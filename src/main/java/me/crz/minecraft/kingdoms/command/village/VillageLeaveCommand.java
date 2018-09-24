@@ -10,14 +10,13 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageLeaveCommand extends SubCommand
-{
+public class VillageLeaveCommand extends SubCommand {
     public VillageLeaveCommand() {
-        super("Leave your current village", new String[] { "leave" });
+        super("Leave your current village", "leave");
         this.setPermission("village.user");
         this.setUsage("leave");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);

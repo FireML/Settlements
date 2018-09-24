@@ -7,21 +7,22 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
+
 import java.text.DecimalFormat;
+
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageMoneyCommand extends SubCommand
-{
+public class VillageMoneyCommand extends SubCommand {
     public VillageMoneyCommand() {
-        super("Commands to interact with the village bank", new String[] { "bank", "money" });
+        super("Commands to interact with the village bank", "bank", "money");
         this.setPermission("village.user");
         this.setUsage("bank <deposit|withdraw|balance> <amount>");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         if (args.length < 1) {
@@ -37,7 +38,7 @@ public class VillageMoneyCommand extends SubCommand
         final String option = args[0];
         final DecimalFormat df = new DecimalFormat("#,###");
         if (option.equalsIgnoreCase("balance") || option.equalsIgnoreCase("bal")) {
-            MessageUtils.tell(player, "&2&lVillage Balance: &r&7" + df.format((long)village.getBank()));
+            MessageUtils.tell(player, "&2&lVillage Balance: &r&7" + df.format((long) village.getBank()));
             return;
         }
         if (option.equalsIgnoreCase("withdraw") || option.equalsIgnoreCase("with")) {
@@ -51,17 +52,15 @@ public class VillageMoneyCommand extends SubCommand
             }
             final int withdrewInit = Integer.parseInt(args[1]);
             if (withdrewInit <= village.getBank()) {
-                final EconomyResponse r = Base.getEconomy().depositPlayer((OfflinePlayer)player, (double)withdrewInit);
+                final EconomyResponse r = Base.getEconomy().depositPlayer(player, (double) withdrewInit);
                 if (r.transactionSuccess()) {
                     village.setBank(village.getBank() - withdrewInit);
                     VillageManager.getInstance().saveVillage(village);
                     MessageUtils.tellResidents(village.getResidents(), "&e&l" + res.getVillageRank() + " &r&e" + player.getName() + " &r&7withdrew &6" + withdrewInit + "&r&7 from the village bank!");
-                }
-                else {
+                } else {
                     MessageUtils.tell(player, "&cAn error occurred, please tell an admin!");
                 }
-            }
-            else {
+            } else {
                 MessageUtils.tell(player, "&c&lNot enough money in the village bank to withdraw &r&6&l" + withdrewInit + "&r&c&l!", null, null);
             }
         }
@@ -73,28 +72,25 @@ public class VillageMoneyCommand extends SubCommand
             final int deposit = Integer.parseInt(args[1]);
             final OfflinePlayer op = Bukkit.getOfflinePlayer(player.getUniqueId());
             if (Base.getEconomy().getBalance(op) >= deposit) {
-                final EconomyResponse r2 = Base.getEconomy().withdrawPlayer(op, (double)deposit);
+                final EconomyResponse r2 = Base.getEconomy().withdrawPlayer(op, (double) deposit);
                 if (r2.transactionSuccess()) {
                     village.setBank(village.getBank() + deposit);
                     VillageManager.getInstance().saveVillage(village);
                     MessageUtils.tellResidents(village.getResidents(), "&e&l" + res.getVillageRank() + "&r&e" + player.getName() + " &r&7deposited &6" + deposit + "&r&7 into the village bank!");
-                }
-                else {
+                } else {
                     MessageUtils.tell(player, "&cAn error occurred, please tell an admin!");
                 }
-            }
-            else {
+            } else {
                 MessageUtils.tell(player, "&c&lNot enough money in your bank to withdraw &r&6&l" + deposit + "&r&c&l!");
             }
         }
     }
-    
+
     public boolean isInt(final String input) {
         try {
             Integer.parseInt(input);
             return true;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return false;
         }
     }

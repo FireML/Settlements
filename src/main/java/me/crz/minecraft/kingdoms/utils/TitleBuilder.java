@@ -1,66 +1,57 @@
 package me.crz.minecraft.kingdoms.utils;
 
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
-import java.util.Iterator;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
+
 import org.bukkit.entity.Player;
 import org.bukkit.Bukkit;
-import net.minecraft.server.v1_12_R1.IChatBaseComponent;
-import net.minecraft.server.v1_12_R1.PacketPlayOutTitle;
-import java.util.ArrayList;
-import net.minecraft.server.v1_12_R1.Packet;
-import java.util.List;
 
-public class TitleBuilder
-{
-    private List<Packet<?>> packets;
-    private boolean title;
-    private boolean subtitle;
-    
+public class TitleBuilder {
+    private String title;
+    private String subtitle;
+    private String actionBar;
+    private int in = 20;
+    private int stay = 60;
+    private int out = 20;
+
     public TitleBuilder() {
         super();
-        packets = new ArrayList<Packet<?>>();
     }
-    
-    public TitleBuilder withTimings(final int in, final int stay, final int out) {
-        packets.add((Packet<?>)new PacketPlayOutTitle(in, stay, out));
+
+    public TitleBuilder withTimings(int in, int stay, int out) {
+        this.in = in;
+        this.stay = stay;
+        this.out = out;
         return this;
     }
-    
-    public TitleBuilder withTitle(final String title) {
-        final IChatBaseComponent message = IChatBaseComponent.ChatSerializer.a("{\"text\": \"\"}").a(title);
-        packets.add((Packet<?>)new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, message));
-        this.title = true;
+
+    public TitleBuilder withTitle(String title) {
+        this.title = title;
         return this;
     }
-    
-    public TitleBuilder withSubtitle(final String subtitle) {
-        final IChatBaseComponent message = IChatBaseComponent.ChatSerializer.a("{\"text\": \"\"}").a(subtitle);
-        packets.add((Packet<?>)new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, message));
-        this.subtitle = true;
+
+    public TitleBuilder withSubtitle(String subtitle) {
+        this.subtitle = subtitle;
         return this;
     }
-    
-    public TitleBuilder withActionbar(final String msg) {
-        final IChatBaseComponent message = IChatBaseComponent.ChatSerializer.a("{\"text\": \"\"}").a(msg);
-        packets.add((Packet<?>)new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.ACTIONBAR, message));
+
+    public TitleBuilder withActionbar(String msg) {
+        this.actionBar = msg;
         return this;
     }
-    
+
     public void send() {
         for (final Player pl : Bukkit.getOnlinePlayers()) {
             this.send(pl);
         }
     }
-    
-    public void send(final Player p) {
-        if (!title) {
-            this.withTitle("");
+
+    public void send(Player p) {
+        if (title != null || subtitle != null) {
+            p.sendTitle(title, subtitle, in, stay, out);
         }
-        if (!subtitle) {
-            this.withSubtitle("");
-        }
-        for (final Packet<?> packet : packets) {
-            ((CraftPlayer)p).getHandle().playerConnection.sendPacket((Packet)packet);
+        if (actionBar != null) {
+            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(actionBar));
         }
     }
 }

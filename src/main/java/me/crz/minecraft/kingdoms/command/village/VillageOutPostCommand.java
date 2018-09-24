@@ -1,15 +1,18 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import org.bukkit.World;
+
 import java.util.HashSet;
 import java.util.Collection;
-import java.util.Iterator;
+
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.utils.ExecuteMoveUtil;
 import org.bukkit.Bukkit;
 import org.bson.Document;
+
 import java.util.Map;
+
 import org.bukkit.Location;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import org.bukkit.Chunk;
@@ -22,12 +25,11 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageOutPostCommand extends SubCommand
-{
+public class VillageOutPostCommand extends SubCommand {
     StringBuilder sb;
-    
+
     public VillageOutPostCommand() {
-        super("Claim a seperate chunk of land", new String[] { "outpost" });
+        super("Claim a seperate chunk of land", "outpost");
         sb = new StringBuilder();
         this.setPermission("village.user");
         sb.append("&8&l--------&r&c&lOutpost Commands&r&8&l--------\n");
@@ -37,7 +39,7 @@ public class VillageOutPostCommand extends SubCommand
         sb.append("&8[&9*&8] &b/s outpost tp <name> &7- teleports to a outpost shown in list\n");
         sb.append("&8[&9*&8] &b/s outpost list &7- lists all of your outposts");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         if (args.length < 1) {
@@ -73,8 +75,7 @@ public class VillageOutPostCommand extends SubCommand
                 }
                 MessageUtils.tell(player, MessageUtils.CANT_CLAIM_HERE_MESSAGE, "{owner}", land.getOwnerVillage());
                 return;
-            }
-            else {
+            } else {
                 LandManager.getInstance().claimOutpost(player.getLocation(), village);
                 MessageUtils.tellResidents(village.getResidents(), "&a&lSUCCESS &r&e{player} &7has claimed an &coutpost&7 for your settlement!", "{player}", player.getName());
             }
@@ -117,14 +118,14 @@ public class VillageOutPostCommand extends SubCommand
             for (final OwnedLand land2 : LandManager.getInstance().getClaimedLand(village)) {
                 if (land2.getIsOutpost()) {
                     if (village.getOutpostHomes().containsKey(String.valueOf(land2.getX()) + "-" + land2.getWorldName() + "-" + land2.getZ())) {
-                        final Location loc = (Location)village.getOutpostHomes().get(String.valueOf(land2.getX()) + "-" + land2.getWorldName() + "-" + land2.getZ());
+                        final Location loc = village.getOutpostHomes().get(String.valueOf(land2.getX()) + "-" + land2.getWorldName() + "-" + land2.getZ());
                         String name = "";
                         for (final Map.Entry<String, Document> doc : village.getOutpostHomesList().entrySet()) {
-                            if (((Document)doc.getValue()).containsKey((Object)"name") && ((String)doc.getKey()).equals(String.valueOf(land2.getX()) + "-" + land2.getWorldName() + "-" + land2.getZ())) {
-                                name = ((Document)doc.getValue()).getString((Object)"name");
+                            if (doc.getValue().containsKey("name") && doc.getKey().equals(String.valueOf(land2.getX()) + "-" + land2.getWorldName() + "-" + land2.getZ())) {
+                                name = doc.getValue().getString("name");
                             }
                         }
-                        sb.append("&a" + name);
+                        sb.append("&a").append(name);
                         sb.append(" (World: ");
                         sb.append(loc.getWorld().getName());
                         sb.append(", X: ");
@@ -132,8 +133,7 @@ public class VillageOutPostCommand extends SubCommand
                         sb.append(", Z: ");
                         sb.append(loc.getZ());
                         sb.append(" )\n");
-                    }
-                    else {
+                    } else {
                         sb.append("&aMBFU\n");
                     }
                 }
@@ -147,13 +147,13 @@ public class VillageOutPostCommand extends SubCommand
             }
             Document doc2 = null;
             for (final Map.Entry<String, Document> document : village.getOutpostHomesList().entrySet()) {
-                if (((Document)document.getValue()).containsKey((Object)"name") && ((Document)document.getValue()).getString((Object)"name").equalsIgnoreCase(args[1])) {
+                if (document.getValue().containsKey("name") && document.getValue().getString("name").equalsIgnoreCase(args[1])) {
                     doc2 = document.getValue();
                     break;
                 }
             }
             if (doc2 != null) {
-                final Location loc2 = new Location(Bukkit.getWorld(doc2.getString((Object)"worldName")), (double)doc2.getDouble((Object)"x"), (double)doc2.getDouble((Object)"y"), (double)doc2.getDouble((Object)"z"));
+                final Location loc2 = new Location(Bukkit.getWorld(doc2.getString("worldName")), doc2.getDouble("x"), doc2.getDouble("y"), doc2.getDouble("z"));
                 MessageUtils.tell(player, "&e&lTeleporting in 5 seconds...");
                 ExecuteMoveUtil.getInstance().execute(player, () -> player.teleport(loc2), 5, "Teleport");
                 return;
@@ -179,13 +179,13 @@ public class VillageOutPostCommand extends SubCommand
             MessageUtils.tell(player, "&a&lHome &6" + args[1] + " &aset here");
         }
     }
-    
+
     public Collection<Chunk> getChunksAroundPlayer(final Player player) {
-        final int[] offset = { -4, -5, -1, 1, 2, 3, 4 };
+        final int[] offset = {-4, -5, -1, 1, 2, 3, 4};
         final World world = player.getWorld();
         final int baseX = player.getLocation().getChunk().getX();
         final int baseZ = player.getLocation().getChunk().getZ();
-        final Collection<Chunk> chunksAroundPlayer = new HashSet<Chunk>();
+        final Collection<Chunk> chunksAroundPlayer = new HashSet<>();
         int[] array;
         for (int length = (array = offset).length, i = 0; i < length; ++i) {
             final int x = array[i];
@@ -197,9 +197,5 @@ public class VillageOutPostCommand extends SubCommand
             }
         }
         return chunksAroundPlayer;
-    }
-    
-    private static /* synthetic */ void lambda$0(final Player player, final Location location) {
-        player.teleport(location);
     }
 }

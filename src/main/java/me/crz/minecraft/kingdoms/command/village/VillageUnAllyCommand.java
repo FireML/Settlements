@@ -9,14 +9,13 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageUnAllyCommand extends SubCommand
-{
+public class VillageUnAllyCommand extends SubCommand {
     public VillageUnAllyCommand() {
-        super("remove an allied village", new String[] { "unally" });
+        super("remove an allied village", "unally");
         this.setPermission("village.user");
         this.setUsage("unally <name>");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         if (args.length < 1) {
@@ -52,7 +51,7 @@ public class VillageUnAllyCommand extends SubCommand
         MessageUtils.tellResidents(invitedVillage.getResidents(), "&7&lAlly &6" + village.getName() + " &7removed!");
         MessageUtils.tellResidents(village.getResidents(), "&7&lAlly &6" + invitedVillage.getName() + " &7removed!");
     }
-    
+
     private boolean canAlly(final Resident res) {
         return VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER);
     }

@@ -1,19 +1,20 @@
 package me.crz.minecraft.kingdoms.chat;
 
-import org.bukkit.event.Listener;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.EventHandler;
 import me.crz.minecraft.kingdoms.village.Village;
-import java.util.Iterator;
+
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Entity;
 import net.md_5.bungee.api.chat.BaseComponent;
+
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.List;
+
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -23,18 +24,19 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
+
 import java.text.DecimalFormat;
+
 import org.bukkit.event.player.PlayerChatEvent;
 import me.crz.minecraft.kingdoms.Base;
 
-public class ChatManager extends Base
-{
+public class ChatManager extends Base {
     private static ChatManager instance;
-    
+
     public ChatManager() {
         super();
     }
-    
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void on(final PlayerChatEvent e) {
         if (e.isCancelled()) {
@@ -60,38 +62,36 @@ public class ChatManager extends Base
             final TextComponent nameBit = new TextComponent(chat.toString());
             nameBit.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + e.getPlayer().getName() + " "));
             nameBit.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(MessageUtils.replaceColorCodes("&9Name: &7" + e.getPlayer().getDisplayName() + "\n&9Balance: &7" + df.format(KingdomsPlugin.getInstance().econ.getBalance(Bukkit.getOfflinePlayer(e.getPlayer().getUniqueId()))))).create()));
-            final TextComponent send;
-            final BaseComponent baseComponent;
-            final TextComponent message;
-            ((List<Object>)Bukkit.getOnlinePlayers().stream().filter(p -> !ResidentManager.getInstance().getResident(p).getIgnore().contains(e.getPlayer().getUniqueId().toString())).filter(p -> Base.getResidentManager().isListening(p, ChatChannel.GENERAL)).<List<Object>, ?>collect((Collector<? super Object, ?, List<Object>>)Collectors.<? super Object>toList())).forEach(p -> {
-                send = new TextComponent();
-                send.addExtra(baseComponent);
-                message = new TextComponent();
-                if (!ResidentManager.getInstance().getResident(p).getSwear()) {
-                    message.addExtra((BaseComponent)new TextComponent(Base.getPlugin().utilChat.filterCurses(e.getMessage())));
-                }
-                else {
-                    message.addExtra((BaseComponent)new TextComponent(e.getMessage()));
-                }
-                send.addExtra((BaseComponent)message);
-                p.spigot().sendMessage((BaseComponent)send);
-                return;
-            });
+
+            Bukkit.getOnlinePlayers().stream()
+                    .filter(p -> !ResidentManager.getInstance().getResident(p).getIgnore().contains(e.getPlayer().getUniqueId().toString()))
+                    .filter(p -> Base.getResidentManager().isListening(p, ChatChannel.GENERAL))
+                    .forEach(p -> {
+                        TextComponent send = new TextComponent();
+                        send.addExtra(nameBit);
+                        TextComponent message = new TextComponent();
+                        if (!ResidentManager.getInstance().getResident(p).getSwear()) {
+                            message.addExtra(new TextComponent(Base.getPlugin().utilChat.filterCurses(e.getMessage())));
+                        } else {
+                            message.addExtra(new TextComponent(e.getMessage()));
+                        }
+                        send.addExtra(message);
+                        p.spigot().sendMessage(send);
+                    });
             System.out.println(MessageUtils.replaceColorCodes(String.valueOf(chat.toString()) + e.getMessage()));
-        }
-        else {
+        } else {
             final Player p2 = e.getPlayer();
             e.setCancelled(true);
             if (res.getActiveChannel().equals(ChatChannel.LOCAL)) {
                 final StringBuilder sb = new StringBuilder("&e[Local] &7");
-                sb.append(String.valueOf(playerPrefix) + p2.getDisplayName());
+                sb.append(String.valueOf(playerPrefix)).append(p2.getDisplayName());
                 sb.append(" \u27a6 &e");
                 sb.append(e.getMessage());
                 MessageUtils.tell(p2, sb.toString());
                 System.out.println(MessageUtils.replaceColorCodes(sb.toString()));
                 for (final Entity en : p2.getNearbyEntities(200.0, 200.0, 200.0)) {
-                    if (en instanceof Player && Base.getResidentManager().isListening((Player)en, ChatChannel.LOCAL)) {
-                        MessageUtils.tell((Player)en, sb.toString());
+                    if (en instanceof Player && Base.getResidentManager().isListening((Player) en, ChatChannel.LOCAL)) {
+                        MessageUtils.tell((Player) en, sb.toString());
                     }
                 }
                 return;
@@ -145,8 +145,7 @@ public class ChatManager extends Base
                     }
                     MessageUtils.tell(op2, sb2.toString());
                 }
-            }
-            else if (res.getActiveChannel().equals(ChatChannel.SETTLEMENT)) {
+            } else if (res.getActiveChannel().equals(ChatChannel.SETTLEMENT)) {
                 final Village village = VillageManager.getInstance().getVillageFromPlayer(p2);
                 if (village == null) {
                     res.setActiveChannel(ChatChannel.GENERAL);
@@ -163,8 +162,7 @@ public class ChatManager extends Base
                 sb2.append(e.getMessage());
                 System.out.println(MessageUtils.replaceColorCodes(sb2.toString()));
                 MessageUtils.tellResidentsC(village.getResidents(), sb2.toString(), ChatChannel.SETTLEMENT);
-            }
-            else {
+            } else {
                 if (res.getActiveChannel().equals(ChatChannel.TRADE)) {
                     final StringBuilder sb = new StringBuilder("&d[TRADE] &r");
                     sb.append(p2.getDisplayName());
@@ -206,33 +204,11 @@ public class ChatManager extends Base
             }
         }
     }
-    
+
     public static ChatManager getInstance() {
         if (instance == null) {
-            Base.registerListener((Listener)(instance = new ChatManager()));
+            Base.registerListener(instance = new ChatManager());
         }
         return instance;
-    }
-    
-    private static /* synthetic */ boolean lambda$0(final PlayerChatEvent playerChatEvent, final Player p) {
-        return !ResidentManager.getInstance().getResident(p).getIgnore().contains(playerChatEvent.getPlayer().getUniqueId().toString());
-    }
-    
-    private static /* synthetic */ boolean lambda$1(final Player p) {
-        return Base.getResidentManager().isListening(p, ChatChannel.GENERAL);
-    }
-    
-    private static /* synthetic */ void lambda$2(final TextComponent textComponent, final PlayerChatEvent playerChatEvent, final Player p) {
-        final TextComponent send = new TextComponent();
-        send.addExtra((BaseComponent)textComponent);
-        final TextComponent message = new TextComponent();
-        if (!ResidentManager.getInstance().getResident(p).getSwear()) {
-            message.addExtra((BaseComponent)new TextComponent(Base.getPlugin().utilChat.filterCurses(playerChatEvent.getMessage())));
-        }
-        else {
-            message.addExtra((BaseComponent)new TextComponent(playerChatEvent.getMessage()));
-        }
-        send.addExtra((BaseComponent)message);
-        p.spigot().sendMessage((BaseComponent)send);
     }
 }

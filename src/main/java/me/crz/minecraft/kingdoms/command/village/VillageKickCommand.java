@@ -1,12 +1,10 @@
 package me.crz.minecraft.kingdoms.command.village;
 
-import java.util.Iterator;
 import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.OfflinePlayer;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import org.bson.conversions.Bson;
 import org.bson.Document;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.db.TownCache;
@@ -19,14 +17,13 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageKickCommand extends SubCommand
-{
+public class VillageKickCommand extends SubCommand {
     public VillageKickCommand() {
-        super("Kick a player from your village", new String[] { "kick" });
+        super("Kick a player from your village", "kick");
         this.setPermission("village.user");
         this.setUsage("kick <name>");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
@@ -65,10 +62,10 @@ public class VillageKickCommand extends SubCommand
         res.setVillageName("");
         res.setVillageRank(VillageRank.RESIDENT);
         ResidentManager.getInstance().saveResident(res);
-        if (((String)TownCache.getPendingTownInvites().get(res.getUUID())).equals(playerVillage.getName())) {
+        if (TownCache.getPendingTownInvites().get(res.getUUID()).equals(playerVillage.getName())) {
             TownCache.getPendingTownInvites().remove(res.getUUID());
         }
-        for (final Document doc : DatabaseManager.getLandCollection().find((Bson)new Document("plotOwner", (Object)res.getUUID().toString()))) {
+        for (final Document doc : DatabaseManager.getLandCollection().find(new Document("plotOwner", res.getUUID().toString()))) {
             final OwnedLand land = new OwnedLand(doc);
             land.setPlotOwner("");
             LandManager.getInstance().saveLand(land);

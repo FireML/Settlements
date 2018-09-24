@@ -2,21 +2,24 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.utils.UtilMath;
 import me.crz.minecraft.kingdoms.village.Village;
+
 import java.util.concurrent.TimeUnit;
+
 import me.crz.minecraft.kingdoms.land.LandManager;
+
 import java.util.Calendar;
+
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageUpkeepCommand extends SubCommand
-{
+public class VillageUpkeepCommand extends SubCommand {
     public VillageUpkeepCommand() {
-        super("upkeep", new String[] { "upkeep" });
+        super("upkeep", "upkeep");
         this.setPermission("village.user");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
@@ -29,26 +32,25 @@ public class VillageUpkeepCommand extends SubCommand
             return;
         }
         final Calendar midnight = Calendar.getInstance();
-        midnight.set(11, 0);
-        midnight.set(12, 0);
-        midnight.set(13, 0);
-        midnight.set(14, 1);
-        midnight.set(6, midnight.get(6) + 1);
+        midnight.set(Calendar.HOUR_OF_DAY, 0);
+        midnight.set(Calendar.MINUTE, 0);
+        midnight.set(Calendar.SECOND, 0);
+        midnight.set(Calendar.MILLISECOND, 1);
+        midnight.set(Calendar.DAY_OF_YEAR, midnight.get(Calendar.DAY_OF_YEAR) + 1);
         final long tillMidnight = midnight.getTimeInMillis() - System.currentTimeMillis() - 1L;
         final StringBuilder sb = new StringBuilder("&7------- &cUpkeep&7 -------\n");
         final int total = LandManager.getInstance().getClaimedLandSize(village) * 500;
-        sb.append("&3&lUpkeep cost:&e " + total + "$\n");
+        sb.append("&3&lUpkeep cost:&e ").append(total).append("$\n");
         sb.append("&3&lUpkeep: &e500$ &7/&e claim &7/&e day\n");
         if (village.getLastUpkeep() < System.nanoTime() + TimeUnit.DAYS.toNanos(1L)) {
-            sb.append("&3&lTime Till Upkeep: &e" + format((double)TimeUnit.MILLISECONDS.toSeconds(tillMidnight)));
+            sb.append("&3&lTime Till Upkeep: &e").append(format((double) TimeUnit.MILLISECONDS.toSeconds(tillMidnight)));
+        } else {
+            sb.append("&3&lTime Till Upkeep: &e").append(format((double) TimeUnit.NANOSECONDS.toSeconds(village.getLastUpkeep() - System.nanoTime())));
         }
-        else {
-            sb.append("&3&lTime Till Upkeep: &e" + format((double)TimeUnit.NANOSECONDS.toSeconds(village.getLastUpkeep() - System.nanoTime())));
-        }
-        sb.append("\n&3&lCan afford? " + ((village.getBank() >= total) ? "&ayes" : "&cno"));
+        sb.append("\n&3&lCan afford? ").append((village.getBank() >= total) ? "&ayes" : "&cno");
         MessageUtils.tell(player, sb.toString());
     }
-    
+
     public static String format(double seconds) {
         if (seconds < 0.0) {
             seconds = 0.0;

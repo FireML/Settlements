@@ -3,23 +3,23 @@ package me.crz.minecraft.kingdoms.utils;
 import org.bukkit.event.EventHandler;
 import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveBlockEvent;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
+
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.Map;
+
 import me.crz.minecraft.kingdoms.Base;
 
-public class ExecuteMoveUtil extends Base
-{
+public class ExecuteMoveUtil extends Base {
     private static ExecuteMoveUtil instance;
     Map<UUID, String> uuids;
-    
+
     public ExecuteMoveUtil() {
         super();
-        uuids = new HashMap<UUID, String>();
-        Base.registerListener((Listener)this);
+        uuids = new HashMap<>();
+        Base.registerListener(this);
     }
-    
+
     public void execute(final Player p, final Runnable r, final int seconds, final String action) {
         uuids.put(p.getUniqueId(), action);
         ThreadManager.getInstance().execute(() -> {
@@ -29,7 +29,7 @@ public class ExecuteMoveUtil extends Base
             }
         }, seconds);
     }
-    
+
     @EventHandler
     public void on(final PlayerMoveBlockEvent e) {
         if (uuids.containsKey(e.getPlayer().getUniqueId())) {
@@ -37,18 +37,11 @@ public class ExecuteMoveUtil extends Base
             uuids.remove(e.getPlayer().getUniqueId());
         }
     }
-    
+
     public static ExecuteMoveUtil getInstance() {
         if (instance == null) {
             instance = new ExecuteMoveUtil();
         }
         return instance;
-    }
-    
-    private /* synthetic */ void lambda$0(final Player player, final Runnable runnable) {
-        if (uuids.containsKey(player.getUniqueId())) {
-            runnable.run();
-            uuids.remove(player.getUniqueId());
-        }
     }
 }

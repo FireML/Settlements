@@ -5,59 +5,57 @@ import org.bukkit.Location;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import org.bukkit.entity.Player;
-import java.util.Iterator;
-import org.bson.conversions.Bson;
+
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import org.bson.Document;
 import com.mongodb.client.MongoCollection;
+
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.List;
 
-public class VillageManager
-{
+public class VillageManager {
     private static VillageManager instance;
     private List<Village> villages;
-    
+
     public static void main(final String[] args) {
         System.out.println(Pattern.compile(".*TeSt.*", 2));
     }
-    
+
     public VillageManager() {
         super();
-        villages = new ArrayList<Village>();
+        villages = new ArrayList<>();
     }
-    
+
     public static VillageManager getInstance() {
         if (instance == null) {
             instance = new VillageManager();
         }
         return instance;
     }
-    
+
     public MongoCollection<Document> getAllVillageDocuments() {
         return DatabaseManager.getKingdomCollection();
     }
-    
+
     public void saveVillage(final Village village) {
         this.saveVillage(village, false);
     }
-    
+
     public void saveVillage(final Village village, final boolean b) {
         final MongoCollection<Document> collection = DatabaseManager.getKingdomCollection();
-        if (collection.find((Bson)new Document("name", (Object)Pattern.compile(".*" + village.getName() + ".*", 2))).first() == null && !b) {
-            collection.insertOne((Object)village.getDocument());
-        }
-        else {
-            collection.updateOne((Bson)new Document("_id", village.getDocument().get((Object)"_id")), (Bson)new Document("$set", (Object)village.getDocument()));
+        if (collection.find(new Document("name", Pattern.compile(".*" + village.getName() + ".*", 2))).first() == null && !b) {
+            collection.insertOne(village.getDocument());
+        } else {
+            collection.updateOne(new Document("_id", village.getDocument().get("_id")), new Document("$set", village.getDocument()));
         }
     }
-    
+
     public void registerNewVillage(final Village village) {
         villages.add(village);
         this.saveVillage(village);
     }
-    
+
     public Village getVillageFromName(final String name) {
         if (name.equals("")) {
             return null;
@@ -67,7 +65,7 @@ public class VillageManager
                 return village;
             }
         }
-        final Document doc = (Document)DatabaseManager.getKingdomCollection().find((Bson)new Document("name", (Object)Pattern.compile(name, 2))).first();
+        final Document doc = DatabaseManager.getKingdomCollection().find(new Document("name", Pattern.compile(name, 2))).first();
         if (doc == null) {
             return null;
         }
@@ -78,18 +76,18 @@ public class VillageManager
         villages.add(village2);
         return village2;
     }
-    
+
     public Village getVillageFromResident(final Resident res) {
         return this.getVillageFromName(res.getVillageName());
     }
-    
+
     public Village getVillageFromPlayer(final Player player) {
         return this.getVillageFromResident(ResidentManager.getInstance().getResident(player));
     }
-    
+
     public void deleteVillage(final Village village) {
         villages.remove(village);
-        DatabaseManager.getKingdomCollection().deleteOne((Bson)village.getDocument());
+        DatabaseManager.getKingdomCollection().deleteOne(village.getDocument());
         for (final String ally : village.getAllies()) {
             final Village al = this.getVillageFromName(ally);
             if (al != null) {
@@ -97,12 +95,12 @@ public class VillageManager
             }
             this.saveVillage(al);
         }
-        for (final Document doc : DatabaseManager.getLandCollection().find((Bson)new Document("ownerVillage", (Object)Pattern.compile(".*" + village.getName() + ".*", 2)))) {
+        for (final Document doc : DatabaseManager.getLandCollection().find(new Document("ownerVillage", Pattern.compile(".*" + village.getName() + ".*", 2)))) {
             final OwnedLand land = new OwnedLand(doc);
             LandManager.getInstance().unclaimLand(land);
         }
     }
-    
+
     public void isResBanished(final Location to, final Player p, final CustomRunnable customRunnable) {
         final OwnedLand land = LandManager.getInstance().getLandFromLocation(to);
         if (land != null) {
@@ -112,7 +110,7 @@ public class VillageManager
             }
         }
     }
-    
+
     public void saveAll() {
         for (final Village v : villages) {
             this.saveVillage(v);

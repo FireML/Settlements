@@ -11,14 +11,13 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageTeleporterSetCommand extends SubCommand
-{
+public class VillageTeleporterSetCommand extends SubCommand {
     public VillageTeleporterSetCommand() {
-        super("sets the teleporter location", new String[] { "set" });
+        super("sets the teleporter location", "set");
         this.setPermission("village.user");
         this.setUsage("set <here|none>");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         if (args.length < 1) {

@@ -7,14 +7,13 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class FriendAddCommand extends SubCommand
-{
+public class FriendAddCommand extends SubCommand {
     public FriendAddCommand() {
-        super("Adds a player to your friend list", new String[] { "add" });
+        super("Adds a player to your friend list", "add");
         this.setPermission("village.user");
         this.setUsage("add <name>");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         if (args.length < 1) {

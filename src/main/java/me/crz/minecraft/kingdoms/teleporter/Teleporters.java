@@ -2,19 +2,18 @@ package me.crz.minecraft.kingdoms.teleporter;
 
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.village.Village;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class Teleporters
-{
+public class Teleporters {
     private static Teleporters instance;
-    Map<String, PrivateTeleportersGUI> privateTeleporters;
-    
+    private Map<String, PrivateTeleportersGUI> privateTeleporters = new HashMap<>();
+
     public Teleporters() {
         super();
-        privateTeleporters = new HashMap<String, PrivateTeleportersGUI>();
     }
-    
+
     public PrivateTeleportersGUI getPrivateTeleporters(final Village v, final Player p) {
         if (v == null) {
             return null;
@@ -26,7 +25,7 @@ public class Teleporters
         privateTeleporters.put(v.getName(), teleporter);
         return teleporter;
     }
-    
+
     public static Teleporters getInstance() {
         if (instance == null) {
             instance = new Teleporters();

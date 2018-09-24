@@ -6,13 +6,12 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageSettingsCommand extends SubCommand
-{
+public class VillageSettingsCommand extends SubCommand {
     public VillageSettingsCommand() {
-        super("Shows a settings gui", new String[] { "settings" });
+        super("Shows a settings gui", "settings");
         this.setPermission("village.user");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
@@ -26,7 +25,7 @@ public class VillageSettingsCommand extends SubCommand
         }
         SettingsGUI.getInstance().open(player);
     }
-    
+
     private boolean canChange(final Village village, final Player player) {
         return village.getChief().equals(player.getUniqueId());
     }

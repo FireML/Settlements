@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.utils;
 
-public interface KingdomRunnable
-{
+public interface KingdomRunnable {
     void run();
 }

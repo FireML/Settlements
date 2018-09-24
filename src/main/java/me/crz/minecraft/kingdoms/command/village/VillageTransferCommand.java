@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import java.util.UUID;
+
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.utils.OfflinePlayerManager;
@@ -11,14 +12,13 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageTransferCommand extends SubCommand
-{
+public class VillageTransferCommand extends SubCommand {
     public VillageTransferCommand() {
-        super("Transfers leadership of your village", new String[] { "transfer" });
+        super("Transfers leadership of your village", "transfer");
         this.setPermission("village.user");
         this.setUsage("transfer <player>");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         if (args.length < 1) {
@@ -54,7 +54,7 @@ public class VillageTransferCommand extends SubCommand
         VillageManager.getInstance().saveVillage(village);
         MessageUtils.tellResidents(village.getResidents(), this.getSuccessSetRankMessage(VillageRank.CHIEF.getTag(village.getState()), player, args[0]), null, null);
     }
-    
+
     private String getSuccessSetRankMessage(final String rank, final Player player, final String target) {
         String message = MessageUtils.SUCCESS_SET_RANK_MESSAGE;
         if (message.contains("{setter}")) {
@@ -68,7 +68,7 @@ public class VillageTransferCommand extends SubCommand
         }
         return message;
     }
-    
+
     private boolean isResident(final Resident resident, final Village village) {
         return resident.getVillageName().equals(village.getName());
     }

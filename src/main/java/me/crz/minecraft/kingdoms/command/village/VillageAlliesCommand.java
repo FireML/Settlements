@@ -1,19 +1,17 @@
 package me.crz.minecraft.kingdoms.command.village;
 
-import java.util.Iterator;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageAlliesCommand extends SubCommand
-{
+public class VillageAlliesCommand extends SubCommand {
     public VillageAlliesCommand() {
-        super("lists all your allies", new String[] { "allies" });
+        super("lists all your allies", "allies");
         this.setPermission("village.user");
     }
-    
+
     @Override
     public void run(final Player p, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(p);

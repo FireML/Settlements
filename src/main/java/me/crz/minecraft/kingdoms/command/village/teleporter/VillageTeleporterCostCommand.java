@@ -6,14 +6,13 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageTeleporterCostCommand extends SubCommand
-{
+public class VillageTeleporterCostCommand extends SubCommand {
     public VillageTeleporterCostCommand() {
-        super("view or set the teleporter cost", new String[] { "cost" });
+        super("view or set the teleporter cost", "cost");
         this.setPermission("village.user");
         this.setUsage("cost <view|set> <value>");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         if (args.length < 1) {
@@ -37,13 +36,12 @@ public class VillageTeleporterCostCommand extends SubCommand
         VillageManager.getInstance().saveVillage(village);
         MessageUtils.tell(player, "&2&lVillage teleport cost set to: &r&6&l" + village.getTeleportCost());
     }
-    
+
     public boolean isInt(final String input) {
         try {
             Integer.parseInt(input);
             return true;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return false;
         }
     }

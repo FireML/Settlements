@@ -16,17 +16,16 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageCreateCommand extends SubCommand
-{
+public class VillageCreateCommand extends SubCommand {
     String allowed;
-    
+
     public VillageCreateCommand() {
-        super("Create a new village.", new String[] { "create" });
+        super("Create a new village.", "create");
         allowed = "abcdefghijklmnopqrstuvwxyz0123456789_-";
         this.setPermission("village.user");
         this.setUsage("create <name>");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         if (args.length < 1) {
@@ -65,7 +64,7 @@ public class VillageCreateCommand extends SubCommand
                 MessageUtils.tell(player, "&c&lYou don't have the required &r&6&l" + Utils.getVillageCreationCost() + "$&r&c&l to make a village!", null, null);
                 return;
             }
-            final EconomyResponse r = Base.getEconomy().withdrawPlayer((OfflinePlayer)player, (double)Utils.getVillageCreationCost());
+            final EconomyResponse r = Base.getEconomy().withdrawPlayer(player, (double) Utils.getVillageCreationCost());
             if (!r.transactionSuccess()) {
                 MessageUtils.tell(player, "&cAn error occurred, please tell an admin!", null, null);
                 return;
@@ -81,7 +80,7 @@ public class VillageCreateCommand extends SubCommand
         ResidentManager.getInstance().saveResident(res);
         MessageUtils.tell(player, MessageUtils.SUCCESS_CREATE_MESSAGE, null, null);
     }
-    
+
     private boolean villageExists(final String name) {
         return VillageManager.getInstance().getVillageFromName(name) != null;
     }

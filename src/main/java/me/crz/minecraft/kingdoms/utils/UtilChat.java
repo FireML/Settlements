@@ -1,27 +1,25 @@
 package me.crz.minecraft.kingdoms.utils;
 
-import java.util.Iterator;
 import java.util.HashSet;
 import java.util.Set;
 
-public class UtilChat
-{
+public class UtilChat {
     private final Set<String> curses;
-    
+
     public UtilChat() {
         super();
-        curses = new HashSet<String>();
+        curses = new HashSet<>();
         this.populate();
     }
-    
+
     public String replaceAllIgnoreCase(final String text, final String regex, final String replacement) {
         return text.replaceAll("(?i)" + regex, replacement);
     }
-    
+
     public String removeRecurringSpaces(final String string) {
         return string.trim().replaceAll(" +", " ");
     }
-    
+
     public String filterCurses(final String message) {
         final StringBuilder sb = new StringBuilder();
         String[] split;
@@ -29,15 +27,14 @@ public class UtilChat
             final String s = split[i];
             if (curses.contains(s.toLowerCase())) {
                 sb.append("cookie");
-            }
-            else {
+            } else {
                 sb.append(s);
             }
             sb.append(" ");
         }
         return sb.toString();
     }
-    
+
     public String filterCursesOld(String message) {
         for (int i = 0; i < message.length(); ++i) {
             if (message.substring(i, i + 1).equals(" ")) {
@@ -52,7 +49,7 @@ public class UtilChat
         message = this.removeRecurringSpaces(message);
         return message.trim();
     }
-    
+
     private void populate() {
         if (!curses.isEmpty()) {
             return;

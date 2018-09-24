@@ -11,14 +11,13 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageEnterMessageCommand extends SubCommand
-{
+public class VillageEnterMessageCommand extends SubCommand {
     public VillageEnterMessageCommand() {
-        super("Sets what players see when walking into your claims", new String[] { "entermessage" });
+        super("Sets what players see when walking into your claims", "entermessage");
         this.setPermission("village.user");
         this.setUsage("entermessage <message>");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
@@ -50,15 +49,15 @@ public class VillageEnterMessageCommand extends SubCommand
         VillageManager.getInstance().saveVillage(village);
         MessageUtils.tell(player, MessageUtils.SUCCESS_CHANGE_ENTER_MESSAGE, null, null);
     }
-    
+
     private String getMessage(final String[] args) {
         final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < args.length; ++i) {
-            builder.append(String.valueOf(args[i]) + " ");
+            builder.append(String.valueOf(args[i])).append(" ");
         }
         return builder.toString();
     }
-    
+
     private boolean canChange(final Village village, final Player player) {
         return village.getState() == VillageState.KINGDOM;
     }

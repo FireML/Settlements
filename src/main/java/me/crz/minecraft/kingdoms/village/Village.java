@@ -1,28 +1,35 @@
 package me.crz.minecraft.kingdoms.village;
 
 import java.lang.reflect.Field;
+
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.utils.config.Config;
 import org.bukkit.Bukkit;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import org.bukkit.Location;
-import java.util.Iterator;
+
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.utils.UtilTime;
+
 import java.util.concurrent.TimeUnit;
+
 import me.crz.minecraft.kingdoms.landflags.Use;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.bson.Document;
+
 import java.util.UUID;
 
-public class Village
-{
+public class Village {
     private String name;
     private String description;
     private int level;
@@ -48,7 +55,7 @@ public class Village
     private long lastUpkeep;
     private UpkeepStage upkeepStage;
     private Document document;
-    
+
     public Village(final String name, final UUID chief, final int level, final VillageState state, final String enterMessage, final String leaveMessage, final BuildState buildState) {
         super();
         document = new Document();
@@ -60,7 +67,7 @@ public class Village
         this.set("enterMessage", enterMessage);
         this.set("leaveMessage", leaveMessage);
         this.set("buildState", buildState);
-        document.put("vault", (Object)new Document());
+        document.put("vault", new Document());
         this.set("pvp", false);
         this.set("fireSpread", false);
         this.set("explosions", false);
@@ -74,81 +81,72 @@ public class Village
         this.set("outpostHomes", new Document());
         this.set("banished", new ArrayList());
         final Document useDoc = new Document();
-        Use[] values;
-        for (int length = (values = Use.values()).length, i = 0; i < length; ++i) {
-            final Use u = values[i];
-            useDoc.put(u.name(), (Object)BuildState.RESIDENTS.name());
+        for (Use u : Use.values()) {
+            useDoc.put(u.name(), BuildState.RESIDENTS.name());
         }
         this.set("use", useDoc);
         this.set("lastUpkeep", System.nanoTime() + TimeUnit.DAYS.toNanos(7L));
         this.set("upkeepStage", UpkeepStage.PAID);
     }
-    
+
     public Village(final Document doc) {
         super();
         document = doc;
-        name = doc.getString((Object)"name");
-        level = doc.getInteger((Object)"level");
-        villageState = VillageState.valueOf(doc.getString((Object)"villageState"));
-        chief = UUID.fromString(doc.getString((Object)"chief"));
-        enterMessage = doc.getString((Object)"enterMessage");
-        leaveMessage = doc.getString((Object)"leaveMessage");
-        buildState = BuildState.valueOf(doc.getString((Object)"buildState"));
-        teleporterClaim = (Document)doc.get((Object)"teleporterClaim");
-        pvp = doc.getBoolean((Object)"pvp");
-        fireSpread = doc.getBoolean((Object)"fireSpread");
-        explosions = doc.getBoolean((Object)"explosions");
-        mobSpawning = doc.getBoolean((Object)"mobSpawning");
-        buff = doc.getBoolean((Object)"buff");
-        teleporter = doc.getBoolean((Object)"teleporter");
-        bank = doc.getInteger((Object)"bank");
-        allies = (List<String>)doc.get((Object)"allies");
-        teleportCost = doc.getInteger((Object)"teleportCost");
-        villageHome = (Document)doc.get((Object)"villageHome");
-        if (doc.containsKey((Object)"outpostHomes")) {
-            outpostHomes = (Document)doc.get((Object)"outpostHomes");
-        }
-        else {
+        name = doc.getString("name");
+        level = doc.getInteger("level");
+        villageState = VillageState.valueOf(doc.getString("villageState"));
+        chief = UUID.fromString(doc.getString("chief"));
+        enterMessage = doc.getString("enterMessage");
+        leaveMessage = doc.getString("leaveMessage");
+        buildState = BuildState.valueOf(doc.getString("buildState"));
+        teleporterClaim = (Document) doc.get("teleporterClaim");
+        pvp = doc.getBoolean("pvp");
+        fireSpread = doc.getBoolean("fireSpread");
+        explosions = doc.getBoolean("explosions");
+        mobSpawning = doc.getBoolean("mobSpawning");
+        buff = doc.getBoolean("buff");
+        teleporter = doc.getBoolean("teleporter");
+        bank = doc.getInteger("bank");
+        allies = doc.get("allies", new ArrayList<>());
+        teleportCost = doc.getInteger("teleportCost");
+        villageHome = (Document) doc.get("villageHome");
+        if (doc.containsKey("outpostHomes")) {
+            outpostHomes = (Document) doc.get("outpostHomes");
+        } else {
             this.set("outpostHomes", new Document());
         }
-        if (doc.containsKey((Object)"banished")) {
-            banished = (List<String>)doc.get((Object)"banished");
-        }
-        else {
+        if (doc.containsKey("banished")) {
+            banished = doc.get("banished", new ArrayList<>());
+        } else {
             this.set("banished", new ArrayList());
         }
-        if (doc.containsKey((Object)"use")) {
-            use = (Document)doc.get((Object)"use");
-        }
-        else {
+        if (doc.containsKey("use")) {
+            use = (Document) doc.get("use");
+        } else {
             final Document useDoc = new Document();
-            Use[] values;
-            for (int length = (values = Use.values()).length, i = 0; i < length; ++i) {
-                final Use u = values[i];
-                useDoc.put(u.name(), (Object)BuildState.RESIDENTS.name());
+            for (Use u : Use.values()) {
+                useDoc.put(u.name(), BuildState.RESIDENTS.name());
             }
             this.set("use", useDoc);
         }
-        if (doc.containsKey((Object)"lastUpkeep")) {
-            lastUpkeep = doc.getLong((Object)"lastUpkeep");
-        }
-        else {
+        if (doc.containsKey("lastUpkeep")) {
+            lastUpkeep = doc.getLong("lastUpkeep");
+        } else {
             this.set("lastUpkeep", System.nanoTime() + TimeUnit.DAYS.toNanos(7L));
         }
-        if (doc.containsKey((Object)"upkeepStage")) {
-            upkeepStage = UpkeepStage.valueOf(doc.getString((Object)"upkeepStage"));
-        }
-        else {
+        if (doc.containsKey("upkeepStage")) {
+            upkeepStage = UpkeepStage.valueOf(doc.getString("upkeepStage"));
+        } else {
             this.set("upkeepStage", UpkeepStage.PAID);
         }
     }
-    
+
     public void checkThenPay() {
         if (UtilTime.elapsedNano(lastUpkeep, TimeUnit.DAYS.toNanos(1L))) {
             this.payUpkeep();
         }
     }
-    
+
     public void payUpkeep() {
         final int total = LandManager.getInstance().getClaimedLandSize(this) * 500;
         if (!this.canPayUpkeep(total)) {
@@ -166,8 +164,7 @@ public class Village
                 MessageUtils.tellResidents(this.getResidents(), "&a&lALERT &7Your settlement has been &cdeleted&7 because it was &cunable&7 to pay its upkeep!");
                 VillageManager.getInstance().deleteVillage(this);
             }
-        }
-        else {
+        } else {
             this.setBank(this.getBank() - total);
             MessageUtils.tellResidents(this.getResidents(), "&a&lALERT &7Your settlement has been charged &6" + total + "&7 for upkeep!");
             this.set("upkeepStage", UpkeepStage.PAID);
@@ -177,321 +174,319 @@ public class Village
             }
         }
     }
-    
+
     public boolean canPayUpkeep(final int total) {
         return this.getBank() - total >= 0;
     }
-    
+
     public long getLastUpkeep() {
         return lastUpkeep;
     }
-    
+
     public UpkeepStage getUpkeepStage() {
         return upkeepStage;
     }
-    
+
     public BuildState getUseState(final Use u) {
-        if (use.containsKey((Object)u.name())) {
-            return BuildState.valueOf(use.getString((Object)u.name()));
+        if (use.containsKey(u.name())) {
+            return BuildState.valueOf(use.getString(u.name()));
         }
         return BuildState.RESIDENTS;
     }
-    
+
     public void setUseState(final Use u, final BuildState state) {
-        use.put(u.name(), (Object)state.name());
+        use.put(u.name(), state.name());
         this.set("use", use);
     }
-    
+
     public List<String> getBanishedResidents() {
         try {
             return banished;
-        }
-        catch (Exception e) {
-            return new ArrayList<String>();
+        } catch (Exception e) {
+            return new ArrayList<>();
         }
     }
-    
+
     public void addBanishedResident(final Resident res) {
         if (!this.isBanished(res.getUUID())) {
             banished.add(res.getUUID().toString());
         }
     }
-    
+
     public void removeBanishedResident(final Resident res) {
         if (this.isBanished(res.getUUID())) {
             banished.remove(res.getUUID().toString());
         }
     }
-    
+
     public boolean isBanished(final UUID uuid) {
         return banished.contains(uuid.toString());
     }
-    
+
     public void addOutpostHome(final Location loc, final OwnedLand land, final String name) {
         final Document doc = new Document();
-        doc.put("name", (Object)name);
-        doc.put("worldName", (Object)loc.getWorld().getName());
-        doc.put("x", (Object)loc.getX());
-        doc.put("y", (Object)loc.getY());
-        doc.put("z", (Object)loc.getZ());
-        outpostHomes.put(String.valueOf(land.getX()) + "-" + land.getWorldName() + "-" + land.getZ(), (Object)doc);
+        doc.put("name", name);
+        doc.put("worldName", loc.getWorld().getName());
+        doc.put("x", loc.getX());
+        doc.put("y", loc.getY());
+        doc.put("z", loc.getZ());
+        outpostHomes.put(String.valueOf(land.getX()) + "-" + land.getWorldName() + "-" + land.getZ(), doc);
     }
-    
+
     public Map<String, Location> getOutpostHomes() {
-        final Map<String, Location> homes = new HashMap<String, Location>();
+        final Map<String, Location> homes = new HashMap<>();
         try {
             for (final Map.Entry<String, Object> name : outpostHomes.entrySet()) {
-                if (((Document)name.getValue()).containsKey((Object)"name")) {
-                    homes.put(name.getKey(), new Location(Bukkit.getWorld(((Document)name.getValue()).getString((Object)"worldName")), (double)((Document)name.getValue()).getDouble((Object)"x"), (double)((Document)name.getValue()).getDouble((Object)"y"), (double)((Document)name.getValue()).getDouble((Object)"z")));
+                if (((Document) name.getValue()).containsKey("name")) {
+                    homes.put(name.getKey(), new Location(Bukkit.getWorld(((Document) name.getValue()).getString("worldName")), ((Document) name.getValue()).getDouble("x"), ((Document) name.getValue()).getDouble("y"), ((Document) name.getValue()).getDouble("z")));
                 }
             }
+        } catch (Exception ex) {
         }
-        catch (Exception ex) {}
         return homes;
     }
-    
+
     public Map<String, Document> getOutpostHomesList() {
-        final Map<String, Document> homes = new HashMap<String, Document>();
+        final Map<String, Document> homes = new HashMap<>();
         for (final Map.Entry<String, Object> name : outpostHomes.entrySet()) {
-            if (name.getValue() instanceof Document && ((Document)name.getValue()).containsKey((Object)"name")) {
-                homes.put(name.getKey(), name.getValue());
+            if (name.getValue() instanceof Document && ((Document) name.getValue()).containsKey("name")) {
+                homes.put(name.getKey(), (Document) name.getValue());
             }
         }
         return homes;
     }
-    
+
     public Location getVillageHome() {
         try {
-            return new Location(Bukkit.getWorld(villageHome.getString((Object)"worldName")), villageHome.getInteger((Object)"x"), villageHome.getInteger((Object)"y"), (double)villageHome.getInteger((Object)"z"));
-        }
-        catch (Exception e) {
+            return new Location(Bukkit.getWorld(villageHome.getString("worldName")), villageHome.getInteger("x"), villageHome.getInteger("y"), (double) villageHome.getInteger("z"));
+        } catch (Exception e) {
             return null;
         }
     }
-    
+
     public boolean hasVillageHome() {
         return this.getVillageHome() != null;
     }
-    
+
     public boolean check(final Document doc, final String key) {
-        return doc.containsKey((Object)key) && doc.get((Object)key) != null;
+        return doc.containsKey(key) && doc.get(key) != null;
     }
-    
+
     public void setVillageHome(final Location loc) {
         if (villageHome == null) {
             villageHome = new Document();
         }
-        villageHome.put("worldName", (Object)loc.getWorld().getName());
-        villageHome.put("x", (Object)loc.getBlockX());
-        villageHome.put("y", (Object)loc.getBlockY());
-        villageHome.put("z", (Object)loc.getBlockZ());
+        villageHome.put("worldName", loc.getWorld().getName());
+        villageHome.put("x", loc.getBlockX());
+        villageHome.put("y", loc.getBlockY());
+        villageHome.put("z", loc.getBlockZ());
         this.set("villageHome", villageHome);
     }
-    
+
     public int getTeleportCost() {
         return teleportCost;
     }
-    
+
     public void setTeleporterCost(final int cost) {
         this.set("teleportCost", cost);
     }
-    
+
     public List<String> getAllies() {
         return allies;
     }
-    
+
     public boolean isAlly(final String name) {
         return this.getAllies().contains(name);
     }
-    
+
     public boolean isAlly(final Village village) {
         return this.isAlly(village.getName());
     }
-    
+
     public void addAlly(final String name) {
         if (!this.isAlly(name)) {
             allies.add(name);
             this.set("allies", allies);
         }
     }
-    
+
     public void removeAlly(final Village village) {
         if (this.isAlly(village.getName())) {
             allies.remove(village.getName());
             this.set("allies", allies);
         }
     }
-    
+
     public void resetTeleporterClaim() {
-        (teleporterClaim = new Document()).put("x", (Object)null);
-        teleporterClaim.put("z", (Object)null);
-        teleporterClaim.put("z", (Object)null);
-        teleporterClaim.put("worldName", (Object)null);
+        (teleporterClaim = new Document()).put("x", null);
+        teleporterClaim.put("y", null);
+        teleporterClaim.put("z", null);
+        teleporterClaim.put("worldName", null);
         this.set("teleporterClaim", teleporterClaim);
     }
-    
+
     public OwnedLand getTeleporterClaim() {
-        if (teleporterClaim.get((Object)"x") == null && teleporterClaim.get((Object)"z") == null && teleporterClaim.get((Object)"worldName") == null) {
+        if (teleporterClaim.get("x") == null && teleporterClaim.get("z") == null && teleporterClaim.get("worldName") == null) {
             return null;
         }
-        return LandManager.getInstance().getLand(teleporterClaim.getInteger((Object)"x"), teleporterClaim.getInteger((Object)"z"), teleporterClaim.getString((Object)"worldName"));
+        return LandManager.getInstance().getLand(teleporterClaim.getInteger("x"), teleporterClaim.getInteger("z"), teleporterClaim.getString("worldName"));
     }
-    
+
     public void setTeleporterClaim(final Location location) {
-        teleporterClaim.put("x", (Object)location.getBlockX());
-        teleporterClaim.put("y", (Object)location.getBlockY());
-        teleporterClaim.put("z", (Object)location.getBlockZ());
-        teleporterClaim.put("worldName", (Object)location.getWorld().getName());
+        teleporterClaim.put("x", location.getBlockX());
+        teleporterClaim.put("y", location.getBlockY());
+        teleporterClaim.put("z", location.getBlockZ());
+        teleporterClaim.put("worldName", location.getWorld().getName());
         this.set("teleporterClaim", teleporterClaim);
     }
-    
+
     public int getBank() {
         return bank;
     }
-    
+
     public void setBank(final int bank) {
         this.set("bank", bank);
     }
-    
+
     public String getName() {
         return name;
     }
-    
+
     public void setName(final String name) {
         this.set("name", name);
     }
-    
+
     public String getDescription() {
         return description;
     }
-    
+
     public void setDescription(final String description) {
         this.set("description", description);
     }
-    
+
     public int getLevel() {
         return level;
     }
-    
+
     public void setLevel(final int level) {
         this.set("level", level);
         if (Config.first.getString(String.valueOf(villageState.name().toLowerCase()) + "-" + level).equals("")) {
-            Config.first.put(String.valueOf(villageState.name().toLowerCase()) + "-" + level, (Object)this.getName());
+            Config.first.put(String.valueOf(villageState.name().toLowerCase()) + "-" + level, this.getName());
             KingdomsPlugin.config.save(KingdomsPlugin.getInstance().getDataFolder());
             for (final Player player : Bukkit.getOnlinePlayers()) {
                 MessageUtils.tell(player, "&6&l" + this.getName() + " &7&l is the first to reach &6&l" + villageState.name().toLowerCase() + " &7&llevel &6&l" + level);
             }
         }
     }
-    
+
     public void levelUp() {
         this.setLevel(level + 1);
     }
-    
+
     public boolean isChief(final Player player) {
         return player.getUniqueId().equals(chief);
     }
-    
+
     public UUID getChief() {
         return chief;
     }
-    
+
     public void setChief(final UUID chief) {
         this.set("chief", chief);
     }
-    
+
     public List<Resident> getResidents() {
         return ResidentManager.getInstance().getResidentsForVillage(this);
     }
-    
+
     public boolean isFull() {
         return ConfigManager.getInstance().getConfig().getInt("max-village-size") - this.getResidents().size() <= 0;
     }
-    
+
     public VillageState getState() {
         return villageState;
     }
-    
+
     public void setState(final VillageState state) {
         this.set("villageState", state);
     }
-    
+
     public String getEnterMessage() {
         return enterMessage;
     }
-    
+
     public void setEnterMessage(final String enterMessage) {
         this.set("enterMessage", enterMessage);
     }
-    
+
     public String getLeaveMessage() {
         return leaveMessage;
     }
-    
+
     public void setLeaveMessage(final String leaveMessage) {
         this.set("leaveMessage", leaveMessage);
     }
-    
+
     public BuildState getBuildState() {
         return buildState;
     }
-    
+
     public void setBuildState(final BuildState buildState) {
         this.set("buildState", buildState);
     }
-    
+
     public boolean isMobSpawning() {
         return mobSpawning;
     }
-    
+
     public void setMobSpawning(final boolean mobSpawning) {
         this.set("mobSpawning", mobSpawning);
     }
-    
+
     public boolean isPvp() {
         return pvp;
     }
-    
+
     public void setPvp(final boolean pvp) {
         this.set("pvp", pvp);
     }
-    
+
     public boolean isFireSpread() {
         return fireSpread;
     }
-    
+
     public void setFireSpread(final boolean fireSpread) {
         this.set("fireSpread", fireSpread);
     }
-    
+
     public boolean isExplosions() {
         return explosions;
     }
-    
+
     public void setExplosions(final boolean explosions) {
         this.set("explosions", explosions);
     }
-    
+
     public boolean isBuff() {
         return buff;
     }
-    
+
     public void setBuff(final boolean buff) {
         this.set("buff", buff);
     }
-    
+
     public boolean isTeleporter() {
         return teleporter;
     }
-    
+
     public void setTeleporter(final boolean teleporter) {
         this.set("teleporter", teleporter);
     }
-    
+
     public Document getDocument() {
         return document;
     }
-    
+
     public void set(final String key, final Object o) {
         Field[] declaredFields;
         for (int length = (declaredFields = this.getClass().getDeclaredFields()).length, i = 0; i < length; ++i) {
@@ -500,21 +495,16 @@ public class Village
                 try {
                     if (o instanceof Enum) {
                         field.set(this, o);
-                        document.put(key, (Object)((Enum)o).name());
-                    }
-                    else if (o instanceof UUID) {
+                        document.put(key, ((Enum) o).name());
+                    } else if (o instanceof UUID) {
                         field.set(this, o);
-                        document.put(key, (Object)((UUID)o).toString());
-                    }
-                    else {
+                        document.put(key, ((UUID) o).toString());
+                    } else {
                         field.set(this, o);
                         document.put(key, o);
                     }
-                }
-                catch (IllegalArgumentException | IllegalAccessException ex2) {
-                    final Exception ex;
-                    final Exception e = ex;
-                    e.printStackTrace();
+                } catch (IllegalArgumentException | IllegalAccessException ex) {
+                    ex.printStackTrace();
                 }
             }
         }

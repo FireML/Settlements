@@ -3,12 +3,14 @@ package me.crz.minecraft.kingdoms.command;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import me.crz.minecraft.kingdoms.village.Village;
+
 import java.util.Arrays;
+
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.apache.commons.lang.StringUtils;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
-import java.util.Iterator;
+
 import me.crz.minecraft.kingdoms.command.village.VillageBanishCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageUpkeepCommand;
 import me.crz.minecraft.kingdoms.command.village.settings.VillageSettingsCommand;
@@ -46,19 +48,19 @@ import me.crz.minecraft.kingdoms.command.village.VillageDisbandCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageShowCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageClaimCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageCreateCommand;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import org.bukkit.command.CommandExecutor;
 
-public class VillageCommand implements CommandExecutor
-{
-    private Map<String, SubCommand> subCommands;
+public class VillageCommand implements CommandExecutor {
+    private Map<String, SubCommand> subCommands = new HashMap<>();
     private StringBuilder sb1;
     private StringBuilder sb2;
-    
+
     public VillageCommand() {
         super();
-        subCommands = new HashMap<String, SubCommand>();
         (sb1 = new StringBuilder()).append("&8&l--------&r&c&lVillage Commands&r&8&l--------");
         sb1.append("\n&8[&9*&8] &b/{alias} create <name> &7- Creates the settlement");
         sb1.append("\n&8[&9*&8] &b/{alias} invite <name> &7- Invites the player to the settlement");
@@ -118,13 +120,13 @@ public class VillageCommand implements CommandExecutor
         this.registerCommand(new VillageUpkeepCommand());
         this.registerCommand(new VillageBanishCommand());
     }
-    
+
     public void registerCommand(final SubCommand c) {
         for (final String alias : c.getAliases()) {
             subCommands.put(alias.toLowerCase(), c);
         }
     }
-    
+
     public void run(final Player p, final String alias, final String[] args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(p);
         if (args.length < 1) {
@@ -136,17 +138,17 @@ public class VillageCommand implements CommandExecutor
             MessageUtils.tell(p, "&c&lUnknown command!");
             return;
         }
-        final SubCommand subCmd = (SubCommand)subCommands.get(aliasUsed);
+        final SubCommand subCmd = subCommands.get(aliasUsed);
         if (p.hasPermission(subCmd.getPermission())) {
-            subCmd.run(p, alias, aliasUsed, (String[])Arrays.<String>asList(args).subList(1, args.length).<String>toArray(new String[0]));
+            subCmd.run(p, alias, aliasUsed, Arrays.copyOfRange(args, 1, args.length));
             return;
         }
         MessageUtils.tell(p, MessageUtils.NO_PERMISSION_MESSAGE);
     }
-    
+
     public boolean onCommand(final CommandSender sender, final Command command, final String alias, final String[] args) {
         if (sender instanceof Player) {
-            this.run((Player)sender, alias, args);
+            this.run((Player) sender, alias, args);
             return true;
         }
         return false;

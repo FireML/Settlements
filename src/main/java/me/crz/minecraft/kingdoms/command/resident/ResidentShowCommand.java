@@ -2,10 +2,12 @@ package me.crz.minecraft.kingdoms.command.resident;
 
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.OfflinePlayer;
+
 import java.util.UUID;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
+
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -15,14 +17,13 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class ResidentShowCommand extends SubCommand
-{
+public class ResidentShowCommand extends SubCommand {
     public ResidentShowCommand() {
-        super("Shows you information about a resident", new String[] { "show" });
+        super("Shows you information about a resident", "show");
         this.setPermission("village.user");
         this.setUsage("show <name>");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         if (args.length < 1) {
@@ -46,7 +47,7 @@ public class ResidentShowCommand extends SubCommand
         sbp.append("\n&a&lBalance: &6$");
         sbp.append(df.format(balance));
         sbp.append("\n&a&lJoin Date: &6");
-        sbp.append(new SimpleDateFormat("dd/MM/yyyy").format((java.util.Date)new Date(target.getFirstPlayed())));
+        sbp.append(new SimpleDateFormat("dd/MM/yyyy").format(new Date(target.getFirstPlayed())));
         MessageUtils.tell(player, sbp.toString());
     }
 }

@@ -1,9 +1,10 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import org.bukkit.World;
+
 import java.util.HashSet;
 import java.util.Collection;
-import java.util.Iterator;
+
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -17,14 +18,13 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageClaimCommand extends SubCommand
-{
+public class VillageClaimCommand extends SubCommand {
     public VillageClaimCommand() {
-        super("Claim a chunk of land", new String[] { "claim" });
+        super("Claim a chunk of land", "claim");
         this.setPermission("village.user");
         this.setUsage("claim");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
@@ -87,13 +87,13 @@ public class VillageClaimCommand extends SubCommand
         }
         MessageUtils.tell(player, MessageUtils.CANT_CLAIM_HERE_MESSAGE, "{owner}", land.getOwnerVillage());
     }
-    
+
     public Collection<Chunk> getChunksAroundPlayer(final Player player) {
-        final int[] offset = { -1, 0, 1 };
+        final int[] offset = {-1, 0, 1};
         final World world = player.getWorld();
         final int baseX = player.getLocation().getChunk().getX();
         final int baseZ = player.getLocation().getChunk().getZ();
-        final Collection<Chunk> chunksAroundPlayer = new HashSet<Chunk>();
+        final Collection<Chunk> chunksAroundPlayer = new HashSet<>();
         int[] array;
         for (int length = (array = offset).length, i = 0; i < length; ++i) {
             final int x = array[i];
@@ -106,13 +106,13 @@ public class VillageClaimCommand extends SubCommand
         }
         return chunksAroundPlayer;
     }
-    
+
     public Collection<Chunk> getChunksAroundPlayer0(final Player player) {
-        final int[] offset = { -4, -5, -1, 0, 1, 2, 3, 4 };
+        final int[] offset = {-4, -5, -1, 0, 1, 2, 3, 4};
         final World world = player.getWorld();
         final int baseX = player.getLocation().getChunk().getX();
         final int baseZ = player.getLocation().getChunk().getZ();
-        final Collection<Chunk> chunksAroundPlayer = new HashSet<Chunk>();
+        final Collection<Chunk> chunksAroundPlayer = new HashSet<>();
         int[] array;
         for (int length = (array = offset).length, i = 0; i < length; ++i) {
             final int x = array[i];

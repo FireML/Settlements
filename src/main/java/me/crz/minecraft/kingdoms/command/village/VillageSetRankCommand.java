@@ -8,22 +8,23 @@ import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+
 import java.util.Arrays;
+
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageSetRankCommand extends SubCommand
-{
+public class VillageSetRankCommand extends SubCommand {
     public VillageSetRankCommand() {
-        super("Sets the rank of a resident", new String[] { "setrank" });
+        super("Sets the rank of a resident", "setrank");
         this.setPermission("village.user");
         this.setUsage("setrank <player> <rank>");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         if (args.length <= 1) {
-            MessageUtils.tellList(player, Arrays.<String>asList("&8&l-------- &r&c&l/" + base + " " + alias + "&r " + "&8&l--------", "/" + base + " setrank <player> <rank>", "&8[&9*&8] &bElder &7- allows mode,claiming,invite,bank,plot,setrank", "&8[&9*&8] &bBuilder &7- allows resident to build on officer only mode", "&8[&9*&8] &bRecruiter &7- allows resident to invite players"));
+            MessageUtils.tellList(player, Arrays.asList("&8&l-------- &r&c&l/" + base + " " + alias + "&r " + "&8&l--------", "/" + base + " setrank <player> <rank>", "&8[&9*&8] &bElder &7- allows mode,claiming,invite,bank,plot,setrank", "&8[&9*&8] &bBuilder &7- allows resident to build on officer only mode", "&8[&9*&8] &bRecruiter &7- allows resident to invite players"));
             return;
         }
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
@@ -67,7 +68,7 @@ public class VillageSetRankCommand extends SubCommand
         ResidentManager.getInstance().saveResident(tres);
         MessageUtils.tellResidents(village.getResidents(), this.getSuccessSetRankMessage(VillageRank.valueOf(rank).getTag(village.getState()), player, target), null, null);
     }
-    
+
     private String getSuccessSetRankMessage(final String rank, final Player player, final OfflinePlayer target) {
         String message = MessageUtils.SUCCESS_SET_RANK_MESSAGE;
         if (message.contains("{setter}")) {
@@ -81,7 +82,7 @@ public class VillageSetRankCommand extends SubCommand
         }
         return message;
     }
-    
+
     private boolean rankIsValid(final String arg) {
         VillageRank[] values;
         for (int length = (values = VillageRank.values()).length, i = 0; i < length; ++i) {
@@ -92,7 +93,7 @@ public class VillageSetRankCommand extends SubCommand
         }
         return false;
     }
-    
+
     private boolean isResident(final Resident tres, final Village village) {
         return tres.getVillageName().equals(village.getName());
     }

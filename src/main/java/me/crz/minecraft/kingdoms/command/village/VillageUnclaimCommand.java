@@ -12,14 +12,13 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageUnclaimCommand extends SubCommand
-{
+public class VillageUnclaimCommand extends SubCommand {
     public VillageUnclaimCommand() {
-        super("Unclaim land which is claimed by your village", new String[] { "unclaim" });
+        super("Unclaim land which is claimed by your village", "unclaim");
         this.setPermission("village.user");
         this.setUsage("unclaim");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);

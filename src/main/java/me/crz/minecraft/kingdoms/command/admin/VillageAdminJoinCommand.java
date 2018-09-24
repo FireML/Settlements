@@ -10,14 +10,13 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageAdminJoinCommand extends SubCommand
-{
+public class VillageAdminJoinCommand extends SubCommand {
     public VillageAdminJoinCommand() {
-        super("Forces a player to join a village", new String[] { "join" });
+        super("Forces a player to join a village", "join");
         this.setPermission("village.admin");
         this.setUsage("join <player> <village>");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         if (args.length < 2) {

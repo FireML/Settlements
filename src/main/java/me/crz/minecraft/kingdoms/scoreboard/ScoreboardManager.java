@@ -1,23 +1,22 @@
 package me.crz.minecraft.kingdoms.scoreboard;
 
-import java.util.Collection;
+
 import org.bukkit.entity.Player;
-import java.util.Iterator;
+
 import me.crz.minecraft.kingdoms.scoreboard.commands.CommandRainbowtag;
-import me.crz.minecraft.kingdoms.essentials.command.Command;
 import me.crz.minecraft.kingdoms.essentials.command.CommandManager;
 import me.crz.minecraft.kingdoms.scoreboard.commands.CommandScoreboard;
-import org.bukkit.event.Listener;
 import me.crz.minecraft.kingdoms.scoreboard.listeners.ScoreboardListeners;
 import org.bukkit.ChatColor;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.Map;
+
 import me.crz.minecraft.kingdoms.Base;
 
-public class ScoreboardManager extends Base
-{
+public class ScoreboardManager extends Base {
     private static ScoreboardManager instance;
     private final Map<UUID, CScoreBoard> scoreboards;
     private List<String> customLines;
@@ -25,21 +24,21 @@ public class ScoreboardManager extends Base
     private String title;
     private long lastUpdate;
     private String bold;
-    
+
     public ScoreboardManager() {
         super();
-        scoreboards = new HashMap<UUID, CScoreBoard>();
+        scoreboards = new HashMap<>();
         lastUpdate = System.currentTimeMillis();
-        bold = new StringBuilder().append(ChatColor.BOLD).toString();
+        bold = String.valueOf(ChatColor.BOLD);
         title = "  " + bold + ChatColor.AQUA + "Wolf" + bold + ChatColor.WHITE + "Pack" + "  ";
-        Base.registerListener((Listener)new ScoreboardListeners(this));
-        Base.registerListener((Listener)new ScoreboardAnimation(this));
+        Base.registerListener(new ScoreboardListeners(this));
+        Base.registerListener(new ScoreboardAnimation(this));
         final CommandScoreboard scoreboard = new CommandScoreboard();
         scoreboard.setManager(this);
-        CommandManager.getInstance().registerCommand((Command)scoreboard);
-        CommandManager.getInstance().registerCommand((Command)new CommandRainbowtag());
+        CommandManager.getInstance().registerCommand(scoreboard);
+        CommandManager.getInstance().registerCommand(new CommandRainbowtag());
     }
-    
+
     public void update() {
         if (System.currentTimeMillis() - lastUpdate < 1000L) {
             return;
@@ -49,63 +48,61 @@ public class ScoreboardManager extends Base
             scoreboard.update();
         }
     }
-    
+
     public void update(final Player p) {
         if (scoreboards.containsKey(p.getUniqueId())) {
-            ((CScoreBoard)scoreboards.get(p.getUniqueId())).update();
+            scoreboards.get(p.getUniqueId()).update();
         }
     }
-    
+
     @Deprecated
     public void updateUndername() {
         for (final CScoreBoard scoreboard : scoreboards.values()) {
             scoreboard.updateUndername();
         }
     }
-    
+
     public Map<UUID, CScoreBoard> getScoreboards() {
         return scoreboards;
     }
-    
+
     public ScoreboardPolicy getScoreboardPolicy() {
         return scoreboardPolicy;
     }
-    
+
     public void setScoreboardPolicy(final ScoreboardPolicy scoreboardPolicy) {
         this.scoreboardPolicy = scoreboardPolicy;
     }
-    
+
     public String getTitle() {
         return title;
     }
-    
+
     public String getTitleStripped() {
         return ChatColor.stripColor(title);
     }
-    
+
     public void setTitle(final String title) {
         this.title = title;
         for (final CScoreBoard scoreboard : scoreboards.values()) {
             scoreboard.setTitle(title);
         }
     }
-    
+
     public List<String> getCustomLines() {
         return customLines;
     }
-    
+
     public void addCustomLines(final List<String> customLines) {
         if (customLines == null) {
             this.customLines = null;
-        }
-        else if (this.customLines == null) {
+        } else if (this.customLines == null) {
             this.customLines = customLines;
-        }
-        else {
+        } else {
             this.customLines.addAll(customLines);
         }
     }
-    
+
     public String trimPrefix(final String prefix) {
         if (prefix == null) {
             return null;
@@ -121,7 +118,7 @@ public class ScoreboardManager extends Base
         firstPart = firstPart.substring(0, 16 - (String.valueOf(secondPart) + " ").length());
         return String.valueOf(firstPart) + " " + secondPart;
     }
-    
+
     public static ScoreboardManager getInstance() {
         if (instance == null) {
             instance = new ScoreboardManager();

@@ -11,14 +11,13 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageJoinCommand extends SubCommand
-{
+public class VillageJoinCommand extends SubCommand {
     public VillageJoinCommand() {
-        super("Join a village", new String[] { "join" });
+        super("Join a village", "join");
         this.setPermission("village.user");
         this.setUsage("join <name>");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);

@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.command.village;
 
-import java.util.Iterator;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -11,17 +10,16 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageRenameCommand extends SubCommand
-{
+public class VillageRenameCommand extends SubCommand {
     String allowed;
-    
+
     public VillageRenameCommand() {
-        super("Renames the current village to something else", new String[] { "rename" });
+        super("Renames the current village to something else", "rename");
         allowed = "abcdefghijklmnopqrstuvwxyz0123456789_-";
         this.setPermission("village.user");
         this.setUsage("rename <name>");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);

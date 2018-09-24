@@ -7,14 +7,13 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class FriendRemoveCommand extends SubCommand
-{
+public class FriendRemoveCommand extends SubCommand {
     public FriendRemoveCommand() {
-        super("Removes a player to your friend list", new String[] { "remove" });
+        super("Removes a player to your friend list", "remove");
         this.setPermission("village.user");
         this.setUsage("remove <name>");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         if (args.length < 1) {

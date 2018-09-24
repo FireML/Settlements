@@ -2,16 +2,17 @@ package me.crz.minecraft.kingdoms.utils;
 
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import org.bukkit.ChatColor;
-import java.util.Iterator;
+
 import org.bukkit.Bukkit;
 import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
+
 import java.util.List;
+
 import me.crz.minecraft.kingdoms.Base;
 
-public class MessageUtils extends Base
-{
+public class MessageUtils extends Base {
     public static final String NO_PERMISSION_MESSAGE;
     public static final String NO_PERMISSION_INTERACT;
     public static final String ONLY_CONSOLE_MESSAGE;
@@ -56,7 +57,7 @@ public class MessageUtils extends Base
     public static final String SUCCESS_CREATE_SALE_PLOT_MESSAGE;
     public static final String SUCCESS_BUILD_STATE_MESSAGE;
     public static final String NO_LAND_AROUND_MESSAGE;
-    
+
     static {
         NO_PERMISSION_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("NO-PERMISSION-MESSAGE");
         NO_PERMISSION_INTERACT = ConfigManager.getInstance().getMessagesConfig().getString("NO-PERMISSION-INTERACT");
@@ -103,15 +104,15 @@ public class MessageUtils extends Base
         SUCCESS_BUILD_STATE_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("SUCCESS-BUILD-STATE-MESSAGE");
         NO_LAND_AROUND_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("NO-LAND-AROUND-MESSAGE");
     }
-    
+
     public MessageUtils() {
         super();
     }
-    
+
     public static void tell(final Player player, final String message) {
         tell(player, message, null, null);
     }
-    
+
     public static void tell(final Player player, String message, final String placeholder, final String value) {
         if (placeholder != null && value != null) {
             message = replacePlaceholders(message, placeholder, value);
@@ -119,11 +120,11 @@ public class MessageUtils extends Base
         message = replaceColorCodes(message);
         player.sendMessage(message);
     }
-    
+
     public static void tellResidents(final List<Resident> residents, final String message) {
         tellResidents(residents, message, null, null);
     }
-    
+
     public static void tellResidents(final List<Resident> residents, final String message, final String placeholder, final String value) {
         for (final Resident res : residents) {
             final Player player = Bukkit.getPlayer(res.getUUID());
@@ -135,7 +136,7 @@ public class MessageUtils extends Base
             }
         }
     }
-    
+
     public static void tellListResidents(final List<Resident> residents, final List<String> message) {
         for (final Resident res : residents) {
             final Player player = Bukkit.getPlayer(res.getUUID());
@@ -147,7 +148,7 @@ public class MessageUtils extends Base
             }
         }
     }
-    
+
     public static void tellList(final Player player, final List<String> messages) {
         if (messages == null) {
             return;
@@ -157,15 +158,15 @@ public class MessageUtils extends Base
             player.sendMessage(message);
         }
     }
-    
+
     public static String replacePlaceholders(String message, final String placeholder, final String value) {
-        return message = message.replace(placeholder, value);
+        return message.replace(placeholder, value);
     }
-    
+
     public static String replaceColorCodes(String message) {
-        return message = ChatColor.translateAlternateColorCodes('&', message);
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
-    
+
     public static void tellResidentsC(final List<Resident> residents, final String message, final ChatChannel channel) {
         for (final Resident res : residents) {
             final Player op = Bukkit.getPlayer(res.getUUID());

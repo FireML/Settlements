@@ -9,14 +9,13 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageDisbandCommand extends SubCommand
-{
+public class VillageDisbandCommand extends SubCommand {
     public VillageDisbandCommand() {
-        super("Disbands the current village", new String[] { "disband" });
+        super("Disbands the current village", "disband");
         this.setPermission("village.user");
         this.setUsage("disband confirm");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);

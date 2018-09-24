@@ -11,17 +11,16 @@ import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.entity.Player;
 import org.bukkit.command.CommandExecutor;
 
-public class ChatCommand implements CommandExecutor
-{
+public class ChatCommand implements CommandExecutor {
     StringBuilder help;
-    
+
     public ChatCommand() {
         super();
         (help = new StringBuilder("&8&l--------&r&c&l/Chat&r&8&l--------")).append("\n&8[&9*&8] &b/chat <channel> &7- sets the active chat");
         help.append("\n&8[&9*&8] &b/chat leave <channel> &7- disable the chat of the channel");
         help.append("\n&8[&9*&8] &b/chat swear &7- toggles swearing");
     }
-    
+
     public void run(final Player p, final String alias, final String[] args) {
         if (args.length < 1) {
             final StringBuilder temp = new StringBuilder(help.toString());
@@ -34,13 +33,11 @@ public class ChatCommand implements CommandExecutor
                 final ChatChannel channel = values[i];
                 if (channel.canChat(p)) {
                     if (channel.equals(res.getActiveChannel())) {
-                        temp.append("\n&8[&9*&8] &b" + channel.name() + " &7&l[&a&lActive&7&l] &3&l<");
-                    }
-                    else if (res.getChannels().contains(channel.name())) {
-                        temp.append("\n&8[&9*&8] &b" + channel.name() + " &7&l[&a&lEnabled&7&l]");
-                    }
-                    else {
-                        temp.append("\n&8[&9*&8] &b" + channel.name() + " &7&l[&c&lDisabled&7&l]");
+                        temp.append("\n&8[&9*&8] &b").append(channel.name()).append(" &7&l[&a&lActive&7&l] &3&l<");
+                    } else if (res.getChannels().contains(channel.name())) {
+                        temp.append("\n&8[&9*&8] &b").append(channel.name()).append(" &7&l[&a&lEnabled&7&l]");
+                    } else {
+                        temp.append("\n&8[&9*&8] &b").append(channel.name()).append(" &7&l[&c&lDisabled&7&l]");
                     }
                 }
             }
@@ -66,13 +63,11 @@ public class ChatCommand implements CommandExecutor
                 if (Config.muteChat) {
                     Config.muteChat = false;
                     Bukkit.broadcastMessage(MessageUtils.replaceColorCodes("&c&lGeneral Chat has been un-muted by &6&l" + p.getDisplayName()));
-                }
-                else {
+                } else {
                     Config.muteChat = true;
                     Bukkit.broadcastMessage(MessageUtils.replaceColorCodes("&c&lGeneral Chat has been muted by &6&l" + p.getDisplayName()));
                 }
-            }
-            else {
+            } else {
                 MessageUtils.tell(p, MessageUtils.NO_PERMISSION_MESSAGE);
             }
         }
@@ -90,16 +85,15 @@ public class ChatCommand implements CommandExecutor
             if (res2.getChannels().contains(channel3.name())) {
                 MessageUtils.tell(p, "&7You have left Chat Channel &6" + args[1]);
                 res2.removeChannel(channel3.name());
-            }
-            else {
+            } else {
                 MessageUtils.tell(p, "&cChat Channel &6" + args[1] + " is not valid channel!");
             }
         }
     }
-    
+
     public boolean onCommand(final CommandSender sender, final Command command, final String alias, final String[] args) {
         if (sender instanceof Player) {
-            this.run((Player)sender, alias, args);
+            this.run((Player) sender, alias, args);
             return true;
         }
         return false;

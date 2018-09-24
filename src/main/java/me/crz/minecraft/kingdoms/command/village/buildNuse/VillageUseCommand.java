@@ -9,13 +9,12 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageUseCommand extends SubCommand
-{
+public class VillageUseCommand extends SubCommand {
     public VillageUseCommand() {
-        super("Set who can use stuff in your village", new String[] { "use" });
+        super("Set who can use stuff in your village", "use");
         this.setPermission("village.user");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
@@ -49,7 +48,7 @@ public class VillageUseCommand extends SubCommand
         }
         MessageUtils.tell(player, "&c/s use <name> <buildState>");
     }
-    
+
     private boolean canChange(final Village village, final Player player) {
         return village.getChief().equals(player.getUniqueId());
     }

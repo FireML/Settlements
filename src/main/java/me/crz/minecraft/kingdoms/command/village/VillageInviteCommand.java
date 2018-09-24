@@ -12,14 +12,13 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageInviteCommand extends SubCommand
-{
+public class VillageInviteCommand extends SubCommand {
     public VillageInviteCommand() {
-        super("Invite someone to join your village", new String[] { "invite" });
+        super("Invite someone to join your village", "invite");
         this.setPermission("village.user");
         this.setUsage("invite <player>");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
@@ -49,7 +48,7 @@ public class VillageInviteCommand extends SubCommand
         MessageUtils.tell(invitedPlayer, MessageUtils.RECEIVE_INVITE_MESSAGE, "{townName}", village.getName());
         MessageUtils.tellResidents(village.getResidents(), MessageUtils.SUCCESS_INVITE_MESSAGE, "{player}", invitedPlayer.getName());
     }
-    
+
     private boolean canInvite(final Resident res) {
         return VillageRank.hasRank(res.getVillageRank(), VillageRank.RECRUITER);
     }

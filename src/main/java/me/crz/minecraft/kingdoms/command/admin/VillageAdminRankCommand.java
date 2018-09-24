@@ -10,14 +10,13 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageAdminRankCommand extends SubCommand
-{
+public class VillageAdminRankCommand extends SubCommand {
     public VillageAdminRankCommand() {
-        super("Forces a player to have a rank", new String[] { "rank" });
+        super("Forces a player to have a rank", "rank");
         this.setPermission("village.admin");
         this.setUsage("join <player> <rank>");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         if (args.length < 2) {
@@ -49,15 +48,14 @@ public class VillageAdminRankCommand extends SubCommand
             VillageManager.getInstance().saveVillage(village);
             ResidentManager.getInstance().saveResident(res);
             ResidentManager.getInstance().saveResident(tRes);
-        }
-        else {
+        } else {
             tRes.setVillageRank(r);
             ResidentManager.getInstance().saveResident(tRes);
         }
         MessageUtils.tell(player, "&c&lPlayer &6&l " + target.getDisplayName() + "&c&l's rank was set to &6&l" + r.name());
         MessageUtils.tellResidents(village.getResidents(), "&c&lPlayer &6&l " + target.getDisplayName() + "&c&l's rank was set to &6&l" + r.name() + "&c&l by &6&l " + player.getDisplayName());
     }
-    
+
     private boolean rankIsValid(final String arg) {
         VillageRank[] values;
         for (int length = (values = VillageRank.values()).length, i = 0; i < length; ++i) {

@@ -12,14 +12,13 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageSetHomeCommand extends SubCommand
-{
+public class VillageSetHomeCommand extends SubCommand {
     public VillageSetHomeCommand() {
-        super("Sets the home for the village", new String[] { "sethome" });
+        super("Sets the home for the village", "sethome");
         this.setPermission("village.user");
         this.setUsage("sethome");
     }
-    
+
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
