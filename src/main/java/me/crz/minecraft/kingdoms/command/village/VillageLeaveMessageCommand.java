@@ -1,0 +1,65 @@
+package me.crz.minecraft.kingdoms.command.village;
+
+import me.crz.minecraft.kingdoms.village.VillageState;
+import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.Village;
+import org.bukkit.ChatColor;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.village.VillageManager;
+import org.bukkit.entity.Player;
+import me.crz.minecraft.kingdoms.command.SubCommand;
+
+public class VillageLeaveMessageCommand extends SubCommand
+{
+    public VillageLeaveMessageCommand() {
+        super("Changes what players see when leaving your claims", new String[] { "leavemessage" });
+        this.setPermission("village.user");
+        this.setUsage("leavemessage <message>");
+    }
+    
+    @Override
+    public void run(final Player player, final String base, final String alias, final String... args) {
+        final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
+        if (village == null) {
+            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
+            return;
+        }
+        if (!this.canChange(village, player)) {
+            MessageUtils.tell(player, "&c&lVillage state of &r&6&lkingdom &r&c&lrequired", null, null);
+            return;
+        }
+        final Resident res = ResidentManager.getInstance().getResident(player);
+        if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER)) {
+            MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.ELDER.getTag(village.getState()) + " or higher&r&c&l!", null, null);
+            return;
+        }
+        if (args.length <= 2) {
+            player.sendMessage(ChatColor.RED + this.getUsage(base));
+            return;
+        }
+        String message = this.getMessage(args);
+        if (!message.contains("{owner}")) {
+            MessageUtils.tell(player, ChatColor.RED + "Message must contain " + ChatColor.YELLOW + "{owner}" + ChatColor.RED + " variable.", null, null);
+            return;
+        }
+        message = message.replace("{owner}", village.getName());
+        message = ChatColor.translateAlternateColorCodes('&', message);
+        village.setLeaveMessage(message);
+        VillageManager.getInstance().saveVillage(village);
+        MessageUtils.tell(player, MessageUtils.SUCCESS_CHANGE_LEAVE_MESSAGE, null, null);
+    }
+    
+    private String getMessage(final String[] args) {
+        final StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < args.length; ++i) {
+            builder.append(String.valueOf(args[i]) + " ");
+        }
+        return builder.toString();
+    }
+    
+    private boolean canChange(final Village village, final Player player) {
+        return village.getState() == VillageState.KINGDOM;
+    }
+}

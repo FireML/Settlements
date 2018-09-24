@@ -1,0 +1,49 @@
+package me.crz.minecraft.kingdoms.command.resident;
+
+import java.util.Arrays;
+import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import org.bukkit.entity.Player;
+import me.crz.minecraft.kingdoms.command.resident.friend.FriendListCommand;
+import me.crz.minecraft.kingdoms.command.resident.friend.FriendRemoveCommand;
+import me.crz.minecraft.kingdoms.command.resident.friend.FriendAddCommand;
+import java.util.HashMap;
+import java.util.Map;
+import me.crz.minecraft.kingdoms.command.SubCommand;
+
+public class ResidentFriendCommand extends SubCommand
+{
+    private Map<String, SubCommand> subCommands;
+    StringBuilder sb;
+    
+    public ResidentFriendCommand() {
+        super("Friend based commands", new String[] { "friend" });
+        subCommands = new HashMap<String, SubCommand>();
+        this.setPermission("village.user");
+        (sb = new StringBuilder()).append("&8&l--------&r&c&lVillage Commands&r&8&l--------");
+        sb.append("\n&8[&9*&8] &b/{alias} show <name> &7- Shows you information about a resident");
+        sb.append("\n&8[&9*&8] &b/{alias} friend &7- Friend based commands");
+        sb.append("\n&8[&9*&8] &b/{alias} help &7- Shows this");
+        subCommands.put("add", new FriendAddCommand());
+        subCommands.put("remove", new FriendRemoveCommand());
+        subCommands.put("list", new FriendListCommand());
+    }
+    
+    @Override
+    public void run(final Player p, final String base, final String alias, final String... args) {
+        if (args.length < 1) {
+            MessageUtils.tell(p, sb.toString());
+            return;
+        }
+        final String aliasUsed = args[0].toLowerCase();
+        if (!subCommands.containsKey(aliasUsed)) {
+            MessageUtils.tell(p, "&c&lUnknown command!");
+            return;
+        }
+        final SubCommand subCmd = (SubCommand)subCommands.get(aliasUsed);
+        if (p.hasPermission(subCmd.getPermission())) {
+            subCmd.run(p, alias, aliasUsed, (String[])Arrays.<String>asList(args).subList(1, args.length).<String>toArray(new String[0]));
+            return;
+        }
+        MessageUtils.tell(p, MessageUtils.NO_PERMISSION_MESSAGE);
+    }
+}

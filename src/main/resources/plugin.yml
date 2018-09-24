@@ -1,0 +1,18 @@
+main: me.crz.minecraft.kingdoms.KingdomsPlugin
+version: "${minecraft.plugin.version}"
+name: Kingdoms
+depend: [Vault, KingdomsEssentials]
+api-version: 1.13
+commands:
+  village:
+    description: Village Commands.
+    aliases: [s, settlement, kingdom, k]
+  villageadmin:
+    description: Admin Commands.
+    aliases: [va]
+  resident:
+    description: Shows you the name of the players village.
+    aliases: [res]
+  chat:
+    description: Chat Channel Commands.
+  

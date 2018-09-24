@@ -1,0 +1,27 @@
+village-level-two:
+  STONE: 5
+  LOG: 5
+village-level-three:
+  SAND: 10
+village-level-four:
+  COBBLESTONE: 64
+village-level-five:
+  SAND: 64
+kingdom-level-two:
+  STONE: 1
+kingdom-level-three:
+  STONE: 1
+kingdom-level-four:
+  STONE: 1
+kingdom-level-five:
+  STONE: 1
+kingdom-level-six:
+  STONE: 1
+kingdom-level-seven:
+  STONE: 1
+kingdom-level-eight:
+  STONE: 1
+kingdom-level-nine:
+  STONE: 1
+kingdom-level-ten:
+  STONE: 1

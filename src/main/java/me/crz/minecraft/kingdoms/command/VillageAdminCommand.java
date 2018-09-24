@@ -1,0 +1,70 @@
+package me.crz.minecraft.kingdoms.command;
+
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import java.util.Arrays;
+import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import org.bukkit.entity.Player;
+import java.util.Iterator;
+import me.crz.minecraft.kingdoms.command.admin.VillageAdminSocialSpuCommand;
+import me.crz.minecraft.kingdoms.command.admin.VillageEmgcyCommand;
+import me.crz.minecraft.kingdoms.command.admin.VillageAdminJoinCommand;
+import me.crz.minecraft.kingdoms.command.admin.VillageAdminRankCommand;
+import me.crz.minecraft.kingdoms.command.admin.VillageAdminWorldCommand;
+import java.util.HashMap;
+import java.util.Map;
+import org.bukkit.command.CommandExecutor;
+
+public class VillageAdminCommand implements CommandExecutor
+{
+    private Map<String, SubCommand> subCommands;
+    private StringBuilder help;
+    
+    public VillageAdminCommand() {
+        super();
+        subCommands = new HashMap<String, SubCommand>();
+        this.registerCommand(new VillageAdminWorldCommand());
+        this.registerCommand(new VillageAdminRankCommand());
+        this.registerCommand(new VillageAdminJoinCommand());
+        this.registerCommand(new VillageEmgcyCommand());
+        this.registerCommand(new VillageAdminSocialSpuCommand());
+        help = new StringBuilder("&8&l--------&r&c&lVillage Admin Commands&r&8&l--------");
+        for (final SubCommand subCmd : subCommands.values()) {
+            help.append("\n&c/{base} ");
+            help.append(subCmd.getBaseAlias());
+            help.append(": ");
+            help.append(subCmd.getDescription());
+        }
+    }
+    
+    public void registerCommand(final SubCommand c) {
+        for (final String alias : c.getAliases()) {
+            subCommands.put(alias.toLowerCase(), c);
+        }
+    }
+    
+    public void run(final Player p, final String alias, final String[] args) {
+        if (args.length < 1) {
+            MessageUtils.tell(p, help.toString(), "{base}", alias);
+            return;
+        }
+        final String aliasUsed = args[0].toLowerCase();
+        if (!subCommands.containsKey(aliasUsed)) {
+            MessageUtils.tell(p, "&c&lUnknown command!");
+            return;
+        }
+        if (!p.hasPermission(((SubCommand)subCommands.get(aliasUsed)).getPermission())) {
+            MessageUtils.tell(p, MessageUtils.NO_PERMISSION_MESSAGE);
+            return;
+        }
+        ((SubCommand)subCommands.get(aliasUsed)).run(p, alias, aliasUsed, (String[])Arrays.<String>asList(args).subList(1, args.length).<String>toArray(new String[0]));
+    }
+    
+    public boolean onCommand(final CommandSender sender, final Command command, final String alias, final String[] args) {
+        if (sender instanceof Player) {
+            this.run((Player)sender, alias, args);
+            return true;
+        }
+        return false;
+    }
+}

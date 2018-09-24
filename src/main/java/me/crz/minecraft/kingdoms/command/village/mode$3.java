@@ -1,0 +1,33 @@
+package me.crz.minecraft.kingdoms.command.village;
+
+import java.util.Iterator;
+import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.land.LandManager;
+import me.crz.minecraft.kingdoms.village.VillageManager;
+import me.crz.minecraft.kingdoms.village.Village;
+
+enum mode$3
+{
+    mode$3(final String s, final int n) {
+    }
+    
+    @Override
+    public void set(final Boolean bool, final Village village) {
+        village.setFireSpread(bool);
+        VillageManager.getInstance().saveVillage(village);
+        for (final OwnedLand land : LandManager.getInstance().getClaimedLand(village)) {
+            land.setFireSpread(bool);
+            LandManager.getInstance().saveLand(land);
+        }
+    }
+    
+    @Override
+    public Boolean get(final Village village) {
+        return village.isFireSpread();
+    }
+    
+    @Override
+    public /* bridge */ Object get(final Village village) {
+        return this.get(village);
+    }
+}
