@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
 public class ResidentHelpCommand extends SubCommand {
-    StringBuilder sb;
+    private StringBuilder sb;
 
     public ResidentHelpCommand() {
         super("Lists the sub commands of the resident command", "help");
@@ -18,6 +18,6 @@ public class ResidentHelpCommand extends SubCommand {
 
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
-        MessageUtils.tell(player, sb.toString());
+        MessageUtils.tell(player, sb.toString(), "{alias}", base + " " + alias);
     }
 }

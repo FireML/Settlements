@@ -15,7 +15,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 
 public class ResidentFriendCommand extends SubCommand {
     private Map<String, SubCommand> subCommands;
-    StringBuilder sb;
+    private StringBuilder sb;
 
     public ResidentFriendCommand() {
         super("Friend based commands", "friend");
@@ -33,7 +33,7 @@ public class ResidentFriendCommand extends SubCommand {
     @Override
     public void run(final Player p, final String base, final String alias, final String... args) {
         if (args.length < 1) {
-            MessageUtils.tell(p, sb.toString());
+            MessageUtils.tell(p, sb.toString(), "{alias}", base + " " + alias);
             return;
         }
         final String aliasUsed = args[0].toLowerCase();
