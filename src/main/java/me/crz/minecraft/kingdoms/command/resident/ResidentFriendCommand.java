@@ -23,7 +23,9 @@ public class ResidentFriendCommand extends SubCommand {
         this.setPermission("village.user");
         (sb = new StringBuilder()).append("&8&l--------&r&c&lVillage Commands&r&8&l--------");
         sb.append("\n&8[&9*&8] &b/{alias} show <name> &7- Shows you information about a resident");
-        sb.append("\n&8[&9*&8] &b/{alias} friend &7- Friend based commands");
+        sb.append("\n&8[&9*&8] &b/{alias} friend add <name> &7- Adds a player into your friends");
+        sb.append("\n&8[&9*&8] &b/{alias} friend remove <name> &7- Remove a player from your friends");
+        sb.append("\n&8[&9*&8] &b/{alias} friend list &7- Shows the list of friends you have");
         sb.append("\n&8[&9*&8] &b/{alias} help &7- Shows this");
         subCommands.put("add", new FriendAddCommand());
         subCommands.put("remove", new FriendRemoveCommand());
