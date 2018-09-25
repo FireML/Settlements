@@ -1,5 +1,8 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.land.LandManager;
+import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -7,6 +10,7 @@ import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.VillageManager;
+import org.bson.Document;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
@@ -34,5 +38,10 @@ public class VillageLeaveCommand extends SubCommand {
         ResidentManager.getInstance().saveResident(res);
         MessageUtils.tell(player, MessageUtils.SUCCESS_LEAVE_MESSAGE, null, null);
         MessageUtils.tellResidents(village.getResidents(), MessageUtils.ALERT_LEAVE_MESSAGE, "{player}", player.getName());
+        for (final Document doc : DatabaseManager.getLandCollection().find(new Document("plotOwner", res.getUUID().toString()))) {
+            final OwnedLand land = new OwnedLand(doc);
+            land.setPlotOwner(null);
+            LandManager.getInstance().saveLand(land);
+        }
     }
 }

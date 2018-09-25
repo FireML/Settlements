@@ -1,6 +1,10 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.land.LandManager;
+import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.village.Resident;
+import org.bson.Document;
 import org.bukkit.OfflinePlayer;
 
 import me.crz.minecraft.kingdoms.village.Village;
@@ -62,6 +66,11 @@ public class VillageBanishCommand extends SubCommand {
             village.addBanishedResident(res);
             VillageManager.getInstance().saveVillage(village);
             MessageUtils.tellResidents(village.getResidents(), "&7Player &6" + args[1] + "&7 has been &cbanished &7from your settlement!");
+            for (final Document doc : DatabaseManager.getLandCollection().find(new Document("plotOwner", res.getUUID().toString()))) {
+                final OwnedLand land = new OwnedLand(doc);
+                land.setPlotOwner(null);
+                LandManager.getInstance().saveLand(land);
+            }
         } else {
             if (!args[0].equalsIgnoreCase("remove")) {
                 MessageUtils.tell(player, "&c" + this.getUsage(base));
