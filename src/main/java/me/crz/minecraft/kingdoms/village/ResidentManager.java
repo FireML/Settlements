@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
@@ -36,7 +37,7 @@ public class ResidentManager {
         return this.getResident(p).getChannels().contains(channel.name());
     }
 
-    public Resident getResident(final Player p) {
+    public Resident getResident(final OfflinePlayer p) {
         return this.getResident(p.getUniqueId());
     }
 
