@@ -39,7 +39,7 @@ public class LandFlagBase extends Base {
         final Village village = VillageManager.getInstance().getVillageFromName(land.getOwnerVillage());
         if (land.isPlot()) {
             final PlotBuildState state = land.getUseState(use);
-            if (land.getPlotOwner().equals(user.getUniqueId().toString())) {
+            if (land.isPlotOwner(user)) {
                 return new Pair<>(true, "");
             }
             if (state.equals(PlotBuildState.PUBLIC)) {
@@ -55,7 +55,7 @@ public class LandFlagBase extends Base {
                 return this.getCanBuildAlly(user, land) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7You are not allied to &e" + land.getOwnerVillage() + "&7.");
             }
             if (state.equals(PlotBuildState.PRIVATE)) {
-                return land.getPlotOwner().equals(user.getUniqueId().toString()) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7Only the &ePlot owner&7 can interact here.");
+                return land.isPlotOwner(user) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7Only the &ePlot owner&7 can interact here.");
             }
             if (state.equals(PlotBuildState.FRIENDS)) {
                 return this.getCanBuildFriends(user, land) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7Only the &ePlot owner's friends&7 can interact here.");
@@ -87,7 +87,7 @@ public class LandFlagBase extends Base {
         }
         final OwnedLand land = LandManager.getInstance().getLandFromLocation(loc);
         if (land.isPlot()) {
-            if (land.getPlotOwner().equals(building.getUniqueId().toString())) {
+            if (land.isPlotOwner(building)) {
                 return new Pair<>(true, "");
             }
             if (land.getBuildState().equals(PlotBuildState.PUBLIC)) {
@@ -103,7 +103,7 @@ public class LandFlagBase extends Base {
                 return this.getCanBuildAlly(building, land) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7You are not allied to &e" + land.getOwnerVillage() + "&7.");
             }
             if (land.getBuildState().equals(PlotBuildState.PRIVATE)) {
-                return land.getPlotOwner().equals(building.getUniqueId().toString()) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7Only the &ePlot owner&7 can build here.");
+                return land.isPlotOwner(building) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7Only the &ePlot owner&7 can build here.");
             }
             if (land.getBuildState().equals(PlotBuildState.FRIENDS)) {
                 return this.getCanBuildFriends(building, land) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7Only the &ePlot owner's friends&7 can build here.");
@@ -133,7 +133,7 @@ public class LandFlagBase extends Base {
             return true;
         }
         final Resident res = ResidentManager.getInstance().getResident(building);
-        final Resident owner = ResidentManager.getInstance().getResident(UUID.fromString(land.getPlotOwner()));
+        final Resident owner = ResidentManager.getInstance().getResident(land.getPlotOwner());
         final Village ownerVillage = VillageManager.getInstance().getVillageFromName(land.getOwnerVillage());
         return ownerVillage.getChief().equals(building.getUniqueId()) || owner.getFriends().contains(res.getUUID().toString());
     }

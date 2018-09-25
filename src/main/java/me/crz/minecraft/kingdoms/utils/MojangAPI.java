@@ -40,6 +40,13 @@ public class MojangAPI extends Base {
         names.put(uuid, e.getPlayer().getName());
     }
 
+    public String getName(UUID uuid) {
+        if (uuid == null) {
+            return "";
+        }
+        return getName(uuid.toString());
+    }
+
     public String getName(final String uuid) {
         try {
             if (names.containsKey(uuid)) {

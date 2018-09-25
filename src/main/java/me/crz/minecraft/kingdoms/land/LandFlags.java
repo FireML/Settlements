@@ -171,9 +171,6 @@ public class LandFlags extends Base {
 
     @EventHandler
     public void on(final PlayerMoveBlockEvent event) {
-        if (event.getFrom().getBlockX() == event.getTo().getBlockX() && event.getFrom().getBlockZ() == event.getTo().getBlockZ()) {
-            return;
-        }
         StringBuilder addition = new StringBuilder();
         Player player = event.getPlayer();
         Village playerVillage = VillageManager.getInstance().getVillageFromPlayer(player);
@@ -183,7 +180,7 @@ public class LandFlags extends Base {
             Village claimedVillage = VillageManager.getInstance().getVillageFromName(destinationLand.getOwnerVillage());
             TitleBuilder tb = new TitleBuilder();
             tb.withTimings(40, 60, 40);
-            if (!destinationLand.getPlotOwner().isEmpty()) {
+            if (destinationLand.isPlot()) {
                 addition.append("&7&lWelcome to&6&l ");
                 addition.append(MojangAPI.getInstance().getName(destinationLand.getPlotOwner()));
                 addition.append("&7&l\u2019s plot v");
@@ -201,56 +198,47 @@ public class LandFlags extends Base {
                 Base.getLandPerks().giveEffects(player, playerVillage);
             }
         } else if (this.landIsClaimed(originalLand) && this.landIsClaimed(destinationLand)) {
-            Village originalVillage = VillageManager.getInstance().getVillageFromName(originalLand.getOwnerVillage());
-            Village destinationVillage = VillageManager.getInstance().getVillageFromName(destinationLand.getOwnerVillage());
-            TitleBuilder tb2 = new TitleBuilder();
-            tb2.withTimings(40, 60, 40);
             if (playerVillage == null) {
                 return;
             }
+            TitleBuilder tb = new TitleBuilder();
+            if (destinationLand.isPlot()) {
+                addition.append("&7&lWelcome to&6&l ");
+                addition.append(MojangAPI.getInstance().getName(destinationLand.getPlotOwner()));
+                addition.append("&7&l\u2019s plot ");
+            }
             if (this.playerOwnsLand(destinationLand, playerVillage.getName())) {
-                if (!destinationLand.getPlotOwner().isEmpty()) {
-                    addition.append("&7&lWelcome to&6&l ");
-                    addition.append(MojangAPI.getInstance().getName(destinationLand.getPlotOwner()));
-                    addition.append("&7&l\u2019s plot ");
-                }
                 if (destinationLand.isForSale()) {
                     addition.append("&9&lLand is for sale ");
                 }
-                tb2.withActionbar(addition.toString());
-                return;
             }
-            if (originalVillage == null) {
-                return;
-            }
-            if (originalVillage.getName().equals(destinationVillage.getName())) {
-                return;
-            }
-            if (playerVillage.isBuff()) {
-                if (this.playerOwnsLand(originalLand, playerVillage.getName()) && !this.playerOwnsLand(destinationLand, playerVillage.getName())) {
-                    Base.getLandPerks().removeEffects(player, playerVillage);
-                } else if (this.playerOwnsLand(destinationLand, playerVillage.getName()) && !this.playerOwnsLand(originalLand, playerVillage.getName())) {
-                    Base.getLandPerks().giveEffects(player, playerVillage);
+            tb.withActionbar(addition.toString());
+            Village originalVillage = VillageManager.getInstance().getVillageFromName(originalLand.getOwnerVillage());
+            Village destinationVillage = VillageManager.getInstance().getVillageFromName(destinationLand.getOwnerVillage());
+            if (originalVillage != null && !originalVillage.getName().equals(destinationVillage.getName())) {
+                if (playerVillage.isBuff()) {
+                    if (this.playerOwnsLand(originalLand, playerVillage.getName()) && !this.playerOwnsLand(destinationLand, playerVillage.getName())) {
+                        Base.getLandPerks().removeEffects(player, playerVillage);
+                    } else if (this.playerOwnsLand(destinationLand, playerVillage.getName()) && !this.playerOwnsLand(originalLand, playerVillage.getName())) {
+                        Base.getLandPerks().giveEffects(player, playerVillage);
+                    }
                 }
+                if (destinationLand.isPvp()) {
+                    tb.withActionbar(MessageUtils.replaceColorCodes(String.valueOf(addition.toString()) + " " + destinationVillage.getEnterMessage() + " - &C&lPvp is enabled!"));
+                } else {
+                    tb.withActionbar(MessageUtils.replaceColorCodes(String.valueOf(addition.toString()) + " " + destinationVillage.getEnterMessage()));
+                }
+                Bukkit.getScheduler().scheduleSyncDelayedTask(KingdomsPlugin.getInstance(), () -> {
+                    new TitleBuilder().withActionbar(originalVillage.getLeaveMessage()).send(player);
+                }, 2000L);
             }
-            if (destinationLand.isPvp()) {
-                tb2.withActionbar(MessageUtils.replaceColorCodes(String.valueOf(addition.toString()) + " " + destinationVillage.getEnterMessage() + " - &C&lPvp is enabled!"));
-            } else {
-                tb2.withActionbar(MessageUtils.replaceColorCodes(String.valueOf(addition.toString()) + " " + destinationVillage.getEnterMessage()));
-            }
-            Bukkit.getScheduler().scheduleSyncDelayedTask(KingdomsPlugin.getInstance(), () -> {
-                final TitleBuilder tb = new TitleBuilder();
-                tb.withTimings(40, 60, 40);
-                tb.withActionbar(originalVillage.getLeaveMessage());
-                tb.send(player);
-            }, 2000L);
+            tb.send(player);
         } else if (this.landIsClaimed(originalLand) && !this.landIsClaimed(destinationLand)) {
             final Village originalVillage = VillageManager.getInstance().getVillageFromName(originalLand.getOwnerVillage());
             if (playerVillage != null && playerVillage.isBuff() && this.playerOwnsLand(originalLand, playerVillage.getName())) {
                 Base.getLandPerks().removeEffects(player, originalVillage);
             }
             final TitleBuilder tb = new TitleBuilder();
-            tb.withTimings(40, 60, 40);
             tb.withActionbar(MessageUtils.replaceColorCodes(originalVillage.getLeaveMessage()));
             tb.send(player);
         }

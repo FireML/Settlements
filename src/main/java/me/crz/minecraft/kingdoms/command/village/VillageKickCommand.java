@@ -67,7 +67,7 @@ public class VillageKickCommand extends SubCommand {
         }
         for (final Document doc : DatabaseManager.getLandCollection().find(new Document("plotOwner", res.getUUID().toString()))) {
             final OwnedLand land = new OwnedLand(doc);
-            land.setPlotOwner("");
+            land.setPlotOwner(null);
             LandManager.getInstance().saveLand(land);
         }
     }

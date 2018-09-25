@@ -96,7 +96,7 @@ public class LandManager {
     }
 
     public OwnedLand claimLand(final Location location, final Village village) {
-        final OwnedLand land = new OwnedLand(village.getName(), location.getChunk().getX(), location.getChunk().getZ(), location.getWorld().getName(), "", 0, false);
+        final OwnedLand land = new OwnedLand(village.getName(), location.getChunk().getX(), location.getChunk().getZ(), location.getWorld().getName());
         if (this.getClaimedLandSize(village) == 0) {
             village.setVillageHome(location);
         }
@@ -106,7 +106,7 @@ public class LandManager {
     }
 
     public void claimLand(final int x, final int z, final String worldName, final Village village) {
-        final OwnedLand land = new OwnedLand(village.getName(), x, z, worldName, "", 0, false);
+        final OwnedLand land = new OwnedLand(village.getName(), x, z, worldName);
         this.saveLand(land);
     }
 

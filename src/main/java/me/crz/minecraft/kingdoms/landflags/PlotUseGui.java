@@ -64,7 +64,7 @@ public class PlotUseGui {
                         return false;
                     }
                     final OwnedLand land = LandManager.getInstance().getLandFromLocation(p.getLocation());
-                    if (land.getPlotOwner().equals(p.getUniqueId().toString())) {
+                    if (land.isPlotOwner(p)) {
                         land.setUseState(u, PlotBuildState.next(land.getUseState(u)));
                         LandManager.getInstance().saveLand(land);
                         MessageUtils.tell(p, "&7Use state &6" + u.name().toLowerCase() + "&7 changed to &6" + land.getUseState(u));

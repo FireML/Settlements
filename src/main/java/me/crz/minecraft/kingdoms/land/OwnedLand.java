@@ -1,7 +1,6 @@
 package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.Material;
@@ -13,6 +12,7 @@ import java.util.ArrayList;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -22,7 +22,7 @@ import me.crz.minecraft.kingdoms.landflags.PlotBuildState;
 
 public class OwnedLand {
     private String ownerVillage;
-    private String plotOwner;
+    private UUID plotOwner = null;
     private SimpleChunkLocation location;
     private int price;
     private boolean forSale;
@@ -37,11 +37,13 @@ public class OwnedLand {
     private Document use;
 
     public OwnedLand(final Document doc) {
-        super();
         document = doc;
         ownerVillage = document.getString("ownerVillage");
         location = SimpleChunkLocation.load(document);
-        plotOwner = document.getString("plotOwner");
+        String plotOwnerStr = document.getString("plotOwner");
+        if (plotOwnerStr != null && !plotOwnerStr.isEmpty()) {
+            plotOwner = UUID.fromString(plotOwnerStr);
+        }
         price = document.getInteger("price");
         forSale = document.getBoolean("forSale");
         mobSpawning = document.getBoolean("mobSpawning");
@@ -77,8 +79,11 @@ public class OwnedLand {
         }
     }
 
-    public OwnedLand(final String ownerVillage, final int x, final int z, final String worldName, final String plotOwner, final int price, final boolean forSale) {
-        super();
+    public OwnedLand(String ownerVillage, int x, int z, String worldName) {
+        this(ownerVillage, x, z, worldName, null, 0, false);
+    }
+
+    public OwnedLand(String ownerVillage, int x, int z, String worldName, UUID plotOwner, int price, boolean forSale) {
         this.ownerVillage = ownerVillage;
         location = new SimpleChunkLocation(worldName, x, z);
         this.plotOwner = plotOwner;
@@ -95,7 +100,7 @@ public class OwnedLand {
         document.put("x", x);
         document.put("z", z);
         document.put("worldName", worldName);
-        document.put("plotOwner", plotOwner);
+        document.put("plotOwner", plotOwner != null ? plotOwner.toString() : null);
         document.put("price", price);
         document.put("forSale", forSale);
         document.put("pvp", pvp);
@@ -185,12 +190,12 @@ public class OwnedLand {
         location.setWorld(worldName);
     }
 
-    public void setPlotOwner(final String plotOwner) {
+    public void setPlotOwner(UUID plotOwner) {
         this.plotOwner = plotOwner;
-        document.put("plotOwner", plotOwner);
+        document.put("plotOwner", plotOwner != null ? plotOwner.toString() : null);
     }
 
-    public String getPlotOwner() {
+    public UUID getPlotOwner() {
         return plotOwner;
     }
 
@@ -303,7 +308,15 @@ public class OwnedLand {
     }
 
     public boolean isPlot() {
-        return !this.getPlotOwner().equals("");
+        return this.getPlotOwner() != null;
+    }
+
+    public boolean isPlotOwner(Player player) {
+        return isPlotOwner(player.getUniqueId());
+    }
+
+    public boolean isPlotOwner(UUID uuid) {
+        return uuid != null && uuid.equals(getPlotOwner());
     }
 
     public String getKey() {

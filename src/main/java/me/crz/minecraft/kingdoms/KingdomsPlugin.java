@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms;
 
+import me.crz.minecraft.kingdoms.land.LandManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import me.crz.minecraft.kingdoms.command.CommandManager;
 import me.crz.minecraft.kingdoms.scoreboard.ScoreboardManager;
@@ -105,6 +106,7 @@ public class KingdomsPlugin extends JavaPlugin {
     public void loadManagers() {
         ThreadManager.getInstance();
         VillageManager.getInstance();
+        LandManager.getInstance();
         ResidentManager.getInstance();
         ConfigManager.getInstance();
         ScoreboardManager.getInstance().setScoreboardPolicy(new ScoreBoard());

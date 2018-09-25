@@ -47,10 +47,10 @@ public class TitleBuilder {
     }
 
     public void send(Player p) {
-        if (title != null || subtitle != null) {
+        if ((title != null && !title.isEmpty()) || (subtitle != null && !subtitle.isEmpty())) {
             p.sendTitle(title, subtitle, in, stay, out);
         }
-        if (actionBar != null) {
+        if (actionBar != null && !actionBar.isEmpty()) {
             p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(actionBar));
         }
     }

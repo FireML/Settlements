@@ -71,7 +71,7 @@ public class VillagePlotCommand extends SubCommand {
                 sb.append("&r&7 | Build: &6");
                 sb.append(land.getBuild());
                 sb.append("\n");
-                if (land.getPlotOwner() != "" && land.getPlotOwner() != null) {
+                if (land.getPlotOwner() != null) {
                     sb.append("&a&lPlot Owner: &7");
                     sb.append(MojangAPI.getInstance().getName(land.getPlotOwner()));
                     sb.append("\n");
@@ -103,7 +103,7 @@ public class VillagePlotCommand extends SubCommand {
                 VillageManager.getInstance().saveVillage(landVillage);
                 land.setForSale(false);
                 land.setPrice(0);
-                land.setPlotOwner(player.getUniqueId().toString());
+                land.setPlotOwner(player.getUniqueId());
                 LandManager.getInstance().saveLand(land);
                 MessageUtils.tell(player, "&aSuccessfully purchased the land.");
                 return;
@@ -134,7 +134,7 @@ public class VillagePlotCommand extends SubCommand {
                     MessageUtils.tell(player, "&cNobody owns this land.");
                     return;
                 }
-                land.setPlotOwner("");
+                land.setPlotOwner(null);
                 LandManager.getInstance().saveLand(land);
                 MessageUtils.tell(player, "&aPlot has been revoked ownership!");
             }
@@ -168,7 +168,7 @@ public class VillagePlotCommand extends SubCommand {
         } else {
             if (!args[0].equalsIgnoreCase("build")) {
                 if (args[0].equalsIgnoreCase("use")) {
-                    if (!land.getPlotOwner().equals(player.getUniqueId().toString())) {
+                    if (!land.isPlotOwner(player)) {
                         MessageUtils.tell(player, MessageUtils.NO_PERMISSION_MESSAGE);
                         return;
                     }
@@ -230,7 +230,7 @@ public class VillagePlotCommand extends SubCommand {
                 MessageUtils.tellList(player, Arrays.asList("&8&l-------- &r&c&l/" + base + " " + alias + "&r " + "&8&l--------", "&8[&9*&8] &b/s plot build residents &7- residents and officers to build in claimed land", "&8[&9*&8] &b/s plot build officers &7- only officers are allowed to build in claimed land", "&8[&9*&8] &b/s plot build public &7- allows everyone to build in your claimed land", "&8[&9*&8] &b/s plot build ally &7- allows your allies to build in your claimed land", "&8[&9*&8] &b/s plot build private &7- allows you to build in your claimed land", "&8[&9*&8] &b/s plot build friends &7- allows your friends to build in your claimed land"));
                 return;
             }
-            if (!land.getPlotOwner().equals(player.getUniqueId().toString())) {
+            if (!player.getUniqueId().equals(land.getPlotOwner())) {
                 MessageUtils.tell(player, MessageUtils.NO_PERMISSION_MESSAGE);
                 return;
             }
@@ -246,7 +246,7 @@ public class VillagePlotCommand extends SubCommand {
     }
 
     private boolean landIsPlot(final OwnedLand land) {
-        return !land.getPlotOwner().equals("");
+        return land.isPlot();
     }
 
     private boolean playerOwnsLand(final Player player, final Village landVillage) {
@@ -259,7 +259,7 @@ public class VillagePlotCommand extends SubCommand {
     }
 
     private boolean playerOwnsPlot(final Player player, final OwnedLand land) {
-        return land.getPlotOwner().equals(player.getUniqueId().toString());
+        return player.getUniqueId().equals(land.getPlotOwner());
     }
 
     private boolean playerIsElderOrChief(final Player player, final Village village) {

@@ -14,7 +14,6 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 
 import net.md_5.bungee.api.chat.TextComponent;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.utils.KingdomRunnable;
 import me.crz.minecraft.kingdoms.utils.ThreadManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
@@ -73,7 +72,7 @@ public class VillageMapCommand extends SubCommand {
         }
         final StringBuilder sb = new StringBuilder();
         sb.append("\n&a&lPlot Owner: &7");
-        if (land.getPlotOwner() != null && !land.getPlotOwner().isEmpty()) {
+        if (land.getPlotOwner() != null) {
             try {
                 sb.append(MojangAPI.getInstance().getName(land.getPlotOwner()));
                 sb.append("\n");
@@ -84,7 +83,7 @@ public class VillageMapCommand extends SubCommand {
             sb.append("none\n");
         }
         if (village != null && land.getOwnerVillage().equals(village.getName())) {
-            if (land.getPlotOwner() == player.getUniqueId().toString()) {
+            if (land.isPlotOwner(player)) {
                 final TextComponent component2 = new TextComponent(MessageUtils.replaceColorCodes("&e" + symbol));
                 component2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(String.valueOf(land.getOwnerVillage()) + MessageUtils.replaceColorCodes(sb.toString())).create()));
                 return component2;
