@@ -5,9 +5,6 @@ import me.crz.minecraft.kingdoms.essentials.events.HostileCreatureSpawnEvent;
 import org.bukkit.Bukkit;
 import me.crz.minecraft.kingdoms.utils.MojangAPI;
 import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveBlockEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-
-import java.util.EnumSet;
 
 import org.bukkit.block.Block;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -25,10 +22,6 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureDamageEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockIgniteEvent;
-
-import org.bukkit.entity.EntityType;
-
-import java.util.Set;
 
 import me.crz.minecraft.kingdoms.utils.TitleBuilder;
 import me.crz.minecraft.kingdoms.Base;
