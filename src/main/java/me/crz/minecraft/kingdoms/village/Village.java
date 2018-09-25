@@ -10,6 +10,7 @@ import me.crz.minecraft.kingdoms.utils.config.Config;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.bukkit.Location;
@@ -236,15 +237,17 @@ public class Village {
         doc.put("x", loc.getX());
         doc.put("y", loc.getY());
         doc.put("z", loc.getZ());
-        outpostHomes.put(String.valueOf(land.getX()) + "-" + land.getWorldName() + "-" + land.getZ(), doc);
+        doc.put("yaw", loc.getYaw());
+        doc.put("piutch", loc.getPitch());
+        outpostHomes.put(land.getX() + "-" + land.getWorldName() + "-" + land.getZ(), doc);
     }
 
-    public Map<String, Location> getOutpostHomes() {
-        final Map<String, Location> homes = new HashMap<>();
+    public Map<String, SimpleLocation> getOutpostHomes() {
+        final Map<String, SimpleLocation> homes = new LinkedHashMap<>();
         try {
             for (final Map.Entry<String, Object> name : outpostHomes.entrySet()) {
                 if (((Document) name.getValue()).containsKey("name")) {
-                    homes.put(name.getKey(), new Location(Bukkit.getWorld(((Document) name.getValue()).getString("worldName")), ((Document) name.getValue()).getDouble("x"), ((Document) name.getValue()).getDouble("y"), ((Document) name.getValue()).getDouble("z")));
+                    homes.put(name.getKey(), SimpleLocation.load((Document) name.getValue()));
                 }
             }
         } catch (Exception ex) {
@@ -253,7 +256,7 @@ public class Village {
     }
 
     public Map<String, Document> getOutpostHomesList() {
-        final Map<String, Document> homes = new HashMap<>();
+        final Map<String, Document> homes = new LinkedHashMap<>();
         for (final Map.Entry<String, Object> name : outpostHomes.entrySet()) {
             if (name.getValue() instanceof Document && ((Document) name.getValue()).containsKey("name")) {
                 homes.put(name.getKey(), (Document) name.getValue());

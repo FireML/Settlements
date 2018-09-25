@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.command.village;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.utils.ExecuteMoveUtil;
+import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import org.bukkit.Bukkit;
 import org.bson.Document;
 
@@ -91,48 +92,34 @@ public class VillageOutPostCommand extends SubCommand {
                 return;
             }
             Chunk currentChunk = player.getLocation().getChunk();
-            OwnedLand land2 = LandManager.getInstance().getLand(currentChunk.getX(), currentChunk.getZ(), currentChunk.getWorld().getName());
-            if (land2 == null || !land2.getOwnerVillage().equals(village.getName())) {
+            OwnedLand land = LandManager.getInstance().getLand(currentChunk.getX(), currentChunk.getZ(), currentChunk.getWorld().getName());
+            if (land == null || !land.getOwnerVillage().equals(village.getName())) {
                 MessageUtils.tell(player, "&cYou do not own this land.");
                 return;
             }
-            if (!land2.getIsOutpost()) {
+            if (!land.getIsOutpost()) {
                 MessageUtils.tell(player, "&cThis land is not an outpost, please use &7/s unclaim&c to unclaim this land.");
                 return;
             }
-            boolean landCheck = false;
-            for (Chunk chunk : Utils.getChunksAroundPlayer(player, 4)) {
-                OwnedLand checkLand = LandManager.getInstance().getLand(chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
-                if (checkLand == null) {
-                    continue;
-                }
-                if (!checkLand.getOwnerVillage().equals(village.getName()) || checkLand.getIsOutpost()) {
-                    continue;
-                }
-                landCheck = true;
+
+            int unclaimed = 0;
+            for (OwnedLand connectedLand : LandManager.getInstance().getAllConnectedLand(land, true)) {
+                LandManager.getInstance().removeLand(connectedLand);
+                unclaimed++;
             }
-            if (landCheck) {
-                MessageUtils.tell(player, "&c&lPlease unclaim all the land surrounding this outpost before you can unclaim this!");
-                return;
-            }
-            LandManager.getInstance().removeLand(land2);
-            MessageUtils.tellResidents(village.getResidents(), "&aSuccess unclaimed outpost.");
-        }
-        if (args[0].equalsIgnoreCase("list")) {
+            LandManager.getInstance().removeLand(land);
+            MessageUtils.tellResidents(village.getResidents(), "&aSuccess unclaimed outpost and " + unclaimed + " land around it.");
+        } else if (args[0].equalsIgnoreCase("list")) {
             StringBuilder sb = new StringBuilder("&7------- &cOutPosts&7 -------\n");
             for (OwnedLand land2 : LandManager.getInstance().getClaimedLand(village)) {
                 if (land2.getIsOutpost()) {
-                    if (village.getOutpostHomes().containsKey(String.valueOf(land2.getX()) + "-" + land2.getWorldName() + "-" + land2.getZ())) {
-                        Location loc = village.getOutpostHomes().get(String.valueOf(land2.getX()) + "-" + land2.getWorldName() + "-" + land2.getZ());
-                        String name = "";
-                        for (Map.Entry<String, Document> doc : village.getOutpostHomesList().entrySet()) {
-                            if (doc.getValue().containsKey("name") && doc.getKey().equals(String.valueOf(land2.getX()) + "-" + land2.getWorldName() + "-" + land2.getZ())) {
-                                name = doc.getValue().getString("name");
-                            }
-                        }
+                    SimpleLocation loc = village.getOutpostHomes().get(land2.getKey());
+                    if (loc != null) {
+                        Document doc = village.getOutpostHomesList().get(land2.getKey());
+                        String name = doc.get("name", "");
                         sb.append("&a").append(name);
                         sb.append(" (World: ");
-                        sb.append(loc.getWorld().getName());
+                        sb.append(loc.getWorld());
                         sb.append(", X: ");
                         sb.append(loc.getX());
                         sb.append(", Z: ");
@@ -144,21 +131,20 @@ public class VillageOutPostCommand extends SubCommand {
                 }
             }
             MessageUtils.tell(player, sb.toString());
-        }
-        if (args[0].equalsIgnoreCase("tp")) {
+        } else if (args[0].equalsIgnoreCase("tp")) {
             if (args.length < 2) {
                 MessageUtils.tell(player, "/s outpost tp <name>");
                 return;
             }
-            Document doc2 = null;
+            Document doc = null;
             for (Map.Entry<String, Document> document : village.getOutpostHomesList().entrySet()) {
                 if (document.getValue().containsKey("name") && document.getValue().getString("name").equalsIgnoreCase(args[1])) {
-                    doc2 = document.getValue();
+                    doc = document.getValue();
                     break;
                 }
             }
-            if (doc2 != null) {
-                Location loc2 = new Location(Bukkit.getWorld(doc2.getString("worldName")), doc2.getDouble("x"), doc2.getDouble("y"), doc2.getDouble("z"));
+            if (doc != null) {
+                Location loc2 = new Location(Bukkit.getWorld(doc.getString("worldName")), doc.getDouble("x"), doc.getDouble("y"), doc.getDouble("z"), (float) doc.get("yaw"), (float) doc.get("pitch"));
                 MessageUtils.tell(player, "&e&lTeleporting in 5 seconds...");
                 ExecuteMoveUtil.getInstance().execute(player, () -> player.teleport(loc2), 5, "Teleport");
                 return;

@@ -80,6 +80,10 @@ public class SimpleLocation {
         return null;
     }
 
+    public SimpleChunkLocation toChunkLocation() {
+        return new SimpleChunkLocation(this);
+    }
+
     public String getWorld() {
         return world;
     }
@@ -126,5 +130,28 @@ public class SimpleLocation {
 
     public void setPitch(float pitch) {
         this.pitch = pitch;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof SimpleLocation)) {
+            return false;
+        }
+        if (this == other) {
+            return true;
+        }
+        SimpleLocation location = (SimpleLocation) other;
+        return location.world.equals(world) && location.x == x && location.y == y && location.z == z && location.yaw == yaw && location.pitch == pitch;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = world.hashCode();
+        hash = hash * 31 + Double.hashCode(x);
+        hash = hash * 31 + Double.hashCode(y);
+        hash = hash * 31 + Double.hashCode(z);
+        hash = hash * 31 + Float.hashCode(yaw);
+        hash = hash * 31 + Float.hashCode(pitch);
+        return hash;
     }
 }

@@ -1,6 +1,8 @@
 package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.utils.Pair;
+import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.Material;
 import org.bukkit.Location;
@@ -20,10 +22,8 @@ import me.crz.minecraft.kingdoms.landflags.PlotBuildState;
 
 public class OwnedLand {
     private String ownerVillage;
-    private String worldName;
     private String plotOwner;
-    private int x;
-    private int z;
+    private SimpleChunkLocation location;
     private int price;
     private boolean forSale;
     private boolean pvp;
@@ -40,9 +40,7 @@ public class OwnedLand {
         super();
         document = doc;
         ownerVillage = document.getString("ownerVillage");
-        x = document.getInteger("x");
-        z = document.getInteger("z");
-        worldName = document.getString("worldName");
+        location = SimpleChunkLocation.load(document);
         plotOwner = document.getString("plotOwner");
         price = document.getInteger("price");
         forSale = document.getBoolean("forSale");
@@ -82,9 +80,7 @@ public class OwnedLand {
     public OwnedLand(final String ownerVillage, final int x, final int z, final String worldName, final String plotOwner, final int price, final boolean forSale) {
         super();
         this.ownerVillage = ownerVillage;
-        this.x = x;
-        this.z = z;
-        this.worldName = worldName;
+        location = new SimpleChunkLocation(worldName, x, z);
         this.plotOwner = plotOwner;
         this.forSale = forSale;
         this.price = price;
@@ -166,27 +162,27 @@ public class OwnedLand {
     }
 
     public int getX() {
-        return x;
+        return location.getX();
     }
 
     public void setX(final int x) {
-        this.x = x;
+        this.location.setX(x);
     }
 
     public int getZ() {
-        return z;
+        return location.getZ();
     }
 
     public void setZ(final int z) {
-        this.z = z;
+        this.location.setZ(z);
     }
 
     public String getWorldName() {
-        return worldName;
+        return location.getWorld();
     }
 
     public void setWorldName(final String worldName) {
-        this.worldName = worldName;
+        location.setWorld(worldName);
     }
 
     public void setPlotOwner(final String plotOwner) {
@@ -216,8 +212,12 @@ public class OwnedLand {
         document.put("price", price);
     }
 
+    public SimpleChunkLocation getLocation() {
+        return location;
+    }
+
     public Chunk getChunk() {
-        return Bukkit.getServer().getWorld(worldName).getChunkAt(x, z);
+        return location.getChunk();
     }
 
     public List<Player> getPlayers() {
@@ -304,5 +304,9 @@ public class OwnedLand {
 
     public boolean isPlot() {
         return !this.getPlotOwner().equals("");
+    }
+
+    public String getKey() {
+        return location.getKey();
     }
 }

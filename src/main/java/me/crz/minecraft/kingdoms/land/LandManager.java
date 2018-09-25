@@ -1,9 +1,20 @@
 package me.crz.minecraft.kingdoms.land;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.village.VillageManager;
+import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
+import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import org.bukkit.Location;
 import com.mongodb.client.MongoCollection;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -94,7 +105,7 @@ public class LandManager {
         return land;
     }
 
-    public void claimLand(final Integer x, final Integer z, final String worldName, final Village village) {
+    public void claimLand(final int x, final int z, final String worldName, final Village village) {
         final OwnedLand land = new OwnedLand(village.getName(), x, z, worldName, "", 0, false);
         this.saveLand(land);
     }
@@ -113,11 +124,17 @@ public class LandManager {
     }
 
     public OwnedLand getLandFromLocation(final Location location) {
-        if (location == null || location.getChunk() == null) {
+        if (location == null) {
             return null;
         }
-        final Chunk chunk = location.getChunk();
-        return this.getLand(chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
+        return this.getLand(new SimpleChunkLocation(location));
+    }
+
+    public OwnedLand getLand(SimpleChunkLocation location) {
+        if (location == null) {
+            return null;
+        }
+        return land0.get(location.getWorld(), this.getData(location.getX(), location.getZ()));
     }
 
     public OwnedLand getLand(final int x, final int z, final String worldName) {
@@ -178,5 +195,50 @@ public class LandManager {
         this.saveLand(land);
         village.addOutpostHome(location, land, "outpost-" + this.getClaimedLandSize(village));
         VillageManager.getInstance().saveVillage(village);
+    }
+
+    public Collection<OwnedLand> getAllConnectedLand(OwnedLand land, boolean outpostMode) {
+        Village village = VillageManager.getInstance().getVillageFromName(land.getOwnerVillage());
+        if (village == null) {
+            return Collections.emptyList();
+        }
+
+        int[][] directions = {{1,0}, {0,1}, {-1,0}, {0,-1}};
+
+        List<OwnedLand> ownedLands = new ArrayList<>();
+        Set<SimpleChunkLocation> checked = new HashSet<>();
+        Queue<SimpleChunkLocation> toSearch = new ArrayDeque<>();
+        Set<SimpleChunkLocation> outposts = outpostMode
+                ? Collections.emptySet()
+                : village.getOutpostHomes().values().stream().map(SimpleChunkLocation::new).collect(Collectors.toSet());
+
+        toSearch.add(land.getLocation());
+        while (!toSearch.isEmpty()) {
+            SimpleChunkLocation current = toSearch.poll();
+            for (int[] direction : directions) {
+                SimpleChunkLocation search = current.copy().add(direction[0], direction[1]);
+                if (outpostMode) {
+                    if (search.equals(village.getVillageHome().toChunkLocation())) {
+                        // return an empty set if this is connected to the home chunk
+                        return Collections.emptyList();
+                    }
+                } else {
+                    if (outposts.contains(search)) {
+                        // return an empty set if this is connected to an outpost
+                        return Collections.emptyList();
+                    }
+                }
+                if (!checked.contains(search)) {
+                    checked.add(search);
+                    OwnedLand foundLand = getLand(search);
+                    if (foundLand != null && foundLand.getOwnerVillage().equals(land.getOwnerVillage())) {
+                        ownedLands.add(foundLand);
+                        toSearch.add(search);
+                    }
+                }
+            }
+        }
+
+        return ownedLands;
     }
 }
