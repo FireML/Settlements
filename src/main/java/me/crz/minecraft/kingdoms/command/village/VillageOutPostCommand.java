@@ -17,8 +17,11 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
+import java.text.DecimalFormat;
+
 public class VillageOutPostCommand extends SubCommand {
     private StringBuilder sb;
+    private static final DecimalFormat DOUBLE_FORMAT = new DecimalFormat("#.#");
 
     public VillageOutPostCommand() {
         super("Claim a seperate chunk of land", "outpost");
@@ -115,9 +118,9 @@ public class VillageOutPostCommand extends SubCommand {
                         sb.append(" (World: ");
                         sb.append(loc.getWorld());
                         sb.append(", X: ");
-                        sb.append(loc.getX());
+                        sb.append(DOUBLE_FORMAT.format(loc.getX()));
                         sb.append(", Z: ");
-                        sb.append(loc.getZ());
+                        sb.append(DOUBLE_FORMAT.format(loc.getZ()));
                         sb.append(" )\n");
                     } else {
                         sb.append("&aMBFU\n");
