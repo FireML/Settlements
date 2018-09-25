@@ -121,10 +121,7 @@ public class LandManager {
     }
 
     public OwnedLand getLand(final int x, final int z, final String worldName) {
-        if (land0.contains(worldName, this.getData(x, z))) {
-            return land0.get(worldName, this.getData(x, z));
-        }
-        return null;
+        return land0.get(worldName, this.getData(x, z));
     }
 
     public OwnedLand getLandFromDatabase0(final int x, final int z, final String worldName) {

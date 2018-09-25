@@ -28,7 +28,7 @@ public class VillageTeleporterSetCommand extends SubCommand {
         final Resident res = ResidentManager.getInstance().getResident(player);
         if (args[0].equalsIgnoreCase("none")) {
             MessageUtils.tellResidents(village.getResidents(), String.valueOf(res.getVillageRank().getTag(village.getState())) + " " + player.getName() + "&r&7&l has &r&6&lremoved&r&7&l the teleport claim", null, null);
-            village.resetTeleporterClaim();
+            village.resetTeleporter();
             VillageManager.getInstance().saveVillage(village);
             return;
         }
@@ -43,7 +43,7 @@ public class VillageTeleporterSetCommand extends SubCommand {
             return;
         }
         MessageUtils.tellResidents(village.getResidents(), String.valueOf(res.getVillageRank().getTag(village.getState())) + " " + player.getName() + "&r&7&l has set the teleport claim at &r&6&l" + String.valueOf(player.getLocation().getBlockX()) + "&r&7&l,&r&6&l" + String.valueOf(player.getLocation().getBlockY()) + "&r&7&l,&r&6&l" + String.valueOf(player.getLocation().getBlockZ()), null, null);
-        village.setTeleporterClaim(player.getLocation());
+        village.setTeleporter(player.getLocation());
         VillageManager.getInstance().saveVillage(village);
     }
 }

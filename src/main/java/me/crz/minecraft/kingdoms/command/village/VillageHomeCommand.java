@@ -23,7 +23,7 @@ public class VillageHomeCommand extends SubCommand {
             MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
             return;
         }
-        final Location loc = village.getVillageHome();
+        final Location loc = village.getVillageHome().toBukkitLocation();
         if (loc != null) {
             MessageUtils.tell(player, "&e&lTeleporting in 5 seconds...");
             ExecuteMoveUtil.getInstance().execute(player, () -> player.teleport(loc), 3, "Teleport");

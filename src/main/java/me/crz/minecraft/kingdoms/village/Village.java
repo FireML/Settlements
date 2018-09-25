@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.village;
 import java.lang.reflect.Field;
 
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
+import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.utils.config.Config;
@@ -38,17 +39,19 @@ public class Village {
     private String enterMessage;
     private String leaveMessage;
     private BuildState buildState;
-    private Document teleporterClaim;
     private boolean pvp;
     private boolean fireSpread;
     private boolean explosions;
     private boolean mobSpawning;
     private boolean buff;
+    private Document teleporterDoc;
+    private SimpleLocation teleporterLoc;
     private boolean teleporter;
     private int bank;
     private List<String> allies;
     private int teleportCost;
-    private Document villageHome;
+    private Document villageHomeDoc;
+    private SimpleLocation villageHomeLoc;
     private Document outpostHomes;
     private List<String> banished;
     private Document use;
@@ -59,7 +62,7 @@ public class Village {
     public Village(final String name, final UUID chief, final int level, final VillageState state, final String enterMessage, final String leaveMessage, final BuildState buildState) {
         super();
         document = new Document();
-        this.resetTeleporterClaim();
+        this.resetTeleporter();
         this.set("name", name);
         this.set("chief", chief);
         this.set("level", level);
@@ -67,13 +70,14 @@ public class Village {
         this.set("enterMessage", enterMessage);
         this.set("leaveMessage", leaveMessage);
         this.set("buildState", buildState);
-        document.put("vault", new Document());
+        this.set("vault", new Document());
         this.set("pvp", false);
         this.set("fireSpread", false);
         this.set("explosions", false);
         this.set("mobSpawning", false);
         this.set("buff", false);
         this.set("teleporter", false);
+        this.set("teleporterLoc", new Document());
         this.set("bank", 0);
         this.set("allies", new ArrayList());
         this.set("teleportCost", 0);
@@ -99,17 +103,19 @@ public class Village {
         enterMessage = doc.getString("enterMessage");
         leaveMessage = doc.getString("leaveMessage");
         buildState = BuildState.valueOf(doc.getString("buildState"));
-        teleporterClaim = (Document) doc.get("teleporterClaim");
+        teleporterDoc = (Document) doc.get("teleporterLoc");
         pvp = doc.getBoolean("pvp");
         fireSpread = doc.getBoolean("fireSpread");
         explosions = doc.getBoolean("explosions");
         mobSpawning = doc.getBoolean("mobSpawning");
         buff = doc.getBoolean("buff");
         teleporter = doc.getBoolean("teleporter");
+        teleporterLoc = SimpleLocation.load(teleporterDoc);
         bank = doc.getInteger("bank");
         allies = doc.get("allies", new ArrayList<>());
         teleportCost = doc.getInteger("teleportCost");
-        villageHome = (Document) doc.get("villageHome");
+        villageHomeDoc = (Document) doc.get("villageHome");
+        villageHomeLoc = SimpleLocation.load(villageHomeDoc);
         if (doc.containsKey("outpostHomes")) {
             outpostHomes = (Document) doc.get("outpostHomes");
         } else {
@@ -256,12 +262,8 @@ public class Village {
         return homes;
     }
 
-    public Location getVillageHome() {
-        try {
-            return new Location(Bukkit.getWorld(villageHome.getString("worldName")), villageHome.getInteger("x"), villageHome.getInteger("y"), (double) villageHome.getInteger("z"));
-        } catch (Exception e) {
-            return null;
-        }
+    public SimpleLocation getVillageHome() {
+        return villageHomeLoc;
     }
 
     public boolean hasVillageHome() {
@@ -273,14 +275,9 @@ public class Village {
     }
 
     public void setVillageHome(final Location loc) {
-        if (villageHome == null) {
-            villageHome = new Document();
-        }
-        villageHome.put("worldName", loc.getWorld().getName());
-        villageHome.put("x", loc.getBlockX());
-        villageHome.put("y", loc.getBlockY());
-        villageHome.put("z", loc.getBlockZ());
-        this.set("villageHome", villageHome);
+        villageHomeLoc = new SimpleLocation(loc);
+        villageHomeDoc = SimpleLocation.save(villageHomeLoc, villageHomeDoc);
+        this.set("villageHome", villageHomeDoc);
     }
 
     public int getTeleportCost() {
@@ -317,27 +314,27 @@ public class Village {
         }
     }
 
-    public void resetTeleporterClaim() {
-        (teleporterClaim = new Document()).put("x", null);
-        teleporterClaim.put("y", null);
-        teleporterClaim.put("z", null);
-        teleporterClaim.put("worldName", null);
-        this.set("teleporterClaim", teleporterClaim);
+    public SimpleLocation getTeleporter() {
+        return teleporterLoc;
+    }
+
+    public void resetTeleporter() {
+        teleporterLoc = null;
+        teleporterDoc = SimpleLocation.save(null, new Document());
+        this.set("teleporter", teleporterDoc);
     }
 
     public OwnedLand getTeleporterClaim() {
-        if (teleporterClaim.get("x") == null && teleporterClaim.get("z") == null && teleporterClaim.get("worldName") == null) {
+        if (teleporterLoc == null) {
             return null;
         }
-        return LandManager.getInstance().getLand(teleporterClaim.getInteger("x"), teleporterClaim.getInteger("z"), teleporterClaim.getString("worldName"));
+        return LandManager.getInstance().getLand((int) teleporterLoc.getX() >> 4, (int) teleporterLoc.getZ() >> 4, teleporterLoc.getWorld());
     }
 
-    public void setTeleporterClaim(final Location location) {
-        teleporterClaim.put("x", location.getBlockX());
-        teleporterClaim.put("y", location.getBlockY());
-        teleporterClaim.put("z", location.getBlockZ());
-        teleporterClaim.put("worldName", location.getWorld().getName());
-        this.set("teleporterClaim", teleporterClaim);
+    public void setTeleporter(final Location location) {
+        teleporterLoc = new SimpleLocation(location);
+        teleporterDoc = SimpleLocation.save(teleporterLoc, teleporterDoc);
+        this.set("teleporterLoc", teleporterDoc);
     }
 
     public int getBank() {

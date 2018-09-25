@@ -4,8 +4,8 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageCopy extends SubCommand {
-    public VillageCopy() {
+public class VillageCopyCommand extends SubCommand {
+    public VillageCopyCommand() {
         super("", "");
         this.setPermission("village.user");
         this.setUsage("");

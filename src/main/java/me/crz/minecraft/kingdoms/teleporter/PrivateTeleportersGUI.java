@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.teleporter;
 
+import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Location;
@@ -70,10 +71,7 @@ public class PrivateTeleportersGUI extends Base {
         checks = 0;
         for (final String ally : allies) {
             final Village v = VillageManager.getInstance().getVillageFromName(ally);
-            if (v == null) {
-                continue;
-            }
-            if (v.getTeleporterClaim() == null) {
+            if (v == null || v.getTeleporter() == null || v.getTeleporterClaim() == null) {
                 continue;
             }
             items.add(new ClickableItem() {
@@ -88,16 +86,14 @@ public class PrivateTeleportersGUI extends Base {
                 }
 
                 public boolean click(final Player p, final ClickType clickType) {
-                    final Document d = (Document) v.getDocument().get("teleporterClaim");
-                    final Location location = new Location(Bukkit.getWorld(d.getString("worldName")), d.getInteger("x"), d.getInteger("y"), (double) d.getInteger("z"));
                     if (v.getTeleportCost() == 0) {
-                        p.teleport(location);
+                        p.teleport(v.getTeleporter().toBukkitLocation());
                     } else {
                         final OfflinePlayer op = Bukkit.getOfflinePlayer(p.getUniqueId());
                         if (Base.getEconomy().getBalance(op) >= v.getTeleportCost()) {
-                            final EconomyResponse r = Base.getEconomy().withdrawPlayer(op, (double) v.getTeleportCost());
+                            final EconomyResponse r = Base.getEconomy().withdrawPlayer(op, v.getTeleportCost());
                             if (r.transactionSuccess()) {
-                                p.teleport(location);
+                                p.teleport(v.getTeleporter().toBukkitLocation());
                                 MessageUtils.tell(p, "&7Teleporting to &6" + v.getName() + "&r&7's teleporter!", null, null);
                                 MessageUtils.tellResidents(v.getResidents(), "&e&l" + p.getName() + " &r&7deposited &6" + v.getTeleportCost() + "&r&7 into the village bank by teleporting to your teleporter!", null, null);
                             } else {

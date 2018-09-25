@@ -95,13 +95,9 @@ public class TeleportersGUI extends Base {
         ci.addItem(5, new ClickableItem() {
             public ItemStack getItem(final Player p) {
                 Village village = VillageManager.getInstance().getVillageFromPlayer(p);
-                if (village == null) {
-                    return locked;
-                }
-                if (village.getTeleporterClaim() == null || village.getTeleporterClaim().getDocument() == null) {
-                    return locked;
-                }
-                if (village.getTeleporterClaim().getDocument().getInteger("x") == null) {
+                if (village == null
+                        || village.getTeleporter() == null
+                        || village.getTeleporterClaim() == null) {
                     return locked;
                 }
                 return Utils.getHead(Bukkit.getOfflinePlayer(village.getChief()), MessageUtils.replaceColorCodes("&e&lVillage Teleporter"));
@@ -109,25 +105,20 @@ public class TeleportersGUI extends Base {
 
             public boolean click(final Player p, final ClickType clickType) {
                 Village v = VillageManager.getInstance().getVillageFromPlayer(p);
-                if (v == null) {
+                if (v == null
+                        || v.getTeleporter() == null
+                        || v.getTeleporterClaim() == null) {
                     return false;
                 }
-                if (v.getTeleporterClaim() == null || v.getTeleporterClaim().getDocument() == null) {
-                    return false;
-                }
-                if (v.getTeleporterClaim().getDocument().getInteger("x") == null) {
-                    return false;
-                }
-                Document d = v.getTeleporterClaim().getDocument();
-                Location location = new Location(Bukkit.getWorld(d.getString("worldName")), d.getInteger("x"), d.getInteger("y"), (double) d.getInteger("z"));
+
                 if (v.getTeleportCost() == 0) {
-                    p.teleport(location);
+                    p.teleport(v.getTeleporter().toBukkitLocation());
                 } else {
                     OfflinePlayer op = Bukkit.getOfflinePlayer(p.getUniqueId());
                     if (Base.getEconomy().getBalance(op) >= v.getTeleportCost()) {
                         EconomyResponse r = Base.getEconomy().withdrawPlayer(op, (double) v.getTeleportCost());
                         if (r.transactionSuccess()) {
-                            p.teleport(location);
+                            p.teleport(v.getTeleporter().toBukkitLocation());
                             MessageUtils.tell(p, "&7Teleporting to &6" + v.getName() + "&r&7's teleporter!", null, null);
                             MessageUtils.tellResidents(v.getResidents(), "&e&l" + p.getName() + " &r&7deposited &6" + v.getTeleportCost() + "&r&7 into the village bank by teleporting to your teleporter!", null, null);
                         } else {
