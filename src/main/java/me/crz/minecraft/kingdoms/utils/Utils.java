@@ -3,12 +3,15 @@ package me.crz.minecraft.kingdoms.utils;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.db.TownCache;
 import me.crz.minecraft.kingdoms.village.Village;
+import org.bukkit.Chunk;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
 
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import org.bukkit.World;
@@ -189,5 +192,19 @@ public class Utils {
             }
         }
         return 4;
+    }
+
+    public static Collection<Chunk> getChunksAroundPlayer(final Player player, int radius) {
+        final World world = player.getWorld();
+        final int baseX = player.getLocation().getChunk().getX();
+        final int baseZ = player.getLocation().getChunk().getZ();
+        final Collection<Chunk> chunksAroundPlayer = new HashSet<>();
+        for (int x = baseX - radius; x <= baseX + radius; x++) {
+            for (int z = baseZ - radius; z <= baseZ + radius; z++) {
+                final Chunk chunk = world.getChunkAt(x, z);
+                chunksAroundPlayer.add(chunk);
+            }
+        }
+        return chunksAroundPlayer;
     }
 }
