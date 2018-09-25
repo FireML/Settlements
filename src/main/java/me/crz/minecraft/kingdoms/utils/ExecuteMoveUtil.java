@@ -23,18 +23,16 @@ public class ExecuteMoveUtil extends Base {
     public void execute(final Player p, final Runnable r, final int seconds, final String action) {
         uuids.put(p.getUniqueId(), action);
         ThreadManager.getInstance().execute(() -> {
-            if (uuids.containsKey(p.getUniqueId())) {
+            if (uuids.remove(p.getUniqueId(), action)) {
                 r.run();
-                uuids.remove(p.getUniqueId());
             }
         }, seconds);
     }
 
     @EventHandler
     public void on(final PlayerMoveBlockEvent e) {
-        if (uuids.containsKey(e.getPlayer().getUniqueId())) {
+        if (uuids.remove(e.getPlayer().getUniqueId()) != null) {
             MessageUtils.tell(e.getPlayer(), "&c" + uuids.get(e.getPlayer().getUniqueId()) + " cancled because you moved!");
-            uuids.remove(e.getPlayer().getUniqueId());
         }
     }
 

@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.village;
 import java.lang.reflect.Field;
 
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
+import me.crz.minecraft.kingdoms.world.NamedLocation;
 import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
@@ -242,25 +243,15 @@ public class Village {
         outpostHomes.put(land.getX() + "-" + land.getWorldName() + "-" + land.getZ(), doc);
     }
 
-    public Map<String, SimpleLocation> getOutpostHomes() {
-        final Map<String, SimpleLocation> homes = new LinkedHashMap<>();
+    public Map<String, NamedLocation> getOutpostHomes() {
+        final Map<String, NamedLocation> homes = new LinkedHashMap<>();
         try {
             for (final Map.Entry<String, Object> name : outpostHomes.entrySet()) {
                 if (((Document) name.getValue()).containsKey("name")) {
-                    homes.put(name.getKey(), SimpleLocation.load((Document) name.getValue()));
+                    homes.put(name.getKey(), NamedLocation.load((Document) name.getValue()));
                 }
             }
         } catch (Exception ex) {
-        }
-        return homes;
-    }
-
-    public Map<String, Document> getOutpostHomesList() {
-        final Map<String, Document> homes = new LinkedHashMap<>();
-        for (final Map.Entry<String, Object> name : outpostHomes.entrySet()) {
-            if (name.getValue() instanceof Document && ((Document) name.getValue()).containsKey("name")) {
-                homes.put(name.getKey(), (Document) name.getValue());
-            }
         }
         return homes;
     }

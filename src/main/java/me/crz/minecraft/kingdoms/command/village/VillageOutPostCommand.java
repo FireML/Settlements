@@ -3,11 +3,7 @@ package me.crz.minecraft.kingdoms.command.village;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.utils.ExecuteMoveUtil;
-import me.crz.minecraft.kingdoms.world.SimpleLocation;
-import org.bukkit.Bukkit;
-import org.bson.Document;
-
-import java.util.Map;
+import me.crz.minecraft.kingdoms.world.NamedLocation;
 
 import org.bukkit.Location;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
@@ -113,11 +109,9 @@ public class VillageOutPostCommand extends SubCommand {
             StringBuilder sb = new StringBuilder("&7------- &cOutPosts&7 -------\n");
             for (OwnedLand land2 : LandManager.getInstance().getClaimedLand(village)) {
                 if (land2.getIsOutpost()) {
-                    SimpleLocation loc = village.getOutpostHomes().get(land2.getKey());
+                    NamedLocation loc = village.getOutpostHomes().get(land2.getKey());
                     if (loc != null) {
-                        Document doc = village.getOutpostHomesList().get(land2.getKey());
-                        String name = doc.get("name", "");
-                        sb.append("&a").append(name);
+                        sb.append("&a").append(loc.getName());
                         sb.append(" (World: ");
                         sb.append(loc.getWorld());
                         sb.append(", X: ");
@@ -136,15 +130,15 @@ public class VillageOutPostCommand extends SubCommand {
                 MessageUtils.tell(player, "/s outpost tp <name>");
                 return;
             }
-            Document doc = null;
-            for (Map.Entry<String, Document> document : village.getOutpostHomesList().entrySet()) {
-                if (document.getValue().containsKey("name") && document.getValue().getString("name").equalsIgnoreCase(args[1])) {
-                    doc = document.getValue();
+            NamedLocation location = null;
+            for (NamedLocation outpost : village.getOutpostHomes().values()) {
+                if (outpost.getName().equalsIgnoreCase(args[1])) {
+                    location = outpost;
                     break;
                 }
             }
-            if (doc != null) {
-                Location loc2 = new Location(Bukkit.getWorld(doc.getString("worldName")), doc.getDouble("x"), doc.getDouble("y"), doc.getDouble("z"), (float) doc.get("yaw"), (float) doc.get("pitch"));
+            if (location != null) {
+                Location loc2 = location.toBukkitLocation();
                 MessageUtils.tell(player, "&e&lTeleporting in 5 seconds...");
                 ExecuteMoveUtil.getInstance().execute(player, () -> player.teleport(loc2), 5, "Teleport");
                 return;

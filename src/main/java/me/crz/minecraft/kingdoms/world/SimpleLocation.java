@@ -30,6 +30,10 @@ public class SimpleLocation {
         this(location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
     }
 
+    public SimpleLocation(SimpleLocation location) {
+        this(location.getWorld(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+    }
+
     public static SimpleLocation load(Document document) {
         if (document != null
                 && document.get("x") != null && document.get("y") != null  && document.get("y") != null
@@ -69,7 +73,7 @@ public class SimpleLocation {
     }
 
     public SimpleLocation copy() {
-        return new SimpleLocation(world, x, y, z, yaw, pitch);
+        return new SimpleLocation(this);
     }
 
     public Location toBukkitLocation() {
