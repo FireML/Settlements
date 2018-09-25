@@ -1,9 +1,10 @@
 package me.crz.minecraft.kingdoms.command.village;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
@@ -88,13 +89,7 @@ enum PlotMode {
         return options;
     }
 
-    public static List<String> modes() {
-        final List<String> temp = new ArrayList<>();
-        PlotMode[] values;
-        for (int length = (values = values()).length, i = 0; i < length; ++i) {
-            final PlotMode m = values[i];
-            temp.add(m.name().toLowerCase());
-        }
-        return temp;
+    public static Set<String> modes() {
+        return Arrays.stream(values()).map(m -> m.name().toLowerCase()).collect(Collectors.toSet());
     }
 }
