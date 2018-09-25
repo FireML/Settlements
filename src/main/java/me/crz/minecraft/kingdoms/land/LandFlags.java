@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.essentials.events.HostileCreatureSpawnEvent;
 import org.bukkit.Bukkit;
 import me.crz.minecraft.kingdoms.utils.MojangAPI;
 import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveBlockEvent;
@@ -34,21 +35,6 @@ import me.crz.minecraft.kingdoms.Base;
 
 public class LandFlags extends Base {
     private TitleBuilder tbPvp = new TitleBuilder();
-    private static final Set<EntityType> HOSTILE = EnumSet.of(
-            EntityType.BLAZE,
-            EntityType.CREEPER,
-            EntityType.SPIDER,
-            EntityType.CAVE_SPIDER,
-            EntityType.ENDERMAN,
-            EntityType.ENDERMITE,
-            EntityType.ZOMBIE,
-            EntityType.WITHER_SKELETON,
-            EntityType.WITCH,
-            EntityType.VEX,
-            EntityType.VINDICATOR,
-            EntityType.SKELETON,
-            EntityType.SLIME,
-            EntityType.PIG_ZOMBIE);
 
     public LandFlags() {
         super();
@@ -177,8 +163,8 @@ public class LandFlags extends Base {
     }
 
     @EventHandler
-    public void onHostileSpawn(final CreatureSpawnEvent e) {
-        if (HOSTILE.contains(e.getEntityType()) && !LandManager.getInstance().getMobSpawning(e.getLocation().getChunk())) {
+    public void onHostileSpawn(final HostileCreatureSpawnEvent e) {
+        if (!LandManager.getInstance().getMobSpawning(e.getLocation().getChunk())) {
             e.setCancelled(true);
         }
     }
