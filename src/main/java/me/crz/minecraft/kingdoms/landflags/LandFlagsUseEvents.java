@@ -1,6 +1,9 @@
 package me.crz.minecraft.kingdoms.landflags;
 
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 
@@ -28,10 +31,10 @@ public class LandFlagsUseEvents extends LandFlagBase {
     }
 
     @EventHandler
-    public void on(final EntityMountEvent e) {
+    public void on(EntityMountEvent e) {
         if (e.getEntity() instanceof Player) {
-            final Player p = (Player) e.getEntity();
-            final Pair<Boolean, String> response = this.canUse(p, Use.RIDE, e.getMount().getLocation());
+            Player p = (Player) e.getEntity();
+            Pair<Boolean, String> response = this.canUse(p, Use.RIDE, e.getMount().getLocation());
             if (!response.getLeft()) {
                 MessageUtils.tell(p, response.getRight());
                 e.setCancelled(true);
@@ -40,8 +43,8 @@ public class LandFlagsUseEvents extends LandFlagBase {
     }
 
     @EventHandler
-    public void on(final PlayerPortalEvent e) {
-        final Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.PORTAL, e.getFrom());
+    public void on(PlayerPortalEvent e) {
+        Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.PORTAL, e.getFrom());
         if (!response.getLeft()) {
             MessageUtils.tell(e.getPlayer(), response.getRight());
             e.setCancelled(true);
@@ -49,8 +52,8 @@ public class LandFlagsUseEvents extends LandFlagBase {
     }
 
     @EventHandler
-    public void on(final PlayerBedEnterEvent e) {
-        final Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.BED, e.getBed().getLocation());
+    public void on(PlayerBedEnterEvent e) {
+        Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.BED, e.getBed().getLocation());
         if (!response.getLeft()) {
             MessageUtils.tell(e.getPlayer(), response.getRight());
             e.setCancelled(true);
@@ -58,19 +61,19 @@ public class LandFlagsUseEvents extends LandFlagBase {
     }
 
     @EventHandler
-    public void on(final PlayerPickupItemEvent e) {
-        final Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.ITEM, e.getPlayer().getLocation());
+    public void on(PlayerPickupItemEvent e) {
+        Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.ITEM, e.getPlayer().getLocation());
         if (!response.getLeft()) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void on(final PlayerFishEvent e) {
+    public void on(PlayerFishEvent e) {
         if (e.getPlayer() == null || e.getHook() == null) {
             return;
         }
-        final Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.FISH, e.getHook().getLocation());
+        Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.FISH, e.getHook().getLocation());
         if (!response.getLeft()) {
             MessageUtils.tell(e.getPlayer(), response.getRight());
             e.setCancelled(true);
@@ -78,8 +81,8 @@ public class LandFlagsUseEvents extends LandFlagBase {
     }
 
     @EventHandler
-    public void on(final PlayerArmorStandManipulateEvent e) {
-        final Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.ARMOR_STAND, e.getRightClicked().getLocation());
+    public void on(PlayerArmorStandManipulateEvent e) {
+        Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.ARMOR_STAND, e.getRightClicked().getLocation());
         if (!response.getLeft()) {
             MessageUtils.tell(e.getPlayer(), response.getRight());
             e.setCancelled(true);
@@ -87,8 +90,8 @@ public class LandFlagsUseEvents extends LandFlagBase {
     }
 
     @EventHandler
-    public void on(final PlayerLeashEntityEvent e) {
-        final Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.LEASH, e.getEntity().getLocation());
+    public void on(PlayerLeashEntityEvent e) {
+        Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.LEASH, e.getEntity().getLocation());
         if (!response.getLeft()) {
             MessageUtils.tell(e.getPlayer(), response.getRight());
             e.setCancelled(true);
@@ -96,8 +99,8 @@ public class LandFlagsUseEvents extends LandFlagBase {
     }
 
     @EventHandler
-    public void on(final PlayerShearEntityEvent e) {
-        final Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.SHEER, e.getEntity().getLocation());
+    public void on(PlayerShearEntityEvent e) {
+        Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.SHEER, e.getEntity().getLocation());
         if (!response.getLeft()) {
             MessageUtils.tell(e.getPlayer(), response.getRight());
             e.setCancelled(true);
@@ -105,10 +108,16 @@ public class LandFlagsUseEvents extends LandFlagBase {
     }
 
     @EventHandler
-    public void on(final PlayerInteractEntityEvent e) {
-        final Player p = e.getPlayer();
+    public void on(PlayerInteractEntityEvent e) {
+        Player p = e.getPlayer();
         if (e.getRightClicked() instanceof Cow && p.getItemInHand().getType() == Material.BUCKET) {
-            final Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.MILK, e.getRightClicked().getLocation());
+            Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.MILK, e.getRightClicked().getLocation());
+            if (!response.getLeft()) {
+                MessageUtils.tell(e.getPlayer(), response.getRight());
+                e.setCancelled(true);
+            }
+        } else if (e.getRightClicked() instanceof ItemFrame) {
+            Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.ITEM_FRAME, e.getRightClicked().getLocation());
             if (!response.getLeft()) {
                 MessageUtils.tell(e.getPlayer(), response.getRight());
                 e.setCancelled(true);
@@ -117,7 +126,7 @@ public class LandFlagsUseEvents extends LandFlagBase {
     }
 
     @EventHandler
-    public void on(final PlayerInteractEvent e) {
+    public void on(PlayerInteractEvent e) {
         if (e.getAction() == Action.PHYSICAL || e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
             Use use = Use.INTERACT;
             if (e.getAction() == Action.PHYSICAL && MaterialUtils.PRESSURE_PLATES.contains(e.getClickedBlock().getType())) {
@@ -127,7 +136,7 @@ public class LandFlagsUseEvents extends LandFlagBase {
                 use = Use.getByMaterial(e.getClickedBlock().getType());
             }
             if (use != Use.INTERACT) {
-                final Pair<Boolean, String> response = this.canUse(e.getPlayer(), use, e.getClickedBlock().getLocation());
+                Pair<Boolean, String> response = this.canUse(e.getPlayer(), use, e.getClickedBlock().getLocation());
                 if (!response.getLeft()) {
                     if (use != Use.PRESSURE_PLATE) {
                         MessageUtils.tell(e.getPlayer(), response.getRight());
@@ -139,8 +148,8 @@ public class LandFlagsUseEvents extends LandFlagBase {
     }
 
     @EventHandler
-    public void on(final PlayerBucketFillEvent e) {
-        final Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.BUCKET, e.getBlockClicked().getLocation());
+    public void on(PlayerBucketFillEvent e) {
+        Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.BUCKET, e.getBlockClicked().getLocation());
         if (!response.getLeft()) {
             MessageUtils.tell(e.getPlayer(), response.getRight());
             e.setCancelled(true);
@@ -148,11 +157,29 @@ public class LandFlagsUseEvents extends LandFlagBase {
     }
 
     @EventHandler
-    public void on(final PlayerBucketEmptyEvent e) {
-        final Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.BUCKET, e.getBlockClicked().getLocation());
+    public void on(PlayerBucketEmptyEvent e) {
+        Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.BUCKET, e.getBlockClicked().getLocation());
         if (!response.getLeft()) {
             MessageUtils.tell(e.getPlayer(), response.getRight());
             e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void on(EntityDamageByEntityEvent e) {
+        if (e.getEntity() instanceof ItemFrame) {
+            if (e.getDamager() instanceof Player) {
+                Player p = (Player) e.getDamager();
+                Pair<Boolean, String> response = this.canUse(p, Use.ITEM_FRAME, e.getEntity().getLocation());
+                if (!response.getLeft()) {
+                    MessageUtils.tell(p, response.getRight());
+                    e.setCancelled(true);
+                }
+            } else if (e.getDamager() instanceof Projectile) {
+                if (this.isLandClaimed(e.getEntity().getLocation())) {
+                    e.setCancelled(true);
+                }
+            }
         }
     }
 }

@@ -1,8 +1,10 @@
 package me.crz.minecraft.kingdoms.landflags;
 
 import org.bukkit.Tag;
-import org.bukkit.entity.Arrow;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
@@ -20,8 +22,8 @@ public class LandFlagsBlockEvents extends LandFlagBase {
     }
 
     @EventHandler
-    public void on(final BlockBreakEvent e) {
-        final Pair<Boolean, String> responce = this.getCanBuildAll(e.getPlayer(), e.getBlock().getLocation());
+    public void on(BlockBreakEvent e) {
+        Pair<Boolean, String> responce = this.getCanBuildAll(e.getPlayer(), e.getBlock().getLocation());
         if (!responce.getLeft()) {
             MessageUtils.tell(e.getPlayer(), responce.getRight());
             e.setCancelled(true);
@@ -29,11 +31,11 @@ public class LandFlagsBlockEvents extends LandFlagBase {
     }
 
     @EventHandler
-    public void on(final PlayerInteractEvent e) {
+    public void on(PlayerInteractEvent e) {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getPlayer().getEquipment().getItemInMainHand() != null) {
             Material mat = e.getPlayer().getEquipment().getItemInMainHand().getType();
             if (Tag.ITEMS_BOATS.isTagged(mat) || mat == Material.ITEM_FRAME || mat == Material.PAINTING || mat == Material.ARMOR_STAND) {
-                final Pair<Boolean, String> response = this.getCanBuildAll(e.getPlayer(), e.getClickedBlock().getLocation());
+                Pair<Boolean, String> response = this.getCanBuildAll(e.getPlayer(), e.getClickedBlock().getLocation());
                 if (!response.getLeft()) {
                     MessageUtils.tell(e.getPlayer(), response.getRight());
                     e.setCancelled(true);
@@ -43,8 +45,8 @@ public class LandFlagsBlockEvents extends LandFlagBase {
     }
 
     @EventHandler
-    public void on(final BlockPlaceEvent e) {
-        final Pair<Boolean, String> response = this.getCanBuildAll(e.getPlayer(), e.getBlock().getLocation());
+    public void on(BlockPlaceEvent e) {
+        Pair<Boolean, String> response = this.getCanBuildAll(e.getPlayer(), e.getBlock().getLocation());
         if (!response.getLeft()) {
             MessageUtils.tell(e.getPlayer(), response.getRight());
             e.setCancelled(true);
@@ -52,21 +54,18 @@ public class LandFlagsBlockEvents extends LandFlagBase {
     }
 
     @EventHandler
-    public void on(final HangingBreakByEntityEvent e) {
+    public void on(HangingBreakByEntityEvent e) {
         if (e.getRemover() instanceof Player) {
-            final Player p = (Player) e.getRemover();
-            final Pair<Boolean, String> response = this.getCanBuildAll(p, e.getEntity().getLocation());
+            Player p = (Player) e.getRemover();
+            Pair<Boolean, String> response = this.getCanBuildAll(p, e.getEntity().getLocation());
             if (!response.getLeft()) {
                 MessageUtils.tell(p, response.getRight());
                 e.setCancelled(true);
-                return;
             }
-        }
-        if (e.getRemover() instanceof Arrow) {
-            if (!this.isLandClaimed(e.getEntity().getLocation())) {
-                return;
+        } else if (e.getRemover() instanceof Projectile) {
+            if (this.isLandClaimed(e.getEntity().getLocation())) {
+                e.setCancelled(true);
             }
-            e.setCancelled(true);
         }
     }
 }
