@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village.buildNuse;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.BuildState;
 import me.crz.minecraft.kingdoms.landflags.Use;
@@ -16,8 +18,8 @@ public class VillageUseCommand extends SubCommand {
     }
 
     @Override
-    public void run(final Player player, final String base, final String alias, final String... args) {
-        final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
+    public void run(Player player, String base, String alias, String... args) {
+        Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
             MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE);
             return;
@@ -30,26 +32,18 @@ public class VillageUseCommand extends SubCommand {
             UseGui.getInstance().open(player);
             return;
         }
-        Use[] values;
-        for (int length = (values = Use.values()).length, i = 0; i < length; ++i) {
-            final Use u = values[i];
-            if (u.name().equalsIgnoreCase(args[0])) {
-                BuildState[] values2;
-                for (int length2 = (values2 = BuildState.values()).length, j = 0; j < length2; ++j) {
-                    final BuildState state = values2[j];
-                    if (state.name().equalsIgnoreCase(args[1])) {
-                        village.setUseState(u, state);
-                        VillageManager.getInstance().saveVillage(village);
-                        MessageUtils.tell(player, "&7State of &6" + u.name() + " &7set to &6" + state.name());
-                        return;
-                    }
-                }
-            }
+        try {
+            Use u = Use.valueOf(args[0].toUpperCase());
+            BuildState state = BuildState.valueOf(args[1].toUpperCase());
+            village.setUseState(u, state);
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
+            MessageUtils.tell(player, "&7State of &6" + u.name() + " &7set to &6" + state.name());
+        } catch (IllegalArgumentException e) {
+            MessageUtils.tell(player, "&c/s use <name> <buildState>");            
         }
-        MessageUtils.tell(player, "&c/s use <name> <buildState>");
     }
 
-    private boolean canChange(final Village village, final Player player) {
+    private boolean canChange(Village village, Player player) {
         return village.getChief().equals(player.getUniqueId());
     }
 }

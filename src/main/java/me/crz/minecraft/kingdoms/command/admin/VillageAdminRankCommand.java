@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.command.admin;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -46,12 +48,15 @@ public class VillageAdminRankCommand extends SubCommand {
             res.setVillageRank(tRes.getVillageRank());
             tRes.setVillageRank(r);
             village.setChief(tRes.getUUID());
-            VillageManager.getInstance().saveVillage(village);
-            ResidentManager.getInstance().saveResident(res);
-            ResidentManager.getInstance().saveResident(tRes);
+
+            Utils.runAsync(() -> {
+                DatabaseManager.getInstance().saveVillage(village);
+                DatabaseManager.getInstance().saveResident(res);
+                DatabaseManager.getInstance().saveResident(tRes);
+            });
         } else {
             tRes.setVillageRank(r);
-            ResidentManager.getInstance().saveResident(tRes);
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(tRes));
         }
         if (player.isOnline()) {
             MessageUtils.tell(player, "&c&lPlayer &6&l " + target.getName() + "&c&l's rank was set to &6&l" + r.name());

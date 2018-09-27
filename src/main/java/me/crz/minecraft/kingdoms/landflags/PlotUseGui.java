@@ -1,12 +1,14 @@
 package me.crz.minecraft.kingdoms.landflags;
 
 import me.crz.minecraft.kingdoms.cinventory.CInventoryManager;
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 
 import java.util.Arrays;
 
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.land.LandManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.event.inventory.ClickType;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
@@ -51,7 +53,7 @@ public class PlotUseGui {
             gui.addItem(new ClickableItem() {
                 public ItemStack getItem(final Player p) {
                     if (ResidentManager.getInstance().doesResidentHaveVillage(p)) {
-                        final OwnedLand land = LandManager.getInstance().getLandFromLocation(p.getLocation());
+                        final OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
                         final CItem item = u.getItem();
                         item.setLore(Arrays.asList(MessageUtils.replaceColorCodes("&7&lState"), MessageUtils.replaceColorCodes("&b&l" + PlotUseGui.cfc(land.getUseState(u).name()))));
                         return item.build();
@@ -63,10 +65,10 @@ public class PlotUseGui {
                     if (!ResidentManager.getInstance().doesResidentHaveVillage(p)) {
                         return false;
                     }
-                    final OwnedLand land = LandManager.getInstance().getLandFromLocation(p.getLocation());
+                    final OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
                     if (land.isPlotOwner(p)) {
                         land.setUseState(u, PlotBuildState.next(land.getUseState(u)));
-                        LandManager.getInstance().saveLand(land);
+                        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
                         MessageUtils.tell(p, "&7Use state &6" + u.name().toLowerCase() + "&7 changed to &6" + land.getUseState(u));
                         gui.build(p);
                         return true;

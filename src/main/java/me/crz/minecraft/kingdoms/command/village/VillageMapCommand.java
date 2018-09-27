@@ -15,6 +15,7 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import net.md_5.bungee.api.chat.TextComponent;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.ThreadManager;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
@@ -52,7 +53,7 @@ public class VillageMapCommand extends SubCommand {
             int[] offset2;
             for (int length2 = (offset2 = VillageMapCommand.offset2).length, l = 0; l < length2; ++l) {
                 final int j = offset2[l];
-                map[countX][countZ] = this.getSymbol(x + j, z + i, player.getLocation().getWorld().getName(), village, (countX == 6 && countZ == 14) ? "+" : "-", player);
+                map[countX][countZ] = this.getSymbol(x + j, z + i, player.getLocation().getWorld(), village, (countX == 6 && countZ == 14) ? "+" : "-", player);
                 ++countZ;
             }
             ++countX;
@@ -60,8 +61,8 @@ public class VillageMapCommand extends SubCommand {
         return map;
     }
 
-    public TextComponent getSymbol(final int x, final int z, final String worldName, final Village village, String symbol, final Player player) {
-        final OwnedLand land = LandManager.getInstance().getLand(x, z, worldName);
+    public TextComponent getSymbol(final int x, final int z, final World world, final Village village, String symbol, final Player player) {
+        final OwnedLand land = LandManager.getInstance().getLand(x, z, world);
         if (land == null) {
             final TextComponent component = new TextComponent(MessageUtils.replaceColorCodes("&7" + symbol));
             component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("").create()));

@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -46,7 +48,7 @@ public class VillageEnterMessageCommand extends SubCommand {
         message = message.replace("{owner}", village.getName());
         message = ChatColor.translateAlternateColorCodes('&', message);
         village.setEnterMessage(message);
-        VillageManager.getInstance().saveVillage(village);
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
         MessageUtils.tell(player, MessageUtils.SUCCESS_CHANGE_ENTER_MESSAGE, null, null);
     }
 

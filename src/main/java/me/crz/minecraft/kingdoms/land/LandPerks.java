@@ -27,7 +27,7 @@ public class LandPerks {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(KingdomsPlugin.getInstance(), () -> {
             for (final Player player : Bukkit.getOnlinePlayers()) {
                 if (ResidentManager.getInstance().doesResidentHaveVillage(player)) {
-                    final OwnedLand land = LandManager.getInstance().getLandFromLocation(player.getLocation());
+                    final OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
                     if (land == null) {
                         continue;
                     }

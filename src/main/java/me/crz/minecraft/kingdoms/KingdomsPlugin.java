@@ -27,6 +27,7 @@ import net.milkbowl.vault.economy.Economy;
 import me.crz.minecraft.kingdoms.land.LandPerks;
 import me.crz.minecraft.kingdoms.utils.config.Config;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 public class KingdomsPlugin extends JavaPlugin {
     private static KingdomsPlugin instance;
@@ -60,7 +61,7 @@ public class KingdomsPlugin extends JavaPlugin {
         config = new Config();
         if (config.load(this.getDataFolder())) {
             try {
-                DatabaseManager.connect();
+                DatabaseManager.getInstance().connect();
             } catch (Exception e) {
                 this.getLogger().severe(String.format("[%s] - Disabled due to data.json error!", this.getDescription().getName()));
                 this.getServer().getPluginManager().disablePlugin(this);
@@ -105,6 +106,7 @@ public class KingdomsPlugin extends JavaPlugin {
 
     public void loadManagers() {
         ThreadManager.getInstance();
+        DatabaseManager.getInstance();
         VillageManager.getInstance();
         LandManager.getInstance();
         ResidentManager.getInstance();
@@ -142,4 +144,5 @@ public class KingdomsPlugin extends JavaPlugin {
     public static KingdomsPlugin getInstance() {
         return instance;
     }
+
 }

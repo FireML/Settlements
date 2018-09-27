@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.village;
 
 import java.util.ArrayList;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import org.bukkit.Location;
 
@@ -9,6 +10,8 @@ import me.crz.minecraft.kingdoms.utils.Vlock;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import me.crz.minecraft.kingdoms.teleporter.TeleportersGUI;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.List;
@@ -27,7 +30,6 @@ import me.crz.minecraft.kingdoms.land.LandManager;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.EventHandler;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.Listener;
 
 public class VillageListener implements Listener {
@@ -36,17 +38,31 @@ public class VillageListener implements Listener {
         super();
     }
 
-    @EventHandler
-    public void on(final PlayerJoinEvent e) {
-        final Resident res = ResidentManager.getInstance().getResident(e.getPlayer());
-        res.setActiveChannel(ChatChannel.GENERAL);
-        ResidentManager.getInstance().saveResident(res);
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void on(AsyncPlayerPreLoginEvent event) {
+        if (event.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED) {
+            // try to load the data and if it doesn't exist create it
+            Resident res = ResidentManager.getInstance().getResident(event.getUniqueId());
+            if (res == null) {
+                res = new Resident(event.getUniqueId(), event.getName());
+                ResidentManager.getInstance().addResident(res);
+                DatabaseManager.getInstance().saveResident(res);
+            } else {
+                res.setActiveChannel(ChatChannel.GENERAL);
+                if (!res.getName().equalsIgnoreCase(event.getName())) {
+                    ResidentManager.getInstance().invalidateName(res.getName());
+                    res.setName(event.getName());
+                    ResidentManager.getInstance().addResident(res);
+                    DatabaseManager.getInstance().saveResident(res);
+                }
+            }
+        }
     }
 
     @EventHandler
-    public void on(final SignChangeEvent e) {
+    public void on(SignChangeEvent e) {
         if (e.getLine(0) != null && e.getLine(0).equalsIgnoreCase("[vlock]")) {
-            final OwnedLand land = LandManager.getInstance().getLandFromLocation(e.getPlayer().getLocation());
+            OwnedLand land = LandManager.getInstance().getLand(e.getPlayer().getLocation());
             if (land == null || !land.getOwnerVillage().equals(ResidentManager.getInstance().getResident(e.getPlayer()).getVillageName())) {
                 MessageUtils.tell(e.getPlayer(), "&c&lYou can only lock things in your own claim!");
                 e.getBlock().breakNaturally();
@@ -59,22 +75,22 @@ public class VillageListener implements Listener {
     }
 
     @EventHandler
-    public void on(final BlockBreakEvent e) {
+    public void on(BlockBreakEvent e) {
         if (e.getBlock() == null) {
             return;
         }
         if (e.isCancelled()) {
             return;
         }
-        final OwnedLand land = LandManager.getInstance().getLandFromLocation(e.getBlock().getLocation());
+        OwnedLand land = LandManager.getInstance().getLand(e.getBlock().getLocation());
         if (land == null) {
             return;
         }
         if (e.getBlock().getType() == Material.SIGN || e.getBlock().getType() == Material.WALL_SIGN) {
-            final Resident res = ResidentManager.getInstance().getResident(e.getPlayer());
-            final Village village = VillageManager.getInstance().getVillageFromResident(res);
-            final Sign sign = (Sign) e.getBlock().getState();
-            final List<String> lines = Arrays.asList(sign.getLines());
+            Resident res = ResidentManager.getInstance().getResident(e.getPlayer());
+            Village village = VillageManager.getInstance().getVillageFromResident(res);
+            Sign sign = (Sign) e.getBlock().getState();
+            List<String> lines = Arrays.asList(sign.getLines());
             if (ChatColor.stripColor(lines.get(0)).equalsIgnoreCase("[vlock]")) {
                 if (village == null) {
                     e.setCancelled(true);
@@ -100,25 +116,25 @@ public class VillageListener implements Listener {
     }
 
     @EventHandler
-    public void onSign(final PlayerInteractEvent e) {
+    public void onSign(PlayerInteractEvent e) {
         if (e.getClickedBlock() == null) {
             return;
         }
         if (e.isCancelled()) {
             return;
         }
-        final OwnedLand land = LandManager.getInstance().getLandFromLocation(e.getClickedBlock().getLocation());
+        OwnedLand land = LandManager.getInstance().getLand(e.getClickedBlock().getLocation());
         if (land == null) {
             return;
         }
         if (e.getClickedBlock().getType() == Material.SIGN || e.getClickedBlock().getType() == Material.WALL_SIGN) {
-            final Resident res = ResidentManager.getInstance().getResident(e.getPlayer());
-            final Village village = VillageManager.getInstance().getVillageFromResident(res);
+            Resident res = ResidentManager.getInstance().getResident(e.getPlayer());
+            Village village = VillageManager.getInstance().getVillageFromResident(res);
             if (village == null) {
                 return;
             }
-            final Sign sign = (Sign) e.getClickedBlock().getState();
-            final List<String> lines = Arrays.asList(sign.getLines());
+            Sign sign = (Sign) e.getClickedBlock().getState();
+            List<String> lines = Arrays.asList(sign.getLines());
             if (lines.size() < 1) {
                 return;
             }
@@ -133,22 +149,22 @@ public class VillageListener implements Listener {
     }
 
     @EventHandler
-    public void on(final PlayerInteractEvent e) {
+    public void on(PlayerInteractEvent e) {
         if (e.isCancelled()) {
             return;
         }
         if (e.getClickedBlock() == null) {
             return;
         }
-        final OwnedLand land = LandManager.getInstance().getLandFromLocation(e.getClickedBlock().getLocation());
+        OwnedLand land = LandManager.getInstance().getLand(e.getClickedBlock().getLocation());
         if (land == null) {
             return;
         }
         if (e.getClickedBlock().getType() == Material.SIGN || e.getClickedBlock().getType() == Material.WALL_SIGN) {
-            final Resident res = ResidentManager.getInstance().getResident(e.getPlayer());
-            final Village village = VillageManager.getInstance().getVillageFromResident(res);
-            final Sign sign = (Sign) e.getClickedBlock().getState();
-            final List<String> lines = Arrays.asList(sign.getLines());
+            Resident res = ResidentManager.getInstance().getResident(e.getPlayer());
+            Village village = VillageManager.getInstance().getVillageFromResident(res);
+            Sign sign = (Sign) e.getClickedBlock().getState();
+            List<String> lines = Arrays.asList(sign.getLines());
             if (ChatColor.stripColor( lines.get(0)).equalsIgnoreCase("[vlock]") && e.getPlayer().isSneaking()) {
                 if (land.getOwnerVillage().equals(res.getVillageName())) {
                     if (VillageRank.hasRank(res.getVillageRank(), VillageRank.CHIEF) || ChatColor.stripColor( lines.get(1)).equals(e.getPlayer().getName())) {
@@ -170,12 +186,12 @@ public class VillageListener implements Listener {
                 }
             }
         }
-        final Material mat = e.getClickedBlock().getType();
+        Material mat = e.getClickedBlock().getType();
         if (MaterialUtils.CONTAINERS.contains(mat)) {
-            for (final Block b : this.getBlocks(e.getClickedBlock().getLocation())) {
+            for (Block b : this.getBlocks(e.getClickedBlock().getLocation())) {
                 if (this.check(b.getLocation())) {
-                    final Sign sign2 = (Sign) b.getState();
-                    final List<String> lines2 = Arrays.asList(sign2.getLines());
+                    Sign sign2 = (Sign) b.getState();
+                    List<String> lines2 = Arrays.asList(sign2.getLines());
                     if (ChatColor.stripColor( lines2.get(0)).equalsIgnoreCase("[vlock]") && !ChatColor.stripColor( lines2.get(1)).equalsIgnoreCase(e.getPlayer().getName())) {
                         if (Vlock.isUUIDPresent(b.getLocation(), e.getPlayer().getUniqueId())) {
                             return;
@@ -189,12 +205,12 @@ public class VillageListener implements Listener {
                     }
                 }
                 if (b.getType() == mat && (mat == Material.CHEST || mat == Material.TRAPPED_CHEST)) {
-                    for (final Block bl : this.getBlocks(b.getLocation())) {
+                    for (Block bl : this.getBlocks(b.getLocation())) {
                         if (!this.check(bl.getLocation())) {
                             continue;
                         }
-                        final Sign sign3 = (Sign) bl.getState();
-                        final List<String> lines3 = Arrays.asList(sign3.getLines());
+                        Sign sign3 = (Sign) bl.getState();
+                        List<String> lines3 = Arrays.asList(sign3.getLines());
                         if (!ChatColor.stripColor( lines3.get(0)).equalsIgnoreCase("[vlock]") || ChatColor.stripColor( lines3.get(1)).equalsIgnoreCase(e.getPlayer().getName())) {
                             continue;
                         }
@@ -214,12 +230,12 @@ public class VillageListener implements Listener {
         if (mat == Material.HOPPER || mat == Material.FURNACE
                 || Tag.WOODEN_DOORS.isTagged(mat) || Tag.BUTTONS.isTagged(mat) || Tag.WOODEN_TRAPDOORS.isTagged(mat)
                 || MaterialUtils.FENCE_GATES.contains(mat)) {
-            for (final Block b : this.getBlocks(e.getClickedBlock().getLocation())) {
+            for (Block b : this.getBlocks(e.getClickedBlock().getLocation())) {
                 if (!this.check(b.getLocation())) {
                     continue;
                 }
-                final Sign sign2 = (Sign) b.getState();
-                final List<String> lines2 = Arrays.asList(sign2.getLines());
+                Sign sign2 = (Sign) b.getState();
+                List<String> lines2 = Arrays.asList(sign2.getLines());
                 if (!ChatColor.stripColor( lines2.get(0)).equalsIgnoreCase("[vlock]") || ChatColor.stripColor( lines2.get(1)).equalsIgnoreCase(e.getPlayer().getName())) {
                     continue;
                 }
@@ -235,8 +251,8 @@ public class VillageListener implements Listener {
         }
     }
 
-    public List<Block> getBlocks(final Location location) {
-        final List<Block> blocks = new ArrayList<>();
+    public List<Block> getBlocks(Location location) {
+        List<Block> blocks = new ArrayList<>();
         blocks.add(location.getWorld().getBlockAt(location.clone().add(1.0, 0.0, 0.0)));
         blocks.add(location.getWorld().getBlockAt(location.clone().add(-1.0, 0.0, 0.0)));
         blocks.add(location.getWorld().getBlockAt(location.clone().add(0.0, 0.0, 1.0)));
@@ -244,8 +260,8 @@ public class VillageListener implements Listener {
         return blocks;
     }
 
-    public boolean check(final Location loc) {
-        final Block b = loc.getWorld().getBlockAt(loc);
+    public boolean check(Location loc) {
+        Block b = loc.getWorld().getBlockAt(loc);
         return b != null && (b.getType() == Material.SIGN || b.getType() == Material.WALL_SIGN);
     }
 }

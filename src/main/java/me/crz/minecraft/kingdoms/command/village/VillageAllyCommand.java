@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 
@@ -57,8 +59,11 @@ public class VillageAllyCommand extends SubCommand {
                 MessageUtils.tellResidents(village.getResidents(), "&7&lYou are now allied to &r&6&l" + invitedVillage.getName());
                 invitedVillage.addAlly(village.getName());
                 village.addAlly(invitedVillage.getName());
-                VillageManager.getInstance().saveVillage(invitedVillage);
-                VillageManager.getInstance().saveVillage(village);
+
+                Utils.runAsync(() -> {
+                    DatabaseManager.getInstance().saveVillage(invitedVillage);
+                    DatabaseManager.getInstance().saveVillage(village);
+                });
             }
         } else {
             if (TownCache.getPendingTownAlly().containsKey(invitedVillage.getName())) {

@@ -13,50 +13,50 @@ import java.util.List;
 import me.crz.minecraft.kingdoms.Base;
 
 public class MessageUtils extends Base {
-    public static final String NO_PERMISSION_MESSAGE;
-    public static final String NO_PERMISSION_INTERACT;
-    public static final String ONLY_CONSOLE_MESSAGE;
-    public static final String ONLY_PLAYER_MESSAGE;
-    public static final String PLAYER_NOT_FOUND_MESSAGE;
-    public static final List<String> HELP_MESSAGE;
-    public static final String MUST_LEAVE_CURRENT_MESSAGE;
-    public static final String NOT_IN_CURRENT_MESSAGE;
-    public static final String SUCCESS_CREATE_MESSAGE;
-    public static final String SUCCESS_DELETE_MESSAGE;
-    public static final String RECEIVE_INVITE_MESSAGE;
-    public static final String TOWN_NOT_FOUND_MESSAGE;
-    public static final String NO_INVITE_MESSAGE;
-    public static final String IS_FULL_MESSAGE;
-    public static final String SUCCESS_JOIN_MESSAGE;
-    public static final String SUCCESS_LEAVE_MESSAGE;
-    public static final String NAME_TAKEN_MESSAGE;
-    public static final String CANT_LEAVE_OWN_MESSAGE;
-    public static final String SUCCESS_INVITE_MESSAGE;
-    public static final String KICKED_PLAYER_MESSAGE;
-    public static final String NEW_RESIDENT_MESSAGE;
-    public static final String ALERT_LEAVE_MESSAGE;
-    public static final List<String> SHOW_SETTLEMENT_MESSAGE;
-    public static final String SUCCESS_DEPOSIT_MESSAGE;
-    public static final String FAIL_DEPOSIT_MESSAGE;
-    public static final String LIST_DEPOSIT_MESSAGE;
-    public static final String UPGRADE_MESSAGE;
-    public static final String CANT_SET_THAT_PERSONS_RANK_MESSAGE;
-    public static final String INVALID_RANK_MESSAGE;
-    public static final String SUCCESS_SET_RANK_MESSAGE;
-    public static final String INVALID_LEVEL_MESSAGE;
-    public static final String UPGRADE_SETTLEMENT_MESSAGE;
-    public static final String CANT_CLAIM_MORE_MESSAGE;
-    public static final String ALREADY_OWN_LAND_MESSAGE;
-    public static final String CANT_CLAIM_HERE_MESSAGE;
-    public static final String SUCCESS_CLAIM_LAND_MESSAGE;
-    public static final String CANT_BUILD_HERE_MESSAGE;
-    public static final String DEFAULT_ENTER_MESSAGE;
-    public static final String DEFAULT_LEAVE_MESSAGE;
-    public static final String SUCCESS_CHANGE_ENTER_MESSAGE;
-    public static final String SUCCESS_CHANGE_LEAVE_MESSAGE;
-    public static final String SUCCESS_CREATE_SALE_PLOT_MESSAGE;
-    public static final String SUCCESS_BUILD_STATE_MESSAGE;
-    public static final String NO_LAND_AROUND_MESSAGE;
+    public static String NO_PERMISSION_MESSAGE;
+    public static String NO_PERMISSION_INTERACT;
+    public static String ONLY_CONSOLE_MESSAGE;
+    public static String ONLY_PLAYER_MESSAGE;
+    public static String PLAYER_NOT_FOUND_MESSAGE;
+    public static List<String> HELP_MESSAGE;
+    public static String MUST_LEAVE_CURRENT_MESSAGE;
+    public static String NOT_IN_CURRENT_MESSAGE;
+    public static String SUCCESS_CREATE_MESSAGE;
+    public static String SUCCESS_DELETE_MESSAGE;
+    public static String RECEIVE_INVITE_MESSAGE;
+    public static String TOWN_NOT_FOUND_MESSAGE;
+    public static String NO_INVITE_MESSAGE;
+    public static String IS_FULL_MESSAGE;
+    public static String SUCCESS_JOIN_MESSAGE;
+    public static String SUCCESS_LEAVE_MESSAGE;
+    public static String NAME_TAKEN_MESSAGE;
+    public static String CANT_LEAVE_OWN_MESSAGE;
+    public static String SUCCESS_INVITE_MESSAGE;
+    public static String KICKED_PLAYER_MESSAGE;
+    public static String NEW_RESIDENT_MESSAGE;
+    public static String ALERT_LEAVE_MESSAGE;
+    public static List<String> SHOW_SETTLEMENT_MESSAGE;
+    public static String SUCCESS_DEPOSIT_MESSAGE;
+    public static String FAIL_DEPOSIT_MESSAGE;
+    public static String LIST_DEPOSIT_MESSAGE;
+    public static String UPGRADE_MESSAGE;
+    public static String CANT_SET_THAT_PERSONS_RANK_MESSAGE;
+    public static String INVALID_RANK_MESSAGE;
+    public static String SUCCESS_SET_RANK_MESSAGE;
+    public static String INVALID_LEVEL_MESSAGE;
+    public static String UPGRADE_SETTLEMENT_MESSAGE;
+    public static String CANT_CLAIM_MORE_MESSAGE;
+    public static String ALREADY_OWN_LAND_MESSAGE;
+    public static String CANT_CLAIM_HERE_MESSAGE;
+    public static String SUCCESS_CLAIM_LAND_MESSAGE;
+    public static String CANT_BUILD_HERE_MESSAGE;
+    public static String DEFAULT_ENTER_MESSAGE;
+    public static String DEFAULT_LEAVE_MESSAGE;
+    public static String SUCCESS_CHANGE_ENTER_MESSAGE;
+    public static String SUCCESS_CHANGE_LEAVE_MESSAGE;
+    public static String SUCCESS_CREATE_SALE_PLOT_MESSAGE;
+    public static String SUCCESS_BUILD_STATE_MESSAGE;
+    public static String NO_LAND_AROUND_MESSAGE;
 
     static {
         NO_PERMISSION_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("NO-PERMISSION-MESSAGE");
@@ -109,11 +109,11 @@ public class MessageUtils extends Base {
         super();
     }
 
-    public static void tell(final Player player, final String message) {
+    public static void tell(Player player, String message) {
         tell(player, message, null, null);
     }
 
-    public static void tell(final Player player, String message, final String placeholder, final String value) {
+    public static void tell(Player player, String message, String placeholder, String value) {
         if (placeholder != null && value != null) {
             message = replacePlaceholders(message, placeholder, value);
         }
@@ -121,13 +121,13 @@ public class MessageUtils extends Base {
         player.sendMessage(message);
     }
 
-    public static void tellResidents(final List<Resident> residents, final String message) {
+    public static void tellResidents(List<Resident> residents, String message) {
         tellResidents(residents, message, null, null);
     }
 
-    public static void tellResidents(final List<Resident> residents, final String message, final String placeholder, final String value) {
-        for (final Resident res : residents) {
-            final Player player = Bukkit.getPlayer(res.getUUID());
+    public static void tellResidents(List<Resident> residents, String message, String placeholder, String value) {
+        for (Resident res : residents) {
+            Player player = Bukkit.getPlayer(res.getUUID());
             if (player != null) {
                 if (!player.isOnline()) {
                     continue;
@@ -137,9 +137,9 @@ public class MessageUtils extends Base {
         }
     }
 
-    public static void tellListResidents(final List<Resident> residents, final List<String> message) {
-        for (final Resident res : residents) {
-            final Player player = Bukkit.getPlayer(res.getUUID());
+    public static void tellListResidents(List<Resident> residents, List<String> message) {
+        for (Resident res : residents) {
+            Player player = Bukkit.getPlayer(res.getUUID());
             if (player != null) {
                 if (!player.isOnline()) {
                     continue;
@@ -149,7 +149,7 @@ public class MessageUtils extends Base {
         }
     }
 
-    public static void tellList(final Player player, final List<String> messages) {
+    public static void tellList(Player player, List<String> messages) {
         if (messages == null) {
             return;
         }
@@ -159,7 +159,7 @@ public class MessageUtils extends Base {
         }
     }
 
-    public static String replacePlaceholders(String message, final String placeholder, final String value) {
+    public static String replacePlaceholders(String message, String placeholder, String value) {
         return message.replace(placeholder, value);
     }
 
@@ -167,9 +167,23 @@ public class MessageUtils extends Base {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
-    public static void tellResidentsC(final List<Resident> residents, final String message, final ChatChannel channel) {
-        for (final Resident res : residents) {
-            final Player op = Bukkit.getPlayer(res.getUUID());
+    public static void tellResidentsC(List<Resident> residents, String message, ChatChannel channel) {
+        for (Resident res : residents) {
+            Player op = Bukkit.getPlayer(res.getUUID());
+            if (op != null) {
+                if (!op.isOnline()) {
+                    continue;
+                }
+                if (!res.getChannels().contains(channel.name())) {
+                    continue;
+                }
+                tell(op, message);
+            }
+        }
+    }
+
+    public static void tellC(List<Player> players, String message, ChatChannel channel) {
+        for (Player op : players) {
             if (op != null) {
                 if (!op.isOnline()) {
                     continue;

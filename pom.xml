@@ -63,7 +63,27 @@
                     <relocations>
                         <relocation>
                             <pattern>io.chazza.advancementapi</pattern>
-                            <shadedPattern>me.crz.minecraft.kingdoms.advancementapi</shadedPattern>
+                            <shadedPattern>me.crz.minecraft.kingdoms.libs.advancementapi</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.github.benmanes.caffeine</pattern>
+                            <shadedPattern>me.crz.minecraft.kingdoms.libs.caffein</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.apache.commons</pattern>
+                            <shadedPattern>me.crz.minecraft.kingdoms.libs.commons</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.json</pattern>
+                            <shadedPattern>me.crz.minecraft.kingdoms.libs.json</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.bson</pattern>
+                            <shadedPattern>me.crz.minecraft.kingdoms.libs.bson</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.mongodb</pattern>
+                            <shadedPattern>me.crz.minecraft.kingdoms.libs.mongodb</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -100,9 +120,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>24.1-jre</version>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>2.6.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -115,6 +135,7 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20180130</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.mongodb</groupId>

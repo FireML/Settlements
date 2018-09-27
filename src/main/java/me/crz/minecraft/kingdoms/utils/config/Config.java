@@ -16,35 +16,27 @@ import org.json.JSONObject;
 
 public class Config {
     @ConfigOption
-    public static String host;
+    public static String databaseType = "mysql";
     @ConfigOption
-    public static int port;
+    public static String host = "localhost";
     @ConfigOption
-    public static String databaseUser;
+    public static int port = 3306;
     @ConfigOption
-    public static String database;
+    public static String databaseUser = "root";
     @ConfigOption
-    public static String databasePassword;
+    public static String database = "kingdoms";
     @ConfigOption
-    public static JSONObject first;
+    public static String databasePassword = "password";
     @ConfigOption
-    public static boolean muteChat;
+    public static JSONObject first = new JSONObject();
+    @ConfigOption
+    public static boolean muteChat = false;
     @ConfigOption
     public static List<String> socialSpy;
     @ConfigOption
-    public static JSONObject vlock;
-
-    static {
-        host = "";
-        port = 0;
-        databaseUser = "";
-        database = "kingdoms";
-        databasePassword = "";
-        first = new JSONObject();
-        muteChat = false;
-        socialSpy = new ArrayList<>();
-        vlock = new JSONObject();
-    }
+    public static JSONObject vlock = new JSONObject();
+    @ConfigOption
+    public static long residentCacheDuration = 120;
 
     public Config() {
         super();

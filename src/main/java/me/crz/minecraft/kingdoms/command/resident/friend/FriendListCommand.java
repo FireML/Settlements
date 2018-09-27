@@ -1,11 +1,11 @@
 package me.crz.minecraft.kingdoms.command.resident.friend;
 
-import org.bukkit.OfflinePlayer;
+import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.Bukkit;
 
 import java.util.Collection;
 import java.util.UUID;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -22,14 +22,21 @@ public class FriendListCommand extends SubCommand {
 
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
-        MessageUtils.tell(player, this.getFriendsToString(ResidentManager.getInstance().getResident(player).getFriends()));
+        Utils.runAsync(() -> MessageUtils.tell(player, this.getFriendsToString(ResidentManager.getInstance().getResident(player).getFriends())));
     }
 
-    public String getFriendsToString(final Collection<String> ids) {
+    public String getFriendsToString(final Collection<UUID> ids) {
         return "&a&lFriends:&r\n" +
                 ids.stream().map(id -> {
-                    final OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(id));
-                    return (player.isOnline() ? "&a" : "&c") + player.getName();
+                    Player player = Bukkit.getPlayer(id);
+                    if (player != null && player.isOnline()) {
+                        return "&a" + player.getName();
+                    }
+                    Resident resident = ResidentManager.getInstance().getResident(id);
+                    if (resident != null) {
+                        return "&c" + resident.getName();
+                    }
+                    return "&c" + id;
                 }).collect(Collectors.joining("&7, "));
     }
 }

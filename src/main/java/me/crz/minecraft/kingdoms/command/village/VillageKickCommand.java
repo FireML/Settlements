@@ -25,8 +25,8 @@ public class VillageKickCommand extends SubCommand {
     }
 
     @Override
-    public void run(final Player player, final String base, final String alias, final String... args) {
-        final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
+    public void run(Player player, String base, String alias, String... args) {
+        Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
             MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
             return;
@@ -39,36 +39,28 @@ public class VillageKickCommand extends SubCommand {
             MessageUtils.tell(player, "&c" + this.getUsage(base));
             return;
         }
-        final OfflinePlayer kickedPlayer = Bukkit.getOfflinePlayer(args[0]);
-        if (kickedPlayer == null) {
+        if (args[0].equalsIgnoreCase(player.getName())) {
+            MessageUtils.tell(player, "&cYou cannot kick yourself!", null, null);
+            return;
+        }
+        Resident res = ResidentManager.getInstance().getResident(args[0]);
+        if (res == null) {
             MessageUtils.tell(player, MessageUtils.PLAYER_NOT_FOUND_MESSAGE, null, null);
             return;
         }
-        final Resident res = ResidentManager.getInstance().getResident(kickedPlayer.getUniqueId());
-        final Village playerVillage = VillageManager.getInstance().getVillageFromResident(res);
+        Village playerVillage = VillageManager.getInstance().getVillageFromResident(res);
         if (!Utils.playerInSameVillage(village, playerVillage)) {
             MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
-            return;
-        }
-        if (kickedPlayer.getUniqueId().equals(player.getUniqueId())) {
-            MessageUtils.tell(player, "&cYou cannot kick yourself!", null, null);
             return;
         }
         if (playerVillage.getChief().equals(player.getUniqueId())) {
             MessageUtils.tell(player, "&cYou cannot kick the &6" + res.getVillageRank().getTag(playerVillage.getState()) + "&c!", null, null);
             return;
         }
-        MessageUtils.tellResidents(village.getResidents(), MessageUtils.KICKED_PLAYER_MESSAGE, "{player}", kickedPlayer.getName());
-        res.setVillageName("");
-        res.setVillageRank(VillageRank.RESIDENT);
-        ResidentManager.getInstance().saveResident(res);
+        MessageUtils.tellResidents(village.getResidents(), MessageUtils.KICKED_PLAYER_MESSAGE, "{player}", res.getName());
         if (TownCache.getPendingTownInvites().get(res.getUUID()).equals(playerVillage.getName())) {
             TownCache.getPendingTownInvites().remove(res.getUUID());
         }
-        for (final Document doc : DatabaseManager.getLandCollection().find(new Document("plotOwner", res.getUUID().toString()))) {
-            final OwnedLand land = new OwnedLand(doc);
-            land.setPlotOwner(null);
-            LandManager.getInstance().saveLand(land);
-        }
+        VillageManager.getInstance().leaveVillage(res);
     }
 }

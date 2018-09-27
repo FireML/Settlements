@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.utils.ExecuteMoveUtil;
@@ -63,7 +64,7 @@ public class VillageOutPostCommand extends SubCommand {
                 return;
             }
             for (Chunk chunk : Utils.getChunksAroundPlayer(player, 4)) {
-                OwnedLand checkLand = LandManager.getInstance().getLand(chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
+                OwnedLand checkLand = LandManager.getInstance().getLand(chunk);
                 if (checkLand == null) {
                     continue;
                 }
@@ -72,7 +73,7 @@ public class VillageOutPostCommand extends SubCommand {
                     return;
                 }
             }
-            OwnedLand land = LandManager.getInstance().getLandFromLocation(player.getLocation());
+            OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
             if (land != null) {
                 if (land.getOwnerVillage().equals(village.getName())) {
                     MessageUtils.tell(player, MessageUtils.ALREADY_OWN_LAND_MESSAGE, null, null);
@@ -91,7 +92,7 @@ public class VillageOutPostCommand extends SubCommand {
                 return;
             }
             Chunk currentChunk = player.getLocation().getChunk();
-            OwnedLand land = LandManager.getInstance().getLand(currentChunk.getX(), currentChunk.getZ(), currentChunk.getWorld().getName());
+            OwnedLand land = LandManager.getInstance().getLand(currentChunk);
             if (land == null || !land.getOwnerVillage().equals(village.getName())) {
                 MessageUtils.tell(player, "&cYou do not own this land.");
                 return;
@@ -103,10 +104,10 @@ public class VillageOutPostCommand extends SubCommand {
 
             int unclaimed = 0;
             for (OwnedLand connectedLand : LandManager.getInstance().getAllConnectedLand(land, true)) {
-                LandManager.getInstance().removeLand(connectedLand);
+                LandManager.getInstance().unclaimLand(connectedLand);
                 unclaimed++;
             }
-            LandManager.getInstance().removeLand(land);
+            LandManager.getInstance().unclaimLand(land);
             MessageUtils.tellResidents(village.getResidents(), "&aSuccess unclaimed outpost and " + unclaimed + " land around it.");
         } else if (args[0].equalsIgnoreCase("list")) {
             StringBuilder sb = new StringBuilder("&7------- &cOutPosts&7 -------\n");
@@ -157,13 +158,13 @@ public class VillageOutPostCommand extends SubCommand {
                 MessageUtils.tell(player, "/s outpost sethome <name>");
                 return;
             }
-            OwnedLand land3 = LandManager.getInstance().getLandFromLocation(player.getLocation());
+            OwnedLand land3 = LandManager.getInstance().getLand(player.getLocation());
             if (land3 == null || !land3.getIsOutpost()) {
                 MessageUtils.tell(player, "&a&lLand must be an outpost to set a home here!");
                 return;
             }
             village.addOutpostHome(player.getLocation(), land3, args[1]);
-            VillageManager.getInstance().saveVillage(village);
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
             MessageUtils.tell(player, "&a&lHome &6" + args[1] + " &aset here");
         }
     }

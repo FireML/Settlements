@@ -23,25 +23,25 @@ import me.crz.minecraft.kingdoms.cinventory.CInventory;
 public class ResidentsGUI {
     public CInventory gui;
 
-    public static String cfc(final String string) {
+    public static String cfc(String string) {
         if (string == null || string.length() == 0) {
             return string;
         }
         return String.valueOf(string.substring(0, 1).toUpperCase()) + string.substring(1, string.length());
     }
 
-    public static String c(final String string) {
+    public static String c(String string) {
         return ChatColor.translateAlternateColorCodes('&', string);
     }
 
     public ResidentsGUI() {
         super();
         (gui = new CInventory("&3&lVillage Residents", InventorySize.SIX) {}).addItem(53, new ClickableItem() {
-            public ItemStack getItem(final Player p) {
+            public ItemStack getItem(Player p) {
                 return new CItem(Material.BARRIER).setName("&c&lBack To Settings").build();
             }
 
-            public boolean click(final Player p, final ClickType clickType) {
+            public boolean click(Player p, ClickType clickType) {
                 SettingsGUI.getInstance().open(p);
                 return true;
             }
@@ -49,21 +49,21 @@ public class ResidentsGUI {
         CInventoryManager.getInstance().addCInvetory(gui);
     }
 
-    public void open(final Player p) {
-        final Village village = VillageManager.getInstance().getVillageFromPlayer(p);
+    public void open(Player p) {
+        Village village = VillageManager.getInstance().getVillageFromPlayer(p);
         gui.clearItems();
         int i = 0;
-        for (final Resident res : ResidentManager.getInstance().getResidentsForVillage(village)) {
+        for (Resident res : village.getResidents()) {
             if (i > 52) {
                 break;
             }
             gui.addItem(new ClickableItem() {
-                public ItemStack getItem(final Player p) {
-                    final OfflinePlayer op = Bukkit.getOfflinePlayer(res.getUUID());
+                public ItemStack getItem(Player p) {
+                    OfflinePlayer op = Bukkit.getOfflinePlayer(res.getUUID());
                     return new CItem(Material.PLAYER_HEAD).setName("&c&l" + op.getName()).setLore(Arrays.asList(ResidentsGUI.c("&7&lRole"), ResidentsGUI.c("&b&l" + ResidentsGUI.cfc(res.getVillageRank().name())))).build();
                 }
 
-                public boolean click(final Player p, final ClickType clickType) {
+                public boolean click(Player p, ClickType clickType) {
                     return true;
                 }
             });

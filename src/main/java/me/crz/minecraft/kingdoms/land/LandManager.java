@@ -6,124 +6,87 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-import me.crz.minecraft.kingdoms.utils.Pair;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
+import me.crz.minecraft.kingdoms.landflags.PlotBuildState;
+import me.crz.minecraft.kingdoms.landflags.Use;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
-import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import org.bukkit.Location;
-import com.mongodb.client.MongoCollection;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.Chunk;
 
-import org.bson.Document;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.utils.ThreadManager;
 import com.google.common.collect.HashBasedTable;
+import org.bukkit.World;
 
 public class LandManager {
     private static LandManager instance;
-    private HashBasedTable<String, String, OwnedLand> land0;
-    private HashBasedTable<String, String, Boolean> mobData;
-
-    public String getData(final int left, final int right) {
-        return String.valueOf(left) + "-" + right;
-    }
+    private HashBasedTable<String, String, OwnedLand> landTable = HashBasedTable.create();
+    private Multimap<String, SimpleChunkLocation> villageLands = MultimapBuilder.hashKeys().hashSetValues().build();
+    private Multimap<UUID, SimpleChunkLocation> playerPlots = MultimapBuilder.hashKeys().hashSetValues().build();
+    private HashBasedTable<String, String, Boolean> mobData = HashBasedTable.create();
 
     public LandManager() {
         super();
-        land0 = HashBasedTable.create();
-        mobData = HashBasedTable.create();
-        ThreadManager.getInstance().execute(() -> {
-            for (final Document doc : DatabaseManager.getLandCollection().find()) {
-                final OwnedLand land = new OwnedLand(doc);
-                land0.put(land.getWorldName(), getData(land.getX(), land.getZ()), land);
-                mobData.put(land.getWorldName(), getData(land.getX(), land.getZ()), land.isMobSpawning());
+        for (OwnedLand land : DatabaseManager.getInstance().getAllLand()) {
+            landTable.put(land.getWorldName(), land.getSimpleKey(), land);
+            villageLands.put(land.getOwnerVillage().toLowerCase(), land.getLocation());
+            if (land.isPlot()) {
+                playerPlots.put(land.getPlotOwner(), land.getLocation());
             }
-        });
-    }
-
-    public boolean getMobSpawning(final Chunk c) {
-        if (mobData.contains(c.getWorld().getName(), this.getData(c.getX(), c.getZ()))) {
-            return mobData.get(c.getWorld().getName(), this.getData(c.getX(), c.getZ()));
-        }
-        final OwnedLand land = this.getLand(c.getX(), c.getZ(), c.getWorld().getName());
-        return land == null || land.isMobSpawning();
-    }
-
-    public boolean getMobSpawning(final OwnedLand land) {
-        return !mobData.contains(land.getWorldName(), this.getData(land.getX(), land.getZ())) || mobData.get(land.getWorldName(), this.getData(land.getX(), land.getZ()));
-    }
-
-    public void saveMobData(final OwnedLand land, final Boolean b) {
-        mobData.put(land.getWorldName(), this.getData(land.getX(), land.getZ()), b);
-        this.saveLand(land);
-    }
-
-    public void saveLand(final OwnedLand land) {
-        land0.put(land.getWorldName(), this.getData(land.getX(), land.getZ()), land);
-        this.saveLandToDatabase(land);
-    }
-
-    public void updateAllLand(final String n, final Village village) {
-        for (final OwnedLand land : this.getClaimedLand(village)) {
-            land.setOwnerVillage(n);
-            this.saveLand(land);
         }
     }
 
-    public void saveAll() {
-        for (final OwnedLand l : land0.values()) {
-            this.saveLand(l);
+    /**
+     * Use {@link DatabaseManager#saveLand(OwnedLand...)}
+     */
+    @Deprecated
+    public void saveLand(OwnedLand land) {
+        cacheLand(land);
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
+    }
+
+    private void cacheLand(OwnedLand land) {
+        landTable.put(land.getWorldName(), land.getSimpleKey(), land);
+        villageLands.put(land.getOwnerVillage().toLowerCase(), land.getLocation());
+        if (land.isPlot()) {
+            playerPlots.put(land.getPlotOwner(), land.getLocation());
         }
     }
 
-    public void saveLandToDatabase(final OwnedLand land) {
-        final Document filter = new Document();
-        filter.put("x", land.getX());
-        filter.put("z", land.getZ());
-        filter.put("worldName", land.getWorldName());
-        final MongoCollection<Document> collection = DatabaseManager.getLandCollection();
-        if (collection.find(filter).first() == null) {
-            collection.insertOne(land.getDocument());
-        } else {
-            collection.updateOne(new Document("_id", land.getDocument().get("_id")), new Document("$set", land.getDocument()));
+    public void changeOwner(Village village, String newOwner) {
+        Collection<OwnedLand> lands = getClaimedLand(village);
+        villageLands.removeAll(village.getName().toLowerCase());
+        for (OwnedLand land : lands) {
+            land.setOwnerVillage(newOwner);
+            villageLands.put(newOwner.toLowerCase(), land.getLocation());
         }
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(lands.toArray(new OwnedLand[0])));
     }
 
-    public OwnedLand claimLand(final Location location, final Village village) {
-        final OwnedLand land = new OwnedLand(village.getName(), location.getChunk().getX(), location.getChunk().getZ(), location.getWorld().getName());
+    public OwnedLand claimLand(Location location, Village village) {
+        SimpleChunkLocation chunkLocation = new SimpleChunkLocation(location);
+        OwnedLand land = new OwnedLand(village.getName(), chunkLocation);
         if (this.getClaimedLandSize(village) == 0) {
             village.setVillageHome(location);
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
         }
-        VillageManager.getInstance().saveVillage(village);
-        this.saveLand(land);
+        cacheLand(land);
         return land;
     }
 
-    public void claimLand(final int x, final int z, final String worldName, final Village village) {
-        final OwnedLand land = new OwnedLand(village.getName(), x, z, worldName);
-        this.saveLand(land);
+    public boolean isLandClaimed(Location location) {
+        return this.getLand(new SimpleChunkLocation(location)) != null;
     }
 
-    public void unclaimLand(final OwnedLand land) {
-        this.removeLand(land);
-    }
-
-    public boolean isLandClaimed(final Location location) {
-        final Chunk chunk = location.getChunk();
-        return this.getLand(chunk.getX(), chunk.getZ(), chunk.getWorld().getName()) != null;
-    }
-
-    public boolean isLandClaimed(final Integer x, final Integer z, final String worldName) {
-        return this.getLand(x, z, worldName) != null;
-    }
-
-    public OwnedLand getLandFromLocation(final Location location) {
+    public OwnedLand getLand(Location location) {
         if (location == null) {
             return null;
         }
@@ -134,36 +97,38 @@ public class LandManager {
         if (location == null) {
             return null;
         }
-        return land0.get(location.getWorld(), this.getData(location.getX(), location.getZ()));
+        return landTable.get(location.getWorld(), location.getSimpleKey());
     }
 
-    public OwnedLand getLand(final int x, final int z, final String worldName) {
-        return land0.get(worldName, this.getData(x, z));
+    public OwnedLand getLand(int x, int z, World world) {
+        return getLand(new SimpleChunkLocation(world.getName(), x, z));
     }
 
-    public OwnedLand getLandFromDatabase0(final int x, final int z, final String worldName) {
-        final Document filter = new Document();
-        filter.put("x", x);
-        filter.put("z", z);
-        filter.put("worldName", worldName);
-        final Document doc = DatabaseManager.getLandCollection().find(filter).first();
-        if (doc == null) {
+    public OwnedLand getLand(Chunk chunk) {
+        if (chunk == null) {
             return null;
         }
-        final OwnedLand ownedLand = new OwnedLand(doc);
-        land0.put(worldName, this.getData(x, z), ownedLand);
-        return ownedLand;
+        return getLand(new SimpleChunkLocation(chunk));
     }
 
-    public void removeLand(final OwnedLand land) {
-        if (land0.contains(land.getWorldName(), this.getData(land.getX(), land.getZ()))) {
-            land0.remove(land.getWorldName(), this.getData(land.getX(), land.getZ()));
+    public void unclaimLand(Collection<OwnedLand> lands) {
+        unclaimLand(lands.toArray(new OwnedLand[0]));
+    }
+
+    public void unclaimLand(OwnedLand... lands) {
+        for (OwnedLand land : lands) {
+            landTable.remove(land.getWorldName(), land.getSimpleKey());
+            villageLands.remove(land.getOwnerVillage().toLowerCase(), land.getLocation());
         }
-        final Document filter = new Document();
-        filter.put("x", land.getX());
-        filter.put("z", land.getZ());
-        filter.put("worldName", land.getWorldName());
-        DatabaseManager.getLandCollection().deleteOne(filter);
+        Utils.runAsync(() -> DatabaseManager.getInstance().unclaimLand(lands));
+    }
+
+    public void unclaimLand(Village village) {
+        for (SimpleChunkLocation claim : villageLands.get(village.getName().toLowerCase())) {
+            landTable.remove(claim.getWorld(), claim.getSimpleKey());
+            villageLands.removeAll(village.getName().toLowerCase());
+        }
+        Utils.runAsync(() -> DatabaseManager.getInstance().unclaimLand(village));
     }
 
     public static LandManager getInstance() {
@@ -173,28 +138,43 @@ public class LandManager {
         return instance;
     }
 
-    public int getClaimedLandSize(final Village village) {
-        return this.getClaimedLand(village).size();
+    public Collection<OwnedLand> getOwnedPlot(UUID uniqueId) {
+        return playerPlots.get(uniqueId).stream().map(this::getLand).collect(Collectors.toList());
     }
 
-    public List<OwnedLand> getClaimedLand(final Village village) {
-        final List<OwnedLand> temp = new ArrayList<>();
-        for (final Document doc : DatabaseManager.getLandCollection().find(new Document("ownerVillage", village.getName()))) {
-            temp.add(new OwnedLand(doc));
+    public void setPlotOwner(OwnedLand land, UUID owner) {
+        if (land.isPlot()) {
+            playerPlots.remove(land.getPlotOwner(), land.getLocation());
         }
-        return temp;
+        land.setPlotOwner(owner);
+        land.setBuildState(PlotBuildState.PRIVATE);
+        for (Use use : Use.values()) {
+            land.setUseState(use, PlotBuildState.PRIVATE);
+        }
+        if (owner != null) {
+            playerPlots.put(owner, land.getLocation());
+        }
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
     }
 
-    public int getClaimedLandSizeOutpost(final Village village) {
+    public int getClaimedLandSize(Village village) {
+        return villageLands.get(village.getName().toLowerCase()).size();
+    }
+
+    public Collection<OwnedLand> getClaimedLand(Village village) {
+        return villageLands.get(village.getName().toLowerCase()).stream().map(this::getLand).collect(Collectors.toList());
+    }
+
+    public int getClaimedLandSizeOutpost(Village village) {
         return Math.toIntExact(this.getClaimedLand(village).stream().filter(OwnedLand::getIsOutpost).count());
     }
 
-    public void claimOutpost(final Location location, final Village village) {
-        final OwnedLand land = this.claimLand(location, village);
+    public void claimOutpost(Location location, Village village) {
+        OwnedLand land = this.claimLand(location, village);
         land.setIsOutpost(true);
-        this.saveLand(land);
+        cacheLand(land);
         village.addOutpostHome(location, land, "outpost-" + this.getClaimedLandSize(village));
-        VillageManager.getInstance().saveVillage(village);
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
     }
 
     public Collection<OwnedLand> getAllConnectedLand(OwnedLand land, boolean outpostMode) {

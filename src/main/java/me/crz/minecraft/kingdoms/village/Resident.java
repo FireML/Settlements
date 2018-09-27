@@ -2,6 +2,8 @@ package me.crz.minecraft.kingdoms.village;
 
 import java.lang.reflect.Field;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -9,67 +11,63 @@ import java.util.ArrayList;
 
 import org.bson.Document;
 
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.HashSet;
 
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class Resident {
     private UUID uuid;
+    private String name;
     private VillageRank rank;
     private String villageName;
     private ChatChannel activeChannel;
-    private List<String> channels;
-    private Set<String> ignore;
-    private Set<String> friends;
+    private Set<ChatChannel> channels;
+    private Set<UUID> ignore;
+    private Set<UUID> friends;
     private boolean swear;
     private Document document;
 
-    public Resident(final UUID uuid) {
+    public Resident(UUID uuid, String name) {
         super();
-        this.initUUID(uuid);
-    }
-
-    public void initUUID(final UUID uuid) {
         document = new Document();
-        (channels = new ArrayList<>()).add(ChatChannel.ALLY.name());
-        channels.add(ChatChannel.GENERAL.name());
-        channels.add(ChatChannel.OFFICER.name());
-        channels.add(ChatChannel.LOCAL.name());
-        channels.add(ChatChannel.SETTLEMENT.name());
+        channels = new HashSet<>();
+        channels.add(ChatChannel.GENERAL);
+        channels.add(ChatChannel.ALLY);
+        channels.add(ChatChannel.OFFICER);
+        channels.add(ChatChannel.LOCAL);
+        channels.add(ChatChannel.SETTLEMENT);
         this.set("uuid", uuid);
+        this.set("name", name);
         this.set("rank", VillageRank.RESIDENT);
         this.set("villageName", "");
         this.set("channels", channels);
         this.set("activeChannel", ChatChannel.GENERAL);
         this.set("swear", true);
-        this.set("ignore", new ArrayList());
-        this.set("friends", new ArrayList());
+        this.set("ignore", new HashSet<UUID>());
+        this.set("friends", new HashSet<UUID>());
     }
 
-    public Resident(final UUID uuid, final VillageRank rank, final String villageName) {
+    public Resident(Document document) {
         super();
-        this.initUUID(uuid);
-        this.rank = rank;
-        this.villageName = villageName;
-    }
-
-    public Resident(final Document document, final UUID uuid) {
-        super();
-        if (document == null && uuid != null) {
-            this.initUUID(uuid);
-            return;
-        }
         this.document = document;
         this.uuid = UUID.fromString(document.getString("uuid"));
+        this.name = document.getString("name");
         rank = VillageRank.valueOf(document.getString("rank"));
         villageName = document.getString("villageName");
         if (document.containsKey("channels")) {
-            channels = document.get("channels", new ArrayList<>());
+            channels = document.get("channels", new ArrayList<String>()).stream().map(s -> {
+                try {
+                    return ChatChannel.valueOf(s.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    return null;
+                }
+            }).filter(Objects::nonNull).collect(Collectors.toSet());
         } else {
             this.set("channels", new ArrayList());
         }
@@ -88,14 +86,14 @@ public class Resident {
             this.set("swear", false);
         }
         if (document.containsKey("ignore")) {
-            ignore = new LinkedHashSet<>((List<String>) document.get("ignore"));
+            ignore = document.get("ignore", new ArrayList<String>()).stream().map(UUID::fromString).collect(Collectors.toSet());
         } else {
-            this.set("ignore", new ArrayList());
+            this.set("ignore", new HashSet<UUID>());
         }
         if (document.containsKey("friends")) {
-            friends = new LinkedHashSet<>((List<String>) document.get("friends"));
+            friends = document.get("friends", new ArrayList<String>()).stream().map(UUID::fromString).collect(Collectors.toSet());
         } else {
-            this.set("friends", new ArrayList());
+            this.set("friends", new HashSet<UUID>());
         }
     }
 
@@ -103,39 +101,51 @@ public class Resident {
         return !this.getVillageName().isEmpty();
     }
 
-    public Set<String> getFriends() {
+    public Set<UUID> getFriends() {
         return friends;
     }
 
-    public void addFriend(final String name) {
-        friends.add(name);
-        this.set("friends", new ArrayList<>(friends), false);
+    public boolean addFriend(UUID id) {
+        if (friends.add(id)) {
+            this.set("friends", friends, false);
+            return true;
+        }
+        return false;
     }
 
-    public void removeFriend(final String name) {
-        friends.remove(name);
-        this.set("friends", new ArrayList<>(friends), false);
+    public boolean removeFriend(UUID id) {
+        if (friends.remove(id)) {
+            this.set("friends", friends, false);
+            return true;
+        }
+        return false;
     }
 
-    public Set<String> getIgnore() {
+    public Set<UUID> getIgnore() {
         return ignore;
     }
 
-    public void addIgnore(final String ignore) {
-        this.ignore.add(ignore);
-        this.set("ignore", new ArrayList<>(this.ignore), false);
+    public boolean addIgnore(UUID ignore) {
+        if (this.ignore.add(ignore)) {
+            this.set("ignore", this.ignore, false);
+            return true;
+        }
+        return false;
     }
 
-    public void removeIgnore(final String ignore) {
-        this.ignore.remove(ignore);
-        this.set("ignore", new ArrayList<>(this.ignore), false);
+    public boolean removeIgnore(UUID ignore) {
+        if (this.ignore.remove(ignore)) {
+            this.set("ignore", this.ignore, false);
+            return true;
+        }
+        return false;
     }
 
     public boolean getSwear() {
         return swear;
     }
 
-    public void setSwear(final boolean swear) {
+    public void setSwear(boolean swear) {
         this.set("swear", swear);
     }
 
@@ -143,26 +153,32 @@ public class Resident {
         return activeChannel;
     }
 
-    public void setActiveChannel(final ChatChannel channel) {
-        this.set("activeChannel", channel);
+    public boolean setActiveChannel(ChatChannel channel) {
+        if (activeChannel != channel) {
+            this.set("activeChannel", channel);
+            return true;
+        }
+        return false;
     }
 
-    public List<String> getChannels() {
+    public Set<ChatChannel> getChannels() {
         return channels;
     }
 
-    public void addChannel(final String channel) {
-        if (!channels.contains(channel)) {
-            channels.add(channel);
+    public boolean addChannel(ChatChannel channel) {
+        if (channels.add(channel)) {
             this.set("channels", channels);
+            return true;
         }
+        return false;
     }
 
-    public void removeChannel(final String channel) {
-        if (channels.contains(channel)) {
-            channels.remove(channel);
+    public boolean removeChannel(ChatChannel channel) {
+        if (channels.remove(channel)) {
             this.set("channels", channels);
+            return true;
         }
+        return false;
     }
 
     public Player getPlayer() {
@@ -173,7 +189,15 @@ public class Resident {
         return uuid;
     }
 
-    public void setVillageName(final String name) {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setVillageName(String name) {
         this.set("villageName", name);
     }
 
@@ -181,7 +205,7 @@ public class Resident {
         return villageName;
     }
 
-    public void setVillageRank(final VillageRank rank) {
+    public void setVillageRank(VillageRank rank) {
         this.set("rank", rank);
     }
 
@@ -193,14 +217,14 @@ public class Resident {
         return document;
     }
 
-    public void set(final String key, final Object o) {
+    public void set(String key, Object o) {
         this.set(key, o, true);
     }
 
-    public void set(final String key, final Object o, final Boolean b) {
+    public void set(String key, Object o, Boolean b) {
         Field[] declaredFields;
         for (int length = (declaredFields = this.getClass().getDeclaredFields()).length, i = 0; i < length; ++i) {
-            final Field field = declaredFields[i];
+            Field field = declaredFields[i];
             if (key.equalsIgnoreCase(field.getName())) {
                 try {
                     if (o instanceof Enum) {
@@ -213,6 +237,11 @@ public class Resident {
                             field.set(this, o);
                         }
                         document.put(key, ((UUID) o).toString());
+                    } else if (o instanceof Set) {
+                        if (b) {
+                            field.set(this, o);
+                        }
+                        document.put(key, ((Set<?>) o).stream().map(String::valueOf).collect(Collectors.toList()));
                     } else {
                         if (b) {
                             field.set(this, o);

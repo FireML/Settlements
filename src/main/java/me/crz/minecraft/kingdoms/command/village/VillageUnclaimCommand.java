@@ -32,7 +32,7 @@ public class VillageUnclaimCommand extends SubCommand {
             return;
         }
         final Chunk currentChunk = player.getLocation().getChunk();
-        final OwnedLand land = LandManager.getInstance().getLand(currentChunk.getX(), currentChunk.getZ(), currentChunk.getWorld().getName());
+        final OwnedLand land = LandManager.getInstance().getLand(currentChunk);
         if (land == null || !land.getOwnerVillage().equals(village.getName())) {
             MessageUtils.tell(player, "&cYou do not own this land.");
             return;
@@ -41,7 +41,7 @@ public class VillageUnclaimCommand extends SubCommand {
             MessageUtils.tell(player, "&cThis land is an outpost, please use &7/s outpost unclaim&c to unclaim this outpost.");
             return;
         }
-        LandManager.getInstance().removeLand(land);
+        LandManager.getInstance().unclaimLand(land);
         MessageUtils.tellResidents(village.getResidents(), "&aSuccess unclaim land.");
     }
 }

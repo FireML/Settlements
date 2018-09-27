@@ -6,8 +6,6 @@ import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Resident;
 
-import java.util.UUID;
-
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
@@ -35,7 +33,7 @@ public class LandFlagBase extends Base {
         if (!this.isLandClaimed(loc)) {
             return new Pair<>(true, "");
         }
-        final OwnedLand land = LandManager.getInstance().getLandFromLocation(loc);
+        final OwnedLand land = LandManager.getInstance().getLand(loc);
         final Village village = VillageManager.getInstance().getVillageFromName(land.getOwnerVillage());
         if (land.isPlot()) {
             final PlotBuildState state = land.getUseState(use);
@@ -85,7 +83,7 @@ public class LandFlagBase extends Base {
         if (!this.isLandClaimed(loc)) {
             return new Pair<>(true, "");
         }
-        final OwnedLand land = LandManager.getInstance().getLandFromLocation(loc);
+        final OwnedLand land = LandManager.getInstance().getLand(loc);
         if (land.isPlot()) {
             if (land.isPlotOwner(building)) {
                 return new Pair<>(true, "");
@@ -135,7 +133,7 @@ public class LandFlagBase extends Base {
         final Resident res = ResidentManager.getInstance().getResident(building);
         final Resident owner = ResidentManager.getInstance().getResident(land.getPlotOwner());
         final Village ownerVillage = VillageManager.getInstance().getVillageFromName(land.getOwnerVillage());
-        return ownerVillage.getChief().equals(building.getUniqueId()) || owner.getFriends().contains(res.getUUID().toString());
+        return ownerVillage.getChief().equals(building.getUniqueId()) || owner.getFriends().contains(res.getUUID());
     }
 
     public boolean getCanBuildResidents(final Player building, final OwnedLand land) {

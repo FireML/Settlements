@@ -1,65 +1,103 @@
 package me.crz.minecraft.kingdoms.village;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.Expiry;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import com.mongodb.client.MongoCollection;
-import org.bson.Document;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 
-import java.util.HashMap;
 import java.util.UUID;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class ResidentManager {
+    private static final Object RESIDENT_LOCK = new Object();
     private static ResidentManager instance;
-    private Map<UUID, Resident> residents;
+    private LoadingCache<UUID, Resident> residentsByUuid;
+    private LoadingCache<String, Resident> residentsByName;
 
     public ResidentManager() {
-        super();
-        residents = new HashMap<>();
+        Expiry<? super Object, Resident> residentExpiry = new Expiry<Object, Resident>() {
+            @Override
+            public long expireAfterCreate(Object key, Resident resident, long currentTime) {
+                return getDuration(resident);
+            }
+
+            @Override
+            public long expireAfterUpdate(Object key, Resident resident, long currentTime, long currentDuration) {
+                return getDuration(resident);
+            }
+
+            @Override
+            public long expireAfterRead(Object key, Resident resident, long currentTime, long currentDuration) {
+                return getDuration(resident);
+            }
+
+            private long getDuration(Resident resident) {
+                if (resident != null) {
+                    Player player = Bukkit.getPlayer(resident.getUUID());
+                    if (player != null && player.isOnline()) {
+                        return Long.MAX_VALUE;
+                    }
+                }
+                return TimeUnit.SECONDS.toNanos(Config.residentCacheDuration);
+            }
+        };
+        residentsByUuid = Caffeine.newBuilder()
+                .expireAfter(residentExpiry)
+                .build(uuid -> {
+                    synchronized (RESIDENT_LOCK) {
+                        Resident res = DatabaseManager.getInstance().getResident(uuid);
+                        if (res == null) {
+                            return null;
+                        }
+
+                        residentsByName.put(res.getName().toLowerCase(), res);
+                        return res;
+                    }
+                });
+        residentsByName = Caffeine.newBuilder()
+                .expireAfter(residentExpiry)
+                .build(name -> {
+                    synchronized (RESIDENT_LOCK) {
+                        Resident res = DatabaseManager.getInstance().getResident(name);
+                        if (res == null) {
+                            return null;
+                        }
+
+                        residentsByUuid.put(res.getUUID(), res);
+                        return res;
+                    }
+                });
     }
 
-    public void saveResident(final Resident res) {
-        residents.put(res.getUUID(), res);
-        final MongoCollection<Document> collection = DatabaseManager.getResidentCollection();
-        if (collection.find(new Document("uuid", res.getUUID().toString())).first() == null) {
-            collection.insertOne(res.getDocument());
-        } else {
-            collection.updateOne(new Document("_id", res.getDocument().get("_id")), new Document("$set", res.getDocument()));
-        }
+    public void addResident(Resident res) {
+        residentsByUuid.put(res.getUUID(), res);
+        residentsByName.put(res.getName().toLowerCase(), res);
     }
 
-    public boolean isListening(final Player p, final ChatChannel channel) {
-        return this.getResident(p).getChannels().contains(channel.name());
+    public void invalidateName(String name) {
+        residentsByName.invalidate(name.toLowerCase());
     }
 
-    public Resident getResident(final OfflinePlayer p) {
+    public boolean isListening(Player p, ChatChannel channel) {
+        return this.getResident(p).getChannels().contains(channel);
+    }
+
+    public Resident getResident(OfflinePlayer p) {
         return this.getResident(p.getUniqueId());
     }
 
-    public Resident getResident(final UUID uuid) {
-        if (residents.containsKey(uuid)) {
-            return residents.get(uuid);
-        }
-        final Document doc = DatabaseManager.getResidentCollection().find(new Document("uuid", uuid.toString())).first();
-        final Resident res = new Resident(doc, uuid);
-        residents.put(uuid, res);
-        return res;
+    public Resident getResident(UUID uuid) {
+        return residentsByUuid.get(uuid);
     }
 
-    public List<Resident> getResidentsForVillage(final Village village) {
-        if (village == null) {
-            return new ArrayList<>();
-        }
-        final List<Resident> residents = new ArrayList<>();
-        for (final Document doc : DatabaseManager.getResidentCollection().find(new Document("villageName", village.getName()))) {
-            residents.add(new Resident(doc, null));
-        }
-        return residents;
+    public Resident getResident(String name) {
+        return residentsByName.get(name.toLowerCase());
     }
 
     public static ResidentManager getInstance() {
@@ -69,7 +107,7 @@ public class ResidentManager {
         return instance;
     }
 
-    public boolean doesResidentHaveVillage(final Player player) {
+    public boolean doesResidentHaveVillage(Player player) {
         return !this.getResident(player).getVillageName().equals("");
     }
 }

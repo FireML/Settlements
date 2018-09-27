@@ -1,121 +1,136 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.LandManager;
-import me.crz.minecraft.kingdoms.village.VillageManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
 
 enum Mode {
     mobspawning {
         @Override
-        public void set(final Boolean bool, final Village village) {
+        public void set(Boolean bool, Village village) {
             village.setMobSpawning(bool);
-            VillageManager.getInstance().saveVillage(village);
-            for (final OwnedLand land : LandManager.getInstance().getClaimedLand(village)) {
+            Collection<OwnedLand> claimedLand = LandManager.getInstance().getClaimedLand(village);
+            for (OwnedLand land : claimedLand) {
                 land.setMobSpawning(bool);
             }
+            Utils.runAsync(() -> {
+                DatabaseManager.getInstance().saveVillage(village);
+                DatabaseManager.getInstance().saveLand(claimedLand);
+            });
         }
 
         @Override
-        public Boolean get(final Village village) {
+        public Boolean get(Village village) {
             return village.isMobSpawning();
         }
     },
     pvp {
         @Override
-        public void set(final Boolean bool, final Village village) {
+        public void set(Boolean bool, Village village) {
             village.setPvp(bool);
-            VillageManager.getInstance().saveVillage(village);
-            for (final OwnedLand land : LandManager.getInstance().getClaimedLand(village)) {
+            Collection<OwnedLand> claimedLand = LandManager.getInstance().getClaimedLand(village);
+            for (OwnedLand land : claimedLand) {
                 land.setPvp(bool);
-                LandManager.getInstance().saveLand(land);
             }
+            Utils.runAsync(() -> {
+                DatabaseManager.getInstance().saveVillage(village);
+                DatabaseManager.getInstance().saveLand(claimedLand);
+            });
         }
 
         @Override
-        public Boolean get(final Village village) {
+        public Boolean get(Village village) {
             return village.isPvp();
         }
     },
     firespread {
         @Override
-        public void set(final Boolean bool, final Village village) {
+        public void set(Boolean bool, Village village) {
             village.setFireSpread(bool);
-            VillageManager.getInstance().saveVillage(village);
-            for (final OwnedLand land : LandManager.getInstance().getClaimedLand(village)) {
+            Collection<OwnedLand> claimedLand = LandManager.getInstance().getClaimedLand(village);
+            for (OwnedLand land : claimedLand) {
                 land.setFireSpread(bool);
-                LandManager.getInstance().saveLand(land);
             }
+            Utils.runAsync(() -> {
+                DatabaseManager.getInstance().saveVillage(village);
+                DatabaseManager.getInstance().saveLand(claimedLand);
+            });
         }
 
         @Override
-        public Boolean get(final Village village) {
+        public Boolean get(Village village) {
             return village.isFireSpread();
         }
     },
     explosions {
         @Override
-        public void set(final Boolean bool, final Village village) {
+        public void set(Boolean bool, Village village) {
             village.setExplosions(bool);
-            VillageManager.getInstance().saveVillage(village);
-            for (final OwnedLand land : LandManager.getInstance().getClaimedLand(village)) {
+            Collection<OwnedLand> claimedLand = LandManager.getInstance().getClaimedLand(village);
+            for (OwnedLand land : claimedLand) {
                 land.setExplosions(bool);
-                LandManager.getInstance().saveLand(land);
             }
+            Utils.runAsync(() -> {
+                DatabaseManager.getInstance().saveVillage(village);
+                DatabaseManager.getInstance().saveLand(claimedLand);
+            });
         }
 
         @Override
-        public Boolean get(final Village village) {
+        public Boolean get(Village village) {
             return village.isExplosions();
         }
     },
     buff {
         @Override
-        public void set(final Boolean bool, final Village village) {
+        public void set(Boolean bool, Village village) {
             village.setBuff(bool);
-            VillageManager.getInstance().saveVillage(village);
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
         }
 
         @Override
-        public Boolean get(final Village village) {
+        public Boolean get(Village village) {
             return village.isBuff();
         }
     },
     teleporter {
         @Override
-        public void set(final Boolean bool, final Village village) {
+        public void set(Boolean bool, Village village) {
             village.setTeleporter(bool);
-            VillageManager.getInstance().saveVillage(village);
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
         }
 
         @Override
-        public Boolean get(final Village village) {
+        public Boolean get(Village village) {
             return village.isTeleporter();
         }
 
         @Override
         public Map<String, Boolean> getOptions() {
-            final Map<String, Boolean> options = new HashMap<>();
+            Map<String, Boolean> options = new HashMap<>();
             options.put("private", true);
             options.put("public", false);
             return options;
         }
     };
 
-    public void set(final Boolean b, final Village village) {
+    public void set(Boolean b, Village village) {
     }
 
-    public Object get(final Village village) {
+    public Object get(Village village) {
         return null;
     }
 
     public Map<String, Boolean> getOptions() {
-        final Map<String, Boolean> options = new HashMap<>();
+        Map<String, Boolean> options = new HashMap<>();
         options.put("on", true);
         options.put("off", false);
         options.put("yes", true);
@@ -126,10 +141,10 @@ enum Mode {
     }
 
     public static List<String> modes() {
-        final List<String> temp = new ArrayList<>();
+        List<String> temp = new ArrayList<>();
         Mode[] values;
         for (int length = (values = values()).length, i = 0; i < length; ++i) {
-            final Mode m = values[i];
+            Mode m = values[i];
             temp.add(m.name().toLowerCase());
         }
         return temp;

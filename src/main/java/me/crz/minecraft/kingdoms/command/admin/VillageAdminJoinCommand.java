@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.command.admin;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -41,7 +43,7 @@ public class VillageAdminJoinCommand extends SubCommand {
         }
         res.setVillageName(village.getName());
         res.setVillageRank(VillageRank.RESIDENT);
-        ResidentManager.getInstance().saveResident(res);
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
         MessageUtils.tell(player, "&6&l" + target.getName() + "&r&c&l is now in {townName}", "{townName}", village.getName());
         if (target.isOnline()) {
             MessageUtils.tell((Player) target, MessageUtils.SUCCESS_JOIN_MESSAGE, "{townName}", village.getName());

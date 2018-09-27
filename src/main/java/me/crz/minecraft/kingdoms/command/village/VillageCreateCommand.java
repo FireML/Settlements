@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import net.milkbowl.vault.economy.EconomyResponse;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -58,9 +59,8 @@ public class VillageCreateCommand extends SubCommand {
             MessageUtils.tell(player, "&cThat name contains invalid charecters", null, null);
             return;
         }
-        final OfflinePlayer op = Bukkit.getOfflinePlayer(player.getUniqueId());
         if (Utils.getVillageCreationCost() != 0) {
-            if (Base.getEconomy().getBalance(op) < Utils.getVillageCreationCost()) {
+            if (Base.getEconomy().getBalance(player) < Utils.getVillageCreationCost()) {
                 MessageUtils.tell(player, "&c&lYou don't have the required &r&6&l" + Utils.getVillageCreationCost() + "$&r&c&l to make a village!", null, null);
                 return;
             }
@@ -77,7 +77,7 @@ public class VillageCreateCommand extends SubCommand {
         final Resident res = ResidentManager.getInstance().getResident(player);
         res.setVillageName(name);
         res.setVillageRank(VillageRank.CHIEF);
-        ResidentManager.getInstance().saveResident(res);
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
         MessageUtils.tell(player, MessageUtils.SUCCESS_CREATE_MESSAGE, null, null);
     }
 

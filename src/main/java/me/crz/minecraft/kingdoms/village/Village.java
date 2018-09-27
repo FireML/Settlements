@@ -2,15 +2,18 @@ package me.crz.minecraft.kingdoms.village;
 
 import java.lang.reflect.Field;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.world.NamedLocation;
+import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.utils.config.Config;
 import org.bukkit.Bukkit;
 
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -21,6 +24,8 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.utils.UtilTime;
 
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import me.crz.minecraft.kingdoms.landflags.Use;
@@ -31,6 +36,7 @@ import java.util.List;
 import org.bson.Document;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class Village {
     private String name;
@@ -55,7 +61,8 @@ public class Village {
     private Document villageHomeDoc;
     private SimpleLocation villageHomeLoc;
     private Document outpostHomes;
-    private List<String> banished;
+    private Set<UUID> residents;
+    private Set<UUID> banished;
     private Document use;
     private long lastUpkeep;
     private UpkeepStage upkeepStage;
@@ -66,6 +73,8 @@ public class Village {
         document = new Document();
         this.resetTeleporter();
         this.set("name", name);
+        residents = new HashSet<>();
+        residents.add(chief);
         this.set("chief", chief);
         this.set("level", level);
         this.set("villageState", state);
@@ -102,6 +111,7 @@ public class Village {
         level = doc.getInteger("level");
         villageState = VillageState.valueOf(doc.getString("villageState"));
         chief = UUID.fromString(doc.getString("chief"));
+        residents = doc.get("residents", new ArrayList<String>()).stream().map(UUID::fromString).collect(Collectors.toSet());
         enterMessage = doc.getString("enterMessage");
         leaveMessage = doc.getString("leaveMessage");
         buildState = BuildState.valueOf(doc.getString("buildState"));
@@ -124,7 +134,7 @@ public class Village {
             this.set("outpostHomes", new Document());
         }
         if (doc.containsKey("banished")) {
-            banished = doc.get("banished", new ArrayList<>());
+            banished = doc.get("banished", new ArrayList<String>()).stream().map(UUID::fromString).collect(Collectors.toSet());
         } else {
             this.set("banished", new ArrayList());
         }
@@ -159,16 +169,12 @@ public class Village {
         final int total = LandManager.getInstance().getClaimedLandSize(this) * 500;
         if (!this.canPayUpkeep(total)) {
             this.setBank(0);
-            if (upkeepStage.equals(UpkeepStage.PAID)) {
+            if (upkeepStage == UpkeepStage.PAID) {
                 this.set("upkeepStage", UpkeepStage.LAND);
-                for (final OwnedLand land : LandManager.getInstance().getClaimedLand(this)) {
-                    LandManager.getInstance().removeLand(land);
-                }
+                LandManager.getInstance().unclaimLand(this);
                 MessageUtils.tellResidents(this.getResidents(), "&a&lALERT &7Your settlement land has been &cunclaimed&7 because ");
-                VillageManager.getInstance().saveVillage(this);
-                return;
-            }
-            if (upkeepStage.equals(UpkeepStage.LAND)) {
+                Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(this));
+            } else if (upkeepStage == UpkeepStage.LAND) {
                 MessageUtils.tellResidents(this.getResidents(), "&a&lALERT &7Your settlement has been &cdeleted&7 because it was &cunable&7 to pay its upkeep!");
                 VillageManager.getInstance().deleteVillage(this);
             }
@@ -207,28 +213,24 @@ public class Village {
         this.set("use", use);
     }
 
-    public List<String> getBanishedResidents() {
-        try {
-            return banished;
-        } catch (Exception e) {
-            return new ArrayList<>();
-        }
+    public Set<UUID> getBanishedResidents() {
+        return banished;
     }
 
     public void addBanishedResident(final Resident res) {
         if (!this.isBanished(res.getUUID())) {
-            banished.add(res.getUUID().toString());
+            banished.add(res.getUUID());
         }
     }
 
     public void removeBanishedResident(final Resident res) {
         if (this.isBanished(res.getUUID())) {
-            banished.remove(res.getUUID().toString());
+            banished.remove(res.getUUID());
         }
     }
 
     public boolean isBanished(final UUID uuid) {
-        return banished.contains(uuid.toString());
+        return banished.contains(uuid);
     }
 
     public void addOutpostHome(final Location loc, final OwnedLand land, final String name) {
@@ -322,7 +324,7 @@ public class Village {
         if (teleporterLoc == null) {
             return null;
         }
-        return LandManager.getInstance().getLand((int) teleporterLoc.getX() >> 4, (int) teleporterLoc.getZ() >> 4, teleporterLoc.getWorld());
+        return LandManager.getInstance().getLand(new SimpleChunkLocation(teleporterLoc));
     }
 
     public void setTeleporter(final Location location) {
@@ -386,8 +388,24 @@ public class Village {
         this.set("chief", chief);
     }
 
+    /**
+     * Might run database operation!
+     */
     public List<Resident> getResidents() {
-        return ResidentManager.getInstance().getResidentsForVillage(this);
+        return residents.stream()
+                .map(id -> ResidentManager.getInstance().getResident(id)).filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+    public List<Resident> getOnlineResidents() {
+        return residents.stream()
+                .map(Bukkit::getPlayer).filter(Objects::nonNull)
+                .map(p -> ResidentManager.getInstance().getResident(p)).filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+    public Set<UUID> getResidentIds() {
+        return residents;
     }
 
     public boolean isFull() {

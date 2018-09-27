@@ -1,6 +1,8 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.Chunk;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -20,25 +22,25 @@ public class VillageSetHomeCommand extends SubCommand {
     }
 
     @Override
-    public void run(final Player player, final String base, final String alias, final String... args) {
-        final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
+    public void run(Player player, String base, String alias, String... args) {
+        Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
             MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE);
             return;
         }
-        final Resident res = ResidentManager.getInstance().getResident(player);
+        Resident res = ResidentManager.getInstance().getResident(player);
         if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.CHIEF)) {
             MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.CHIEF.getTag(village.getState()) + " or higher&r&c&l!");
             return;
         }
-        final Chunk currentChunk = player.getLocation().getChunk();
-        final OwnedLand land = LandManager.getInstance().getLand(currentChunk.getX(), currentChunk.getZ(), currentChunk.getWorld().getName());
+        Chunk currentChunk = player.getLocation().getChunk();
+        OwnedLand land = LandManager.getInstance().getLand(currentChunk);
         if (land == null || !land.getOwnerVillage().equals(village.getName())) {
             MessageUtils.tell(player, "&c&lYou do not own this land!");
             return;
         }
         MessageUtils.tellResidents(village.getResidents(), String.valueOf(res.getVillageRank().getTag(village.getState())) + " " + player.getName() + "&r&7&l has set the village home at &r&6&l" + String.valueOf(player.getLocation().getBlockX()) + "&r&7&l,&r&6&l" + String.valueOf(player.getLocation().getBlockY()) + "&r&7&l,&r&6&l" + String.valueOf(player.getLocation().getBlockZ()));
         village.setVillageHome(player.getLocation());
-        VillageManager.getInstance().saveVillage(village);
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
     }
 }

@@ -79,13 +79,13 @@ public class OwnedLand {
         }
     }
 
-    public OwnedLand(String ownerVillage, int x, int z, String worldName) {
-        this(ownerVillage, x, z, worldName, null, 0, false);
+    public OwnedLand(String ownerVillage, SimpleChunkLocation location) {
+        this(ownerVillage, location, null, 0, false);
     }
 
-    public OwnedLand(String ownerVillage, int x, int z, String worldName, UUID plotOwner, int price, boolean forSale) {
+    public OwnedLand(String ownerVillage, SimpleChunkLocation location, UUID plotOwner, int price, boolean forSale) {
         this.ownerVillage = ownerVillage;
-        location = new SimpleChunkLocation(worldName, x, z);
+        this.location = location;
         this.plotOwner = plotOwner;
         this.forSale = forSale;
         this.price = price;
@@ -97,9 +97,9 @@ public class OwnedLand {
         isOutpost = false;
         buildState = PlotBuildState.RESIDENTS;
         (document = new Document()).put("ownerVillage", ownerVillage);
-        document.put("x", x);
-        document.put("z", z);
-        document.put("worldName", worldName);
+        document.put("x", location.getX());
+        document.put("z", location.getZ());
+        document.put("worldName", location.getWorld());
         document.put("plotOwner", plotOwner != null ? plotOwner.toString() : null);
         document.put("price", price);
         document.put("forSale", forSale);
@@ -190,6 +190,9 @@ public class OwnedLand {
         location.setWorld(worldName);
     }
 
+    /**
+     * To ensure data consistence you should be using {@link LandManager#setPlotOwner(OwnedLand, UUID)} instead!
+     */
     public void setPlotOwner(UUID plotOwner) {
         this.plotOwner = plotOwner;
         document.put("plotOwner", plotOwner != null ? plotOwner.toString() : null);
@@ -253,7 +256,6 @@ public class OwnedLand {
     public void setMobSpawning(final boolean mobSpawning) {
         this.mobSpawning = mobSpawning;
         document.put("mobSpawning", mobSpawning);
-        LandManager.getInstance().saveMobData(this, mobSpawning);
     }
 
     public boolean isFireSpread() {
@@ -321,5 +323,9 @@ public class OwnedLand {
 
     public String getKey() {
         return location.getKey();
+    }
+
+    public String getSimpleKey() {
+        return location.getSimpleKey();
     }
 }

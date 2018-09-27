@@ -6,15 +6,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import me.crz.minecraft.kingdoms.land.LandManager;
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.utils.Utils;
 
 enum PlotMode {
     build {
         @Override
         public void set(final Boolean bool, final OwnedLand land) {
             land.setBuild(bool);
-            LandManager.getInstance().saveLand(land);
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
         }
 
         @Override
@@ -26,7 +27,7 @@ enum PlotMode {
         @Override
         public void set(final Boolean bool, final OwnedLand land) {
             land.setPvp(bool);
-            LandManager.getInstance().saveLand(land);
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
         }
 
         @Override
@@ -38,7 +39,7 @@ enum PlotMode {
         @Override
         public void set(final Boolean bool, final OwnedLand land) {
             land.setMobSpawning(bool);
-            LandManager.getInstance().saveMobData(land, bool);
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
         }
 
         @Override
@@ -50,7 +51,7 @@ enum PlotMode {
         @Override
         public void set(final Boolean bool, final OwnedLand land) {
             land.setFireSpread(bool);
-            LandManager.getInstance().saveLand(land);
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
         }
 
         @Override
@@ -62,7 +63,7 @@ enum PlotMode {
         @Override
         public void set(final Boolean bool, final OwnedLand land) {
             land.setExplosions(bool);
-            LandManager.getInstance().saveLand(land);
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
         }
 
         @Override

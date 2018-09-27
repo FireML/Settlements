@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
@@ -45,8 +46,8 @@ public class VillageJoinCommand extends SubCommand {
         final Resident res = ResidentManager.getInstance().getResident(player);
         res.setVillageName(joinVillage.getName());
         res.setVillageRank(VillageRank.RESIDENT);
-        res.addChannel(ChatChannel.SETTLEMENT.name());
-        ResidentManager.getInstance().saveResident(res);
+        res.addChannel(ChatChannel.SETTLEMENT);
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
         MessageUtils.tell(player, MessageUtils.SUCCESS_JOIN_MESSAGE, "{townName}", joinVillage.getName());
         MessageUtils.tellResidents(joinVillage.getResidents(), MessageUtils.NEW_RESIDENT_MESSAGE, "{player}", player.getName());
     }

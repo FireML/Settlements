@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.Utils;
 
 import java.util.List;
@@ -41,7 +42,7 @@ public class VillagePlotCommand extends SubCommand {
             MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE);
             return;
         }
-        OwnedLand land = LandManager.getInstance().getLandFromLocation(player.getLocation());
+        OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
         if (land == null || !land.getOwnerVillage().equals(senderVillage.getName())) {
             MessageUtils.tell(player, "&c&lError &r&7You need to own the land to make it a plot", "{owner}", (land == null) ? "null" : land.getOwnerVillage());
             return;
@@ -95,15 +96,10 @@ public class VillagePlotCommand extends SubCommand {
             }
             Base.getEconomy().withdrawPlayer(Bukkit.getOfflinePlayer(player.getUniqueId()), (double) land.getPrice());
             landVillage.setBank(landVillage.getBank() + land.getPrice());
-            VillageManager.getInstance().saveVillage(landVillage);
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(landVillage));
             land.setForSale(false);
             land.setPrice(0);
-            land.setPlotOwner(player.getUniqueId());
-            land.setBuildState(PlotBuildState.PRIVATE);
-            for (Use use : Use.values()) {
-                land.setUseState(use, PlotBuildState.PRIVATE);
-            }
-            LandManager.getInstance().saveLand(land);
+            LandManager.getInstance().setPlotOwner(land, player.getUniqueId());
             MessageUtils.tell(player, "&aSuccessfully purchased the land.");
         } else if (args[0].equalsIgnoreCase("unsale")) {
             if (!this.playerOwnsLand(player, landVillage)) {
@@ -120,7 +116,7 @@ public class VillagePlotCommand extends SubCommand {
             }
             land.setForSale(false);
             land.setPrice(0);
-            LandManager.getInstance().saveLand(land);
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
             MessageUtils.tell(player, "&aThis land is no longer for sale!");
         } else if (args[0].equalsIgnoreCase("revoke")) {
             if (!this.playerIsElderOrChief(player, senderVillage)) {
@@ -131,8 +127,7 @@ public class VillagePlotCommand extends SubCommand {
                 MessageUtils.tell(player, "&cNobody owns this land.");
                 return;
             }
-            land.setPlotOwner(null);
-            LandManager.getInstance().saveLand(land);
+            LandManager.getInstance().setPlotOwner(land, null);
             MessageUtils.tell(player, "&aPlot has been revoked ownership!");
         } else if (args[0].equalsIgnoreCase("sale")) {
             if (args.length < 3) {
@@ -155,7 +150,7 @@ public class VillagePlotCommand extends SubCommand {
             int price = Integer.valueOf(args[1]);
             land.setPrice(price);
             land.setForSale(true);
-            LandManager.getInstance().saveLand(land);
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
             MessageUtils.tell(player, MessageUtils.SUCCESS_CREATE_SALE_PLOT_MESSAGE, "{price}", String.valueOf(price));
         } else if (args[0].equalsIgnoreCase("use")) {
             if (!land.isPlotOwner(player)) {
@@ -175,7 +170,7 @@ public class VillagePlotCommand extends SubCommand {
                         PlotBuildState state = values2[j];
                         if (state.name().equalsIgnoreCase(args[1])) {
                             land.setUseState(u, state);
-                            LandManager.getInstance().saveLand(land);
+                            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
                             MessageUtils.tell(player, "&7Plot State of &6" + u.name() + " &7set to &6" + state.name());
                             return;
                         }
@@ -220,7 +215,7 @@ public class VillagePlotCommand extends SubCommand {
             try {
                 PlotBuildState newState = PlotBuildState.valueOf(args[1].toUpperCase());
                 land.setBuildState(newState);
-                LandManager.getInstance().saveLand(land);
+                Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
                 MessageUtils.tell(player, MessageUtils.SUCCESS_BUILD_STATE_MESSAGE, "{state}", args[0]);
             } catch (IllegalArgumentException e) {
                 MessageUtils.tellList(player, Arrays.asList("&8&l-------- &r&c&l/" + base + " " + alias + "&r " + "&8&l--------", "&8[&9*&8] &b/s plot build residents &7- residents and officers to build in claimed land", "&8[&9*&8] &b/s plot build officers &7- only officers are allowed to build in claimed land", "&8[&9*&8] &b/s plot build public &7- allows everyone to build in your claimed land", "&8[&9*&8] &b/s plot build ally &7- allows your allies to build in your claimed land", "&8[&9*&8] &b/s plot build private &7- allows you to build in your claimed land", "&8[&9*&8] &b/s plot build friends &7- allows your friends to build in your claimed land"));

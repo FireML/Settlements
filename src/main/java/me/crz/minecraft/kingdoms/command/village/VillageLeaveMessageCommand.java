@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -46,7 +48,7 @@ public class VillageLeaveMessageCommand extends SubCommand {
         message = message.replace("{owner}", village.getName());
         message = ChatColor.translateAlternateColorCodes('&', message);
         village.setLeaveMessage(message);
-        VillageManager.getInstance().saveVillage(village);
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
         MessageUtils.tell(player, MessageUtils.SUCCESS_CHANGE_LEAVE_MESSAGE, null, null);
     }
 

@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.command.resident.friend;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.Bukkit;
@@ -27,12 +29,11 @@ public class FriendRemoveCommand extends SubCommand {
             return;
         }
         Resident res = ResidentManager.getInstance().getResident(player);
-        if (!res.getFriends().contains(target.getUniqueId().toString())) {
+        if (!res.removeFriend(target.getUniqueId())) {
             MessageUtils.tell(player, "&c you are not friends with &6" + target.getName());
             return;
         }
-        res.removeFriend(target.getUniqueId().toString());
-        ResidentManager.getInstance().saveResident(res);
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
         MessageUtils.tell(player, "&cSuccessfully removed &6" + target.getName() + "&c from your friends list");
     }
 }

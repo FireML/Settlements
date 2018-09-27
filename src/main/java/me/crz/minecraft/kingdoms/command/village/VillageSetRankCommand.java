@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.OfflinePlayer;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -22,32 +24,31 @@ public class VillageSetRankCommand extends SubCommand {
     }
 
     @Override
-    public void run(final Player player, final String base, final String alias, final String... args) {
+    public void run(Player player, String base, String alias, String... args) {
         if (args.length <= 1) {
             MessageUtils.tellList(player, Arrays.asList("&8&l-------- &r&c&l/" + base + " " + alias + "&r " + "&8&l--------", "/" + base + " setrank <player> <rank>", "&8[&9*&8] &bElder &7- allows mode,claiming,invite,bank,plot,setrank", "&8[&9*&8] &bBuilder &7- allows resident to build on officer only mode", "&8[&9*&8] &bRecruiter &7- allows resident to invite players"));
             return;
         }
-        final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
+        Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
             MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
             return;
         }
-        final Resident res = ResidentManager.getInstance().getResident(player);
+        Resident res = ResidentManager.getInstance().getResident(player);
         if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER)) {
             MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.ELDER.getTag(village.getState()) + " or higher&r&c&l!", null, null);
             return;
         }
-        final OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-        if (target == null) {
+        Resident tres = ResidentManager.getInstance().getResident(args[0]);
+        if (tres == null) {
             MessageUtils.tell(player, MessageUtils.PLAYER_NOT_FOUND_MESSAGE, null, null);
             return;
         }
-        final Resident tres = ResidentManager.getInstance().getResident(target.getUniqueId());
         if (!this.isResident(tres, village)) {
             MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
             return;
         }
-        final String rank = args[1].toUpperCase();
+        String rank = args[1].toUpperCase();
         if (!this.rankIsValid(rank)) {
             MessageUtils.tell(player, MessageUtils.INVALID_RANK_MESSAGE, "{rank}", rank);
             return;
@@ -65,11 +66,11 @@ public class VillageSetRankCommand extends SubCommand {
             return;
         }
         tres.setVillageRank(VillageRank.valueOf(rank));
-        ResidentManager.getInstance().saveResident(tres);
-        MessageUtils.tellResidents(village.getResidents(), this.getSuccessSetRankMessage(VillageRank.valueOf(rank).getTag(village.getState()), player, target), null, null);
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(tres));
+        MessageUtils.tellResidents(village.getResidents(), this.getSuccessSetRankMessage(VillageRank.valueOf(rank).getTag(village.getState()), player, tres), null, null);
     }
 
-    private String getSuccessSetRankMessage(final String rank, final Player player, final OfflinePlayer target) {
+    private String getSuccessSetRankMessage(String rank, Player player, Resident target) {
         String message = MessageUtils.SUCCESS_SET_RANK_MESSAGE;
         if (message.contains("{setter}")) {
             message = message.replace("{setter}", player.getName());
@@ -83,10 +84,10 @@ public class VillageSetRankCommand extends SubCommand {
         return message;
     }
 
-    private boolean rankIsValid(final String arg) {
+    private boolean rankIsValid(String arg) {
         VillageRank[] values;
         for (int length = (values = VillageRank.values()).length, i = 0; i < length; ++i) {
-            final VillageRank rank = values[i];
+            VillageRank rank = values[i];
             if (rank.name().equals(arg)) {
                 return true;
             }
@@ -94,7 +95,7 @@ public class VillageSetRankCommand extends SubCommand {
         return false;
     }
 
-    private boolean isResident(final Resident tres, final Village village) {
+    private boolean isResident(Resident tres, Village village) {
         return tres.getVillageName().equals(village.getName());
     }
 }

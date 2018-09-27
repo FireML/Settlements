@@ -1,8 +1,10 @@
 package me.crz.minecraft.kingdoms.utils;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.db.TownCache;
 import me.crz.minecraft.kingdoms.village.Village;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -22,6 +24,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.scheduler.BukkitTask;
 
 public class Utils {
     private static final int CHUNK_VILLAGE_LEVEL_ONE = getChunkFromConfig("village-level-one-chunks");
@@ -206,5 +209,20 @@ public class Utils {
             }
         }
         return chunksAroundPlayer;
+    }
+
+    /**
+     * Make sure to run something not on the primary server thread.
+     * A new task is started if this is the primary thread, if not the current one is used!
+     * @param run What to run
+     * @return The BukkitTask that was started or null if we are already on an async thread
+     */
+    public static BukkitTask runAsync(Runnable run) {
+        if (Bukkit.isPrimaryThread()) {
+            return Bukkit.getScheduler().runTaskAsynchronously(KingdomsPlugin.getInstance(), run);
+        } else {
+            run.run();
+        }
+        return null;
     }
 }

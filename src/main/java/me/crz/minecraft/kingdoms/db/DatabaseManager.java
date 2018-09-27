@@ -1,61 +1,62 @@
 package me.crz.minecraft.kingdoms.db;
 
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
+import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.config.Config;
-import org.bson.Document;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoDatabase;
+import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.Village;
 
-public class DatabaseManager {
-    private static MongoDatabase database;
-    private static MongoClient mongo;
-    private static MongoCollection<Document> kingdomCollection;
-    private static MongoCollection<Document> residentCollection;
-    private static MongoCollection<Document> landCollection;
-    private static MongoCollection<Document> otherData;
+import java.util.Collection;
+import java.util.UUID;
+
+public abstract class DatabaseManager {
+    private static DatabaseManager instance;
 
     public DatabaseManager() {
         super();
     }
 
-    public static boolean connect() {
-        if (Config.host.isEmpty() && Config.port == 0) {
-            System.out.println("Mongo not connecting due to bad data.json file!");
-            return false;
+    public static DatabaseManager getInstance() {
+        if (instance == null) {
+            if ("mongo".equalsIgnoreCase(Config.databaseType)) {
+                instance = new MongoDatabaseManager();
+            } else if ("mysql".equalsIgnoreCase(Config.databaseType)) {
+                instance = new MySqlDatabaseManager();
+            }
         }
-        try {
-            mongo = new MongoClient(
-                    new ServerAddress(Config.host, Config.port),
-                    MongoCredential.createCredential(Config.databaseUser, Config.database, Config.databasePassword.toCharArray()),
-                    MongoClientOptions.builder().applicationName("Kingdoms").build()
-            );
-        } catch (Exception e) {
-            return false;
-        }
-        database = mongo.getDatabase(Config.database);
-        kingdomCollection = database.getCollection("Kingdoms");
-        residentCollection = database.getCollection("resident");
-        landCollection = database.getCollection("land");
-        otherData = database.getCollection("otherData");
-        return true;
+        return instance;
     }
 
-    public static MongoCollection<Document> getKingdomCollection() {
-        return kingdomCollection;
+    public abstract void connect();
+
+    public abstract void saveVillage(Village village);
+
+    public abstract void saveVillage(Village village, boolean b);
+
+    public abstract void deleteVillage(Village village);
+
+    public abstract void saveAllVillages(Collection<Village> values);
+
+    public abstract void unclaimLand(OwnedLand... lands);
+
+    public abstract void unclaimLand(Village village);
+
+    public void saveLand(Collection<OwnedLand> lands) {
+        saveLand(lands.toArray(new OwnedLand[0]));
     }
 
-    public static MongoCollection<Document> getResidentCollection() {
-        return residentCollection;
+    public abstract void saveLand(OwnedLand... lands);
+
+    public abstract Collection<OwnedLand> getAllLand();
+
+    public abstract Collection<Village> getAllVillages();
+
+    public abstract Resident getResident(UUID uuid);
+
+    public abstract Resident getResident(String name);
+
+    public void saveResident(Collection<Resident> residents) {
+        saveResident(residents.toArray(new Resident[0]));
     }
 
-    public static MongoCollection<Document> getLandCollection() {
-        return landCollection;
-    }
-
-    public static MongoCollection<Document> getOtherDataCollection() {
-        return otherData;
-    }
+    public abstract void saveResident(Resident... residents);
 }

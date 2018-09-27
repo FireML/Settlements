@@ -43,11 +43,11 @@ public class VillageClaimCommand extends SubCommand {
             return;
         }
         Chunk currentChunk = player.getLocation().getChunk();
-        OwnedLand land = LandManager.getInstance().getLand(currentChunk.getX(), currentChunk.getZ(), currentChunk.getWorld().getName());
+        OwnedLand land = LandManager.getInstance().getLand(currentChunk.getX(), currentChunk.getZ(), currentChunk.getWorld());
         if (amountClaimed > 0) {
             int landAround = 0;
             for (Chunk chunk : Utils.getChunksAroundPlayer(player, 1)) {
-                OwnedLand checkLand = LandManager.getInstance().getLand(chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
+                OwnedLand checkLand = LandManager.getInstance().getLand(chunk.getX(), chunk.getZ(), chunk.getWorld());
                 if (checkLand == null) {
                     continue;
                 }
@@ -62,7 +62,7 @@ public class VillageClaimCommand extends SubCommand {
             }
         }
         for (Chunk chunk : Utils.getChunksAroundPlayer(player, 4)) {
-            OwnedLand checkLand = LandManager.getInstance().getLand(chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
+            OwnedLand checkLand = LandManager.getInstance().getLand(chunk.getX(), chunk.getZ(), chunk.getWorld());
             if (checkLand == null) {
                 continue;
             }

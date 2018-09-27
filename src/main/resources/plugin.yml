@@ -2,6 +2,8 @@ main: me.crz.minecraft.kingdoms.KingdomsPlugin
 version: "${minecraft.plugin.version}"
 name: Kingdoms
 depend: [Vault, KingdomsEssentials]
+author: crz
+authors: [Phoenix616]
 api-version: 1.13
 commands:
   village:

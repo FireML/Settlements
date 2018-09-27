@@ -1,11 +1,9 @@
 package me.crz.minecraft.kingdoms.chat.commands;
 
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.List;
 
-import org.bukkit.OfflinePlayer;
-
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.Bukkit;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -30,39 +28,43 @@ public class IgnoreCommand extends Command {
         this.setUsage("ignore <list|player>");
     }
 
-    public void run(final Player p, final String alias, final String[] args) {
+    public void run(Player p, String alias, String[] args) {
         if (args.length < 1) {
             MessageUtils.tell(p, "&c" + this.getUsage());
             return;
         }
         if (args[0].equalsIgnoreCase("list")) {
-            final Resident res = ResidentManager.getInstance().getResident(p);
-            final StringBuilder sb = new StringBuilder("&7------- &cIgnored&7 -------\n&c");
-            for (final String s : res.getIgnore()) {
-                final OfflinePlayer op = Bukkit.getOfflinePlayer(UUID.fromString(s));
-                sb.append(String.valueOf(op.getName())).append("&7,&c");
-            }
-            MessageUtils.tell(p, sb.toString());
+            Utils.runAsync(() ->
+                    MessageUtils.tell(p, "&7------- &cIgnored&7 -------\n&c"
+                            + ResidentManager.getInstance().getResident(p).getIgnore().stream()
+                            .map(id -> {
+                                Resident resident = ResidentManager.getInstance().getResident(id);
+                                if (resident != null) {
+                                    return resident.getName();
+                                } else {
+                                    return id.toString();
+                                }
+                            }).collect(Collectors.joining("&7, &c"))
+                    )
+            );
             return;
         }
-        final Player target = getPlayer(args[0]);
+        Player target = getPlayer(args[0]);
         if (target != null) {
-            final Resident res2 = ResidentManager.getInstance().getResident(p);
-            if (res2.getIgnore().contains(target.getUniqueId().toString())) {
-                res2.removeIgnore(target.getUniqueId().toString());
-                ResidentManager.getInstance().saveResident(res2);
+            Resident res = ResidentManager.getInstance().getResident(p);
+            if (res.removeIgnore(target.getUniqueId())) {
                 MessageUtils.tell(p, "&7Player &6" + target.getName() + "&7 has been &aun-ignored&7!");
             } else {
-                res2.addIgnore(target.getUniqueId().toString());
-                ResidentManager.getInstance().saveResident(res2);
+                res.addIgnore(target.getUniqueId());
                 MessageUtils.tell(p, "&7Player &6" + target.getName() + "&7 has been &cignored&7!");
             }
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
             return;
         }
         MessageUtils.tell(p, MessageUtils.PLAYER_NOT_FOUND_MESSAGE);
     }
 
-    public static Player getPlayer(final String name) {
+    public static Player getPlayer(String name) {
         try {
             return Bukkit.getPlayer(name);
         } catch (Exception e) {
@@ -70,12 +72,12 @@ public class IgnoreCommand extends Command {
         }
     }
 
-    public static void setLastMessage(final UUID uuid1, final UUID uuid2) {
+    public static void setLastMessage(UUID uuid1, UUID uuid2) {
         lastMessage.put(uuid1, uuid2);
         lastMessage.put(uuid2, uuid1);
     }
 
-    public static Player getLastMessage(final Player p) {
+    public static Player getLastMessage(Player p) {
         if (lastMessage.containsKey(p.getUniqueId())) {
             return Bukkit.getPlayer(lastMessage.get(p.getUniqueId()));
         }

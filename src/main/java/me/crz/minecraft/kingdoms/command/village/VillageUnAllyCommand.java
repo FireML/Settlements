@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -17,12 +19,12 @@ public class VillageUnAllyCommand extends SubCommand {
     }
 
     @Override
-    public void run(final Player player, final String base, final String alias, final String... args) {
+    public void run(Player player, String base, String alias, String... args) {
         if (args.length < 1) {
             MessageUtils.tell(player, this.getUsage(base));
             return;
         }
-        final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
+        Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
             MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE);
             return;
@@ -31,7 +33,7 @@ public class VillageUnAllyCommand extends SubCommand {
             MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.ELDER.getTag(village.getState()) + " or higher&r&c&l!");
             return;
         }
-        final Village invitedVillage = VillageManager.getInstance().getVillageFromName(args[0].toLowerCase());
+        Village invitedVillage = VillageManager.getInstance().getVillageFromName(args[0].toLowerCase());
         if (invitedVillage == null) {
             MessageUtils.tell(player, "&c&lVillage &r&6&l" + args[0] + "&r&c&l doesn't exist!");
             return;
@@ -46,13 +48,15 @@ public class VillageUnAllyCommand extends SubCommand {
         }
         village.removeAlly(invitedVillage);
         invitedVillage.removeAlly(village);
-        VillageManager.getInstance().saveVillage(invitedVillage);
-        VillageManager.getInstance().saveVillage(village);
+        Utils.runAsync(() -> {
+            DatabaseManager.getInstance().saveVillage(invitedVillage);
+            DatabaseManager.getInstance().saveVillage(village);
+        });
         MessageUtils.tellResidents(invitedVillage.getResidents(), "&7&lAlly &6" + village.getName() + " &7removed!");
         MessageUtils.tellResidents(village.getResidents(), "&7&lAlly &6" + invitedVillage.getName() + " &7removed!");
     }
 
-    private boolean canAlly(final Resident res) {
+    private boolean canAlly(Resident res) {
         return VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER);
     }
 }

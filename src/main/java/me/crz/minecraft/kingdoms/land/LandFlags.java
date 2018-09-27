@@ -34,9 +34,9 @@ public class LandFlags extends Base {
     }
 
     @EventHandler
-    public void on(final BlockIgniteEvent e) {
+    public void on(BlockIgniteEvent e) {
         if (e.getCause().equals(BlockIgniteEvent.IgniteCause.SPREAD) && e.getIgnitingBlock() != null) {
-            final OwnedLand land = LandManager.getInstance().getLandFromLocation(e.getIgnitingBlock().getLocation());
+            OwnedLand land = LandManager.getInstance().getLand(e.getIgnitingBlock().getLocation());
             if (land == null) {
                 return;
             }
@@ -47,11 +47,11 @@ public class LandFlags extends Base {
     }
 
     @EventHandler
-    public void on(final PassiveCreatureDamageEvent e) {
+    public void on(PassiveCreatureDamageEvent e) {
         if (e.getEntity() == null) {
             return;
         }
-        final OwnedLand land = LandManager.getInstance().getLandFromLocation(e.getEntity().getLocation());
+        OwnedLand land = LandManager.getInstance().getLand(e.getEntity().getLocation());
         if (land == null) {
             return;
         }
@@ -61,22 +61,22 @@ public class LandFlags extends Base {
         if (e.getDamager().isOp()) {
             return;
         }
-        final Village village = VillageManager.getInstance().getVillageFromName(land.getOwnerVillage());
-        final Resident res = ResidentManager.getInstance().getResident(e.getDamager());
+        Village village = VillageManager.getInstance().getVillageFromName(land.getOwnerVillage());
+        Resident res = ResidentManager.getInstance().getResident(e.getDamager());
         if (!village.getName().equals(res.getVillageName())) {
             e.setCancelled(true);
-            final TitleBuilder tb = new TitleBuilder();
+            TitleBuilder tb = new TitleBuilder();
             tb.withActionbar(MessageUtils.replaceColorCodes("&c&lYou cannot attack another villages HOSTILE!"));
             tb.send(e.getDamager());
         }
     }
 
     @EventHandler
-    public void on(final EntityDamageByEntityEvent e) {
+    public void on(EntityDamageByEntityEvent e) {
         if ((e.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK
                 || e.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)
                 && e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
-            final OwnedLand land = LandManager.getInstance().getLandFromLocation(e.getEntity().getLocation());
+            OwnedLand land = LandManager.getInstance().getLand(e.getEntity().getLocation());
             if (land == null) {
                 return;
             }
@@ -91,11 +91,11 @@ public class LandFlags extends Base {
         }
         if (e.getCause() == EntityDamageEvent.DamageCause.PROJECTILE
                 && e.getEntity() instanceof Player && e.getDamager() instanceof Arrow && ((Arrow) e.getDamager()).getShooter() instanceof Player) {
-            final OwnedLand land = LandManager.getInstance().getLandFromLocation(e.getEntity().getLocation());
+            OwnedLand land = LandManager.getInstance().getLand(e.getEntity().getLocation());
             if (land == null) {
                 return;
             }
-            final Village village = VillageManager.getInstance().getVillageFromName(land.getOwnerVillage());
+            Village village = VillageManager.getInstance().getVillageFromName(land.getOwnerVillage());
             if (village.getState() == VillageState.KINGDOM && !village.isPvp() && !land.isPvp()) {
                 e.setCancelled(true);
                 tbPvp.send((Player) ((Arrow) e.getDamager()).getShooter());
@@ -109,13 +109,13 @@ public class LandFlags extends Base {
     }
 
     @EventHandler
-    public void on(final EntityCombustByEntityEvent e) {
+    public void on(EntityCombustByEntityEvent e) {
         if (e.getEntity() instanceof Player && e.getCombuster() instanceof Arrow && ((Arrow) e.getCombuster()).getShooter() instanceof Player) {
-            final OwnedLand land = LandManager.getInstance().getLandFromLocation(e.getEntity().getLocation());
+            OwnedLand land = LandManager.getInstance().getLand(e.getEntity().getLocation());
             if (land == null) {
                 return;
             }
-            final Village village = VillageManager.getInstance().getVillageFromName(land.getOwnerVillage());
+            Village village = VillageManager.getInstance().getVillageFromName(land.getOwnerVillage());
             if (village.getState() == VillageState.KINGDOM && !village.isPvp() && !land.isPvp()) {
                 e.setCancelled(true);
                 tbPvp.send((Player) ((Arrow) e.getCombuster()).getShooter());
@@ -129,9 +129,9 @@ public class LandFlags extends Base {
     }
 
     @EventHandler
-    public void on(final EntityExplodeEvent e) {
-        for (final Block block : e.blockList()) {
-            final OwnedLand land = LandManager.getInstance().getLandFromLocation(block.getLocation());
+    public void on(EntityExplodeEvent e) {
+        for (Block block : e.blockList()) {
+            OwnedLand land = LandManager.getInstance().getLand(block.getLocation());
             if (land == null) {
                 return;
             }
@@ -143,9 +143,9 @@ public class LandFlags extends Base {
     }
 
     @EventHandler
-    public void on(final EntityDamageEvent e) {
+    public void on(EntityDamageEvent e) {
         if (e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
-            final OwnedLand land = LandManager.getInstance().getLandFromLocation(e.getEntity().getLocation());
+            OwnedLand land = LandManager.getInstance().getLand(e.getEntity().getLocation());
             if (land == null) {
                 return;
             }
@@ -156,19 +156,20 @@ public class LandFlags extends Base {
     }
 
     @EventHandler
-    public void onHostileSpawn(final HostileCreatureSpawnEvent e) {
-        if (!LandManager.getInstance().getMobSpawning(e.getLocation().getChunk())) {
+    public void onHostileSpawn(HostileCreatureSpawnEvent e) {
+        OwnedLand land = LandManager.getInstance().getLand(e.getLocation().getChunk());
+        if (land != null && !land.isMobSpawning()) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void on(final PlayerMoveBlockEvent event) {
+    public void on(PlayerMoveBlockEvent event) {
         StringBuilder addition = new StringBuilder();
         Player player = event.getPlayer();
         Village playerVillage = VillageManager.getInstance().getVillageFromPlayer(player);
-        OwnedLand originalLand = LandManager.getInstance().getLandFromLocation(player.getLocation());
-        OwnedLand destinationLand = LandManager.getInstance().getLandFromLocation(event.getTo());
+        OwnedLand originalLand = LandManager.getInstance().getLand(player.getLocation());
+        OwnedLand destinationLand = LandManager.getInstance().getLand(event.getTo());
         if (!this.landIsClaimed(originalLand) && this.landIsClaimed(destinationLand)) {
             Village claimedVillage = VillageManager.getInstance().getVillageFromName(destinationLand.getOwnerVillage());
             TitleBuilder tb = new TitleBuilder();
@@ -227,21 +228,21 @@ public class LandFlags extends Base {
             }
             tb.send(player);
         } else if (this.landIsClaimed(originalLand) && !this.landIsClaimed(destinationLand)) {
-            final Village originalVillage = VillageManager.getInstance().getVillageFromName(originalLand.getOwnerVillage());
+            Village originalVillage = VillageManager.getInstance().getVillageFromName(originalLand.getOwnerVillage());
             if (playerVillage != null && playerVillage.isBuff() && this.playerOwnsLand(originalLand, playerVillage.getName())) {
                 Base.getLandPerks().removeEffects(player, originalVillage);
             }
-            final TitleBuilder tb = new TitleBuilder();
+            TitleBuilder tb = new TitleBuilder();
             tb.withActionbar(MessageUtils.replaceColorCodes(originalVillage.getLeaveMessage()));
             tb.send(player);
         }
     }
 
-    private boolean landIsClaimed(final OwnedLand land) {
+    private boolean landIsClaimed(OwnedLand land) {
         return land != null;
     }
 
-    private boolean playerOwnsLand(final OwnedLand land, final String villageName) {
+    private boolean playerOwnsLand(OwnedLand land, String villageName) {
         return land != null && land.getOwnerVillage().equals(villageName);
     }
 }

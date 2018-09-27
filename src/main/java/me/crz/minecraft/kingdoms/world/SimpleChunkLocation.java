@@ -17,6 +17,10 @@ public class SimpleChunkLocation {
         this.z = z;
     }
 
+    public SimpleChunkLocation(Chunk chunk) {
+        this(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
+    }
+
     public SimpleChunkLocation(Location location) {
         this(location.getWorld().getName(), (int) location.getX() >> 4, (int) location.getZ() >> 4);
     }
@@ -117,5 +121,9 @@ public class SimpleChunkLocation {
 
     public String getKey() {
         return x + "-" + world + "-" + z;
+    }
+
+    public String getSimpleKey() {
+        return x + "-" + z;
     }
 }

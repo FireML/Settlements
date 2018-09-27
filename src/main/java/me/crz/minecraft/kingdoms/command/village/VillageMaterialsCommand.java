@@ -2,6 +2,8 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import java.util.HashMap;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bson.Document;
 import me.crz.minecraft.kingdoms.vault.Levels;
@@ -32,7 +34,7 @@ public class VillageMaterialsCommand extends SubCommand {
         if (doc == null) {
             doc = new Document();
             village.set("vault", doc);
-            VillageManager.getInstance().saveVillage(village);
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
         }
         final StringBuilder sb = new StringBuilder("&8&l--------&r&c&lRequired Materials&r&8&l--------");
         if (nextLevelReqs != null) {

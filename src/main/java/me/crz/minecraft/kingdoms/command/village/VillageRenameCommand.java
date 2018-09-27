@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -9,6 +11,9 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class VillageRenameCommand extends SubCommand {
     String allowed;
@@ -21,13 +26,13 @@ public class VillageRenameCommand extends SubCommand {
     }
 
     @Override
-    public void run(final Player player, final String base, final String alias, final String... args) {
-        final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
+    public void run(Player player, String base, String alias, String... args) {
+        Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
             MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
             return;
         }
-        final Resident res = ResidentManager.getInstance().getResident(player);
+        Resident res = ResidentManager.getInstance().getResident(player);
         if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.CHIEF)) {
             MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.CHIEF.getTag(village.getState()) + "&r&c&l!", null, null);
             return;
@@ -43,7 +48,7 @@ public class VillageRenameCommand extends SubCommand {
         boolean invalid = false;
         String[] split;
         for (int length = (split = args[0].split("")).length, i = 0; i < length; ++i) {
-            final String s = split[i];
+            String s = split[i];
             if (!allowed.contains(s.toLowerCase())) {
                 invalid = true;
                 break;
@@ -54,24 +59,26 @@ public class VillageRenameCommand extends SubCommand {
             return;
         }
         MessageUtils.tellResidents(village.getResidents(), "&7&lVillage has been renamed to &6&l" + args[0], null, null);
-        for (final Resident resi : ResidentManager.getInstance().getResidentsForVillage(village)) {
+        for (Resident resi : village.getResidents()) {
             resi.setVillageName(args[0]);
-            ResidentManager.getInstance().saveResident(resi);
         }
-        for (final String ally : village.getAllies()) {
-            final Village allyVillage = VillageManager.getInstance().getVillageFromName(ally);
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(village.getResidents()));
+        List<Village> villagesToSave = new ArrayList<>();
+        for (String ally : village.getAllies()) {
+            Village allyVillage = VillageManager.getInstance().getVillageFromName(ally);
             if (allyVillage != null) {
                 allyVillage.removeAlly(village);
                 allyVillage.addAlly(args[0]);
-                VillageManager.getInstance().saveVillage(allyVillage);
+                villagesToSave.add(allyVillage);
             }
         }
-        LandManager.getInstance().updateAllLand(args[0], village);
+        LandManager.getInstance().changeOwner(village, args[0]);
         village.setName(args[0]);
-        final String enter = MessageUtils.DEFAULT_ENTER_MESSAGE.replace("{owner}", village.getName());
-        final String leave = MessageUtils.DEFAULT_LEAVE_MESSAGE.replace("{owner}", village.getName());
+        String enter = MessageUtils.DEFAULT_ENTER_MESSAGE.replace("{owner}", village.getName());
+        String leave = MessageUtils.DEFAULT_LEAVE_MESSAGE.replace("{owner}", village.getName());
         village.setEnterMessage(enter);
         village.setLeaveMessage(leave);
-        VillageManager.getInstance().saveVillage(village, true);
+        villagesToSave.add(village);
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveAllVillages(villagesToSave));
     }
 }
