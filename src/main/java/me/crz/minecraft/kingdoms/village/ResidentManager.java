@@ -4,7 +4,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
-import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -50,28 +49,41 @@ public class ResidentManager {
         residentsByUuid = Caffeine.newBuilder()
                 .expireAfter(residentExpiry)
                 .build(uuid -> {
-                    synchronized (RESIDENT_LOCK) {
-                        Resident res = DatabaseManager.getInstance().getResident(uuid);
-                        if (res == null) {
-                            return null;
-                        }
-
-                        residentsByName.put(res.getName().toLowerCase(), res);
-                        return res;
+                    Resident res = DatabaseManager.getInstance().getResident(uuid);
+                    if (res == null) {
+                        return null;
                     }
+
+                    Resident resByName = residentsByName.getIfPresent(res.getName().toLowerCase());
+                    if (resByName != null) {
+                        if (resByName.getUUID().equals(uuid)) {
+                            return resByName;
+                        } if (resByName.getLastLogin() > res.getLastLogin()) {
+                            return res;
+                        }
+                    }
+                    residentsByName.put(res.getName().toLowerCase(), res);
+                    return res;
                 });
         residentsByName = Caffeine.newBuilder()
                 .expireAfter(residentExpiry)
                 .build(name -> {
-                    synchronized (RESIDENT_LOCK) {
-                        Resident res = DatabaseManager.getInstance().getResident(name);
-                        if (res == null) {
-                            return null;
-                        }
-
-                        residentsByUuid.put(res.getUUID(), res);
-                        return res;
+                    Resident res = DatabaseManager.getInstance().getResident(name);
+                    if (res == null) {
+                        return null;
                     }
+
+                    Resident resByUuid = residentsByUuid.getIfPresent(res.getUUID());
+                    if (resByUuid != null) {
+                        if (!resByUuid.getName().equalsIgnoreCase(res.getName())
+                                && resByUuid.getLastLogin() < res.getLastLogin()) {
+                            resByUuid.setName(res.getName());
+                        }
+                        return resByUuid;
+                    }
+
+                    residentsByUuid.put(res.getUUID(), res);
+                    return res;
                 });
     }
 
@@ -93,11 +105,23 @@ public class ResidentManager {
     }
 
     public Resident getResident(UUID uuid) {
-        return residentsByUuid.get(uuid);
+        Resident resident = residentsByUuid.getIfPresent(uuid);
+        if (resident == null) {
+            synchronized (RESIDENT_LOCK) {
+                resident = residentsByUuid.get(uuid);
+            }
+        }
+        return resident;
     }
 
     public Resident getResident(String name) {
-        return residentsByName.get(name.toLowerCase());
+        Resident resident = residentsByName.getIfPresent(name.toLowerCase());
+        if (resident == null) {
+            synchronized (RESIDENT_LOCK) {
+                resident = residentsByName.get(name.toLowerCase());
+            }
+        }
+        return resident;
     }
 
     public static ResidentManager getInstance() {

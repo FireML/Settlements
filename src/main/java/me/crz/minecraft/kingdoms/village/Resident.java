@@ -2,8 +2,6 @@ package me.crz.minecraft.kingdoms.village;
 
 import java.lang.reflect.Field;
 
-import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -31,6 +29,7 @@ public class Resident {
     private Set<UUID> ignore;
     private Set<UUID> friends;
     private boolean swear;
+    private long lastLogin;
     private Document document;
 
     public Resident(UUID uuid, String name) {
@@ -51,6 +50,7 @@ public class Resident {
         this.set("swear", true);
         this.set("ignore", new HashSet<UUID>());
         this.set("friends", new HashSet<UUID>());
+        this.set("lastLogin", 0);
     }
 
     public Resident(Document document) {
@@ -95,6 +95,7 @@ public class Resident {
         } else {
             this.set("friends", new HashSet<UUID>());
         }
+        lastLogin = document.getLong("lastLogin");
     }
 
     public boolean hasVillage() {
@@ -221,29 +222,29 @@ public class Resident {
         this.set(key, o, true);
     }
 
-    public void set(String key, Object o, Boolean b) {
+    public void set(String key, Object o, Boolean setField) {
         Field[] declaredFields;
         for (int length = (declaredFields = this.getClass().getDeclaredFields()).length, i = 0; i < length; ++i) {
             Field field = declaredFields[i];
             if (key.equalsIgnoreCase(field.getName())) {
                 try {
                     if (o instanceof Enum) {
-                        if (b) {
+                        if (setField) {
                             field.set(this, o);
                         }
                         document.put(key, ((Enum) o).name());
                     } else if (o instanceof UUID) {
-                        if (b) {
+                        if (setField) {
                             field.set(this, o);
                         }
                         document.put(key, ((UUID) o).toString());
                     } else if (o instanceof Set) {
-                        if (b) {
+                        if (setField) {
                             field.set(this, o);
                         }
                         document.put(key, ((Set<?>) o).stream().map(String::valueOf).collect(Collectors.toList()));
                     } else {
-                        if (b) {
+                        if (setField) {
                             field.set(this, o);
                         }
                         document.put(key, o);
@@ -253,5 +254,13 @@ public class Resident {
                 }
             }
         }
+    }
+
+    public long getLastLogin() {
+        return lastLogin;
+    }
+
+    public void updateLastLogin() {
+        set("lastLogin", System.currentTimeMillis());
     }
 }
