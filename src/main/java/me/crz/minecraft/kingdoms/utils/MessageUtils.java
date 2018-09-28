@@ -1,6 +1,8 @@
 package me.crz.minecraft.kingdoms.utils;
 
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 
 import org.bukkit.Bukkit;
@@ -159,6 +161,10 @@ public class MessageUtils extends Base {
 
     public static String replaceColorCodes(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    public static BaseComponent[] toColoredComponents(String message) {
+        return TextComponent.fromLegacyText(replaceColorCodes(message));
     }
 
     public static void tellResidentsC(List<Resident> residents, String message, ChatChannel channel) {
