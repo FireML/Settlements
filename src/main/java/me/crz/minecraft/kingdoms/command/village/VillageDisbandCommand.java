@@ -32,7 +32,7 @@ public class VillageDisbandCommand extends SubCommand {
             MessageUtils.tell(player, "&c&lPlease do /" + base + " " + alias + " confirm to confirm the &r&e&ldisbanding&r&c&l of your village.", null, null);
             return;
         }
-        MessageUtils.tellResidents(village.getResidents(), MessageUtils.SUCCESS_DELETE_MESSAGE, null, null);
+        MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.SUCCESS_DELETE_MESSAGE, null, null);
         VillageManager.getInstance().deleteVillage(village);
     }
 }

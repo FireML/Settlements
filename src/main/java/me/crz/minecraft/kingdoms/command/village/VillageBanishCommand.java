@@ -62,7 +62,7 @@ public class VillageBanishCommand extends SubCommand {
             }
             village.addBanishedResident(res);
             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
-            MessageUtils.tellResidents(village.getResidents(), "&7Player &6" + args[1] + "&7 has been &cbanished &7from your settlement!");
+            MessageUtils.tellResidents(village.getOnlineResidents(), "&7Player &6" + args[1] + "&7 has been &cbanished &7from your settlement!");
 
         } else {
             if (!args[0].equalsIgnoreCase("remove")) {
@@ -80,7 +80,7 @@ public class VillageBanishCommand extends SubCommand {
             }
             village.removeBanishedResident(res);
             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
-            MessageUtils.tellResidents(village.getResidents(), "&7Player &6" + args[1] + "&7 has been &aun-banished &7from your settlement!");
+            MessageUtils.tellResidents(village.getOnlineResidents(), "&7Player &6" + args[1] + "&7 has been &aun-banished &7from your settlement!");
         }
     }
 }

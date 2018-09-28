@@ -24,7 +24,7 @@ import me.crz.minecraft.kingdoms.Base;
 
 public class MojangAPI extends Base {
     private static MojangAPI mojangAPI;
-    private Map<String, String> names;
+    private Map<UUID, String> names;
 
     public MojangAPI() {
         super();
@@ -33,7 +33,7 @@ public class MojangAPI extends Base {
 
     @EventHandler
     public void on(final PlayerLoginEvent e) {
-        final String uuid = e.getPlayer().getUniqueId().toString();
+        UUID uuid = e.getPlayer().getUniqueId();
         if (names.containsKey(uuid) && names.get(uuid).equals(e.getPlayer().getName())) {
             return;
         }
@@ -44,10 +44,6 @@ public class MojangAPI extends Base {
         if (uuid == null) {
             return "";
         }
-        return getName(uuid.toString());
-    }
-
-    public String getName(final String uuid) {
         try {
             if (names.containsKey(uuid)) {
                 return names.get(uuid);
@@ -55,7 +51,7 @@ public class MojangAPI extends Base {
             JSONObject jsonObject;
             String name;
             try {
-                jsonObject = readJsonFromUrl("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.replace("-", ""));
+                jsonObject = readJsonFromUrl("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.toString().replace("-", ""));
                 name = jsonObject.getString("name");
                 names.put(uuid, name);
                 return name;
@@ -76,13 +72,13 @@ public class MojangAPI extends Base {
     }
 
     public UUID getUniqueId(final String name) {
-        JSONObject jsonObject = null;
         try {
-            jsonObject = readJsonFromUrl("https://api.mojang.com/users/profiles/minecraft/" + name);
+            JSONObject jsonObject = readJsonFromUrl("https://api.mojang.com/users/profiles/minecraft/" + name);
+            return UUID.fromString(jsonObject.get("id").toString().replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
         } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
-        return UUID.fromString(jsonObject.get("id").toString().replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
+        return null;
     }
 
     private static String readAll(final Reader rd) throws IOException {

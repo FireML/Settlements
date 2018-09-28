@@ -128,10 +128,7 @@ public class MessageUtils extends Base {
     public static void tellResidents(List<Resident> residents, String message, String placeholder, String value) {
         for (Resident res : residents) {
             Player player = Bukkit.getPlayer(res.getUUID());
-            if (player != null) {
-                if (!player.isOnline()) {
-                    continue;
-                }
+            if (player != null && player.isOnline()) {
                 tell(player, message, placeholder, value);
             }
         }
@@ -140,10 +137,7 @@ public class MessageUtils extends Base {
     public static void tellListResidents(List<Resident> residents, List<String> message) {
         for (Resident res : residents) {
             Player player = Bukkit.getPlayer(res.getUUID());
-            if (player != null) {
-                if (!player.isOnline()) {
-                    continue;
-                }
+            if (player != null && player.isOnline()) {
                 tellList(player, message);
             }
         }
@@ -170,27 +164,7 @@ public class MessageUtils extends Base {
     public static void tellResidentsC(List<Resident> residents, String message, ChatChannel channel) {
         for (Resident res : residents) {
             Player op = Bukkit.getPlayer(res.getUUID());
-            if (op != null) {
-                if (!op.isOnline()) {
-                    continue;
-                }
-                if (!res.getChannels().contains(channel.name())) {
-                    continue;
-                }
-                tell(op, message);
-            }
-        }
-    }
-
-    public static void tellC(List<Player> players, String message, ChatChannel channel) {
-        for (Player op : players) {
-            if (op != null) {
-                if (!op.isOnline()) {
-                    continue;
-                }
-                if (!Base.getResidentManager().isListening(op, channel)) {
-                    continue;
-                }
+            if (op != null && op.isOnline() && res.getChannels().contains(channel)) {
                 tell(op, message);
             }
         }

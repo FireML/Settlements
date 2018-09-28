@@ -39,7 +39,7 @@ public class VillageSetHomeCommand extends SubCommand {
             MessageUtils.tell(player, "&c&lYou do not own this land!");
             return;
         }
-        MessageUtils.tellResidents(village.getResidents(), String.valueOf(res.getVillageRank().getTag(village.getState())) + " " + player.getName() + "&r&7&l has set the village home at &r&6&l" + String.valueOf(player.getLocation().getBlockX()) + "&r&7&l,&r&6&l" + String.valueOf(player.getLocation().getBlockY()) + "&r&7&l,&r&6&l" + String.valueOf(player.getLocation().getBlockZ()));
+        MessageUtils.tellResidents(village.getOnlineResidents(), String.valueOf(res.getVillageRank().getTag(village.getState())) + " " + player.getName() + "&r&7&l has set the village home at &r&6&l" + String.valueOf(player.getLocation().getBlockX()) + "&r&7&l,&r&6&l" + String.valueOf(player.getLocation().getBlockY()) + "&r&7&l,&r&6&l" + String.valueOf(player.getLocation().getBlockZ()));
         village.setVillageHome(player.getLocation());
         Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
     }

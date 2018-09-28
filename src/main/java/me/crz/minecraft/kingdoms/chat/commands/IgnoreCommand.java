@@ -33,35 +33,35 @@ public class IgnoreCommand extends Command {
             MessageUtils.tell(p, "&c" + this.getUsage());
             return;
         }
-        if (args[0].equalsIgnoreCase("list")) {
-            Utils.runAsync(() ->
-                    MessageUtils.tell(p, "&7------- &cIgnored&7 -------\n&c"
-                            + ResidentManager.getInstance().getResident(p).getIgnore().stream()
-                            .map(id -> {
-                                Resident resident = ResidentManager.getInstance().getResident(id);
-                                if (resident != null) {
-                                    return resident.getName();
-                                } else {
-                                    return id.toString();
-                                }
-                            }).collect(Collectors.joining("&7, &c"))
-                    )
-            );
-            return;
-        }
-        Player target = getPlayer(args[0]);
-        if (target != null) {
-            Resident res = ResidentManager.getInstance().getResident(p);
-            if (res.removeIgnore(target.getUniqueId())) {
-                MessageUtils.tell(p, "&7Player &6" + target.getName() + "&7 has been &aun-ignored&7!");
-            } else {
-                res.addIgnore(target.getUniqueId());
-                MessageUtils.tell(p, "&7Player &6" + target.getName() + "&7 has been &cignored&7!");
+        Resident res = ResidentManager.getInstance().getResident(p);
+        Utils.runAsync(() -> {
+            if (args[0].equalsIgnoreCase("list")) {
+                MessageUtils.tell(p, "&7------- &cIgnored&7 -------\n&c"
+                        + res.getIgnore().stream()
+                        .map(id -> {
+                            Resident resident = ResidentManager.getInstance().getResident(id);
+                            if (resident != null) {
+                                return resident.getName();
+                            } else {
+                                return id.toString();
+                            }
+                        }).collect(Collectors.joining("&7, &c"))
+                );
+                return;
             }
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
-            return;
-        }
-        MessageUtils.tell(p, MessageUtils.PLAYER_NOT_FOUND_MESSAGE);
+            Resident target = ResidentManager.getInstance().getResident(args[0]);
+            if (target != null) {
+                if (res.removeIgnore(target.getUUID())) {
+                    MessageUtils.tell(p, "&7Player &6" + target.getName() + "&7 has been &aun-ignored&7!");
+                } else {
+                    res.addIgnore(target.getUUID());
+                    MessageUtils.tell(p, "&7Player &6" + target.getName() + "&7 has been &cignored&7!");
+                }
+                Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
+                return;
+            }
+            MessageUtils.tell(p, MessageUtils.PLAYER_NOT_FOUND_MESSAGE);
+        });
     }
 
     public static Player getPlayer(String name) {

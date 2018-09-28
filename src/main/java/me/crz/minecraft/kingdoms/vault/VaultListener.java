@@ -96,7 +96,7 @@ public class VaultListener implements Listener {
                 }
             }
             if (!deposited.isEmpty()) {
-                MessageUtils.tellListResidents(village.getResidents(), this.buildSuccessDepositMessage(player, deposited));
+                MessageUtils.tellListResidents(village.getOnlineResidents(), this.buildSuccessDepositMessage(player, deposited));
                 village.getVault().putAll(total);
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
             }
@@ -159,14 +159,14 @@ public class VaultListener implements Listener {
     private void upgrade(Village village) {
         village.setState(VillageState.KINGDOM);
         village.setLevel(1);
-        MessageUtils.tellResidents(village.getResidents(), MessageUtils.UPGRADE_SETTLEMENT_MESSAGE, "{state}", village.getState().toString());
+        MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.UPGRADE_SETTLEMENT_MESSAGE, "{state}", village.getState().toString());
         this.resetVaultAfterLevelUp(village);
     }
 
     private void levelUp(Village village) {
         village.levelUp();
         this.resetVaultAfterLevelUp(village);
-        MessageUtils.tellResidents(village.getResidents(), MessageUtils.UPGRADE_MESSAGE, "{level}", Integer.toString(village.getLevel()));
+        MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.UPGRADE_MESSAGE, "{level}", Integer.toString(village.getLevel()));
         if (village.getState().equals(VillageState.KINGDOM)) {
             String unlock;
             switch (village.getLevel()) {
@@ -194,7 +194,7 @@ public class VaultListener implements Listener {
                 default:
                     return;
             }
-            MessageUtils.tellResidents(village.getResidents(), "&6&l{unlock} &7&lhas been unlocked!", "{unlock}", unlock);
+            MessageUtils.tellResidents(village.getOnlineResidents(), "&6&l{unlock} &7&lhas been unlocked!", "{unlock}", unlock);
         }
     }
 

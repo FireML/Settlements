@@ -37,26 +37,24 @@ public class VillageTransferCommand extends SubCommand {
             MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.CHIEF.getTag(village.getState()) + " or higher&r&c&l!", null, null);
             return;
         }
-        OfflinePlayerManager manager = OfflinePlayerManager.getInstance();
-        UUID target = manager.uuidFromName(args[0]);
-        if (target == null) {
-            MessageUtils.tell(player, MessageUtils.PLAYER_NOT_FOUND_MESSAGE, null, null);
-            return;
-        }
-        Resident tres = ResidentManager.getInstance().getResident(target);
-        if (!this.isResident(tres, village)) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
-            return;
-        }
-        tres.setVillageRank(VillageRank.CHIEF);
-        res.setVillageRank(VillageRank.ELDER);
-        village.setChief(tres.getUUID());
         Utils.runAsync(() -> {
+            Resident tres = ResidentManager.getInstance().getResident(args[0]);
+            if (tres == null) {
+                MessageUtils.tell(player, MessageUtils.PLAYER_NOT_FOUND_MESSAGE, null, null);
+                return;
+            }
+            if (!this.isResident(tres, village)) {
+                MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
+                return;
+            }
+            tres.setVillageRank(VillageRank.CHIEF);
+            res.setVillageRank(VillageRank.ELDER);
+            village.setChief(tres.getUUID());
             DatabaseManager.getInstance().saveResident(res);
             DatabaseManager.getInstance().saveResident(tres);
             DatabaseManager.getInstance().saveVillage(village);
+            MessageUtils.tellResidents(village.getOnlineResidents(), this.getSuccessSetRankMessage(VillageRank.CHIEF.getTag(village.getState()), player, args[0]), null, null);
         });
-        MessageUtils.tellResidents(village.getResidents(), this.getSuccessSetRankMessage(VillageRank.CHIEF.getTag(village.getState()), player, args[0]), null, null);
     }
 
     private String getSuccessSetRankMessage(String rank, Player player, String target) {

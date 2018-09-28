@@ -49,6 +49,6 @@ public class VillageJoinCommand extends SubCommand {
         res.addChannel(ChatChannel.SETTLEMENT);
         Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
         MessageUtils.tell(player, MessageUtils.SUCCESS_JOIN_MESSAGE, "{townName}", joinVillage.getName());
-        MessageUtils.tellResidents(joinVillage.getResidents(), MessageUtils.NEW_RESIDENT_MESSAGE, "{player}", player.getName());
+        MessageUtils.tellResidents(joinVillage.getOnlineResidents(), MessageUtils.NEW_RESIDENT_MESSAGE, "{player}", player.getName());
     }
 }

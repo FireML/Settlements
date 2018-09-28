@@ -58,27 +58,29 @@ public class VillageRenameCommand extends SubCommand {
             MessageUtils.tell(player, "&cThat name contains invalid charecters", null, null);
             return;
         }
-        MessageUtils.tellResidents(village.getResidents(), "&7&lVillage has been renamed to &6&l" + args[0], null, null);
-        for (Resident resi : village.getResidents()) {
-            resi.setVillageName(args[0]);
-        }
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(village.getResidents()));
-        List<Village> villagesToSave = new ArrayList<>();
-        for (String ally : village.getAllies()) {
-            Village allyVillage = VillageManager.getInstance().getVillageFromName(ally);
-            if (allyVillage != null) {
-                allyVillage.removeAlly(village);
-                allyVillage.addAlly(args[0]);
-                villagesToSave.add(allyVillage);
+        Utils.runAsync(() -> {
+            for (Resident resi : village.getResidents()) {
+                resi.setVillageName(args[0]);
             }
-        }
-        LandManager.getInstance().changeOwner(village, args[0]);
-        village.setName(args[0]);
-        String enter = MessageUtils.DEFAULT_ENTER_MESSAGE.replace("{owner}", village.getName());
-        String leave = MessageUtils.DEFAULT_LEAVE_MESSAGE.replace("{owner}", village.getName());
-        village.setEnterMessage(enter);
-        village.setLeaveMessage(leave);
-        villagesToSave.add(village);
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveAllVillages(villagesToSave));
+            DatabaseManager.getInstance().saveResident(village.getResidents());
+            List<Village> villagesToSave = new ArrayList<>();
+            for (String ally : village.getAllies()) {
+                Village allyVillage = VillageManager.getInstance().getVillageFromName(ally);
+                if (allyVillage != null) {
+                    allyVillage.removeAlly(village);
+                    allyVillage.addAlly(args[0]);
+                    villagesToSave.add(allyVillage);
+                }
+            }
+            LandManager.getInstance().changeOwner(village, args[0]);
+            village.setName(args[0]);
+            String enter = MessageUtils.DEFAULT_ENTER_MESSAGE.replace("{owner}", village.getName());
+            String leave = MessageUtils.DEFAULT_LEAVE_MESSAGE.replace("{owner}", village.getName());
+            village.setEnterMessage(enter);
+            village.setLeaveMessage(leave);
+            villagesToSave.add(village);
+            DatabaseManager.getInstance().saveAllVillages(villagesToSave);
+            MessageUtils.tellResidents(village.getOnlineResidents(), "&7&lVillage has been renamed to &6&l" + village.getName(), null, null);
+        });
     }
 }

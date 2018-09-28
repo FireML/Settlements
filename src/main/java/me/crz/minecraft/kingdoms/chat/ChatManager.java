@@ -60,7 +60,7 @@ public class ChatManager extends Base {
                 }
                 BaseComponent[] nameBit = new ComponentBuilder("")
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + e.getPlayer().getName() + " "))
-                        .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(MessageUtils.replaceColorCodes("&9Name: &7" + e.getPlayer().getDisplayName() + "\n&9Balance: &7" + df.format(KingdomsPlugin.getInstance().econ.getBalance(Bukkit.getOfflinePlayer(e.getPlayer().getUniqueId()))))).create()))
+                        .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(MessageUtils.replaceColorCodes("&9Name: &7" + e.getPlayer().getDisplayName() + "\n&9Balance: &7" + df.format(KingdomsPlugin.getInstance().econ.getBalance(e.getPlayer())))).create()))
                         .append(TextComponent.fromLegacyText(MessageUtils.replaceColorCodes(playerPrefix)))
                         .append(e.getPlayer().getDisplayName())
                         .color(ChatColor.GRAY)
@@ -194,13 +194,13 @@ public class ChatManager extends Base {
                 sb.append(" \u27a6 ");
                 sb.append(e.getMessage());
                 System.out.println(MessageUtils.replaceColorCodes(sb.toString()));
-                MessageUtils.tellResidentsC(village.getResidents(), sb.toString(), ChatChannel.SETTLEMENT);
+                MessageUtils.tellResidentsC(village.getOnlineResidents(), sb.toString(), ChatChannel.SETTLEMENT);
                 for (String s : village.getAllies()) {
                     Village tVillage = VillageManager.getInstance().getVillageFromName(s);
                     if (tVillage == null) {
                         continue;
                     }
-                    MessageUtils.tellResidentsC(tVillage.getResidents(), sb.toString(), ChatChannel.ALLY);
+                    MessageUtils.tellResidentsC(tVillage.getOnlineResidents(), sb.toString(), ChatChannel.ALLY);
                 }
                 return;
         }

@@ -56,7 +56,7 @@ public class VillageMoneyCommand extends SubCommand {
                 if (r.transactionSuccess()) {
                     village.setBank(village.getBank() - withdrewInit);
                     Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
-                    MessageUtils.tellResidents(village.getResidents(), "&e&l" + res.getVillageRank() + " &r&e" + player.getName() + " &r&7withdrew &6" + withdrewInit + "&r&7 from the village bank!");
+                    MessageUtils.tellResidents(village.getOnlineResidents(), "&e&l" + res.getVillageRank() + " &r&e" + player.getName() + " &r&7withdrew &6" + withdrewInit + "&r&7 from the village bank!");
                 } else {
                     MessageUtils.tell(player, "&cAn error occurred, please tell an admin!");
                 }
@@ -75,7 +75,7 @@ public class VillageMoneyCommand extends SubCommand {
                 if (r2.transactionSuccess()) {
                     village.setBank(village.getBank() + deposit);
                     Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
-                    MessageUtils.tellResidents(village.getResidents(), "&e&l" + res.getVillageRank() + "&r&e" + player.getName() + " &r&7deposited &6" + deposit + "&r&7 into the village bank!");
+                    MessageUtils.tellResidents(village.getOnlineResidents(), "&e&l" + res.getVillageRank() + "&r&e" + player.getName() + " &r&7deposited &6" + deposit + "&r&7 into the village bank!");
                 } else {
                     MessageUtils.tell(player, "&cAn error occurred, please tell an admin!");
                 }

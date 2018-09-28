@@ -35,19 +35,19 @@ public class TeleportersGUI extends Base {
         Integer[] slots = {0, 1, 2, 6, 7, 8};
         Integer[] array;
         for (int length = (array = slots).length, j = 0; j < length; ++j) {
-            final int i = array[j];
+            int i = array[j];
             ci.addItem(i, new ClickableItem() {
-                public ItemStack getItem(final Player p) {
+                public ItemStack getItem(Player p) {
                     return new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
                 }
 
-                public boolean click(final Player p, final ClickType clickType) {
+                public boolean click(Player p, ClickType clickType) {
                     return false;
                 }
             });
         }
         ci.addItem(3, new ClickableItem() {
-            public ItemStack getItem(final Player p) {
+            public ItemStack getItem(Player p) {
                 ItemStack item = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
                 ItemMeta pm = item.getItemMeta();
                 pm.setDisplayName(MessageUtils.replaceColorCodes("&e&lPrivate Warps"));
@@ -55,7 +55,7 @@ public class TeleportersGUI extends Base {
                 return item;
             }
 
-            public boolean click(final Player p, final ClickType clickType) {
+            public boolean click(Player p, ClickType clickType) {
                 Village v = VillageManager.getInstance().getVillageFromPlayer(p);
                 if (v == null) {
                     return false;
@@ -65,7 +65,7 @@ public class TeleportersGUI extends Base {
             }
         });
         ci.addItem(4, new ClickableItem() {
-            public ItemStack getItem(final Player p) {
+            public ItemStack getItem(Player p) {
                 Village v = VillageManager.getInstance().getVillageFromPlayer(p);
                 if (v == null || v.getState().equals(VillageState.VILLAGE) || v.getLevel() < 4) {
                     MessageUtils.tell(p, "&c&lYou require a level &610 Kingdom&c&l to use this!");
@@ -78,7 +78,7 @@ public class TeleportersGUI extends Base {
                 return item;
             }
 
-            public boolean click(final Player p, final ClickType clickType) {
+            public boolean click(Player p, ClickType clickType) {
                 Village v = VillageManager.getInstance().getVillageFromPlayer(p);
                 if (v == null || v.getState().equals(VillageState.VILLAGE) || v.getLevel() < 4) {
                     MessageUtils.tell(p, "&c&lYou require a level &610 Kingdom&c&l to use this!");
@@ -93,7 +93,7 @@ public class TeleportersGUI extends Base {
             }
         });
         ci.addItem(5, new ClickableItem() {
-            public ItemStack getItem(final Player p) {
+            public ItemStack getItem(Player p) {
                 Village village = VillageManager.getInstance().getVillageFromPlayer(p);
                 if (village == null
                         || village.getTeleporter() == null
@@ -103,7 +103,7 @@ public class TeleportersGUI extends Base {
                 return Utils.getHead(Bukkit.getOfflinePlayer(village.getChief()), MessageUtils.replaceColorCodes("&e&lVillage Teleporter"));
             }
 
-            public boolean click(final Player p, final ClickType clickType) {
+            public boolean click(Player p, ClickType clickType) {
                 Village v = VillageManager.getInstance().getVillageFromPlayer(p);
                 if (v == null
                         || v.getTeleporter() == null
@@ -114,13 +114,12 @@ public class TeleportersGUI extends Base {
                 if (v.getTeleportCost() == 0) {
                     p.teleport(v.getTeleporter().toBukkitLocation());
                 } else {
-                    OfflinePlayer op = Bukkit.getOfflinePlayer(p.getUniqueId());
-                    if (Base.getEconomy().getBalance(op) >= v.getTeleportCost()) {
-                        EconomyResponse r = Base.getEconomy().withdrawPlayer(op, (double) v.getTeleportCost());
+                    if (Base.getEconomy().getBalance(p) >= v.getTeleportCost()) {
+                        EconomyResponse r = Base.getEconomy().withdrawPlayer(p, (double) v.getTeleportCost());
                         if (r.transactionSuccess()) {
                             p.teleport(v.getTeleporter().toBukkitLocation());
                             MessageUtils.tell(p, "&7Teleporting to &6" + v.getName() + "&r&7's teleporter!", null, null);
-                            MessageUtils.tellResidents(v.getResidents(), "&e&l" + p.getName() + " &r&7deposited &6" + v.getTeleportCost() + "&r&7 into the village bank by teleporting to your teleporter!", null, null);
+                            MessageUtils.tellResidents(v.getOnlineResidents(), "&e&l" + p.getName() + " &r&7deposited &6" + v.getTeleportCost() + "&r&7 into the village bank by teleporting to your teleporter!", null, null);
                         } else {
                             MessageUtils.tell(p, "&cAn error occurred, please tell an admin!", null, null);
                         }
@@ -134,7 +133,7 @@ public class TeleportersGUI extends Base {
         CInventoryManager.getInstance().addCInvetory(ci);
     }
 
-    public void build(final Player p) {
+    public void build(Player p) {
         ci.build(p);
     }
 }

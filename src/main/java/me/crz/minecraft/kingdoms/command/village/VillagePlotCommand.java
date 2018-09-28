@@ -20,6 +20,7 @@ import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.utils.MojangAPI;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
@@ -228,12 +229,7 @@ public class VillagePlotCommand extends SubCommand {
     }
 
     private boolean playerOwnsLand(Player player, Village landVillage) {
-        for (Resident res : landVillage.getResidents()) {
-            if (res.getUUID().equals(player.getUniqueId())) {
-                return true;
-            }
-        }
-        return false;
+        return landVillage.getResidentIds().contains(player.getUniqueId());
     }
 
     private boolean playerOwnsPlot(Player player, OwnedLand land) {

@@ -92,19 +92,19 @@ public class Village {
             if (upkeepStage == UpkeepStage.PAID) {
                 this.upkeepStage = UpkeepStage.LAND;
                 LandManager.getInstance().unclaimLand(this);
-                MessageUtils.tellResidents(this.getResidents(), "&a&lALERT &7Your settlement land has been &cunclaimed&7 because ");
+                MessageUtils.tellResidents(this.getOnlineResidents(), "&a&lALERT &7Your settlement land has been &cunclaimed&7 because ");
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(this));
             } else if (upkeepStage == UpkeepStage.LAND) {
-                MessageUtils.tellResidents(this.getResidents(), "&a&lALERT &7Your settlement has been &cdeleted&7 because it was &cunable&7 to pay its upkeep!");
+                MessageUtils.tellResidents(this.getOnlineResidents(), "&a&lALERT &7Your settlement has been &cdeleted&7 because it was &cunable&7 to pay its upkeep!");
                 VillageManager.getInstance().deleteVillage(this);
             }
         } else {
             this.setBank(this.getBank() - total);
-            MessageUtils.tellResidents(this.getResidents(), "&a&lALERT &7Your settlement has been charged &6" + total + "&7 for upkeep!");
+            MessageUtils.tellResidents(this.getOnlineResidents(), "&a&lALERT &7Your settlement has been charged &6" + total + "&7 for upkeep!");
             this.upkeepStage = UpkeepStage.PAID;
             this.lastUpkeep = System.currentTimeMillis();
             if (!this.canPayUpkeep(total)) {
-                MessageUtils.tellResidents(this.getResidents(), "&a&lALERT &7Your settlement is &cunable&7 to pay tommorrows upkeep, it will cost &6" + total + "&7!");
+                MessageUtils.tellResidents(this.getOnlineResidents(), "&a&lALERT &7Your settlement is &cunable&7 to pay tommorrows upkeep, it will cost &6" + total + "&7!");
             }
         }
     }
@@ -320,7 +320,7 @@ public class Village {
     }
 
     public boolean isFull() {
-        return ConfigManager.getInstance().getConfig().getInt("max-village-size") - this.getResidents().size() <= 0;
+        return this.getResidentIds().size() >= ConfigManager.getInstance().getConfig().getInt("max-village-size");
     }
 
     public VillageState getState() {

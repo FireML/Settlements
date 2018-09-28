@@ -33,14 +33,14 @@ public class PrivateTeleportersGUI extends Base {
     private int checks = 0;
     private List<ClickableItem> items = new ArrayList<>();
 
-    public PrivateTeleportersGUI(final Village village) {
+    public PrivateTeleportersGUI(Village village) {
         super();
         this.update(village);
     }
 
-    public void open(final Player p, final int i) {
+    public void open(Player p, int i) {
         this.update(VillageManager.getInstance().getVillageFromPlayer(p));
-        final CInventory ci = new CInventory("Private Teleporters: " + (i + 1), InventorySize.FOUR) {};
+        CInventory ci = new CInventory("Private Teleporters: " + (i + 1), InventorySize.FOUR) {};
         if (items.isEmpty()) {
             return;
         }
@@ -49,7 +49,7 @@ public class PrivateTeleportersGUI extends Base {
                 ci.addItem(items.get(j));
             }
         } else {
-            for (final ClickableItem item : items.subList(14 * i, items.size())) {
+            for (ClickableItem item : items.subList(14 * i, items.size())) {
                 ci.addItem(item);
             }
         }
@@ -57,7 +57,7 @@ public class PrivateTeleportersGUI extends Base {
         ci.build(p);
     }
 
-    public void update(final Village village) {
+    public void update(Village village) {
         if (village == null) {
             allies.clear();
             return;
@@ -68,15 +68,15 @@ public class PrivateTeleportersGUI extends Base {
         }
         allies = village.getAllies();
         checks = 0;
-        for (final String ally : allies) {
-            final Village v = VillageManager.getInstance().getVillageFromName(ally);
+        for (String ally : allies) {
+            Village v = VillageManager.getInstance().getVillageFromName(ally);
             if (v == null || v.getTeleporter() == null || v.getTeleporterClaim() == null) {
                 continue;
             }
             items.add(new ClickableItem() {
-                public ItemStack getItem(final Player p) {
-                    final ItemStack item = new ItemStack(Material.PLAYER_HEAD);
-                    final SkullMeta sm = (SkullMeta) item.getItemMeta();
+                public ItemStack getItem(Player p) {
+                    ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+                    SkullMeta sm = (SkullMeta) item.getItemMeta();
                     sm.setDisplayName(MessageUtils.replaceColorCodes("&b" + v.getName()));
                     sm.setLore(Collections.singletonList(MessageUtils.replaceColorCodes("&a&lCost: &r&6" + v.getTeleportCost() + "&r&7$")));
                     sm.setOwningPlayer(Bukkit.getOfflinePlayer(v.getChief()));
@@ -84,17 +84,16 @@ public class PrivateTeleportersGUI extends Base {
                     return item;
                 }
 
-                public boolean click(final Player p, final ClickType clickType) {
+                public boolean click(Player p, ClickType clickType) {
                     if (v.getTeleportCost() == 0) {
                         p.teleport(v.getTeleporter().toBukkitLocation());
                     } else {
-                        final OfflinePlayer op = Bukkit.getOfflinePlayer(p.getUniqueId());
-                        if (Base.getEconomy().getBalance(op) >= v.getTeleportCost()) {
-                            final EconomyResponse r = Base.getEconomy().withdrawPlayer(op, v.getTeleportCost());
+                        if (Base.getEconomy().getBalance(p) >= v.getTeleportCost()) {
+                            EconomyResponse r = Base.getEconomy().withdrawPlayer(p, v.getTeleportCost());
                             if (r.transactionSuccess()) {
                                 p.teleport(v.getTeleporter().toBukkitLocation());
                                 MessageUtils.tell(p, "&7Teleporting to &6" + v.getName() + "&r&7's teleporter!", null, null);
-                                MessageUtils.tellResidents(v.getResidents(), "&e&l" + p.getName() + " &r&7deposited &6" + v.getTeleportCost() + "&r&7 into the village bank by teleporting to your teleporter!", null, null);
+                                MessageUtils.tellResidents(v.getOnlineResidents(), "&e&l" + p.getName() + " &r&7deposited &6" + v.getTeleportCost() + "&r&7 into the village bank by teleporting to your teleporter!", null, null);
                             } else {
                                 MessageUtils.tell(p, "&cAn error occurred, please tell an admin!", null, null);
                             }

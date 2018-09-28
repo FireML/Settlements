@@ -52,8 +52,8 @@ public class VillageUnAllyCommand extends SubCommand {
             DatabaseManager.getInstance().saveVillage(invitedVillage);
             DatabaseManager.getInstance().saveVillage(village);
         });
-        MessageUtils.tellResidents(invitedVillage.getResidents(), "&7&lAlly &6" + village.getName() + " &7removed!");
-        MessageUtils.tellResidents(village.getResidents(), "&7&lAlly &6" + invitedVillage.getName() + " &7removed!");
+        MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), "&7&lAlly &6" + village.getName() + " &7removed!");
+        MessageUtils.tellResidents(village.getOnlineResidents(), "&7&lAlly &6" + invitedVillage.getName() + " &7removed!");
     }
 
     private boolean canAlly(Resident res) {

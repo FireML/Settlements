@@ -27,7 +27,7 @@ public class VillageLeaveCommand extends SubCommand {
             return;
         }
         MessageUtils.tell(player, MessageUtils.SUCCESS_LEAVE_MESSAGE, null, null);
-        MessageUtils.tellResidents(village.getResidents(), MessageUtils.ALERT_LEAVE_MESSAGE, "{player}", player.getName());
+        MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.ALERT_LEAVE_MESSAGE, "{player}", player.getName());
         VillageManager.getInstance().leaveVillage(ResidentManager.getInstance().getResident(player));
     }
 }

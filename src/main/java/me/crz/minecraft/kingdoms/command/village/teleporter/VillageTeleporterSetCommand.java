@@ -29,7 +29,7 @@ public class VillageTeleporterSetCommand extends SubCommand {
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         Resident res = ResidentManager.getInstance().getResident(player);
         if (args[0].equalsIgnoreCase("none")) {
-            MessageUtils.tellResidents(village.getResidents(), String.valueOf(res.getVillageRank().getTag(village.getState())) + " " + player.getName() + "&r&7&l has &r&6&lremoved&r&7&l the teleport claim", null, null);
+            MessageUtils.tellResidents(village.getOnlineResidents(), String.valueOf(res.getVillageRank().getTag(village.getState())) + " " + player.getName() + "&r&7&l has &r&6&lremoved&r&7&l the teleport claim", null, null);
             village.resetTeleporter();
             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
         } else if (args[0].equalsIgnoreCase("here")) {
@@ -39,7 +39,7 @@ public class VillageTeleporterSetCommand extends SubCommand {
                 MessageUtils.tell(player, "&c&lYou do not own this land!", null, null);
                 return;
             }
-            MessageUtils.tellResidents(village.getResidents(), String.valueOf(res.getVillageRank().getTag(village.getState())) + " " + player.getName() + "&r&7&l has set the teleport claim at &r&6&l" + String.valueOf(player.getLocation().getBlockX()) + "&r&7&l,&r&6&l" + String.valueOf(player.getLocation().getBlockY()) + "&r&7&l,&r&6&l" + String.valueOf(player.getLocation().getBlockZ()), null, null);
+            MessageUtils.tellResidents(village.getOnlineResidents(), String.valueOf(res.getVillageRank().getTag(village.getState())) + " " + player.getName() + "&r&7&l has set the teleport claim at &r&6&l" + String.valueOf(player.getLocation().getBlockX()) + "&r&7&l,&r&6&l" + String.valueOf(player.getLocation().getBlockY()) + "&r&7&l,&r&6&l" + String.valueOf(player.getLocation().getBlockZ()), null, null);
             village.setTeleporter(player.getLocation());
             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
         } else {

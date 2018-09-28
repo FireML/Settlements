@@ -39,35 +39,37 @@ public class VillageSetRankCommand extends SubCommand {
             MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.ELDER.getTag(village.getState()) + " or higher&r&c&l!", null, null);
             return;
         }
-        Resident tres = ResidentManager.getInstance().getResident(args[0]);
-        if (tres == null) {
-            MessageUtils.tell(player, MessageUtils.PLAYER_NOT_FOUND_MESSAGE, null, null);
-            return;
-        }
-        if (!this.isResident(tres, village)) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
-            return;
-        }
-        String rank = args[1].toUpperCase();
-        if (!this.rankIsValid(rank)) {
-            MessageUtils.tell(player, MessageUtils.INVALID_RANK_MESSAGE, "{rank}", rank);
-            return;
-        }
-        if (res.getVillageRank().ordinal() >= tres.getVillageRank().ordinal()) {
-            MessageUtils.tell(player, MessageUtils.CANT_SET_THAT_PERSONS_RANK_MESSAGE, null, null);
-            return;
-        }
-        if (VillageRank.valueOf(rank).equals(VillageRank.CHIEF)) {
-            MessageUtils.tell(player, "&c&lPlease use &6&c&l/" + base + " transfer <player>&r&c&l to transfer ownership of the " + village.getState().name().toLowerCase(), null, null);
-            return;
-        }
-        if (res.getVillageRank().ordinal() >= VillageRank.valueOf(rank).ordinal()) {
-            MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.CHIEF.getTag(village.getState()) + "&r&c&l!", null, null);
-            return;
-        }
-        tres.setVillageRank(VillageRank.valueOf(rank));
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(tres));
-        MessageUtils.tellResidents(village.getResidents(), this.getSuccessSetRankMessage(VillageRank.valueOf(rank).getTag(village.getState()), player, tres), null, null);
+        Utils.runAsync(() -> {
+            Resident tres = ResidentManager.getInstance().getResident(args[0]);
+            if (tres == null) {
+                MessageUtils.tell(player, MessageUtils.PLAYER_NOT_FOUND_MESSAGE, null, null);
+                return;
+            }
+            if (!this.isResident(tres, village)) {
+                MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
+                return;
+            }
+            String rank = args[1].toUpperCase();
+            if (!this.rankIsValid(rank)) {
+                MessageUtils.tell(player, MessageUtils.INVALID_RANK_MESSAGE, "{rank}", rank);
+                return;
+            }
+            if (res.getVillageRank().ordinal() >= tres.getVillageRank().ordinal()) {
+                MessageUtils.tell(player, MessageUtils.CANT_SET_THAT_PERSONS_RANK_MESSAGE, null, null);
+                return;
+            }
+            if (VillageRank.valueOf(rank).equals(VillageRank.CHIEF)) {
+                MessageUtils.tell(player, "&c&lPlease use &6&c&l/" + base + " transfer <player>&r&c&l to transfer ownership of the " + village.getState().name().toLowerCase(), null, null);
+                return;
+            }
+            if (res.getVillageRank().ordinal() >= VillageRank.valueOf(rank).ordinal()) {
+                MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.CHIEF.getTag(village.getState()) + "&r&c&l!", null, null);
+                return;
+            }
+            tres.setVillageRank(VillageRank.valueOf(rank));
+            DatabaseManager.getInstance().saveResident(tres);
+            MessageUtils.tellResidents(village.getOnlineResidents(), this.getSuccessSetRankMessage(VillageRank.valueOf(rank).getTag(village.getState()), player, tres), null, null);
+        });
     }
 
     private String getSuccessSetRankMessage(String rank, Player player, Resident target) {

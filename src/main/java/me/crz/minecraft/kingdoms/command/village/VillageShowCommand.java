@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.OfflinePlayer;
 
 import org.bukkit.ChatColor;
@@ -30,36 +31,38 @@ public class VillageShowCommand extends SubCommand {
     }
 
     @Override
-    public void run(final Player player, final String base, final String alias, final String... args) {
+    public void run(Player player, String base, String alias, String... args) {
         if (args.length == 0) {
-            final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
+            Village village = VillageManager.getInstance().getVillageFromPlayer(player);
             if (village == null) {
                 MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
                 return;
             }
-            MessageUtils.tellList(player, this.showSettlementMessage(village));
+            Utils.runAsync(() -> MessageUtils.tellList(player, this.showSettlementMessage(village)));
         } else {
             if (args.length != 1) {
                 return;
             }
-            final String name = args[0];
-            final Village village2 = VillageManager.getInstance().getVillageFromName(name);
-            final Player target = Bukkit.getPlayerExact(name);
-            if (target != null) {
-                final Village playerVillage = VillageManager.getInstance().getVillageFromPlayer(Bukkit.getPlayerExact(name));
-                MessageUtils.tellList(player, this.showSettlementMessage(playerVillage));
-                return;
-            }
-            if (village2 != null) {
-                MessageUtils.tellList(player, this.showSettlementMessage(village2));
-                return;
-            }
-            MessageUtils.tell(player, MessageUtils.TOWN_NOT_FOUND_MESSAGE, null, null);
+            String name = args[0];
+            Utils.runAsync(() -> {
+                Village village2 = VillageManager.getInstance().getVillageFromName(name);
+                Resident target = ResidentManager.getInstance().getResident(name);
+                if (target != null) {
+                    Village playerVillage = VillageManager.getInstance().getVillageFromResident(target);
+                    MessageUtils.tellList(player, this.showSettlementMessage(playerVillage));
+                    return;
+                }
+                if (village2 != null) {
+                    MessageUtils.tellList(player, this.showSettlementMessage(village2));
+                    return;
+                }
+                MessageUtils.tell(player, MessageUtils.TOWN_NOT_FOUND_MESSAGE, null, null);
+            });
         }
     }
 
-    List<String> showSettlementMessage(final Village village) {
-        final List<String> messages = new ArrayList<>();
+    private List<String> showSettlementMessage(Village village) {
+        List<String> messages = new ArrayList<>();
         for (String line : MessageUtils.SHOW_SETTLEMENT_MESSAGE) {
             if (line.contains("{townName}")) {
                 line = line.replace("{townName}", village.getName());
@@ -85,7 +88,7 @@ public class VillageShowCommand extends SubCommand {
             if (line.contains("{pvp}")) {
                 line = line.replace("{pvp}", this.yesOrNo(village.isPvp()));
             }
-            final DecimalFormat df = new DecimalFormat("#,###");
+            DecimalFormat df = new DecimalFormat("#,###");
             if (line.contains("{balance}")) {
                 line = line.replace("{balance}", df.format((long) village.getBank()));
             }
@@ -102,14 +105,14 @@ public class VillageShowCommand extends SubCommand {
                 line = line.replace("{buff}", this.yesOrNo(village.isBuff()));
             }
             if (line.contains("{teleporter}")) {
-                final String yon = (village.getState() == VillageState.KINGDOM && village.getLevel() >= 4) ? (village.isTeleporter() ? "Private" : "Public") : "Not available";
+                String yon = (village.getState() == VillageState.KINGDOM && village.getLevel() >= 4) ? (village.isTeleporter() ? "Private" : "Public") : "Not available";
                 line = line.replace("{teleporter}", yon);
             }
             if (line.contains("{chiefRank}")) {
                 line = line.replace("{chiefRank}", VillageRank.CHIEF.getTag(village.getState()));
             }
             if (line.contains("{chief}")) {
-                final OfflinePlayer player = Bukkit.getOfflinePlayer(village.getChief());
+                OfflinePlayer player = Bukkit.getOfflinePlayer(village.getChief());
                 line = line.replace("{chief}", player.getName());
             }
             if (line.contains("{residents}")) {
@@ -121,20 +124,19 @@ public class VillageShowCommand extends SubCommand {
         return messages;
     }
 
-    public String yesOrNo(final boolean b) {
+    public String yesOrNo(boolean b) {
         return b ? "Yes" : "No";
     }
 
-    public String getResidentsToString(final List<Resident> residents, final Village village) {
-        final StringBuilder builder = new StringBuilder();
+    private String getResidentsToString(List<Resident> residents, Village village) {
+        StringBuilder builder = new StringBuilder();
         int i = 0;
-        for (final Resident res : residents) {
-            final OfflinePlayer player = Bukkit.getOfflinePlayer(res.getUUID());
+        for (Resident res : residents) {
             builder.append("&e");
             builder.append(res.getVillageRank().getTag(village.getState()));
             builder.append(" ");
-            builder.append(player.isOnline() ? "&a" : "&c");
-            builder.append(player.getName());
+            builder.append(res.getPlayer() != null ? "&a" : "&c");
+            builder.append(res.getName());
             if (i + 1 < residents.size()) {
                 builder.append("&7, ");
             }

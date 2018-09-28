@@ -73,7 +73,7 @@ public class VillageClaimCommand extends SubCommand {
         }
         if (land == null) {
             LandManager.getInstance().claimLand(player.getLocation(), village);
-            MessageUtils.tellResidents(village.getResidents(), MessageUtils.SUCCESS_CLAIM_LAND_MESSAGE, "{player}", player.getName());
+            MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.SUCCESS_CLAIM_LAND_MESSAGE, "{player}", player.getName());
             return;
         }
         if (land.getOwnerVillage().equals(village.getName())) {

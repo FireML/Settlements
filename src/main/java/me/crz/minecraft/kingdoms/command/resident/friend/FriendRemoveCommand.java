@@ -23,17 +23,19 @@ public class FriendRemoveCommand extends SubCommand {
             MessageUtils.tell(player, "&c" + this.getUsage(base));
             return;
         }
-        OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-        if (target == null || target.getName() == null || target.getUniqueId() == null) {
-            MessageUtils.tell(player, "&c&lNo &r&6&lplayer&r&c&l with the name &r&6&l{player}&r&c&l found!", "{player}", args[0]);
-            return;
-        }
-        Resident res = ResidentManager.getInstance().getResident(player);
-        if (!res.removeFriend(target.getUniqueId())) {
-            MessageUtils.tell(player, "&c you are not friends with &6" + target.getName());
-            return;
-        }
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
-        MessageUtils.tell(player, "&cSuccessfully removed &6" + target.getName() + "&c from your friends list");
+        Utils.runAsync(() -> {
+            Resident target = ResidentManager.getInstance().getResident(player);
+            if (target == null ) {
+                MessageUtils.tell(player, "&c&lNo &r&6&lplayer&r&c&l with the name &r&6&l{player}&r&c&l found!", "{player}", args[0]);
+                return;
+            }
+            Resident res = ResidentManager.getInstance().getResident(player);
+            if (!res.removeFriend(target.getUUID())) {
+                MessageUtils.tell(player, "&c you are not friends with &6" + target.getName());
+                return;
+            }
+            DatabaseManager.getInstance().saveResident(res);
+            MessageUtils.tell(player, "&cSuccessfully removed &6" + target.getName() + "&c from your friends list");
+        });
     }
 }

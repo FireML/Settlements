@@ -31,37 +31,36 @@ public class VillageAdminRankCommand extends SubCommand {
             MessageUtils.tell(player, MessageUtils.INVALID_RANK_MESSAGE, "{rank}", rank);
             return;
         }
-        OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-        if (target == null || target.getName() == null || target.getUniqueId() == null) {
-            MessageUtils.tell(player, "&c&lNo &r&6&lplayer&r&c&l with the name &r&6&l{player}&r&c&l found!", "{player}", args[0]);
-            return;
-        }
-        Resident tRes = ResidentManager.getInstance().getResident(target);
-        Village village = VillageManager.getInstance().getVillageFromName(tRes.getVillageName());
-        if (village == null) {
-            MessageUtils.tell(player, "&c&lTarget player isn't in a village!");
-            return;
-        }
-        Resident res = ResidentManager.getInstance().getResident(village.getChief());
-        VillageRank r = VillageRank.valueOf(rank);
-        if (r.equals(VillageRank.CHIEF)) {
-            res.setVillageRank(tRes.getVillageRank());
-            tRes.setVillageRank(r);
-            village.setChief(tRes.getUUID());
+        Utils.runAsync(() -> {
+            Resident tRes = ResidentManager.getInstance().getResident(args[0]);
+            if (tRes == null) {
+                MessageUtils.tell(player, "&c&lNo &r&6&lplayer&r&c&l with the name &r&6&l{player}&r&c&l found!", "{player}", args[0]);
+                return;
+            }
+            Village village = VillageManager.getInstance().getVillageFromName(tRes.getVillageName());
+            if (village == null) {
+                MessageUtils.tell(player, "&c&lTarget player isn't in a village!");
+                return;
+            }
+            Resident res = ResidentManager.getInstance().getResident(village.getChief());
+            VillageRank r = VillageRank.valueOf(rank);
+            if (r.equals(VillageRank.CHIEF)) {
+                res.setVillageRank(tRes.getVillageRank());
+                tRes.setVillageRank(r);
+                village.setChief(tRes.getUUID());
 
-            Utils.runAsync(() -> {
                 DatabaseManager.getInstance().saveVillage(village);
                 DatabaseManager.getInstance().saveResident(res);
                 DatabaseManager.getInstance().saveResident(tRes);
-            });
-        } else {
-            tRes.setVillageRank(r);
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(tRes));
-        }
-        if (player.isOnline()) {
-            MessageUtils.tell(player, "&c&lPlayer &6&l " + target.getName() + "&c&l's rank was set to &6&l" + r.name());
-        }
-        MessageUtils.tellResidents(village.getResidents(), "&c&lPlayer &6&l " + target.getName() + "&c&l's rank was set to &6&l" + r.name() + "&c&l by &6&l " + player.getDisplayName());
+            } else {
+                tRes.setVillageRank(r);
+                DatabaseManager.getInstance().saveResident(tRes);
+            }
+            if (player.isOnline()) {
+                MessageUtils.tell(player, "&c&lPlayer &6&l " + tRes.getName() + "&c&l's rank was set to &6&l" + r.name());
+            }
+            MessageUtils.tellResidents(village.getOnlineResidents(), "&c&lPlayer &6&l " + tRes.getName() + "&c&l's rank was set to &6&l" + r.name() + "&c&l by &6&l " + player.getDisplayName());
+        });
     }
 
     private boolean rankIsValid(String arg) {

@@ -55,8 +55,8 @@ public class VillageAllyCommand extends SubCommand {
         if (TownCache.getPendingTownAlly().containsKey(village.getName())) {
             final List<String> invites = TownCache.getPendingTownAlly().get(village.getName());
             if (invites.contains(invitedVillage.getName())) {
-                MessageUtils.tellResidents(invitedVillage.getResidents(), "&7&lYou are now allied to &r&6&l" + village.getName());
-                MessageUtils.tellResidents(village.getResidents(), "&7&lYou are now allied to &r&6&l" + invitedVillage.getName());
+                MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), "&7&lYou are now allied to &r&6&l" + village.getName());
+                MessageUtils.tellResidents(village.getOnlineResidents(), "&7&lYou are now allied to &r&6&l" + invitedVillage.getName());
                 invitedVillage.addAlly(village.getName());
                 village.addAlly(invitedVillage.getName());
 
@@ -69,11 +69,11 @@ public class VillageAllyCommand extends SubCommand {
             if (TownCache.getPendingTownAlly().containsKey(invitedVillage.getName())) {
                 final List<String> iInvites = TownCache.getPendingTownAlly().get(invitedVillage.getName());
                 iInvites.add(village.getName());
-                MessageUtils.tellResidents(invitedVillage.getResidents(), "&r&6&l" + village.getName() + " &r&7&lwants to ally!");
-                MessageUtils.tellResidents(invitedVillage.getResidents(), "&r&6&l/s ally " + village.getName() + " &r&7&lto ally them!");
+                MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), "&r&6&l" + village.getName() + " &r&7&lwants to ally!");
+                MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), "&r&6&l/s ally " + village.getName() + " &r&7&lto ally them!");
             } else {
                 TownCache.getPendingTownAlly().put(invitedVillage.getName(), new ArrayList<>(Collections.singletonList(village.getName())));
-                MessageUtils.tellResidents(invitedVillage.getResidents(), "&r&6&l" + village.getName() + " &r&7&lwants to ally!");
+                MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), "&r&6&l" + village.getName() + " &r&7&lwants to ally!");
             }
             MessageUtils.tell(player, "&7&lAlly request sent to &r&6&l" + invitedVillage.getName());
         }

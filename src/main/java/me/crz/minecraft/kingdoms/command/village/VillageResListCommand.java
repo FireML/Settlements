@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.OfflinePlayer;
 
 import me.crz.minecraft.kingdoms.village.Village;
@@ -22,28 +23,29 @@ public class VillageResListCommand extends SubCommand {
     }
 
     @Override
-    public void run(final Player p, final String base, final String alias, final String... args) {
-        final Village village = VillageManager.getInstance().getVillageFromPlayer(p);
+    public void run(Player p, String base, String alias, String... args) {
+        Village village = VillageManager.getInstance().getVillageFromPlayer(p);
         if (village == null) {
             MessageUtils.tell(p, MessageUtils.NOT_IN_CURRENT_MESSAGE);
             return;
         }
-        final StringBuilder sb = new StringBuilder("&8&l--------&r&c&lResidents&r&8&l--------\n");
-        int i = 0;
-        for (Resident res : village.getResidents().stream()
-                .sorted(Comparator.comparing(Resident::getVillageRank))
-                .collect(Collectors.toList())) {
-            final OfflinePlayer player = Bukkit.getOfflinePlayer(res.getUUID());
-            sb.append("&e");
-            sb.append(res.getVillageRank().getTag(village.getState()));
-            sb.append(" ");
-            sb.append(player.isOnline() ? "&a" : "&c");
-            sb.append(player.getName());
-            if (i + 1 < village.getResidents().size()) {
-                sb.append("&7, ");
+        Utils.runAsync(() -> {
+            StringBuilder sb = new StringBuilder("&8&l--------&r&c&lResidents&r&8&l--------\n");
+            int i = 0;
+            for (Resident res : village.getResidents().stream()
+                    .sorted(Comparator.comparing(Resident::getVillageRank))
+                    .collect(Collectors.toList())) {
+                sb.append("&e");
+                sb.append(res.getVillageRank().getTag(village.getState()));
+                sb.append(" ");
+                sb.append(res.getPlayer() != null ? "&a" : "&c");
+                sb.append(res.getName());
+                if (i + 1 < village.getOnlineResidents().size()) {
+                    sb.append("&7, ");
+                }
+                ++i;
             }
-            ++i;
-        }
-        MessageUtils.tell(p, sb.toString());
+            MessageUtils.tell(p, sb.toString());
+        });
     }
 }

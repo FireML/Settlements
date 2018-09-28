@@ -42,6 +42,6 @@ public class VillageUnclaimCommand extends SubCommand {
             return;
         }
         LandManager.getInstance().unclaimLand(land);
-        MessageUtils.tellResidents(village.getResidents(), "&aSuccess unclaim land.");
+        MessageUtils.tellResidents(village.getOnlineResidents(), "&aSuccess unclaim land.");
     }
 }

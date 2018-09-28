@@ -46,7 +46,7 @@ public class VillageInviteCommand extends SubCommand {
         }
         TownCache.getPendingTownInvites().put(invitedPlayer.getUniqueId(), village.getName());
         MessageUtils.tell(invitedPlayer, MessageUtils.RECEIVE_INVITE_MESSAGE, "{townName}", village.getName());
-        MessageUtils.tellResidents(village.getResidents(), MessageUtils.SUCCESS_INVITE_MESSAGE, "{player}", invitedPlayer.getName());
+        MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.SUCCESS_INVITE_MESSAGE, "{player}", invitedPlayer.getName());
     }
 
     private boolean canInvite(final Resident res) {

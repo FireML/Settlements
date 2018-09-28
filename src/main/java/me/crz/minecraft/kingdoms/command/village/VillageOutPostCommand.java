@@ -83,7 +83,7 @@ public class VillageOutPostCommand extends SubCommand {
                 return;
             } else {
                 LandManager.getInstance().claimOutpost(player.getLocation(), village);
-                MessageUtils.tellResidents(village.getResidents(), "&a&lSUCCESS &r&e{player} &7has claimed an &coutpost&7 for your settlement!", "{player}", player.getName());
+                MessageUtils.tellResidents(village.getOnlineResidents(), "&a&lSUCCESS &r&e{player} &7has claimed an &coutpost&7 for your settlement!", "{player}", player.getName());
             }
         }
         if (args[0].equalsIgnoreCase("unclaim")) {
@@ -108,7 +108,7 @@ public class VillageOutPostCommand extends SubCommand {
                 unclaimed++;
             }
             LandManager.getInstance().unclaimLand(land);
-            MessageUtils.tellResidents(village.getResidents(), "&aSuccess unclaimed outpost and " + unclaimed + " land around it.");
+            MessageUtils.tellResidents(village.getOnlineResidents(), "&aSuccess unclaimed outpost and " + unclaimed + " land around it.");
         } else if (args[0].equalsIgnoreCase("list")) {
             StringBuilder sb = new StringBuilder("&7------- &cOutPosts&7 -------\n");
             for (OwnedLand land2 : LandManager.getInstance().getClaimedLand(village)) {

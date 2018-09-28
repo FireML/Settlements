@@ -57,7 +57,7 @@ public class VillageKickCommand extends SubCommand {
             MessageUtils.tell(player, "&cYou cannot kick the &6" + res.getVillageRank().getTag(playerVillage.getState()) + "&c!", null, null);
             return;
         }
-        MessageUtils.tellResidents(village.getResidents(), MessageUtils.KICKED_PLAYER_MESSAGE, "{player}", res.getName());
+        MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.KICKED_PLAYER_MESSAGE, "{player}", res.getName());
         if (TownCache.getPendingTownInvites().get(res.getUUID()).equals(playerVillage.getName())) {
             TownCache.getPendingTownInvites().remove(res.getUUID());
         }
