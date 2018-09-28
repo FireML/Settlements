@@ -115,6 +115,13 @@ public class ResidentManager {
     }
 
     public Resident getResident(String name) {
+        if (name.length() > 16) {
+            try {
+                return getResident(UUID.fromString(name));
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+        }
         Resident resident = residentsByName.getIfPresent(name.toLowerCase());
         if (resident == null) {
             synchronized (RESIDENT_LOCK) {
