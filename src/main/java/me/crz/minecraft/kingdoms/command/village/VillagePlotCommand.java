@@ -15,12 +15,9 @@ import me.crz.minecraft.kingdoms.landflags.PlotBuildState;
 import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.landflags.PlotUseGui;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
-import org.bukkit.Bukkit;
 import me.crz.minecraft.kingdoms.Base;
-import me.crz.minecraft.kingdoms.utils.MojangAPI;
 
 import java.util.Arrays;
-import java.util.UUID;
 
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
@@ -51,37 +48,53 @@ public class VillagePlotCommand extends SubCommand {
         Resident res = ResidentManager.getInstance().getResident(player);
         Village landVillage = VillageManager.getInstance().getVillageFromName(land.getOwnerVillage());
         if (args.length == 0) {
-            MessageUtils.tellList(player, Arrays.asList("&8&l-------- &r&c&l/" + base + " " + alias + "&r &8&l--------", "&8[&9*&8] &b/" + base + " plot sale <amount> &7- places a price on the claimed chunk", "&8[&9*&8] &b/" + base + " plot info", "&8[&9*&8] &b/" + base + " plot mode &7- changes mode of the plot your currently standin in", "&8[&9*&8] &b/" + base + " plot buy &7- buys the currently chunk your standing in", "&8[&9*&8] &b/" + base + " plot revoke &7- removes the players owned claims"));
+            MessageUtils.tellList(player, Arrays.asList(
+                    "&8&l-------- &r&c&l/" + base + " " + alias + "&r &8&l--------",
+                    "&8[&9*&8] &b/" + base + " plot sale <amount> &7- places a price on the claimed chunk",
+                    "&8[&9*&8] &b/" + base + " plot info",
+                    "&8[&9*&8] &b/" + base + " plot mode &7- changes mode of the plot your currently standin in",
+                    "&8[&9*&8] &b/" + base + " plot buy &7- buys the currently chunk your standing in",
+                    "&8[&9*&8] &b/" + base + " plot revoke &7- removes the players owned claims"
+            ));
         } else if (args[0].equalsIgnoreCase("info")) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("&8&l-------- &r&c&lPlot Info&r &8&l--------");
-            sb.append("\n");
-            sb.append("&c&lVillage: &7");
-            sb.append(landVillage.getName());
-            sb.append("\n");
-            sb.append("&9&lModes: &7MobSpawning: &6");
-            sb.append(land.isMobSpawning());
-            sb.append("&r&7 | FireSpread: &6");
-            sb.append(land.isFireSpread());
-            sb.append("&r&7 | Explosions: &6");
-            sb.append(land.isExplosions());
-            sb.append("&r&7 | PvP: &6");
-            sb.append(land.isPvp());
-            sb.append("&r&7 | Build: &6");
-            sb.append(land.getBuild() ? land.getBuildState().toString().toLowerCase() : "false");
-            sb.append("\n");
-            if (land.getPlotOwner() != null) {
-                sb.append("&a&lPlot Owner: &7");
-                sb.append(MojangAPI.getInstance().getName(land.getPlotOwner()));
+            Utils.runAsync(() -> {
+                StringBuilder sb = new StringBuilder();
+                sb.append("&8&l-------- &r&c&lPlot Info&r &8&l--------");
                 sb.append("\n");
-            } else if (land.isForSale()) {
-                sb.append("&a&lPlot Price: &7");
-                sb.append(land.getPrice());
+                sb.append("&c&lVillage: &7");
+                sb.append(landVillage.getName());
                 sb.append("\n");
-            }
-            player.sendMessage(MessageUtils.replaceColorCodes(sb.toString()));
+                sb.append("&9&lModes: &7MobSpawning: &6");
+                sb.append(land.isMobSpawning());
+                sb.append("&r&7 | FireSpread: &6");
+                sb.append(land.isFireSpread());
+                sb.append("&r&7 | Explosions: &6");
+                sb.append(land.isExplosions());
+                sb.append("&r&7 | PvP: &6");
+                sb.append(land.isPvp());
+                sb.append("&r&7 | Build: &6");
+                sb.append(land.getBuild() ? land.getBuildState().toString().toLowerCase() : "false");
+                sb.append("\n");
+                if (land.getPlotOwner() != null) {
+                    sb.append("&a&lPlot Owner: &7");
+                    sb.append(ResidentManager.getInstance().getResident(land.getPlotOwner()).getName());
+                    sb.append("\n");
+                } else if (land.isForSale()) {
+                    sb.append("&a&lPlot Price: &7");
+                    sb.append(land.getPrice());
+                    sb.append("\n");
+                }
+                player.sendMessage(MessageUtils.replaceColorCodes(sb.toString()));
+            });
         } else if (args[0].equalsIgnoreCase("help")) {
-            MessageUtils.tellList(player, Arrays.asList("&8&l-------- &r&c&l/" + base + " " + alias + "&r &8&l--------", "&8[&9*&8] &b/" + base + " plot sale <amount> &7- places a price on the claimed chunk", "&8[&9*&8] &b/" + base + " plot info", "&8[&9*&8] &b/" + base + " plot mode &7- changes mode of the plot your currently standin in", "&8[&9*&8] &b/" + base + " plot buy &7- buys the currently chunk your standing in", "&8[&9*&8] &b/" + base + " plot build &7- sets who can build in the current plot", "&8[&9*&8] &b/" + base + " plot revoke &7- removes the players owned claims"));
+            MessageUtils.tellList(player, Arrays.asList(
+                    "&8&l-------- &r&c&l/" + base + " " + alias + "&r &8&l--------",
+                    "&8[&9*&8] &b/" + base + " plot sale <amount> &7- places a price on the claimed chunk",
+                    "&8[&9*&8] &b/" + base + " plot info",
+                    "&8[&9*&8] &b/" + base + " plot mode &7- changes mode of the plot your currently standin in",
+                    "&8[&9*&8] &b/" + base + " plot buy &7- buys the currently chunk your standing in",
+                    "&8[&9*&8] &b/" + base + " plot build &7- sets who can build in the current plot",
+                    "&8[&9*&8] &b/" + base + " plot revoke &7- removes the players owned claims"));
         } else if (args[0].equalsIgnoreCase("buy")) {
             if (!this.playerOwnsLand(player, landVillage)) {
                 MessageUtils.tell(player, MessageUtils.NO_PERMISSION_MESSAGE);
@@ -91,11 +104,11 @@ public class VillagePlotCommand extends SubCommand {
                 MessageUtils.tell(player, "&cLand not for sale");
                 return;
             }
-            if (Base.getEconomy().getBalance(Bukkit.getOfflinePlayer(player.getUniqueId())) < land.getPrice()) {
+            if (Base.getEconomy().getBalance(player) < land.getPrice()) {
                 MessageUtils.tell(player, "&cYou cannot afford the &6$" + land.getPrice() + "&c that the land costs to buy!");
                 return;
             }
-            Base.getEconomy().withdrawPlayer(Bukkit.getOfflinePlayer(player.getUniqueId()), (double) land.getPrice());
+            Base.getEconomy().withdrawPlayer(player, (double) land.getPrice());
             landVillage.setBank(landVillage.getBank() + land.getPrice());
             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(landVillage));
             land.setForSale(false);
@@ -162,23 +175,16 @@ public class VillagePlotCommand extends SubCommand {
                 PlotUseGui.getInstance().open(player);
                 return;
             }
-            Use[] values;
-            for (int length = (values = Use.values()).length, i = 0; i < length; ++i) {
-                Use u = values[i];
-                if (u.name().equalsIgnoreCase(args[0])) {
-                    PlotBuildState[] values2;
-                    for (int length2 = (values2 = PlotBuildState.values()).length, j = 0; j < length2; ++j) {
-                        PlotBuildState state = values2[j];
-                        if (state.name().equalsIgnoreCase(args[1])) {
-                            land.setUseState(u, state);
-                            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
-                            MessageUtils.tell(player, "&7Plot State of &6" + u.name() + " &7set to &6" + state.name());
-                            return;
-                        }
-                    }
-                }
+            try {
+                Use u = Use.valueOf(args[0].toUpperCase());
+                PlotBuildState state = PlotBuildState.valueOf(args[1].toUpperCase());
+                land.setUseState(u, state);
+                Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
+                MessageUtils.tell(player, "&7Plot State of &6" + u.name() + " &7set to &6" + state.name());
+                return;
+            } catch (IllegalArgumentException e) {
+                MessageUtils.tell(player, "&c/s plot use <name> <buildState>");
             }
-            MessageUtils.tell(player, "&c/s plot use <name> <buildState>");
         } else if (args[0].equalsIgnoreCase("mode")) {
             if (this.landIsPlot(land) && !this.playerOwnsPlot(player, land)) {
                 MessageUtils.tell(player, MessageUtils.NO_PERMISSION_MESSAGE);
@@ -192,8 +198,8 @@ public class VillagePlotCommand extends SubCommand {
                 MessageUtils.tell(player, "&c&lError &r&7You need to specify what to set the flag to!\n&c/" + base + alias + " mode " + String.join(" | ", PlotMode.modes()));
                 return;
             }
-            if (PlotMode.modes().contains(args[1].toLowerCase())) {
-                PlotMode m = PlotMode.valueOf(args[1]);
+            try {
+                PlotMode m = PlotMode.valueOf(args[1].toLowerCase());
                 List<String> optionStrings = new ArrayList<>(m.getOptions().keySet());
                 if (m.getOptions().containsKey(args[2].toLowerCase())) {
                     m.set(m.getOptions().get(args[2].toLowerCase()), land);
@@ -201,7 +207,7 @@ public class VillagePlotCommand extends SubCommand {
                 } else {
                     MessageUtils.tell(player, String.valueOf(this.getUsage(base)) + " <" + String.join(" | ", optionStrings) + ">", null, null);
                 }
-            } else {
+            } catch (IllegalArgumentException e) {
                 MessageUtils.tellList(player, Arrays.asList("&8&l-------- &r&c&l/" + base + " " + alias + "&r " + "&8&l--------", "&8[&9*&8] &b/" + base + " plot sale <amdozzunt> &7- places a price on the claimed chunk", "&8[&9*&8] &b/" + base + " plot mode &7- changes mode of the plot your currently standin in", "&8[&9*&8] &b/" + base + " plot buy &7- buys the currently chunk your standing in", "&8[&9*&8] &b/" + base + " plot revoke &7- removes the players owned claims"));
             }
         } else if (args[0].equalsIgnoreCase("build")) {

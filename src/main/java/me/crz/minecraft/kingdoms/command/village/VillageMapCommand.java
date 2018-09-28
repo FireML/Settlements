@@ -5,7 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.utils.MojangAPI;
+import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import me.crz.minecraft.kingdoms.land.LandManager;
@@ -14,7 +15,6 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 
 import net.md_5.bungee.api.chat.TextComponent;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.utils.ThreadManager;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
@@ -31,28 +31,28 @@ public class VillageMapCommand extends SubCommand {
     }
 
     @Override
-    public void run(final Player player, final String base, final String alias, final String... args) {
-        ThreadManager.getInstance().execute(() -> {
+    public void run(Player player, String base, String alias, String... args) {
+        Utils.runAsync(() -> {
             player.sendMessage(MessageUtils.replaceColorCodes("&7--------------&eSettlement Map&r&7-------------"));
-            for (final TextComponent component : getMap(generateMap(player), player)) {
+            for (TextComponent component : getMap(generateMap(player), player)) {
                 player.spigot().sendMessage(component);
             }
         });
     }
 
-    public TextComponent[][] generateMap(final Player player) {
-        final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
-        final TextComponent[][] map = new TextComponent[13][29];
-        final int x = player.getLocation().getChunk().getX();
-        final int z = player.getLocation().getChunk().getZ();
+    public TextComponent[][] generateMap(Player player) {
+        Village village = VillageManager.getInstance().getVillageFromPlayer(player);
+        TextComponent[][] map = new TextComponent[13][29];
+        int x = player.getLocation().getChunk().getX();
+        int z = player.getLocation().getChunk().getZ();
         int countX = 0;
         int[] offset1;
         for (int length = (offset1 = this.offset1).length, k = 0; k < length; ++k) {
-            final int i = offset1[k];
+            int i = offset1[k];
             int countZ = 0;
             int[] offset2;
             for (int length2 = (offset2 = VillageMapCommand.offset2).length, l = 0; l < length2; ++l) {
-                final int j = offset2[l];
+                int j = offset2[l];
                 map[countX][countZ] = this.getSymbol(x + j, z + i, player.getLocation().getWorld(), village, (countX == 6 && countZ == 14) ? "+" : "-", player);
                 ++countZ;
             }
@@ -61,21 +61,21 @@ public class VillageMapCommand extends SubCommand {
         return map;
     }
 
-    public TextComponent getSymbol(final int x, final int z, final World world, final Village village, String symbol, final Player player) {
-        final OwnedLand land = LandManager.getInstance().getLand(x, z, world);
+    public TextComponent getSymbol(int x, int z, World world, Village village, String symbol, Player player) {
+        OwnedLand land = LandManager.getInstance().getLand(x, z, world);
         if (land == null) {
-            final TextComponent component = new TextComponent(MessageUtils.replaceColorCodes("&7" + symbol));
+            TextComponent component = new TextComponent(MessageUtils.replaceColorCodes("&7" + symbol));
             component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("").create()));
             return component;
         }
         if (land.getIsOutpost()) {
             symbol = "@";
         }
-        final StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         sb.append("\n&a&lPlot Owner: &7");
         if (land.getPlotOwner() != null) {
             try {
-                sb.append(MojangAPI.getInstance().getName(land.getPlotOwner()));
+                sb.append(ResidentManager.getInstance().getResident(land.getPlotOwner()).getName());
                 sb.append("\n");
             } catch (Exception e) {
                 sb.append("none\n");
@@ -85,38 +85,38 @@ public class VillageMapCommand extends SubCommand {
         }
         if (village != null && land.getOwnerVillage().equals(village.getName())) {
             if (land.isPlotOwner(player)) {
-                final TextComponent component2 = new TextComponent(MessageUtils.replaceColorCodes("&e" + symbol));
+                TextComponent component2 = new TextComponent(MessageUtils.replaceColorCodes("&e" + symbol));
                 component2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(String.valueOf(land.getOwnerVillage()) + MessageUtils.replaceColorCodes(sb.toString())).create()));
                 return component2;
             }
             if (land.isForSale()) {
-                final TextComponent component2 = new TextComponent(MessageUtils.replaceColorCodes("&a" + ((symbol.equals("-")) ? "$" : ((!symbol.equals("+")) ? "+" : symbol))));
+                TextComponent component2 = new TextComponent(MessageUtils.replaceColorCodes("&a" + ((symbol.equals("-")) ? "$" : ((!symbol.equals("+")) ? "+" : symbol))));
                 component2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(String.valueOf(land.getOwnerVillage()) + MessageUtils.replaceColorCodes(sb.toString())).create()));
                 return component2;
             }
-            final TextComponent component2 = new TextComponent(MessageUtils.replaceColorCodes("&a" + symbol));
+            TextComponent component2 = new TextComponent(MessageUtils.replaceColorCodes("&a" + symbol));
             component2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(String.valueOf(land.getOwnerVillage()) + MessageUtils.replaceColorCodes(sb.toString())).create()));
             return component2;
         } else {
             if (village != null && village.getAllies().contains(land.getOwnerVillage())) {
-                final TextComponent component2 = new TextComponent(MessageUtils.replaceColorCodes("&b" + symbol));
+                TextComponent component2 = new TextComponent(MessageUtils.replaceColorCodes("&b" + symbol));
                 component2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(String.valueOf(land.getOwnerVillage()) + MessageUtils.replaceColorCodes(sb.toString())).create()));
                 return component2;
             }
-            final TextComponent component2 = new TextComponent(MessageUtils.replaceColorCodes("&c" + symbol));
+            TextComponent component2 = new TextComponent(MessageUtils.replaceColorCodes("&c" + symbol));
             component2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(String.valueOf(land.getOwnerVillage()) + MessageUtils.replaceColorCodes(sb.toString())).create()));
             return component2;
         }
     }
 
-    public String rpGetPlayerDirection(final Player playerSelf) {
+    public String rpGetPlayerDirection(Player playerSelf) {
         String dir;
         float y = playerSelf.getLocation().getYaw();
         if (y < 0.0f) {
             y += 360.0f;
         }
         y %= 360.0f;
-        final int i = (int) ((y + 8.0f) / 22.5);
+        int i = (int) ((y + 8.0f) / 22.5);
         if (i == 0) {
             dir = "S";
         } else if (i == 2) {
@@ -139,9 +139,9 @@ public class VillageMapCommand extends SubCommand {
         return dir;
     }
 
-    public List<String> getRowSymbols(final Player p) {
-        final String tmp = this.rpGetPlayerDirection(p);
-        final List<String> temp = Arrays.asList("&e\\&eN&e/&r", "&eW&e+&eE&r", "&e/&eS&e\\&r");
+    public List<String> getRowSymbols(Player p) {
+        String tmp = this.rpGetPlayerDirection(p);
+        List<String> temp = Arrays.asList("&e\\&eN&e/&r", "&eW&e+&eE&r", "&e/&eS&e\\&r");
         for (int i = 0; i < 3; ++i) {
             if (tmp.contains(new StringBuilder(String.valueOf(i)).toString())) {
                 temp.set(i, temp.get(i).replace(tmp.replace(String.valueOf(i), ""), "&c" + tmp.replace(String.valueOf(i), "")));
@@ -152,8 +152,8 @@ public class VillageMapCommand extends SubCommand {
         return temp;
     }
 
-    public TextComponent getRowBase(final int row, final Player p) {
-        final List<String> tmp = this.getRowSymbols(p);
+    public TextComponent getRowBase(int row, Player p) {
+        List<String> tmp = this.getRowSymbols(p);
         if (row == 0) {
             return new TextComponent(MessageUtils.replaceColorCodes(tmp.get(0)));
         }
@@ -166,7 +166,7 @@ public class VillageMapCommand extends SubCommand {
         return new TextComponent();
     }
 
-    public TextComponent getRowEnd(final int row) {
+    public TextComponent getRowEnd(int row) {
         if (row == 0) {
             return new TextComponent(MessageUtils.replaceColorCodes(" &a-&r&6 = your land"));
         }
@@ -188,7 +188,7 @@ public class VillageMapCommand extends SubCommand {
         return new TextComponent();
     }
 
-    public int getStart(final int row) {
+    public int getStart(int row) {
         if (row == 0) {
             return 3;
         }
@@ -201,10 +201,10 @@ public class VillageMapCommand extends SubCommand {
         return 0;
     }
 
-    private List<TextComponent> getMap(final TextComponent[][] map, final Player p) {
-        final List<TextComponent> components = new ArrayList<>();
+    private List<TextComponent> getMap(TextComponent[][] map, Player p) {
+        List<TextComponent> components = new ArrayList<>();
         for (int i = 0; i < 13; ++i) {
-            final TextComponent component = new TextComponent(this.getRowBase(i, p));
+            TextComponent component = new TextComponent(this.getRowBase(i, p));
             for (int j = this.getStart(i); j < 29; ++j) {
                 component.addExtra(new TextComponent(map[i][j]));
             }

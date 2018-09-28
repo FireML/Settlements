@@ -2,8 +2,8 @@ package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.essentials.events.HostileCreatureSpawnEvent;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.Bukkit;
-import me.crz.minecraft.kingdoms.utils.MojangAPI;
 import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveBlockEvent;
 
 import org.bukkit.block.Block;
@@ -172,19 +172,21 @@ public class LandFlags extends Base {
         OwnedLand destinationLand = LandManager.getInstance().getLand(event.getTo());
         if (!this.landIsClaimed(originalLand) && this.landIsClaimed(destinationLand)) {
             Village claimedVillage = VillageManager.getInstance().getVillageFromName(destinationLand.getOwnerVillage());
-            TitleBuilder tb = new TitleBuilder();
-            tb.withTimings(40, 60, 40);
-            if (destinationLand.isPlot()) {
-                addition.append("&7&lWelcome to&6&l ");
-                addition.append(MojangAPI.getInstance().getName(destinationLand.getPlotOwner()));
-                addition.append("&7&l\u2019s plot v");
-            }
-            if (destinationLand.isPvp()) {
-                tb.withActionbar(MessageUtils.replaceColorCodes(String.valueOf(addition.toString()) + claimedVillage.getEnterMessage() + " - &C&lPvp is enabled!"));
-            } else {
-                tb.withActionbar(MessageUtils.replaceColorCodes(String.valueOf(addition.toString()) + claimedVillage.getEnterMessage()));
-            }
-            tb.send(player);
+            Utils.runAsync(() -> {
+                TitleBuilder tb = new TitleBuilder();
+                tb.withTimings(40, 60, 40);
+                if (destinationLand.isPlot()) {
+                    addition.append("&7&lWelcome to&6&l ");
+                    addition.append(ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName());
+                    addition.append("&7&l\u2019s plot v");
+                }
+                if (destinationLand.isPvp()) {
+                    tb.withActionbar(MessageUtils.replaceColorCodes(String.valueOf(addition.toString()) + claimedVillage.getEnterMessage() + " - &C&lPvp is enabled!"));
+                } else {
+                    tb.withActionbar(MessageUtils.replaceColorCodes(String.valueOf(addition.toString()) + claimedVillage.getEnterMessage()));
+                }
+                tb.send(player);
+            });
             if (playerVillage == null) {
                 return;
             }
@@ -195,18 +197,6 @@ public class LandFlags extends Base {
             if (playerVillage == null) {
                 return;
             }
-            TitleBuilder tb = new TitleBuilder();
-            if (destinationLand.isPlot()) {
-                addition.append("&7&lWelcome to&6&l ");
-                addition.append(MojangAPI.getInstance().getName(destinationLand.getPlotOwner()));
-                addition.append("&7&l\u2019s plot ");
-            }
-            if (this.playerOwnsLand(destinationLand, playerVillage.getName())) {
-                if (destinationLand.isForSale()) {
-                    addition.append("&9&lLand is for sale ");
-                }
-            }
-            tb.withActionbar(addition.toString());
             Village originalVillage = VillageManager.getInstance().getVillageFromName(originalLand.getOwnerVillage());
             Village destinationVillage = VillageManager.getInstance().getVillageFromName(destinationLand.getOwnerVillage());
             if (originalVillage != null && !originalVillage.getName().equals(destinationVillage.getName())) {
@@ -217,16 +207,33 @@ public class LandFlags extends Base {
                         Base.getLandPerks().giveEffects(player, playerVillage);
                     }
                 }
-                if (destinationLand.isPvp()) {
-                    tb.withActionbar(MessageUtils.replaceColorCodes(String.valueOf(addition.toString()) + " " + destinationVillage.getEnterMessage() + " - &C&lPvp is enabled!"));
-                } else {
-                    tb.withActionbar(MessageUtils.replaceColorCodes(String.valueOf(addition.toString()) + " " + destinationVillage.getEnterMessage()));
-                }
-                Bukkit.getScheduler().scheduleSyncDelayedTask(KingdomsPlugin.getInstance(), () -> {
-                    new TitleBuilder().withActionbar(originalVillage.getLeaveMessage()).send(player);
-                }, 2000L);
             }
-            tb.send(player);
+            Utils.runAsync(() -> {
+                TitleBuilder tb = new TitleBuilder();
+                if (destinationLand.isPlot()) {
+                    addition.append("&7&lWelcome to&6&l ");
+                    addition.append(ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName());
+                    addition.append("&7&l\u2019s plot ");
+                }
+                if (this.playerOwnsLand(destinationLand, playerVillage.getName())) {
+                    if (destinationLand.isForSale()) {
+                        addition.append("&9&lLand is for sale ");
+                    }
+                }
+                tb.withActionbar(addition.toString());
+
+                if (originalVillage != null && !originalVillage.getName().equals(destinationVillage.getName())) {
+                    if (destinationLand.isPvp()) {
+                        tb.withActionbar(MessageUtils.replaceColorCodes(String.valueOf(addition.toString()) + " " + destinationVillage.getEnterMessage() + " - &C&lPvp is enabled!"));
+                    } else {
+                        tb.withActionbar(MessageUtils.replaceColorCodes(String.valueOf(addition.toString()) + " " + destinationVillage.getEnterMessage()));
+                    }
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(KingdomsPlugin.getInstance(), () -> {
+                        new TitleBuilder().withActionbar(originalVillage.getLeaveMessage()).send(player);
+                    }, 2000L);
+                }
+                tb.send(player);
+            });
         } else if (this.landIsClaimed(originalLand) && !this.landIsClaimed(destinationLand)) {
             Village originalVillage = VillageManager.getInstance().getVillageFromName(originalLand.getOwnerVillage());
             if (playerVillage != null && playerVillage.isBuff() && this.playerOwnsLand(originalLand, playerVillage.getName())) {

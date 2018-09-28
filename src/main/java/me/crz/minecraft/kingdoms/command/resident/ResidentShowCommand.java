@@ -5,7 +5,6 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.OfflinePlayer;
 
-import java.util.UUID;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
@@ -14,7 +13,6 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Bukkit;
-import me.crz.minecraft.kingdoms.utils.OfflinePlayerManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;

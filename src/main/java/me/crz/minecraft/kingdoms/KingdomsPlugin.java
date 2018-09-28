@@ -20,14 +20,12 @@ import me.crz.minecraft.kingdoms.village.VillageListener;
 import me.crz.minecraft.kingdoms.vault.VaultListener;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.village.VillageManager;
-import me.crz.minecraft.kingdoms.utils.OfflinePlayerManager;
 import me.crz.minecraft.kingdoms.utils.UtilChat;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import me.crz.minecraft.kingdoms.land.LandPerks;
 import me.crz.minecraft.kingdoms.utils.config.Config;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
 
 public class KingdomsPlugin extends JavaPlugin {
     private static KingdomsPlugin instance;
@@ -48,7 +46,6 @@ public class KingdomsPlugin extends JavaPlugin {
 
     public void onDisable() {
         running = false;
-        OfflinePlayerManager.getInstance().save();
         VillageManager.getInstance().saveAll();
     }
 
@@ -79,7 +76,6 @@ public class KingdomsPlugin extends JavaPlugin {
             this.getServer().getPluginManager().registerEvents(new Advancements(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlagsBlockEvents(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlagsUseEvents(), this);
-            this.getServer().getPluginManager().registerEvents(OfflinePlayerManager.getInstance(), this);
             this.upkeep();
             running = true;
             return;
