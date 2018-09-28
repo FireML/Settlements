@@ -173,7 +173,7 @@ public class LandManager {
         OwnedLand land = this.claimLand(location, village);
         land.setIsOutpost(true);
         cacheLand(land);
-        village.addOutpostHome(location, land, "outpost-" + this.getClaimedLandSize(village));
+        village.addOutpostHome("outpost-" + this.getClaimedLandSize(village), location);
         Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
     }
 

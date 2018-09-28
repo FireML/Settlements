@@ -55,29 +55,21 @@ public class VaultListener implements Listener {
     }
 
     private void deposit(ItemStack[] contents, Village village, Player player) {
-        Document doc = (Document) village.getDocument().get("vault");
-        if (doc == null) {
-            doc = new Document();
-            village.set("vault", doc);
-            DatabaseManager.getInstance().saveVillage(village);
-        }
         Map<Material, Integer> fail = new HashMap<>();
         if (village.getLevel() != 10 || village.getState() != VillageState.KINGDOM) {
             HashMap<String, Integer> nextLevelReqs = Levels.getLevelMapFromInt(village.getLevel() + 1, village.getState());
-            Map<Material, Integer> total = new HashMap<>();
-            Map<Material, Integer> deposited = new HashMap<>();
-            for (Map.Entry<String, Integer> entry : nextLevelReqs.entrySet()) {
-                if (doc.containsKey(entry.getKey())) {
-                    total.put(Material.valueOf(entry.getKey()), doc.getInteger(entry.getKey()));
-                } else {
-                    total.put(Material.valueOf(entry.getKey()), 0);
-                }
+            Map<String, Integer> total = new HashMap<>();
+            Map<String, Integer> deposited = new HashMap<>();
+
+            for (String type : nextLevelReqs.keySet()) {
+                total.put(type, village.getVault().getOrDefault(type, 0));
             }
+
             for (ItemStack item : contents) {
                 if (item != null) {
-                    Material material = item.getType();
-                    if (nextLevelReqs.containsKey(material.name())) {
-                        int required = nextLevelReqs.get(material.name());
+                    String material = item.getType().name();
+                    if (nextLevelReqs.containsKey(material)) {
+                        int required = nextLevelReqs.get(material);
                         if (required <= total.get(material)) {
                             player.getInventory().addItem(item);
                             this.add(fail, item.getType(), item.getAmount());
@@ -105,9 +97,8 @@ public class VaultListener implements Listener {
             }
             if (!deposited.isEmpty()) {
                 MessageUtils.tellListResidents(village.getResidents(), this.buildSuccessDepositMessage(player, deposited));
-                for (Material mat : total.keySet()) {
-                    this.save(village, mat, total.get(mat));
-                }
+                village.getVault().putAll(total);
+                Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
             }
             if (!fail.isEmpty()) {
                 MessageUtils.tellList(player, this.buildfailDepositMessage(fail, ""));
@@ -125,22 +116,8 @@ public class VaultListener implements Listener {
         }
     }
 
-    public void add(Map<Material, Integer> m, Material mat, Integer add) {
-        if (m.containsKey(mat)) {
-            m.put(mat, add + m.get(mat));
-        } else {
-            m.put(mat, add);
-        }
-    }
-
-    private void save(Village village, Material material, int amount) {
-        Document doc = (Document) village.getDocument().get("vault");
-        if (doc == null) {
-            doc = new Document();
-        }
-        doc.put(material.name(), amount);
-        village.getDocument().put("vault", doc);
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
+    public <R> void add(Map<R, Integer> m, R mat, Integer add) {
+        m.put(mat, m.getOrDefault(mat, 0) + add);
     }
 
     private boolean isVault(Inventory inv) {
@@ -163,16 +140,16 @@ public class VaultListener implements Listener {
         return messages;
     }
 
-    private List<String> buildSuccessDepositMessage(Player p, Map<Material, Integer> deposited) {
+    private List<String> buildSuccessDepositMessage(Player p, Map<String, Integer> deposited) {
         List<String> messages = new ArrayList<>();
         messages.add("&6&l" + p.getName() + " &7&lhas deposited:");
-        for (Map.Entry<Material, Integer> entry : deposited.entrySet()) {
+        for (Map.Entry<String, Integer> entry : deposited.entrySet()) {
             String message = MessageUtils.LIST_DEPOSIT_MESSAGE;
             if (message.contains("{amount}")) {
                 message = message.replace("{amount}", (entry.getValue()).toString());
             }
             if (message.contains("{material}")) {
-                message = message.replace("{material}", (entry.getKey()).name());
+                message = message.replace("{material}", (entry.getKey()));
             }
             messages.add(ChatColor.translateAlternateColorCodes('&', message));
         }
@@ -222,17 +199,11 @@ public class VaultListener implements Listener {
     }
 
     private void resetVaultAfterLevelUp(Village village) {
-        village.getDocument().put("vault", new Document());
+        village.getVault().clear();
         Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
     }
 
     private boolean canLevelUp(Village village) {
-        Document doc = (Document) village.getDocument().get("vault");
-        if (doc == null) {
-            doc = new Document();
-            village.set("vault", doc);
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
-        }
         int currentLevel = village.getLevel();
         if (currentLevel == 10 && village.getState() == VillageState.KINGDOM) {
             return false;
@@ -244,11 +215,11 @@ public class VaultListener implements Listener {
         Iterator<Map.Entry<String, Integer>> iterator = nextLevelReqs.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, Integer> pair = iterator.next();
-            if (!doc.containsKey(pair.getKey())) {
+            if (!village.getVault().containsKey(pair.getKey())) {
                 return false;
             }
             int amountRequired = nextLevelReqs.get(pair.getKey());
-            int amountInVault = doc.getInteger(pair.getKey());
+            int amountInVault = village.getVault().get(pair.getKey());
             if (amountInVault < amountRequired) {
                 return false;
             }

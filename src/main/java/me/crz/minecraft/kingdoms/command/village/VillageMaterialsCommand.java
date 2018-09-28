@@ -20,8 +20,8 @@ public class VillageMaterialsCommand extends SubCommand {
     }
 
     @Override
-    public void run(final Player player, final String base, final String alias, final String... args) {
-        final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
+    public void run(Player player, String base, String alias, String... args) {
+        Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
             MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
             return;
@@ -29,18 +29,12 @@ public class VillageMaterialsCommand extends SubCommand {
         if (village.getLevel() == 10) {
             return;
         }
-        final HashMap<String, Integer> nextLevelReqs = Levels.getLevelMapFromInt(village.getLevel() + 1, village.getState());
-        Document doc = (Document) village.getDocument().get("vault");
-        if (doc == null) {
-            doc = new Document();
-            village.set("vault", doc);
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
-        }
-        final StringBuilder sb = new StringBuilder("&8&l--------&r&c&lRequired Materials&r&8&l--------");
+        HashMap<String, Integer> nextLevelReqs = Levels.getLevelMapFromInt(village.getLevel() + 1, village.getState());
+        StringBuilder sb = new StringBuilder("&8&l--------&r&c&lRequired Materials&r&8&l--------");
         if (nextLevelReqs != null) {
-            for (final String mat : nextLevelReqs.keySet()) {
-                if (doc.containsKey(mat)) {
-                    sb.append("\n&e").append(nextLevelReqs.get(mat) - doc.getInteger(mat)).append(" &7").append(mat);
+            for (String mat : nextLevelReqs.keySet()) {
+                if (village.getVault().containsKey(mat)) {
+                    sb.append("\n&e").append(nextLevelReqs.get(mat) - village.getVault().get(mat)).append(" &7").append(mat);
                 } else {
                     sb.append("\n&e").append(nextLevelReqs.get(mat)).append(" &7").append(mat);
                 }

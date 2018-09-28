@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.world;
 
-import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -27,34 +26,6 @@ public class SimpleChunkLocation {
 
     public SimpleChunkLocation(SimpleLocation location) {
         this(location.getWorld(), (int) location.getX() >> 4, (int) location.getZ() >> 4);
-    }
-
-    public static SimpleChunkLocation load(Document document) {
-        if (document != null
-                && document.get("x") != null && document.get("y") != null && document.get("worldName") != null) {
-            return new SimpleChunkLocation(
-                    document.getString("worldName"),
-                    document.getInteger("x"),
-                    document.getInteger("z")
-            );
-        }
-        return null;
-    }
-
-    public static Document save(SimpleChunkLocation location, Document document) {
-        if (document == null) {
-            document = new Document();
-        }
-        if (location != null) {
-            document.put("x", location.getX());
-            document.put("z", location.getZ());
-            document.put("worldName", location.getWorld());
-        } else {
-            document.put("x", null);
-            document.put("z", null);
-            document.put("worldName", null);
-        }
-        return document;
     }
 
     public SimpleChunkLocation copy() {

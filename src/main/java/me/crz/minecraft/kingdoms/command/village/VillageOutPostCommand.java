@@ -163,7 +163,7 @@ public class VillageOutPostCommand extends SubCommand {
                 MessageUtils.tell(player, "&a&lLand must be an outpost to set a home here!");
                 return;
             }
-            village.addOutpostHome(player.getLocation(), land3, args[1]);
+            village.addOutpostHome(args[1], player.getLocation());
             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
             MessageUtils.tell(player, "&a&lHome &6" + args[1] + " &aset here");
         }

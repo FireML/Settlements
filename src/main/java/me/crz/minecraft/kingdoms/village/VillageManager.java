@@ -13,7 +13,6 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class VillageManager {
     private static VillageManager instance;

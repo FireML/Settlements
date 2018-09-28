@@ -1,10 +1,7 @@
 package me.crz.minecraft.kingdoms.teleporter;
 
-import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Location;
-import org.bson.Document;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.Bukkit;
 
@@ -25,12 +22,14 @@ import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import me.crz.minecraft.kingdoms.Base;
 
 public class PrivateTeleportersGUI extends Base {
-    private List<String> allies = new ArrayList<>();
+    private Set<String> allies = new LinkedHashSet<>();
     private int checks = 0;
     private List<ClickableItem> items = new ArrayList<>();
 

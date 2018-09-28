@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.utils;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.db.TownCache;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -15,6 +16,7 @@ import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.World;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -224,5 +226,29 @@ public class Utils {
             run.run();
         }
         return null;
+    }
+
+    public static UUID parseUuid(String uuidStr) {
+        try {
+            return UUID.fromString(uuidStr);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    public static <R extends Enum<R>> R parseEnum(Class<R> chatChannelClass, String name) {
+        try {
+            return Enum.valueOf(chatChannelClass, name);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    public static <R extends Enum<R>> R parseEnum(String name, R defaultValue) {
+        try {
+            return Enum.valueOf(defaultValue.getDeclaringClass(), name);
+        } catch (IllegalArgumentException e) {
+            return defaultValue;
+        }
     }
 }

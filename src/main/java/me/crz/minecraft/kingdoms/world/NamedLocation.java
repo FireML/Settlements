@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.world;
 
-import org.bson.Document;
 import org.bukkit.Location;
 
 public class NamedLocation extends SimpleLocation {
@@ -34,11 +33,4 @@ public class NamedLocation extends SimpleLocation {
         this.name = name;
     }
 
-    public static NamedLocation load(Document document) {
-        if (document.containsKey("name")) {
-            SimpleLocation location = SimpleLocation.load(document);
-            return new NamedLocation(document.getString("name"), location);
-        }
-        return null;
-    }
 }
