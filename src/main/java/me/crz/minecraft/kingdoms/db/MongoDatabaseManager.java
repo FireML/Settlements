@@ -65,6 +65,7 @@ public class MongoDatabaseManager extends DatabaseManager {
     }
 
     public void saveVillage(Village village, boolean exists) {
+        Utils.catchSync();
         if (!exists && kingdomCollection.find(new Document("name", Pattern.compile(village.getName(), Pattern.CASE_INSENSITIVE))).first() == null) {
             kingdomCollection.insertOne(createDocument(village));
         } else {
@@ -74,6 +75,7 @@ public class MongoDatabaseManager extends DatabaseManager {
 
     @Override
     public void deleteVillage(Village village) {
+        Utils.catchSync();
         kingdomCollection.deleteOne(new Document("name", Pattern.compile(village.getName(), Pattern.CASE_INSENSITIVE)));
     }
 
@@ -97,11 +99,13 @@ public class MongoDatabaseManager extends DatabaseManager {
 
     @Override
     public void unclaimLand(Village village) {
+        Utils.catchSync();
         landCollection.deleteMany(new Document("ownerVillage", Pattern.compile(village.getName(), Pattern.CASE_INSENSITIVE)));
     }
 
     @Override
     public void saveLand(OwnedLand... lands) {
+        Utils.catchSync();
         for (OwnedLand land : lands) {
             Document filter = new Document();
             filter.put("x", land.getX());
@@ -118,6 +122,7 @@ public class MongoDatabaseManager extends DatabaseManager {
 
     @Override
     public Collection<OwnedLand> getAllLand() {
+        Utils.catchSync();
         List<OwnedLand> lands = new ArrayList<>();
         for (Document doc : landCollection.find()) {
             lands.add(createOwnedLand(doc));
@@ -127,6 +132,7 @@ public class MongoDatabaseManager extends DatabaseManager {
 
     @Override
     public Collection<Village> getAllVillages() {
+        Utils.catchSync();
         List<Village> villages = new ArrayList<>();
         for (Document doc : kingdomCollection.find()) {
             Village village = createVillage(doc);
@@ -139,16 +145,19 @@ public class MongoDatabaseManager extends DatabaseManager {
 
     @Override
     public Resident getResident(UUID uuid) {
+        Utils.catchSync();
         return createResident(residentCollection.find(new Document("uuid", uuid.toString())).first());
     }
 
     @Override
     public Resident getResident(String name) {
+        Utils.catchSync();
         return createResident(residentCollection.find(new Document("name", Pattern.compile(name, Pattern.CASE_INSENSITIVE))).first());
     }
 
     @Override
     public void saveResident(Resident... residents) {
+        Utils.catchSync();
         for (Resident resident : residents) {
             if (residentCollection.find(new Document("uuid", resident.getUUID().toString())).first().isEmpty()) {
                 residentCollection.insertOne(createDocument(resident));

@@ -37,6 +37,7 @@ public class KingdomsPlugin extends JavaPlugin {
     public boolean emgcy;
     public static Chat chat;
     public UtilChat utilChat;
+    private boolean running = false;
 
     public KingdomsPlugin() {
         super();
@@ -46,6 +47,7 @@ public class KingdomsPlugin extends JavaPlugin {
     }
 
     public void onDisable() {
+        running = false;
         OfflinePlayerManager.getInstance().save();
         VillageManager.getInstance().saveAll();
     }
@@ -79,6 +81,7 @@ public class KingdomsPlugin extends JavaPlugin {
             this.getServer().getPluginManager().registerEvents(new LandFlagsUseEvents(), this);
             this.getServer().getPluginManager().registerEvents(OfflinePlayerManager.getInstance(), this);
             this.upkeep();
+            running = true;
             return;
         }
         this.getLogger().severe(String.format("[%s] - Disabled due to data.json error!", this.getDescription().getName()));
@@ -145,4 +148,7 @@ public class KingdomsPlugin extends JavaPlugin {
         return instance;
     }
 
+    public boolean isRunning() {
+        return running;
+    }
 }

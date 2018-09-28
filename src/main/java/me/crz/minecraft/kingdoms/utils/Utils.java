@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.World;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -249,6 +250,12 @@ public class Utils {
             return Enum.valueOf(defaultValue.getDeclaringClass(), name);
         } catch (IllegalArgumentException e) {
             return defaultValue;
+        }
+    }
+
+    public static void catchSync() {
+        if (KingdomsPlugin.getInstance().isRunning() && Bukkit.isPrimaryThread()) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Doing an operation on the main thread that should be done async!", new Throwable());
         }
     }
 }
