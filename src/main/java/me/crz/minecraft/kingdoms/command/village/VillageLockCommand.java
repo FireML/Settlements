@@ -28,7 +28,7 @@ public class VillageLockCommand extends SubCommand {
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
             return;
         }
         if (args.length < 1) {
@@ -69,7 +69,7 @@ public class VillageLockCommand extends SubCommand {
                 }
                 final Player target = Bukkit.getPlayerExact(args[1]);
                 if (target == null) {
-                    MessageUtils.tell(player, MessageUtils.PLAYER_NOT_FOUND_MESSAGE);
+                    MessageUtils.tell(player, MessageUtils.Message.PLAYER_NOT_FOUND);
                     return;
                 }
                 final Block block = player.getTargetBlock(null, 15);
@@ -97,7 +97,7 @@ public class VillageLockCommand extends SubCommand {
         }
         final Player target = Bukkit.getPlayerExact(args[1]);
         if (target == null) {
-            MessageUtils.tell(player, MessageUtils.PLAYER_NOT_FOUND_MESSAGE);
+            MessageUtils.tell(player, MessageUtils.Message.PLAYER_NOT_FOUND);
             return;
         }
         final Block block = player.getTargetBlock(null, 15);

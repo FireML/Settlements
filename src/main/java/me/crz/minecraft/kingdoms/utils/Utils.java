@@ -1,7 +1,6 @@
 package me.crz.minecraft.kingdoms.utils;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.db.TownCache;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -14,8 +13,10 @@ import java.util.ArrayList;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -30,151 +31,99 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitTask;
 
 public class Utils {
-    private static final int CHUNK_VILLAGE_LEVEL_ONE = getChunkFromConfig("village-level-one-chunks");
-    private static final int CHUNK_VILLAGE_LEVEL_TWO = getChunkFromConfig("village-level-two-chunks");
-    private static final int CHUNK_VILLAGE_LEVEL_THREE = getChunkFromConfig("village-level-three-chunks");
-    private static final int CHUNK_VILLAGE_LEVEL_FOUR = getChunkFromConfig("village-level-four-chunks");
-    private static final int CHUNK_VILLAGE_LEVEL_FIVE = getChunkFromConfig("village-level-five-chunks");
-    private static final int CHUNK_KINGDOM_LEVEL_ONE = getChunkFromConfig("kingdom-level-one-chunks");
-    private static final int CHUNK_KINGDOM_LEVEL_TWO = getChunkFromConfig("kingdom-level-two-chunks");
-    private static final int CHUNK_KINGDOM_LEVEL_THREE = getChunkFromConfig("kingdom-level-three-chunks");
-    private static final int CHUNK_KINGDOM_LEVEL_FOUR = getChunkFromConfig("kingdom-level-four-chunks");
-    private static final int CHUNK_KINGDOM_LEVEL_FIVE = getChunkFromConfig("kingdom-level-five-chunks");
-    private static final int CHUNK_KINGDOM_LEVEL_SIX = getChunkFromConfig("kingdom-level-six-chunks");
-    private static final int CHUNK_KINGDOM_LEVEL_SEVEN = getChunkFromConfig("kingdom-level-seven-chunks");
-    private static final int CHUNK_KINGDOM_LEVEL_EIGHT = getChunkFromConfig("kingdom-level-eight-chunks");
-    private static final int CHUNK_KINGDOM_LEVEL_NINE = getChunkFromConfig("kingdom-level-nine-chunks");
-    private static final int CHUNK_KINGDOM_LEVEL_TEN = getChunkFromConfig("kingdom-level-ten-chunks");
+    private static Map<String, Integer> LEVEL_CHUNKS = new HashMap<>();
 
     public Utils() {
         super();
     }
 
-    public static ItemStack getHead(final OfflinePlayer player, final String name) {
-        final ItemStack item = new ItemStack(Material.PLAYER_HEAD);
-        final SkullMeta skull = (SkullMeta) item.getItemMeta();
+    public static ItemStack getHead(OfflinePlayer player, String name) {
+        ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta skull = (SkullMeta) item.getItemMeta();
         skull.setDisplayName(name);
         skull.setOwningPlayer(player);
         item.setItemMeta(skull);
         return item;
     }
 
-    public static boolean playerIsElder(final Player player) {
+    public static boolean playerIsElder(Player player) {
         return ResidentManager.getInstance().getResident(player).getVillageRank().equals(VillageRank.ELDER);
     }
 
-    public static boolean isWorldClaimable(final World world) {
+    public static boolean isWorldClaimable(World world) {
         return !getDisabledClaimingWorlds().contains(world.getName());
     }
 
     public static List<String> getDisabledClaimingWorlds() {
-        final FileConfiguration config = ConfigManager.getInstance().getConfig();
+        FileConfiguration config = KingdomsPlugin.getInstance().getConfig();
         if (config.contains("disabled-claiming-worlds")) {
             return config.getStringList("disabled-claiming-worlds");
         }
-        final List<String> temp = new ArrayList<>();
+        List<String> temp = new ArrayList<>();
         config.set("disabled-claiming-worlds", temp);
-        ConfigManager.getInstance().save(ConfigManager.getInstance().configf, config);
+        KingdomsPlugin.getInstance().saveConfig();
         return temp;
     }
 
     public static int getVillageCreationCost() {
-        if (ConfigManager.getInstance().getConfig().contains("village-creation-cost")) {
+        if (ConfigManager.getInstance().getConfig().isInt("village-creation-cost")) {
             return ConfigManager.getInstance().getConfig().getInt("village-creation-cost");
         }
         return 0;
     }
 
-    public static boolean playerIsChief(final Player player, final Village village) {
+    public static boolean playerIsChief(Player player, Village village) {
         return village != null && village.getChief().equals(player.getUniqueId());
     }
 
-    public static boolean playerIsBuilder(final Player player) {
+    public static boolean playerIsBuilder(Player player) {
         return ResidentManager.getInstance().getResident(player).getVillageRank().equals(VillageRank.BUILDER);
     }
 
-    public static boolean playerInSameVillage(final Village sender, final Village other) {
+    public static boolean playerInSameVillage(Village sender, Village other) {
         return other != null && sender.getName().equals(other.getName());
     }
 
-    public static boolean playerIsRecruiter(final Player player) {
+    public static boolean playerIsRecruiter(Player player) {
         return ResidentManager.getInstance().getResident(player).getVillageRank().equals(VillageRank.RECRUITER);
     }
 
-    public static boolean playerCanKick(final Player player, final Village village) {
+    public static boolean playerCanKick(Player player, Village village) {
         return playerIsElder(player) || playerIsRecruiter(player) || village.getChief().equals(player.getUniqueId());
     }
 
-    public static boolean playerHasInvite(final Player player, final String joinVillageName) {
+    public static boolean playerHasInvite(Player player, String joinVillageName) {
         return TownCache.getPendingTownInvites().containsKey(player.getUniqueId()) && TownCache.getPendingTownInvites().get(player.getUniqueId()).equals(joinVillageName);
     }
 
-    private static int getChunkFromConfig(final String levelPath) {
-        return ConfigManager.getInstance().getConfig().getInt(levelPath);
+    public static int getChunkMax(int level, VillageState state) {
+        return getLevelChunks(state, level);
     }
 
-    public static int getChunkMax(final int level, final VillageState state) {
-        if (state == VillageState.VILLAGE) {
-            switch (level) {
-                case 1:
-                    return CHUNK_VILLAGE_LEVEL_ONE;
-                case 2:
-                    return CHUNK_VILLAGE_LEVEL_TWO;
-                case 3:
-                    return CHUNK_VILLAGE_LEVEL_THREE;
-                case 4:
-                    return CHUNK_VILLAGE_LEVEL_FOUR;
-                case 5:
-                    return CHUNK_VILLAGE_LEVEL_FIVE;
-            }
-        } else if (state == VillageState.KINGDOM) {
-            switch (level) {
-                case 1:
-                    return CHUNK_KINGDOM_LEVEL_ONE;
-                case 2:
-                    return CHUNK_KINGDOM_LEVEL_TWO;
-                case 3:
-                    return CHUNK_KINGDOM_LEVEL_THREE;
-                case 4:
-                    return CHUNK_KINGDOM_LEVEL_FOUR;
-                case 5:
-                    return CHUNK_KINGDOM_LEVEL_FIVE;
-                case 6:
-                    return CHUNK_KINGDOM_LEVEL_SIX;
-                case 7:
-                    return CHUNK_KINGDOM_LEVEL_SEVEN;
-                case 8:
-                    return CHUNK_KINGDOM_LEVEL_EIGHT;
-                case 9:
-                    return CHUNK_KINGDOM_LEVEL_NINE;
-                case 10:
-                    return CHUNK_KINGDOM_LEVEL_TEN;
-            }
-        }
-        return 0;
+    private static int getLevelChunks(VillageState state, int level) {
+        return LEVEL_CHUNKS.computeIfAbsent(state.name() + "_" + level,
+                key -> ConfigManager.getInstance().getLevelConfig().getInt(state.name().toLowerCase() + ".level-" + level + ".chunks"));
     }
 
-    public static void addDisabledWorld(final World world) {
-        final FileConfiguration config = ConfigManager.getInstance().getConfig();
-        final List<String> temp = getDisabledClaimingWorlds();
+    public static void addDisabledWorld(World world) {
+        List<String> temp = getDisabledClaimingWorlds();
         if (!temp.contains(world.getName())) {
             temp.add(world.getName());
-            config.set("disabled-claiming-worlds", temp);
-            ConfigManager.getInstance().save(ConfigManager.getInstance().configf, config);
+            KingdomsPlugin.getInstance().getConfig().set("disabled-claiming-worlds", temp);
+            KingdomsPlugin.getInstance().saveConfig();
         }
     }
 
-    public static void removeDisabledWorld(final World world) {
-        final FileConfiguration config = ConfigManager.getInstance().getConfig();
-        final List<String> temp = getDisabledClaimingWorlds();
+    public static void removeDisabledWorld(World world) {
+        List<String> temp = getDisabledClaimingWorlds();
         if (temp.contains(world.getName())) {
             temp.remove(world.getName());
-            config.set("disabled-claiming-worlds", temp);
-            ConfigManager.getInstance().save(ConfigManager.getInstance().configf, config);
+            KingdomsPlugin.getInstance().getConfig().set("disabled-claiming-worlds", temp);
+            KingdomsPlugin.getInstance().saveConfig();
         }
     }
 
-    public static int getChunkMaxOutpost(final int level, final VillageState state) {
+    public static int getChunkMaxOutpost(int level, VillageState state) {
         if (state == VillageState.VILLAGE) {
             if (level <= 3) {
                 return 1;
@@ -200,14 +149,14 @@ public class Utils {
         return 4;
     }
 
-    public static Collection<Chunk> getChunksAroundPlayer(final Player player, int radius) {
-        final World world = player.getWorld();
-        final int baseX = player.getLocation().getChunk().getX();
-        final int baseZ = player.getLocation().getChunk().getZ();
-        final Collection<Chunk> chunksAroundPlayer = new HashSet<>();
+    public static Collection<Chunk> getChunksAroundPlayer(Player player, int radius) {
+        World world = player.getWorld();
+        int baseX = player.getLocation().getChunk().getX();
+        int baseZ = player.getLocation().getChunk().getZ();
+        Collection<Chunk> chunksAroundPlayer = new HashSet<>();
         for (int x = baseX - radius; x <= baseX + radius; x++) {
             for (int z = baseZ - radius; z <= baseZ + radius; z++) {
-                final Chunk chunk = world.getChunkAt(x, z);
+                Chunk chunk = world.getChunkAt(x, z);
                 chunksAroundPlayer.add(chunk);
             }
         }

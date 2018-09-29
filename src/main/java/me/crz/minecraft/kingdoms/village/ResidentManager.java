@@ -4,7 +4,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
-import me.crz.minecraft.kingdoms.utils.config.Config;
+import me.crz.minecraft.kingdoms.utils.config.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -43,7 +43,7 @@ public class ResidentManager {
                         return Long.MAX_VALUE;
                     }
                 }
-                return TimeUnit.SECONDS.toNanos(Config.residentCacheDuration);
+                return TimeUnit.SECONDS.toNanos(Data.residentCacheDuration);
             }
         };
         residentsByUuid = Caffeine.newBuilder()

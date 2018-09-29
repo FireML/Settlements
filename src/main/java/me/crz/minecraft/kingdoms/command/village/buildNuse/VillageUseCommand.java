@@ -21,11 +21,11 @@ public class VillageUseCommand extends SubCommand {
     public void run(Player player, String base, String alias, String... args) {
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
             return;
         }
         if (!this.canChange(village, player)) {
-            MessageUtils.tell(player, MessageUtils.NO_PERMISSION_MESSAGE);
+            MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
             return;
         }
         if (args.length < 2) {

@@ -23,11 +23,11 @@ public class VillageInviteCommand extends SubCommand {
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
             return;
         }
         if (!this.canInvite(ResidentManager.getInstance().getResident(player))) {
-            MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.RECRUITER.getTag(village.getState()) + " or higher&r&c&l!", null, null);
+            MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.RECRUITER.getTag(village.getState()));
             return;
         }
         if (args.length < 1) {
@@ -36,17 +36,17 @@ public class VillageInviteCommand extends SubCommand {
         }
         final Player invitedPlayer = Bukkit.getPlayerExact(args[0]);
         if (invitedPlayer == null) {
-            MessageUtils.tell(player, MessageUtils.PLAYER_NOT_FOUND_MESSAGE, null, null);
+            MessageUtils.tell(player, MessageUtils.Message.PLAYER_NOT_FOUND, null, null);
             return;
         }
         final Village playerVillage = VillageManager.getInstance().getVillageFromPlayer(invitedPlayer);
         if (Utils.playerInSameVillage(village, playerVillage)) {
-            MessageUtils.tell(player, MessageUtils.MUST_LEAVE_CURRENT_MESSAGE, null, null);
+            MessageUtils.tell(player, MessageUtils.Message.MUST_LEAVE_CURRENT, null, null);
             return;
         }
         TownCache.getPendingTownInvites().put(invitedPlayer.getUniqueId(), village.getName());
-        MessageUtils.tell(invitedPlayer, MessageUtils.RECEIVE_INVITE_MESSAGE, "{townName}", village.getName());
-        MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.SUCCESS_INVITE_MESSAGE, "{player}", invitedPlayer.getName());
+        MessageUtils.tell(invitedPlayer, MessageUtils.Message.RECEIVE_INVITE, "{townName}", village.getName());
+        MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_INVITE, "{player}", invitedPlayer.getName());
     }
 
     private boolean canInvite(final Resident res) {

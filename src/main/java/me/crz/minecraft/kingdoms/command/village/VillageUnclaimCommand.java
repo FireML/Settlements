@@ -20,19 +20,19 @@ public class VillageUnclaimCommand extends SubCommand {
     }
 
     @Override
-    public void run(final Player player, final String base, final String alias, final String... args) {
-        final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
+    public void run(Player player, String base, String alias, String... args) {
+        Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
             return;
         }
-        final Resident res = ResidentManager.getInstance().getResident(player);
+        Resident res = ResidentManager.getInstance().getResident(player);
         if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER)) {
             MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.ELDER.getTag(village.getState()) + "&r&c&l!");
             return;
         }
-        final Chunk currentChunk = player.getLocation().getChunk();
-        final OwnedLand land = LandManager.getInstance().getLand(currentChunk);
+        Chunk currentChunk = player.getLocation().getChunk();
+        OwnedLand land = LandManager.getInstance().getLand(currentChunk);
         if (land == null || !land.getOwnerVillage().equals(village.getName())) {
             MessageUtils.tell(player, "&cYou do not own this land.");
             return;
@@ -42,6 +42,9 @@ public class VillageUnclaimCommand extends SubCommand {
             return;
         }
         LandManager.getInstance().unclaimLand(land);
-        MessageUtils.tellResidents(village.getOnlineResidents(), "&aSuccess unclaim land.");
+        MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_UNCLAIM_LAND,
+                "player", player.getName(),
+                "x", String.valueOf(player.getLocation().getBlockX()),
+                "z", String.valueOf(player.getLocation().getBlockZ()));
     }
 }

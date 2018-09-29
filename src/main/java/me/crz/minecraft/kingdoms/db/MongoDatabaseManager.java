@@ -13,7 +13,6 @@ import me.crz.minecraft.kingdoms.landflags.PlotBuildState;
 import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.BuildState;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.UpkeepStage;
@@ -23,6 +22,7 @@ import me.crz.minecraft.kingdoms.world.NamedLocation;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import org.bson.Document;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,15 +44,16 @@ public class MongoDatabaseManager extends DatabaseManager {
     private MongoCollection<Document> otherData;
 
     public void connect() {
-        if (Config.host.isEmpty() && Config.port == 0) {
-            throw new IllegalArgumentException("Mongo not connecting due to bad data.json file!");
+        ConfigurationSection config = KingdomsPlugin.getInstance().getConfig().getConfigurationSection("storage");
+        if (config.getString("host", "").isEmpty() && config.getInt("port", 0) == 0) {
+            throw new IllegalArgumentException("Mongo not connecting due to bad storage data!");
         }
         mongo = new MongoClient(
-                new ServerAddress(Config.host, Config.port),
-                MongoCredential.createCredential(Config.databaseUser, Config.database, Config.databasePassword.toCharArray()),
+                new ServerAddress(config.getString("host"), config.getInt("port")),
+                MongoCredential.createCredential(config.getString("user"), config.getString("database"), config.getString("password").toCharArray()),
                 MongoClientOptions.builder().applicationName("Kingdoms").build()
         );
-        database = mongo.getDatabase(Config.database);
+        database = mongo.getDatabase(config.getString("database"));
         kingdomCollection = database.getCollection("Kingdoms");
         residentCollection = database.getCollection("resident");
         landCollection = database.getCollection("land");

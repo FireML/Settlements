@@ -16,11 +16,11 @@ public class VillageSettingsCommand extends SubCommand {
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
             return;
         }
         if (!this.canChange(village, player)) {
-            MessageUtils.tell(player, MessageUtils.NO_PERMISSION_MESSAGE);
+            MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
             return;
         }
         SettingsGUI.getInstance().open(player);

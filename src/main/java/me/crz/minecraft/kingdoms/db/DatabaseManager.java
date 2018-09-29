@@ -1,7 +1,7 @@
 package me.crz.minecraft.kingdoms.db;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 
@@ -17,9 +17,10 @@ public abstract class DatabaseManager {
 
     public static DatabaseManager getInstance() {
         if (instance == null) {
-            if ("mongo".equalsIgnoreCase(Config.databaseType)) {
+            String type = KingdomsPlugin.getInstance().getConfig().getString("storage.type");
+            if ("mongo".equalsIgnoreCase(type)) {
                 instance = new MongoDatabaseManager();
-            } else if ("mysql".equalsIgnoreCase(Config.databaseType)) {
+            } else if ("mysql".equalsIgnoreCase(type)) {
                 instance = new MySqlDatabaseManager();
             }
         }

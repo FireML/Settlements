@@ -1,27 +1,59 @@
-village-level-two:
-  STONE: 5
-  LOG: 5
-village-level-three:
-  SAND: 10
-village-level-four:
-  COBBLESTONE: 64
-village-level-five:
-  SAND: 64
-kingdom-level-two:
-  STONE: 1
-kingdom-level-three:
-  STONE: 1
-kingdom-level-four:
-  STONE: 1
-kingdom-level-five:
-  STONE: 1
-kingdom-level-six:
-  STONE: 1
-kingdom-level-seven:
-  STONE: 1
-kingdom-level-eight:
-  STONE: 1
-kingdom-level-nine:
-  STONE: 1
-kingdom-level-ten:
-  STONE: 1
+village:
+  level-1:
+    chunks: 20
+  level-2:
+    chunks: 40
+    requirements:
+      STONE: 5
+      LOG: 5
+  level-3:
+    chunks: 60
+    requirements:
+      SAND: 10
+  level-4:
+    chunks: 80
+    requirements:
+      COBBLESTONE: 64
+  level-5:
+    chunks: 100
+    requirements:
+      SAND: 64
+kingdom:
+  level-1:
+    chunks: 150
+    requirements:
+      STONE: 1
+  level-2:
+    chunks: 175
+    requirements:
+      STONE: 1
+  level-3:
+    chunks: 200
+    requirements:
+      STONE: 1
+  level-4:
+    chunks: 250
+    requirements:
+      STONE: 1
+  level-5:
+    chunks: 300
+    requirements:
+      STONE: 1
+  level-6:
+    chunks: 400
+    requirements:
+      STONE: 1
+  level-7:
+    chunks: 650
+    requirements:
+      STONE: 1
+  level-8:
+    chunks: 800
+    requirements:
+      STONE: 1
+  level-9:
+    chunks: 1000
+    requirements:
+      STONE: 1
+  level-10:
+    chunks: 1000

@@ -24,7 +24,7 @@ public class VillageLeaveMessageCommand extends SubCommand {
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
             return;
         }
         if (!this.canChange(village, player)) {
@@ -33,7 +33,7 @@ public class VillageLeaveMessageCommand extends SubCommand {
         }
         final Resident res = ResidentManager.getInstance().getResident(player);
         if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER)) {
-            MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.ELDER.getTag(village.getState()) + " or higher&r&c&l!", null, null);
+            MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
             return;
         }
         if (args.length <= 2) {
@@ -49,7 +49,7 @@ public class VillageLeaveMessageCommand extends SubCommand {
         message = ChatColor.translateAlternateColorCodes('&', message);
         village.setLeaveMessage(message);
         Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
-        MessageUtils.tell(player, MessageUtils.SUCCESS_CHANGE_LEAVE_MESSAGE, null, null);
+        MessageUtils.tell(player, MessageUtils.Message.SUCCESS_CHANGE_LEAVE, null, null);
     }
 
     private String getMessage(final String[] args) {

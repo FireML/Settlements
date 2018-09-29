@@ -1,7 +1,7 @@
 package me.crz.minecraft.kingdoms.chat.commands;
 
+import me.crz.minecraft.kingdoms.utils.config.Data;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.utils.config.Config;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
@@ -98,7 +98,7 @@ public class MessageCommand extends Command {
         msg.append(target.getDisplayName());
         msg.append("&7: ");
         msg.append(sb.toString());
-        for (String sUUID : Config.socialSpy) {
+        for (String sUUID : Data.socialSpy) {
             Player pl = Bukkit.getPlayer(UUID.fromString(sUUID));
             if (pl != null && pl.isOnline()) {
                 MessageUtils.tell(pl, msg.toString());

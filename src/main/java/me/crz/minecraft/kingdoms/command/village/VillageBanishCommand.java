@@ -24,11 +24,11 @@ public class VillageBanishCommand extends SubCommand {
     public void run(Player player, String base, String alias, String... args) {
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
             return;
         }
         if (!village.getChief().equals(player.getUniqueId())) {
-            MessageUtils.tell(player, MessageUtils.NO_PERMISSION_MESSAGE, null, null);
+            MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION, null, null);
             return;
         }
         if (args.length < 1) {
@@ -53,7 +53,7 @@ public class VillageBanishCommand extends SubCommand {
             Utils.runAsync(() -> {
                 Resident res = ResidentManager.getInstance().getResident(args[1]);
                 if (res == null) {
-                    MessageUtils.tell(player, MessageUtils.PLAYER_NOT_FOUND_MESSAGE);
+                    MessageUtils.tell(player, MessageUtils.Message.PLAYER_NOT_FOUND);
                     return;
                 }
                 if (res.getVillageName().equals(village.getName())) {
@@ -61,7 +61,7 @@ public class VillageBanishCommand extends SubCommand {
                 }
                 village.addBanishedResident(res);
                 DatabaseManager.getInstance().saveVillage(village);
-                MessageUtils.tellResidents(village.getOnlineResidents(), "&7Player &6" + res.getName() + "&7 has been &cbanished &7from your settlement!");
+                MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.BANISHED, "player", res.getName());
             });
         } else if (!args[0].equalsIgnoreCase("remove")) {
             if (args.length < 2) {
@@ -71,12 +71,12 @@ public class VillageBanishCommand extends SubCommand {
             Utils.runAsync(() -> {
                 Resident res = ResidentManager.getInstance().getResident(args[1]);
                 if (res == null) {
-                    MessageUtils.tell(player, MessageUtils.PLAYER_NOT_FOUND_MESSAGE);
+                    MessageUtils.tell(player, MessageUtils.Message.PLAYER_NOT_FOUND);
                     return;
                 }
                 village.removeBanishedResident(res);
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
-                MessageUtils.tellResidents(village.getOnlineResidents(), "&7Player &6" + res.getName() + "&7 has been &aun-banished &7from your settlement!");
+                MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.UNBANISHED, "player", res.getName());
             });
         } else {
             MessageUtils.tell(player, "&c" + this.getUsage(base));

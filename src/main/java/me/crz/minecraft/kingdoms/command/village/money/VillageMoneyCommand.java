@@ -33,7 +33,7 @@ public class VillageMoneyCommand extends SubCommand {
         }
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
             return;
         }
         Resident res = ResidentManager.getInstance().getResident(player);
@@ -43,7 +43,7 @@ public class VillageMoneyCommand extends SubCommand {
             MessageUtils.tell(player, "&2&lVillage Balance: &r&7" + df.format((long) village.getBank()));
         } else if (option.equalsIgnoreCase("withdraw") || option.equalsIgnoreCase("with")) {
             if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.CHIEF)) {
-                MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.CHIEF.getTag(village.getState()) + " or higher&r&c&l!");
+                MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.CHIEF.getTag(village.getState()));
                 return;
             }
             if (args.length < 2 && !this.isInt(args[1])) {
@@ -56,12 +56,15 @@ public class VillageMoneyCommand extends SubCommand {
                 if (r.transactionSuccess()) {
                     village.setBank(village.getBank() - withdrewInit);
                     Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
-                    MessageUtils.tellResidents(village.getOnlineResidents(), "&e&l" + res.getVillageRank() + " &r&e" + player.getName() + " &r&7withdrew &6" + withdrewInit + "&r&7 from the village bank!");
+                    MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.BANK_WITHDRAW,
+                            "rank", res.getVillageRank().getTag(village.getState()),
+                            "player", player.getName(),
+                            "amount", String.valueOf(withdrewInit));
                 } else {
                     MessageUtils.tell(player, "&cAn error occurred, please tell an admin!");
                 }
             } else {
-                MessageUtils.tell(player, "&c&lNot enough money in the village bank to withdraw &r&6&l" + withdrewInit + "&r&c&l!", null, null);
+                MessageUtils.tell(player, MessageUtils.Message.BANK_NOT_ENOUGH_MONEY, "amount", String.valueOf(withdrewInit));
             }
         } else if (option.equalsIgnoreCase("deposit") || option.equalsIgnoreCase("deposit")) {
             if (args.length < 2 && !this.isInt(args[1])) {
@@ -75,12 +78,15 @@ public class VillageMoneyCommand extends SubCommand {
                 if (r2.transactionSuccess()) {
                     village.setBank(village.getBank() + deposit);
                     Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
-                    MessageUtils.tellResidents(village.getOnlineResidents(), "&e&l" + res.getVillageRank() + "&r&e" + player.getName() + " &r&7deposited &6" + deposit + "&r&7 into the village bank!");
+                    MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.BANK_DEPOSIT,
+                            "rank", res.getVillageRank().getTag(village.getState()),
+                            "player", player.getName(),
+                            "amount", String.valueOf(deposit));
                 } else {
                     MessageUtils.tell(player, "&cAn error occurred, please tell an admin!");
                 }
             } else {
-                MessageUtils.tell(player, "&c&lNot enough money in your bank to withdraw &r&6&l" + deposit + "&r&c&l!");
+                MessageUtils.tell(player, MessageUtils.Message.PLAYER_NOT_ENOUGH_MONEY, "amount", String.valueOf(deposit));
             }
         }
     }

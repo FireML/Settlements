@@ -23,7 +23,7 @@ public class VillageJoinCommand extends SubCommand {
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village != null) {
-            MessageUtils.tell(player, MessageUtils.MUST_LEAVE_CURRENT_MESSAGE);
+            MessageUtils.tell(player, MessageUtils.Message.MUST_LEAVE_CURRENT);
             return;
         }
         if (args.length < 1) {
@@ -32,15 +32,15 @@ public class VillageJoinCommand extends SubCommand {
         }
         final Village joinVillage = VillageManager.getInstance().getVillageFromName(args[0].toLowerCase());
         if (joinVillage == null) {
-            MessageUtils.tell(player, MessageUtils.TOWN_NOT_FOUND_MESSAGE);
+            MessageUtils.tell(player, MessageUtils.Message.TOWN_NOT_FOUND);
             return;
         }
         if (!Utils.playerHasInvite(player, joinVillage.getName())) {
-            MessageUtils.tell(player, MessageUtils.NO_INVITE_MESSAGE);
+            MessageUtils.tell(player, MessageUtils.Message.NO_INVITE);
             return;
         }
         if (joinVillage.isFull()) {
-            MessageUtils.tell(player, MessageUtils.IS_FULL_MESSAGE);
+            MessageUtils.tell(player, MessageUtils.Message.IS_FULL);
             return;
         }
         final Resident res = ResidentManager.getInstance().getResident(player);
@@ -48,7 +48,7 @@ public class VillageJoinCommand extends SubCommand {
         res.setVillageRank(VillageRank.RESIDENT);
         res.addChannel(ChatChannel.SETTLEMENT);
         Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
-        MessageUtils.tell(player, MessageUtils.SUCCESS_JOIN_MESSAGE, "{townName}", joinVillage.getName());
-        MessageUtils.tellResidents(joinVillage.getOnlineResidents(), MessageUtils.NEW_RESIDENT_MESSAGE, "{player}", player.getName());
+        MessageUtils.tell(player, MessageUtils.Message.SUCCESS_JOIN, "{townName}", joinVillage.getName());
+        MessageUtils.tellResidents(joinVillage.getOnlineResidents(), MessageUtils.Message.NEW_RESIDENT, "{player}", player.getName());
     }
 }

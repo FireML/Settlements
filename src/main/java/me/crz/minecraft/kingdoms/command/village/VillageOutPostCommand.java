@@ -44,13 +44,13 @@ public class VillageOutPostCommand extends SubCommand {
         }
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
             return;
         }
         Resident res = ResidentManager.getInstance().getResident(player);
         if (args[0].equalsIgnoreCase("claim")) {
             if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER)) {
-                MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.ELDER.getTag(village.getState()) + " or higher&r&c&l!", null, null);
+                MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
                 return;
             }
             if (!Utils.isWorldClaimable(player.getWorld())) {
@@ -60,7 +60,7 @@ public class VillageOutPostCommand extends SubCommand {
             int amountClaimed = LandManager.getInstance().getClaimedLandSizeOutpost(village);
             int maxClaimAllowed = Utils.getChunkMaxOutpost(village.getLevel(), village.getState());
             if (amountClaimed >= maxClaimAllowed) {
-                MessageUtils.tell(player, "&c&lERROR &r&7Your settlement can only claim &e{max}&r&7 outpost chunks!", "{max}", Integer.toString(maxClaimAllowed));
+                MessageUtils.tell(player, MessageUtils.Message.ERROR_MAX_OUTPOST_CHUNKS, "{max}", Integer.toString(maxClaimAllowed));
                 return;
             }
             for (Chunk chunk : Utils.getChunksAroundPlayer(player, 4)) {
@@ -76,14 +76,17 @@ public class VillageOutPostCommand extends SubCommand {
             OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
             if (land != null) {
                 if (land.getOwnerVillage().equals(village.getName())) {
-                    MessageUtils.tell(player, MessageUtils.ALREADY_OWN_LAND_MESSAGE, null, null);
+                    MessageUtils.tell(player, MessageUtils.Message.ALREADY_OWN_LAND, null, null);
                     return;
                 }
-                MessageUtils.tell(player, MessageUtils.CANT_CLAIM_HERE_MESSAGE, "{owner}", land.getOwnerVillage());
+                MessageUtils.tell(player, MessageUtils.Message.CANT_CLAIM_HERE, "{owner}", land.getOwnerVillage());
                 return;
             } else {
                 LandManager.getInstance().claimOutpost(player.getLocation(), village);
-                MessageUtils.tellResidents(village.getOnlineResidents(), "&a&lSUCCESS &r&e{player} &7has claimed an &coutpost&7 for your settlement!", "{player}", player.getName());
+                MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_CLAIM_OUTPOST,
+                        "player", player.getName(),
+                        "x", String.valueOf(player.getLocation().getBlockX()),
+                        "z", String.valueOf(player.getLocation().getBlockZ()));
             }
         }
         if (args[0].equalsIgnoreCase("unclaim")) {
@@ -108,25 +111,22 @@ public class VillageOutPostCommand extends SubCommand {
                 unclaimed++;
             }
             LandManager.getInstance().unclaimLand(land);
-            MessageUtils.tellResidents(village.getOnlineResidents(), "&aSuccess unclaimed outpost and " + unclaimed + " land around it.");
+            MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_UNCLAIM_OUTPOST,
+                    "amount", String.valueOf(unclaimed),
+                    "x", String.valueOf(player.getLocation().getBlockX()),
+                    "z", String.valueOf(player.getLocation().getBlockZ()));
         } else if (args[0].equalsIgnoreCase("list")) {
             StringBuilder sb = new StringBuilder("&7------- &cOutPosts&7 -------\n");
-            for (OwnedLand land2 : LandManager.getInstance().getClaimedLand(village)) {
-                if (land2.getIsOutpost()) {
-                    NamedLocation loc = village.getOutpostHomes().get(land2.getKey());
-                    if (loc != null) {
-                        sb.append("&a").append(loc.getName());
-                        sb.append(" (World: ");
-                        sb.append(loc.getWorld());
-                        sb.append(", X: ");
-                        sb.append(DOUBLE_FORMAT.format(loc.getX()));
-                        sb.append(", Z: ");
-                        sb.append(DOUBLE_FORMAT.format(loc.getZ()));
-                        sb.append(" )\n");
-                    } else {
-                        sb.append("&aMBFU\n");
-                    }
-                }
+            for (NamedLocation loc : village.getOutpostHomes().values()) {
+                sb.append("&a")
+                        .append(loc.getName())
+                        .append(" (World: ")
+                        .append(loc.getWorld())
+                        .append(", X: ")
+                        .append(DOUBLE_FORMAT.format(loc.getX()))
+                        .append(", Z: ")
+                        .append(DOUBLE_FORMAT.format(loc.getZ()))
+                        .append(" )\n");
             }
             MessageUtils.tell(player, sb.toString());
         } else if (args[0].equalsIgnoreCase("tp")) {
@@ -134,24 +134,18 @@ public class VillageOutPostCommand extends SubCommand {
                 MessageUtils.tell(player, "/s outpost tp <name>");
                 return;
             }
-            NamedLocation location = null;
-            for (NamedLocation outpost : village.getOutpostHomes().values()) {
-                if (outpost.getName().equalsIgnoreCase(args[1])) {
-                    location = outpost;
-                    break;
-                }
-            }
+            NamedLocation location = village.getOutpostHomes().get(args[1].toLowerCase());
             if (location != null) {
                 Location loc2 = location.toBukkitLocation();
                 MessageUtils.tell(player, "&e&lTeleporting in 5 seconds...");
                 ExecuteMoveUtil.getInstance().execute(player, () -> player.teleport(loc2), 5, "Teleport");
                 return;
             }
-            MessageUtils.tell(player, "&cunable to find: &6" + args[1] + "\n&cPlease make sure your using the outpost name shown in /s outpost list!\n&ce.g. /s outpost tp outpost-4");
+            MessageUtils.tell(player, MessageUtils.Message.OUTPOST_NOT_FOUND, "name", args[1]);
         }
         if (args[0].equalsIgnoreCase("sethome")) {
             if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER)) {
-                MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.ELDER.getTag(village.getState()) + " or higher&r&c&l!", null, null);
+                MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
                 return;
             }
             if (args.length < 2) {

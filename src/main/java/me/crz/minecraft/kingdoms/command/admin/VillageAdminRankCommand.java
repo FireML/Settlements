@@ -28,18 +28,18 @@ public class VillageAdminRankCommand extends SubCommand {
         }
         String rank = args[1].toUpperCase();
         if (!this.rankIsValid(rank)) {
-            MessageUtils.tell(player, MessageUtils.INVALID_RANK_MESSAGE, "{rank}", rank);
+            MessageUtils.tell(player, MessageUtils.Message.INVALID_RANK, "rank", rank);
             return;
         }
         Utils.runAsync(() -> {
             Resident tRes = ResidentManager.getInstance().getResident(args[0]);
             if (tRes == null) {
-                MessageUtils.tell(player, "&c&lNo &r&6&lplayer&r&c&l with the name &r&6&l{player}&r&c&l found!", "{player}", args[0]);
+                MessageUtils.tell(player, MessageUtils.Message.PLAYER_NOT_FOUND, "player", args[0]);
                 return;
             }
             Village village = VillageManager.getInstance().getVillageFromName(tRes.getVillageName());
             if (village == null) {
-                MessageUtils.tell(player, "&c&lTarget player isn't in a village!");
+                MessageUtils.tell(player, MessageUtils.Message.NOT_IN_VILLAGE, "player", tRes.getName());
                 return;
             }
             Resident res = ResidentManager.getInstance().getResident(village.getChief());
@@ -56,10 +56,8 @@ public class VillageAdminRankCommand extends SubCommand {
                 tRes.setVillageRank(r);
                 DatabaseManager.getInstance().saveResident(tRes);
             }
-            if (player.isOnline()) {
-                MessageUtils.tell(player, "&c&lPlayer &6&l " + tRes.getName() + "&c&l's rank was set to &6&l" + r.name());
-            }
-            MessageUtils.tellResidents(village.getOnlineResidents(), "&c&lPlayer &6&l " + tRes.getName() + "&c&l's rank was set to &6&l" + r.name() + "&c&l by &6&l " + player.getDisplayName());
+            MessageUtils.tell(player, MessageUtils.Message.SET_RANK, "target", tRes.getName(), "rank", r.getTag(village.getState()));
+            MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_SET_RANK, "sender", player.getDisplayName(), "target", tRes.getName(), "rank", r.getTag(village.getState()));
         });
     }
 

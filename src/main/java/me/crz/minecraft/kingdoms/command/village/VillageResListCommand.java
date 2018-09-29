@@ -26,7 +26,7 @@ public class VillageResListCommand extends SubCommand {
     public void run(Player p, String base, String alias, String... args) {
         Village village = VillageManager.getInstance().getVillageFromPlayer(p);
         if (village == null) {
-            MessageUtils.tell(p, MessageUtils.NOT_IN_CURRENT_MESSAGE);
+            MessageUtils.tell(p, MessageUtils.Message.NOT_IN_CURRENT);
             return;
         }
         Utils.runAsync(() -> {

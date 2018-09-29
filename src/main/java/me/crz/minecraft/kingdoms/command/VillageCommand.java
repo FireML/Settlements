@@ -143,7 +143,7 @@ public class VillageCommand implements CommandExecutor {
             subCmd.run(p, alias, aliasUsed, Arrays.copyOfRange(args, 1, args.length));
             return;
         }
-        MessageUtils.tell(p, MessageUtils.NO_PERMISSION_MESSAGE);
+        MessageUtils.tell(p, MessageUtils.Message.NO_PERMISSION);
     }
 
     public boolean onCommand(final CommandSender sender, final Command command, final String alias, final String[] args) {

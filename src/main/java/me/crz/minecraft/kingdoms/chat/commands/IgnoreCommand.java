@@ -60,7 +60,7 @@ public class IgnoreCommand extends Command {
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
                 return;
             }
-            MessageUtils.tell(p, MessageUtils.PLAYER_NOT_FOUND_MESSAGE);
+            MessageUtils.tell(p, MessageUtils.Message.PLAYER_NOT_FOUND, "player", args[0]);
         });
     }
 

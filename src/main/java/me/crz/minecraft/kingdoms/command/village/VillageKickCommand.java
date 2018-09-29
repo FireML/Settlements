@@ -28,11 +28,11 @@ public class VillageKickCommand extends SubCommand {
     public void run(Player player, String base, String alias, String... args) {
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
             return;
         }
         if (!Utils.playerCanKick(player, village)) {
-            MessageUtils.tell(player, MessageUtils.NO_PERMISSION_MESSAGE, null, null);
+            MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION, null, null);
             return;
         }
         if (args.length < 1) {
@@ -45,19 +45,19 @@ public class VillageKickCommand extends SubCommand {
         }
         Resident res = ResidentManager.getInstance().getResident(args[0]);
         if (res == null) {
-            MessageUtils.tell(player, MessageUtils.PLAYER_NOT_FOUND_MESSAGE, null, null);
+            MessageUtils.tell(player, MessageUtils.Message.PLAYER_NOT_FOUND, null, null);
             return;
         }
         Village playerVillage = VillageManager.getInstance().getVillageFromResident(res);
         if (!Utils.playerInSameVillage(village, playerVillage)) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
             return;
         }
         if (playerVillage.getChief().equals(player.getUniqueId())) {
             MessageUtils.tell(player, "&cYou cannot kick the &6" + res.getVillageRank().getTag(playerVillage.getState()) + "&c!", null, null);
             return;
         }
-        MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.KICKED_PLAYER_MESSAGE, "{player}", res.getName());
+        MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.KICKED_PLAYER, "{player}", res.getName());
         if (TownCache.getPendingTownInvites().get(res.getUUID()).equals(playerVillage.getName())) {
             TownCache.getPendingTownInvites().remove(res.getUUID());
         }

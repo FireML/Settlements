@@ -24,12 +24,12 @@ public class VillageClaimCommand extends SubCommand {
     public void run(Player player, String base, String alias, String... args) {
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
             return;
         }
         Resident res = ResidentManager.getInstance().getResident(player);
         if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER)) {
-            MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.ELDER.getTag(village.getState()) + " or higher&r&c&l!", null, null);
+            MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
             return;
         }
         if (!Utils.isWorldClaimable(player.getWorld())) {
@@ -39,7 +39,7 @@ public class VillageClaimCommand extends SubCommand {
         int amountClaimed = LandManager.getInstance().getClaimedLandSize(village);
         int maxClaimAllowed = Utils.getChunkMax(village.getLevel(), village.getState());
         if (amountClaimed >= maxClaimAllowed) {
-            MessageUtils.tell(player, MessageUtils.CANT_CLAIM_MORE_MESSAGE, "{max}", Integer.toString(maxClaimAllowed));
+            MessageUtils.tell(player, MessageUtils.Message.CANT_CLAIM_MORE, "{max}", Integer.toString(maxClaimAllowed));
             return;
         }
         Chunk currentChunk = player.getLocation().getChunk();
@@ -57,7 +57,7 @@ public class VillageClaimCommand extends SubCommand {
                 ++landAround;
             }
             if (landAround == 0) {
-                MessageUtils.tell(player, MessageUtils.NO_LAND_AROUND_MESSAGE, null, null);
+                MessageUtils.tell(player, MessageUtils.Message.NO_LAND_AROUND, null, null);
                 return;
             }
         }
@@ -73,14 +73,14 @@ public class VillageClaimCommand extends SubCommand {
         }
         if (land == null) {
             LandManager.getInstance().claimLand(player.getLocation(), village);
-            MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.SUCCESS_CLAIM_LAND_MESSAGE, "{player}", player.getName());
+            MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_CLAIM_LAND, "{player}", player.getName());
             return;
         }
         if (land.getOwnerVillage().equals(village.getName())) {
-            MessageUtils.tell(player, MessageUtils.ALREADY_OWN_LAND_MESSAGE, null, null);
+            MessageUtils.tell(player, MessageUtils.Message.ALREADY_OWN_LAND, null, null);
             return;
         }
-        MessageUtils.tell(player, MessageUtils.CANT_CLAIM_HERE_MESSAGE, "{owner}", land.getOwnerVillage());
+        MessageUtils.tell(player, MessageUtils.Message.CANT_CLAIM_HERE, "{owner}", land.getOwnerVillage());
     }
 
 }

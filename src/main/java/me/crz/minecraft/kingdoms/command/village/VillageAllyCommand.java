@@ -25,21 +25,21 @@ public class VillageAllyCommand extends SubCommand {
     }
 
     @Override
-    public void run(final Player player, final String base, final String alias, final String... args) {
+    public void run(Player player, String base, String alias, String... args) {
         if (args.length < 1) {
             MessageUtils.tell(player, this.getUsage(base));
             return;
         }
-        final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
+        Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
             return;
         }
         if (!this.canAlly(ResidentManager.getInstance().getResident(player))) {
-            MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.ELDER.getTag(village.getState()) + " or higher&r&c&l!");
+            MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
             return;
         }
-        final Village invitedVillage = VillageManager.getInstance().getVillageFromName(args[0].toLowerCase());
+        Village invitedVillage = VillageManager.getInstance().getVillageFromName(args[0].toLowerCase());
         if (invitedVillage == null) {
             MessageUtils.tell(player, "&c&lVillage &r&6&l" + args[0] + "&r&c&l doesn't exist!");
             return;
@@ -53,10 +53,10 @@ public class VillageAllyCommand extends SubCommand {
             return;
         }
         if (TownCache.getPendingTownAlly().containsKey(village.getName())) {
-            final List<String> invites = TownCache.getPendingTownAlly().get(village.getName());
+            List<String> invites = TownCache.getPendingTownAlly().get(village.getName());
             if (invites.contains(invitedVillage.getName())) {
-                MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), "&7&lYou are now allied to &r&6&l" + village.getName());
-                MessageUtils.tellResidents(village.getOnlineResidents(), "&7&lYou are now allied to &r&6&l" + invitedVillage.getName());
+                MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), MessageUtils.Message.NOW_ALLIED_TO, "name", village.getName());
+                MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.NOW_ALLIED_TO, "name", invitedVillage.getName());
                 invitedVillage.addAlly(village.getName());
                 village.addAlly(invitedVillage.getName());
 
@@ -67,19 +67,19 @@ public class VillageAllyCommand extends SubCommand {
             }
         } else {
             if (TownCache.getPendingTownAlly().containsKey(invitedVillage.getName())) {
-                final List<String> iInvites = TownCache.getPendingTownAlly().get(invitedVillage.getName());
+                List<String> iInvites = TownCache.getPendingTownAlly().get(invitedVillage.getName());
                 iInvites.add(village.getName());
-                MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), "&r&6&l" + village.getName() + " &r&7&lwants to ally!");
-                MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), "&r&6&l/s ally " + village.getName() + " &r&7&lto ally them!");
+                MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), MessageUtils.Message.ALLY_INVITE, "name", village.getName());
+                MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), MessageUtils.Message.ALLY_ACCEPT_INFO, "name", village.getName());
             } else {
                 TownCache.getPendingTownAlly().put(invitedVillage.getName(), new ArrayList<>(Collections.singletonList(village.getName())));
-                MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), "&r&6&l" + village.getName() + " &r&7&lwants to ally!");
+                MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), MessageUtils.Message.ALLY_INVITE, "name", village.getName());
             }
             MessageUtils.tell(player, "&7&lAlly request sent to &r&6&l" + invitedVillage.getName());
         }
     }
 
-    private boolean canAlly(final Resident res) {
+    private boolean canAlly(Resident res) {
         return VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER);
     }
 }

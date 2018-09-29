@@ -1,52 +1,99 @@
-NO-PERMISSION-MESSAGE: '&cNo permission.'
-NO-PERMISSION-INTERACT: "&cYou don't have permission to interact in {townName}'s claims!"
-ONLY-CONSOLE-MESSAGE: '&cMust be ran by console.'
-ONLY-PLAYER-MESSAGE: '&cMust be ran by player.'
-PLAYER-NOT-FOUND-MESSAGE: '&cCant find player.'
-HELP-MESSAGE:
-  - 'Help message one'
-  - 'Help message two'
-MUST-LEAVE-CURRENT-MESSAGE: '&c&lERROR &r&7Must leave current settlement.'
-SUCCESS-CREATE-MESSAGE: '&a&lSUCCESS &r&7created a new settlement.'
-SUCCESS-DELETE-MESSAGE: '&e&lALERT &r&7Your chief has deleted your settlement.'
-NOT-IN-CURRENT-MESSAGE: '&c&lERROR &r&7Not currently in settlement.'
-RECEIVE-INVITE-MESSAGE: '&e&lALERT &r&7Invite received from {townName}! Type &e/village join {townName} &7to join.'
-TOWN-NOT-FOUND-MESSAGE: '&c&lERROR &r&7settlement could not be found.'
-NO-INVITE-MESSAGE: '&c&lERROR &r&7You dont not have an invite for this settlement.'
-IS-FULL-MESSAGE: '&e&lALERT &r&7The {type] is full.'
-SUCCESS-JOIN-MESSAGE: '&a&lSUCCESS &r&7You have joined {townName}.'
-SUCCESS-LEAVE-MESSAGE: '&a&lSUCCESS &r&7You have left your settlement.'
-ALERT-LEAVE-MESSAGE: '&e&lALERT &r&e{player}&7 has left the settlement.'
-NAME-TAKEN-MESSAGE: '&c&lERROR &r&7settlement name not available.'
-CANT-LEAVE-OWN-MESSAGE: '&c&lERROR &r&7You cannot leave your own settlement. You must delete it.'
-SUCCESS-INVITE-MESSAGE: '&e&lALERT &r&e{player}&7 has been invited to the settlement.'
-KICKED-PLAYER-MESSAGE: '&a&lALERT &r&e{player}&7 has been kicked from the settlement.'
-NEW-RESIDENT-MESSAGE: '&e&lALERT &r&e{player}&7 has joined the settlement!'
-SHOW-SETTLEMENT-MESSAGE:
-  - '&8--------&c&l{townName}&r&8--------'
-  - '&a&lSTATE &r&7{state}'
-  - '&6&lLEVEL &r&7{level}'
-  - '&6&lLand &r&7{land}&r&e/&r&7{maxLand}'
-  - '&9&lMODE &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobSpawning}&r&7 |  Firespread: &r&e{fireSpread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7 | Teleporter : &r&e{teleporter}'
-  - '&e&l{chiefRank} &r&7{chief}'
-  - '&b&lRESIDENTS: &r&7{residents}'
-FAIL-DEPOSIT-MESSAGE: '&c&lFailed Deposited Items:'
-LIST-DEPOSIT-MESSAGE: '&6{amount} &e{material}'
-UPGRADE-MESSAGE: '&d&lLEVEL UP &r&7Your settlement is now level &d{level}'
-CANT-SET-THAT-PERSONS-RANK-MESSAGE: '&c&lERROR &r&7You cannot change that persons rank!'
-INVALID-RANK-MESSAGE: '&c&lERROR &r&c{rank} &7is not a valid rank!'
-SUCCESS-SET-RANK-MESSAGE: '&e&lALERT &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!'
-INVALID-LEVEL-MESSAGE: '&c&lERROR &r&7You must be level &e{requiredLevel} &7to do that!'
-UPGRADE-SETTLEMENT-MESSAGE: '&a&lSUCCESS &r&7The settlement has been upgraded to &e{state}!'
-CANT-CLAIM-MORE-MESSAGE: '&c&lERROR &r&7Your settlement can only claim &e{max} chunks of land!'
-ALREADY-OWN-LAND-MESSAGE: '&e&lALERT &r&7Your settlement already owns this land!'
-CANT-CLAIM-HERE-MESSAGE: '&c&lERROR &r&7This land is owned by &e{owner}!'
-SUCCESS-CLAIM-LAND-MESSAGE: '&a&lSUCCESS &r&e{player} &7has claimed land for your settlement!'
-CANT-BUILD-HERE-MESSAGE: '&e&lALERT &r&7This land is owned by &e{owner}&7.'
-DEFAULT-ENTER-MESSAGE: '&e&lALERT &r&bNow entering &e{owner}&b!'
-DEFAULT-LEAVE-MESSAGE: '&e&lALERT &r&bNow leaving &e{owner}&b!'
-SUCCESS-CHANGE-ENTER-MESSAGE: '&a&lSUCCESS &r&7Changed enter message!'
-SUCCESS-CHANGE-LEAVE-MESSAGE: '&a&lSUCCESS &r&7Changed leave message!'
-SUCCESS-CREATE-SALE-PLOT-MESSAGE: '&a&lSUCCESS &7This land has been put on sale for &e${price}&7!'
-SUCCESS-BUILD-STATE-MESSAGE: '&a&lSUCCESS &7You have changed your settlement build state to &e{state}&7!'
-NO-LAND-AROUND-MESSAGE: '&c&lERROR &r&7Your claim must be connected to an existing settlement claim!'
+no-permission: '&cNo permission.'
+no-permission-interact: "&cYou don't have permission to interact in {townName}'s claims!"
+only-console: '&cMust be ran by console.'
+only-player: '&cMust be ran by player.'
+player-not-found: '&c&lNo &r&6&lplayer&r&c&l with the name &r&6&l{player}&r&c&l found!'
+help: |-
+  Help message one
+  Help message two
+must-leave-current: '&c&lERROR &r&7Must leave current settlement.'
+success-create: '&a&lSUCCESS &r&7created a new settlement.'
+success-delete: '&e&lALERT &r&7Your chief has deleted your settlement.'
+not-in-current: '&c&lERROR &r&7Not currently in settlement.'
+receive-invite: '&e&lALERT &r&7Invite received from {townName}! Type &e/village join {townName} &7to join.'
+town-not-found: '&c&lERROR &r&7settlement could not be found.'
+no-invite: '&c&lERROR &r&7You dont not have an invite for this settlement.'
+is-full: '&e&lALERT &r&7The {type] is full.'
+success-join: '&a&lSUCCESS &r&7You have joined {townName}.'
+success-leave: '&a&lSUCCESS &r&7You have left your settlement.'
+alert-leave: '&e&lALERT &r&e{player}&7 has left the settlement.'
+name-taken: '&c&lERROR &r&7settlement name not available.'
+cant-leave-own: '&c&lERROR &r&7You cannot leave your own settlement. You must delete it.'
+success-invite: '&e&lALERT &r&e{player}&7 has been invited to the settlement.'
+kicked-player: '&a&lALERT &r&e{player}&7 has been kicked from the settlement.'
+new-resident: '&e&lALERT &r&e{player}&7 has joined the settlement!'
+show-settlement: |-
+  &8--------&c&l{townName}&r&8--------
+  &a&lSTATE &r&7{state}
+  &6&lLEVEL &r&7{level}
+  &6&lLand &r&7{land}&r&e/&r&7{maxLand}
+  &9&lMODE &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobSpawning}&r&7 |  Firespread: &r&e{fireSpread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7 | Teleporter : &r&e{teleporter}
+  &e&l{chiefRank} &r&7{chief}
+  &b&lRESIDENTS: &r&7{residents}
+fail-deposit: '&c&lFailed Deposited Items: {reason}'
+success-deposit: "&6&l{player} &7&lhas deposited:"
+list-deposit: '&6{amount} &e{material}'
+upgrade: '&d&lLEVEL UP &r&7Your settlement is now level &d{level}'
+upgrade-unlock: "&6&l{unlock} &7&lhas been unlocked!"
+cant-set-that-persons-rank: '&c&lERROR &r&7You cannot change that persons rank!'
+invalid-rank: '&c&lERROR &r&c{rank} &7is not a valid rank!'
+success-set-rank: '&e&lALERT &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!'
+set-rank: "&c&lPlayer &6&l {target}&c&l's rank was set to &6&l{rank}"
+invalid-level: '&c&lERROR &r&7You must be level &e{requiredLevel} &7to do that!'
+upgrade-settlement: '&a&lSUCCESS &r&7The settlement has been upgraded to &e{state}!'
+cant-claim-more: '&c&lERROR &r&7Your settlement can only claim &e{max} chunks of land!'
+already-own-land: '&e&lALERT &r&7Your settlement already owns this land!'
+cant-claim-here: '&c&lERROR &r&7This land is owned by &e{owner}!'
+success-claim-land: '&a&lSUCCESS &r&e{player} &7has claimed land for your settlement at {x},{z}!'
+success-unclaim-land: '&a&lSUCCESS &r&e{player} &7has unclaimed land at {x},{z}!'
+success-claim-outpost: "&a&lSUCCESS &r&e{player} &7has claimed an &coutpost&7 for your settlement at {x},{z}!"
+success-unclaim-outpost: "&aSuccess unclaimed the outpost at {x},{z} and {amount} land around it."
+cant-build-here: '&e&lALERT &r&7This land is owned by &e{owner}&7.'
+default-enter: '&e&lALERT &r&bNow entering &e{owner}&b!'
+default-leave: '&e&lALERT &r&bNow leaving &e{owner}&b!'
+success-change-enter: '&a&lSUCCESS &r&7Changed enter message!'
+success-change-leave: '&a&lSUCCESS &r&7Changed leave message!'
+success-create-sale-plot: '&a&lSUCCESS &7This land has been put on sale for &e${price}&7!'
+success-build-state: '&a&lSUCCESS &7You have changed your settlement build state to &e{state}&7!'
+no-land-around: '&c&lERROR &r&7Your claim must be connected to an existing settlement claim!'
+not-in-village: "&c&lTarget player {player} isn't in a village!"
+alert-upkeep-unclaimed: "&a&lALERT &7Your settlement land has been &cunclaimed&7 because {reason} you had not enough money for the upkeep!"
+alert-upkeep-deleted: "&a&lALERT &7Your settlement has been &cdeleted&7 because it was &cunable&7 to pay its upkeep!"
+alert-upkeep-charged: "&a&lALERT &7Your settlement has been charged &6{charged}&7 for upkeep!"
+alert-upkeep-cant-pay: "&a&lALERT &7Your settlement is &cunable&7 to pay tommorrows upkeep, it will cost &6{cost}&7!"
+bank-withdraw: "&e&l{rank} &r&e{name} &r&7withdrew &6{amount}&r&7 from the village bank!"
+bank-deposit: "&e&l{rank} &r&e{name} &r&7deposited &6{amount}&r&7 into the village bank!"
+teleport-deposit: "&e&l{player} &r&7deposited &6{amount}&r&7 into the village bank by teleporting to your teleporter!"
+rank-required: "&c&lYou require the rank &r&6&l{rank} or higher&r&c&l!"
+bank-not-enough-money: "&c&lNot enough money in the village bank to withdraw &r&6&l{amount}&r&c&l!"
+player-not-enough-money: "&c&lNot enough money in your account to pay &r&6&l{amount}&r&c&l!"
+error-max-outpost-chunks: "&c&lERROR &r&7Your settlement can only claim &e{max}&r&7 outpost chunks!"
+outpost-not-found: |
+  &cUnable to find: &6{name}
+  &cPlease make sure your using the outpost name shown in /s outpost list!
+  &ce.g. /s outpost tp outpost-4
+village-renamed: "&7&lVillage has been renamed to &6&l{name}"
+error-village-exists: "&7&lVillage with the name &6&l{name}&7&l already exists!"
+teleport-claim-removed: "{rank} {player} &r&7&l has &r&6&lremoved&r&7&l the teleport claim"
+teleport-claim-set: "{rank} {player} &r&7&l has set the teleport claim at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
+ally-invite: "&r&6&l{name} &r&7&lwants to ally!"
+ally-accept-info: "&r&6&l/s ally {name} &r&7&lto ally them!"
+ally-removed: "&7&lAlly &6{name} &7removed!"
+now-allied-to: "&7&lYou are now allied to &r&6&l{name}"
+banished: "&7Player &6{player}&7 has been &cbanished &7from your settlement!"
+unbanished: "&7Player &6{player}&7 has been &cbanished &7from your settlement!"
+village-home-set: "{rank} {player} &r&7&l has set the village home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
+village:
+  name:
+    chief: 'CHIEF'
+    elder: 'ELDER'
+    builder: 'BUILDER'
+    recruiter: 'RECRUITER'
+    resident: 'RESIDENT'
+kingdom:
+  name:
+    chief: 'KING'
+    elder: 'ELDER'
+    builder: 'BUILDER'
+    recruiter: 'RECRUITER'
+    resident: 'RESIDENT'

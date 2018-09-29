@@ -24,12 +24,12 @@ import me.crz.minecraft.kingdoms.utils.UtilChat;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import me.crz.minecraft.kingdoms.land.LandPerks;
-import me.crz.minecraft.kingdoms.utils.config.Config;
+import me.crz.minecraft.kingdoms.utils.config.Data;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class KingdomsPlugin extends JavaPlugin {
     private static KingdomsPlugin instance;
-    public static Config config;
+    public static Data data;
     private LandPerks lPerks;
     public Economy econ;
     public boolean emgcy;
@@ -57,8 +57,8 @@ public class KingdomsPlugin extends JavaPlugin {
             return;
         }
         this.checkDataFolder();
-        config = new Config();
-        if (config.load(this.getDataFolder())) {
+        data = new Data();
+        if (data.load(this.getDataFolder())) {
             try {
                 DatabaseManager.getInstance().connect();
             } catch (Exception e) {
@@ -104,12 +104,12 @@ public class KingdomsPlugin extends JavaPlugin {
     }
 
     public void loadManagers() {
+        ConfigManager.getInstance();
         ThreadManager.getInstance();
         DatabaseManager.getInstance();
         VillageManager.getInstance();
         LandManager.getInstance();
         ResidentManager.getInstance();
-        ConfigManager.getInstance();
         ScoreboardManager.getInstance().setScoreboardPolicy(new ScoreBoard());
         new CommandManager();
     }

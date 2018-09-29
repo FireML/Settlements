@@ -29,12 +29,12 @@ public class VillageRenameCommand extends SubCommand {
     public void run(Player player, String base, String alias, String... args) {
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
             return;
         }
         Resident res = ResidentManager.getInstance().getResident(player);
         if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.CHIEF)) {
-            MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.CHIEF.getTag(village.getState()) + "&r&c&l!", null, null);
+            MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.CHIEF.getTag(village.getState()));
             return;
         }
         if (args.length == 0) {
@@ -42,7 +42,7 @@ public class VillageRenameCommand extends SubCommand {
             return;
         }
         if (VillageManager.getInstance().getVillageFromName(args[0]) != null) {
-            MessageUtils.tell(player, "&7&lVillage with the name &6&l" + args[0] + " &7&l already exists!");
+            MessageUtils.tell(player, MessageUtils.Message.ERROR_VILLAGE_EXISTS, "name", args[0]);
             return;
         }
         boolean invalid = false;
@@ -74,13 +74,11 @@ public class VillageRenameCommand extends SubCommand {
             }
             LandManager.getInstance().changeOwner(village, args[0]);
             village.setName(args[0]);
-            String enter = MessageUtils.DEFAULT_ENTER_MESSAGE.replace("{owner}", village.getName());
-            String leave = MessageUtils.DEFAULT_LEAVE_MESSAGE.replace("{owner}", village.getName());
-            village.setEnterMessage(enter);
-            village.setLeaveMessage(leave);
+            village.setEnterMessage(MessageUtils.Message.DEFAULT_ENTER.getReplaced("owner", village.getName()));
+            village.setLeaveMessage(MessageUtils.Message.DEFAULT_LEAVE.getReplaced("owner", village.getName()));
             villagesToSave.add(village);
             DatabaseManager.getInstance().saveAllVillages(villagesToSave);
-            MessageUtils.tellResidents(village.getOnlineResidents(), "&7&lVillage has been renamed to &6&l" + village.getName(), null, null);
+            MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.VILLAGE_RENAMED, "name", village.getName());
         });
     }
 }

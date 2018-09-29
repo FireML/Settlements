@@ -37,7 +37,7 @@ public enum ChatChannel {
                 return true;
             }
             Village village = VillageManager.getInstance().getVillageFromPlayer(player);
-            MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.ELDER.getTag(village.getState()) + " or higher&r&c&l!");
+            MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
             return false;
         }
     },
@@ -53,7 +53,7 @@ public enum ChatChannel {
             if (this.canChat(player)) {
                 return true;
             }
-            MessageUtils.tell(player, MessageUtils.NO_PERMISSION_MESSAGE);
+            MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
             return false;
         }
     },
@@ -68,7 +68,7 @@ public enum ChatChannel {
             if (this.canChat(player)) {
                 return true;
             }
-            MessageUtils.tell(player, MessageUtils.NO_PERMISSION_MESSAGE);
+            MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
             return false;
         }
     };

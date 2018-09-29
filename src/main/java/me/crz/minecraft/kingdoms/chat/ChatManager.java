@@ -20,7 +20,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.utils.config.Config;
+import me.crz.minecraft.kingdoms.utils.config.Data;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 
@@ -54,7 +54,7 @@ public class ChatManager extends Base {
         }
         switch (res.getActiveChannel()) {
             case GENERAL:
-                if (Config.muteChat && !e.getPlayer().hasPermission("kingdoms.staff")) {
+                if (Data.muteChat && !e.getPlayer().hasPermission("kingdoms.staff")) {
                     MessageUtils.tell(e.getPlayer(), "&c&lChat is currently locked!");
                     return;
                 }

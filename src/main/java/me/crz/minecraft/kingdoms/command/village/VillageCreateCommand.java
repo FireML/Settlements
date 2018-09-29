@@ -28,24 +28,24 @@ public class VillageCreateCommand extends SubCommand {
     }
 
     @Override
-    public void run(final Player player, final String base, final String alias, final String... args) {
+    public void run(Player player, String base, String alias, String... args) {
         if (args.length < 1) {
             MessageUtils.tell(player, this.getUsage(base), null, null);
             return;
         }
         if (VillageManager.getInstance().getVillageFromPlayer(player) != null) {
-            MessageUtils.tell(player, MessageUtils.MUST_LEAVE_CURRENT_MESSAGE, null, null);
+            MessageUtils.tell(player, MessageUtils.Message.MUST_LEAVE_CURRENT, null, null);
             return;
         }
-        final String name = args[0];
+        String name = args[0];
         if (this.villageExists(name)) {
-            MessageUtils.tell(player, MessageUtils.NAME_TAKEN_MESSAGE, null, null);
+            MessageUtils.tell(player, MessageUtils.Message.NAME_TAKEN, null, null);
             return;
         }
         boolean invalid = false;
         String[] split;
         for (int length = (split = name.split("")).length, i = 0; i < length; ++i) {
-            final String s = split[i];
+            String s = split[i];
             if (!allowed.contains(s.toLowerCase())) {
                 invalid = true;
                 break;
@@ -64,24 +64,24 @@ public class VillageCreateCommand extends SubCommand {
                 MessageUtils.tell(player, "&c&lYou don't have the required &r&6&l" + Utils.getVillageCreationCost() + "$&r&c&l to make a village!", null, null);
                 return;
             }
-            final EconomyResponse r = Base.getEconomy().withdrawPlayer(player, (double) Utils.getVillageCreationCost());
+            EconomyResponse r = Base.getEconomy().withdrawPlayer(player, (double) Utils.getVillageCreationCost());
             if (!r.transactionSuccess()) {
                 MessageUtils.tell(player, "&cAn error occurred, please tell an admin!", null, null);
                 return;
             }
         }
-        final String enter = MessageUtils.DEFAULT_ENTER_MESSAGE.replace("{owner}", name);
-        final String leave = MessageUtils.DEFAULT_LEAVE_MESSAGE.replace("{owner}", name);
-        final Village village = new Village(name, player.getUniqueId(), 1, VillageState.VILLAGE, enter, leave, BuildState.RESIDENTS);
+        String enter = MessageUtils.Message.DEFAULT_ENTER.getReplaced("owner", name);
+        String leave = MessageUtils.Message.DEFAULT_LEAVE.getReplaced("owner", name);
+        Village village = new Village(name, player.getUniqueId(), 1, VillageState.VILLAGE, enter, leave, BuildState.RESIDENTS);
         VillageManager.getInstance().registerNewVillage(village);
-        final Resident res = ResidentManager.getInstance().getResident(player);
+        Resident res = ResidentManager.getInstance().getResident(player);
         res.setVillageName(name);
         res.setVillageRank(VillageRank.CHIEF);
         Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
-        MessageUtils.tell(player, MessageUtils.SUCCESS_CREATE_MESSAGE, null, null);
+        MessageUtils.tell(player, MessageUtils.Message.SUCCESS_CREATE, null, null);
     }
 
-    private boolean villageExists(final String name) {
+    private boolean villageExists(String name) {
         return VillageManager.getInstance().getVillageFromName(name) != null;
     }
 }

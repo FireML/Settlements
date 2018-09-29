@@ -37,7 +37,7 @@ public class VillagePlotCommand extends SubCommand {
     public void run(Player player, String base, String alias, String... args) {
         Village senderVillage = VillageManager.getInstance().getVillageFromPlayer(player);
         if (senderVillage == null) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
             return;
         }
         OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
@@ -97,7 +97,7 @@ public class VillagePlotCommand extends SubCommand {
                     "&8[&9*&8] &b/" + base + " plot revoke &7- removes the players owned claims"));
         } else if (args[0].equalsIgnoreCase("buy")) {
             if (!this.playerOwnsLand(player, landVillage)) {
-                MessageUtils.tell(player, MessageUtils.NO_PERMISSION_MESSAGE);
+                MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
                 return;
             }
             if (!land.isForSale()) {
@@ -117,7 +117,7 @@ public class VillagePlotCommand extends SubCommand {
             MessageUtils.tell(player, "&aSuccessfully purchased the land.");
         } else if (args[0].equalsIgnoreCase("unsale")) {
             if (!this.playerOwnsLand(player, landVillage)) {
-                MessageUtils.tell(player, MessageUtils.NO_PERMISSION_MESSAGE);
+                MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
                 return;
             }
             if (!land.isForSale()) {
@@ -125,7 +125,7 @@ public class VillagePlotCommand extends SubCommand {
                 return;
             }
             if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER)) {
-                MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.ELDER.getTag(senderVillage.getState()) + " or higher&r&c&l!", null, null);
+                MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(senderVillage.getState()));
                 return;
             }
             land.setForSale(false);
@@ -134,7 +134,7 @@ public class VillagePlotCommand extends SubCommand {
             MessageUtils.tell(player, "&aThis land is no longer for sale!");
         } else if (args[0].equalsIgnoreCase("revoke")) {
             if (!this.playerIsElderOrChief(player, senderVillage)) {
-                MessageUtils.tell(player, MessageUtils.NO_PERMISSION_MESSAGE);
+                MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
                 return;
             }
             if (!this.landIsPlot(land)) {
@@ -152,10 +152,10 @@ public class VillagePlotCommand extends SubCommand {
                 }
                 return;
             } else if (!this.playerOwnsLand(player, landVillage)) {
-                MessageUtils.tell(player, MessageUtils.NO_PERMISSION_MESSAGE);
+                MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
                 return;
             } else if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER)) {
-                MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.ELDER.getTag(senderVillage.getState()) + " or higher&r&c&l!");
+                MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(senderVillage.getState()));
                 return;
             } else if (this.landIsPlot(land)) {
                 MessageUtils.tell(player, "&cLand is already owned");
@@ -165,10 +165,10 @@ public class VillagePlotCommand extends SubCommand {
             land.setPrice(price);
             land.setForSale(true);
             Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
-            MessageUtils.tell(player, MessageUtils.SUCCESS_CREATE_SALE_PLOT_MESSAGE, "{price}", String.valueOf(price));
+            MessageUtils.tell(player, MessageUtils.Message.SUCCESS_CREATE_SALE_PLOT, "{price}", String.valueOf(price));
         } else if (args[0].equalsIgnoreCase("use")) {
             if (!land.isPlotOwner(player)) {
-                MessageUtils.tell(player, MessageUtils.NO_PERMISSION_MESSAGE);
+                MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
                 return;
             }
             if (args.length < 3) {
@@ -187,11 +187,11 @@ public class VillagePlotCommand extends SubCommand {
             }
         } else if (args[0].equalsIgnoreCase("mode")) {
             if (this.landIsPlot(land) && !this.playerOwnsPlot(player, land)) {
-                MessageUtils.tell(player, MessageUtils.NO_PERMISSION_MESSAGE);
+                MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
                 return;
             }
             if (!this.landIsPlot(land) && !VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER)) {
-                MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.ELDER.getTag(senderVillage.getState()) + " or higher&r&c&l!");
+                MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(senderVillage.getState()));
                 return;
             }
             if (args.length < 3) {
@@ -216,14 +216,14 @@ public class VillagePlotCommand extends SubCommand {
                 return;
             }
             if (!player.getUniqueId().equals(land.getPlotOwner())) {
-                MessageUtils.tell(player, MessageUtils.NO_PERMISSION_MESSAGE);
+                MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
                 return;
             }
             try {
                 PlotBuildState newState = PlotBuildState.valueOf(args[1].toUpperCase());
                 land.setBuildState(newState);
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
-                MessageUtils.tell(player, MessageUtils.SUCCESS_BUILD_STATE_MESSAGE, "{state}", args[0]);
+                MessageUtils.tell(player, MessageUtils.Message.SUCCESS_BUILD_STATE, "{state}", args[0]);
             } catch (IllegalArgumentException e) {
                 MessageUtils.tellList(player, Arrays.asList("&8&l-------- &r&c&l/" + base + " " + alias + "&r " + "&8&l--------", "&8[&9*&8] &b/s plot build residents &7- residents and officers to build in claimed land", "&8[&9*&8] &b/s plot build officers &7- only officers are allowed to build in claimed land", "&8[&9*&8] &b/s plot build public &7- allows everyone to build in your claimed land", "&8[&9*&8] &b/s plot build ally &7- allows your allies to build in your claimed land", "&8[&9*&8] &b/s plot build private &7- allows you to build in your claimed land", "&8[&9*&8] &b/s plot build friends &7- allows your friends to build in your claimed land"));
             }

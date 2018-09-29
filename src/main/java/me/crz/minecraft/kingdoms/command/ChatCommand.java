@@ -2,11 +2,11 @@ package me.crz.minecraft.kingdoms.command;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Data;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.Bukkit;
-import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -61,15 +61,15 @@ public class ChatCommand implements CommandExecutor {
             MessageUtils.tell(p, "&7&lSwearing has been " + (res.getSwear() ? "&AEnabled" : "&cDisabled") + "&7!");
         } else if (args[0].equalsIgnoreCase("lock")) {
             if (p.hasPermission("kingdoms.staff")) {
-                if (Config.muteChat) {
-                    Config.muteChat = false;
+                if (Data.muteChat) {
+                    Data.muteChat = false;
                     Bukkit.broadcastMessage(MessageUtils.replaceColorCodes("&c&lGeneral Chat has been un-muted by &6&l" + p.getDisplayName()));
                 } else {
-                    Config.muteChat = true;
+                    Data.muteChat = true;
                     Bukkit.broadcastMessage(MessageUtils.replaceColorCodes("&c&lGeneral Chat has been muted by &6&l" + p.getDisplayName()));
                 }
             } else {
-                MessageUtils.tell(p, MessageUtils.NO_PERMISSION_MESSAGE);
+                MessageUtils.tell(p, MessageUtils.Message.NO_PERMISSION);
             }
         } else if (args[0].equalsIgnoreCase("leave")) {
             Resident res = ResidentManager.getInstance().getResident(p);

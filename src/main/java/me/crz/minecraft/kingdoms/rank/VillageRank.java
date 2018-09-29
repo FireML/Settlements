@@ -12,9 +12,9 @@ public enum VillageRank {
 
     public String getTag(final VillageState state) {
         if (state.equals(VillageState.VILLAGE)) {
-            return ConfigManager.getInstance().getConfig().getString(name().toLowerCase() + "-village-name");
+            return ConfigManager.getInstance().getMessagesConfig().getString("village.name." + name().toLowerCase());
         }
-        return ConfigManager.getInstance().getConfig().getString(name().toLowerCase() + "-kingdom-name");
+        return ConfigManager.getInstance().getMessagesConfig().getString("kingdom.name." + name().toLowerCase());
     }
 
     public static boolean hasRank(final VillageRank current, final VillageRank looking) {

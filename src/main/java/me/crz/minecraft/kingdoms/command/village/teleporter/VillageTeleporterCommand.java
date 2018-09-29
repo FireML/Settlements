@@ -49,7 +49,7 @@ public class VillageTeleporterCommand extends SubCommand {
         }
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
             return;
         }
         final Resident res = ResidentManager.getInstance().getResident(player);

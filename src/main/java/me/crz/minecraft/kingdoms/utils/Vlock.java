@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import org.json.JSONObject;
-import me.crz.minecraft.kingdoms.utils.config.Config;
+import me.crz.minecraft.kingdoms.utils.config.Data;
 import org.bukkit.Location;
 
 public class Vlock {
@@ -17,14 +17,14 @@ public class Vlock {
     }
 
     public static boolean isLocationVLock(final Location loc) {
-        return Config.vlock.has(String.valueOf(loc.getX()) + "~" + loc.getY() + "~" + loc.getZ() + "~" + loc.getWorld().getName());
+        return Data.vlock.has(String.valueOf(loc.getX()) + "~" + loc.getY() + "~" + loc.getZ() + "~" + loc.getWorld().getName());
     }
 
     public static JSONObject getVLock(final Location loc) {
         if (!isLocationVLock(loc)) {
             return null;
         }
-        return Config.vlock.getJSONObject(String.valueOf(loc.getX()) + "~" + loc.getY() + "~" + loc.getZ() + "~" + loc.getWorld().getName());
+        return Data.vlock.getJSONObject(String.valueOf(loc.getX()) + "~" + loc.getY() + "~" + loc.getZ() + "~" + loc.getWorld().getName());
     }
 
     public static boolean isUUIDPresent(final Location loc, final UUID uuid) {
@@ -58,7 +58,7 @@ public class Vlock {
     }
 
     public static void save(final Location loc, final JSONObject obj) {
-        Config.vlock.put(String.valueOf(loc.getX()) + "~" + loc.getY() + "~" + loc.getZ() + "~" + loc.getWorld().getName(), obj);
-        KingdomsPlugin.config.save(KingdomsPlugin.getInstance().getDataFolder());
+        Data.vlock.put(String.valueOf(loc.getX()) + "~" + loc.getY() + "~" + loc.getZ() + "~" + loc.getWorld().getName(), obj);
+        KingdomsPlugin.data.save(KingdomsPlugin.getInstance().getDataFolder());
     }
 }

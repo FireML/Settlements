@@ -14,19 +14,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-public class Config {
-    @ConfigOption
-    public static String databaseType = "mysql";
-    @ConfigOption
-    public static String host = "localhost";
-    @ConfigOption
-    public static int port = 3306;
-    @ConfigOption
-    public static String databaseUser = "root";
-    @ConfigOption
-    public static String database = "kingdoms";
-    @ConfigOption
-    public static String databasePassword = "password";
+public class Data {
     @ConfigOption
     public static JSONObject first = new JSONObject();
     @ConfigOption
@@ -38,7 +26,7 @@ public class Config {
     @ConfigOption
     public static long residentCacheDuration = 120;
 
-    public Config() {
+    public Data() {
         super();
         for (int i = 1; i <= 5; ++i) {
             first.put("village-" + i, "");
@@ -48,25 +36,21 @@ public class Config {
         }
     }
 
-    public boolean load(final File folder) {
+    public boolean load(File folder) {
         try {
-            final File file = new File(folder, "data.json");
+            File file = new File(folder, "data.json");
             if (!file.exists()) {
                 file.createNewFile();
-                final JSONObject object = new JSONObject();
-                Field[] declaredFields;
-                for (int n = (declaredFields = this.getClass().getDeclaredFields()).length, i = 0; i < n; ++i) {
-                    final Field field = declaredFields[i];
+                JSONObject object = new JSONObject();
+                for (Field field : this.getClass().getDeclaredFields()) {
                     if (field.isAnnotationPresent(ConfigOption.class)) {
                         object.put(field.getName(), field.get(this));
                     }
                 }
-                FileUtils.writeStringToFile(file, object.toString());
+                FileUtils.writeStringToFile(file, object.toString(), "UTF-8");
             } else {
-                final JSONObject object = new JSONObject(new Scanner(file).useDelimiter("\\Z").next());
-                Field[] declaredFields2;
-                for (int n = (declaredFields2 = this.getClass().getDeclaredFields()).length, i = 0; i < n; ++i) {
-                    final Field field = declaredFields2[i];
+                JSONObject object = new JSONObject(new Scanner(file).useDelimiter("\\Z").next());
+                for (Field field : this.getClass().getDeclaredFields()) {
                     if (field.isAnnotationPresent(ConfigOption.class) && object.has(field.getName())) {
                         if (field.getType().isAssignableFrom(JSONObject.class)) {
                             field.set(this, new JSONObject(object.get(field.getName()).toString()));
@@ -86,24 +70,22 @@ public class Config {
         }
     }
 
-    private List<Object> toList(final JSONArray array) {
-        final List<Object> temp = new ArrayList<>();
+    private List<Object> toList(JSONArray array) {
+        List<Object> temp = new ArrayList<>();
         array.forEach(temp::add);
         return temp;
     }
 
-    public void save(final File folder) {
+    public void save(File folder) {
         try {
-            final File file = new File(folder, "data.json");
-            final JSONObject object = new JSONObject();
-            Field[] declaredFields;
-            for (int length = (declaredFields = this.getClass().getDeclaredFields()).length, i = 0; i < length; ++i) {
-                final Field field = declaredFields[i];
+            File file = new File(folder, "data.json");
+            JSONObject object = new JSONObject();
+            for (Field field : this.getClass().getDeclaredFields()) {
                 if (field.isAnnotationPresent(ConfigOption.class)) {
                     object.put(field.getName(), field.get(this));
                 }
             }
-            FileUtils.writeStringToFile(file, object.toString());
+            FileUtils.writeStringToFile(file, object.toString(), "UTF-8");
         } catch (Exception ex) {
         }
     }

@@ -25,12 +25,12 @@ public class VillageSetHomeCommand extends SubCommand {
     public void run(Player player, String base, String alias, String... args) {
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
             return;
         }
         Resident res = ResidentManager.getInstance().getResident(player);
         if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.CHIEF)) {
-            MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.CHIEF.getTag(village.getState()) + " or higher&r&c&l!");
+            MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.CHIEF.getTag(village.getState()));
             return;
         }
         Chunk currentChunk = player.getLocation().getChunk();
@@ -39,7 +39,13 @@ public class VillageSetHomeCommand extends SubCommand {
             MessageUtils.tell(player, "&c&lYou do not own this land!");
             return;
         }
-        MessageUtils.tellResidents(village.getOnlineResidents(), String.valueOf(res.getVillageRank().getTag(village.getState())) + " " + player.getName() + "&r&7&l has set the village home at &r&6&l" + String.valueOf(player.getLocation().getBlockX()) + "&r&7&l,&r&6&l" + String.valueOf(player.getLocation().getBlockY()) + "&r&7&l,&r&6&l" + String.valueOf(player.getLocation().getBlockZ()));
+        MessageUtils.tellResidents(village.getOnlineResidents(),
+                MessageUtils.Message.VILLAGE_HOME_SET,
+                "rank", res.getVillageRank().getTag(village.getState()),
+                "player", player.getName(),
+                "x", String.valueOf(player.getLocation().getBlockX()),
+                "y", String.valueOf(player.getLocation().getBlockY()),
+                "z", String.valueOf(player.getLocation().getBlockZ()));
         village.setVillageHome(player.getLocation());
         Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
     }

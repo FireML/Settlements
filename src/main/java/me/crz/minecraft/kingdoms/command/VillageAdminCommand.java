@@ -57,7 +57,7 @@ public class VillageAdminCommand implements CommandExecutor {
             return;
         }
         if (!p.hasPermission(subCommands.get(aliasUsed).getPermission())) {
-            MessageUtils.tell(p, MessageUtils.NO_PERMISSION_MESSAGE);
+            MessageUtils.tell(p, MessageUtils.Message.NO_PERMISSION);
             return;
         }
         subCommands.get(aliasUsed).run(p, alias, aliasUsed, (String[]) Arrays.copyOfRange(args, 1, args.length));

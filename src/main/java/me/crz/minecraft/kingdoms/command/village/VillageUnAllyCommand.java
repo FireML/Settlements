@@ -26,11 +26,11 @@ public class VillageUnAllyCommand extends SubCommand {
         }
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
             return;
         }
         if (!this.canAlly(ResidentManager.getInstance().getResident(player))) {
-            MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.ELDER.getTag(village.getState()) + " or higher&r&c&l!");
+            MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
             return;
         }
         Village invitedVillage = VillageManager.getInstance().getVillageFromName(args[0].toLowerCase());
@@ -52,8 +52,8 @@ public class VillageUnAllyCommand extends SubCommand {
             DatabaseManager.getInstance().saveVillage(invitedVillage);
             DatabaseManager.getInstance().saveVillage(village);
         });
-        MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), "&7&lAlly &6" + village.getName() + " &7removed!");
-        MessageUtils.tellResidents(village.getOnlineResidents(), "&7&lAlly &6" + invitedVillage.getName() + " &7removed!");
+        MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), MessageUtils.Message.ALLY_REMOVED, "name", village.getName());
+        MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.ALLY_REMOVED, "name", invitedVillage.getName());
     }
 
     private boolean canAlly(Resident res) {

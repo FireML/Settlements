@@ -93,12 +93,14 @@ public class PrivateTeleportersGUI extends Base {
                             if (r.transactionSuccess()) {
                                 p.teleport(v.getTeleporter().toBukkitLocation());
                                 MessageUtils.tell(p, "&7Teleporting to &6" + v.getName() + "&r&7's teleporter!", null, null);
-                                MessageUtils.tellResidents(v.getOnlineResidents(), "&e&l" + p.getName() + " &r&7deposited &6" + v.getTeleportCost() + "&r&7 into the village bank by teleporting to your teleporter!", null, null);
+                                MessageUtils.tellResidents(v.getOnlineResidents(), MessageUtils.Message.TELEPORT_DEPOSIT,
+                                        "player", p.getName(),
+                                        "amount", String.valueOf(v.getTeleportCost()));
                             } else {
                                 MessageUtils.tell(p, "&cAn error occurred, please tell an admin!", null, null);
                             }
                         } else {
-                            MessageUtils.tell(p, "&c&lNot enough money in your bank to pay &r&6&l" + v.getTeleportCost() + "&r&c&l to teleport!", null, null);
+                            MessageUtils.tell(p, MessageUtils.Message.PLAYER_NOT_ENOUGH_MONEY, "amount", String.valueOf(v.getTeleportCost()));
                         }
                     }
                     return false;

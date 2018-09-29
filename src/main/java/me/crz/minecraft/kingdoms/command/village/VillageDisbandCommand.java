@@ -20,7 +20,7 @@ public class VillageDisbandCommand extends SubCommand {
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
             return;
         }
         final Resident res = ResidentManager.getInstance().getResident(player);
@@ -32,7 +32,7 @@ public class VillageDisbandCommand extends SubCommand {
             MessageUtils.tell(player, "&c&lPlease do /" + base + " " + alias + " confirm to confirm the &r&e&ldisbanding&r&c&l of your village.", null, null);
             return;
         }
-        MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.SUCCESS_DELETE_MESSAGE, null, null);
+        MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_DELETE, null, null);
         VillageManager.getInstance().deleteVillage(village);
     }
 }

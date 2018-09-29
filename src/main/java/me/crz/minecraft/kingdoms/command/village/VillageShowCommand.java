@@ -35,10 +35,10 @@ public class VillageShowCommand extends SubCommand {
         if (args.length == 0) {
             Village village = VillageManager.getInstance().getVillageFromPlayer(player);
             if (village == null) {
-                MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE, null, null);
+                MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
                 return;
             }
-            Utils.runAsync(() -> MessageUtils.tellList(player, this.showSettlementMessage(village)));
+            Utils.runAsync(() -> MessageUtils.tell(player, this.showSettlementMessage(village)));
         } else {
             if (args.length != 1) {
                 return;
@@ -49,79 +49,75 @@ public class VillageShowCommand extends SubCommand {
                 Resident target = ResidentManager.getInstance().getResident(name);
                 if (target != null) {
                     Village playerVillage = VillageManager.getInstance().getVillageFromResident(target);
-                    MessageUtils.tellList(player, this.showSettlementMessage(playerVillage));
+                    MessageUtils.tell(player, this.showSettlementMessage(playerVillage));
                     return;
                 }
                 if (village2 != null) {
-                    MessageUtils.tellList(player, this.showSettlementMessage(village2));
+                    MessageUtils.tell(player, this.showSettlementMessage(village2));
                     return;
                 }
-                MessageUtils.tell(player, MessageUtils.TOWN_NOT_FOUND_MESSAGE, null, null);
+                MessageUtils.tell(player, MessageUtils.Message.TOWN_NOT_FOUND, null, null);
             });
         }
     }
 
-    private List<String> showSettlementMessage(Village village) {
-        List<String> messages = new ArrayList<>();
-        for (String line : MessageUtils.SHOW_SETTLEMENT_MESSAGE) {
-            if (line.contains("{townName}")) {
-                line = line.replace("{townName}", village.getName());
-            }
-            if (line.contains("{state}")) {
-                line = line.replace("{state}", village.getState().name());
-            }
-            if (line.contains("{level}")) {
-                line = line.replace("{level}", Integer.toString(village.getLevel()));
-            }
-            if (line.contains("{land}")) {
-                line = line.replace("{land}", Integer.toString(LandManager.getInstance().getClaimedLandSize(village)));
-            }
-            if (line.contains("{maxLand}")) {
-                line = line.replace("{maxLand}", Integer.toString(Utils.getChunkMax(village.getLevel(), village.getState())));
-            }
-            if (line.contains("{outpost}")) {
-                line = line.replace("{outpost}", Integer.toString(LandManager.getInstance().getClaimedLandSizeOutpost(village)));
-            }
-            if (line.contains("{maxOutpost}")) {
-                line = line.replace("{maxOutpost}", Integer.toString(Utils.getChunkMaxOutpost(village.getLevel(), village.getState())));
-            }
-            if (line.contains("{pvp}")) {
-                line = line.replace("{pvp}", this.yesOrNo(village.isPvp()));
-            }
-            DecimalFormat df = new DecimalFormat("#,###");
-            if (line.contains("{balance}")) {
-                line = line.replace("{balance}", df.format((long) village.getBank()));
-            }
-            if (line.contains("{mobSpawning}")) {
-                line = line.replace("{mobSpawning}", this.yesOrNo(village.isMobSpawning()));
-            }
-            if (line.contains("{fireSpread}")) {
-                line = line.replace("{fireSpread}", this.yesOrNo(village.isFireSpread()));
-            }
-            if (line.contains("{explosions}")) {
-                line = line.replace("{explosions}", this.yesOrNo(village.isExplosions()));
-            }
-            if (line.contains("{buff}")) {
-                line = line.replace("{buff}", this.yesOrNo(village.isBuff()));
-            }
-            if (line.contains("{teleporter}")) {
-                String yon = (village.getState() == VillageState.KINGDOM && village.getLevel() >= 4) ? (village.isTeleporter() ? "Private" : "Public") : "Not available";
-                line = line.replace("{teleporter}", yon);
-            }
-            if (line.contains("{chiefRank}")) {
-                line = line.replace("{chiefRank}", VillageRank.CHIEF.getTag(village.getState()));
-            }
-            if (line.contains("{chief}")) {
-                OfflinePlayer player = Bukkit.getOfflinePlayer(village.getChief());
-                line = line.replace("{chief}", player.getName());
-            }
-            if (line.contains("{residents}")) {
-                line = line.replace("{residents}", this.getResidentsToString(village.getResidents(), village));
-            }
-            line = ChatColor.translateAlternateColorCodes('&', line);
-            messages.add(line);
+    private String showSettlementMessage(Village village) {
+        String message = MessageUtils.Message.SHOW_SETTLEMENT.getText();
+        if (message.contains("{townName}")) {
+            message = message.replace("{townName}", village.getName());
         }
-        return messages;
+        if (message.contains("{state}")) {
+            message = message.replace("{state}", village.getState().name());
+        }
+        if (message.contains("{level}")) {
+            message = message.replace("{level}", Integer.toString(village.getLevel()));
+        }
+        if (message.contains("{land}")) {
+            message = message.replace("{land}", Integer.toString(LandManager.getInstance().getClaimedLandSize(village)));
+        }
+        if (message.contains("{maxLand}")) {
+            message = message.replace("{maxLand}", Integer.toString(Utils.getChunkMax(village.getLevel(), village.getState())));
+        }
+        if (message.contains("{outpost}")) {
+            message = message.replace("{outpost}", Integer.toString(LandManager.getInstance().getClaimedLandSizeOutpost(village)));
+        }
+        if (message.contains("{maxOutpost}")) {
+            message = message.replace("{maxOutpost}", Integer.toString(Utils.getChunkMaxOutpost(village.getLevel(), village.getState())));
+        }
+        if (message.contains("{pvp}")) {
+            message = message.replace("{pvp}", this.yesOrNo(village.isPvp()));
+        }
+        if (message.contains("{balance}")) {
+            DecimalFormat df = new DecimalFormat("#,###");
+            message = message.replace("{balance}", df.format((long) village.getBank()));
+        }
+        if (message.contains("{mobSpawning}")) {
+            message = message.replace("{mobSpawning}", this.yesOrNo(village.isMobSpawning()));
+        }
+        if (message.contains("{fireSpread}")) {
+            message = message.replace("{fireSpread}", this.yesOrNo(village.isFireSpread()));
+        }
+        if (message.contains("{explosions}")) {
+            message = message.replace("{explosions}", this.yesOrNo(village.isExplosions()));
+        }
+        if (message.contains("{buff}")) {
+            message = message.replace("{buff}", this.yesOrNo(village.isBuff()));
+        }
+        if (message.contains("{teleporter}")) {
+            String yon = (village.getState() == VillageState.KINGDOM && village.getLevel() >= 4) ? (village.isTeleporter() ? "Private" : "Public") : "Not available";
+            message = message.replace("{teleporter}", yon);
+        }
+        if (message.contains("{chiefRank}")) {
+            message = message.replace("{chiefRank}", VillageRank.CHIEF.getTag(village.getState()));
+        }
+        if (message.contains("{chief}")) {
+            OfflinePlayer player = Bukkit.getOfflinePlayer(village.getChief());
+            message = message.replace("{chief}", player.getName());
+        }
+        if (message.contains("{residents}")) {
+            message = message.replace("{residents}", this.getResidentsToString(village.getResidents(), village));
+        }
+        return MessageUtils.replaceColorCodes(message);
     }
 
     public String yesOrNo(boolean b) {

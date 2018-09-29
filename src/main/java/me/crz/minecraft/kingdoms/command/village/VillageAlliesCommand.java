@@ -16,7 +16,7 @@ public class VillageAlliesCommand extends SubCommand {
     public void run(final Player p, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(p);
         if (village == null) {
-            MessageUtils.tell(p, MessageUtils.NOT_IN_CURRENT_MESSAGE);
+            MessageUtils.tell(p, MessageUtils.Message.NOT_IN_CURRENT);
             return;
         }
         final StringBuilder sb = new StringBuilder("&8&l--------&r&c&lAllies&r&8&l--------\n");

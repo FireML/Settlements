@@ -45,9 +45,9 @@ public class VillageAdminJoinCommand extends SubCommand {
             MessageUtils.tell(player, "&6&l" + target.getName() + "&r&c&l is now in {townName}", "{townName}", village.getName());
             Player targetP = target.getPlayer();
             if (targetP != null) {
-                MessageUtils.tell(targetP, MessageUtils.SUCCESS_JOIN_MESSAGE, "{townName}", village.getName());
+                MessageUtils.tell(targetP, MessageUtils.Message.SUCCESS_JOIN, "{townName}", village.getName());
             }
-            MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.NEW_RESIDENT_MESSAGE, "{player}", target.getName());
+            MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.NEW_RESIDENT, "{player}", target.getName());
         });
     }
 }

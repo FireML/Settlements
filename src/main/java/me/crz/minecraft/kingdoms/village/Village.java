@@ -3,13 +3,12 @@ package me.crz.minecraft.kingdoms.village;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
+import me.crz.minecraft.kingdoms.utils.config.Data;
 import me.crz.minecraft.kingdoms.world.NamedLocation;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import me.crz.minecraft.kingdoms.world.SimpleLocation;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.utils.config.Config;
 import org.bukkit.Bukkit;
 
 import java.util.EnumMap;
@@ -92,19 +91,19 @@ public class Village {
             if (upkeepStage == UpkeepStage.PAID) {
                 this.upkeepStage = UpkeepStage.LAND;
                 LandManager.getInstance().unclaimLand(this);
-                MessageUtils.tellResidents(this.getOnlineResidents(), "&a&lALERT &7Your settlement land has been &cunclaimed&7 because ");
+                MessageUtils.tellResidents(this.getOnlineResidents(), MessageUtils.Message.ALERT_UPKEEP_UNCLAIMED);
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(this));
             } else if (upkeepStage == UpkeepStage.LAND) {
-                MessageUtils.tellResidents(this.getOnlineResidents(), "&a&lALERT &7Your settlement has been &cdeleted&7 because it was &cunable&7 to pay its upkeep!");
+                MessageUtils.tellResidents(this.getOnlineResidents(), MessageUtils.Message.ALERT_UPKEEP_DELETED);
                 VillageManager.getInstance().deleteVillage(this);
             }
         } else {
             this.setBank(this.getBank() - total);
-            MessageUtils.tellResidents(this.getOnlineResidents(), "&a&lALERT &7Your settlement has been charged &6" + total + "&7 for upkeep!");
+            MessageUtils.tellResidents(this.getOnlineResidents(), MessageUtils.Message.ALERT_UPKEEP_CHARGED, "charged", String.valueOf(total));
             this.upkeepStage = UpkeepStage.PAID;
             this.lastUpkeep = System.currentTimeMillis();
             if (!this.canPayUpkeep(total)) {
-                MessageUtils.tellResidents(this.getOnlineResidents(), "&a&lALERT &7Your settlement is &cunable&7 to pay tommorrows upkeep, it will cost &6" + total + "&7!");
+                MessageUtils.tellResidents(this.getOnlineResidents(), MessageUtils.Message.ALERT_UPKEEP_CANT_PAY, "cost", String.valueOf(total));
             }
         }
     }
@@ -274,9 +273,9 @@ public class Village {
 
     public void setLevel(int level) {
         this.level = level;
-        if (Config.first.getString(String.valueOf(villageState.name().toLowerCase()) + "-" + level).equals("")) {
-            Config.first.put(String.valueOf(villageState.name().toLowerCase()) + "-" + level, this.getName());
-            KingdomsPlugin.config.save(KingdomsPlugin.getInstance().getDataFolder());
+        if (Data.first.getString(String.valueOf(villageState.name().toLowerCase()) + "-" + level).equals("")) {
+            Data.first.put(String.valueOf(villageState.name().toLowerCase()) + "-" + level, this.getName());
+            KingdomsPlugin.data.save(KingdomsPlugin.getInstance().getDataFolder());
             for (Player player : Bukkit.getOnlinePlayers()) {
                 MessageUtils.tell(player, "&6&l" + this.getName() + " &7&l is the first to reach &6&l" + villageState.name().toLowerCase() + " &7&llevel &6&l" + level);
             }

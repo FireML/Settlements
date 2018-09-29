@@ -26,18 +26,18 @@ public class VillageBuildCommand extends SubCommand {
         }
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.NOT_IN_CURRENT_MESSAGE);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
             return;
         }
         if (!this.canChange(village, player)) {
-            MessageUtils.tell(player, MessageUtils.NO_PERMISSION_MESSAGE);
+            MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
             return;
         }
         if (args[0].equalsIgnoreCase("residents") || args[0].equalsIgnoreCase("officers") || args[0].equalsIgnoreCase("public") || args[0].equalsIgnoreCase("ally")) {
             BuildState newState = BuildState.valueOf(args[0].toUpperCase());
             village.setBuildState(newState);
             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
-            MessageUtils.tell(player, MessageUtils.SUCCESS_BUILD_STATE_MESSAGE, "{state}", args[0]);
+            MessageUtils.tell(player, MessageUtils.Message.SUCCESS_BUILD_STATE, "{state}", args[0]);
             return;
         }
         MessageUtils.tellList(player, Arrays.asList("&8&l-------- &r&c&l/" + base + " " + alias + "&r " + "&8&l--------", "&8[&9*&8] &b/" + base + " " + alias + " residents &7- residents and officers to build in claimed land" + "&8[&9*&8] &b/" + base + " " + alias + " officers &7- only officers are allowed to build in claimed land" + "&8[&9*&8] &b/" + base + " " + alias + " public &7- allows everyone to build in your claimed land"));

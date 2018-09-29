@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.utils;
 
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -8,130 +9,126 @@ import org.bukkit.ChatColor;
 import org.bukkit.Bukkit;
 import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.entity.Player;
-import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 
 import java.util.List;
 
 import me.crz.minecraft.kingdoms.Base;
 
 public class MessageUtils extends Base {
-    public static String NO_PERMISSION_MESSAGE;
-    public static String NO_PERMISSION_INTERACT;
-    public static String ONLY_CONSOLE_MESSAGE;
-    public static String ONLY_PLAYER_MESSAGE;
-    public static String PLAYER_NOT_FOUND_MESSAGE;
-    public static List<String> HELP_MESSAGE;
-    public static String MUST_LEAVE_CURRENT_MESSAGE;
-    public static String NOT_IN_CURRENT_MESSAGE;
-    public static String SUCCESS_CREATE_MESSAGE;
-    public static String SUCCESS_DELETE_MESSAGE;
-    public static String RECEIVE_INVITE_MESSAGE;
-    public static String TOWN_NOT_FOUND_MESSAGE;
-    public static String NO_INVITE_MESSAGE;
-    public static String IS_FULL_MESSAGE;
-    public static String SUCCESS_JOIN_MESSAGE;
-    public static String SUCCESS_LEAVE_MESSAGE;
-    public static String NAME_TAKEN_MESSAGE;
-    public static String CANT_LEAVE_OWN_MESSAGE;
-    public static String SUCCESS_INVITE_MESSAGE;
-    public static String KICKED_PLAYER_MESSAGE;
-    public static String NEW_RESIDENT_MESSAGE;
-    public static String ALERT_LEAVE_MESSAGE;
-    public static List<String> SHOW_SETTLEMENT_MESSAGE;
-    public static String SUCCESS_DEPOSIT_MESSAGE;
-    public static String FAIL_DEPOSIT_MESSAGE;
-    public static String LIST_DEPOSIT_MESSAGE;
-    public static String UPGRADE_MESSAGE;
-    public static String CANT_SET_THAT_PERSONS_RANK_MESSAGE;
-    public static String INVALID_RANK_MESSAGE;
-    public static String SUCCESS_SET_RANK_MESSAGE;
-    public static String INVALID_LEVEL_MESSAGE;
-    public static String UPGRADE_SETTLEMENT_MESSAGE;
-    public static String CANT_CLAIM_MORE_MESSAGE;
-    public static String ALREADY_OWN_LAND_MESSAGE;
-    public static String CANT_CLAIM_HERE_MESSAGE;
-    public static String SUCCESS_CLAIM_LAND_MESSAGE;
-    public static String CANT_BUILD_HERE_MESSAGE;
-    public static String DEFAULT_ENTER_MESSAGE;
-    public static String DEFAULT_LEAVE_MESSAGE;
-    public static String SUCCESS_CHANGE_ENTER_MESSAGE;
-    public static String SUCCESS_CHANGE_LEAVE_MESSAGE;
-    public static String SUCCESS_CREATE_SALE_PLOT_MESSAGE;
-    public static String SUCCESS_BUILD_STATE_MESSAGE;
-    public static String NO_LAND_AROUND_MESSAGE;
+    public enum Message {
+        NO_PERMISSION,
+        NO_PERMISSION_,
+        ONLY_CONSOLE,
+        ONLY_PLAYER,
+        PLAYER_NOT_FOUND,
+        HELP,
+        MUST_LEAVE_CURRENT,
+        NOT_IN_CURRENT,
+        SUCCESS_CREATE,
+        SUCCESS_DELETE,
+        RECEIVE_INVITE,
+        TOWN_NOT_FOUND,
+        NO_INVITE,
+        IS_FULL,
+        SUCCESS_JOIN,
+        SUCCESS_LEAVE,
+        NAME_TAKEN,
+        CANT_LEAVE_OWN,
+        SUCCESS_INVITE,
+        KICKED_PLAYER,
+        NEW_RESIDENT,
+        ALERT_LEAVE,
+        SHOW_SETTLEMENT,
+        SUCCESS_DEPOSIT,
+        FAIL_DEPOSIT,
+        LIST_DEPOSIT,
+        UPGRADE,
+        CANT_SET_THAT_PERSONS_RANK,
+        INVALID_RANK,
+        SUCCESS_SET_RANK,
+        SET_RANK,
+        INVALID_LEVEL,
+        UPGRADE_SETTLEMENT,
+        CANT_CLAIM_MORE,
+        ALREADY_OWN_LAND,
+        CANT_CLAIM_HERE,
+        SUCCESS_CLAIM_LAND,
+        CANT_BUILD_HERE,
+        DEFAULT_ENTER,
+        DEFAULT_LEAVE,
+        SUCCESS_CHANGE_ENTER,
+        SUCCESS_CHANGE_LEAVE,
+        SUCCESS_CREATE_SALE_PLOT,
+        SUCCESS_BUILD_STATE,
+        NO_LAND_AROUND,
+        NOT_IN_VILLAGE,
+        UPGRADE_UNLOCK,
+        ALERT_UPKEEP_UNCLAIMED,
+        ALERT_UPKEEP_DELETED,
+        ALERT_UPKEEP_CHARGED,
+        ALERT_UPKEEP_CANT_PAY,
+        BANK_WITHDRAW,
+        RANK_REQUIRED,
+        BANK_NOT_ENOUGH_MONEY,
+        BANK_DEPOSIT,
+        PLAYER_NOT_ENOUGH_MONEY,
+        SUCCESS_CLAIM_OUTPOST,
+        ERROR_MAX_OUTPOST_CHUNKS,
+        SUCCESS_UNCLAIM_OUTPOST,
+        OUTPOST_NOT_FOUND,
+        VILLAGE_RENAMED,
+        ERROR_VILLAGE_EXISTS,
+        TELEPORT_DEPOSIT,
+        TELEPORT_CLAIM_REMOVED,
+        TELEPORT_CLAIM_SET,
+        NOW_ALLIED_TO,
+        ALLY_INVITE,
+        ALLY_ACCEPT_INFO,
+        BANISHED,
+        UNBANISHED,
+        SUCCESS_UNCLAIM_LAND,
+        VILLAGE_HOME_SET, ALLY_REMOVED;
 
-    static {
-        NO_PERMISSION_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("NO-PERMISSION-MESSAGE");
-        NO_PERMISSION_INTERACT = ConfigManager.getInstance().getMessagesConfig().getString("NO-PERMISSION-INTERACT");
-        ONLY_CONSOLE_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("ONLY-CONSOLE-MESSAGE");
-        ONLY_PLAYER_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("ONLY-PLAYER-MESSAGE");
-        PLAYER_NOT_FOUND_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("PLAYER-NOT-FOUND-MESSAGE");
-        HELP_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getStringList("HELP-MESSAGE");
-        MUST_LEAVE_CURRENT_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("MUST-LEAVE-CURRENT-MESSAGE");
-        NOT_IN_CURRENT_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("NOT-IN-CURRENT-MESSAGE");
-        SUCCESS_CREATE_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("SUCCESS-CREATE-MESSAGE");
-        SUCCESS_DELETE_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("SUCCESS-DELETE-MESSAGE");
-        RECEIVE_INVITE_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("RECEIVE-INVITE-MESSAGE");
-        TOWN_NOT_FOUND_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("TOWN-NOT-FOUND-MESSAGE");
-        NO_INVITE_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("NO-INVITE-MESSAGE");
-        IS_FULL_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("IS-FULL-MESSAGE");
-        SUCCESS_JOIN_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("SUCCESS-JOIN-MESSAGE");
-        SUCCESS_LEAVE_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("SUCCESS-LEAVE-MESSAGE");
-        NAME_TAKEN_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("NAME-TAKEN-MESSAGE");
-        CANT_LEAVE_OWN_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("CANT-LEAVE-OWN-MESSAGE");
-        SUCCESS_INVITE_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("SUCCESS-INVITE-MESSAGE");
-        KICKED_PLAYER_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("KICKED-PLAYER-MESSAGE");
-        NEW_RESIDENT_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("NEW-RESIDENT-MESSAGE");
-        ALERT_LEAVE_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("ALERT-LEAVE-MESSAGE");
-        SHOW_SETTLEMENT_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getStringList("SHOW-SETTLEMENT-MESSAGE");
-        SUCCESS_DEPOSIT_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("SUCCESS-DEPOSIT-MESSAGE");
-        FAIL_DEPOSIT_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("FAIL-DEPOSIT-MESSAGE");
-        LIST_DEPOSIT_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("LIST-DEPOSIT-MESSAGE");
-        UPGRADE_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("UPGRADE-MESSAGE");
-        CANT_SET_THAT_PERSONS_RANK_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("CANT-SET-THAT-PERSONS-RANK-MESSAGE");
-        INVALID_RANK_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("INVALID-RANK-MESSAGE");
-        SUCCESS_SET_RANK_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("SUCCESS-SET-RANK-MESSAGE");
-        INVALID_LEVEL_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("INVALID-LEVEL-MESSAGE");
-        UPGRADE_SETTLEMENT_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("UPGRADE-SETTLEMENT-MESSAGE");
-        CANT_CLAIM_MORE_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("CANT-CLAIM-MORE-MESSAGE");
-        ALREADY_OWN_LAND_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("ALREADY-OWN-LAND-MESSAGE");
-        CANT_CLAIM_HERE_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("CANT-CLAIM-HERE-MESSAGE");
-        SUCCESS_CLAIM_LAND_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("SUCCESS-CLAIM-LAND-MESSAGE");
-        CANT_BUILD_HERE_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("CANT-BUILD-HERE-MESSAGE");
-        DEFAULT_ENTER_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("DEFAULT-ENTER-MESSAGE");
-        DEFAULT_LEAVE_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("DEFAULT-LEAVE-MESSAGE");
-        SUCCESS_CHANGE_ENTER_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("SUCCESS-CHANGE-ENTER-MESSAGE");
-        SUCCESS_CHANGE_LEAVE_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("SUCCESS-CHANGE-LEAVE-MESSAGE");
-        SUCCESS_CREATE_SALE_PLOT_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("SUCCESS-CREATE-SALE-PLOT-MESSAGE");
-        SUCCESS_BUILD_STATE_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("SUCCESS-BUILD-STATE-MESSAGE");
-        NO_LAND_AROUND_MESSAGE = ConfigManager.getInstance().getMessagesConfig().getString("NO-LAND-AROUND-MESSAGE");
+        private final String text;
+
+        Message() {
+            text = replaceColorCodes(ConfigManager.getInstance().getMessagesConfig().getString(getKey()));
+        }
+
+        private String getKey() {
+            return name().toLowerCase().replace('_', '-');
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public String getReplaced(String... replaced) {
+            return replacePlaceholders(text, replaced);
+        }
     }
 
     public MessageUtils() {
         super();
     }
 
-    public static void tell(Player player, String message) {
-        tell(player, message, null, null);
+    public static void tell(Player player, Message message, String... replacements) {
+        tell(player, message.text, replacements);
     }
 
-    public static void tell(Player player, String message, String placeholder, String value) {
-        if (placeholder != null && value != null) {
-            message = replacePlaceholders(message, placeholder, value);
+    public static void tell(Player player, String message, String... replacements) {
+        if (replacements != null && replacements.length > 0) {
+            message = replacePlaceholders(message, replacements);
         }
         message = replaceColorCodes(message);
         player.sendMessage(message);
     }
 
-    public static void tellResidents(List<Resident> residents, String message) {
-        tellResidents(residents, message, null, null);
-    }
-
-    public static void tellResidents(List<Resident> residents, String message, String placeholder, String value) {
+    public static void tellResidents(List<Resident> residents, Message message, String... replacements) {
         for (Resident res : residents) {
             Player player = Bukkit.getPlayer(res.getUUID());
             if (player != null && player.isOnline()) {
-                tell(player, message, placeholder, value);
+                tell(player, message, replacements);
             }
         }
     }
@@ -150,13 +147,25 @@ public class MessageUtils extends Base {
             return;
         }
         for (String message : messages) {
-            message = replaceColorCodes(message);
-            player.sendMessage(message);
+            player.sendMessage(replaceColorCodes(message));
         }
     }
 
-    public static String replacePlaceholders(String message, String placeholder, String value) {
-        return message.replace(placeholder, value);
+    public static String replacePlaceholders(Message message, String... replacements) {
+        return replacePlaceholders(message.text, replacements);
+    }
+
+    public static String replacePlaceholders(String message, String... replacements) {
+        for (int i = 0; i + 1 < replacements.length; i += 2) {
+            String placeholder = replacements[i];
+            if (placeholder != null && replacements[i + 1] != null) {
+                if (!placeholder.startsWith("{") && !placeholder.endsWith("}")) {
+                    placeholder = "{" + placeholder + "}";
+                }
+                message = message.replace(placeholder, replacements[i+1]);
+            }
+        }
+        return message;
     }
 
     public static String replaceColorCodes(String message) {

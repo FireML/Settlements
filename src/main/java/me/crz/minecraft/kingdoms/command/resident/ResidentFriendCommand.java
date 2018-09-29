@@ -48,6 +48,6 @@ public class ResidentFriendCommand extends SubCommand {
             subCmd.run(p, alias, aliasUsed, Arrays.copyOfRange(args, 1, args.length));
             return;
         }
-        MessageUtils.tell(p, MessageUtils.NO_PERMISSION_MESSAGE);
+        MessageUtils.tell(p, MessageUtils.Message.NO_PERMISSION);
     }
 }
