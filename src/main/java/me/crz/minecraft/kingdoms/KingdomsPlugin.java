@@ -10,6 +10,7 @@ import me.crz.minecraft.kingdoms.utils.ThreadManager;
 import org.bukkit.Bukkit;
 
 import java.util.Calendar;
+import java.util.logging.Level;
 
 import me.crz.minecraft.kingdoms.landflags.LandFlagsUseEvents;
 import me.crz.minecraft.kingdoms.landflags.LandFlagsBlockEvents;
@@ -52,7 +53,7 @@ public class KingdomsPlugin extends JavaPlugin {
     public void onEnable() {
         instance = this;
         if (!this.setupEconomy() || !this.setupChat()) {
-            this.getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", this.getDescription().getName()));
+            this.getLogger().log(Level.SEVERE, "Disabled due to missing economy or chat plugin!");
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -62,7 +63,7 @@ public class KingdomsPlugin extends JavaPlugin {
             try {
                 DatabaseManager.getInstance().connect();
             } catch (Exception e) {
-                this.getLogger().severe(String.format("[%s] - Disabled due to data.json error!", this.getDescription().getName()));
+                this.getLogger().log(Level.SEVERE, "Disabled due to databaser error!", e);
                 this.getServer().getPluginManager().disablePlugin(this);
                 return;
             }
@@ -80,20 +81,20 @@ public class KingdomsPlugin extends JavaPlugin {
             running = true;
             return;
         }
-        this.getLogger().severe(String.format("[%s] - Disabled due to data.json error!", this.getDescription().getName()));
+        this.getLogger().log(Level.SEVERE, "Disabled due to data.json error!");
         this.getServer().getPluginManager().disablePlugin(this);
     }
 
     public void upkeep() {
-        final Calendar midnight = Calendar.getInstance();
+        Calendar midnight = Calendar.getInstance();
         midnight.set(Calendar.HOUR_OF_DAY, 0);
         midnight.set(Calendar.MINUTE, 0);
         midnight.set(Calendar.SECOND, 0);
         midnight.set(Calendar.MILLISECOND, 1);
         midnight.set(Calendar.DAY_OF_YEAR, midnight.get(Calendar.DAY_OF_YEAR) + 1);
-        final long tillMidnight = midnight.getTimeInMillis() - System.currentTimeMillis() - 1L;
-        final long ticksTillMidnight = tillMidnight / 50L;
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> System.out.println("should be doing upkeep here!"), ticksTillMidnight, 1728000L);
+        long tillMidnight = midnight.getTimeInMillis() - System.currentTimeMillis() - 1L;
+        long ticksTillMidnight = tillMidnight / 50L;
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> this.getLogger().log(Level.INFO, "Should be doing upkeep here!"), ticksTillMidnight, 1728000L);
     }
 
     public LandPerks getLandPerks() {
@@ -115,19 +116,27 @@ public class KingdomsPlugin extends JavaPlugin {
     }
 
     private boolean setupChat() {
-        final RegisteredServiceProvider<Chat> rsp = this.getServer().getServicesManager().getRegistration(Chat.class);
+        if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
+            this.getLogger().log(Level.SEVERE, "Vault is not available?");
+            return false;
+        }
+        RegisteredServiceProvider<Chat> rsp = this.getServer().getServicesManager().getRegistration(Chat.class);
+        if (rsp == null) {
+            this.getLogger().log(Level.SEVERE, "No chat service provider registered!");
+            return false;
+        }
         chat = rsp.getProvider();
         return chat != null;
     }
 
     private boolean setupEconomy() {
         if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
-            this.getLogger().info("null plugin");
+            this.getLogger().log(Level.SEVERE, "Vault is not available?");
             return false;
         }
-        final RegisteredServiceProvider<Economy> rsp = this.getServer().getServicesManager().getRegistration(Economy.class);
+        RegisteredServiceProvider<Economy> rsp = this.getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
-            this.getLogger().info("null rsp");
+            this.getLogger().log(Level.SEVERE, "No economy service provider registered!");
             return false;
         }
         econ = rsp.getProvider();
