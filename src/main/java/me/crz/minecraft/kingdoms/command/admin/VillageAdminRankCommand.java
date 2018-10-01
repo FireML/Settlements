@@ -16,7 +16,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageAdminRankCommand extends SubCommand {
     public VillageAdminRankCommand() {
         super("Forces a player to have a rank", "rank");
-        this.setPermission("village.admin");
+        this.setPermission("kingdoms.admin");
         this.setUsage("join <player> <rank>");
     }
 

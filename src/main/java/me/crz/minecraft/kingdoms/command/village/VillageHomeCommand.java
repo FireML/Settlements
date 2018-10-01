@@ -12,7 +12,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageHomeCommand extends SubCommand {
     public VillageHomeCommand() {
         super("Teleport to village home", "home");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("home");
     }
 

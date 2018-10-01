@@ -17,7 +17,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageUpkeepCommand extends SubCommand {
     public VillageUpkeepCommand() {
         super("upkeep", "upkeep");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
     }
 
     @Override

@@ -12,7 +12,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageDisbandCommand extends SubCommand {
     public VillageDisbandCommand() {
         super("Disbands the current village", "disband");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("disband confirm");
     }
 

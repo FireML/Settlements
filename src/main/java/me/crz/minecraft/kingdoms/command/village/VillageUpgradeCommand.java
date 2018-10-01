@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageUpgradeCommand extends SubCommand {
     public VillageUpgradeCommand() {
         super("Upgrade your village to a kingdom", "upgrade");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("upgrade");
     }
 

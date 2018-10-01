@@ -18,7 +18,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageResListCommand extends SubCommand {
     public VillageResListCommand() {
         super("lists all online residents", "reslist");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("reslist");
     }
 

@@ -26,7 +26,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageShowCommand extends SubCommand {
     public VillageShowCommand() {
         super("Shows information on a village ", "show");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("show");
     }
 

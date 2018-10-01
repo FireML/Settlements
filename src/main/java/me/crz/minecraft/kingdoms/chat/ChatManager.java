@@ -106,7 +106,7 @@ public class ChatManager extends Base {
                 sb.append(e.getMessage());
                 System.out.println(MessageUtils.replaceColorCodes(sb.toString()));
                 for (Player op : Bukkit.getOnlinePlayers()) {
-                    if (op.hasPermission("village.admin") && Base.getResidentManager().isListening(op, ChatChannel.ADMIN)) {
+                    if (op.hasPermission("kingdoms.admin") && Base.getResidentManager().isListening(op, ChatChannel.ADMIN)) {
                         MessageUtils.tell(op, sb.toString());
                     }
                 }
@@ -118,7 +118,7 @@ public class ChatManager extends Base {
                 sb.append(e.getMessage());
                 System.out.println(MessageUtils.replaceColorCodes(sb.toString()));
                 for (Player op : Bukkit.getOnlinePlayers()) {
-                    if (op.hasPermission("village.staff") && Base.getResidentManager().isListening(op, ChatChannel.STAFF)) {
+                    if (op.hasPermission("kingdoms.staff") && Base.getResidentManager().isListening(op, ChatChannel.STAFF)) {
                         MessageUtils.tell(op, sb.toString());
                     }
                 }

@@ -20,7 +20,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageLockCommand extends SubCommand {
     public VillageLockCommand() {
         super("Add, list or remove someone from a lock", "lock");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("lock <add|list|remove> <(optional) player>");
     }
 

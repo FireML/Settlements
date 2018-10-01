@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class VillageBanishCommand extends SubCommand {
     public VillageBanishCommand() {
         super("Banishes a player from your village", "banish");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("banish <list|add|remove> <name>");
     }
 

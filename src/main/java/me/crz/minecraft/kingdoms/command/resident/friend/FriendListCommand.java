@@ -16,7 +16,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class FriendListCommand extends SubCommand {
     public FriendListCommand() {
         super("Lists all the people on your friends list", "list");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("list");
     }
 

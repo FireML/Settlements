@@ -15,7 +15,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageInviteCommand extends SubCommand {
     public VillageInviteCommand() {
         super("Invite someone to join your village", "invite");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("invite <player>");
     }
 

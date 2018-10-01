@@ -11,7 +11,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class FriendAddCommand extends SubCommand {
     public FriendAddCommand() {
         super("Adds a player to your friend list", "add");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("add <name>");
     }
 

@@ -23,7 +23,7 @@ public class VillageCreateCommand extends SubCommand {
     public VillageCreateCommand() {
         super("Create a new village.", "create");
         allowed = "abcdefghijklmnopqrstuvwxyz0123456789_-";
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("create <name>");
     }
 

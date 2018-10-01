@@ -20,7 +20,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageKickCommand extends SubCommand {
     public VillageKickCommand() {
         super("Kick a player from your village", "kick");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("kick <name>");
     }
 

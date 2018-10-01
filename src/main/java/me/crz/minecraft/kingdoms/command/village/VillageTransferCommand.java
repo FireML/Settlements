@@ -14,7 +14,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageTransferCommand extends SubCommand {
     public VillageTransferCommand() {
         super("Transfers leadership of your village", "transfer");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("transfer <player>");
     }
 

@@ -29,7 +29,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillagePlotCommand extends SubCommand {
     public VillagePlotCommand() {
         super("Plot Commands", "plot");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("plot <buy|revoke|sale|mode>");
     }
 

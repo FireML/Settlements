@@ -9,7 +9,7 @@ public class ResidentHelpCommand extends SubCommand {
 
     public ResidentHelpCommand() {
         super("Lists the sub commands of the resident command", "help");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         (sb = new StringBuilder()).append("&8&l--------&r&c&lVillage Commands&r&8&l--------");
         sb.append("\n&8[&9*&8] &b/{alias} show <name> &7- Shows you information about a resident");
         sb.append("\n&8[&9*&8] &b/{alias} friend add <name> &7- Adds a player into your friends");

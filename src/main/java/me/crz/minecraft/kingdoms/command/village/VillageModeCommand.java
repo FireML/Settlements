@@ -18,7 +18,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageModeCommand extends SubCommand {
     public VillageModeCommand() {
         super("Changes settings for your village claims", "mode");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("mode <" + String.join(" | ", Mode.modes()) + ">");
     }
 

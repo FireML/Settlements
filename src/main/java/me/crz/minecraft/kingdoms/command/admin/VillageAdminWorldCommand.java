@@ -11,7 +11,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageAdminWorldCommand extends SubCommand {
     public VillageAdminWorldCommand() {
         super("Sets if a world is claimable in or not", "world");
-        this.setPermission("village.admin");
+        this.setPermission("kingdoms.admin");
         this.setUsage("world <yes|no>");
     }
 

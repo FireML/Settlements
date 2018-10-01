@@ -16,7 +16,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageMaterialsCommand extends SubCommand {
     public VillageMaterialsCommand() {
         super("Shows you the materials required to upgrade", "materials");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("materials");
     }
 

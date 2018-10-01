@@ -15,7 +15,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageJoinCommand extends SubCommand {
     public VillageJoinCommand() {
         super("Join a village", "join");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("join <name>");
     }
 

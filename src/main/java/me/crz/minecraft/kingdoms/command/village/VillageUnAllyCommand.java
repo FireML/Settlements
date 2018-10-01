@@ -14,7 +14,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageUnAllyCommand extends SubCommand {
     public VillageUnAllyCommand() {
         super("remove an allied village", "unally");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("unally <name>");
     }
 

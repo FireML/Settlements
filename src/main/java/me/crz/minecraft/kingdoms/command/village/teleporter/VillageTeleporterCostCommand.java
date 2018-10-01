@@ -11,7 +11,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageTeleporterCostCommand extends SubCommand {
     public VillageTeleporterCostCommand() {
         super("view or set the teleporter cost", "cost");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("cost <view|set> <value>");
     }
 

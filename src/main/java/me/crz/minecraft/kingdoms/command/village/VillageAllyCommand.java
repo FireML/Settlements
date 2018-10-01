@@ -20,7 +20,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageAllyCommand extends SubCommand {
     public VillageAllyCommand() {
         super("Ally another village", "ally");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("ally <name>");
     }
 

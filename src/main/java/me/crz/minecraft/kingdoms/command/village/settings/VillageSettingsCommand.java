@@ -9,7 +9,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageSettingsCommand extends SubCommand {
     public VillageSettingsCommand() {
         super("Shows a settings gui", "settings");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
     }
 
     @Override

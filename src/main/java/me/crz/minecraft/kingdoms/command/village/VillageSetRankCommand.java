@@ -17,7 +17,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageSetRankCommand extends SubCommand {
     public VillageSetRankCommand() {
         super("Sets the rank of a resident", "setrank");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("setrank <player> <rank>");
     }
 

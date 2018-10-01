@@ -15,7 +15,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageUnclaimCommand extends SubCommand {
     public VillageUnclaimCommand() {
         super("Unclaim land which is claimed by your village", "unclaim");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("unclaim");
     }
 

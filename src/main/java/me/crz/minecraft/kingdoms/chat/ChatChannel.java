@@ -45,7 +45,7 @@ public enum ChatChannel {
     ADMIN("admin", "ac") {
         @Override
         public boolean canChat(Player player) {
-            return player.hasPermission("village.admin");
+            return player.hasPermission("kingdoms.admin");
         }
 
         @Override
@@ -60,7 +60,7 @@ public enum ChatChannel {
     STAFF("staff", "sc") {
         @Override
         public boolean canChat(Player player) {
-            return player.hasPermission("village.staff");
+            return player.hasPermission("kingdoms.staff");
         }
 
         @Override

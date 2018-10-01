@@ -13,7 +13,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class FriendRemoveCommand extends SubCommand {
     public FriendRemoveCommand() {
         super("Removes a player to your friend list", "remove");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("remove <name>");
     }
 

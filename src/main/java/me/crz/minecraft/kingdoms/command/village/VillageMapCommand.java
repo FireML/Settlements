@@ -26,7 +26,7 @@ public class VillageMapCommand extends SubCommand {
     public VillageMapCommand() {
         super("Shows you a map of the surrounding chunks", "map");
         offset1 = new int[]{-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6};
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("map");
     }
 

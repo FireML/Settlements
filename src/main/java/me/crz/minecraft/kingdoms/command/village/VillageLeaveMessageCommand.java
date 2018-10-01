@@ -16,7 +16,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageLeaveMessageCommand extends SubCommand {
     public VillageLeaveMessageCommand() {
         super("Changes what players see when leaving your claims", "leavemessage");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("leavemessage <message>");
     }
 

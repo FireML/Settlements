@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class VillageAlliesCommand extends SubCommand {
     public VillageAlliesCommand() {
         super("lists all your allies", "allies");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
     }
 
     @Override

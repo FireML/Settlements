@@ -20,7 +20,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class ResidentShowCommand extends SubCommand {
     public ResidentShowCommand() {
         super("Shows you information about a resident", "show");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("show <name>");
     }
 

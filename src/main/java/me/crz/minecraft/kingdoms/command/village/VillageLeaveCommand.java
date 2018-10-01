@@ -11,7 +11,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageLeaveCommand extends SubCommand {
     public VillageLeaveCommand() {
         super("Leave your current village", "leave");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("leave");
     }
 

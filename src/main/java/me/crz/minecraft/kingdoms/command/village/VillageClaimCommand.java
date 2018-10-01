@@ -16,7 +16,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageClaimCommand extends SubCommand {
     public VillageClaimCommand() {
         super("Claim a chunk of land", "claim");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("claim");
     }
 

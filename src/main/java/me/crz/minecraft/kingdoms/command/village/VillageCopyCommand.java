@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageCopyCommand extends SubCommand {
     public VillageCopyCommand() {
         super("", "");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("");
     }
 

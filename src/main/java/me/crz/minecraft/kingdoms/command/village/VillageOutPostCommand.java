@@ -27,7 +27,7 @@ public class VillageOutPostCommand extends SubCommand {
     public VillageOutPostCommand() {
         super("Claim a seperate chunk of land", "outpost");
         sb = new StringBuilder();
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         sb.append("&8&l--------&r&c&lOutpost Commands&r&8&l--------\n");
         sb.append("&8[&9*&8] &b/s outpost claim &7- claims an outpost for your settlement\n");
         sb.append("&8[&9*&8] &b/s outpost unclaim &7- unclaims the outpost your standing on\n");

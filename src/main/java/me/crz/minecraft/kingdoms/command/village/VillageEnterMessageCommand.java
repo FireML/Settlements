@@ -16,7 +16,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageEnterMessageCommand extends SubCommand {
     public VillageEnterMessageCommand() {
         super("Sets what players see when walking into your claims", "entermessage");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("entermessage <message>");
     }
 

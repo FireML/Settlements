@@ -17,7 +17,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageSetHomeCommand extends SubCommand {
     public VillageSetHomeCommand() {
         super("Sets the home for the village", "sethome");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("sethome");
     }
 

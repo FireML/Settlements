@@ -21,7 +21,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageMoneyCommand extends SubCommand {
     public VillageMoneyCommand() {
         super("Commands to interact with the village bank", "bank", "money");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("bank <deposit|withdraw|balance> <amount>");
     }
 

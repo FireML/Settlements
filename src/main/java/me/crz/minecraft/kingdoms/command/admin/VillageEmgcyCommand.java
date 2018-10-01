@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageEmgcyCommand extends SubCommand {
     public VillageEmgcyCommand() {
         super("dont touch", "emgcy");
-        this.setPermission("village.admin");
+        this.setPermission("kingdoms.admin");
         this.setUsage("");
     }
 

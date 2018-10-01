@@ -24,7 +24,7 @@ public class VillageTeleporterCommand extends SubCommand {
     public VillageTeleporterCommand() {
         super("configure the teleporter", "teleporter");
         subCommands = new HashMap<>();
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("teleporter <set|cost> <args>");
         this.registerCommand(new VillageTeleporterSetCommand());
         this.registerCommand(new VillageTeleporterCostCommand());

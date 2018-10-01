@@ -15,7 +15,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageBuildCommand extends SubCommand {
     public VillageBuildCommand() {
         super("Set who can build in your village", "build");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
     }
 
     @Override

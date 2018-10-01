@@ -21,7 +21,7 @@ public class VillageRenameCommand extends SubCommand {
     public VillageRenameCommand() {
         super("Renames the current village to something else", "rename");
         allowed = "abcdefghijklmnopqrstuvwxyz0123456789_-";
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("rename <name>");
     }
 

@@ -16,7 +16,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageTeleporterSetCommand extends SubCommand {
     public VillageTeleporterSetCommand() {
         super("sets the teleporter location", "set");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("set <here|none>");
     }
 

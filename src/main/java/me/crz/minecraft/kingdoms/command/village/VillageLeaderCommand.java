@@ -12,7 +12,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageLeaderCommand extends SubCommand {
     public VillageLeaderCommand() {
         super("Shows the leader commands", "leader");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("leader help");
     }
 

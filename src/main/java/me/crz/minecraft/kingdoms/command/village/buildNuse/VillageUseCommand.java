@@ -14,7 +14,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageUseCommand extends SubCommand {
     public VillageUseCommand() {
         super("Set who can use stuff in your village", "use");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
     }
 
     @Override

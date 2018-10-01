@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageRulesCommand extends SubCommand {
     public VillageRulesCommand() {
         super("Links you to the rules", "rules");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
     }
 
     @Override

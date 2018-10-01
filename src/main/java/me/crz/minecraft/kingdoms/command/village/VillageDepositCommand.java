@@ -10,7 +10,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageDepositCommand extends SubCommand {
     public VillageDepositCommand() {
         super("Deposit an item into the vault", "deposit");
-        this.setPermission("village.user");
+        this.setPermission("kingdoms.user");
         this.setUsage("deposit");
     }
 
