@@ -2,8 +2,10 @@ package me.crz.minecraft.kingdoms.village;
 
 import java.util.ArrayList;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import me.crz.minecraft.kingdoms.utils.Vlock;
@@ -47,7 +49,6 @@ public class VillageListener implements Listener {
                 res = new Resident(event.getUniqueId(), event.getName());
                 res.updateLastLogin();
                 ResidentManager.getInstance().addResident(res);
-                DatabaseManager.getInstance().saveResident(res);
             } else {
                 res.updateLastLogin();
                 res.setActiveChannel(ChatChannel.GENERAL);
@@ -56,8 +57,10 @@ public class VillageListener implements Listener {
                     res.setName(event.getName());
                     ResidentManager.getInstance().addResident(res);
                 }
-                DatabaseManager.getInstance().saveResident(res);
             }
+            Resident finalRes = res;
+            Bukkit.getScheduler().runTaskAsynchronously(KingdomsPlugin.getInstance(),
+                    () -> DatabaseManager.getInstance().saveResident(finalRes));
         }
     }
 
