@@ -18,6 +18,8 @@ import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
 public class ResidentShowCommand extends SubCommand {
+    private final DecimalFormat df = new DecimalFormat("#.##");
+
     public ResidentShowCommand() {
         super("Shows you information about a resident", "show");
         this.setPermission("kingdoms.user");
@@ -39,7 +41,6 @@ public class ResidentShowCommand extends SubCommand {
             Village village = VillageManager.getInstance().getVillageFromResident(target);
             OfflinePlayer op = Bukkit.getOfflinePlayer(target.getUUID());
             double balance = KingdomsPlugin.getInstance().econ.getBalance(op);
-            DecimalFormat df = new DecimalFormat("#,###.00");
             StringBuilder sbp = new StringBuilder("&8------&c&l");
             sbp.append(target.getName());
             sbp.append("&8------\n");
