@@ -49,6 +49,8 @@ public class ResidentShowCommand extends SubCommand {
             sbp.append(df.format(balance));
             sbp.append("\n&a&lJoin Date: &6");
             sbp.append(new SimpleDateFormat("dd/MM/yyyy").format(new Date(op.getFirstPlayed())));
+            sbp.append("\n&a&lLast Login: &6");
+            sbp.append(new SimpleDateFormat("dd/MM/yyyy").format(new Date(target.getLastLogin())));
             MessageUtils.tell(player, sbp.toString());
         });
     }
