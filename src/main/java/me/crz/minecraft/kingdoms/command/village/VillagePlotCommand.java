@@ -208,11 +208,23 @@ public class VillagePlotCommand extends SubCommand {
                     MessageUtils.tell(player, String.valueOf(this.getUsage(base)) + " <" + String.join(" | ", optionStrings) + ">", null, null);
                 }
             } catch (IllegalArgumentException e) {
-                MessageUtils.tellList(player, Arrays.asList("&8&l-------- &r&c&l/" + base + " " + alias + "&r " + "&8&l--------", "&8[&9*&8] &b/" + base + " plot sale <amdozzunt> &7- places a price on the claimed chunk", "&8[&9*&8] &b/" + base + " plot mode &7- changes mode of the plot your currently standin in", "&8[&9*&8] &b/" + base + " plot buy &7- buys the currently chunk your standing in", "&8[&9*&8] &b/" + base + " plot revoke &7- removes the players owned claims"));
+                MessageUtils.tellList(player, Arrays.asList(
+                        "&8&l-------- &r&c&l/" + base + " " + alias + "&r " + "&8&l--------",
+                        "&8[&9*&8] &b/" + base + " plot sale <amdozzunt> &7- places a price on the claimed chunk",
+                        "&8[&9*&8] &b/" + base + " plot mode &7- changes mode of the plot your currently standin in",
+                        "&8[&9*&8] &b/" + base + " plot buy &7- buys the currently chunk your standing in",
+                        "&8[&9*&8] &b/" + base + " plot revoke &7- removes the players owned claims"));
             }
         } else if (args[0].equalsIgnoreCase("build")) {
             if (args.length < 2) {
-                MessageUtils.tellList(player, Arrays.asList("&8&l-------- &r&c&l/" + base + " " + alias + "&r " + "&8&l--------", "&8[&9*&8] &b/s plot build residents &7- residents and officers to build in claimed land", "&8[&9*&8] &b/s plot build officers &7- only officers are allowed to build in claimed land", "&8[&9*&8] &b/s plot build public &7- allows everyone to build in your claimed land", "&8[&9*&8] &b/s plot build ally &7- allows your allies to build in your claimed land", "&8[&9*&8] &b/s plot build private &7- allows you to build in your claimed land", "&8[&9*&8] &b/s plot build friends &7- allows your friends to build in your claimed land"));
+                MessageUtils.tellList(player, Arrays.asList(
+                        "&8&l-------- &r&c&l/" + base + " " + alias + "&r " + "&8&l--------",
+                        "&8[&9*&8] &b/s plot build residents &7- residents and officers to build in claimed land",
+                        "&8[&9*&8] &b/s plot build officers &7- only officers are allowed to build in claimed land",
+                        "&8[&9*&8] &b/s plot build public &7- allows everyone to build in your claimed land",
+                        "&8[&9*&8] &b/s plot build ally &7- allows your allies to build in your claimed land",
+                        "&8[&9*&8] &b/s plot build private &7- allows you to build in your claimed land",
+                        "&8[&9*&8] &b/s plot build friends &7- allows your friends to build in your claimed land"));
                 return;
             }
             if (!player.getUniqueId().equals(land.getPlotOwner())) {
@@ -225,7 +237,14 @@ public class VillagePlotCommand extends SubCommand {
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
                 MessageUtils.tell(player, MessageUtils.Message.SUCCESS_BUILD_STATE, "{state}", args[0]);
             } catch (IllegalArgumentException e) {
-                MessageUtils.tellList(player, Arrays.asList("&8&l-------- &r&c&l/" + base + " " + alias + "&r " + "&8&l--------", "&8[&9*&8] &b/s plot build residents &7- residents and officers to build in claimed land", "&8[&9*&8] &b/s plot build officers &7- only officers are allowed to build in claimed land", "&8[&9*&8] &b/s plot build public &7- allows everyone to build in your claimed land", "&8[&9*&8] &b/s plot build ally &7- allows your allies to build in your claimed land", "&8[&9*&8] &b/s plot build private &7- allows you to build in your claimed land", "&8[&9*&8] &b/s plot build friends &7- allows your friends to build in your claimed land"));
+                MessageUtils.tellList(player, Arrays.asList(
+                        "&8&l-------- &r&c&l/" + base + " " + alias + "&r " + "&8&l--------",
+                        "&8[&9*&8] &b/s plot build residents &7- residents and officers to build in claimed land",
+                        "&8[&9*&8] &b/s plot build officers &7- only officers are allowed to build in claimed land",
+                        "&8[&9*&8] &b/s plot build public &7- allows everyone to build in your claimed land",
+                        "&8[&9*&8] &b/s plot build ally &7- allows your allies to build in your claimed land",
+                        "&8[&9*&8] &b/s plot build private &7- allows you to build in your claimed land",
+                        "&8[&9*&8] &b/s plot build friends &7- allows your friends to build in your claimed land"));
             }
         }
     }

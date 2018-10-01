@@ -46,7 +46,7 @@ public class SettingsGUI {
 
     public SettingsGUI() {
         super();
-        (gui = new CInventory("&3&lVillage Settings", InventorySize.ONE) {}).addItem(new ClickableItem() {
+        (gui = new CInventory("&3&lSettlement Settings", InventorySize.ONE) {}).addItem(new ClickableItem() {
             public ItemStack getItem(final Player p) {
                 return new CItem(Material.GRASS).setName("&b&lUse").build();
             }

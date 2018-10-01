@@ -24,7 +24,12 @@ public class VillageSetRankCommand extends SubCommand {
     @Override
     public void run(Player player, String base, String alias, String... args) {
         if (args.length <= 1) {
-            MessageUtils.tellList(player, Arrays.asList("&8&l-------- &r&c&l/" + base + " " + alias + "&r " + "&8&l--------", "/" + base + " setrank <player> <rank>", "&8[&9*&8] &bElder &7- allows mode,claiming,invite,bank,plot,setrank", "&8[&9*&8] &bBuilder &7- allows resident to build on officer only mode", "&8[&9*&8] &bRecruiter &7- allows resident to invite players"));
+            MessageUtils.tellList(player, Arrays.asList(
+                    "&8&l-------- &r&c&l/" + base + " " + alias + "&r " + "&8&l--------",
+                    "/" + base + " setrank <player> <rank>",
+                    "&8[&9*&8] &bElder &7- allows mode,claiming,invite,bank,plot,setrank",
+                    "&8[&9*&8] &bBuilder &7- allows resident to build on elder and builder only mode",
+                    "&8[&9*&8] &bRecruiter &7- allows resident to invite players"));
             return;
         }
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);

@@ -35,7 +35,7 @@ public class ModeGUI {
 
     public ModeGUI() {
         super();
-        (gui = new CInventory("&3&lVillage Mode", InventorySize.ONE) {}).addItem(1, new ClickableItem() {
+        (gui = new CInventory("&3&lSettlement Mode", InventorySize.ONE) {}).addItem(1, new ClickableItem() {
             public ItemStack getItem(final Player p) {
                 if (ResidentManager.getInstance().doesResidentHaveVillage(p)) {
                     final Village village = VillageManager.getInstance().getVillageFromPlayer(p);
