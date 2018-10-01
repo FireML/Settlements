@@ -1,6 +1,8 @@
 package me.crz.minecraft.kingdoms.scoreboard.listeners;
 
 import me.crz.minecraft.kingdoms.scoreboard.commands.CommandRainbowtag;
+import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.EventHandler;
@@ -20,7 +22,7 @@ public class ScoreboardListeners implements Listener {
 
     public ScoreboardListeners(final ScoreboardManager scoreboardManager) {
         super();
-        th = new TabHeader("&b&lWolf&f&lPack", "&fThere are &6" + Bukkit.getOnlinePlayers().size() + "&f Players online!");
+        th = new TabHeader(MessageUtils.Message.SERVER_NAME.getText(), "&fThere are &6" + Bukkit.getOnlinePlayers().size() + "&f Players online!");
         this.scoreboardManager = scoreboardManager;
         Bukkit.getScheduler().scheduleSyncRepeatingTask(KingdomsPlugin.getInstance(), this::onUpdate, 0L, 200L);
         Bukkit.getScheduler().scheduleSyncRepeatingTask(KingdomsPlugin.getInstance(), this::onUpdateRainbowTag, 0L, 5L);

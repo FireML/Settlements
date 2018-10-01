@@ -1,3 +1,4 @@
+server-name: '&b&lYour&f&lServer'
 no-permission: '&cNo permission.'
 no-permission-interact: "&cYou don't have permission to interact in {townName}'s claims!"
 only-console: '&cMust be ran by console.'

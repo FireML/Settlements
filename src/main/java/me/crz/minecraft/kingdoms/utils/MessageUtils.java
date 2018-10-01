@@ -16,6 +16,7 @@ import me.crz.minecraft.kingdoms.Base;
 
 public class MessageUtils extends Base {
     public enum Message {
+        SERVER_NAME,
         NO_PERMISSION,
         NO_PERMISSION_,
         ONLY_CONSOLE,
@@ -87,7 +88,8 @@ public class MessageUtils extends Base {
         BANISHED,
         UNBANISHED,
         SUCCESS_UNCLAIM_LAND,
-        VILLAGE_HOME_SET, ALLY_REMOVED;
+        VILLAGE_HOME_SET,
+        ALLY_REMOVED;
 
         private final String text;
 
@@ -169,7 +171,7 @@ public class MessageUtils extends Base {
     }
 
     public static String replaceColorCodes(String message) {
-        return ChatColor.translateAlternateColorCodes('&', message);
+        return message != null ? ChatColor.translateAlternateColorCodes('&', message) : null;
     }
 
     public static BaseComponent[] toColoredComponents(String message) {
@@ -183,5 +185,12 @@ public class MessageUtils extends Base {
                 tell(op, message);
             }
         }
+    }
+
+    public static String invertColors(String text) {
+        String colorTwo = ChatColor.getLastColors(text);
+        String replacedText = text.replace(colorTwo, "{colorTwo}");
+        String colorOne = ChatColor.getLastColors(replacedText);
+        return replacedText.replace(colorOne, colorTwo).replace("{colorTwo}", colorOne);
     }
 }

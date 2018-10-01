@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.scoreboard;
 
 
+import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 
 import me.crz.minecraft.kingdoms.scoreboard.commands.CommandRainbowtag;
@@ -30,7 +31,7 @@ public class ScoreboardManager extends Base {
         scoreboards = new HashMap<>();
         lastUpdate = System.currentTimeMillis();
         bold = String.valueOf(ChatColor.BOLD);
-        title = "  " + bold + ChatColor.AQUA + "Wolf" + bold + ChatColor.WHITE + "Pack" + "  ";
+        title = MessageUtils.Message.SERVER_NAME.getText();
         Base.registerListener(new ScoreboardListeners(this));
         Base.registerListener(new ScoreboardAnimation(this));
         final CommandScoreboard scoreboard = new CommandScoreboard();
