@@ -44,7 +44,7 @@ public class VillageJoinCommand extends SubCommand {
             return;
         }
         final Resident res = ResidentManager.getInstance().getResident(player);
-        res.setVillageName(joinVillage.getName());
+        res.setVillage(joinVillage);
         res.setVillageRank(VillageRank.RESIDENT);
         res.addChannel(ChatChannel.SETTLEMENT);
         Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));

@@ -41,12 +41,12 @@ public class VillagePlotCommand extends SubCommand {
             return;
         }
         OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
-        if (land == null || !land.getOwnerVillage().equals(senderVillage.getName())) {
-            MessageUtils.tell(player, "&c&lError &r&7You need to own the land to make it a plot", "{owner}", (land == null) ? "null" : land.getOwnerVillage());
+        if (land == null || !land.getOwnerVillage().equals(senderVillage)) {
+            MessageUtils.tell(player, "&c&lError &r&7You need to own the land to make it a plot", "{owner}", (land == null) ? "null" : land.getOwnerVillage().getName());
             return;
         }
         Resident res = ResidentManager.getInstance().getResident(player);
-        Village landVillage = VillageManager.getInstance().getVillageFromName(land.getOwnerVillage());
+        Village landVillage = land.getOwnerVillage();
         if (args.length == 0) {
             MessageUtils.tellList(player, Arrays.asList(
                     "&8&l-------- &r&c&l/" + base + " " + alias + "&r &8&l--------",

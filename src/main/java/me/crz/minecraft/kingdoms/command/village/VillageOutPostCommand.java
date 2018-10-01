@@ -69,7 +69,7 @@ public class VillageOutPostCommand extends SubCommand {
                     continue;
                 }
                 if (!checkLand.getOwnerVillage().equals(village.getName())) {
-                    MessageUtils.tell(player, "&c&lERROR &r&7You are too close to &e{owner}'s land !", "{owner}", checkLand.getOwnerVillage());
+                    MessageUtils.tell(player, "&c&lERROR &r&7You are too close to &e{owner}'s land !", "{owner}", checkLand.getOwnerVillage().getName());
                     return;
                 }
             }
@@ -79,7 +79,7 @@ public class VillageOutPostCommand extends SubCommand {
                     MessageUtils.tell(player, MessageUtils.Message.ALREADY_OWN_LAND, null, null);
                     return;
                 }
-                MessageUtils.tell(player, MessageUtils.Message.CANT_CLAIM_HERE, "{owner}", land.getOwnerVillage());
+                MessageUtils.tell(player, MessageUtils.Message.CANT_CLAIM_HERE, "{owner}", land.getOwnerVillage().getName());
                 return;
             } else {
                 LandManager.getInstance().claimOutpost(player.getLocation(), village);

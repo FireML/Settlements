@@ -1,7 +1,12 @@
 package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.utils.IdObject;
+import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.Material;
 import org.bukkit.Location;
@@ -12,17 +17,20 @@ import java.util.ArrayList;
 import org.bukkit.entity.Player;
 
 import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import me.crz.minecraft.kingdoms.landflags.Use;
-import org.bson.Document;
 import me.crz.minecraft.kingdoms.landflags.PlotBuildState;
 
-public class OwnedLand {
-    private String ownerVillage;
+public class OwnedLand implements ConfigurationSerializable {
+    private IdObject id;
+    private Village ownerVillage;
     private UUID plotOwner = null;
     private SimpleChunkLocation location;
     private int price;
@@ -36,11 +44,11 @@ public class OwnedLand {
     private PlotBuildState buildState = PlotBuildState.RESIDENTS;
     private EnumMap<Use, PlotBuildState> use = new EnumMap<>(Use.class);
 
-    public OwnedLand(String ownerVillage, SimpleChunkLocation location) {
+    public OwnedLand(Village ownerVillage, SimpleChunkLocation location) {
         this(ownerVillage, location, null, 0, false);
     }
 
-    public OwnedLand(String ownerVillage, SimpleChunkLocation location, UUID plotOwner, int price, boolean forSale) {
+    public OwnedLand(Village ownerVillage, SimpleChunkLocation location, UUID plotOwner, int price, boolean forSale) {
         this.ownerVillage = ownerVillage;
         this.location = location;
         this.plotOwner = plotOwner;
@@ -54,6 +62,10 @@ public class OwnedLand {
 
     public void setUseState(Use u, PlotBuildState state) {
         use.put(u, state);
+    }
+
+    public Map<Use, PlotBuildState> getUseStates() {
+        return use;
     }
 
     public PlotBuildState getBuildState() {
@@ -80,11 +92,11 @@ public class OwnedLand {
         build = b;
     }
 
-    public String getOwnerVillage() {
+    public Village getOwnerVillage() {
         return ownerVillage;
     }
 
-    public void setOwnerVillage(String ownerVillage) {
+    public void setOwnerVillage(Village ownerVillage) {
         this.ownerVillage = ownerVillage;
     }
 
@@ -191,6 +203,14 @@ public class OwnedLand {
         this.explosions = explosions;
     }
 
+    public void setId(IdObject id) {
+        this.id = id;
+    }
+
+    public IdObject getId() {
+        return id;
+    }
+
     public void highlightLand(Player player) {
         Chunk chunk = this.getChunk();
         ArrayList<Location> edgeBlocks = new ArrayList<>();
@@ -238,5 +258,59 @@ public class OwnedLand {
 
     public String getSimpleKey() {
         return location.getSimpleKey();
+    }
+
+    @Override
+    public Map<String, Object> serialize() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("ownerVillage", getOwnerVillage().getName());
+        map.put("x", getX());
+        map.put("z", getZ());
+        map.put("world", getWorldName());
+        map.put("plotOwner", getPlotOwner() != null ? getPlotOwner().toString() : null);
+        map.put("price", getPrice());
+        map.put("forSale", isForSale());
+        map.put("pvp", isPvp());
+        map.put("fireSpread", isFireSpread());
+        map.put("explosions", isExplosions());
+        map.put("mobSpawning", isMobSpawning());
+        map.put("build", getBuild());
+        map.put("isOutpost", getIsOutpost());
+        map.put("buildState", getBuildState().name());
+        map.put("use", getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
+        return map;
+    }
+
+    public static OwnedLand deserialize(Map<String, Object> map) {
+        if (map == null || map.get("worldName") == null || map.get("x") == null || map.get("z") == null) {
+            return null;
+        }
+        OwnedLand land = new OwnedLand(
+                map.get("ownerVillage") != null
+                        ? VillageManager.getInstance().getVillageFromName((String) map.get("ownerVillage"))
+                        : VillageManager.getInstance().getVillageFromId(IdObject.get(map.get("settlementId"))),
+                new SimpleChunkLocation((String) map.get("world"), (Integer) map.get("x"), (Integer) map.get("z"))
+        );
+        land.setId(IdObject.get(map));
+        String plotOwnerStr = (String) map.get("plotOwner");
+        if (plotOwnerStr != null && !plotOwnerStr.isEmpty()) {
+            land.setPlotOwner(UUID.fromString(plotOwnerStr));
+        }
+        land.setPrice((Integer) map.get("price"));
+        land.setForSale((Boolean) map.get("forSale"));
+        land.setPvp((Boolean) map.get("pvp"));
+        land.setFireSpread((Boolean) map.get("fireSpread"));
+        land.setExplosions((Boolean) map.get("explosions"));
+        land.setMobSpawning((Boolean) map.get("mobSpawning"));
+        land.setBuild((Boolean) map.get("build"));
+        land.setIsOutpost((Boolean) map.get("isOutpost"));
+        land.setBuildState(Utils.parseEnum((String) map.get("buildState"), PlotBuildState.RESIDENTS));
+        Map<String, Object> use = (Map<String, Object>) map.get("use");
+        for (Use u : Use.values()) {
+            if (use.containsKey(u.name())) {
+                land.setUseState(u, Utils.parseEnum((String) use.get(u.name()), PlotBuildState.RESIDENTS));
+            }
+        }
+        return land;
     }
 }

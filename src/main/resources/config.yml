@@ -4,6 +4,7 @@ storage:
   port: 3306
   user: root
   database: kingdoms
+  table-prefix: kingdoms_
   password: password
   url-parameters: ""
 resident-cache-duration: 120 # in seconds

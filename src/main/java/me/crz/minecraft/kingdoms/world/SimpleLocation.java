@@ -3,8 +3,12 @@ package me.crz.minecraft.kingdoms.world;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
-public class SimpleLocation {
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public class SimpleLocation implements ConfigurationSerializable {
     private String world;
     private double x;
     private double y;
@@ -119,4 +123,33 @@ public class SimpleLocation {
         hash = hash * 31 + Float.hashCode(pitch);
         return hash;
     }
+
+    @Override
+    public Map<String, Object> serialize() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("x", getX());
+        map.put("y", getY());
+        map.put("z", getZ());
+        map.put("yaw", getYaw());
+        map.put("pitch", getPitch());
+        map.put("world", getWorld());
+        return map;
+    }
+
+    public static SimpleLocation deserialize(Map<String, Object> map) {
+        if (map == null
+                || map.get("x") == null && map.get("y") == null || map.get("y") == null
+                || map.get("yaw") == null && map.get("pitch") == null || map.get("world") == null) {
+            return null;
+        }
+        return new SimpleLocation(
+                (String) map.get("world"),
+                (double) map.get("x"),
+                (double) map.get("y"),
+                (double) map.get("z"),
+                (float) map.get("yaw"),
+                (float) map.get("pitch")
+        );
+    }
+
 }

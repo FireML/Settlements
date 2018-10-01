@@ -1,7 +1,7 @@
 package me.crz.minecraft.kingdoms.teleporter;
 
+import me.crz.minecraft.kingdoms.utils.IdObject;
 import net.milkbowl.vault.economy.EconomyResponse;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.Bukkit;
 
@@ -29,7 +29,7 @@ import java.util.Set;
 import me.crz.minecraft.kingdoms.Base;
 
 public class PrivateTeleportersGUI extends Base {
-    private Set<String> allies = new LinkedHashSet<>();
+    private Set<IdObject> allies = new LinkedHashSet<>();
     private int checks = 0;
     private List<ClickableItem> items = new ArrayList<>();
 
@@ -68,8 +68,8 @@ public class PrivateTeleportersGUI extends Base {
         }
         allies = village.getAllies();
         checks = 0;
-        for (String ally : allies) {
-            Village v = VillageManager.getInstance().getVillageFromName(ally);
+        for (IdObject ally : allies) {
+            Village v = VillageManager.getInstance().getVillageFromId(ally);
             if (v == null || v.getTeleporter() == null || v.getTeleporterClaim() == null) {
                 continue;
             }

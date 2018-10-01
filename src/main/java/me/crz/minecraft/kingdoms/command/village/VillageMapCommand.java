@@ -96,7 +96,7 @@ public class VillageMapCommand extends SubCommand {
         return new ComponentBuilder(symbol)
                 .color(color)
                 .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                        new ComponentBuilder(land.getOwnerVillage())
+                        new ComponentBuilder(land.getOwnerVillage().getName())
                                 .append(MessageUtils.toColoredComponents(sb.toString()))
                                 .create()))
                 .create();

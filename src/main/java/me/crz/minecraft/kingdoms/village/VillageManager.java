@@ -1,7 +1,9 @@
 package me.crz.minecraft.kingdoms.village;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.banish.CustomRunnable;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.Location;
 import me.crz.minecraft.kingdoms.land.LandManager;
@@ -11,17 +13,20 @@ import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 public class VillageManager {
     private static VillageManager instance;
-    private Map<String, Village> villages = new HashMap<>();
+    private Map<String, Village> villages = new ConcurrentHashMap<>();
+    private Map<IdObject, Village> villageIDs = new ConcurrentHashMap<>();
 
     public VillageManager() {
         super();
         for (Village village : DatabaseManager.getInstance().getAllVillages()) {
             villages.put(village.getName().toLowerCase(), village);
+            villageIDs.put(village.getId(), village);
         }
     }
 
@@ -32,33 +37,51 @@ public class VillageManager {
         return instance;
     }
 
-    public void registerNewVillage(final Village village) {
+    public void registerNewVillage(Village village) {
+        if (!village.getId().isNull()) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving " + village.getName() + " to the database! It already had an ID defined?");
+            return;
+        }
         villages.put(village.getName().toLowerCase(), village);
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
+        Utils.runAsync(() -> {
+            DatabaseManager.getInstance().saveVillage(village);
+            if (!village.getId().isNull()) {
+                villageIDs.put(village.getId(), village);
+            } else {
+                KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving " + village.getName() + " to the database! No ID was returned.");
+            }
+        });
     }
 
-    public Village getVillageFromName(final String name) {
+    public Village getVillageFromId(IdObject id) {
+        if (id == null) {
+            return null;
+        }
+        return villageIDs.get(id);
+    }
+
+    public Village getVillageFromName(String name) {
         if (name.equals("")) {
             return null;
         }
         return villages.get(name.toLowerCase());
     }
 
-    public Village getVillageFromResident(final Resident res) {
+    public Village getVillageFromResident(Resident res) {
         return this.getVillageFromName(res.getVillageName());
     }
 
-    public Village getVillageFromPlayer(final Player player) {
+    public Village getVillageFromPlayer(Player player) {
         return this.getVillageFromResident(ResidentManager.getInstance().getResident(player));
     }
 
-    public void deleteVillage(final Village village) {
+    public void deleteVillage(Village village) {
         villages.remove(village.getName().toLowerCase());
         LandManager.getInstance().unclaimLand(village);
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().deleteVillage(village);
-            for (final String ally : village.getAllies()) {
-                final Village al = this.getVillageFromName(ally);
+            for (IdObject ally : village.getAllies()) {
+                Village al = this.getVillageFromId(ally);
                 if (al != null) {
                     al.removeAlly(village);
                     DatabaseManager.getInstance().saveVillage(al);
@@ -68,10 +91,10 @@ public class VillageManager {
     }
 
 
-    public void isResBanished(final Location to, final Player p, final CustomRunnable customRunnable) {
-        final OwnedLand land = LandManager.getInstance().getLand(to);
+    public void isResBanished(Location to, Player p, CustomRunnable customRunnable) {
+        OwnedLand land = LandManager.getInstance().getLand(to);
         if (land != null) {
-            final Village village = this.getVillageFromName(land.getOwnerVillage());
+            Village village = land.getOwnerVillage();
             if (village != null && village.isBanished(p.getUniqueId())) {
                 customRunnable.run(land, p, village);
             }
@@ -82,7 +105,7 @@ public class VillageManager {
      * Runs database operation!
      */
     public void saveAll() {
-        DatabaseManager.getInstance().saveAllVillages(villages.values());
+        DatabaseManager.getInstance().saveVillages(villages.values());
     }
 
     public void leaveVillage(Resident resident) {

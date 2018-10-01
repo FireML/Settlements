@@ -51,7 +51,7 @@ public class VillageClaimCommand extends SubCommand {
                 if (checkLand == null) {
                     continue;
                 }
-                if (!checkLand.getOwnerVillage().equals(village.getName())) {
+                if (!checkLand.getOwnerVillage().equals(village)) {
                     continue;
                 }
                 ++landAround;
@@ -66,8 +66,8 @@ public class VillageClaimCommand extends SubCommand {
             if (checkLand == null) {
                 continue;
             }
-            if (!checkLand.getOwnerVillage().equals(village.getName())) {
-                MessageUtils.tell(player, "&c&lERROR &r&7You are too close to &e{owner}'s land !", "{owner}", checkLand.getOwnerVillage());
+            if (!checkLand.getOwnerVillage().equals(village)) {
+                MessageUtils.tell(player, "&c&lERROR &r&7You are too close to &e{owner}'s land !", "{owner}", checkLand.getOwnerVillage().getName());
                 return;
             }
         }
@@ -76,11 +76,11 @@ public class VillageClaimCommand extends SubCommand {
             MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_CLAIM_LAND, "{player}", player.getName());
             return;
         }
-        if (land.getOwnerVillage().equals(village.getName())) {
+        if (land.getOwnerVillage().equals(village)) {
             MessageUtils.tell(player, MessageUtils.Message.ALREADY_OWN_LAND, null, null);
             return;
         }
-        MessageUtils.tell(player, MessageUtils.Message.CANT_CLAIM_HERE, "{owner}", land.getOwnerVillage());
+        MessageUtils.tell(player, MessageUtils.Message.CANT_CLAIM_HERE, "{owner}", land.getOwnerVillage().getName());
     }
 
 }

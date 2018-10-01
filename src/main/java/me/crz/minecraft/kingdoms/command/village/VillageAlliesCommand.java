@@ -6,6 +6,8 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
+import java.util.stream.Collectors;
+
 public class VillageAlliesCommand extends SubCommand {
     public VillageAlliesCommand() {
         super("lists all your allies", "allies");
@@ -13,18 +15,15 @@ public class VillageAlliesCommand extends SubCommand {
     }
 
     @Override
-    public void run(final Player p, final String base, final String alias, final String... args) {
-        final Village village = VillageManager.getInstance().getVillageFromPlayer(p);
+    public void run(Player p, String base, String alias, String... args) {
+        Village village = VillageManager.getInstance().getVillageFromPlayer(p);
         if (village == null) {
             MessageUtils.tell(p, MessageUtils.Message.NOT_IN_CURRENT);
             return;
         }
-        final StringBuilder sb = new StringBuilder("&8&l--------&r&c&lAllies&r&8&l--------\n");
-        for (final String ally : village.getAllies()) {
-            sb.append("&a");
-            sb.append(ally);
-            sb.append("&7, ");
-        }
-        MessageUtils.tell(p, sb.toString());
+        MessageUtils.tell(p, "&8&l--------&r&c&lAllies&r&8&l--------\n&a"
+                + village.getAllies().stream()
+                .map(id -> VillageManager.getInstance().getVillageFromId(id).getName())
+                .collect(Collectors.joining("&7, &a")));
     }
 }

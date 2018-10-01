@@ -59,25 +59,10 @@ public class VillageRenameCommand extends SubCommand {
             return;
         }
         Utils.runAsync(() -> {
-            for (Resident resi : village.getResidents()) {
-                resi.setVillageName(args[0]);
-            }
-            DatabaseManager.getInstance().saveResident(village.getResidents());
-            List<Village> villagesToSave = new ArrayList<>();
-            for (String ally : village.getAllies()) {
-                Village allyVillage = VillageManager.getInstance().getVillageFromName(ally);
-                if (allyVillage != null) {
-                    allyVillage.removeAlly(village);
-                    allyVillage.addAlly(args[0]);
-                    villagesToSave.add(allyVillage);
-                }
-            }
-            LandManager.getInstance().changeOwner(village, args[0]);
             village.setName(args[0]);
             village.setEnterMessage(MessageUtils.Message.DEFAULT_ENTER.getReplaced("owner", village.getName()));
             village.setLeaveMessage(MessageUtils.Message.DEFAULT_LEAVE.getReplaced("owner", village.getName()));
-            villagesToSave.add(village);
-            DatabaseManager.getInstance().saveAllVillages(villagesToSave);
+            DatabaseManager.getInstance().saveVillage(village);
             MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.VILLAGE_RENAMED, "name", village.getName());
         });
     }

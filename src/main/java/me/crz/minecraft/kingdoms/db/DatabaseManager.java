@@ -27,15 +27,13 @@ public abstract class DatabaseManager {
         return instance;
     }
 
-    public abstract void connect();
+    public abstract void connect() throws Exception;
 
     public abstract void saveVillage(Village village);
 
-    public abstract void saveVillage(Village village, boolean b);
-
     public abstract void deleteVillage(Village village);
 
-    public abstract void saveAllVillages(Collection<Village> values);
+    public abstract void saveVillages(Collection<Village> values);
 
     public abstract void unclaimLand(OwnedLand... lands);
 

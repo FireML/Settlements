@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.chat;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.IdObject;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.EventHandler;
@@ -186,22 +187,18 @@ public class ChatManager extends Base {
                     this.on(e);
                     return;
                 }
-                sb = new StringBuilder("&b[Ally] &6");
-                sb.append(village.getState().name().charAt(0));
-                sb.append(village.getState().name().toLowerCase().substring(1));
-                sb.append(" ");
-                sb.append(player.getDisplayName());
-                sb.append(" \u27a6 ");
-                sb.append(e.getMessage());
-                System.out.println(MessageUtils.replaceColorCodes(sb.toString()));
-                MessageUtils.tellResidentsC(village.getOnlineResidents(), sb.toString(), ChatChannel.SETTLEMENT);
-                for (String s : village.getAllies()) {
-                    Village tVillage = VillageManager.getInstance().getVillageFromName(s);
-                    if (tVillage == null) {
-                        continue;
-                    }
-                    MessageUtils.tellResidentsC(tVillage.getOnlineResidents(), sb.toString(), ChatChannel.ALLY);
-                }
+                StringBuilder sba = new StringBuilder("&b[Ally] &6");
+                sba.append(village.getState().name().charAt(0));
+                sba.append(village.getState().name().toLowerCase().substring(1));
+                sba.append(" ");
+                sba.append(player.getDisplayName());
+                sba.append(" \u27a6 ");
+                sba.append(e.getMessage());
+                System.out.println(MessageUtils.replaceColorCodes(sba.toString()));
+                MessageUtils.tellResidentsC(village.getOnlineResidents(), sba.toString(), ChatChannel.SETTLEMENT);
+                village.getAllies().stream()
+                        .map(id -> VillageManager.getInstance().getVillageFromId(id))
+                        .forEach(v -> MessageUtils.tellResidentsC(v.getOnlineResidents(), sba.toString(), ChatChannel.ALLY));
                 return;
         }
     }

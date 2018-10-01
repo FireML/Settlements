@@ -61,7 +61,7 @@ public class LandFlags extends Base {
         if (e.getDamager().isOp()) {
             return;
         }
-        Village village = VillageManager.getInstance().getVillageFromName(land.getOwnerVillage());
+        Village village = land.getOwnerVillage();
         Resident res = ResidentManager.getInstance().getResident(e.getDamager());
         if (!village.getName().equals(res.getVillageName())) {
             e.setCancelled(true);
@@ -95,7 +95,7 @@ public class LandFlags extends Base {
             if (land == null) {
                 return;
             }
-            Village village = VillageManager.getInstance().getVillageFromName(land.getOwnerVillage());
+            Village village = land.getOwnerVillage();
             if (village.getState() == VillageState.KINGDOM && !village.isPvp() && !land.isPvp()) {
                 e.setCancelled(true);
                 tbPvp.send((Player) ((Arrow) e.getDamager()).getShooter());
@@ -115,7 +115,7 @@ public class LandFlags extends Base {
             if (land == null) {
                 return;
             }
-            Village village = VillageManager.getInstance().getVillageFromName(land.getOwnerVillage());
+            Village village = land.getOwnerVillage();
             if (village.getState() == VillageState.KINGDOM && !village.isPvp() && !land.isPvp()) {
                 e.setCancelled(true);
                 tbPvp.send((Player) ((Arrow) e.getCombuster()).getShooter());
@@ -171,7 +171,7 @@ public class LandFlags extends Base {
         OwnedLand originalLand = LandManager.getInstance().getLand(player.getLocation());
         OwnedLand destinationLand = LandManager.getInstance().getLand(event.getTo());
         if (!this.landIsClaimed(originalLand) && this.landIsClaimed(destinationLand)) {
-            Village claimedVillage = VillageManager.getInstance().getVillageFromName(destinationLand.getOwnerVillage());
+            Village claimedVillage = destinationLand.getOwnerVillage();
             Utils.runAsync(() -> {
                 TitleBuilder tb = new TitleBuilder();
                 tb.withTimings(40, 60, 40);
@@ -197,8 +197,8 @@ public class LandFlags extends Base {
             if (playerVillage == null) {
                 return;
             }
-            Village originalVillage = VillageManager.getInstance().getVillageFromName(originalLand.getOwnerVillage());
-            Village destinationVillage = VillageManager.getInstance().getVillageFromName(destinationLand.getOwnerVillage());
+            Village originalVillage = originalLand.getOwnerVillage();
+            Village destinationVillage = destinationLand.getOwnerVillage();
             if (originalVillage != null && !originalVillage.getName().equals(destinationVillage.getName())) {
                 if (playerVillage.isBuff()) {
                     if (this.playerOwnsLand(originalLand, playerVillage.getName()) && !this.playerOwnsLand(destinationLand, playerVillage.getName())) {
@@ -235,7 +235,7 @@ public class LandFlags extends Base {
                 tb.send(player);
             });
         } else if (this.landIsClaimed(originalLand) && !this.landIsClaimed(destinationLand)) {
-            Village originalVillage = VillageManager.getInstance().getVillageFromName(originalLand.getOwnerVillage());
+            Village originalVillage = originalLand.getOwnerVillage();
             if (playerVillage != null && playerVillage.isBuff() && this.playerOwnsLand(originalLand, playerVillage.getName())) {
                 Base.getLandPerks().removeEffects(player, originalVillage);
             }

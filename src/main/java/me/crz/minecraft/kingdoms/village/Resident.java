@@ -1,6 +1,10 @@
 package me.crz.minecraft.kingdoms.village;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.utils.IdObject;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -9,14 +13,21 @@ import java.util.HashSet;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 
-public class Resident {
+public class Resident implements ConfigurationSerializable {
+    private Object id = null;
     private UUID uuid;
     private String name;
     private VillageRank rank = VillageRank.RESIDENT;
-    private String villageName = "";
+    private Village village = null;
     private ChatChannel activeChannel = ChatChannel.GENERAL;
     private Set<ChatChannel> channels = new HashSet<>(Arrays.asList(
             ChatChannel.GENERAL,
@@ -36,7 +47,7 @@ public class Resident {
     }
 
     public boolean hasVillage() {
-        return !this.getVillageName().isEmpty();
+        return village != null;
     }
 
     public Set<UUID> getFriends() {
@@ -111,12 +122,24 @@ public class Resident {
         this.name = name;
     }
 
+    /**
+     * @deprecated Use {@link this#setVillage(Village)}
+     */
+    @Deprecated
     public void setVillageName(String name) {
-        villageName = name;
+        village = VillageManager.getInstance().getVillageFromName(name);
     }
 
     public String getVillageName() {
-        return villageName;
+        return village != null ? village.getName() : "";
+    }
+
+    public void setVillage(Village village) {
+        this.village = village;
+    }
+
+    public Village getVillage() {
+        return village;
     }
 
     public void setVillageRank(VillageRank rank) {
@@ -137,5 +160,67 @@ public class Resident {
 
     public void setLastLogin(long lastLogin) {
         this.lastLogin = lastLogin;
+    }
+
+    @Override
+    public Map<String, Object> serialize() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("uuid", getUUID().toString());
+        map.put("name", getName());
+        map.put("villageName", village != null ? village.getName() : null);
+        map.put("settlementId", village != null ? village.getId().value() : 0);
+        map.put("lastLogin", getLastLogin());
+        map.put("channels", getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
+        map.put("activeChannel", getActiveChannel().name());
+        map.put("swear", getSwear());
+        map.put("ignores", getIgnore().stream().map(UUID::toString).collect(Collectors.toList()));
+        map.put("friends", getFriends().stream().map(UUID::toString).collect(Collectors.toList()));
+        return map;
+    }
+
+    public static Resident deserialize(Map<String, Object> map) {
+        if (map == null || map.get("uuid") == null || map.get("name") == null) {
+            return null;
+        }
+        Resident resident = new Resident(UUID.fromString((String) map.get("uuid")), (String) map.get("name"));
+        resident.setId(map.get("id"));
+        if (resident.getId() == null) {
+            resident.setId(map.get("_id"));
+        }
+        resident.setVillageRank(VillageRank.valueOf((String) map.get("rank")));
+        if (map.get("villageName") != null) {
+            resident.setVillage(VillageManager.getInstance().getVillageFromName((String) map.get("villageName")));
+        } else {
+            resident.setVillage(VillageManager.getInstance().getVillageFromId(IdObject.get(map.get("settlementId"))));
+        }
+        resident.setLastLogin((Long) map.get("lastLogin"));
+        resident.getChannels().clear();
+        ((List<String>) map.get("channels")).stream()
+                .map(s -> Utils.parseEnum(ChatChannel.class, s.toUpperCase()))
+                .filter(Objects::nonNull)
+                .forEach(resident::addChannel);
+        try {
+            resident.setActiveChannel(ChatChannel.valueOf(((String) map.get("activeChannel")).toUpperCase()));
+        } catch (Exception e) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid active channel for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("activeChannel"));
+        }
+        if (map.containsKey("swear")) {
+            resident.setSwear((Boolean) map.get("swear"));
+        }
+        if (map.containsKey("ignores")) {
+            ((List<String>) map.get("ignores")).stream().map(Utils::parseUuid).filter(Objects::nonNull).forEach(resident::addIgnore);
+        }
+        if (map.containsKey("friends")) {
+            ((List<String>) map.get("friends")).stream().map(Utils::parseUuid).filter(Objects::nonNull).forEach(resident::addFriend);
+        }
+        return resident;
+    }
+
+    public Object getId() {
+        return id;
+    }
+
+    public void setId(Object id) {
+        this.id = id;
     }
 }

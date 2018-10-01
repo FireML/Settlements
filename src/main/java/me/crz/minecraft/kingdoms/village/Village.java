@@ -1,12 +1,14 @@
 package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.utils.config.Data;
 import me.crz.minecraft.kingdoms.world.NamedLocation;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import me.crz.minecraft.kingdoms.world.SimpleLocation;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import org.bukkit.Bukkit;
@@ -32,12 +34,11 @@ import me.crz.minecraft.kingdoms.landflags.Use;
 
 import java.util.List;
 
-import org.bson.Document;
-
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class Village {
+public class Village implements ConfigurationSerializable {
+    private IdObject id = IdObject.get(null);
     private String name;
     private String description;
     private int level;
@@ -54,7 +55,7 @@ public class Village {
     private SimpleLocation teleporterLoc = null;
     private boolean teleporter = false;
     private int bank = 0;
-    private Set<String> allies = new LinkedHashSet<>();
+    private Set<IdObject> allies = new LinkedHashSet<>();
     private int teleportCost = 0;
     private SimpleLocation villageHomeLoc;
     private Map<String, NamedLocation> outpostHomes = new LinkedHashMap<>();
@@ -136,6 +137,10 @@ public class Village {
         use.put(u, state);
     }
 
+    public Map<Use, BuildState> getUseStates() {
+        return use;
+    }
+
     public Set<UUID> getBanishedResidents() {
         return banished;
     }
@@ -176,10 +181,6 @@ public class Village {
         return this.getVillageHome() != null;
     }
 
-    public boolean check(Document doc, String key) {
-        return doc.containsKey(key) && doc.get(key) != null;
-    }
-
     public void setVillageHome(Location location) {
         setVillageHome(new SimpleLocation(location));
     }
@@ -196,28 +197,20 @@ public class Village {
         this.teleportCost = cost;
     }
 
-    public Set<String> getAllies() {
+    public Set<IdObject> getAllies() {
         return allies;
     }
 
-    public boolean isAlly(String name) {
-        return this.getAllies().contains(name);
-    }
-
     public boolean isAlly(Village village) {
-        return this.isAlly(village.getName());
+        return allies.contains(village.getId());
     }
 
-    public void addAlly(String name) {
-        if (!this.isAlly(name)) {
-            allies.add(name);
-        }
+    public void addAlly(Village village) {
+        allies.add(village.getId());
     }
 
     public void removeAlly(Village village) {
-        if (this.isAlly(village.getName())) {
-            allies.remove(village.getName());
-        }
+        allies.remove(village.getId());
     }
 
     public SimpleLocation getTeleporter() {
@@ -404,5 +397,113 @@ public class Village {
 
     public Map<String, Integer> getVault() {
         return vault;
+    }
+
+    public IdObject getId() {
+        return id;
+    }
+
+    public void setId(IdObject id) {
+        this.id = id;
+    }
+
+    @Override
+    public Map<String, Object> serialize() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("name", getName());
+        map.put("chief", getChief().toString());
+        map.put("level", getLevel());
+        map.put("settlementState", getState().name());
+        map.put("enterMessage", getEnterMessage());
+        map.put("leaveMessage", getLeaveMessage());
+        map.put("buildState", getBuildState().name());
+        map.put("residents", getResidentIds().stream().map(UUID::toString).collect(Collectors.toList()));
+        map.put("pvp", isPvp());
+        map.put("fireSpread", isFireSpread());
+        map.put("explosions", isExplosions());
+        map.put("mobSpawning", isMobSpawning());
+        map.put("buff", isBuff());
+        map.put("teleporter", isTeleporter());
+        map.put("teleporterLoc", getTeleporter().serialize());
+        map.put("bank", getBank());
+        map.put("homeLoc", getVillageHome().serialize());
+        map.put("outpostHomes", getOutpostHomes().values().stream().collect(Collectors.toMap(NamedLocation::getName, NamedLocation::serialize)));
+        map.put("banished", getBanishedResidents().stream().map(UUID::toString).collect(Collectors.toList()));
+        map.put("uses", getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
+        map.put("lastUpkeep", getLastUpkeep());
+        map.put("upkeepStage", getUpkeepStage().name());
+        map.put("vault", getVault().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        return map;
+    }
+    
+    public static Village deserialize(Map<String, Object> map) {
+        if (map == null || map.get("name") == null || map.get("chief") == null || map.get("level") == null
+                || map.get("settlementState") == null || map.get("enterMessage") == null || map.get("leaveMessage") == null
+                || map.get("buildState") == null) {
+            return null;
+        }
+        Village village = new Village(
+                (String) map.get("name"),
+                UUID.fromString((String) map.get("chief")),
+                (Integer) map.get("level"),
+                VillageState.valueOf((String) map.get("settlementState")),
+                (String) map.get("enterMessage"),
+                (String) map.get("leaveMessage"),
+                BuildState.valueOf((String) map.get("buildState"))
+        );
+        village.setId(IdObject.get(map));
+        village.getResidentIds().addAll(((List<String>) map.get("residents")).stream().map(UUID::fromString).collect(Collectors.toSet()));
+        village.setPvp((Boolean) map.get("pvp"));
+        village.setFireSpread((Boolean) map.get("fireSpread"));
+        village.setExplosions((Boolean) map.get("explosions"));
+        village.setMobSpawning((Boolean) map.get("mobSpawning"));
+        village.setBuff((Boolean) map.get("buff"));
+        village.setTeleporter((Boolean) map.get("teleporter"));
+        if (map.get("teleporterLoc") != null) {
+            village.setTeleporter(SimpleLocation.deserialize((Map<String, Object>) map.get("teleporterLoc")));
+        } else if (map.get("teleporterLoc_x") != null && map.get("teleporterLoc_y") != null && map.get("teleporterLoc_Z") != null
+                && map.get("teleporterLoc_world") != null && map.get("teleporterLoc_yaw") != null && map.get("teleporterLoc_pitch") != null){
+            village.setTeleporter(new SimpleLocation(
+                    (String) map.get("teleporterLoc_world"),
+                    (double) map.get("teleporterLoc_x"),
+                    (double) map.get("teleporterLoc_y"),
+                    (double) map.get("teleporterLoc_z"),
+                    (float) map.get("teleporterLoc_yaw"),
+                    (float) map.get("teleporterLoc_pitch")
+            ));
+        }
+        village.setBank((Integer) map.get("bank"));
+        village.getAllies().addAll(((List<Object>) map.get("allies")).stream().map(IdObject::get).collect(Collectors.toSet()));
+        village.setTeleporterCost((Integer) map.get("teleportCost"));
+        if (map.get("homeLoc") != null) {
+            village.setVillageHome(SimpleLocation.deserialize((Map<String, Object>) map.get("homeLoc")));
+        } else if (map.get("homeLoc_x") != null && map.get("homeLoc_y") != null && map.get("homeLoc_Z") != null
+                && map.get("homeLoc_world") != null && map.get("homeLoc_yaw") != null && map.get("homeLoc_pitch") != null){
+            village.setVillageHome(new SimpleLocation(
+                    (String) map.get("homeLoc_world"),
+                    (double) map.get("homeLoc_x"),
+                    (double) map.get("homeLoc_y"),
+                    (double) map.get("homeLoc_z"),
+                    (float) map.get("homeLoc_yaw"),
+                    (float) map.get("homeLoc_pitch")
+            ));
+        }
+        ((Map<String, Map<String, Object>>) map.get("outpostHomes")).values().stream()
+                .map(NamedLocation::deserialize)
+                .filter(Objects::nonNull)
+                .forEach(village::addOutpostHome);
+        village.getBanishedResidents().addAll(((List<String>) map.get("banished")).stream().map(UUID::fromString).collect(Collectors.toSet()));
+        Map<String, Object> use = (Map<String, Object>) map.get("uses");
+        for (Use u : Use.values()) {
+            if (use.containsKey(u.name())) {
+                village.setUseState(u, Utils.parseEnum((String) use.get(u.name()), BuildState.RESIDENTS));
+            }
+        }
+        village.setLastUpkeep((Long) map.get("lastUpkeep"));
+        village.setUpkeepStage(Utils.parseEnum((String) map.get("upkeepStage"), UpkeepStage.PAID));
+        ((Map<String, Object>) map.get("vault")).entrySet().stream()
+                .filter(e -> !(e.getValue() instanceof Integer))
+                .forEach(e -> village.getVault().put(e.getKey(), (Integer) e.getValue()));
+        return village;
     }
 }

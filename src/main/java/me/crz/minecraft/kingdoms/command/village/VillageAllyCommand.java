@@ -57,8 +57,8 @@ public class VillageAllyCommand extends SubCommand {
             if (invites.contains(invitedVillage.getName())) {
                 MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), MessageUtils.Message.NOW_ALLIED_TO, "name", village.getName());
                 MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.NOW_ALLIED_TO, "name", invitedVillage.getName());
-                invitedVillage.addAlly(village.getName());
-                village.addAlly(invitedVillage.getName());
+                invitedVillage.addAlly(village);
+                village.addAlly(invitedVillage);
 
                 Utils.runAsync(() -> {
                     DatabaseManager.getInstance().saveVillage(invitedVillage);

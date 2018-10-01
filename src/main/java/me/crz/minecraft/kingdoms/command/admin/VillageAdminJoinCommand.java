@@ -39,7 +39,7 @@ public class VillageAdminJoinCommand extends SubCommand {
                 MessageUtils.tell(player, "&6&l" + target.getName() + "&r&c&l is already in the &r&6&l" + village.getName(), null, null);
                 return;
             }
-            target.setVillageName(village.getName());
+            target.setVillage(village);
             target.setVillageRank(VillageRank.RESIDENT);
             DatabaseManager.getInstance().saveResident(target);
             MessageUtils.tell(player, "&6&l" + target.getName() + "&r&c&l is now in {townName}", "{townName}", village.getName());

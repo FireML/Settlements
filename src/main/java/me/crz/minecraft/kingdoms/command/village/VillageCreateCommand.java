@@ -75,7 +75,7 @@ public class VillageCreateCommand extends SubCommand {
         Village village = new Village(name, player.getUniqueId(), 1, VillageState.VILLAGE, enter, leave, BuildState.RESIDENTS);
         VillageManager.getInstance().registerNewVillage(village);
         Resident res = ResidentManager.getInstance().getResident(player);
-        res.setVillageName(name);
+        res.setVillage(village);
         res.setVillageRank(VillageRank.CHIEF);
         Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
         MessageUtils.tell(player, MessageUtils.Message.SUCCESS_CREATE, null, null);

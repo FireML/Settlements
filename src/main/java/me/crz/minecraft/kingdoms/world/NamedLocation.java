@@ -2,6 +2,9 @@ package me.crz.minecraft.kingdoms.world;
 
 import org.bukkit.Location;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class NamedLocation extends SimpleLocation {
     private String name;
 
@@ -31,6 +34,26 @@ public class NamedLocation extends SimpleLocation {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode() * 31 + super.hashCode();
+    }
+
+    @Override
+    public Map<String, Object> serialize() {
+        Map<String, Object> map = super.serialize();
+        map.put("name", getName());
+        return map;
+    }
+
+    public static NamedLocation deserialize(Map<String, Object> map) {
+        SimpleLocation simpleLocation = SimpleLocation.deserialize(map);
+        if (simpleLocation == null || map.get("name") == null) {
+            return null;
+        }
+        return new NamedLocation((String) map.get("name"), simpleLocation);
     }
 
 }
