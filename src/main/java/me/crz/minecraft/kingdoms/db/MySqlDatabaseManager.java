@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.db;
 
 import com.zaxxer.hikari.HikariDataSource;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -55,7 +56,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
     private void initializeTables() throws SQLException {
         try (Connection conn = ds.getConnection(); Statement sta = conn.createStatement()) {
-            sta.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlements ("
+            sta.addBatch("SET FOREIGN_KEY_CHECKS = 0");
+
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlements ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                     + "name VARCHAR(255) NOT NULL, INDEX (name),"
                     + "chiefId INTEGER NOT NULL,"
@@ -88,7 +91,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "upkeepStage VARCHAR(255) NOT NULL"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
-            sta.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_outposts ("
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_outposts ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                     + "settlementId INTEGER, INDEX (settlementId),"
                     + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
@@ -102,7 +105,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "pitch FLOAT"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
-            sta.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_vaults ("
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_vaults ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                     + "settlementId INTEGER,"
                     + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
@@ -110,16 +113,16 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "amount INTEGER"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
-            sta.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_uses ("
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_uses ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "settlementId INTEGER, INDEX(claimId),"
+                    + "settlementId INTEGER, INDEX(settlementId),"
                     + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
-                    + "use VARCHAR(255) NOT NULL,"
+                    + "type VARCHAR(255) NOT NULL,"
                     + "state VARCHAR(255) NOT NULL,"
-                    + "UNIQUE (claimId, use, state)"
+                    + "UNIQUE (settlementId, type)"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
-            sta.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_banished ("
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_banished ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                     + "settlementId INTEGER, INDEX (settlementId),"
                     + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
@@ -128,7 +131,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "UNIQUE (settlementId, banishedId)"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
-            sta.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_allies ("
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_allies ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                     + "settlementId INTEGER, INDEX (settlementId),"
                     + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
@@ -137,18 +140,19 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "UNIQUE (settlementId, allyId)"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
-            sta.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "residents ("
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "residents ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                     + "uuid CHAR(36) NOT NULL, UNIQUE (uuid),"
                     + "name VARCHAR(16) NOT NULL,"
                     + "settlementId INTEGER,"
                     + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE SET NULL,"
+                    + "rank VARCHAR(255),"
                     + "lastLogin BIGINT(11) NOT NULL,"
                     + "activeChannel VARCHAR(255) NOT NULL,"
                     + "swear BOOLEAN NOT NULL"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
-            sta.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "resident_channels ("
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "resident_channels ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                     + "userId INTEGER, INDEX (userId),"
                     + "FOREIGN KEY (userId) REFERENCES " + tablePrefix + "residents(id) ON DELETE CASCADE,"
@@ -156,7 +160,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "UNIQUE (userId, channel)"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
-            sta.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "resident_friends ("
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "resident_friends ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                     + "userId INTEGER, INDEX (userId),"
                     + "FOREIGN KEY (userId) REFERENCES " + tablePrefix + "residents(id) ON DELETE CASCADE,"
@@ -165,7 +169,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "UNIQUE (userId, friendId)"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
-            sta.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "resident_ignores ("
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "resident_ignores ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                     + "userId INTEGER, INDEX (userId),"
                     + "FOREIGN KEY (userId) REFERENCES " + tablePrefix + "residents(id) ON DELETE CASCADE,"
@@ -174,7 +178,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "UNIQUE (userId, ignoredId)"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
-            sta.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "claims ("
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "claims ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                     + "settlementId INTEGER NOT NULL, INDEX (settlementId), "
                     + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE RESTRICT,"
@@ -195,14 +199,18 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "BUILDSTATE VARCHAR(255) NOT NULL "
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
-            sta.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "claim_uses ("
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "claim_uses ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                     + "claimId INTEGER, INDEX(claimId),"
                     + "FOREIGN KEY (claimId) REFERENCES " + tablePrefix + "claims(id) ON DELETE CASCADE,"
-                    + "use VARCHAR(255) NOT NULL,"
+                    + "type VARCHAR(255) NOT NULL,"
                     + "state VARCHAR(255) NOT NULL,"
-                    + "UNIQUE (claimId, use, state)"
+                    + "UNIQUE (claimId, type)"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
+
+            sta.addBatch("SET FOREIGN_KEY_CHECKS = 1");
+
+            sta.executeBatch();
         }
     }
 
@@ -233,7 +241,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 updateAllyList(conn, "settlement_allies", "settlementId", (Integer) village.getId().value(), "banishedId", village.getAllies());
                 updateDataMap(conn, "settlement_vaults", "settlementId", (Integer) village.getId().value(), "content", "amount", village.getVault());
                 updateDataMap(conn, "settlement_outposts", "settlementId", (Integer) village.getId().value(), "name", "", village.getOutpostHomes());
-                updateDataMap(conn, "settlement_uses", "settlementId", (Integer) village.getId().value(), "use", "state",
+                updateDataMap(conn, "settlement_uses", "settlementId", (Integer) village.getId().value(), "type", "state",
                         village.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
             }
         } catch (SQLException e) {
@@ -330,7 +338,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     }
                 }
                 if (land.getId() != null) {
-                    updateDataMap(conn, "claim_uses", "claimId", (Integer) land.getId().value(), "use", "state",
+                    updateDataMap(conn, "claim_uses", "claimId", (Integer) land.getId().value(), "type", "state",
                             land.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
                 }
             } catch (SQLException e) {
@@ -435,6 +443,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     }
                 }
                 if (resident.getId() != null) {
+                    updateChannelList(conn, "resident_channels", "userId", (Integer) resident.getId(), "channel", resident.getChannels());
                     updateUserList(conn, "resident_friends", "userId", (Integer) resident.getId(), "friendId", resident.getFriends());
                     updateUserList(conn, "resident_ignores", "userId", (Integer) resident.getId(), "ignoredId", resident.getIgnore());
                 }
@@ -466,7 +475,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         ResultSet uRs = uSta.executeQuery();
         Map<String, String> use = new LinkedHashMap<>();
         while (uRs.next()) {
-            use.put(uRs.getString("use"), uRs.getString("state"));
+            use.put(uRs.getString("type"), uRs.getString("state"));
         }
         map.put("uses", use);
 
@@ -500,7 +509,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         ResultSet uRs = uSta.executeQuery();
         Map<String, String> use = new LinkedHashMap<>();
         while (uRs.next()) {
-            use.put(uRs.getString("use"), uRs.getString("state"));
+            use.put(uRs.getString("type"), uRs.getString("state"));
         }
         map.put("uses", use);
 
@@ -568,7 +577,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
     }
 
     private List<Object> selectList(Connection conn, String tableName, int userId, String columnName) throws SQLException {
-        String sql = "SELECT " + columnName + " FROM " + tablePrefix + tableName + " WHERE f.userId=?;";
+        String sql = "SELECT " + columnName + " FROM " + tablePrefix + tableName + " WHERE userId=?;";
         List<Object> list = new ArrayList<>();
         PreparedStatement sta = conn.prepareStatement(sql);
         sta.setInt(1, userId);
@@ -642,8 +651,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
         PreparedStatement deleteSta = conn.prepareStatement(deleteSql);
         deleteSta.setInt(1, keyId);
         int i = 2;
-        for (Object id : allies) {
-            deleteSta.setInt(i, (Integer) id);
+        for (IdObject id : allies) {
+            deleteSta.setInt(i, (Integer) id.value());
             i++;
         }
         deleteSta.executeUpdate();
@@ -654,7 +663,41 @@ public class MySqlDatabaseManager extends DatabaseManager {
             PreparedStatement insertSta = conn.prepareStatement(insertSql);
             for (IdObject id : allies) {
                 insertSta.setInt(1, keyId);
-                deleteSta.setInt(i, (Integer) id.value());
+                insertSta.setInt(2, (Integer) id.value());
+                insertSta.addBatch();
+            }
+            insertSta.executeUpdate();
+        }
+    }
+
+    private void updateChannelList(Connection conn, String tableName, String keyColumn, int keyId, String channelColumn, Collection<ChatChannel> channels) throws SQLException {
+        String deleteSql;
+        if (channels.isEmpty()) {
+            deleteSql = "DELETE FROM " + tablePrefix + tableName + " " +
+                    " WHERE " + keyColumn + " = ?;";
+        } else {
+            deleteSql = "DELETE t FROM " + tablePrefix + tableName + " AS t" +
+                    " WHERE t." + keyColumn + " = ?" +
+                    " AND t." + channelColumn + " NOT IN " +
+                    "(" + String.join(",", Collections.nCopies(channels.size(), "?")) + ");";
+        }
+
+        PreparedStatement deleteSta = conn.prepareStatement(deleteSql);
+        deleteSta.setInt(1, keyId);
+        int i = 2;
+        for (ChatChannel channel : channels) {
+            deleteSta.setString(i, channel.name());
+            i++;
+        }
+        deleteSta.executeUpdate();
+
+        if (!channels.isEmpty()) {
+            String insertSql = "INSERT IGNORE INTO " + tablePrefix + tableName + " (" + keyColumn + ", " + channelColumn + ")" +
+                    " VALUES (?,?);";
+            PreparedStatement insertSta = conn.prepareStatement(insertSql);
+            for (ChatChannel channel : channels) {
+                insertSta.setInt(1, keyId);
+                insertSta.setString(2, channel.name());
                 insertSta.addBatch();
             }
             insertSta.executeUpdate();

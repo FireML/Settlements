@@ -1,6 +1,9 @@
 package me.crz.minecraft.kingdoms;
 
 import me.crz.minecraft.kingdoms.land.LandManager;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import me.crz.minecraft.kingdoms.command.CommandManager;
 import me.crz.minecraft.kingdoms.scoreboard.ScoreboardManager;
@@ -28,7 +31,7 @@ import me.crz.minecraft.kingdoms.land.LandPerks;
 import me.crz.minecraft.kingdoms.utils.config.Data;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class KingdomsPlugin extends JavaPlugin {
+public class KingdomsPlugin extends JavaPlugin implements Listener {
     private static KingdomsPlugin instance;
     public static Data data;
     private LandPerks lPerks;
@@ -46,20 +49,19 @@ public class KingdomsPlugin extends JavaPlugin {
     }
 
     public void onDisable() {
-        running = false;
-        VillageManager.getInstance().saveAll();
+        if (running) {
+            running = false;
+            VillageManager.getInstance().saveAll();
+        }
     }
 
     public void onEnable() {
         instance = this;
-        if (!this.setupEconomy() || !this.setupChat()) {
-            this.getLogger().log(Level.SEVERE, "Disabled due to missing economy or chat plugin!");
-            this.getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
+        this.getServer().getPluginManager().registerEvents(this, this);
         this.checkDataFolder();
         data = new Data();
         if (data.load(this.getDataFolder())) {
+            ConfigManager.getInstance();
             try {
                 DatabaseManager.getInstance().connect();
             } catch (Exception e) {
@@ -85,6 +87,20 @@ public class KingdomsPlugin extends JavaPlugin {
         this.getServer().getPluginManager().disablePlugin(this);
     }
 
+    @EventHandler
+    public void on(ServerLoadEvent event) {
+        if (!this.setupEconomy()) {
+            this.getLogger().log(Level.SEVERE, "Disabled due to missing economy provider!");
+            this.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        if (!this.setupChat()) {
+            this.getLogger().log(Level.SEVERE, "Disabled due to missing chat provider! (e.g. a permission plugin)");
+            this.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+    }
+
     public void upkeep() {
         Calendar midnight = Calendar.getInstance();
         midnight.set(Calendar.HOUR_OF_DAY, 0);
@@ -105,7 +121,6 @@ public class KingdomsPlugin extends JavaPlugin {
     }
 
     public void loadManagers() {
-        ConfigManager.getInstance();
         ThreadManager.getInstance();
         DatabaseManager.getInstance();
         VillageManager.getInstance();
@@ -126,6 +141,7 @@ public class KingdomsPlugin extends JavaPlugin {
             return false;
         }
         chat = rsp.getProvider();
+        this.getLogger().log(Level.INFO, "Hooked into chat service provider " + chat.getName());
         return chat != null;
     }
 
@@ -140,6 +156,7 @@ public class KingdomsPlugin extends JavaPlugin {
             return false;
         }
         econ = rsp.getProvider();
+        this.getLogger().log(Level.INFO, "Hooked into economy service provider " + econ.getName());
         return econ != null;
     }
 

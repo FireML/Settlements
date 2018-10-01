@@ -59,7 +59,6 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <minimizeJar>true</minimizeJar>
                     <relocations>
                         <relocation>
                             <pattern>io.chazza.advancementapi</pattern>
@@ -70,8 +69,8 @@
                             <shadedPattern>me.crz.minecraft.kingdoms.libs.caffein</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>org.apache.commons</pattern>
-                            <shadedPattern>me.crz.minecraft.kingdoms.libs.commons</shadedPattern>
+                            <pattern>org.apache.commons.io</pattern>
+                            <shadedPattern>me.crz.minecraft.kingdoms.libs.commons.io</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.json</pattern>

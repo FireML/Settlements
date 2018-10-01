@@ -8,13 +8,13 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -167,8 +167,8 @@ public class Resident implements ConfigurationSerializable {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("uuid", getUUID().toString());
         map.put("name", getName());
-        map.put("villageName", village != null ? village.getName() : null);
-        map.put("settlementId", village != null ? village.getId().value() : 0);
+        map.put("settlementId", village != null ? village.getId().value() : null);
+        map.put("rank", getVillageRank().name());
         map.put("lastLogin", getLastLogin());
         map.put("channels", getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
         map.put("activeChannel", getActiveChannel().name());
@@ -195,7 +195,7 @@ public class Resident implements ConfigurationSerializable {
         }
         resident.setLastLogin((Long) map.get("lastLogin"));
         resident.getChannels().clear();
-        ((List<String>) map.get("channels")).stream()
+        ((Collection<String>) map.get("channels")).stream()
                 .map(s -> Utils.parseEnum(ChatChannel.class, s.toUpperCase()))
                 .filter(Objects::nonNull)
                 .forEach(resident::addChannel);
@@ -208,10 +208,10 @@ public class Resident implements ConfigurationSerializable {
             resident.setSwear((Boolean) map.get("swear"));
         }
         if (map.containsKey("ignores")) {
-            ((List<String>) map.get("ignores")).stream().map(Utils::parseUuid).filter(Objects::nonNull).forEach(resident::addIgnore);
+            ((Collection<String>) map.get("ignores")).stream().map(Utils::parseUuid).filter(Objects::nonNull).forEach(resident::addIgnore);
         }
         if (map.containsKey("friends")) {
-            ((List<String>) map.get("friends")).stream().map(Utils::parseUuid).filter(Objects::nonNull).forEach(resident::addFriend);
+            ((Collection<String>) map.get("friends")).stream().map(Utils::parseUuid).filter(Objects::nonNull).forEach(resident::addFriend);
         }
         return resident;
     }

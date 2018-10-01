@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import org.bukkit.Bukkit;
 
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -452,7 +453,7 @@ public class Village implements ConfigurationSerializable {
                 BuildState.valueOf((String) map.get("buildState"))
         );
         village.setId(IdObject.get(map));
-        village.getResidentIds().addAll(((List<String>) map.get("residents")).stream().map(UUID::fromString).collect(Collectors.toSet()));
+        village.getResidentIds().addAll(((Collection<String>) map.get("residents")).stream().map(UUID::fromString).collect(Collectors.toSet()));
         village.setPvp((Boolean) map.get("pvp"));
         village.setFireSpread((Boolean) map.get("fireSpread"));
         village.setExplosions((Boolean) map.get("explosions"));
@@ -473,7 +474,7 @@ public class Village implements ConfigurationSerializable {
             ));
         }
         village.setBank((Integer) map.get("bank"));
-        village.getAllies().addAll(((List<Object>) map.get("allies")).stream().map(IdObject::get).collect(Collectors.toSet()));
+        village.getAllies().addAll(((Collection<Object>) map.get("allies")).stream().map(IdObject::get).collect(Collectors.toSet()));
         village.setTeleporterCost((Integer) map.get("teleportCost"));
         if (map.get("homeLoc") != null) {
             village.setVillageHome(SimpleLocation.deserialize((Map<String, Object>) map.get("homeLoc")));
