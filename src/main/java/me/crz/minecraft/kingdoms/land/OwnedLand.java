@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -264,10 +265,11 @@ public class OwnedLand implements ConfigurationSerializable {
     public Map<String, Object> serialize() {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("ownerVillage", getOwnerVillage().getName());
+        map.put("settlementId", getOwnerVillage().getId().value());
         map.put("x", getX());
         map.put("z", getZ());
         map.put("world", getWorldName());
-        map.put("plotOwner", getPlotOwner() != null ? getPlotOwner().toString() : null);
+        map.put("owner", getPlotOwner() != null ? getPlotOwner() : new UUID(0,0));
         map.put("price", getPrice());
         map.put("forSale", isForSale());
         map.put("pvp", isPvp());
@@ -282,7 +284,8 @@ public class OwnedLand implements ConfigurationSerializable {
     }
 
     public static OwnedLand deserialize(Map<String, Object> map) {
-        if (map == null || map.get("worldName") == null || map.get("x") == null || map.get("z") == null) {
+        if (map == null || map.get("world") == null || map.get("x") == null || map.get("z") == null) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize OwnedLand! (" + map + ")");
             return null;
         }
         OwnedLand land = new OwnedLand(
@@ -292,9 +295,12 @@ public class OwnedLand implements ConfigurationSerializable {
                 new SimpleChunkLocation((String) map.get("world"), (Integer) map.get("x"), (Integer) map.get("z"))
         );
         land.setId(IdObject.get(map));
-        String plotOwnerStr = (String) map.get("plotOwner");
+        String plotOwnerStr = (String) map.get("owner");
         if (plotOwnerStr != null && !plotOwnerStr.isEmpty()) {
             land.setPlotOwner(UUID.fromString(plotOwnerStr));
+            if (land.getPlotOwner().equals(new UUID(0, 0))) {
+                land.setPlotOwner(null);
+            }
         }
         land.setPrice((Integer) map.get("price"));
         land.setForSale((Boolean) map.get("forSale"));
@@ -305,10 +311,10 @@ public class OwnedLand implements ConfigurationSerializable {
         land.setBuild((Boolean) map.get("build"));
         land.setIsOutpost((Boolean) map.get("isOutpost"));
         land.setBuildState(Utils.parseEnum((String) map.get("buildState"), PlotBuildState.RESIDENTS));
-        Map<String, Object> use = (Map<String, Object>) map.get("use");
+        Map<String, Object> uses = (Map<String, Object>) map.get("uses");
         for (Use u : Use.values()) {
-            if (use.containsKey(u.name())) {
-                land.setUseState(u, Utils.parseEnum((String) use.get(u.name()), PlotBuildState.RESIDENTS));
+            if (uses.containsKey(u.name())) {
+                land.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), PlotBuildState.RESIDENTS));
             }
         }
         return land;

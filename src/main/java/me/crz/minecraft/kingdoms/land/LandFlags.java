@@ -190,7 +190,7 @@ public class LandFlags extends Base {
             if (playerVillage == null) {
                 return;
             }
-            if (this.playerOwnsLand(destinationLand, playerVillage.getName())) {
+            if (this.playerOwnsLand(destinationLand, playerVillage)) {
                 Base.getLandPerks().giveEffects(player, playerVillage);
             }
         } else if (this.landIsClaimed(originalLand) && this.landIsClaimed(destinationLand)) {
@@ -201,9 +201,9 @@ public class LandFlags extends Base {
             Village destinationVillage = destinationLand.getOwnerVillage();
             if (originalVillage != null && !originalVillage.getName().equals(destinationVillage.getName())) {
                 if (playerVillage.isBuff()) {
-                    if (this.playerOwnsLand(originalLand, playerVillage.getName()) && !this.playerOwnsLand(destinationLand, playerVillage.getName())) {
+                    if (this.playerOwnsLand(originalLand, playerVillage) && !this.playerOwnsLand(destinationLand, playerVillage)) {
                         Base.getLandPerks().removeEffects(player, playerVillage);
-                    } else if (this.playerOwnsLand(destinationLand, playerVillage.getName()) && !this.playerOwnsLand(originalLand, playerVillage.getName())) {
+                    } else if (this.playerOwnsLand(destinationLand, playerVillage) && !this.playerOwnsLand(originalLand, playerVillage)) {
                         Base.getLandPerks().giveEffects(player, playerVillage);
                     }
                 }
@@ -215,7 +215,7 @@ public class LandFlags extends Base {
                     addition.append(ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName());
                     addition.append("&7&l\u2019s plot ");
                 }
-                if (this.playerOwnsLand(destinationLand, playerVillage.getName())) {
+                if (this.playerOwnsLand(destinationLand, playerVillage)) {
                     if (destinationLand.isForSale()) {
                         addition.append("&9&lLand is for sale ");
                     }
@@ -236,7 +236,7 @@ public class LandFlags extends Base {
             });
         } else if (this.landIsClaimed(originalLand) && !this.landIsClaimed(destinationLand)) {
             Village originalVillage = originalLand.getOwnerVillage();
-            if (playerVillage != null && playerVillage.isBuff() && this.playerOwnsLand(originalLand, playerVillage.getName())) {
+            if (playerVillage != null && playerVillage.isBuff() && this.playerOwnsLand(originalLand, playerVillage)) {
                 Base.getLandPerks().removeEffects(player, originalVillage);
             }
             TitleBuilder tb = new TitleBuilder();
@@ -249,7 +249,7 @@ public class LandFlags extends Base {
         return land != null;
     }
 
-    private boolean playerOwnsLand(OwnedLand land, String villageName) {
-        return land != null && land.getOwnerVillage().equals(villageName);
+    private boolean playerOwnsLand(OwnedLand land, Village village) {
+        return land != null && land.getOwnerVillage().equals(village);
     }
 }

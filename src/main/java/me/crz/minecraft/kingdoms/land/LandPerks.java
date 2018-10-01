@@ -35,7 +35,7 @@ public class LandPerks {
                     if (village == null) {
                         continue;
                     }
-                    if (!land.getOwnerVillage().equals(village.getName())) {
+                    if (!land.getOwnerVillage().equals(village)) {
                         continue;
                     }
                     if (!village.isBuff()) {

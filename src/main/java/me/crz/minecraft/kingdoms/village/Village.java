@@ -36,6 +36,7 @@ import me.crz.minecraft.kingdoms.landflags.Use;
 import java.util.List;
 
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class Village implements ConfigurationSerializable {
@@ -411,7 +412,7 @@ public class Village implements ConfigurationSerializable {
     public Map<String, Object> serialize() {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("name", getName());
-        map.put("chief", getChief().toString());
+        map.put("chief", getChief());
         map.put("level", getLevel());
         map.put("settlementState", getState().name());
         map.put("enterMessage", getEnterMessage());
@@ -424,10 +425,13 @@ public class Village implements ConfigurationSerializable {
         map.put("mobSpawning", isMobSpawning());
         map.put("buff", isBuff());
         map.put("teleporter", isTeleporter());
-        map.put("teleporterLoc", getTeleporter().serialize());
+        map.put("teleportCost", getTeleportCost());
+        if (getTeleporter() != null)
+            map.put("teleporterLoc", getTeleporter().serialize());
         map.put("bank", getBank());
-        map.put("homeLoc", getVillageHome().serialize());
-        map.put("outpostHomes", getOutpostHomes().values().stream().collect(Collectors.toMap(NamedLocation::getName, NamedLocation::serialize)));
+        if (getVillageHome() != null)
+            map.put("homeLoc", getVillageHome().serialize());
+        map.put("outposts", getOutpostHomes().values().stream().collect(Collectors.toMap(NamedLocation::getName, NamedLocation::serialize)));
         map.put("banished", getBanishedResidents().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("uses", getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
         map.put("lastUpkeep", getLastUpkeep());
@@ -440,6 +444,7 @@ public class Village implements ConfigurationSerializable {
         if (map == null || map.get("name") == null || map.get("chief") == null || map.get("level") == null
                 || map.get("settlementState") == null || map.get("enterMessage") == null || map.get("leaveMessage") == null
                 || map.get("buildState") == null) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize Village! (" + map + ")");
             return null;
         }
         Village village = new Village(
@@ -459,6 +464,7 @@ public class Village implements ConfigurationSerializable {
         village.setMobSpawning((Boolean) map.get("mobSpawning"));
         village.setBuff((Boolean) map.get("buff"));
         village.setTeleporter((Boolean) map.get("teleporter"));
+        village.setTeleporterCost((Integer) map.get("teleportCost"));
         if (map.get("teleporterLoc") != null) {
             village.setTeleporter(SimpleLocation.deserialize((Map<String, Object>) map.get("teleporterLoc")));
         } else if (map.get("teleporterLoc_x") != null && map.get("teleporterLoc_y") != null && map.get("teleporterLoc_Z") != null
@@ -474,7 +480,6 @@ public class Village implements ConfigurationSerializable {
         }
         village.setBank((Integer) map.get("bank"));
         village.getAllies().addAll(((Collection<Object>) map.get("allies")).stream().map(IdObject::get).collect(Collectors.toSet()));
-        village.setTeleporterCost((Integer) map.get("teleportCost"));
         if (map.get("homeLoc") != null) {
             village.setVillageHome(SimpleLocation.deserialize((Map<String, Object>) map.get("homeLoc")));
         } else if (map.get("homeLoc_x") != null && map.get("homeLoc_y") != null && map.get("homeLoc_Z") != null
@@ -488,15 +493,15 @@ public class Village implements ConfigurationSerializable {
                     (float) map.get("homeLoc_pitch")
             ));
         }
-        ((Map<String, Map<String, Object>>) map.get("outpostHomes")).values().stream()
+        ((Map<String, Map<String, Object>>) map.get("outposts")).values().stream()
                 .map(NamedLocation::deserialize)
                 .filter(Objects::nonNull)
                 .forEach(village::addOutpostHome);
-        village.getBanishedResidents().addAll(((List<String>) map.get("banished")).stream().map(UUID::fromString).collect(Collectors.toSet()));
-        Map<String, Object> use = (Map<String, Object>) map.get("uses");
+        village.getBanishedResidents().addAll(((Collection<String>) map.get("banished")).stream().map(UUID::fromString).collect(Collectors.toSet()));
+        Map<String, Object> uses = (Map<String, Object>) map.get("uses");
         for (Use u : Use.values()) {
-            if (use.containsKey(u.name())) {
-                village.setUseState(u, Utils.parseEnum((String) use.get(u.name()), BuildState.RESIDENTS));
+            if (uses.containsKey(u.name())) {
+                village.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), BuildState.RESIDENTS));
             }
         }
         village.setLastUpkeep((Long) map.get("lastUpkeep"));

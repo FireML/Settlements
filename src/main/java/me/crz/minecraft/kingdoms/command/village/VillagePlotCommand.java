@@ -144,7 +144,7 @@ public class VillagePlotCommand extends SubCommand {
             LandManager.getInstance().setPlotOwner(land, null);
             MessageUtils.tell(player, "&aPlot has been revoked ownership!");
         } else if (args[0].equalsIgnoreCase("sale")) {
-            if (args.length < 3) {
+            if (args.length < 2) {
                 if (land.isForSale()) {
                     MessageUtils.tell(player, "&7&lThe current price of this land is: &6&l " + land.getPrice());
                 } else {

@@ -7,6 +7,7 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -18,8 +19,10 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -60,7 +63,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlements ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "name VARCHAR(255) NOT NULL, INDEX (name),"
+                    + "name VARCHAR(255) NOT NULL, INDEX (name), UNIQUE (name), "
                     + "chiefId INTEGER NOT NULL,"
                     + "FOREIGN KEY (chiefId) REFERENCES " + tablePrefix + "residents(id) ON DELETE RESTRICT,"
                     + "level INTEGER NOT NULL,"
@@ -74,6 +77,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "mobSpawning BOOLEAN NOT NULL,"
                     + "buff BOOLEAN NOT NULL,"
                     + "teleporter BOOLEAN NOT NULL,"
+                    + "teleportCost INTEGER NOT NULL,"
                     + "teleporterLoc_world VARCHAR(255),"
                     + "teleporterLoc_x DOUBLE,"
                     + "teleporterLoc_y DOUBLE,"
@@ -217,26 +221,26 @@ public class MySqlDatabaseManager extends DatabaseManager {
     @Override
     public void saveVillage(Village village) {
         Utils.catchSync();
-        Map<String, Object> values = getValues(village.serialize());
+        Map<String, Object> values = getValues(village.serialize(), "outpostHomes", "banished", "uses", "vault");
         String sql = "INSERT INTO " + tablePrefix + "settlements "
                 + "(`" + String.join("`,`", values.keySet()) + "`)"
                 + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")"
                 + " ON DUPLICATE KEY UPDATE " + values.keySet().stream().map(c -> "`" + c + "`=VALUES(`" + c + "`)").collect(Collectors.joining(",")) + ";";
         try (Connection conn = ds.getConnection();
-             PreparedStatement sta = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement sta = conn.prepareStatement(sql, village.getId().isNull() ? PreparedStatement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS)) {
             int i = 0;
             for (Object value : values.values()) {
                 i++;
                 sta.setObject(i, value);
             }
             sta.executeUpdate();
-            if (village.getId().value() == null) {
+            if (village.getId().isNull()) {
                 ResultSet rs = sta.getGeneratedKeys();
                 if (rs.next()) {
                     village.setId(IdObject.get(rs));
                 }
             }
-            if (village.getId().value() != null) {
+            if (!village.getId().isNull()) {
                 updateUserList(conn, "settlement_banished", "settlementId", (Integer) village.getId().value(), "banishedId", village.getBanishedResidents());
                 updateAllyList(conn, "settlement_allies", "settlementId", (Integer) village.getId().value(), "banishedId", village.getAllies());
                 updateDataMap(conn, "settlement_vaults", "settlementId", (Integer) village.getId().value(), "content", "amount", village.getVault());
@@ -318,13 +322,13 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return;
         }
         for (OwnedLand land : lands) {
-            Map<String, Object> values = getValues(lands[0].serialize());
+            Map<String, Object> values = getValues(lands[0].serialize(), "ownerVillage", "use");
             String sql = "INSERT INTO " + tablePrefix + "claims "
                     + "(`" + String.join("`,`", values.keySet()) + "`)"
                     + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")"
                     + " ON DUPLICATE KEY UPDATE " + values.keySet().stream().map(c -> "`" + c + "`=VALUES(`" + c + "`)").collect(Collectors.joining(",")) + ";";
             try (Connection conn = ds.getConnection();
-                 PreparedStatement sta = conn.prepareStatement(sql)) {
+                 PreparedStatement sta = conn.prepareStatement(sql, land.getId() == null ? PreparedStatement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS)) {
                 int i = 0;
                 for (Object value : values.values()) {
                     i++;
@@ -356,7 +360,10 @@ public class MySqlDatabaseManager extends DatabaseManager {
              ResultSet rs = conn.createStatement().executeQuery(sql)) {
             List<OwnedLand> claims = new ArrayList<>();
             while (rs.next()) {
-                claims.add(createLand(conn, rs));
+                OwnedLand ownedLand = createLand(conn, rs);
+                if (ownedLand != null) {
+                    claims.add(ownedLand);
+                }
             }
             return claims;
         } catch (SQLException e) {
@@ -373,7 +380,10 @@ public class MySqlDatabaseManager extends DatabaseManager {
              ResultSet rs = conn.createStatement().executeQuery(sql)) {
             List<Village> villages = new ArrayList<>();
             while (rs.next()) {
-                villages.add(createVillage(conn, rs));
+                Village village = createVillage(conn, rs);
+                if (village != null) {
+                    villages.add(village);
+                }
             }
             return villages;
         } catch (SQLException e) {
@@ -423,13 +433,13 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return;
         }
         for (Resident resident : residents) {
-            Map<String, Object> values = getValues(residents[0].serialize());
+            Map<String, Object> values = getValues(residents[0].serialize(), "channels", "ignores", "friends");
             String sql = "INSERT INTO " + tablePrefix + "residents "
                     + "(`" + String.join("`,`", values.keySet()) + "`)"
                     + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")"
                     + " ON DUPLICATE KEY UPDATE " + values.keySet().stream().map(c -> "`" + c + "`=VALUES(`" + c + "`)").collect(Collectors.joining(",")) + ";";
             try (Connection conn = ds.getConnection();
-                 PreparedStatement sta = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                 PreparedStatement sta = conn.prepareStatement(sql, resident.getId() == null ? PreparedStatement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS)) {
                 int i = 0;
                 for (Object value : values.values()) {
                     i++;
@@ -459,6 +469,17 @@ public class MySqlDatabaseManager extends DatabaseManager {
         int id = rs.getInt("id");
         Map<String, Object> map = toMap(rs);
 
+        PreparedStatement rSta = conn.prepareStatement("SELECT uuid FROM " + tablePrefix + "residents WHERE settlementId = ?;");
+        rSta.setInt(1, id);
+        ResultSet rRs = rSta.executeQuery();
+        Collection<String> residents = new LinkedHashSet<>();
+        while (rRs.next()) {
+            residents.add(rRs.getString("uuid"));
+        }
+        map.put("residents", residents);
+
+        map.put("allies", selectList(conn, "settlement_allies", "settlementId", rs.getInt("id"), "allyId"));
+
         PreparedStatement oSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_outposts WHERE settlementId = ?;");
         oSta.setInt(1, id);
         ResultSet oRs = oSta.executeQuery();
@@ -482,11 +503,11 @@ public class MySqlDatabaseManager extends DatabaseManager {
         PreparedStatement vSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_vaults WHERE settlementId = ?;");
         vSta.setInt(1, id);
         ResultSet vRs = vSta.executeQuery();
-        Map<String, Integer> vaults = new LinkedHashMap<>();
+        Map<String, Integer> vault = new LinkedHashMap<>();
         while (vRs.next()) {
-            vaults.put(vRs.getString("content"), vRs.getInt("amount"));
+            vault.put(vRs.getString("content"), vRs.getInt("amount"));
         }
-        map.put("vaults", vaults);
+        map.put("vault", vault);
 
         return Village.deserialize(map);
     }
@@ -494,7 +515,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
     private Resident createResident(Connection conn, ResultSet rs) throws SQLException {
         Map<String, Object> map = toMap(rs);
         int id = rs.getInt("id");
-        map.put("channels", selectList(conn, "resident_channels", id, "channel"));
+        map.put("channels", selectList(conn, "resident_channels", "userId", id, "channel"));
         map.put("friends", selectResidentList(conn, "resident_friends", "userId", id, "friendId"));
         map.put("ignores", selectResidentList(conn, "resident_ignores", "userId", id, "ignoredId"));
         return Resident.deserialize(map);
@@ -568,7 +589,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                         j++;
                     }
                 } else {
-                    insertSta.setObject(2, entry.getValue());
+                    insertSta.setObject(3, entry.getValue());
                 }
                 insertSta.addBatch();
             }
@@ -576,25 +597,25 @@ public class MySqlDatabaseManager extends DatabaseManager {
         }
     }
 
-    private List<Object> selectList(Connection conn, String tableName, int userId, String columnName) throws SQLException {
-        String sql = "SELECT " + columnName + " FROM " + tablePrefix + tableName + " WHERE userId=?;";
+    private List<Object> selectList(Connection conn, String tableName, String keyColumn, int keyValue, String valueColumn) throws SQLException {
+        String sql = "SELECT " + valueColumn + " FROM " + tablePrefix + tableName + " WHERE " + keyColumn + "=?;";
         List<Object> list = new ArrayList<>();
         PreparedStatement sta = conn.prepareStatement(sql);
-        sta.setInt(1, userId);
+        sta.setInt(1, keyValue);
         ResultSet rs = sta.executeQuery();
         while (rs.next()) {
-            list.add(rs.getObject(columnName));
+            list.add(rs.getObject(valueColumn));
         }
         return list;
     }
 
-    private Collection<String> selectResidentList(Connection conn, String tableName, String keyColumn, int userId, String columnName) throws SQLException {
+    private Collection<String> selectResidentList(Connection conn, String tableName, String keyColumn, int keyValue, String valueColumn) throws SQLException {
         String sql = "SELECT r.uuid FROM " + tablePrefix + tableName + " AS f" +
-                " JOIN " + tablePrefix + "residents AS r ON f." + columnName + " = r.id" +
+                " JOIN " + tablePrefix + "residents AS r ON f." + valueColumn + " = r.id" +
                 " WHERE f." + keyColumn + "=?";
         Set<String> uuids = new LinkedHashSet<>();
         PreparedStatement sta = conn.prepareStatement(sql);
-        sta.setInt(1, userId);
+        sta.setInt(1, keyValue);
         ResultSet rs = sta.executeQuery();
         while (rs.next()) {
             uuids.add(rs.getString(1));
@@ -706,17 +727,29 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
     // ------ Utility methods ----- //
 
-    private Map<String, Object> getValues(Map<String, ?> serialized) {
-        Map<String, Object> values = new LinkedHashMap<>();
-        for (Map.Entry<String, ?> entry : serialized.entrySet()) {
-            if (!(entry.getValue() instanceof Collection)) {
-                if (entry.getValue() instanceof ConfigurationSerializable) {
-                    for (Map.Entry<String, Object> serEntry : getValues(((ConfigurationSerializable) entry.getValue()).serialize()).entrySet()) {
-                        if (entry.getKey().isEmpty()) {
-                            values.put(serEntry.getKey(), serEntry.getValue());
+    private <K> Map<K, Object> getValues(Map<K, ?> serialized, K... ignoredKeys) {
+        Set<K> ignored = new HashSet<>(Arrays.asList(ignoredKeys));
+        Map<K, Object> values = new LinkedHashMap<>();
+        for (Map.Entry<K, ?> entry : serialized.entrySet()) {
+            if (!ignored.contains(entry.getKey()) && !(entry.getValue() instanceof Collection)) {
+                if (entry.getValue() instanceof Map) {
+                    for (Map.Entry<K, Object> serEntry : getValues((Map<K, Object>) entry.getValue(), ignoredKeys).entrySet()) {
+                        if (entry.getKey() instanceof String && !((String) entry.getKey()).isEmpty()) {
+                            values.put((K) (entry.getKey() + "_" + serEntry.getKey()), serEntry.getValue());
                         } else {
-                            values.put(entry.getKey() + "_" + serEntry.getKey(), serEntry.getValue());
+                            values.put(serEntry.getKey(), serEntry.getValue());
                         }
+                    }
+                } else if (entry.getValue() instanceof UUID) {
+                    Object id = null;
+                    if (!entry.getValue().equals(new UUID(0, 0))) {
+                        Resident resident = ResidentManager.getInstance().getResident((UUID) entry.getValue());
+                        id = resident != null ? resident.getId() : null;
+                    }
+                    if (entry.getKey() instanceof String && !((String) entry.getKey()).endsWith("Id")) {
+                        values.put((K) (entry.getKey() + "Id"), id);
+                    } else {
+                        values.put(entry.getKey(), id);
                     }
                 } else {
                     values.put(entry.getKey(), entry.getValue());
@@ -730,11 +763,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         Map<String, Object> map = new LinkedHashMap<>();
         ResultSetMetaData metaData = rs.getMetaData();
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
-            String columnName = metaData.getColumnName(i);
-            if (columnName.contains(".")) {
-                columnName = columnName.substring(columnName.lastIndexOf('.'));
-            }
-            map.put(columnName, rs.getObject(i));
+            map.put(metaData.getColumnLabel(i), rs.getObject(i));
         }
         return map;
     }

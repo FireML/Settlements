@@ -67,7 +67,7 @@ public class VillageListener implements Listener {
     public void on(SignChangeEvent e) {
         if (e.getLine(0) != null && e.getLine(0).equalsIgnoreCase("[vlock]")) {
             OwnedLand land = LandManager.getInstance().getLand(e.getPlayer().getLocation());
-            if (land == null || !land.getOwnerVillage().equals(ResidentManager.getInstance().getResident(e.getPlayer()).getVillageName())) {
+            if (land == null || !land.getOwnerVillage().equals(ResidentManager.getInstance().getResident(e.getPlayer()).getVillage())) {
                 MessageUtils.tell(e.getPlayer(), "&c&lYou can only lock things in your own claim!");
                 e.getBlock().breakNaturally();
                 return;
@@ -100,7 +100,7 @@ public class VillageListener implements Listener {
                     e.setCancelled(true);
                     return;
                 }
-                if (!land.getOwnerVillage().equals(res.getVillageName())) {
+                if (!land.getOwnerVillage().equals(res.getVillage())) {
                     MessageUtils.tell(e.getPlayer(), "&c&lYou can't unlock another villages block!");
                     e.setCancelled(true);
                     return;
@@ -143,7 +143,7 @@ public class VillageListener implements Listener {
                 return;
             }
             if (ChatColor.stripColor( lines.get(0)).equalsIgnoreCase("[teleporter]")) {
-                if (land.getOwnerVillage().equals(village.getName())) {
+                if (land.getOwnerVillage().equals(village)) {
                     new TeleportersGUI().build(e.getPlayer());
                 } else {
                     MessageUtils.tell(e.getPlayer(), "&c&lYou can't use another villages teleporter");
@@ -170,7 +170,7 @@ public class VillageListener implements Listener {
             Sign sign = (Sign) e.getClickedBlock().getState();
             List<String> lines = Arrays.asList(sign.getLines());
             if (ChatColor.stripColor( lines.get(0)).equalsIgnoreCase("[vlock]") && e.getPlayer().isSneaking()) {
-                if (land.getOwnerVillage().equals(res.getVillageName())) {
+                if (land.getOwnerVillage().equals(res.getVillage())) {
                     if (VillageRank.hasRank(res.getVillageRank(), VillageRank.CHIEF) || ChatColor.stripColor( lines.get(1)).equals(e.getPlayer().getName())) {
                         e.getClickedBlock().breakNaturally();
                     } else {

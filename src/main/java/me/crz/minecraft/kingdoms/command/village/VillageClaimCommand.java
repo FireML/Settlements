@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -72,9 +73,10 @@ public class VillageClaimCommand extends SubCommand {
             }
         }
         if (land == null) {
-            land = LandManager.getInstance().claimLand(player.getLocation(), village);
+            OwnedLand newLand = LandManager.getInstance().claimLand(player.getLocation(), village);
             MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_CLAIM_LAND,
-                    "{player}", player.getName(), "{x}", String.valueOf(land.getX()), "{z}",  String.valueOf(land.getZ()));
+                    "{player}", player.getName(), "{x}", String.valueOf(newLand.getX()), "{z}",  String.valueOf(newLand.getZ()));
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(newLand));
             return;
         }
         if (land.getOwnerVillage().equals(village)) {

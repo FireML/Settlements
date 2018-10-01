@@ -186,9 +186,9 @@ public class Utils {
         }
     }
 
-    public static <R extends Enum<R>> R parseEnum(Class<R> chatChannelClass, String name) {
+    public static <R extends Enum<R>> R parseEnum(Class<R> enumClass, String name) {
         try {
-            return Enum.valueOf(chatChannelClass, name);
+            return Enum.valueOf(enumClass, name);
         } catch (IllegalArgumentException e) {
             return null;
         }
@@ -197,7 +197,7 @@ public class Utils {
     public static <R extends Enum<R>> R parseEnum(String name, R defaultValue) {
         try {
             return Enum.valueOf(defaultValue.getDeclaringClass(), name);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             return defaultValue;
         }
     }

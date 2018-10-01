@@ -180,6 +180,7 @@ public class Resident implements ConfigurationSerializable {
 
     public static Resident deserialize(Map<String, Object> map) {
         if (map == null || map.get("uuid") == null || map.get("name") == null) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize Resident! (" + map + ")");
             return null;
         }
         Resident resident = new Resident(UUID.fromString((String) map.get("uuid")), (String) map.get("name"));

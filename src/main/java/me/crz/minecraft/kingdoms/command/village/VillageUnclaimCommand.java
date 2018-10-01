@@ -33,7 +33,7 @@ public class VillageUnclaimCommand extends SubCommand {
         }
         Chunk currentChunk = player.getLocation().getChunk();
         OwnedLand land = LandManager.getInstance().getLand(currentChunk);
-        if (land == null || !land.getOwnerVillage().equals(village.getName())) {
+        if (land == null || !land.getOwnerVillage().equals(village)) {
             MessageUtils.tell(player, "&cYou do not own this land.");
             return;
         }

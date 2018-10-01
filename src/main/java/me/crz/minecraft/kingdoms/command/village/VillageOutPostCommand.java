@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
 import java.text.DecimalFormat;
+import java.util.Collection;
 
 public class VillageOutPostCommand extends SubCommand {
     private StringBuilder sb;
@@ -68,35 +69,35 @@ public class VillageOutPostCommand extends SubCommand {
                 if (checkLand == null) {
                     continue;
                 }
-                if (!checkLand.getOwnerVillage().equals(village.getName())) {
+                if (!checkLand.getOwnerVillage().equals(village)) {
                     MessageUtils.tell(player, "&c&lERROR &r&7You are too close to &e{owner}'s land !", "{owner}", checkLand.getOwnerVillage().getName());
                     return;
                 }
             }
             OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
             if (land != null) {
-                if (land.getOwnerVillage().equals(village.getName())) {
+                if (land.getOwnerVillage().equals(village)) {
                     MessageUtils.tell(player, MessageUtils.Message.ALREADY_OWN_LAND, null, null);
                     return;
                 }
                 MessageUtils.tell(player, MessageUtils.Message.CANT_CLAIM_HERE, "{owner}", land.getOwnerVillage().getName());
                 return;
             } else {
-                LandManager.getInstance().claimOutpost(player.getLocation(), village);
+                OwnedLand outpost = LandManager.getInstance().claimOutpost(player.getLocation(), village);
                 MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_CLAIM_OUTPOST,
                         "player", player.getName(),
                         "x", String.valueOf(player.getLocation().getBlockX()),
                         "z", String.valueOf(player.getLocation().getBlockZ()));
+                Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(outpost));
             }
-        }
-        if (args[0].equalsIgnoreCase("unclaim")) {
+        } else if (args[0].equalsIgnoreCase("unclaim")) {
             if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.CHIEF)) {
                 MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.CHIEF.getTag(village.getState()) + "&r&c&l!");
                 return;
             }
             Chunk currentChunk = player.getLocation().getChunk();
             OwnedLand land = LandManager.getInstance().getLand(currentChunk);
-            if (land == null || !land.getOwnerVillage().equals(village.getName())) {
+            if (land == null || !land.getOwnerVillage().equals(village)) {
                 MessageUtils.tell(player, "&cYou do not own this land.");
                 return;
             }
@@ -105,14 +106,11 @@ public class VillageOutPostCommand extends SubCommand {
                 return;
             }
 
-            int unclaimed = 0;
-            for (OwnedLand connectedLand : LandManager.getInstance().getAllConnectedLand(land, true)) {
-                LandManager.getInstance().unclaimLand(connectedLand);
-                unclaimed++;
-            }
-            LandManager.getInstance().unclaimLand(land);
+            Collection<OwnedLand> toUnclaim = LandManager.getInstance().getAllConnectedLand(land, true);
+            toUnclaim.add(land);
+            LandManager.getInstance().unclaimLand(toUnclaim);
             MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_UNCLAIM_OUTPOST,
-                    "amount", String.valueOf(unclaimed),
+                    "amount", String.valueOf(toUnclaim.size() - 1),
                     "x", String.valueOf(player.getLocation().getBlockX()),
                     "z", String.valueOf(player.getLocation().getBlockZ()));
         } else if (args[0].equalsIgnoreCase("list")) {
@@ -142,8 +140,7 @@ public class VillageOutPostCommand extends SubCommand {
                 return;
             }
             MessageUtils.tell(player, MessageUtils.Message.OUTPOST_NOT_FOUND, "name", args[1]);
-        }
-        if (args[0].equalsIgnoreCase("sethome")) {
+        } else if (args[0].equalsIgnoreCase("sethome")) {
             if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER)) {
                 MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
                 return;

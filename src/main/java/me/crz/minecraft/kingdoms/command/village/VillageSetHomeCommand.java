@@ -35,7 +35,7 @@ public class VillageSetHomeCommand extends SubCommand {
         }
         Chunk currentChunk = player.getLocation().getChunk();
         OwnedLand land = LandManager.getInstance().getLand(currentChunk);
-        if (land == null || !land.getOwnerVillage().equals(village.getName())) {
+        if (land == null || !land.getOwnerVillage().equals(village)) {
             MessageUtils.tell(player, "&c&lYou do not own this land!");
             return;
         }
