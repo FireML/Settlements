@@ -12,6 +12,6 @@ public class VillageRulesCommand extends SubCommand {
 
     @Override
     public void run(final Player player, final String base, final String alias, final String... args) {
-        MessageUtils.tell(player, "&6&lhttps://www.mc-wolfpack.com/forum/m/48851490/viewthread/31928866-server-rules");
+        MessageUtils.tell(player, MessageUtils.Message.SERVER_RULES);
     }
 }

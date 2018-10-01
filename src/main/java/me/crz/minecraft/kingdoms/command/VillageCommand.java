@@ -7,7 +7,6 @@ import me.crz.minecraft.kingdoms.village.Village;
 import java.util.Arrays;
 
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import org.apache.commons.lang.StringUtils;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 
@@ -79,9 +78,10 @@ public class VillageCommand implements CommandExecutor {
         sb2.append("\n&8[&9*&8] &b/{alias} unally &7- Removes an ally");
         sb2.append("\n&8[&9*&8] &b/{alias} reslist &7- Lists all residents");
         sb2.append("\n&8[&9*&8] &b/{alias} leader help &7- Shows commands for the leaders");
-        sb2.append("\n&8[&9*&8] &b/{alias} rules &7- SShows you global settlement rules");
+        sb2.append("\n&8[&9*&8] &b/{alias} rules &7- Shows you global settlement rules");
         sb2.append("\n&8[&9*&8] &b/{alias} lock &7- Shows you the vlock commands");
         sb2.append("\n&8[&9*&8] &b/{alias} upkeep &7- Shows you information on your upkeep");
+        // TODO: auto-generate/move to messages config
         this.registerCommand(new VillageCreateCommand());
         this.registerCommand(new VillageClaimCommand());
         this.registerCommand(new VillageShowCommand());
@@ -130,7 +130,7 @@ public class VillageCommand implements CommandExecutor {
     public void run(final Player p, final String alias, final String[] args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(p);
         if (args.length < 1) {
-            MessageUtils.tell(p, StringUtils.replace((village == null) ? sb1.toString() : sb2.toString(), "{alias}", alias));
+            MessageUtils.tell(p, ((village == null) ? sb1.toString() : sb2.toString()).replace("{alias}", alias));
             return;
         }
         final String aliasUsed = args[0].toLowerCase();

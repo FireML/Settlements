@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.command;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Data;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -14,32 +15,31 @@ import org.bukkit.entity.Player;
 import org.bukkit.command.CommandExecutor;
 
 public class ChatCommand implements CommandExecutor {
-    StringBuilder help;
+    private final String help;
 
     public ChatCommand() {
-        super();
-        (help = new StringBuilder("&8&l--------&r&c&l/Chat&r&8&l--------")).append("\n&8[&9*&8] &b/chat <channel> &7- sets the active chat");
-        help.append("\n&8[&9*&8] &b/chat leave <channel> &7- disable the chat of the channel");
-        help.append("\n&8[&9*&8] &b/chat swear &7- toggles swearing");
+        help = "&8&l--------&r&c&l/Chat&r&8&l--------" +
+                "\n&8[&9*&8] &b/{alias <channel> &7- sets the active chat" +
+                "\n&8[&9*&8] &b/{alias} leave <channel> &7- disable the chat of the channel" +
+                "\n&8[&9*&8] &b/{alias} swear &7- toggles swearing";
     }
 
     public void run(Player p, String alias, String[] args) {
         if (args.length < 1) {
-            StringBuilder temp = new StringBuilder(help.toString());
+            StringBuilder temp = new StringBuilder(help.replace("{alias}", alias));
             if (p.hasPermission("kingdoms.staff")) {
-                temp.append("\n&8[&9*&8] &b/chat lock &7- locks and unlocks general chat");
+                temp.append("\n&8[&9*&8] &b/").append(alias).append(" lock &7- locks and unlocks general chat");
             }
             Resident res = ResidentManager.getInstance().getResident(p);
-            ChatChannel[] values;
-            for (int length = (values = ChatChannel.values()).length, i = 0; i < length; ++i) {
-                ChatChannel channel = values[i];
+            for (ChatChannel channel : ChatChannel.values()) {
                 if (channel.canChat(p)) {
+                    String channelName = StringUtils.capitalize(channel.name().toLowerCase());
                     if (channel.equals(res.getActiveChannel())) {
-                        temp.append("\n&8[&9*&8] &b").append(channel.name()).append(" &7&l[&a&lActive&7&l] &3&l<");
-                    } else if (res.getChannels().contains(channel.name())) {
-                        temp.append("\n&8[&9*&8] &b").append(channel.name()).append(" &7&l[&a&lEnabled&7&l]");
+                        temp.append("\n&8[&9*&8] &b").append(channelName).append(" &7&l[&a&lActive&7&l] &3&l<");
+                    } else if (res.getChannels().contains(channel)) {
+                        temp.append("\n&8[&9*&8] &b").append(channelName).append(" &7&l[&a&lEnabled&7&l]");
                     } else {
-                        temp.append("\n&8[&9*&8] &b").append(channel.name()).append(" &7&l[&c&lDisabled&7&l]");
+                        temp.append("\n&8[&9*&8] &b").append(channelName).append(" &7&l[&c&lDisabled&7&l]");
                     }
                 }
             }
@@ -74,7 +74,7 @@ public class ChatCommand implements CommandExecutor {
         } else if (args[0].equalsIgnoreCase("leave")) {
             Resident res = ResidentManager.getInstance().getResident(p);
             if (args.length < 2) {
-                MessageUtils.tell(p, "&cPlease specify a channel you would like to leave!\n&c/chat leave &6<channel>");
+                MessageUtils.tell(p, "&cPlease specify a channel you would like to leave!\n&c/" + alias + " leave &6<channel>");
                 return;
             }
             if (!ChatChannel.isChannel(args[1])) {

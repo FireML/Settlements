@@ -83,7 +83,7 @@ public class ChatManager extends Base {
                     }
                 }
                 System.out.println(TextComponent.toLegacyText(nameBit) + e.getMessage());
-
+                return;
             case LOCAL:
                 sb = new StringBuilder("&e[Local] &7");
                 sb.append(String.valueOf(playerPrefix)).append(player.getDisplayName());
@@ -92,7 +92,8 @@ public class ChatManager extends Base {
                 MessageUtils.tell(player, sb.toString());
                 System.out.println(MessageUtils.replaceColorCodes(sb.toString()));
                 for (Player p : Bukkit.getOnlinePlayers()) {
-                    if (player.getLocation().getWorld().equals(p.getWorld())
+                    if (p != player
+                            && player.getLocation().getWorld().equals(p.getWorld())
                             && player.getLocation().distanceSquared(p.getLocation()) < 200 * 200
                             && ResidentManager.getInstance().isListening(p, ChatChannel.LOCAL)) {
                         MessageUtils.tell(p, sb.toString());
@@ -166,6 +167,7 @@ public class ChatManager extends Base {
                 sb.append(e.getMessage());
                 System.out.println(MessageUtils.replaceColorCodes(sb.toString()));
                 MessageUtils.tellResidentsC(village.getOnlineResidents(), sb.toString(), ChatChannel.SETTLEMENT);
+                return;
             case TRADE:
                 sb = new StringBuilder("&d[TRADE] &r");
                 sb.append(player.getDisplayName());

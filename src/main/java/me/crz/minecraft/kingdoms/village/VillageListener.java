@@ -51,7 +51,6 @@ public class VillageListener implements Listener {
                 ResidentManager.getInstance().addResident(res);
             } else {
                 res.updateLastLogin();
-                res.setActiveChannel(ChatChannel.GENERAL);
                 if (!res.getName().equalsIgnoreCase(event.getName())) {
                     ResidentManager.getInstance().invalidateName(res.getName());
                     res.setName(event.getName());

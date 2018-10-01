@@ -89,7 +89,8 @@ public class MessageUtils extends Base {
         UNBANISHED,
         SUCCESS_UNCLAIM_LAND,
         VILLAGE_HOME_SET,
-        ALLY_REMOVED;
+        ALLY_REMOVED,
+        SERVER_RULES;
 
         private final String text;
 

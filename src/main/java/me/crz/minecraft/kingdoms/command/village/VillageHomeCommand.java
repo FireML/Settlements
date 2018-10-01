@@ -17,14 +17,14 @@ public class VillageHomeCommand extends SubCommand {
     }
 
     @Override
-    public void run(final Player player, final String base, final String alias, final String... args) {
-        final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
+    public void run(Player player, String base, String alias, String... args) {
+        Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
             MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
             return;
         }
-        final Location loc = village.getVillageHome().toBukkitLocation();
-        if (loc != null) {
+        if (village.getVillageHome() != null) {
+            Location loc = village.getVillageHome().toBukkitLocation();
             MessageUtils.tell(player, "&e&lTeleporting in 5 seconds...");
             ExecuteMoveUtil.getInstance().execute(player, () -> player.teleport(loc), 3, "Teleport");
         } else {

@@ -68,7 +68,6 @@ public class Village implements ConfigurationSerializable {
     private Map<String, Integer> vault = new HashMap<>();
 
     public Village(String name, UUID chief, int level, VillageState state, String enterMessage, String leaveMessage, BuildState buildState) {
-        super();
         this.resetTeleporter();
         this.name = name;
         residents.add(chief);

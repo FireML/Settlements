@@ -26,21 +26,25 @@ public class ResidentCommand implements CommandExecutor {
         subCommands.put("friend", new ResidentFriendCommand());
     }
 
-    public void run(final Player p, final String alias, final String[] args) {
-        final String aliasUsed = args[0].toLowerCase();
+    public void run(Player p, String alias, String[] args) {
+        if (args.length < 1) {
+            subCommands.get("help").run(p, alias, "help");
+            return;
+        }
+        String aliasUsed = args[0].toLowerCase();
         if (!subCommands.containsKey(aliasUsed)) {
             subCommands.get("show").run(p, alias, "show", args);
             return;
         }
-        final SubCommand subCmd = subCommands.get(aliasUsed);
+        SubCommand subCmd = subCommands.get(aliasUsed);
         if (p.hasPermission(subCmd.getPermission())) {
-            subCmd.run(p, alias, aliasUsed, (String[]) Arrays.copyOfRange(args, 1, args.length));
+            subCmd.run(p, alias, aliasUsed, Arrays.copyOfRange(args, 1, args.length));
             return;
         }
         MessageUtils.tell(p, MessageUtils.Message.NO_PERMISSION);
     }
 
-    public boolean onCommand(final CommandSender sender, final Command command, final String alias, final String[] args) {
+    public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
         if (sender instanceof Player) {
             this.run((Player) sender, alias, args);
             return true;

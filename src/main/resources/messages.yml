@@ -1,4 +1,5 @@
 server-name: '&b&lYour&f&lServer'
+server-rules: "&6&llink.to/server-rules&r or rule text"
 no-permission: '&cNo permission.'
 no-permission-interact: "&cYou don't have permission to interact in {townName}'s claims!"
 only-console: '&cMust be ran by console.'

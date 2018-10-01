@@ -13,17 +13,15 @@ public class IdObject {
 
     /**
      * Utility method to build a IdObject object
-     * @return null if id is null or an error occured
+     * @return never null, IdObject value might be null, check with {@link #isNull()}
      */
     public static IdObject get(Object id) {
-        if (id == null)
-            return null;
         if (id instanceof ResultSet)
             try {
                 return new IdObject(((ResultSet) id).getInt(1));
             } catch (SQLException e) {
                 e.printStackTrace();
-                return null;
+                return new IdObject(null);
             }
         if (id instanceof Map)
             if (((Map) id).containsKey("id"))

@@ -77,7 +77,7 @@ public class VillageMapCommand extends SubCommand {
             sb.append("none\n");
         }
         ChatColor color;
-        if (village != null && land.getOwnerVillage().equals(village.getName())) {
+        if (land.getOwnerVillage().equals(village)) {
             if (land.isPlotOwner(player)) {
                 color = ChatColor.YELLOW;
             } else {
@@ -87,7 +87,7 @@ public class VillageMapCommand extends SubCommand {
                 color = ChatColor.GREEN;
             }
         } else {
-            if (village != null && village.getAllies().contains(land.getOwnerVillage())) {
+            if (village != null && village.getAllies().contains(land.getOwnerVillage().getId())) {
                 color = ChatColor.AQUA;
             } else {
                 color = ChatColor.RED;
@@ -186,14 +186,21 @@ public class VillageMapCommand extends SubCommand {
 
     private BaseComponent[] getMap(BaseComponent[][][] map, Player p) {
         ComponentBuilder cb = new ComponentBuilder("")
-                .append(MessageUtils.toColoredComponents("&7--------------&eSettlement Map&r&7-------------"));
+                .append(MessageUtils.toColoredComponents("&8---------------- &eSettlement Map &r&8----------------"));
         for (int i = 0; i < 13; ++i) {
-            cb.append("\n", ComponentBuilder.FormatRetention.NONE)
-                    .append(this.getRowBase(i, p));
+            cb.append("\n", ComponentBuilder.FormatRetention.NONE);
+            BaseComponent[] rowBase = this.getRowBase(i, p);
+            if (rowBase.length > 0) {
+                cb.append(rowBase);
+            }
             for (int j = this.getStart(i); j < 29; ++j) {
                 cb.append(map[i][j], ComponentBuilder.FormatRetention.NONE);
             }
-            cb.append(this.getRowEnd(i), ComponentBuilder.FormatRetention.NONE).create();
+            BaseComponent[] rowEnd = this.getRowEnd(i);
+            if (rowEnd.length > 0) {
+                cb.append(rowEnd, ComponentBuilder.FormatRetention.NONE);
+            }
+            cb.create();
         }
         return cb.create();
     }
