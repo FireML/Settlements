@@ -29,7 +29,9 @@ public class VillageSetRankCommand extends SubCommand {
                     "/" + base + " setrank <player> <rank>",
                     "&8[&9*&8] &bElder &7- allows mode,claiming,invite,bank,plot,setrank",
                     "&8[&9*&8] &bBuilder &7- allows resident to build on elder and builder only mode",
-                    "&8[&9*&8] &bRecruiter &7- allows resident to invite players"));
+                    "&8[&9*&8] &bRecruiter &7- allows resident to invite players",
+                    "&8[&9*&8] &bResident &7- default rank for members of this settlement",
+                    "&aNote: Officers = Elder and Builder"));
             return;
         }
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
