@@ -17,4 +17,25 @@ commands:
     aliases: [res]
   chat:
     description: Chat Channel Commands.
-  
+permissions:
+  kingdoms.admin:
+    description: Permission for admins. Gives access to everything.
+    default: op
+    children:
+      kingdoms.admin.ss: true
+      kingdoms.staff: true
+      kingdoms.chat.colour: true
+  kingdoms.admin.ss:
+    description: Permission to access social spy.
+    default: op
+  kingdoms.staff:
+    description: Permission for staffs. Gives access to some staff only functions.
+    default: op
+    children:
+      kingdoms.user: true
+  kingdoms.user:
+    description: Permission for users. Gives access to all plugin functions that a user should have.
+    default: true
+  kingdoms.chat.colour:
+    description: Gives permission to use colours in chat
+    default: op
