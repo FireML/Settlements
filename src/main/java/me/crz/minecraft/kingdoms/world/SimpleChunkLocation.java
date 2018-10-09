@@ -25,7 +25,7 @@ public class SimpleChunkLocation {
     }
 
     public SimpleChunkLocation(SimpleLocation location) {
-        this(location.getWorld(), (int) location.getX() >> 4, (int) location.getZ() >> 4);
+        this(location.getWorld(), location.getChunkX(), location.getChunkZ());
     }
 
     public SimpleChunkLocation copy() {

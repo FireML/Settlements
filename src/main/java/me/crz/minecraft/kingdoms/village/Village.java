@@ -167,6 +167,7 @@ public class Village implements ConfigurationSerializable {
     }
 
     public void addOutpostHome(NamedLocation location) {
+        outpostHomes.values().removeIf(location::inSameChunk);
         outpostHomes.put(location.getName().toLowerCase(), location);
     }
 

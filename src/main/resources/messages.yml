@@ -48,7 +48,7 @@ already-own-land: '&e&lALERT &r&7Your settlement already owns this land!'
 cant-claim-here: '&c&lERROR &r&7This land is owned by &e{owner}!'
 success-claim-land: '&a&lSUCCESS &r&e{player} &7has claimed land for your settlement at {x},{z}!'
 success-unclaim-land: '&a&lSUCCESS &r&e{player} &7has unclaimed land at {x},{z}!'
-success-claim-outpost: "&a&lSUCCESS &r&e{player} &7has claimed an &coutpost&7 for your settlement at {x},{z}!"
+success-claim-outpost: "&a&lSUCCESS &r&e{player} &7has claimed &coutpost&7 &e{name}&7 for your settlement at {x},{z}!"
 success-unclaim-outpost: "&aSuccess unclaimed the outpost at {x},{z} and {amount} land around it."
 cant-build-here: '&e&lALERT &r&7This land is owned by &e{owner}&7.'
 default-enter: '&e&lALERT &r&bNow entering &e{owner}&b!'

@@ -53,6 +53,21 @@ public class SimpleLocation implements ConfigurationSerializable {
         return new SimpleChunkLocation(this);
     }
 
+    public boolean inSameChunk(SimpleLocation location) {
+        return location != null
+                && world.equals(location.getWorld())
+                && getChunkX() == location.getChunkX()
+                && getChunkZ() == location.getChunkZ();
+    }
+
+    public int getChunkX() {
+        return (int) x >> 4;
+    }
+
+    public int getChunkZ() {
+        return (int) z >> 4;
+    }
+
     public String getWorld() {
         return world;
     }
@@ -151,5 +166,4 @@ public class SimpleLocation implements ConfigurationSerializable {
                 (float) map.get("pitch")
         );
     }
-
 }

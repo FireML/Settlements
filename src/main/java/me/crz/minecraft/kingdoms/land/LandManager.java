@@ -170,11 +170,11 @@ public class LandManager {
         return Math.toIntExact(this.getClaimedLand(village).stream().filter(OwnedLand::getIsOutpost).count());
     }
 
-    public OwnedLand claimOutpost(Location location, Village village) {
+    public OwnedLand claimOutpost(Location location, Village village, String name) {
         OwnedLand land = this.claimLand(location, village);
         land.setIsOutpost(true);
         cacheLand(land);
-        village.addOutpostHome("outpost-" + this.getClaimedLandSize(village), location);
+        village.addOutpostHome(name, location);
         Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
         return land;
     }

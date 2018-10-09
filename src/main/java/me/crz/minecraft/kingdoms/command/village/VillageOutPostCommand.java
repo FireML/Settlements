@@ -58,6 +58,10 @@ public class VillageOutPostCommand extends SubCommand {
                 MessageUtils.tell(player, "&c&lClaiming is disabled in this world!", null, null);
                 return;
             }
+            if (args.length < 2) {
+                MessageUtils.tell(player, "/s outpost claim <name>");
+                return;
+            }
             int amountClaimed = LandManager.getInstance().getClaimedLandSizeOutpost(village);
             int maxClaimAllowed = Utils.getChunkMaxOutpost(village.getLevel(), village.getState());
             if (amountClaimed >= maxClaimAllowed) {
@@ -83,9 +87,10 @@ public class VillageOutPostCommand extends SubCommand {
                 MessageUtils.tell(player, MessageUtils.Message.CANT_CLAIM_HERE, "{owner}", land.getOwnerVillage().getName());
                 return;
             } else {
-                OwnedLand outpost = LandManager.getInstance().claimOutpost(player.getLocation(), village);
+                OwnedLand outpost = LandManager.getInstance().claimOutpost(player.getLocation(), village, args[1]);
                 MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_CLAIM_OUTPOST,
                         "player", player.getName(),
+                        "name", args[1],
                         "x", String.valueOf(player.getLocation().getBlockX()),
                         "z", String.valueOf(player.getLocation().getBlockZ()));
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(outpost));
