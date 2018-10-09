@@ -81,7 +81,7 @@ public class Utils {
     }
 
     public static boolean playerInSameVillage(Village sender, Village other) {
-        return other != null && sender.getName().equals(other.getName());
+        return sender != null && sender.equals(other);
     }
 
     public static boolean playerIsRecruiter(Player player) {

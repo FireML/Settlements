@@ -68,7 +68,7 @@ public class VillageManager {
     }
 
     public Village getVillageFromResident(Resident res) {
-        return this.getVillageFromName(res.getVillageName());
+        return res.getVillage();
     }
 
     public Village getVillageFromPlayer(Player player) {
@@ -113,7 +113,7 @@ public class VillageManager {
         for (OwnedLand land : lands) {
             LandManager.getInstance().setPlotOwner(land, null);
         }
-        resident.setVillageName("");
+        resident.setVillage(null);
         resident.setVillageRank(VillageRank.RESIDENT);
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveLand(lands);
