@@ -20,6 +20,6 @@ public class ResidentHelpCommand extends SubCommand {
 
     @Override
     public void run(Player player, String base, String alias, String... args) {
-        MessageUtils.tell(player, sb.toString(), "{alias}", base + " " + alias);
+        MessageUtils.tell(player, sb.toString(), "{alias}", base);
     }
 }
