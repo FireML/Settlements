@@ -199,7 +199,7 @@ public class LandFlags extends Base {
             }
             Village originalVillage = originalLand.getOwnerVillage();
             Village destinationVillage = destinationLand.getOwnerVillage();
-            if (originalVillage != null && !originalVillage.getName().equals(destinationVillage.getName())) {
+            if (originalVillage != null && !originalVillage.equals(destinationVillage)) {
                 if (playerVillage.isBuff()) {
                     if (this.playerOwnsLand(originalLand, playerVillage) && !this.playerOwnsLand(destinationLand, playerVillage)) {
                         Base.getLandPerks().removeEffects(player, playerVillage);
@@ -222,15 +222,13 @@ public class LandFlags extends Base {
                 }
                 tb.withActionbar(addition.toString());
 
-                if (originalVillage != null && !originalVillage.getName().equals(destinationVillage.getName())) {
+                if (originalVillage != null && !originalVillage.equals(destinationVillage)) {
+                    MessageUtils.tell(player, originalVillage.getLeaveMessage());
                     if (destinationLand.isPvp()) {
-                        tb.withActionbar(MessageUtils.replaceColorCodes(String.valueOf(addition.toString()) + " " + destinationVillage.getEnterMessage() + " - &C&lPvp is enabled!"));
+                        MessageUtils.tell(player, destinationVillage.getEnterMessage() + " - &C&lPvp is enabled!");
                     } else {
-                        tb.withActionbar(MessageUtils.replaceColorCodes(String.valueOf(addition.toString()) + " " + destinationVillage.getEnterMessage()));
+                        MessageUtils.tell(player, destinationVillage.getEnterMessage());
                     }
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(KingdomsPlugin.getInstance(), () -> {
-                        new TitleBuilder().withActionbar(originalVillage.getLeaveMessage()).send(player);
-                    }, 2000L);
                 }
                 tb.send(player);
             });
@@ -239,9 +237,7 @@ public class LandFlags extends Base {
             if (playerVillage != null && playerVillage.isBuff() && this.playerOwnsLand(originalLand, playerVillage)) {
                 Base.getLandPerks().removeEffects(player, originalVillage);
             }
-            TitleBuilder tb = new TitleBuilder();
-            tb.withActionbar(MessageUtils.replaceColorCodes(originalVillage.getLeaveMessage()));
-            tb.send(player);
+            MessageUtils.tell(player, originalVillage.getLeaveMessage());
         }
     }
 
