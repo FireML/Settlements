@@ -24,7 +24,7 @@ public class FriendRemoveCommand extends SubCommand {
             return;
         }
         Utils.runAsync(() -> {
-            Resident target = ResidentManager.getInstance().getResident(player);
+            Resident target = ResidentManager.getInstance().getResident(args[0]);
             if (target == null ) {
                 MessageUtils.tell(player, "&c&lNo &r&6&lplayer&r&c&l with the name &r&6&l{player}&r&c&l found!", "{player}", args[0]);
                 return;
