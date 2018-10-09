@@ -26,17 +26,17 @@ public class TitleBuilder {
     }
 
     public TitleBuilder withTitle(String title) {
-        this.title = title;
+        this.title = MessageUtils.replaceColorCodes(title);
         return this;
     }
 
     public TitleBuilder withSubtitle(String subtitle) {
-        this.subtitle = subtitle;
+        this.subtitle = MessageUtils.replaceColorCodes(subtitle);
         return this;
     }
 
     public TitleBuilder withActionbar(String msg) {
-        this.actionBar = msg;
+        this.actionBar = MessageUtils.replaceColorCodes(msg);
         return this;
     }
 
@@ -47,10 +47,10 @@ public class TitleBuilder {
     }
 
     public void send(Player p) {
-        if ((title != null && !title.isEmpty()) || (subtitle != null && !subtitle.isEmpty())) {
+        if (title != null || subtitle != null) {
             p.sendTitle(title, subtitle, in, stay, out);
         }
-        if (actionBar != null && !actionBar.isEmpty()) {
+        if (actionBar != null) {
             p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(actionBar));
         }
     }
