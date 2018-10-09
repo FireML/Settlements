@@ -68,7 +68,7 @@ public class VillageManager {
     }
 
     public Village getVillageFromResident(Resident res) {
-        return res.getVillage();
+        return res != null ? res.getVillage() : null;
     }
 
     public Village getVillageFromPlayer(Player player) {
