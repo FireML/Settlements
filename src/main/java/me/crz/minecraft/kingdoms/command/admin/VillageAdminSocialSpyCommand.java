@@ -5,8 +5,8 @@ import me.crz.minecraft.kingdoms.utils.config.Data;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageAdminSocialSpuCommand extends SubCommand {
-    public VillageAdminSocialSpuCommand() {
+public class VillageAdminSocialSpyCommand extends SubCommand {
+    public VillageAdminSocialSpyCommand() {
         super("Lets you see other peoples messages", "ss", "socialspy");
         this.setPermission("kingdoms.admin.ss");
         this.setUsage("socialspy");

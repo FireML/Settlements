@@ -8,7 +8,7 @@ import java.util.Arrays;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 
-import me.crz.minecraft.kingdoms.command.admin.VillageAdminSocialSpuCommand;
+import me.crz.minecraft.kingdoms.command.admin.VillageAdminSocialSpyCommand;
 import me.crz.minecraft.kingdoms.command.admin.VillageEmgcyCommand;
 import me.crz.minecraft.kingdoms.command.admin.VillageAdminJoinCommand;
 import me.crz.minecraft.kingdoms.command.admin.VillageAdminRankCommand;
@@ -30,7 +30,7 @@ public class VillageAdminCommand implements CommandExecutor {
         this.registerCommand(new VillageAdminRankCommand());
         this.registerCommand(new VillageAdminJoinCommand());
         this.registerCommand(new VillageEmgcyCommand());
-        this.registerCommand(new VillageAdminSocialSpuCommand());
+        this.registerCommand(new VillageAdminSocialSpyCommand());
         help = new StringBuilder("&8&l--------&r&c&lVillage Admin Commands&r&8&l--------");
         for (final SubCommand subCmd : subCommands.values()) {
             help.append("\n&c/{base} ");
