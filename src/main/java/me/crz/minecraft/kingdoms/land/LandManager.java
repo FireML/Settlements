@@ -182,7 +182,7 @@ public class LandManager {
     public Collection<OwnedLand> getAllConnectedLand(OwnedLand land, boolean outpostMode) {
         Village village = land.getOwnerVillage();
         if (village == null) {
-            return Collections.emptyList();
+            return new ArrayList<>();
         }
 
         int[][] directions = {{1,0}, {0,1}, {-1,0}, {0,-1}};
@@ -202,12 +202,12 @@ public class LandManager {
                 if (outpostMode) {
                     if (search.equals(village.getVillageHome().toChunkLocation())) {
                         // return an empty set if this is connected to the home chunk
-                        return Collections.emptyList();
+                        return new ArrayList<>();
                     }
                 } else {
                     if (outposts.contains(search)) {
                         // return an empty set if this is connected to an outpost
-                        return Collections.emptyList();
+                        return new ArrayList<>();
                     }
                 }
                 if (!checked.contains(search)) {
