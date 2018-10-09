@@ -70,6 +70,7 @@ public class ChatManager extends Base {
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + e.getPlayer().getName() + " "))
                         .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(MessageUtils.replaceColorCodes(hoverText)).create()))
                         .append(TextComponent.fromLegacyText(MessageUtils.replaceColorCodes(playerPrefix)))
+                        .append(" ")
                         .append(e.getPlayer().getDisplayName())
                         .color(ChatColor.GRAY)
                         .append(" \u27a6 ")

@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.chat.commands;
 
+import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.utils.config.Data;
 import me.crz.minecraft.kingdoms.village.Resident;
 import net.md_5.bungee.api.ChatColor;
@@ -72,41 +73,45 @@ public class MessageCommand extends Command {
         if (tres.getVillage() != null) {
             targetHoverText += "\n&9" + StringUtils.capitalize(tres.getVillage().getState().toString().toLowerCase()) + ": &7" + tres.getVillage().getName();
         }
-        String playerPrefix = KingdomsPlugin.chat.getPlayerPrefix(p);
-        String targetPrefix = KingdomsPlugin.chat.getPlayerPrefix(target);
+
         TextComponent from = new TextComponent(c("&8["));
         from.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/r"));
         TextComponent fromYou = new TextComponent(c("&ayou"));
         fromYou.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(c(senderHoverText)).create()));
         from.addExtra(fromYou);
         from.addExtra(new TextComponent(c(" &7\u27a6 &3")));
-        TextComponent fromTo = new TextComponent(c(String.valueOf(targetPrefix) + target.getDisplayName()));
+        TextComponent fromTo = new TextComponent(c(target.getDisplayName()));
         fromTo.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(c(targetHoverText)).create()));
         from.addExtra(fromTo);
         from.addExtra(c("&8] "));
         TextComponent temp = new TextComponent(sb.toString());
         temp.setColor(ChatColor.AQUA);
         from.addExtra(temp);
-        TextComponent to = new TextComponent(c("&8["));
+
+        TextComponent to = new TextComponent("");
+        if (ChatChannel.ADMIN.canChat(p)) {
+            to.addExtra(c("&c&lStaff ")); // TODO: Make configurable
+        }
+        to.addExtra(c("&8["));
         to.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/r"));
         TextComponent toYou = new TextComponent(c("&ayou"));
         toYou.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(c(targetHoverText)).create()));
-        TextComponent toTo = new TextComponent(c(String.valueOf(playerPrefix) + p.getDisplayName()));
+        TextComponent toTo = new TextComponent(c(p.getDisplayName()));
         toTo.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(c(senderHoverText)).create()));
         to.addExtra(toTo);
         to.addExtra(new TextComponent(c(" &7\u27a6 &3")));
         to.addExtra(toYou);
         to.addExtra(c("&8] "));
         to.addExtra(temp);
+
         p.spigot().sendMessage(from);
         target.spigot().sendMessage(to);
+
         lastMessage.put(p.getUniqueId(), target.getUniqueId());
         lastMessage.put(target.getUniqueId(), p.getUniqueId());
         StringBuilder msg = new StringBuilder("&7[&6SS&7]&r ");
-        msg.append(playerPrefix);
         msg.append(p.getDisplayName());
         msg.append(c(" &7\u27a6 &3"));
-        msg.append(targetPrefix);
         msg.append(target.getDisplayName());
         msg.append("&7: ");
         msg.append(sb.toString());
