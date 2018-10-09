@@ -1,8 +1,8 @@
 package me.crz.minecraft.kingdoms.chat;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.utils.IdObject;
 import net.md_5.bungee.api.ChatColor;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.EventHandler;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -59,9 +59,16 @@ public class ChatManager extends Base {
                     MessageUtils.tell(e.getPlayer(), "&c&lChat is currently locked!");
                     return;
                 }
+
+                String hoverText = "&9Name: &7" + e.getPlayer().getDisplayName()
+                        + "\n&9Balance: &7" + df.format(KingdomsPlugin.getInstance().econ.getBalance(e.getPlayer()));
+                village = VillageManager.getInstance().getVillageFromPlayer(player);
+                if (village != null) {
+                    hoverText += "\n&9" + StringUtils.capitalize(village.getState().toString().toLowerCase()) + ": &7" + village.getName();
+                }
                 BaseComponent[] nameBit = new ComponentBuilder("")
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + e.getPlayer().getName() + " "))
-                        .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(MessageUtils.replaceColorCodes("&9Name: &7" + e.getPlayer().getDisplayName() + "\n&9Balance: &7" + df.format(KingdomsPlugin.getInstance().econ.getBalance(e.getPlayer())))).create()))
+                        .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(MessageUtils.replaceColorCodes(hoverText)).create()))
                         .append(TextComponent.fromLegacyText(MessageUtils.replaceColorCodes(playerPrefix)))
                         .append(e.getPlayer().getDisplayName())
                         .color(ChatColor.GRAY)
