@@ -29,13 +29,7 @@ public class Resident implements ConfigurationSerializable {
     private VillageRank rank = VillageRank.RESIDENT;
     private Village village = null;
     private ChatChannel activeChannel = ChatChannel.GENERAL;
-    private Set<ChatChannel> channels = new HashSet<>(Arrays.asList(
-            ChatChannel.GENERAL,
-            ChatChannel.ALLY,
-            ChatChannel.OFFICER,
-            ChatChannel.LOCAL,
-            ChatChannel.SETTLEMENT
-    ));
+    private Set<ChatChannel> channels = new HashSet<>();
     private Set<UUID> ignore = new HashSet<>();
     private Set<UUID> friends = new HashSet<>();
     private boolean swear = true;

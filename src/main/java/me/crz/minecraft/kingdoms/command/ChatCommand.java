@@ -19,7 +19,7 @@ public class ChatCommand implements CommandExecutor {
 
     public ChatCommand() {
         help = "&8&l--------&r&c&l/Chat&r&8&l--------" +
-                "\n&8[&9*&8] &b/{alias <channel> &7- sets the active chat" +
+                "\n&8[&9*&8] &b/{alias} <channel> &7- sets the active chat" +
                 "\n&8[&9*&8] &b/{alias} leave <channel> &7- disable the chat of the channel" +
                 "\n&8[&9*&8] &b/{alias} swear &7- toggles swearing";
     }

@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.village;
 import java.util.ArrayList;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import org.bukkit.Bukkit;
@@ -16,6 +17,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -31,8 +34,8 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.EventHandler;
-import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 public class VillageListener implements Listener {
 
@@ -60,6 +63,17 @@ public class VillageListener implements Listener {
             Resident finalRes = res;
             Bukkit.getScheduler().runTaskAsynchronously(KingdomsPlugin.getInstance(),
                     () -> DatabaseManager.getInstance().saveResident(finalRes));
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void on(PlayerJoinEvent event) {
+        Resident res = ResidentManager.getInstance().getResident(event.getPlayer().getUniqueId()); // should be cached
+        res.getChannels().removeIf(chatChannel -> !chatChannel.canChat(event.getPlayer()));
+        for (ChatChannel channel : ChatChannel.values()) {
+            if (channel.canChat(event.getPlayer())) {
+                res.getChannels().add(channel);
+            }
         }
     }
 
