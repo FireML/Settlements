@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
@@ -139,7 +140,7 @@ public class LandManager {
     }
 
     public Collection<OwnedLand> getOwnedPlot(UUID uniqueId) {
-        return playerPlots.get(uniqueId).stream().map(this::getLand).collect(Collectors.toList());
+        return playerPlots.get(uniqueId).stream().map(this::getLand).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     public void setPlotOwner(OwnedLand land, UUID owner) {
