@@ -127,8 +127,8 @@ public class LandManager {
     public void unclaimLand(Village village) {
         for (SimpleChunkLocation claim : villageLands.get(village.getId())) {
             landTable.remove(claim.getWorld(), claim.getSimpleKey());
-            villageLands.removeAll(village.getId());
         }
+        villageLands.removeAll(village.getId());
         Utils.runAsync(() -> DatabaseManager.getInstance().unclaimLand(village));
     }
 
