@@ -73,7 +73,7 @@ public class VillagePlotCommand extends SubCommand {
                 sb.append("&r&7 | PvP: &6");
                 sb.append(land.isPvp());
                 sb.append("&r&7 | Build: &6");
-                sb.append(land.getBuild() ? land.getBuildState().toString().toLowerCase() : "false");
+                sb.append(land.getBuildState().toString().toLowerCase());
                 sb.append("\n");
                 if (land.getPlotOwner() != null) {
                     sb.append("&a&lPlot Owner: &7");

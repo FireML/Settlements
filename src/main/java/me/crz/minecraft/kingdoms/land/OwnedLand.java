@@ -40,7 +40,6 @@ public class OwnedLand implements ConfigurationSerializable {
     private boolean mobSpawning = false;
     private boolean fireSpread = false;
     private boolean explosions = false;
-    private boolean build = false;
     private boolean isOutpost = false;
     private PlotBuildState buildState = PlotBuildState.RESIDENTS;
     private EnumMap<Use, PlotBuildState> use = new EnumMap<>(Use.class);
@@ -83,14 +82,6 @@ public class OwnedLand implements ConfigurationSerializable {
 
     public void setIsOutpost(boolean b) {
         isOutpost = b;
-    }
-
-    public boolean getBuild() {
-        return build;
-    }
-
-    public void setBuild(boolean b) {
-        build = b;
     }
 
     public Village getOwnerVillage() {
@@ -276,7 +267,6 @@ public class OwnedLand implements ConfigurationSerializable {
         map.put("fireSpread", isFireSpread());
         map.put("explosions", isExplosions());
         map.put("mobSpawning", isMobSpawning());
-        map.put("build", getBuild());
         map.put("isOutpost", getIsOutpost());
         map.put("buildState", getBuildState().name());
         map.put("use", getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
@@ -308,7 +298,6 @@ public class OwnedLand implements ConfigurationSerializable {
         land.setFireSpread((Boolean) map.get("fireSpread"));
         land.setExplosions((Boolean) map.get("explosions"));
         land.setMobSpawning((Boolean) map.get("mobSpawning"));
-        land.setBuild((Boolean) map.get("build"));
         land.setIsOutpost((Boolean) map.get("isOutpost"));
         land.setBuildState(Utils.parseEnum((String) map.get("buildState"), PlotBuildState.RESIDENTS));
         Map<String, Object> uses = (Map<String, Object>) map.get("uses");

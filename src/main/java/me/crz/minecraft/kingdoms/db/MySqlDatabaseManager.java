@@ -198,9 +198,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "fireSpread BOOLEAN NOT NULL,"
                     + "explosions BOOLEAN NOT NULL,"
                     + "mobSpawning BOOLEAN NOT NULL,"
-                    + "build BOOLEAN NOT NULL,"
                     + "isOutpost BOOLEAN NOT NULL, "
-                    + "BUILDSTATE VARCHAR(255) NOT NULL "
+                    + "buildState VARCHAR(255) NOT NULL "
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "claim_uses ("

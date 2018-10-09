@@ -11,18 +11,6 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.Utils;
 
 enum PlotMode {
-    build {
-        @Override
-        public void set(final Boolean bool, final OwnedLand land) {
-            land.setBuild(bool);
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
-        }
-
-        @Override
-        public Boolean get(final OwnedLand land) {
-            return land.getBuild();
-        }
-    },
     pvp {
         @Override
         public void set(final Boolean bool, final OwnedLand land) {
