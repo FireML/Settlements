@@ -235,7 +235,7 @@ public class VillagePlotCommand extends SubCommand {
                 PlotBuildState newState = PlotBuildState.valueOf(args[1].toUpperCase());
                 land.setBuildState(newState);
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
-                MessageUtils.tell(player, MessageUtils.Message.SUCCESS_BUILD_STATE, "{state}", args[0]);
+                MessageUtils.tell(player, MessageUtils.Message.SUCCESS_BUILD_STATE, "{state}", newState.toString());
             } catch (IllegalArgumentException e) {
                 MessageUtils.tellList(player, Arrays.asList(
                         "&8&l-------- &r&c&l/" + base + " " + alias + "&r " + "&8&l--------",
