@@ -79,7 +79,7 @@ public class VillageShowCommand extends SubCommand {
             message = message.replace("{maxLand}", Integer.toString(Utils.getChunkMax(village.getLevel(), village.getState())));
         }
         if (message.contains("{outpost}")) {
-            message = message.replace("{outpost}", Integer.toString(LandManager.getInstance().getClaimedLandSizeOutpost(village)));
+            message = message.replace("{outpost}", Integer.toString(village.getOutpostHomes().size()));
         }
         if (message.contains("{maxOutpost}")) {
             message = message.replace("{maxOutpost}", Integer.toString(Utils.getChunkMaxOutpost(village.getLevel(), village.getState())));

@@ -39,6 +39,12 @@ public class SimpleChunkLocation {
         }
         return null;
     }
+    public boolean contains(SimpleLocation location) {
+        return location != null
+                && world.equals(location.getWorld())
+                && x == location.getChunkX()
+                && z == location.getChunkZ();
+    }
 
     public String getWorld() {
         return world;

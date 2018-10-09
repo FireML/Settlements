@@ -31,8 +31,7 @@ public class VillageUnclaimCommand extends SubCommand {
             MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.ELDER.getTag(village.getState()) + "&r&c&l!");
             return;
         }
-        Chunk currentChunk = player.getLocation().getChunk();
-        OwnedLand land = LandManager.getInstance().getLand(currentChunk);
+        OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
         if (land == null || !land.getOwnerVillage().equals(village)) {
             MessageUtils.tell(player, "&cYou do not own this land.");
             return;

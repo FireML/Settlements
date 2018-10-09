@@ -62,7 +62,7 @@ public class VillageOutPostCommand extends SubCommand {
                 MessageUtils.tell(player, "/s outpost claim <name>");
                 return;
             }
-            int amountClaimed = LandManager.getInstance().getClaimedLandSizeOutpost(village);
+            int amountClaimed = village.getOutpostHomes().size();
             int maxClaimAllowed = Utils.getChunkMaxOutpost(village.getLevel(), village.getState());
             if (amountClaimed >= maxClaimAllowed) {
                 MessageUtils.tell(player, MessageUtils.Message.ERROR_MAX_OUTPOST_CHUNKS, "{max}", Integer.toString(maxClaimAllowed));

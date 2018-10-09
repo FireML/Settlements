@@ -120,6 +120,9 @@ public class LandManager {
         for (OwnedLand land : lands) {
             landTable.remove(land.getWorldName(), land.getSimpleKey());
             villageLands.remove(land.getOwnerVillage().getId(), land.getLocation());
+            if (land.getOwnerVillage() != null && land.getIsOutpost()) {
+                land.getOwnerVillage().getOutpostHomes().values().removeIf(l -> land.getLocation().contains(l));
+            }
         }
         Utils.runAsync(() -> DatabaseManager.getInstance().unclaimLand(lands));
     }
@@ -166,10 +169,6 @@ public class LandManager {
         return villageLands.get(village.getId()).stream().map(this::getLand).collect(Collectors.toList());
     }
 
-    public int getClaimedLandSizeOutpost(Village village) {
-        return Math.toIntExact(this.getClaimedLand(village).stream().filter(OwnedLand::getIsOutpost).count());
-    }
-
     public OwnedLand claimOutpost(Location location, Village village, String name) {
         OwnedLand land = this.claimLand(location, village);
         land.setIsOutpost(true);
@@ -213,7 +212,7 @@ public class LandManager {
                 if (!checked.contains(search)) {
                     checked.add(search);
                     OwnedLand foundLand = getLand(search);
-                    if (foundLand != null && foundLand.getOwnerVillage().equals(land.getOwnerVillage())) {
+                    if (foundLand != null && foundLand.getOwnerVillage().equals(land.getOwnerVillage()) && !foundLand.getIsOutpost()) {
                         ownedLands.add(foundLand);
                         toSearch.add(search);
                     }

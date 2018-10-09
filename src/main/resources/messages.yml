@@ -26,12 +26,14 @@ kicked-player: '&a&lALERT &r&e{player}&7 has been kicked from the settlement.'
 new-resident: '&e&lALERT &r&e{player}&7 has joined the settlement!'
 show-settlement: |-
   &8--------&c&l{townName}&r&8--------
-  &a&lSTATE &r&7{state}
-  &6&lLEVEL &r&7{level}
-  &6&lLand &r&7{land}&r&e/&r&7{maxLand}
-  &9&lMODE &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobSpawning}&r&7 |  Firespread: &r&e{fireSpread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7 | Teleporter : &r&e{teleporter}
+  &a&lState: &r&7{state}
+  &6&lLevel: &r&7{level}
+  &6&lBank: &r&7{bank}
+  &6&lOutposts: &r&7{outpost}&r&e/&r&7{maxOutpost}
+  &6&lLand: &r&7{land}&r&e/&r&7{maxLand}
+  &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobSpawning}&r&7 |  Firespread: &r&e{fireSpread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7 | Teleporter : &r&e{teleporter}
   &e&l{chiefRank} &r&7{chief}
-  &b&lRESIDENTS: &r&7{residents}
+  &b&lResidents: &r&7{residents}
 fail-deposit: '&c&lFailed Deposited Items: {reason}'
 success-deposit: "&6&l{player} &7&lhas deposited:"
 list-deposit: '&6{amount} &e{material}'
