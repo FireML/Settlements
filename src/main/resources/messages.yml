@@ -59,6 +59,7 @@ success-change-enter: '&a&lSUCCESS &r&7Changed enter message!'
 success-change-leave: '&a&lSUCCESS &r&7Changed leave message!'
 success-create-sale-plot: '&a&lSUCCESS &7This land has been put on sale for &e${price}&7!'
 success-build-state: '&a&lSUCCESS &7You have changed your settlement build state to &e{state}&7!'
+success-plit-build-state: '&a&lSUCCESS &7You have changed your plot build state to &e{state}&7!'
 no-land-around: '&c&lERROR &r&7Your claim must be connected to an existing settlement claim!'
 not-in-village: "&c&lTarget player {player} isn't in a village!"
 alert-upkeep-unclaimed: "&a&lALERT &7Your settlement land has been &cunclaimed&7 because {reason} you had not enough money for the upkeep!"

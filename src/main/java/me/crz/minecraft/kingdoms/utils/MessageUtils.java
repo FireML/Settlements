@@ -61,6 +61,7 @@ public class MessageUtils extends Base {
         SUCCESS_CHANGE_LEAVE,
         SUCCESS_CREATE_SALE_PLOT,
         SUCCESS_BUILD_STATE,
+        SUCCESS_PLOT_BUILD_STATE,
         NO_LAND_AROUND,
         NOT_IN_VILLAGE,
         UPGRADE_UNLOCK,
