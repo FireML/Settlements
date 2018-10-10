@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command;
 
+import me.crz.minecraft.kingdoms.command.village.VillageSetAccessCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -26,7 +27,6 @@ import me.crz.minecraft.kingdoms.command.village.VillageTransferCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageHomeCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageSetHomeCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageLeaderCommand;
-import me.crz.minecraft.kingdoms.command.village.teleporter.VillageTeleporterCommand;
 import me.crz.minecraft.kingdoms.command.village.money.VillageMoneyCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageModeCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageMaterialsCommand;
@@ -62,17 +62,18 @@ public class VillageCommand implements CommandExecutor {
         super();
         (sb1 = new StringBuilder()).append("&8&l--------&r&c&lVillage Commands&r&8&l--------");
         sb1.append("\n&8[&9*&8] &b/{alias} create <name> &7- Creates the settlement");
-        sb1.append("\n&8[&9*&8] &b/{alias} invite <name> &7- Invites the player to the settlement");
         sb1.append("\n&8[&9*&8] &b/{alias} show <name> &7- Shows the information of a settlement");
+        sb2.append("\n&8[&9*&8] &b/{alias} home <name> &7- Teleport to a settlement's home");
         sb1.append("\n&8[&9*&8] &b/{alias} map &7- Shows virtual map in chat.(hover mouse in map to show name");
-        sb1.append("\n&8[&9*&8] &b/{alias} join &7- Accepts the invite from a settlement");
+        sb1.append("\n&8[&9*&8] &b/{alias} join <name> &7- Joins or accepts the invite from a settlement");
         sb1.append("\n&8[&9*&8] &b/{alias} rules &7- Shows you the rules");
         (sb2 = new StringBuilder("&8&l--------&r&c&lVillage Commands&r&8&l--------")).append("\n&8[&9*&8] &b/{alias} invite <name> &7- Invites the player to the settlement");
         sb2.append("\n&8[&9*&8] &b/{alias} show <name> &7- Shows the information of a settlement");
+        sb1.append("\n&8[&9*&8] &b/{alias} invite <name> &7- Invites the player to the settlement");
         sb2.append("\n&8[&9*&8] &b/{alias} map &7- Shows virtual map in chat (hover mouse in map to show name)");
         sb2.append("\n&8[&9*&8] &b/{alias} materials &7- List of requirements to upgrade");
         sb2.append("\n&8[&9*&8] &b/{alias} deposit &7- Deposits resources to upgrade your settlement");
-        sb2.append("\n&8[&9*&8] &b/{alias} home &7- Teleport to your settlements home");
+        sb2.append("\n&8[&9*&8] &b/{alias} home [<name>] &7- Teleport to a settlement's home");
         sb2.append("\n&8[&9*&8] &b/{alias} allies &7- Lists all allies");
         sb2.append("\n&8[&9*&8] &b/{alias} ally &7- Adds an ally");
         sb2.append("\n&8[&9*&8] &b/{alias} unally &7- Removes an ally");
@@ -102,8 +103,8 @@ public class VillageCommand implements CommandExecutor {
         this.registerCommand(new VillageMaterialsCommand());
         this.registerCommand(new VillageModeCommand());
         this.registerCommand(new VillageMoneyCommand());
-        this.registerCommand(new VillageTeleporterCommand());
         this.registerCommand(new VillageLeaderCommand());
+        this.registerCommand(new VillageSetAccessCommand());
         this.registerCommand(new VillageSetHomeCommand());
         this.registerCommand(new VillageHomeCommand());
         this.registerCommand(new VillageTransferCommand());
@@ -130,7 +131,7 @@ public class VillageCommand implements CommandExecutor {
     public void run(final Player p, final String alias, final String[] args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(p);
         if (args.length < 1) {
-            MessageUtils.tell(p, ((village == null) ? sb1.toString() : sb2.toString()).replace("{alias}", alias));
+            MessageUtils.tell(p, (village == null) ? sb1.toString() : sb2.toString(), "alias", alias);
             return;
         }
         final String aliasUsed = args[0].toLowerCase();

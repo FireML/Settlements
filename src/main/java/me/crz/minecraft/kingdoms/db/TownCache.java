@@ -1,27 +1,25 @@
 package me.crz.minecraft.kingdoms.db;
 
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.HashMap;
 
 public class TownCache {
-    private static HashMap<UUID, String> pendingTownInvites;
-    private static HashMap<String, List<String>> pendingTownAlly;
-
-    static {
-        pendingTownInvites = new HashMap<>();
-        pendingTownAlly = new HashMap<>();
-    }
+    private static Multimap<UUID, String> pendingTownInvites = MultimapBuilder.hashKeys().hashSetValues().build();
+    private static Multimap<String, String> pendingTownAlly = MultimapBuilder.hashKeys().hashSetValues().build();
 
     public TownCache() {
         super();
     }
 
-    public static HashMap<UUID, String> getPendingTownInvites() {
+    public static Multimap<UUID, String> getPendingTownInvites() {
         return pendingTownInvites;
     }
 
-    public static HashMap<String, List<String>> getPendingTownAlly() {
+    public static Multimap<String, String> getPendingTownAlly() {
         return pendingTownAlly;
     }
 }

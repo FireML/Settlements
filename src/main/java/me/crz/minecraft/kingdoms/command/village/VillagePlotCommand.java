@@ -124,7 +124,7 @@ public class VillagePlotCommand extends SubCommand {
                 MessageUtils.tell(player, "&cLand not for sale");
                 return;
             }
-            if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER)) {
+            if (res.getVillageRank().below(VillageRank.ELDER)) {
                 MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(senderVillage.getState()));
                 return;
             }
@@ -154,7 +154,7 @@ public class VillagePlotCommand extends SubCommand {
             } else if (!this.playerOwnsLand(player, landVillage)) {
                 MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
                 return;
-            } else if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER)) {
+            } else if (res.getVillageRank().below(VillageRank.ELDER)) {
                 MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(senderVillage.getState()));
                 return;
             } else if (this.landIsPlot(land)) {
@@ -190,7 +190,7 @@ public class VillagePlotCommand extends SubCommand {
                 MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
                 return;
             }
-            if (!this.landIsPlot(land) && !VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER)) {
+            if (!this.landIsPlot(land) && res.getVillageRank().below(VillageRank.ELDER)) {
                 MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(senderVillage.getState()));
                 return;
             }

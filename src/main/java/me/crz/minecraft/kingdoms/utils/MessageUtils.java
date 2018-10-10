@@ -80,6 +80,7 @@ public class MessageUtils extends Base {
         OUTPOST_NOT_FOUND,
         VILLAGE_RENAMED,
         ERROR_VILLAGE_EXISTS,
+        ERROR_VILLAGE_DOESNT_EXIST,
         TELEPORT_DEPOSIT,
         TELEPORT_CLAIM_REMOVED,
         TELEPORT_CLAIM_SET,

@@ -23,40 +23,36 @@ public class VillageModeCommand extends SubCommand {
     }
 
     @Override
-    public void run(final Player player, final String base, final String alias, final String... args) {
+    public void run(Player player, String base, String alias, String... args) {
         if (args.length < 1) {
-            MessageUtils.tell(player, this.getUsage(base), null, null);
+            MessageUtils.tell(player, this.getUsage(base));
             return;
         }
-        final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
+        Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
+            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
             return;
         }
-        final Resident res = ResidentManager.getInstance().getResident(player);
-        if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER)) {
+        Resident res = ResidentManager.getInstance().getResident(player);
+        if (res.getVillageRank().below(VillageRank.ELDER)) {
             MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
             return;
         }
         if (Mode.modes().contains(args[0].toLowerCase())) {
-            final Mode m = Mode.valueOf(args[0]);
-            if (m.equals(Mode.teleporter) && !village.getState().equals(VillageState.KINGDOM)) {
-                MessageUtils.tell(player, "&7Mode &6" + m.name() + "&7 is disabled until village is a &6Kingdom", null, null);
-                return;
-            }
-            final List<String> optionStrings = new ArrayList<>(m.getOptions().keySet());
+            Mode m = Mode.valueOf(args[0]);
+            List<String> optionStrings = new ArrayList<>(m.getOptions().keySet());
             if (args.length > 1) {
                 if (m.getOptions().containsKey(args[1].toLowerCase())) {
                     m.set(m.getOptions().get(args[1].toLowerCase()), village);
-                    MessageUtils.tell(player, "&7Mode &6" + m.name() + "&7 set to &6" + args[1], null, null);
+                    MessageUtils.tell(player, "&7Mode &6" + m.name() + "&7 set to &6" + args[1]);
                 } else {
-                    MessageUtils.tell(player, String.valueOf(this.getUsage(base)) + " <" + String.join(" | ", optionStrings) + ">", null, null);
+                    MessageUtils.tell(player, String.valueOf(this.getUsage(base)) + " <" + String.join(" | ", optionStrings) + ">");
                 }
             } else {
-                MessageUtils.tell(player, String.valueOf(this.getUsage(base)) + " <" + optionStrings.get(0) + " | " + optionStrings.get(1) + ">", null, null);
+                MessageUtils.tell(player, String.valueOf(this.getUsage(base)) + " <" + optionStrings.get(0) + " | " + optionStrings.get(1) + ">");
             }
         } else {
-            MessageUtils.tell(player, this.getUsage(base), null, null);
+            MessageUtils.tell(player, this.getUsage(base));
         }
     }
 }

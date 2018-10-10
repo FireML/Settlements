@@ -5,7 +5,6 @@ import me.crz.minecraft.kingdoms.utils.config.Data;
 import me.crz.minecraft.kingdoms.village.Resident;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -66,12 +65,12 @@ public class MessageCommand extends Command {
         String senderHoverText = "&9Name: &7" + p.getDisplayName()
                 + "\n&9Balance: &7" + df.format(KingdomsPlugin.getInstance().econ.getBalance(p));
         if (res.getVillage() != null) {
-            senderHoverText += "\n&9" + StringUtils.capitalize(res.getVillage().getState().toString().toLowerCase()) + ": &7" + res.getVillage().getName();
+            senderHoverText += "\n&9" + res.getVillage().getState().humanizedName() + ": &7" + res.getVillage().getName();
         }
         String targetHoverText = "&9Name: &7" + target.getDisplayName()
                 + "\n&9Balance: &7" + df.format(KingdomsPlugin.getInstance().econ.getBalance(target));
         if (tres.getVillage() != null) {
-            targetHoverText += "\n&9" + StringUtils.capitalize(tres.getVillage().getState().toString().toLowerCase()) + ": &7" + tres.getVillage().getName();
+            targetHoverText += "\n&9" + tres.getVillage().getState().humanizedName() + ": &7" + tres.getVillage().getName();
         }
 
         TextComponent from = new TextComponent(c("&8["));

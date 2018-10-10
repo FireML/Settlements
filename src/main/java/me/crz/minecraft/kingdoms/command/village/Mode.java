@@ -100,26 +100,6 @@ enum Mode {
         public Boolean get(Village village) {
             return village.isBuff();
         }
-    },
-    teleporter {
-        @Override
-        public void set(Boolean bool, Village village) {
-            village.setTeleporter(bool);
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
-        }
-
-        @Override
-        public Boolean get(Village village) {
-            return village.isTeleporter();
-        }
-
-        @Override
-        public Map<String, Boolean> getOptions() {
-            Map<String, Boolean> options = new HashMap<>();
-            options.put("private", true);
-            options.put("public", false);
-            return options;
-        }
     };
 
     public void set(Boolean b, Village village) {

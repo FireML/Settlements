@@ -95,40 +95,19 @@ public class TeleportersGUI extends Base {
         ci.addItem(5, new ClickableItem() {
             public ItemStack getItem(Player p) {
                 Village village = VillageManager.getInstance().getVillageFromPlayer(p);
-                if (village == null
-                        || village.getTeleporter() == null
-                        || village.getTeleporterClaim() == null) {
+                if (village == null || village.getVillageHome() == null) {
                     return locked;
                 }
-                return Utils.getHead(Bukkit.getOfflinePlayer(village.getChief()), MessageUtils.replaceColorCodes("&e&lVillage Teleporter"));
+                return Utils.getHead(Bukkit.getOfflinePlayer(village.getChief()), MessageUtils.replaceColorCodes("&e&lVillage Home"));
             }
 
             public boolean click(Player p, ClickType clickType) {
                 Village v = VillageManager.getInstance().getVillageFromPlayer(p);
-                if (v == null
-                        || v.getTeleporter() == null
-                        || v.getTeleporterClaim() == null) {
+                if (v == null || v.getVillageHome() == null) {
                     return false;
                 }
 
-                if (v.getTeleportCost() == 0) {
-                    p.teleport(v.getTeleporter().toBukkitLocation());
-                } else {
-                    if (Base.getEconomy().getBalance(p) >= v.getTeleportCost()) {
-                        EconomyResponse r = Base.getEconomy().withdrawPlayer(p, (double) v.getTeleportCost());
-                        if (r.transactionSuccess()) {
-                            p.teleport(v.getTeleporter().toBukkitLocation());
-                            MessageUtils.tell(p, "&7Teleporting to &6" + v.getName() + "&r&7's teleporter!", null, null);
-                            MessageUtils.tellResidents(v.getOnlineResidents(), MessageUtils.Message.TELEPORT_DEPOSIT,
-                                    "player", p.getName(),
-                                    "amount", String.valueOf(v.getTeleportCost()));
-                        } else {
-                            MessageUtils.tell(p, "&cAn error occurred, please tell an admin!", null, null);
-                        }
-                    } else {
-                        MessageUtils.tell(p, MessageUtils.Message.PLAYER_NOT_ENOUGH_MONEY, "amount", String.valueOf(v.getTeleportCost()));
-                    }
-                }
+                p.teleport(v.getVillageHome().toBukkitLocation());
                 return false;
             }
         });

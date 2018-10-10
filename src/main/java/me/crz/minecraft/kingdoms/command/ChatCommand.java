@@ -3,7 +3,6 @@ package me.crz.minecraft.kingdoms.command;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Data;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -33,7 +32,7 @@ public class ChatCommand implements CommandExecutor {
             Resident res = ResidentManager.getInstance().getResident(p);
             for (ChatChannel channel : ChatChannel.values()) {
                 if (channel.canChat(p)) {
-                    String channelName = StringUtils.capitalize(channel.name().toLowerCase());
+                    String channelName = channel.humanizedName();
                     if (channel.equals(res.getActiveChannel())) {
                         temp.append("\n&8[&9*&8] &b").append(channelName).append(" &7&l[&a&lActive&7&l] &3&l<");
                     } else if (res.getChannels().contains(channel)) {

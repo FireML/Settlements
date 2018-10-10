@@ -1,6 +1,8 @@
 package me.crz.minecraft.kingdoms.village;
 
-public enum VillageState {
+import me.crz.minecraft.kingdoms.utils.HumanReadable;
+
+public enum VillageState implements HumanReadable {
     VILLAGE,
     KINGDOM;
 }

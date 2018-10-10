@@ -42,7 +42,7 @@ public class VillageMoneyCommand extends SubCommand {
         if (option.equalsIgnoreCase("balance") || option.equalsIgnoreCase("bal")) {
             MessageUtils.tell(player, "&2&lVillage Balance: &r&7" + df.format((long) village.getBank()));
         } else if (option.equalsIgnoreCase("withdraw") || option.equalsIgnoreCase("with")) {
-            if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.CHIEF)) {
+            if (res.getVillageRank().below(VillageRank.CHIEF)) {
                 MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.CHIEF.getTag(village.getState()));
                 return;
             }

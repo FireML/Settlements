@@ -1,7 +1,10 @@
 package me.crz.minecraft.kingdoms.command.village.settings;
 
 import me.crz.minecraft.kingdoms.cinventory.CInventoryManager;
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.VillageState;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.event.inventory.ClickType;
 import me.crz.minecraft.kingdoms.village.Village;
 
@@ -23,10 +26,7 @@ public class ModeGUI {
     public CInventory gui;
 
     public static String cfc(final String string) {
-        if (string == null || string.length() == 0) {
-            return string;
-        }
-        return String.valueOf(string.substring(0, 1).toUpperCase()) + string.substring(1, string.length());
+        return WordUtils.capitalizeFully(string);
     }
 
     public String yesOrNo(final boolean b) {
@@ -35,7 +35,8 @@ public class ModeGUI {
 
     public ModeGUI() {
         super();
-        (gui = new CInventory("&3&lSettlement Mode", InventorySize.ONE) {}).addItem(1, new ClickableItem() {
+        gui = new CInventory("&3&lSettlement Mode", InventorySize.ONE) {};
+        gui.addItem(1, new ClickableItem() {
             public ItemStack getItem(final Player p) {
                 if (ResidentManager.getInstance().doesResidentHaveVillage(p)) {
                     final Village village = VillageManager.getInstance().getVillageFromPlayer(p);
@@ -52,6 +53,7 @@ public class ModeGUI {
                 if (village.getChief().equals(p.getUniqueId())) {
                     village.setPvp(!village.isPvp());
                     MessageUtils.tell(p, "&7PvP State &7 changed to &6" + yesOrNo(village.isPvp()));
+                    Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
                     gui.build(p);
                     return true;
                 }
@@ -75,6 +77,7 @@ public class ModeGUI {
                 if (village.getChief().equals(p.getUniqueId())) {
                     village.setMobSpawning(!village.isMobSpawning());
                     MessageUtils.tell(p, "&7MobSpawning State &7 changed to &6" + yesOrNo(village.isMobSpawning()));
+                    Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
                     gui.build(p);
                     return true;
                 }
@@ -98,6 +101,7 @@ public class ModeGUI {
                 if (village.getChief().equals(p.getUniqueId())) {
                     village.setFireSpread(!village.isFireSpread());
                     MessageUtils.tell(p, "&7FireSpread State &7 changed to &6" + yesOrNo(village.isFireSpread()));
+                    Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
                     gui.build(p);
                     return true;
                 }
@@ -121,6 +125,7 @@ public class ModeGUI {
                 if (village.getChief().equals(p.getUniqueId())) {
                     village.setExplosions(!village.isExplosions());
                     MessageUtils.tell(p, "&7Explosion State &7 changed to &6" + yesOrNo(village.isExplosions()));
+                    Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
                     gui.build(p);
                     return true;
                 }
@@ -144,42 +149,11 @@ public class ModeGUI {
                 if (village.getChief().equals(p.getUniqueId())) {
                     village.setBuff(!village.isBuff());
                     MessageUtils.tell(p, "&7Buff State &7 changed to &6" + yesOrNo(village.isBuff()));
+                    Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
                     gui.build(p);
                     return true;
                 }
                 return false;
-            }
-        });
-        gui.addItem(6, new ClickableItem() {
-            public ItemStack getItem(final Player p) {
-                if (!ResidentManager.getInstance().doesResidentHaveVillage(p)) {
-                    return null;
-                }
-                final Village village = VillageManager.getInstance().getVillageFromPlayer(p);
-                final String yon = (village.getState() == VillageState.KINGDOM && village.getLevel() >= 4) ? (village.isTeleporter() ? "Private" : "Public") : "Not Avalable";
-                if (yon.equals("Not Avalable")) {
-                    return null;
-                }
-                return new CItem(Material.ENDER_PEARL).setName("&b&lTeleporter").setLore(Arrays.asList(MessageUtils.replaceColorCodes("&7&lState"), MessageUtils.replaceColorCodes("&b&l" + yon))).build();
-            }
-
-            public boolean click(final Player p, final ClickType clickType) {
-                if (!ResidentManager.getInstance().doesResidentHaveVillage(p)) {
-                    return false;
-                }
-                final Village village = VillageManager.getInstance().getVillageFromPlayer(p);
-                if (!village.getChief().equals(p.getUniqueId())) {
-                    return false;
-                }
-                String yon = (village.getState() == VillageState.KINGDOM && village.getLevel() >= 4) ? (village.isTeleporter() ? "Private" : "Public") : "Not Avalable";
-                if (yon.equals("Not Avalable")) {
-                    return false;
-                }
-                village.setTeleporter(!village.isTeleporter());
-                yon = ((village.getState() == VillageState.KINGDOM && village.getLevel() >= 4) ? (village.isTeleporter() ? "Private" : "Public") : "Not Avalable");
-                MessageUtils.tell(p, "&7Teleporter State &7 changed to &6" + yon);
-                gui.build(p);
-                return true;
             }
         });
         gui.addItem(8, new ClickableItem() {

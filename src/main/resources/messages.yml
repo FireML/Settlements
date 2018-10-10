@@ -27,11 +27,12 @@ new-resident: '&e&lALERT &r&e{player}&7 has joined the settlement!'
 show-settlement: |-
   &8--------&c&l{townName}&r&8--------
   &a&lState: &r&7{state}
+  &6&lAccess: &r&7{access}
   &6&lLevel: &r&7{level}
   &6&lBank: &r&7{bank}
   &6&lOutposts: &r&7{outpost}&r&e/&r&7{maxOutpost}
   &6&lLand: &r&7{land}&r&e/&r&7{maxLand}
-  &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobSpawning}&r&7 |  Firespread: &r&e{fireSpread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7 | Teleporter : &r&e{teleporter}
+  &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobSpawning}&r&7 |  Firespread: &r&e{fireSpread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
   &e&l{chiefRank} &r&7{chief}
   &b&lResidents: &r&7{residents}
 fail-deposit: '&c&lFailed Deposited Items: {reason}'
@@ -68,7 +69,6 @@ alert-upkeep-charged: "&a&lALERT &7Your settlement has been charged &6{charged}&
 alert-upkeep-cant-pay: "&a&lALERT &7Your settlement is &cunable&7 to pay tommorrows upkeep, it will cost &6{cost}&7!"
 bank-withdraw: "&e&l{rank} &r&e{name} &r&7withdrew &6{amount}&r&7 from the village bank!"
 bank-deposit: "&e&l{rank} &r&e{name} &r&7deposited &6{amount}&r&7 into the village bank!"
-teleport-deposit: "&e&l{player} &r&7deposited &6{amount}&r&7 into the village bank by teleporting to your teleporter!"
 rank-required: "&c&lYou require the rank &r&6&l{rank} or higher&r&c&l!"
 bank-not-enough-money: "&c&lNot enough money in the village bank to withdraw &r&6&l{amount}&r&c&l!"
 player-not-enough-money: "&c&lNot enough money in your account to pay &r&6&l{amount}&r&c&l!"
@@ -79,8 +79,7 @@ outpost-not-found: |
   &ce.g. /s outpost tp outpost-4
 village-renamed: "&7&lVillage has been renamed to &6&l{name}"
 error-village-exists: "&7&lVillage with the name &6&l{name}&7&l already exists!"
-teleport-claim-removed: "{rank} {player} &r&7&l has &r&6&lremoved&r&7&l the teleport claim"
-teleport-claim-set: "{rank} {player} &r&7&l has set the teleport claim at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
+error-village-doesnt-exist: "&c&lVillage with the name &6&l{name}&7&l does not exist!"
 ally-invite: "&r&6&l{name} &r&7&lwants to ally!"
 ally-accept-info: "&r&6&l/s ally {name} &r&7&lto ally them!"
 ally-removed: "&7&lAlly &6{name} &7removed!"

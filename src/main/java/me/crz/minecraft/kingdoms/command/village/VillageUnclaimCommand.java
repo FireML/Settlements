@@ -27,7 +27,7 @@ public class VillageUnclaimCommand extends SubCommand {
             return;
         }
         Resident res = ResidentManager.getInstance().getResident(player);
-        if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER)) {
+        if (res.getVillageRank().below(VillageRank.ELDER)) {
             MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.ELDER.getTag(village.getState()) + "&r&c&l!");
             return;
         }

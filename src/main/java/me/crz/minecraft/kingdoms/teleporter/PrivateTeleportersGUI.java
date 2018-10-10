@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.teleporter;
 
 import me.crz.minecraft.kingdoms.utils.IdObject;
+import me.crz.minecraft.kingdoms.village.VillageAccess;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.Bukkit;
@@ -40,7 +41,7 @@ public class PrivateTeleportersGUI extends Base {
 
     public void open(Player p, int i) {
         this.update(VillageManager.getInstance().getVillageFromPlayer(p));
-        CInventory ci = new CInventory("Private Teleporters: " + (i + 1), InventorySize.FOUR) {};
+        CInventory ci = new CInventory("Private Warps: " + (i + 1), InventorySize.FOUR) {};
         if (items.isEmpty()) {
             return;
         }
@@ -70,7 +71,7 @@ public class PrivateTeleportersGUI extends Base {
         checks = 0;
         for (IdObject ally : allies) {
             Village v = VillageManager.getInstance().getVillageFromId(ally);
-            if (v == null || v.getTeleporter() == null || v.getTeleporterClaim() == null) {
+            if (v == null || v.getAccess().atLeast(VillageAccess.ALLY)) {
                 continue;
             }
             items.add(new ClickableItem() {
@@ -78,31 +79,13 @@ public class PrivateTeleportersGUI extends Base {
                     ItemStack item = new ItemStack(Material.PLAYER_HEAD);
                     SkullMeta sm = (SkullMeta) item.getItemMeta();
                     sm.setDisplayName(MessageUtils.replaceColorCodes("&b" + v.getName()));
-                    sm.setLore(Collections.singletonList(MessageUtils.replaceColorCodes("&a&lCost: &r&6" + v.getTeleportCost() + "&r&7$")));
                     sm.setOwningPlayer(Bukkit.getOfflinePlayer(v.getChief()));
                     item.setItemMeta(sm);
                     return item;
                 }
 
                 public boolean click(Player p, ClickType clickType) {
-                    if (v.getTeleportCost() == 0) {
-                        p.teleport(v.getTeleporter().toBukkitLocation());
-                    } else {
-                        if (Base.getEconomy().getBalance(p) >= v.getTeleportCost()) {
-                            EconomyResponse r = Base.getEconomy().withdrawPlayer(p, v.getTeleportCost());
-                            if (r.transactionSuccess()) {
-                                p.teleport(v.getTeleporter().toBukkitLocation());
-                                MessageUtils.tell(p, "&7Teleporting to &6" + v.getName() + "&r&7's teleporter!", null, null);
-                                MessageUtils.tellResidents(v.getOnlineResidents(), MessageUtils.Message.TELEPORT_DEPOSIT,
-                                        "player", p.getName(),
-                                        "amount", String.valueOf(v.getTeleportCost()));
-                            } else {
-                                MessageUtils.tell(p, "&cAn error occurred, please tell an admin!", null, null);
-                            }
-                        } else {
-                            MessageUtils.tell(p, MessageUtils.Message.PLAYER_NOT_ENOUGH_MONEY, "amount", String.valueOf(v.getTeleportCost()));
-                        }
-                    }
+                    p.teleport(v.getVillageHome().toBukkitLocation());
                     return false;
                 }
             });

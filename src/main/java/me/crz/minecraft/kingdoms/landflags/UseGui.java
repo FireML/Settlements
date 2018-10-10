@@ -1,6 +1,8 @@
 package me.crz.minecraft.kingdoms.landflags;
 
 import me.crz.minecraft.kingdoms.cinventory.CInventoryManager;
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.BuildState;
 import me.crz.minecraft.kingdoms.village.Village;
 
@@ -75,6 +77,7 @@ public class UseGui {
                     if (village.getChief().equals(p.getUniqueId())) {
                         village.setUseState(u, BuildState.next(village.getUseState(u)));
                         MessageUtils.tell(p, "&7Use state &6" + u.name().toLowerCase() + "&7 changed to &6" + village.getUseState(u));
+                        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
                         gui.build(p);
                         return true;
                     }

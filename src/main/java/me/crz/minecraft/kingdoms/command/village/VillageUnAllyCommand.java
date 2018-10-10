@@ -29,7 +29,7 @@ public class VillageUnAllyCommand extends SubCommand {
             MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
             return;
         }
-        if (!this.canAlly(ResidentManager.getInstance().getResident(player))) {
+        if (ResidentManager.getInstance().getResident(player).getVillageRank().below(VillageRank.ELDER)) {
             MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
             return;
         }
@@ -54,9 +54,5 @@ public class VillageUnAllyCommand extends SubCommand {
         });
         MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), MessageUtils.Message.ALLY_REMOVED, "name", village.getName());
         MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.ALLY_REMOVED, "name", invitedVillage.getName());
-    }
-
-    private boolean canAlly(Resident res) {
-        return VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER);
     }
 }

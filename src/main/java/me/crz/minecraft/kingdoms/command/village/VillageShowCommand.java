@@ -4,16 +4,13 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.OfflinePlayer;
 
-import org.bukkit.ChatColor;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.village.VillageState;
 
 import java.text.DecimalFormat;
 
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.land.LandManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import me.crz.minecraft.kingdoms.village.Village;
@@ -103,9 +100,8 @@ public class VillageShowCommand extends SubCommand {
         if (message.contains("{buff}")) {
             message = message.replace("{buff}", this.yesOrNo(village.isBuff()));
         }
-        if (message.contains("{teleporter}")) {
-            String yon = (village.getState() == VillageState.KINGDOM && village.getLevel() >= 4) ? (village.isTeleporter() ? "Private" : "Public") : "Not available";
-            message = message.replace("{teleporter}", yon);
+        if (message.contains("{access}")) {
+            message = message.replace("{access}", village.getAccess().humanizedName());
         }
         if (message.contains("{chiefRank}")) {
             message = message.replace("{chiefRank}", VillageRank.CHIEF.getTag(village.getState()));

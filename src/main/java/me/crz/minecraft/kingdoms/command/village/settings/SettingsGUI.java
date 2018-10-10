@@ -37,16 +37,20 @@ public class SettingsGUI {
         guis = new HashMap<>();
     }
 
-    public static String cfc(final String string) {
-        if (string == null || string.length() == 0) {
-            return string;
-        }
-        return String.valueOf(string.substring(0, 1).toUpperCase()) + string.substring(1, string.length());
-    }
-
     public SettingsGUI() {
         super();
-        (gui = new CInventory("&3&lSettlement Settings", InventorySize.ONE) {}).addItem(new ClickableItem() {
+        gui = new CInventory("&3&lSettlement Settings", InventorySize.ONE) {};
+        gui.addItem(new ClickableItem() {
+            public ItemStack getItem(final Player p) {
+                return new CItem(Material.GRASS).setName("&b&lAccess").build();
+            }
+
+            public boolean click(final Player p, final ClickType clickType) {
+                AccessGUI.getInstance().open(p);
+                return true;
+            }
+        });
+        gui.addItem(new ClickableItem() {
             public ItemStack getItem(final Player p) {
                 return new CItem(Material.GRASS).setName("&b&lUse").build();
             }
@@ -66,16 +70,18 @@ public class SettingsGUI {
                 return true;
             }
         });
-        gui.addItem(4, new ClickableItem() {
+        gui.addItem(8, new ClickableItem() {
             public ItemStack getItem(final Player p) {
                 final Village village = VillageManager.getInstance().getVillageFromPlayer(p);
                 final StringBuilder sb = new StringBuilder("&8--------&c&l");
                 sb.append(village.getName());
                 sb.append("&r&8--------\n");
-                sb.append("&a&lSTATE &r&7");
-                sb.append(SettingsGUI.cfc(village.getState().name().toLowerCase()));
-                sb.append("\n&6&lLEVEL &r&7");
+                sb.append("&a&lState &r&7");
+                sb.append(village.getState().humanizedName());
+                sb.append("\n&6&lLevel &r&7");
                 sb.append(village.getLevel());
+                sb.append("\n&6&lAccess &r&7");
+                sb.append(village.getAccess().humanizedName());
                 sb.append("\n&6&lLand &r&7");
                 sb.append(LandManager.getInstance().getClaimedLandSize(village));
                 sb.append("&r&e/&r&7");

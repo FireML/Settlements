@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.chat;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.HumanReadable;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -15,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public enum ChatChannel {
+public enum ChatChannel implements HumanReadable {
     LOCAL("local", "l"),
     TRADE("trade", "t"),
     GENERAL("general", "g"),

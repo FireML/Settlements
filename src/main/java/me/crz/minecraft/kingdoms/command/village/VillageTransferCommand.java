@@ -30,7 +30,7 @@ public class VillageTransferCommand extends SubCommand {
             return;
         }
         Resident res = ResidentManager.getInstance().getResident(player);
-        if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.CHIEF)) {
+        if (res.getVillageRank().below(VillageRank.CHIEF)) {
             MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.CHIEF.getTag(village.getState()));
             return;
         }

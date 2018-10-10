@@ -2,12 +2,7 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import me.crz.minecraft.kingdoms.db.TownCache;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -35,7 +30,7 @@ public class VillageAllyCommand extends SubCommand {
             MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
             return;
         }
-        if (!this.canAlly(ResidentManager.getInstance().getResident(player))) {
+        if (ResidentManager.getInstance().getResident(player).getVillageRank().below(VillageRank.ELDER)) {
             MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
             return;
         }
@@ -52,34 +47,22 @@ public class VillageAllyCommand extends SubCommand {
             MessageUtils.tell(player, "&c&lYou are already allied to Village &r&6&l" + args[0]);
             return;
         }
-        if (TownCache.getPendingTownAlly().containsKey(village.getName())) {
-            List<String> invites = TownCache.getPendingTownAlly().get(village.getName());
-            if (invites.contains(invitedVillage.getName())) {
-                MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), MessageUtils.Message.NOW_ALLIED_TO, "name", village.getName());
-                MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.NOW_ALLIED_TO, "name", invitedVillage.getName());
-                invitedVillage.addAlly(village);
-                village.addAlly(invitedVillage);
+        if (TownCache.getPendingTownAlly().containsEntry(village.getName(), invitedVillage.getName())) {
+            MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), MessageUtils.Message.NOW_ALLIED_TO, "name", village.getName());
+            MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.NOW_ALLIED_TO, "name", invitedVillage.getName());
+            TownCache.getPendingTownAlly().remove(village.getName(), invitedVillage.getName());
+            invitedVillage.addAlly(village);
+            village.addAlly(invitedVillage);
 
-                Utils.runAsync(() -> {
-                    DatabaseManager.getInstance().saveVillage(invitedVillage);
-                    DatabaseManager.getInstance().saveVillage(village);
-                });
-            }
+            Utils.runAsync(() -> {
+                DatabaseManager.getInstance().saveVillage(invitedVillage);
+                DatabaseManager.getInstance().saveVillage(village);
+            });
         } else {
-            if (TownCache.getPendingTownAlly().containsKey(invitedVillage.getName())) {
-                List<String> iInvites = TownCache.getPendingTownAlly().get(invitedVillage.getName());
-                iInvites.add(village.getName());
-                MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), MessageUtils.Message.ALLY_INVITE, "name", village.getName());
-                MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), MessageUtils.Message.ALLY_ACCEPT_INFO, "name", village.getName());
-            } else {
-                TownCache.getPendingTownAlly().put(invitedVillage.getName(), new ArrayList<>(Collections.singletonList(village.getName())));
-                MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), MessageUtils.Message.ALLY_INVITE, "name", village.getName());
-            }
+            TownCache.getPendingTownAlly().put(invitedVillage.getName(), village.getName());
+            MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), MessageUtils.Message.ALLY_INVITE, "name", village.getName());
+            MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), MessageUtils.Message.ALLY_ACCEPT_INFO, "name", village.getName());
             MessageUtils.tell(player, "&7&lAlly request sent to &r&6&l" + invitedVillage.getName());
         }
-    }
-
-    private boolean canAlly(Resident res) {
-        return VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER);
     }
 }

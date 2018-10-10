@@ -2,7 +2,6 @@ package me.crz.minecraft.kingdoms.chat;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import net.md_5.bungee.api.ChatColor;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.EventHandler;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -64,7 +63,7 @@ public class ChatManager extends Base {
                         + "\n&9Balance: &7" + df.format(KingdomsPlugin.getInstance().econ.getBalance(e.getPlayer()));
                 village = VillageManager.getInstance().getVillageFromPlayer(player);
                 if (village != null) {
-                    hoverText += "\n&9" + StringUtils.capitalize(village.getState().toString().toLowerCase()) + ": &7" + village.getName();
+                    hoverText += "\n&9" + village.getState().humanizedName() + ": &7" + village.getName();
                 }
                 BaseComponent[] nameBit = new ComponentBuilder("")
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + e.getPlayer().getName() + " "))

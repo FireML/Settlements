@@ -119,7 +119,7 @@ public class VillageListener implements Listener {
                     e.setCancelled(true);
                     return;
                 }
-                if (VillageRank.hasRank(res.getVillageRank(), VillageRank.CHIEF)) {
+                if (res.getVillageRank().atLeast(VillageRank.CHIEF)) {
                     e.getBlock().breakNaturally();
                 } else {
                     if (lines.get(1) != null && ChatColor.stripColor(lines.get(1)).equals(e.getPlayer().getName())) {
@@ -185,7 +185,7 @@ public class VillageListener implements Listener {
             List<String> lines = Arrays.asList(sign.getLines());
             if (ChatColor.stripColor( lines.get(0)).equalsIgnoreCase("[vlock]") && e.getPlayer().isSneaking()) {
                 if (land.getOwnerVillage().equals(res.getVillage())) {
-                    if (VillageRank.hasRank(res.getVillageRank(), VillageRank.CHIEF) || ChatColor.stripColor( lines.get(1)).equals(e.getPlayer().getName())) {
+                    if (res.getVillageRank().atLeast(VillageRank.CHIEF) || ChatColor.stripColor( lines.get(1)).equals(e.getPlayer().getName())) {
                         e.getClickedBlock().breakNaturally();
                     } else {
                         if (e.getPlayer().isOp()) {

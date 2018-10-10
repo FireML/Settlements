@@ -31,7 +31,7 @@ public class VillageDisbandCommand extends SubCommand {
             return;
         }
         final Resident res = ResidentManager.getInstance().getResident(player);
-        if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.CHIEF)) {
+        if (res.getVillageRank().below(VillageRank.CHIEF)) {
             MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.CHIEF.getTag(village.getState()) + "&r&c&l!", null, null);
             return;
         }

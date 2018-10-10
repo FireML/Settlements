@@ -139,6 +139,6 @@ public class ResidentManager {
     }
 
     public boolean doesResidentHaveVillage(Player player) {
-        return !this.getResident(player).getVillageName().equals("");
+        return this.getResident(player).getVillage() != null;
     }
 }

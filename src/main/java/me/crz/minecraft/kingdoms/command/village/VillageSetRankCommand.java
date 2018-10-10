@@ -40,7 +40,7 @@ public class VillageSetRankCommand extends SubCommand {
             return;
         }
         Resident res = ResidentManager.getInstance().getResident(player);
-        if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER)) {
+        if (res.getVillageRank().below(VillageRank.ELDER)) {
             MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
             return;
         }

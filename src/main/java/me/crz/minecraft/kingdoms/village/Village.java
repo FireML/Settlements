@@ -6,7 +6,6 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.utils.config.Data;
 import me.crz.minecraft.kingdoms.world.NamedLocation;
-import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
@@ -23,7 +22,6 @@ import java.util.Map;
 import org.bukkit.Location;
 
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.utils.UtilTime;
 
@@ -54,11 +52,9 @@ public class Village implements ConfigurationSerializable {
     private boolean explosions = false;
     private boolean mobSpawning = false;
     private boolean buff = false;
-    private SimpleLocation teleporterLoc = null;
-    private boolean teleporter = false;
+    private VillageAccess access = VillageAccess.ALLY;
     private int bank = 0;
     private Set<IdObject> allies = new LinkedHashSet<>();
-    private int teleportCost = 0;
     private SimpleLocation villageHomeLoc;
     private Map<String, NamedLocation> outpostHomes = new LinkedHashMap<>();
     private Set<UUID> residents = new LinkedHashSet<>();
@@ -69,7 +65,6 @@ public class Village implements ConfigurationSerializable {
     private Map<String, Integer> vault = new HashMap<>();
 
     public Village(String name, UUID chief, int level, VillageState state, String enterMessage, String leaveMessage, BuildState buildState) {
-        this.resetTeleporter();
         this.name = name;
         residents.add(chief);
         this.chief = chief;
@@ -191,14 +186,6 @@ public class Village implements ConfigurationSerializable {
         villageHomeLoc = loc;
     }
 
-    public int getTeleportCost() {
-        return teleportCost;
-    }
-
-    public void setTeleporterCost(int cost) {
-        this.teleportCost = cost;
-    }
-
     public Set<IdObject> getAllies() {
         return allies;
     }
@@ -215,27 +202,12 @@ public class Village implements ConfigurationSerializable {
         allies.remove(village.getId());
     }
 
-    public SimpleLocation getTeleporter() {
-        return teleporterLoc;
+    public VillageAccess getAccess() {
+        return access;
     }
 
-    public void resetTeleporter() {
-        teleporterLoc = null;
-    }
-
-    public OwnedLand getTeleporterClaim() {
-        if (teleporterLoc == null) {
-            return null;
-        }
-        return LandManager.getInstance().getLand(new SimpleChunkLocation(teleporterLoc));
-    }
-
-    public void setTeleporter(Location location) {
-        setTeleporter(new SimpleLocation(location));
-    }
-
-    public void setTeleporter(SimpleLocation location) {
-        teleporterLoc = location;
+    public void setAccess(VillageAccess access) {
+        this.access = access;
     }
 
     public int getBank() {
@@ -389,14 +361,6 @@ public class Village implements ConfigurationSerializable {
         this.buff = buff;
     }
 
-    public boolean isTeleporter() {
-        return teleporter;
-    }
-
-    public void setTeleporter(boolean teleporter) {
-        this.teleporter = teleporter;
-    }
-
     public Map<String, Integer> getVault() {
         return vault;
     }
@@ -416,6 +380,7 @@ public class Village implements ConfigurationSerializable {
         map.put("chief", getChief());
         map.put("level", getLevel());
         map.put("settlementState", getState().name());
+        map.put("access", getAccess().toString());
         map.put("enterMessage", getEnterMessage());
         map.put("leaveMessage", getLeaveMessage());
         map.put("buildState", getBuildState().name());
@@ -425,10 +390,6 @@ public class Village implements ConfigurationSerializable {
         map.put("explosions", isExplosions());
         map.put("mobSpawning", isMobSpawning());
         map.put("buff", isBuff());
-        map.put("teleporter", isTeleporter());
-        map.put("teleportCost", getTeleportCost());
-        if (getTeleporter() != null)
-            map.put("teleporterLoc", getTeleporter().serialize());
         map.put("bank", getBank());
         if (getVillageHome() != null)
             map.put("homeLoc", getVillageHome().serialize());
@@ -458,27 +419,13 @@ public class Village implements ConfigurationSerializable {
                 BuildState.valueOf((String) map.get("buildState"))
         );
         village.setId(IdObject.get(map));
+        village.setAccess(VillageAccess.valueOf((String) map.get("access")));
         village.getResidentIds().addAll(((Collection<String>) map.get("residents")).stream().map(UUID::fromString).collect(Collectors.toSet()));
         village.setPvp((Boolean) map.get("pvp"));
         village.setFireSpread((Boolean) map.get("fireSpread"));
         village.setExplosions((Boolean) map.get("explosions"));
         village.setMobSpawning((Boolean) map.get("mobSpawning"));
         village.setBuff((Boolean) map.get("buff"));
-        village.setTeleporter((Boolean) map.get("teleporter"));
-        village.setTeleporterCost((Integer) map.get("teleportCost"));
-        if (map.get("teleporterLoc") != null) {
-            village.setTeleporter(SimpleLocation.deserialize((Map<String, Object>) map.get("teleporterLoc")));
-        } else if (map.get("teleporterLoc_x") != null && map.get("teleporterLoc_y") != null && map.get("teleporterLoc_Z") != null
-                && map.get("teleporterLoc_world") != null && map.get("teleporterLoc_yaw") != null && map.get("teleporterLoc_pitch") != null){
-            village.setTeleporter(new SimpleLocation(
-                    (String) map.get("teleporterLoc_world"),
-                    (double) map.get("teleporterLoc_x"),
-                    (double) map.get("teleporterLoc_y"),
-                    (double) map.get("teleporterLoc_z"),
-                    (float) map.get("teleporterLoc_yaw"),
-                    (float) map.get("teleporterLoc_pitch")
-            ));
-        }
         village.setBank((Integer) map.get("bank"));
         village.getAllies().addAll(((Collection<Object>) map.get("allies")).stream().map(IdObject::get).collect(Collectors.toSet()));
         if (map.get("homeLoc") != null) {

@@ -26,7 +26,7 @@ public class VillageInviteCommand extends SubCommand {
             MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
             return;
         }
-        if (!this.canInvite(ResidentManager.getInstance().getResident(player))) {
+        if (ResidentManager.getInstance().getResident(player).getVillageRank().below(VillageRank.RECRUITER)) {
             MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.RECRUITER.getTag(village.getState()));
             return;
         }
@@ -47,9 +47,5 @@ public class VillageInviteCommand extends SubCommand {
         TownCache.getPendingTownInvites().put(invitedPlayer.getUniqueId(), village.getName());
         MessageUtils.tell(invitedPlayer, MessageUtils.Message.RECEIVE_INVITE, "{townName}", village.getName());
         MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_INVITE, "{player}", invitedPlayer.getName());
-    }
-
-    private boolean canInvite(final Resident res) {
-        return VillageRank.hasRank(res.getVillageRank(), VillageRank.RECRUITER);
     }
 }

@@ -50,7 +50,7 @@ public class VillageOutPostCommand extends SubCommand {
         }
         Resident res = ResidentManager.getInstance().getResident(player);
         if (args[0].equalsIgnoreCase("claim")) {
-            if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER)) {
+            if (res.getVillageRank().below(VillageRank.ELDER)) {
                 MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
                 return;
             }
@@ -96,7 +96,7 @@ public class VillageOutPostCommand extends SubCommand {
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(outpost));
             }
         } else if (args[0].equalsIgnoreCase("unclaim")) {
-            if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.CHIEF)) {
+            if (res.getVillageRank().below(VillageRank.CHIEF)) {
                 MessageUtils.tell(player, "&c&lYou require the rank &r&6&l" + VillageRank.CHIEF.getTag(village.getState()) + "&r&c&l!");
                 return;
             }
@@ -146,7 +146,7 @@ public class VillageOutPostCommand extends SubCommand {
             }
             MessageUtils.tell(player, MessageUtils.Message.OUTPOST_NOT_FOUND, "name", args[1]);
         } else if (args[0].equalsIgnoreCase("sethome")) {
-            if (!VillageRank.hasRank(res.getVillageRank(), VillageRank.ELDER)) {
+            if (res.getVillageRank().below(VillageRank.ELDER)) {
                 MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
                 return;
             }
