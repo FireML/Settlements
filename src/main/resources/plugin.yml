@@ -1,6 +1,6 @@
 main: me.crz.minecraft.kingdoms.KingdomsPlugin
 version: "${minecraft.plugin.version}"
-name: Kingdoms
+name: AperionKingdoms
 depend: [Vault, KingdomsEssentials]
 author: crz
 authors: [Phoenix616]
