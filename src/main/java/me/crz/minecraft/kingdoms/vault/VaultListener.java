@@ -125,9 +125,9 @@ public class VaultListener implements Listener {
 
     private List<String> buildfailDepositMessage(Map<Material, Integer> fail, String reason) {
         List<String> messages = new ArrayList<>();
-        messages.add(Message.get("fail-deposit").getReplaced("reason", reason));
+        messages.add(Message.get("fail-deposit").getReplacedText("reason", reason));
         for (Map.Entry<Material, Integer> entry : fail.entrySet()) {
-            messages.add(Message.get("list-deposit").getReplaced(
+            messages.add(Message.get("list-deposit").getReplacedText(
                     "amount", String.valueOf(entry.getValue()),
                     "material", entry.getKey().name()));
         }
@@ -136,9 +136,9 @@ public class VaultListener implements Listener {
 
     private List<String> buildSuccessDepositMessage(Player p, Map<String, Integer> deposited) {
         List<String> messages = new ArrayList<>();
-        messages.add(Message.get("success-deposit").getReplaced("player", p.getDisplayName()));
+        messages.add(Message.get("success-deposit").getReplacedText("player", p.getDisplayName()));
         for (Map.Entry<String, Integer> entry : deposited.entrySet()) {
-            messages.add(Message.get("list-deposit").getReplaced(
+            messages.add(Message.get("list-deposit").getReplacedText(
                 "amount", String.valueOf(entry.getValue()),
                 "material", entry.getKey()));
         }

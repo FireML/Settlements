@@ -33,7 +33,15 @@ public class Message {
         } else {
             exists = false;
         }
-        this.text = MessageUtils.replaceColorCodes(text);
+        try {
+            components = MineDown.parse(text);
+            text = TextComponent.toLegacyText(components);
+        } catch (IllegalArgumentException e) {
+            components = TextComponent.fromLegacyText(text);
+            text = MessageUtils.replaceColorCodes(text);
+            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Message with key " + key + " has an invalid MineDown format! " + e.getMessage());
+        }
+        this.text = text;
     }
 
     public boolean exists() {
@@ -48,24 +56,24 @@ public class Message {
         return text;
     }
 
-    public BaseComponent[] getComponents() {
-        if (components == null) {
-            try {
-                components = MineDown.parse(text);
-            } catch (IllegalArgumentException e) {
-                components = TextComponent.fromLegacyText(text);
-                KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Message with key " + key + " has an invalid MineDown format! " + e.getMessage());
-            }
-        }
-        return components;
-    }
-
     public List<String> getTextList() {
         return Arrays.asList(text.split("\n"));
     }
 
-    public String getReplaced(String... replaced) {
-        return MessageUtils.replacePlaceholders(text, replaced);
+    public BaseComponent[] getComponents() {
+        return components;
+    }
+
+    public String getReplacedText(String... replacements) {
+        return MessageUtils.replacePlaceholders(text, replacements);
+    }
+
+    public BaseComponent[] getReplacedComponents(String placeholder, BaseComponent[] value) {
+        return MessageUtils.replacePlaceholders(components, placeholder, value);
+    }
+
+    public BaseComponent[] getReplacedComponents(String... replacements) {
+        return MessageUtils.replacePlaceholders(components, replacements);
     }
 
     private static Map<String, Message> messages = new HashMap<>();

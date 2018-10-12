@@ -57,8 +57,6 @@ public class VillageRenameCommand extends SubCommand {
         }
         Utils.runAsync(() -> {
             village.setName(args[0]);
-            village.setEnterMessage(Message.get("default-enter").getReplaced("owner", village.getName()));
-            village.setLeaveMessage(Message.get("default-leave").getReplaced("owner", village.getName()));
             DatabaseManager.getInstance().saveVillage(village);
             MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("village-renamed"), "name", village.getName());
         });

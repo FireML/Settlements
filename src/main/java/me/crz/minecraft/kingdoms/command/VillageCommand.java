@@ -36,8 +36,6 @@ import me.crz.minecraft.kingdoms.command.village.VillagePlotCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageUpgradeCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageSetRankCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageInviteCommand;
-import me.crz.minecraft.kingdoms.command.village.VillageLeaveMessageCommand;
-import me.crz.minecraft.kingdoms.command.village.VillageEnterMessageCommand;
 import me.crz.minecraft.kingdoms.command.village.buildNuse.VillageBuildCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageJoinCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageKickCommand;
@@ -94,8 +92,6 @@ public class VillageCommand implements CommandExecutor {
         this.registerCommand(new VillageKickCommand());
         this.registerCommand(new VillageJoinCommand());
         this.registerCommand(new VillageBuildCommand());
-        this.registerCommand(new VillageEnterMessageCommand());
-        this.registerCommand(new VillageLeaveMessageCommand());
         this.registerCommand(new VillageInviteCommand());
         this.registerCommand(new VillageSetRankCommand());
         this.registerCommand(new VillageUpgradeCommand());

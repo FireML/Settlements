@@ -54,8 +54,6 @@ success-unclaim-land: '&a&lSUCCESS &r&e{player} &7has unclaimed land at {x},{z}!
 success-claim-outpost: "&a&lSUCCESS &r&e{player} &7has claimed &coutpost&7 &e{name}&7 for your settlement at {x},{z}!"
 success-unclaim-outpost: "&aSuccess unclaimed the outpost at {x},{z} and {amount} land around it."
 cant-build-here: '&e&lALERT &r&7This land is owned by &e{owner}&7.'
-default-enter: '&e&lALERT &r&bNow entering &e{owner}&b!'
-default-leave: '&e&lALERT &r&bNow leaving &e{owner}&b!'
 success-change-enter: '&a&lSUCCESS &r&7Changed enter message!'
 success-change-leave: '&a&lSUCCESS &r&7Changed leave message!'
 success-create-sale-plot: '&a&lSUCCESS &7This land has been put on sale for &e${price}&7!'
@@ -88,6 +86,8 @@ banished: "&7Player &6{player}&7 has been &cbanished &7from your settlement!"
 unbanished: "&7Player &6{player}&7 has been &cbanished &7from your settlement!"
 village-home-set: "{rank} {player} &r&7&l has set the village home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
 village:
+  enter-message: "&f[&eKingdoms&f] &7Entering &a{name}{pvp}"
+  leave-message: "&f[&eKingdoms&f] &7Leaving &a{name}"
   name:
     chief: 'CHIEF'
     elder: 'ELDER'
@@ -95,9 +95,15 @@ village:
     recruiter: 'RECRUITER'
     resident: 'RESIDENT'
 kingdom:
+  enter-message: "&f[&eKingdoms&f] &7Entering &a{name}{pvp}"
+  leave-message: "&f[&eKingdoms&f] &7Leaving &a{name}"
   name:
     chief: 'KING'
     elder: 'ELDER'
     builder: 'BUILDER'
     recruiter: 'RECRUITER'
     resident: 'RESIDENT'
+pvp-is-enabled: " - &c&lPvp is enabled!"
+enter-plot: "&7&lWelcome to&6&l {owner}&7&l’s plot "
+plot-is-for-sale: "&9&lLand is for sale "
+cannot-attack-animals: "&c&lYou cannot attack another village's animals!"

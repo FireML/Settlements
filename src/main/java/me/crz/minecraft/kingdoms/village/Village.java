@@ -45,8 +45,6 @@ public class Village implements ConfigurationSerializable {
     private int level;
     private UUID chief;
     private VillageState villageState;
-    private String enterMessage;
-    private String leaveMessage;
     private BuildState buildState;
     private boolean pvp = false;
     private boolean fireSpread = false;
@@ -65,14 +63,12 @@ public class Village implements ConfigurationSerializable {
     private UpkeepStage upkeepStage = UpkeepStage.PAID;
     private Map<String, Integer> vault = new HashMap<>();
 
-    public Village(String name, UUID chief, int level, VillageState state, String enterMessage, String leaveMessage, BuildState buildState) {
+    public Village(String name, UUID chief, int level, VillageState state, BuildState buildState) {
         this.name = name;
         residents.add(chief);
         this.chief = chief;
         this.level = level;
         this.villageState = state;
-        this.enterMessage = enterMessage;
-        this.leaveMessage = leaveMessage;
         this.buildState = buildState;
     }
 
@@ -298,22 +294,6 @@ public class Village implements ConfigurationSerializable {
         this.villageState = state;
     }
 
-    public String getEnterMessage() {
-        return enterMessage;
-    }
-
-    public void setEnterMessage(String enterMessage) {
-        this.enterMessage = enterMessage;
-    }
-
-    public String getLeaveMessage() {
-        return leaveMessage;
-    }
-
-    public void setLeaveMessage(String leaveMessage) {
-        this.leaveMessage = leaveMessage;
-    }
-
     public BuildState getBuildState() {
         return buildState;
     }
@@ -382,8 +362,6 @@ public class Village implements ConfigurationSerializable {
         map.put("level", getLevel());
         map.put("settlementState", getState().name());
         map.put("access", getAccess().toString());
-        map.put("enterMessage", getEnterMessage());
-        map.put("leaveMessage", getLeaveMessage());
         map.put("buildState", getBuildState().name());
         map.put("residents", getResidentIds().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("pvp", isPvp());
@@ -415,8 +393,6 @@ public class Village implements ConfigurationSerializable {
                 UUID.fromString((String) map.get("chief")),
                 (Integer) map.get("level"),
                 VillageState.valueOf((String) map.get("settlementState")),
-                (String) map.get("enterMessage"),
-                (String) map.get("leaveMessage"),
                 BuildState.valueOf((String) map.get("buildState"))
         );
         village.setId(IdObject.get(map));

@@ -69,9 +69,7 @@ public class VillageCreateCommand extends SubCommand {
                 return;
             }
         }
-        String enter = Message.get("default-enter").getReplaced("owner", name);
-        String leave = Message.get("default-leave").getReplaced("owner", name);
-        Village village = new Village(name, player.getUniqueId(), 1, VillageState.VILLAGE, enter, leave, BuildState.RESIDENTS);
+        Village village = new Village(name, player.getUniqueId(), 1, VillageState.VILLAGE, BuildState.RESIDENTS);
         VillageManager.getInstance().registerNewVillage(village);
         Resident res = ResidentManager.getInstance().getResident(player);
         res.setVillage(village);

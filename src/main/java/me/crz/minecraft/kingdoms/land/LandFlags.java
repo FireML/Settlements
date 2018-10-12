@@ -1,11 +1,11 @@
 package me.crz.minecraft.kingdoms.land;
 
-import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.essentials.events.HostileCreatureSpawnEvent;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import org.bukkit.Bukkit;
 import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveBlockEvent;
 
+import net.md_5.bungee.api.ChatMessageType;
 import org.bukkit.block.Block;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
@@ -65,9 +65,7 @@ public class LandFlags extends Base {
         Resident res = ResidentManager.getInstance().getResident(e.getDamager());
         if (!village.getName().equals(res.getVillageName())) {
             e.setCancelled(true);
-            TitleBuilder tb = new TitleBuilder();
-            tb.withActionbar(MessageUtils.replaceColorCodes("&c&lYou cannot attack another villages HOSTILE!"));
-            tb.send(e.getDamager());
+            e.getDamager().spigot().sendMessage(ChatMessageType.ACTION_BAR, Message.get("cannot-attack-animals").getComponents());
         }
     }
 
@@ -172,7 +170,7 @@ public class LandFlags extends Base {
         boolean sameVillage = originalLand != null && destinationLand != null && originalLand.getOwnerVillage().equals(destinationLand.getOwnerVillage());
 
         if (!sameVillage && originalLand != null) {
-            MessageUtils.tell(player, originalLand.getOwnerVillage().getLeaveMessage());
+            MessageUtils.tell(player, Message.get(originalLand.getOwnerVillage().getState().getKey() + ".leave-message"));
             if (originalLand.getOwnerVillage().equals(playerVillage) && originalLand.getOwnerVillage().isBuff()) {
                 Base.getLandPerks().removeEffects(player, originalLand.getOwnerVillage());
             }
@@ -181,9 +179,9 @@ public class LandFlags extends Base {
         if (destinationLand != null) {
             if (!sameVillage) {
                 if (destinationLand.getOwnerVillage().isPvp()) {
-                    MessageUtils.tell(player, destinationLand.getOwnerVillage().getEnterMessage() + " &c&lPvp is enabled!");
+                    MessageUtils.tell(player, Message.get(destinationLand.getOwnerVillage().getState().getKey() + ".enter-message").getReplacedComponents("pvp", Message.get("pvp-is-enabled").getComponents()));
                 } else {
-                    MessageUtils.tell(player, destinationLand.getOwnerVillage().getEnterMessage());
+                    MessageUtils.tell(player, Message.get(destinationLand.getOwnerVillage().getState().getKey() + ".enter-message").getReplacedComponents("pvp", ""));
                 }
                 if (destinationLand.getOwnerVillage().equals(playerVillage) && destinationLand.getOwnerVillage().isBuff()) {
                     Base.getLandPerks().giveEffects(player, destinationLand.getOwnerVillage());
@@ -193,12 +191,10 @@ public class LandFlags extends Base {
                 TitleBuilder tb = new TitleBuilder();
                 StringBuilder actionBar = new StringBuilder();
                 if (destinationLand.isPlot()) {
-                    actionBar.append("&7&lWelcome to&6&l ");
-                    actionBar.append(ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName());
-                    actionBar.append("&7&l\u2019s plot ");
+                    actionBar.append(Message.get("enter-plot").getReplacedText("owner", ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName()));
                 }
                 if (destinationLand.isForSale() && destinationLand.getOwnerVillage().equals(playerVillage)) {
-                    actionBar.append("&9&lLand is for sale ");
+                    actionBar.append(Message.get("plot-is-for-sale").getText());
                 }
                 tb.withActionbar(actionBar.toString());
                 tb.send(player);

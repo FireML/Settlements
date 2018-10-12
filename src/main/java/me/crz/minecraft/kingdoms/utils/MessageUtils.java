@@ -74,6 +74,14 @@ public class MessageUtils extends Base {
                 .replaceIn(message);
     }
 
+    public static BaseComponent[] replacePlaceholders(BaseComponent[] message, String placeholder, BaseComponent[] value) {
+        return new Replacer()
+                .placeholderPrefix('{')
+                .placeholderSuffix('}')
+                .replace(placeholder, value)
+                .replaceIn(message);
+    }
+
     public static String replacePlaceholders(String message, String... replacements) {
         return new Replacer()
                 .placeholderPrefix('{')

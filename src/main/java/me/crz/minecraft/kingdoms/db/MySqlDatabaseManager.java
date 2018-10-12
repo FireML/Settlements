@@ -69,8 +69,6 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "level INTEGER NOT NULL,"
                     + "settlementState VARCHAR(255) NOT NULL,"
                     + "access VARCHAR(255) NOT NULL,"
-                    + "enterMessage TEXT NOT NULL,"
-                    + "leaveMessage TEXT NOT NULL,"
                     + "buildState VARCHAR(255) NOT NULL,"
                     + "pvp BOOLEAN NOT NULL,"
                     + "fireSpread BOOLEAN NOT NULL,"
