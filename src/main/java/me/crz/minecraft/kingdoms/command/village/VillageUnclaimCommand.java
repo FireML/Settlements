@@ -1,7 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import org.bukkit.Chunk;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.land.LandManager;
@@ -23,7 +23,7 @@ public class VillageUnclaimCommand extends SubCommand {
     public void run(Player player, String base, String alias, String... args) {
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
+            MessageUtils.tell(player, Message.get("not-in-current"));
             return;
         }
         Resident res = ResidentManager.getInstance().getResident(player);
@@ -41,7 +41,7 @@ public class VillageUnclaimCommand extends SubCommand {
             return;
         }
         LandManager.getInstance().unclaimLand(land);
-        MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_UNCLAIM_LAND,
+        MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("success-unclaim-land"),
                 "player", player.getName(),
                 "x", String.valueOf(player.getLocation().getBlockX()),
                 "z", String.valueOf(player.getLocation().getBlockZ()));

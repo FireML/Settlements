@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.utils.ExecuteMoveUtil;
@@ -45,13 +46,13 @@ public class VillageOutPostCommand extends SubCommand {
         }
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
+            MessageUtils.tell(player, Message.get("not-in-current"));
             return;
         }
         Resident res = ResidentManager.getInstance().getResident(player);
         if (args[0].equalsIgnoreCase("claim")) {
             if (res.getVillageRank().below(VillageRank.ELDER)) {
-                MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
+                MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.ELDER.getTag(village.getState()));
                 return;
             }
             if (!Utils.isWorldClaimable(player.getWorld())) {
@@ -65,7 +66,7 @@ public class VillageOutPostCommand extends SubCommand {
             int amountClaimed = village.getOutpostHomes().size();
             int maxClaimAllowed = Utils.getChunkMaxOutpost(village.getLevel(), village.getState());
             if (amountClaimed >= maxClaimAllowed) {
-                MessageUtils.tell(player, MessageUtils.Message.ERROR_MAX_OUTPOST_CHUNKS, "{max}", Integer.toString(maxClaimAllowed));
+                MessageUtils.tell(player, Message.get("error-max-outpost-chunks"), "{max}", Integer.toString(maxClaimAllowed));
                 return;
             }
             for (Chunk chunk : Utils.getChunksAroundPlayer(player, 4)) {
@@ -81,14 +82,14 @@ public class VillageOutPostCommand extends SubCommand {
             OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
             if (land != null) {
                 if (land.getOwnerVillage().equals(village)) {
-                    MessageUtils.tell(player, MessageUtils.Message.ALREADY_OWN_LAND, null, null);
+                    MessageUtils.tell(player, Message.get("already-own-land"), null, null);
                     return;
                 }
-                MessageUtils.tell(player, MessageUtils.Message.CANT_CLAIM_HERE, "{owner}", land.getOwnerVillage().getName());
+                MessageUtils.tell(player, Message.get("cant-claim-here"), "{owner}", land.getOwnerVillage().getName());
                 return;
             } else {
                 OwnedLand outpost = LandManager.getInstance().claimOutpost(player.getLocation(), village, args[1]);
-                MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_CLAIM_OUTPOST,
+                MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("success-claim-outpost"),
                         "player", player.getName(),
                         "name", args[1],
                         "x", String.valueOf(player.getLocation().getBlockX()),
@@ -114,7 +115,7 @@ public class VillageOutPostCommand extends SubCommand {
             Collection<OwnedLand> toUnclaim = LandManager.getInstance().getAllConnectedLand(land, true);
             toUnclaim.add(land);
             LandManager.getInstance().unclaimLand(toUnclaim);
-            MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_UNCLAIM_OUTPOST,
+            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("success-unclaim-outpost"),
                     "amount", String.valueOf(toUnclaim.size() - 1),
                     "x", String.valueOf(player.getLocation().getBlockX()),
                     "z", String.valueOf(player.getLocation().getBlockZ()));
@@ -144,10 +145,10 @@ public class VillageOutPostCommand extends SubCommand {
                 ExecuteMoveUtil.getInstance().execute(player, () -> player.teleport(loc2), 5, "Teleport");
                 return;
             }
-            MessageUtils.tell(player, MessageUtils.Message.OUTPOST_NOT_FOUND, "name", args[1]);
+            MessageUtils.tell(player, Message.get("outpost-not-found"), "name", args[1]);
         } else if (args[0].equalsIgnoreCase("sethome")) {
             if (res.getVillageRank().below(VillageRank.ELDER)) {
-                MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
+                MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.ELDER.getTag(village.getState()));
                 return;
             }
             if (args.length < 2) {

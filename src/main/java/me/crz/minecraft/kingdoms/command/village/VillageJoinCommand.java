@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.db.TownCache;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
@@ -29,20 +30,20 @@ public class VillageJoinCommand extends SubCommand {
         }
         Village joinVillage = VillageManager.getInstance().getVillageFromName(args[0]);
         if (joinVillage == null) {
-            MessageUtils.tell(player, MessageUtils.Message.TOWN_NOT_FOUND);
+            MessageUtils.tell(player, Message.get("town-not-found"));
             return;
         }
         if (joinVillage.getAccess().below(VillageAccess.OPEN) && !Utils.playerHasInvite(player, joinVillage.getName())) {
-            MessageUtils.tell(player, MessageUtils.Message.NO_INVITE);
+            MessageUtils.tell(player, Message.get("no-invite"));
             return;
         }
         if (joinVillage.isFull()) {
-            MessageUtils.tell(player, MessageUtils.Message.IS_FULL);
+            MessageUtils.tell(player, Message.get("is-full"));
             return;
         }
         Resident res = ResidentManager.getInstance().getResident(player);
         if (res.getVillage() != null) {
-            MessageUtils.tell(player, MessageUtils.Message.MUST_LEAVE_CURRENT);
+            MessageUtils.tell(player, Message.get("must-leave-current"));
             return;
         }
         res.setVillage(joinVillage);
@@ -50,7 +51,7 @@ public class VillageJoinCommand extends SubCommand {
         res.addChannel(ChatChannel.SETTLEMENT);
         TownCache.getPendingTownInvites().remove(player.getUniqueId(), joinVillage.getName());
         Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
-        MessageUtils.tell(player, MessageUtils.Message.SUCCESS_JOIN, "{townName}", joinVillage.getName());
-        MessageUtils.tellResidents(joinVillage.getOnlineResidents(), MessageUtils.Message.NEW_RESIDENT, "{player}", player.getName());
+        MessageUtils.tell(player, Message.get("success-join"), "{townName}", joinVillage.getName());
+        MessageUtils.tellResidents(joinVillage.getOnlineResidents(), Message.get("new-resident"), "{player}", player.getName());
     }
 }

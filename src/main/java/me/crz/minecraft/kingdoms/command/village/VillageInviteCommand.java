@@ -1,6 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.db.TownCache;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -23,11 +23,11 @@ public class VillageInviteCommand extends SubCommand {
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
+            MessageUtils.tell(player, Message.get("not-in-current"), null, null);
             return;
         }
         if (ResidentManager.getInstance().getResident(player).getVillageRank().below(VillageRank.RECRUITER)) {
-            MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.RECRUITER.getTag(village.getState()));
+            MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.RECRUITER.getTag(village.getState()));
             return;
         }
         if (args.length < 1) {
@@ -36,16 +36,16 @@ public class VillageInviteCommand extends SubCommand {
         }
         final Player invitedPlayer = Bukkit.getPlayerExact(args[0]);
         if (invitedPlayer == null) {
-            MessageUtils.tell(player, MessageUtils.Message.PLAYER_NOT_FOUND, null, null);
+            MessageUtils.tell(player, Message.get("player-not-found"), null, null);
             return;
         }
         final Village playerVillage = VillageManager.getInstance().getVillageFromPlayer(invitedPlayer);
         if (Utils.playerInSameVillage(village, playerVillage)) {
-            MessageUtils.tell(player, MessageUtils.Message.MUST_LEAVE_CURRENT, null, null);
+            MessageUtils.tell(player, Message.get("must-leave-current"), null, null);
             return;
         }
         TownCache.getPendingTownInvites().put(invitedPlayer.getUniqueId(), village.getName());
-        MessageUtils.tell(invitedPlayer, MessageUtils.Message.RECEIVE_INVITE, "{townName}", village.getName());
-        MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_INVITE, "{player}", invitedPlayer.getName());
+        MessageUtils.tell(invitedPlayer, Message.get("receive-invite"), "{townName}", village.getName());
+        MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("success-invite"), "{player}", invitedPlayer.getName());
     }
 }

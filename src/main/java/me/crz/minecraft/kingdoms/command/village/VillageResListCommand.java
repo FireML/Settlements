@@ -1,10 +1,9 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import org.bukkit.OfflinePlayer;
 
 import me.crz.minecraft.kingdoms.village.Village;
-import org.bukkit.Bukkit;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 import java.util.Comparator;
@@ -26,7 +25,7 @@ public class VillageResListCommand extends SubCommand {
     public void run(Player p, String base, String alias, String... args) {
         Village village = VillageManager.getInstance().getVillageFromPlayer(p);
         if (village == null) {
-            MessageUtils.tell(p, MessageUtils.Message.NOT_IN_CURRENT);
+            MessageUtils.tell(p, Message.get("not-in-current"));
             return;
         }
         Utils.runAsync(() -> {

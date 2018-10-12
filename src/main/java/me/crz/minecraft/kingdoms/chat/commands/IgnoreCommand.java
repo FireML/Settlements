@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.chat.commands;
 import java.util.stream.Collectors;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.Bukkit;
@@ -60,7 +61,7 @@ public class IgnoreCommand extends Command {
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
                 return;
             }
-            MessageUtils.tell(p, MessageUtils.Message.PLAYER_NOT_FOUND, "player", args[0]);
+            MessageUtils.tell(p, Message.get("player-not-found"), "player", args[0]);
         });
     }
 

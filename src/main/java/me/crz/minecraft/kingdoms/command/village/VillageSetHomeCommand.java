@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.Chunk;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -25,12 +26,12 @@ public class VillageSetHomeCommand extends SubCommand {
     public void run(Player player, String base, String alias, String... args) {
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
+            MessageUtils.tell(player, Message.get("not-in-current"));
             return;
         }
         Resident res = ResidentManager.getInstance().getResident(player);
         if (res.getVillageRank().below(VillageRank.CHIEF)) {
-            MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.CHIEF.getTag(village.getState()));
+            MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.CHIEF.getTag(village.getState()));
             return;
         }
         Chunk currentChunk = player.getLocation().getChunk();
@@ -40,7 +41,7 @@ public class VillageSetHomeCommand extends SubCommand {
             return;
         }
         MessageUtils.tellResidents(village.getOnlineResidents(),
-                MessageUtils.Message.VILLAGE_HOME_SET,
+                Message.get("village-home-set"),
                 "rank", res.getVillageRank().getTag(village.getState()),
                 "player", player.getName(),
                 "x", String.valueOf(player.getLocation().getBlockX()),

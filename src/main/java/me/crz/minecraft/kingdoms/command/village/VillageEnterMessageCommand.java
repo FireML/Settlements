@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -24,7 +25,7 @@ public class VillageEnterMessageCommand extends SubCommand {
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
+            MessageUtils.tell(player, Message.get("not-in-current"), null, null);
             return;
         }
         if (!this.canChange(village, player)) {
@@ -33,7 +34,7 @@ public class VillageEnterMessageCommand extends SubCommand {
         }
         final Resident res = ResidentManager.getInstance().getResident(player);
         if (res.getVillageRank().below(VillageRank.ELDER)) {
-            MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
+            MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.ELDER.getTag(village.getState()));
             return;
         }
         if (args.length <= 2) {
@@ -45,11 +46,11 @@ public class VillageEnterMessageCommand extends SubCommand {
             MessageUtils.tell(player, ChatColor.RED + "Message must contain " + ChatColor.YELLOW + "{owner}" + ChatColor.RED + " variable.", null, null);
             return;
         }
-        message = message.replace("{owner}", village.getName());
+        message = MessageUtils.replacePlaceholders(message, "owner", village.getName());
         message = ChatColor.translateAlternateColorCodes('&', message);
         village.setEnterMessage(message);
         Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
-        MessageUtils.tell(player, MessageUtils.Message.SUCCESS_CHANGE_ENTER, null, null);
+        MessageUtils.tell(player, Message.get("success-change-enter"), null, null);
     }
 
     private String getMessage(final String[] args) {

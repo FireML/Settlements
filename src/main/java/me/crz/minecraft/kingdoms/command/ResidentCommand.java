@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command;
 
+import me.crz.minecraft.kingdoms.utils.Message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -41,7 +42,7 @@ public class ResidentCommand implements CommandExecutor {
             subCmd.run(p, alias, aliasUsed, Arrays.copyOfRange(args, 1, args.length));
             return;
         }
-        MessageUtils.tell(p, MessageUtils.Message.NO_PERMISSION);
+        MessageUtils.tell(p, Message.get("no-permission"));
     }
 
     public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {

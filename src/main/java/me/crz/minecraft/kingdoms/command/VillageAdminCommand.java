@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command;
 
+import me.crz.minecraft.kingdoms.utils.Message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -57,7 +58,7 @@ public class VillageAdminCommand implements CommandExecutor {
             return;
         }
         if (!p.hasPermission(subCommands.get(aliasUsed).getPermission())) {
-            MessageUtils.tell(p, MessageUtils.Message.NO_PERMISSION);
+            MessageUtils.tell(p, Message.get("no-permission"));
             return;
         }
         subCommands.get(aliasUsed).run(p, alias, aliasUsed, (String[]) Arrays.copyOfRange(args, 1, args.length));

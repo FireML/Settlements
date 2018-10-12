@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.utils.Message;
 import org.json.JSONObject;
 import org.bukkit.block.Block;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -28,7 +29,7 @@ public class VillageLockCommand extends SubCommand {
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
+            MessageUtils.tell(player, Message.get("not-in-current"), null, null);
             return;
         }
         if (args.length < 1) {
@@ -69,7 +70,7 @@ public class VillageLockCommand extends SubCommand {
                 }
                 final Player target = Bukkit.getPlayerExact(args[1]);
                 if (target == null) {
-                    MessageUtils.tell(player, MessageUtils.Message.PLAYER_NOT_FOUND);
+                    MessageUtils.tell(player, Message.get("player-not-found"));
                     return;
                 }
                 final Block block = player.getTargetBlock(null, 15);
@@ -97,7 +98,7 @@ public class VillageLockCommand extends SubCommand {
         }
         final Player target = Bukkit.getPlayerExact(args[1]);
         if (target == null) {
-            MessageUtils.tell(player, MessageUtils.Message.PLAYER_NOT_FOUND);
+            MessageUtils.tell(player, Message.get("player-not-found"));
             return;
         }
         final Block block = player.getTargetBlock(null, 15);

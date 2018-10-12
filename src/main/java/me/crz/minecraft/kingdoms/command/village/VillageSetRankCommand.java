@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -36,33 +37,33 @@ public class VillageSetRankCommand extends SubCommand {
         }
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
+            MessageUtils.tell(player, Message.get("not-in-current"), null, null);
             return;
         }
         Resident res = ResidentManager.getInstance().getResident(player);
         if (res.getVillageRank().below(VillageRank.ELDER)) {
-            MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
+            MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.ELDER.getTag(village.getState()));
             return;
         }
         Utils.runAsync(() -> {
             Resident tres = ResidentManager.getInstance().getResident(args[0]);
             if (tres == null) {
-                MessageUtils.tell(player, MessageUtils.Message.PLAYER_NOT_FOUND, null, null);
+                MessageUtils.tell(player, Message.get("player-not-found"), null, null);
                 return;
             }
             if (!this.isResident(tres, village)) {
-                MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
+                MessageUtils.tell(player, Message.get("not-in-current"), null, null);
                 return;
             }
             VillageRank rank;
             try {
                 rank = VillageRank.valueOf(args[1].toUpperCase());
             } catch (IllegalArgumentException e) {
-                MessageUtils.tell(player, MessageUtils.Message.INVALID_RANK, "{rank}", args[1]);
+                MessageUtils.tell(player, Message.get("invalid-rank"), "{rank}", args[1]);
                 return;
             }
             if (res.getVillageRank().ordinal() <= tres.getVillageRank().ordinal()) {
-                MessageUtils.tell(player, MessageUtils.Message.CANT_SET_THAT_PERSONS_RANK, null, null);
+                MessageUtils.tell(player, Message.get("cant_set_that_persons_rank"), null, null);
                 return;
             }
             if (rank.equals(VillageRank.CHIEF)) {
@@ -70,12 +71,12 @@ public class VillageSetRankCommand extends SubCommand {
                 return;
             }
             if (res.getVillageRank().ordinal() <= rank.ordinal()) {
-                MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.values()[rank.ordinal() + 1].getTag(village.getState()));
+                MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.values()[rank.ordinal() + 1].getTag(village.getState()));
                 return;
             }
             tres.setVillageRank(rank);
             DatabaseManager.getInstance().saveResident(tres);
-            MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_SET_RANK,
+            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("success-set-rank"),
                     "rank", res.getVillageRank().getTag(village.getState()),
                     "setter", player.getName(),
                     "target", tres.getName());

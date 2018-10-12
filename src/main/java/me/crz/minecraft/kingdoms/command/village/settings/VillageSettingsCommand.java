@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village.settings;
 
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -16,11 +17,11 @@ public class VillageSettingsCommand extends SubCommand {
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
+            MessageUtils.tell(player, Message.get("not-in-current"));
             return;
         }
         if (!this.canChange(village, player)) {
-            MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
+            MessageUtils.tell(player, Message.get("no-permission"));
             return;
         }
         SettingsGUI.getInstance().open(player);

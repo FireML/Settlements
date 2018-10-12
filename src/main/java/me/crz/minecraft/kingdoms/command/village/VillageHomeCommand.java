@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.village.VillageAccess;
 import org.bukkit.Location;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -23,7 +24,7 @@ public class VillageHomeCommand extends SubCommand {
         Village playerVillage = VillageManager.getInstance().getVillageFromPlayer(player);
         if (args.length < 1) {
             if (playerVillage == null) {
-                MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
+                MessageUtils.tell(player, Message.get("not-in-current"));
                 return;
             } else if (playerVillage.getVillageHome() == null) {
                 MessageUtils.tell(player, "&c&lYour village doesn't have a home ask your " + VillageRank.CHIEF.getTag(playerVillage.getState()) + " to set one!");
@@ -34,7 +35,7 @@ public class VillageHomeCommand extends SubCommand {
         } else {
             village = VillageManager.getInstance().getVillageFromName(args[0]);
             if (village == null) {
-                MessageUtils.tell(player, MessageUtils.Message.ERROR_VILLAGE_DOESNT_EXIST);
+                MessageUtils.tell(player, Message.get("error-village-doesnt-exist"));
                 return;
             }
         }

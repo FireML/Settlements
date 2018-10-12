@@ -1,7 +1,7 @@
 package me.crz.minecraft.kingdoms.utils;
 
+import de.themoep.minedown.Replacer;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
-import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -15,110 +15,20 @@ import java.util.List;
 import me.crz.minecraft.kingdoms.Base;
 
 public class MessageUtils extends Base {
-    public enum Message {
-        SERVER_NAME,
-        NO_PERMISSION,
-        NO_PERMISSION_,
-        ONLY_CONSOLE,
-        ONLY_PLAYER,
-        PLAYER_NOT_FOUND,
-        HELP,
-        MUST_LEAVE_CURRENT,
-        NOT_IN_CURRENT,
-        SUCCESS_CREATE,
-        SUCCESS_DELETE,
-        RECEIVE_INVITE,
-        TOWN_NOT_FOUND,
-        NO_INVITE,
-        IS_FULL,
-        SUCCESS_JOIN,
-        SUCCESS_LEAVE,
-        NAME_TAKEN,
-        CANT_LEAVE_OWN,
-        SUCCESS_INVITE,
-        KICKED_PLAYER,
-        NEW_RESIDENT,
-        ALERT_LEAVE,
-        SHOW_SETTLEMENT,
-        SUCCESS_DEPOSIT,
-        FAIL_DEPOSIT,
-        LIST_DEPOSIT,
-        UPGRADE,
-        CANT_SET_THAT_PERSONS_RANK,
-        INVALID_RANK,
-        SUCCESS_SET_RANK,
-        SET_RANK,
-        INVALID_LEVEL,
-        UPGRADE_SETTLEMENT,
-        CANT_CLAIM_MORE,
-        ALREADY_OWN_LAND,
-        CANT_CLAIM_HERE,
-        SUCCESS_CLAIM_LAND,
-        CANT_BUILD_HERE,
-        DEFAULT_ENTER,
-        DEFAULT_LEAVE,
-        SUCCESS_CHANGE_ENTER,
-        SUCCESS_CHANGE_LEAVE,
-        SUCCESS_CREATE_SALE_PLOT,
-        SUCCESS_BUILD_STATE,
-        SUCCESS_PLOT_BUILD_STATE,
-        NO_LAND_AROUND,
-        NOT_IN_VILLAGE,
-        UPGRADE_UNLOCK,
-        ALERT_UPKEEP_UNCLAIMED,
-        ALERT_UPKEEP_DELETED,
-        ALERT_UPKEEP_CHARGED,
-        ALERT_UPKEEP_CANT_PAY,
-        BANK_WITHDRAW,
-        RANK_REQUIRED,
-        BANK_NOT_ENOUGH_MONEY,
-        BANK_DEPOSIT,
-        PLAYER_NOT_ENOUGH_MONEY,
-        SUCCESS_CLAIM_OUTPOST,
-        ERROR_MAX_OUTPOST_CHUNKS,
-        SUCCESS_UNCLAIM_OUTPOST,
-        OUTPOST_NOT_FOUND,
-        VILLAGE_RENAMED,
-        ERROR_VILLAGE_EXISTS,
-        ERROR_VILLAGE_DOESNT_EXIST,
-        TELEPORT_DEPOSIT,
-        TELEPORT_CLAIM_REMOVED,
-        TELEPORT_CLAIM_SET,
-        NOW_ALLIED_TO,
-        ALLY_INVITE,
-        ALLY_ACCEPT_INFO,
-        BANISHED,
-        UNBANISHED,
-        SUCCESS_UNCLAIM_LAND,
-        VILLAGE_HOME_SET,
-        ALLY_REMOVED,
-        SERVER_RULES;
-
-        private final String text;
-
-        Message() {
-            text = replaceColorCodes(ConfigManager.getInstance().getMessagesConfig().getString(getKey()));
-        }
-
-        private String getKey() {
-            return name().toLowerCase().replace('_', '-');
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public String getReplaced(String... replaced) {
-            return replacePlaceholders(text, replaced);
-        }
-    }
 
     public MessageUtils() {
         super();
     }
 
     public static void tell(Player player, Message message, String... replacements) {
-        tell(player, message.text, replacements);
+        tell(player, message.getComponents(), replacements);
+    }
+
+    public static void tell(Player player, BaseComponent[] message, String... replacements) {
+        if (replacements != null && replacements.length > 0) {
+            message = replacePlaceholders(message, replacements);
+        }
+        player.spigot().sendMessage(message);
     }
 
     public static void tell(Player player, String message, String... replacements) {
@@ -156,21 +66,20 @@ public class MessageUtils extends Base {
         }
     }
 
-    public static String replacePlaceholders(Message message, String... replacements) {
-        return replacePlaceholders(message.text, replacements);
+    public static BaseComponent[] replacePlaceholders(BaseComponent[] message, String... replacements) {
+        return new Replacer()
+                .placeholderPrefix('{')
+                .placeholderSuffix('}')
+                .replace(replacements)
+                .replaceIn(message);
     }
 
     public static String replacePlaceholders(String message, String... replacements) {
-        for (int i = 0; i + 1 < replacements.length; i += 2) {
-            String placeholder = replacements[i];
-            if (placeholder != null && replacements[i + 1] != null) {
-                if (!placeholder.startsWith("{") && !placeholder.endsWith("}")) {
-                    placeholder = "{" + placeholder + "}";
-                }
-                message = message.replace(placeholder, replacements[i+1]);
-            }
-        }
-        return message;
+        return new Replacer()
+                .placeholderPrefix('{')
+                .placeholderSuffix('}')
+                .replace(replacements)
+                .replaceIn(message);
     }
 
     public static String replaceColorCodes(String message) {

@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 
 import java.util.List;
@@ -37,7 +38,7 @@ public class VillagePlotCommand extends SubCommand {
     public void run(Player player, String base, String alias, String... args) {
         Village senderVillage = VillageManager.getInstance().getVillageFromPlayer(player);
         if (senderVillage == null) {
-            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
+            MessageUtils.tell(player, Message.get("not-in-current"));
             return;
         }
         OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
@@ -97,7 +98,7 @@ public class VillagePlotCommand extends SubCommand {
                     "&8[&9*&8] &b/" + base + " plot revoke &7- removes the players owned claims"));
         } else if (args[0].equalsIgnoreCase("buy")) {
             if (!this.playerOwnsLand(player, landVillage)) {
-                MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
+                MessageUtils.tell(player, Message.get("no-permission"));
                 return;
             }
             if (!land.isForSale()) {
@@ -117,7 +118,7 @@ public class VillagePlotCommand extends SubCommand {
             MessageUtils.tell(player, "&aSuccessfully purchased the land.");
         } else if (args[0].equalsIgnoreCase("unsale")) {
             if (!this.playerOwnsLand(player, landVillage)) {
-                MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
+                MessageUtils.tell(player, Message.get("no-permission"));
                 return;
             }
             if (!land.isForSale()) {
@@ -125,7 +126,7 @@ public class VillagePlotCommand extends SubCommand {
                 return;
             }
             if (res.getVillageRank().below(VillageRank.ELDER)) {
-                MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(senderVillage.getState()));
+                MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.ELDER.getTag(senderVillage.getState()));
                 return;
             }
             land.setForSale(false);
@@ -134,7 +135,7 @@ public class VillagePlotCommand extends SubCommand {
             MessageUtils.tell(player, "&aThis land is no longer for sale!");
         } else if (args[0].equalsIgnoreCase("revoke")) {
             if (!this.playerIsElderOrChief(player, senderVillage)) {
-                MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
+                MessageUtils.tell(player, Message.get("no-permission"));
                 return;
             }
             if (!this.landIsPlot(land)) {
@@ -152,10 +153,10 @@ public class VillagePlotCommand extends SubCommand {
                 }
                 return;
             } else if (!this.playerOwnsLand(player, landVillage)) {
-                MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
+                MessageUtils.tell(player, Message.get("no-permission"));
                 return;
             } else if (res.getVillageRank().below(VillageRank.ELDER)) {
-                MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(senderVillage.getState()));
+                MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.ELDER.getTag(senderVillage.getState()));
                 return;
             } else if (this.landIsPlot(land)) {
                 MessageUtils.tell(player, "&cLand is already owned");
@@ -165,10 +166,10 @@ public class VillagePlotCommand extends SubCommand {
             land.setPrice(price);
             land.setForSale(true);
             Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
-            MessageUtils.tell(player, MessageUtils.Message.SUCCESS_CREATE_SALE_PLOT, "{price}", String.valueOf(price));
+            MessageUtils.tell(player, Message.get("success-create-sale-plot"), "{price}", String.valueOf(price));
         } else if (args[0].equalsIgnoreCase("use")) {
             if (!land.isPlotOwner(player)) {
-                MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
+                MessageUtils.tell(player, Message.get("no-permission"));
                 return;
             }
             if (args.length < 3) {
@@ -187,11 +188,11 @@ public class VillagePlotCommand extends SubCommand {
             }
         } else if (args[0].equalsIgnoreCase("mode")) {
             if (this.landIsPlot(land) && !this.playerOwnsPlot(player, land)) {
-                MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
+                MessageUtils.tell(player, Message.get("no-permission"));
                 return;
             }
             if (!this.landIsPlot(land) && res.getVillageRank().below(VillageRank.ELDER)) {
-                MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(senderVillage.getState()));
+                MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.ELDER.getTag(senderVillage.getState()));
                 return;
             }
             if (args.length < 3) {
@@ -228,14 +229,14 @@ public class VillagePlotCommand extends SubCommand {
                 return;
             }
             if (!player.getUniqueId().equals(land.getPlotOwner())) {
-                MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
+                MessageUtils.tell(player, Message.get("no-permission"));
                 return;
             }
             try {
                 PlotBuildState newState = PlotBuildState.valueOf(args[1].toUpperCase());
                 land.setBuildState(newState);
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
-                MessageUtils.tell(player, MessageUtils.Message.SUCCESS_PLOT_BUILD_STATE, "{state}", newState.toString());
+                MessageUtils.tell(player, Message.get("success-plot-build-state"), "{state}", newState.toString());
             } catch (IllegalArgumentException e) {
                 MessageUtils.tellList(player, Arrays.asList(
                         "&8&l-------- &r&c&l/" + base + " " + alias + "&r " + "&8&l--------",

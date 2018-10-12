@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.Chunk;
@@ -25,12 +26,12 @@ public class VillageClaimCommand extends SubCommand {
     public void run(Player player, String base, String alias, String... args) {
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
+            MessageUtils.tell(player, Message.get("not-in-current"), null, null);
             return;
         }
         Resident res = ResidentManager.getInstance().getResident(player);
         if (res.getVillageRank().below(VillageRank.ELDER)) {
-            MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
+            MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.ELDER.getTag(village.getState()));
             return;
         }
         if (!Utils.isWorldClaimable(player.getWorld())) {
@@ -40,7 +41,7 @@ public class VillageClaimCommand extends SubCommand {
         int amountClaimed = LandManager.getInstance().getClaimedLandSize(village);
         int maxClaimAllowed = Utils.getChunkMax(village.getLevel(), village.getState());
         if (amountClaimed >= maxClaimAllowed) {
-            MessageUtils.tell(player, MessageUtils.Message.CANT_CLAIM_MORE, "{max}", Integer.toString(maxClaimAllowed));
+            MessageUtils.tell(player, Message.get("cant-claim-more"), "{max}", Integer.toString(maxClaimAllowed));
             return;
         }
         Chunk currentChunk = player.getLocation().getChunk();
@@ -58,7 +59,7 @@ public class VillageClaimCommand extends SubCommand {
                 ++landAround;
             }
             if (landAround == 0) {
-                MessageUtils.tell(player, MessageUtils.Message.NO_LAND_AROUND, null, null);
+                MessageUtils.tell(player, Message.get("no-land-around"), null, null);
                 return;
             }
         }
@@ -74,16 +75,16 @@ public class VillageClaimCommand extends SubCommand {
         }
         if (land == null) {
             OwnedLand newLand = LandManager.getInstance().claimLand(player.getLocation(), village);
-            MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_CLAIM_LAND,
+            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("success-claim-land"),
                     "{player}", player.getName(), "{x}", String.valueOf(newLand.getX()), "{z}",  String.valueOf(newLand.getZ()));
             Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(newLand));
             return;
         }
         if (land.getOwnerVillage().equals(village)) {
-            MessageUtils.tell(player, MessageUtils.Message.ALREADY_OWN_LAND, null, null);
+            MessageUtils.tell(player, Message.get("already-own-land"), null, null);
             return;
         }
-        MessageUtils.tell(player, MessageUtils.Message.CANT_CLAIM_HERE, "{owner}", land.getOwnerVillage().getName());
+        MessageUtils.tell(player, Message.get("cant-claim-here"), "{owner}", land.getOwnerVillage().getName());
     }
 
 }

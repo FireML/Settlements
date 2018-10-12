@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village.buildNuse;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.BuildState;
@@ -21,11 +22,11 @@ public class VillageUseCommand extends SubCommand {
     public void run(Player player, String base, String alias, String... args) {
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
+            MessageUtils.tell(player, Message.get("not-in-current"));
             return;
         }
         if (!this.canChange(village, player)) {
-            MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
+            MessageUtils.tell(player, Message.get("no-permission"));
             return;
         }
         if (args.length < 2) {

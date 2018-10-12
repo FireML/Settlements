@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command;
 
 import me.crz.minecraft.kingdoms.command.village.VillageSetAccessCommand;
+import me.crz.minecraft.kingdoms.utils.Message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -144,7 +145,7 @@ public class VillageCommand implements CommandExecutor {
             subCmd.run(p, alias, aliasUsed, Arrays.copyOfRange(args, 1, args.length));
             return;
         }
-        MessageUtils.tell(p, MessageUtils.Message.NO_PERMISSION);
+        MessageUtils.tell(p, Message.get("no-permission"));
     }
 
     public boolean onCommand(final CommandSender sender, final Command command, final String alias, final String[] args) {

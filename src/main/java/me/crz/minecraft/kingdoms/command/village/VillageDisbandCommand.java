@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -27,7 +28,7 @@ public class VillageDisbandCommand extends SubCommand {
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
+            MessageUtils.tell(player, Message.get("not-in-current"), null, null);
             return;
         }
         final Resident res = ResidentManager.getInstance().getResident(player);
@@ -40,7 +41,7 @@ public class VillageDisbandCommand extends SubCommand {
             MessageUtils.tell(player, "&c&lPlease do /" + base + " " + alias + " confirm to confirm the &r&e&ldisbanding&r&c&l of your village.", null, null);
             return;
         }
-        MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_DELETE, null, null);
+        MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("success-delete"), null, null);
         VillageManager.getInstance().deleteVillage(village);
     }
 }

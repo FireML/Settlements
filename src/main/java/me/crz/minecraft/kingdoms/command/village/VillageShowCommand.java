@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.OfflinePlayer;
@@ -32,7 +33,7 @@ public class VillageShowCommand extends SubCommand {
         if (args.length == 0) {
             Village village = VillageManager.getInstance().getVillageFromPlayer(player);
             if (village == null) {
-                MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
+                MessageUtils.tell(player, Message.get("not-in-current"), null, null);
                 return;
             }
             Utils.runAsync(() -> MessageUtils.tell(player, this.showSettlementMessage(village)));
@@ -53,13 +54,13 @@ public class VillageShowCommand extends SubCommand {
                     MessageUtils.tell(player, this.showSettlementMessage(village2));
                     return;
                 }
-                MessageUtils.tell(player, MessageUtils.Message.TOWN_NOT_FOUND, null, null);
+                MessageUtils.tell(player, Message.get("town-not-found"), null, null);
             });
         }
     }
 
     private String showSettlementMessage(Village village) {
-        String message = MessageUtils.Message.SHOW_SETTLEMENT.getText();
+        String message = Message.get("show-settlement").getText();
         if (message.contains("{townName}")) {
             message = message.replace("{townName}", village.getName());
         }

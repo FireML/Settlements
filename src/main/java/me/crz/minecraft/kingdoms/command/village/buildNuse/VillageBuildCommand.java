@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village.buildNuse;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.BuildState;
@@ -26,18 +27,18 @@ public class VillageBuildCommand extends SubCommand {
         }
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
+            MessageUtils.tell(player, Message.get("not-in-current"));
             return;
         }
         if (!this.canChange(village, player)) {
-            MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
+            MessageUtils.tell(player, Message.get("no-permission"));
             return;
         }
         if (args[0].equalsIgnoreCase("residents") || args[0].equalsIgnoreCase("officers") || args[0].equalsIgnoreCase("public") || args[0].equalsIgnoreCase("ally")) {
             BuildState newState = BuildState.valueOf(args[0].toUpperCase());
             village.setBuildState(newState);
             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
-            MessageUtils.tell(player, MessageUtils.Message.SUCCESS_BUILD_STATE, "{state}", args[0]);
+            MessageUtils.tell(player, Message.get("success-build-state"), "{state}", args[0]);
             return;
         }
         MessageUtils.tellList(player, Arrays.asList("&8&l-------- &r&c&l/" + base + " " + alias + "&r " + "&8&l--------", "&8[&9*&8] &b/" + base + " " + alias + " residents &7- residents and officers to build in claimed land" + "&8[&9*&8] &b/" + base + " " + alias + " officers &7- only officers are allowed to build in claimed land" + "&8[&9*&8] &b/" + base + " " + alias + " public &7- allows everyone to build in your claimed land"));

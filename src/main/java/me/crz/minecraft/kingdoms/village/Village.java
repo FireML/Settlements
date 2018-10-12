@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.IdObject;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.utils.config.Data;
@@ -88,19 +89,19 @@ public class Village implements ConfigurationSerializable {
             if (upkeepStage == UpkeepStage.PAID) {
                 this.upkeepStage = UpkeepStage.LAND;
                 LandManager.getInstance().unclaimLand(this);
-                MessageUtils.tellResidents(this.getOnlineResidents(), MessageUtils.Message.ALERT_UPKEEP_UNCLAIMED);
+                MessageUtils.tellResidents(this.getOnlineResidents(), Message.get("alert-upkeep-unclaimed"));
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(this));
             } else if (upkeepStage == UpkeepStage.LAND) {
-                MessageUtils.tellResidents(this.getOnlineResidents(), MessageUtils.Message.ALERT_UPKEEP_DELETED);
+                MessageUtils.tellResidents(this.getOnlineResidents(), Message.get("alert-upkeep-deleted"));
                 VillageManager.getInstance().deleteVillage(this);
             }
         } else {
             this.setBank(this.getBank() - total);
-            MessageUtils.tellResidents(this.getOnlineResidents(), MessageUtils.Message.ALERT_UPKEEP_CHARGED, "charged", String.valueOf(total));
+            MessageUtils.tellResidents(this.getOnlineResidents(), Message.get("alert-upkeep-charged"), "charged", String.valueOf(total));
             this.upkeepStage = UpkeepStage.PAID;
             this.lastUpkeep = System.currentTimeMillis();
             if (!this.canPayUpkeep(total)) {
-                MessageUtils.tellResidents(this.getOnlineResidents(), MessageUtils.Message.ALERT_UPKEEP_CANT_PAY, "cost", String.valueOf(total));
+                MessageUtils.tellResidents(this.getOnlineResidents(), Message.get("alert-upkeep-cant-pay"), "cost", String.valueOf(total));
             }
         }
     }

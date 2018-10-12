@@ -1,9 +1,9 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -11,9 +11,6 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class VillageRenameCommand extends SubCommand {
     String allowed;
@@ -29,12 +26,12 @@ public class VillageRenameCommand extends SubCommand {
     public void run(Player player, String base, String alias, String... args) {
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
+            MessageUtils.tell(player, Message.get("not-in-current"));
             return;
         }
         Resident res = ResidentManager.getInstance().getResident(player);
         if (res.getVillageRank().below(VillageRank.CHIEF)) {
-            MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.CHIEF.getTag(village.getState()));
+            MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.CHIEF.getTag(village.getState()));
             return;
         }
         if (args.length == 0) {
@@ -42,7 +39,7 @@ public class VillageRenameCommand extends SubCommand {
             return;
         }
         if (VillageManager.getInstance().getVillageFromName(args[0]) != null) {
-            MessageUtils.tell(player, MessageUtils.Message.ERROR_VILLAGE_EXISTS, "name", args[0]);
+            MessageUtils.tell(player, Message.get("error-village-exists"), "name", args[0]);
             return;
         }
         boolean invalid = false;
@@ -60,10 +57,10 @@ public class VillageRenameCommand extends SubCommand {
         }
         Utils.runAsync(() -> {
             village.setName(args[0]);
-            village.setEnterMessage(MessageUtils.Message.DEFAULT_ENTER.getReplaced("owner", village.getName()));
-            village.setLeaveMessage(MessageUtils.Message.DEFAULT_LEAVE.getReplaced("owner", village.getName()));
+            village.setEnterMessage(Message.get("default-enter").getReplaced("owner", village.getName()));
+            village.setLeaveMessage(Message.get("default-leave").getReplaced("owner", village.getName()));
             DatabaseManager.getInstance().saveVillage(village);
-            MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.VILLAGE_RENAMED, "name", village.getName());
+            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("village-renamed"), "name", village.getName());
         });
     }
 }

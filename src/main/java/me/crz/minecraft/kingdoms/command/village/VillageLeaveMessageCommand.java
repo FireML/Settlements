@@ -1,6 +1,25 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+/*
+ * Kingdoms - kingdoms
+ * Copyright (c) 2018 Max Lee aka Phoenix616 (mail@moep.tv)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -24,7 +43,7 @@ public class VillageLeaveMessageCommand extends SubCommand {
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
+            MessageUtils.tell(player, Message.get("not-in-current"), null, null);
             return;
         }
         if (!this.canChange(village, player)) {
@@ -33,7 +52,7 @@ public class VillageLeaveMessageCommand extends SubCommand {
         }
         final Resident res = ResidentManager.getInstance().getResident(player);
         if (res.getVillageRank().below(VillageRank.ELDER)) {
-            MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
+            MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.ELDER.getTag(village.getState()));
             return;
         }
         if (args.length <= 2) {
@@ -49,7 +68,7 @@ public class VillageLeaveMessageCommand extends SubCommand {
         message = ChatColor.translateAlternateColorCodes('&', message);
         village.setLeaveMessage(message);
         Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
-        MessageUtils.tell(player, MessageUtils.Message.SUCCESS_CHANGE_LEAVE, null, null);
+        MessageUtils.tell(player, Message.get("success-change-leave"), null, null);
     }
 
     private String getMessage(final String[] args) {

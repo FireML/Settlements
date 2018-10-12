@@ -1,12 +1,9 @@
 package me.crz.minecraft.kingdoms.command.village;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.village.Village;
-import org.bson.Document;
 import me.crz.minecraft.kingdoms.vault.Levels;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -24,7 +21,7 @@ public class VillageMaterialsCommand extends SubCommand {
     public void run(Player player, String base, String alias, String... args) {
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
+            MessageUtils.tell(player, Message.get("not-in-current"), null, null);
             return;
         }
         if (village.getLevel() == 10) {

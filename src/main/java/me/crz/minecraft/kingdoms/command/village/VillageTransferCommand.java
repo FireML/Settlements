@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -26,22 +27,22 @@ public class VillageTransferCommand extends SubCommand {
         }
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
+            MessageUtils.tell(player, Message.get("not-in-current"), null, null);
             return;
         }
         Resident res = ResidentManager.getInstance().getResident(player);
         if (res.getVillageRank().below(VillageRank.CHIEF)) {
-            MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.CHIEF.getTag(village.getState()));
+            MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.CHIEF.getTag(village.getState()));
             return;
         }
         Utils.runAsync(() -> {
             Resident tres = ResidentManager.getInstance().getResident(args[0]);
             if (tres == null) {
-                MessageUtils.tell(player, MessageUtils.Message.PLAYER_NOT_FOUND, null, null);
+                MessageUtils.tell(player, Message.get("player-not-found"), null, null);
                 return;
             }
             if (!this.isResident(tres, village)) {
-                MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT, null, null);
+                MessageUtils.tell(player, Message.get("not-in-current"), null, null);
                 return;
             }
             tres.setVillageRank(VillageRank.CHIEF);
@@ -50,7 +51,7 @@ public class VillageTransferCommand extends SubCommand {
             DatabaseManager.getInstance().saveResident(res);
             DatabaseManager.getInstance().saveResident(tres);
             DatabaseManager.getInstance().saveVillage(village);
-            MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.SUCCESS_SET_RANK,
+            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("success-set-rank"),
                     "rank", VillageRank.CHIEF.getTag(village.getState()),
                     "setter", player.getName(),
                     "target", args[0]

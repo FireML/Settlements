@@ -1,8 +1,8 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -26,11 +26,11 @@ public class VillageUnAllyCommand extends SubCommand {
         }
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
+            MessageUtils.tell(player, Message.get("not-in-current"));
             return;
         }
         if (ResidentManager.getInstance().getResident(player).getVillageRank().below(VillageRank.ELDER)) {
-            MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
+            MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.ELDER.getTag(village.getState()));
             return;
         }
         Village invitedVillage = VillageManager.getInstance().getVillageFromName(args[0].toLowerCase());
@@ -52,7 +52,7 @@ public class VillageUnAllyCommand extends SubCommand {
             DatabaseManager.getInstance().saveVillage(invitedVillage);
             DatabaseManager.getInstance().saveVillage(village);
         });
-        MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), MessageUtils.Message.ALLY_REMOVED, "name", village.getName());
-        MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.ALLY_REMOVED, "name", invitedVillage.getName());
+        MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), Message.get("ally-removed"), "name", village.getName());
+        MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("ally-removed"), "name", invitedVillage.getName());
     }
 }

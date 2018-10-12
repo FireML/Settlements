@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command.admin;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -45,9 +46,9 @@ public class VillageAdminJoinCommand extends SubCommand {
             MessageUtils.tell(player, "&6&l" + target.getName() + "&r&c&l is now in {townName}", "{townName}", village.getName());
             Player targetP = target.getPlayer();
             if (targetP != null) {
-                MessageUtils.tell(targetP, MessageUtils.Message.SUCCESS_JOIN, "{townName}", village.getName());
+                MessageUtils.tell(targetP, Message.get("success-join"), "{townName}", village.getName());
             }
-            MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.NEW_RESIDENT, "{player}", target.getName());
+            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("new-resident"), "{player}", target.getName());
         });
     }
 }

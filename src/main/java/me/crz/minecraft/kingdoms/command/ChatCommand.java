@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Data;
 import org.bukkit.command.Command;
@@ -68,7 +69,7 @@ public class ChatCommand implements CommandExecutor {
                     Bukkit.broadcastMessage(MessageUtils.replaceColorCodes("&c&lGeneral Chat has been muted by &6&l" + p.getDisplayName()));
                 }
             } else {
-                MessageUtils.tell(p, MessageUtils.Message.NO_PERMISSION);
+                MessageUtils.tell(p, Message.get("no-permission"));
             }
         } else if (args[0].equalsIgnoreCase("leave")) {
             Resident res = ResidentManager.getInstance().getResident(p);

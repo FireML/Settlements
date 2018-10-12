@@ -1,7 +1,7 @@
 package me.crz.minecraft.kingdoms.scoreboard;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
@@ -26,8 +26,8 @@ public class ScoreboardAnimation implements Listener {
         PRIMARY = ChatColor.WHITE + bold;
         SECONDARY = ChatColor.AQUA + bold;
         TRANSITION = ChatColor.WHITE + bold;
-        PRIMARYT = MessageUtils.Message.SERVER_NAME.getText();
-        SECONDARYT = MessageUtils.invertColors(MessageUtils.Message.SERVER_NAME.getText());
+        PRIMARYT = Message.get("server-name").getText();
+        SECONDARYT = MessageUtils.invertColors(Message.get("server-name").getText());
         stage = false;
         counter = -1;
         KingdomsPlugin.getInstance().getServer().getScheduler().scheduleSyncRepeatingTask(KingdomsPlugin.getInstance(), this::onUpdate, 0L, 2L);

@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.command.resident;
 
 import java.util.Arrays;
 
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.resident.friend.FriendListCommand;
@@ -48,6 +49,6 @@ public class ResidentFriendCommand extends SubCommand {
             subCmd.run(p, alias, aliasUsed, Arrays.copyOfRange(args, 1, args.length));
             return;
         }
-        MessageUtils.tell(p, MessageUtils.Message.NO_PERMISSION);
+        MessageUtils.tell(p, Message.get("no-permission"));
     }
 }

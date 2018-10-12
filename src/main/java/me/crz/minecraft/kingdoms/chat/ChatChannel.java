@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.chat;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.HumanReadable;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -38,7 +39,7 @@ public enum ChatChannel implements HumanReadable {
                 return true;
             }
             Village village = VillageManager.getInstance().getVillageFromPlayer(player);
-            MessageUtils.tell(player, MessageUtils.Message.RANK_REQUIRED, "rank", VillageRank.ELDER.getTag(village.getState()));
+            MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.ELDER.getTag(village.getState()));
             return false;
         }
     },
@@ -54,7 +55,7 @@ public enum ChatChannel implements HumanReadable {
             if (this.canChat(player)) {
                 return true;
             }
-            MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
+            MessageUtils.tell(player, Message.get("no-permission"));
             return false;
         }
     },
@@ -69,7 +70,7 @@ public enum ChatChannel implements HumanReadable {
             if (this.canChat(player)) {
                 return true;
             }
-            MessageUtils.tell(player, MessageUtils.Message.NO_PERMISSION);
+            MessageUtils.tell(player, Message.get("no-permission"));
             return false;
         }
     };

@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.UtilMath;
 import me.crz.minecraft.kingdoms.village.Village;
 
@@ -24,7 +25,7 @@ public class VillageUpkeepCommand extends SubCommand {
     public void run(final Player player, final String base, final String alias, final String... args) {
         final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         if (village == null) {
-            MessageUtils.tell(player, MessageUtils.Message.NOT_IN_CURRENT);
+            MessageUtils.tell(player, Message.get("not-in-current"));
             return;
         }
         if (args.length >= 1 && args[0].equalsIgnoreCase("test") && player.isOp()) {

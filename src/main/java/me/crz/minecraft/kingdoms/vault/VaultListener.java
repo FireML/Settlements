@@ -1,8 +1,8 @@
 package me.crz.minecraft.kingdoms.vault;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,6 @@ import org.bukkit.Material;
 
 import java.util.HashMap;
 
-import org.bson.Document;
 import org.bukkit.event.EventHandler;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.inventory.ItemStack;
@@ -126,9 +125,9 @@ public class VaultListener implements Listener {
 
     private List<String> buildfailDepositMessage(Map<Material, Integer> fail, String reason) {
         List<String> messages = new ArrayList<>();
-        messages.add(MessageUtils.Message.FAIL_DEPOSIT.getReplaced("reason", reason));
+        messages.add(Message.get("fail-deposit").getReplaced("reason", reason));
         for (Map.Entry<Material, Integer> entry : fail.entrySet()) {
-            messages.add(MessageUtils.Message.LIST_DEPOSIT.getReplaced(
+            messages.add(Message.get("list-deposit").getReplaced(
                     "amount", String.valueOf(entry.getValue()),
                     "material", entry.getKey().name()));
         }
@@ -137,9 +136,9 @@ public class VaultListener implements Listener {
 
     private List<String> buildSuccessDepositMessage(Player p, Map<String, Integer> deposited) {
         List<String> messages = new ArrayList<>();
-        messages.add(MessageUtils.Message.SUCCESS_DEPOSIT.getReplaced("player", p.getDisplayName()));
+        messages.add(Message.get("success-deposit").getReplaced("player", p.getDisplayName()));
         for (Map.Entry<String, Integer> entry : deposited.entrySet()) {
-            messages.add(MessageUtils.Message.LIST_DEPOSIT.getReplaced(
+            messages.add(Message.get("list-deposit").getReplaced(
                 "amount", String.valueOf(entry.getValue()),
                 "material", entry.getKey()));
         }
@@ -149,14 +148,14 @@ public class VaultListener implements Listener {
     private void upgrade(Village village) {
         village.setState(VillageState.KINGDOM);
         village.setLevel(1);
-        MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.UPGRADE_SETTLEMENT, "{state}", village.getState().toString());
+        MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("upgrade-settlement"), "{state}", village.getState().toString());
         this.resetVaultAfterLevelUp(village);
     }
 
     private void levelUp(Village village) {
         village.levelUp();
         this.resetVaultAfterLevelUp(village);
-        MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.UPGRADE, "{level}", Integer.toString(village.getLevel()));
+        MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("upgrade"), "{level}", Integer.toString(village.getLevel()));
         if (village.getState().equals(VillageState.KINGDOM)) {
             String unlock;
             switch (village.getLevel()) {
@@ -184,7 +183,7 @@ public class VaultListener implements Listener {
                 default:
                     return;
             }
-            MessageUtils.tellResidents(village.getOnlineResidents(), MessageUtils.Message.UPGRADE_UNLOCK, "{unlock}", unlock);
+            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("upgrade-unlock"), "{unlock}", unlock);
         }
     }
 
