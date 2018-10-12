@@ -120,4 +120,13 @@ public class VillageManager {
             DatabaseManager.getInstance().saveResident(resident);
         });
     }
+
+    /**
+     * Check the upkeep for all registered villages
+     */
+    public void doUpkeep() {
+        for (Village village : villages.values()) {
+            village.doUpkeep();
+        }
+    }
 }

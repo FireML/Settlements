@@ -6,6 +6,7 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
+import me.crz.minecraft.kingdoms.utils.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -17,8 +18,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -73,6 +72,12 @@ public class VillageListener implements Listener {
         for (ChatChannel channel : ChatChannel.values()) {
             if (channel.canChat(event.getPlayer())) {
                 res.getChannels().add(channel);
+            }
+        }
+        if (res.getVillage() != null) {
+            int upkeep = res.getVillage().getUpkeep();
+            if (!res.getVillage().canPay(upkeep)) {
+                MessageUtils.tell(event.getPlayer(), Message.get("upkeep.alert.cant-pay"), "cost", String.valueOf(upkeep));
             }
         }
     }

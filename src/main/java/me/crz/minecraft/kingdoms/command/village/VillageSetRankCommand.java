@@ -67,7 +67,7 @@ public class VillageSetRankCommand extends SubCommand {
                 return;
             }
             if (rank.equals(VillageRank.CHIEF)) {
-                MessageUtils.tell(player, "&c&lPlease use &6&c&l/" + base + " transfer <player>&r&c&l to transfer ownership of the " + village.getState().name().toLowerCase(), null, null);
+                MessageUtils.tell(player, "&c&lPlease use &6&c&l/" + base + " transfer <player>&r&c&l to transfer ownership of the " + village.getState().getTag(), null, null);
                 return;
             }
             if (res.getVillageRank().ordinal() <= rank.ordinal()) {

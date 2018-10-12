@@ -184,10 +184,6 @@ public class LandFlagBase extends Base {
         return LandManager.getInstance().isLandClaimed(loc);
     }
 
-    public boolean isKingdom(Village village) {
-        return village.getState().equals(VillageState.KINGDOM);
-    }
-
     public void sendPvPNotEnabledMessage(Player p) {
         pvpMessage.send(p);
     }

@@ -166,8 +166,7 @@ public class ChatManager extends Base {
                     return;
                 }
                 sb = new StringBuilder("&b[");
-                sb.append(village.getState().name().charAt(0));
-                sb.append(village.getState().name().toLowerCase().substring(1));
+                sb.append(village.getState().getTag());
                 sb.append("] &7");
                 sb.append(player.getDisplayName());
                 sb.append(" \u27a6 &a");
@@ -197,8 +196,7 @@ public class ChatManager extends Base {
                     return;
                 }
                 StringBuilder sba = new StringBuilder("&b[Ally] &6");
-                sba.append(village.getState().name().charAt(0));
-                sba.append(village.getState().name().toLowerCase().substring(1));
+                sba.append(village.getState().getTag());
                 sba.append(" ");
                 sba.append(player.getDisplayName());
                 sba.append(" \u27a6 ");

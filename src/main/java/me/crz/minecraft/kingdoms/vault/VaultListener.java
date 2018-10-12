@@ -45,7 +45,7 @@ public class VaultListener implements Listener {
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         this.deposit(contents, village, player);
         if (this.canLevelUp(village)) {
-            if (village.getLevel() == Levels.VILLAGE_TO_KINGDOM_LEVEL && village.getState().equals(VillageState.VILLAGE)) {
+            if (village.getLevel() == Levels.VILLAGE_TO_KINGDOM_LEVEL && village.getState() == VillageState.VILLAGE) {
                 this.upgrade(village);
             } else {
                 this.levelUp(village);
@@ -148,15 +148,15 @@ public class VaultListener implements Listener {
     private void upgrade(Village village) {
         village.setState(VillageState.KINGDOM);
         village.setLevel(1);
-        MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("upgrade-settlement"), "{state}", village.getState().toString());
+        MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("upgrade-settlement"), "state", village.getState().getTag());
         this.resetVaultAfterLevelUp(village);
     }
 
     private void levelUp(Village village) {
         village.levelUp();
         this.resetVaultAfterLevelUp(village);
-        MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("upgrade"), "{level}", Integer.toString(village.getLevel()));
-        if (village.getState().equals(VillageState.KINGDOM)) {
+        MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("upgrade"), "level", Integer.toString(village.getLevel()));
+        if (village.getState() == VillageState.KINGDOM) {
             String unlock;
             switch (village.getLevel()) {
                 case 4:
@@ -183,7 +183,7 @@ public class VaultListener implements Listener {
                 default:
                     return;
             }
-            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("upgrade-unlock"), "{unlock}", unlock);
+            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("upgrade-unlock"), "unlock", unlock);
         }
     }
 

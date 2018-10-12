@@ -1,9 +1,8 @@
 package me.crz.minecraft.kingdoms.village;
 
-import me.crz.minecraft.kingdoms.utils.ConfigKey;
-import me.crz.minecraft.kingdoms.utils.HumanReadable;
+import me.crz.minecraft.kingdoms.utils.NameTag;
 
-public enum VillageState implements HumanReadable, ConfigKey {
+public enum VillageState implements NameTag {
     VILLAGE,
     KINGDOM;
 }

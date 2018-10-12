@@ -61,10 +61,14 @@ success-build-state: '&a&lSUCCESS &7You have changed your settlement build state
 success-plit-build-state: '&a&lSUCCESS &7You have changed your plot build state to &e{state}&7!'
 no-land-around: '&c&lERROR &r&7Your claim must be connected to an existing settlement claim!'
 not-in-village: "&c&lTarget player {player} isn't in a village!"
-alert-upkeep-unclaimed: "&a&lALERT &7Your settlement land has been &cunclaimed&7 because {reason} you had not enough money for the upkeep!"
-alert-upkeep-deleted: "&a&lALERT &7Your settlement has been &cdeleted&7 because it was &cunable&7 to pay its upkeep!"
-alert-upkeep-charged: "&a&lALERT &7Your settlement has been charged &6{charged}&7 for upkeep!"
-alert-upkeep-cant-pay: "&a&lALERT &7Your settlement is &cunable&7 to pay tommorrows upkeep, it will cost &6{cost}&7!"
+upkeep:
+  alert:
+    level-removed: "&a&lALERT &7Your settlement has had a level removed because you couldn't pay the upkeep!"
+    downgraded: "&a&lALERT &7Your settlement was downgraded to a level {level} {state} because you couldn't pay the upkeep!"
+    deleted: "&a&lALERT &7Your settlement has been &cdeleted&7 because it was &cunable&7 to pay its upkeep!"
+    charged: "&a&lALERT &7Your settlement has been charged &6{charged}&7 for upkeep!"
+    cant-pay: "&a&lALERT &7Your settlement is &cunable&7 to pay tomorrows upkeep, it will cost &6{cost}&7!"
+first-to-reach-level: "&6&l{name} &7&l is the first to reach &6&l{state} &7&llevel &6&l{level}"
 bank-withdraw: "&e&l{rank} &r&e{name} &r&7withdrew &6{amount}&r&7 from the village bank!"
 bank-deposit: "&e&l{rank} &r&e{name} &r&7deposited &6{amount}&r&7 into the village bank!"
 rank-required: "&c&lYou require the rank &r&6&l{rank} or higher&r&c&l!"
@@ -86,6 +90,7 @@ banished: "&7Player &6{player}&7 has been &cbanished &7from your settlement!"
 unbanished: "&7Player &6{player}&7 has been &cbanished &7from your settlement!"
 village-home-set: "{rank} {player} &r&7&l has set the village home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
 village:
+  name: "village"
   enter-message: "&f[&eKingdoms&f] &7Entering &a{name}{pvp}"
   leave-message: "&f[&eKingdoms&f] &7Leaving &a{name}"
   name:
@@ -95,6 +100,7 @@ village:
     recruiter: 'RECRUITER'
     resident: 'RESIDENT'
 kingdom:
+  name: "kingdom"
   enter-message: "&f[&eKingdoms&f] &7Entering &a{name}{pvp}"
   leave-message: "&f[&eKingdoms&f] &7Leaving &a{name}"
   name:

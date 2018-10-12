@@ -82,8 +82,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "homeLoc_z DOUBLE,"
                     + "homeLoc_yaw FLOAT,"
                     + "homeLoc_pitch FLOAT,"
-                    + "lastUpkeep BIGINT(11) NOT NULL,"
-                    + "upkeepStage VARCHAR(255) NOT NULL"
+                    + "lastUpkeep BIGINT(11) NOT NULL"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_outposts ("

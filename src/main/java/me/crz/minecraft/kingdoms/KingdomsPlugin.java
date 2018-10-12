@@ -13,6 +13,7 @@ import me.crz.minecraft.kingdoms.utils.ThreadManager;
 import org.bukkit.Bukkit;
 
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import me.crz.minecraft.kingdoms.landflags.LandFlagsUseEvents;
@@ -35,18 +36,11 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     private static KingdomsPlugin instance;
     public static Data data;
     private LandPerks lPerks;
-    public Economy econ;
-    public boolean emgcy;
+    public Economy econ = null;
+    public boolean emgcy = false;
     public static Chat chat;
-    public UtilChat utilChat;
+    public UtilChat utilChat = new UtilChat();
     private boolean running = false;
-
-    public KingdomsPlugin() {
-        super();
-        econ = null;
-        emgcy = false;
-        utilChat = new UtilChat();
-    }
 
     public void onDisable() {
         if (running) {
@@ -103,14 +97,14 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     public void upkeep() {
         Calendar midnight = Calendar.getInstance();
-        midnight.set(Calendar.HOUR_OF_DAY, 0);
+        midnight.set(Calendar.HOUR_OF_DAY, 12);
         midnight.set(Calendar.MINUTE, 0);
         midnight.set(Calendar.SECOND, 0);
         midnight.set(Calendar.MILLISECOND, 1);
         midnight.set(Calendar.DAY_OF_YEAR, midnight.get(Calendar.DAY_OF_YEAR) + 1);
-        long tillMidnight = midnight.getTimeInMillis() - System.currentTimeMillis() - 1L;
-        long ticksTillMidnight = tillMidnight / 50L;
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> this.getLogger().log(Level.INFO, "Should be doing upkeep here!"), ticksTillMidnight, 1728000L);
+        long tillNoon = midnight.getTimeInMillis() - System.currentTimeMillis() - 1L;
+        long ticksTillNoon = tillNoon / 50L;
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> VillageManager.getInstance().doUpkeep(), ticksTillNoon, TimeUnit.DAYS.toSeconds(1L) * 20);
     }
 
     public LandPerks getLandPerks() {

@@ -65,7 +65,7 @@ public class VillageShowCommand extends SubCommand {
             message = message.replace("{townName}", village.getName());
         }
         if (message.contains("{state}")) {
-            message = message.replace("{state}", village.getState().name());
+            message = message.replace("{state}", village.getState().getTag());
         }
         if (message.contains("{level}")) {
             message = message.replace("{level}", Integer.toString(village.getLevel()));

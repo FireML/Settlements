@@ -67,9 +67,12 @@ public class TeleportersGUI extends Base {
         ci.addItem(4, new ClickableItem() {
             public ItemStack getItem(Player p) {
                 Village v = VillageManager.getInstance().getVillageFromPlayer(p);
-                if (v == null || v.getState().equals(VillageState.VILLAGE) || v.getLevel() < 4) {
-                    MessageUtils.tell(p, "&c&lYou require a level &610 Kingdom&c&l to use this!");
-                    return locked;
+                if (v == null || v.getState() == VillageState.VILLAGE || v.getLevel() < 10) {
+                    ItemStack item = new ItemStack(locked);
+                    ItemMeta pm = item.getItemMeta();
+                    pm.setDisplayName("&c&lYou require a level &610 Kingdom&c&l to use this!");
+                    item.setItemMeta(pm);
+                    return item;
                 }
                 ItemStack item = new ItemStack(Material.GRASS);
                 ItemMeta pm = item.getItemMeta();
@@ -80,7 +83,7 @@ public class TeleportersGUI extends Base {
 
             public boolean click(Player p, ClickType clickType) {
                 Village v = VillageManager.getInstance().getVillageFromPlayer(p);
-                if (v == null || v.getState().equals(VillageState.VILLAGE) || v.getLevel() < 4) {
+                if (v == null || v.getState() == VillageState.VILLAGE || v.getLevel() < 10) {
                     MessageUtils.tell(p, "&c&lYou require a level &610 Kingdom&c&l to use this!");
                     return false;
                 }

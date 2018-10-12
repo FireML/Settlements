@@ -92,7 +92,7 @@ public class LandPerks {
         for (final PotionEffect effect : this.getApplicablePotionEffects(village, player)) {
             player.addPotionEffect(effect, true);
         }
-        if (village.getLevel() >= 4 && village.getState().equals(VillageState.KINGDOM)) {
+        if (village.getLevel() >= 4 && village.getState() == VillageState.KINGDOM) {
             player.getWorld().getName().equalsIgnoreCase("kingdoms"); // TODO: wat?
         }
     }

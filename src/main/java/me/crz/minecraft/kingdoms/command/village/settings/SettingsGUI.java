@@ -77,7 +77,7 @@ public class SettingsGUI {
                 sb.append(village.getName());
                 sb.append("&r&8--------\n");
                 sb.append("&a&lState &r&7");
-                sb.append(village.getState().humanizedName());
+                sb.append(village.getState().getTag());
                 sb.append("\n&6&lLevel &r&7");
                 sb.append(village.getLevel());
                 sb.append("\n&6&lAccess &r&7");

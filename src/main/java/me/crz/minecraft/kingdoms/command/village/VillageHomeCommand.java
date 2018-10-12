@@ -42,7 +42,7 @@ public class VillageHomeCommand extends SubCommand {
 
         if ((village.getAccess() == VillageAccess.PRIVATE && !village.equals(playerVillage))
                 || (village.getAccess() == VillageAccess.ALLY && (playerVillage == null || !village.getAllies().contains(playerVillage.getId())))) {
-            MessageUtils.tell(player, "&c&lYou don't have access to teleport to the home of that " + village.getState().humanizedName() + "!");
+            MessageUtils.tell(player, "&c&lYou don't have access to teleport to the home of that " + village.getState().getTag() + "!");
             return;
         }
 
@@ -51,7 +51,7 @@ public class VillageHomeCommand extends SubCommand {
             MessageUtils.tell(player, "&e&lTeleporting in 5 seconds...");
             ExecuteMoveUtil.getInstance().execute(player, () -> player.teleport(loc), 3, "Teleport");
         } else {
-            MessageUtils.tell(player, "&c&lThat " + village.getState().humanizedName() + " doesn't have a home!");
+            MessageUtils.tell(player, "&c&lThat " + village.getState().getTag() + " doesn't have a home!");
         }
     }
 }

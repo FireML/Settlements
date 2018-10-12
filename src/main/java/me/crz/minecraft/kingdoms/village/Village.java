@@ -6,6 +6,7 @@ import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.utils.config.Data;
+import me.crz.minecraft.kingdoms.vault.Levels;
 import me.crz.minecraft.kingdoms.world.NamedLocation;
 import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -24,7 +25,6 @@ import org.bukkit.Location;
 
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.land.LandManager;
-import me.crz.minecraft.kingdoms.utils.UtilTime;
 
 import java.util.Objects;
 import java.util.Set;
@@ -59,8 +59,7 @@ public class Village implements ConfigurationSerializable {
     private Set<UUID> residents = new LinkedHashSet<>();
     private Set<UUID> banished = new LinkedHashSet<>();
     private Map<Use, BuildState> use = new EnumMap<>(Use.class);
-    private long lastUpkeep = System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7L);
-    private UpkeepStage upkeepStage = UpkeepStage.PAID;
+    private long lastUpkeep = System.currentTimeMillis();
     private Map<String, Integer> vault = new HashMap<>();
 
     public Village(String name, UUID chief, int level, VillageState state, BuildState buildState) {
@@ -72,37 +71,45 @@ public class Village implements ConfigurationSerializable {
         this.buildState = buildState;
     }
 
-    public void checkThenPay() {
-        if (UtilTime.elapsedNano(lastUpkeep, TimeUnit.DAYS.toNanos(1L))) {
+    public void doUpkeep() {
+        if (System.currentTimeMillis() > lastUpkeep + TimeUnit.DAYS.toMillis(1L)) {
             this.payUpkeep();
         }
     }
 
     public void payUpkeep() {
-        int total = LandManager.getInstance().getClaimedLandSize(this) * 500;
-        if (!this.canPayUpkeep(total)) {
-            this.setBank(0);
-            if (upkeepStage == UpkeepStage.PAID) {
-                this.upkeepStage = UpkeepStage.LAND;
-                LandManager.getInstance().unclaimLand(this);
-                MessageUtils.tellResidents(this.getOnlineResidents(), Message.get("alert-upkeep-unclaimed"));
+        int total = getUpkeep();
+        if (!canPay(total)) {
+            if (getLevel() > 1 || getState() == VillageState.KINGDOM) {
+                if (getLevel() == 1 && getState() == VillageState.KINGDOM) {
+                    setState(VillageState.VILLAGE);
+                    setLevel(Levels.VILLAGE_TO_KINGDOM_LEVEL);
+                    MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.downgraded"), "state", getState().getTag(), "level", String.valueOf(getLevel()));
+                } else {
+                    setLevel(getLevel() - 1);
+                    MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.level-removed"), "level", String.valueOf(getLevel()));
+                }
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(this));
-            } else if (upkeepStage == UpkeepStage.LAND) {
-                MessageUtils.tellResidents(this.getOnlineResidents(), Message.get("alert-upkeep-deleted"));
+            } else {
+                setBank(0);
+                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.deleted"));
                 VillageManager.getInstance().deleteVillage(this);
             }
         } else {
-            this.setBank(this.getBank() - total);
-            MessageUtils.tellResidents(this.getOnlineResidents(), Message.get("alert-upkeep-charged"), "charged", String.valueOf(total));
-            this.upkeepStage = UpkeepStage.PAID;
-            this.lastUpkeep = System.currentTimeMillis();
-            if (!this.canPayUpkeep(total)) {
-                MessageUtils.tellResidents(this.getOnlineResidents(), Message.get("alert-upkeep-cant-pay"), "cost", String.valueOf(total));
+            setBank(getBank() - total);
+            MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.charged"), "charged", String.valueOf(total));
+            setLastUpkeep(System.currentTimeMillis());
+            if (!canPay(total)) {
+                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.cant-pay"), "cost", String.valueOf(total));
             }
         }
     }
 
-    public boolean canPayUpkeep(int total) {
+    public int getUpkeep() {
+        return LandManager.getInstance().getClaimedLandSize(this) * 500;
+    }
+
+    public boolean canPay(int total) {
         return this.getBank() - total >= 0;
     }
 
@@ -112,14 +119,6 @@ public class Village implements ConfigurationSerializable {
 
     public void setLastUpkeep(long lastUpkeep) {
         this.lastUpkeep = lastUpkeep;
-    }
-
-    public UpkeepStage getUpkeepStage() {
-        return upkeepStage;
-    }
-
-    public void setUpkeepStage(UpkeepStage upkeepStage) {
-        this.upkeepStage = upkeepStage;
     }
 
     public BuildState getUseState(Use u) {
@@ -237,11 +236,14 @@ public class Village implements ConfigurationSerializable {
 
     public void setLevel(int level) {
         this.level = level;
-        if (Data.first.getString(String.valueOf(villageState.name().toLowerCase()) + "-" + level).equals("")) {
-            Data.first.put(String.valueOf(villageState.name().toLowerCase()) + "-" + level, this.getName());
+        if (Data.first.getString(villageState.getKey() + "-" + level).equals("")) {
+            Data.first.put(villageState.getKey() + "-" + level, this.getName());
             KingdomsPlugin.data.save(KingdomsPlugin.getInstance().getDataFolder());
             for (Player player : Bukkit.getOnlinePlayers()) {
-                MessageUtils.tell(player, "&6&l" + this.getName() + " &7&l is the first to reach &6&l" + villageState.name().toLowerCase() + " &7&llevel &6&l" + level);
+                MessageUtils.tell(player, Message.get("first-to-reach-level"),
+                        "name", this.getName(),
+                        "state", villageState.name().toLowerCase(),
+                        "level", String.valueOf(level));
             }
         }
     }
@@ -376,7 +378,6 @@ public class Village implements ConfigurationSerializable {
         map.put("banished", getBanishedResidents().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("uses", getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
         map.put("lastUpkeep", getLastUpkeep());
-        map.put("upkeepStage", getUpkeepStage().name());
         map.put("vault", getVault().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         return map;
     }
@@ -430,7 +431,6 @@ public class Village implements ConfigurationSerializable {
             }
         }
         village.setLastUpkeep((Long) map.get("lastUpkeep"));
-        village.setUpkeepStage(Utils.parseEnum((String) map.get("upkeepStage"), UpkeepStage.PAID));
         ((Map<String, Object>) map.get("vault")).entrySet().stream()
                 .filter(e -> !(e.getValue() instanceof Integer))
                 .forEach(e -> village.getVault().put(e.getKey(), (Integer) e.getValue()));
