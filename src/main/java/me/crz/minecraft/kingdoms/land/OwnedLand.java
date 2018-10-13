@@ -40,7 +40,7 @@ public class OwnedLand implements ConfigurationSerializable {
     private boolean mobSpawning = false;
     private boolean fireSpread = false;
     private boolean explosions = false;
-    private boolean isOutpost = false;
+    private String outpost = null;
     private PlotBuildState buildState = PlotBuildState.RESIDENTS;
     private EnumMap<Use, PlotBuildState> use = new EnumMap<>(Use.class);
 
@@ -76,12 +76,23 @@ public class OwnedLand implements ConfigurationSerializable {
         buildState = state;
     }
 
-    public boolean getIsOutpost() {
-        return isOutpost;
+    public boolean isOutpost() {
+        return outpost != null;
     }
 
-    public void setIsOutpost(boolean b) {
-        isOutpost = b;
+    public void setOutpost(String name ) {
+        if (name != null && name.isEmpty()) {
+            outpost = null;
+        } else {
+            outpost = name;
+        }
+    }
+
+    public String getOutpostName() {
+        if (!isOutpost()) {
+            return "-";
+        }
+        return outpost;
     }
 
     public Village getOwnerVillage() {
@@ -90,6 +101,10 @@ public class OwnedLand implements ConfigurationSerializable {
 
     public void setOwnerVillage(Village ownerVillage) {
         this.ownerVillage = ownerVillage;
+    }
+
+    public boolean isOwnedBy(Village village) {
+        return getOwnerVillage() != null && getOwnerVillage().equals(village);
     }
 
     public int getX() {
@@ -267,7 +282,7 @@ public class OwnedLand implements ConfigurationSerializable {
         map.put("fireSpread", isFireSpread());
         map.put("explosions", isExplosions());
         map.put("mobSpawning", isMobSpawning());
-        map.put("isOutpost", getIsOutpost());
+        map.put("outpost", isOutpost() ? getOutpostName() : "");
         map.put("buildState", getBuildState().name());
         map.put("use", getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
         return map;
@@ -298,7 +313,7 @@ public class OwnedLand implements ConfigurationSerializable {
         land.setFireSpread((Boolean) map.get("fireSpread"));
         land.setExplosions((Boolean) map.get("explosions"));
         land.setMobSpawning((Boolean) map.get("mobSpawning"));
-        land.setIsOutpost((Boolean) map.get("isOutpost"));
+        land.setOutpost(map.get("outpost") != null ? (String) map.get("outpost") : null);
         land.setBuildState(Utils.parseEnum((String) map.get("buildState"), PlotBuildState.RESIDENTS));
         Map<String, Object> uses = (Map<String, Object>) map.get("uses");
         for (Use u : Use.values()) {

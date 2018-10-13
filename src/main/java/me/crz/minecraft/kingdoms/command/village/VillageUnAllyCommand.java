@@ -1,58 +1,44 @@
 package me.crz.minecraft.kingdoms.command.village;
 
-import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.VillageManager;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.command.VillageSubCommand;
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageManager;
 
-public class VillageUnAllyCommand extends SubCommand {
-    public VillageUnAllyCommand() {
-        super("remove an allied village", "unally");
-        this.setPermission("kingdoms.user");
-        this.setUsage("unally <name>");
+public class VillageUnAllyCommand extends VillageSubCommand {
+    public VillageUnAllyCommand(SubCommand parent) {
+        super(parent, "unally <name>", VillageRank.ELDER);
+        setPermission("kingdoms.user");
     }
 
     @Override
-    public void run(Player player, String base, String alias, String... args) {
+    public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length < 1) {
-            MessageUtils.tell(player, this.getUsage(base));
-            return;
+            return false;
         }
-        Village village = VillageManager.getInstance().getVillageFromPlayer(player);
-        if (village == null) {
-            MessageUtils.tell(player, Message.get("not-in-current"));
-            return;
+        Village village = resident.getVillage();
+        Village targetVillage = VillageManager.getInstance().getVillageFromName(args[0].toLowerCase());
+        if (targetVillage == null) {
+            resident.tell(getError("village-doesnt-exist"), "name", args[0]);
+        } else if (targetVillage.getName().equals(village.getName())) {
+            resident.tell(getError("cant-unally-yourself"));
+        } else if (!village.isAlly(targetVillage)) {
+            resident.tell(getError("not-allied"), "name", targetVillage.getName(), "state", targetVillage.getState().getTag());
+        } else {
+            village.removeAlly(targetVillage);
+            targetVillage.removeAlly(village);
+            Utils.runAsync(() -> {
+                DatabaseManager.getInstance().saveVillage(targetVillage);
+                DatabaseManager.getInstance().saveVillage(village);
+            });
+            MessageUtils.tellResidents(targetVillage.getOnlineResidents(), getMessage("success"), "name", village.getName());
+            MessageUtils.tellResidents(village.getOnlineResidents(), getMessage("success"), "name", targetVillage.getName());
         }
-        if (ResidentManager.getInstance().getResident(player).getVillageRank().below(VillageRank.ELDER)) {
-            MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.ELDER.getTag(village.getState()));
-            return;
-        }
-        Village invitedVillage = VillageManager.getInstance().getVillageFromName(args[0].toLowerCase());
-        if (invitedVillage == null) {
-            MessageUtils.tell(player, "&c&lVillage &r&6&l" + args[0] + "&r&c&l doesn't exist!");
-            return;
-        }
-        if (invitedVillage.getName().equals(village.getName())) {
-            MessageUtils.tell(player, "&c&lYou can't un-ally yourself!");
-            return;
-        }
-        if (!village.isAlly(invitedVillage)) {
-            MessageUtils.tell(player, "&c&lYou are not allied to Village &r&6&l" + args[0]);
-            return;
-        }
-        village.removeAlly(invitedVillage);
-        invitedVillage.removeAlly(village);
-        Utils.runAsync(() -> {
-            DatabaseManager.getInstance().saveVillage(invitedVillage);
-            DatabaseManager.getInstance().saveVillage(village);
-        });
-        MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), Message.get("ally-removed"), "name", village.getName());
-        MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("ally-removed"), "name", invitedVillage.getName());
+        return true;
     }
 }

@@ -1,36 +1,33 @@
 package me.crz.minecraft.kingdoms.teleporter;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CInventoryManager;
-import net.milkbowl.vault.economy.EconomyResponse;
-import org.bukkit.OfflinePlayer;
-import org.bson.Document;
-import org.bukkit.Location;
-import me.crz.minecraft.kingdoms.utils.Utils;
-import org.bukkit.Bukkit;
-import me.crz.minecraft.kingdoms.village.VillageState;
-import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.VillageManager;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
-import org.bukkit.Material;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageGUI;
+import me.crz.minecraft.kingdoms.village.VillageManager;
+import me.crz.minecraft.kingdoms.village.VillageState;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
-import me.crz.minecraft.kingdoms.cinventory.CInventory;
-import me.crz.minecraft.kingdoms.Base;
+import org.bukkit.inventory.meta.ItemMeta;
 
-public class TeleportersGUI extends Base {
+public class TeleportersGUI extends VillageGUI {
     private CInventory ci;
     private ItemStack locked;
 
     public TeleportersGUI() {
-        super();
-        ci = new CInventory(MessageUtils.replaceColorCodes("&2&lTeleporters"), InventorySize.ONE) {};
+        super("teleporters");
+        ci = new CInventory(getText("title"), InventorySize.ONE) {};
         locked = new ItemStack(Material.RED_STAINED_GLASS_PANE);
         ItemMeta lm = locked.getItemMeta();
-        lm.setDisplayName(MessageUtils.replaceColorCodes("Locked"));
+        lm.setDisplayName(getText("locked"));
         locked.setItemMeta(lm);
         Integer[] slots = {0, 1, 2, 6, 7, 8};
         Integer[] array;
@@ -50,7 +47,7 @@ public class TeleportersGUI extends Base {
             public ItemStack getItem(Player p) {
                 ItemStack item = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
                 ItemMeta pm = item.getItemMeta();
-                pm.setDisplayName(MessageUtils.replaceColorCodes("&e&lPrivate Warps"));
+                pm.setDisplayName(getText("private"));
                 item.setItemMeta(pm);
                 return item;
             }
@@ -70,13 +67,13 @@ public class TeleportersGUI extends Base {
                 if (v == null || v.getState() == VillageState.VILLAGE || v.getLevel() < 10) {
                     ItemStack item = new ItemStack(locked);
                     ItemMeta pm = item.getItemMeta();
-                    pm.setDisplayName("&c&lYou require a level &610 Kingdom&c&l to use this!");
+                    pm.setDisplayName(getText("kingdom-required"));
                     item.setItemMeta(pm);
                     return item;
                 }
                 ItemStack item = new ItemStack(Material.GRASS);
                 ItemMeta pm = item.getItemMeta();
-                pm.setDisplayName(MessageUtils.replaceColorCodes("&e&lKingdoms World"));
+                pm.setDisplayName(MessageUtils.replaceColorCodes(getText("kingdoms-world")));
                 item.setItemMeta(pm);
                 return item;
             }
@@ -84,11 +81,11 @@ public class TeleportersGUI extends Base {
             public boolean click(Player p, ClickType clickType) {
                 Village v = VillageManager.getInstance().getVillageFromPlayer(p);
                 if (v == null || v.getState() == VillageState.VILLAGE || v.getLevel() < 10) {
-                    MessageUtils.tell(p, "&c&lYou require a level &610 Kingdom&c&l to use this!");
+                    MessageUtils.tell(p, getMessage("kingdom-required"));
                     return false;
                 }
                 try {
-                    p.teleport(Bukkit.getWorld("kingdom").getSpawnLocation());
+                    p.teleport(Bukkit.getWorld(KingdomsPlugin.getInstance().getKingdomsWorld()).getSpawnLocation());
                 } catch (Exception e) {
                     MessageUtils.tell(p, "&c&lAn error occurred somewhere! warp possibly not set!");
                 }
@@ -101,7 +98,7 @@ public class TeleportersGUI extends Base {
                 if (village == null || village.getVillageHome() == null) {
                     return locked;
                 }
-                return Utils.getHead(Bukkit.getOfflinePlayer(village.getChief()), MessageUtils.replaceColorCodes("&e&lVillage Home"));
+                return Utils.getHead(Bukkit.getOfflinePlayer(village.getChief()), getText("village-home"));
             }
 
             public boolean click(Player p, ClickType clickType) {

@@ -12,7 +12,7 @@ public interface Rankable {
      * @return Whether or not the ordinal of this one is equal or below the other one
      */
     default boolean atLeast(Rankable rankable) {
-        return rankable.ordinal() >= this.ordinal();
+        return rankable == null || rankable.ordinal() >= this.ordinal();
     }
 
     /**
@@ -21,7 +21,7 @@ public interface Rankable {
      * @return Whether or not the ordinal of this one is below the other one
      */
     default boolean above(Rankable rankable) {
-        return rankable.ordinal() > this.ordinal();
+        return rankable == null || rankable.ordinal() > this.ordinal();
     }
 
     /**
@@ -30,7 +30,7 @@ public interface Rankable {
      * @return Whether or not the ordinal of this one is above the other one
      */
     default boolean below(Rankable rankable) {
-        return rankable.ordinal() < this.ordinal();
+        return rankable != null && rankable.ordinal() < this.ordinal();
     }
 
     /**

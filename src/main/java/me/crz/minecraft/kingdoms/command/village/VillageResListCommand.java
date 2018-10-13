@@ -1,50 +1,48 @@
 package me.crz.minecraft.kingdoms.command.village;
 
-import me.crz.minecraft.kingdoms.utils.Message;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
+import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.command.VillageSubCommand;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
-
-import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.village.VillageManager;
-import org.bukkit.entity.Player;
-import me.crz.minecraft.kingdoms.command.SubCommand;
-
-public class VillageResListCommand extends SubCommand {
-    public VillageResListCommand() {
-        super("lists all online residents", "reslist");
-        this.setPermission("kingdoms.user");
-        this.setUsage("reslist");
+public class VillageResListCommand extends VillageSubCommand {
+    public VillageResListCommand(SubCommand parent) {
+        super(parent, "reslist", VillageRank.RESIDENT, "roster");
+        setPermission("kingdoms.user");
     }
 
     @Override
-    public void run(Player p, String base, String alias, String... args) {
-        Village village = VillageManager.getInstance().getVillageFromPlayer(p);
-        if (village == null) {
-            MessageUtils.tell(p, Message.get("not-in-current"));
-            return;
-        }
+    public boolean run(Resident sender, String base, String alias, String... args) {
         Utils.runAsync(() -> {
-            StringBuilder sb = new StringBuilder("&8&l--------&r&c&lResidents&r&8&l--------\n");
-            int i = 0;
-            for (Resident res : village.getResidents().stream()
-                    .sorted(Comparator.comparing(Resident::getVillageRank))
-                    .collect(Collectors.toList())) {
-                sb.append("&e");
-                sb.append(res.getVillageRank().getTag(village.getState()));
-                sb.append(" ");
-                sb.append(res.getPlayer() != null ? "&a" : "&c");
-                sb.append(res.getName());
-                if (i + 1 < village.getOnlineResidents().size()) {
-                    sb.append("&7, ");
-                }
-                ++i;
+            sender.tell(getMessage("head"));
+            String entry = getMessage("entry").getText();
+            String online = getMessage("online").getText();
+            String offline = getMessage("offline").getText();
+            String separator = getMessage("separator").getText();
+            Multimap<VillageRank, Resident> rankMap = MultimapBuilder.enumKeys(VillageRank.class).arrayListValues().build();
+            for (Resident resident : sender.getVillage().getResidents()) {
+                rankMap.put(resident.getVillageRank(), resident);
             }
-            MessageUtils.tell(p, sb.toString());
+            for (VillageRank rank : VillageRank.values()) {
+                sender.tell(getMessage("rank"), "residents",
+                        rankMap.get(rank).stream()
+                                .sorted(Comparator.comparing(Resident::getVillageJoin))
+                                .map(res -> MessageUtils.replacePlaceholders(entry,
+                                        "online", res.getPlayer() != null ? online : offline,
+                                        "name", res.getName(),
+                                        "rank", res.getVillageRank().getTag(res.getVillage())
+                                ))
+                                .collect(Collectors.joining(separator))
+                );
+            }
         });
+        return true;
     }
 }

@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.world;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.EventHandler;
@@ -17,7 +18,7 @@ public class WorldListener extends Base {
 
     @EventHandler
     public void on(final PlayerMoveBlockEvent e) {
-        if (e.getFrom().getWorld().getName().equalsIgnoreCase("kingdom")) {
+        if (e.getFrom().getWorld().getName().equalsIgnoreCase(KingdomsPlugin.getInstance().getKingdomsWorld())) {
             final Village village = VillageManager.getInstance().getVillageFromPlayer(e.getPlayer());
             if (village.getLevel() < 4 && !e.getPlayer().isOp()) {
                 e.setCancelled(true);
@@ -29,7 +30,7 @@ public class WorldListener extends Base {
 
     @EventHandler
     public void on(final PlayerChangedWorldEvent e) {
-        if (e.getFrom().getName().equalsIgnoreCase("kingdom")) {
+        if (e.getFrom().getName().equalsIgnoreCase(KingdomsPlugin.getInstance().getKingdomsWorld())) {
             final Village village = VillageManager.getInstance().getVillageFromPlayer(e.getPlayer());
             if (village.getLevel() < 4 && !e.getPlayer().isOp()) {
                 MessageUtils.tell(e.getPlayer(), "&cYou must be kingdom level 4 to be here!");
@@ -40,7 +41,7 @@ public class WorldListener extends Base {
 
     @EventHandler
     public void on(final PlayerTeleportEvent e) {
-        if (e.getFrom().getWorld().getName().equalsIgnoreCase("kingdom")) {
+        if (e.getFrom().getWorld().getName().equalsIgnoreCase(KingdomsPlugin.getInstance().getKingdomsWorld())) {
             final Village village = VillageManager.getInstance().getVillageFromPlayer(e.getPlayer());
             if (village.getLevel() < 4 && !e.getPlayer().isOp()) {
                 e.setCancelled(true);

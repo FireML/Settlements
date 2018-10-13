@@ -13,21 +13,19 @@ import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
 public class VillageAdminJoinCommand extends SubCommand {
-    public VillageAdminJoinCommand() {
-        super("Forces a player to join a village", "join");
-        this.setPermission("kingdoms.admin");
-        this.setUsage("join <player> <village>");
+    public VillageAdminJoinCommand(SubCommand parent) {
+        super(parent, "join <player> <village>");
+        setPermission("kingdoms.admin");
     }
 
     @Override
-    public void run(Player player, String base, String alias, String... args) {
+    public boolean run(Player player, String base, String alias, String... args) {
         if (args.length < 2) {
-            MessageUtils.tell(player, this.getUsage(base), null, null);
-            return;
+            return false;
         }
         if (VillageManager.getInstance().getVillageFromName(args[1].toLowerCase()) == null) {
             MessageUtils.tell(player, "&c&lNo &r&6&lvillage&r&c&l with the name &r&6&l{village}&r&c&l exists!", "{village}", args[1]);
-            return;
+            return true;
         }
         Utils.runAsync(() -> {
             Resident target = ResidentManager.getInstance().getResident(args[0]);
@@ -46,9 +44,10 @@ public class VillageAdminJoinCommand extends SubCommand {
             MessageUtils.tell(player, "&6&l" + target.getName() + "&r&c&l is now in {townName}", "{townName}", village.getName());
             Player targetP = target.getPlayer();
             if (targetP != null) {
-                MessageUtils.tell(targetP, Message.get("success-join"), "{townName}", village.getName());
+                MessageUtils.tell(targetP, Message.get("commands.village.join.success"), "name", village.getName(), "state", village.getState().getTag());
             }
-            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("new-resident"), "{player}", target.getName());
+            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("comands.village.join.new-resident"), "player", target.getName());
         });
+        return true;
     }
 }

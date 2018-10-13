@@ -24,7 +24,7 @@ public class ConfigManager {
         levelConf.reloadConfig();
     }
 
-    public void save(final File file, final FileConfiguration fileConfiguration) {
+    public static void save(File file, FileConfiguration fileConfiguration) {
         try {
             fileConfiguration.save(file);
         } catch (IOException e) {

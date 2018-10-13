@@ -1,6 +1,8 @@
 package me.crz.minecraft.kingdoms.landflags;
 
-public enum PlotBuildState {
+import me.crz.minecraft.kingdoms.utils.NameTag;
+
+public enum PlotBuildState implements NameTag {
     RESIDENTS,
     OFFICERS,
     ALLY,

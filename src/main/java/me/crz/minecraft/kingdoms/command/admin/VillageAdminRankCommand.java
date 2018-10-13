@@ -13,32 +13,30 @@ import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
 public class VillageAdminRankCommand extends SubCommand {
-    public VillageAdminRankCommand() {
-        super("Forces a player to have a rank", "rank");
-        this.setPermission("kingdoms.admin");
-        this.setUsage("join <player> <rank>");
+    public VillageAdminRankCommand(SubCommand parent) {
+        super(parent, "join <player> <rank>");
+        setPermission("kingdoms.admin");
     }
 
     @Override
-    public void run(Player player, String base, String alias, String... args) {
+    public boolean run(Player player, String base, String alias, String... args) {
         if (args.length < 2) {
-            MessageUtils.tell(player, this.getUsage(base));
-            return;
+            return false;
         }
         String rank = args[1].toUpperCase();
         if (!this.rankIsValid(rank)) {
-            MessageUtils.tell(player, Message.get("invalid-rank"), "rank", rank);
-            return;
+            MessageUtils.tell(player, getError("invalid-rank"), "rank", rank);
+            return true;
         }
         Utils.runAsync(() -> {
             Resident tRes = ResidentManager.getInstance().getResident(args[0]);
             if (tRes == null) {
-                MessageUtils.tell(player, Message.get("player-not-found"), "player", args[0]);
+                MessageUtils.tell(player, getError("player-not-found"), "player", args[0]);
                 return;
             }
             Village village = VillageManager.getInstance().getVillageFromName(tRes.getVillageName());
             if (village == null) {
-                MessageUtils.tell(player, Message.get("not-in-village"), "player", tRes.getName());
+                MessageUtils.tell(player, getError("not-in-village"), "player", tRes.getName());
                 return;
             }
             Resident res = ResidentManager.getInstance().getResident(village.getChief());
@@ -55,9 +53,10 @@ public class VillageAdminRankCommand extends SubCommand {
                 tRes.setVillageRank(r);
                 DatabaseManager.getInstance().saveResident(tRes);
             }
-            MessageUtils.tell(player, Message.get("set-rank"), "target", tRes.getName(), "rank", r.getTag(village.getState()));
-            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("success-set-rank"), "sender", player.getDisplayName(), "target", tRes.getName(), "rank", r.getTag(village.getState()));
+            MessageUtils.tell(player, Message.get("commands.village.setrank.success"), "setter", player.getDisplayName(), "target", tRes.getName(), "rank", r.getTag(village));
+            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("commands.village.setrank.success"), "setter", player.getDisplayName(), "target", tRes.getName(), "rank", r.getTag(village));
         });
+        return true;
     }
 
     private boolean rankIsValid(String arg) {

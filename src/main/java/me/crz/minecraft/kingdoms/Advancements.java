@@ -1,13 +1,14 @@
 package me.crz.minecraft.kingdoms;
 
-import org.bukkit.event.EventHandler;
-import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.Resident;
-import org.bukkit.entity.Player;
-import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.essentials.KingdomsEssentialsPlugin;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
+
+import java.util.logging.Level;
 
 public class Advancements extends Base {
     public Advancements() {
@@ -15,18 +16,18 @@ public class Advancements extends Base {
     }
 
     @EventHandler
-    public void on(final PlayerJoinEvent e) {
+    public void on(PlayerJoinEvent e) {
         try {
-            final Player p = e.getPlayer();
-            final Resident res = ResidentManager.getInstance().getResident(p);
-            final KingdomsEssentialsPlugin plugin = KingdomsEssentialsPlugin.getInstance();
-            if (ResidentManager.getInstance().doesResidentHaveVillage(p)) {
-                final Village v = VillageManager.getInstance().getVillageFromResident(res);
-                if (!p.getAdvancementProgress(plugin.advancements.get("root").getAdvancement()).isDone() && v.getChief().equals(res.getUUID())) {
+            Player p = e.getPlayer();
+            Resident res = ResidentManager.getInstance().getResident(p);
+            KingdomsEssentialsPlugin plugin = KingdomsEssentialsPlugin.getInstance();
+            if (res.getVillage() != null) {
+                if (!p.getAdvancementProgress(plugin.advancements.get("root").getAdvancement()).isDone() && res.getVillageRank().atLeast(VillageRank.CHIEF)) {
                     plugin.advancements.get("root").grant(p);
                 }
             }
         } catch (Exception ex) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Error while handling player login event", ex);
         }
     }
 }

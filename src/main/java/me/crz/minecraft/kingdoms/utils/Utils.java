@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.utils;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.db.TownCache;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -54,10 +55,10 @@ public class Utils {
         return !getDisabledClaimingWorlds().contains(world.getName());
     }
 
-    public static List<String> getDisabledClaimingWorlds() {
+    public static Collection<String> getDisabledClaimingWorlds() {
         FileConfiguration config = KingdomsPlugin.getInstance().getConfig();
         if (config.contains("disabled-claiming-worlds")) {
-            return config.getStringList("disabled-claiming-worlds");
+            return new HashSet<>(config.getStringList("disabled-claiming-worlds"));
         }
         List<String> temp = new ArrayList<>();
         config.set("disabled-claiming-worlds", temp);
@@ -76,77 +77,31 @@ public class Utils {
         return village != null && village.getChief().equals(player.getUniqueId());
     }
 
-    public static boolean playerIsBuilder(Player player) {
-        return ResidentManager.getInstance().getResident(player).getVillageRank().equals(VillageRank.BUILDER);
+    public static boolean playerHasInvite(UUID playerId, Village joinVillage) {
+        return TownCache.getPendingTownInvites().containsKey(playerId) && TownCache.getPendingTownInvites().get(playerId).equals(joinVillage.getId());
     }
 
-    public static boolean playerInSameVillage(Village sender, Village other) {
-        return sender != null && sender.equals(other);
-    }
-
-    public static boolean playerIsRecruiter(Player player) {
-        return ResidentManager.getInstance().getResident(player).getVillageRank().equals(VillageRank.RECRUITER);
-    }
-
-    public static boolean playerCanKick(Player player, Village village) {
-        return playerIsElder(player) || playerIsRecruiter(player) || village.getChief().equals(player.getUniqueId());
-    }
-
-    public static boolean playerHasInvite(Player player, String joinVillageName) {
-        return TownCache.getPendingTownInvites().containsKey(player.getUniqueId()) && TownCache.getPendingTownInvites().get(player.getUniqueId()).equals(joinVillageName);
-    }
-
-    public static int getChunkMax(int level, VillageState state) {
-        return getLevelChunks(state, level);
-    }
-
-    private static int getLevelChunks(VillageState state, int level) {
+    public static int getLevelChunks(VillageState state, int level) {
         return LEVEL_CHUNKS.computeIfAbsent(state.name() + "_" + level,
                 key -> ConfigManager.getInstance().getLevelConfig().getInt(state.name().toLowerCase() + ".level-" + level + ".chunks"));
     }
 
     public static void addDisabledWorld(World world) {
-        List<String> temp = getDisabledClaimingWorlds();
+        Collection<String> temp = getDisabledClaimingWorlds();
         if (!temp.contains(world.getName())) {
             temp.add(world.getName());
-            KingdomsPlugin.getInstance().getConfig().set("disabled-claiming-worlds", temp);
+            KingdomsPlugin.getInstance().getConfig().set("disabled-claiming-worlds", new ArrayList<>(temp));
             KingdomsPlugin.getInstance().saveConfig();
         }
     }
 
     public static void removeDisabledWorld(World world) {
-        List<String> temp = getDisabledClaimingWorlds();
+        Collection<String> temp = getDisabledClaimingWorlds();
         if (temp.contains(world.getName())) {
             temp.remove(world.getName());
-            KingdomsPlugin.getInstance().getConfig().set("disabled-claiming-worlds", temp);
+            KingdomsPlugin.getInstance().getConfig().set("disabled-claiming-worlds", new ArrayList<>(temp));
             KingdomsPlugin.getInstance().saveConfig();
         }
-    }
-
-    public static int getChunkMaxOutpost(int level, VillageState state) {
-        if (state == VillageState.VILLAGE) {
-            if (level <= 3) {
-                return 1;
-            }
-            if (level <= 5) {
-                return 2;
-            }
-        }
-        if (state == VillageState.KINGDOM) {
-            if (level <= 2) {
-                return 4;
-            }
-            if (level <= 5) {
-                return 6;
-            }
-            if (level <= 8) {
-                return 8;
-            }
-            if (level <= 10) {
-                return 12;
-            }
-        }
-        return 4;
     }
 
     public static Collection<Chunk> getChunksAroundPlayer(Player player, int radius) {

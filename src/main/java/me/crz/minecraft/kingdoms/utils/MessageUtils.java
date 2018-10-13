@@ -24,14 +24,28 @@ public class MessageUtils extends Base {
         tell(player, message.getComponents(), replacements);
     }
 
+    public static void tell(Resident resident, Message message, String... replacements) {
+        tell(resident.getPlayer(), message.getComponents(), replacements);
+    }
+
     public static void tell(Player player, BaseComponent[] message, String... replacements) {
+        if (player == null) {
+            return;
+        }
         if (replacements != null && replacements.length > 0) {
             message = replacePlaceholders(message, replacements);
         }
         player.spigot().sendMessage(message);
     }
 
+    public static void tell(Resident player, String message, String... replacements) {
+        tell(player.getPlayer(), message, replacements);
+    }
+
     public static void tell(Player player, String message, String... replacements) {
+        if (player == null) {
+            return;
+        }
         if (replacements != null && replacements.length > 0) {
             message = replacePlaceholders(message, replacements);
         }

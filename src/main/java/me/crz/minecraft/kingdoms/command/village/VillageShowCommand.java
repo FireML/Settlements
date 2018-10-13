@@ -1,9 +1,10 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import org.bukkit.OfflinePlayer;
 
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 
@@ -12,109 +13,74 @@ import java.text.DecimalFormat;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.land.LandManager;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import me.crz.minecraft.kingdoms.village.Village;
-import org.bukkit.Bukkit;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
 public class VillageShowCommand extends SubCommand {
-    public VillageShowCommand() {
-        super("Shows information on a village ", "show");
-        this.setPermission("kingdoms.user");
-        this.setUsage("show");
+    private final static DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###");
+
+    public VillageShowCommand(SubCommand parent) {
+        super(parent, "show [<name>]");
+        setPermission("kingdoms.user");
     }
 
     @Override
-    public void run(Player player, String base, String alias, String... args) {
+    public boolean run(Player player, String base, String alias, String... args) {
         if (args.length == 0) {
             Village village = VillageManager.getInstance().getVillageFromPlayer(player);
             if (village == null) {
-                MessageUtils.tell(player, Message.get("not-in-current"), null, null);
-                return;
+                MessageUtils.tell(player, getError("village-required"));
+                return false;
             }
-            Utils.runAsync(() -> MessageUtils.tell(player, this.showSettlementMessage(village)));
-        } else {
-            if (args.length != 1) {
-                return;
-            }
+            Utils.runAsync(() -> MessageUtils.tell(player, getMessage("general"), getReplacements(village)));
+        } else if (args.length == 1) {
             String name = args[0];
             Utils.runAsync(() -> {
                 Village village2 = VillageManager.getInstance().getVillageFromName(name);
                 Resident target = ResidentManager.getInstance().getResident(name);
                 if (target != null) {
                     Village playerVillage = VillageManager.getInstance().getVillageFromResident(target);
-                    MessageUtils.tell(player, this.showSettlementMessage(playerVillage));
-                    return;
+                    MessageUtils.tell(player, getMessage("general"), getReplacements(playerVillage));
+                } else if (village2 != null) {
+                    MessageUtils.tell(player, getMessage("general"), getReplacements(village2));
+                } else {
+                    MessageUtils.tell(player, getError("village-doesnt-exist"), "name", args[0]);
                 }
-                if (village2 != null) {
-                    MessageUtils.tell(player, this.showSettlementMessage(village2));
-                    return;
-                }
-                MessageUtils.tell(player, Message.get("town-not-found"), null, null);
             });
+        } else {
+            return false;
         }
+        return true;
     }
 
-    private String showSettlementMessage(Village village) {
-        String message = Message.get("show-settlement").getText();
-        if (message.contains("{townName}")) {
-            message = message.replace("{townName}", village.getName());
-        }
-        if (message.contains("{state}")) {
-            message = message.replace("{state}", village.getState().getTag());
-        }
-        if (message.contains("{level}")) {
-            message = message.replace("{level}", Integer.toString(village.getLevel()));
-        }
-        if (message.contains("{land}")) {
-            message = message.replace("{land}", Integer.toString(LandManager.getInstance().getClaimedLandSize(village)));
-        }
-        if (message.contains("{maxLand}")) {
-            message = message.replace("{maxLand}", Integer.toString(Utils.getChunkMax(village.getLevel(), village.getState())));
-        }
-        if (message.contains("{outpost}")) {
-            message = message.replace("{outpost}", Integer.toString(village.getOutpostHomes().size()));
-        }
-        if (message.contains("{maxOutpost}")) {
-            message = message.replace("{maxOutpost}", Integer.toString(Utils.getChunkMaxOutpost(village.getLevel(), village.getState())));
-        }
-        if (message.contains("{pvp}")) {
-            message = message.replace("{pvp}", this.yesOrNo(village.isPvp()));
-        }
-        if (message.contains("{balance}")) {
-            DecimalFormat df = new DecimalFormat("#,###");
-            message = message.replace("{balance}", df.format((long) village.getBank()));
-        }
-        if (message.contains("{mobSpawning}")) {
-            message = message.replace("{mobSpawning}", this.yesOrNo(village.isMobSpawning()));
-        }
-        if (message.contains("{fireSpread}")) {
-            message = message.replace("{fireSpread}", this.yesOrNo(village.isFireSpread()));
-        }
-        if (message.contains("{explosions}")) {
-            message = message.replace("{explosions}", this.yesOrNo(village.isExplosions()));
-        }
-        if (message.contains("{buff}")) {
-            message = message.replace("{buff}", this.yesOrNo(village.isBuff()));
-        }
-        if (message.contains("{access}")) {
-            message = message.replace("{access}", village.getAccess().humanizedName());
-        }
-        if (message.contains("{chiefRank}")) {
-            message = message.replace("{chiefRank}", VillageRank.CHIEF.getTag(village.getState()));
-        }
-        if (message.contains("{chief}")) {
-            OfflinePlayer player = Bukkit.getOfflinePlayer(village.getChief());
-            message = message.replace("{chief}", player.getName());
-        }
-        if (message.contains("{residents}")) {
-            message = message.replace("{residents}", this.getResidentsToString(village.getResidents(), village));
-        }
-        return MessageUtils.replaceColorCodes(message);
+    private String[] getReplacements(Village village) {
+        return new String[] {
+                "name", village.getName(),
+                "state", village.getState().getTag(),
+                "level", String.valueOf(village.getLevel()),
+                "land", String.valueOf(LandManager.getInstance().getClaimedLandSize(village)),
+                "maxLand", String.valueOf(village.getMaxClaimableChunks()),
+                "outposts", String.valueOf(village.getOutpostHomes().size()),
+                "maxOutposts", String.valueOf(village.getMaxOutposts()),
+                "pvp", yesOrNo(village.isPvp()),
+                "balance", DECIMAL_FORMAT.format(village.getBank()),
+                "mobSpawning", yesOrNo(village.isMobSpawning()),
+                "fireSpread", yesOrNo(village.isFireSpread()),
+                "explosions", yesOrNo(village.isExplosions()),
+                "buff", yesOrNo(village.isBuff()),
+                "access", village.getAccess().getTag(),
+                "chiefRank", VillageRank.CHIEF.getTag(village),
+                "chief", ResidentManager.getInstance().getResident(village.getChief()).getName(),
+                "residents", getResidentsToString(village.getResidents(), village)
+        };
     }
 
     public String yesOrNo(boolean b) {
@@ -122,19 +88,28 @@ public class VillageShowCommand extends SubCommand {
     }
 
     private String getResidentsToString(List<Resident> residents, Village village) {
-        StringBuilder builder = new StringBuilder();
-        int i = 0;
-        for (Resident res : residents) {
-            builder.append("&e");
-            builder.append(res.getVillageRank().getTag(village.getState()));
-            builder.append(" ");
-            builder.append(res.getPlayer() != null ? "&a" : "&c");
-            builder.append(res.getName());
-            if (i + 1 < residents.size()) {
-                builder.append("&7, ");
-            }
-            ++i;
+        Message rankMessage = getMessage("residents.rank");
+        String entry = getMessage("residents.entry").getText();
+        String online = getMessage("residents.online").getText();
+        String offline = getMessage("residents.offline").getText();
+        String separator = getMessage("residents.separator").getText();
+        Multimap<VillageRank, Resident> rankMap = MultimapBuilder.enumKeys(VillageRank.class).arrayListValues().build();
+        for (Resident resident : residents) {
+            rankMap.put(resident.getVillageRank(), resident);
         }
-        return builder.toString();
+        List<String> lines = new ArrayList<>();
+        for (VillageRank rank : VillageRank.values()) {
+            lines.add(rankMessage.getReplacedText("residents",
+                    rankMap.get(rank).stream()
+                            .sorted(Comparator.comparing(Resident::getVillageJoin))
+                            .map(res -> MessageUtils.replacePlaceholders(entry,
+                                    "online", res.getPlayer() != null ? online : offline,
+                                    "name", res.getName(),
+                                    "rank", res.getVillageRank().getTag(village)
+                            ))
+                            .collect(Collectors.joining(separator))
+            ));
+        }
+        return String.join("\n", lines);
     }
 }

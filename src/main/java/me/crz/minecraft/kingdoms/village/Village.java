@@ -17,6 +17,7 @@ import org.bukkit.Bukkit;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class Village implements ConfigurationSerializable {
     private boolean mobSpawning = false;
     private boolean buff = false;
     private VillageAccess access = VillageAccess.ALLY;
-    private int bank = 0;
+    private long bank = 0;
     private Set<IdObject> allies = new LinkedHashSet<>();
     private SimpleLocation villageHomeLoc;
     private Map<String, NamedLocation> outpostHomes = new LinkedHashMap<>();
@@ -106,7 +107,7 @@ public class Village implements ConfigurationSerializable {
     }
 
     public int getUpkeep() {
-        return LandManager.getInstance().getClaimedLandSize(this) * 500;
+        return LandManager.getInstance().getClaimedLandSize(this) * KingdomsPlugin.UPKEEP;
     }
 
     public boolean canPay(int total) {
@@ -206,11 +207,11 @@ public class Village implements ConfigurationSerializable {
         this.access = access;
     }
 
-    public int getBank() {
+    public long getBank() {
         return bank;
     }
 
-    public void setBank(int bank) {
+    public void setBank(long bank) {
         this.bank = bank;
     }
 
@@ -246,10 +247,6 @@ public class Village implements ConfigurationSerializable {
                         "level", String.valueOf(level));
             }
         }
-    }
-
-    public void levelUp() {
-        this.setLevel(level + 1);
     }
 
     public boolean isChief(Player player) {
@@ -356,6 +353,67 @@ public class Village implements ConfigurationSerializable {
         this.id = id;
     }
 
+    public int getMaxClaimableChunks() {
+        return Utils.getLevelChunks(getState(), getLevel());
+    }
+
+    public int getMaxOutposts() {
+        if (getState() == VillageState.VILLAGE) {
+            if (getLevel() <= 3) {
+                return 1;
+            }
+            if (getLevel() <= 5) {
+                return 2;
+            }
+        }
+        if (getState() == VillageState.KINGDOM) {
+            if (getLevel() <= 2) {
+                return 4;
+            }
+            if (getLevel() <= 5) {
+                return 6;
+            }
+            if (getLevel() <= 8) {
+                return 8;
+            }
+            if (getLevel() <= 10) {
+                return 12;
+            }
+        }
+        return 4;
+    }
+
+    public boolean canLevelUp() {
+        int currentLevel = getLevel();
+        if (isMaxLevel()) {
+            return false;
+        }
+        Map<String, Integer> nextLevelReqs = Levels.getLevelMapFromInt(currentLevel + 1, getState());
+        if (nextLevelReqs == null) {
+            return false;
+        }
+        Iterator<Map.Entry<String, Integer>> iterator = nextLevelReqs.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Integer> pair = iterator.next();
+            if (!getVault().containsKey(pair.getKey())) {
+                return false;
+            }
+            int amountRequired = nextLevelReqs.get(pair.getKey());
+            int amountInVault = getVault().get(pair.getKey());
+            if (amountInVault < amountRequired) {
+                return false;
+            }
+            if (!iterator.hasNext()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isMaxLevel() {
+        return (getLevel() == 10 && getState() == VillageState.KINGDOM) || Levels.getLevelMapFromInt(getLevel() + 1, getState()) == null;
+    }
+
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new LinkedHashMap<>();
@@ -404,7 +462,7 @@ public class Village implements ConfigurationSerializable {
         village.setExplosions((Boolean) map.get("explosions"));
         village.setMobSpawning((Boolean) map.get("mobSpawning"));
         village.setBuff((Boolean) map.get("buff"));
-        village.setBank((Integer) map.get("bank"));
+        village.setBank((Long) map.get("bank"));
         village.getAllies().addAll(((Collection<Object>) map.get("allies")).stream().map(IdObject::get).collect(Collectors.toSet()));
         if (map.get("homeLoc") != null) {
             village.setVillageHome(SimpleLocation.deserialize((Map<String, Object>) map.get("homeLoc")));

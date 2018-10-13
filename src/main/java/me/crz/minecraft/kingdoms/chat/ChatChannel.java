@@ -39,7 +39,7 @@ public enum ChatChannel implements HumanReadable {
                 return true;
             }
             Village village = VillageManager.getInstance().getVillageFromPlayer(player);
-            MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.ELDER.getTag(village.getState()));
+            MessageUtils.tell(player, Message.get("error.rank-required"), "rank", VillageRank.ELDER.getTag(village));
             return false;
         }
     },
@@ -55,7 +55,7 @@ public enum ChatChannel implements HumanReadable {
             if (this.canChat(player)) {
                 return true;
             }
-            MessageUtils.tell(player, Message.get("no-permission"));
+            MessageUtils.tell(player, Message.get("error.no-permission"));
             return false;
         }
     },
@@ -70,7 +70,7 @@ public enum ChatChannel implements HumanReadable {
             if (this.canChat(player)) {
                 return true;
             }
-            MessageUtils.tell(player, Message.get("no-permission"));
+            MessageUtils.tell(player, Message.get("error.no-permission"));
             return false;
         }
     };

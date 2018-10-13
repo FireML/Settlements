@@ -33,6 +33,7 @@ import me.crz.minecraft.kingdoms.utils.config.Data;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class KingdomsPlugin extends JavaPlugin implements Listener {
+    public static final int UPKEEP = 500;
     private static KingdomsPlugin instance;
     public static Data data;
     private LandPerks lPerks;
@@ -41,6 +42,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     public static Chat chat;
     public UtilChat utilChat = new UtilChat();
     private boolean running = false;
+    private String kingdomsWorld = "";
 
     public void onDisable() {
         if (running) {
@@ -56,6 +58,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         data = new Data();
         if (data.load(this.getDataFolder())) {
             ConfigManager.getInstance();
+            kingdomsWorld = getConfig().getString("kingdoms-world");
             try {
                 DatabaseManager.getInstance().connect();
             } catch (Exception e) {
@@ -166,5 +169,9 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     public boolean isRunning() {
         return running;
+    }
+
+    public String getKingdomsWorld() {
+        return kingdomsWorld;
     }
 }

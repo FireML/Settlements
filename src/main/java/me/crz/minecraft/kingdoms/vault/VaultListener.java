@@ -1,17 +1,16 @@
 package me.crz.minecraft.kingdoms.vault;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Iterator;
 
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 
 import java.util.Map;
 
+import me.crz.minecraft.kingdoms.village.VillageGUI;
 import org.bukkit.Material;
 
 import java.util.HashMap;
@@ -26,9 +25,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.Listener;
 
-public class VaultListener implements Listener {
+public class VaultListener extends VillageGUI implements Listener {
     public VaultListener() {
-        super();
+        super("vault");
     }
 
     @EventHandler
@@ -43,19 +42,15 @@ public class VaultListener implements Listener {
         }
         Player player = (Player) event.getPlayer();
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
-        this.deposit(contents, village, player);
-        if (this.canLevelUp(village)) {
-            if (village.getLevel() == Levels.VILLAGE_TO_KINGDOM_LEVEL && village.getState() == VillageState.VILLAGE) {
-                this.upgrade(village);
-            } else {
-                this.levelUp(village);
-            }
+        if (village != null) {
+            deposit(contents, village, player);
+            VillageManager.getInstance().checkLevelUp(village);
         }
     }
 
     private void deposit(ItemStack[] contents, Village village, Player player) {
         Map<Material, Integer> fail = new HashMap<>();
-        if (village.getLevel() != 10 || village.getState() != VillageState.KINGDOM) {
+        if (!village.isMaxLevel()) {
             Map<String, Integer> nextLevelReqs = Levels.getLevelMapFromInt(village.getLevel() + 1, village.getState());
             Map<String, Integer> total = new HashMap<>();
             Map<String, Integer> deposited = new HashMap<>();
@@ -102,16 +97,14 @@ public class VaultListener implements Listener {
             if (!fail.isEmpty()) {
                 MessageUtils.tellList(player, this.buildfailDepositMessage(fail, ""));
             }
-            return;
-        }
-        if (contents.length > 0) {
+        } else if (contents.length > 0) {
             for (ItemStack item2 : contents) {
                 if (item2 != null) {
-                    this.add(fail, item2.getType(), item2.getAmount());
+                    add(fail, item2.getType(), item2.getAmount());
                     player.getInventory().addItem(item2);
                 }
             }
-            MessageUtils.tellList(player, this.buildfailDepositMessage(fail, " &r&c&lReason: Max Level Reached"));
+            MessageUtils.tellList(player, this.buildfailDepositMessage(fail, getText("max-level-reached")));
         }
     }
 
@@ -120,14 +113,14 @@ public class VaultListener implements Listener {
     }
 
     private boolean isVault(Inventory inv) {
-        return inv.getName().equals(VaultInventory.inventoryName);
+        return inv.getName().equals(getText("title"));
     }
 
     private List<String> buildfailDepositMessage(Map<Material, Integer> fail, String reason) {
         List<String> messages = new ArrayList<>();
-        messages.add(Message.get("fail-deposit").getReplacedText("reason", reason));
+        messages.add(getMessage("fail-deposit").getReplacedText("reason", reason));
         for (Map.Entry<Material, Integer> entry : fail.entrySet()) {
-            messages.add(Message.get("list-deposit").getReplacedText(
+            messages.add(getMessage("list-deposit").getReplacedText(
                     "amount", String.valueOf(entry.getValue()),
                     "material", entry.getKey().name()));
         }
@@ -136,86 +129,13 @@ public class VaultListener implements Listener {
 
     private List<String> buildSuccessDepositMessage(Player p, Map<String, Integer> deposited) {
         List<String> messages = new ArrayList<>();
-        messages.add(Message.get("success-deposit").getReplacedText("player", p.getDisplayName()));
+        messages.add(getMessage("success-deposit").getReplacedText("player", p.getDisplayName()));
         for (Map.Entry<String, Integer> entry : deposited.entrySet()) {
-            messages.add(Message.get("list-deposit").getReplacedText(
+            messages.add(getMessage("list-deposit").getReplacedText(
                 "amount", String.valueOf(entry.getValue()),
                 "material", entry.getKey()));
         }
         return messages;
     }
 
-    private void upgrade(Village village) {
-        village.setState(VillageState.KINGDOM);
-        village.setLevel(1);
-        MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("upgrade-settlement"), "state", village.getState().getTag());
-        this.resetVaultAfterLevelUp(village);
-    }
-
-    private void levelUp(Village village) {
-        village.levelUp();
-        this.resetVaultAfterLevelUp(village);
-        MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("upgrade"), "level", Integer.toString(village.getLevel()));
-        if (village.getState() == VillageState.KINGDOM) {
-            String unlock;
-            switch (village.getLevel()) {
-                case 4:
-                    unlock = "Teleporter";
-                    break;
-                case 5:
-                    unlock = "Regen 1 Buff";
-                    break;
-                case 6:
-                    unlock = "Speed 1 Buff";
-                    break;
-                case 7:
-                    unlock = "Regen 2 Buff";
-                    break;
-                case 8:
-                    unlock = "Haste 1 Buff";
-                    break;
-                case 9:
-                    unlock = "Haste 2 Buff";
-                    break;
-                case 10:
-                    unlock = "World";
-                    break;
-                default:
-                    return;
-            }
-            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("upgrade-unlock"), "unlock", unlock);
-        }
-    }
-
-    private void resetVaultAfterLevelUp(Village village) {
-        village.getVault().clear();
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
-    }
-
-    private boolean canLevelUp(Village village) {
-        int currentLevel = village.getLevel();
-        if (currentLevel == 10 && village.getState() == VillageState.KINGDOM) {
-            return false;
-        }
-        Map<String, Integer> nextLevelReqs = Levels.getLevelMapFromInt(currentLevel + 1, village.getState());
-        if (nextLevelReqs == null) {
-            return false;
-        }
-        Iterator<Map.Entry<String, Integer>> iterator = nextLevelReqs.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, Integer> pair = iterator.next();
-            if (!village.getVault().containsKey(pair.getKey())) {
-                return false;
-            }
-            int amountRequired = nextLevelReqs.get(pair.getKey());
-            int amountInVault = village.getVault().get(pair.getKey());
-            if (amountInVault < amountRequired) {
-                return false;
-            }
-            if (!iterator.hasNext()) {
-                return true;
-            }
-        }
-        return false;
-    }
 }

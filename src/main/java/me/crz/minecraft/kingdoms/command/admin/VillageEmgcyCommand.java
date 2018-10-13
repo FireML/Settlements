@@ -5,14 +5,15 @@ import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
 public class VillageEmgcyCommand extends SubCommand {
-    public VillageEmgcyCommand() {
-        super("dont touch", "emgcy");
-        this.setPermission("kingdoms.admin");
-        this.setUsage("");
+    public VillageEmgcyCommand(SubCommand parent) {
+        super(parent, "emgcy");
+        setPermission("kingdoms.admin");
+        setVisible(false);
     }
 
     @Override
-    public void run(final Player player, final String base, final String alias, final String... args) {
+    public boolean run(final Player player, final String base, final String alias, final String... args) {
         Base.getPlugin().emgcy = !Base.getPlugin().emgcy;
+        return true;
     }
 }

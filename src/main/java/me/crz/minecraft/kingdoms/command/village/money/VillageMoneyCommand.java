@@ -1,103 +1,50 @@
 package me.crz.minecraft.kingdoms.command.village.money;
 
-import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.utils.Utils;
-import net.milkbowl.vault.economy.EconomyResponse;
+/*
+ * Kingdoms - kingdoms
+ * Copyright (c) 2018 Max Lee aka Phoenix616 (mail@moep.tv)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.Village;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 
 import java.text.DecimalFormat;
 
-import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.VillageManager;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageMoneyCommand extends SubCommand {
-    public VillageMoneyCommand() {
-        super("Commands to interact with the village bank", "bank", "money");
-        this.setPermission("kingdoms.user");
-        this.setUsage("bank <deposit|withdraw|balance> <amount>");
+public class VillageMoneyCommand extends VillageSubCommand {
+    private final static DecimalFormat DF = new DecimalFormat("#,###");
+
+    public VillageMoneyCommand(SubCommand parent) {
+        super(parent, "bank <deposit|withdraw|balance> <amount>", "money");
+        setPermission("kingdoms.user");
+        registerCommand(new VillageSubCommand(this, "balance", VillageRank.RESIDENT) {
+            @Override
+            public boolean run(Resident resident, String base, String alias, String... args) {
+                resident.tell("&2&lVillage Balance: &r&7" + DF.format((long) resident.getVillage().getBank()));
+                return true;
+            }
+        });
+        registerCommand(new MoneyWithdrawCommand(this));
+        registerCommand(new MoneyDepositCommand(this));
     }
 
     @Override
-    public void run(Player player, String base, String alias, String... args) {
-        if (args.length < 1) {
-            MessageUtils.tell(player, this.getUsage(base));
-            return;
-        }
-        Village village = VillageManager.getInstance().getVillageFromPlayer(player);
-        if (village == null) {
-            MessageUtils.tell(player, Message.get("not-in-current"));
-            return;
-        }
-        Resident res = ResidentManager.getInstance().getResident(player);
-        String option = args[0];
-        DecimalFormat df = new DecimalFormat("#,###");
-        if (option.equalsIgnoreCase("balance") || option.equalsIgnoreCase("bal")) {
-            MessageUtils.tell(player, "&2&lVillage Balance: &r&7" + df.format((long) village.getBank()));
-        } else if (option.equalsIgnoreCase("withdraw") || option.equalsIgnoreCase("with")) {
-            if (res.getVillageRank().below(VillageRank.CHIEF)) {
-                MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.CHIEF.getTag(village.getState()));
-                return;
-            }
-            if (args.length < 2 && !this.isInt(args[1])) {
-                MessageUtils.tell(player, "&cPlease specify an amount to withdraw!");
-                return;
-            }
-            int withdrewInit = Integer.parseInt(args[1]);
-            if (withdrewInit <= village.getBank()) {
-                EconomyResponse r = Base.getEconomy().depositPlayer(player, (double) withdrewInit);
-                if (r.transactionSuccess()) {
-                    village.setBank(village.getBank() - withdrewInit);
-                    Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
-                    MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("bank-withdraw"),
-                            "rank", res.getVillageRank().getTag(village.getState()),
-                            "player", player.getName(),
-                            "amount", String.valueOf(withdrewInit));
-                } else {
-                    MessageUtils.tell(player, "&cAn error occurred, please tell an admin!");
-                }
-            } else {
-                MessageUtils.tell(player, Message.get("bank-not-enough-money"), "amount", String.valueOf(withdrewInit));
-            }
-        } else if (option.equalsIgnoreCase("deposit") || option.equalsIgnoreCase("deposit")) {
-            if (args.length < 2 && !this.isInt(args[1])) {
-                MessageUtils.tell(player, "&cPlease specify an amount to withdraw!");
-                return;
-            }
-            int deposit = Integer.parseInt(args[1]);
-            OfflinePlayer op = Bukkit.getOfflinePlayer(player.getUniqueId());
-            if (Base.getEconomy().getBalance(op) >= deposit) {
-                EconomyResponse r2 = Base.getEconomy().withdrawPlayer(op, (double) deposit);
-                if (r2.transactionSuccess()) {
-                    village.setBank(village.getBank() + deposit);
-                    Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
-                    MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("bank-deposit"),
-                            "rank", res.getVillageRank().getTag(village.getState()),
-                            "player", player.getName(),
-                            "amount", String.valueOf(deposit));
-                } else {
-                    MessageUtils.tell(player, "&cAn error occurred, please tell an admin!");
-                }
-            } else {
-                MessageUtils.tell(player, Message.get("player-not-enough-money"), "amount", String.valueOf(deposit));
-            }
-        }
-    }
-
-    public boolean isInt(String input) {
-        try {
-            Integer.parseInt(input);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    public boolean run(Resident resident, String base, String alias, String... args) {
+        return false;
     }
 }

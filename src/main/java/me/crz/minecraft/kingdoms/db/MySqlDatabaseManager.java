@@ -140,6 +140,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "name VARCHAR(16) NOT NULL,"
                     + "settlementId INTEGER,"
                     + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE SET NULL,"
+                    + "settlementJoin BIGINT(11) NOT NULL,"
                     + "rank VARCHAR(255),"
                     + "lastLogin BIGINT(11) NOT NULL,"
                     + "activeChannel VARCHAR(255) NOT NULL,"

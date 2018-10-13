@@ -2,8 +2,11 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.utils.ConfigKey;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import net.md_5.bungee.api.ChatColor;
@@ -15,90 +18,81 @@ import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
 public class VillageMapCommand extends SubCommand {
-    private int[] offset1;
-    private static int[] offset2 = new int[]{-14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+    private static final int HEIGHT = 13;
+    private static final int WIDTH = 29;
 
-    public VillageMapCommand() {
-        super("Shows you a map of the surrounding chunks", "map");
-        offset1 = new int[]{-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6};
-        this.setPermission("kingdoms.user");
-        this.setUsage("map");
+    public VillageMapCommand(SubCommand parent) {
+        super(parent, "map");
+        setPermission("kingdoms.user");
     }
 
     @Override
-    public void run(Player player, String base, String alias, String... args) {
+    public boolean run(Player player, String base, String alias, String... args) {
         Utils.runAsync(() -> player.spigot().sendMessage(getMap(generateMap(player), player)));
+        return true;
     }
 
     private BaseComponent[][][] generateMap(Player player) {
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
-        BaseComponent[][][] map = new BaseComponent[13][29][0];
-        int x = player.getLocation().getChunk().getX();
-        int z = player.getLocation().getChunk().getZ();
-        int countX = 0;
-        int[] offset1;
-        for (int length = (offset1 = this.offset1).length, k = 0; k < length; ++k) {
-            int i = offset1[k];
-            int countZ = 0;
-            int[] offset2;
-            for (int length2 = (offset2 = VillageMapCommand.offset2).length, l = 0; l < length2; ++l) {
-                int j = offset2[l];
-                map[countX][countZ] = this.getSymbol(x + j, z + i, player.getLocation().getWorld(), village, (countX == 6 && countZ == 14) ? "+" : "-", player);
-                ++countZ;
+        BaseComponent[][][] map = new BaseComponent[HEIGHT][WIDTH][0];
+        int x = (player.getLocation().getBlockX() >> 4) - HEIGHT / 2;
+        int z = (player.getLocation().getBlockZ() >> 4) - WIDTH / 2;
+        for (int countX = 0; countX < HEIGHT; countX++) {
+            for (int countZ = 0; countZ < WIDTH; countZ++) {
+                map[countX][countZ] = getSymbol(x + countX, z + countZ, player.getLocation().getWorld(), village, countX == HEIGHT / 2 && countZ == WIDTH / 2, player);
             }
             ++countX;
         }
         return map;
     }
 
-    private BaseComponent[] getSymbol(int x, int z, World world, Village village, String symbol, Player player) {
+    private BaseComponent[] getSymbol(int x, int z, World world, Village village, boolean current, Player player) {
         OwnedLand land = LandManager.getInstance().getLand(x, z, world);
         if (land == null) {
-            return new ComponentBuilder(symbol).color(ChatColor.GRAY).create();
+            return new ComponentBuilder((current ? Symbol.CURRENT : Symbol.NORMAL).getText()).color(Relation.UNCLAIMED.getColor()).create();
         }
-        if (land.getIsOutpost()) {
-            symbol = "@";
+        Symbol symbol = Symbol.NORMAL;
+        Relation relation;
+        if (land.isOutpost()) {
+            symbol = Symbol.OUTPOST;
         }
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n&a&lPlot Owner: &7");
-        if (land.getPlotOwner() != null) {
-            try {
-                sb.append(ResidentManager.getInstance().getResident(land.getPlotOwner()).getName());
-                sb.append("\n");
-            } catch (Exception e) {
-                sb.append("none\n");
-            }
-        } else {
-            sb.append("none\n");
-        }
-        ChatColor color;
         if (land.getOwnerVillage().equals(village)) {
-            if (land.isPlotOwner(player)) {
-                color = ChatColor.YELLOW;
-            } else {
-                if (land.isForSale()) {
-                    symbol = symbol.equals("-") ? "$" : "+";
+            relation = Relation.OWN;
+            if (land.isPlot()) {
+                if (land.isPlotOwner(player)) {
+                    relation = Relation.OWN_PLOT;
                 }
-                color = ChatColor.GREEN;
+                symbol = Symbol.PLOT;
+            } else if (land.isForSale()) {
+                symbol = Symbol.FOR_SALE;
             }
+        } else if (village != null && village.getAllies().contains(land.getOwnerVillage().getId())) {
+            relation = Relation.ALLY;
         } else {
-            if (village != null && village.getAllies().contains(land.getOwnerVillage().getId())) {
-                color = ChatColor.AQUA;
-            } else {
-                color = ChatColor.RED;
-            }
+            relation = Relation.ENEMY;
         }
-        return new ComponentBuilder(symbol)
-                .color(color)
-                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                        new ComponentBuilder(land.getOwnerVillage().getName())
-                                .append(MessageUtils.toColoredComponents(sb.toString()))
-                                .create()))
+
+        ComponentBuilder hover = new ComponentBuilder(land.getOwnerVillage().getName());
+        if (getMessage("hover." + symbol.getKey()).exists()) {
+            hover.append("\n").append(getMessage("hover." + symbol.getKey()).getReplacedComponents(
+                    "owner", land.isPlot() ? ResidentManager.getInstance().getResidentName(land.getPlotOwner()) : "none",
+                    "price", land.isForSale() ? String.valueOf(land.getPrice()) : "not for sale",
+                    "name", land.getOutpostName()
+            ));
+        }
+
+        if (current) {
+            symbol = Symbol.CURRENT;
+        }
+        return new ComponentBuilder(MessageUtils.replaceColorCodes(symbol.getText()))
+                .color(relation.getColor())
+                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover.create()))
                 .create();
     }
 
@@ -153,20 +147,10 @@ public class VillageMapCommand extends SubCommand {
         return new BaseComponent[0];
     }
 
-    private  BaseComponent[] getRowEnd(int row) {
-        switch (row) {
-            case 0:
-                return MessageUtils.toColoredComponents(" &a-&r&6 = your land");
-            case 1:
-                return MessageUtils.toColoredComponents(" &a$&r&6 = land for sale");
-            case 2:
-                return MessageUtils.toColoredComponents(" &7-&r&6 = unclaimed land");
-            case 3:
-                return MessageUtils.toColoredComponents(" &b-&r&6 = ally land");
-            case 4:
-                return MessageUtils.toColoredComponents(" &c-&r&6 = other land");
-            case 5:
-                return MessageUtils.toColoredComponents(" &e+&r&6 = current land");
+    private BaseComponent[] getRowEnd(int row) {
+        List<String> lines = getMessage("explanation").getTextList();
+        if (lines.size() > row) {
+            return TextComponent.fromLegacyText(lines.get(row));
         }
         return new BaseComponent[0];
     }
@@ -185,9 +169,8 @@ public class VillageMapCommand extends SubCommand {
     }
 
     private BaseComponent[] getMap(BaseComponent[][][] map, Player p) {
-        ComponentBuilder cb = new ComponentBuilder("")
-                .append(MessageUtils.toColoredComponents("&8---------------- &eSettlement Map &r&8----------------"));
-        for (int i = 0; i < 13; ++i) {
+        ComponentBuilder cb = new ComponentBuilder("").append(getMessage("head").getComponents());
+        for (int i = 0; i < map.length; ++i) {
             cb.append("\n", ComponentBuilder.FormatRetention.NONE);
             BaseComponent[] rowBase = this.getRowBase(i, p);
             if (rowBase.length > 0) {
@@ -200,8 +183,55 @@ public class VillageMapCommand extends SubCommand {
             if (rowEnd.length > 0) {
                 cb.append(rowEnd, ComponentBuilder.FormatRetention.NONE);
             }
-            cb.create();
         }
         return cb.create();
+    }
+
+    enum Relation implements ConfigKey {
+        OWN,
+        OWN_PLOT,
+        ALLY,
+        ENEMY,
+        UNCLAIMED,
+        CURRENT;
+
+        private final ChatColor color;
+
+        Relation() {
+            ChatColor temp;
+            try {
+                temp = ChatColor.valueOf(KingdomsPlugin.getInstance().getConfig().getString("map.color." + getKey()).toUpperCase());
+            } catch (IllegalArgumentException e) {
+                temp = ChatColor.GRAY;
+                KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Wrong color string for " + name() + "! " + e.getMessage());
+            }
+            color = temp;
+        }
+
+        public ChatColor getColor() {
+            return color;
+        }
+    }
+
+    enum Symbol implements ConfigKey {
+        NORMAL,
+        FOR_SALE,
+        PLOT,
+        HOME,
+        OUTPOST,
+        UNCLAIMED,
+        ALLY,
+        OTHER,
+        CURRENT;
+
+        private final String text;
+
+        Symbol() {
+            text = KingdomsPlugin.getInstance().getConfig().getString("map.symbol." + getKey());
+        }
+
+        public String getText() {
+            return text;
+        }
     }
 }

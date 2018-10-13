@@ -131,7 +131,7 @@ public class VillageListener implements Listener {
                         e.getBlock().breakNaturally();
                         return;
                     }
-                    MessageUtils.tell(e.getPlayer(), "&c&lYou require &r&6&l" + VillageRank.CHIEF.getTag(village.getState()) + " or higher&r&c&l !");
+                    MessageUtils.tell(e.getPlayer(), "&c&lYou require &r&6&l" + VillageRank.CHIEF.getTag(village) + " or higher&r&c&l !");
                     e.setCancelled(true);
                 }
             }
@@ -197,7 +197,7 @@ public class VillageListener implements Listener {
                             e.getClickedBlock().breakNaturally();
                             return;
                         }
-                        MessageUtils.tell(e.getPlayer(), "&c&lYou require &r&6&l" + VillageRank.CHIEF.getTag(village.getState()) + " or higher&r&c&l !");
+                        MessageUtils.tell(e.getPlayer(), "&c&lYou require &r&6&l" + VillageRank.CHIEF.getTag(village) + " or higher&r&c&l !");
                     }
                 } else {
                     if (e.getPlayer().isOp()) {

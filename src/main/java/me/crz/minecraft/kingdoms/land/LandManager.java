@@ -117,14 +117,21 @@ public class LandManager {
     }
 
     public void unclaimLand(OwnedLand... lands) {
+        Set<Village> saveVillages = new HashSet<>();
         for (OwnedLand land : lands) {
             landTable.remove(land.getWorldName(), land.getSimpleKey());
             villageLands.remove(land.getOwnerVillage().getId(), land.getLocation());
-            if (land.getOwnerVillage() != null && land.getIsOutpost()) {
-                land.getOwnerVillage().getOutpostHomes().values().removeIf(l -> land.getLocation().contains(l));
+            if (land.getOwnerVillage() != null && land.isOutpost()) {
+                if (land.getOwnerVillage().getOutpostHomes().remove(land.getOutpostName().toLowerCase()) != null) {
+                    saveVillages.add(land.getOwnerVillage());
+                }
             }
+            land.setOwnerVillage(null);
         }
-        Utils.runAsync(() -> DatabaseManager.getInstance().unclaimLand(lands));
+        Utils.runAsync(() -> {
+            DatabaseManager.getInstance().unclaimLand(lands);
+            DatabaseManager.getInstance().saveVillages(saveVillages);
+        });
     }
 
     public void unclaimLand(Village village) {
@@ -171,7 +178,7 @@ public class LandManager {
 
     public OwnedLand claimOutpost(Location location, Village village, String name) {
         OwnedLand land = this.claimLand(location, village);
-        land.setIsOutpost(true);
+        land.setOutpost(name);
         cacheLand(land);
         village.addOutpostHome(name, location);
         Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
@@ -212,7 +219,7 @@ public class LandManager {
                 if (!checked.contains(search)) {
                     checked.add(search);
                     OwnedLand foundLand = getLand(search);
-                    if (foundLand != null && foundLand.getOwnerVillage().equals(land.getOwnerVillage()) && !foundLand.getIsOutpost()) {
+                    if (foundLand != null && foundLand.getOwnerVillage().equals(land.getOwnerVillage()) && !foundLand.isOutpost()) {
                         ownedLands.add(foundLand);
                         toSearch.add(search);
                     }

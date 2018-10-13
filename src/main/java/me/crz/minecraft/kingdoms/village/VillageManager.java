@@ -4,7 +4,10 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.banish.CustomRunnable;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
+import me.crz.minecraft.kingdoms.utils.Message;
+import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.vault.Levels;
 import org.bukkit.Location;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
@@ -129,4 +132,71 @@ public class VillageManager {
             village.doUpkeep();
         }
     }
+
+    /**
+     * Check whether or not a village can level up
+     * @param village The village to check
+     * @return Whether or not the village was leveled up
+     */
+    public boolean checkLevelUp(Village village) {
+        if (!village.canLevelUp()) {
+            return false;
+        }
+
+        if (village.getLevel() == Levels.VILLAGE_TO_KINGDOM_LEVEL && village.getState() == VillageState.VILLAGE) {
+            village.setState(VillageState.KINGDOM);
+            village.setLevel(1);
+            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("levels.upgrade-settlement"), "state", village.getState().getTag());
+        } else {
+            village.setLevel(village.getLevel() + 1);
+            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("levels.upgrade"), "level", Integer.toString(village.getLevel()));
+        }
+        removeLevelRequirements(village);
+
+        // TODO: This should be a config and new shop system:
+        if (village.getState() == VillageState.KINGDOM) {
+            String unlock;
+            switch (village.getLevel()) {
+                case 4:
+                    unlock = "Teleporter";
+                    break;
+                case 5:
+                    unlock = "Regen 1 Buff";
+                    break;
+                case 6:
+                    unlock = "Speed 1 Buff";
+                    break;
+                case 7:
+                    unlock = "Regen 2 Buff";
+                    break;
+                case 8:
+                    unlock = "Haste 1 Buff";
+                    break;
+                case 9:
+                    unlock = "Haste 2 Buff";
+                    break;
+                case 10:
+                    unlock = "World";
+                    break;
+                default:
+                    return true;
+            }
+            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("levels.upgrade-unlock"), "unlock", unlock);
+        }
+        return true;
+    }
+
+    private void removeLevelRequirements(Village village) {
+        Map<String, Integer> levelReqs = Levels.getLevelMapFromInt(village.getLevel(), village.getState());
+        if (levelReqs == null || levelReqs.isEmpty()) {
+            return;
+        }
+        for (Map.Entry<String, Integer> entry : levelReqs.entrySet()) {
+            if (village.getVault().containsKey(entry.getKey())) {
+                village.getVault().put(entry.getKey(), village.getVault().get(entry.getKey()) - levelReqs.get(entry.getKey()));
+            }
+        }
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
+    }
+
 }

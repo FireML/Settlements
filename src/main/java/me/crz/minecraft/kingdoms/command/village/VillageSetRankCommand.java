@@ -1,89 +1,79 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.utils.Message;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.VillageManager;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
-
-import java.util.Arrays;
-
+import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.entity.Player;
-import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageSetRankCommand extends SubCommand {
-    public VillageSetRankCommand() {
-        super("Sets the rank of a resident", "setrank");
-        this.setPermission("kingdoms.user");
-        this.setUsage("setrank <player> <rank>");
+public class VillageSetRankCommand extends VillageSubCommand {
+    public VillageSetRankCommand(SubCommand parent) {
+        super(parent, "setrank <player> <rank>", VillageRank.ELDER);
+        setPermission("kingdoms.user");
     }
 
     @Override
-    public void run(Player player, String base, String alias, String... args) {
+    public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length <= 1) {
-            MessageUtils.tellList(player, Arrays.asList(
-                    "&8&l-------- &r&c&l/" + base + " " + alias + "&r " + "&8&l--------",
-                    "/" + base + " setrank <player> <rank>",
-                    "&8[&9*&8] &bElder &7- allows mode,claiming,invite,bank,plot,setrank",
-                    "&8[&9*&8] &bBuilder &7- allows resident to build on elder and builder only mode",
-                    "&8[&9*&8] &bRecruiter &7- allows resident to invite players",
-                    "&8[&9*&8] &bResident &7- default rank for members of this settlement",
-                    "&aNote: Officers = Elder and Builder"));
-            return;
+            res.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base));
+            res.tell(getUsage(base));
+            for (VillageRank rank : VillageRank.values()) {
+                res.tell(getMessage("usage.entry"),
+                        "usage", "/" + base + " " + alias + " " + rank.getTag(res.getVillage()),
+                        "description", getText("rank." + rank.getKey())
+                );
+            }
+            if (getMessage("usage.footer").exists()) {
+                res.tell(getMessage("usage.footer"), "name", name(), "command", "/" + base + " " + alias);
+            }
+            return true;
         }
-        Village village = VillageManager.getInstance().getVillageFromPlayer(player);
-        if (village == null) {
-            MessageUtils.tell(player, Message.get("not-in-current"), null, null);
-            return;
-        }
-        Resident res = ResidentManager.getInstance().getResident(player);
-        if (res.getVillageRank().below(VillageRank.ELDER)) {
-            MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.ELDER.getTag(village.getState()));
-            return;
-        }
+        Player player = res.getPlayer();
+        Village village = res.getVillage();
         Utils.runAsync(() -> {
             Resident tres = ResidentManager.getInstance().getResident(args[0]);
             if (tres == null) {
-                MessageUtils.tell(player, Message.get("player-not-found"), null, null);
+                MessageUtils.tell(player, getError("player-not-found"), "name", args[0]);
+                return;
+            } else if (!tres.getVillage().equals(village)) {
+                MessageUtils.tell(player, getError("not-in-current"), "state", village.getState().getTag());
                 return;
             }
-            if (!this.isResident(tres, village)) {
-                MessageUtils.tell(player, Message.get("not-in-current"), null, null);
-                return;
-            }
-            VillageRank rank;
+            VillageRank rank = null;
             try {
                 rank = VillageRank.valueOf(args[1].toUpperCase());
             } catch (IllegalArgumentException e) {
-                MessageUtils.tell(player, Message.get("invalid-rank"), "{rank}", args[1]);
-                return;
+                for (VillageRank r : VillageRank.values()) {
+                    if (r.getTag(village).equalsIgnoreCase(args[1])) {
+                        rank = r;
+                        break;
+                    }
+                }
             }
-            if (res.getVillageRank().ordinal() <= tres.getVillageRank().ordinal()) {
-                MessageUtils.tell(player, Message.get("cant_set_that_persons_rank"), null, null);
-                return;
-            }
-            if (rank.equals(VillageRank.CHIEF)) {
-                MessageUtils.tell(player, "&c&lPlease use &6&c&l/" + base + " transfer <player>&r&c&l to transfer ownership of the " + village.getState().getTag(), null, null);
-                return;
-            }
-            if (res.getVillageRank().ordinal() <= rank.ordinal()) {
-                MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.values()[rank.ordinal() + 1].getTag(village.getState()));
-                return;
-            }
-            tres.setVillageRank(rank);
-            DatabaseManager.getInstance().saveResident(tres);
-            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("success-set-rank"),
-                    "rank", res.getVillageRank().getTag(village.getState()),
-                    "setter", player.getName(),
-                    "target", tres.getName());
-        });
-    }
 
-    private boolean isResident(Resident tres, Village village) {
-        return tres.getVillageName().equals(village.getName());
+
+            if (rank == null) {
+                MessageUtils.tell(player, getError("invalid-rank"), "rank", args[1]);
+            } else if (rank.equals(VillageRank.CHIEF)) {
+                MessageUtils.tell(player, getError("cant-set-chief"), "base", base, "state", village.getState().getTag());
+            } else if (tres.getVillageRank().atLeast(res.getVillageRank())) {
+                MessageUtils.tell(player, getMessage("cant-set-higher"), "rank", res.getVillageRank().getTag(village));
+            } else  if (res.getVillageRank().ordinal() <= rank.ordinal()) {
+                MessageUtils.tell(player, getError("rank-required"), "rank", VillageRank.values()[rank.ordinal() + 1].getTag(village));
+            } else {
+                tres.setVillageRank(rank);
+                DatabaseManager.getInstance().saveResident(tres);
+                MessageUtils.tellResidents(village.getOnlineResidents(), getMessage("success"),
+                        "rank", res.getVillageRank().getTag(village),
+                        "setter", player.getName(),
+                        "target", tres.getName());
+            }
+        });
+        return true;
     }
 }

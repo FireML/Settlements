@@ -4,24 +4,20 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import org.bukkit.Bukkit;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
 public class FriendRemoveCommand extends SubCommand {
-    public FriendRemoveCommand() {
-        super("Removes a player to your friend list", "remove");
-        this.setPermission("kingdoms.user");
-        this.setUsage("remove <name>");
+    public FriendRemoveCommand(SubCommand parent) {
+        super(parent, "remove <name>");
+        setPermission("kingdoms.user");
     }
 
     @Override
-    public void run(Player player, String base, String alias, String... args) {
+    public boolean run(Player player, String base, String alias, String... args) {
         if (args.length < 1) {
-            MessageUtils.tell(player, "&c" + this.getUsage(base));
-            return;
+            return false;
         }
         Utils.runAsync(() -> {
             Resident target = ResidentManager.getInstance().getResident(args[0]);
@@ -37,5 +33,6 @@ public class FriendRemoveCommand extends SubCommand {
             DatabaseManager.getInstance().saveResident(res);
             MessageUtils.tell(player, "&cSuccessfully removed &6" + target.getName() + "&c from your friends list");
         });
+        return true;
     }
 }

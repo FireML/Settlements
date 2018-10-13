@@ -100,6 +100,11 @@ public class ResidentManager {
         return this.getResident(p).getChannels().contains(channel);
     }
 
+    public Resident getResident(Player p) {
+        Resident resident = getResident(p.getUniqueId());
+        return resident != null ? resident : new Resident(p.getUniqueId(), p.getName());
+    }
+
     public Resident getResident(OfflinePlayer p) {
         return this.getResident(p.getUniqueId());
     }
@@ -129,6 +134,11 @@ public class ResidentManager {
             }
         }
         return resident;
+    }
+
+    public String getResidentName(UUID uuid) {
+        Resident resident = getResident(uuid);
+        return resident != null ? resident.getName() : uuid.toString();
     }
 
     public static ResidentManager getInstance() {

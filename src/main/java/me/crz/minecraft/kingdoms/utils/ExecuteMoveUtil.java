@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.utils;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveBlockEvent;
 import org.bukkit.entity.Player;
@@ -20,17 +22,17 @@ public class ExecuteMoveUtil extends Base {
         Base.registerListener(this);
     }
 
-    public void execute(final Player p, final Runnable r, final int seconds, final String action) {
+    public void execute(Player p, Runnable r, int seconds, String action) {
         uuids.put(p.getUniqueId(), action);
-        ThreadManager.getInstance().execute(() -> {
-            if (uuids.remove(p.getUniqueId(), action)) {
+        Bukkit.getScheduler().runTaskLater(KingdomsPlugin.getInstance(), () -> {
+            if (uuids.remove(p.getUniqueId(), action) && p.isOnline()) {
                 r.run();
             }
-        }, seconds);
+        }, seconds * 20);
     }
 
     @EventHandler
-    public void on(final PlayerMoveBlockEvent e) {
+    public void on(PlayerMoveBlockEvent e) {
         if (uuids.remove(e.getPlayer().getUniqueId()) != null) {
             MessageUtils.tell(e.getPlayer(), "&c" + uuids.get(e.getPlayer().getUniqueId()) + " cancled because you moved!");
         }

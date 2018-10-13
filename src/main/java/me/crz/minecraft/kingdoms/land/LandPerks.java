@@ -59,7 +59,7 @@ public class LandPerks {
         switch (level) {
             case 10:
                 effects.putIfAbsent(PotionEffectType.DAMAGE_RESISTANCE, 1);
-                if (p.getWorld().getName().equalsIgnoreCase("kingdom")) {
+                if (p.getWorld().getName().equalsIgnoreCase(KingdomsPlugin.getInstance().getKingdomsWorld())) {
                     effects.putIfAbsent(PotionEffectType.INCREASE_DAMAGE, 0);
                     effects.putIfAbsent(PotionEffectType.REGENERATION, 0);
                 }

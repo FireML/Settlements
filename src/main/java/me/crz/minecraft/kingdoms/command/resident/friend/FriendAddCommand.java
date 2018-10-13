@@ -9,17 +9,15 @@ import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
 public class FriendAddCommand extends SubCommand {
-    public FriendAddCommand() {
-        super("Adds a player to your friend list", "add");
-        this.setPermission("kingdoms.user");
-        this.setUsage("add <name>");
+    public FriendAddCommand(SubCommand parent) {
+        super(parent, "add <name>");
+        setPermission("kingdoms.user");
     }
 
     @Override
-    public void run(Player player, String base, String alias, String... args) {
+    public boolean run(Player player, String base, String alias, String... args) {
         if (args.length < 1) {
-            MessageUtils.tell(player, "&c" + this.getUsage(base));
-            return;
+            return false;
         }
         Utils.runAsync(() -> {
             Resident target = ResidentManager.getInstance().getResident(args[0]);
@@ -35,5 +33,6 @@ public class FriendAddCommand extends SubCommand {
             Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
             MessageUtils.tell(player, "&aSuccessfully added &6" + target.getName() + "&a as a friend");
         });
+        return true;
     }
 }

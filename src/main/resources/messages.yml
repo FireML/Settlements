@@ -1,115 +1,409 @@
-server-name: '&b&lYour&f&lServer'
+server-name: "&b&lYour&f&lServer"
 server-rules: "&6&llink.to/server-rules&r or rule text"
-no-permission: '&cNo permission.'
-no-permission-interact: "&cYou don't have permission to interact in {townName}'s claims!"
-only-console: '&cMust be ran by console.'
-only-player: '&cMust be ran by player.'
-player-not-found: '&c&lNo &r&6&lplayer&r&c&l with the name &r&6&l{player}&r&c&l found!'
-help: |-
-  Help message one
-  Help message two
-must-leave-current: '&c&lERROR &r&7Must leave current settlement.'
-success-create: '&a&lSUCCESS &r&7created a new settlement.'
-success-delete: '&e&lALERT &r&7Your chief has deleted your settlement.'
-not-in-current: '&c&lERROR &r&7Not currently in settlement.'
-receive-invite: '&e&lALERT &r&7Invite received from {townName}! Type &e/village join {townName} &7to join.'
-town-not-found: '&c&lERROR &r&7settlement could not be found.'
-no-invite: '&c&lERROR &r&7You dont not have an invite for this settlement.'
-is-full: '&e&lALERT &r&7The {type] is full.'
-success-join: '&a&lSUCCESS &r&7You have joined {townName}.'
-success-leave: '&a&lSUCCESS &r&7You have left your settlement.'
-alert-leave: '&e&lALERT &r&e{player}&7 has left the settlement.'
-name-taken: '&c&lERROR &r&7settlement name not available.'
-cant-leave-own: '&c&lERROR &r&7You cannot leave your own settlement. You must delete it.'
-success-invite: '&e&lALERT &r&e{player}&7 has been invited to the settlement.'
-kicked-player: '&a&lALERT &r&e{player}&7 has been kicked from the settlement.'
-new-resident: '&e&lALERT &r&e{player}&7 has joined the settlement!'
-show-settlement: |-
-  &8--------&c&l{townName}&r&8--------
-  &a&lState: &r&7{state}
-  &6&lAccess: &r&7{access}
-  &6&lLevel: &r&7{level}
-  &6&lBank: &r&7{bank}
-  &6&lOutposts: &r&7{outpost}&r&e/&r&7{maxOutpost}
-  &6&lLand: &r&7{land}&r&e/&r&7{maxLand}
-  &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobSpawning}&r&7 |  Firespread: &r&e{fireSpread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
-  &e&l{chiefRank} &r&7{chief}
-  &b&lResidents: &r&7{residents}
-fail-deposit: '&c&lFailed Deposited Items: {reason}'
-success-deposit: "&6&l{player} &7&lhas deposited:"
-list-deposit: '&6{amount} &e{material}'
-upgrade: '&d&lLEVEL UP &r&7Your settlement is now level &d{level}'
-upgrade-unlock: "&6&l{unlock} &7&lhas been unlocked!"
-cant-set-that-persons-rank: '&c&lERROR &r&7You cannot change that persons rank!'
-invalid-rank: '&c&lERROR &r&c{rank} &7is not a valid rank!'
-success-set-rank: '&e&lALERT &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!'
-set-rank: "&c&lPlayer &6&l {target}&c&l's rank was set to &6&l{rank}"
-invalid-level: '&c&lERROR &r&7You must be level &e{requiredLevel} &7to do that!'
-upgrade-settlement: '&a&lSUCCESS &r&7The settlement has been upgraded to &e{state}!'
-cant-claim-more: '&c&lERROR &r&7Your settlement can only claim &e{max} chunks of land!'
-already-own-land: '&e&lALERT &r&7Your settlement already owns this land!'
-cant-claim-here: '&c&lERROR &r&7This land is owned by &e{owner}!'
-success-claim-land: '&a&lSUCCESS &r&e{player} &7has claimed land for your settlement at {x},{z}!'
-success-unclaim-land: '&a&lSUCCESS &r&e{player} &7has unclaimed land at {x},{z}!'
-success-claim-outpost: "&a&lSUCCESS &r&e{player} &7has claimed &coutpost&7 &e{name}&7 for your settlement at {x},{z}!"
-success-unclaim-outpost: "&aSuccess unclaimed the outpost at {x},{z} and {amount} land around it."
-cant-build-here: '&e&lALERT &r&7This land is owned by &e{owner}&7.'
-success-change-enter: '&a&lSUCCESS &r&7Changed enter message!'
-success-change-leave: '&a&lSUCCESS &r&7Changed leave message!'
-success-create-sale-plot: '&a&lSUCCESS &7This land has been put on sale for &e${price}&7!'
-success-build-state: '&a&lSUCCESS &7You have changed your settlement build state to &e{state}&7!'
-success-plit-build-state: '&a&lSUCCESS &7You have changed your plot build state to &e{state}&7!'
-no-land-around: '&c&lERROR &r&7Your claim must be connected to an existing settlement claim!'
-not-in-village: "&c&lTarget player {player} isn't in a village!"
+error:
+  not-in-current: "&c&lERROR &r&7Not currently in settlement."
+  not-in-village: "&c&lTarget player {player} isn't in a village!"
+  no-permission: "&cNo permission."
+  not-enough-money: "&c&lNot enough money in your account to pay &r&6&l{amount}&r&c&l!"
+  not-your-village: "&c&lThis is not your {state}!"
+  no-village: "&c&lNo village at your location!"
+  invalid-rank: "&c&lERROR &r&c{rank} &7is not a valid rank!"
+  village-exists: "&7&lVillage with the name &6&l{name}&7&l already exists!"
+  village-doesnt-exist: "&c&lNo village with the name &6&l{name}&7&l found!"
+  invalid-characters: "&c{input} contains invalid characters!"
+  too-long: "&c{input} is too long, only {amount} characters are allowed!"
+  player-not-found: "&c&lNo &r&6&lplayer&r&c&l with the name &r&6&l{name}&r&c&l found!"
+  not-a-plot: "&c&lYou are not currently standing in a plot"
+  not-for-sale: "&cLand is not for sale!"
+  not-your-plot: "&cThis is not your plot!"
+  world-not-claimable: "&c&lClaiming is disabled in this world!"
+  claim-too-close: "&c&lERROR &r&7You are too close to &e{owner}'s land !"
+  already-own-land: "&e&lALERT &r&7Your settlement already owns this land!"
+  cant-claim-here: "&c&lERROR &r&7This land is owned by &e{owner}!"
+  outpost-not-found: |
+    &cUnable to find: &6{name}
+    &cPlease make sure your using the outpost name shown in /s outpost list!
+  rank-required: "&c&lYou require the rank &r&6&l{rank} or higher&r&c&l!"
+  village-required: "&c&lYou can only do this after you joined a settlement!"
+  free-required: "&c&lYou can only do this if you are not part of a settlement yet!"
+  only-player: "&cMust be ran by player."
+levels:
+  upgrade: "&d&lLEVEL UP &r&7Your settlement is now level &d{level}"
+  upgrade-settlement: "&a&lSUCCESS &r&7The settlement has been upgraded to &e{state}!"
+  upgrade-unlock: "&6&l{unlock} &7&lhas been unlocked!"
 upkeep:
   alert:
     level-removed: "&a&lALERT &7Your settlement has had a level removed because you couldn't pay the upkeep!"
     downgraded: "&a&lALERT &7Your settlement was downgraded to a level {level} {state} because you couldn't pay the upkeep!"
     deleted: "&a&lALERT &7Your settlement has been &cdeleted&7 because it was &cunable&7 to pay its upkeep!"
     charged: "&a&lALERT &7Your settlement has been charged &6{charged}&7 for upkeep!"
-    cant-pay: "&a&lALERT &7Your settlement is &cunable&7 to pay tomorrows upkeep, it will cost &6{cost}&7!"
-first-to-reach-level: "&6&l{name} &7&l is the first to reach &6&l{state} &7&llevel &6&l{level}"
-bank-withdraw: "&e&l{rank} &r&e{name} &r&7withdrew &6{amount}&r&7 from the village bank!"
-bank-deposit: "&e&l{rank} &r&e{name} &r&7deposited &6{amount}&r&7 into the village bank!"
-rank-required: "&c&lYou require the rank &r&6&l{rank} or higher&r&c&l!"
-bank-not-enough-money: "&c&lNot enough money in the village bank to withdraw &r&6&l{amount}&r&c&l!"
-player-not-enough-money: "&c&lNot enough money in your account to pay &r&6&l{amount}&r&c&l!"
-error-max-outpost-chunks: "&c&lERROR &r&7Your settlement can only claim &e{max}&r&7 outpost chunks!"
-outpost-not-found: |
-  &cUnable to find: &6{name}
-  &cPlease make sure your using the outpost name shown in /s outpost list!
-  &ce.g. /s outpost tp outpost-4
-village-renamed: "&7&lVillage has been renamed to &6&l{name}"
-error-village-exists: "&7&lVillage with the name &6&l{name}&7&l already exists!"
-error-village-doesnt-exist: "&c&lVillage with the name &6&l{name}&7&l does not exist!"
-ally-invite: "&r&6&l{name} &r&7&lwants to ally!"
-ally-accept-info: "&r&6&l/s ally {name} &r&7&lto ally them!"
-ally-removed: "&7&lAlly &6{name} &7removed!"
-now-allied-to: "&7&lYou are now allied to &r&6&l{name}"
-banished: "&7Player &6{player}&7 has been &cbanished &7from your settlement!"
-unbanished: "&7Player &6{player}&7 has been &cbanished &7from your settlement!"
-village-home-set: "{rank} {player} &r&7&l has set the village home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
+    cant-pay: "&a&lALERT &7Your settlement is &cunable&7 to pay tomorrows upkeep it will cost &6{cost}&7!"
+first-to-reach-level: '&6&l{name} &7&l is the first to reach &6&l{state} &7&llevel
+  &6&l{level}'
 village:
-  name: "village"
   enter-message: "&f[&eKingdoms&f] &7Entering &a{name}{pvp}"
   leave-message: "&f[&eKingdoms&f] &7Leaving &a{name}"
   name:
-    chief: 'CHIEF'
-    elder: 'ELDER'
-    builder: 'BUILDER'
-    recruiter: 'RECRUITER'
-    resident: 'RESIDENT'
+    chief: CHIEF
+    elder: ELDER
+    builder: BUILDER
+    recruiter: RECRUITER
+    resident: RESIDENT
 kingdom:
-  name: "kingdom"
   enter-message: "&f[&eKingdoms&f] &7Entering &a{name}{pvp}"
   leave-message: "&f[&eKingdoms&f] &7Leaving &a{name}"
   name:
-    chief: 'KING'
-    elder: 'ELDER'
-    builder: 'BUILDER'
-    recruiter: 'RECRUITER'
-    resident: 'RESIDENT'
+    chief: KING
+    elder: ELDER
+    builder: BUILDER
+    recruiter: RECRUITER
+    resident: RESIDENT
 pvp-is-enabled: " - &c&lPvp is enabled!"
 enter-plot: "&7&lWelcome to&6&l {owner}&7&l’s plot "
 plot-is-for-sale: "&9&lLand is for sale "
 cannot-attack-animals: "&c&lYou cannot attack another village's animals!"
+usage:
+  head: |-
+    &8&l--------&r&c&l{name} Commands&r&8&l--------
+    &c{usage}
+  entry: "&8[&9*&8] &b{usage} &7- {description}"
+gui:
+  access:
+    title: "&3&lSettlement Access"
+    back: "&c&lBack To Settings"
+    selected: "&e&l{access}"
+    available: "&7{access}"
+    access:
+      open: Allows everyone to join without an invitation
+      public: Everyone can tp to home but requires invite to join
+      ally: Allows allies to teleport to home
+      private: Allows only members to teleport to home
+  teleporters:
+    title: "&2&lTeleporters"
+    locked: "&cLocked"
+    private: "&e&lPrivate Warps"
+    kingdom-required: "&c&lYou require a level &610 Kingdom&c&l to use this!"
+    kingdoms-world: "&e&lKingdoms World"
+    village-home: "&e&lVillage Home"
+  vault:
+    title: "&1&lVault"
+    success-deposit: "&6&l{player} &7&lhas deposited:"
+    fail-deposit: "&c&lFailed Deposited Items: {reason}"
+    max-level-reached: "&r&c&lMax Level Reached"
+    list-deposit: "&6{amount} &e{material}"
+commands:
+  resident:
+    show:
+      info: |-
+        &8------&c&l {name} &8------
+        &a&lSettlement: {settlement}
+        &a&lBalance: &6${balance}
+        &a&lJoin Date: {joindate}
+        &a&lLast Login: {lastlogin}
+      friend:
+        list:
+          head: "&a&lFriends:&r"
+          entry: "{online}{name}"
+          separator: "&7, "
+          online: "&a"
+          offline: "&c"
+      description: Shows you information about a resident
+    description: Resident management commands
+    friend:
+      description: Friend based commands
+      add:
+        description: Adds a player to your friend list
+      remove:
+        description: Removes a player to your friend list
+      list:
+        description: Lists all the people on your friends list
+  village:
+    allies:
+      head: "&8&l--------&r&c&lAllies&r&8&l--------"
+      entry: "&a{name}"
+      separator: "&7, "
+      description: lists all your allies
+    ally:
+      cant-ally-yourself: "&c&lYou can't ally yourself!"
+      already-allied: "&c&lYou are already allied to Village &6&l{name}"
+      now-allied-to: "&7&lYou are now allied to &6&l{name}"
+      invite: "&r&6&l{state} {name} &r&7&lwants to ally!"
+      accept-info: "&r&6&l/s ally {name} &r&7&lto ally them!"
+      request-send: "&7&lAlly request sent to &r&6&l{name}"
+      description: Ally another village
+    banish:
+      list:
+        head: "&7------- &cBanished&7 -------"
+        entry: "&c{name}"
+        separator: "&7, "
+        description: List all banished users
+      add:
+        banished: "&7Player &6{player}&7 has been &cbanished &7from your settlement!"
+        description: Add a player to the banish list
+      remove:
+        unbanished: "&7Player &6{player}&7 has been &cbanished &7from your settlement!"
+        description: Remove a player to the banish list
+      description: Banishes a player from your village
+    bank:
+      withdraw:
+        not-enough-money: "&c&lNot enough money in the bank to withdraw &r&6&l{amount}&r&c&l!"
+        withdrawn: "&e&l{rank} &r&e{name} &r&7withdrew &6{amount}&r&7 from the bank!"
+        description: Withdraw money from the bank
+      deposit:
+        deposited: "&e&l{rank} &r&e{name} &r&7deposited &6{amount}&r&7 into the bank!"
+        description: Deposit money into the bank
+      description: Commands to interact with the village bank
+      balance:
+        description: Check the balance of the bank
+    build:
+      success: "&aSet build state of this plot to {state}"
+      states:
+        residents: residents and officers to build in claimed land
+        officers: only officers are allowed to build in claimed land
+        public: allows everyone to build in your claimed land
+        ally: allows your allies to build in your claimed land
+      description: Set who can build in your village
+    claim:
+      cant-claim-more: "&c&lERROR &r&7Your settlement can only claim &e{max} chunks of land!"
+      no-land-around: "&c&lERROR &r&7Your claim must be connected to an existing settlement claim!"
+      success: "&a&lSUCCESS &r&e{player} &7has claimed land for your settlement at {x},{z}!"
+      description: Claim a chunk of land
+    create:
+      success: "&a&lSUCCESS &r&7created a new settlement."
+      description: Create a new village.
+    disband:
+      confirm: "&c&lPlease do /{command} to confirm the &r&e&ldisbanding&r&c&l of your village."
+      success: "&e&lALERT &r&7Your {chief} has deleted your {state}."
+      description: Disbands the current village
+    home:
+      own-no-home: "&c&lYour village doesn't have a home ask your {chief} to set one!"
+      no-home: "&c&lThat {state} doesn't have a home!"
+      no-access: "&c&lYou don't have access to teleport to the home of that {state}!"
+      waiting: "&e&lTeleporting in {seconds} seconds..."
+      success: "&a&lTeleported to home of {state} {name}"
+      description: Teleport to a settlement's home
+    invite:
+      already-in-village: "&c&l{name} is already in your {state}"
+      received: "&e&lALERT &r&7Invite received from {state} {name}! Type &e/s join {name} &7to join."
+      alert: "&e&lALERT &r&e{player}&7 has been invited to the settlement."
+      description: Invite someone to join your village
+    join:
+      no-invite: "&c&lERROR &r&7You dont not have an invite for this settlement."
+      success: "&a&lSUCCESS &r&7You have joined {state} {name}."
+      new-resident: "&e&lALERT &r&e{player}&7 has joined the settlement!"
+      is-full: "&e&lALERT &r&7The {state} {name} is full."
+      description: Join a village
+    kick:
+      cant-kick-yourself: "&cYou cannot kick yourself!"
+      cant-kick-higher: "&cYou cannot kick &6{rank} or higher&c!"
+      kicked-alert: "&a&lALERT &r&e{player}&7 has been kicked from the settlement."
+      description: Kick a player from your village
+    leave:
+      cant-leave-own: "&c&lERROR &r&7You cannot leave your own settlement. You must delete it."
+      success: "&a&lSUCCESS &r&7You have left your settlement."
+      alert: "&e&lALERT &r&e{player}&7 has left the settlement."
+      description: Leave your current village
+    map:
+      head: "&8---------------- &eSettlement Map &r&8----------------"
+      explanation: |-
+        &r&a- &6= your land
+        &r&a$ &6= for sale
+        &r&a~ &6= player plot
+        &r&aH &6= home
+        &r&a@ &6= outpost
+        &r&b- &6= ally
+        &r&c- &6= other
+        &r&7- &6= unclaimed
+        &r&e+ &6= current
+      hover:
+        own-plot: Your plot
+        plot: "Plot Owner: &7{owner}"
+        for-sale: "For sale: &7{price}"
+        outpost: "Outpost: &7{name}"
+        home: Home
+      description: Shows you a map of the surrounding chunks
+    materials:
+      max-level-reached: "&c&lYour {state} already has the max level!"
+      head: "&8&l--------&r&c&lRequired Materials&r&8&l--------"
+      entry: "&e{amount} &7{material}"
+      description: Shows you the materials required to upgrade
+    mode:
+      modes: "&cAvailable modes: {modes}"
+      success: "&7Settlement mode &6{mode}&7 set to &6{value}"
+      description: Changes settings for your village claims
+    outpost:
+      usage: |-
+        &8&l--------&r&c&lOutpost Commands&r&8&l--------
+        &8[&9*&8] &b/{alias} outpost claim &7- claims an outpost for your settlement
+        &8[&9*&8] &b/{alias} outpost unclaim &7- unclaims the outpost your standing on
+        &8[&9*&8] &b/{alias} outpost sethome <name> &7- sets a sethome on that specific chunk
+        &8[&9*&8] &b/{alias} outpost tp <name> &7- teleports to a outpost shown in list
+        &8[&9*&8] &b/{alias} outpost list &7- lists all of your outposts
+      claim:
+        max-outpost-chunks: "&c&lERROR &r&7Your settlement can only claim &e{max}&r&7 outpost chunks!"
+        success: "&a&lSUCCESS &r&e{player} &7has claimed &coutpost&7 &e{name}&7 for your settlement at {x},{z}!"
+        description: Claims an outpost for your settlement
+      list:
+        head: "&7------- &cOutPosts&7 -------"
+        entry: "&a{name} (World: {world}, X: {x}, Z: {z}"
+        description: List all your outposts
+      sethome:
+        not-an-outpost: "&cThe land must be an outpost to set the home!"
+        success: "&a&lOutpost home &6{name} &aset here"
+        description: Sets a outpost home on that specific chunk
+      teleport:
+        waiting: "&e&lTeleporting in {seconds} seconds..."
+        success: "&a&lTeleported to outpost {name}"
+        description: Teleports to a outpost shown in the list
+      unclaim:
+        not-an-outpost: "&cThis land is not an outpost, please use &7/s unclaim&c to unclaim this land."
+        success: "&aSuccess unclaimed the outpost at {x},{z} and {amount} land around it."
+        description: Unclaims the outpost you are standing in
+      description: Claim a seperate chunk of land
+    plot:
+      build:
+        success: "&aSet build state of this plot to {state}"
+        states:
+          residents: residents and officers to build in claimed land
+          officers: only officers are allowed to build in claimed land
+          public: allows everyone to build in your claimed land
+          ally: allows your allies to build in your claimed land
+          private: allows you to build in your claimed land
+          friends: allows your friends to build in your claimed land
+        description: Sets the build mode of a plot
+      buy:
+        purchased: "&aSuccessfully purchased the land for {price}."
+        description: Buys the chunk you are standing in
+      info:
+        general: |-
+          &8&l-------- &r&c&lPlot Info&r &8&l--------
+          &c&l{state}: &7{name}
+          &9&lModes: &7MobSpawning: &6{spawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explisions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}
+        owner: "&a&lPlot Owner: &7{name}"
+        price: "&a&lPlot Price: &7{price}"
+        description: Get information about the current plot
+      mode:
+        modes: "&cAvailable modes: {modes}"
+        success: "&7Plot mode &6{mode}&7 set to &6{value}"
+        description: Sets the modes of a plot
+      revoke:
+        success: "&aPlot has been revoked ownership!"
+        description: Revokes ownership of the plot you are standing in
+      sale:
+        current: "&7&lThe current price of this land is: &6&l {price}"
+        already-owned: "&cLand is already owned"
+        success: "&a&lSUCCESS &7This land has been put on sale for &e${price}&7!"
+        description: Gets or sets the price of a claimed chunk
+      unsale:
+        success: "&aThis land is no longer for sale!"
+        description: Remove the ability to buy a chunk
+      use:
+        flags: "&cAvailable flags: {flags}"
+        states: "&cAvailable states: {states}"
+        success: "&7Plot State of &6{flag} &7set to &6{state}"
+        description: Sets the use flags of a plot
+      description: Plot Commands
+    rename:
+      success: "&7&lVillage has been renamed to &6&l{name}"
+      description: Renames the current village to something else
+    reslist:
+      head: "&8&l--------&r&c&lResidents&r&8&l--------"
+      rank: "&6&l{rank}:&r {residents}"
+      separator: "&7, "
+      online: "&a"
+      offline: "&c"
+      entry: "{online}{name}"
+      description: lists all residents
+    setaccess:
+      success: "&7Access changed to &6{access}"
+      access:
+        open: Allows everyone to join without an invitation
+        public: Everyone can teleport to home but requires invitation to join
+        ally: Allows allies to teleport to home
+        private: Allows only members to teleport to home
+      description: Sets the access level for the settlement
+    sethome:
+      success: "{rank} {player} &r&7&l has set the {state} home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
+      description: Sets the home for the village
+    setrank:
+      invalid-rank: "&c&lERROR &r&c{rank} &7is not a valid rank!"
+      cant-set-chief: "&c&lPlease use &6&c&l/{base} transfer <player>&r&c&l to transfer ownership of the {state}"
+      cant-set-higher: "&cYou cannot set the rank of &6{rank} or higher&c!"
+      success: "&e&lALERT &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
+      rank:
+        elder: Allows mode,claiming,invite,bank,plot,setrank
+        builder: Allows resident to build on elder and builder only mode
+        recruiter: Allows resident to invite players
+        resident: Default rank for members of this settlement
+      usage:
+        footer: "&aNote: Officers = Elder and Builder"
+      description: Sets the rank of a resident
+    show:
+      general: |-
+        &8--------&c&l{name}&r&8--------
+        &a&lState: &r&7{state}
+        &6&lAccess: &r&7{access}
+        &6&lLevel: &r&7{level}
+        &6&lBank: &r&7{bank}
+        &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxOutposts}
+        &6&lLand: &r&7{land}&r&e/&r&7{maxLand}
+        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobSpawning}&r&7 |  Firespread: &r&e{fireSpread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &b&lResidents:
+        {residents}
+      residents:
+        rank: "&6&l{rank}:&r {residents}"
+        separator: "&7, "
+        online: "&a"
+        offline: "&c"
+        entry: "{online}{name}"
+      description: "Shows information on a village "
+    transfer:
+      success: "&e&lALERT &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
+      description: Transfers leadership of your village
+    unally:
+      cant-unally-yourself: "&c&lYou can't un-ally yourself!"
+      not-allied: "&c&lYou are not allied to {state} &r&6&l{name}"
+      success: "&7&lAlly &6{name} &7removed!"
+      description: remove an allied village
+    unclaim:
+      outpost: "&cThis land is an outpost, please use &7/{base} outpost unclaim&c to unclaim this outpost."
+      success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at {x},{z}!"
+      description: Unclaim land which is claimed by your village
+    upgrade:
+      not-possible: "&cThe village cannot be leveled up! {reason}"
+      max-level-reached: "&r&c&lMax Level Reached."
+      missing-items: "&c&lMissing Items:"
+      entry: "&6{amount} &e{material}"
+      description: Manually trigger a village upgrade
+    upkeep:
+      info: |-
+        &7------- &cUpkeep&7 -------
+        &3&lUpkeep cost:&e {cost}
+        &3&lUpkeep: &e{upkeep}$ &7/&e claim &7/&e day
+        &3&lTime Till Upkeep: &e{time}
+        &3&lCan afford? {afford}
+      description: upkeep
+    use:
+      flags: "&cAvailable flags: {flags}"
+      states: "&cAvailable states: {states}"
+      success: "&7State of &6{flag} &7set to &6{state}"
+      description: Set who can use stuff in your village
+    description: Settlement management command
+    deposit:
+      description: Deposit an item into the vault
+    rules:
+      description: Links you to the rules
+    settings:
+      description: Shows a settings gui
+  chat:
+    description: Chat command
+  villageadmin:
+    description: Village administration command
+    world:
+      description: Sets if a world is claimable in or not
+    join:
+      description: Forces a player to join a village
+    emgcy:
+      description: dont touch
+    ss:
+      description: Lets you see other peoples messages

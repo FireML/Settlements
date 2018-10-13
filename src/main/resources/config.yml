@@ -11,3 +11,20 @@ resident-cache-duration: 120 # in seconds
 disabled-claiming-worlds: []
 village-creation-cost: 0
 max-village-size: 30
+kingdoms-world: "kingdom"
+map:
+  colors:
+    own: GREEN
+    own-plot: YELLOW
+    ally: AQUA
+    enemy: RED
+    unclaimed: LGRAY
+    current: YELLOW
+  symbol:
+    normal: "-"
+    for-sale: "$"
+    plot: "~"
+    home: "H"
+    outpost: "@"
+    unclaimed: "-"
+    current: "+"

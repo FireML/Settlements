@@ -1,6 +1,8 @@
 package me.crz.minecraft.kingdoms.village;
 
-public enum BuildState {
+import me.crz.minecraft.kingdoms.utils.NameTag;
+
+public enum BuildState implements NameTag {
     RESIDENTS,
     OFFICERS,
     ALLY,

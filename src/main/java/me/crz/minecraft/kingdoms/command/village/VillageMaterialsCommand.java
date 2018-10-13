@@ -1,43 +1,41 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.command.VillageSubCommand;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.vault.Levels;
+import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageState;
+
 import java.util.Map;
 
-import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.vault.Levels;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.village.VillageManager;
-import org.bukkit.entity.Player;
-import me.crz.minecraft.kingdoms.command.SubCommand;
-
-public class VillageMaterialsCommand extends SubCommand {
-    public VillageMaterialsCommand() {
-        super("Shows you the materials required to upgrade", "materials");
-        this.setPermission("kingdoms.user");
-        this.setUsage("materials");
+public class VillageMaterialsCommand extends VillageSubCommand {
+    public VillageMaterialsCommand(SubCommand parent) {
+        super(parent, "materials", VillageRank.RESIDENT);
+        setPermission("kingdoms.user");
     }
 
     @Override
-    public void run(Player player, String base, String alias, String... args) {
-        Village village = VillageManager.getInstance().getVillageFromPlayer(player);
-        if (village == null) {
-            MessageUtils.tell(player, Message.get("not-in-current"), null, null);
-            return;
+    public boolean run(Resident resident, String base, String alias, String... args) {
+        if (resident.getVillage().getState() == VillageState.KINGDOM && resident.getVillage().getLevel() >= 10) {
+            resident.tell(getMessage("max-level-reached"), "state", resident.getVillage().getState().getTag());
+            return true;
         }
-        if (village.getLevel() == 10) {
-            return;
-        }
+        Village village = resident.getVillage();
         Map<String, Integer> nextLevelReqs = Levels.getLevelMapFromInt(village.getLevel() + 1, village.getState());
-        StringBuilder sb = new StringBuilder("&8&l--------&r&c&lRequired Materials&r&8&l--------");
-        if (nextLevelReqs != null) {
-            for (String mat : nextLevelReqs.keySet()) {
-                if (village.getVault().containsKey(mat)) {
-                    sb.append("\n&e").append(nextLevelReqs.get(mat) - village.getVault().get(mat)).append(" &7").append(mat);
-                } else {
-                    sb.append("\n&e").append(nextLevelReqs.get(mat)).append(" &7").append(mat);
-                }
-            }
+        if (nextLevelReqs == null || nextLevelReqs.isEmpty()) {
+            resident.tell(getMessage("max-level-reached"), "state", resident.getVillage().getState().getTag());
+            return true;
         }
-        MessageUtils.tell(player, sb.toString(), null, null);
+
+        resident.tell(getMessage("head"));
+        for (Map.Entry<String, Integer> entry : nextLevelReqs.entrySet()) {
+            resident.tell(getMessage("entry"),
+                    "material", entry.getKey(),
+                    "amount", String.valueOf(entry.getValue() - village.getVault().getOrDefault(entry.getKey(), 0))
+            );
+        }
+        return true;
     }
 }

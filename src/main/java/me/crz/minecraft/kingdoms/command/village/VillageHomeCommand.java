@@ -1,57 +1,59 @@
 package me.crz.minecraft.kingdoms.command.village;
 
-import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.village.VillageAccess;
-import org.bukkit.Location;
-import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ExecuteMoveUtil;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageAccess;
 import me.crz.minecraft.kingdoms.village.VillageManager;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import me.crz.minecraft.kingdoms.command.SubCommand;
 
 public class VillageHomeCommand extends SubCommand {
-    public VillageHomeCommand() {
-        super("Teleport to a settlement's home", "home");
-        this.setPermission("kingdoms.user");
-        this.setUsage("home [<name>]");
+    public VillageHomeCommand(SubCommand parent) {
+        super(parent, "home [<name>]");
+        setPermission("kingdoms.user");
     }
 
     @Override
-    public void run(Player player, String base, String alias, String... args) {
+    public boolean run(Player player, String base, String alias, String... args) {
         Village village;
         Village playerVillage = VillageManager.getInstance().getVillageFromPlayer(player);
         if (args.length < 1) {
             if (playerVillage == null) {
-                MessageUtils.tell(player, Message.get("not-in-current"));
-                return;
+                MessageUtils.tell(player, getError("village-required"));
+                return false;
             } else if (playerVillage.getVillageHome() == null) {
-                MessageUtils.tell(player, "&c&lYour village doesn't have a home ask your " + VillageRank.CHIEF.getTag(playerVillage.getState()) + " to set one!");
-                return;
+                MessageUtils.tell(player, getMessage("own-no-home"), "chief", VillageRank.CHIEF.getTag(playerVillage));
+                return true;
             } else {
                 village = playerVillage;
             }
         } else {
             village = VillageManager.getInstance().getVillageFromName(args[0]);
             if (village == null) {
-                MessageUtils.tell(player, Message.get("error-village-doesnt-exist"));
-                return;
+                MessageUtils.tell(player, getError("village-doesnt-exist"));
+                return true;
             }
         }
 
         if ((village.getAccess() == VillageAccess.PRIVATE && !village.equals(playerVillage))
                 || (village.getAccess() == VillageAccess.ALLY && (playerVillage == null || !village.getAllies().contains(playerVillage.getId())))) {
-            MessageUtils.tell(player, "&c&lYou don't have access to teleport to the home of that " + village.getState().getTag() + "!");
-            return;
+            MessageUtils.tell(player, getMessage("no-access"), "state", village.getState().getTag());
+            return true;
         }
 
         if (village.getVillageHome() != null) {
             Location loc = village.getVillageHome().toBukkitLocation();
-            MessageUtils.tell(player, "&e&lTeleporting in 5 seconds...");
-            ExecuteMoveUtil.getInstance().execute(player, () -> player.teleport(loc), 3, "Teleport");
+            MessageUtils.tell(player, getMessage("waiting"), "seconds", String.valueOf(3));
+            ExecuteMoveUtil.getInstance().execute(player, () -> {
+                player.teleport(loc);
+                MessageUtils.tell(player, getMessage("success"), "state", village.getState().getTag(), "name", village.getName());
+            }, 3, "Teleport");
         } else {
-            MessageUtils.tell(player, "&c&lThat " + village.getState().getTag() + " doesn't have a home!");
+            MessageUtils.tell(player, getMessage("no-home"), "state", village.getState().getTag());
         }
+        return true;
     }
 }

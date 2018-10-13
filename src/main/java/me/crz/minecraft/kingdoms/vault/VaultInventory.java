@@ -1,21 +1,26 @@
 package me.crz.minecraft.kingdoms.vault;
 
+import me.crz.minecraft.kingdoms.village.VillageGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
 
-public class VaultInventory {
+public class VaultInventory extends VillageGUI {
+    private final Player player;
     private Inventory inv;
     private final int inventorySize = 54;
-    public static final String inventoryName = ChatColor.DARK_BLUE + "" + ChatColor.BOLD + "Vault";
 
-    public VaultInventory(final Player player) {
-        super();
-        inv = Bukkit.createInventory(null, inventorySize, inventoryName);
+    public VaultInventory(Player player) {
+        super("vault");
+        this.player = player;
+        inv = Bukkit.createInventory(null, inventorySize, getText("title"));
     }
 
     public Inventory getInventory() {
         return inv;
+    }
+
+    public void open() {
+        player.openInventory(inv);
     }
 }

@@ -6,14 +6,13 @@ import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
 public class VillageAdminSocialSpyCommand extends SubCommand {
-    public VillageAdminSocialSpyCommand() {
-        super("Lets you see other peoples messages", "ss", "socialspy");
-        this.setPermission("kingdoms.admin.ss");
-        this.setUsage("socialspy");
+    public VillageAdminSocialSpyCommand(SubCommand parent) {
+        super(parent, "ss", "socialspy");
+        setPermission("kingdoms.admin.ss");
     }
 
     @Override
-    public void run(final Player player, final String base, final String alias, final String... args) {
+    public boolean run(final Player player, final String base, final String alias, final String... args) {
         if (Data.socialSpy.contains(player.getUniqueId().toString())) {
             Data.socialSpy.remove(player.getUniqueId().toString());
             MessageUtils.tell(player, "&6&lSocialSpy &c&lDisabled");
@@ -21,5 +20,6 @@ public class VillageAdminSocialSpyCommand extends SubCommand {
             Data.socialSpy.add(player.getUniqueId().toString());
             MessageUtils.tell(player, "&6&lSocialSpy &a&lEnabled");
         }
+        return true;
     }
 }

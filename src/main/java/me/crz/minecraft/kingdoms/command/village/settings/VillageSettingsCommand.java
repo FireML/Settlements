@@ -1,33 +1,19 @@
 package me.crz.minecraft.kingdoms.command.village.settings;
 
-import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.village.VillageManager;
-import org.bukkit.entity.Player;
+import me.crz.minecraft.kingdoms.command.VillageSubCommand;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageSettingsCommand extends SubCommand {
-    public VillageSettingsCommand() {
-        super("Shows a settings gui", "settings");
-        this.setPermission("kingdoms.user");
+public class VillageSettingsCommand extends VillageSubCommand {
+    public VillageSettingsCommand(SubCommand parent) {
+        super(parent, "settings", VillageRank.CHIEF);
+        setPermission("kingdoms.user");
     }
 
     @Override
-    public void run(final Player player, final String base, final String alias, final String... args) {
-        final Village village = VillageManager.getInstance().getVillageFromPlayer(player);
-        if (village == null) {
-            MessageUtils.tell(player, Message.get("not-in-current"));
-            return;
-        }
-        if (!this.canChange(village, player)) {
-            MessageUtils.tell(player, Message.get("no-permission"));
-            return;
-        }
-        SettingsGUI.getInstance().open(player);
-    }
-
-    private boolean canChange(final Village village, final Player player) {
-        return village.getChief().equals(player.getUniqueId());
+    public boolean run(Resident resident, String base, String alias, String... args) {
+        SettingsGUI.getInstance().open(resident.getPlayer());
+        return true;
     }
 }

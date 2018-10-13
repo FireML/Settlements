@@ -1,57 +1,40 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 
 import me.crz.minecraft.kingdoms.db.TownCache;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageAllyCommand extends SubCommand {
-    public VillageAllyCommand() {
-        super("Ally another village", "ally");
-        this.setPermission("kingdoms.user");
-        this.setUsage("ally <name>");
+public class VillageAllyCommand extends VillageSubCommand {
+    public VillageAllyCommand(SubCommand parent) {
+        super(parent, "ally <name>", VillageRank.ELDER);
+        setPermission("kingdoms.user");
     }
 
     @Override
-    public void run(Player player, String base, String alias, String... args) {
+    public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length < 1) {
-            MessageUtils.tell(player, this.getUsage(base));
-            return;
+            return false;
         }
-        Village village = VillageManager.getInstance().getVillageFromPlayer(player);
-        if (village == null) {
-            MessageUtils.tell(player, Message.get("not-in-current"));
-            return;
-        }
-        if (ResidentManager.getInstance().getResident(player).getVillageRank().below(VillageRank.ELDER)) {
-            MessageUtils.tell(player, Message.get("rank-required"), "rank", VillageRank.ELDER.getTag(village.getState()));
-            return;
-        }
+        Village village = res.getVillage();
         Village invitedVillage = VillageManager.getInstance().getVillageFromName(args[0].toLowerCase());
         if (invitedVillage == null) {
-            MessageUtils.tell(player, "&c&lVillage &r&6&l" + args[0] + "&r&c&l doesn't exist!");
-            return;
-        }
-        if (invitedVillage.getName().equals(village.getName())) {
-            MessageUtils.tell(player, "&c&lYou can't ally yourself!");
-            return;
-        }
-        if (village.isAlly(invitedVillage)) {
-            MessageUtils.tell(player, "&c&lYou are already allied to Village &r&6&l" + args[0]);
-            return;
-        }
-        if (TownCache.getPendingTownAlly().containsEntry(village.getName(), invitedVillage.getName())) {
-            MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), Message.get("now-allied-to"), "name", village.getName());
-            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("now-allied-to"), "name", invitedVillage.getName());
-            TownCache.getPendingTownAlly().remove(village.getName(), invitedVillage.getName());
+            res.tell(getError("village-doesnt-exist"), "name", args[0]);
+        } else if (invitedVillage.equals(village)) {
+            res.tell(getMessage("cant-ally-yourself"));
+        } else if (village.isAlly(invitedVillage)) {
+            res.tell(getMessage("already-allied"), "name", invitedVillage.getName());
+        } else if (TownCache.getPendingTownAlly().containsEntry(village.getId(), invitedVillage.getId())) {
+            MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), getMessage("now-allied-to"), "name", village.getName(), "state", village.getState().getTag());
+            MessageUtils.tellResidents(village.getOnlineResidents(), getMessage("now-allied-to"), "name", invitedVillage.getName(), "state", invitedVillage.getState().getTag());
+            TownCache.getPendingTownAlly().remove(village.getId(), invitedVillage.getId());
             invitedVillage.addAlly(village);
             village.addAlly(invitedVillage);
 
@@ -60,10 +43,11 @@ public class VillageAllyCommand extends SubCommand {
                 DatabaseManager.getInstance().saveVillage(village);
             });
         } else {
-            TownCache.getPendingTownAlly().put(invitedVillage.getName(), village.getName());
-            MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), Message.get("ally-invite"), "name", village.getName());
-            MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), Message.get("ally-accept-info"), "name", village.getName());
-            MessageUtils.tell(player, "&7&lAlly request sent to &r&6&l" + invitedVillage.getName());
+            TownCache.getPendingTownAlly().put(invitedVillage.getId(), village.getId());
+            MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), getMessage("invite"), "name", village.getName(), "state", village.getState().getTag());
+            MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), getMessage("accept-info"), "name", village.getName(), "state", village.getState().getTag());
+            res.tell(getMessage("request-send"), "name", invitedVillage.getName());
         }
+        return true;
     }
 }

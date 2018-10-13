@@ -1,7 +1,7 @@
 main: me.crz.minecraft.kingdoms.KingdomsPlugin
 version: "${minecraft.plugin.version}"
-name: AperionKingdoms
-depend: [Vault, KingdomsEssentials]
+name: ApeironKingdoms
+depend: [Vault, ApeironKingdomsEssentials]
 author: crz
 authors: [Phoenix616]
 api-version: 1.13

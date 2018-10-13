@@ -2,6 +2,8 @@ package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.utils.IdObject;
+import me.crz.minecraft.kingdoms.utils.Message;
+import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -34,6 +36,7 @@ public class Resident implements ConfigurationSerializable {
     private Set<UUID> friends = new HashSet<>();
     private boolean swear = true;
     private long lastLogin = 0;
+    private long villageJoin;
 
     public Resident(UUID uuid, String name) {
         this.uuid = uuid;
@@ -121,7 +124,7 @@ public class Resident implements ConfigurationSerializable {
      */
     @Deprecated
     public void setVillageName(String name) {
-        village = VillageManager.getInstance().getVillageFromName(name);
+        setVillage(VillageManager.getInstance().getVillageFromName(name));
     }
 
     public String getVillageName() {
@@ -129,7 +132,16 @@ public class Resident implements ConfigurationSerializable {
     }
 
     public void setVillage(Village village) {
+        if (this.village != null) {
+            this.village.getResidentIds().remove(getUUID());
+        }
         this.village = village;
+        if (village != null) {
+            village.getResidentIds().add(getUUID());
+            setVillageJoin(System.currentTimeMillis());
+        } else {
+            setVillageJoin(-1);
+        }
     }
 
     public Village getVillage() {
@@ -142,6 +154,14 @@ public class Resident implements ConfigurationSerializable {
 
     public VillageRank getVillageRank() {
         return rank;
+    }
+
+    public long getVillageJoin() {
+        return getVillage() != null ? villageJoin : -1;
+    }
+
+    public void setVillageJoin(long villageJoin) {
+        this.villageJoin = villageJoin;
     }
 
     public long getLastLogin() {
@@ -162,6 +182,7 @@ public class Resident implements ConfigurationSerializable {
         map.put("uuid", getUUID().toString());
         map.put("name", getName());
         map.put("settlementId", village != null ? village.getId().value() : null);
+        map.put("settlementJoin", getVillageJoin());
         map.put("rank", getVillageRank().name());
         map.put("lastLogin", getLastLogin());
         map.put("channels", getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
@@ -188,6 +209,7 @@ public class Resident implements ConfigurationSerializable {
         } else {
             resident.setVillage(VillageManager.getInstance().getVillageFromId(IdObject.get(map.get("settlementId"))));
         }
+        resident.setVillageJoin((Long) map.get("settlementJoin"));
         resident.setLastLogin((Long) map.get("lastLogin"));
         resident.getChannels().clear();
         ((Collection<String>) map.get("channels")).stream()
@@ -217,5 +239,13 @@ public class Resident implements ConfigurationSerializable {
 
     public void setId(Object id) {
         this.id = id;
+    }
+
+    public void tell(Message message, String... replacements) {
+        MessageUtils.tell(this, message, replacements);
+    }
+
+    public void tell(String message, String... replacements) {
+        MessageUtils.tell(this, message, replacements);
     }
 }
