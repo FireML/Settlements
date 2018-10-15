@@ -4,6 +4,8 @@ error:
   not-in-current: "&c&lERROR &r&7Not currently in settlement."
   not-in-village: "&c&lTarget player {player} isn't in a village!"
   no-permission: "&cNo permission."
+  no-channel-permission: "&cNo permission to use {channel} channel!"
+  not-a-channel: "&cChat Channel &6{name}&c is not valid channel!"
   not-enough-money: "&c&lNot enough money in your account to pay &r&6&l{amount}&r&c&l!"
   not-your-village: "&c&lThis is not your {state}!"
   no-village: "&c&lNo village at your location!"
@@ -38,12 +40,11 @@ upkeep:
     deleted: "&a&lALERT &7Your settlement has been &cdeleted&7 because it was &cunable&7 to pay its upkeep!"
     charged: "&a&lALERT &7Your settlement has been charged &6{charged}&7 for upkeep!"
     cant-pay: "&a&lALERT &7Your settlement is &cunable&7 to pay tomorrows upkeep it will cost &6{cost}&7!"
-first-to-reach-level: '&6&l{name} &7&l is the first to reach &6&l{state} &7&llevel
-  &6&l{level}'
+first-to-reach-level: "&6&l{name} &7&l is the first to reach &6&l{state} &7&llevel &6&l{level}"
 village:
   enter-message: "&f[&eKingdoms&f] &7Entering &a{name}{pvp}"
   leave-message: "&f[&eKingdoms&f] &7Leaving &a{name}"
-  name:
+  rank:
     chief: CHIEF
     elder: ELDER
     builder: BUILDER
@@ -52,7 +53,7 @@ village:
 kingdom:
   enter-message: "&f[&eKingdoms&f] &7Entering &a{name}{pvp}"
   leave-message: "&f[&eKingdoms&f] &7Leaving &a{name}"
-  name:
+  rank:
     chief: KING
     elder: ELDER
     builder: BUILDER
@@ -62,11 +63,39 @@ pvp-is-enabled: " - &c&lPvp is enabled!"
 enter-plot: "&7&lWelcome to&6&l {owner}&7&l’s plot "
 plot-is-for-sale: "&9&lLand is for sale "
 cannot-attack-animals: "&c&lYou cannot attack another village's animals!"
+chat:
+  locked: "&c&lChat is currently locked!"
+  hover:
+    info: "&9Name: &7{name}{balance}{village}"
+    balance: "\n&9Balance: &7{balance}"
+    village: "\n&9{state}: &7{name}"
+  staff: "&c&lStaff "
+  format:
+    private:
+      sender: "[&8[&a{sender} &7➦ &3{target}&8] &b{message}"
+      target: "{staff}[&8[&3{sender} &7➦ &a{target}&8] &b{message}"
+      name:
+        sender: "you"
+        target: "{name}"
+      social-spy: "&7[&6SS&7]&r {sender}  &7➦ &3{target}&7: {message}"
+    channel:
+      general: "&r{prefix}&7{sender}&r{suffix}&r ➦ {message}"
+      local: "&e[Local] &r{prefix}&7{sender}&r{suffix}&r ➦ &e{message}"
+      admin: "&b[Admin] &r{prefix}&7{sender}&r{suffix}&r ➦ &5{message}"
+      staff: "&9[Staff] &r{prefix}&7{sender}&r{suffix}&r ➦ &6{message}"
+      officer: "&e[Officer] {rank} &r{prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
+      settlement: "&e[{state}] {rank} &r{prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
+      trade: "&d[TRADE] &r{prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
+      ally: "&b[Ally] &6{state} {rank} &r{prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
+  ignored: "&cYou cannot message &6{name}&c because they are ignoring you!"
+  ignoring: |-
+    &cYou cannot message &6{name}&c because you are ignoring them!
+    &6[/ignore {name}](/ignore {name})&c to un-ignore them
 usage:
   head: |-
     &8&l--------&r&c&l{name} Commands&r&8&l--------
     &c{usage}
-  entry: "&8[&9*&8] &b{usage} &7- {description}"
+  entry: "&8[&9*&8] [&b{usage}](suggest_command={usage}) &7- {description}"
 gui:
   access:
     title: "&3&lSettlement Access"
@@ -92,6 +121,37 @@ gui:
     max-level-reached: "&r&c&lMax Level Reached"
     list-deposit: "&6{amount} &e{material}"
 commands:
+  chat:
+    description: "Chat command"
+    joined: "&7You have joined Chat Channel &6{name}"
+    channel-entry:
+      active: "&8[&9*&8] &b{name} &7&l[&a&lActive&7&l] &3&l<"
+      enabled: "&8[&9*&8] &b{name} &7&l[&a&lEnabled&7&l]"
+      disabled: "&8[&9*&8] &b{name} &7&l[&c&lDisabled&7&l]"
+    leave:
+      description: "Disable the chat of the channel"
+      success: "&7You have left Chat Channel {name}&6"
+    lock:
+      muted: "&c&lGeneral Chat has been muted by &6&l{name}"
+      unmuted: "&c&lGeneral Chat has been un-muted by &6&l{name}"
+    swear:
+      description: "Toggles swearing"
+      enabled: "&7&lSwearing has been &aEnabled"
+      disabled: "&7&lSwearing has been &cDisabled"
+  ignore:
+    description: "Ignores a players chat and messages"
+    ignored: "&7Player &6{name}&7 has been &cignored&7!"
+    unignored: "&7Player &6{name}&7 has been &aun-ignored&7!"
+    list:
+      head: "&7------- &cIgnored&7 -------"
+      entry: "&c{name}"
+      separator: "&7, "
+  message:
+    description: "Message another player"
+  reply:
+    description: "Replies to the last person who messaged you."
+    no-one-messaged: "&cNo one messaged you!"
+    target-is-offline: "&cThe player that messaged you is offline now!"
   resident:
     show:
       info: |-
@@ -234,11 +294,11 @@ commands:
     outpost:
       usage: |-
         &8&l--------&r&c&lOutpost Commands&r&8&l--------
-        &8[&9*&8] &b/{alias} outpost claim &7- claims an outpost for your settlement
-        &8[&9*&8] &b/{alias} outpost unclaim &7- unclaims the outpost your standing on
-        &8[&9*&8] &b/{alias} outpost sethome <name> &7- sets a sethome on that specific chunk
-        &8[&9*&8] &b/{alias} outpost tp <name> &7- teleports to a outpost shown in list
-        &8[&9*&8] &b/{alias} outpost list &7- lists all of your outposts
+        &8[&9*&8] &b[/{alias} outpost claim](/{alias} outpost claim]) &7- claims an outpost for your settlement
+        &8[&9*&8] &b[/{alias} outpost unclaim](/{alias} outpost unclaim]) &7- unclaims the outpost your standing on
+        &8[&9*&8] &b[/{alias} outpost sethome <name>](suggest_command=/{alias} outpost sethome <name>]) &7- sets a sethome on that specific chunk
+        &8[&9*&8] &b[/{alias} outpost tp <name>](suggest_command=/{alias} outpost tp <name>]) &7- teleports to a outpost shown in list
+        &8[&9*&8] &b[/{alias} outpost list](/{alias} outpost list]) &7- lists all of your outposts
       claim:
         max-outpost-chunks: "&c&lERROR &r&7Your settlement can only claim &e{max}&r&7 outpost chunks!"
         success: "&a&lSUCCESS &r&e{player} &7has claimed &coutpost&7 &e{name}&7 for your settlement at {x},{z}!"
@@ -395,8 +455,6 @@ commands:
       description: Links you to the rules
     settings:
       description: Shows a settings gui
-  chat:
-    description: Chat command
   villageadmin:
     description: Village administration command
     world:

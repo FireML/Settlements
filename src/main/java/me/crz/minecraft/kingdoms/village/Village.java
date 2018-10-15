@@ -273,7 +273,7 @@ public class Village implements ConfigurationSerializable {
     public List<Resident> getOnlineResidents() {
         return residents.stream()
                 .map(Bukkit::getPlayer).filter(Objects::nonNull)
-                .map(p -> ResidentManager.getInstance().getResident(p)).filter(Objects::nonNull)
+                .map(p -> ResidentManager.getInstance().getResident(p))
                 .collect(Collectors.toList());
     }
 

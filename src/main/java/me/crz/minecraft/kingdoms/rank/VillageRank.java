@@ -15,6 +15,6 @@ public enum VillageRank implements Rankable, ConfigKey {
     RESIDENT;
 
     public String getTag(Village village) {
-        return Message.get(village.getState().getKey() + ".name." + getKey()).getText();
+        return Message.get(village.getState().getKey() + ".rank." + getKey()).getText();
     }
 }

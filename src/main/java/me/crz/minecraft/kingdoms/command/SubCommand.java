@@ -47,35 +47,40 @@ public abstract class SubCommand implements ConfigKey {
                 if (!subCommand.testAccess(player)) {
                     return true;
                 }
-                String path = base != null && !base.isEmpty() ? (base + " " + alias) : alias;
-                if (!subCommand.execute(player, path, args[0].toLowerCase(), Arrays.copyOfRange(args, 1, args.length))) {
-                    if (getMessage("usage").exists()) {
-                        MessageUtils.tell(player, getMessage("usage"), "alias", path);
-                        return true;
-                    } else {
-                        Collection<SubCommand> accessibleCommands = getAccessibleCommands(player);
-                        if (!accessibleCommands.isEmpty()) {
-                            MessageUtils.tell(player, Message.get("usage.head"),
-                                    "name", StringUtils.capitalize(name()),
-                                    "alias", StringUtils.capitalize(alias),
-                                    "path", WordUtils.capitalize(path)
-                            );
-                            for (SubCommand s : accessibleCommands) {
-                                MessageUtils.tell(player, Message.get("usage.entry"),
-                                        "usage", hasUsage() ? s.getUsage(base) : "/" + path,
-                                        "description", s.getDescription()
-                                );
-                            }
-                        } else if (subCommand.hasUsage()) {
-                            MessageUtils.tell(player, subCommand.getUsage(base));
-                            return true;
-                        }
-                    }
-                    return false;
+                if (!subCommand.execute(player, base != null && !base.isEmpty() ? (base + " " + alias) : alias, args[0].toLowerCase(), Arrays.copyOfRange(args, 1, args.length))) {
+                    return sendUsageMessage(player, subCommand, base, alias);
                 }
             }
         }
         return run(player, base, alias, args);
+    }
+
+    protected boolean sendUsageMessage(Player player, SubCommand subCommand, String base, String alias) {
+        String path = base != null && !base.isEmpty() ? (base + " " + alias) : alias;
+        if (getMessage("usage").exists()) {
+            MessageUtils.tell(player, getMessage("usage"), "alias", path);
+            return true;
+        } else {
+            Collection<SubCommand> accessibleCommands = getAccessibleCommands(player);
+            if (!accessibleCommands.isEmpty()) {
+                MessageUtils.tell(player, Message.get("usage.head"),
+                        "name", StringUtils.capitalize(name()),
+                        "alias", StringUtils.capitalize(alias),
+                        "path", WordUtils.capitalize(path)
+                );
+                for (SubCommand s : accessibleCommands) {
+                    MessageUtils.tell(player, Message.get("usage.entry"),
+                            "usage", hasUsage() ? s.getUsage(base) : "/" + path,
+                            "description", s.getDescription()
+                    );
+                }
+                return true;
+            } else if (subCommand.hasUsage()) {
+                MessageUtils.tell(player, subCommand.getUsage(base));
+                return true;
+            }
+        }
+        return false;
     }
 
     private SubCommand matchSubCommand(String input) {
@@ -98,7 +103,7 @@ public abstract class SubCommand implements ConfigKey {
         return subCommands.get(input);
     }
 
-    private Collection<SubCommand> getAccessibleCommands(Player player) {
+    public Collection<SubCommand> getAccessibleCommands(Player player) {
         Collection<SubCommand> accessibleCommands = new LinkedHashSet<>();
         for (SubCommand subCommand : subCommands.values()) {
             if (subCommand.hasAccess(player)) {

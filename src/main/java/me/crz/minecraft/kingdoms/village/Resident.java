@@ -5,12 +5,14 @@ import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
@@ -93,6 +95,10 @@ public class Resident implements ConfigurationSerializable {
 
     public Set<ChatChannel> getChannels() {
         return channels;
+    }
+
+    public boolean isListening(ChatChannel channel) {
+        return getChannels().contains(channel);
     }
 
     public boolean addChannel(ChatChannel channel) {
@@ -247,5 +253,9 @@ public class Resident implements ConfigurationSerializable {
 
     public void tell(String message, String... replacements) {
         MessageUtils.tell(this, message, replacements);
+    }
+
+    public void tell(BaseComponent[] message) {
+        MessageUtils.tell(this.getPlayer(), message);
     }
 }

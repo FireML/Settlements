@@ -1,14 +1,14 @@
 package me.crz.minecraft.kingdoms.chat;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.utils.HumanReadable;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 
@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public enum ChatChannel implements HumanReadable {
+public enum ChatChannel implements NameTag {
     LOCAL("local", "l"),
     TRADE("trade", "t"),
     GENERAL("general", "g"),
@@ -30,7 +30,7 @@ public enum ChatChannel implements HumanReadable {
                 return false;
             }
             Resident res = ResidentManager.getInstance().getResident(player);
-            return village.getChief().equals(player.getUniqueId()) || res.getVillageRank().equals(VillageRank.ELDER);
+            return res.getVillageRank().atLeast(VillageRank.ELDER);
         }
 
         @Override
@@ -55,7 +55,7 @@ public enum ChatChannel implements HumanReadable {
             if (this.canChat(player)) {
                 return true;
             }
-            MessageUtils.tell(player, Message.get("error.no-permission"));
+            MessageUtils.tell(player, Message.get("error.no-channel-permission"), "channel", name());
             return false;
         }
     },
@@ -70,7 +70,7 @@ public enum ChatChannel implements HumanReadable {
             if (this.canChat(player)) {
                 return true;
             }
-            MessageUtils.tell(player, Message.get("error.no-permission"));
+            MessageUtils.tell(player, Message.get("error.no-channel-permission"), "channel", name());
             return false;
         }
     };

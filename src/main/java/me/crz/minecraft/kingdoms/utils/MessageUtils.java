@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.utils;
 
+import com.google.common.collect.ImmutableMap;
 import de.themoep.minedown.Replacer;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -11,6 +12,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Map;
 
 import me.crz.minecraft.kingdoms.Base;
 
@@ -33,6 +35,24 @@ public class MessageUtils extends Base {
             return;
         }
         if (replacements != null && replacements.length > 0) {
+            message = replacePlaceholders(message, replacements);
+        }
+        player.spigot().sendMessage(message);
+    }
+
+    public static void tell(Player player, Message message, Map<String,BaseComponent[]> replacements) {
+        tell(player, message.getComponents(), replacements);
+    }
+
+    public static void tell(Player player, BaseComponent[] message, String placeholder, BaseComponent[] value) {
+        tell(player, message, ImmutableMap.of(placeholder, value));
+    }
+
+    public static void tell(Player player, BaseComponent[] message, Map<String,BaseComponent[]> replacements) {
+        if (player == null) {
+            return;
+        }
+        if (replacements != null && !replacements.isEmpty()) {
             message = replacePlaceholders(message, replacements);
         }
         player.spigot().sendMessage(message);
@@ -88,6 +108,14 @@ public class MessageUtils extends Base {
                 .replaceIn(message);
     }
 
+    public static BaseComponent[] replacePlaceholders(BaseComponent[] message, Map<String, BaseComponent[]> replacements) {
+        Replacer replacer = new Replacer()
+                .placeholderPrefix('{')
+                .placeholderSuffix('}');
+        replacer.componentReplacements().putAll(replacements);
+        return replacer.replaceIn(message);
+    }
+
     public static BaseComponent[] replacePlaceholders(BaseComponent[] message, String placeholder, BaseComponent[] value) {
         return new Replacer()
                 .placeholderPrefix('{')
@@ -110,15 +138,6 @@ public class MessageUtils extends Base {
 
     public static BaseComponent[] toColoredComponents(String message) {
         return TextComponent.fromLegacyText(replaceColorCodes(message));
-    }
-
-    public static void tellResidentsC(List<Resident> residents, String message, ChatChannel channel) {
-        for (Resident res : residents) {
-            Player op = Bukkit.getPlayer(res.getUUID());
-            if (op != null && op.isOnline() && res.getChannels().contains(channel)) {
-                tell(op, message);
-            }
-        }
     }
 
     public static String invertColors(String text) {

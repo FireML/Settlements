@@ -1,19 +1,16 @@
 package me.crz.minecraft.kingdoms.command;
 
-import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.chat.commands.IgnoreCommand;
-import me.crz.minecraft.kingdoms.chat.commands.ReplyCommand;
 import me.crz.minecraft.kingdoms.chat.commands.MessageCommand;
+import me.crz.minecraft.kingdoms.chat.commands.ReplyCommand;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
-import me.crz.minecraft.kingdoms.Base;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -23,14 +20,13 @@ public class CommandManager extends Base implements CommandExecutor {
 
     public CommandManager() {
         super();
-        this.registerCommand(new VillageCommand());
-        this.registerCommand(new ChatCommand());
-        this.registerCommand(new VillageAdminCommand());
-        this.registerCommand(new ResidentCommand());
-        ConfigManager.save(new File(KingdomsPlugin.getInstance().getDataFolder(), "messages.yml"), ConfigManager.getInstance().getMessagesConfig());
-        me.crz.minecraft.kingdoms.essentials.command.CommandManager.getInstance().registerCommand(new MessageCommand());
-        me.crz.minecraft.kingdoms.essentials.command.CommandManager.getInstance().registerCommand(new ReplyCommand());
-        me.crz.minecraft.kingdoms.essentials.command.CommandManager.getInstance().registerCommand(new IgnoreCommand());
+        registerCommand(new VillageCommand());
+        registerCommand(new ChatCommand());
+        registerCommand(new VillageAdminCommand());
+        registerCommand(new ResidentCommand());
+        registerCommand(new MessageCommand());
+        registerCommand(new ReplyCommand());
+        registerCommand(new IgnoreCommand());
     }
 
     public void registerCommand(SubCommand ex) {

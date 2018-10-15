@@ -76,6 +76,10 @@ public class Message {
         return MessageUtils.replacePlaceholders(components, replacements);
     }
 
+    public BaseComponent[] getReplacedComponents(Map<String, BaseComponent[]> replacements) {
+        return MessageUtils.replacePlaceholders(components, replacements);
+    }
+
     private static Map<String, Message> messages = new HashMap<>();
 
     public static Message get(String key) {
@@ -85,5 +89,52 @@ public class Message {
             messages.put(key.toLowerCase(), message);
         }
         return message;
+    }
+
+    public MessageReplacer getReplacer() {
+        return new MessageReplacer(this);
+    }
+
+    public class MessageReplacer extends Replacer {
+        private Message message;
+
+        public MessageReplacer(Message message) {
+            this.message = message;
+            placeholderPrefix('{');
+            placeholderSuffix('}');
+        }
+
+        public MessageReplacer replace(String placeholder, BaseComponent[] value) {
+            super.replace(placeholder, value);
+            return this;
+        }
+
+        public MessageReplacer replace(String... replacements) {
+            super.replace(replacements);
+            return this;
+        }
+
+        public MessageReplacer replace(Map<String, ?> replacements) {
+            super.replace(replacements);
+            return this;
+        }
+
+        public BaseComponent[] getComponents() {
+            return replaceIn(message.getComponents());
+        }
+
+        public String getText() {
+            return replaceIn(message.getText());
+        }
+
+        public MessageReplacer copy() {
+            return new MessageReplacer(message).copy(this);
+        }
+
+        public MessageReplacer copy(MessageReplacer replacer) {
+            super.copy(replacer);
+            message = replacer.message;
+            return this;
+        }
     }
 }
