@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public abstract class SubCommand implements ConfigMessages {
     private SubCommand parent;
     private List<String> aliases;
-    private String usage = "";
+    private String usage;
     private String permission = "";
     private boolean visible = true;
     private String name;
@@ -42,43 +42,60 @@ public abstract class SubCommand implements ConfigMessages {
             return true;
         }
         if (args.length > 0) {
+            String path = base != null && !base.isEmpty() ? (base + " " + alias) : alias;
             SubCommand subCommand = matchSubCommand(args[0]);
             if (subCommand != null) {
                 if (!subCommand.testAccess(player)) {
                     return true;
                 }
-                if (!subCommand.execute(player, base != null && !base.isEmpty() ? (base + " " + alias) : alias, args[0].toLowerCase(), Arrays.copyOfRange(args, 1, args.length))) {
-                    return sendUsageMessage(player, subCommand, base, alias);
+                if (!subCommand.execute(player, path, args[0].toLowerCase(), Arrays.copyOfRange(args, 1, args.length))) {
+                    return subCommand.sendUsageMessage(player, path, args[0]);
                 }
+                return true;
             }
         }
         return run(player, base, alias, args);
     }
 
-    protected boolean sendUsageMessage(Player player, SubCommand subCommand, String base, String alias) {
+    protected boolean sendUsageMessage(Player player, String base, String alias) {
         String path = base != null && !base.isEmpty() ? (base + " " + alias) : alias;
         if (getMessage("usage").exists()) {
-            MessageUtils.tell(player, getMessage("usage"), "alias", path);
+            MessageUtils.tell(player, getMessage("usage"), "alias", path, "usage", hasUsage() ? getUsage(base) : "/" + path);
             return true;
-        } else {
-            Collection<SubCommand> accessibleCommands = getAccessibleCommands(player);
-            if (!accessibleCommands.isEmpty()) {
-                MessageUtils.tell(player, Message.get("usage.head"),
-                        "name", StringUtils.capitalize(name()),
-                        "alias", StringUtils.capitalize(alias),
-                        "path", WordUtils.capitalize(path)
-                );
-                for (SubCommand s : accessibleCommands) {
+        }
+
+        if (!getAccessibleCommands(player).isEmpty()) {
+            MessageUtils.tell(player, Message.get("usage.head"),
+                    "usage", hasUsage() ? getUsage(base) : "/" + path,
+                    "name", StringUtils.capitalize(name()),
+                    "alias", StringUtils.capitalize(alias),
+                    "path", WordUtils.capitalize(path)
+            );
+        }
+        return sendUsageList(player, base, alias, path);
+    }
+
+    private boolean sendUsageList(Player player, String base, String alias, String path) {
+        Collection<SubCommand> accessibleCommands = getAccessibleCommands(player);
+        if (!accessibleCommands.isEmpty()) {
+            for (SubCommand s : accessibleCommands) {
+                String subPath = path + " " + s.name();
+                if (s.isDeepUsage()) {
+                    s.sendUsageList(player, path, s.name(), subPath);
+                } else {
                     MessageUtils.tell(player, Message.get("usage.entry"),
-                            "usage", hasUsage() ? s.getUsage(base) : "/" + path,
+                            "usage", s.hasUsage() ? s.getUsage(path) : "/" + subPath,
                             "description", s.getDescription()
                     );
                 }
-                return true;
-            } else if (subCommand.hasUsage()) {
-                MessageUtils.tell(player, subCommand.getUsage(base));
-                return true;
             }
+            return true;
+        } else if (hasUsage()) {
+            MessageUtils.tell(player, Message.get("usage.entry"),
+                    "usage", hasUsage() ? getUsage(base) : "/" + path,
+                    "description", getDescription()
+            );
+            return true;
         }
         return false;
     }
@@ -91,13 +108,12 @@ public abstract class SubCommand implements ConfigMessages {
                 if (s.getKey().startsWith(input)) {
                     if (subCommand == null) {
                         subCommand = s.getValue();
-                    } else {
-                        subCommands.put(input, null);
-                        return null;
                     }
                 }
             }
-            subCommands.put(input, subCommand);
+            if (subCommand != null) {
+                subCommands.put(input, subCommand);
+            }
             return subCommand;
         }
         return subCommands.get(input);
@@ -106,12 +122,8 @@ public abstract class SubCommand implements ConfigMessages {
     public Collection<SubCommand> getAccessibleCommands(Player player) {
         Collection<SubCommand> accessibleCommands = new LinkedHashSet<>();
         for (SubCommand subCommand : subCommands.values()) {
-            if (subCommand.hasAccess(player)) {
-                if (subCommand.isDeepUsage()) {
-                    accessibleCommands.addAll(subCommand.getAccessibleCommands(player));
-                } else {
-                    accessibleCommands.add(subCommand);
-                }
+            if (subCommand != null && subCommand.hasAccess(player)) {
+                accessibleCommands.add(subCommand);
             }
         }
         return accessibleCommands;
@@ -182,7 +194,7 @@ public abstract class SubCommand implements ConfigMessages {
     }
 
     public String getUsage(String base) {
-        return "/" + base + " " + usage;
+        return "/" + (base == null || base.isEmpty() ? "" : base + " ") + usage;
     }
 
     public String getDescription() {

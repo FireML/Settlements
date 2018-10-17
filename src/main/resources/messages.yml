@@ -40,7 +40,7 @@ scoreboard:
       village: |-
         &3&l{villagename}
         &3({villagestate})
-        &3lRank: {villagerank}
+        &3&lRank: {villagerank}
 
         &3&lBal&3: &b$&e{balance}
         &3&lBank: &b$&e{bank}
@@ -94,6 +94,7 @@ chat:
     village: "\n&9{state}: &7{name}"
   staff: "&c&lStaff "
   format:
+    name: "{name}"
     private:
       sender: "[&8[&a{sender} &7➦ &3{target}&8] &b{message}"
       target: "{staff}[&8[&3{sender} &7➦ &a{target}&8] &b{message}"
@@ -117,8 +118,7 @@ chat:
 usage:
   head: |-
     &8&l--------&r&c&l{name} Commands&r&8&l--------
-    &c{usage}
-  entry: "&8[&9*&8] [&b{usage}](suggest_command={usage}) &7- {description}"
+  entry: "&8\\[&9*&8] [&b{usage}](suggest_command={{usage}) &7- {description}"
 gui:
   access:
     title: "&3&lSettlement Access"
@@ -148,13 +148,16 @@ command:
     description: "Chat command"
     joined: "&7You have joined Chat Channel &6{name}"
     channel-entry:
-      active: "&8[&9*&8] &b{name} &7&l[&a&lActive&7&l] &3&l<"
-      enabled: "&8[&9*&8] &b{name} &7&l[&a&lEnabled&7&l]"
-      disabled: "&8[&9*&8] &b{name} &7&l[&c&lDisabled&7&l]"
+      active: "&8\\[&9*&8] &b{name} &7&l[&a&lActive&7&l] &3&l<"
+      enabled: "&8\\[&9*&8] [&b{name}](suggest_command=/chat {name}) &7&l[&a&lEnabled&7&l]"
+      disabled: "&8\\[&9*&8] [&b{name}](suggest_command=/chat {name}) &7&l[&c&lDisabled&7&l]"
+    "<channel>":
+      description: "Join a chat channel"
     leave:
       description: "Disable the chat of the channel"
       success: "&7You have left Chat Channel {name}&6"
     lock:
+      description: "Lock a channel"
       muted: "&c&lGeneral Chat has been muted by &6&l{name}"
       unmuted: "&c&lGeneral Chat has been un-muted by &6&l{name}"
     swear:
@@ -327,13 +330,6 @@ command:
       success: "&7Settlement mode &6{mode}&7 set to &6{value}"
       description: Changes settings for your village claims
     outpost:
-      usage: |-
-        &8&l--------&r&c&lOutpost Commands&r&8&l--------
-        &8[&9*&8] &b[/{alias} outpost claim](/{alias} outpost claim]) &7- claims an outpost for your settlement
-        &8[&9*&8] &b[/{alias} outpost unclaim](/{alias} outpost unclaim]) &7- unclaims the outpost your standing on
-        &8[&9*&8] &b[/{alias} outpost sethome <name>](suggest_command=/{alias} outpost sethome <name>]) &7- sets a sethome on that specific chunk
-        &8[&9*&8] &b[/{alias} outpost tp <name>](suggest_command=/{alias} outpost tp <name>]) &7- teleports to a outpost shown in list
-        &8[&9*&8] &b[/{alias} outpost list](/{alias} outpost list]) &7- lists all of your outposts
       claim:
         max-outpost-chunks: "&c&lERROR &r&7Your settlement can only claim &e{max}&r&7 outpost chunks!"
         success: "&a&lSUCCESS &r&e{player} &7has claimed &coutpost&7 &e{name}&7 for your settlement at {x},{z}!"
@@ -496,7 +492,12 @@ command:
       description: Sets if a world is claimable in or not
     join:
       description: Forces a player to join a village
+    rank:
+      description: Set the rank of a  player
     emgcy:
       description: dont touch
     ss:
       description: Lets you see other peoples messages
+    reload:
+      description: Reload some plugin functionality
+      success: "&aConfigs reloaded. Will only affect values that are read directly from the config!"

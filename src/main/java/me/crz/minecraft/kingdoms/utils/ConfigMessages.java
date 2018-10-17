@@ -9,7 +9,7 @@ public interface ConfigMessages extends ConfigKey {
 
     default Message getMessage(String key) {
         String base = type().isEmpty() ? "" : (type() + ".");
-        Message message = Message.get(base + name().toLowerCase() + "." + key);
+        Message message = Message.get(base + getKey().toLowerCase() + "." + key);
         if (message.exists()) {
             return message;
         }

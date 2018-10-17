@@ -162,4 +162,33 @@ public class Utils {
             KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Doing an operation on the main thread that should be done async!", new Throwable());
         }
     }
+
+    public static String trim(String string, int length) {
+        if (string == null) {
+            return null;
+        }
+        if (string.length() < length) {
+            return string;
+        }
+        String[] split = string.split(" ");
+        if (split.length <= 1) {
+            return string.substring(0, length);
+        }
+        int tooLong = string.length() - length;
+        boolean shortened = true;
+        while (shortened && tooLong > 0) {
+            shortened = false;
+            for (int i = 0; i < split.length && tooLong > 0; i++) {
+                if (split[i].length() > 3) {
+                    split[i] = split[i].substring(0, split[i].length() - 1);
+                    tooLong--;
+                    shortened = true;
+                }
+            }
+        }
+        if (tooLong == 0) {
+            return String.join(" ", split);
+        }
+        return String.join(" ", split).substring(0, length);
+    }
 }

@@ -99,22 +99,6 @@ public class ScoreboardManager implements ConfigMessages {
         }
     }
 
-    public String trimPrefix(String prefix) {
-        if (prefix == null) {
-            return null;
-        }
-        if (prefix.length() < 16) {
-            return prefix;
-        }
-        if (prefix.split(" ").length <= 1) {
-            return prefix.substring(0, 16);
-        }
-        String firstPart = prefix.split(" ")[0];
-        String secondPart = prefix.substring(firstPart.length() + 1);
-        firstPart = firstPart.substring(0, 16 - 1 - secondPart.length());
-        return firstPart + " " + secondPart;
-    }
-
     public static ScoreboardManager getInstance() {
         if (instance == null) {
             instance = new ScoreboardManager();

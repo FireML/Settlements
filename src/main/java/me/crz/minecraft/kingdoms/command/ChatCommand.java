@@ -11,10 +11,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class ChatCommand extends SubCommand {
-    private final String help;
 
     public ChatCommand() {
-        super(null, "chat");
+        super(null, "chat <channel>", "c");
+        registerCommand(new SubCommand(this, "<channel>") {
+            @Override
+            public boolean run(Player p0, String p1, String p2, String... p3) {
+                return false;
+            }
+        });
         registerCommand(new SubCommand(this, "leave <channel>") {
             @Override
             public boolean run(Player p, String base, String alias, String... args) {
@@ -56,14 +61,12 @@ public class ChatCommand extends SubCommand {
                 return false;
             }
         });
-        help = "&8&l--------&r&c&l/Chat&r&8&l--------" +
-                "\n&8[&9*&8] &b/{alias} <channel> &7- sets the active chat";
     }
 
     @Override
     public boolean run(Player p, String base, String alias, String... args) {
         if (args.length < 1) {
-            sendUsageMessage(p, this, base, alias);
+            sendUsageMessage(p, base, alias);
 
             Resident res = ResidentManager.getInstance().getResident(p);
             for (ChatChannel channel : ChatChannel.values()) {

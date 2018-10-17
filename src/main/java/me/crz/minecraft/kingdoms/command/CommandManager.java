@@ -4,22 +4,24 @@ import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.chat.commands.IgnoreCommand;
 import me.crz.minecraft.kingdoms.chat.commands.MessageCommand;
 import me.crz.minecraft.kingdoms.chat.commands.ReplyCommand;
+import me.crz.minecraft.kingdoms.command.resident.ResidentFriendCommand;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class CommandManager extends Base implements CommandExecutor {
     private static CommandManager instance;
     private Map<String, SubCommand> commandMap = new LinkedHashMap<>();
 
-    public CommandManager() {
-        super();
+    private void registerCommands() {
         registerCommand(new VillageCommand());
         registerCommand(new ChatCommand());
         registerCommand(new VillageAdminCommand());
@@ -31,7 +33,12 @@ public class CommandManager extends Base implements CommandExecutor {
 
     public void registerCommand(SubCommand ex) {
         commandMap.put(ex.name().toLowerCase(), ex);
-        Base.getPlugin().getCommand(ex.name()).setExecutor(this);
+        PluginCommand command = getPlugin().getCommand(ex.name());
+        if (command != null) {
+            command.setExecutor(this);
+        } else {
+            getPlugin().getLogger().log(Level.SEVERE, "Tried to register command by the name of " + ex.name() + " but it's not defined in the plugin.yml?");
+        }
     }
 
     @Override
@@ -40,11 +47,11 @@ public class CommandManager extends Base implements CommandExecutor {
             SubCommand cmd = commandMap.get(command.getName().toLowerCase());
             if (cmd == null) {
                 MessageUtils.tell((Player) sender, "&c&lUnknown command!");
-            } else if (!cmd.execute((Player) sender, "", alias, args)) {
+            } else if (!cmd.execute((Player) sender, null, alias, args)) {
                 if (cmd.getMessage("usage").exists()) {
                     MessageUtils.tell((Player) sender, cmd.getMessage("usage"), "alias", alias);
-                } else if (cmd.hasUsage()) {
-                    MessageUtils.tell((Player) sender, "&c" + cmd.getUsage(alias));
+                } else if (!cmd.sendUsageMessage((Player) sender, null, alias) && cmd.hasUsage()) {
+                    MessageUtils.tell((Player) sender, "&c" + cmd.getUsage(null));
                 } else {
                     return false;
                 }
@@ -58,6 +65,7 @@ public class CommandManager extends Base implements CommandExecutor {
     public static CommandManager getInstance() {
         if (instance == null) {
             instance = new CommandManager();
+            instance.registerCommands();
         }
         return instance;
     }

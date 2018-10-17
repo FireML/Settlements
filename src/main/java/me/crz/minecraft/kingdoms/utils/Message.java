@@ -4,8 +4,10 @@ import de.themoep.minedown.MineDown;
 import de.themoep.minedown.Replacer;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
+import me.crz.minecraft.kingdoms.village.Resident;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -84,6 +86,18 @@ public class Message {
         return MessageUtils.replacePlaceholders(components, replacements);
     }
 
+    public MessageReplacer getReplacer() {
+        return new MessageReplacer(this);
+    }
+
+    public void tell(Player player, String... replacements) {
+        MessageUtils.tell(player, this, replacements);
+    }
+
+    public void tell(Resident resident, String... replacements) {
+        MessageUtils.tell(resident, this, replacements);
+    }
+
     private static Map<String, Message> messages = new HashMap<>();
 
     public static Message get(String key) {
@@ -95,8 +109,8 @@ public class Message {
         return message;
     }
 
-    public MessageReplacer getReplacer() {
-        return new MessageReplacer(this);
+    public static void clearCache() {
+        messages.clear();
     }
 
     public class MessageReplacer extends Replacer {

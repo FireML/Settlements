@@ -10,7 +10,6 @@ public class ScoreboardAnimation implements Listener {
     private String title;
     private String PRIMARY;
     private String SECONDARY;
-    private String TRANSITION;
     private String PRIMARYT;
     private String SECONDARYT;
     private boolean stage;
@@ -21,12 +20,11 @@ public class ScoreboardAnimation implements Listener {
         super();
         bold = String.valueOf(ChatColor.BOLD);
         this.manager = manager;
-        title = manager.getTitleStripped();
-        PRIMARY = ChatColor.WHITE + bold;
-        SECONDARY = ChatColor.AQUA + bold;
-        TRANSITION = ChatColor.WHITE + bold;
         PRIMARYT = manager.getText("sidebar.title");
         SECONDARYT = MessageUtils.invertColors(manager.getText("sidebar.title"));
+        title = manager.getTitleStripped();
+        PRIMARY = ChatColor.getLastColors(PRIMARYT);
+        SECONDARY = ChatColor.getLastColors(SECONDARYT);
         stage = false;
         counter = -1;
         KingdomsPlugin.getInstance().getServer().getScheduler().scheduleSyncRepeatingTask(KingdomsPlugin.getInstance(), this::onUpdate, 0L, 2L);
@@ -52,7 +50,7 @@ public class ScoreboardAnimation implements Listener {
             s = SECONDARYT;
             counter = -52;
         } else {
-            s = String.valueOf(SECONDARY) + title.substring(0, counter - 1) + TRANSITION + title.substring(counter - 1, counter) + PRIMARY + title.substring(counter, title.length());
+            s = String.valueOf(SECONDARY) + title.substring(0, counter) + PRIMARY + title.substring(counter, title.length());
         }
         manager.setTitle(s);
     }

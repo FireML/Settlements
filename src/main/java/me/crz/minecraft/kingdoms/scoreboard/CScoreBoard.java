@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.scoreboard;
 
+import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.ChatColor;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
@@ -20,6 +21,8 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 import java.util.Map;
+
+import static me.crz.minecraft.kingdoms.utils.Utils.trim;
 
 public class CScoreBoard {
     private final ScoreboardManager manager;
@@ -73,12 +76,12 @@ public class CScoreBoard {
                 String prefix = manager.getScoreboardPolicy().getPrefix(p, pl);
                 String suffix = manager.getScoreboardPolicy().getSuffix(p, pl);
                 if (prefix != null && !team.getPrefix().equals(prefix)) {
-                    team.setPrefix(manager.trimPrefix(prefix));
+                    team.setPrefix(trim(prefix, 16));
                 } else if (prefix == null && team.getPrefix() != null) {
                     team.setPrefix("");
                 }
                 if (suffix != null && !team.getSuffix().equals(suffix)) {
-                    team.setSuffix(manager.trimPrefix(suffix));
+                    team.setSuffix(trim(suffix, 16));
                 } else {
                     if (suffix != null || team.getSuffix() == null) {
                         continue;
@@ -94,10 +97,10 @@ public class CScoreBoard {
                 String prefix2 = manager.getScoreboardPolicy().getPrefix(p, pl2);
                 String suffix2 = manager.getScoreboardPolicy().getSuffix(p, pl2);
                 if (prefix2 != null) {
-                    team2.setPrefix(manager.trimPrefix(prefix2));
+                    team2.setPrefix(trim(prefix2, 16));
                 }
                 if (suffix2 != null) {
-                    team2.setSuffix(manager.trimPrefix(suffix2));
+                    team2.setSuffix(trim(suffix2, 16));
                 }
                 team2.addEntry(pl2.getName());
             }
@@ -159,6 +162,7 @@ public class CScoreBoard {
         if (sidebar != null && sidebar.size() > 0) {
             int score = 15;
             for (String line : sidebar) {
+                line = trim(line, 40);
                 if (score < 1) {
                     break;
                 }
@@ -239,7 +243,7 @@ public class CScoreBoard {
         for (sort = String.valueOf(DisplayRank.values().length - disp.ordinal()); sort.length() < String.valueOf(DisplayRank.values().length).length(); sort = "0" + sort) {
         }
         String displayName = String.valueOf(sort) + "-" + subject.getName();
-        displayName = displayName.substring(0, Math.min(displayName.length(), 16));
+        displayName = Utils.trim(displayName, 16);
         return displayName;
     }
 

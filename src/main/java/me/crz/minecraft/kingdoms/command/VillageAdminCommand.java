@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command;
 
+import me.crz.minecraft.kingdoms.command.admin.VillageAdminReloadCommand;
 import org.bukkit.entity.Player;
 
 import me.crz.minecraft.kingdoms.command.admin.VillageAdminSocialSpyCommand;
@@ -17,6 +18,7 @@ public class VillageAdminCommand extends SubCommand {
         this.registerCommand(new VillageAdminWorldCommand(this));
         this.registerCommand(new VillageAdminRankCommand(this));
         this.registerCommand(new VillageAdminJoinCommand(this));
+        this.registerCommand(new VillageAdminReloadCommand(this));
         this.registerCommand(new VillageEmgcyCommand(this));
         this.registerCommand(new VillageAdminSocialSpyCommand(this));
     }

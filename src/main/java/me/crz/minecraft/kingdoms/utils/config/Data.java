@@ -20,7 +20,7 @@ public class Data {
     @ConfigOption
     public static boolean muteChat = false;
     @ConfigOption
-    public static List<String> socialSpy;
+    public static List<String> socialSpy = new ArrayList<>();
     @ConfigOption
     public static JSONObject vlock = new JSONObject();
     @ConfigOption

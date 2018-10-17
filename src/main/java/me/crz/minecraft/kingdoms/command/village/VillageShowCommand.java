@@ -98,14 +98,15 @@ public class VillageShowCommand extends SubCommand {
             rankMap.put(resident.getVillageRank(), resident);
         }
         List<String> lines = new ArrayList<>();
-        for (VillageRank rank : VillageRank.values()) {
-            lines.add(rankMessage.getReplacedText("residents",
-                    rankMap.get(rank).stream()
+        for (VillageRank rank : rankMap.keySet()) {
+            lines.add(rankMessage.getReplacedText(
+                    "rank", rank.getTag(village),
+                    "residents", rankMap.get(rank).stream()
                             .sorted(Comparator.comparing(Resident::getVillageJoin))
                             .map(res -> MessageUtils.replacePlaceholders(entry,
                                     "online", res.getPlayer() != null ? online : offline,
                                     "name", res.getName(),
-                                    "rank", res.getVillageRank().getTag(village)
+                                    "rank", rank.getTag(village)
                             ))
                             .collect(Collectors.joining(separator))
             ));

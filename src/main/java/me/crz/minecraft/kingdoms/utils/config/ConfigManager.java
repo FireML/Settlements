@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.utils.config;
 import java.io.IOException;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.utils.Message;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
@@ -14,6 +15,10 @@ public class ConfigManager {
 
     public ConfigManager() {
         super();
+        reload();
+    }
+
+    public void reload() {
         KingdomsPlugin.getInstance().saveDefaultConfig();
         KingdomsPlugin.getInstance().reloadConfig();
         messages = new ConfigAccessor(KingdomsPlugin.getInstance(), "messages.yml");
@@ -22,6 +27,7 @@ public class ConfigManager {
         levelConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "levelConf.yml");
         levelConf.saveDefaultConfig();
         levelConf.reloadConfig();
+        Message.clearCache();
     }
 
     public static void save(File file, FileConfiguration fileConfiguration) {

@@ -14,7 +14,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 
 public class VillageAdminRankCommand extends SubCommand {
     public VillageAdminRankCommand(SubCommand parent) {
-        super(parent, "join <player> <rank>");
+        super(parent, "rank <player> <rank>");
         setPermission("kingdoms.admin");
     }
 

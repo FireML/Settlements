@@ -17,6 +17,22 @@ commands:
     aliases: [res]
   chat:
     description: Chat Channel Commands.
+    aliases: [c]
+  message:
+    description: Private message command
+    aliases: [msg, tell, pm, m, w, t, whisper, emsg, etell, epm, ewhisper]
+  reply:
+    description: PM reply command
+    aliases: [r]
+  friend:
+    aliases: [friends, f]
+    description: Friending command
+  ignore:
+    description: Player ignore command
+  scoreboard:
+    description: Scoreboard command
+  rainbowtag:
+    description: Rainbow tag command
 permissions:
   kingdoms.admin:
     description: Permission for admins. Gives access to everything.

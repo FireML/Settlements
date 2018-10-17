@@ -44,6 +44,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     private boolean running = false;
     private String kingdomsWorld = "";
 
+    @Override
     public void onDisable() {
         if (running) {
             running = false;
@@ -51,6 +52,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         }
     }
 
+    @Override
     public void onEnable() {
         instance = this;
         this.getServer().getPluginManager().registerEvents(this, this);

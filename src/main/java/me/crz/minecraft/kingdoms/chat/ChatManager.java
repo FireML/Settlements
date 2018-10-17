@@ -71,7 +71,8 @@ public class ChatManager extends Base {
         String senderSuffix = MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerSuffix(sender));
 
         HoverEvent senderHover = new HoverEvent(HoverEvent.Action.SHOW_TEXT, getMessage("hover.info").getReplacedComponents(
-                "name", sender.getDisplayName(),
+                "name", sender.getName(),
+                "displayname", sender.getDisplayName(),
                 "prefix", senderPrefix,
                 "suffix", senderSuffix,
                 "balance", getMessage("hover.balance").getReplacedText("balance", BALANCE_FORMAT.format(KingdomsPlugin.getInstance().econ.getBalance(sender))),
@@ -99,8 +100,13 @@ public class ChatManager extends Base {
                 .replace("rank", TextComponent.fromLegacyText(village != null ? res.getVillageRank().getTag(village) : ""))
                 .replace("state", TextComponent.fromLegacyText(village != null ? village.getState().getTag() : ""))
                 .replace("sender", new ComponentBuilder("")
-                        .append(TextComponent.fromLegacyText(sender.getDisplayName()))
                         .event(senderHover)
+                        .append(getMessage("format.name").getReplacedComponents(
+                                "name", sender.getName(),
+                                "displayname", sender.getDisplayName(),
+                                "prefix", senderPrefix,
+                                "suffix", senderSuffix
+                        ))
                         .create());
         BaseComponent[] filteredMessage = replacer
                 .replace("message", KingdomsPlugin.getInstance().utilChat.filterCurses(e.getMessage()))
@@ -182,7 +188,8 @@ public class ChatManager extends Base {
         String senderPrefix = MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(sender));
         String senderSuffix = MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerSuffix(sender));
         HoverEvent senderHover = new HoverEvent(HoverEvent.Action.SHOW_TEXT, getMessage("hover.info").getReplacedComponents(
-                "name", sender.getDisplayName(),
+                "name", sender.getName(),
+                "displayname", sender.getDisplayName(),
                 "prefix", senderPrefix,
                 "suffix", senderSuffix,
                 "balance", getMessage("hover.balance").getReplacedText("balance", BALANCE_FORMAT.format(KingdomsPlugin.getInstance().econ.getBalance(sender))),
@@ -195,7 +202,8 @@ public class ChatManager extends Base {
         String targetPrefix = MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(target));
         String targetSuffix = MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerSuffix(target));
         HoverEvent targetHover = new HoverEvent(HoverEvent.Action.SHOW_TEXT, getMessage("hover.info").getReplacedComponents(
-                "name", target.getDisplayName(),
+                "name", target.getName(),
+                "displayname", target.getDisplayName(),
                 "prefix", targetPrefix,
                 "suffix", targetSuffix,
                 "balance", getMessage("hover.balance").getReplacedText("balance", BALANCE_FORMAT.format(KingdomsPlugin.getInstance().econ.getBalance(target))),
@@ -207,16 +215,18 @@ public class ChatManager extends Base {
 
         MessageUtils.tell(sender, getMessage("format.private.sender"), ImmutableMap.of(
                 "sender", new ComponentBuilder(
-                        getMessage("private.name.sender").getReplacedText(
-                                "name", sender.getDisplayName(),
+                        getMessage("format.private.name.sender").getReplacedText(
+                                "name", sender.getName(),
+                                "displayname", sender.getDisplayName(),
                                 "prefix", senderPrefix,
                                 "suffix", senderSuffix
                         ))
                         .event(senderHover)
                         .create(),
                 "target", new ComponentBuilder(
-                        getMessage("private.name.target").getReplacedText(
-                                "name", target.getDisplayName(),
+                        getMessage("format.private.name.target").getReplacedText(
+                                "name", target.getName(),
+                                "displayname", target.getDisplayName(),
                                 "prefix", targetPrefix,
                                 "suffix", targetSuffix
                         ))
@@ -229,8 +239,9 @@ public class ChatManager extends Base {
 
         MessageUtils.tell(sender, getMessage("format.private.target"), ImmutableMap.of(
                 "sender", new ComponentBuilder(
-                        getMessage("private.name.target").getReplacedText(
-                                "name", target.getDisplayName(),
+                        getMessage("format.private.name.target").getReplacedText(
+                                "name", target.getName(),
+                                "displayname", target.getDisplayName(),
                                 "prefix", targetPrefix,
                                 "suffix", targetSuffix
                         ))
@@ -238,8 +249,9 @@ public class ChatManager extends Base {
                         .event(senderHover)
                         .create(),
                 "target", new ComponentBuilder(
-                        getMessage("private.name.sender").getReplacedText(
-                                "name", sender.getDisplayName(),
+                        getMessage("format.private.name.sender").getReplacedText(
+                                "name", sender.getName(),
+                                "displayname", sender.getDisplayName(),
                                 "prefix", senderPrefix,
                                 "suffix", senderSuffix
                         ))
@@ -251,8 +263,10 @@ public class ChatManager extends Base {
         lastMessage.put(sender.getUniqueId(), target.getUniqueId());
         lastMessage.put(target.getUniqueId(), sender.getUniqueId());
         BaseComponent[] socialSpy = getMessage("format.social-spy").getReplacedComponents(
-                "sender", sender.getDisplayName(),
-                "target", target.getDisplayName(),
+                "sender", sender.getName(),
+                "senderdisplay", sender.getDisplayName(),
+                "target", target.getName(),
+                "targetdisplay", target.getDisplayName(),
                 "message", message
         );
         for (String sUUID : Data.socialSpy) {
