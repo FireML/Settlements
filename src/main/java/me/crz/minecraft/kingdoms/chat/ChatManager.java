@@ -120,7 +120,8 @@ public class ChatManager extends Base {
 
                 Bukkit.getOnlinePlayers().stream()
                         .map(p -> ResidentManager.getInstance().getResident(p))
-                        .filter(r -> r.isListening(finalChannel) && !r.getIgnore().contains(sender.getUniqueId()))
+                        .filter(r -> r.isListening(finalChannel)
+                                && !(r.getIgnore().contains(sender.getUniqueId()) && !ChatChannel.STAFF.canChat(sender)))
                         .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
                 break;
             case LOCAL:
@@ -130,7 +131,8 @@ public class ChatManager extends Base {
                                 && sender.getLocation().getWorld().equals(p.getWorld())
                                 && sender.getLocation().distanceSquared(p.getLocation()) < 200 * 200)
                         .map(p -> ResidentManager.getInstance().getResident(p))
-                        .filter(r -> r.isListening(finalChannel) && !r.getIgnore().contains(sender.getUniqueId()))
+                        .filter(r -> r.isListening(finalChannel)
+                                && !(r.getIgnore().contains(sender.getUniqueId()) && !ChatChannel.STAFF.canChat(sender)))
                         .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
                 break;
             case ADMIN:
@@ -173,7 +175,7 @@ public class ChatManager extends Base {
             MessageUtils.tell(sender, getMessage("ignoring"), "name", target.getName());
             return;
         }
-        if (tres.getIgnore().contains(res.getUUID())) {
+        if (tres.getIgnore().contains(res.getUUID()) && !ChatChannel.STAFF.canChat(sender)) {
             MessageUtils.tell(sender, getMessage("ignored"), "name", target.getName());
             return;
         }
