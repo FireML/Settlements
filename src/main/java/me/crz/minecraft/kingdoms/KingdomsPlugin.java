@@ -123,8 +123,8 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         VillageManager.getInstance();
         LandManager.getInstance();
         ResidentManager.getInstance();
-        ScoreboardManager.getInstance().setScoreboardPolicy(new ScoreBoard());
-        new CommandManager();
+        ScoreboardManager.getInstance();
+        CommandManager.getInstance();
     }
 
     private boolean setupChat() {

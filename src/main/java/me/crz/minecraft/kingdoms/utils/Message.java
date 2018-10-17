@@ -68,6 +68,10 @@ public class Message {
         return MessageUtils.replacePlaceholders(text, replacements);
     }
 
+    public List<String> getReplacedTextList(String... replacements) {
+        return Arrays.asList(getReplacedText(replacements).split("\n"));
+    }
+
     public BaseComponent[] getReplacedComponents(String placeholder, BaseComponent[] value) {
         return MessageUtils.replacePlaceholders(components, placeholder, value);
     }

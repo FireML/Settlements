@@ -1,43 +1,38 @@
 package me.crz.minecraft.kingdoms.scoreboard;
 
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 public class TabHeader {
-    private String header;
-    private String footer;
+    private Message header;
+    private Message footer;
 
-    public TabHeader(final String header, final String footer) {
+    public TabHeader(Message header, Message footer) {
         super();
-        this.header = MessageUtils.replaceColorCodes(header);
-        this.footer = MessageUtils.replaceColorCodes(footer);
-    }
-
-    public void send() {
-        this.send(new ArrayList<>(Bukkit.getOnlinePlayers()));
-    }
-
-    public void setFooter(final String footer) {
+        this.header = header;
         this.footer = footer;
     }
 
-    public void send(final Collection<Player> players) {
-        for (final Player pl : players) {
-            this.send(pl);
+    public void send(String... replacements) {
+        this.send(Bukkit.getOnlinePlayers(), replacements);
+    }
+
+    public void send(Collection<? extends Player> players, String... replacements) {
+        for (Player pl : players) {
+            this.send(pl, replacements);
         }
     }
 
-    public void send(final Player... players) {
-        for (final Player pl : players) {
-            this.send(pl);
+    public void send(Player[] players, String... replacements) {
+        for (Player pl : players) {
+            send(pl, replacements);
         }
     }
 
-    public void send(final Player p) {
-        p.setPlayerListHeaderFooter(header, footer);
+    public void send(Player p, String... replacements) {
+        p.setPlayerListHeaderFooter(header.getReplacedText(replacements), footer.getReplacedText(replacements));
     }
 }

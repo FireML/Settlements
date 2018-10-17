@@ -18,7 +18,7 @@ public class VillageDepositCommand extends VillageSubCommand {
         if (!resident.getVillage().isMaxLevel()) {
             new VaultInventory(resident.getPlayer()).open();
         } else {
-            resident.tell(Message.get("commands.upgrade.max-level-reached"));
+            resident.tell(Message.get("command.upgrade.max-level-reached"));
         }
         return true;
     }

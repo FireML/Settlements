@@ -2,66 +2,61 @@ package me.crz.minecraft.kingdoms.scoreboard.commands;
 
 import java.util.ArrayList;
 
+import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.ChatColor;
 
 import java.util.List;
 
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.scoreboard.ScoreboardManager;
-import me.crz.minecraft.kingdoms.essentials.command.Command;
 
-public class CommandScoreboard extends Command {
-    private final int MAX_WIDTH = 40;
-    private ScoreboardManager manager;
+public class CommandScoreboard extends SubCommand {
+    private static final int MAX_WIDTH = 40;
 
-    public CommandScoreboard() {
-        super("Set the scoreboard for all players", "scoreboard", "sb", "board", "sidebar", "side");
+    public CommandScoreboard(ScoreboardManager manager) {
+        super(null, "scoreboard clear|add <line>", "sb", "board", "sidebar", "side");
+        setPermission("kingdoms.scoreboard");
+        registerCommand(new SubCommand(this, "clear", "reset", "remove") {
+            @Override
+            public boolean run(Player p, String base, String alias, String... args) {
+                manager.addCustomLines(null);
+                manager.update();
+                MessageUtils.tell(p, getMessage("cleared"));
+                return true;
+            }
+        });
+        registerCommand(new SubCommand(this, "add <line>") {
+            @Override
+            public boolean run(Player p, String base, String alias, String... args) {
+                String line = ChatColor.translateAlternateColorCodes('&', String.join(" ", args));
+                manager.addCustomLines(listByWidth(line));
+                manager.update();
+                MessageUtils.tell(p, getMessage("added"), "line", line);
+                return true;
+            }
+        });
     }
 
-    public void setManager(final ScoreboardManager manager) {
-        this.manager = manager;
+    @Override
+    public boolean run(Player p, String base, String alias, String... args) {
+        return false;
     }
 
-    public void run(final Player p, final String aliasUsed, final String[] args) {
-        if (!p.hasPermission("kingdoms.scoreboard")) {
-            p.sendMessage("Sorry, you can only do this on an Event Server!");
-            return;
-        }
-        if (args.length < 1) {
-            return;
-        }
-        if (args[0].equalsIgnoreCase("clear") || args[0].equalsIgnoreCase("reset") || args[0].equalsIgnoreCase("remove")) {
-            manager.addCustomLines(null);
-            manager.update();
-            p.sendMessage("Reset scoreboard for all players.");
-            return;
-        }
-        String s = "";
-        for (final String arg : args) {
-            s = String.valueOf(s) + arg + " ";
-        }
-        s = ChatColor.translateAlternateColorCodes('&', s.trim());
-        manager.addCustomLines(this.listByWidth(s));
-        manager.update();
-        p.sendMessage(ChatColor.GRAY + "Added '" + ChatColor.WHITE + s + ChatColor.GRAY + "' to the scoreboard.");
-    }
-
-    private List<String> listByWidth(final String s) {
-        final List<String> l = new ArrayList<>();
+    private List<String> listByWidth(String s) {
+        List<String> l = new ArrayList<>();
         String progress = "";
-        String[] split;
-        for (int length = (split = s.split(" ")).length, j = 0; j < length; ++j) {
-            String var = split[j];
-            progress = String.valueOf(progress) + var;
+        for (String var : s.split(" ")) {
+            progress += var;
             if (l.size() == 0) {
                 if (var.length() > MAX_WIDTH) {
                     var = var.substring(0, 40);
                 }
                 l.add(var);
-            } else if ((String.valueOf(l.get(l.size() - 1)) + var).length() > MAX_WIDTH) {
-                l.add(String.valueOf(ChatColor.getLastColors(progress)) + ChatColor.stripColor((var.length() > MAX_WIDTH) ? var.substring(0, MAX_WIDTH) : var));
+            } else if ((l.get(l.size() - 1) + var).length() > MAX_WIDTH) {
+                l.add(ChatColor.getLastColors(progress) + ChatColor.stripColor((var.length() > MAX_WIDTH) ? var.substring(0, MAX_WIDTH) : var));
             } else {
-                l.set(l.size() - 1, String.valueOf(l.get(l.size() - 1)) + " " + var);
+                l.set(l.size() - 1, l.get(l.size() - 1) + " " + var);
             }
         }
         for (int i = 0; i < l.size(); ++i) {

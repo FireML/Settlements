@@ -1,4 +1,3 @@
-server-name: "&b&lYour&f&lServer"
 server-rules: "&6&llink.to/server-rules&r or rule text"
 error:
   not-in-current: "&c&lERROR &r&7Not currently in settlement."
@@ -29,6 +28,30 @@ error:
   village-required: "&c&lYou can only do this after you joined a settlement!"
   free-required: "&c&lYou can only do this if you are not part of a settlement yet!"
   only-player: "&cMust be ran by player."
+scoreboard:
+  sidebar:
+    title: "&b&lServer&f&lName"
+    entries:
+      no-village: |-
+        &3&lBal&3: &b$&e{balance}
+
+        &3&lKills&3: &e{kills}
+        &3&lDeaths&3: &e{deaths}
+      village: |-
+        &3&l{villagename}
+        &3({villagestate})
+        &3lRank: {villagerank}
+
+        &3&lBal&3: &b$&e{balance}
+        &3&lBank: &b$&e{bank}
+
+        &3&lKills&3: &e{kills}
+        &3&lDeaths&3: &e{deaths}
+  tab:
+    header: "&b&lServer&f&lName"
+    footer: |-
+      &fThere are &6{amount}&f Players online!
+      &fWorld: &6{world}
 levels:
   upgrade: "&d&lLEVEL UP &r&7Your settlement is now level &d{level}"
   upgrade-settlement: "&a&lSUCCESS &r&7The settlement has been upgraded to &e{state}!"
@@ -120,7 +143,7 @@ gui:
     fail-deposit: "&c&lFailed Deposited Items: {reason}"
     max-level-reached: "&r&c&lMax Level Reached"
     list-deposit: "&6{amount} &e{material}"
-commands:
+command:
   chat:
     description: "Chat command"
     joined: "&7You have joined Chat Channel &6{name}"
@@ -148,6 +171,10 @@ commands:
       separator: "&7, "
   message:
     description: "Message another player"
+  rainbowtag:
+    description: "Make your nametag flash like a rainbow!"
+    disabled: "&cDisabled rainbow tag."
+    enabled: "&a&lEnabled rainbow tag."
   reply:
     description: "Replies to the last person who messaged you."
     no-one-messaged: "&cNo one messaged you!"
@@ -177,6 +204,14 @@ commands:
         description: Removes a player to your friend list
       list:
         description: Lists all the people on your friends list
+  scoreboard:
+    descriptipon: "Set the scoreboard for all players"
+    clear:
+      description: "Clear custom lines from the scoreboard for all players"
+      cleared: "Cleared custom lines from scoreboard for all players."
+    add:
+      description: "Add custom lines to the scoreboard"
+      added: "&7Added '&f{line}&7' to the scoreboard."
   village:
     allies:
       head: "&8&l--------&r&c&lAllies&r&8&l--------"

@@ -5,17 +5,17 @@ import java.util.List;
 import org.bukkit.entity.Player;
 
 public interface ScoreboardPolicy {
-    List<String> getSidebar(final Player p0);
+    List<String> getSidebar(Player player);
 
-    String getPrefix(final Player p0, final Player p1);
+    String getPrefix(Player player, Player relative);
 
-    String getSuffix(final Player p0, final Player p1);
+    String getSuffix(Player player, Player relative);
 
-    String getUndername(final Player p0);
+    String getUndername(Player player);
 
-    int getUndernameScore(final Player p0, final Player p1);
+    int getUndernameScore(Player player, Player relative);
 
-    String getTablist(final Player p0);
+    String getTablist(Player player);
 
-    int getTablistScore(final Player p0, final Player p1);
+    int getTablistScore(Player player, Player relative);
 }

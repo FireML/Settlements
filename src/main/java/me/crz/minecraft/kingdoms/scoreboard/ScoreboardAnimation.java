@@ -1,13 +1,12 @@
 package me.crz.minecraft.kingdoms.scoreboard;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 
 public class ScoreboardAnimation implements Listener {
-    private final ScoreboardManager scoreboardManager;
+    private final ScoreboardManager manager;
     private String title;
     private String PRIMARY;
     private String SECONDARY;
@@ -18,16 +17,16 @@ public class ScoreboardAnimation implements Listener {
     private int counter;
     private String bold;
 
-    public ScoreboardAnimation(final ScoreboardManager scoreboardManager) {
+    public ScoreboardAnimation(ScoreboardManager manager) {
         super();
         bold = String.valueOf(ChatColor.BOLD);
-        this.scoreboardManager = scoreboardManager;
-        title = scoreboardManager.getTitleStripped();
+        this.manager = manager;
+        title = manager.getTitleStripped();
         PRIMARY = ChatColor.WHITE + bold;
         SECONDARY = ChatColor.AQUA + bold;
         TRANSITION = ChatColor.WHITE + bold;
-        PRIMARYT = Message.get("server-name").getText();
-        SECONDARYT = MessageUtils.invertColors(Message.get("server-name").getText());
+        PRIMARYT = manager.getText("sidebar.title");
+        SECONDARYT = MessageUtils.invertColors(manager.getText("sidebar.title"));
         stage = false;
         counter = -1;
         KingdomsPlugin.getInstance().getServer().getScheduler().scheduleSyncRepeatingTask(KingdomsPlugin.getInstance(), this::onUpdate, 0L, 2L);
@@ -55,6 +54,6 @@ public class ScoreboardAnimation implements Listener {
         } else {
             s = String.valueOf(SECONDARY) + title.substring(0, counter - 1) + TRANSITION + title.substring(counter - 1, counter) + PRIMARY + title.substring(counter, title.length());
         }
-        scoreboardManager.setTitle(s);
+        manager.setTitle(s);
     }
 }

@@ -53,8 +53,8 @@ public class VillageAdminRankCommand extends SubCommand {
                 tRes.setVillageRank(r);
                 DatabaseManager.getInstance().saveResident(tRes);
             }
-            MessageUtils.tell(player, Message.get("commands.village.setrank.success"), "setter", player.getDisplayName(), "target", tRes.getName(), "rank", r.getTag(village));
-            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("commands.village.setrank.success"), "setter", player.getDisplayName(), "target", tRes.getName(), "rank", r.getTag(village));
+            MessageUtils.tell(player, Message.get("command.village.setrank.success"), "setter", player.getDisplayName(), "target", tRes.getName(), "rank", r.getTag(village));
+            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("command.village.setrank.success"), "setter", player.getDisplayName(), "target", tRes.getName(), "rank", r.getTag(village));
         });
         return true;
     }

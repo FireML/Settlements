@@ -1,49 +1,26 @@
 package me.crz.minecraft.kingdoms.scoreboard.commands;
 
+import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.scoreboard.ScoreboardManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
-import java.util.UUID;
-import java.util.Set;
+public class CommandRainbowtag extends SubCommand {
+    private final ScoreboardManager manager;
 
-import me.crz.minecraft.kingdoms.essentials.command.Command;
-
-public class CommandRainbowtag extends Command {
-    private static CommandRainbowtag instance;
-    private Set<UUID> enabled;
-    private String[] colours;
-
-    public CommandRainbowtag() {
-        super("Make your nametag flash like a rainbow!", "rainbowtag");
-        enabled = new HashSet<>();
-        colours = new String[]{"a", "b", "c", "d", "e", "2", "3", "4", "5", "6"};
-        instance = this;
+    public CommandRainbowtag(ScoreboardManager manager) {
+        super(null, "rainbowtag");
+        setPermission("kingdoms.rainbowtag");
+        this.manager = manager;
     }
 
-    public boolean isEnabled(final UUID uuid) {
-        return enabled.contains(uuid);
-    }
-
-    public String[] getColours() {
-        return colours;
-    }
-
-    public Set<UUID> getEnabled() {
-        return enabled;
-    }
-
-    public static CommandRainbowtag getInstance() {
-        return instance;
-    }
-
-    public void run(final Player p, final String alias, final String[] args) {
-        if (enabled.contains(p.getUniqueId())) {
-            enabled.remove(p.getUniqueId());
-            p.sendMessage(MessageUtils.replaceColorCodes("Disabled rainbow tag."));
+    @Override
+    public boolean run(Player p, String base, String alias, String[] args) {
+        if (manager.toggleRainbowTag(p)) {
+            MessageUtils.tell(p, getMessage("enabled"));
         } else {
-            enabled.add(p.getUniqueId());
-            p.sendMessage(MessageUtils.replaceColorCodes("&a&lEnabled rainbow tag."));
+            MessageUtils.tell(p, getMessage("disabled"));
         }
+        return true;
     }
 }

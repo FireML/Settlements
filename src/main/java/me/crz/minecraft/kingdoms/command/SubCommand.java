@@ -1,7 +1,7 @@
 package me.crz.minecraft.kingdoms.command;
 
 
-import me.crz.minecraft.kingdoms.utils.ConfigKey;
+import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.apache.commons.lang.StringUtils;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class SubCommand implements ConfigKey {
+public abstract class SubCommand implements ConfigMessages {
     private SubCommand parent;
     private List<String> aliases;
     private String usage = "";
@@ -134,10 +134,17 @@ public abstract class SubCommand implements ConfigKey {
 
     public abstract boolean run(Player p0, String p1, String p2, String... p3);
 
+    @Override
     public String name() {
         return name;
     }
 
+    @Override
+    public String type() {
+        return "command";
+    }
+
+    @Override
     public String getKey() {
         return parent != null ? (parent.getKey() + "." + name()) : name();
     }
@@ -213,20 +220,6 @@ public abstract class SubCommand implements ConfigKey {
 
     public Map<String, SubCommand> getSubCommands() {
         return subCommands;
-    }
-
-    protected String getText(String key) {
-        return getMessage(key).getText();
-    }
-
-    protected Message getMessage(String key) {
-        Message message = Message.get("commands." + getKey() + "." + key);
-        return message.exists() ? message : Message.get(key);
-    }
-
-    protected Message getError(String key) {
-        Message message = getMessage(key);
-        return message.exists() ? message : getMessage("error." + key);
     }
 
     public void registerCommand(SubCommand c) {

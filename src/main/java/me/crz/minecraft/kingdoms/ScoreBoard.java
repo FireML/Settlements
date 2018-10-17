@@ -1,82 +1,82 @@
 package me.crz.minecraft.kingdoms;
 
-import java.util.Random;
 
-import org.bukkit.ChatColor;
-import me.crz.minecraft.kingdoms.scoreboard.commands.CommandRainbowtag;
+import me.crz.minecraft.kingdoms.scoreboard.ScoreboardManager;
+import me.crz.minecraft.kingdoms.scoreboard.ScoreboardPolicy;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.village.Village;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
+import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
+import org.bukkit.ChatColor;
 import org.bukkit.Statistic;
-import org.bukkit.Bukkit;
-import me.crz.minecraft.kingdoms.village.VillageManager;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
-import org.bukkit.entity.Player;
-import me.crz.minecraft.kingdoms.scoreboard.ScoreboardPolicy;
-
 public class ScoreBoard implements ScoreboardPolicy {
-    private static final Random RANDOM = new Random();
+    private final ScoreboardManager manager;
 
-    public ScoreBoard() {
+    public ScoreBoard(ScoreboardManager manager) {
         super();
+        this.manager = manager;
     }
 
-    public static String withSuffix(final long count) {
+    public static String withSuffix(long count) {
         if (count < 1000L) {
             return String.valueOf(count);
         }
-        final int exp = (int) (Math.log(count) / Math.log(1000.0));
+        int exp = (int) (Math.log(count) / Math.log(1000.0));
         return String.format("%.1f%c", count / Math.pow(1000.0, exp), "kMBTPE".charAt(exp - 1));
     }
 
     @Override
-    public List<String> getSidebar(final Player member) {
-        final Village k = VillageManager.getInstance().getVillageFromPlayer(member);
-        if (k == null) {
-            return new ArrayList<>(Arrays.asList(String.valueOf(this.c("&3&lBal&3: ")) + this.c("&b$&e" + withSuffix((long) KingdomsPlugin.getInstance().econ.getBalance(Bukkit.getOfflinePlayer(member.getUniqueId())))), "", String.valueOf(this.c("&3&lKills&3: &e")) + this.c(String.valueOf(member.getStatistic(Statistic.PLAYER_KILLS))), String.valueOf(this.c("&3&lDeaths&3: &e")) + this.c(new StringBuilder(String.valueOf(member.getStatistic(Statistic.DEATHS))).toString())));
-        }
-        return new ArrayList<>(Arrays.asList(String.valueOf(this.c("&3&lBal&3: ")) + this.c("&b$&e" + withSuffix((long) KingdomsPlugin.getInstance().econ.getBalance(Bukkit.getOfflinePlayer(member.getUniqueId())))), String.valueOf(this.c("&3&lBank: ")) + this.c("&b$&e" + withSuffix((long) k.getBank())), "", String.valueOf(this.c("&3&lKills&3: &e")) + this.c(new StringBuilder(String.valueOf(member.getStatistic(Statistic.PLAYER_KILLS))).toString()), String.valueOf(this.c("&3&lDeaths&3: &e")) + this.c(String.valueOf(member.getStatistic(Statistic.DEATHS)))));
+    public List<String> getSidebar(Player member) {
+        Resident resident = ResidentManager.getInstance().getResident(member);
+
+        return manager.getMessage("sidebar.entries." + (resident.hasVillage() ? "village" : "no-village")).getReplacedTextList(
+                "balance", withSuffix((long) KingdomsPlugin.getInstance().econ.getBalance(member)),
+                "kills", String.valueOf(member.getStatistic(Statistic.PLAYER_KILLS)),
+                "deaths", String.valueOf(member.getStatistic(Statistic.DEATHS)),
+                "villagename", resident.getVillageName(),
+                "villagestate", resident.hasVillage() ? resident.getVillage().getState().getTag() : "",
+                "villagerank", resident.getVillageRank().getTag(resident.getVillage())
+        );
     }
 
-    public String c(final String input) {
+    public String c(String input) {
         return MessageUtils.replaceColorCodes(input);
     }
 
     @Override
-    public String getPrefix(final Player perspective, final Player subject) {
-        if (subject.isOp() && CommandRainbowtag.getInstance().isEnabled(subject.getUniqueId())) {
-            return String.valueOf(this.c(KingdomsPlugin.chat.getPlayerPrefix(subject).toLowerCase())) + ChatColor.RESET.toString() + ChatColor.getByChar(CommandRainbowtag.getInstance().getColours()[RANDOM.nextInt(CommandRainbowtag.getInstance().getColours().length)]) + " ";
+    public String getPrefix(Player perspective, Player subject) {
+        if (subject.isOp() && manager.hasRainbowTag(subject)) {
+            return String.valueOf(c(KingdomsPlugin.chat.getPlayerPrefix(subject).toLowerCase()))
+                    + ChatColor.RESET + manager.getNextRainbowColor(subject) + " ";
         }
         return this.c(KingdomsPlugin.chat.getPlayerPrefix(subject));
     }
 
     @Override
-    public String getSuffix(final Player perspective, final Player subject) {
+    public String getSuffix(Player perspective, Player subject) {
         return null;
     }
 
     @Override
-    public String getUndername(final Player member) {
+    public String getUndername(Player member) {
         return null;
     }
 
     @Override
-    public int getUndernameScore(final Player perspective, final Player subject) {
+    public int getUndernameScore(Player perspective, Player subject) {
         return 0;
     }
 
     @Override
-    public String getTablist(final Player member) {
+    public String getTablist(Player member) {
         return null;
     }
 
     @Override
-    public int getTablistScore(final Player perspective, final Player subject) {
+    public int getTablistScore(Player perspective, Player subject) {
         return 0;
     }
 }

@@ -1,43 +1,51 @@
 package me.crz.minecraft.kingdoms.scoreboard;
 
 
-import me.crz.minecraft.kingdoms.utils.Message;
-import org.bukkit.entity.Player;
-
+import me.crz.minecraft.kingdoms.Base;
+import me.crz.minecraft.kingdoms.ScoreBoard;
+import me.crz.minecraft.kingdoms.command.CommandManager;
 import me.crz.minecraft.kingdoms.scoreboard.commands.CommandRainbowtag;
-import me.crz.minecraft.kingdoms.essentials.command.CommandManager;
 import me.crz.minecraft.kingdoms.scoreboard.commands.CommandScoreboard;
 import me.crz.minecraft.kingdoms.scoreboard.listeners.ScoreboardListeners;
+import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 import java.util.Map;
+import java.util.UUID;
 
-import me.crz.minecraft.kingdoms.Base;
-
-public class ScoreboardManager extends Base {
+public class ScoreboardManager implements ConfigMessages {
+    private static final ChatColor[] RAINBOW = {
+            ChatColor.RED,
+            ChatColor.GOLD,
+            ChatColor.YELLOW,
+            ChatColor.GREEN,
+            ChatColor.DARK_GREEN,
+            ChatColor.DARK_AQUA,
+            ChatColor.BLUE,
+            ChatColor.DARK_BLUE,
+            ChatColor.DARK_PURPLE,
+            ChatColor.LIGHT_PURPLE,
+    };
     private static ScoreboardManager instance;
-    private final Map<UUID, CScoreBoard> scoreboards;
+
+    private Map<UUID, CScoreBoard> scoreboards = new HashMap<>();
     private List<String> customLines;
-    private ScoreboardPolicy scoreboardPolicy;
+    private Map<UUID, Integer> rainbowTags = new HashMap<>();
+
+    private ScoreboardPolicy scoreboardPolicy = new ScoreBoard(this);
     private String title;
-    private long lastUpdate;
-    private String bold;
+    private long lastUpdate = System.currentTimeMillis();
 
     public ScoreboardManager() {
         super();
-        scoreboards = new HashMap<>();
-        lastUpdate = System.currentTimeMillis();
-        bold = String.valueOf(ChatColor.BOLD);
-        title = Message.get("server-name").getText();
+        title = getText("sidebar.title");
         Base.registerListener(new ScoreboardListeners(this));
         Base.registerListener(new ScoreboardAnimation(this));
-        final CommandScoreboard scoreboard = new CommandScoreboard();
-        scoreboard.setManager(this);
-        CommandManager.getInstance().registerCommand(scoreboard);
-        CommandManager.getInstance().registerCommand(new CommandRainbowtag());
+        CommandManager.getInstance().registerCommand(new CommandScoreboard(this));
+        CommandManager.getInstance().registerCommand(new CommandRainbowtag(this));
     }
 
     public void update() {
@@ -45,21 +53,8 @@ public class ScoreboardManager extends Base {
             return;
         }
         lastUpdate = System.currentTimeMillis();
-        for (final CScoreBoard scoreboard : scoreboards.values()) {
+        for (CScoreBoard scoreboard : scoreboards.values()) {
             scoreboard.update();
-        }
-    }
-
-    public void update(final Player p) {
-        if (scoreboards.containsKey(p.getUniqueId())) {
-            scoreboards.get(p.getUniqueId()).update();
-        }
-    }
-
-    @Deprecated
-    public void updateUndername() {
-        for (final CScoreBoard scoreboard : scoreboards.values()) {
-            scoreboard.updateUndername();
         }
     }
 
@@ -71,7 +66,7 @@ public class ScoreboardManager extends Base {
         return scoreboardPolicy;
     }
 
-    public void setScoreboardPolicy(final ScoreboardPolicy scoreboardPolicy) {
+    public void setScoreboardPolicy(ScoreboardPolicy scoreboardPolicy) {
         this.scoreboardPolicy = scoreboardPolicy;
     }
 
@@ -83,9 +78,9 @@ public class ScoreboardManager extends Base {
         return ChatColor.stripColor(title);
     }
 
-    public void setTitle(final String title) {
+    public void setTitle(String title) {
         this.title = title;
-        for (final CScoreBoard scoreboard : scoreboards.values()) {
+        for (CScoreBoard scoreboard : scoreboards.values()) {
             scoreboard.setTitle(title);
         }
     }
@@ -94,7 +89,7 @@ public class ScoreboardManager extends Base {
         return customLines;
     }
 
-    public void addCustomLines(final List<String> customLines) {
+    public void addCustomLines(List<String> customLines) {
         if (customLines == null) {
             this.customLines = null;
         } else if (this.customLines == null) {
@@ -104,7 +99,7 @@ public class ScoreboardManager extends Base {
         }
     }
 
-    public String trimPrefix(final String prefix) {
+    public String trimPrefix(String prefix) {
         if (prefix == null) {
             return null;
         }
@@ -115,9 +110,9 @@ public class ScoreboardManager extends Base {
             return prefix.substring(0, 16);
         }
         String firstPart = prefix.split(" ")[0];
-        final String secondPart = prefix.substring((String.valueOf(firstPart) + " ").length());
-        firstPart = firstPart.substring(0, 16 - (String.valueOf(secondPart) + " ").length());
-        return String.valueOf(firstPart) + " " + secondPart;
+        String secondPart = prefix.substring(firstPart.length() + 1);
+        firstPart = firstPart.substring(0, 16 - 1 - secondPart.length());
+        return firstPart + " " + secondPart;
     }
 
     public static ScoreboardManager getInstance() {
@@ -125,5 +120,53 @@ public class ScoreboardManager extends Base {
             instance = new ScoreboardManager();
         }
         return instance;
+    }
+
+    public Map<UUID, Integer> getRainbowTags() {
+        return rainbowTags;
+    }
+
+    /**
+     * Check whether or not a player has a rainbow tag enabled
+     * @param p The player to check
+     * @return Whether or not it is enabled
+     */
+    public boolean hasRainbowTag(Player p) {
+        return rainbowTags.get(p.getUniqueId()) != null;
+    }
+
+    /**
+     * Toggle the rainbow tag
+     * @param p The player to toggle the tag for
+     * @return <tt>true</tt> if it now enabled; <tt>false</tt> if not
+     */
+    public boolean toggleRainbowTag(Player p) {
+        if (rainbowTags.remove(p.getUniqueId()) == null) {
+            rainbowTags.put(p.getUniqueId(), 0);
+            return true;
+        }
+        return false;
+    }
+
+    public ChatColor getNextRainbowColor(Player player) {
+        if (hasRainbowTag(player)) {
+            int nextIndex = rainbowTags.get(player.getUniqueId()) + 1;
+            if (nextIndex >= RAINBOW.length) {
+                nextIndex = 0;
+            }
+            rainbowTags.put(player.getUniqueId(), nextIndex);
+            return RAINBOW[nextIndex];
+        }
+        return ChatColor.RESET;
+    }
+
+    @Override
+    public String type() {
+        return "";
+    }
+
+    @Override
+    public String name() {
+        return "scoreboard";
     }
 }

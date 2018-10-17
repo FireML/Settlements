@@ -39,3 +39,6 @@ permissions:
   kingdoms.chat.colour:
     description: Gives permission to use colours in chat
     default: op
+  kingdoms.rainbowtag:
+    description: Gives permission to use the rainbowtag command
+    default: op

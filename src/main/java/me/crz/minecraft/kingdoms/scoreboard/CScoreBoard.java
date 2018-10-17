@@ -22,61 +22,63 @@ import java.util.UUID;
 import java.util.Map;
 
 public class CScoreBoard {
-    private static final Map<String, UUID> staticNametags = new HashMap<>();
+    private final ScoreboardManager manager;
+
+    private Map<String, UUID> staticNametags = new HashMap<>();
     private Player p;
     private Scoreboard scoreboard;
     private Objective sidebarObjective;
     private Objective undernameObjective;
     private Objective tablistObjective;
-    private List<String> sidebar;
+    private List<String> sidebar = new ArrayList<>();
 
-    public CScoreBoard(final Player p) {
+    public CScoreBoard(Player p, ScoreboardManager manager) {
         super();
+        this.manager = manager;
         this.p = p;
         scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        sidebar = new ArrayList<>();
-        for (final UUID staticNametag : staticNametags.values()) {
-            this.setStaticNametag0(Bukkit.getPlayer(staticNametag));
+        for (UUID staticNametag : staticNametags.values()) {
+            setStaticNametag0(Bukkit.getPlayer(staticNametag));
         }
-        this.getPlayer().setScoreboard(scoreboard);
+        getPlayer().setScoreboard(scoreboard);
     }
 
     public void update() {
-        this.updateSidebar();
-        this.updateTeams();
-        this.updateUndername();
-        this.updateTablist();
+        updateSidebar();
+        updateTeams();
+        updateUndername();
+        updateTablist();
     }
 
     public void updateSidebar() {
-        if (ScoreboardManager.getInstance().getCustomLines() == null && ScoreboardManager.getInstance().getScoreboardPolicy().getSidebar(p) == null) {
+        if (manager.getCustomLines() == null && manager.getScoreboardPolicy().getSidebar(p) == null) {
             if (sidebarObjective != null) {
                 sidebarObjective.unregister();
                 sidebarObjective = null;
             }
             return;
         }
-        this.setSidebar((ScoreboardManager.getInstance().getCustomLines() == null) ? ScoreboardManager.getInstance().getScoreboardPolicy().getSidebar(p) : ScoreboardManager.getInstance().getCustomLines());
+        setSidebar((manager.getCustomLines() == null) ? manager.getScoreboardPolicy().getSidebar(p) : manager.getCustomLines());
     }
 
     public void updateTeams() {
-        for (final Team team : new ArrayList<>(scoreboard.getTeams())) {
+        for (Team team : new ArrayList<>(scoreboard.getTeams())) {
             if (staticNametags.containsKey(team.getName())) {
                 continue;
             }
-            final Player pl = Bukkit.getPlayer(team.getName().split("-")[1]);
+            Player pl = Bukkit.getPlayer(team.getName().split("-")[1]);
             if (pl == null) {
                 team.unregister();
             } else {
-                final String prefix = ScoreboardManager.getInstance().getScoreboardPolicy().getPrefix(p, pl);
-                final String suffix = ScoreboardManager.getInstance().getScoreboardPolicy().getSuffix(p, pl);
+                String prefix = manager.getScoreboardPolicy().getPrefix(p, pl);
+                String suffix = manager.getScoreboardPolicy().getSuffix(p, pl);
                 if (prefix != null && !team.getPrefix().equals(prefix)) {
-                    team.setPrefix(ScoreboardManager.getInstance().trimPrefix(prefix));
+                    team.setPrefix(manager.trimPrefix(prefix));
                 } else if (prefix == null && team.getPrefix() != null) {
                     team.setPrefix("");
                 }
                 if (suffix != null && !team.getSuffix().equals(suffix)) {
-                    team.setSuffix(ScoreboardManager.getInstance().trimPrefix(suffix));
+                    team.setSuffix(manager.trimPrefix(suffix));
                 } else {
                     if (suffix != null || team.getSuffix() == null) {
                         continue;
@@ -85,17 +87,17 @@ public class CScoreBoard {
                 }
             }
         }
-        for (final Player pl2 : Bukkit.getOnlinePlayers()) {
-            final String teamName = getTeamName(pl2);
+        for (Player pl2 : Bukkit.getOnlinePlayers()) {
+            String teamName = getTeamName(pl2);
             if (scoreboard.getTeam(teamName) == null) {
-                final Team team2 = scoreboard.registerNewTeam(teamName);
-                final String prefix2 = ScoreboardManager.getInstance().getScoreboardPolicy().getPrefix(p, pl2);
-                final String suffix2 = ScoreboardManager.getInstance().getScoreboardPolicy().getSuffix(p, pl2);
+                Team team2 = scoreboard.registerNewTeam(teamName);
+                String prefix2 = manager.getScoreboardPolicy().getPrefix(p, pl2);
+                String suffix2 = manager.getScoreboardPolicy().getSuffix(p, pl2);
                 if (prefix2 != null) {
-                    team2.setPrefix(ScoreboardManager.getInstance().trimPrefix(prefix2));
+                    team2.setPrefix(manager.trimPrefix(prefix2));
                 }
                 if (suffix2 != null) {
-                    team2.setSuffix(ScoreboardManager.getInstance().trimPrefix(suffix2));
+                    team2.setSuffix(manager.trimPrefix(suffix2));
                 }
                 team2.addEntry(pl2.getName());
             }
@@ -103,7 +105,7 @@ public class CScoreBoard {
     }
 
     public void updateUndername() {
-        if (ScoreboardManager.getInstance().getScoreboardPolicy().getUndername(p) == null) {
+        if (manager.getScoreboardPolicy().getUndername(p) == null) {
             if (undernameObjective != null) {
                 undernameObjective.unregister();
                 undernameObjective = null;
@@ -113,12 +115,12 @@ public class CScoreBoard {
         if (undernameObjective == null) {
             (undernameObjective = scoreboard.registerNewObjective("undername", "dummy", "undername")).setDisplaySlot(DisplaySlot.BELOW_NAME);
         }
-        if (!undernameObjective.getDisplayName().equals(ScoreboardManager.getInstance().getScoreboardPolicy().getUndername(p))) {
-            undernameObjective.setDisplayName(ScoreboardManager.getInstance().getScoreboardPolicy().getUndername(p));
+        if (!undernameObjective.getDisplayName().equals(manager.getScoreboardPolicy().getUndername(p))) {
+            undernameObjective.setDisplayName(manager.getScoreboardPolicy().getUndername(p));
         }
-        for (final Player pl : Bukkit.getOnlinePlayers()) {
-            final String name = pl.getName();
-            final int score = ScoreboardManager.getInstance().getScoreboardPolicy().getUndernameScore(p, pl);
+        for (Player pl : Bukkit.getOnlinePlayers()) {
+            String name = pl.getName();
+            int score = manager.getScoreboardPolicy().getUndernameScore(p, pl);
             if (undernameObjective.getScore(name).getScore() != score) {
                 undernameObjective.getScore(name).setScore(score);
             }
@@ -126,7 +128,7 @@ public class CScoreBoard {
     }
 
     public void updateTablist() {
-        if (ScoreboardManager.getInstance().getScoreboardPolicy().getTablist(p) == null) {
+        if (manager.getScoreboardPolicy().getTablist(p) == null) {
             if (tablistObjective != null) {
                 tablistObjective.unregister();
                 tablistObjective = null;
@@ -136,27 +138,27 @@ public class CScoreBoard {
         if (tablistObjective == null) {
             (tablistObjective = scoreboard.registerNewObjective("tablist", "dummy", "tablist")).setDisplaySlot(DisplaySlot.PLAYER_LIST);
         }
-        if (!tablistObjective.getDisplayName().equals(ScoreboardManager.getInstance().getScoreboardPolicy().getTablist(p))) {
-            tablistObjective.setDisplayName(ScoreboardManager.getInstance().getScoreboardPolicy().getTablist(p));
+        if (!tablistObjective.getDisplayName().equals(manager.getScoreboardPolicy().getTablist(p))) {
+            tablistObjective.setDisplayName(manager.getScoreboardPolicy().getTablist(p));
         }
-        for (final Player pl : Bukkit.getOnlinePlayers()) {
-            final String name = pl.getName();
-            final int score = ScoreboardManager.getInstance().getScoreboardPolicy().getTablistScore(p, pl);
+        for (Player pl : Bukkit.getOnlinePlayers()) {
+            String name = pl.getName();
+            int score = manager.getScoreboardPolicy().getTablistScore(p, pl);
             if (tablistObjective.getScore(name).getScore() != score) {
                 tablistObjective.getScore(name).setScore(score);
             }
         }
     }
 
-    public void setSidebar(final List<String> sidebar) {
+    public void setSidebar(List<String> sidebar) {
         if (sidebarObjective == null) {
-            (sidebarObjective = scoreboard.registerNewObjective("title", "dummy", "title")).setDisplayName(ScoreboardManager.getInstance().getTitle());
+            (sidebarObjective = scoreboard.registerNewObjective("title", "dummy", "title")).setDisplayName(manager.getTitle());
             sidebarObjective.setDisplaySlot(DisplaySlot.SIDEBAR);
         }
-        final List<String> set = new ArrayList<>();
+        List<String> set = new ArrayList<>();
         if (sidebar != null && sidebar.size() > 0) {
             int score = 15;
-            for (final String line : sidebar) {
+            for (String line : sidebar) {
                 if (score < 1) {
                     break;
                 }
@@ -168,7 +170,7 @@ public class CScoreBoard {
                 --score;
             }
         }
-        for (final String last : this.sidebar) {
+        for (String last : this.sidebar) {
             if (!set.contains(last)) {
                 scoreboard.resetScores(last);
             }
@@ -191,22 +193,22 @@ public class CScoreBoard {
         tablistObjective = null;
     }
 
-    public void setTitle(final String title) {
+    public void setTitle(String title) {
         if (sidebarObjective != null) {
             sidebarObjective.setDisplayName(title);
         }
     }
 
-    public static void setStaticNametag(final Player player) {
+    public void setStaticNametag(Player player) {
         if (!staticNametags.containsKey(getTeamName(player))) {
             staticNametags.put(getTeamName(player), player.getUniqueId());
         }
-        for (final CScoreBoard scoreboard : ScoreboardManager.getInstance().getScoreboards().values()) {
+        for (CScoreBoard scoreboard : manager.getScoreboards().values()) {
             scoreboard.setStaticNametag0(player);
         }
     }
 
-    private void setStaticNametag0(final Player p) {
+    private void setStaticNametag0(Player p) {
         if (p == null) {
             return;
         }
@@ -215,8 +217,8 @@ public class CScoreBoard {
             team.unregister();
         }
         team = scoreboard.registerNewTeam(getTeamName(p));
-        final String prefix = ScoreboardManager.getInstance().getScoreboardPolicy().getPrefix(null, p);
-        final String suffix = ScoreboardManager.getInstance().getScoreboardPolicy().getSuffix(null, p);
+        String prefix = manager.getScoreboardPolicy().getPrefix(null, p);
+        String suffix = manager.getScoreboardPolicy().getSuffix(null, p);
         if (prefix != null) {
             team.setPrefix(prefix);
         }
@@ -226,13 +228,13 @@ public class CScoreBoard {
         team.addEntry(p.getName());
         if (undernameObjective == null) {
             (undernameObjective = scoreboard.registerNewObjective("undername", "dummy", "undername")).setDisplaySlot(DisplaySlot.BELOW_NAME);
-            undernameObjective.setDisplayName(ScoreboardManager.getInstance().getScoreboardPolicy().getUndername(p));
+            undernameObjective.setDisplayName(manager.getScoreboardPolicy().getUndername(p));
         }
-        undernameObjective.getScore(p.getName()).setScore(ScoreboardManager.getInstance().getScoreboardPolicy().getUndernameScore(null, p));
+        undernameObjective.getScore(p.getName()).setScore(manager.getScoreboardPolicy().getUndernameScore(null, p));
     }
 
-    public static String getTeamName(final Player subject) {
-        final DisplayRank disp = DisplayRank.get(ChatColor.stripColor(MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(subject))).toLowerCase().replace("+", "P"));
+    public static String getTeamName(Player subject) {
+        DisplayRank disp = DisplayRank.get(ChatColor.stripColor(MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(subject))).toLowerCase().replace("+", "P"));
         String sort;
         for (sort = String.valueOf(DisplayRank.values().length - disp.ordinal()); sort.length() < String.valueOf(DisplayRank.values().length).length(); sort = "0" + sort) {
         }
@@ -241,7 +243,7 @@ public class CScoreBoard {
         return displayName;
     }
 
-    public static Map<String, UUID> getStaticNametags() {
+    public Map<String, UUID> getStaticNametags() {
         return staticNametags;
     }
 

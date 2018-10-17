@@ -15,7 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CommandManager extends Base implements CommandExecutor {
-
+    private static CommandManager instance;
     private Map<String, SubCommand> commandMap = new LinkedHashMap<>();
 
     public CommandManager() {
@@ -41,8 +41,8 @@ public class CommandManager extends Base implements CommandExecutor {
             if (cmd == null) {
                 MessageUtils.tell((Player) sender, "&c&lUnknown command!");
             } else if (!cmd.execute((Player) sender, "", alias, args)) {
-                if (Message.get("commands." + cmd.name() + ".usage").exists()) {
-                    MessageUtils.tell((Player) sender, Message.get("commands." + cmd.name() + ".usage"), "alias", alias);
+                if (cmd.getMessage("usage").exists()) {
+                    MessageUtils.tell((Player) sender, cmd.getMessage("usage"), "alias", alias);
                 } else if (cmd.hasUsage()) {
                     MessageUtils.tell((Player) sender, "&c" + cmd.getUsage(alias));
                 } else {
@@ -53,5 +53,12 @@ public class CommandManager extends Base implements CommandExecutor {
             sender.sendMessage(Message.get("error.only-player").getText());
         }
         return true;
+    }
+
+    public static CommandManager getInstance() {
+        if (instance == null) {
+            instance = new CommandManager();
+        }
+        return instance;
     }
 }

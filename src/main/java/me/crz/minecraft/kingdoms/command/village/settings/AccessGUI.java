@@ -64,7 +64,7 @@ public class AccessGUI extends VillageGUI {
                     if (resident.getVillage() != null && resident.getVillageRank().atLeast(VillageRank.CHIEF)) {
                         if (resident.getVillage().getAccess() != access) {
                             resident.getVillage().setAccess(access);
-                            resident.tell(Message.get("commands.village.setaccess.success"), "access", access.getTag());
+                            resident.tell(Message.get("command.village.setaccess.success"), "access", access.getTag());
                             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
                             gui.build(p);
                             return true;
