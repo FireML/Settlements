@@ -255,7 +255,7 @@ public class ChatManager extends Base {
         );
         for (String sUUID : Data.socialSpy) {
             Player pl = Bukkit.getPlayer(UUID.fromString(sUUID));
-            if (pl != null && pl.isOnline()) {
+            if (pl != null && pl != sender && pl != target && pl.isOnline()) {
                 MessageUtils.tell(pl, socialSpy);
             }
         }
