@@ -29,8 +29,8 @@ public class PlotUseGui extends VillageGUI {
         for (Use u : Use.values()) {
             gui.addItem(new ClickableItem() {
                 public ItemStack getItem(Player p) {
-                    if (ResidentManager.getInstance().doesResidentHaveVillage(p)) {
-                        OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                    OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                    if (land != null) {
                         PlotBuildState state = land.getUseState(u);
                         return u.getItem().setName(getMessage("entry.title").getReplacedText(
                                 "flag", u.getTag(),
@@ -44,11 +44,8 @@ public class PlotUseGui extends VillageGUI {
                 }
 
                 public boolean click(Player p, ClickType clickType) {
-                    if (!ResidentManager.getInstance().doesResidentHaveVillage(p)) {
-                        return false;
-                    }
                     OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
-                    if (land.isPlotOwner(p)) {
+                    if (land != null && land.isPlotOwner(p)) {
                         PlotBuildState next = PlotBuildState.next(land.getUseState(u));
                         land.setUseState(u, next);
                         MessageUtils.tell(p, Message.get("command.village.plot.use.success"),
@@ -70,7 +67,8 @@ public class PlotUseGui extends VillageGUI {
             gui.addItem(slot++, new ClickableItem() {
                 @Override
                 public ItemStack getItem(Player p) {
-                    if (ResidentManager.getInstance().doesResidentHaveVillage(p)) {
+                    OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                    if (land != null && land.isPlotOwner(p)) {
                         return state.getItem()
                                 .setName(getMessage("toggle-all").getReplacedText("state", state.getTag()))
                                 .setLore(getMessage("toggle-all").getReplacedTextList("state", state.getTag()).stream().skip(1).collect(Collectors.toList()))
@@ -81,11 +79,8 @@ public class PlotUseGui extends VillageGUI {
 
                 @Override
                 public boolean click(Player p, ClickType clickType) {
-                    if (!ResidentManager.getInstance().doesResidentHaveVillage(p)) {
-                        return false;
-                    }
                     OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
-                    if (land.isPlotOwner(p)) {
+                    if (land != null && land.isPlotOwner(p)) {
                         for (Use u : Use.values()) {
                             land.setUseState(u, state);
                         }

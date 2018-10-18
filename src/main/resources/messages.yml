@@ -181,29 +181,36 @@ gui:
       public: Everyone can tp to home but requires invite to join
       ally: Allows allies to teleport to home
       private: Allows only members to teleport to home
+  build:
+    title: "&3&lSettlement Build Settings"
+    set-state: "&7&lClick to allow building of &b&l{state}"
+    selected-state: "&e&lBuilding is currently set to &b&l{state}"
   plot-use:
     title: "&3&lPlot Use Settings"
-    back: "&c&lBack To Settings"
-    toggle-all: "&7&lClick to toggle all to &b&l{{state}"
+    toggle-all: "&7&lClick to toggle all to &b&l{state}"
     entry:
       title: "&b&l{flag}"
       lore: "&7&lState: &b&l{state}"
+  plot-build:
+    title: "&3&lPlot Build Settings"
+    set-state: "&7&lClick to allow building of &b&l{state}"
+    selected-state: "&e&lBuilding is currently set to &b&l{state}"
   teleporters:
-    title: "&2&lTeleporters"
+    title: "&2&lSettlement Teleporters"
     locked: "&cLocked"
     private: "&e&lPrivate Warps"
     kingdom-required: "&c&lYou require a level &610 Kingdom&c&l to use this!"
     kingdoms-world: "&e&lKingdoms World"
     village-home: "&e&lVillage Home"
   use:
-    title: "&3&lUse Settings"
+    title: "&3&lSettlement Use Settings"
     back: "&c&lBack To Settings"
-    toggle-all: "&7&lClick to toggle all to &b&l{{state}"
+    toggle-all: "&7&lClick to toggle all to &b&l{state}"
     entry:
       title: "&b&l{flag}"
       lore: "&7&lState: &b&l{state}"
   vault:
-    title: "&1&lVault"
+    title: "&1&lSettlement Vault"
     success-deposit: "&6&l{player} &7&lhas deposited:"
     fail-deposit: "&c&lFailed Deposited Items: {reason}"
     max-level-reached: "&r&c&lMax Level Reached"

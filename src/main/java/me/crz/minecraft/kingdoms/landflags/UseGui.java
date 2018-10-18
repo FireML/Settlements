@@ -7,10 +7,12 @@ import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.command.village.settings.SettingsGUI;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.BuildState;
+import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageGUI;
@@ -33,8 +35,8 @@ public class UseGui extends VillageGUI {
         for (Use u : Use.values()) {
             gui.addItem(new ClickableItem() {
                 public ItemStack getItem(Player p) {
-                    if (ResidentManager.getInstance().doesResidentHaveVillage(p)) {
-                        Village village = VillageManager.getInstance().getVillageFromPlayer(p);
+                    Village village = VillageManager.getInstance().getVillageFromPlayer(p);
+                    if (village != null) {
                         BuildState state = village.getUseState(u);
                         return u.getItem().setName(getMessage("entry.title").getReplacedText(
                                 "flag", u.getTag(),
@@ -48,18 +50,15 @@ public class UseGui extends VillageGUI {
                 }
 
                 public boolean click(Player p, ClickType clickType) {
-                    if (!ResidentManager.getInstance().doesResidentHaveVillage(p)) {
-                        return false;
-                    }
-                    Village village = VillageManager.getInstance().getVillageFromPlayer(p);
-                    if (village.getChief().equals(p.getUniqueId())) {
-                        BuildState next = BuildState.next(village.getUseState(u));
-                        village.setUseState(u, next);
+                    Resident res = ResidentManager.getInstance().getResident(p);
+                    if (res.hasVillage() && res.getVillageRank().atLeast(VillageRank.CHIEF)) {
+                        BuildState next = BuildState.next(res.getVillage().getUseState(u));
+                        res.getVillage().setUseState(u, next);
                         MessageUtils.tell(p, Message.get("command.village.use.success"),
                                 "flag", u.getTag(),
                                 "state", next.getTag()
                         );
-                        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
+                        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
                         gui.build(p);
                         return true;
                     }
@@ -85,18 +84,15 @@ public class UseGui extends VillageGUI {
 
                 @Override
                 public boolean click(Player p, ClickType clickType) {
-                    if (!ResidentManager.getInstance().doesResidentHaveVillage(p)) {
-                        return false;
-                    }
-                    Village village = VillageManager.getInstance().getVillageFromPlayer(p);
-                    if (village.getChief().equals(p.getUniqueId())) {
+                    Resident res = ResidentManager.getInstance().getResident(p);
+                    if (res.hasVillage() && res.getVillageRank().atLeast(VillageRank.CHIEF)) {
                         for (Use u : Use.values()) {
-                            village.setUseState(u, state);
+                            res.getVillage().setUseState(u, state);
                         }
                         MessageUtils.tell(p, Message.get("command.village.use.success-all"),
                                 "state", state.getTag()
                         );
-                        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
+                        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
                         gui.build(p);
                         return true;
                     }

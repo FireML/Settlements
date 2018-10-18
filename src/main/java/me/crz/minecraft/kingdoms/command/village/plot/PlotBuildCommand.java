@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.command.village.VillagePlotCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.landflags.PlotBuildGui;
 import me.crz.minecraft.kingdoms.landflags.PlotBuildState;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -23,8 +24,8 @@ public class PlotBuildCommand extends VillageSubCommand {
             res.tell(getError("not-your-village"), "state", res.getVillage().getState().getTag());
         } else if (!land.isPlotOwner(res.getUUID())) {
             res.tell(getError("not-your-plot"));
-        } else if (args.length < 2) {
-            return false;
+        } else if (args.length < 1) {
+            new PlotBuildGui().open(res.getPlayer());
         } else {
             try {
                 PlotBuildState newState = PlotBuildState.valueOf(args[0].toUpperCase());
