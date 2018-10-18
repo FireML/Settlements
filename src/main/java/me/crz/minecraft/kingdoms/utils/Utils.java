@@ -73,6 +73,13 @@ public class Utils {
         return 0;
     }
 
+    public static int getOutpostCreationCost() {
+        if (ConfigManager.getInstance().getConfig().isInt("voutpost-creation-cost")) {
+            return ConfigManager.getInstance().getConfig().getInt("outpost-creation-cost");
+        }
+        return 0;
+    }
+
     public static boolean playerIsChief(Player player, Village village) {
         return village != null && village.getChief().equals(player.getUniqueId());
     }

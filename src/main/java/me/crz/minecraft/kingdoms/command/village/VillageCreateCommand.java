@@ -39,7 +39,7 @@ public class VillageCreateCommand extends VillageSubCommand {
         } else {
             if (Utils.getVillageCreationCost() != 0) {
                 if (Base.getEconomy().getBalance(player.getPlayer()) < Utils.getVillageCreationCost()) {
-                    MessageUtils.tell(player, "&c&lYou don't have the required &r&6&l" + Utils.getVillageCreationCost() + "$&r&c&l to make a village!", null, null);
+                    MessageUtils.tell(player, getError("not-enough-money"), "amount", String.valueOf(Utils.getVillageCreationCost()));
                     return true;
                 }
                 EconomyResponse r = Base.getEconomy().withdrawPlayer(player.getPlayer(), (double) Utils.getVillageCreationCost());

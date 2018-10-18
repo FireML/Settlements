@@ -10,6 +10,7 @@ storage:
 resident-cache-duration: 120 # in seconds
 disabled-claiming-worlds: []
 village-creation-cost: 0
+outpost-creation-cost: 0
 max-village-size: 30
 kingdoms-world: "kingdom"
 only-lock-in-settlement: true

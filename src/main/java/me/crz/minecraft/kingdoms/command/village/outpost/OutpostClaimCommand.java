@@ -1,7 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village.outpost;
 
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
-import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -31,6 +30,12 @@ public class OutpostClaimCommand extends VillageSubCommand {
             resident.tell(getMessage("max-outpost-chunks"), "max", Integer.toString(maxClaimAllowed));
             return true;
         }
+
+        if (resident.getVillage().getBank() < Utils.getOutpostCreationCost()) {
+            resident.tell(getError("not-enough-money"), "amount", String.valueOf(Utils.getVillageCreationCost()));
+            return true;
+        }
+
         OwnedLand land = LandManager.getInstance().getLand(resident.getPlayer().getLocation());
         if (land != null) {
             if (land.isOwnedBy(resident.getVillage())) {
@@ -49,13 +54,16 @@ public class OutpostClaimCommand extends VillageSubCommand {
                     return true;
                 }
             }
-            OwnedLand outpost = LandManager.getInstance().claimOutpost(resident.getPlayer().getLocation(), resident.getVillage(), args[0]);
-            MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("success"),
-                    "player", resident.getName(),
-                    "name", args[1],
-                    "x", String.valueOf(resident.getPlayer().getLocation().getBlockX()),
-                    "z", String.valueOf(resident.getPlayer().getLocation().getBlockZ()));
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(outpost));
+            if (LandManager.getInstance().claimOutpost(resident.getPlayer().getLocation(), resident.getVillage(), args[0]) != null) {
+                MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("success"),
+                        "cost", String.valueOf(Utils.getOutpostCreationCost()),
+                        "player", resident.getName(),
+                        "name", args[1],
+                        "x", String.valueOf(resident.getPlayer().getLocation().getBlockX()),
+                        "z", String.valueOf(resident.getPlayer().getLocation().getBlockZ()));
+            } else {
+                resident.tell("&cAn error occured while claiming the outpost!");
+            }
         }
         return true;
     }

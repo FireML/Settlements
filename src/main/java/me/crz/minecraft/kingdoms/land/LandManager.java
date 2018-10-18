@@ -199,11 +199,18 @@ public class LandManager {
     }
 
     public OwnedLand claimOutpost(Location location, Village village, String name) {
+        if (village.getBank() < Utils.getOutpostCreationCost()) {
+            return null;
+        }
         OwnedLand land = this.claimLand(location, village);
         land.setOutpost(name);
         cacheLand(land);
         village.addOutpostHome(name, location);
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
+        village.setBank(village.getBank() - Utils.getOutpostCreationCost());
+        Utils.runAsync(() -> {
+            DatabaseManager.getInstance().saveVillage(village);
+            DatabaseManager.getInstance().saveLand(land);
+        });
         return land;
     }
 
