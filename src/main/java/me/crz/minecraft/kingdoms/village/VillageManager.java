@@ -86,6 +86,9 @@ public class VillageManager {
     public void deleteVillage(Village village) {
         villages.remove(village.getName().toLowerCase());
         LandManager.getInstance().unclaimLand(village);
+        MessageUtils.broadcast(Message.get("broadcast.village-deletion"),
+                "name", village.getName(),
+                "state", village.getState().getTag());
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().deleteVillage(village);
             for (IdObject ally : village.getAllies()) {

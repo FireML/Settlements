@@ -28,6 +28,8 @@ error:
   village-required: "&c&lYou can only do this after you joined a settlement!"
   free-required: "&c&lYou can only do this if you are not part of a settlement yet!"
   only-player: "&cMust be ran by player."
+broadcast:
+  village-deletion: "&c{state} {name} has fallen!"
 scoreboard:
   sidebar:
     title: "&b&lServer&f&lName"
@@ -283,6 +285,7 @@ command:
       description: Claim a chunk of land
     create:
       success: "&a&lSUCCESS &r&7created a new settlement."
+      broadcast: "&e{player} has made a settlement called {name}!"
       description: Create a new village.
     disband:
       confirm: "&c&lPlease do /{command} to confirm the &r&e&ldisbanding&r&c&l of your village."

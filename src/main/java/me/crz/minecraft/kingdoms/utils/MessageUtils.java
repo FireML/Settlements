@@ -150,4 +150,11 @@ public class MessageUtils extends Base {
     public static String yesOrNo(boolean b) {
         return b ? "Yes" : "No";
     }
+
+    public static void broadcast(Message message, String... replacements) {
+        BaseComponent[] components = message.getReplacedComponents(replacements);
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            tell(player, components);
+        }
+    }
 }

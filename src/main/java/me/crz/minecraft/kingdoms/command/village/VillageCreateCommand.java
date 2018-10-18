@@ -53,6 +53,11 @@ public class VillageCreateCommand extends VillageSubCommand {
             player.setVillage(village);
             player.setVillageRank(VillageRank.CHIEF);
             Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(player));
+
+            MessageUtils.broadcast(getMessage("broadcast"),
+                    "name", village.getName(),
+                    "state", village.getState().getTag(),
+                    "player", player.getName());
             MessageUtils.tell(player, getMessage("success"), "name", village.getName());
         }
         return true;
