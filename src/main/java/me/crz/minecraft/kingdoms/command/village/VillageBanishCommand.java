@@ -8,7 +8,10 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.stream.Collectors;
 
@@ -48,12 +51,21 @@ public class VillageBanishCommand extends VillageSubCommand {
                         resident.tell(getError("player-not-found"), "name", args[0]);
                         return;
                     }
+                    resident.getVillage().addBanishedResident(res);
+                    Utils.runSync(() -> {
+                        Player target = res.getPlayer();
+                        if (target != null) {
+                            Village village = VillageManager.getInstance().getVillageAt(target.getLocation());
+                            if (resident.getVillage().equals(village)) {
+                                target.teleport(target.getLocation().getWorld().getSpawnLocation());
+                            }
+                        }
+                    });
+                    MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("banished"), "player", res.getName());
                     if (res.getVillage().equals(resident.getVillage())) {
                         VillageManager.getInstance().leaveVillage(res);
                     }
-                    resident.getVillage().addBanishedResident(res);
                     DatabaseManager.getInstance().saveVillage(resident.getVillage());
-                    MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("banished"), "player", res.getName());
                 });
                 return true;
             }

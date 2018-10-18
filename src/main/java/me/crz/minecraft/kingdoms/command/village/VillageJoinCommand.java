@@ -31,6 +31,8 @@ public class VillageJoinCommand extends VillageSubCommand {
             resident.tell(getMessage("no-invite"));
         } else if (joinVillage.isFull()) {
             resident.tell(getMessage("is-full"), "state", joinVillage.getState().getTag(), "name", joinVillage.getName());
+        }else if (joinVillage.isBanished(resident.getUUID())) {
+            resident.tell(getMessage("banished"), "state", joinVillage.getState().getTag(), "name", joinVillage.getName());
         } else {
             resident.setVillage(joinVillage);
             resident.setVillageRank(VillageRank.RESIDENT);

@@ -140,6 +140,21 @@ public class Utils {
         return null;
     }
 
+    /**
+     * Make sure to run something on the primary server thread.
+     * A new task is started if this is not the primary thread, if not the main one is used!
+     * @param run What to run
+     * @return The BukkitTask that was started or null if we are already on the main thread
+     */
+    public static BukkitTask runSync(Runnable run) {
+        if (!Bukkit.isPrimaryThread()) {
+            return Bukkit.getScheduler().runTask(KingdomsPlugin.getInstance(), run);
+        } else {
+            run.run();
+        }
+        return null;
+    }
+
     public static UUID parseUuid(String uuidStr) {
         try {
             return UUID.fromString(uuidStr);

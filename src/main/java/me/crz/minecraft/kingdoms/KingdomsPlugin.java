@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms;
 
 import com.griefcraft.lwc.LWC;
+import me.crz.minecraft.kingdoms.banish.BanishListener;
 import me.crz.minecraft.kingdoms.integration.LWCIntegration;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import org.bukkit.event.EventHandler;
@@ -83,6 +84,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             }
             this.loadManagers();
             this.getLandPerks().runTimer();
+            this.getServer().getPluginManager().registerEvents(new BanishListener(), this);
             this.getServer().getPluginManager().registerEvents(new VaultListener(), this);
             this.getServer().getPluginManager().registerEvents(new VillageListener(), this);
             this.getServer().getPluginManager().registerEvents(new ChatManager(), this);

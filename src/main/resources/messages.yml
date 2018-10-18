@@ -28,6 +28,13 @@ error:
   village-required: "&c&lYou can only do this after you joined a settlement!"
   free-required: "&c&lYou can only do this if you are not part of a settlement yet!"
   only-player: "&cMust be ran by player."
+banished:
+  move:
+    title: "&cTurn Around"
+    subtitle: "&cYou're banished from this settlement!"
+  teleport:
+    title: "&cCan't teleport"
+    subtitle: "&cYou're banished from this settlement!"
 broadcast:
   village-deletion: "&c{state} {name} has fallen!"
 scoreboard:
@@ -382,6 +389,7 @@ command:
       success: "&a&lSUCCESS &r&7You have joined {state} {name}."
       new-resident: "&e&lALERT &r&e{player}&7 has joined the settlement!"
       is-full: "&e&lALERT &r&7The {state} {name} is full."
+      banished: "&cYou are banished from {state} {name}!"
       description: Join a village
     kick:
       cant-kick-yourself: "&cYou cannot kick yourself!"
