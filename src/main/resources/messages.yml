@@ -288,6 +288,25 @@ command:
       confirm: "&c&lPlease do /{command} to confirm the &r&e&ldisbanding&r&c&l of your village."
       success: "&e&lALERT &r&7Your {chief} has deleted your {state}."
       description: Disbands the current village
+    here:
+      general: |-
+        &8--------&c&l{name}&r&8--------
+        &a&lState: &r&7{state}
+        &6&lAccess: &r&7{access}
+        &6&lLevel: &r&7{level}
+        &6&lBank: &r&7{bank}
+        &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxOutposts}
+        &6&lLand: &r&7{land}&r&e/&r&7{maxLand}
+        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobSpawning}&r&7 |  Firespread: &r&e{fireSpread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &b&lResidents:
+        {residents}
+      residents:
+        rank: "&6&l{rank}:&r {residents}"
+        separator: "&7, "
+        online: "&a"
+        offline: "&c"
+        entry: "{online}{name}"
+      description: "Shows information on the village you are stending in "
     home:
       own-no-home: "&c&lYour village doesn't have a home ask your {chief} to set one!"
       no-home: "&c&lThat {state} doesn't have a home!"

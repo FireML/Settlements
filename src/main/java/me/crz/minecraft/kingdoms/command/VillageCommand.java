@@ -8,6 +8,7 @@ import me.crz.minecraft.kingdoms.command.village.VillageClaimCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageCreateCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageDepositCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageDisbandCommand;
+import me.crz.minecraft.kingdoms.command.village.VillageHereCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageHomeCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageInviteCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageJoinCommand;
@@ -46,6 +47,7 @@ public class VillageCommand extends SubCommand {
         registerCommand(new VillageCreateCommand(this));
         registerCommand(new VillageDepositCommand(this));
         registerCommand(new VillageDisbandCommand(this));
+        registerCommand(new VillageHereCommand(this));
         registerCommand(new VillageHomeCommand(this));
         registerCommand(new VillageInviteCommand(this));
         registerCommand(new VillageJoinCommand(this));

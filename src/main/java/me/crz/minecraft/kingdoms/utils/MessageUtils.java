@@ -146,4 +146,8 @@ public class MessageUtils extends Base {
         String colorOne = ChatColor.getLastColors(replacedText);
         return replacedText.replace(colorOne, colorTwo).replace("{colorTwo}", colorOne);
     }
+
+    public static String yesOrNo(boolean b) {
+        return b ? "Yes" : "No";
+    }
 }
