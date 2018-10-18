@@ -131,6 +131,10 @@
             <id>minedown-repo</id>
             <url>https://repo.minebench.de</url>
         </repository>
+        <repository>
+            <id>lwc-repo</id>
+            <url>http://repo.dmulloy2.net/nexus/repository/snapshots/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -193,6 +197,71 @@
             <artifactId>VaultAPI</artifactId>
             <version>1.6</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.griefcraft</groupId>
+            <artifactId>lwc</artifactId>
+            <version>4.5.0-SNAPSHOT</version>
+            <scope>provided</scope>
+            <!-- dmulloy2's LWC's maven artifact is a bit annoying to use... -->
+            <exclusions>
+                <exclusion>
+                    <groupId>BOSEconomy</groupId>
+                    <artifactId>BOSEconomy</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>CreeperHeal</groupId>
+                    <artifactId>CreeperHeal</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>Essentials</groupId>
+                    <artifactId>Essentials</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>Heroes</groupId>
+                    <artifactId>Heroes</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>iConomy5</groupId>
+                    <artifactId>iConomy5</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>iConomy6</groupId>
+                    <artifactId>iConomy6</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>MobArena</groupId>
+                    <artifactId>MobArena</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>PermissionsBukkit</groupId>
+                    <artifactId>PermissionsBukkit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>PermissionsEx</groupId>
+                    <artifactId>PermissionsEx</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>Showcase</groupId>
+                    <artifactId>Showcase</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>Towny</groupId>
+                    <artifactId>Towny</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>Towny_Advanced</groupId>
+                    <artifactId>Towny_Advanced</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>WorldEdit</groupId>
+                    <artifactId>WorldEdit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>WorldGuard</groupId>
+                    <artifactId>WorldGuard</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!--
         <dependency>

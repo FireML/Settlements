@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms;
 
+import com.griefcraft.lwc.LWC;
+import me.crz.minecraft.kingdoms.integration.LWCIntegration;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -38,6 +40,12 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     public static Data data;
     private LandPerks lPerks;
     public Economy econ = null;
+
+    /**
+     * LWC integration
+     */
+    private LWCIntegration lwcIntegration = null;
+
     public boolean emgcy = false;
     public static Chat chat;
     public UtilChat utilChat = new UtilChat();
@@ -58,6 +66,11 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         this.getServer().getPluginManager().registerEvents(this, this);
         this.checkDataFolder();
         data = new Data();
+        if (getServer().getPluginManager().isPluginEnabled("LWC")) {
+            lwcIntegration = new LWCIntegration(LWC.getInstance());
+
+            getLogger().log(Level.INFO, "Hooked into LWC " + lwcIntegration.getLWC().getPlugin().getDescription().getVersion() + "!");
+        }
         if (data.load(this.getDataFolder())) {
             ConfigManager.getInstance();
             kingdomsWorld = getConfig().getString("kingdoms-world");
@@ -175,5 +188,9 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     public String getKingdomsWorld() {
         return kingdomsWorld;
+    }
+
+    public LWCIntegration getLWCIntegration() {
+        return lwcIntegration;
     }
 }

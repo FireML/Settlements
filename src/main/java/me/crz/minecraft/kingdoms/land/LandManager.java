@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.land;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -14,11 +15,13 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.landflags.PlotBuildState;
 import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.Chunk;
@@ -129,17 +132,36 @@ public class LandManager {
             land.setOwnerVillage(null);
         }
         Utils.runAsync(() -> {
+            if (KingdomsPlugin.getInstance().getConfig().getBoolean("remove-locks-on-unclaim")) {
+                removeLocks(lands);
+            }
             DatabaseManager.getInstance().unclaimLand(lands);
             DatabaseManager.getInstance().saveVillages(saveVillages);
         });
     }
 
     public void unclaimLand(Village village) {
-        for (SimpleChunkLocation claim : villageLands.get(village.getId())) {
+        List<SimpleChunkLocation> claims = new ArrayList<>(villageLands.get(village.getId()));
+        for (SimpleChunkLocation claim : claims) {
             landTable.remove(claim.getWorld(), claim.getSimpleKey());
         }
         villageLands.removeAll(village.getId());
-        Utils.runAsync(() -> DatabaseManager.getInstance().unclaimLand(village));
+        Utils.runAsync(() -> {
+            if (KingdomsPlugin.getInstance().getConfig().getBoolean("locks.remove-on-unclaim")) {
+                removeLocks(claims);
+            }
+            DatabaseManager.getInstance().unclaimLand(village);
+        });
+    }
+
+    private void removeLocks(OwnedLand... lands) {
+        removeLocks(Arrays.stream(lands).map(OwnedLand::getLocation).collect(Collectors.toSet()));
+    }
+
+    private void removeLocks(Collection<SimpleChunkLocation> claims) {
+        if (KingdomsPlugin.getInstance().getLWCIntegration() != null) {
+            KingdomsPlugin.getInstance().getLWCIntegration().removeChunkProtections(claims);
+        }
     }
 
     public static LandManager getInstance() {

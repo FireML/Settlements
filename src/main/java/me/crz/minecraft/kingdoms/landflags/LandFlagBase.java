@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.landflags;
 
+import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import me.crz.minecraft.kingdoms.village.VillageState;
@@ -18,183 +19,132 @@ import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.utils.TitleBuilder;
 import me.crz.minecraft.kingdoms.Base;
 
-public class LandFlagBase extends Base {
-    private TitleBuilder pvpMessage;
+import java.util.UUID;
 
-    public LandFlagBase() {
-        super();
-        (pvpMessage = new TitleBuilder()).withActionbar(this.replaceColourCodes("&c&lPvp isn't enabled here!"));
-    }
+public interface LandFlagBase extends ConfigMessages {
 
-    public Pair<Boolean, String> canUse(Player user, Use use, Location loc) {
-        if (user.isOp()) {
-            return new Pair<>(true, "");
-        }
-        if (!this.isLandClaimed(loc)) {
+    default Pair<Boolean, String> canUse(Player user, Use use, Location loc) {
+        if (user.hasPermission("kingdoms.staff")) {
             return new Pair<>(true, "");
         }
         OwnedLand land = LandManager.getInstance().getLand(loc);
-        Village village = land.getOwnerVillage();
-        if (land.isPlot()) {
-            PlotBuildState state = land.getUseState(use);
-            if (land.isPlotOwner(user)) {
-                return new Pair<>(true, "");
-            }
-            if (state.equals(PlotBuildState.PUBLIC)) {
-                return new Pair<>(true, "");
-            }
-            if (state.equals(PlotBuildState.RESIDENTS)) {
-                return this.getCanBuildResidents(user, land) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7This land is owned by &e" + village.getName() + "&7.");
-            }
-            if (state.equals(PlotBuildState.OFFICERS)) {
-                return this.getCanBuildOfficer(user, land) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7This land is in &eofficer only &7mode.");
-            }
-            if (state.equals(PlotBuildState.ALLY)) {
-                return this.getCanBuildAlly(user, land) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7You are not allied to &e" + village.getName() + "&7.");
-            }
-            if (state.equals(PlotBuildState.PRIVATE)) {
-                return land.isPlotOwner(user) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7Only the &ePlot owner&7 can interact here.");
-            }
-            if (state.equals(PlotBuildState.FRIENDS)) {
-                return this.getCanBuildFriends(user, land) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7Only the &ePlot owner's friends&7 can interact here.");
-            }
-        } else {
-            BuildState state2 = village.getUseState(use);
-            if (state2.equals(BuildState.RESIDENTS)) {
-                return this.getCanBuildResidents(user, land) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7This land is owned by &e" + village.getName() + "&7.");
-            }
-            if (state2.equals(BuildState.OFFICERS)) {
-                return this.getCanBuildOfficer(user, land) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7This land is in &eofficer only &7mode.");
-            }
-            if (state2.equals(BuildState.ALLY)) {
-                return this.getCanBuildAlly(user, land) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7You are not allied to &e" + village.getName() + "&7.");
-            }
-            if (state2.equals(BuildState.PUBLIC)) {
-                return new Pair<>(true, "");
-            }
+        Pair<Boolean, String> r = getCanBuild(user, land, land.getUseState(use), "use");
+        if (r == null) {
+            r = getCanBuild(user, land.getOwnerVillage(), land.getOwnerVillage().getUseState(use), "use");
+        }
+        if (r != null) {
+            return r;
         }
         return new Pair<>(true, "&cUnknown");
     }
 
-    public Pair<Boolean, String> getCanBuildAll(Player building, Location loc) {
-        if (building.isOp()) {
-            return new Pair<>(true, "");
-        }
-        if (!this.isLandClaimed(loc)) {
+    default Pair<Boolean, String> getCanBuildAll(Player building, Location loc) {
+        if (building.hasPermission("kingdoms.staff")) {
             return new Pair<>(true, "");
         }
         OwnedLand land = LandManager.getInstance().getLand(loc);
-        if (land.isPlot()) {
-            if (land.isPlotOwner(building)) {
-                return new Pair<>(true, "");
-            }
-            if (land.getBuildState().equals(PlotBuildState.PUBLIC)) {
-                return new Pair<>(true, "");
-            }
-            if (land.getBuildState().equals(PlotBuildState.RESIDENTS)) {
-                return this.getCanBuildResidents(building, land) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7This land is owned by &e" + land.getOwnerVillage().getName() + "&7.");
-            }
-            if (land.getBuildState().equals(PlotBuildState.OFFICERS)) {
-                return this.getCanBuildOfficer(building, land) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7This land is in &eofficer only &7mode.");
-            }
-            if (land.getBuildState().equals(PlotBuildState.ALLY)) {
-                return this.getCanBuildAlly(building, land) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7You are not allied to &e" + land.getOwnerVillage() + "&7.");
-            }
-            if (land.getBuildState().equals(PlotBuildState.PRIVATE)) {
-                return land.isPlotOwner(building) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7Only the &ePlot owner&7 can build here.");
-            }
-            if (land.getBuildState().equals(PlotBuildState.FRIENDS)) {
-                return this.getCanBuildFriends(building, land) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7Only the &ePlot owner's friends&7 can build here.");
-            }
+        Pair<Boolean, String> r = getCanBuild(building, land, land.getBuildState(), "build");
+        if (r == null) {
+            r = getCanBuild(building, land.getOwnerVillage(), land.getOwnerVillage().getBuildState(), "build");
         }
-        Village village = land.getOwnerVillage();
-        if (village.getBuildState().equals(BuildState.RESIDENTS)) {
-            return this.getCanBuildResidents(building, land) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7This land is owned by &e" + village.getName() + "&7.");
-        }
-        if (village.getBuildState().equals(BuildState.OFFICERS)) {
-            return this.getCanBuildOfficer(building, land) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7This land is in &eofficer only &7mode.");
-        }
-        if (village.getBuildState().equals(BuildState.ALLY)) {
-            return this.getCanBuildAlly(building, land) ? new Pair<>(true, "") : new Pair<>(false, "&e&lALERT &r&7You are not allied to &e" + village.getName() + "&7.");
-        }
-        if (village.getBuildState().equals(BuildState.PUBLIC)) {
-            return new Pair<>(true, "");
+        if (r != null) {
+            return r;
         }
         return new Pair<>(true, "&cUnknown");
     }
 
-    private boolean getCanBuildFriends(Player building, OwnedLand land) {
-        if (building.isOp()) {
-            return true;
+    default Pair<Boolean, String> getCanBuild(Player building, OwnedLand land, PlotBuildState state, String type) {
+        if (!land.isPlot()) {
+            return null;
         }
-        if (land == null) {
-            return true;
+        if (land.isPlotOwner(building) || land.getOwnerVillage().isChief(building)) {
+            return new Pair<>(true, "");
         }
-        Resident res = ResidentManager.getInstance().getResident(building);
-        Resident owner = ResidentManager.getInstance().getResident(land.getPlotOwner());
-        return land.getOwnerVillage().getChief().equals(building.getUniqueId()) || owner.getFriends().contains(res.getUUID());
+
+        Resident res;
+        Resident owner = null;
+        boolean allowed = false;
+        switch (state) {
+            case PUBLIC:
+                allowed = true;
+                break;
+            case FRIENDS:
+                owner = ResidentManager.getInstance().getResident(land.getPlotOwner());
+                allowed = owner.getFriends().contains(building.getUniqueId());
+                break;
+            case ALLY:
+                res = ResidentManager.getInstance().getResident(building);
+                allowed = res.hasVillage() && land.getOwnerVillage().isAlly(res.getVillage());
+                break;
+            case OFFICERS:
+                res = ResidentManager.getInstance().getResident(building);
+                allowed = land.getOwnerVillage().equals(res.getVillage()) && res.getVillageRank().atLeast(VillageRank.BUILDER);
+                break;
+            case RESIDENTS:
+                res = ResidentManager.getInstance().getResident(building);
+                allowed = land.getOwnerVillage().equals(res.getVillage());
+                break;
+            case PRIVATE:
+                allowed = land.isPlotOwner(building);
+                break;
+            default:
+                return null;
+        }
+        if (allowed) {
+            return new Pair<>(true, "");
+        }
+        return new Pair<>(false, getMessage("state." + type + "." + state.getKey()).getReplacedText(
+                "owner", owner != null ? owner.getName() : land.getPlotOwner().toString(),
+                "village", land.getOwnerVillage().getName(),
+                "state", land.getOwnerVillage().getState().getTag()
+        ));
     }
 
-    public boolean getCanBuildResidents(Player building, OwnedLand land) {
-        if (building.isOp()) {
-            return true;
+    default Pair<Boolean, String> getCanBuild(Player building, Village village, BuildState state, String type) {
+        if (village.isChief(building)) {
+            return new Pair<>(true, "");
         }
-        if (land == null) {
-            return true;
+
+        Resident res;
+        boolean allowed = false;
+        switch (state) {
+            case PUBLIC:
+                return new Pair<>(true, "");
+            case ALLY:
+                res = ResidentManager.getInstance().getResident(building);
+                allowed = res.hasVillage() && village.isAlly(res.getVillage());
+                break;
+            case OFFICERS:
+                res = ResidentManager.getInstance().getResident(building);
+                allowed = village.equals(res.getVillage()) && res.getVillageRank().atLeast(VillageRank.BUILDER);
+                break;
+            case RESIDENTS:
+                res = ResidentManager.getInstance().getResident(building);
+                allowed = village.equals(res.getVillage());
+                break;
+            default:
+                return null;
         }
-        Resident res = ResidentManager.getInstance().getResident(building);
-        if (!res.hasVillage()) {
-            return false;
+        if (allowed) {
+            return new Pair<>(true, "");
         }
-        Village ownerVillage = land.getOwnerVillage();
-        return ownerVillage.getChief().equals(building.getUniqueId()) || res.getVillage().equals(ownerVillage);
+        return new Pair<>(false, getMessage("state." + type + "." + state.getKey()).getReplacedText(
+                "village", village.getName(),
+                "state", village.getState().getTag()
+        ));
     }
 
-    public boolean getCanBuildOfficer(Player building, OwnedLand land) {
-        if (building.isOp()) {
-            return true;
-        }
-        if (land == null) {
-            return true;
-        }
-        Resident res = ResidentManager.getInstance().getResident(building);
-        if (!res.hasVillage()) {
-            return false;
-        }
-        Village ownerVillage = land.getOwnerVillage();
-        return ownerVillage.getChief().equals(building.getUniqueId()) || (res.getVillageName().equals(ownerVillage) && (res.getVillageRank().equals(VillageRank.BUILDER) || res.getVillageRank().equals(VillageRank.ELDER)));
+    @Override
+    default String type() {
+        return "";
     }
 
-    public boolean getCanBuildAlly(Player building, OwnedLand land) {
-        if (building.isOp()) {
-            return true;
-        }
-        if (land == null) {
-            return true;
-        }
-        Resident res = ResidentManager.getInstance().getResident(building);
-        if (!res.hasVillage()) {
-            return false;
-        }
-        Village ownerVillage = land.getOwnerVillage();
-        return ownerVillage.getChief().equals(building.getUniqueId()) || res.getVillage().equals(land.getOwnerVillage()) || ownerVillage.isAlly(res.getVillage());
+    @Override
+    default String name() {
+        return "protection";
     }
 
-    public boolean isLandClaimed(Location loc) {
-        return LandManager.getInstance().isLandClaimed(loc);
-    }
-
-    public void sendPvPNotEnabledMessage(Player p) {
-        pvpMessage.send(p);
-    }
-
-    public void sendPvPNotEnabledMessage(Entity e) {
-        if (e instanceof Player) {
-            pvpMessage.send((Player) e);
-        }
-    }
-
-    public String replaceColourCodes(String msg) {
-        return ChatColor.translateAlternateColorCodes('&', msg);
+    default boolean isLandClaimed(Location location) {
+        return LandManager.getInstance().isLandClaimed(location);
     }
 }

@@ -12,6 +12,7 @@ disabled-claiming-worlds: []
 village-creation-cost: 0
 max-village-size: 30
 kingdoms-world: "kingdom"
+only-lock-in-settlement: true
 map:
   colors:
     own: GREEN

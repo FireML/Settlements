@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.landflags;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
@@ -25,10 +26,7 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import org.spigotmc.event.entity.EntityMountEvent;
 
-public class LandFlagsUseEvents extends LandFlagBase {
-    public LandFlagsUseEvents() {
-        super();
-    }
+public class LandFlagsUseEvents implements LandFlagBase, Listener {
 
     @EventHandler
     public void on(EntityMountEvent e) {

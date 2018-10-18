@@ -1,22 +1,20 @@
 package me.crz.minecraft.kingdoms.landflags;
 
+import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.Pair;
+import org.bukkit.Material;
 import org.bukkit.Tag;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-
-import org.bukkit.Material;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.EventHandler;
-import me.crz.minecraft.kingdoms.utils.Pair;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
-public class LandFlagsBlockEvents extends LandFlagBase {
+public class LandFlagsBlockEvents implements LandFlagBase, Listener {
     public LandFlagsBlockEvents() {
         super();
     }

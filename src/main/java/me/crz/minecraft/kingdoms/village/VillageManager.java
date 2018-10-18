@@ -56,6 +56,11 @@ public class VillageManager {
         });
     }
 
+    public Village getVillageAt(Location location) {
+        OwnedLand ownedLand = LandManager.getInstance().getLand(location);
+        return ownedLand != null ? ownedLand.getOwnerVillage() : null;
+    }
+
     public Village getVillageFromId(IdObject id) {
         if (id == null) {
             return null;
