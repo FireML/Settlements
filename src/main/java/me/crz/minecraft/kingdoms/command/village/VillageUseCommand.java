@@ -19,6 +19,23 @@ public class VillageUseCommand extends VillageSubCommand {
     public VillageUseCommand(SubCommand parent) {
         super(parent, "use <name> <state>", VillageRank.CHIEF);
         setPermission("kingdoms.user");
+        registerCommand(new VillageSubCommand(this, "all <state>") {
+            @Override
+            public boolean run(Resident res, String base, String alias, String... args) {
+                try {
+                    BuildState state = BuildState.valueOf(String.join("_", args).toUpperCase());
+                    for (Use u : Use.values()) {
+                        res.getVillage().setUseState(u, state);
+                    }
+                    Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
+                    res.tell(getMessage("success-all"), "state", state.getTag());
+                } catch (IllegalArgumentException e) {
+                    res.tell(getMessage("states"), "states", Arrays.stream(BuildState.values()).map(NameTag::humanizedName).collect(Collectors.joining(", ")));
+                    return false;
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -28,13 +45,13 @@ public class VillageUseCommand extends VillageSubCommand {
         } else {
             try {
                 Use u = Use.valueOf(args[0].toUpperCase());
-                BuildState state = BuildState.valueOf(args[1].toUpperCase());
+                BuildState state = BuildState.valueOf(Arrays.stream(args).skip(1).collect(Collectors.joining("_")).toUpperCase());
                 res.getVillage().setUseState(u, state);
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
                 res.tell(getMessage("success"), "flag", u.name(), "state", state.getTag());
             } catch (IllegalArgumentException e) {
                 res.tell(getMessage("flags"), "flags", Arrays.stream(Use.values()).map(u -> u.name().toLowerCase()).collect(Collectors.joining(", ")));
-                res.tell(getMessage("states"), "states", Arrays.stream(PlotBuildState.values()).map(NameTag::humanizedName).collect(Collectors.joining(", ")));
+                res.tell(getMessage("states"), "states", Arrays.stream(BuildState.values()).map(NameTag::humanizedName).collect(Collectors.joining(", ")));
                 return false;
             }
         }

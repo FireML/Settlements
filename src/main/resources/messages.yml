@@ -117,6 +117,40 @@ chat:
   ignoring: |-
     &cYou cannot message &6{name}&c because you are ignoring them!
     &6[/ignore {name}](/ignore {name})&c to un-ignore them
+names:
+  use:
+    chest: "Chests"
+    lever: "Levers"
+    door: "Doors"
+    gate: "Gates"
+    trap-door: "Trap Doors"
+    button: "Buttons"
+    pressure-plate: "Pressure plates"
+    bucket: "Buckets"
+    ride: "Ridable Stuff"
+    furnace: "Furnaces"
+    hopper: "Hoppers"
+    dropper: "Droppers"
+    dispenser: "Dispensers"
+    anvil: "Anvils"
+    enchantment-table: "Enchantment Tables"
+    portaL: "Portals"
+    jukebox: "Jukeboxes"
+    shulker-box: "Shulker Boxes"
+    bed: "Beds"
+    armor-stand: "Armorstands"
+    item-frame: "Item Frames"
+    crafting-table: "Crafting tables"
+    sheer: "Sheering Animals"
+    milk: "Milking Cows"
+    leash: "Leashing Animals"
+    becon: "Beacons"
+    brewing-stand: "Brewing Stands"
+    fish: "Fishing"
+    item: "Pickup Items"
+    repeaters: "Repeaters"
+    cake: "Cake"
+    interact: "Other"
 usage:
   head: |-
     &8&l--------&r&c&l{name} Commands&r&8&l--------
@@ -147,6 +181,13 @@ gui:
       public: Everyone can tp to home but requires invite to join
       ally: Allows allies to teleport to home
       private: Allows only members to teleport to home
+  plot-use:
+    title: "&3&lPlot Use Settings"
+    back: "&c&lBack To Settings"
+    toggle-all: "&7&lClick to toggle all to &b&l{{state}"
+    entry:
+      title: "&b&l{flag}"
+      lore: "&7&lState: &b&l{state}"
   teleporters:
     title: "&2&lTeleporters"
     locked: "&cLocked"
@@ -154,6 +195,13 @@ gui:
     kingdom-required: "&c&lYou require a level &610 Kingdom&c&l to use this!"
     kingdoms-world: "&e&lKingdoms World"
     village-home: "&e&lVillage Home"
+  use:
+    title: "&3&lUse Settings"
+    back: "&c&lBack To Settings"
+    toggle-all: "&7&lClick to toggle all to &b&l{{state}"
+    entry:
+      title: "&b&l{flag}"
+      lore: "&7&lState: &b&l{state}"
   vault:
     title: "&1&lVault"
     success-deposit: "&6&l{player} &7&lhas deposited:"
@@ -430,6 +478,7 @@ command:
         flags: "&cAvailable flags: {flags}"
         states: "&cAvailable states: {states}"
         success: "&7Plot State of &6{flag} &7set to &6{state}"
+        success-all: "&7Set all flags to &6{state}"
         description: Sets the use flags of a plot
       description: Plot Commands
     rename:
@@ -516,6 +565,7 @@ command:
       flags: "&cAvailable flags: {flags}"
       states: "&cAvailable states: {states}"
       success: "&7State of &6{flag} &7set to &6{state}"
+      success-all: "&7Set all flags to &6{state}"
       description: Set who can use stuff in your village
     description: Settlement management command
     deposit:
