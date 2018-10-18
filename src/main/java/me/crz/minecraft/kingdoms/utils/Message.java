@@ -22,12 +22,12 @@ public class Message {
     private final boolean exists;
     private BaseComponent[] components;
 
-    Message(String key) {
+    public Message(String key) {
         this.key = key;
         String text = "&cUnknown message &6" + key;
         if (ConfigManager.getInstance().getMessagesConfig().isString(key)) {
-            exists = true;
             text = ConfigManager.getInstance().getMessagesConfig().getString(key);
+            exists = true;
         } else if (ConfigManager.getInstance().getMessagesConfig().isList(key)) {
             List<?> list = ConfigManager.getInstance().getMessagesConfig().getList(key);
             text = list.stream().map(String::valueOf).collect(Collectors.joining("\n"));

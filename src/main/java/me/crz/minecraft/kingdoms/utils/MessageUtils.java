@@ -31,7 +31,7 @@ public class MessageUtils extends Base {
     }
 
     public static void tell(Player player, BaseComponent[] message, String... replacements) {
-        if (player == null) {
+        if (player == null || message.length == 0 || TextComponent.toPlainText(message).isEmpty()) {
             return;
         }
         if (replacements != null && replacements.length > 0) {
@@ -49,7 +49,7 @@ public class MessageUtils extends Base {
     }
 
     public static void tell(Player player, BaseComponent[] message, Map<String,BaseComponent[]> replacements) {
-        if (player == null) {
+        if (player == null || message.length == 0 || TextComponent.toPlainText(message).isEmpty()) {
             return;
         }
         if (replacements != null && !replacements.isEmpty()) {
@@ -63,7 +63,7 @@ public class MessageUtils extends Base {
     }
 
     public static void tell(Player player, String message, String... replacements) {
-        if (player == null) {
+        if (player == null || message == null || message.isEmpty()) {
             return;
         }
         if (replacements != null && replacements.length > 0) {
