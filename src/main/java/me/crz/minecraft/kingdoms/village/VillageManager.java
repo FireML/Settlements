@@ -144,9 +144,10 @@ public class VillageManager {
     /**
      * Check whether or not a village can level up
      * @param village The village to check
+     * @param res
      * @return Whether or not the village was leveled up
      */
-    public boolean checkLevelUp(Village village) {
+    public boolean checkLevelUp(Village village, Resident res) {
         if (!village.canLevelUp()) {
             return false;
         }
@@ -159,7 +160,7 @@ public class VillageManager {
             village.setLevel(village.getLevel() + 1);
             MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("levels.upgrade"), "level", Integer.toString(village.getLevel()));
         }
-        removeLevelRequirements(village);
+        removeLevelRequirements(village, res);
 
         // TODO: This should be a config and new shop system:
         if (village.getState() == VillageState.KINGDOM) {
@@ -194,7 +195,7 @@ public class VillageManager {
         return true;
     }
 
-    private void removeLevelRequirements(Village village) {
+    private void removeLevelRequirements(Village village, Resident res) {
         Map<String, Integer> levelReqs = Levels.getLevelMapFromInt(village.getLevel(), village.getState());
         if (levelReqs == null || levelReqs.isEmpty()) {
             return;
@@ -204,7 +205,10 @@ public class VillageManager {
                 village.getVault().put(entry.getKey(), village.getVault().get(entry.getKey()) - levelReqs.get(entry.getKey()));
             }
         }
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
+        Utils.runAsync(() -> {
+            DatabaseManager.getInstance().saveVillage(village);
+            DatabaseManager.getInstance().logLevelup(village, res, levelReqs);
+        });
     }
 
 }

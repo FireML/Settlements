@@ -9,6 +9,7 @@ import me.crz.minecraft.kingdoms.command.village.VillageCreateCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageDepositCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageDisbandCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageHereCommand;
+import me.crz.minecraft.kingdoms.command.village.VillageHistoryCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageHomeCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageInviteCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageJoinCommand;
@@ -34,6 +35,7 @@ import me.crz.minecraft.kingdoms.command.village.VillageUpkeepCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageUseCommand;
 import me.crz.minecraft.kingdoms.command.village.money.VillageMoneyCommand;
 import me.crz.minecraft.kingdoms.command.village.settings.VillageSettingsCommand;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import org.bukkit.entity.Player;
 
 public class VillageCommand extends SubCommand {
@@ -48,6 +50,7 @@ public class VillageCommand extends SubCommand {
         registerCommand(new VillageDepositCommand(this));
         registerCommand(new VillageDisbandCommand(this));
         registerCommand(new VillageHereCommand(this));
+        registerCommand(new VillageHistoryCommand(this, VillageRank.CHIEF, VillageHistoryCommand.Type.ALL));
         registerCommand(new VillageHomeCommand(this));
         registerCommand(new VillageInviteCommand(this));
         registerCommand(new VillageJoinCommand(this));

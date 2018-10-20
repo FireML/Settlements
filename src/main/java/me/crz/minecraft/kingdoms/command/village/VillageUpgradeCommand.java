@@ -19,7 +19,7 @@ public class VillageUpgradeCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         Village v = res.getVillage();
-        if (!VillageManager.getInstance().checkLevelUp(v)) {
+        if (!VillageManager.getInstance().checkLevelUp(v, res)) {
             res.tell(getMessage("not-possible"), "reason", v.isMaxLevel() ? getText("max-level-reached") :
                 getText("missing-items") + "\n"
                         + Levels.getLevelMapFromInt(v.getLevel() + 1, v.getState()).entrySet().stream()

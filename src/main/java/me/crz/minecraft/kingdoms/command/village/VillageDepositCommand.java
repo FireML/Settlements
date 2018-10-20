@@ -11,6 +11,7 @@ public class VillageDepositCommand extends VillageSubCommand {
     public VillageDepositCommand(SubCommand parent) {
         super(parent, "deposit", VillageRank.RESIDENT);
         setPermission("kingdoms.user");
+        registerCommand(new VillageHistoryCommand(this, VillageRank.RESIDENT, VillageHistoryCommand.Type.VAULT));
     }
 
     @Override

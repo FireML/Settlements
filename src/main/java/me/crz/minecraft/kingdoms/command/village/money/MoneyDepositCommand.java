@@ -26,7 +26,10 @@ public class MoneyDepositCommand extends VillageSubCommand {
                 EconomyResponse r2 = Base.getEconomy().withdrawPlayer(resident.getPlayer(), (double) deposit);
                 if (r2.transactionSuccess()) {
                     resident.getVillage().setBank(resident.getVillage().getBank() + deposit);
-                    Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
+                    Utils.runAsync(() -> {
+                        DatabaseManager.getInstance().saveVillage(resident.getVillage());
+                        DatabaseManager.getInstance().logDeposit(resident.getVillage(), resident, deposit);
+                    });
                     MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("deposited"),
                             "rank", resident.getVillageRank().getTag(resident.getVillage()),
                             "player", resident.getName(),

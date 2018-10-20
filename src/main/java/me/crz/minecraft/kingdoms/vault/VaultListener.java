@@ -10,6 +10,8 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 
 import java.util.Map;
 
+import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.VillageGUI;
 import org.bukkit.Material;
 
@@ -19,7 +21,6 @@ import org.bukkit.event.EventHandler;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Inventory;
-import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -41,15 +42,16 @@ public class VaultListener extends VillageGUI implements Listener {
             return;
         }
         Player player = (Player) event.getPlayer();
-        Village village = VillageManager.getInstance().getVillageFromPlayer(player);
-        if (village != null) {
-            deposit(contents, village, player);
-            VillageManager.getInstance().checkLevelUp(village);
+        Resident resident = ResidentManager.getInstance().getResident(player);
+        if (resident.hasVillage()) {
+            deposit(contents, resident, player);
+            VillageManager.getInstance().checkLevelUp(resident.getVillage(), resident);
         }
     }
 
-    private void deposit(ItemStack[] contents, Village village, Player player) {
+    private void deposit(ItemStack[] contents, Resident resident, Player player) {
         Map<Material, Integer> fail = new HashMap<>();
+        Village village = resident.getVillage();
         if (!village.isMaxLevel()) {
             Map<String, Integer> nextLevelReqs = Levels.getLevelMapFromInt(village.getLevel() + 1, village.getState());
             Map<String, Integer> total = new HashMap<>();
@@ -92,7 +94,10 @@ public class VaultListener extends VillageGUI implements Listener {
             if (!deposited.isEmpty()) {
                 MessageUtils.tellListResidents(village.getOnlineResidents(), this.buildSuccessDepositMessage(player, deposited));
                 village.getVault().putAll(total);
-                Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
+                Utils.runAsync(() -> {
+                    DatabaseManager.getInstance().saveVillage(village);
+                    DatabaseManager.getInstance().logDeposit(village, resident, total);
+                });
             }
             if (!fail.isEmpty()) {
                 MessageUtils.tellList(player, this.buildfailDepositMessage(fail, ""));

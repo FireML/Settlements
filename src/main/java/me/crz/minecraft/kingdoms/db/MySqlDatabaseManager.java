@@ -3,7 +3,9 @@ package me.crz.minecraft.kingdoms.db;
 import com.zaxxer.hikari.HikariDataSource;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import me.crz.minecraft.kingdoms.command.village.VillageHistoryCommand;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -200,6 +203,18 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "type VARCHAR(255) NOT NULL,"
                     + "state VARCHAR(255) NOT NULL,"
                     + "UNIQUE (claimId, type)"
+                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
+
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "logs ("
+                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+                    + "settlementId INTEGER, INDEX(settlementId),"
+                    + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
+                    + "residentId INTEGER, "
+                    + "FOREIGN KEY (residentId) REFERENCES " + tablePrefix + "residents(id) ON DELETE CASCADE,"
+                    + "`action` VARCHAR(255) NOT NULL,"
+                    + "type VARCHAR(255) NOT NULL,"
+                    + "amount INTEGER NOT NULL,"
+                    + "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
             sta.addBatch("SET FOREIGN_KEY_CHECKS = 1");
@@ -451,6 +466,78 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 plugin.getLogger().log(Level.SEVERE, "Error while saving player " + resident.getName() + "/" + resident.getUUID() + " to database!", e);
             }
         }
+    }
+
+    @Override
+    protected void log(Village village, Resident resident, String action, Map<String, Integer> values) {
+        Utils.catchSync();
+        try (Connection conn = ds.getConnection();
+             PreparedStatement sta = conn.prepareStatement("INSERT INTO " + tablePrefix + "logs " +
+                     "(`settlementId`, `residentId`, `action`, `type`, `amount`) " +
+                     "VALUES (?, ?, ?, ?, ?);"
+             )
+        ) {
+            for (Map.Entry<String, Integer> value : values.entrySet()) {
+                if (!village.getId().isNull()) {
+                    sta.setInt(1, (Integer) village.getId().value());
+                    sta.setInt(2, resident != null && resident.getId() != null ? (Integer) resident.getId() : -1);
+                    sta.setString(3, action.toLowerCase());
+                    sta.setString(4, value.getKey().toLowerCase());
+                    sta.setInt(5, value.getValue());
+                    sta.addBatch();
+                }
+            }
+            sta.executeBatch();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<String[]> getLog(Village village, Resident resident, int page, VillageHistoryCommand.Type bank) {
+        List<String[]> log = new ArrayList<>();
+        if (village.getId().isNull() || page < 1) {
+            return log;
+        }
+        int start = (page-1) * 20;
+        String sql = "SELECT l.action, l.type, l.amount, l.timestamp, r.name AS playerName, r.uuid AS playerId, r.rank AS playerRank FROM " + tablePrefix + "logs AS l " +
+                "LEFT JOIN " + tablePrefix + "residents AS r ON l.residentId = r.id " +
+                "WHERE l.settlementId=?";
+        switch (bank) {
+            case BANK:
+                sql += " AND l.type = 'cash'";
+                break;
+            case VAULT:
+                sql += " AND l.type != 'cash'";
+                break;
+        }
+        if (!resident.getVillageRank().atLeast(VillageRank.CHIEF)) {
+            sql += " AND `action` = 'deposit'";
+        }
+        sql += " ORDER BY id DESC LIMIT " + start + ",20;";
+        try (Connection conn = ds.getConnection();
+             PreparedStatement sta = conn.prepareStatement(sql)) {
+            sta.setInt(1, (Integer) village.getId().value());
+            ResultSet rs = sta.executeQuery();
+            while (rs.next()) {
+                VillageRank rank = VillageRank.RESIDENT;
+                try {
+                    rank = VillageRank.valueOf(rs.getString("playerRank").toUpperCase());
+                } catch (IllegalArgumentException ignored) {}
+                log.add(new String[] {
+                        "name", rs.getString("playerName"),
+                        "uuid", rs.getString("playerId"),
+                        "rank", rank.getTag(village),
+                        "action", rs.getString("action"),
+                        "type", rs.getString("type"),
+                        "amount", String.valueOf(rs.getInt("amount")),
+                        "timestamp", Utils.TIME_FORMAT.format(new Date(rs.getTimestamp("timestamp").getTime()))
+                });
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to get log for village " + village.getName() + "/" + village.getId(), e);
+        }
+        return log;
     }
 
     // ------ Creation methods ----- //

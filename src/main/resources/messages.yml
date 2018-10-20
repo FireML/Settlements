@@ -1,5 +1,6 @@
 server-rules: "&6&llink.to/server-rules&r or rule text"
 error:
+  not-a-number: "&c&lERROR &r&c{input} is not a number!"
   not-in-current: "&c&lERROR &r&7Not currently in settlement."
   not-in-village: "&c&lTarget player {player} isn't in a village!"
   no-permission: "&cNo permission."
@@ -332,6 +333,10 @@ command:
       description: Commands to interact with the village bank
       balance:
         description: Check the balance of the bank
+      history:
+        head: "&7------- &cBank History [{page}]&7 -------"
+        entry: "&8\\[&9*&8] [&e&l{rank} &r&e{name} - &r&7{action} - &6${amount}](&eAt {timestamp})"
+        description: Show the bank's history
     build:
       success: "&aSet build state of this plot to {state}"
       states:
@@ -372,6 +377,10 @@ command:
         offline: "&c"
         entry: "{online}{name}"
       description: "Shows information on the village you are stending in "
+    history:
+      head: "&7------- &cLog History [{page}]&7 -------"
+      entry: "&8\\[&9*&8] [&e&l{rank} &r&e{name} - &r&7{action} - &6{amount} {type}](&eAt {timestamp})"
+      description: Show the log history
     home:
       own-no-home: "&c&lYour village doesn't have a home ask your {chief} to set one!"
       no-home: "&c&lThat {state} doesn't have a home!"
@@ -585,6 +594,10 @@ command:
     description: Settlement management command
     deposit:
       description: Deposit an item into the vault
+      history:
+        head: "&7------- &cVault History [{page}]&7 -------"
+        entry: "&8\\[&9*&8] [&e&l{rank} &r&e{name} - &r&7{action} - &6{amount} {type}](&eAt {timestamp})"
+        description: Show the vault's history
     rules:
       description: Links you to the rules
     settings:

@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
@@ -32,6 +33,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitTask;
 
 public class Utils {
+    public final static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat();
     private static Map<String, Integer> LEVEL_CHUNKS = new HashMap<>();
 
     public Utils() {
