@@ -410,6 +410,10 @@ command:
       success: "&a&lSUCCESS &r&7You have left your settlement."
       alert: "&e&lALERT &r&e{player}&7 has left the settlement."
       description: Leave your current village
+    list:
+      description: "List settlements"
+      head: "&7------- &c{access}Settlements [{page}]&7 -------"
+      entry: "&8\\[&9*&8] [&e&l{state} &r&e{name} &r&7{access}]({chiefrank}: {chief}\\nSize: {residents} players)"
     map:
       head: "&8---------------- &eSettlement Map &r&8----------------"
       explanation: |-

@@ -15,6 +15,7 @@ import me.crz.minecraft.kingdoms.command.village.VillageInviteCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageJoinCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageKickCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageLeaveCommand;
+import me.crz.minecraft.kingdoms.command.village.VillageListCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageMapCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageMaterialsCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageModeCommand;
@@ -56,6 +57,7 @@ public class VillageCommand extends SubCommand {
         registerCommand(new VillageJoinCommand(this));
         registerCommand(new VillageKickCommand(this));
         registerCommand(new VillageLeaveCommand(this));
+        registerCommand(new VillageListCommand(this));
         registerCommand(new VillageMapCommand(this));
         registerCommand(new VillageMaterialsCommand(this));
         registerCommand(new VillageModeCommand(this));

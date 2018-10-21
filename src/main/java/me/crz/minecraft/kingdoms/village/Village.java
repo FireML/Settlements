@@ -39,7 +39,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class Village implements ConfigurationSerializable {
+public class Village implements ConfigurationSerializable, Comparable<Village> {
     private IdObject id = IdObject.get(null);
     private String name;
     private String description;
@@ -493,5 +493,16 @@ public class Village implements ConfigurationSerializable {
                 .filter(e -> !(e.getValue() instanceof Integer))
                 .forEach(e -> village.getVault().put(e.getKey(), (Integer) e.getValue()));
         return village;
+    }
+
+    @Override
+    public int compareTo(Village v) {
+        if (v.getState() != getState())
+            return getState().compareTo(v.getState());
+        if (v.getLevel() != getLevel())
+            return Integer.compare(v.getLevel(), getLevel());
+        if (v.getResidentIds().size() != getResidentIds().size())
+            return Integer.compare(v.getResidentIds().size(), getResidentIds().size());
+        return Long.compare(v.getBank(), getBank());
     }
 }

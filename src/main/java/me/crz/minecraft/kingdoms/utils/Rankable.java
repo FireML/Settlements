@@ -38,4 +38,13 @@ public interface Rankable {
      * @return The priority
      */
     int ordinal();
+
+    default int compareTo(Rankable r) {
+        if (r.below(this)) {
+            return 1;
+        } else if (r.above(this)) {
+            return -1;
+        }
+        return 0;
+    }
 }

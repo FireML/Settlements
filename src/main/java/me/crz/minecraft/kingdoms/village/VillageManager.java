@@ -40,6 +40,10 @@ public class VillageManager {
         return instance;
     }
 
+    public Collection<Village> getVillages() {
+        return villages.values();
+    }
+
     public void registerNewVillage(Village village) {
         if (!village.getId().isNull()) {
             KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving " + village.getName() + " to the database! It already had an ID defined?");
