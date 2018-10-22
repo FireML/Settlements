@@ -487,10 +487,14 @@ command:
       buy:
         purchased: "&aSuccessfully purchased the land for {price}."
         description: Buys the chunk you are standing in
+      description:
+        success: "&aSet description of plot to &r{description}"
+        description: Set the description of a plot
       info:
         general: |-
           &8&l-------- &r&c&lPlot Info&r &8&l--------
-          &c&l{state}: &7{name}
+          &c&l{state}: &7{settlement}
+          &9&lDescription: &r{description}
           &9&lModes: &7MobSpawning: &6{spawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explisions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}
         owner: "&a&lPlot Owner: &7{name}"
         price: "&a&lPlot Price: &7{price}"

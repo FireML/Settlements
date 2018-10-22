@@ -23,7 +23,8 @@ public class PlotInfoCommand extends VillageSubCommand {
         }
         res.tell(getMessage("general"),
                 "state", land.getOwnerVillage().getState().getTag(),
-                "name", land.getOwnerVillage().getName(),
+                "description", land.getDescription(),
+                "settlement", land.getOwnerVillage().getName(),
                 "spawning", String.valueOf(land.isMobSpawning()),
                 "firespread", String.valueOf(land.isFireSpread()),
                 "explosions", String.valueOf(land.isExplosions()),

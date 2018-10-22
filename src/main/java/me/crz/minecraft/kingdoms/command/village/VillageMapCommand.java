@@ -79,6 +79,9 @@ public class VillageMapCommand extends SubCommand {
         }
 
         ComponentBuilder hover = new ComponentBuilder(land.getOwnerVillage().getName());
+        if (!land.getDescription().isEmpty()) {
+            hover.append("\n").append(land.getDescription());
+        }
         if (getMessage("hover." + symbol.getKey()).exists()) {
             hover.append("\n").append(getMessage("hover." + symbol.getKey()).getReplacedComponents(
                     "owner", land.isPlot() ? ResidentManager.getInstance().getResidentName(land.getPlotOwner()) : "none",

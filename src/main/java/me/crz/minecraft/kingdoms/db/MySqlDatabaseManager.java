@@ -188,6 +188,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "FOREIGN KEY (ownerId) REFERENCES " + tablePrefix + "residents(id) ON DELETE SET NULL,"
                     + "price INTEGER DEFAULT 0,"
                     + "forSale BOOLEAN NOT NULL,"
+                    + "description VARCHAR(255),"
                     + "pvp BOOLEAN NOT NULL,"
                     + "fireSpread BOOLEAN NOT NULL,"
                     + "explosions BOOLEAN NOT NULL,"
