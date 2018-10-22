@@ -11,7 +11,7 @@ import me.crz.minecraft.kingdoms.village.ResidentManager;
 
 public class PlotInfoCommand extends VillageSubCommand {
     public PlotInfoCommand(VillagePlotCommand parent) {
-        super(parent, "info", VillageRank.RESIDENT);
+        super(parent, "info", VillageRank.RESIDENT, "here");
     }
 
     @Override
