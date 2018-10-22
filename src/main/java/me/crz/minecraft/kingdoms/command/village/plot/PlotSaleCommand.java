@@ -19,25 +19,27 @@ public class PlotSaleCommand extends VillageSubCommand {
         OwnedLand land = LandManager.getInstance().getLand(res.getPlayer().getLocation());
         if (land == null) {
             res.tell(getError("not-your-village"), "state", res.getVillage().getState().getTag());
-            return true;
-        }
-        if (args.length < 1) {
+        } else if (!res.getVillage().equals(land.getOwnerVillage())) {
+            res.tell(getError("not-your-village"), "state", land.getOwnerVillage().getState().getTag());
+        } else if (land.isPlot()) {
+            res.tell(getMessage("already-owned"));
+        } else if (args.length < 1) {
             if (land.isForSale()) {
                 res.tell(getMessage("current"), "price", String.valueOf(land.getPrice()));
             } else {
                 return false;
             }
-        } else if (!res.getVillage().equals(land.getOwnerVillage())) {
-            res.tell(getError("not-your-village"), "state", land.getOwnerVillage().getState().getTag());
-        } else if (land.isPlot()) {
-            res.tell(getMessage("already-owned"));
         } else {
             try {
                 int price = Integer.valueOf(args[0]);
                 land.setPrice(price);
-                land.setForSale(true);
+                land.setForSale(price > 0);
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
-                res.tell(getMessage("success"), "price", String.valueOf(price));
+                if (land.isForSale()) {
+                    res.tell(getMessage("success"), "price", String.valueOf(price));
+                } else {
+                    res.tell(getMessage("no-longer-for-sale"));
+                }
             } catch (NumberFormatException e) {
                 return false;
             }

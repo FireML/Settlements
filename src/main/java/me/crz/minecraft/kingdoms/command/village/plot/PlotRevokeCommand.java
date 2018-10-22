@@ -18,7 +18,7 @@ public class PlotRevokeCommand extends VillageSubCommand {
         if (land == null || !res.getVillage().equals(land.getOwnerVillage())) {
             res.tell(getError("not-your-village"), "state", res.getVillage().getState().getTag());
         } else if (!land.isPlot()) {
-                res.tell(getError("not-a-plot"));
+            res.tell(getError("not-a-plot"));
         } else {
             LandManager.getInstance().setPlotOwner(land, null);
             res.tell(getMessage("success"));

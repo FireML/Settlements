@@ -109,16 +109,13 @@ public class LWCIntegration extends JavaModule implements ConfigMessages, LandFl
         if (!event.getPlayer().hasPermission("kingdoms.staff")) {
             boolean limitedToVillage = plugin.getConfig().getBoolean("only-lock-in-settlement");
             Resident res = ResidentManager.getInstance().getResident(event.getPlayer());
-            if (!res.hasVillage() && limitedToVillage) {
-                res.tell(getMessage("only-in-village"));
-                event.setCancelled(true);
-                return;
-            }
-            OwnedLand land = LandManager.getInstance().getLand(event.getPlayer().getLocation());
-            if (land == null) {
-                res.tell(getMessage("only-in-village"));
-                event.setCancelled(true);
-                return;
+            if (limitedToVillage) {
+                OwnedLand land = LandManager.getInstance().getLand(event.getPlayer().getLocation());
+                if (land == null) {
+                    res.tell(getMessage("only-in-village"));
+                    event.setCancelled(true);
+                    return;
+                }
             }
 
             Pair<Boolean, String> response = getCanBuildAll(event.getPlayer(), event.getBlock().getLocation());

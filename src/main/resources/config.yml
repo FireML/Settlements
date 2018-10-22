@@ -27,6 +27,7 @@ map:
     normal: "-"
     for-sale: "$"
     plot: "~"
+    embassy: "e"
     home: "H"
     outpost: "@"
     unclaimed: "-"

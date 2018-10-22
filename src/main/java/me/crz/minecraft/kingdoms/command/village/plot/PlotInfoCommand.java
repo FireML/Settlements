@@ -29,11 +29,13 @@ public class PlotInfoCommand extends VillageSubCommand {
                 "firespread", String.valueOf(land.isFireSpread()),
                 "explosions", String.valueOf(land.isExplosions()),
                 "pvp", String.valueOf(land.isPvp()),
-                "build", land.getBuildState().getTag()
+                "build", land.getBuildState().getTag(),
+                "embassy", String.valueOf(land.isEmbassy())
         );
         if (land.isPlot()) {
             Utils.runAsync(() -> res.tell(getMessage("owner"), "name", ResidentManager.getInstance().getResident(land.getPlotOwner()).getName()));
-        } else if (land.isForSale()) {
+        } else if (land.isForSale() &&
+                (land.isEmbassy() || land.isOwnedBy(res.getVillage()))) {
             res.tell(getMessage("price"), "price", String.valueOf(land.getPrice()));
         }
         return true;

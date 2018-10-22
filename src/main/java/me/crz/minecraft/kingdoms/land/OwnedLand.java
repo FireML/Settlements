@@ -50,6 +50,7 @@ public class OwnedLand implements ConfigurationSerializable {
     private EnumMap<Use, PlotBuildState> use = new EnumMap<>(Use.class);
     private SimpleChunkLocation linkedTo = null;
     private Set<SimpleChunkLocation> linked = new HashSet<>();
+    private boolean embassy;
 
     public OwnedLand(Village ownerVillage, SimpleChunkLocation location) {
         this(ownerVillage, location, null, 0, false);
@@ -163,6 +164,14 @@ public class OwnedLand implements ConfigurationSerializable {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public boolean isEmbassy() {
+        return embassy;
+    }
+
+    public void setEmbassy(boolean embassy) {
+        this.embassy = embassy;
     }
 
     public SimpleChunkLocation getLocation() {
@@ -333,6 +342,7 @@ public class OwnedLand implements ConfigurationSerializable {
         map.put("owner", getPlotOwner() != null ? getPlotOwner() : new UUID(0,0));
         map.put("price", getPrice());
         map.put("forSale", isForSale());
+        map.put("embassy", isEmbassy());
         map.put("description", getDescription());
         map.put("pvp", isPvp());
         map.put("fireSpread", isFireSpread());
@@ -367,6 +377,7 @@ public class OwnedLand implements ConfigurationSerializable {
         }
         land.setPrice((Integer) map.get("price"));
         land.setForSale((Boolean) map.get("forSale"));
+        land.setEmbassy((Boolean) map.get("embassy"));
         land.setDescription((String) map.get("description"));
         land.setPvp((Boolean) map.get("pvp"));
         land.setFireSpread((Boolean) map.get("fireSpread"));

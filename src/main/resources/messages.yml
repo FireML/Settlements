@@ -98,6 +98,7 @@ kingdom:
 pvp-is-enabled: " - &c&lPvp is enabled!"
 enter-plot: "&7&lWelcome to&6&l {owner}&7&l’s plot "
 plot-is-for-sale: "&9&lLand is for sale "
+plot-is-embassy: "&e&lEmbassy "
 cannot-attack-animals: "&c&lYou cannot attack another village's animals!"
 chat:
   locked: "&c&lChat is currently locked!"
@@ -458,6 +459,7 @@ command:
         &r&a- &6= your land
         &r&a$ &6= for sale
         &r&a~ &6= player plot
+        &r&ae &6= embassy
         &r&aH &6= home
         &r&a@ &6= outpost
         &r&b- &6= ally
@@ -547,9 +549,10 @@ command:
         current: "&7&lThe current price of this land is: &6&l {price}"
         already-owned: "&cLand is already owned"
         success: "&a&lSUCCESS &7This land has been put on sale for &e${price}&7!"
+        no-longer-for-sale: "&a&lSUCCESS &7This land is no longer for sale!"
         description: Gets or sets the price of a claimed chunk
       unlink:
-        none-connected: "&c&lERROR: &cNo plots are linbed to this one!"
+        none-connected: "&c&lERROR: &cNo plots are linked to this one!"
         disconnected:
           self: "&r&7Unlinked from {location}"
           others: "&r&7Unlinked {amount} plots fromthis one!"

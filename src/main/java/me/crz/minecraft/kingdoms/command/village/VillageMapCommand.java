@@ -79,7 +79,7 @@ public class VillageMapCommand extends SubCommand {
                 }
                 symbol = Symbol.PLOT;
             } else if (land.isForSale()) {
-                symbol = Symbol.FOR_SALE;
+                symbol = land.isEmbassy() ? Symbol.EMBASSY : Symbol.FOR_SALE;
             }
         } else if (resident.hasVillage() && resident.getVillage().getAllies().contains(land.getOwnerVillage().getId())) {
             relation = Relation.ALLY;
@@ -229,10 +229,10 @@ public class VillageMapCommand extends SubCommand {
         NORMAL,
         FOR_SALE,
         PLOT,
+        EMBASSY,
         HOME,
         OUTPOST,
         UNCLAIMED,
-        ALLY,
         OTHER,
         CURRENT;
 

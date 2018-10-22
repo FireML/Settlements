@@ -1,31 +1,29 @@
 package me.crz.minecraft.kingdoms.command.village.plot;
 
-import me.crz.minecraft.kingdoms.command.VillageSubCommand;
+import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.command.village.VillagePlotCommand;
-import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.landflags.PlotBuildState;
 import me.crz.minecraft.kingdoms.landflags.PlotUseGui;
 import me.crz.minecraft.kingdoms.landflags.Use;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.NameTag;
-import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.BuildState;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class PlotUseCommand extends VillageSubCommand {
+public class PlotUseCommand extends ResidentSubCommand {
     public PlotUseCommand(VillagePlotCommand parent) {
-        super(parent, "use <flag> <state>", VillageRank.RESIDENT);
-        registerCommand(new VillageSubCommand(this, "all <state>") {
+        super(parent, "use <flag> <state>");
+        registerCommand(new ResidentSubCommand(this, "all <state>") {
             @Override
             public boolean run(Resident res, String base, String alias, String... args) {
                 OwnedLand land = LandManager.getInstance().getLand(res.getPlayer().getLocation());
-                if (land == null || !res.getVillage().equals(land.getOwnerVillage())) {
+                if (land == null) {
                     res.tell(getError("not-your-village"), "state", res.getVillage().getState().getTag());
+                } else if (!(land.isEmbassy() || res.getVillage().equals(land.getOwnerVillage()))) {
+                    res.tell(getError("not-your-village"), "state", land.getOwnerVillage().getState().getTag());
                 } else if (!land.isPlotOwner(res.getUUID())) {
                     res.tell(getError("not-your-plot"));
                 } else {
@@ -49,8 +47,10 @@ public class PlotUseCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         OwnedLand land = LandManager.getInstance().getLand(res.getPlayer().getLocation());
-        if (land == null || !res.getVillage().equals(land.getOwnerVillage())) {
+        if (land == null) {
             res.tell(getError("not-your-village"), "state", res.getVillage().getState().getTag());
+        } else if (!(land.isEmbassy() || res.getVillage().equals(land.getOwnerVillage()))) {
+            res.tell(getError("not-your-village"), "state", land.getOwnerVillage().getState().getTag());
         } else if (!land.isPlotOwner(res.getUUID())) {
             res.tell(getError("not-your-plot"));
         } else if (args.length < 2) {

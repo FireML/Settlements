@@ -53,6 +53,17 @@ public enum PlotMode {
         public Boolean get(OwnedLand land) {
             return land.isExplosions();
         }
+    },
+    embassy {
+        @Override
+        public void set(Boolean bool, OwnedLand land) {
+            land.setEmbassy(bool);
+        }
+
+        @Override
+        public Boolean get(OwnedLand land) {
+            return land.isEmbassy();
+        }
     };
 
     private static Map<String, Boolean> DEFAULT_OPTIONS = new HashMap<>();

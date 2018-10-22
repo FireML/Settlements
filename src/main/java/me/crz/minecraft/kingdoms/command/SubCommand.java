@@ -37,6 +37,8 @@ public abstract class SubCommand implements ConfigMessages {
         name = usage.split(" ")[0];
     }
 
+    public abstract boolean run(Player player, String base, String alias, String... args);
+
     public boolean execute(Player player, String base, String alias, String... args) {
         if (!testAccess(player)) {
             return true;
@@ -143,8 +145,6 @@ public abstract class SubCommand implements ConfigMessages {
         }
         return getPermission() == null || getPermission().isEmpty() || player.hasPermission(getPermission());
     }
-
-    public abstract boolean run(Player p0, String p1, String p2, String... p3);
 
     @Override
     public String name() {

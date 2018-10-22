@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.essentials.events.HostileCreatureSpawnEvent;
+import me.crz.minecraft.kingdoms.landflags.LandFlagBase;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveBlockEvent;
@@ -14,7 +15,6 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -26,7 +26,7 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import me.crz.minecraft.kingdoms.utils.TitleBuilder;
 import me.crz.minecraft.kingdoms.Base;
 
-public class LandFlags extends Base {
+public class LandFlags extends Base implements LandFlagBase {
     private TitleBuilder tbPvp = new TitleBuilder();
 
     public LandFlags() {
@@ -51,19 +51,10 @@ public class LandFlags extends Base {
         if (e.getEntity() == null) {
             return;
         }
-        OwnedLand land = LandManager.getInstance().getLand(e.getEntity().getLocation());
-        if (land == null) {
-            return;
-        }
         if (e.getDamager() == null) {
             return;
         }
-        if (e.getDamager().isOp()) {
-            return;
-        }
-        Village village = land.getOwnerVillage();
-        Resident res = ResidentManager.getInstance().getResident(e.getDamager());
-        if (!village.getName().equals(res.getVillageName())) {
+        if (!getCanBuildAll(e.getDamager(), e.getEntity().getLocation()).getLeft()) {
             e.setCancelled(true);
             e.getDamager().spigot().sendMessage(ChatMessageType.ACTION_BAR, Message.get("cannot-attack-animals").getComponents());
         }
@@ -78,7 +69,7 @@ public class LandFlags extends Base {
             if (land == null) {
                 return;
             }
-            if (e.getDamager().isOp()) {
+            if (e.getDamager().hasPermission("kindoms.staff")) {
                 return;
             }
             if (!land.isPvp()) {
@@ -193,8 +184,11 @@ public class LandFlags extends Base {
                 if (destinationLand.isPlot()) {
                     actionBar.append(Message.get("enter-plot").getReplacedText("owner", ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName()));
                 }
-                if (destinationLand.isForSale() && destinationLand.getOwnerVillage().equals(playerVillage)) {
+                if (destinationLand.isForSale() && (destinationLand.getOwnerVillage().equals(playerVillage) || destinationLand.isEmbassy())) {
                     actionBar.append(Message.get("plot-is-for-sale").getText());
+                }
+                if (destinationLand.isEmbassy()) {
+                    actionBar.append(Message.get("plot-is-embassy").getText());
                 }
                 tb.withActionbar(actionBar.toString());
                 tb.send(player);

@@ -43,12 +43,14 @@ public interface LandFlagBase extends ConfigMessages {
             return new Pair<>(true, "");
         }
         OwnedLand land = LandManager.getInstance().getLand(loc);
-        Pair<Boolean, String> r = getCanBuild(building, land, land.getBuildState(), "build");
-        if (r == null) {
-            r = getCanBuild(building, land.getOwnerVillage(), land.getOwnerVillage().getBuildState(), "build");
-        }
-        if (r != null) {
-            return r;
+        if (land != null) {
+            Pair<Boolean, String> r = getCanBuild(building, land, land.getBuildState(), "build");
+            if (r == null) {
+                r = getCanBuild(building, land.getOwnerVillage(), land.getOwnerVillage().getBuildState(), "build");
+            }
+            if (r != null) {
+                return r;
+            }
         }
         return new Pair<>(true, "&cUnknown");
     }

@@ -13,26 +13,31 @@ import java.util.stream.Collectors;
 
 public class PlotModeCommand extends VillageSubCommand {
     public PlotModeCommand(VillagePlotCommand parent) {
-        super(parent, "mode <mode> <on/off>", VillageRank.ELDER);
+        super(parent, "mode <mode> <on/off>", VillageRank.ELDER, "set");
     }
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         OwnedLand land = LandManager.getInstance().getLand(res.getPlayer().getLocation());
-        if (land == null || !res.getVillage().equals(land.getOwnerVillage())) {
-            res.tell(getError("not-your-village"), "state", res.getVillage().getState().getTag());
-        } else if (args.length < 2) {
+        if (land == null) {
+            getError("not-your-village").tell(res, "state", res.getVillage().getState().getTag());
+        } else if (!res.getVillage().equals(land.getOwnerVillage())) {
+            getError("not-your-village").tell(res, "state", land.getOwnerVillage().getState().getTag());
+        } else if (args.length < 1 || args.length > 2) {
             return false;
         } else {
             try {
                 PlotMode m = PlotMode.valueOf(args[0].toLowerCase());
-                if (m.getOptions().containsKey(args[1].toLowerCase())) {
-                    m.set(m.getOptions().get(args[1].toLowerCase()), land);
-                    LandManager.getInstance().syncAndSave(land);
-                    res.tell(getMessage("success"), "mode", m.name(), "value", args[1]);
-                } else {
-                    return false;
+                Boolean setTo = !m.get(land);
+                if (args.length > 1) {
+                    setTo = m.getOptions().get(args[1].toLowerCase());
+                    if (setTo == null) {
+                        return false;
+                    }
                 }
+                m.set(setTo, land);
+                LandManager.getInstance().syncAndSave(land);
+                res.tell(getMessage("success"), "mode", m.name(), "value", args[1]);
             } catch (IllegalArgumentException e) {
                 res.tell(getMessage("modes"), "modes", Arrays.stream(PlotMode.values()).map(Enum::name).collect(Collectors.joining(", ")));
                 return false;

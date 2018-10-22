@@ -1,11 +1,10 @@
 package me.crz.minecraft.kingdoms.command.village.plot;
 
-import me.crz.minecraft.kingdoms.command.VillageSubCommand;
+import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.command.village.VillagePlotCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
@@ -13,39 +12,45 @@ import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class PlotUnlinkCommand extends VillageSubCommand {
+public class PlotUnlinkCommand extends ResidentSubCommand {
     public PlotUnlinkCommand(VillagePlotCommand parent) {
-        super(parent, "unlink", VillageRank.RESIDENT, "disconnect");
+        super(parent, "unlink", "disconnect");
     }
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         OwnedLand land = LandManager.getInstance().getLand(res.getPlayer().getLocation());
-        if (land == null || !res.getVillage().equals(land.getOwnerVillage())) {
-            getError("not-your-village").tell(res, "state", res.getVillage().getState().getTag());
+        if (land == null) {
+            res.tell(getError("not-your-village"), "state", res.getVillage().getState().getTag());
+        } else if (!(land.isEmbassy() || res.getVillage().equals(land.getOwnerVillage()))) {
+            res.tell(getError("not-your-village"), "state", land.getOwnerVillage().getState().getTag());
         } else if (!land.isPlotOwner(res.getUUID())) {
             getError("not-your-plot").tell(res);
         } else if (land.getLinkedTo() == null && land.getLinked().isEmpty()) {
             getError("none-linked").tell(res);
         } else {
-            Collection<OwnedLand> connected = new ArrayList<>();
+            Collection<OwnedLand> toSave = new ArrayList<>();
             for (SimpleChunkLocation l : land.getLinked()) {
                 OwnedLand c = LandManager.getInstance().getLand(l);
                 if (c.isLinkedTo(land)) {
                     c.setLinkedTo(null);
-                    connected.add(c);
+                    toSave.add(c);
                 }
             }
-            if (land.getLinked() != null) {
+            OwnedLand lt = LandManager.getInstance().getLand(land.getLinkedTo());
+            if (lt != null) {
                 getMessage("unlink.self").tell(res, "location", land.getLinkedTo().getKey());
+                if (lt.removeLinked(land)) {
+                    toSave.add(lt);
+                }
                 land.setLinkedTo(null);
             }
             if (!land.getLinked().isEmpty()) {
                 land.getLinked().clear();
-                getMessage("unlink.others").tell(res, "amount", String.valueOf(connected.size()));
+                getMessage("unlink.others").tell(res, "amount", String.valueOf(toSave.size()));
             }
-            connected.add(land); // add to save
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(connected));
+            toSave.add(land); // add to save
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(toSave));
         }
         return true;
     }

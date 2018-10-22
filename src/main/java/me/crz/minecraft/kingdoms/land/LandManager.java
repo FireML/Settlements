@@ -195,10 +195,25 @@ public class LandManager {
         for (Use use : Use.values()) {
             land.setUseState(use, PlotBuildState.PRIVATE);
         }
+        List<OwnedLand> toSave = new ArrayList<>();
+        toSave.add(land);
         if (owner != null) {
             playerPlots.put(owner, land.getLocation());
+        } else {
+            OwnedLand lt = getLand(land.getLinkedTo());
+            if (lt != null && lt.removeLinked(land)) {
+                toSave.add(lt);
+            }
+            land.setLinkedTo(null);
+            for (SimpleChunkLocation c : land.getLinked()) {
+                OwnedLand l = getLand(c);
+                if (l != null && l.removeLinked(land)) {
+                    toSave.add(land);
+                }
+            }
+            land.getLinked().clear();
         }
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(toSave));
     }
 
     public int getClaimedLandSize(Village village) {
