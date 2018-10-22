@@ -11,12 +11,17 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.VillageGUI;
+import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class PlotUseGui extends VillageGUI {
@@ -35,9 +40,6 @@ public class PlotUseGui extends VillageGUI {
                         return u.getItem().setName(getMessage("entry.title").getReplacedText(
                                 "flag", u.getTag(),
                                 "state", state.getTag()
-                        )).setLore(getMessage("entry.lore").getReplacedTextList(
-                                "flag", u.getTag(),
-                                "state", state.getTag()
                         )).build();
                     }
                     return null;
@@ -52,7 +54,7 @@ public class PlotUseGui extends VillageGUI {
                                 "flag", u.getTag(),
                                 "state", next.getTag()
                         );
-                        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
+                        LandManager.getInstance().syncAndSave(land);
                         gui.build(p);
                         return true;
                     }
@@ -87,7 +89,7 @@ public class PlotUseGui extends VillageGUI {
                         MessageUtils.tell(p, Message.get("command.village.plot.use.success-all"),
                                 "state", state.getTag()
                         );
-                        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
+                        LandManager.getInstance().syncAndSave(land);
                         gui.build(p);
                         return true;
                     }
@@ -95,6 +97,65 @@ public class PlotUseGui extends VillageGUI {
                 }
             });
         }
+
+        gui.addItem((slot / 9) * 9 + 8, new ClickableItem() {
+            @Override
+            public ItemStack getItem(Player p) {
+                OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                if (land != null && land.isPlotOwner(p)) {
+                    List<String> description = new ArrayList<>();
+                    CItem item = new CItem(Material.MAP);
+                    if (land.getLinkedTo() != null) {
+                        description.add(getMessage("linked-to").getReplacedText("location", land.getLinkedTo().getSimpleKey()));
+                    }
+                    if (!land.getLinked().isEmpty()) {
+                        description.add(getMessage("linked").getReplacedText("amount", String.valueOf(land.getLinked().size())));
+                    }
+                    if (description.isEmpty()) {
+                        description.add(getText("link"));
+                    } else {
+                        description.add(getText("unlink"));
+                        item.glow(true);
+                    }
+                    return item.setName(String.join("\n", description)).build();
+                }
+                return null;
+            }
+
+            @Override
+            public boolean click(Player p, ClickType type) {
+                OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                if (land != null && land.isPlotOwner(p)) {
+                    Set<OwnedLand> toSave = new LinkedHashSet<>();
+                    if (!land.getLinked().isEmpty()) {
+                        for (SimpleChunkLocation c : land.getLinked()) {
+                            OwnedLand linked = LandManager.getInstance().getLand(c);
+                            if (linked != null && linked.isLinkedTo(land)) {
+                                linked.setLinkedTo(null);
+                                toSave.add(linked);
+                            }
+                        }
+                        Message.get("command.village.plot.unlink.disconnected.others").tell(p, "amount", String.valueOf(toSave.size()));
+                    }
+                    if (land.getLinkedTo() != null) {
+                        OwnedLand linkedTo = LandManager.getInstance().getLand(land.getLinkedTo());
+                        if (linkedTo != null && linkedTo.removeLinked(land)) {
+                            toSave.add(linkedTo);
+                        }
+                        Message.get("command.village.plot.unlink.disconnected.self").tell(p, "location", land.getLinkedTo().getSimpleKey());
+                        land.setLinkedTo(null);
+                    }
+                    if (!toSave.isEmpty()) {
+                        toSave.add(land);
+                        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(toSave));
+                        gui.build(p);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
         CInventoryManager.getInstance().addCInvetory(gui);
     }
 

@@ -199,6 +199,12 @@ gui:
     entry:
       title: "&b&l{flag}"
       lore: "&7&lState: &b&l{state}"
+    link: |-
+      &7Click to link the permissions of all
+      &7plots connected to this one
+    linked-to: "&bThis plot is linked to {location}"
+    linked: "&e{amount}&b other plots are linked to this one"
+    unlink: "&7Click to unlink!"
   plot-build:
     title: "&3&lPlot Build Settings"
     set-state: "&7&lClick to allow building of &b&l{state}"
@@ -463,6 +469,8 @@ command:
       unclaim:
         not-an-outpost: "&cThis land is not an outpost, please use &7/s unclaim&c to unclaim this land."
         success: "&aSuccess unclaimed the outpost at {x},{z} and {amount} land around it."
+        connected-to-home: "&cOnly unclaiming the outpost chunk as its land is connected to the home!"
+        connected-to-outpost: "&cOnly unclaiming the outpost chunk as its land is connected to another outpost!"
         description: Unclaims the outpost you are standing in
       description: Claim a seperate chunk of land
     plot:
@@ -487,6 +495,10 @@ command:
         owner: "&a&lPlot Owner: &7{name}"
         price: "&a&lPlot Price: &7{price}"
         description: Get information about the current plot
+      link:
+        already-linked: "&c&lERROR: &cAlready linked to plot {location}!"
+        success: "&a&lSUCCESS: &r&7Linked {amount} plots to your current one!"
+        description: Link surrounding land flags with the current one
       mode:
         modes: "&cAvailable modes: {modes}"
         success: "&7Plot mode &6{mode}&7 set to &6{value}"
@@ -499,6 +511,12 @@ command:
         already-owned: "&cLand is already owned"
         success: "&a&lSUCCESS &7This land has been put on sale for &e${price}&7!"
         description: Gets or sets the price of a claimed chunk
+      unlink:
+        none-connected: "&c&lERROR: &cNo plots are linbed to this one!"
+        disconnected:
+          self: "&r&7Unlinked from {location}"
+          others: "&r&7Unlinked {amount} plots fromthis one!"
+        description: Unlink this plot's flags
       unsale:
         success: "&aThis land is no longer for sale!"
         description: Remove the ability to buy a chunk

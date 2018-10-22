@@ -6,16 +6,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.utils.Utils;
 
 public enum PlotMode {
     pvp {
         @Override
         public void set(Boolean bool, OwnedLand land) {
             land.setPvp(bool);
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
         }
 
         @Override
@@ -27,7 +25,6 @@ public enum PlotMode {
         @Override
         public void set(Boolean bool, OwnedLand land) {
             land.setMobSpawning(bool);
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
         }
 
         @Override
@@ -39,7 +36,6 @@ public enum PlotMode {
         @Override
         public void set(Boolean bool, OwnedLand land) {
             land.setFireSpread(bool);
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
         }
 
         @Override
@@ -51,7 +47,6 @@ public enum PlotMode {
         @Override
         public void set(Boolean bool, OwnedLand land) {
             land.setExplosions(bool);
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
         }
 
         @Override
@@ -73,8 +68,8 @@ public enum PlotMode {
     public void set(Boolean b, OwnedLand land) {
     }
 
-    public Object get(OwnedLand land) {
-        return null;
+    public Boolean get(OwnedLand land) {
+        return false;
     }
 
     public Map<String, Boolean> getOptions() {

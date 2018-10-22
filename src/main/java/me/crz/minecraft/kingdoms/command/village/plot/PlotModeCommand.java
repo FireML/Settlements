@@ -28,6 +28,7 @@ public class PlotModeCommand extends VillageSubCommand {
                 PlotMode m = PlotMode.valueOf(args[0].toLowerCase());
                 if (m.getOptions().containsKey(args[1].toLowerCase())) {
                     m.set(m.getOptions().get(args[1].toLowerCase()), land);
+                    LandManager.getInstance().syncAndSave(land);
                     res.tell(getMessage("success"), "mode", m.name(), "value", args[1]);
                 } else {
                     return false;

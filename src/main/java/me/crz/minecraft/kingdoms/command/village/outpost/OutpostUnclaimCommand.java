@@ -6,9 +6,13 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Chunk;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class OutpostUnclaimCommand extends VillageSubCommand {
     public OutpostUnclaimCommand(VillageSubCommand parent) {
@@ -28,7 +32,19 @@ public class OutpostUnclaimCommand extends VillageSubCommand {
             return true;
         }
 
-        Collection<OwnedLand> toUnclaim = LandManager.getInstance().getAllConnectedLand(land, true);
+        Collection<OwnedLand> toUnclaim = LandManager.getInstance().getAllConnectedLand(land, search -> {
+            if (search.isOutpost()) {
+                // return an empty set if this is connected to the home chunk
+                getMessage("connected-to-outpost").tell(resident);
+                return LandManager.FilterResponse.ABORT;
+            } else if (search.getLocation().equals(resident.getVillage().getVillageHome().toChunkLocation())) {
+                // return an empty set if this is connected to the home chunk
+                getMessage("connected-to-home").tell(resident);
+                return LandManager.FilterResponse.ABORT;
+            }
+            return LandManager.FilterResponse.ACCEPT;
+        });
+
         toUnclaim.add(land);
         LandManager.getInstance().unclaimLand(toUnclaim);
         MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("success"),

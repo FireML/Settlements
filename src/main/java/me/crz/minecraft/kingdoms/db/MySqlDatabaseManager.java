@@ -193,7 +193,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "explosions BOOLEAN NOT NULL,"
                     + "mobSpawning BOOLEAN NOT NULL,"
                     + "isOutpost BOOLEAN NOT NULL, "
-                    + "buildState VARCHAR(255) NOT NULL "
+                    + "buildState VARCHAR(255) NOT NULL,"
+                    + "linkX INTEGER,"
+                    + "linkZ INTEGER"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "claim_uses ("
@@ -327,7 +329,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return;
         }
         for (OwnedLand land : lands) {
-            Map<String, Object> values = getValues(lands[0].serialize(), "ownerVillage", "use");
+            Map<String, Object> values = getValues(lands[0].serialize(), "ownerVillage", "uses");
             String sql = "INSERT INTO " + tablePrefix + "claims "
                     + "(`" + String.join("`,`", values.keySet()) + "`)"
                     + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")"

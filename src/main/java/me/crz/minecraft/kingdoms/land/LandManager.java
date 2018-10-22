@@ -4,13 +4,13 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Multimap;
@@ -21,7 +21,6 @@ import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.Chunk;
@@ -44,6 +43,18 @@ public class LandManager {
             villageLands.put(land.getOwnerVillage().getId(), land.getLocation());
             if (land.isPlot()) {
                 playerPlots.put(land.getPlotOwner(), land.getLocation());
+            }
+        }
+        for (OwnedLand land : landTable.values()) {
+            if (land.getLinkedTo() != null) {
+                OwnedLand connectedTo = getLand(land.getLinkedTo());
+                if (connectedTo != null
+                        && land.isPlotOwner(connectedTo.getPlotOwner())
+                        && land.getOwnerVillage().equals(connectedTo.getOwnerVillage())) {
+                    connectedTo.addLinked(land);
+                } else {
+                    land.setLinkedTo(null);
+                }
             }
         }
     }
@@ -214,7 +225,7 @@ public class LandManager {
         return land;
     }
 
-    public Collection<OwnedLand> getAllConnectedLand(OwnedLand land, boolean outpostMode) {
+    public Collection<OwnedLand> getAllConnectedLand(OwnedLand land, Function<OwnedLand, FilterResponse> filter) {
         Village village = land.getOwnerVillage();
         if (village == null) {
             return new ArrayList<>();
@@ -225,30 +236,26 @@ public class LandManager {
         List<OwnedLand> ownedLands = new ArrayList<>();
         Set<SimpleChunkLocation> checked = new HashSet<>();
         Queue<SimpleChunkLocation> toSearch = new ArrayDeque<>();
-        Set<SimpleChunkLocation> outposts = outpostMode
-                ? Collections.emptySet()
-                : village.getOutpostHomes().values().stream().map(SimpleChunkLocation::new).collect(Collectors.toSet());
 
         toSearch.add(land.getLocation());
         while (!toSearch.isEmpty()) {
             SimpleChunkLocation current = toSearch.poll();
             for (int[] direction : directions) {
                 SimpleChunkLocation search = current.copy().add(direction[0], direction[1]);
-                if (outpostMode) {
-                    if (search.equals(village.getVillageHome().toChunkLocation())) {
-                        // return an empty set if this is connected to the home chunk
-                        return new ArrayList<>();
-                    }
-                } else {
-                    if (outposts.contains(search)) {
-                        // return an empty set if this is connected to an outpost
-                        return new ArrayList<>();
-                    }
-                }
                 if (!checked.contains(search)) {
                     checked.add(search);
                     OwnedLand foundLand = getLand(search);
-                    if (foundLand != null && foundLand.getOwnerVillage().equals(land.getOwnerVillage()) && !foundLand.isOutpost()) {
+                    if (foundLand != null && foundLand.isOwnedBy(land.getOwnerVillage())) {
+                        if (filter != null) {
+                            switch (filter.apply(foundLand)) {
+                                case ABORT:
+                                    return new ArrayList<>();
+                                case RETURN:
+                                    return ownedLands;
+                                case SKIP:
+                                    continue;
+                            }
+                        }
                         ownedLands.add(foundLand);
                         toSearch.add(search);
                     }
@@ -257,5 +264,25 @@ public class LandManager {
         }
 
         return ownedLands;
+    }
+
+    public void syncAndSave(OwnedLand land) {
+        List<OwnedLand> lands = new ArrayList<>();
+        lands.add(land);
+        for (SimpleChunkLocation l : land.getLinked()) {
+            OwnedLand c = getLand(l);
+            if (c != null && c.syncLinked(land)) {
+                lands.add(c);
+            }
+        }
+
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(lands));
+    }
+
+    public enum FilterResponse {
+        ABORT,
+        RETURN,
+        SKIP,
+        ACCEPT;
     }
 }

@@ -34,7 +34,7 @@ public class PlotUseCommand extends VillageSubCommand {
                         for (Use u : Use.values()) {
                             land.setUseState(u, state);
                         }
-                        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
+                        LandManager.getInstance().syncAndSave(land);
                         res.tell(getMessage("success-all"), "state", state.getTag());
                     } catch (IllegalArgumentException e) {
                         res.tell(getMessage("states"), "states", Arrays.stream(PlotBuildState.values()).map(NameTag::humanizedName).collect(Collectors.joining(", ")));
@@ -60,7 +60,7 @@ public class PlotUseCommand extends VillageSubCommand {
                 Use u = Use.valueOf(args[0].toUpperCase());
                 PlotBuildState state = PlotBuildState.valueOf(Arrays.stream(args).skip(1).collect(Collectors.joining("_")).toUpperCase());
                 land.setUseState(u, state);
-                Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
+                LandManager.getInstance().syncAndSave(land);
                 res.tell(getMessage("success"), "flag", u.name(), "state", state.getTag());
             } catch (IllegalArgumentException e) {
                 res.tell(getMessage("flags"), "flags", Arrays.stream(Use.values()).map(u -> u.name().toLowerCase()).collect(Collectors.joining(", ")));
