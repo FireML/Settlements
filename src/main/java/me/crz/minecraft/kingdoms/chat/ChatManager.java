@@ -54,7 +54,6 @@ public class ChatManager extends Base {
         if (village == null) {
             switch (channel) {
                 case ALLY:
-                case OFFICER:
                 case SETTLEMENT:
                     channel = ChatChannel.GENERAL;
                     if (res.setActiveChannel(channel)) {
@@ -147,11 +146,6 @@ public class ChatManager extends Base {
                         .filter(finalChannel::canChat)
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(finalChannel))
-                        .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
-                break;
-            case OFFICER:
-                village.getOnlineResidents().stream()
-                        .filter(r -> r.isListening(finalChannel) && r.getVillageRank().atLeast(VillageRank.ELDER))
                         .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
                 break;
             case ALLY:

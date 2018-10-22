@@ -22,27 +22,6 @@ public enum ChatChannel implements NameTag {
     TRADE("trade", "t"),
     GENERAL("general", "g"),
     SETTLEMENT("settlement", "s", "village"),
-    OFFICER("officer", "o") {
-        @Override
-        public boolean canChat(Player player) {
-            Village village = VillageManager.getInstance().getVillageFromPlayer(player);
-            if (village == null) {
-                return false;
-            }
-            Resident res = ResidentManager.getInstance().getResident(player);
-            return res.getVillageRank().atLeast(VillageRank.ELDER);
-        }
-
-        @Override
-        public boolean canChatM(Player player) {
-            if (this.canChat(player)) {
-                return true;
-            }
-            Village village = VillageManager.getInstance().getVillageFromPlayer(player);
-            MessageUtils.tell(player, Message.get("error.rank-required"), "rank", VillageRank.ELDER.getTag(village));
-            return false;
-        }
-    },
     ALLY("ally", "a"),
     ADMIN("admin", "ac") {
         @Override
