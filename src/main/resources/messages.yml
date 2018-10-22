@@ -355,6 +355,7 @@ command:
       cant-claim-more: "&c&lERROR &r&7Your settlement can only claim &e{max} chunks of land!"
       no-land-around: "&c&lERROR &r&7Your claim must be connected to an existing settlement claim!"
       success: "&a&lSUCCESS &r&e{player} &7has claimed land for your settlement at {x},{z}!"
+      radius-too-large: "&c&lERROR &r&7Can't use an radius of {radius} for claiming as the maximum is {max}!"
       description: Claim a chunk of land
     create:
       success: "&a&lSUCCESS &r&7created a new settlement."
@@ -433,6 +434,7 @@ command:
         &r&7- &6= unclaimed
         &r&e+ &6= current
       hover:
+        click-to-claim: "&1Click to claim &f{location}"
         own-plot: Your plot
         plot: "Plot Owner: &7{owner}"
         for-sale: "For sale: &7{price}"

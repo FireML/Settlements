@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.db.TownCache;
 import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -113,18 +114,23 @@ public class Utils {
         }
     }
 
-    public static Collection<Chunk> getChunksAroundPlayer(Player player, int radius) {
-        World world = player.getWorld();
-        int baseX = player.getLocation().getChunk().getX();
-        int baseZ = player.getLocation().getChunk().getZ();
-        Collection<Chunk> chunksAroundPlayer = new HashSet<>();
+    public static Collection<SimpleChunkLocation> getChunksAround(Player player, int radius) {
+        return getChunksAround(new SimpleChunkLocation(player.getLocation()), radius);
+    }
+
+    public static Collection<SimpleChunkLocation> getChunksAround(SimpleChunkLocation location, int radius) {
+        String world = location.getWorld();
+        int baseX = location.getX();
+        int baseZ = location.getZ();
+        Collection<SimpleChunkLocation> chunksAround = new HashSet<>();
         for (int x = baseX - radius; x <= baseX + radius; x++) {
             for (int z = baseZ - radius; z <= baseZ + radius; z++) {
-                Chunk chunk = world.getChunkAt(x, z);
-                chunksAroundPlayer.add(chunk);
+                if (x != baseX && z != baseZ) {
+                    chunksAround.add(new SimpleChunkLocation(world, x, z));
+                }
             }
         }
-        return chunksAroundPlayer;
+        return chunksAround;
     }
 
     /**

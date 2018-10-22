@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
-import org.bukkit.Chunk;
+import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 
 public class OutpostClaimCommand extends VillageSubCommand {
     public OutpostClaimCommand(VillageSubCommand parent) {
@@ -44,12 +44,12 @@ public class OutpostClaimCommand extends VillageSubCommand {
                 resident.tell(getError("cant-claim-here"), "owner", land.getOwnerVillage().getName());
             }
         } else {
-            for (Chunk chunk : Utils.getChunksAroundPlayer(resident.getPlayer(), 4)) {
+            for (SimpleChunkLocation chunk : Utils.getChunksAround(resident.getPlayer(), 4)) {
                 OwnedLand checkLand = LandManager.getInstance().getLand(chunk);
                 if (checkLand == null) {
                     continue;
                 }
-                if (!checkLand.isOwnedBy(resident.getVillage())) {
+                if (!checkLand.isOwnedBy(resident.getVillage()) && !checkLand.getOwnerVillage().isAlly(resident.getVillage())) {
                     resident.tell(getError("claim-too-close"), "owner", checkLand.getOwnerVillage().getName());
                     return true;
                 }

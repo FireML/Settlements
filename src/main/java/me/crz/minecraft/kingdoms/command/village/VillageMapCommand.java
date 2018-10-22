@@ -6,11 +6,14 @@ import java.util.logging.Level;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ConfigKey;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import me.crz.minecraft.kingdoms.land.LandManager;
@@ -39,40 +42,46 @@ public class VillageMapCommand extends SubCommand {
     }
 
     private BaseComponent[][][] generateMap(Player player) {
-        Village village = VillageManager.getInstance().getVillageFromPlayer(player);
+        Resident resident = ResidentManager.getInstance().getResident(player);
         BaseComponent[][][] map = new BaseComponent[HEIGHT][WIDTH][0];
         int x = (player.getLocation().getBlockX() >> 4) - HEIGHT / 2;
         int z = (player.getLocation().getBlockZ() >> 4) - WIDTH / 2;
         for (int countX = 0; countX < HEIGHT; countX++) {
             for (int countZ = 0; countZ < WIDTH; countZ++) {
-                map[countX][countZ] = getSymbol(x + countX, z + countZ, player.getLocation().getWorld(), village, countX == HEIGHT / 2 && countZ == WIDTH / 2, player);
+                map[countX][countZ] = getSymbol(x + countX, z + countZ, player.getLocation().getWorld(), resident, countX == HEIGHT / 2 && countZ == WIDTH / 2);
             }
             ++countX;
         }
         return map;
     }
 
-    private BaseComponent[] getSymbol(int x, int z, World world, Village village, boolean current, Player player) {
+    private BaseComponent[] getSymbol(int x, int z, World world, Resident resident, boolean current) {
         OwnedLand land = LandManager.getInstance().getLand(x, z, world);
         if (land == null) {
-            return new ComponentBuilder((current ? Symbol.CURRENT : Symbol.NORMAL).getText()).color(Relation.UNCLAIMED.getColor()).create();
+            ComponentBuilder cb = new ComponentBuilder((current ? Symbol.CURRENT : Symbol.NORMAL).getText());
+            if (resident.hasVillage() && resident.getVillageRank().atLeast(VillageRank.ELDER)) {
+                cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/village claim " + x + " " + z));
+                cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, getMessage("hover.click-to-claim")
+                        .getReplacedComponents("location", x + "-" + z)));
+            }
+            return cb.color(Relation.UNCLAIMED.getColor()).create();
         }
         Symbol symbol = Symbol.NORMAL;
         Relation relation;
         if (land.isOutpost()) {
             symbol = Symbol.OUTPOST;
         }
-        if (land.getOwnerVillage().equals(village)) {
+        if (land.getOwnerVillage().equals(resident.getVillage())) {
             relation = Relation.OWN;
             if (land.isPlot()) {
-                if (land.isPlotOwner(player)) {
+                if (land.isPlotOwner(resident)) {
                     relation = Relation.OWN_PLOT;
                 }
                 symbol = Symbol.PLOT;
             } else if (land.isForSale()) {
                 symbol = Symbol.FOR_SALE;
             }
-        } else if (village != null && village.getAllies().contains(land.getOwnerVillage().getId())) {
+        } else if (resident.hasVillage() && resident.getVillage().getAllies().contains(land.getOwnerVillage().getId())) {
             relation = Relation.ALLY;
         } else {
             relation = Relation.ENEMY;

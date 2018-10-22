@@ -14,6 +14,7 @@ outpost-creation-cost: 0
 max-village-size: 30
 kingdoms-world: "kingdom"
 only-lock-in-settlement: true
+claim-max-radius: 5
 map:
   colors:
     own: GREEN
