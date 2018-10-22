@@ -41,6 +41,8 @@ public abstract class AbstractVillageInfoCommand extends SubCommand {
                 "fireSpread", yesOrNo(village.isFireSpread()),
                 "explosions", yesOrNo(village.isExplosions()),
                 "buff", yesOrNo(village.isBuff()),
+                "bank", String.valueOf(village.getBank()),
+                "bonusClaims", village.getBonusClaims() > 0 ? getMessage("bonus-claims").getReplacedText("amount", String.valueOf(village.getBonusClaims())) : "",
                 "access", village.getAccess().getTag(),
                 "chiefRank", VillageRank.CHIEF.getTag(village),
                 "chief", ResidentManager.getInstance().getResident(village.getChief()).getName(),

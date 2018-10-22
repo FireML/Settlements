@@ -64,9 +64,9 @@ public abstract class DatabaseManager {
 
     public abstract void saveResident(Resident... residents);
 
-    protected abstract void log(Village village, Resident resident, String action, Map<String, Integer> values);
+    public abstract void log(Village village, Resident resident, String action, Map<String, Integer> values);
 
-    protected void log(Village village, Resident resident, String action, String type, int amount) {
+    public void log(Village village, Resident resident, String action, String type, int amount) {
         log(village, resident, action, ImmutableMap.of(type, amount));
     }
 

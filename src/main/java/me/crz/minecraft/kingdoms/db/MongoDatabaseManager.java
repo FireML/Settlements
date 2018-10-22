@@ -171,7 +171,7 @@ public class MongoDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    protected void log(Village village, Resident resident, String action, Map<String, Integer> values) {
+    public void log(Village village, Resident resident, String action, Map<String, Integer> values) {
         if (village.getId().isNull()) {
             return;
         }
@@ -203,11 +203,12 @@ public class MongoDatabaseManager extends DatabaseManager {
             filters.add(Filters.eq("action", "deposit"));
         }
         switch (type) {
-            case BANK:
-                filters.add(Filters.eq("type", "cash"));
+            case GENERAL:
+                filters.add(Filters.or(Filters.eq("type", "cash"), Filters.eq("type", "claim")));
                 break;
             case VAULT:
                 filters.add(Filters.not(Filters.eq("type", "cash")));
+                filters.add(Filters.not(Filters.eq("type", "claim")));
                 break;
 
         }

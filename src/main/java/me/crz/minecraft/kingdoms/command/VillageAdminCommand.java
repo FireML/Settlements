@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command;
 
+import me.crz.minecraft.kingdoms.command.admin.VillageAdminBonusCommand;
 import me.crz.minecraft.kingdoms.command.admin.VillageAdminReloadCommand;
 import org.bukkit.entity.Player;
 
@@ -10,11 +11,11 @@ import me.crz.minecraft.kingdoms.command.admin.VillageAdminRankCommand;
 import me.crz.minecraft.kingdoms.command.admin.VillageAdminWorldCommand;
 
 public class VillageAdminCommand extends SubCommand {
-    private StringBuilder help;
 
     public VillageAdminCommand() {
         super(null, "villageadmin", "va");
         setPermission("kingdoms.admin");
+        this.registerCommand(new VillageAdminBonusCommand(this));
         this.registerCommand(new VillageAdminWorldCommand(this));
         this.registerCommand(new VillageAdminRankCommand(this));
         this.registerCommand(new VillageAdminJoinCommand(this));

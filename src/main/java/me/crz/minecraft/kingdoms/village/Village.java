@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.BonusClaimsHolder;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -39,7 +40,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class Village implements ConfigurationSerializable, Comparable<Village> {
+public class Village implements ConfigurationSerializable, Comparable<Village>, BonusClaimsHolder {
     private IdObject id = IdObject.get(null);
     private String name;
     private String description;
@@ -62,6 +63,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village> {
     private Map<Use, BuildState> use = new EnumMap<>(Use.class);
     private long lastUpkeep = System.currentTimeMillis();
     private Map<String, Integer> vault = new HashMap<>();
+    private int bonusClaims = 0;
 
     public Village(String name, UUID chief, int level, VillageState state, BuildState buildState) {
         this.name = name;
@@ -354,7 +356,15 @@ public class Village implements ConfigurationSerializable, Comparable<Village> {
     }
 
     public int getMaxClaimableChunks() {
-        return Utils.getLevelChunks(getState(), getLevel());
+        return Utils.getLevelChunks(getState(), getLevel()) + bonusClaims;
+    }
+
+    public int getBonusClaims() {
+        return bonusClaims;
+    }
+
+    public void setBonusClaims(int bonusClaims) {
+        this.bonusClaims = bonusClaims;
     }
 
     public int getMaxOutposts() {
@@ -430,6 +440,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village> {
         map.put("mobSpawning", isMobSpawning());
         map.put("buff", isBuff());
         map.put("bank", getBank());
+        map.put("bonusClaims", getBonusClaims());
         if (getVillageHome() != null)
             map.put("homeLoc", getVillageHome().serialize());
         map.put("outposts", getOutpostHomes().values().stream().collect(Collectors.toMap(NamedLocation::getName, NamedLocation::serialize)));
@@ -463,6 +474,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village> {
         village.setMobSpawning((Boolean) map.get("mobSpawning"));
         village.setBuff((Boolean) map.get("buff"));
         village.setBank((Long) map.get("bank"));
+        village.setBonusClaims((Integer) map.get("bonusClaims"));
         village.getAllies().addAll(((Collection<Object>) map.get("allies")).stream().map(IdObject::get).collect(Collectors.toSet()));
         if (map.get("homeLoc") != null) {
             village.setVillageHome(SimpleLocation.deserialize((Map<String, Object>) map.get("homeLoc")));

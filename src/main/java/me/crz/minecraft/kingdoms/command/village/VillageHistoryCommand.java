@@ -41,7 +41,7 @@ public class VillageHistoryCommand extends VillageSubCommand {
     }
 
     public enum Type {
-        BANK,
+        GENERAL,
         VAULT,
         ALL;
     }

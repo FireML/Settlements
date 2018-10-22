@@ -36,9 +36,12 @@ public class ScoreBoard implements ScoreboardPolicy {
                 "balance", withSuffix((long) KingdomsPlugin.getInstance().econ.getBalance(member)),
                 "kills", String.valueOf(member.getStatistic(Statistic.PLAYER_KILLS)),
                 "deaths", String.valueOf(member.getStatistic(Statistic.DEATHS)),
+                "bonus", String.valueOf(resident.getBonusClaims()),
                 "villagename", resident.getVillageName(),
                 "villagestate", resident.hasVillage() ? resident.getVillage().getState().getTag() : "",
-                "villagerank", resident.getVillageRank().getTag(resident.getVillage())
+                "villagerank", resident.getVillageRank().getTag(resident.getVillage()),
+                "villagebank", resident.hasVillage() ? String.valueOf(resident.getVillage().getBank()) : "",
+                "villagebonus", resident.hasVillage() ? String.valueOf(resident.getVillage().getBonusClaims()) : ""
         );
     }
 

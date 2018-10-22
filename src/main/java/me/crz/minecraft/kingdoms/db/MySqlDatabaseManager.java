@@ -79,6 +79,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "mobSpawning BOOLEAN NOT NULL,"
                     + "buff BOOLEAN NOT NULL,"
                     + "bank INTEGER,"
+                    + "bonusClaims INTEGER,"
                     + "homeLoc_world VARCHAR(255),"
                     + "homeLoc_x DOUBLE,"
                     + "homeLoc_y DOUBLE,"
@@ -145,6 +146,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE SET NULL,"
                     + "settlementJoin BIGINT(11) NOT NULL,"
                     + "rank VARCHAR(255),"
+                    + "bonusClaims INTEGER,"
                     + "lastLogin BIGINT(11) NOT NULL,"
                     + "activeChannel VARCHAR(255) NOT NULL,"
                     + "swear BOOLEAN NOT NULL"
@@ -472,7 +474,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    protected void log(Village village, Resident resident, String action, Map<String, Integer> values) {
+    public void log(Village village, Resident resident, String action, Map<String, Integer> values) {
         Utils.catchSync();
         try (Connection conn = ds.getConnection();
              PreparedStatement sta = conn.prepareStatement("INSERT INTO " + tablePrefix + "logs " +
@@ -507,11 +509,11 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 "LEFT JOIN " + tablePrefix + "residents AS r ON l.residentId = r.id " +
                 "WHERE l.settlementId=?";
         switch (bank) {
-            case BANK:
-                sql += " AND l.type = 'cash'";
+            case GENERAL:
+                sql += " AND (l.type = 'cash' OR l.type = 'claim')";
                 break;
             case VAULT:
-                sql += " AND l.type != 'cash'";
+                sql += " AND l.type != 'cash' AND l.type != 'claim'";
                 break;
         }
         if (!resident.getVillageRank().atLeast(VillageRank.CHIEF)) {

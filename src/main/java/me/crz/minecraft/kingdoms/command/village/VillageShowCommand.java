@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 public class VillageShowCommand extends AbstractVillageInfoCommand {
 
     public VillageShowCommand(SubCommand parent) {
-        super(parent, "show [<name>]");
+        super(parent, "show [<name>]", "info");
         setPermission("kingdoms.user");
     }
 

@@ -3,11 +3,11 @@ package me.crz.minecraft.kingdoms.command.village.settings;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
 
-import java.util.Arrays;
-
 import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.VillageGUI;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.cinventory.CInventoryManager;
+import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.ClickType;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import org.bukkit.Material;
@@ -17,9 +17,9 @@ import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import net.md_5.bungee.api.ChatColor;
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
+import org.bukkit.inventory.meta.SkullMeta;
 
-public class ResidentsGUI {
-    public CInventory gui;
+public class ResidentsGUI extends VillageGUI {
 
     public static String cfc(String string) {
         if (string == null || string.length() == 0) {
@@ -33,24 +33,24 @@ public class ResidentsGUI {
     }
 
     public ResidentsGUI() {
-        super();
-        (gui = new CInventory("&3&lVillage Residents", InventorySize.SIX) {}).addItem(53, new ClickableItem() {
-            public ItemStack getItem(Player p) {
-                return new CItem(Material.BARRIER).setName("&c&lBack To Settings").build();
-            }
-
-            public boolean click(Player p, ClickType clickType) {
-                SettingsGUI.getInstance().open(p);
-                return true;
-            }
-        });
-        CInventoryManager.getInstance().addCInvetory(gui);
+        super("residents");
     }
 
     public void open(Player p) {
         Utils.runAsync(() -> {
+            CInventory gui = new CInventory(getText("title"), InventorySize.SIX) {};
+            CInventoryManager.getInstance().addCInvetory(gui);
+            gui.addItem(53, new ClickableItem() {
+                public ItemStack getItem(Player p) {
+                    return new CItem(Material.BARRIER).setName(getText("back")).build();
+                }
+
+                public boolean click(Player p, ClickType clickType) {
+                    SettingsGUI.getInstance().open(p);
+                    return true;
+                }
+            });
             Village village = VillageManager.getInstance().getVillageFromPlayer(p);
-            gui.clearItems();
             int i = 0;
             for (Resident res : village.getResidents()) {
                 if (i > 52) {
@@ -58,10 +58,18 @@ public class ResidentsGUI {
                 }
                 gui.addItem(new ClickableItem() {
                     public ItemStack getItem(Player p) {
-                        return new CItem(Material.PLAYER_HEAD)
-                                .setName("&c&l" + res.getName())
-                                .setLore(Arrays.asList(ResidentsGUI.c("&7&lRole"), ResidentsGUI.c("&b&l" + ResidentsGUI.cfc(res.getVillageRank().name()))))
+                        ItemStack item = new CItem(Material.PLAYER_HEAD)
+                                .setName(getMessage("entry").getReplacedText(
+                                        "name", res.getName(),
+                                        "rank", res.getVillageRank().getTag(village),
+                                        "joined", Utils.TIME_FORMAT.format(res.getVillageJoin()),
+                                        "lastlogin", Utils.TIME_FORMAT.format(res.getLastLogin())
+                                ))
                                 .build();
+                        SkullMeta meta = (SkullMeta) item.getItemMeta();
+                        meta.setPlayerProfile(Bukkit.createProfile(res.getUUID(), res.getName()));
+                        item.setItemMeta(meta);
+                        return item;
                     }
 
                     public boolean click(Player p, ClickType clickType) {

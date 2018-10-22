@@ -44,6 +44,7 @@ scoreboard:
     entries:
       no-village: |-
         &3&lBal&3: &b$&e{balance}
+        &3&lBonus&e: &e{bonus}
 
         &3&lKills&3: &e{kills}
         &3&lDeaths&3: &e{deaths}
@@ -53,7 +54,9 @@ scoreboard:
         &3&lRank: {villagerank}
 
         &3&lBal&3: &b$&e{balance}
+        &3&lBonus&e: &e{bonus}
         &3&lBank: &b$&e{bank}
+        &3&lVillage-Bonus&e: &e{villagebonus}
 
         &3&lKills&3: &e{kills}
         &3&lDeaths&3: &e{deaths}
@@ -208,6 +211,30 @@ gui:
     title: "&3&lPlot Build Settings"
     set-state: "&7&lClick to allow building of &b&l{state}"
     selected-state: "&e&lBuilding is currently set to &b&l{state}"
+  residents:
+    title: "&3&lVillage Residents"
+    back: "&c&lBack To Settings"
+    entry: |-
+      &c&l{name}
+      &7&lRole &b&l{rank}
+      &7&lJoined &b&l{joined}
+      &7&lLast login &b&l{lastlogin}
+  settings:
+    title: "&3&lSettlement Settings"
+    access: "&b&lAccess"
+    use: "&b&lUse"
+    mode: "&b&lMode"
+    entry: |-
+      &b&lVillage Data
+      &8--------&c&l{name}&r&8--------
+      &a&lState &r&7{state}
+      &6&lLevel &r&7{level}
+      &6&lAccess &r&7{access}
+      &6&lBank &r&7{bank}
+      &6&lLand &r&7{land}&r&e/&r&7{maxLand}{bonus}
+      &e&l{chiefRank} &r&7{chief}
+      &e&lResidents: &r&7{residents}
+    bonus: " Bonus: {amount}"
   teleporters:
     title: "&2&lSettlement Teleporters"
     locked: "&cLocked"
@@ -268,6 +295,10 @@ command:
     no-one-messaged: "&cNo one messaged you!"
     target-is-offline: "&cThe player that messaged you is offline now!"
   resident:
+    claimtransfer:
+      success: "&e&l{rank} &r&e{name} &r&7added &6{amount}&r&7 bonus claims to the {state}!"
+      description: Deposit money into the bank
+      not-enough-bonus: "&c&lNot enough bonus claims to transfer &r&6&l{amount}&r&c&l!"
     show:
       info: |-
         &8------&c&l {name} &8------
@@ -372,10 +403,11 @@ command:
         &6&lLevel: &r&7{level}
         &6&lBank: &r&7{bank}
         &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxOutposts}
-        &6&lLand: &r&7{land}&r&e/&r&7{maxLand}
+        &6&lLand: &r&7{land}&r&e/&r&7{maxLand}{bonusClaims}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobSpawning}&r&7 |  Firespread: &r&e{fireSpread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &b&lResidents:
         {residents}
+      bonus-claims: " Bonus: {amount}"
       residents:
         rank: "&6&l{rank}:&r {residents}"
         separator: "&7, "
@@ -575,10 +607,11 @@ command:
         &6&lLevel: &r&7{level}
         &6&lBank: &r&7{bank}
         &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxOutposts}
-        &6&lLand: &r&7{land}&r&e/&r&7{maxLand}
+        &6&lLand: &r&7{land}&r&e/&r&7{maxLand}{bonusClaims}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobSpawning}&r&7 |  Firespread: &r&e{fireSpread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &b&lResidents:
         {residents}
+      bonus-claims: " Bonus: {amount}"
       residents:
         rank: "&6&l{rank}:&r {residents}"
         separator: "&7, "
@@ -631,6 +664,9 @@ command:
       description: Shows a settings gui
   villageadmin:
     description: Village administration command
+    bonus:
+      description: Add/set/remove bonus claims from Residents/Villages
+      success: "&aSUCCESS: {operation} {amount} to {name}"
     world:
       description: Sets if a world is claimable in or not
     join:

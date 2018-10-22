@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.utils.BonusClaimsHolder;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -10,9 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
@@ -26,7 +25,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class Resident implements ConfigurationSerializable {
+public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
     private Object id = null;
     private UUID uuid;
     private String name;
@@ -37,6 +36,7 @@ public class Resident implements ConfigurationSerializable {
     private Set<UUID> ignore = new HashSet<>();
     private Set<UUID> friends = new HashSet<>();
     private boolean swear = true;
+    private int bonusClaims = 0;
     private long lastLogin = 0;
     private long villageJoin;
 
@@ -162,6 +162,14 @@ public class Resident implements ConfigurationSerializable {
         return rank;
     }
 
+    public int getBonusClaims() {
+        return bonusClaims;
+    }
+
+    public void setBonusClaims(int bonusClaims) {
+        this.bonusClaims = bonusClaims;
+    }
+
     public long getVillageJoin() {
         return getVillage() != null ? villageJoin : -1;
     }
@@ -194,6 +202,7 @@ public class Resident implements ConfigurationSerializable {
         map.put("channels", getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
         map.put("activeChannel", getActiveChannel().name());
         map.put("swear", getSwear());
+        map.put("bonusClaims", getBonusClaims());
         map.put("ignores", getIgnore().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("friends", getFriends().stream().map(UUID::toString).collect(Collectors.toList()));
         return map;
@@ -229,6 +238,9 @@ public class Resident implements ConfigurationSerializable {
         }
         if (map.containsKey("swear")) {
             resident.setSwear((Boolean) map.get("swear"));
+        }
+        if (map.containsKey("bonusClaims")) {
+            resident.setBonusClaims((Integer) map.get("bonusClaims"));
         }
         if (map.containsKey("ignores")) {
             ((Collection<String>) map.get("ignores")).stream().map(Utils::parseUuid).filter(Objects::nonNull).forEach(resident::addIgnore);
