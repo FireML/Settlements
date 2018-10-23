@@ -146,6 +146,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE SET NULL,"
                     + "settlementJoin BIGINT(11) NOT NULL,"
                     + "rank VARCHAR(255),"
+                    + "title VARCHAR(255),"
                     + "bonusClaims INTEGER,"
                     + "lastLogin BIGINT(11) NOT NULL,"
                     + "activeChannel VARCHAR(255) NOT NULL,"
@@ -506,7 +507,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return log;
         }
         int start = (page-1) * 20;
-        String sql = "SELECT l.action, l.type, l.amount, l.timestamp, r.name AS playerName, r.uuid AS playerId, r.rank AS playerRank FROM " + tablePrefix + "logs AS l " +
+        String sql = "SELECT l.action, l.type, l.amount, l.timestamp, r.name AS playerName, r.uuid AS playerId, r.rank AS playerRank, r.title AS playerTitle " +
+                "FROM " + tablePrefix + "logs AS l " +
                 "LEFT JOIN " + tablePrefix + "residents AS r ON l.residentId = r.id " +
                 "WHERE l.settlementId=?";
         switch (bank) {
@@ -534,6 +536,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                         "name", rs.getString("playerName"),
                         "uuid", rs.getString("playerId"),
                         "rank", rank.getTag(village),
+                        "title", rs.getString("playerTitle"),
                         "action", rs.getString("action"),
                         "type", rs.getString("type"),
                         "amount", String.valueOf(rs.getInt("amount")),

@@ -30,7 +30,8 @@ public class MoneyWithdrawCommand extends VillageSubCommand {
                     DatabaseManager.getInstance().logWithdraw(resident.getVillage(), resident, withdrewInit);
                     MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("withdrawn"),
                             "rank", resident.getVillageRank().getTag(resident.getVillage()),
-                            "player", resident.getName(),
+                            "title", resident.getTitle(),
+                            "name", resident.getName(),
                             "amount", String.valueOf(withdrewInit));
                 } else {
                     resident.tell("&cAn error occurred, please tell an admin!");

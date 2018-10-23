@@ -27,6 +27,7 @@ public abstract class AbstractVillageInfoCommand extends SubCommand {
     }
 
     protected String[] getReplacements(Village village) {
+        Resident chief = ResidentManager.getInstance().getResident(village.getChief());
         return new String[] {
                 "name", village.getName(),
                 "state", village.getState().getTag(),
@@ -45,7 +46,8 @@ public abstract class AbstractVillageInfoCommand extends SubCommand {
                 "bonusClaims", village.getBonusClaims() > 0 ? getMessage("bonus-claims").getReplacedText("amount", String.valueOf(village.getBonusClaims())) : "",
                 "access", village.getAccess().getTag(),
                 "chiefRank", VillageRank.CHIEF.getTag(village),
-                "chief", ResidentManager.getInstance().getResident(village.getChief()).getName(),
+                "chiefTitle", chief.getTitle(),
+                "chief", chief.getName(),
                 "residents", getResidentsToString(village)
         };
     }
@@ -69,7 +71,8 @@ public abstract class AbstractVillageInfoCommand extends SubCommand {
                             .map(res -> MessageUtils.replacePlaceholders(entry,
                                     "online", res.getPlayer() != null ? online : offline,
                                     "name", res.getName(),
-                                    "rank", rank.getTag(village)
+                                    "rank", rank.getTag(village),
+                                    "title", res.getTitle()
                             ))
                             .collect(Collectors.joining(separator))
             ));

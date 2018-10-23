@@ -32,7 +32,8 @@ public class MoneyDepositCommand extends VillageSubCommand {
                     });
                     MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("deposited"),
                             "rank", resident.getVillageRank().getTag(resident.getVillage()),
-                            "player", resident.getName(),
+                            "title", resident.getTitle(),
+                            "name", resident.getName(),
                             "amount", String.valueOf(deposit));
                 } else {
                     resident.tell("&cAn error occurred, please tell an admin!");

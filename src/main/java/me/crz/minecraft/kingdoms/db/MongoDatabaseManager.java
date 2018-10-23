@@ -178,9 +178,12 @@ public class MongoDatabaseManager extends DatabaseManager {
         List<Document> insert = new ArrayList<>();
         for (Map.Entry<String, Integer> entry : values.entrySet()) {
             Map<String, Object> map = new LinkedHashMap<>();
-            map.put("name", resident != null ? resident.getName() : "");
-            map.put("uuid", resident != null ? resident.getUUID() : "");
-            map.put("rank", resident != null ? resident.getVillageRank().name() : "");
+            if (resident != null) {
+                map.put("name", resident.getName());
+                map.put("uuid", resident.getUUID());
+                map.put("rank", resident.getVillageRank().name());
+                map.put("title", resident.getTitle());
+            }
             map.put("village", village.getId().value());
             map.put("action", action);
             map.put("type", entry.getKey().toLowerCase());
@@ -225,6 +228,7 @@ public class MongoDatabaseManager extends DatabaseManager {
                     "name", document.getString("name"),
                     "uuid", document.getString("uuid"),
                     "rank", rank.getTag(village),
+                    "title", document.getString("title"),
                     "action", document.getString("action"),
                     "type", document.getString("type"),
                     "amount", String.valueOf(document.getInteger("amount")),

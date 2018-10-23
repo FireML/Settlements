@@ -129,7 +129,6 @@ public class VillageManager {
             LandManager.getInstance().setPlotOwner(land, null);
         }
         resident.setVillage(null);
-        resident.setVillageRank(VillageRank.RESIDENT);
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveLand(lands);
             DatabaseManager.getInstance().saveResident(resident);

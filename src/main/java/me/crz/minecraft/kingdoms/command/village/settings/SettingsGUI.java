@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.command.village.settings;
 
 import me.crz.minecraft.kingdoms.cinventory.CInventoryManager;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.VillageGUI;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -73,6 +74,7 @@ public class SettingsGUI extends VillageGUI {
                 if (village == null) {
                     return null;
                 }
+                Resident chief = ResidentManager.getInstance().getResident(village.getChief());
                 return new CItem(Material.LIGHT_GRAY_STAINED_GLASS_PANE).setName(
                         getMessage("entry").getReplacedText(
                                 "name", village.getName(),
@@ -85,7 +87,8 @@ public class SettingsGUI extends VillageGUI {
                                 "outposts", String.valueOf(village.getOutpostHomes().size()),
                                 "maxOutposts", String.valueOf(village.getMaxOutposts()),
                                 "chiefRank", VillageRank.CHIEF.getTag(village),
-                                "chief", ResidentManager.getInstance().getResidentName(village.getChief()),
+                                "chiefTitle", chief.getName(),
+                                "chief", chief.getName(),
                                 "residents", String.valueOf(village.getResidentIds().size())
                         )
                 ).build();

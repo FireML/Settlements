@@ -69,22 +69,6 @@ public class ChatManager extends Base {
         String senderPrefix = MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(sender));
         String senderSuffix = MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerSuffix(sender));
 
-        HoverEvent senderHover = new HoverEvent(HoverEvent.Action.SHOW_TEXT, getMessage("hover.info").getReplacedComponents(
-                "name", sender.getName(),
-                "displayname", sender.getDisplayName(),
-                "prefix", senderPrefix,
-                "suffix", senderSuffix,
-                "balance", getMessage("hover.balance").getReplacedText("balance", BALANCE_FORMAT.format(KingdomsPlugin.getInstance().econ.getBalance(sender))),
-                "village", village != null ? getMessage("hover.village").getReplacedText(
-                        "state", village.getState().getTag(),
-                        "name", village.getName()
-                ): "",
-                "rank", village != null ? getMessage("hover.rank").getReplacedText(
-                        "state", village.getState().getTag(),
-                        "rank", res.getVillageRank().getTag(village)
-                ) : ""
-        ));
-
         e.setCancelled(true);
 
         if (e.getPlayer().hasPermission("kingdoms.chat.colour")) {
@@ -97,9 +81,10 @@ public class ChatManager extends Base {
                 .replace("prefix", TextComponent.fromLegacyText(senderPrefix))
                 .replace("suffix", TextComponent.fromLegacyText(senderSuffix))
                 .replace("rank", TextComponent.fromLegacyText(village != null ? res.getVillageRank().getTag(village) : ""))
+                .replace("title", TextComponent.fromLegacyText(res.getTitle()))
                 .replace("state", TextComponent.fromLegacyText(village != null ? village.getState().getTag() : ""))
                 .replace("sender", new ComponentBuilder("")
-                        .event(senderHover)
+                        .event(getHover(sender, res))
                         .append(getMessage("format.name").getReplacedComponents(
                                 "name", sender.getName(),
                                 "displayname", sender.getDisplayName(),
@@ -179,51 +164,16 @@ public class ChatManager extends Base {
             MessageUtils.tell(sender, getMessage("ignored"), "name", target.getName());
             return;
         }
-        String senderPrefix = MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(sender));
-        String senderSuffix = MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerSuffix(sender));
-        HoverEvent senderHover = new HoverEvent(HoverEvent.Action.SHOW_TEXT, getMessage("hover.info").getReplacedComponents(
-                "name", sender.getName(),
-                "displayname", sender.getDisplayName(),
-                "prefix", senderPrefix,
-                "suffix", senderSuffix,
-                "balance", getMessage("hover.balance").getReplacedText("balance", BALANCE_FORMAT.format(KingdomsPlugin.getInstance().econ.getBalance(sender))),
-                "village", res.getVillage() != null ? getMessage("hover.village").getReplacedText(
-                        "state", res.getVillage().getState().getTag(),
-                        "name", res.getVillage().getName()
-                ): ""
-        ));
-
-        String targetPrefix = MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(target));
-        String targetSuffix = MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerSuffix(target));
-        HoverEvent targetHover = new HoverEvent(HoverEvent.Action.SHOW_TEXT, getMessage("hover.info").getReplacedComponents(
-                "name", target.getName(),
-                "displayname", target.getDisplayName(),
-                "prefix", targetPrefix,
-                "suffix", targetSuffix,
-                "balance", getMessage("hover.balance").getReplacedText("balance", BALANCE_FORMAT.format(KingdomsPlugin.getInstance().econ.getBalance(target))),
-                "village", tres.getVillage() != null ? getMessage("hover.village").getReplacedText(
-                        "state", tres.getVillage().getState().getTag(),
-                        "name", tres.getVillage().getName()
-                ): ""
-        ));
+        HoverEvent senderHover = getHover(sender, res);
+        HoverEvent targetHover = getHover(target, tres);
 
         MessageUtils.tell(sender, getMessage("format.private.sender"), ImmutableMap.of(
                 "sender", new ComponentBuilder(
-                        getMessage("format.private.name.sender").getReplacedText(
-                                "name", sender.getName(),
-                                "displayname", sender.getDisplayName(),
-                                "prefix", senderPrefix,
-                                "suffix", senderSuffix
-                        ))
+                        getMessage("format.private.name.sender").getReplacedText(getReplacements(sender, res)))
                         .event(senderHover)
                         .create(),
                 "target", new ComponentBuilder(
-                        getMessage("format.private.name.target").getReplacedText(
-                                "name", target.getName(),
-                                "displayname", target.getDisplayName(),
-                                "prefix", targetPrefix,
-                                "suffix", targetSuffix
-                        ))
+                        getMessage("format.private.name.target").getReplacedText(getReplacements(target, tres)))
                         .event(targetHover)
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + target.getName() + " "))
                         .create(),
@@ -233,22 +183,12 @@ public class ChatManager extends Base {
 
         MessageUtils.tell(sender, getMessage("format.private.target"), ImmutableMap.of(
                 "sender", new ComponentBuilder(
-                        getMessage("format.private.name.target").getReplacedText(
-                                "name", target.getName(),
-                                "displayname", target.getDisplayName(),
-                                "prefix", targetPrefix,
-                                "suffix", targetSuffix
-                        ))
+                        getMessage("format.private.name.target").getReplacedText(getReplacements(target, tres)))
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + sender.getName() + " "))
                         .event(senderHover)
                         .create(),
                 "target", new ComponentBuilder(
-                        getMessage("format.private.name.sender").getReplacedText(
-                                "name", sender.getName(),
-                                "displayname", sender.getDisplayName(),
-                                "prefix", senderPrefix,
-                                "suffix", senderSuffix
-                        ))
+                        getMessage("format.private.name.sender").getReplacedText(getReplacements(sender, res)))
                         .event(targetHover)
                         .create(),
                 "message", new ComponentBuilder(message).create(),
@@ -269,6 +209,36 @@ public class ChatManager extends Base {
                 MessageUtils.tell(pl, socialSpy);
             }
         }
+    }
+
+    private String[] getReplacements(Player player, Resident res) {
+        return new String[] {
+                "name", player.getName(),
+                "displayname", player.getDisplayName(),
+                "prefix", MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(player)),
+                "suffix", MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerSuffix(player)),
+                "rank", res.hasVillage() ? res.getVillageRank().getTag(res.getVillage()) : "",
+                "title", res.getTitle()
+        };
+    }
+
+    private HoverEvent getHover(Player player, Resident res) {
+        return new HoverEvent(HoverEvent.Action.SHOW_TEXT, getMessage("hover.info").getReplacedComponents(
+                "name", player.getName(),
+                "displayname", player.getDisplayName(),
+                "prefix", MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(player)),
+                "suffix", MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerSuffix(player)),
+                "balance", getMessage("hover.balance").getReplacedText("balance", BALANCE_FORMAT.format(KingdomsPlugin.getInstance().econ.getBalance(player))),
+                "village", res.hasVillage() ? getMessage("hover.village").getReplacedText(
+                        "state", res.getVillage().getState().getTag(),
+                        "name", res.getVillage().getName()
+                ): "",
+                "rank", res.hasVillage() ? getMessage("hover.rank").getReplacedText(
+                        "state", res.getVillage().getState().getTag(),
+                        "rank", res.getVillageRank().getTag(res.getVillage()),
+                        "title", res.getTitle()
+                ) : ""
+        ));
     }
 
     public UUID getLastMessaged(Player p) {

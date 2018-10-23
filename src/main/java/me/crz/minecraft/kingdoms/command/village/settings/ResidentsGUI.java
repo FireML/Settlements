@@ -62,6 +62,7 @@ public class ResidentsGUI extends VillageGUI {
                                 .setName(getMessage("entry").getReplacedText(
                                         "name", res.getName(),
                                         "rank", res.getVillageRank().getTag(village),
+                                        "title", res.getTitle(),
                                         "joined", Utils.TIME_FORMAT.format(res.getVillageJoin()),
                                         "lastlogin", Utils.TIME_FORMAT.format(res.getLastLogin())
                                 ))

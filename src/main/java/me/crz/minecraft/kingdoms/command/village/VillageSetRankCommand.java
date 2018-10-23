@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 
 public class VillageSetRankCommand extends VillageSubCommand {
     public VillageSetRankCommand(SubCommand parent) {
-        super(parent, "setrank <player> <rank>", VillageRank.ELDER);
+        super(parent, "setrank <player> <rank>", VillageRank.ELDER, "rank");
         setPermission("kingdoms.user");
     }
 
@@ -44,18 +44,8 @@ public class VillageSetRankCommand extends VillageSubCommand {
                 MessageUtils.tell(player, getError("not-in-current"), "state", village.getState().getTag());
                 return;
             }
-            VillageRank rank = null;
-            try {
-                rank = VillageRank.valueOf(args[1].toUpperCase());
-            } catch (IllegalArgumentException e) {
-                for (VillageRank r : VillageRank.values()) {
-                    if (r.getTag(village).equalsIgnoreCase(args[1])) {
-                        rank = r;
-                        break;
-                    }
-                }
-            }
 
+            VillageRank rank = VillageRank.get(args[1]);
 
             if (rank == null) {
                 MessageUtils.tell(player, getError("invalid-rank"), "rank", args[1]);

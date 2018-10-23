@@ -37,7 +37,8 @@ public class VillageResListCommand extends VillageSubCommand {
                                 .map(res -> MessageUtils.replacePlaceholders(entry,
                                         "online", res.getPlayer() != null ? online : offline,
                                         "name", res.getName(),
-                                        "rank", res.getVillageRank().getTag(res.getVillage())
+                                        "rank", res.getVillageRank().getTag(res.getVillage()),
+                                        "title", res.getTitle()
                                 ))
                                 .collect(Collectors.joining(separator))
                 );

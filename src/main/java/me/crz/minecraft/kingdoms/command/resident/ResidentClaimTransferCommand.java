@@ -48,6 +48,7 @@ public class ResidentClaimTransferCommand extends VillageSubCommand {
                 });
                 MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("success"),
                         "rank", resident.getVillageRank().getTag(resident.getVillage()),
+                        "title", resident.getTitle(),
                         "player", resident.getName(),
                         "amount", String.valueOf(transfer),
                         "state", resident.getVillage().getState().getTag());

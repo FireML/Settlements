@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.command.village;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageAccess;
@@ -54,14 +55,18 @@ public class VillageListCommand extends SubCommand {
                     .filter(v -> v.getAccess().atLeast(finalAccess))
                     .sorted(Village::compareTo)
                     .skip((finalPage - 1) * 20)
-                    .forEachOrdered(v -> getMessage("entry").tell(player,
-                            "name", v.getName(),
-                            "state", v.getState().getTag(),
-                            "access", v.getAccess() != VillageAccess.PRIVATE ? v.getAccess().getTag() : "",
-                            "residents", String.valueOf(v.getResidentIds().size()),
-                            "chief", ResidentManager.getInstance().getResident(v.getChief()).getName(),
-                            "chiefrank", VillageRank.CHIEF.getTag(v)
-                    ));
+                    .forEachOrdered(v -> {
+                        Resident chief = ResidentManager.getInstance().getResident(v.getChief());
+                        getMessage("entry").tell(player,
+                                "name", v.getName(),
+                                "state", v.getState().getTag(),
+                                "access", v.getAccess() != VillageAccess.PRIVATE ? v.getAccess().getTag() : "",
+                                "residents", String.valueOf(v.getResidentIds().size()),
+                                "chief", chief.getName(),
+                                "chieftitle", chief.getTitle(),
+                                "chiefrank", VillageRank.CHIEF.getTag(v)
+                        );
+                    });
         });
 
         return true;
