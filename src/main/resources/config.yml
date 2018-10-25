@@ -15,20 +15,3 @@ max-village-size: 30
 kingdoms-world: "kingdom"
 only-lock-in-settlement: true
 claim-max-radius: 5
-map:
-  colors:
-    own: GREEN
-    own-plot: YELLOW
-    ally: AQUA
-    enemy: RED
-    unclaimed: LGRAY
-    current: YELLOW
-  symbol:
-    normal: "-"
-    for-sale: "$"
-    plot: "~"
-    embassy: "e"
-    home: "H"
-    outpost: "@"
-    unclaimed: "-"
-    current: "+"

@@ -1,0 +1,16 @@
+colors:
+  own: GREEN
+  own-plot: YELLOW
+  ally: AQUA
+  enemy: RED
+  unclaimed: LGRAY
+  current: YELLOW
+symbol:
+  normal: "-"
+  for-sale: "$"
+  plot: "~"
+  embassy: "e"
+  home: "H"
+  outpost: "@"
+  unclaimed: "-"
+  current: "+"

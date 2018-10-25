@@ -9,6 +9,7 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ConfigKey;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import net.md_5.bungee.api.ChatColor;
@@ -212,7 +213,7 @@ public class VillageMapCommand extends SubCommand {
         Relation() {
             ChatColor temp;
             try {
-                temp = ChatColor.valueOf(KingdomsPlugin.getInstance().getConfig().getString("map.color." + getKey()).toUpperCase());
+                temp = ChatColor.valueOf(ConfigManager.getInstance().getMapConfig().getString("color." + getKey()).toUpperCase());
             } catch (IllegalArgumentException e) {
                 temp = ChatColor.GRAY;
                 KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Wrong color string for " + name() + "! " + e.getMessage());
@@ -239,7 +240,7 @@ public class VillageMapCommand extends SubCommand {
         private final String text;
 
         Symbol() {
-            text = KingdomsPlugin.getInstance().getConfig().getString("map.symbol." + getKey());
+            text = ConfigManager.getInstance().getMapConfig().getString("symbol." + getKey());
         }
 
         public String getText() {

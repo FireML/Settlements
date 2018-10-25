@@ -12,6 +12,7 @@ public class ConfigManager {
     private static ConfigManager instance;
     private ConfigAccessor messages;
     private ConfigAccessor levelConf;
+    private ConfigAccessor mapConf;
 
     public ConfigManager() {
         super();
@@ -27,6 +28,9 @@ public class ConfigManager {
         levelConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "levelConf.yml");
         levelConf.saveDefaultConfig();
         levelConf.reloadConfig();
+        mapConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "mapConf.yml");
+        mapConf.saveDefaultConfig();
+        mapConf.reloadConfig();
         Message.clearCache();
     }
 
@@ -44,6 +48,10 @@ public class ConfigManager {
 
     public FileConfiguration getLevelConfig() {
         return levelConf.getConfig();
+    }
+
+    public FileConfiguration getMapConfig() {
+        return mapConf.getConfig();
     }
 
     public FileConfiguration getConfig() {
