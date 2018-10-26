@@ -12,6 +12,7 @@ import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageGUI;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.village.VillagePerk;
@@ -38,8 +39,17 @@ public class PerksGUI extends VillageGUI {
         }
 
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
+        Village village = resident.getVillage();
 
         for (VillagePerk perk : VillageManager.getInstance().getPerks()) {
+            if (village.getState() == perk.getState() && village.getLevel() + 1 < perk.getLevel()) {
+                continue;
+            }
+
+            if (village.getState().below(perk.getState())) {
+                continue;
+            }
+
             gui.addItem(new ClickableItem() {
                 @Override
                 public ItemStack getItem(Player p) {
