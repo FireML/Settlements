@@ -29,6 +29,7 @@ error:
   village-required: "&c&lYou can only do this after you joined a settlement!"
   free-required: "&c&lYou can only do this if you are not part of a settlement yet!"
   only-player: "&cMust be ran by player."
+  unknown-perk: "&cNo unlock with the name &f{perk}&c available!"
 banished:
   move:
     title: "&cTurn Around"
@@ -68,7 +69,8 @@ scoreboard:
 levels:
   upgrade: "&d&lLEVEL UP &r&7Your settlement is now level &d{level}"
   upgrade-settlement: "&a&lSUCCESS &r&7The settlement has been upgraded to &e{state}!"
-  upgrade-unlock: "&6&l{unlock} &7&lhas been unlocked!"
+  perk-available: "&7Perk &6&l{perk} &7&lcan be unlocked!"
+  perk-unlocked: "&6&l{perk} &7&lhas been unlocked!"
 upkeep:
   alert:
     level-removed: "&a&lALERT &7Your settlement has had a level removed because you couldn't pay the upkeep!"
@@ -165,6 +167,22 @@ names:
     repeaters: "Repeaters"
     cake: "Cake"
     interact: "Other"
+  villageperks:
+    regen1: Regen 1 Buff
+    speed1: Speed 1 Buff
+    regen2: Regen 2 Buff
+    haste1: Haste 1 Buff
+    haste2: Haste 2 Buff
+    extra-claims: 10 Extra Claims
+    extra-outpost: 1 Extra Outpost
+    effectlocation:
+      plot: For owner in plot
+      plot-friends: For owner and friends in plot
+      own-settlement: In own settlement
+      allied-settlement: In own and allied settlements
+      enemy-settlement: In enemies settlements
+      unclaimed: In unclaimed area
+      everywhere: Globally
 usage:
   head: |-
     &8&l--------&r&c&l{name} Commands&r&8&l--------
@@ -228,6 +246,7 @@ gui:
     access: "&b&lAccess"
     use: "&b&lUse"
     mode: "&b&lMode"
+    perks: "&b&lPerks"
     entry: |-
       &b&lVillage Data
       &8--------&c&l{name}&r&8--------
@@ -246,6 +265,29 @@ gui:
     kingdom-required: "&c&lYou require a level &610 Kingdom&c&l to use this!"
     kingdoms-world: "&e&lKingdoms World"
     village-home: "&e&lVillage Home"
+  perks:
+    title: "&3&lSettlement Perks"
+    entry:
+      locked: |-
+        &e{name}
+        &cReach {state} {level} to unlock!
+      unlockable: |-
+        &e{name}
+        &bClick to purchase!
+      purchased: |-
+        &e{name}
+        &dPurchased!
+      repeat: |-
+        &e{name}
+        &7Used {used} times.
+        &bClick to buy again!
+    repeatable: "&7Usable {amount} times. {left} times left!"
+    unlimited: "&7Can be purchased as often as you want"
+    cost:
+      unlock: "&aUnlock cost:"
+      repeat: "&aRepeat cost:"
+      entry: "&a{type}&7: {amount}"
+    cooldown: "&aCan be repeated in {cooldown}"
   use:
     title: "&3&lSettlement Use Settings"
     back: "&c&lBack To Settings"
@@ -646,6 +688,25 @@ command:
       outpost: "&cThis land is an outpost, please use &7/{base} outpost unclaim&c to unclaim this outpost."
       success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at {x},{z}!"
       description: Unclaim land which is claimed by your village
+    perks:
+      unlock:
+        success: "&6&l{perk} &7&lhas been unlocked!"
+        level-too-low: "&cCan't unlock &f{perk}&c! It requires a level {level} {state}!"
+        not-possible: "&f{perk} &ccan't be unlocked! {reason}"
+        missing-items: "&c&lMissing Items:"
+        already-unlocked: "&cPerk &f{perk} &cis already unlocked"
+        entry: "&6{amount} &e{material}"
+        description: Unlock perks
+      repeat:
+        success: "&6&l{perk} &7&lhas been repeated!"
+        level-too-low: "&cCan't repeat &f{perk}&c! It requires a level {level} {state}!"
+        not-possible: "&f{perk} &ccan't be repeated! {reason}"
+        missing-items: "&c&lMissing Items:"
+        entry: "&6{amount} &e{material}"
+        not-unlocked: "&cPerk &f{perk} &cis not unlocked!"
+        already-repeated: "&cPerk &f{perk} &cis already been repeated {amount} times!"
+        description: Repeat perks
+      description: Unlock and manage perks
     upgrade:
       not-possible: "&cThe village cannot be leveled up! {reason}"
       max-level-reached: "&r&c&lMax Level Reached."

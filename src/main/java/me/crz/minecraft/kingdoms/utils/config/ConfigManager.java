@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.utils.Message;
+import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
@@ -13,6 +14,7 @@ public class ConfigManager {
     private ConfigAccessor messages;
     private ConfigAccessor levelConf;
     private ConfigAccessor mapConf;
+    private ConfigAccessor unlocksConf;
 
     public ConfigManager() {
         super();
@@ -31,7 +33,13 @@ public class ConfigManager {
         mapConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "mapConf.yml");
         mapConf.saveDefaultConfig();
         mapConf.reloadConfig();
-        Message.clearCache();
+        unlocksConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "unlocksConf.yml");
+        unlocksConf.saveDefaultConfig();
+        unlocksConf.reloadConfig();
+        if (KingdomsPlugin.getInstance().isRunning()) {
+            VillageManager.getInstance().loadPerks();
+            Message.clearCache();
+        }
     }
 
     public static void save(File file, FileConfiguration fileConfiguration) {
@@ -52,6 +60,10 @@ public class ConfigManager {
 
     public FileConfiguration getMapConfig() {
         return mapConf.getConfig();
+    }
+
+    public FileConfiguration getPerksConfig() {
+        return unlocksConf.getConfig();
     }
 
     public FileConfiguration getConfig() {

@@ -1,10 +1,10 @@
 package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.essentials.events.HostileCreatureSpawnEvent;
+import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveChunkEvent;
 import me.crz.minecraft.kingdoms.landflags.LandFlagBase;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveBlockEvent;
 
 import net.md_5.bungee.api.ChatMessageType;
 import org.bukkit.block.Block;
@@ -34,7 +34,7 @@ public class LandFlags extends Base implements LandFlagBase {
     }
 
     @EventHandler
-    public void on(BlockIgniteEvent e) {
+    public void onBlockIgnite(BlockIgniteEvent e) {
         if (e.getCause().equals(BlockIgniteEvent.IgniteCause.SPREAD) && e.getIgnitingBlock() != null) {
             OwnedLand land = LandManager.getInstance().getLand(e.getIgnitingBlock().getLocation());
             if (land == null) {
@@ -47,7 +47,7 @@ public class LandFlags extends Base implements LandFlagBase {
     }
 
     @EventHandler
-    public void on(PassiveCreatureDamageEvent e) {
+    public void onPassiveDamage(PassiveCreatureDamageEvent e) {
         if (e.getEntity() == null) {
             return;
         }
@@ -61,7 +61,7 @@ public class LandFlags extends Base implements LandFlagBase {
     }
 
     @EventHandler
-    public void on(EntityDamageByEntityEvent e) {
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
         if ((e.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK
                 || e.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)
                 && e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
@@ -98,7 +98,7 @@ public class LandFlags extends Base implements LandFlagBase {
     }
 
     @EventHandler
-    public void on(EntityCombustByEntityEvent e) {
+    public void onEntityCombust(EntityCombustByEntityEvent e) {
         if (e.getEntity() instanceof Player && e.getCombuster() instanceof Arrow && ((Arrow) e.getCombuster()).getShooter() instanceof Player) {
             OwnedLand land = LandManager.getInstance().getLand(e.getEntity().getLocation());
             if (land == null) {
@@ -118,7 +118,7 @@ public class LandFlags extends Base implements LandFlagBase {
     }
 
     @EventHandler
-    public void on(EntityExplodeEvent e) {
+    public void onEnttiyExplode(EntityExplodeEvent e) {
         for (Block block : e.blockList()) {
             OwnedLand land = LandManager.getInstance().getLand(block.getLocation());
             if (land == null) {
@@ -132,7 +132,7 @@ public class LandFlags extends Base implements LandFlagBase {
     }
 
     @EventHandler
-    public void on(EntityDamageEvent e) {
+    public void onEntityDamage(EntityDamageEvent e) {
         if (e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
             OwnedLand land = LandManager.getInstance().getLand(e.getEntity().getLocation());
             if (land == null) {
@@ -153,17 +153,17 @@ public class LandFlags extends Base implements LandFlagBase {
     }
 
     @EventHandler
-    public void on(PlayerMoveBlockEvent event) {
+    public void onPlayerMove(PlayerMoveChunkEvent event) {
         Player player = event.getPlayer();
         Village playerVillage = VillageManager.getInstance().getVillageFromPlayer(player);
-        OwnedLand originalLand = LandManager.getInstance().getLand(player.getLocation());
+        OwnedLand originalLand = LandManager.getInstance().getLand(event.getFrom());
         OwnedLand destinationLand = LandManager.getInstance().getLand(event.getTo());
         boolean sameVillage = originalLand != null && destinationLand != null && originalLand.getOwnerVillage().equals(destinationLand.getOwnerVillage());
 
         if (!sameVillage && originalLand != null) {
             MessageUtils.tell(player, Message.get(originalLand.getOwnerVillage().getState().getKey() + ".leave-message"));
             if (originalLand.getOwnerVillage().equals(playerVillage) && originalLand.getOwnerVillage().isBuff()) {
-                Base.getLandPerks().removeEffects(player, originalLand.getOwnerVillage());
+                Base.getLandPerks().removeEffects(player, originalLand, true);
             }
         }
 
@@ -175,7 +175,7 @@ public class LandFlags extends Base implements LandFlagBase {
                     MessageUtils.tell(player, Message.get(destinationLand.getOwnerVillage().getState().getKey() + ".enter-message").getReplacedComponents("pvp", ""));
                 }
                 if (destinationLand.getOwnerVillage().equals(playerVillage) && destinationLand.getOwnerVillage().isBuff()) {
-                    Base.getLandPerks().giveEffects(player, destinationLand.getOwnerVillage());
+                    Base.getLandPerks().giveEffects(player, destinationLand, true);
                 }
             }
             Utils.runAsync(() -> {

@@ -9,4 +9,8 @@ public interface ConfigKey {
     default String getKey() {
         return name().toLowerCase().replace('_', '-');
     }
+
+    static String toEnumString(String key) {
+        return key.toUpperCase().replace('-', '_');
+    }
 }

@@ -1,39 +1,27 @@
 package me.crz.minecraft.kingdoms.command.village.settings;
 
+import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CInventoryManager;
+import me.crz.minecraft.kingdoms.cinventory.CItem;
+import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
+import me.crz.minecraft.kingdoms.cinventory.InventorySize;
+import me.crz.minecraft.kingdoms.land.LandManager;
+import me.crz.minecraft.kingdoms.landflags.UseGui;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.VillageGUI;
 import me.crz.minecraft.kingdoms.village.Village;
-
-import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.land.LandManager;
+import me.crz.minecraft.kingdoms.village.VillageGUI;
 import me.crz.minecraft.kingdoms.village.VillageManager;
-import me.crz.minecraft.kingdoms.landflags.UseGui;
-import org.bukkit.event.inventory.ClickType;
-import me.crz.minecraft.kingdoms.cinventory.CItem;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.entity.Player;
-import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
-import me.crz.minecraft.kingdoms.cinventory.InventorySize;
-
-import java.util.HashMap;
-
-import me.crz.minecraft.kingdoms.cinventory.CInventory;
-
-import java.util.UUID;
-import java.util.Map;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
 
 public class SettingsGUI extends VillageGUI {
     private static SettingsGUI instance;
-    private static Map<UUID, ResidentsGUI> guis;
     public CInventory gui;
-
-    static {
-        guis = new HashMap<>();
-    }
 
     public SettingsGUI() {
         super("settings");
@@ -65,6 +53,16 @@ public class SettingsGUI extends VillageGUI {
 
             public boolean click(Player p, ClickType clickType) {
                 ModeGUI.getInstance().open(p);
+                return true;
+            }
+        });
+        gui.addItem(new ClickableItem() {
+            public ItemStack getItem(Player p) {
+                return new CItem(Material.LINGERING_POTION).setName(getText("perks")).build();
+            }
+
+            public boolean click(Player p, ClickType clickType) {
+                new PerksGUI(ResidentManager.getInstance().getResident(p)).open();
                 return true;
             }
         });
@@ -103,15 +101,6 @@ public class SettingsGUI extends VillageGUI {
 
     public void open(Player p) {
         Utils.runAsync(() -> gui.build(p));
-    }
-
-    public static ResidentsGUI getGUI(Player p) {
-        if (!guis.containsKey(p.getUniqueId())) {
-            ResidentsGUI instance = new ResidentsGUI();
-            guis.put(p.getUniqueId(), instance);
-            return instance;
-        }
-        return guis.get(p.getUniqueId());
     }
 
     public static SettingsGUI getInstance() {

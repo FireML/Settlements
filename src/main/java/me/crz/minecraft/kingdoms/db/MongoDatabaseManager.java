@@ -171,12 +171,12 @@ public class MongoDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public void log(Village village, Resident resident, String action, Map<String, Integer> values) {
+    public void log(Village village, Resident resident, String action, Map<String, Long> values) {
         if (village.getId().isNull()) {
             return;
         }
         List<Document> insert = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : values.entrySet()) {
+        for (Map.Entry<String, Long> entry : values.entrySet()) {
             Map<String, Object> map = new LinkedHashMap<>();
             if (resident != null) {
                 map.put("name", resident.getName());

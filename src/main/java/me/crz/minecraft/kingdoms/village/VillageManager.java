@@ -2,11 +2,11 @@ package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.banish.CustomRunnable;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.vault.Levels;
 import org.bukkit.Location;
 import me.crz.minecraft.kingdoms.land.LandManager;
@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -25,11 +26,29 @@ public class VillageManager {
     private Map<String, Village> villages = new ConcurrentHashMap<>();
     private Map<IdObject, Village> villageIDs = new ConcurrentHashMap<>();
 
+    private Map<String, VillagePerk> perks;
+    private Map<String, VillagePerk> perkTags;
+
     public VillageManager() {
         super();
+        loadPerks();
         for (Village village : DatabaseManager.getInstance().getAllVillages()) {
             villages.put(village.getName().toLowerCase(), village);
             villageIDs.put(village.getId(), village);
+        }
+    }
+
+    public void loadPerks() {
+        perks = new LinkedHashMap<>();
+        perkTags = new LinkedHashMap<>();
+        for (String perkName : ConfigManager.getInstance().getPerksConfig().getKeys(false)) {
+            try {
+                VillagePerk perk = new VillagePerk(ConfigManager.getInstance().getPerksConfig().getConfigurationSection(perkName));
+                perks.put(perk.name().toLowerCase(), perk);
+                perkTags.put(perk.getTag().toLowerCase(), perk);
+            } catch (IllegalArgumentException e) {
+                KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Config for Perk " + perkName + " was invalid! " + e.getMessage());
+            }
         }
     }
 
@@ -106,8 +125,7 @@ public class VillageManager {
     }
 
 
-    public void isResBanished(Location to, Player p, CustomRunnable customRunnable) {
-        OwnedLand land = LandManager.getInstance().getLand(to);
+    public void isResBanished(OwnedLand land, Player p, CustomRunnable customRunnable) {
         if (land != null) {
             Village village = land.getOwnerVillage();
             if (village != null && village.isBanished(p.getUniqueId())) {
@@ -165,53 +183,38 @@ public class VillageManager {
         }
         removeLevelRequirements(village, res);
 
-        // TODO: This should be a config and new shop system:
-        if (village.getState() == VillageState.KINGDOM) {
-            String unlock;
-            switch (village.getLevel()) {
-                case 4:
-                    unlock = "Teleporter";
-                    break;
-                case 5:
-                    unlock = "Regen 1 Buff";
-                    break;
-                case 6:
-                    unlock = "Speed 1 Buff";
-                    break;
-                case 7:
-                    unlock = "Regen 2 Buff";
-                    break;
-                case 8:
-                    unlock = "Haste 1 Buff";
-                    break;
-                case 9:
-                    unlock = "Haste 2 Buff";
-                    break;
-                case 10:
-                    unlock = "World";
-                    break;
-                default:
-                    return true;
+        for (VillagePerk perk : getPerks()) {
+            if (village.matchesLevelRequirement(perk)) {
+                if (perk.getUnlockCost().isEmpty()) {
+                    MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("levels.perk-unlocked"), "perk", perk.getTag());
+                    village.unlockPerk(perk);
+                } else {
+                    MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("levels.perk-available"), "perk", perk.getTag());
+                }
             }
-            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("levels.upgrade-unlock"), "unlock", unlock);
         }
         return true;
     }
 
     private void removeLevelRequirements(Village village, Resident res) {
-        Map<String, Integer> levelReqs = Levels.getLevelMapFromInt(village.getLevel(), village.getState());
-        if (levelReqs == null || levelReqs.isEmpty()) {
-            return;
+        Map<String, Long> levelReqs = Levels.getLevelRequirements(village.getState(), village.getLevel());
+        if (village.remove(levelReqs)) {
+            Utils.runAsync(() -> {
+                DatabaseManager.getInstance().saveVillage(village);
+                DatabaseManager.getInstance().logLevelup(village, res, levelReqs);
+            });
         }
-        for (Map.Entry<String, Integer> entry : levelReqs.entrySet()) {
-            if (village.getVault().containsKey(entry.getKey())) {
-                village.getVault().put(entry.getKey(), village.getVault().get(entry.getKey()) - levelReqs.get(entry.getKey()));
-            }
-        }
-        Utils.runAsync(() -> {
-            DatabaseManager.getInstance().saveVillage(village);
-            DatabaseManager.getInstance().logLevelup(village, res, levelReqs);
-        });
     }
 
+    public VillagePerk getPerk(String name) {
+        VillagePerk perk = perks.get(name.toLowerCase());
+        if (perk != null) {
+            perk = perkTags.get(name.toLowerCase());
+        }
+        return perk;
+    }
+
+    public Collection<VillagePerk> getPerks() {
+        return perks.values();
+    }
 }

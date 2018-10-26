@@ -11,33 +11,27 @@ import java.util.Map;
 
 public class Levels {
     public static final int VILLAGE_TO_KINGDOM_LEVEL = 5;
-    private static final Map<String, Map<String, Integer>> LEVEL_REQUIREMENTS = new HashMap<>();
+    private static final Map<String, Map<String, Long>> LEVEL_REQUIREMENTS = new HashMap<>();
 
     public Levels() {
         super();
     }
     
-    private static Map<String, Integer> getLevelRequirements(VillageState state, int level) {
+    public static Map<String, Long> getLevelRequirements(VillageState state, int level) {
         return LEVEL_REQUIREMENTS.computeIfAbsent(state.name() + "_" + level, key -> getLevelRequirements(state.name().toLowerCase() + ".level-" + level + ".requirements"));
     }
 
-    private static Map<String, Integer> getLevelRequirements(String levelPath) {
-        Map<String, Integer> levelRequirements = new HashMap<>();
+    private static Map<String, Long> getLevelRequirements(String levelPath) {
+        Map<String, Long> levelRequirements = new HashMap<>();
         FileConfiguration config = ConfigManager.getInstance().getLevelConfig();
         for (String key : config.getConfigurationSection(levelPath).getKeys(false)) {
             if (key.equalsIgnoreCase("CASH")) {
-                int amount = config.getInt(String.valueOf(levelPath) + "." + key);
-                levelRequirements.put("CASH", amount);
+                levelRequirements.put("CASH", config.getLong(levelPath + "." + key));
             } else {
                 Material material = Material.getMaterial(key);
-                int amount2 = config.getInt(String.valueOf(levelPath) + "." + key);
-                levelRequirements.put(material.name(), amount2);
+                levelRequirements.put(material.name(), config.getLong(levelPath + "." + key));
             }
         }
         return levelRequirements;
-    }
-
-    public static Map<String, Integer> getLevelMapFromInt(int level, VillageState state) {
-        return getLevelRequirements(state, level);
     }
 }

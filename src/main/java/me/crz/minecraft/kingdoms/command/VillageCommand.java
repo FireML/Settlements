@@ -32,6 +32,7 @@ import me.crz.minecraft.kingdoms.command.village.VillageTitleCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageTransferCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageUnAllyCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageUnclaimCommand;
+import me.crz.minecraft.kingdoms.command.village.VillagePerksCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageUpgradeCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageUpkeepCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageUseCommand;
@@ -77,6 +78,7 @@ public class VillageCommand extends SubCommand {
         registerCommand(new VillageTransferCommand(this));
         registerCommand(new VillageUnAllyCommand(this));
         registerCommand(new VillageUnclaimCommand(this));
+        registerCommand(new VillagePerksCommand(this));
         registerCommand(new VillageUpgradeCommand(this));
         registerCommand(new VillageUpkeepCommand(this));
         registerCommand(new VillageUseCommand(this));

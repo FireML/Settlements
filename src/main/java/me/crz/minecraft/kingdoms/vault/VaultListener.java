@@ -50,44 +50,44 @@ public class VaultListener extends VillageGUI implements Listener {
     }
 
     private void deposit(ItemStack[] contents, Resident resident, Player player) {
-        Map<Material, Integer> fail = new HashMap<>();
+        Map<Material, Long> fail = new HashMap<>();
         Village village = resident.getVillage();
         if (!village.isMaxLevel()) {
-            Map<String, Integer> nextLevelReqs = Levels.getLevelMapFromInt(village.getLevel() + 1, village.getState());
-            Map<String, Integer> total = new HashMap<>();
-            Map<String, Integer> deposited = new HashMap<>();
+            Map<String, Long> nextLevelReqs = Levels.getLevelRequirements(village.getState(), village.getLevel() + 1);
+            Map<String, Long> total = new HashMap<>();
+            Map<String, Long> deposited = new HashMap<>();
 
             for (String type : nextLevelReqs.keySet()) {
-                total.put(type, village.getVault().getOrDefault(type, 0));
+                total.put(type, village.getVault().getOrDefault(type, (long) 0));
             }
 
             for (ItemStack item : contents) {
                 if (item != null) {
                     String material = item.getType().name();
                     if (nextLevelReqs.containsKey(material)) {
-                        int required = nextLevelReqs.get(material);
+                        int required = Math.toIntExact(nextLevelReqs.get(material));
                         if (required <= total.get(material)) {
                             player.getInventory().addItem(item);
-                            this.add(fail, item.getType(), item.getAmount());
+                            this.add(fail, item.getType(), (long) item.getAmount());
                         } else {
-                            int totalAdd = item.getAmount() + total.get(material);
+                            long totalAdd = item.getAmount() + total.get(material);
                             if (required - totalAdd >= 0) {
-                                this.add(total, material, item.getAmount());
-                                this.add(deposited, material, item.getAmount());
+                                this.add(total, material, (long) item.getAmount());
+                                this.add(deposited, material, (long) item.getAmount());
                             } else {
-                                int rv = required - total.get(material);
-                                int drv = item.getAmount() - rv;
+                                long rv = required - total.get(material);
+                                long drv = item.getAmount() - rv;
                                 this.add(total, material, item.getAmount() - drv);
                                 this.add(deposited, material, item.getAmount() - drv);
                                 ItemStack temp = item.clone();
-                                temp.setAmount(drv);
+                                temp.setAmount(Math.toIntExact(drv));
                                 player.getInventory().addItem(temp);
-                                this.add(fail, temp.getType(), temp.getAmount());
+                                this.add(fail, temp.getType(), (long) temp.getAmount());
                             }
                         }
                     } else {
                         player.getInventory().addItem(item);
-                        this.add(fail, item.getType(), item.getAmount());
+                        this.add(fail, item.getType(), (long) item.getAmount());
                     }
                 }
             }
@@ -105,7 +105,7 @@ public class VaultListener extends VillageGUI implements Listener {
         } else if (contents.length > 0) {
             for (ItemStack item2 : contents) {
                 if (item2 != null) {
-                    add(fail, item2.getType(), item2.getAmount());
+                    add(fail, item2.getType(), (long) item2.getAmount());
                     player.getInventory().addItem(item2);
                 }
             }
@@ -113,18 +113,18 @@ public class VaultListener extends VillageGUI implements Listener {
         }
     }
 
-    public <R> void add(Map<R, Integer> m, R mat, Integer add) {
-        m.put(mat, m.getOrDefault(mat, 0) + add);
+    public <R> void add(Map<R, Long> m, R mat, Long add) {
+        m.put(mat, m.getOrDefault(mat, (long) 0) + add);
     }
 
     private boolean isVault(Inventory inv) {
         return inv.getName().equals(getText("title"));
     }
 
-    private List<String> buildfailDepositMessage(Map<Material, Integer> fail, String reason) {
+    private List<String> buildfailDepositMessage(Map<Material, Long> fail, String reason) {
         List<String> messages = new ArrayList<>();
         messages.add(getMessage("fail-deposit").getReplacedText("reason", reason));
-        for (Map.Entry<Material, Integer> entry : fail.entrySet()) {
+        for (Map.Entry<Material, Long> entry : fail.entrySet()) {
             messages.add(getMessage("list-deposit").getReplacedText(
                     "amount", String.valueOf(entry.getValue()),
                     "material", entry.getKey().name()));
@@ -132,10 +132,10 @@ public class VaultListener extends VillageGUI implements Listener {
         return messages;
     }
 
-    private List<String> buildSuccessDepositMessage(Player p, Map<String, Integer> deposited) {
+    private List<String> buildSuccessDepositMessage(Player p, Map<String, Long> deposited) {
         List<String> messages = new ArrayList<>();
         messages.add(getMessage("success-deposit").getReplacedText("player", p.getDisplayName()));
-        for (Map.Entry<String, Integer> entry : deposited.entrySet()) {
+        for (Map.Entry<String, Long> entry : deposited.entrySet()) {
             messages.add(getMessage("list-deposit").getReplacedText(
                 "amount", String.valueOf(entry.getValue()),
                 "material", entry.getKey()));

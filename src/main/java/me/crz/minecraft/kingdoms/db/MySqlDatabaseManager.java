@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.db;
 
+import com.google.common.collect.ImmutableMap;
 import com.zaxxer.hikari.HikariDataSource;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
@@ -7,6 +8,7 @@ import me.crz.minecraft.kingdoms.command.village.VillageHistoryCommand;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
+import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -78,7 +80,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "explosions BOOLEAN NOT NULL,"
                     + "mobSpawning BOOLEAN NOT NULL,"
                     + "buff BOOLEAN NOT NULL,"
-                    + "bank INTEGER,"
+                    + "bank BIGINT,"
                     + "bonusClaims INTEGER,"
                     + "homeLoc_world VARCHAR(255),"
                     + "homeLoc_x DOUBLE,"
@@ -108,7 +110,17 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "settlementId INTEGER,"
                     + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
                     + "content VARCHAR(255) NOT NULL,"
-                    + "amount INTEGER"
+                    + "amount BIGINT"
+                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
+
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_perks ("
+                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+                    + "settlementId INTEGER, INDEX(settlementId),"
+                    + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
+                    + "perk VARCHAR(255) NOT NULL,"
+                    + "times INTEGER NOT NULL,"
+                    + "lastused TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
+                    + "UNIQUE (settlementId, unlock)"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_uses ("
@@ -220,7 +232,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "FOREIGN KEY (residentId) REFERENCES " + tablePrefix + "residents(id) ON DELETE CASCADE,"
                     + "`action` VARCHAR(255) NOT NULL,"
                     + "type VARCHAR(255) NOT NULL,"
-                    + "amount INTEGER NOT NULL,"
+                    + "amount BIGINT NOT NULL,"
                     + "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
@@ -233,7 +245,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
     @Override
     public void saveVillage(Village village) {
         Utils.catchSync();
-        Map<String, Object> values = getValues(village.serialize(), "outpostHomes", "banished", "uses", "vault");
+        Map<String, Object> values = getValues(village.serialize(), "outpostHomes", "banished", "uses", "vault", "perks");
         String sql = "INSERT INTO " + tablePrefix + "settlements "
                 + "(`" + String.join("`,`", values.keySet()) + "`)"
                 + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")"
@@ -259,6 +271,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 updateDataMap(conn, "settlement_outposts", "settlementId", (Integer) village.getId().value(), "name", "", village.getOutpostHomes());
                 updateDataMap(conn, "settlement_uses", "settlementId", (Integer) village.getId().value(), "type", "state",
                         village.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
+                updateDataMap(conn, "settlement_perks", "settlementId", (Integer) village.getId().value(), "perk", "",
+                        village.getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
+                                e -> ImmutableMap.of("times", e.getValue().getLeft(), "lastused", e.getValue().getRight()))));
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while saving village " + village.getName() + " to database!", e);
@@ -476,7 +491,10 @@ public class MySqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public void log(Village village, Resident resident, String action, Map<String, Integer> values) {
+    public void log(Village village, Resident resident, String action, Map<String, Long> values) {
+        if (values.isEmpty()) {
+            return;
+        }
         Utils.catchSync();
         try (Connection conn = ds.getConnection();
              PreparedStatement sta = conn.prepareStatement("INSERT INTO " + tablePrefix + "logs " +
@@ -484,13 +502,13 @@ public class MySqlDatabaseManager extends DatabaseManager {
                      "VALUES (?, ?, ?, ?, ?);"
              )
         ) {
-            for (Map.Entry<String, Integer> value : values.entrySet()) {
+            for (Map.Entry<String, Long> value : values.entrySet()) {
                 if (!village.getId().isNull()) {
                     sta.setInt(1, (Integer) village.getId().value());
                     sta.setInt(2, resident != null && resident.getId() != null ? (Integer) resident.getId() : -1);
                     sta.setString(3, action.toLowerCase());
                     sta.setString(4, value.getKey().toLowerCase());
-                    sta.setInt(5, value.getValue());
+                    sta.setLong(5, value.getValue());
                     sta.addBatch();
                 }
             }
@@ -589,11 +607,20 @@ public class MySqlDatabaseManager extends DatabaseManager {
         PreparedStatement vSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_vaults WHERE settlementId = ?;");
         vSta.setInt(1, id);
         ResultSet vRs = vSta.executeQuery();
-        Map<String, Integer> vault = new LinkedHashMap<>();
+        Map<String, Long> vault = new LinkedHashMap<>();
         while (vRs.next()) {
-            vault.put(vRs.getString("content"), vRs.getInt("amount"));
+            vault.put(vRs.getString("content"), vRs.getLong("amount"));
         }
         map.put("vault", vault);
+
+        PreparedStatement pSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_perks WHERE settlementId = ?;");
+        pSta.setInt(1, id);
+        ResultSet pRs = pSta.executeQuery();
+        Map<String, Pair<Integer, Long>> unlockedPerks = new LinkedHashMap<>();
+        while (pRs.next()) {
+            unlockedPerks.put(pRs.getString("perk"), new Pair<>(pRs.getInt("times"), pRs.getTimestamp("lastunlock").getTime()));
+        }
+        map.put("perks", unlockedPerks);
 
         return Village.deserialize(map);
     }
@@ -657,8 +684,20 @@ public class MySqlDatabaseManager extends DatabaseManager {
                         columns.add(mapValue + "_" + column);
                     }
                 }
-            } else {
+            } else if (value instanceof Map) {
+                if (((Map) value).keySet().iterator().next() instanceof String) {
+                    for (String column : getValues((Map<String, ?>) value).keySet()) {
+                        if (mapValue.isEmpty()) {
+                            columns.add(column);
+                        } else {
+                            columns.add(mapValue + "_" + column);
+                        }
+                    }
+                }
+            } else if (!mapValue.isEmpty()) {
                 columns.add(mapValue);
+            } else {
+                return;
             }
             String insertSql = "INSERT IGNORE INTO " + tablePrefix + tableName + " (" + keyColumn + ", " + mapKey + ", " + String.join(",", columns) + ")" +
                     " VALUES (?,?," + String.join(",", Collections.nCopies(columns.size(), "?")) + ");";

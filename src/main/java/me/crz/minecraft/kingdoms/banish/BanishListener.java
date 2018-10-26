@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.banish;
 
-import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveBlockEvent;
+import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveChunkEvent;
+import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.TitleBuilder;
@@ -14,8 +15,8 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 public class BanishListener implements Listener {
     
     @EventHandler
-    public void on(PlayerMoveBlockEvent e) {
-        VillageManager.getInstance().isResBanished(e.getTo(), e.getPlayer(), (land, p, village) -> {
+    public void on(PlayerMoveChunkEvent e) {
+        VillageManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getTo()), e.getPlayer(), (land, p, village) -> {
             sendInfo(p, village, "move");
             e.setCancelled(true);
         });
@@ -23,7 +24,7 @@ public class BanishListener implements Listener {
 
     @EventHandler
     public void on(PlayerTeleportEvent e) {
-        VillageManager.getInstance().isResBanished(e.getTo(), e.getPlayer(), (land, p, village) -> {
+        VillageManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getTo()), e.getPlayer(), (land, p, village) -> {
             sendInfo(p, village, "teleport");
             e.setCancelled(true);
         });

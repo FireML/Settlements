@@ -1,9 +1,11 @@
 package me.crz.minecraft.kingdoms.village;
 
+import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.BonusClaimsHolder;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
+import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.utils.config.Data;
@@ -18,7 +20,6 @@ import org.bukkit.Bukkit;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -62,8 +63,9 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     private Set<UUID> banished = new LinkedHashSet<>();
     private Map<Use, BuildState> use = new EnumMap<>(Use.class);
     private long lastUpkeep = System.currentTimeMillis();
-    private Map<String, Integer> vault = new HashMap<>();
+    private Map<String, Long> vault = new HashMap<>();
     private int bonusClaims = 0;
+    private Map<String, Pair<Integer, Long>> perks = new LinkedHashMap<>();
 
     public Village(String name, UUID chief, int level, VillageState state, BuildState buildState) {
         this.name = name;
@@ -343,7 +345,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         this.buff = buff;
     }
 
-    public Map<String, Integer> getVault() {
+    public Map<String, Long> getVault() {
         return vault;
     }
 
@@ -356,7 +358,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     }
 
     public int getMaxClaimableChunks() {
-        return Utils.getLevelChunks(getState(), getLevel()) + bonusClaims;
+        return Utils.getLevelChunks(getState(), getLevel()) + bonusClaims + getPerks().stream().mapToInt(VillagePerk::getBonusClaims).sum();
     }
 
     public int getBonusClaims() {
@@ -368,29 +370,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     }
 
     public int getMaxOutposts() {
-        if (getState() == VillageState.VILLAGE) {
-            if (getLevel() <= 3) {
-                return 1;
-            }
-            if (getLevel() <= 5) {
-                return 2;
-            }
-        }
-        if (getState() == VillageState.KINGDOM) {
-            if (getLevel() <= 2) {
-                return 4;
-            }
-            if (getLevel() <= 5) {
-                return 6;
-            }
-            if (getLevel() <= 8) {
-                return 8;
-            }
-            if (getLevel() <= 10) {
-                return 12;
-            }
-        }
-        return 4;
+        return Utils.getLevelOutposts(getState(), getLevel()) + getPerks().stream().mapToInt(VillagePerk::getBonusOutposts).sum();
     }
 
     public boolean canLevelUp() {
@@ -398,30 +378,137 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         if (isMaxLevel()) {
             return false;
         }
-        Map<String, Integer> nextLevelReqs = Levels.getLevelMapFromInt(currentLevel + 1, getState());
-        if (nextLevelReqs == null) {
+        return has(Levels.getLevelRequirements(getState(), currentLevel + 1));
+    }
+
+    public boolean has(Map<String, Long> requirements) {
+        if (requirements == null) {
             return false;
         }
-        Iterator<Map.Entry<String, Integer>> iterator = nextLevelReqs.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, Integer> pair = iterator.next();
-            if (!getVault().containsKey(pair.getKey())) {
+        for (Map.Entry<String, Long> pair : requirements.entrySet()) {
+            if (!has(pair.getKey(), pair.getValue())) {
                 return false;
             }
-            int amountRequired = nextLevelReqs.get(pair.getKey());
-            int amountInVault = getVault().get(pair.getKey());
-            if (amountInVault < amountRequired) {
-                return false;
-            }
-            if (!iterator.hasNext()) {
-                return true;
-            }
+        }
+        return true;
+    }
+
+    public boolean has(String key, long amount) {
+        return getAmount(key) >= amount;
+    }
+
+    public long getAmount(String key) {
+        if ("cash".equalsIgnoreCase(key)) {
+            return getBank();
+        }
+        return getVault().getOrDefault(key, (long) 0);
+    }
+
+    public boolean remove(String key, long amount) {
+        if (has(key, amount)) {
+            setAmount(key, getAmount(key) - amount);
+            return true;
         }
         return false;
     }
 
+    public boolean remove(Map<String, Long> toRemove) {
+        if (toRemove == null || toRemove.isEmpty()) {
+            return false;
+        }
+        if (!has(toRemove)) {
+            return false;
+        }
+        for (Map.Entry<String, Long> entry : toRemove.entrySet()) {
+            remove(entry.getKey(), entry.getValue());
+        }
+        return true;
+    }
+
+
+    private void setAmount(String key, long amount) {
+        if ("cash".equalsIgnoreCase(key)) {
+            setBank(amount);
+        }
+        getVault().put(key, amount);
+    }
+
     public boolean isMaxLevel() {
-        return (getLevel() == 10 && getState() == VillageState.KINGDOM) || Levels.getLevelMapFromInt(getLevel() + 1, getState()) == null;
+        return (getLevel() == 10 && getState() == VillageState.KINGDOM) || Levels.getLevelRequirements(getState(), getLevel() + 1) == null;
+    }
+
+    public boolean hasUnlocked(VillagePerk unlock) {
+        return perks.containsKey(unlock.name().toLowerCase());
+    }
+
+    public Map<String, Pair<Integer, Long>> getPerksMap() {
+        return perks;
+    }
+
+    public Collection<VillagePerk> getPerks() {
+        return perks.keySet().stream()
+                .map(n -> VillageManager.getInstance().getPerk(n))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+    public Pair<Integer, Long> getPerkData(VillagePerk unlock) {
+        return perks.get(unlock.getKey().toLowerCase());
+    }
+
+    public boolean canUnlock(VillagePerk perk) {
+        return !hasUnlocked(perk) && has(perk.getUnlockCost());
+    }
+
+    public boolean canRepeat(VillagePerk perk) {
+        return hasUnlocked(perk) && has(perk.getRepeatCost()) && checkPerkCount(perk);
+    }
+
+    public boolean matchesLevelRequirement(VillagePerk perk) {
+        return getState().above(perk.getState()) || (getState() == perk.getState() && getLevel() >= perk.getLevel());
+    }
+
+    public boolean checkPerkCount(VillagePerk perk) {
+        if (perk.getRepeat() > 0) {
+            Pair<Integer, Long> p = perks.get(perk.getKey().toLowerCase());
+            if (p != null) {
+                return p.getLeft() < perk.getRepeat();
+            }
+        }
+        return true;
+    }
+
+    public boolean checkPerkCooldown(VillagePerk perk) {
+        if (perk.getCooldown() > 0) {
+            Pair<Integer, Long> p = perks.get(perk.getKey().toLowerCase());
+            if (p != null) {
+                return p.getRight() + perk.getCooldown() * 1000 < System.currentTimeMillis();
+            }
+        }
+        return true;
+    }
+
+    public boolean unlockPerk(VillagePerk perk) {
+        if (!hasUnlocked(perk)) {
+            perks.put(perk.name().toLowerCase(), new Pair<>(0, System.currentTimeMillis()));
+            if (!perk.getEffects().isEmpty()) {
+                Base.getLandPerks().updateEffects(false);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public boolean repeatPerk(VillagePerk perk) {
+        Pair<Integer, Long> pair = getPerkData(perk);
+        if (pair != null) {
+            perks.put(perk.name().toLowerCase(), new Pair<>(pair.getLeft() + 1, System.currentTimeMillis()));
+            if (!perk.getEffects().isEmpty()) {
+                Base.getLandPerks().updateEffects(false);
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -447,7 +534,8 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         map.put("banished", getBanishedResidents().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("uses", getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
         map.put("lastUpkeep", getLastUpkeep());
-        map.put("vault", getVault().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        map.put("vault", getVault());
+        map.put("perks", getPerksMap());
         return map;
     }
     
@@ -503,14 +591,15 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         village.setLastUpkeep((Long) map.get("lastUpkeep"));
         ((Map<String, Object>) map.get("vault")).entrySet().stream()
                 .filter(e -> !(e.getValue() instanceof Integer))
-                .forEach(e -> village.getVault().put(e.getKey(), (Integer) e.getValue()));
+                .forEach(e -> village.getVault().put(e.getKey(), (Long) e.getValue()));
+        village.getPerksMap().putAll((Map<String, Pair<Integer, Long>>) map.get("perks"));
         return village;
     }
 
     @Override
     public int compareTo(Village v) {
         if (v.getState() != getState())
-            return getState().compareTo(v.getState());
+            return v.getState().compareTo(getState());
         if (v.getLevel() != getLevel())
             return Integer.compare(v.getLevel(), getLevel());
         if (v.getResidentIds().size() != getResidentIds().size())

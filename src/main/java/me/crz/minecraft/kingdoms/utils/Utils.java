@@ -36,6 +36,7 @@ import org.bukkit.scheduler.BukkitTask;
 public class Utils {
     public final static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat();
     private static Map<String, Integer> LEVEL_CHUNKS = new HashMap<>();
+    private static Map<String, Integer> LEVEL_OUTPOSTS = new HashMap<>();
 
     public Utils() {
         super();
@@ -94,6 +95,11 @@ public class Utils {
     public static int getLevelChunks(VillageState state, int level) {
         return LEVEL_CHUNKS.computeIfAbsent(state.name() + "_" + level,
                 key -> ConfigManager.getInstance().getLevelConfig().getInt(state.name().toLowerCase() + ".level-" + level + ".chunks"));
+    }
+
+    public static int getLevelOutposts(VillageState state, int level) {
+        return LEVEL_OUTPOSTS.computeIfAbsent(state.name() + "_" + level,
+                key -> ConfigManager.getInstance().getLevelConfig().getInt(state.name().toLowerCase() + ".level-" + level + ".outposts"));
     }
 
     public static void addDisabledWorld(World world) {

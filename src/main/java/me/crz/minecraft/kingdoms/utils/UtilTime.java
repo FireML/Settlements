@@ -19,21 +19,21 @@ public class UtilTime {
         final double months = days / 30.0;
         final double years = days / 365.0;
         if (minutes < 1.0) {
-            return String.valueOf(UtilMath.trim(seconds)) + " Seconds";
+            return UtilMath.trim(seconds) + " Seconds";
         }
         if (hours < 1.0) {
-            return String.valueOf(UtilMath.trim(minutes)) + " Minutes";
+            return UtilMath.trim(minutes) + " Minutes";
         }
         if (days < 1.0) {
-            return String.valueOf(UtilMath.trim(hours)) + " Hours";
+            return UtilMath.trim(hours) + " Hours";
         }
         if (months < 1.0) {
-            return String.valueOf(UtilMath.trim(days)) + " Days";
+            return UtilMath.trim(days) + " Days";
         }
         if (years < 1.0) {
-            return String.valueOf(UtilMath.trim(months)) + " Months";
+            return - UtilMath.trim(months) + " Months";
         }
-        return String.valueOf(UtilMath.trim(years)) + " Years";
+        return UtilMath.trim(years) + " Years";
     }
 
     public static boolean elapsedNano(final long from, final long required) {

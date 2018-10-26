@@ -23,17 +23,17 @@ public class VillageMaterialsCommand extends VillageSubCommand {
             return true;
         }
         Village village = resident.getVillage();
-        Map<String, Integer> nextLevelReqs = Levels.getLevelMapFromInt(village.getLevel() + 1, village.getState());
+        Map<String, Long> nextLevelReqs = Levels.getLevelRequirements(village.getState(), village.getLevel() + 1);
         if (nextLevelReqs == null || nextLevelReqs.isEmpty()) {
             resident.tell(getMessage("max-level-reached"), "state", resident.getVillage().getState().getTag());
             return true;
         }
 
         resident.tell(getMessage("head"));
-        for (Map.Entry<String, Integer> entry : nextLevelReqs.entrySet()) {
+        for (Map.Entry<String, Long> entry : nextLevelReqs.entrySet()) {
             resident.tell(getMessage("entry"),
                     "material", entry.getKey(),
-                    "amount", String.valueOf(entry.getValue() - village.getVault().getOrDefault(entry.getKey(), 0))
+                    "amount", String.valueOf(entry.getValue() - village.getVault().getOrDefault(entry.getKey(), (long) 0))
             );
         }
         return true;
