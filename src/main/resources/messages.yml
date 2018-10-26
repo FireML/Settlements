@@ -191,7 +191,8 @@ names:
 usage:
   head: |-
     &8&l--------&r&c&l{name} Commands&r&8&l--------
-  entry: "&8\\[&9*&8] [&b{usage}](suggest_command={{usage}) &7- {description}"
+  entry: "&8\\[&9*&8] [&b{usage}](hover=&9Click to add it to your input{aliases} suggest_command={{usage}) &7- {description}"
+  aliases: "\n&fAliases: &7{aliases}"
 protection:
   only-in-village: "&c&lYou can only lock things in a settlement claim!"
   state:

@@ -62,15 +62,21 @@ public abstract class SubCommand implements ConfigMessages {
     protected boolean sendUsageMessage(Player player, String base, String alias) {
         String path = base != null && !base.isEmpty() ? (base + " " + alias) : alias;
         if (getMessage("usage").exists()) {
-            MessageUtils.tell(player, getMessage("usage"), "alias", path, "usage", hasUsage() ? getUsage(base) : "/" + path);
+            getMessage("usage").tell(player,
+                    "alias", path,
+                    "usage", hasUsage() ? getUsage(base) : "/" + path,
+                    "aliases", getAliases().isEmpty() ? "" : getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getAliases())),
+                    "description", getDescription()
+            );
             return true;
         }
 
         if (!getAccessibleCommands(player).isEmpty()) {
-            MessageUtils.tell(player, Message.get("usage.head"),
+            getMessage("usage.head").tell(player,
                     "usage", hasUsage() ? getUsage(base) : "/" + path,
                     "name", StringUtils.capitalize(name()),
                     "alias", StringUtils.capitalize(alias),
+                    "aliases", getAliases().isEmpty() ? "" : getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getAliases())),
                     "path", WordUtils.capitalize(path)
             );
         }
@@ -85,16 +91,18 @@ public abstract class SubCommand implements ConfigMessages {
                 if (s.isDeepUsage()) {
                     s.sendUsageList(player, path, s.name(), subPath);
                 } else {
-                    MessageUtils.tell(player, Message.get("usage.entry"),
+                    getMessage("usage.entry").tell(player,
                             "usage", s.hasUsage() ? s.getUsage(path) : "/" + subPath,
+                            "aliases", s.getAliases().isEmpty() ? "" : getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", s.getAliases())),
                             "description", s.getDescription()
                     );
                 }
             }
             return true;
         } else if (hasUsage()) {
-            MessageUtils.tell(player, Message.get("usage.entry"),
+            getMessage("usage.entry").tell(player,
                     "usage", hasUsage() ? getUsage(base) : "/" + path,
+                    "aliases", getAliases().isEmpty() ? "" : getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getAliases())),
                     "description", getDescription()
             );
             return true;
