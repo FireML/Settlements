@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class VillagePerksCommand extends VillageSubCommand {
     public VillagePerksCommand(SubCommand parent) {
-        super(parent, "perks [unlock <perk>]", VillageRank.ELDER);
+        super(parent, "perks [unlock <perk>]", VillageRank.ELDER, "shop");
         setPermission("kingdoms.user");
         registerCommand(new VillageSubCommand(this, "unlock <perk>") {
             @Override
