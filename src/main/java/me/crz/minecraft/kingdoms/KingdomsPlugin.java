@@ -64,8 +64,17 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         instance = this;
-        this.getServer().getPluginManager().registerEvents(this, this);
         this.checkDataFolder();
+        if (!this.setupEconomy()) {
+            this.getLogger().log(Level.SEVERE, "Disabled due to missing economy provider!");
+            this.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        if (!this.setupChat()) {
+            this.getLogger().log(Level.SEVERE, "Disabled due to missing chat provider! (e.g. a permission plugin)");
+            this.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         data = new Data();
         if (getServer().getPluginManager().isPluginEnabled("LWC")) {
             lwcIntegration = new LWCIntegration(LWC.getInstance());
@@ -99,20 +108,6 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         }
         this.getLogger().log(Level.SEVERE, "Disabled due to data.json error!");
         this.getServer().getPluginManager().disablePlugin(this);
-    }
-
-    @EventHandler
-    public void on(ServerLoadEvent event) {
-        if (!this.setupEconomy()) {
-            this.getLogger().log(Level.SEVERE, "Disabled due to missing economy provider!");
-            this.getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-        if (!this.setupChat()) {
-            this.getLogger().log(Level.SEVERE, "Disabled due to missing chat provider! (e.g. a permission plugin)");
-            this.getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
     }
 
     public void upkeep() {
