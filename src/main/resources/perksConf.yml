@@ -49,8 +49,9 @@ resistance1:
     claims: 0
     outposts: 0
   # Run an arbitrary console command for all members of the settlement
+  # Placeholders: player, playerid, settlement, state, level, perk
   # run-command:
-  # - some %player% command
+  # - some {player} command
   cost:
     # Cost to unlock. Can include "cash" to pay with bank or any material to pay from vault
     # If empty it will be instantly granted when the state and level are reached
@@ -118,7 +119,7 @@ haste1:
   state: kingdom
   level: 9
   effects:
-    - type: haste
+    - type: fast_digging
       strength: 1
   cost:
     unlock:
@@ -127,7 +128,7 @@ haste2:
   state: kingdom
   level: 10
   effects:
-    - type: haste
+    - type: fast_digging
       strength: 1
   cost:
     unlock:

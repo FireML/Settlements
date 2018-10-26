@@ -156,7 +156,7 @@ public class ModeGUI {
                 return false;
             }
         });
-        gui.addItem(8, new ClickableItem() {
+        gui.addItem((gui.getMaxSlot() / 9 ) * 9 + 8, new ClickableItem() {
             public ItemStack getItem(final Player p) {
                 return new CItem(Material.BARRIER).setName("&c&lBack To Settings").build();
             }

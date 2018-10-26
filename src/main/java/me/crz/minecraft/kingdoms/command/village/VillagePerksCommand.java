@@ -8,14 +8,16 @@ import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.village.VillagePerk;
+import org.bukkit.ChatColor;
 
 import java.util.stream.Collectors;
 
 public class VillagePerksCommand extends VillageSubCommand {
     public VillagePerksCommand(SubCommand parent) {
-        super(parent, "perks [unlock <perk>]", VillageRank.ELDER, "shop");
+        super(parent, "perks [unlock <perk>]", VillageRank.ELDER, "shop", "buffs");
         setPermission("kingdoms.user");
         registerCommand(new VillageSubCommand(this, "unlock <perk>") {
             @Override
@@ -104,7 +106,35 @@ public class VillagePerksCommand extends VillageSubCommand {
                 }
                 return false;
             }
+        });registerCommand(new VillageSubCommand(this, "toggle <perk>") {
+            @Override
+            public boolean run(Resident resident, String base, String alias, String... args) {
+                if (args.length > 0) {
+                    VillagePerk perk = VillageManager.getInstance().getPerk(String.join(" ", args));
+                    if (perk == null) {
+                        getError("unknown-perk").tell(resident, "perk", String.join(" ", args));
+                    } else if (!resident.getVillage().hasUnlocked(perk)) {
+                        getError("not-unlocked").tell(resident, "perk", perk.getTag());
+                    } else if (!perk.hasEffects()) {
+                        getError("no-effects").tell(resident, "perk", perk.getTag());
+                    } else {
+                        Village.PerkData perkData = resident.getVillage().getPerkData(perk);
+                        perkData.toggle();
+                        MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage(perkData.isActive() ? "activated" : "deactivated"), "perk", perk.getTag());
+                        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
+                    }
+                    return true;
+                }
+                getMessage("usage.head").tell(resident, "name", "Toggle Perks");
+                for (VillagePerk perk : VillageManager.getInstance().getPerks()) {
+                    if (resident.getVillage().hasUnlocked(perk) && perk.hasEffects()) {
+                        getMessage("usage.entry").tell(resident, "usage", getUsage(base) + " " + perk.name(), "description", perk.getTag());
+                    }
+                }
+                return false;
+            }
         });
+
     }
 
     @Override

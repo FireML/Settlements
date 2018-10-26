@@ -15,7 +15,7 @@ public class ConfigManager {
     private ConfigAccessor messages;
     private ConfigAccessor levelConf;
     private ConfigAccessor mapConf;
-    private ConfigAccessor unlocksConf;
+    private ConfigAccessor perksConf;
     private IconRpMapping iconRpMapping;
 
     public ConfigManager() {
@@ -35,9 +35,9 @@ public class ConfigManager {
         mapConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "mapConf.yml");
         mapConf.saveDefaultConfig();
         mapConf.reloadConfig();
-        unlocksConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "unlocksConf.yml");
-        unlocksConf.saveDefaultConfig();
-        unlocksConf.reloadConfig();
+        perksConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "perksConf.yml");
+        perksConf.saveDefaultConfig();
+        perksConf.reloadConfig();
         iconRpMapping = new IconRpMapping(KingdomsPlugin.getInstance());
         if (KingdomsPlugin.getInstance().isRunning()) {
             VillageManager.getInstance().loadPerks();
@@ -66,7 +66,7 @@ public class ConfigManager {
     }
 
     public FileConfiguration getPerksConfig() {
-        return unlocksConf.getConfig();
+        return perksConf.getConfig();
     }
 
     public FileConfiguration getConfig() {

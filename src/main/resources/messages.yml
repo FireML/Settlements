@@ -286,6 +286,9 @@ gui:
         &e{name}
         &7Used {used} times.
         &bClick to buy again!
+    toggleable: "&bMiddle click to toggle."
+    active: "&aEffect enabled!"
+    inactive: "&cEffect disabled!"
     repeatable: "&7Usable {amount} times. {left} times left!"
     unlimited: "&7Can be purchased as often as you want"
     cost:
@@ -711,6 +714,12 @@ command:
         not-unlocked: "&cPerk &f{perk} &cis not unlocked!"
         already-repeated: "&cPerk &f{perk} &cis already been repeated {amount} times!"
         description: Repeat perks
+      toggle:
+        active: "&6&l{perk} &7&lhas been &a&lactivated"
+        deactived: "&6&l{perk} &7&lhas been &c&ldeactivated"
+        not-unlocked: "&cPerk &f{perk} &cis not unlocked!"
+        no-effects: "&cPerk &f{perk} &chas no effects that can be toggled!"
+        description: Toggle perks
       description: Unlock and manage perks
     upgrade:
       not-possible: "&cThe village cannot be leveled up! {reason}"

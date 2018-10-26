@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.db;
 
-import com.google.common.collect.ImmutableMap;
 import com.zaxxer.hikari.HikariDataSource;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
@@ -8,7 +7,6 @@ import me.crz.minecraft.kingdoms.command.village.VillageHistoryCommand;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
-import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -119,8 +117,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
                     + "perk VARCHAR(255) NOT NULL,"
                     + "times INTEGER NOT NULL,"
-                    + "lastused TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
-                    + "UNIQUE (settlementId, unlock)"
+                    + "lastUsed TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
+                    + "active BOOLEAN,"
+                    + "UNIQUE (settlementId, perk)"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_uses ("
@@ -272,8 +271,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 updateDataMap(conn, "settlement_uses", "settlementId", (Integer) village.getId().value(), "type", "state",
                         village.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
                 updateDataMap(conn, "settlement_perks", "settlementId", (Integer) village.getId().value(), "perk", "",
-                        village.getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
-                                e -> ImmutableMap.of("times", e.getValue().getLeft(), "lastused", e.getValue().getRight()))));
+                        village.getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while saving village " + village.getName() + " to database!", e);
@@ -616,9 +614,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
         PreparedStatement pSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_perks WHERE settlementId = ?;");
         pSta.setInt(1, id);
         ResultSet pRs = pSta.executeQuery();
-        Map<String, Pair<Integer, Long>> unlockedPerks = new LinkedHashMap<>();
+        Map<String, Map<String, Object>> unlockedPerks = new LinkedHashMap<>();
         while (pRs.next()) {
-            unlockedPerks.put(pRs.getString("perk"), new Pair<>(pRs.getInt("times"), pRs.getTimestamp("lastunlock").getTime()));
+            unlockedPerks.put(pRs.getString("perk"), toMap(pRs));
         }
         map.put("perks", unlockedPerks);
 

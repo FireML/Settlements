@@ -1,22 +1,24 @@
 package me.crz.minecraft.kingdoms.village;
 
+import com.google.common.collect.ImmutableMap;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.BonusClaimsHolder;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.utils.config.Data;
 import me.crz.minecraft.kingdoms.vault.Levels;
 import me.crz.minecraft.kingdoms.world.NamedLocation;
 import me.crz.minecraft.kingdoms.world.SimpleLocation;
+import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import org.bukkit.Bukkit;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -65,7 +67,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     private long lastUpkeep = System.currentTimeMillis();
     private Map<String, Long> vault = new HashMap<>();
     private int bonusClaims = 0;
-    private Map<String, Pair<Integer, Long>> perks = new LinkedHashMap<>();
+    private Map<String, PerkData> perks = new LinkedHashMap<>();
 
     public Village(String name, UUID chief, int level, VillageState state, BuildState buildState) {
         this.name = name;
@@ -437,11 +439,11 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         return (getLevel() == 10 && getState() == VillageState.KINGDOM) || Levels.getLevelRequirements(getState(), getLevel() + 1) == null;
     }
 
-    public boolean hasUnlocked(VillagePerk unlock) {
-        return perks.containsKey(unlock.name().toLowerCase());
+    public boolean hasUnlocked(VillagePerk perk) {
+        return perks.containsKey(perk.name().toLowerCase());
     }
 
-    public Map<String, Pair<Integer, Long>> getPerksMap() {
+    public Map<String, PerkData> getPerksMap() {
         return perks;
     }
 
@@ -452,8 +454,8 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
                 .collect(Collectors.toList());
     }
 
-    public Pair<Integer, Long> getPerkData(VillagePerk unlock) {
-        return perks.get(unlock.getKey().toLowerCase());
+    public PerkData getPerkData(VillagePerk perk) {
+        return perks.get(perk.getKey().toLowerCase());
     }
 
     public boolean canUnlock(VillagePerk perk) {
@@ -470,9 +472,9 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
 
     public boolean checkPerkCount(VillagePerk perk) {
         if (perk.getRepeat() > 0) {
-            Pair<Integer, Long> p = perks.get(perk.getKey().toLowerCase());
+            PerkData p = getPerkData(perk);
             if (p != null) {
-                return p.getLeft() < perk.getRepeat();
+                return p.getTimes() < perk.getRepeat();
             }
         }
         return true;
@@ -480,9 +482,9 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
 
     public boolean checkPerkCooldown(VillagePerk perk) {
         if (perk.getCooldown() > 0) {
-            Pair<Integer, Long> p = perks.get(perk.getKey().toLowerCase());
+            PerkData p = getPerkData(perk);
             if (p != null) {
-                return p.getRight() + perk.getCooldown() * 1000 < System.currentTimeMillis();
+                return p.getLastUsed() + perk.getCooldown() * 1000 < System.currentTimeMillis();
             }
         }
         return true;
@@ -490,25 +492,50 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
 
     public boolean unlockPerk(VillagePerk perk) {
         if (!hasUnlocked(perk)) {
-            perks.put(perk.name().toLowerCase(), new Pair<>(0, System.currentTimeMillis()));
-            if (!perk.getEffects().isEmpty()) {
+            perks.put(perk.name().toLowerCase(), new PerkData());
+            if (perk.hasEffects()) {
                 Base.getLandPerks().updateEffects(false);
             }
+            runCommands(perk);
             return true;
         }
         return false;
     }
 
     public boolean repeatPerk(VillagePerk perk) {
-        Pair<Integer, Long> pair = getPerkData(perk);
-        if (pair != null) {
-            perks.put(perk.name().toLowerCase(), new Pair<>(pair.getLeft() + 1, System.currentTimeMillis()));
-            if (!perk.getEffects().isEmpty()) {
+        PerkData p = getPerkData(perk);
+        if (p != null) {
+            p.addUse();
+            if (perk.hasEffects()) {
                 Base.getLandPerks().updateEffects(false);
             }
+            runCommands(perk);
             return true;
         }
         return false;
+    }
+
+    private void runCommands(VillagePerk perk) {
+        Utils.runAsync(() -> {
+            List<String> commands = new ArrayList<>();
+            for (String command : perk.getCommands()) {
+                for (Resident resident : getResidents()) {
+                    commands.add(MessageUtils.replacePlaceholders(command,
+                            "player", resident.getName(),
+                            "playerid", resident.getUUID().toString(),
+                            "settlement", getName(),
+                            "state", getState().getTag(),
+                            "level", String.valueOf(getLevel()),
+                            "perk", perk.getTag()
+                    ));
+                }
+            }
+            Utils.runSync(() -> {
+                for (String command : commands) {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+                }
+            });
+        });
     }
 
     @Override
@@ -535,7 +562,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         map.put("uses", getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
         map.put("lastUpkeep", getLastUpkeep());
         map.put("vault", getVault());
-        map.put("perks", getPerksMap());
+        map.put("perks", getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
         return map;
     }
     
@@ -592,7 +619,9 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         ((Map<String, Object>) map.get("vault")).entrySet().stream()
                 .filter(e -> !(e.getValue() instanceof Integer))
                 .forEach(e -> village.getVault().put(e.getKey(), (Long) e.getValue()));
-        village.getPerksMap().putAll((Map<String, Pair<Integer, Long>>) map.get("perks"));
+        ((Map<String, Object>) map.get("perks")).entrySet().stream()
+                .filter(e -> !(e.getValue() instanceof Map))
+                .forEach(e -> village.getPerksMap().put(e.getKey(), PerkData.deserialize((Map<String, Object>) e.getValue())));
         return village;
     }
 
@@ -605,5 +634,60 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         if (v.getResidentIds().size() != getResidentIds().size())
             return Integer.compare(v.getResidentIds().size(), getResidentIds().size());
         return Long.compare(v.getBank(), getBank());
+    }
+
+    public static class PerkData implements ConfigurationSerializable {
+        private int times;
+        private long lastUsed;
+        private boolean active;
+
+        public PerkData() {
+            this.times = 0;
+            this.lastUsed = System.currentTimeMillis();
+            this.active = true;
+        }
+
+        private PerkData(int times, long lastUsed, boolean active) {
+            this.lastUsed = lastUsed;
+            this.times = times;
+            this.active = active;
+        }
+
+        public static PerkData deserialize(Map<String, Object> map) {
+            Validate.notNull(map.get("times"));
+            Validate.notNull(map.get("lastUsed"));
+            Validate.notNull(map.get("active"));
+            return new PerkData((Integer) map.get("times"), (Long) map.get("lastUsed"), (Boolean) map.get("active"));
+        }
+
+        public long getLastUsed() {
+            return lastUsed;
+        }
+
+        public int getTimes() {
+            return times;
+        }
+
+        public boolean isActive() {
+            return active;
+        }
+
+        public void toggle() {
+            this.active = !active;
+        }
+
+        public void addUse() {
+            times++;
+            lastUsed = System.currentTimeMillis();
+        }
+
+        @Override
+        public Map<String, Object> serialize() {
+            return ImmutableMap.of(
+                    "times", times,
+                    "lastUsed", lastUsed,
+                    "active", active
+            );
+        }
     }
 }

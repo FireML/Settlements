@@ -49,6 +49,10 @@ public class LandPerks {
 
         for (VillagePerk perk : resident.getVillage().getPerks()) {
             for (VillagePerk.PerkEffect effect : perk.getEffects()) {
+                if (!resident.getVillage().getPerkData(perk).isActive()) {
+                    continue;
+                }
+
                 if (effect.getLength() > 0 && refresh) {
                     continue;
                 }
@@ -113,6 +117,10 @@ public class LandPerks {
 
         if (land != null && !land.isOwnedBy(resident.getVillage())) {
             for (VillagePerk perk : land.getOwnerVillage().getPerks()) {
+                if (!land.getOwnerVillage().getPerkData(perk).isActive()) {
+                    continue;
+                }
+
                 for (VillagePerk.PerkEffect effect : perk.getEffects()) {
                     if (effect.getLength() > 0 && refresh) {
                         continue;

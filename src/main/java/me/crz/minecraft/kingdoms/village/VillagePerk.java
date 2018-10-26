@@ -110,6 +110,10 @@ public class VillagePerk implements NameTag {
         return repeatCost;
     }
 
+    public boolean hasEffects() {
+        return !effects.isEmpty();
+    }
+
     public class PerkEffect {
         private PotionEffectType type;
         private int strength = 1;

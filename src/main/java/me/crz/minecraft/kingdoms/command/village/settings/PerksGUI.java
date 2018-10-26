@@ -7,7 +7,6 @@ import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
@@ -55,23 +54,24 @@ public class PerksGUI extends VillageGUI {
                 public ItemStack getItem(Player p) {
                     CItem item = new CItem(perk.getIcon());
                     if (resident.getVillage().hasUnlocked(perk)) {
-                        Pair<Integer, Long> unlockData = resident.getVillage().getPerkData(perk);
+                        Village.PerkData perkData = resident.getVillage().getPerkData(perk);
                         if (perk.getRepeat() != 0) {
                             item.setName(getMessage("entry.repeat").getReplacedText(
                                     "name", perk.getTag(),
-                                    "used", String.valueOf(unlockData.getLeft())
+                                    "used", String.valueOf(perkData.getTimes())
                             )).glow(true);
                             if (perk.getRepeat() > 0) {
                                 item.addLore(getMessage("repeatable").getReplacedTextList(
                                         "times", String.valueOf(perk.getRepeat()),
-                                        "used", String.valueOf(unlockData.getLeft()),
-                                        "left", String.valueOf(perk.getRepeat() - unlockData.getLeft())
+                                        "used", String.valueOf(perkData.getTimes()),
+                                        "left", String.valueOf(perk.getRepeat() - perkData.getLastUsed())
                                 ));
+                                item.setAmount(perkData.getTimes());
                             } else {
                                 item.addLore(getMessage("unlimited").getTextList());
                             }
                             if (!resident.getVillage().checkPerkCooldown(perk)) {
-                                item.addLore(getMessage("cooldown").getReplacedTextList("cooldown", UtilTime.format(unlockData.getRight())));
+                                item.addLore(getMessage("cooldown").getReplacedTextList("cooldown", UtilTime.format(perkData.getLastUsed())));
                             }
                             if (!perk.getRepeatCost().isEmpty()) {
                                 item.addLore(getMessage("cost.repeat").getTextList());
@@ -86,6 +86,14 @@ public class PerksGUI extends VillageGUI {
 
                         } else {
                             item.setName(getMessage("entry.purchased").getReplacedText("name", perk.getTag())).glow(true);
+                        }
+                        if (perk.hasEffects()) {
+                            if (perkData.isActive()) {
+                                item.addLore(getMessage("active").getReplacedTextList("name", perk.getTag()));
+                            } else {
+                                item.addLore(getMessage("inactive").getReplacedTextList("name", perk.getTag()));
+                            }
+                            item.addLore(getMessage("toggleable").getReplacedTextList("name", perk.getTag()));
                         }
                     } else {
                         item.setName(getMessage("entry." + (resident.getVillage().canUnlock(perk) ? "unlockable" : "locked")).getReplacedText(
@@ -149,7 +157,13 @@ public class PerksGUI extends VillageGUI {
 
                 @Override
                 public boolean click(Player p, ClickType type) {
-                    if (resident.getVillage().canRepeat(perk) && resident.getVillage().remove(perk.getRepeatCost())) {
+                    if (type == ClickType.MIDDLE && perk.hasEffects()) {
+                        Village.PerkData perkData = resident.getVillage().getPerkData(perk);
+                        if (perkData != null) {
+                            perkData.toggle();
+                            return true;
+                        }
+                    } else if (resident.getVillage().canRepeat(perk) && resident.getVillage().remove(perk.getRepeatCost())) {
                         resident.getVillage().repeatPerk(perk);
                         MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), Message.get("command.village.perks.unlock.success"), "perk", perk.getTag());
                         Utils.runAsync(() -> {
