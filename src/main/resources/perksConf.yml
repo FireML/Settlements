@@ -1,4 +1,4 @@
-regen1:
+resistance1:
   # The icon that should be shown in the GUI. If it's a potion (the default value is a lingering one)
   # and an effect is defined then it will just use a potion of the configured effect
   icon: lingering_potion
@@ -10,10 +10,11 @@ regen1:
   # the state that unlocks it
   state: kingdom
   # the level that upgrade unlocks at
-  level: 5
+  level: 1
   # The effects (a map list) that members of the settlement get applied
-  effect:
-    - type: regeneration
+  effects:
+      # the type https://papermc.io/javadocs/org/bukkit/potion/PotionEffectType.html
+    - type: damage_resistance
       strength: 1
       # the length of the effect after applying in seconds
       # leave empty or set to -1 (default) to make it indefinite
@@ -61,17 +62,53 @@ regen1:
       cash: 100
 speed1:
   state: kingdom
-  level: 6
-  effect:
+  level: 2
+  effects:
     - type: speed
+      strength: 1
+  cost:
+    unlock:
+      cash: 1000
+strength1:
+  state: kingdom
+  level: 3
+  effects:
+    - type: increase_damage
+      strength: 1
+  cost:
+    unlock:
+      cash: 1000
+regen1:
+  state: kingdom
+  level: 4
+  effects:
+    - type: regeneration
+      strength: 1
+  cost:
+    unlock:
+      cash: 1000
+speed2:
+  state: kingdom
+  level: 5
+  effects:
+    - type: speed
+      strength: 2
+  cost:
+    unlock:
+      cash: 1000
+resistance2:
+  state: kingdom
+  level: 6
+  effects:
+    - type: damage_resistance
       strength: 2
   cost:
     unlock:
       cash: 1000
 regen2:
   state: kingdom
-  level: 7
-  effect:
+  level: 8
+  effects:
     - type: regeneration
       strength: 2
   cost:
@@ -79,8 +116,8 @@ regen2:
       cash: 1000
 haste1:
   state: kingdom
-  level: 8
-  effect:
+  level: 9
+  effects:
     - type: haste
       strength: 1
   cost:
@@ -88,8 +125,8 @@ haste1:
       cash: 1000
 haste2:
   state: kingdom
-  level: 9
-  effect:
+  level: 10
+  effects:
     - type: haste
       strength: 1
   cost:
