@@ -10,6 +10,7 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 
 import java.util.Map;
 
+import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.VillageGUI;
@@ -92,7 +93,7 @@ public class VaultListener extends VillageGUI implements Listener {
                 }
             }
             if (!deposited.isEmpty()) {
-                MessageUtils.tellListResidents(village.getOnlineResidents(), this.buildSuccessDepositMessage(player, deposited));
+                MessageUtils.tellListResidents(village.getOnlineResidents(), this.buildSuccessDepositMessage(resident, player, deposited));
                 village.getVault().putAll(total);
                 Utils.runAsync(() -> {
                     DatabaseManager.getInstance().saveVillage(village);
@@ -100,7 +101,7 @@ public class VaultListener extends VillageGUI implements Listener {
                 });
             }
             if (!fail.isEmpty()) {
-                MessageUtils.tellList(player, this.buildfailDepositMessage(fail, ""));
+                MessageUtils.tellList(player, this.buildfailDepositMessage(resident, fail, ""));
             }
         } else if (contents.length > 0) {
             for (ItemStack item2 : contents) {
@@ -109,7 +110,7 @@ public class VaultListener extends VillageGUI implements Listener {
                     player.getInventory().addItem(item2);
                 }
             }
-            MessageUtils.tellList(player, this.buildfailDepositMessage(fail, getText("max-level-reached")));
+            MessageUtils.tellList(player, this.buildfailDepositMessage(resident, fail, getText("max-level-reached")));
         }
     }
 
@@ -121,23 +122,25 @@ public class VaultListener extends VillageGUI implements Listener {
         return inv.getName().equals(getText("title"));
     }
 
-    private List<String> buildfailDepositMessage(Map<Material, Long> fail, String reason) {
+    private List<String> buildfailDepositMessage(Resident resident, Map<Material, Long> fail, String reason) {
         List<String> messages = new ArrayList<>();
         messages.add(getMessage("fail-deposit").getReplacedText("reason", reason));
         for (Map.Entry<Material, Long> entry : fail.entrySet()) {
-            messages.add(getMessage("list-deposit").getReplacedText(
+            messages.add(getMessage("list-entry").getReplacedText(
                     "amount", String.valueOf(entry.getValue()),
+                    "icon", resident.hasResourcePack() ? ConfigManager.getInstance().getIconRpMapping().getIcon(entry.getKey().name(), true) : "",
                     "material", entry.getKey().name()));
         }
         return messages;
     }
 
-    private List<String> buildSuccessDepositMessage(Player p, Map<String, Long> deposited) {
+    private List<String> buildSuccessDepositMessage(Resident resident, Player p, Map<String, Long> deposited) {
         List<String> messages = new ArrayList<>();
         messages.add(getMessage("success-deposit").getReplacedText("player", p.getDisplayName()));
         for (Map.Entry<String, Long> entry : deposited.entrySet()) {
-            messages.add(getMessage("list-deposit").getReplacedText(
+            messages.add(getMessage("list-entry").getReplacedText(
                 "amount", String.valueOf(entry.getValue()),
+                "icon", resident.hasResourcePack() ? ConfigManager.getInstance().getIconRpMapping().getIcon(entry.getKey(), true) : "",
                 "material", entry.getKey()));
         }
         return messages;

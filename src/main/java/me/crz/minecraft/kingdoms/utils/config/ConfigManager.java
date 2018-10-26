@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.utils.config;
 import java.io.IOException;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.utils.IconRpMapping;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,6 +16,7 @@ public class ConfigManager {
     private ConfigAccessor levelConf;
     private ConfigAccessor mapConf;
     private ConfigAccessor unlocksConf;
+    private IconRpMapping iconRpMapping;
 
     public ConfigManager() {
         super();
@@ -36,6 +38,7 @@ public class ConfigManager {
         unlocksConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "unlocksConf.yml");
         unlocksConf.saveDefaultConfig();
         unlocksConf.reloadConfig();
+        iconRpMapping = new IconRpMapping(KingdomsPlugin.getInstance());
         if (KingdomsPlugin.getInstance().isRunning()) {
             VillageManager.getInstance().loadPerks();
             Message.clearCache();
@@ -68,6 +71,10 @@ public class ConfigManager {
 
     public FileConfiguration getConfig() {
         return KingdomsPlugin.getInstance().getConfig();
+    }
+
+    public IconRpMapping getIconRpMapping() {
+        return iconRpMapping;
     }
 
     public static ConfigManager getInstance() {

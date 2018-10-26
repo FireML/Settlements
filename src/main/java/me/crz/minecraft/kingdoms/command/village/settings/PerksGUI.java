@@ -10,6 +10,7 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.VillageGUI;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -65,7 +66,11 @@ public class PerksGUI extends VillageGUI {
                             if (!perk.getRepeatCost().isEmpty()) {
                                 item.addLore(getMessage("cost.repeat").getTextList());
                                 for (Map.Entry<String, Long> cost : perk.getRepeatCost().entrySet()) {
-                                    item.addLore(getMessage("cost.entry").getReplacedTextList("type", cost.getKey(), "amount", String.valueOf(cost.getValue())));
+                                    item.addLore(getMessage("cost.entry").getReplacedTextList(
+                                            "type", cost.getKey(),
+                                            "icon", resident.hasResourcePack() ? ConfigManager.getInstance().getIconRpMapping().getIcon(cost.getKey(), true) : "",
+                                            "amount", String.valueOf(cost.getValue())
+                                    ));
                                 }
                             }
 
@@ -96,14 +101,22 @@ public class PerksGUI extends VillageGUI {
                             if (!perk.getRepeatCost().isEmpty()) {
                                 item.addLore(getMessage("cost.repeat").getTextList());
                                 for (Map.Entry<String, Long> cost : perk.getRepeatCost().entrySet()) {
-                                    item.addLore(getMessage("cost.entry").getReplacedTextList("type", cost.getKey(), "amount", String.valueOf(cost.getValue())));
+                                    item.addLore(getMessage("cost.entry").getReplacedTextList(
+                                            "type", cost.getKey(),
+                                            "icon", resident.hasResourcePack() ? ConfigManager.getInstance().getIconRpMapping().getIcon(cost.getKey(), true) : "",
+                                            "amount", String.valueOf(cost.getValue())
+                                    ));
                                 }
                             }
                         }
                         if (!perk.getUnlockCost().isEmpty()) {
                             item.addLore(getMessage("cost.unlock").getTextList());
                             for (Map.Entry<String, Long> cost : perk.getUnlockCost().entrySet()) {
-                                item.addLore(getMessage("cost.entry").getReplacedTextList("type", cost.getKey(), "amount", String.valueOf(cost.getValue())));
+                                item.addLore(getMessage("cost.entry").getReplacedTextList(
+                                        "type", cost.getKey(),
+                                        "icon", resident.hasResourcePack() ? ConfigManager.getInstance().getIconRpMapping().getIcon(cost.getKey(), true) : "",
+                                        "amount", String.valueOf(cost.getValue())
+                                ));
                             }
                         }
                     }

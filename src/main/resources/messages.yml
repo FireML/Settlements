@@ -286,7 +286,7 @@ gui:
     cost:
       unlock: "&aUnlock cost:"
       repeat: "&aRepeat cost:"
-      entry: "&a{type}&7: {amount}"
+      entry: "{icon}&a{type}&7: {amount}"
     cooldown: "&aCan be repeated in {cooldown}"
   use:
     title: "&3&lSettlement Use Settings"
@@ -300,7 +300,7 @@ gui:
     success-deposit: "&6&l{player} &7&lhas deposited:"
     fail-deposit: "&c&lFailed Deposited Items: {reason}"
     max-level-reached: "&r&c&lMax Level Reached"
-    list-deposit: "&6{amount} &e{material}"
+    list-entry: "&6{amount} {icon}&e{material}"
 command:
   chat:
     description: "Chat command"
@@ -732,7 +732,7 @@ command:
       description: Deposit an item into the vault
       history:
         head: "&7------- &cVault History [{page}]&7 -------"
-        entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {type}](&eAt {timestamp})"
+        entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}{type}](&eAt {timestamp})"
         description: Show the vault's history
     rules:
       description: Links you to the rules

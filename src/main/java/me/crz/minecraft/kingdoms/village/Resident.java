@@ -40,6 +40,7 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
     private int bonusClaims = 0;
     private long lastLogin = 0;
     private long villageJoin;
+    private boolean resourcePack = false;
 
     public Resident(UUID uuid, String name) {
         this.uuid = uuid;
@@ -298,5 +299,13 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
 
     public void tell(BaseComponent[] message) {
         MessageUtils.tell(this.getPlayer(), message);
+    }
+
+    public void setResourcePack(boolean resourcePack) {
+        this.resourcePack = resourcePack;
+    }
+
+    public boolean hasResourcePack() {
+        return resourcePack;
     }
 }

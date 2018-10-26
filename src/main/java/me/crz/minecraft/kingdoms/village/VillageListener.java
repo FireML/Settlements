@@ -18,6 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +30,7 @@ public class VillageListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void on(AsyncPlayerPreLoginEvent event) {
+    public void onPreLogin(AsyncPlayerPreLoginEvent event) {
         if (event.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED) {
             // try to load the data and if it doesn't exist create it
             Resident res = ResidentManager.getInstance().getResident(event.getUniqueId());
@@ -52,7 +53,7 @@ public class VillageListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void on(PlayerJoinEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         Resident res = ResidentManager.getInstance().getResident(event.getPlayer().getUniqueId()); // should be cached
         res.getChannels().removeIf(chatChannel -> !chatChannel.canChat(event.getPlayer()));
         for (ChatChannel channel : ChatChannel.values()) {
@@ -98,6 +99,13 @@ public class VillageListener implements Listener {
                     MessageUtils.tell(e.getPlayer(), "&c&lYou can't use another villages teleporter");
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onResourcePackStatus(PlayerResourcePackStatusEvent event) {
+        if (event.getStatus() == PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED) {
+            ResidentManager.getInstance().getResident(event.getPlayer()).setResourcePack(true);
         }
     }
 }
