@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.utils.NameTag;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
@@ -169,6 +170,10 @@ public class VillagePerk implements NameTag {
 
         public EffectInfluenced getApplyTo() {
             return applyTo;
+        }
+
+        public PotionEffect getPotionEffect() {
+            return new PotionEffect(type, length > 0 ? length * 20: 300, strength, ambient, particles, icon);
         }
     }
 

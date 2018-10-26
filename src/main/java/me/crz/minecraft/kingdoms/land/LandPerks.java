@@ -169,17 +169,17 @@ public class LandPerks {
             }
         }
 
-        Map<PotionEffectType, Pair<Integer, Integer>> potionEffects = new LinkedHashMap<>();
+        Map<PotionEffectType, VillagePerk.PerkEffect> potionEffects = new LinkedHashMap<>();
 
         for (VillagePerk.PerkEffect effect : effects) {
-            Pair<Integer, Integer> data = potionEffects.get(effect.getType());
-            if (data == null || data.getLeft() < effect.getStrength() || (data.getLeft() == effect.getStrength() && data.getRight() < effect.getLength())) {
-                potionEffects.put(effect.getType(), new Pair<>(effect.getStrength(), effect.getLength() > 0 ? effect.getLength() * 20 : 300));
+            VillagePerk.PerkEffect perkEffect = potionEffects.get(effect.getType());
+            if (perkEffect == null || perkEffect.getStrength() < effect.getStrength() || (perkEffect.getStrength() == effect.getStrength() && perkEffect.getLength() < effect.getLength())) {
+                potionEffects.put(effect.getType(), effect);
             }
         }
 
-        return potionEffects.entrySet().stream()
-                .map(e -> new PotionEffect(e.getKey(), e.getValue().getRight(), e.getValue().getLeft() + 1))
+        return potionEffects.values().stream()
+                .map(VillagePerk.PerkEffect::getPotionEffect)
                 .collect(Collectors.toList());
     }
 
