@@ -1,9 +1,9 @@
-colors:
+color:
   own: GREEN
   own-plot: YELLOW
   ally: AQUA
   enemy: RED
-  unclaimed: LGRAY
+  unclaimed: GRAY
   current: YELLOW
 symbol:
   normal: "-"

@@ -38,7 +38,7 @@ public class VillageMapCommand extends SubCommand {
 
     @Override
     public boolean run(Player player, String base, String alias, String... args) {
-        Utils.runAsync(() -> player.spigot().sendMessage(getMap(generateMap(player), player)));
+        Utils.runAsync(() -> sendMap(generateMap(player), player));
         return true;
     }
 
@@ -51,7 +51,6 @@ public class VillageMapCommand extends SubCommand {
             for (int countZ = 0; countZ < WIDTH; countZ++) {
                 map[countX][countZ] = getSymbol(x + countX, z + countZ, player.getLocation().getWorld(), resident, countX == HEIGHT / 2 && countZ == WIDTH / 2);
             }
-            ++countX;
         }
         return map;
     }
@@ -96,6 +95,7 @@ public class VillageMapCommand extends SubCommand {
             hover.append("\n").append(getMessage("hover." + symbol.getKey()).getReplacedComponents(
                     "owner", land.isPlot() ? ResidentManager.getInstance().getResidentName(land.getPlotOwner()) : "none",
                     "price", land.isForSale() ? String.valueOf(land.getPrice()) : "not for sale",
+                    "description", land.getDescription(),
                     "name", land.getOutpostName()
             ));
         }
@@ -110,33 +110,33 @@ public class VillageMapCommand extends SubCommand {
     }
 
     private String rpGetPlayerDirection(Player playerSelf) {
-        String dir;
         float y = playerSelf.getLocation().getYaw();
+        y += 22.5f;
         if (y < 0.0f) {
             y += 360.0f;
         }
         y %= 360.0f;
-        int i = (int) ((y + 8.0f) / 22.5);
-        if (i == 0) {
-            dir = "S";
-        } else if (i == 2) {
-            dir = "0/";
-        } else if (i == 4) {
-            dir = "W";
-        } else if (i == 6) {
-            dir = "0\\";
-        } else if (i == 8) {
-            dir = "N";
-        } else if (i == 10) {
-            dir = "2\\";
-        } else if (i == 12) {
-            dir = "E";
-        } else if (i == 14) {
-            dir = "2/";
-        } else {
-            dir = "S";
+        int i = (int) (y / 45);
+        switch (i) {
+            case 0:
+                return "S";
+            case 1:
+                return "2/";
+            case 2:
+                return "W";
+            case 3:
+                return "0\\";
+            case 4:
+                return "N";
+            case 5:
+                return "0/";
+            case 6:
+                return "E";
+            case 7:
+                return "2\\";
+            default:
+                return "+";
         }
-        return dir;
     }
 
     public List<String> getRowSymbols(Player p) {
@@ -181,23 +181,25 @@ public class VillageMapCommand extends SubCommand {
         return 0;
     }
 
-    private BaseComponent[] getMap(BaseComponent[][][] map, Player p) {
-        ComponentBuilder cb = new ComponentBuilder("").append(getMessage("head").getComponents());
+    private void sendMap(BaseComponent[][][] map, Player p) {
+        getMessage("head").tell(p);
         for (int i = 0; i < map.length; ++i) {
-            cb.append("\n", ComponentBuilder.FormatRetention.NONE);
+            ComponentBuilder cb = new ComponentBuilder("");
             BaseComponent[] rowBase = this.getRowBase(i, p);
             if (rowBase.length > 0) {
                 cb.append(rowBase);
             }
             for (int j = this.getStart(i); j < 29; ++j) {
-                cb.append(map[i][j], ComponentBuilder.FormatRetention.NONE);
+                if (map[i][j].length > 0) {
+                    cb.append(map[i][j], ComponentBuilder.FormatRetention.NONE);
+                }
             }
             BaseComponent[] rowEnd = this.getRowEnd(i);
             if (rowEnd.length > 0) {
                 cb.append(rowEnd, ComponentBuilder.FormatRetention.NONE);
             }
+            p.spigot().sendMessage(cb.create());
         }
-        return cb.create();
     }
 
     enum Relation implements ConfigKey {
