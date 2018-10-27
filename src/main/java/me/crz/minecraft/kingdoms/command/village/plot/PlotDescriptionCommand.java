@@ -11,7 +11,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 
 public class PlotDescriptionCommand extends ResidentSubCommand {
     public PlotDescriptionCommand(VillagePlotCommand parent) {
-        super(parent, "description <text>", "name");
+        super(parent, "description <text>", "name", "board");
     }
 
     @Override

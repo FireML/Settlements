@@ -71,6 +71,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "FOREIGN KEY (chiefId) REFERENCES " + tablePrefix + "residents(id) ON DELETE RESTRICT,"
                     + "level INTEGER NOT NULL,"
                     + "settlementState VARCHAR(255) NOT NULL,"
+                    + "description TEXT NOT NULL,"
                     + "access VARCHAR(255) NOT NULL,"
                     + "buildState VARCHAR(255) NOT NULL,"
                     + "pvp BOOLEAN NOT NULL,"
@@ -157,7 +158,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE SET NULL,"
                     + "settlementJoin BIGINT(11) NOT NULL,"
                     + "rank VARCHAR(255),"
-                    + "title VARCHAR(255),"
+                    + "title VARCHAR(255) NOT NULL,"
                     + "bonusClaims INTEGER,"
                     + "lastLogin BIGINT(11) NOT NULL,"
                     + "activeChannel VARCHAR(255) NOT NULL,"
@@ -203,7 +204,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "price INTEGER DEFAULT 0,"
                     + "forSale BOOLEAN NOT NULL,"
                     + "embassy BOOLEAN NOT NULL,"
-                    + "description VARCHAR(255),"
+                    + "description TEXT,"
                     + "pvp BOOLEAN NOT NULL,"
                     + "fireSpread BOOLEAN NOT NULL,"
                     + "explosions BOOLEAN NOT NULL,"
@@ -571,7 +572,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         int id = rs.getInt("id");
         Map<String, Object> map = toMap(rs);
 
-        PreparedStatement rSta = conn.prepareStatement("SELECT uuid FROM " + tablePrefix + "residents WHERE settlementId = ?;");
+        PreparedStatement rSta = conn.prepareStatement("SELECT id, uuid FROM " + tablePrefix + "residents WHERE settlementId = ?;");
         rSta.setInt(1, id);
         ResultSet rRs = rSta.executeQuery();
         Collection<String> residents = new LinkedHashSet<>();

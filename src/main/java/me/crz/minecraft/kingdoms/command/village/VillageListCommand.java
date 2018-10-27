@@ -59,6 +59,7 @@ public class VillageListCommand extends SubCommand {
                         Resident chief = ResidentManager.getInstance().getResident(v.getChief());
                         getMessage("entry").tell(player,
                                 "name", v.getName(),
+                                "description", v.getDescription(),
                                 "state", v.getState().getTag(),
                                 "access", v.getAccess() != VillageAccess.PRIVATE ? v.getAccess().getTag() : "",
                                 "residents", String.valueOf(v.getResidentIds().size()),

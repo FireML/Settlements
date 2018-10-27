@@ -35,7 +35,7 @@ public class LandPerks {
         for (Player player : Bukkit.getOnlinePlayers()) {
             OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
             Resident resident = ResidentManager.getInstance().getResident(player);
-            if ((resident.getVillage().isBuff() || resident.getVillage().getPerksMap().isEmpty())
+            if ((resident.hasVillage() && (resident.getVillage().isBuff() || resident.getVillage().getPerksMap().isEmpty()))
                     && (land != null && (!land.getOwnerVillage().isBuff() || land.getOwnerVillage().getPerksMap().isEmpty()))) {
                 continue;
             }
@@ -47,71 +47,73 @@ public class LandPerks {
         List<VillagePerk.PerkEffect> effects = new ArrayList<>();
         Resident resident = ResidentManager.getInstance().getResident(p);
 
-        for (VillagePerk perk : resident.getVillage().getPerks()) {
-            for (VillagePerk.PerkEffect effect : perk.getEffects()) {
+        if (resident.hasVillage()) {
+            for (VillagePerk perk : resident.getVillage().getPerks()) {
                 if (!resident.getVillage().getPerkData(perk).isActive()) {
                     continue;
                 }
 
-                if (effect.getLength() > 0 && refresh) {
-                    continue;
-                }
-
-                if (resident.hasVillage() && effect.getApplyTo() == VillagePerk.EffectInfluenced.FREE) {
-                    continue;
-                }
-
-                if (land == null) {
-                    if (effect.getApplyIn() != VillagePerk.EffectLocation.UNCLAIMED) {
+                for (VillagePerk.PerkEffect effect : perk.getEffects()) {
+                    if (effect.getLength() > 0 && refresh) {
                         continue;
                     }
-                } else {
-                    switch (effect.getApplyIn()) {
-                        case PLOT:
-                            if (!land.isPlotOwner(p.getUniqueId())) {
-                                continue;
-                            }
-                            break;
-                        case PLOT_FRIENDS:
-                            if (!land.isPlot() || !resident.getFriends().contains(land.getPlotOwner())) {
-                                continue;
-                            }
-                            break;
-                        case OWN_SETTLEMENT:
-                            if (!land.isOwnedBy(resident.getVillage())) {
-                                continue;
-                            }
-                            break;
-                        case ENEMY_SETTLEMENT:
+
+                    if (resident.hasVillage() && effect.getApplyTo() == VillagePerk.EffectInfluenced.FREE) {
+                        continue;
+                    }
+
+                    if (land == null) {
+                        if (effect.getApplyIn() != VillagePerk.EffectLocation.UNCLAIMED) {
+                            continue;
+                        }
+                    } else {
+                        switch (effect.getApplyIn()) {
+                            case PLOT:
+                                if (!land.isPlotOwner(p.getUniqueId())) {
+                                    continue;
+                                }
+                                break;
+                            case PLOT_FRIENDS:
+                                if (!land.isPlot() || !resident.getFriends().contains(land.getPlotOwner())) {
+                                    continue;
+                                }
+                                break;
+                            case OWN_SETTLEMENT:
+                                if (!land.isOwnedBy(resident.getVillage())) {
+                                    continue;
+                                }
+                                break;
+                            case ENEMY_SETTLEMENT:
+                                if (land.isOwnedBy(resident.getVillage()) || land.getOwnerVillage().isAlly(resident.getVillage())) {
+                                    continue;
+                                }
+                                break;
+                            case ALLIED_SETTLEMENT:
+                                if (!land.isOwnedBy(resident.getVillage()) && !land.getOwnerVillage().isAlly(resident.getVillage())) {
+                                    continue;
+                                }
+                                break;
+                        }
+                        if (effect.getApplyTo() == VillagePerk.EffectInfluenced.ENEMIES) {
                             if (land.isOwnedBy(resident.getVillage()) || land.getOwnerVillage().isAlly(resident.getVillage())) {
                                 continue;
                             }
-                            break;
-                        case ALLIED_SETTLEMENT:
+                        } else if (effect.getApplyTo() == VillagePerk.EffectInfluenced.ALLIES) {
                             if (!land.isOwnedBy(resident.getVillage()) && !land.getOwnerVillage().isAlly(resident.getVillage())) {
                                 continue;
                             }
-                            break;
-                    }
-                    if (effect.getApplyTo() == VillagePerk.EffectInfluenced.ENEMIES) {
-                        if (land.isOwnedBy(resident.getVillage()) || land.getOwnerVillage().isAlly(resident.getVillage())) {
-                            continue;
-                        }
-                    } else if (effect.getApplyTo() == VillagePerk.EffectInfluenced.ALLIES) {
-                        if (!land.isOwnedBy(resident.getVillage()) && !land.getOwnerVillage().isAlly(resident.getVillage())) {
-                            continue;
                         }
                     }
-                }
 
-                if (resident.hasVillage()) {
-                    VillageRank rank = effect.getApplyTo().getRank();
-                    if (rank != null && resident.getVillageRank().below(rank)) {
-                        continue;
+                    if (resident.hasVillage()) {
+                        VillageRank rank = effect.getApplyTo().getRank();
+                        if (rank != null && resident.getVillageRank().below(rank)) {
+                            continue;
+                        }
                     }
-                }
 
-                effects.add(effect);
+                    effects.add(effect);
+                }
             }
         }
 

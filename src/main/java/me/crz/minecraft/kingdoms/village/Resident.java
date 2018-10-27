@@ -30,7 +30,7 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
     private UUID uuid;
     private String name;
     private VillageRank rank = VillageRank.RESIDENT;
-    private String title = null;
+    private String title = "";
     private Village village = null;
     private ChatChannel activeChannel = ChatChannel.GENERAL;
     private Set<ChatChannel> channels = new HashSet<>();

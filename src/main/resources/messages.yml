@@ -56,7 +56,7 @@ scoreboard:
 
         &3&lBal&3: &b$&e{balance}
         &3&lBonus&e: &e{bonus}
-        &3&lBank: &b$&e{bank}
+        &3&lBank: &b$&e{villagebank}
         &3&lVillage-Bonus&e: &e{villagebonus}
 
         &3&lKills&3: &e{kills}
@@ -446,6 +446,9 @@ command:
       success: "&a&lSUCCESS &r&7created a new settlement."
       broadcast: "&e{player} has made a settlement called {name}!"
       description: Create a new village.
+    description:
+      success: "&aSet description of {state} to &r{description}"
+      description: Set the description of a village
     disband:
       confirm: "&c&lPlease do /{command} to confirm the &r&e&ldisbanding&r&c&l of your village."
       success: "&e&lALERT &r&7Your {chief} has deleted your {state}."
@@ -453,6 +456,7 @@ command:
     here:
       general: |-
         &8--------&c&l{name}&r&8--------
+        &a&lDescription: &r&7{description}
         &a&lState: &r&7{state}
         &6&lAccess: &r&7{access}
         &6&lLevel: &r&7{level}
@@ -506,22 +510,22 @@ command:
     list:
       description: "List settlements"
       head: "&7------- &c{access}Settlements [{page}]&7 -------"
-      entry: "&8\\[&9*&8] [&e&l{state} &r&e{name} &r&7{access}]({chiefrank}: {chief}\\nSize: {residents} players)"
+      entry: "&8\\[&9*&8] [&e&l{state} &r&e{name} &r&7{access}]({chiefrank}: {chief}\\nSize: {residents} players\\n{description})"
     map:
       head: "&8---------------- &eSettlement Map &r&8----------------"
       explanation: |-
-        &r&a- &6= your land
-        &r&a$ &6= for sale
-        &r&a~ &6= player plot
-        &r&ae &6= embassy
-        &r&aH &6= home
-        &r&a@ &6= outpost
-        &r&b- &6= ally
-        &r&c- &6= other
-        &r&7- &6= unclaimed
-        &r&e+ &6= current
+        &r &a- &6= your land
+        &r &a$ &6= for sale
+        &r &a~ &6= player plot
+        &r &ae &6= embassy
+        &r &aH &6= home
+        &r &a@ &6= outpost
+        &r &b- &6= ally
+        &r &c- &6= other
+        &r &7- &6= unclaimed
+        &r &e+ &6= current
       hover:
-        click-to-claim: "&1Click to claim &f{location}"
+        click-to-claim: "&9Click to claim &f{location}"
         own-plot: Your plot
         plot: "Plot Owner: &7{owner}"
         for-sale: "For sale: &7{price}"
@@ -659,6 +663,7 @@ command:
     show:
       general: |-
         &8--------&c&l{name}&r&8--------
+        &a&lDescription: &r&7{description}
         &a&lState: &r&7{state}
         &6&lAccess: &r&7{access}
         &6&lLevel: &r&7{level}

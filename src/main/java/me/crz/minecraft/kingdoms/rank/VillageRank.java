@@ -7,6 +7,7 @@ import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Rankable;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageState;
+import org.bukkit.ChatColor;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,7 +31,7 @@ public enum VillageRank implements Rankable, ConfigKey {
     static {
         for (VillageRank rank : values()) {
             for (VillageState state : VillageState.values()) {
-                List<String> titles = Message.get(state.getKey() + ".rank." + rank.getKey()).getTextList();
+                List<String> titles = Message.get(state.getKey() + ".rank." + rank.getKey()).getTextList().stream().map(ChatColor::stripColor).collect(Collectors.toList());
                 rank.titles.putAll(state, titles);
                 byTitle.put(rank.name().toLowerCase(), rank);
                 byTitle.putAll(titles.stream().collect(Collectors.toMap(String::toLowerCase, t -> rank)));

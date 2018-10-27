@@ -30,6 +30,7 @@ public abstract class AbstractVillageInfoCommand extends SubCommand {
         Resident chief = ResidentManager.getInstance().getResident(village.getChief());
         return new String[] {
                 "name", village.getName(),
+                "description", village.getDescription(),
                 "state", village.getState().getTag(),
                 "level", String.valueOf(village.getLevel()),
                 "land", String.valueOf(LandManager.getInstance().getClaimedLandSize(village)),

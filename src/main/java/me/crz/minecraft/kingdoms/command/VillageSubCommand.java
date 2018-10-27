@@ -20,7 +20,7 @@ public abstract class VillageSubCommand extends ResidentSubCommand {
 
     @Override
     public boolean testAccess(Player player) {
-        return super.testAccess(player) && testRank(player);
+        return testRank(player) && super.testAccess(player);
     }
 
     private boolean testRank(Player player) {

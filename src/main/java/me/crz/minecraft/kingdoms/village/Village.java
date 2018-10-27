@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 public class Village implements ConfigurationSerializable, Comparable<Village>, BonusClaimsHolder {
     private IdObject id = IdObject.get(null);
     private String name;
-    private String description;
+    private String description = "";
     private int level;
     private UUID chief;
     private VillageState villageState;
@@ -542,6 +542,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     public Map<String, Object> serialize() {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("name", getName());
+        map.put("description", getDescription());
         map.put("chief", getChief());
         map.put("level", getLevel());
         map.put("settlementState", getState().name());
@@ -568,8 +569,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     
     public static Village deserialize(Map<String, Object> map) {
         if (map == null || map.get("name") == null || map.get("chief") == null || map.get("level") == null
-                || map.get("settlementState") == null || map.get("enterMessage") == null || map.get("leaveMessage") == null
-                || map.get("buildState") == null) {
+                || map.get("settlementState") == null || map.get("buildState") == null) {
             KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize Village! (" + map + ")");
             return null;
         }
@@ -581,6 +581,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
                 BuildState.valueOf((String) map.get("buildState"))
         );
         village.setId(IdObject.get(map));
+        village.setDescription((String) map.get("description"));
         village.setAccess(VillageAccess.valueOf((String) map.get("access")));
         village.getResidentIds().addAll(((Collection<String>) map.get("residents")).stream().map(UUID::fromString).collect(Collectors.toSet()));
         village.setPvp((Boolean) map.get("pvp"));
