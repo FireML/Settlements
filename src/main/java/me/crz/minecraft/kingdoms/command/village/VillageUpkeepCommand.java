@@ -3,7 +3,7 @@ package me.crz.minecraft.kingdoms.command.village;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.utils.UtilMath;
+import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 
@@ -14,6 +14,7 @@ import me.crz.minecraft.kingdoms.land.LandManager;
 import java.util.Calendar;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
+import org.bukkit.ChatColor;
 
 public class VillageUpkeepCommand extends VillageSubCommand {
     public VillageUpkeepCommand(SubCommand parent) {
@@ -37,37 +38,10 @@ public class VillageUpkeepCommand extends VillageSubCommand {
                 "cost", String.valueOf(total),
                 "upkeep", String.valueOf(KingdomsPlugin.UPKEEP),
                 "time", village.getLastUpkeep() < System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1L)
-                        ? format((double) TimeUnit.MILLISECONDS.toSeconds(tillNoon))
-                        : format((double) TimeUnit.MILLISECONDS.toSeconds(village.getLastUpkeep() - System.currentTimeMillis())),
-                "afford", (village.getBank() >= total) ? "&ayes" : "&cno"
+                        ? UtilTime.format((double) TimeUnit.MILLISECONDS.toSeconds(tillNoon))
+                        : UtilTime.format((double) TimeUnit.MILLISECONDS.toSeconds(village.getLastUpkeep() - System.currentTimeMillis())),
+                "afford", (village.getBank() >= total) ? ChatColor.GREEN + "yes" : ChatColor.RED + "no"
         );
         return true;
-    }
-
-    public static String format(double seconds) {
-        if (seconds < 0.0) {
-            seconds = 0.0;
-        }
-        double minutes = seconds / 60.0;
-        double hours = minutes / 60.0;
-        double days = hours / 24.0;
-        double months = days / 30.0;
-        double years = days / 365.0;
-        if (minutes < 1.0) {
-            return String.valueOf(UtilMath.trim(seconds)) + "&7 Seconds";
-        }
-        if (hours < 1.0) {
-            return String.valueOf(UtilMath.trim(minutes)) + "&7 Minutes";
-        }
-        if (days < 1.0) {
-            return String.valueOf(UtilMath.trim(hours)) + "&7 Hours";
-        }
-        if (months < 1.0) {
-            return String.valueOf(UtilMath.trim(days)) + "&7 Days";
-        }
-        if (years < 1.0) {
-            return String.valueOf(UtilMath.trim(months)) + "&7 Months";
-        }
-        return String.valueOf(UtilMath.trim(years)) + "&7 Years";
     }
 }

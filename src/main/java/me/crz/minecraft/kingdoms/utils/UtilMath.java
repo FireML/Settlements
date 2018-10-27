@@ -21,15 +21,7 @@ public class UtilMath {
         if (Double.isNaN(d) || Double.isInfinite(d)) {
             d = 0.0;
         }
-        String format = "#.#";
-        for (int i = 1; i < degree; ++i) {
-            format = String.valueOf(format) + "#";
-        }
-        try {
-            return Double.valueOf(new DecimalFormat(format).format(d));
-        } catch (NumberFormatException exception) {
-            return d;
-        }
+        return Math.round(d * Math.pow(10, degree)) / Math.pow(10, degree);
     }
 
     public static boolean parseInt(final String s) {
