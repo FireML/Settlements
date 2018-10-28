@@ -56,7 +56,7 @@ public class VillageListCommand extends SubCommand {
                     .sorted(Village::compareTo)
                     .skip((finalPage - 1) * 20)
                     .forEachOrdered(v -> {
-                        Resident chief = ResidentManager.getInstance().getResident(v.getChief());
+                        Resident chief = v.getChief();
                         getMessage("entry").tell(player,
                                 "name", v.getName(),
                                 "level", String.valueOf(v.getLevel()),

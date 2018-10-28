@@ -251,6 +251,9 @@ gui:
     title: "&3&lPlot Build Settings"
     set-state: "&7&lClick to allow building of &b&l{state}"
     selected-state: "&e&lBuilding is currently set to &b&l{state}"
+  private-teleports:
+    title: "&3&lSettlement teleports: &r&7{page}"
+    entry: "&b{name}"
   residents:
     title: "&3&lVillage Residents"
     back: "&c&lBack To Settings"

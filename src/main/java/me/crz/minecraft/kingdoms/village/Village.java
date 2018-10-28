@@ -262,12 +262,20 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         return player.getUniqueId().equals(chief);
     }
 
-    public UUID getChief() {
+    public UUID getChiefId() {
         return chief;
     }
 
     public void setChief(UUID chief) {
         this.chief = chief;
+    }
+
+    /**
+     * Get the chief, might run database operation!
+     * @return The chief's Resident object
+     */
+    public Resident getChief() {
+        return ResidentManager.getInstance().getResident(getChiefId());
     }
 
     /**
@@ -452,7 +460,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("name", getName());
         map.put("description", getDescription());
-        map.put("chief", getChief());
+        map.put("chief", getChiefId());
         map.put("level", getLevel());
         map.put("settlementState", getState().name());
         map.put("access", getAccess().toString());

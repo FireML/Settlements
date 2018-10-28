@@ -1,8 +1,9 @@
 package me.crz.minecraft.kingdoms.teleporter;
 
 import me.crz.minecraft.kingdoms.utils.IdObject;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.VillageAccess;
-import net.milkbowl.vault.economy.EconomyResponse;
+import me.crz.minecraft.kingdoms.village.VillageGUI;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.Bukkit;
 
@@ -22,26 +23,25 @@ import java.util.ArrayList;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import me.crz.minecraft.kingdoms.Base;
 
-public class PrivateTeleportersGUI extends Base {
+public class PrivateTeleportersGUI extends VillageGUI {
     private Set<IdObject> allies = new LinkedHashSet<>();
     private int checks = 0;
     private List<ClickableItem> items = new ArrayList<>();
 
     public PrivateTeleportersGUI(Village village) {
-        super();
+        super("private-teleports");
         this.update(village);
     }
 
     public void open(Player p, int i) {
         this.update(VillageManager.getInstance().getVillageFromPlayer(p));
-        CInventory ci = new CInventory("Private Warps: " + (i + 1), InventorySize.FOUR) {};
+        CInventory ci = new CInventory(getMessage("title").getReplacedText("page", String.valueOf(i + 1)), InventorySize.FOUR) {};
         if (items.isEmpty()) {
             return;
         }
@@ -76,12 +76,7 @@ public class PrivateTeleportersGUI extends Base {
             }
             items.add(new ClickableItem() {
                 public ItemStack getItem(Player p) {
-                    ItemStack item = new ItemStack(Material.PLAYER_HEAD);
-                    SkullMeta sm = (SkullMeta) item.getItemMeta();
-                    sm.setDisplayName(MessageUtils.replaceColorCodes("&b" + v.getName()));
-                    sm.setOwningPlayer(Bukkit.getOfflinePlayer(v.getChief()));
-                    item.setItemMeta(sm);
-                    return item;
+                    return Utils.getHead(v.getChiefId(), getMessage("entry").getReplacedText("name", v.getName()));
                 }
 
                 public boolean click(Player p, ClickType clickType) {

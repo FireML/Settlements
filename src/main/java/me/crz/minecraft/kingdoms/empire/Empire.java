@@ -12,7 +12,6 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
-import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;

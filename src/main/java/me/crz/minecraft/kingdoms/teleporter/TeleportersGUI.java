@@ -98,7 +98,7 @@ public class TeleportersGUI extends VillageGUI {
                 if (village == null || village.getVillageHome() == null) {
                     return locked;
                 }
-                return Utils.getHead(Bukkit.getOfflinePlayer(village.getChief()), getText("village-home"));
+                return Utils.getHead(village.getChiefId(), getText("village-home"));
             }
 
             public boolean click(Player p, ClickType clickType) {

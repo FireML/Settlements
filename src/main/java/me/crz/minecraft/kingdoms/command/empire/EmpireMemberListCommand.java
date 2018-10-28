@@ -21,7 +21,7 @@ public class EmpireMemberListCommand extends EmpireSubCommand {
         Utils.runAsync(() -> {
             sender.tell(getMessage("head"));
             for (Village village : sender.getVillage().getEmpire().getMembers()) {
-                Resident chief = ResidentManager.getInstance().getResident(village.getChief());
+                Resident chief = village.getChief();
                 getMessage("entry").tell(sender,
                         "name", village.getName(),
                         "state", village.getState().getTag(),

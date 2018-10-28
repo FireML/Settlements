@@ -39,7 +39,7 @@ public class VillageAdminRankCommand extends SubCommand {
                 MessageUtils.tell(player, getError("not-in-village"), "player", tRes.getName());
                 return;
             }
-            Resident res = ResidentManager.getInstance().getResident(village.getChief());
+            Resident res = village.getChief();
             VillageRank r = VillageRank.valueOf(rank);
             if (r.equals(VillageRank.CHIEF)) {
                 res.setVillageRank(tRes.getVillageRank());

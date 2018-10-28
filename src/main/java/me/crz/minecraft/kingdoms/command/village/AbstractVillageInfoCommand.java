@@ -27,7 +27,7 @@ public abstract class AbstractVillageInfoCommand extends SubCommand {
     }
 
     protected String[] getReplacements(Village village) {
-        Resident chief = ResidentManager.getInstance().getResident(village.getChief());
+        Resident chief = village.getChief();
         return new String[] {
                 "name", village.getName(),
                 "description", village.getDescription(),

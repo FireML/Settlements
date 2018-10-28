@@ -3,14 +3,12 @@ package me.crz.minecraft.kingdoms.command.empire;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageAccess;
-import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 
 public class EmpireListCommand extends SubCommand {
@@ -43,7 +41,7 @@ public class EmpireListCommand extends SubCommand {
                     .skip((finalPage - 1) * 20)
                     .forEachOrdered(e -> {
                         Village capital = e.getCapital();
-                        Resident chief = ResidentManager.getInstance().getResident(capital.getChief());
+                        Resident chief = capital.getChief();
                         getMessage("entry").tell(player,
                                 "name", e.getName(),
                                 "level", String.valueOf(e.getLevel()),

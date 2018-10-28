@@ -52,7 +52,7 @@ public class SettingsGUI extends VillageGUI {
                 }
                 Empire empire = resident.getVillage().getEmpire();
                 Village capital = empire.getCapital();
-                Resident chief = ResidentManager.getInstance().getResident(capital.getChief());
+                Resident chief = capital.getChief();
                 return new CItem(Material.LIGHT_GRAY_STAINED_GLASS_PANE).setName(
                         getMessage("entry").getReplacedText(
                                 "name", empire.getName(),

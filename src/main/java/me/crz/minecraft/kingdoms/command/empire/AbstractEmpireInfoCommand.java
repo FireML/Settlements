@@ -21,7 +21,7 @@ public abstract class AbstractEmpireInfoCommand extends SubCommand {
 
     protected String[] getReplacements(Empire empire) {
         Village capital = empire.getCapital();
-        Resident chief = ResidentManager.getInstance().getResident(capital.getChief());
+        Resident chief = capital.getChief();
         return new String[] {
                 "name", empire.getName(),
                 "description", empire.getDescription(),

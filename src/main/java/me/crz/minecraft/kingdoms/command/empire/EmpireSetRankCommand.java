@@ -50,7 +50,7 @@ public class EmpireSetRankCommand extends EmpireSubCommand {
             if (rank == null) {
                 getError("invalid-rank").tell(player, "rank", args[1]);
             } else if (rank.equals(EmpireRank.LEADER)) {
-                getError("cant-set-chief").tell(player, "base", base);
+                getError("cant-set-leader").tell(player, "base", base);
             } else if (tres.getEmpireRank().atLeast(res.getEmpireRank())) {
                 getMessage("cant-set-higher").tell(player, "rank", res.getEmpireRank().getTag());
             } else  if (res.getEmpireRank().ordinal() <= rank.ordinal()) {

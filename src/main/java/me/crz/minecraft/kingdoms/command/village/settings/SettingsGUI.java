@@ -72,7 +72,7 @@ public class SettingsGUI extends VillageGUI {
                 if (village == null) {
                     return null;
                 }
-                Resident chief = ResidentManager.getInstance().getResident(village.getChief());
+                Resident chief = village.getChief();
                 return new CItem(Material.LIGHT_GRAY_STAINED_GLASS_PANE).setName(
                         getMessage("entry").getReplacedText(
                                 "name", village.getName(),

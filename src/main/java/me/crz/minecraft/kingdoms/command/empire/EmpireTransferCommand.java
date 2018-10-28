@@ -33,8 +33,13 @@ public class EmpireTransferCommand extends EmpireSubCommand {
                 res.tell(getError("not-in-empire"), "name", empire.getName());
                 return;
             }
+            Resident oldLeader = empire.getCapital().getChief();
+            oldLeader.setEmpireRank(EmpireRank.SENATOR);
+            Resident newLeader = targetVillage.getChief();
+            newLeader.setEmpireRank(EmpireRank.LEADER);
             empire.setCapital(targetVillage);
             DatabaseManager.getInstance().saveEmpire(empire);
+            DatabaseManager.getInstance().saveResident(oldLeader, newLeader);
             MessageUtils.tellResidents(empire.getOnlineResidents(), getMessage("success"),
                     "setter", res.getName(),
                     "target", targetVillage.getName(),

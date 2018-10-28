@@ -41,11 +41,11 @@ public class Utils {
         super();
     }
 
-    public static ItemStack getHead(OfflinePlayer player, String name) {
+    public static ItemStack getHead(UUID playerId, String name) {
         ItemStack item = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skull = (SkullMeta) item.getItemMeta();
         skull.setDisplayName(name);
-        skull.setOwningPlayer(player);
+        skull.setPlayerProfile(Bukkit.createProfile(playerId));
         item.setItemMeta(skull);
         return item;
     }
@@ -91,7 +91,7 @@ public class Utils {
     }
 
     public static boolean playerIsChief(Player player, Village village) {
-        return village != null && village.getChief().equals(player.getUniqueId());
+        return village != null && village.getChiefId().equals(player.getUniqueId());
     }
 
     public static boolean playerHasInvite(UUID playerId, Village joinVillage) {
