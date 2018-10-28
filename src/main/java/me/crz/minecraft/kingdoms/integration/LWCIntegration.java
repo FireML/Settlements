@@ -6,6 +6,8 @@ import com.griefcraft.scripting.JavaModule;
 import com.griefcraft.scripting.event.LWCAccessEvent;
 import com.griefcraft.scripting.event.LWCProtectionRegisterEvent;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.landflags.LandFlagBase;
@@ -49,14 +51,21 @@ public class LWCIntegration extends JavaModule implements ConfigMessages, LandFl
             switch (permission.getType()) {
                 case TOWN:
                     if (resident.hasVillage()) {
-                        Village village;
-                        if ("#this".equalsIgnoreCase(permission.getName())) {
-                            village = VillageManager.getInstance().getVillageAt(block.getLocation());
+                        if (permission.getName().startsWith("empire:") || permission.getName().startsWith("e:")) {
+                            Empire empire = EmpireManager.getInstance().getEmpireFromName(permission.getName().split(":")[1]);
+                            if (empire != null && empire.isMember(resident.getVillage())) {
+                                access = permission.getAccess();
+                            }
                         } else {
-                            village = VillageManager.getInstance().getVillageFromName(permission.getName());
-                        }
-                        if (resident.getVillage().equals(village)) {
-                            access = permission.getAccess();
+                            Village village;
+                            if ("#this".equalsIgnoreCase(permission.getName())) {
+                                village = VillageManager.getInstance().getVillageAt(block.getLocation());
+                            } else {
+                                village = VillageManager.getInstance().getVillageFromName(permission.getName());
+                            }
+                            if (resident.getVillage().equals(village)) {
+                                access = permission.getAccess();
+                            }
                         }
                     }
                     break;

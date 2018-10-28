@@ -7,6 +7,7 @@ import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.vault.Levels;
 import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.entity.Player;
 
@@ -19,7 +20,15 @@ public class EmpireSetHomeCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         Empire empire = res.getVillage().getEmpire();
+        if (empire.getLevel() < Levels.EMPIRES_MAX_LEVEL) {
+            getError("not-unlocked-yet").tell(res, "state", "Empire", "level", String.valueOf(Levels.EMPIRES_MAX_LEVEL));
+            return true;
+        }
         Player player = res.getPlayer();
+        if (!player.getWorld().getName().equals(empire.getWorldName())) {
+            getError("not-in-empire-world").tell(res);
+            return true;
+        }
 
         empire.setHome(player.getLocation());
         MessageUtils.tellResidents(empire.getOnlineResidents(), getMessage("success"),

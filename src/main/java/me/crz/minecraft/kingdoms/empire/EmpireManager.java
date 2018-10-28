@@ -12,6 +12,11 @@ import me.crz.minecraft.kingdoms.vault.Levels;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -102,7 +107,7 @@ public class EmpireManager {
         }
 
         empire.setLevel(empire.getLevel() + 1);
-        MessageUtils.tellResidents(empire.getOnlineResidents(), Message.get("levels.upgrade"), "level", Integer.toString(empire.getLevel()));
+        MessageUtils.tellResidents(empire.getOnlineResidents(), Message.get("levels.upgrade"), "level", Integer.toString(empire.getLevel()), "state", "Empire");
         removeLevelRequirements(empire, res);
 
         for (Perk perk : getPerks()) {
@@ -114,6 +119,56 @@ public class EmpireManager {
                     MessageUtils.tellResidents(empire.getOnlineResidents(), Message.get("levels.perk-available"), "perk", perk.getTag());
                 }
             }
+        }
+
+        if (empire.getLevel() == Levels.EMPIRES_MAX_LEVEL) {
+            String worldName = empire.getWorldName();
+            World world = Bukkit.getWorld(worldName);
+            ConfigurationSection worldConfig = KingdomsPlugin.getInstance().getConfig().getConfigurationSection("empires-world");
+            if (world == null) {
+                WorldCreator worldCreator = new WorldCreator(worldName);
+                if (worldConfig.isString("generator")) {
+                    worldCreator.generator(worldConfig.getString("generator"));
+                    if (worldConfig.isString("generator-settings")) {
+                        worldCreator.generatorSettings(worldConfig.getString("generator-settings"));
+                    }
+                }
+                if (worldConfig.isSet("seed")) {
+                    if (worldConfig.isLong("seed")) {
+                        worldCreator.seed(worldConfig.getLong("seed"));
+                    } else {
+                        worldCreator.seed(worldConfig.getString("seed").hashCode());
+                    }
+                }
+                if (worldConfig.isBoolean("structures")) {
+                    worldCreator.generateStructures(worldConfig.getBoolean("structures"));
+                }
+                if (worldConfig.isString("environment")) {
+                    try {
+                        worldCreator.environment(World.Environment.valueOf(worldConfig.getString("environment").toUpperCase()));
+                    } catch (IllegalArgumentException e) {
+                        KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, worldConfig.getString("environment") + " is not a valid Environment for the empires world!");
+                    }
+                }
+                if (worldConfig.isString("type")) {
+                    try {
+                        worldCreator.type(WorldType.valueOf(worldConfig.getString("type").toUpperCase()));
+                    } catch (IllegalArgumentException e) {
+                        KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, worldConfig.getString("type") + " is not a valid type for the empires world!");
+                    }
+                }
+                world = Bukkit.createWorld(worldCreator);
+            }
+            if (worldConfig.isInt("border-radius")) {
+                world.getWorldBorder().setCenter(0, 0);
+                world.getWorldBorder().setSize(worldConfig.getInt("border-radius") * 2);
+            }
+            world.setSpawnLocation(0, world.getHighestBlockYAt(0, 0), 0);
+            empire.setHome(world.getSpawnLocation());
+
+            Message.get("empire-world-unlocked").tell(empire.getOnlineResidents());
+
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(empire));
         }
         return true;
     }
@@ -150,5 +205,12 @@ public class EmpireManager {
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveVillage(village);
         });
+    }
+
+    public Empire getEmpireFromWorld(World world) {
+        if (world.getName().startsWith(KingdomsPlugin.getInstance().getEmpiresWorldPrefix())) {
+            return getEmpireFromName(world.getName().substring(0, KingdomsPlugin.getInstance().getEmpiresWorldPrefix().length()));
+        }
+        return null;
     }
 }

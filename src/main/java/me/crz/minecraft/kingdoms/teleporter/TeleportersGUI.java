@@ -7,6 +7,8 @@ import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageGUI;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -29,20 +31,6 @@ public class TeleportersGUI extends VillageGUI {
         ItemMeta lm = locked.getItemMeta();
         lm.setDisplayName(getText("locked"));
         locked.setItemMeta(lm);
-        Integer[] slots = {0, 1, 2, 6, 7, 8};
-        Integer[] array;
-        for (int length = (array = slots).length, j = 0; j < length; ++j) {
-            int i = array[j];
-            ci.addItem(i, new ClickableItem() {
-                public ItemStack getItem(Player p) {
-                    return new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
-                }
-
-                public boolean click(Player p, ClickType clickType) {
-                    return false;
-                }
-            });
-        }
         ci.addItem(3, new ClickableItem() {
             public ItemStack getItem(Player p) {
                 ItemStack item = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
@@ -96,7 +84,9 @@ public class TeleportersGUI extends VillageGUI {
             public ItemStack getItem(Player p) {
                 Village village = VillageManager.getInstance().getVillageFromPlayer(p);
                 if (village == null || village.getVillageHome() == null) {
-                    return locked;
+                    ItemStack l = locked.clone();
+                    l.setLore(getMessage("empire-home").getTextList());
+                    return l;
                 }
                 return Utils.getHead(village.getChiefId(), getText("village-home"));
             }
@@ -108,6 +98,27 @@ public class TeleportersGUI extends VillageGUI {
                 }
 
                 p.teleport(v.getVillageHome().toBukkitLocation());
+                return false;
+            }
+        });
+        ci.addItem(6, new ClickableItem() {
+            public ItemStack getItem(Player p) {
+                Resident resident = ResidentManager.getInstance().getResident(p);
+                if (!resident.hasEmpire() || resident.getVillage().getEmpire().getHome() == null) {
+                    ItemStack l = locked.clone();
+                    l.setLore(getMessage("empire-home").getTextList());
+                    return l;
+                }
+                return Utils.getHead(resident.getVillage().getEmpire().getCapital().getChiefId(), getText("empire-home"));
+            }
+
+            public boolean click(Player p, ClickType clickType) {
+                Resident resident = ResidentManager.getInstance().getResident(p);
+                if (!resident.hasEmpire() || resident.getVillage().getEmpire().getHome() == null) {
+                    return false;
+                }
+
+                p.teleport(resident.getVillage().getEmpire().getHome().toBukkitLocation());
                 return false;
             }
         });

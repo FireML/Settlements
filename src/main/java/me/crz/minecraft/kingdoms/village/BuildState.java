@@ -17,16 +17,10 @@ public enum BuildState implements NameTag {
     }
 
     public static BuildState next(final BuildState current) {
-        if (current == RESIDENTS) {
-            return OFFICERS;
+        if (current.ordinal() + 1 >= values().length) {
+            return values()[0];
         }
-        if (current == OFFICERS) {
-            return ALLY;
-        }
-        if (current == ALLY) {
-            return PUBLIC;
-        }
-        return RESIDENTS;
+        return values()[current.ordinal() + 1];
     }
 
     public CItem getItem() {

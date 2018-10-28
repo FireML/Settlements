@@ -1,30 +1,34 @@
 package me.crz.minecraft.kingdoms.land;
 
+import me.crz.minecraft.kingdoms.Base;
+import me.crz.minecraft.kingdoms.command.empire.EmpireMode;
+import me.crz.minecraft.kingdoms.command.village.PlotMode;
+import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.essentials.events.HostileCreaturePreSpawnEvent;
 import me.crz.minecraft.kingdoms.essentials.events.HostileCreatureSpawnEvent;
+import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureDamageEvent;
 import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveChunkEvent;
 import me.crz.minecraft.kingdoms.landflags.LandFlagBase;
 import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.utils.Utils;
-
-import net.md_5.bungee.api.ChatMessageType;
-import org.bukkit.block.Block;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityCombustByEntityEvent;
-import me.crz.minecraft.kingdoms.village.VillageState;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.VillageManager;
-import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureDamageEvent;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.block.BlockIgniteEvent;
-
 import me.crz.minecraft.kingdoms.utils.TitleBuilder;
-import me.crz.minecraft.kingdoms.Base;
+import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageManager;
+import net.md_5.bungee.api.ChatMessageType;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.entity.EntityCombustByEntityEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 
 public class LandFlags extends Base implements LandFlagBase {
     private TitleBuilder tbPvp = new TitleBuilder();
@@ -33,16 +37,23 @@ public class LandFlags extends Base implements LandFlagBase {
         super();
     }
 
+    private boolean isAllowed(Location location, PlotMode mode) {
+        OwnedLand land = LandManager.getInstance().getLand(location);
+        return land == null || mode.get(land);
+    }
+
+    private boolean isAllowed(Location location, EmpireMode mode) {
+        Empire empire = EmpireManager.getInstance().getEmpireFromWorld(location.getWorld());
+        return empire == null || mode.get(empire);
+    }
+
     @EventHandler
     public void onBlockIgnite(BlockIgniteEvent e) {
         if (e.getCause().equals(BlockIgniteEvent.IgniteCause.SPREAD) && e.getIgnitingBlock() != null) {
-            OwnedLand land = LandManager.getInstance().getLand(e.getIgnitingBlock().getLocation());
-            if (land == null) {
+            if (isAllowed(e.getBlock().getLocation(), PlotMode.firespread) && isAllowed(e.getBlock().getLocation(), EmpireMode.firespread)) {
                 return;
             }
-            if (!land.isFireSpread()) {
-                e.setCancelled(true);
-            }
+            e.setCancelled(true);
         }
     }
 
@@ -62,69 +73,61 @@ public class LandFlags extends Base implements LandFlagBase {
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
-        if ((e.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK
-                || e.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)
-                && e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
-            OwnedLand land = LandManager.getInstance().getLand(e.getEntity().getLocation());
-            if (land == null) {
+        if (e.getEntity() instanceof Player) {
+            Player damager;
+            if (e.getDamager() instanceof Player) {
+                damager = (Player) e.getDamager();
+            } else if (e.getDamager() instanceof Projectile && ((Projectile) e.getDamager()).getShooter() instanceof Player) {
+                damager = (Player) ((Projectile) e.getDamager()).getShooter();
+            } else {
                 return;
             }
-            if (e.getDamager().hasPermission("kindoms.staff")) {
+
+            if (isAllowed(e.getEntity().getLocation(), PlotMode.pvp) && isAllowed(e.getEntity().getLocation(), EmpireMode.pvp)) {
                 return;
             }
-            if (!land.isPvp()) {
-                e.setCancelled(true);
-                tbPvp.send((Player) e.getDamager());
+            if (damager.hasPermission("kindoms.staff")) {
                 return;
             }
-        }
-        if (e.getCause() == EntityDamageEvent.DamageCause.PROJECTILE
-                && e.getEntity() instanceof Player && e.getDamager() instanceof Arrow && ((Arrow) e.getDamager()).getShooter() instanceof Player) {
-            OwnedLand land = LandManager.getInstance().getLand(e.getEntity().getLocation());
-            if (land == null) {
-                return;
-            }
-            Village village = land.getOwnerVillage();
-            if (village.getState() == VillageState.KINGDOM && !village.isPvp() && !land.isPvp()) {
-                e.setCancelled(true);
-                tbPvp.send((Player) ((Arrow) e.getDamager()).getShooter());
-                return;
-            }
-            if (!land.isPvp()) {
-                e.setCancelled(true);
-                tbPvp.send((Player) ((Arrow) e.getDamager()).getShooter());
-            }
+            e.setCancelled(true);
+            tbPvp.send((Player) e.getDamager());
         }
     }
 
     @EventHandler
     public void onEntityCombust(EntityCombustByEntityEvent e) {
-        if (e.getEntity() instanceof Player && e.getCombuster() instanceof Arrow && ((Arrow) e.getCombuster()).getShooter() instanceof Player) {
+        if (e.getEntity() instanceof Player && e.getCombuster() instanceof Projectile && ((Projectile) e.getCombuster()).getShooter() instanceof Player) {
             OwnedLand land = LandManager.getInstance().getLand(e.getEntity().getLocation());
             if (land == null) {
                 return;
             }
-            Village village = land.getOwnerVillage();
-            if (village.getState() == VillageState.KINGDOM && !village.isPvp() && !land.isPvp()) {
-                e.setCancelled(true);
-                tbPvp.send((Player) ((Arrow) e.getCombuster()).getShooter());
+            if (isAllowed(e.getEntity().getLocation(), PlotMode.pvp) && isAllowed(e.getEntity().getLocation(), EmpireMode.pvp)) {
                 return;
             }
-            if (!land.isPvp()) {
-                e.setCancelled(true);
-                tbPvp.send((Player) ((Arrow) e.getCombuster()).getShooter());
+            Player damager = (Player) ((Projectile) e.getCombuster()).getShooter();
+            if (damager.hasPermission("kindoms.staff")) {
+                return;
             }
+            e.setCancelled(true);
+            tbPvp.send(damager);
         }
     }
 
     @EventHandler
-    public void onEnttiyExplode(EntityExplodeEvent e) {
+    public void onEntityExplode(EntityExplodeEvent e) {
         for (Block block : e.blockList()) {
-            OwnedLand land = LandManager.getInstance().getLand(block.getLocation());
-            if (land == null) {
-                return;
+            if (isAllowed(block.getLocation(), PlotMode.explosions) && isAllowed(block.getLocation(), EmpireMode.explosions)) {
+                continue;
             }
-            if (land.isExplosions()) {
+            e.setCancelled(true);
+        }
+    }
+
+
+    @EventHandler
+    public void onEntityExplode(BlockExplodeEvent e) {
+        for (Block block : e.blockList()) {
+            if (isAllowed(block.getLocation(), PlotMode.explosions) && isAllowed(block.getLocation(), EmpireMode.explosions)) {
                 continue;
             }
             e.setCancelled(true);
@@ -134,13 +137,18 @@ public class LandFlags extends Base implements LandFlagBase {
     @EventHandler
     public void onEntityDamage(EntityDamageEvent e) {
         if (e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
-            OwnedLand land = LandManager.getInstance().getLand(e.getEntity().getLocation());
-            if (land == null) {
+            if (isAllowed(e.getEntity().getLocation(), PlotMode.explosions) && isAllowed(e.getEntity().getLocation(), EmpireMode.explosions)) {
                 return;
             }
-            if (!land.isExplosions()) {
-                e.setCancelled(true);
-            }
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onHostileSpawn(HostileCreaturePreSpawnEvent e) {
+        OwnedLand land = LandManager.getInstance().getLand(e.getLocation().getChunk());
+        if (land != null && !land.isMobSpawning()) {
+            e.setCancelled(true);
         }
     }
 

@@ -31,7 +31,7 @@ public class VillageBuildCommand extends VillageSubCommand {
             res.tell(getMessage("success"), "state", newState.getTag());
         } catch (IllegalArgumentException e) {
             res.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base));
-            for (PlotBuildState state : PlotBuildState.values()) {
+            for (BuildState state : BuildState.values()) {
                 res.tell(getMessage("usage.entry"),
                         "usage", getUsage(base).replace("<state>", state.name().toLowerCase()),
                         "description", getMessage("states." + state.getKey()).getText()

@@ -35,6 +35,8 @@ error:
   no-empire-required: "&c&lYou can only do this if you are not part of an empire yet!"
   only-player: "&cMust be ran by player."
   unknown-perk: "&cNo unlock with the name &f{perk}&c available!"
+  not-in-empire-world: "&cYou are not in your Empire's world!"
+  not-unlocked-yet: "&cThis feature only unlocked with {state} level {level}!"
 banished:
   move:
     title: "&cTurn Around"
@@ -72,8 +74,9 @@ scoreboard:
       &fThere are &6{amount}&f Players online!
       &fWorld: &6{world}
 levels:
-  upgrade: "&d&lLEVEL UP &r&7Your settlement is now level &d{level}"
+  upgrade: "&d&lLEVEL UP &r&7Your {state} is now level &d{level}"
   upgrade-settlement: "&a&lSUCCESS &r&7The settlement has been upgraded to &e{state}!"
+  empire-world-unlocked: "&a&lUnlocked your own empire world!"
   perk-available: "&7Perk &6&l{perk} &7&lcan be unlocked!"
   perk-unlocked: "&6&l{perk} &7&lhas been unlocked!"
 upkeep:
@@ -295,6 +298,7 @@ gui:
     kingdom-required: "&c&lYou require a level &610 Kingdom&c&l to use this!"
     kingdoms-world: "&e&lKingdoms World"
     village-home: "&e&lVillage Home"
+    empire-home: "&e&lEmpire Home"
   perks:
     title: "&3&lSettlement Perks"
     entry:

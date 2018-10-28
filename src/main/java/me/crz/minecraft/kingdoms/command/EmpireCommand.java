@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command;
 
+import me.crz.minecraft.kingdoms.command.empire.EmpireBuildCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireCreateCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireDepositCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireDescriptionCommand;
@@ -32,6 +33,7 @@ import org.bukkit.entity.Player;
 public class EmpireCommand extends SubCommand {
     public EmpireCommand() {
         super(null, "empire");
+        registerCommand(new EmpireBuildCommand(this));
         registerCommand(new EmpireCreateCommand(this));
         registerCommand(new EmpireDepositCommand(this));
         registerCommand(new EmpireDescriptionCommand(this));

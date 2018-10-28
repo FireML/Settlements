@@ -10,12 +10,14 @@ import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
+import me.crz.minecraft.kingdoms.utils.config.Data;
 import me.crz.minecraft.kingdoms.vault.Levels;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.SimpleLocation;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
@@ -53,6 +55,7 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
     private Map<String, Long> vault = new HashMap<>();
     private Map<String, PerkData> perks = new LinkedHashMap<>();
     private SimpleLocation home;
+    private BuildState buildState = BuildState.PRIVATE;
 
     public Empire(String name, IdObject capital, int level) {
         this.name = name;
@@ -112,6 +115,7 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
         map.put("joinFee", getJoinFee());
         map.put("tax", getTax());
         map.put("bonusClaims", getBonusClaims());
+        map.put("buildState", getBuildState().name());
         if (getHome() != null)
             map.put("homeLoc", getHome().serialize());
         map.put("vault", getVault());
@@ -241,6 +245,16 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
 
     public void setLevel(int level) {
         this.level = level;
+        if (Data.first.getString("empire-" + level).equals("")) {
+            Data.first.put("empire-" + level, this.getName());
+            KingdomsPlugin.data.save(KingdomsPlugin.getInstance().getDataFolder());
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                Message.get("first-to-reach-level").tell(player,
+                        "name", getName(),
+                        "state", "Empire",
+                        "level", String.valueOf(level));
+            }
+        }
     }
 
     public Set<IdObject> getMemberIds() {
@@ -366,5 +380,41 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
 
     public void setTax(long tax) {
         this.tax = tax;
+    }
+
+    public void setBuildState(BuildState buildState) {
+        this.buildState = buildState;
+    }
+
+    public BuildState getBuildState() {
+        return this.buildState;
+    }
+
+    public String getWorldName() {
+        return KingdomsPlugin.getInstance().getEmpiresWorldPrefix() + getName();
+    }
+
+    public boolean isMember(Village village) {
+        return village != null && getMemberIds().contains(village.getId());
+    }
+
+    public boolean isAlly(Village village) {
+        return village != null && getMembers().stream().anyMatch(v -> v.isAlly(village));
+    }
+
+    public boolean canAccess(Player player) {
+        return canAccess(ResidentManager.getInstance().getResident(player));
+    }
+
+    public boolean canAccess(Resident resident) {
+        switch (getBuildState()) {
+            case PRIVATE:
+                return isMember(resident.getVillage());
+            case ALLY:
+                return isAlly(resident.getVillage());
+            case PUBLIC:
+                return true;
+        }
+        return false;
     }
 }

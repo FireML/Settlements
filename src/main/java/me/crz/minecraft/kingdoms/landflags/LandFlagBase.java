@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.landflags;
 
+import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
@@ -27,13 +29,19 @@ public interface LandFlagBase extends ConfigMessages {
         if (user.hasPermission("kingdoms.staff")) {
             return new Pair<>(true, "");
         }
-        OwnedLand land = LandManager.getInstance().getLand(loc);
-        Pair<Boolean, String> r = getCanBuild(user, land, land.getUseState(use), "use");
-        if (r == null) {
-            r = getCanBuild(user, land.getOwnerVillage(), land.getOwnerVillage().getUseState(use), "use");
+        Empire empire = EmpireManager.getInstance().getEmpireFromWorld(loc.getWorld());
+        if (empire != null) {
+            return new Pair<>(empire.canAccess(user), "&cEmpire world");
         }
-        if (r != null) {
-            return r;
+        OwnedLand land = LandManager.getInstance().getLand(loc);
+        if (land != null) {
+            Pair<Boolean, String> r = getCanBuild(user, land, land.getUseState(use), "use");
+            if (r == null) {
+                r = getCanBuild(user, land.getOwnerVillage(), land.getOwnerVillage().getUseState(use), "use");
+            }
+            if (r != null) {
+                return r;
+            }
         }
         return new Pair<>(true, "&cUnknown");
     }
@@ -41,6 +49,10 @@ public interface LandFlagBase extends ConfigMessages {
     default Pair<Boolean, String> getCanBuildAll(Player building, Location loc) {
         if (building.hasPermission("kingdoms.staff")) {
             return new Pair<>(true, "");
+        }
+        Empire empire = EmpireManager.getInstance().getEmpireFromWorld(loc.getWorld());
+        if (empire != null) {
+            return new Pair<>(empire.canAccess(building), "&cEmpire world");
         }
         OwnedLand land = LandManager.getInstance().getLand(loc);
         if (land != null) {

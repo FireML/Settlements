@@ -193,7 +193,7 @@ public class VillageManager {
             MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("levels.upgrade-settlement"), "state", village.getState().getTag());
         } else {
             village.setLevel(village.getLevel() + 1);
-            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("levels.upgrade"), "level", Integer.toString(village.getLevel()));
+            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("levels.upgrade"), "level", Integer.toString(village.getLevel()), "state", village.getState().getTag());
         }
         removeLevelRequirements(village, res);
 

@@ -15,6 +15,15 @@ outpost-creation-cost: 0
 upkeep-cost-per-claim: 500
 max-village-size: 30
 max-empire-size: 20
-kingdoms-world: "kingdom"
+kingdoms-world: "kingdoms"
+empires-world:
+  prefix: "empire"
+#  generator: "generatorname"
+#  generator-settings: "settings"
+#  seed: ""
+  structures: false
+  environment: normal
+  type: normal
+  border-radius: 500
 only-lock-in-settlement: true
 claim-max-radius: 5

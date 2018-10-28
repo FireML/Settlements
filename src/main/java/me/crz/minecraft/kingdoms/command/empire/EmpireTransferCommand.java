@@ -29,7 +29,7 @@ public class EmpireTransferCommand extends EmpireSubCommand {
                 return;
             }
             Empire empire = res.getVillage().getEmpire();
-            if (!isMember(targetVillage, empire)) {
+            if (!empire.isMember(targetVillage)) {
                 res.tell(getError("not-in-empire"), "name", empire.getName());
                 return;
             }
@@ -47,9 +47,5 @@ public class EmpireTransferCommand extends EmpireSubCommand {
             );
         });
         return true;
-    }
-
-    private boolean isMember(Village village, Empire empire) {
-        return empire.getMemberIds().contains(village.getId());
     }
 }

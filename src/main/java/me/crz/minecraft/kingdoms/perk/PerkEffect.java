@@ -81,6 +81,8 @@ public class PerkEffect {
         ALLIED_SETTLEMENT,
         ENEMY_SETTLEMENT,
         UNCLAIMED,
+        KINGDOMS_WORLD,
+        EMPIRE_WORLD,
         EVERYWHERE
     }
 
