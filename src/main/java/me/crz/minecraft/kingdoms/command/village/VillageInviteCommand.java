@@ -1,12 +1,11 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
-import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
 
 public class VillageInviteCommand extends VillageSubCommand {
     public VillageInviteCommand(SubCommand parent) {
@@ -29,8 +28,9 @@ public class VillageInviteCommand extends VillageSubCommand {
             return true;
         }
         InviteCache.getPendingVillageInvites().put(invitedPlayer.getUUID(), res.getVillage().getId());
-        MessageUtils.tell(invitedPlayer, getMessage("received"), "name", res.getVillage().getName(), "state", res.getVillage().getState().getTag());
-        MessageUtils.tellResidents(res.getVillage().getOnlineResidents(), getMessage("alert"), "player", invitedPlayer.getName());
+        getMessage("received").tell(invitedPlayer, "name", res.getVillage().getName(), "state", res.getVillage().getState().getTag());
+        getMessage("joinfee").tell(invitedPlayer, "name", res.getVillage().getName(), "state", res.getVillage().getState().getTag(), "amount", String.valueOf(res.getVillage().getJoinFee()));
+        getMessage("alert").tell(res.getVillage().getOnlineResidents(), "player", invitedPlayer.getName());
         return true;
     }
 }

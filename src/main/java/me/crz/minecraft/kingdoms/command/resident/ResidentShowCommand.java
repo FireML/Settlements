@@ -42,7 +42,10 @@ public class ResidentShowCommand extends SubCommand {
             MessageUtils.tell(player, getMessage("info"),
                     "name", target.getName(),
                     "settlement", (target.getVillage() == null) ? "none" : target.getVillage().getName(),
+                    "rank", (target.getVillage() == null) ? "none" : target.getVillageRank().getTag(target.getVillage()),
+                    "title", (target.getVillage() == null) ? "none" : target.getTitle(),
                     "balance", DECIMAL_FORMAT.format(balance),
+                    "taxowed", DECIMAL_FORMAT.format(target.getTaxOwed()),
                     "joindate", DATE_FORMAT.format(new Date(op.getFirstPlayed())),
                     "lastlogin",  DATE_FORMAT.format(new Date(target.getLastLogin()))
             );

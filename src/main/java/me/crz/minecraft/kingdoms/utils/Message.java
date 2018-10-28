@@ -10,6 +10,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +93,10 @@ public class Message {
 
     public void tell(Player player, String... replacements) {
         MessageUtils.tell(player, this, replacements);
+    }
+
+    public void tell(Collection<Resident> residents, String... replacements) {
+        MessageUtils.tellResidents(residents, this, replacements);
     }
 
     public void tell(Resident resident, String... replacements) {

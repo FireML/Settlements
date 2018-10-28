@@ -3,8 +3,8 @@ package me.crz.minecraft.kingdoms.command.empire;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 
 import java.text.DecimalFormat;
@@ -28,16 +28,18 @@ public abstract class AbstractEmpireInfoCommand extends SubCommand {
                 "level", String.valueOf(empire.getLevel()),
                 "pvp", yesOrNo(empire.isPvp()),
                 "balance", DECIMAL_FORMAT.format(empire.getBank()),
-                "mobSpawning", yesOrNo(empire.isMobSpawning()),
-                "fireSpread", yesOrNo(empire.isFireSpread()),
+                "joinfee", DECIMAL_FORMAT.format(empire.getBank()),
+                "tax", DECIMAL_FORMAT.format(empire.getBank()),
+                "mobspawning", yesOrNo(empire.isMobSpawning()),
+                "firespread", yesOrNo(empire.isFireSpread()),
                 "explosions", yesOrNo(empire.isExplosions()),
                 "buff", yesOrNo(empire.isBuff()),
-                "bank", String.valueOf(empire.getBank()),
-                "bonusClaims", empire.getBonusClaims() > 0 ? getMessage("bonus-claims").getReplacedText("amount", String.valueOf(empire.getBonusClaims())) : "",
+                "bonusclaims", empire.getBonusClaims() > 0 ? getMessage("bonus-claims").getReplacedText("amount", String.valueOf(empire.getBonusClaims())) : "",
                 "capital", capital.getName(),
                 "capitalstate", capital.getState().getTag(),
-                "chiefRank", VillageRank.CHIEF.getTag(capital),
-                "chiefTitle", chief.getTitle(),
+                "perks", empire.getPerks().stream().map(NameTag::getTag).collect(Collectors.joining(", ")),
+                "chiefrank", VillageRank.CHIEF.getTag(capital),
+                "chieftitle", chief.getTitle(),
                 "chief", chief.getName(),
                 "members", empire.getMembers().stream().map(v -> v.getState().getTag() + " " + v.getName()).collect(Collectors.joining(", "))
         };

@@ -7,6 +7,12 @@ public interface Vaultable {
 
     long getBank();
 
+    void setBank(long amount);
+
+    default boolean has(long total) {
+        return getBank() >= total;
+    }
+
     default boolean has(Map<String, Long> requirements) {
         if (requirements == null) {
             return false;
@@ -58,5 +64,15 @@ public interface Vaultable {
         getVault().put(key, amount);
     }
 
-    void setBank(long amount);
+    default void addToBank(long amount) {
+        setBank(getBank() + amount);
+    }
+
+    default boolean removeFromBank(long amount) {
+        if (getBank() > amount) {
+            setBank(getBank() - amount);
+            return true;
+        }
+        return false;
+    }
 }

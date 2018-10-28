@@ -7,8 +7,8 @@ import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 
 import java.text.DecimalFormat;
@@ -34,20 +34,23 @@ public abstract class AbstractVillageInfoCommand extends SubCommand {
                 "state", village.getState().getTag(),
                 "level", String.valueOf(village.getLevel()),
                 "land", String.valueOf(LandManager.getInstance().getClaimedLandSize(village)),
-                "maxLand", String.valueOf(village.getMaxClaimableChunks()),
+                "maxland", String.valueOf(village.getMaxClaimableChunks()),
                 "outposts", String.valueOf(village.getOutpostHomes().size()),
-                "maxOutposts", String.valueOf(village.getMaxOutposts()),
+                "maxoutposts", String.valueOf(village.getMaxOutposts()),
                 "pvp", yesOrNo(village.isPvp()),
                 "balance", DECIMAL_FORMAT.format(village.getBank()),
-                "mobSpawning", yesOrNo(village.isMobSpawning()),
-                "fireSpread", yesOrNo(village.isFireSpread()),
+                "tax", DECIMAL_FORMAT.format(village.getTax()),
+                "joinfee", DECIMAL_FORMAT.format(village.getJoinFee()),
+                "mobspawning", yesOrNo(village.isMobSpawning()),
+                "firespread", yesOrNo(village.isFireSpread()),
                 "explosions", yesOrNo(village.isExplosions()),
                 "buff", yesOrNo(village.isBuff()),
                 "bank", String.valueOf(village.getBank()),
-                "bonusClaims", village.getBonusClaims() > 0 ? getMessage("bonus-claims").getReplacedText("amount", String.valueOf(village.getBonusClaims())) : "",
+                "bonusclaims", village.getBonusClaims() > 0 ? getMessage("bonus-claims").getReplacedText("amount", String.valueOf(village.getBonusClaims())) : "",
                 "access", village.getAccess().getTag(),
-                "chiefRank", VillageRank.CHIEF.getTag(village),
-                "chiefTitle", chief.getTitle(),
+                "perks", village.getPerks().stream().map(NameTag::getTag).collect(Collectors.joining(", ")),
+                "chiefrank", VillageRank.CHIEF.getTag(village),
+                "chieftitle", chief.getTitle(),
                 "chief", chief.getName(),
                 "residents", getResidentsToString(village)
         };

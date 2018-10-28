@@ -29,7 +29,18 @@ public class EmpireJoinCommand extends EmpireSubCommand {
             resident.tell(getMessage("no-invite"));
         } else if (joinEmpire.isFull()) {
             resident.tell(getMessage("is-full"), "name", joinEmpire.getName());
+        } else if (joinEmpire.getJoinFee() > 0 && resident.getVillage().getBank() < joinEmpire.getJoinFee()) {
+            resident.tell(getError("not-enough-money"), "name", joinEmpire.getName(), "amount", String.valueOf(joinEmpire.getJoinFee()));
         } else {
+            if (joinEmpire.getJoinFee() > 0) {
+                resident.getVillage().removeFromBank(joinEmpire.getJoinFee());
+                joinEmpire.addToBank(joinEmpire.getJoinFee());
+                getMessage("money-paid").tell(resident, "amount", String.valueOf(joinEmpire.getJoinFee()));
+                Utils.runAsync(() -> {
+                    DatabaseManager.getInstance().saveEmpire(joinEmpire);
+                    DatabaseManager.getInstance().log(joinEmpire, resident, "joinfee", "cash", joinEmpire.getJoinFee());
+                });
+            }
             resident.getVillage().setEmpire(joinEmpire);
             resident.addChannel(ChatChannel.EMPIRE);
             InviteCache.getPendingEmpireInvites().remove(resident.getVillage().getId(), joinEmpire.getId());

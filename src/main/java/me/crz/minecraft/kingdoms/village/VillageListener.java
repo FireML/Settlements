@@ -62,9 +62,19 @@ public class VillageListener implements Listener {
             }
         }
         if (res.getVillage() != null) {
+            if (!KingdomsPlugin.getInstance().econ.has(event.getPlayer(), res.getTaxOwed())) {
+                VillageManager.getInstance().leaveVillage(res);
+                return;
+            }
             int upkeep = res.getVillage().getUpkeep();
-            if (!res.getVillage().canPay(upkeep)) {
-                MessageUtils.tell(event.getPlayer(), Message.get("upkeep.alert.cant-pay"), "cost", String.valueOf(upkeep));
+            if (!res.getVillage().has(upkeep)) {
+                MessageUtils.tell(event.getPlayer(), Message.get("upkeep.alert.cant-pay"), "amount", String.valueOf(upkeep));
+            }
+            if (res.hasEmpire()) {
+                long empireTax = res.getVillage().getEmpire().getTax();
+                if (!res.getVillage().has(empireTax)) {
+                    MessageUtils.tell(event.getPlayer(), Message.get("empire-tax.cant-pay"), "amount", String.valueOf(empireTax));
+                }
             }
         }
     }

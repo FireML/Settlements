@@ -43,6 +43,7 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
     private long lastLogin = 0;
     private long villageJoin;
     private boolean resourcePack = false;
+    private long taxOwed = 0;
 
     public Resident(UUID uuid, String name) {
         this.uuid = uuid;
@@ -243,6 +244,26 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
         this.lastLogin = lastLogin;
     }
 
+    public void setResourcePack(boolean resourcePack) {
+        this.resourcePack = resourcePack;
+    }
+
+    public boolean hasResourcePack() {
+        return resourcePack;
+    }
+
+    public long getTaxOwed() {
+        return taxOwed;
+    }
+
+    public void setTaxOwed(long taxOwed) {
+        this.taxOwed = taxOwed;
+    }
+
+    public void addTaxOwed(long tax) {
+        setTaxOwed(getTaxOwed() + tax);
+    }
+
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new LinkedHashMap<>();
@@ -258,6 +279,7 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
         map.put("activeChannel", getActiveChannel().name());
         map.put("swear", getSwear());
         map.put("bonusClaims", getBonusClaims());
+        map.put("taxOwed", getTaxOwed());
         map.put("ignores", getIgnore().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("friends", getFriends().stream().map(UUID::toString).collect(Collectors.toList()));
         return map;
@@ -291,6 +313,7 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
         }
         resident.setVillageJoin((Long) map.get("settlementJoin"));
         resident.setLastLogin((Long) map.get("lastLogin"));
+        resident.setTaxOwed((Long) map.get("taxOwed"));
         resident.getChannels().clear();
         ((Collection<String>) map.get("channels")).stream()
                 .map(s -> Utils.parseEnum(ChatChannel.class, s.toUpperCase()))
@@ -334,14 +357,6 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
 
     public void tell(BaseComponent[] message) {
         MessageUtils.tell(this.getPlayer(), message);
-    }
-
-    public void setResourcePack(boolean resourcePack) {
-        this.resourcePack = resourcePack;
-    }
-
-    public boolean hasResourcePack() {
-        return resourcePack;
     }
 
 }

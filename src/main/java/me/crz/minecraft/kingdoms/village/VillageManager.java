@@ -149,20 +149,31 @@ public class VillageManager {
         for (OwnedLand land : lands) {
             LandManager.getInstance().setPlotOwner(land, null);
         }
+        Village village = resident.getVillage();
         resident.setVillage(null);
+        long taxOwed = resident.getTaxOwed();
+        if (taxOwed > 0) {
+            resident.setTaxOwed(0);
+            if (KingdomsPlugin.getInstance().econ.withdrawPlayer(resident.getPlayer(), taxOwed).transactionSuccess()) {
+                Message.get("tax.removed").tell(resident,
+                        "amount", String.valueOf(taxOwed),
+                        "state", village.getState().getTag(),
+                        "name", village.getName());
+                village.addToBank(taxOwed);
+                Utils.runAsync(() -> DatabaseManager.getInstance().log(village, resident, "tax", "cash", taxOwed));
+            } else {
+                village.addBanishedResident(resident);
+                Message.get("tax.couldnt-pay").tell(resident,
+                        "amount", String.valueOf(taxOwed),
+                        "state", village.getState().getTag(),
+                        "name", village.getName());
+            }
+        }
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveLand(lands);
             DatabaseManager.getInstance().saveResident(resident);
+            DatabaseManager.getInstance().saveVillage(village);
         });
-    }
-
-    /**
-     * Check the upkeep for all registered villages
-     */
-    public void doUpkeep() {
-        for (Village village : villages.values()) {
-            village.doUpkeep();
-        }
     }
 
     /**

@@ -2,13 +2,13 @@ package me.crz.minecraft.kingdoms;
 
 import com.griefcraft.lwc.LWC;
 import me.crz.minecraft.kingdoms.banish.BanishListener;
+import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.integration.LWCIntegration;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.vault.EmpireVaultListener;
-import org.bukkit.event.EventHandler;
+import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.event.Listener;
-import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import me.crz.minecraft.kingdoms.command.CommandManager;
 import me.crz.minecraft.kingdoms.scoreboard.ScoreboardManager;
@@ -121,7 +121,14 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         midnight.set(Calendar.DAY_OF_YEAR, midnight.get(Calendar.DAY_OF_YEAR) + 1);
         long tillNoon = midnight.getTimeInMillis() - System.currentTimeMillis() - 1L;
         long ticksTillNoon = tillNoon / 50L;
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> VillageManager.getInstance().doUpkeep(), ticksTillNoon, TimeUnit.DAYS.toSeconds(1L) * 20);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            for (Village village : VillageManager.getInstance().getVillages()) {
+                village.doUpkeep();
+            }
+            for (Empire empire : EmpireManager.getInstance().getEmpires()) {
+                empire.doUpkeep();
+            }
+        }, ticksTillNoon, TimeUnit.DAYS.toSeconds(1L) * 20);
     }
 
     public LandPerks getLandPerks() {

@@ -61,13 +61,14 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     private boolean buff = false;
     private VillageAccess access = VillageAccess.ALLY;
     private long bank = 0;
+    private long joinFee = 0;
+    private long tax = 0;
     private Set<IdObject> allies = new LinkedHashSet<>();
     private SimpleLocation villageHomeLoc;
     private Map<String, NamedLocation> outpostHomes = new LinkedHashMap<>();
     private Set<UUID> residents = new LinkedHashSet<>();
     private Set<UUID> banished = new LinkedHashSet<>();
     private Map<Use, BuildState> use = new EnumMap<>(Use.class);
-    private long lastUpkeep = System.currentTimeMillis();
     private Map<String, Long> vault = new HashMap<>();
     private int bonusClaims = 0;
     private Map<String, PerkData> perks = new LinkedHashMap<>();
@@ -82,14 +83,59 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     }
 
     public void doUpkeep() {
-        if (System.currentTimeMillis() > lastUpkeep + TimeUnit.DAYS.toMillis(1L)) {
-            this.payUpkeep();
+        if (getTax() > 0) {
+            Utils.runAsync(() -> {
+                long totalTax = 0;
+                Map<Resident, Long> paidTaxes = new LinkedHashMap<>();
+                for (Resident resident : getResidents()) {
+                    if (resident.getId().equals(getChiefId())) {
+                        continue;
+                    }
+                    Player player = resident.getPlayer();
+                    if (player != null && player.isOnline()) {
+                        resident.addTaxOwed(getTax());
+                        if (KingdomsPlugin.getInstance().econ.withdrawPlayer(player, resident.getTaxOwed()).transactionSuccess()) {
+                            addToBank(resident.getTaxOwed());
+                            totalTax += resident.getTaxOwed();
+                            paidTaxes.put(resident, resident.getTaxOwed());
+                            Message.get("tax.removed").tell(resident,
+                                    "amount", String.valueOf(resident.getTaxOwed()),
+                                    "state", getState().getTag(),
+                                    "name", getName());
+                            resident.setTaxOwed(0);
+                        } else if (resident.getTaxOwed() > getTax()) {
+                            VillageManager.getInstance().leaveVillage(resident);
+                        } else {
+                            Message.get("tax.cant-pay").tell(player,
+                                    "amount", String.valueOf(resident.getTaxOwed()),
+                                    "nextamount", String.valueOf(resident.getTaxOwed() + getTax()));
+                            paidTaxes.put(resident, (long) 0);
+                        }
+                    } else {
+                        resident.addTaxOwed(getTax());
+                        paidTaxes.put(resident, (long) 0);
+                    }
+                }
+                long finalTotalTax = totalTax;
+                Utils.runSync(() -> payUpkeep(finalTotalTax));
+                DatabaseManager.getInstance().saveResident(paidTaxes.entrySet().stream()
+                        .filter(e -> e.getValue() != getTax())
+                        .map(Map.Entry::getKey)
+                        .collect(Collectors.toList()));
+                for (Map.Entry<Resident, Long> e : paidTaxes.entrySet()) {
+                    if (e.getValue() > 0) {
+                        DatabaseManager.getInstance().log(this, e.getKey(), "tax", "cash", e.getValue());
+                    }
+                }
+            });
+        } else {
+            payUpkeep(0);
         }
     }
 
-    public void payUpkeep() {
+    private void payUpkeep(long lastTax) {
         int total = getUpkeep();
-        if (!canPay(total)) {
+        if (!has(total)) {
             if (getLevel() > 1 || getState() == VillageState.KINGDOM) {
                 if (getLevel() == 1 && getState() == VillageState.KINGDOM) {
                     setState(VillageState.VILLAGE);
@@ -106,29 +152,20 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
                 VillageManager.getInstance().deleteVillage(this);
             }
         } else {
-            setBank(getBank() - total);
+            removeFromBank(total);
             MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.charged"), "charged", String.valueOf(total));
-            setLastUpkeep(System.currentTimeMillis());
-            if (!canPay(total)) {
+            if (!has(total - lastTax)) {
                 MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.cant-pay"), "cost", String.valueOf(total));
             }
+            Utils.runAsync(() -> {
+                DatabaseManager.getInstance().saveVillage(this);
+                DatabaseManager.getInstance().log(this, null, "upkeep", "cash", total);
+            });
         }
     }
 
     public int getUpkeep() {
         return LandManager.getInstance().getClaimedLandSize(this) * Utils.getUpkeepCost();
-    }
-
-    public boolean canPay(int total) {
-        return this.getBank() - total >= 0;
-    }
-
-    public long getLastUpkeep() {
-        return lastUpkeep;
-    }
-
-    public void setLastUpkeep(long lastUpkeep) {
-        this.lastUpkeep = lastUpkeep;
     }
 
     public BuildState getUseState(Use u) {
@@ -216,10 +253,12 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         this.access = access;
     }
 
+    @Override
     public long getBank() {
         return bank;
     }
 
+    @Override
     public void setBank(long bank) {
         this.bank = bank;
     }
@@ -404,6 +443,22 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         return empire != null;
     }
 
+    public long getJoinFee() {
+        return joinFee;
+    }
+
+    public void setJoinFee(long joinFee) {
+        this.joinFee = joinFee;
+    }
+
+    public long getTax() {
+        return tax;
+    }
+
+    public void setTax(long tax) {
+        this.tax = tax;
+    }
+
     public boolean canLevelUp() {
         int currentLevel = getLevel();
         if (isMaxLevel()) {
@@ -472,13 +527,14 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         map.put("mobSpawning", isMobSpawning());
         map.put("buff", isBuff());
         map.put("bank", getBank());
+        map.put("joinFee", getJoinFee());
+        map.put("tax", getTax());
         map.put("bonusClaims", getBonusClaims());
         if (getVillageHome() != null)
             map.put("homeLoc", getVillageHome().serialize());
         map.put("outposts", getOutpostHomes().values().stream().collect(Collectors.toMap(NamedLocation::getName, NamedLocation::serialize)));
         map.put("banished", getBanishedResidents().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("uses", getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
-        map.put("lastUpkeep", getLastUpkeep());
         map.put("vault", getVault());
         map.put("perks", getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
         return map;
@@ -508,6 +564,8 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         village.setMobSpawning((Boolean) map.get("mobSpawning"));
         village.setBuff((Boolean) map.get("buff"));
         village.setBank((Long) map.get("bank"));
+        village.setJoinFee((Long) map.get("joinFee"));
+        village.setTax((Long) map.get("tax"));
         village.setBonusClaims((Integer) map.get("bonusClaims"));
         village.getAllies().addAll(((Collection<Object>) map.get("allies")).stream().map(IdObject::get).collect(Collectors.toSet()));
         if (map.get("homeLoc") != null) {
@@ -534,7 +592,6 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
                 village.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), BuildState.RESIDENTS));
             }
         }
-        village.setLastUpkeep((Long) map.get("lastUpkeep"));
         ((Map<String, Object>) map.get("vault")).entrySet().stream()
                 .filter(e -> !(e.getValue() instanceof Integer))
                 .forEach(e -> village.getVault().put(e.getKey(), (Long) e.getValue()));

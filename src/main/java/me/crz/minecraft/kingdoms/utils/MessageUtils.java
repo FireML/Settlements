@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -73,7 +74,7 @@ public class MessageUtils extends Base {
         player.sendMessage(message);
     }
 
-    public static void tellResidents(List<Resident> residents, Message message, String... replacements) {
+    public static void tellResidents(Collection<Resident> residents, Message message, String... replacements) {
         for (Resident res : residents) {
             Player player = Bukkit.getPlayer(res.getUUID());
             if (player != null && player.isOnline()) {
@@ -82,7 +83,7 @@ public class MessageUtils extends Base {
         }
     }
 
-    public static void tellListResidents(List<Resident> residents, List<String> message) {
+    public static void tellListResidents(Collection<Resident> residents, List<String> message) {
         for (Resident res : residents) {
             Player player = Bukkit.getPlayer(res.getUUID());
             if (player != null && player.isOnline()) {

@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
@@ -12,6 +13,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageAccess;
 import me.crz.minecraft.kingdoms.village.VillageManager;
+import net.milkbowl.vault.economy.EconomyResponse;
 
 public class VillageJoinCommand extends VillageSubCommand {
     public VillageJoinCommand(SubCommand parent) {
@@ -31,9 +33,24 @@ public class VillageJoinCommand extends VillageSubCommand {
             resident.tell(getMessage("no-invite"));
         } else if (joinVillage.isFull()) {
             resident.tell(getMessage("is-full"), "state", joinVillage.getState().getTag(), "name", joinVillage.getName());
-        }else if (joinVillage.isBanished(resident.getUUID())) {
+        } else if (joinVillage.isBanished(resident.getUUID())) {
             resident.tell(getMessage("banished"), "state", joinVillage.getState().getTag(), "name", joinVillage.getName());
+        } else if (joinVillage.getJoinFee() > 0 && !KingdomsPlugin.getInstance().econ.has(resident.getPlayer(), joinVillage.getJoinFee())) {
+            resident.tell(getError("not-enough-money"), "state", joinVillage.getState().getTag(), "name", joinVillage.getName(), "amount", String.valueOf(joinVillage.getJoinFee()));
         } else {
+            if (joinVillage.getJoinFee() > 0) {
+                if (KingdomsPlugin.getInstance().econ.withdrawPlayer(resident.getPlayer(), joinVillage.getJoinFee()).transactionSuccess()) {
+                    joinVillage.addToBank(joinVillage.getJoinFee());
+                    getMessage("money-paid").tell(resident, "amount", String.valueOf(joinVillage.getJoinFee()));
+                    Utils.runAsync(() -> {
+                        DatabaseManager.getInstance().saveVillage(joinVillage);
+                        DatabaseManager.getInstance().log(joinVillage, resident, "joinfee", "cash", joinVillage.getJoinFee());
+                    });
+                } else {
+                    resident.tell("&cAn internal error occured!");
+                    return true;
+                }
+            }
             resident.setVillage(joinVillage);
             resident.setVillageRank(VillageRank.RESIDENT);
             resident.addChannel(ChatChannel.SETTLEMENT);

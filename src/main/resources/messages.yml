@@ -1,6 +1,6 @@
 server-rules: "&6&llink.to/server-rules&r or rule text"
 error:
-  not-a-number: "&c&lERROR &r&c{input} is not a number!"
+  not-a-number: "&c&lERROR &r&c{input} is not a valid number!"
   not-in-current: "&c&lERROR &r&7Not currently in settlement."
   not-in-village: "&c&lTarget player {player} isn't in a village!"
   not-in-empire: "&c&lERROR &r&7Not currently in your empire."
@@ -82,7 +82,15 @@ upkeep:
     downgraded: "&a&lALERT &7Your settlement was downgraded to a level {level} {state} because you couldn't pay the upkeep!"
     deleted: "&a&lALERT &7Your settlement has been &cdeleted&7 because it was &cunable&7 to pay its upkeep!"
     charged: "&a&lALERT &7Your settlement has been charged &6{charged}&7 for upkeep!"
-    cant-pay: "&a&lALERT &7Your settlement is &cunable&7 to pay tomorrows upkeep it will cost &6{cost}&7!"
+    cant-pay: "&a&lALERT &7Your settlement is &cunable&7 to pay tomorrows upkeep it will cost &6{amount}&7!"
+tax:
+  removed: "&eRemoved &c{amount}&e of tax from your {state}'s bank!"
+  cant-pay: "&cYou can't pay the tax of &e{amount}&c and will be banished tomorrow if you still can't pay tomorrows amount of &e{nextamount}&c!"
+  couldnt-pay: "&cYou were not able to pay your tax of &e{amount}&c and have been banished from the {state} {name}!"
+empire-tax:
+  cant-pay: "&a&lALERT &7Your settlement is &cunable&7 to pay tomorrows empire tax of &6{amount}&7!"
+  removed: "&eRemoved &c{amount}&e of tax from your account!"
+  couldnt-pay: "&cYou were not able to pay your tax of &e{amount}&c and have been removed from the Empire {name}!"
 first-to-reach-level: "&6&l{name} &7&l is the first to reach &6&l{state} &7&llevel &6&l{level}"
 village:
   enter-message: "&f[&eKingdoms&f] &7Entering &a{name}{pvp}"
@@ -275,8 +283,9 @@ gui:
       &6&lLevel &r&7{level}
       &6&lAccess &r&7{access}
       &6&lBank &r&7{bank}
-      &6&lLand &r&7{land}&r&e/&r&7{maxLand}{bonus}
-      &e&l{chiefRank} &r&7{chief}
+      &6&lLand &r&7{land}&r&e/&r&7{maxland}{bonus}
+      &6&lOutposts &r&7{outposts}&r&e/&r&7{maxoutposts}
+      &e&l{chiefrank} &r&7{chief}
       &e&lResidents: &r&7{residents}
     bonus: " Bonus: {amount}"
   teleporters:
@@ -373,7 +382,9 @@ command:
       info: |-
         &8------&c&l {name} &8------
         &a&lSettlement: {settlement}
+        &a&lRank: {title}
         &a&lBalance: &6${balance}
+        &a&lTax owed: &6${taxowed}
         &a&lJoin Date: {joindate}
         &a&lLast Login: {lastlogin}
       friend:
@@ -477,9 +488,12 @@ command:
         &6&lAccess: &r&7{access}
         &6&lLevel: &r&7{level}
         &6&lBank: &r&7{bank}
-        &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxOutposts}
-        &6&lLand: &r&7{land}&r&e/&r&7{maxLand}{bonusClaims}
-        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobSpawning}&r&7 |  Firespread: &r&e{fireSpread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &6&lJoin fee: &r&7{joinfee}
+        &6&lDaily tax: &r&7{tax}
+        &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}
+        &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
+        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &9&lPerks: &r&7{perks}
         &b&lResidents:
         {residents}
       bonus-claims: " Bonus: {amount}"
@@ -503,11 +517,14 @@ command:
       description: Teleport to a settlement's home
     invite:
       already-in-village: "&c&l{name} is already in your {state}"
+      joinfee: "&7Fee to join is &e{amount}!"
       received: "&e&lALERT &r&7Invite received from {state} {name}! Type &e/s join {name} &7to join."
       alert: "&e&lALERT &r&e{player}&7 has been invited to the settlement."
       description: Invite someone to join your village
     join:
-      no-invite: "&c&lERROR &r&7You dont not have an invite for this settlement."
+      not-enough-money: "&c&lERROR &r&7You do not have enough money to pay the join fee of {amount}!"
+      money-paid: "&7Paid &e{amount}&7 to join!"
+      no-invite: "&c&lERROR &r&7You do not have an invite for this settlement."
       success: "&a&lSUCCESS &r&7You have joined {state} {name}."
       new-resident: "&e&lALERT &r&e{player}&7 has joined the settlement!"
       is-full: "&e&lALERT &r&7The {state} {name} is full."
@@ -663,6 +680,9 @@ command:
     sethome:
       success: "{title} {name} &r&7&l has set the {state} home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
       description: Sets the home for the village
+    setjoinfee:
+      success: "&e&lALERT &r&7Join fee was set &e{amount}&7!"
+      description: Sets the fee a player needs to pay to join
     setrank:
       invalid-rank: "&c&lERROR &r&c{rank} &7is not a valid rank!"
       cant-set-chief: "&c&lPlease use &6&c&l/{base} transfer <player>&r&c&l to transfer ownership of the {state}"
@@ -676,6 +696,12 @@ command:
       usage:
         footer: "&aNote: Officers = Elder and Builder"
       description: Sets the rank of a resident
+    tax:
+      current: "&7Your village's tax is &e{amount}&7!"
+      description: Settlement taxes
+      set:
+        success: "&e&lALERT &r&7Daily tax was set &e{amount}&7!"
+        description: Sets the tax a player needs to pay each day he is in the settlement
     show:
       general: |-
         &8--------&c&l{name}&r&8--------
@@ -684,9 +710,12 @@ command:
         &6&lAccess: &r&7{access}
         &6&lLevel: &r&7{level}
         &6&lBank: &r&7{bank}
-        &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxOutposts}
-        &6&lLand: &r&7{land}&r&e/&r&7{maxLand}{bonusClaims}
-        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobSpawning}&r&7 |  Firespread: &r&e{fireSpread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &6&lJoin fee: &r&7{joinfee}
+        &6&lDaily tax: &r&7{tax}
+        &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}
+        &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
+        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &9&lPerks: &r&7{perks}
         &b&lResidents:
         {residents}
       bonus-claims: " Bonus: {amount}"

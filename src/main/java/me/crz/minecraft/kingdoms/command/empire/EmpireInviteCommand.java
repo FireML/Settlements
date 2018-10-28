@@ -22,16 +22,17 @@ public class EmpireInviteCommand extends EmpireSubCommand {
         }
         Village invitedVillage = VillageManager.getInstance().getVillageFromName(args[0]);
         if (invitedVillage == null) {
-            res.tell(getError("village-not-found"), "name", args[0]);
+            getError("village-not-found").tell(res, "name", args[0]);
             return true;
         }
         if (invitedVillage.hasEmpire()) {
-            res.tell(getMessage("already-in-empire"), "name", invitedVillage.getEmpire().getName());
+            getMessage("already-in-empire").tell(res, "name", invitedVillage.getEmpire().getName());
             return true;
         }
         InviteCache.getPendingEmpireInvites().put(invitedVillage.getId(), res.getVillage().getEmpire().getId());
-        MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), getMessage("received"), "name", res.getVillage().getEmpire().getName());
-        MessageUtils.tellResidents(res.getVillage().getEmpire().getOnlineResidents(), getMessage("alert"), "player", invitedVillage.getName());
+        getMessage("received").tell(invitedVillage.getOnlineResidents(), "name", res.getVillage().getEmpire().getName());
+        getMessage("joinfee").tell(invitedVillage.getOnlineResidents(), "name", res.getVillage().getEmpire().getName(), "amount", String.valueOf(res.getVillage().getEmpire().getJoinFee()));
+        getMessage("alert").tell(res.getVillage().getEmpire().getOnlineResidents(), "player", invitedVillage.getName());
         return true;
     }
 }

@@ -1,11 +1,14 @@
 package me.crz.minecraft.kingdoms.empire;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.perk.Perk;
 import me.crz.minecraft.kingdoms.perk.PerkData;
 import me.crz.minecraft.kingdoms.perk.Perkable;
 import me.crz.minecraft.kingdoms.utils.BonusClaimsHolder;
 import me.crz.minecraft.kingdoms.utils.IdObject;
+import me.crz.minecraft.kingdoms.utils.Message;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.vault.Levels;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -15,6 +18,7 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.entity.Player;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,6 +40,8 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
     private String description = "";
     private int level;
     private long bank = 0;
+    private long joinFee = 0;
+    private long tax = 0;
     private boolean pvp = false;
     private boolean fireSpread = false;
     private boolean explosions = false;
@@ -55,6 +61,40 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
         members.add(capital);
     }
 
+    public void doUpkeep() {
+        if (getTax() > 0) {
+            Utils.runAsync(() -> {
+                Map<Village, Long> paidTaxes = new LinkedHashMap<>();
+                for (Village member : getMembers()) {
+                    if (member.getId().equals(getCapitalId())) {
+                        continue;
+                    }
+                    if (member.removeFromBank(member.getTax())) {
+                        addToBank(getTax());
+                        paidTaxes.put(member, getTax());
+                        Message.get("empire-tax.removed").tell(member.getOnlineResidents(),
+                                "amount", String.valueOf(getTax()),
+                                "state", member.getState().getTag(),
+                                "name", getName());
+                    } else {
+                        member.setEmpire(null);
+                        getMemberIds().remove(member.getId());
+                        paidTaxes.put(member, (long) 0);
+                        Message.get("empire-tax.couldnt-pay").tell(member.getOnlineResidents(),
+                                "amount", String.valueOf(getTax()),
+                                "name", getName());
+                    }
+                }
+                DatabaseManager.getInstance().saveVillages(paidTaxes.keySet());
+                for (Map.Entry<Village, Long> e : paidTaxes.entrySet()) {
+                    if (e.getValue() > 0) {
+                        DatabaseManager.getInstance().log(this, e.getKey(), null, "tax", "cash", e.getValue());
+                    }
+                }
+            });
+        }
+    }
+
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new LinkedHashMap<>();
@@ -69,6 +109,8 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
         map.put("mobSpawning", isMobSpawning());
         map.put("buff", isBuff());
         map.put("bank", getBank());
+        map.put("joinFee", getJoinFee());
+        map.put("tax", getTax());
         map.put("bonusClaims", getBonusClaims());
         if (getHome() != null)
             map.put("homeLoc", getHome().serialize());
@@ -96,6 +138,8 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
         }
         empire.setId(IdObject.get(map));
         empire.setBank((Long) map.get("bank"));
+        empire.setJoinFee((Long) map.get("joinFee"));
+        empire.setTax((Long) map.get("tax"));
         empire.setPvp((Boolean) map.get("pvp"));
         empire.setFireSpread((Boolean) map.get("fireSpread"));
         empire.setExplosions((Boolean) map.get("explosions"));
@@ -306,5 +350,21 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
 
     public void setHome(Location location) {
         setHome(new SimpleLocation(location));
+    }
+
+    public long getJoinFee() {
+        return joinFee;
+    }
+
+    public void setJoinFee(long joinFee) {
+        this.joinFee = joinFee;
+    }
+
+    public long getTax() {
+        return tax;
+    }
+
+    public void setTax(long tax) {
+        this.tax = tax;
     }
 }
