@@ -10,16 +10,18 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.command.village.VillageHistoryCommand;
+import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,6 +36,7 @@ import java.util.stream.Collectors;
 public class MongoDatabaseManager extends DatabaseManager {
     private MongoDatabase database;
     private MongoClient mongo;
+    private MongoCollection<Document> empiresCollection;
     private MongoCollection<Document> settlementsCollection;
     private MongoCollection<Document> residentCollection;
     private MongoCollection<Document> landCollection;
@@ -53,11 +56,30 @@ public class MongoDatabaseManager extends DatabaseManager {
         );
         database = mongo.getDatabase(config.getString("database"));
         String tablePrefix = config.getString("table-prefix");
+        empiresCollection = database.getCollection(tablePrefix + "empires");
         settlementsCollection = database.getCollection(tablePrefix + "settlements");
         residentCollection = database.getCollection(tablePrefix + "residents");
         landCollection = database.getCollection(tablePrefix + "lands");
         logsCollection = database.getCollection(tablePrefix + "logs");
         otherData = database.getCollection(tablePrefix + "otherData");
+    }
+
+    @Override
+    public void saveEmpire(Empire empire) {
+        Utils.catchSync();
+        if (empire.getId().isNull() || empiresCollection.find(new Document("_id", empire.getId().value())).first() == null) {
+            empiresCollection.insertOne(createDocument(empire));
+            Document document = empiresCollection.find(new Document("name", Pattern.compile(empire.getName(), Pattern.CASE_INSENSITIVE))).first();
+            empire.setId(IdObject.get(document));
+        } else {
+            empiresCollection.updateOne(new Document("_id", empire.getId().value()), new Document("$set", createDocument(empire)));
+        }
+    }
+
+    @Override
+    public void deleteEmpire(Empire village) {
+        Utils.catchSync();
+        empiresCollection.deleteOne(new Document("name", Pattern.compile(village.getName(), Pattern.CASE_INSENSITIVE)));
     }
 
     @Override
@@ -130,6 +152,19 @@ public class MongoDatabaseManager extends DatabaseManager {
     }
 
     @Override
+    public Collection<Empire> getAllEmpires() {
+        Utils.catchSync();
+        List<Empire> empires = new ArrayList<>();
+        for (Document doc : empiresCollection.find()) {
+            Empire empire = createEmpire(doc);
+            if (empire != null) {
+                empires.add(empire);
+            }
+        }
+        return empires;
+    }
+
+    @Override
     public Collection<Village> getAllVillages() {
         Utils.catchSync();
         List<Village> villages = new ArrayList<>();
@@ -171,7 +206,7 @@ public class MongoDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public void log(Village village, Resident resident, String action, Map<String, Long> values) {
+    public void log(Empire empire, Village village, Resident resident, String action, Map<String, Long> values) {
         if (village.getId().isNull()) {
             return;
         }
@@ -184,6 +219,9 @@ public class MongoDatabaseManager extends DatabaseManager {
                 map.put("rank", resident.getVillageRank().name());
                 map.put("title", resident.getTitle());
             }
+            if (empire != null) {
+                map.put("empire", empire.getId().value());
+            }
             map.put("village", village.getId().value());
             map.put("action", action);
             map.put("type", entry.getKey().toLowerCase());
@@ -195,13 +233,22 @@ public class MongoDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public List<String[]> getLog(Village village, Resident resident, int page, VillageHistoryCommand.Type type) {
+    public List<String[]> getLog(Village village, Resident resident, int page, LogType type) {
+        return getLog("village", village.getId(), resident, page, type);
+    }
+
+    @Override
+    public List<String[]> getLog(Empire empire, Resident resident, int page, LogType type) {
+        return getLog("empire", empire.getId(), resident, page, type);
+    }
+
+    private List<String[]> getLog(String column, IdObject id, Resident resident, int page, LogType type) {
         List<String[]> log = new ArrayList<>();
-        if (village.getId().isNull()) {
+        if (id.isNull()) {
             return log;
         }
         List<Bson> filters = new ArrayList<>();
-        filters.add(Filters.eq("village", village.getId().value()));
+        filters.add(Filters.eq(column, id.value()));
         if (!resident.getVillageRank().atLeast(VillageRank.CHIEF)) {
             filters.add(Filters.eq("action", "deposit"));
         }
@@ -220,6 +267,7 @@ public class MongoDatabaseManager extends DatabaseManager {
                 .skip((page-1) * 20)
                 .limit(20);
         for (Document document : logIt) {
+            Village village = VillageManager.getInstance().getVillageFromId(IdObject.get(document.get("village")));
             VillageRank rank = VillageRank.RESIDENT;
             try {
                 rank = VillageRank.valueOf(document.getString("rank").toUpperCase());
@@ -240,8 +288,8 @@ public class MongoDatabaseManager extends DatabaseManager {
 
     // ------ Utility methods ----- //
 
-    private Document createDocument(Resident resident) {
-        return new Document(resident.serialize());
+    private Document createDocument(ConfigurationSerializable serializable) {
+        return new Document(serializable.serialize());
     }
 
     private Resident createResident(Document document) {
@@ -251,8 +299,11 @@ public class MongoDatabaseManager extends DatabaseManager {
         return Resident.deserialize(document.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
     }
 
-    private Document createDocument(Village village) {
-        return new Document(village.serialize());
+    private Empire createEmpire(Document document) {
+        if (document == null || document.isEmpty()) {
+            return null;
+        }
+        return Empire.deserialize(document.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
     }
 
     private Village createVillage(Document document) {

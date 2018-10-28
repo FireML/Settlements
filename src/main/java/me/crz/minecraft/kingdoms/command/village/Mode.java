@@ -6,33 +6,17 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
+import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.LandManager;
+import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
+import org.bukkit.Material;
 
-enum Mode {
-    mobspawning {
-        @Override
-        public void set(Boolean bool, Village village) {
-            village.setMobSpawning(bool);
-            Collection<OwnedLand> claimedLand = LandManager.getInstance().getClaimedLand(village);
-            for (OwnedLand land : claimedLand) {
-                land.setMobSpawning(bool);
-            }
-            Utils.runAsync(() -> {
-                DatabaseManager.getInstance().saveVillage(village);
-                DatabaseManager.getInstance().saveLand(claimedLand);
-            });
-        }
-
-        @Override
-        public Boolean get(Village village) {
-            return village.isMobSpawning();
-        }
-    },
-    pvp {
+public enum Mode implements NameTag {
+    pvp(Material.IRON_SWORD) {
         @Override
         public void set(Boolean bool, Village village) {
             village.setPvp(bool);
@@ -51,7 +35,26 @@ enum Mode {
             return village.isPvp();
         }
     },
-    firespread {
+    mobspawning(Material.SKELETON_SKULL) {
+        @Override
+        public void set(Boolean bool, Village village) {
+            village.setMobSpawning(bool);
+            Collection<OwnedLand> claimedLand = LandManager.getInstance().getClaimedLand(village);
+            for (OwnedLand land : claimedLand) {
+                land.setMobSpawning(bool);
+            }
+            Utils.runAsync(() -> {
+                DatabaseManager.getInstance().saveVillage(village);
+                DatabaseManager.getInstance().saveLand(claimedLand);
+            });
+        }
+
+        @Override
+        public Boolean get(Village village) {
+            return village.isMobSpawning();
+        }
+    },
+    firespread(Material.FIREWORK_STAR) {
         @Override
         public void set(Boolean bool, Village village) {
             village.setFireSpread(bool);
@@ -70,7 +73,7 @@ enum Mode {
             return village.isFireSpread();
         }
     },
-    explosions {
+    explosions(Material.TNT) {
         @Override
         public void set(Boolean bool, Village village) {
             village.setExplosions(bool);
@@ -89,7 +92,7 @@ enum Mode {
             return village.isExplosions();
         }
     },
-    buff {
+    buff(Material.POTION) {
         @Override
         public void set(Boolean bool, Village village) {
             village.setBuff(bool);
@@ -102,10 +105,16 @@ enum Mode {
         }
     };
 
+    private Material icon;
+
+    Mode(Material icon) {
+        this.icon = icon;
+    }
+
     public void set(Boolean b, Village village) {
     }
 
-    public Object get(Village village) {
+    public Boolean get(Village village) {
         return null;
     }
 
@@ -128,5 +137,9 @@ enum Mode {
             temp.add(m.name().toLowerCase());
         }
         return temp;
+    }
+
+    public CItem getItem() {
+        return new CItem(icon);
     }
 }

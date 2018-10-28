@@ -3,6 +3,7 @@ error:
   not-a-number: "&c&lERROR &r&c{input} is not a number!"
   not-in-current: "&c&lERROR &r&7Not currently in settlement."
   not-in-village: "&c&lTarget player {player} isn't in a village!"
+  not-in-empire: "&c&lERROR &r&7Not currently in your empire."
   no-permission: "&cNo permission."
   no-channel-permission: "&cNo permission to use {channel} channel!"
   not-a-channel: "&cChat Channel &6{name}&c is not valid channel!"
@@ -10,8 +11,10 @@ error:
   not-your-village: "&c&lThis is not your {state}!"
   no-village: "&c&lNo village at your location!"
   invalid-rank: "&c&lERROR &r&c{rank} &7is not a valid rank!"
-  village-exists: "&7&lVillage with the name &6&l{name}&7&l already exists!"
-  village-doesnt-exist: "&c&lNo village with the name &6&l{name}&7&l found!"
+  village-exists: "&7&lA settlement with the name &6&l{name}&7&l already exists!"
+  empire-exists: "&7&lAn empire with the name &6&l{name}&7&l already exists!"
+  village-doesnt-exist: "&c&lNo settlement with the name &6&l{name}&7&l found!"
+  empire-doesnt-exist: "&c&lNo empire with the name &6&l{name}&7&l found!"
   invalid-characters: "&c{input} contains invalid characters!"
   too-long: "&c{input} is too long, only {amount} characters are allowed!"
   player-not-found: "&c&lNo &r&6&lplayer&r&c&l with the name &r&6&l{name}&r&c&l found!"
@@ -27,7 +30,9 @@ error:
     &cPlease make sure your using the outpost name shown in /s outpost list!
   rank-required: "&c&lYou require the rank &r&6&l{rank} or higher&r&c&l!"
   village-required: "&c&lYou can only do this after you joined a settlement!"
+  empire-required: "&c&lYou can only do this after you joined an empire!"
   free-required: "&c&lYou can only do this if you are not part of a settlement yet!"
+  no-empire-required: "&c&lYou can only do this if you are not part of an empire yet!"
   only-player: "&cMust be ran by player."
   unknown-perk: "&cNo unlock with the name &f{perk}&c available!"
 banished:
@@ -167,7 +172,7 @@ names:
     repeaters: "Repeaters"
     cake: "Cake"
     interact: "Other"
-  villageperks:
+  villageperk:
     resistance1: Resistance 1 Buff
     resistance2: Resistance 2 Buff
     strength1: Strength 1 Buff
@@ -180,6 +185,7 @@ names:
     haste2: Haste 2 Buff
     extra-claims: 10 Extra Claims
     extra-outpost: 1 Extra Outpost
+  perkeffect:
     effectlocation:
       plot: For owner in plot
       plot-friends: For owner and friends in plot
@@ -223,6 +229,12 @@ gui:
     title: "&3&lSettlement Build Settings"
     set-state: "&7&lClick to allow building of &b&l{state}"
     selected-state: "&e&lBuilding is currently set to &b&l{state}"
+  mode:
+    title: "&3&lSettlement Mode"
+    entry:
+      title: "&b&l{mode}"
+      lore: "&7&lState: &b&l{state}"
+    back: "&c&lBack To Settings"
   plot-use:
     title: "&3&lPlot Use Settings"
     toggle-all: "&7&lClick to toggle all to &b&l{state}"
@@ -423,6 +435,7 @@ command:
         description: Deposit money into the bank
       description: Commands to interact with the village bank
       balance:
+        balance: "&2&lVillage Balance: &r&7{amount}"
         description: Check the balance of the bank
       history:
         head: "&7------- &cBank History [{page}]&7 -------"

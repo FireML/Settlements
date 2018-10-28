@@ -39,6 +39,7 @@ import me.crz.minecraft.kingdoms.command.village.VillageUpkeepCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageUseCommand;
 import me.crz.minecraft.kingdoms.command.village.money.VillageMoneyCommand;
 import me.crz.minecraft.kingdoms.command.village.settings.VillageSettingsCommand;
+import me.crz.minecraft.kingdoms.db.LogType;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import org.bukkit.entity.Player;
 
@@ -55,7 +56,7 @@ public class VillageCommand extends SubCommand {
         registerCommand(new VillageDescriptionCommand(this));
         registerCommand(new VillageDisbandCommand(this));
         registerCommand(new VillageHereCommand(this));
-        registerCommand(new VillageHistoryCommand(this, VillageRank.CHIEF, VillageHistoryCommand.Type.ALL));
+        registerCommand(new VillageHistoryCommand(this, VillageRank.CHIEF, LogType.ALL));
         registerCommand(new VillageHomeCommand(this));
         registerCommand(new VillageInviteCommand(this));
         registerCommand(new VillageJoinCommand(this));

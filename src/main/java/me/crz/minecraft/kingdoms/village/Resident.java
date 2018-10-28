@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.BonusClaimsHolder;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -41,6 +42,7 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
     private long lastLogin = 0;
     private long villageJoin;
     private boolean resourcePack = false;
+    private boolean senator;
 
     public Resident(UUID uuid, String name) {
         this.uuid = uuid;
@@ -174,6 +176,29 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
         return rank;
     }
 
+    public EmpireRank getEmpireRank() {
+        if (hasEmpire()) {
+            if (isSenator()) {
+                return EmpireRank.SENATOR;
+            } else if (getVillage().getEmpire().isCapital(getVillage()) && getVillageRank() == VillageRank.CHIEF) {
+                return EmpireRank.LEADER;
+            }
+        }
+        return EmpireRank.NONE;
+    }
+
+    public boolean hasEmpire() {
+        return hasVillage() && getVillage().hasEmpire();
+    }
+
+    public boolean isSenator() {
+        return senator;
+    }
+
+    public void setSenator(boolean senator) {
+        this.senator = senator;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -223,6 +248,7 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
         map.put("settlementJoin", getVillageJoin());
         map.put("rank", getVillageRank().name());
         map.put("title", getTitle());
+        map.put("senator", isSenator());
         map.put("lastLogin", getLastLogin());
         map.put("channels", getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
         map.put("activeChannel", getActiveChannel().name());
@@ -249,6 +275,7 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
             KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid rank for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("rank"));
         }
         resident.setTitle((String) map.get("title"));
+        resident.setSenator((Boolean) map.get("senator"));
         if (map.get("villageName") != null) {
             resident.setVillage(VillageManager.getInstance().getVillageFromName((String) map.get("villageName")));
         } else {
@@ -307,5 +334,18 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
 
     public boolean hasResourcePack() {
         return resourcePack;
+    }
+
+    public void setEmpireRank(EmpireRank rank) {
+        switch (rank) {
+            case NONE:
+                setSenator(false);
+                break;
+            case SENATOR:
+                setSenator(true);
+                break;
+            case LEADER:
+                throw new IllegalArgumentException("Can't set Resident's EmpireRank to chief");
+        }
     }
 }

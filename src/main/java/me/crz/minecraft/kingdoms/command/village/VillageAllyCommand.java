@@ -6,7 +6,7 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 
-import me.crz.minecraft.kingdoms.db.TownCache;
+import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -31,10 +31,10 @@ public class VillageAllyCommand extends VillageSubCommand {
             res.tell(getMessage("cant-ally-yourself"));
         } else if (village.isAlly(invitedVillage)) {
             res.tell(getMessage("already-allied"), "name", invitedVillage.getName());
-        } else if (TownCache.getPendingTownAlly().containsEntry(village.getId(), invitedVillage.getId())) {
+        } else if (InviteCache.getPendingTownAlly().containsEntry(village.getId(), invitedVillage.getId())) {
             MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), getMessage("now-allied-to"), "name", village.getName(), "state", village.getState().getTag());
             MessageUtils.tellResidents(village.getOnlineResidents(), getMessage("now-allied-to"), "name", invitedVillage.getName(), "state", invitedVillage.getState().getTag());
-            TownCache.getPendingTownAlly().remove(village.getId(), invitedVillage.getId());
+            InviteCache.getPendingTownAlly().remove(village.getId(), invitedVillage.getId());
             invitedVillage.addAlly(village);
             village.addAlly(invitedVillage);
 
@@ -43,7 +43,7 @@ public class VillageAllyCommand extends VillageSubCommand {
                 DatabaseManager.getInstance().saveVillage(village);
             });
         } else {
-            TownCache.getPendingTownAlly().put(invitedVillage.getId(), village.getId());
+            InviteCache.getPendingTownAlly().put(invitedVillage.getId(), village.getId());
             MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), getMessage("invite"), "name", village.getName(), "state", village.getState().getTag());
             MessageUtils.tellResidents(invitedVillage.getOnlineResidents(), getMessage("accept-info"), "name", village.getName(), "state", village.getState().getTag());
             res.tell(getMessage("request-send"), "name", invitedVillage.getName());

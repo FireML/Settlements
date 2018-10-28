@@ -35,7 +35,7 @@ public class VillageAdminJoinCommand extends SubCommand {
             }
             Village village = VillageManager.getInstance().getVillageFromName(args[1]);
             if (target.getVillageName().equals(village.getName())) {
-                MessageUtils.tell(player, "&6&l" + target.getName() + "&r&c&l is already in the &r&6&l" + village.getName(), null, null);
+                MessageUtils.tell(player, "&6&l" + target.getName() + "&r&c&l is already in the &r&6&l" + village.getName());
                 return;
             }
             target.setVillage(village);

@@ -1,13 +1,12 @@
 package me.crz.minecraft.kingdoms.utils;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.village.VillageState;
-import me.crz.minecraft.kingdoms.db.TownCache;
+import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.text.SimpleDateFormat;
@@ -70,6 +69,13 @@ public class Utils {
         return temp;
     }
 
+    public static int getEmpireCreationCost() {
+        if (ConfigManager.getInstance().getConfig().isInt("empire-creation-cost")) {
+            return ConfigManager.getInstance().getConfig().getInt("empire-creation-cost");
+        }
+        return 0;
+    }
+
     public static int getVillageCreationCost() {
         if (ConfigManager.getInstance().getConfig().isInt("village-creation-cost")) {
             return ConfigManager.getInstance().getConfig().getInt("village-creation-cost");
@@ -89,7 +95,11 @@ public class Utils {
     }
 
     public static boolean playerHasInvite(UUID playerId, Village joinVillage) {
-        return TownCache.getPendingTownInvites().containsKey(playerId) && TownCache.getPendingTownInvites().get(playerId).equals(joinVillage.getId());
+        return InviteCache.getPendingVillageInvites().containsKey(playerId) && InviteCache.getPendingVillageInvites().get(playerId).contains(joinVillage.getId());
+    }
+
+    public static boolean villageHasInvite(Village village, Empire joinEmpire) {
+        return InviteCache.getPendingEmpireInvites().containsKey(village.getId()) && InviteCache.getPendingEmpireInvites().get(village.getId()).contains(joinEmpire.getId());
     }
 
     public static int getLevelChunks(VillageState state, int level) {

@@ -9,9 +9,11 @@ storage:
   url-parameters: ""
 resident-cache-duration: 120 # in seconds
 disabled-claiming-worlds: []
+empire-creation-cost: 0
 village-creation-cost: 0
 outpost-creation-cost: 0
 max-village-size: 30
+max-empire-size: 20
 kingdoms-world: "kingdom"
 only-lock-in-settlement: true
 claim-max-radius: 5

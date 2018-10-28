@@ -5,6 +5,8 @@ import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.perk.PerkData;
+import me.crz.minecraft.kingdoms.perk.VillagePerk;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.UtilTime;
@@ -14,7 +16,6 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageGUI;
 import me.crz.minecraft.kingdoms.village.VillageManager;
-import me.crz.minecraft.kingdoms.village.VillagePerk;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -54,7 +55,7 @@ public class PerksGUI extends VillageGUI {
                 public ItemStack getItem(Player p) {
                     CItem item = new CItem(perk.getIcon());
                     if (resident.getVillage().hasUnlocked(perk)) {
-                        Village.PerkData perkData = resident.getVillage().getPerkData(perk);
+                        PerkData perkData = resident.getVillage().getPerkData(perk);
                         if (perk.getRepeat() != 0) {
                             item.setName(getMessage("entry.repeat").getReplacedText(
                                     "name", perk.getTag(),
@@ -158,7 +159,7 @@ public class PerksGUI extends VillageGUI {
                 @Override
                 public boolean click(Player p, ClickType type) {
                     if (type == ClickType.MIDDLE && perk.hasEffects()) {
-                        Village.PerkData perkData = resident.getVillage().getPerkData(perk);
+                        PerkData perkData = resident.getVillage().getPerkData(perk);
                         if (perkData != null) {
                             perkData.toggle();
                             return true;

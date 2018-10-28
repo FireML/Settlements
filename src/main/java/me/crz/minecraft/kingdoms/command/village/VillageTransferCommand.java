@@ -48,6 +48,6 @@ public class VillageTransferCommand extends VillageSubCommand {
     }
 
     private boolean isResident(Resident resident, Village village) {
-        return resident.getVillageName().equals(village.getName());
+        return village.getResidentIds().contains(resident.getUUID());
     }
 }

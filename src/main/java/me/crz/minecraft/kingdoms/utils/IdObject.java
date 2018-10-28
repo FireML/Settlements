@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.utils;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.Objects;
 
 public class IdObject {
     private final Object value;
@@ -44,7 +45,7 @@ public class IdObject {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        return this == o || (o instanceof IdObject && o.hashCode() == hashCode());
+        return this == o || (o instanceof IdObject && Objects.equals(((IdObject) o).value, value));
     }
 
     @Override

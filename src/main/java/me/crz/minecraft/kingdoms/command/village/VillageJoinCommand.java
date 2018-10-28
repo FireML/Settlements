@@ -4,7 +4,7 @@ import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.db.TownCache;
+import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -37,7 +37,7 @@ public class VillageJoinCommand extends VillageSubCommand {
             resident.setVillage(joinVillage);
             resident.setVillageRank(VillageRank.RESIDENT);
             resident.addChannel(ChatChannel.SETTLEMENT);
-            TownCache.getPendingTownInvites().remove(resident.getUUID(), joinVillage.getId());
+            InviteCache.getPendingVillageInvites().remove(resident.getUUID(), joinVillage.getId());
             Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(resident));
             resident.tell(getMessage("success"), "name", joinVillage.getName(), "state", joinVillage.getState().getTag());
             MessageUtils.tellResidents(joinVillage.getOnlineResidents(), getMessage("new-resident"), "player", resident.getName());

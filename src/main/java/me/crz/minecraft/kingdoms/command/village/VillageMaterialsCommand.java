@@ -18,7 +18,7 @@ public class VillageMaterialsCommand extends VillageSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        if (resident.getVillage().getState() == VillageState.KINGDOM && resident.getVillage().getLevel() >= 10) {
+        if (resident.getVillage().isMaxLevel()) {
             resident.tell(getMessage("max-level-reached"), "state", resident.getVillage().getState().getTag());
             return true;
         }

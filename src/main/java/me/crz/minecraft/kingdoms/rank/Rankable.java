@@ -1,4 +1,4 @@
-package me.crz.minecraft.kingdoms.utils;
+package me.crz.minecraft.kingdoms.rank;
 
 /**
  * Classes (most often enums) that are able to be ranked.

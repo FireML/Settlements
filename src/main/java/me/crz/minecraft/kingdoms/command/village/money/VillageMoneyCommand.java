@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.command.village.money;
 
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageHistoryCommand;
+import me.crz.minecraft.kingdoms.db.LogType;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 
@@ -18,13 +19,13 @@ public class VillageMoneyCommand extends VillageSubCommand {
         registerCommand(new VillageSubCommand(this, "balance", VillageRank.RESIDENT) {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
-                resident.tell("&2&lVillage Balance: &r&7" + DF.format((long) resident.getVillage().getBank()));
+                getMessage("balance").tell(resident, "amount", DF.format(resident.getVillage().getBank()));
                 return true;
             }
         });
         registerCommand(new MoneyWithdrawCommand(this));
         registerCommand(new MoneyDepositCommand(this));
-        registerCommand(new VillageHistoryCommand(this, VillageRank.RESIDENT, VillageHistoryCommand.Type.GENERAL));
+        registerCommand(new VillageHistoryCommand(this, VillageRank.RESIDENT, LogType.GENERAL));
     }
 
     @Override

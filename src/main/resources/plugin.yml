@@ -10,6 +10,9 @@ commands:
   village:
     description: Village Commands.
     aliases: [s, settlement, kingdom, k]
+  empire:
+    description: Empire Commands.
+    aliases: [e, nation]
   villageadmin:
     description: Admin Commands.
     aliases: [va]

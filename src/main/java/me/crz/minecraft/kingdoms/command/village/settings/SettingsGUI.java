@@ -76,6 +76,7 @@ public class SettingsGUI extends VillageGUI {
                 return new CItem(Material.LIGHT_GRAY_STAINED_GLASS_PANE).setName(
                         getMessage("entry").getReplacedText(
                                 "name", village.getName(),
+                                "level", String.valueOf(village.getLevel()),
                                 "state", village.getState().getTag(),
                                 "bank", String.valueOf(village.getBank()),
                                 "bonusClaims", String.valueOf(village.getBonusClaims()),

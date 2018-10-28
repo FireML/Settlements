@@ -1,11 +1,11 @@
 package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.perk.PerkEffect;
+import me.crz.minecraft.kingdoms.perk.VillagePerk;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.VillagePerk;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -44,7 +44,7 @@ public class LandPerks {
     }
 
     private List<PotionEffect> getApplicablePotionEffects(Player p, OwnedLand land, boolean refresh) {
-        List<VillagePerk.PerkEffect> effects = new ArrayList<>();
+        List<PerkEffect> effects = new ArrayList<>();
         Resident resident = ResidentManager.getInstance().getResident(p);
 
         if (resident.hasVillage()) {
@@ -53,17 +53,17 @@ public class LandPerks {
                     continue;
                 }
 
-                for (VillagePerk.PerkEffect effect : perk.getEffects()) {
+                for (PerkEffect effect : perk.getEffects()) {
                     if (effect.getLength() > 0 && refresh) {
                         continue;
                     }
 
-                    if (resident.hasVillage() && effect.getApplyTo() == VillagePerk.EffectInfluenced.FREE) {
+                    if (resident.hasVillage() && effect.getApplyTo() == PerkEffect.EffectInfluenced.FREE) {
                         continue;
                     }
 
                     if (land == null) {
-                        if (effect.getApplyIn() != VillagePerk.EffectLocation.UNCLAIMED) {
+                        if (effect.getApplyIn() != PerkEffect.EffectLocation.UNCLAIMED) {
                             continue;
                         }
                     } else {
@@ -94,11 +94,11 @@ public class LandPerks {
                                 }
                                 break;
                         }
-                        if (effect.getApplyTo() == VillagePerk.EffectInfluenced.ENEMIES) {
+                        if (effect.getApplyTo() == PerkEffect.EffectInfluenced.ENEMIES) {
                             if (land.isOwnedBy(resident.getVillage()) || land.getOwnerVillage().isAlly(resident.getVillage())) {
                                 continue;
                             }
-                        } else if (effect.getApplyTo() == VillagePerk.EffectInfluenced.ALLIES) {
+                        } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.ALLIES) {
                             if (!land.isOwnedBy(resident.getVillage()) && !land.getOwnerVillage().isAlly(resident.getVillage())) {
                                 continue;
                             }
@@ -123,12 +123,12 @@ public class LandPerks {
                     continue;
                 }
 
-                for (VillagePerk.PerkEffect effect : perk.getEffects()) {
+                for (PerkEffect effect : perk.getEffects()) {
                     if (effect.getLength() > 0 && refresh) {
                         continue;
                     }
 
-                    if (resident.hasVillage() && effect.getApplyTo() == VillagePerk.EffectInfluenced.FREE) {
+                    if (resident.hasVillage() && effect.getApplyTo() == PerkEffect.EffectInfluenced.FREE) {
                         continue;
                     }
 
@@ -157,11 +157,11 @@ public class LandPerks {
                             continue;
                     }
 
-                    if (effect.getApplyTo() == VillagePerk.EffectInfluenced.ENEMIES) {
+                    if (effect.getApplyTo() == PerkEffect.EffectInfluenced.ENEMIES) {
                         if (land.getOwnerVillage().isAlly(resident.getVillage())) {
                             continue;
                         }
-                    } else if (effect.getApplyTo() == VillagePerk.EffectInfluenced.ALLIES) {
+                    } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.ALLIES) {
                         if (!land.getOwnerVillage().isAlly(resident.getVillage())) {
                             continue;
                         }
@@ -179,17 +179,17 @@ public class LandPerks {
             }
         }
 
-        Map<PotionEffectType, VillagePerk.PerkEffect> potionEffects = new LinkedHashMap<>();
+        Map<PotionEffectType, PerkEffect> potionEffects = new LinkedHashMap<>();
 
-        for (VillagePerk.PerkEffect effect : effects) {
-            VillagePerk.PerkEffect perkEffect = potionEffects.get(effect.getType());
+        for (PerkEffect effect : effects) {
+            PerkEffect perkEffect = potionEffects.get(effect.getType());
             if (perkEffect == null || perkEffect.getStrength() < effect.getStrength() || (perkEffect.getStrength() == effect.getStrength() && perkEffect.getLength() < effect.getLength())) {
                 potionEffects.put(effect.getType(), effect);
             }
         }
 
         return potionEffects.values().stream()
-                .map(VillagePerk.PerkEffect::getPotionEffect)
+                .map(PerkEffect::getPotionEffect)
                 .collect(Collectors.toList());
     }
 

@@ -2,8 +2,10 @@ package me.crz.minecraft.kingdoms;
 
 import com.griefcraft.lwc.LWC;
 import me.crz.minecraft.kingdoms.banish.BanishListener;
+import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.integration.LWCIntegration;
 import me.crz.minecraft.kingdoms.land.LandManager;
+import me.crz.minecraft.kingdoms.vault.EmpireVaultListener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerLoadEvent;
@@ -95,6 +97,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             this.getLandPerks().runTimer();
             this.getServer().getPluginManager().registerEvents(new BanishListener(), this);
             this.getServer().getPluginManager().registerEvents(new VaultListener(), this);
+            this.getServer().getPluginManager().registerEvents(new EmpireVaultListener(), this);
             this.getServer().getPluginManager().registerEvents(new VillageListener(), this);
             this.getServer().getPluginManager().registerEvents(new ChatManager(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlags(), this);
@@ -132,6 +135,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     public void loadManagers() {
         ThreadManager.getInstance();
         DatabaseManager.getInstance();
+        EmpireManager.getInstance();
         VillageManager.getInstance();
         LandManager.getInstance();
         ResidentManager.getInstance();

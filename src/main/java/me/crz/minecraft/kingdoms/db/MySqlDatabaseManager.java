@@ -3,7 +3,8 @@ package me.crz.minecraft.kingdoms.db;
 import com.zaxxer.hikari.HikariDataSource;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
-import me.crz.minecraft.kingdoms.command.village.VillageHistoryCommand;
+import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
@@ -11,6 +12,7 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
@@ -64,6 +66,51 @@ public class MySqlDatabaseManager extends DatabaseManager {
         try (Connection conn = ds.getConnection(); Statement sta = conn.createStatement()) {
             sta.addBatch("SET FOREIGN_KEY_CHECKS = 0");
 
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "empires ("
+                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+                    + "name VARCHAR(255) NOT NULL, INDEX (name), UNIQUE (name), "
+                    + "capitalId INTEGER NOT NULL,"
+                    + "FOREIGN KEY (capitalId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE RESTRICT,"
+                    + "description TEXT, "
+                    + "level INTEGER NOT NULL,"
+                    + "description TEXT NOT NULL,"
+                    + "access VARCHAR(255) NOT NULL,"
+                    + "buildState VARCHAR(255) NOT NULL,"
+                    + "pvp BOOLEAN NOT NULL,"
+                    + "fireSpread BOOLEAN NOT NULL,"
+                    + "explosions BOOLEAN NOT NULL,"
+                    + "mobSpawning BOOLEAN NOT NULL,"
+                    + "buff BOOLEAN NOT NULL,"
+                    + "bank BIGINT,"
+                    + "bonusClaims INTEGER,"
+                    + "homeLoc_world VARCHAR(255),"
+                    + "homeLoc_x DOUBLE,"
+                    + "homeLoc_y DOUBLE,"
+                    + "homeLoc_z DOUBLE,"
+                    + "homeLoc_yaw FLOAT,"
+                    + "homeLoc_pitch FLOAT"
+                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
+
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "empire_vaults ("
+                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+                    + "empireId INTEGER,"
+                    + "FOREIGN KEY (empireId) REFERENCES " + tablePrefix + "empires(id) ON DELETE CASCADE,"
+                    + "content VARCHAR(255) NOT NULL,"
+                    + "amount BIGINT,"
+                    + "UNIQUE (empireId, content)"
+                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
+
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "empire_perks ("
+                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+                    + "empireId INTEGER, INDEX(settlementId),"
+                    + "FOREIGN KEY (empireId) REFERENCES " + tablePrefix + "empires(id) ON DELETE CASCADE,"
+                    + "perk VARCHAR(255) NOT NULL,"
+                    + "times INTEGER NOT NULL,"
+                    + "lastUsed TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
+                    + "active BOOLEAN,"
+                    + "UNIQUE (empireId, perk)"
+                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
+
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlements ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                     + "name VARCHAR(255) NOT NULL, INDEX (name), UNIQUE (name), "
@@ -71,6 +118,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "FOREIGN KEY (chiefId) REFERENCES " + tablePrefix + "residents(id) ON DELETE RESTRICT,"
                     + "level INTEGER NOT NULL,"
                     + "settlementState VARCHAR(255) NOT NULL,"
+                    + "empireId INTEGER,"
+                    + "FOREIGN KEY (empireId) REFERENCES " + tablePrefix + "empires(id) ON DELETE SET NULL,"
                     + "description TEXT NOT NULL,"
                     + "access VARCHAR(255) NOT NULL,"
                     + "buildState VARCHAR(255) NOT NULL,"
@@ -109,7 +158,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "settlementId INTEGER,"
                     + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
                     + "content VARCHAR(255) NOT NULL,"
-                    + "amount BIGINT"
+                    + "amount BIGINT,"
+                    + "UNIQUE (settlementId, content)"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_perks ("
@@ -159,6 +209,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "settlementJoin BIGINT(11) NOT NULL,"
                     + "rank VARCHAR(255),"
                     + "title VARCHAR(255) NOT NULL,"
+                    + "senator BOOLEAN,"
                     + "bonusClaims INTEGER,"
                     + "lastLogin BIGINT(11) NOT NULL,"
                     + "activeChannel VARCHAR(255) NOT NULL,"
@@ -226,6 +277,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "logs ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+                    + "empireId INTEGER, INDEX(empireId),"
+                    + "FOREIGN KEY (empireId) REFERENCES " + tablePrefix + "empires(id) ON DELETE CASCADE,"
                     + "settlementId INTEGER, INDEX(settlementId),"
                     + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
                     + "residentId INTEGER, "
@@ -239,6 +292,58 @@ public class MySqlDatabaseManager extends DatabaseManager {
             sta.addBatch("SET FOREIGN_KEY_CHECKS = 1");
 
             sta.executeBatch();
+        }
+    }
+
+    @Override
+    public void saveEmpire(Empire empire) {
+        Utils.catchSync();
+        Map<String, Object> values = getValues(empire.serialize(), "senators", "vault", "perks");
+        String sql = "INSERT INTO " + tablePrefix + "empires "
+                + "(`" + String.join("`,`", values.keySet()) + "`)"
+                + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")"
+                + " ON DUPLICATE KEY UPDATE " + values.keySet().stream().map(c -> "`" + c + "`=VALUES(`" + c + "`)").collect(Collectors.joining(",")) + ";";
+        try (Connection conn = ds.getConnection();
+             PreparedStatement sta = conn.prepareStatement(sql, empire.getId().isNull() ? PreparedStatement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS)) {
+            int i = 0;
+            for (Object value : values.values()) {
+                i++;
+                sta.setObject(i, value);
+            }
+            sta.executeUpdate();
+            if (empire.getId().isNull()) {
+                ResultSet rs = sta.getGeneratedKeys();
+                if (rs.next()) {
+                    empire.setId(IdObject.get(rs));
+                }
+            }
+            if (!empire.getId().isNull()) {
+                updateDataMap(conn, "empire_vaults", "empireId", (Integer) empire.getId().value(), "content", "amount", empire.getVault());
+                updateDataMap(conn, "empire_perks", "empireId", (Integer) empire.getId().value(), "perk", "",
+                        empire.getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while saving empire " + empire.getName() + " to database!", e);
+        }
+    }
+
+    @Override
+    public void deleteEmpire(Empire empire) {
+        Utils.catchSync();
+        if (empire.getId() != null) {
+            try (Connection conn = ds.getConnection();
+                 PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "empires WHERE id=?")) {
+                sta.setInt(1, (Integer) empire.getId().value());
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "Error while trying to delete empire " + empire.getId().value() + "/" + empire.getName() + " from database!", e);
+            }
+        } else {
+            try (Connection conn = ds.getConnection();
+                 PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "empires WHERE name LIKE ? LIMIT 1")) {
+                sta.setString(1, empire.getName());
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "Error while trying to delete empire " + empire.getId().value() + "/" + empire.getName() + " from database!", e);
+            }
         }
     }
 
@@ -419,6 +524,26 @@ public class MySqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
+    public Collection<Empire> getAllEmpires() {
+        Utils.catchSync();
+        String sql = "SELECT * FROM " + tablePrefix + "empires;";
+        try (Connection conn = ds.getConnection();
+             ResultSet rs = conn.createStatement().executeQuery(sql)) {
+            List<Empire> empires = new ArrayList<>();
+            while (rs.next()) {
+                Empire empire = createEmpire(conn, rs);
+                if (empire != null) {
+                    empires.add(empire);
+                }
+            }
+            return empires;
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to get all empires from database!", e);
+        }
+        return Collections.EMPTY_LIST;
+    }
+
+    @Override
     public Resident getResident(UUID uuid) {
         Utils.catchSync();
         String sql = "SELECT * FROM " + tablePrefix + "residents WHERE uuid=?";
@@ -490,24 +615,25 @@ public class MySqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public void log(Village village, Resident resident, String action, Map<String, Long> values) {
+    public void log(Empire empire, Village village, Resident resident, String action, Map<String, Long> values) {
         if (values.isEmpty()) {
             return;
         }
         Utils.catchSync();
         try (Connection conn = ds.getConnection();
              PreparedStatement sta = conn.prepareStatement("INSERT INTO " + tablePrefix + "logs " +
-                     "(`settlementId`, `residentId`, `action`, `type`, `amount`) " +
-                     "VALUES (?, ?, ?, ?, ?);"
+                     "(`empireId`, `settlementId`, `residentId`, `action`, `type`, `amount`) " +
+                     "VALUES (?, ?, ?, ?, ?, ?);"
              )
         ) {
             for (Map.Entry<String, Long> value : values.entrySet()) {
                 if (!village.getId().isNull()) {
-                    sta.setInt(1, (Integer) village.getId().value());
-                    sta.setInt(2, resident != null && resident.getId() != null ? (Integer) resident.getId() : -1);
-                    sta.setString(3, action.toLowerCase());
-                    sta.setString(4, value.getKey().toLowerCase());
-                    sta.setLong(5, value.getValue());
+                    sta.setInt(1, empire != null ? (Integer) empire.getId().value() : -1);
+                    sta.setInt(2, (Integer) village.getId().value());
+                    sta.setInt(3, resident != null && resident.getId() != null ? (Integer) resident.getId() : -1);
+                    sta.setString(4, action.toLowerCase());
+                    sta.setString(5, value.getKey().toLowerCase());
+                    sta.setLong(6, value.getValue());
                     sta.addBatch();
                 }
             }
@@ -518,17 +644,26 @@ public class MySqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public List<String[]> getLog(Village village, Resident resident, int page, VillageHistoryCommand.Type bank) {
+    public List<String[]> getLog(Village village, Resident resident, int page, LogType type) {
+        return getLog("settlementId", village.getId(), resident, page, type);
+    }
+
+    @Override
+    public List<String[]> getLog(Empire empire, Resident resident, int page, LogType type) {
+        return getLog("empireId", empire.getId(), resident, page, type);
+    }
+
+    private List<String[]> getLog(String column, IdObject id, Resident resident, int page, LogType type) {
         List<String[]> log = new ArrayList<>();
-        if (village.getId().isNull() || page < 1) {
+        if (id.isNull() || page < 1) {
             return log;
         }
         int start = (page-1) * 20;
-        String sql = "SELECT l.action, l.type, l.amount, l.timestamp, r.name AS playerName, r.uuid AS playerId, r.rank AS playerRank, r.title AS playerTitle " +
+        String sql = "SELECT l.empireId, l.settlementId, l.action, l.type, l.amount, l.timestamp, r.name AS playerName, r.uuid AS playerId, r.rank AS playerRank, r.title AS playerTitle " +
                 "FROM " + tablePrefix + "logs AS l " +
                 "LEFT JOIN " + tablePrefix + "residents AS r ON l.residentId = r.id " +
-                "WHERE l.settlementId=?";
-        switch (bank) {
+                "WHERE l." + column + "=?";
+        switch (type) {
             case GENERAL:
                 sql += " AND (l.type = 'cash' OR l.type = 'claim')";
                 break;
@@ -542,14 +677,24 @@ public class MySqlDatabaseManager extends DatabaseManager {
         sql += " ORDER BY id DESC LIMIT " + start + ",20;";
         try (Connection conn = ds.getConnection();
              PreparedStatement sta = conn.prepareStatement(sql)) {
-            sta.setInt(1, (Integer) village.getId().value());
+            sta.setInt(1, (Integer) id.value());
             ResultSet rs = sta.executeQuery();
             while (rs.next()) {
                 VillageRank rank = VillageRank.RESIDENT;
                 try {
                     rank = VillageRank.valueOf(rs.getString("playerRank").toUpperCase());
                 } catch (IllegalArgumentException ignored) {}
+
+                Village village = VillageManager.getInstance().getVillageFromId(IdObject.get(rs.getInt("settlementId")));
+                Empire empire = null;
+                if (rs.getInt("empireId") > -1) {
+                    empire = EmpireManager.getInstance().getEmpireFromId(IdObject.get(rs.getInt("empireId")));
+                }
+
                 log.add(new String[] {
+                        "village", village.getName(),
+                        "villagestate", village.getState().getTag(),
+                        "empire", empire != null ? empire.getName() : "",
                         "name", rs.getString("playerName"),
                         "uuid", rs.getString("playerId"),
                         "rank", rank.getTag(village),
@@ -561,12 +706,57 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 });
             }
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while trying to get log for village " + village.getName() + "/" + village.getId(), e);
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to get log for " + id, e);
         }
         return log;
     }
 
     // ------ Creation methods ----- //
+
+    private Empire createEmpire(Connection conn, ResultSet rs) throws SQLException {
+        int id = rs.getInt("id");
+        Map<String, Object> map = toMap(rs);
+
+        PreparedStatement rSta = conn.prepareStatement("SELECT id FROM " + tablePrefix + "settlements WHERE empireId = ?;");
+        rSta.setInt(1, id);
+        ResultSet rRs = rSta.executeQuery();
+        Collection<Integer> members = new ArrayList<>();
+        while (rRs.next()) {
+            members.add(rRs.getInt("id"));
+        }
+        map.put("members", members);
+
+        Collection<String> senators = new ArrayList<>();
+        for (int memberId : members) {
+            PreparedStatement sSta = conn.prepareStatement("SELECT uuid FROM " + tablePrefix + "residents WHERE senator = true AND settlementId = ?;");
+            sSta.setInt(1, memberId);
+            ResultSet sRs = sSta.executeQuery();
+            while (sRs.next()) {
+                senators.add(sRs.getString("uuid"));
+            }
+        }
+        map.put("senators", senators);
+
+        PreparedStatement vSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_vaults WHERE settlementId = ?;");
+        vSta.setInt(1, id);
+        ResultSet vRs = vSta.executeQuery();
+        Map<String, Long> vault = new LinkedHashMap<>();
+        while (vRs.next()) {
+            vault.put(vRs.getString("content"), vRs.getLong("amount"));
+        }
+        map.put("vault", vault);
+
+        PreparedStatement pSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_perks WHERE settlementId = ?;");
+        pSta.setInt(1, id);
+        ResultSet pRs = pSta.executeQuery();
+        Map<String, Map<String, Object>> unlockedPerks = new LinkedHashMap<>();
+        while (pRs.next()) {
+            unlockedPerks.put(pRs.getString("perk"), toMap(pRs));
+        }
+        map.put("perks", unlockedPerks);
+
+        return Empire.deserialize(map);
+    }
 
     private Village createVillage(Connection conn, ResultSet rs) throws SQLException {
         int id = rs.getInt("id");

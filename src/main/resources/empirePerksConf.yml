@@ -1,0 +1,145 @@
+resistance1:
+  # The icon that should be shown in the GUI. If it's a potion (the default value is a lingering one)
+  # and an effect is defined then it will just use a potion of the configured effect
+  icon: lingering_potion
+  # The amount of times this upgrade can be repeated. This allows to make re-purchasable upgrades to trigger effects
+  # Default if not added is 0
+  repeat: 0
+  # How long one has to wait (in seconds) between unlocks if amount is above 1
+  cooldown: 0
+  # the level that upgrade unlocks at
+  level: 1
+  # The effects (a map list) that members of the settlement get applied
+  effects:
+      # the type https://papermc.io/javadocs/org/bukkit/potion/PotionEffectType.html
+    - type: damage_resistance
+      strength: 1
+      # the length of the effect after applying in seconds
+      # leave empty or set to -1 (default) to make it indefinite
+      length: -1
+      # Whether or not particles should be more translucent (default is true)
+      ambient: true
+      # Whether or not to show potion particles, default is to not show them (false)
+      particles: false
+      # Whether or not to show the icon of the effect
+      icon: true
+      apply:
+        # Where the effect should happen
+        # can be:
+        # plot - Only for the owner of a plot on the plot
+        # plot-friends - Like plot just for friends of the resident too
+        # own-settlement - Effect only in own settlement (default if not set)
+        # allied-settlement - Effect in own and all allied settlements
+        # enemy-settlement - Effect only while in enemy settlement
+        # unclaimed - only in unclaimed chunks
+        # everywhere - everywhere
+        in: own-settlement
+        # Who should get the effect
+        # can be:
+        # each rank above the specified like resident (default), recruiter, builder, elder, chief - applied for the specific rank
+        # allies - applies to all allies
+        # enemies - applies to all enemies
+        # free - applies to everyone without a settlement
+        # (note that embassy plot owners are treated like they are residents of the village they own a plot in but only on their plot)
+        to: resident
+  # Allow purchasing extra claims or outposts
+  bonnus:
+    claims: 0
+    outposts: 0
+  # Run an arbitrary console command for all members of the settlement
+  # Placeholders: player, playerid, settlement, state, level, perk
+  # run-command:
+  # - some {player} command
+  cost:
+    # Cost to unlock. Can include "cash" to pay with bank or any material to pay from vault
+    # If empty it will be instantly granted when the state and level are reached
+    unlock:
+      cash: 1000
+      stone: 100
+    # If the amount is higher than 1 then this is the cost that needs to be paid to trigger it again
+    repeating:
+      cash: 100
+speed1:
+  level: 2
+  effects:
+    - type: speed
+      strength: 1
+  cost:
+    unlock:
+      cash: 1000
+strength1:
+  level: 3
+  effects:
+    - type: increase_damage
+      strength: 1
+  cost:
+    unlock:
+      cash: 1000
+regen1:
+  level: 4
+  effects:
+    - type: regeneration
+      strength: 1
+  cost:
+    unlock:
+      cash: 1000
+speed2:
+  level: 5
+  effects:
+    - type: speed
+      strength: 2
+  cost:
+    unlock:
+      cash: 1000
+resistance2:
+  level: 6
+  effects:
+    - type: damage_resistance
+      strength: 2
+  cost:
+    unlock:
+      cash: 1000
+regen2:
+  level: 8
+  effects:
+    - type: regeneration
+      strength: 2
+  cost:
+    unlock:
+      cash: 1000
+haste1:
+  level: 9
+  effects:
+    - type: fast_digging
+      strength: 1
+  cost:
+    unlock:
+      cash: 1000
+haste2:
+  level: 10
+  effects:
+    - type: fast_digging
+      strength: 1
+  cost:
+    unlock:
+      cash: 1000
+extra-claims:
+  level: 10
+  repeat: -1 # as often as you want
+  bonnus:
+    claims: 10
+  cost:
+    unlock:
+      cash: 1000
+    repeat:
+      cash: 1000
+extra-outpost:
+  level: 10
+  repeat: -1
+  bonnus:
+    outposts: 1
+  cost:
+    unlock:
+      cash: 1000
+    repeat:
+      cash: 1000

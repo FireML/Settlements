@@ -1,0 +1,43 @@
+package me.crz.minecraft.kingdoms.command.empire;
+
+import me.crz.minecraft.kingdoms.command.EmpireSubCommand;
+import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.db.LogType;
+import me.crz.minecraft.kingdoms.rank.EmpireRank;
+import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.village.Resident;
+
+import java.util.List;
+
+public class EmpireHistoryCommand extends EmpireSubCommand {
+    private final LogType type;
+
+    public EmpireHistoryCommand(SubCommand parent, EmpireRank rank, LogType type) {
+        super(parent, "history [<page>]", rank, "log");
+        this.type = type;
+    }
+
+    @Override
+    public boolean run(Resident resident, String base, String alias, String... args) {
+        int page;
+        if (args.length > 0) {
+            try {
+                page = Integer.parseInt(args[0]);
+            } catch (NumberFormatException e) {
+                getError("not-a-number").tell(resident, "input", args[0]);
+                return false;
+            }
+        } else {
+            page = 1;
+        }
+        Utils.runAsync(() -> {
+            getMessage("head").tell(resident, "page", String.valueOf(page));
+            List<String[]> history = DatabaseManager.getInstance().getLog(resident.getVillage().getEmpire(), resident, page, type);
+            for (String[] entry : history) {
+                getMessage("entry").tell(resident, entry);
+            }
+        });
+        return true;
+    }
+}

@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.command.village;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.db.LogType;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -10,9 +11,9 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import java.util.List;
 
 public class VillageHistoryCommand extends VillageSubCommand {
-    private final Type type;
+    private final LogType type;
 
-    public VillageHistoryCommand(SubCommand parent, VillageRank rank, Type type) {
+    public VillageHistoryCommand(SubCommand parent, VillageRank rank, LogType type) {
         super(parent, "history [<page>]", rank, "log");
         this.type = type;
     }
@@ -40,9 +41,4 @@ public class VillageHistoryCommand extends VillageSubCommand {
         return true;
     }
 
-    public enum Type {
-        GENERAL,
-        VAULT,
-        ALL;
-    }
 }

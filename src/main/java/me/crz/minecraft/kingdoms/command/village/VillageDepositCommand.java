@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
+import me.crz.minecraft.kingdoms.db.LogType;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.vault.VaultInventory;
@@ -11,7 +12,7 @@ public class VillageDepositCommand extends VillageSubCommand {
     public VillageDepositCommand(SubCommand parent) {
         super(parent, "deposit", VillageRank.RESIDENT);
         setPermission("kingdoms.user");
-        registerCommand(new VillageHistoryCommand(this, VillageRank.RESIDENT, VillageHistoryCommand.Type.VAULT));
+        registerCommand(new VillageHistoryCommand(this, VillageRank.RESIDENT, LogType.VAULT));
     }
 
     @Override
@@ -19,7 +20,7 @@ public class VillageDepositCommand extends VillageSubCommand {
         if (!resident.getVillage().isMaxLevel()) {
             new VaultInventory(resident.getPlayer()).open();
         } else {
-            resident.tell(Message.get("command.upgrade.max-level-reached"));
+            resident.tell(Message.get("command.village.upgrade.max-level-reached"));
         }
         return true;
     }

@@ -23,6 +23,7 @@ public class CommandManager extends Base implements CommandExecutor {
 
     private void registerCommands() {
         registerCommand(new VillageCommand());
+        registerCommand(new EmpireCommand());
         registerCommand(new ChatCommand());
         registerCommand(new VillageAdminCommand());
         registerCommand(new ResidentCommand());

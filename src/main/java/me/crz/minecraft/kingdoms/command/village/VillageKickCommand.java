@@ -2,7 +2,7 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
-import me.crz.minecraft.kingdoms.db.TownCache;
+import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -33,15 +33,15 @@ public class VillageKickCommand extends VillageSubCommand {
                 return;
             }
             if (!player.getVillage().equals(res.getVillage())) {
-                MessageUtils.tell(player, getError("not-in-current"), null, null);
+                MessageUtils.tell(player, getError("not-in-current"));
                 return;
             }
             if (res.getVillageRank().atLeast(player.getVillageRank())) {
                 MessageUtils.tell(player, getMessage("cant-kick-higher"), "rank", res.getVillageRank().getTag(res.getVillage()));
                 return;
             }
-            MessageUtils.tellResidents(res.getVillage().getOnlineResidents(), getMessage("kicked-alert"), "{player}", res.getName());
-            TownCache.getPendingTownInvites().remove(res.getUUID(), res.getVillage().getId());
+            MessageUtils.tellResidents(res.getVillage().getOnlineResidents(), getMessage("kicked-alert"), "player", res.getName());
+            InviteCache.getPendingVillageInvites().remove(res.getUUID(), res.getVillage().getId());
             VillageManager.getInstance().leaveVillage(res);
         });
         return true;

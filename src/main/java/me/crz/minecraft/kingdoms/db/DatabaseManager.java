@@ -2,7 +2,8 @@ package me.crz.minecraft.kingdoms.db;
 
 import com.google.common.collect.ImmutableMap;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.command.village.VillageHistoryCommand;
+import me.crz.minecraft.kingdoms.command.empire.EmpireHistoryCommand;
+import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -33,6 +34,10 @@ public abstract class DatabaseManager {
 
     public abstract void connect() throws Exception;
 
+    public abstract void saveEmpire(Empire empire);
+
+    public abstract void deleteEmpire(Empire village);
+
     public abstract void saveVillage(Village village);
 
     public abstract void deleteVillage(Village village);
@@ -53,6 +58,8 @@ public abstract class DatabaseManager {
 
     public abstract Collection<Village> getAllVillages();
 
+    public abstract Collection<Empire> getAllEmpires();
+
     public abstract Resident getResident(UUID uuid);
 
     public abstract Resident getResident(String name);
@@ -63,27 +70,61 @@ public abstract class DatabaseManager {
 
     public abstract void saveResident(Resident... residents);
 
-    public abstract void log(Village village, Resident resident, String action, Map<String, Long> values);
+    public abstract void log(Empire empire, Village village, Resident resident, String action, Map<String, Long> values);
+
+    public void log(Empire empire, Resident resident, String action, Map<String, Long> values) {
+        log(empire, resident.getVillage(), resident, action, values);
+    }
+
+    public void log(Village village, Resident resident, String action, Map<String, Long> values) {
+        log(null, village, resident, action, values);
+    }
+
+    public void log(Empire empire, Village village, Resident resident, String action, String type, long amount) {
+        log(empire, village, resident, action, ImmutableMap.of(type, amount));
+    }
 
     public void log(Village village, Resident resident, String action, String type, long amount) {
-        log(village, resident, action, ImmutableMap.of(type, amount));
+        log(null, village, resident, action, ImmutableMap.of(type, amount));
+    }
+
+    public void log(Empire empire, Resident resident, String action, String type, long amount) {
+        log(empire, resident.getVillage(), resident, action, ImmutableMap.of(type, amount));
     }
 
     public void logDeposit(Village village, Resident resident, long deposited) {
-        log(village, resident, "deposit", "cash", deposited);
+        log(null, village, resident, "deposit", "cash", deposited);
     }
 
     public void logDeposit(Village village, Resident resident, Map<String, Long> deposited) {
-        log(village, resident, "deposit", deposited);
+        log(null, village, resident, "deposit", deposited);
+    }
+
+    public void logDeposit(Empire empire, Village village, Resident resident, long deposited) {
+        log(empire, village, resident, "deposit", "cash", deposited);
+    }
+
+    public void logDeposit(Empire empire, Village village, Resident resident, Map<String, Long> deposited) {
+        log(empire, village, resident, "deposit", deposited);
+    }
+
+    public void logLevelup(Empire empire, Resident resident, Map<String, Long> removed) {
+        log(empire, resident.getVillage(), resident, "levelup", removed);
     }
 
     public void logLevelup(Village village, Resident resident, Map<String, Long> removed) {
-        log(village, resident, "levelup", removed);
+        log(null, village, resident, "levelup", removed);
     }
 
     public void logWithdraw(Village village, Resident resident, long withdrawn) {
-        log(village, resident, "withdraw", "cash", withdrawn);
+        log(null, village, resident, "withdraw", "cash", withdrawn);
     }
 
-    public abstract List<String[]> getLog(Village village, Resident resident, int page, VillageHistoryCommand.Type type);
+    public void logWithdraw(Empire empire, Village village, Resident resident, long withdrawn) {
+        log(empire, village, resident, "withdraw", "cash", withdrawn);
+    }
+
+    public abstract List<String[]> getLog(Village village, Resident resident, int page, LogType type);
+
+    public abstract List<String[]> getLog(Empire Empire, Resident resident, int page, LogType type);
 }

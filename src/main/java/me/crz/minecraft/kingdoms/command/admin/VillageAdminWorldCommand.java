@@ -23,7 +23,7 @@ public class VillageAdminWorldCommand extends SubCommand {
                 option = "disabled";
                 Utils.addDisabledWorld(player.getWorld());
             }
-            MessageUtils.tell(player, "&c&lClaiming has been &r&6&l" + option + "&r&c&l for world &r&6&l" + player.getWorld().getName(), null, null);
+            MessageUtils.tell(player, "&c&lClaiming has been &r&6&l" + option + "&r&c&l for world &r&6&l" + player.getWorld().getName());
             return true;
         }
         return false;

@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -51,14 +50,22 @@ public class ChatManager extends Base {
         Village village = res.getVillage();
         ChatChannel channel = res.getActiveChannel();
 
+        boolean resetChannel = false;
         if (village == null) {
             switch (channel) {
+                case EMPIRE:
                 case ALLY:
                 case SETTLEMENT:
-                    channel = ChatChannel.GENERAL;
-                    if (res.setActiveChannel(channel)) {
-                        Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
-                    }
+                    resetChannel = true;
+            }
+        } else if (!res.hasEmpire() && channel == ChatChannel.EMPIRE) {
+            resetChannel = true;
+        }
+
+        if (resetChannel) {
+            channel = ChatChannel.GENERAL;
+            if (res.setActiveChannel(channel)) {
+                Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
             }
         }
 
@@ -133,6 +140,10 @@ public class ChatManager extends Base {
                         .filter(r -> r.isListening(finalChannel))
                         .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
                 break;
+            case EMPIRE:
+                village.getEmpire().getOnlineResidents().stream()
+                        .filter(r -> r.isListening(finalChannel))
+                        .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
             case ALLY:
                 village.getAllies().stream()
                         .map(id -> VillageManager.getInstance().getVillageFromId(id))

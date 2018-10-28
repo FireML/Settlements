@@ -4,14 +4,13 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.command.village.settings.PerksGUI;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.perk.PerkData;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
-import me.crz.minecraft.kingdoms.village.VillagePerk;
-import org.bukkit.ChatColor;
+import me.crz.minecraft.kingdoms.perk.VillagePerk;
 
 import java.util.stream.Collectors;
 
@@ -118,7 +117,7 @@ public class VillagePerksCommand extends VillageSubCommand {
                     } else if (!perk.hasEffects()) {
                         getError("no-effects").tell(resident, "perk", perk.getTag());
                     } else {
-                        Village.PerkData perkData = resident.getVillage().getPerkData(perk);
+                        PerkData perkData = resident.getVillage().getPerkData(perk);
                         perkData.toggle();
                         MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage(perkData.isActive() ? "activated" : "deactivated"), "perk", perk.getTag());
                         Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));

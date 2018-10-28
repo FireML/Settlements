@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.banish.CustomRunnable;
+import me.crz.minecraft.kingdoms.perk.VillagePerk;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -118,8 +119,10 @@ public class VillageManager {
                 Village al = this.getVillageFromId(ally);
                 if (al != null) {
                     al.removeAlly(village);
-                    DatabaseManager.getInstance().saveVillage(al);
                 }
+            }
+            for (Resident resident : village.getResidents()) {
+                resident.setVillage(null);
             }
         });
     }

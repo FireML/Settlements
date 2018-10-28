@@ -15,7 +15,8 @@ public class ConfigManager {
     private ConfigAccessor messages;
     private ConfigAccessor levelConf;
     private ConfigAccessor mapConf;
-    private ConfigAccessor perksConf;
+    private ConfigAccessor settlementPerksConf;
+    private ConfigAccessor empirePerksConf;
     private IconRpMapping iconRpMapping;
 
     public ConfigManager() {
@@ -35,9 +36,12 @@ public class ConfigManager {
         mapConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "mapConf.yml");
         mapConf.saveDefaultConfig();
         mapConf.reloadConfig();
-        perksConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "perksConf.yml");
-        perksConf.saveDefaultConfig();
-        perksConf.reloadConfig();
+        settlementPerksConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "settlementPerksConf.yml");
+        settlementPerksConf.saveDefaultConfig();
+        settlementPerksConf.reloadConfig();
+        empirePerksConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "empirePerksConf.yml");
+        empirePerksConf.saveDefaultConfig();
+        empirePerksConf.reloadConfig();
         iconRpMapping = new IconRpMapping(KingdomsPlugin.getInstance());
         if (KingdomsPlugin.getInstance().isRunning()) {
             VillageManager.getInstance().loadPerks();
@@ -66,7 +70,11 @@ public class ConfigManager {
     }
 
     public FileConfiguration getPerksConfig() {
-        return perksConf.getConfig();
+        return settlementPerksConf.getConfig();
+    }
+
+    public FileConfiguration getEmpirePerksConfig() {
+        return empirePerksConf.getConfig();
     }
 
     public FileConfiguration getConfig() {
