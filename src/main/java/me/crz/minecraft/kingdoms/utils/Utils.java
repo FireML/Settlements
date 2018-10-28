@@ -84,8 +84,15 @@ public class Utils {
     }
 
     public static int getOutpostCreationCost() {
-        if (ConfigManager.getInstance().getConfig().isInt("voutpost-creation-cost")) {
+        if (ConfigManager.getInstance().getConfig().isInt("outpost-creation-cost")) {
             return ConfigManager.getInstance().getConfig().getInt("outpost-creation-cost");
+        }
+        return 0;
+    }
+
+    public static int getUpkeepCost() {
+        if (ConfigManager.getInstance().getConfig().isInt("upkeep-cost-per-claim")) {
+            return ConfigManager.getInstance().getConfig().getInt("upkeep-cost-per-claim");
         }
         return 0;
     }

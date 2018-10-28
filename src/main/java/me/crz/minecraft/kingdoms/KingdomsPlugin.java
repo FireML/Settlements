@@ -38,7 +38,6 @@ import me.crz.minecraft.kingdoms.utils.config.Data;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class KingdomsPlugin extends JavaPlugin implements Listener {
-    public static final int UPKEEP = 500;
     private static KingdomsPlugin instance;
     public static Data data;
     private LandPerks lPerks;

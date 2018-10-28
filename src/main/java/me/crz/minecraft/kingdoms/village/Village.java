@@ -116,7 +116,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     }
 
     public int getUpkeep() {
-        return LandManager.getInstance().getClaimedLandSize(this) * KingdomsPlugin.UPKEEP;
+        return LandManager.getInstance().getClaimedLandSize(this) * Utils.getUpkeepCost();
     }
 
     public boolean canPay(int total) {

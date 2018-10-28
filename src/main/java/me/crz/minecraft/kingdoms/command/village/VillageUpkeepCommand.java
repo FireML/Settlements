@@ -1,9 +1,9 @@
 package me.crz.minecraft.kingdoms.command.village;
 
-import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.UtilTime;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 
@@ -36,7 +36,7 @@ public class VillageUpkeepCommand extends VillageSubCommand {
 
         res.tell(getMessage("info"),
                 "cost", String.valueOf(total),
-                "upkeep", String.valueOf(KingdomsPlugin.UPKEEP),
+                "upkeep", String.valueOf(Utils.getUpkeepCost()),
                 "time", village.getLastUpkeep() < System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1L)
                         ? UtilTime.format((double) TimeUnit.MILLISECONDS.toSeconds(tillNoon))
                         : UtilTime.format((double) TimeUnit.MILLISECONDS.toSeconds(village.getLastUpkeep() - System.currentTimeMillis())),
