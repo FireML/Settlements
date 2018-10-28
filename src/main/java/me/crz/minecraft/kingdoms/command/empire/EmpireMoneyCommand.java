@@ -68,18 +68,21 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                 try {
                     long withdrewInit = Long.parseLong(args[0]);
                     if (withdrewInit <= resident.getVillage().getEmpire().getBank()) {
-                        resident.getVillage().getEmpire().setBank(resident.getVillage().getEmpire().getBank() - withdrewInit);
-                        resident.getVillage().setBank(resident.getVillage().getBank() + withdrewInit);
-                        Utils.runAsync(() -> {
-                            DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
-                            DatabaseManager.getInstance().saveVillage(resident.getVillage());
-                            DatabaseManager.getInstance().logWithdraw(resident.getVillage().getEmpire(), resident.getVillage(), resident, withdrewInit);
-                        });
-                        MessageUtils.tellResidents(resident.getVillage().getEmpire().getOnlineResidents(), getMessage("withdrawn"),
-                                "rank", resident.getVillageRank().getTag(resident.getVillage()),
-                                "title", resident.getTitle(),
-                                "name", resident.getName(),
-                                "amount", String.valueOf(withdrewInit));
+                        EconomyResponse r = Base.getEconomy().depositPlayer(resident.getPlayer(), (double) withdrewInit);
+                        if (r.transactionSuccess()) {
+                            resident.getVillage().getEmpire().setBank(resident.getVillage().getEmpire().getBank() - withdrewInit);
+                            Utils.runAsync(() -> {
+                                DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
+                                DatabaseManager.getInstance().logWithdraw(resident.getVillage().getEmpire(), resident.getVillage(), resident, withdrewInit);
+                            });
+                            MessageUtils.tellResidents(resident.getVillage().getEmpire().getOnlineResidents(), getMessage("withdrawn"),
+                                    "rank", resident.getVillageRank().getTag(resident.getVillage()),
+                                    "title", resident.getTitle(),
+                                    "name", resident.getName(),
+                                    "amount", String.valueOf(withdrewInit));
+                        } else {
+                            resident.tell("&cAn error occurred, please tell an admin!");
+                        }
                     } else {
                         resident.tell(getMessage("not-enough-money"), "amount", String.valueOf(withdrewInit));
                     }
