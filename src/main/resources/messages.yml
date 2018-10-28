@@ -315,7 +315,7 @@ gui:
         &e{name}
         &7Used {used} times.
         &bClick to buy again!
-    toggleable: "&bMiddle click to toggle."
+    toggleable: "&bRight click to toggle."
     active: "&aEffect enabled!"
     inactive: "&cEffect disabled!"
     repeatable: "&7Usable {amount} times. {left} times left!"

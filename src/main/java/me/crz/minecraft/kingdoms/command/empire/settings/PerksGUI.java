@@ -153,7 +153,7 @@ public class PerksGUI extends VillageGUI {
 
                 @Override
                 public boolean click(Player p, ClickType type) {
-                    if (type == ClickType.MIDDLE && perk.hasEffects()) {
+                    if (type == ClickType.RIGHT && perk.hasEffects()) {
                         PerkData perkData = resident.getVillage().getEmpire().getPerkData(perk);
                         if (perkData != null) {
                             perkData.toggle();
