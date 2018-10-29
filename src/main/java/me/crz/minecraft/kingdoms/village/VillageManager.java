@@ -231,4 +231,11 @@ public class VillageManager {
     public Collection<VillagePerk> getPerks() {
         return perks.values();
     }
+
+    public void changeName(Village village, String name) {
+        villages.remove(village.getName().toLowerCase());
+        village.setName(name);
+        villages.put(village.getName().toLowerCase(), village);
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
+    }
 }

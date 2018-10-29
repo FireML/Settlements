@@ -39,11 +39,8 @@ public class VillageRenameCommand extends VillageSubCommand {
             res.tell(getError("invalid-characters"), "input", name);
             return true;
         }
-        village.setName(name);
-        Utils.runAsync(() -> {
-            DatabaseManager.getInstance().saveVillage(village);
-            MessageUtils.tellResidents(village.getOnlineResidents(), getMessage("success"), "name", village.getName());
-        });
+        VillageManager.getInstance().changeName(village, name);
+        getMessage("success").tell(village.getOnlineResidents(), "name", village.getName(), "state", village.getState().getTag());
         return true;
     }
 

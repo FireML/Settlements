@@ -39,11 +39,8 @@ public class EmpireRenameCommand extends EmpireSubCommand {
             res.tell(getError("invalid-characters"), "input", name);
             return true;
         }
-        empire.setName(name);
-        Utils.runAsync(() -> {
-            DatabaseManager.getInstance().saveEmpire(empire);
-            MessageUtils.tellResidents(empire.getOnlineResidents(), getMessage("success"), "name", empire.getName());
-        });
+        EmpireManager.getInstance().changeName(empire, name);
+        getMessage("success").tell(empire.getOnlineResidents(), "name", empire.getName());
         return true;
     }
 

@@ -213,4 +213,11 @@ public class EmpireManager {
         }
         return null;
     }
+
+    public void changeName(Empire empire, String name) {
+        empires.remove(empire.getName().toLowerCase());
+        empire.setName(name);
+        empires.put(empire.getName().toLowerCase(), empire);
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(empire));
+    }
 }

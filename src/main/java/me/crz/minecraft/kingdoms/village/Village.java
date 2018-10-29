@@ -274,6 +274,9 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         return name;
     }
 
+    /**
+     * Should not be used directly! Use {@link VillageManager#changeName(Village, String)} to ensure data consistency!
+     */
     public void setName(String name) {
         this.name = name;
     }
