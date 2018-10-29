@@ -13,12 +13,14 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -222,6 +224,11 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
 
     public void setBonusClaims(int bonusClaims) {
         this.bonusClaims = bonusClaims;
+    }
+
+    @Override
+    public List<Resident> getOnlineResidents() {
+        return getPlayer() == null ? Collections.EMPTY_LIST : Collections.singletonList(this);
     }
 
     public long getVillageJoin() {

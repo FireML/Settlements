@@ -600,7 +600,7 @@ command:
     list:
       description: "List settlements"
       head: "&7------- &c{access}Settlements [{page}]&7 -------"
-      entry: "&8\\[&9*&8] [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\\n&8Size: &f{residents} players\\n&f{description})"
+      entry: "&8\\[&9*&8] [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{residents} players\n&f{description})"
     map:
       head: "&8---------------- &eSettlement Map &r&8----------------"
       explanation: |-
@@ -970,7 +970,7 @@ command:
     list:
       description: "List empire"
       head: "&7------- &cEmpires [{page}]&7 -------"
-      entry: "&8\\[&9*&8] [&r&e{name}](&8Capital: &f{capitalstate}{capital}\\n&8Leader: &f{chieftitle} {chief}\\n&8Size: &f{members} members\\n&f{description})"
+      entry: "&8\\[&9*&8] [&r&e{name}](&8Capital: &f{capitalstate}{capital}\n&8Leader: &f{chieftitle} {chief}\n&8Size: &f{members} members\n&f{description})"
     materials:
       max-level-reached: "&c&lYour Empire already has the max level!"
       head: "&8&l--------&r&c&lRequired Materials&r&8&l--------"
@@ -985,7 +985,7 @@ command:
       description: Renames the current empire to something else
     memberlist:
       head: "&8&l--------&r&c&lMembers&r&8&l--------"
-      entry: "&8\\[&9*&8] [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\\n&8Size: &f{residents} players\\n&f{description})"
+      entry: "&8\\[&9*&8] [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{residents} players\n&f{description})"
     perks:
       unlock:
         success: "&6&l{perk} &7&lhas been unlocked!"
