@@ -419,6 +419,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
     @Override
     public void unclaimLand(OwnedLand... lands) {
         Utils.catchSync();
+        if (lands.length == 0) {
+            return;
+        }
         try (Connection conn = ds.getConnection();
             PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE world = ? AND x = ? AND z = ?;")) {
             for (OwnedLand land : lands) {
