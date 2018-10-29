@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.land;
 
+import com.google.common.collect.ImmutableMap;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.command.empire.EmpireMode;
 import me.crz.minecraft.kingdoms.command.village.PlotMode;
@@ -18,6 +19,7 @@ import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -169,7 +171,10 @@ public class LandFlags extends Base implements LandFlagBase {
         boolean sameVillage = originalLand != null && destinationLand != null && originalLand.getOwnerVillage().equals(destinationLand.getOwnerVillage());
 
         if (!sameVillage && originalLand != null) {
-            MessageUtils.tell(player, Message.get(originalLand.getOwnerVillage().getState().getKey() + ".leave-message"));
+            Message.get(originalLand.getOwnerVillage().getState().getKey() + ".leave-message").tell(player,
+                    "name", originalLand.getOwnerVillage().getName(),
+                    "state", originalLand.getOwnerVillage().getState().getTag()
+            );
             if (originalLand.getOwnerVillage().equals(playerVillage) && originalLand.getOwnerVillage().isBuff()) {
                 Base.getLandPerks().removeEffects(player, originalLand, true);
             }
@@ -178,9 +183,19 @@ public class LandFlags extends Base implements LandFlagBase {
         if (destinationLand != null) {
             if (!sameVillage) {
                 if (destinationLand.getOwnerVillage().isPvp()) {
-                    MessageUtils.tell(player, Message.get(destinationLand.getOwnerVillage().getState().getKey() + ".enter-message").getReplacedComponents("pvp", Message.get("pvp-is-enabled").getComponents()));
+                    MessageUtils.tell(player, Message.get(destinationLand.getOwnerVillage().getState().getKey() + ".enter-message")
+                            .getReplacedComponents(ImmutableMap.of(
+                                    "pvp", Message.get("pvp-is-enabled").getComponents(),
+                                    "name", TextComponent.fromLegacyText(destinationLand.getOwnerVillage().getName()),
+                                    "state", TextComponent.fromLegacyText(destinationLand.getOwnerVillage().getState().getTag())
+                            ))
+                    );
                 } else {
-                    MessageUtils.tell(player, Message.get(destinationLand.getOwnerVillage().getState().getKey() + ".enter-message").getReplacedComponents("pvp", ""));
+                    Message.get(destinationLand.getOwnerVillage().getState().getKey() + ".enter-message").tell(player,
+                            "pvp", "",
+                            "name", destinationLand.getOwnerVillage().getName(),
+                            "state", destinationLand.getOwnerVillage().getState().getTag()
+                    );
                 }
                 if (destinationLand.getOwnerVillage().equals(playerVillage) && destinationLand.getOwnerVillage().isBuff()) {
                     Base.getLandPerks().giveEffects(player, destinationLand, true);
@@ -190,7 +205,10 @@ public class LandFlags extends Base implements LandFlagBase {
                 TitleBuilder tb = new TitleBuilder();
                 StringBuilder actionBar = new StringBuilder();
                 if (destinationLand.isPlot()) {
-                    actionBar.append(Message.get("enter-plot").getReplacedText("owner", ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName()));
+                    actionBar.append(Message.get("enter-plot").getReplacedText(
+                            "owner", ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName(),
+                            "description", destinationLand.getDescription()
+                    ));
                 }
                 if (destinationLand.isForSale() && (destinationLand.getOwnerVillage().equals(playerVillage) || destinationLand.isEmbassy())) {
                     actionBar.append(Message.get("plot-is-for-sale").getText());
