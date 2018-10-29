@@ -14,6 +14,9 @@ public class EmpireTaxCommand extends EmpireSubCommand {
         registerCommand(new EmpireSubCommand(this, "set <amount>", EmpireRank.LEADER) {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
+                if (args.length == 0) {
+                    return false;
+                }
                 try {
                     long amount = Long.parseLong(args[0]);
                     resident.getVillage().getEmpire().setTax(amount);

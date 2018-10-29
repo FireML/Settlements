@@ -14,6 +14,9 @@ public class VillageTaxCommand extends VillageSubCommand {
         registerCommand(new VillageSubCommand(this, "set <amount>", VillageRank.CHIEF) {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
+                if (args.length == 0) {
+                    return false;
+                }
                 try {
                     long amount = Long.parseLong(args[0]);
                     resident.getVillage().setTax(amount);
