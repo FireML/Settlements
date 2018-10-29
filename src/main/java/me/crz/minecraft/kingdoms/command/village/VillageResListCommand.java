@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class VillageResListCommand extends VillageSubCommand {
     public VillageResListCommand(SubCommand parent) {
-        super(parent, "reslist", VillageRank.RESIDENT, "roster");
+        super(parent, "reslist", VillageRank.RESIDENT, "roster", "members", "memberlist");
         setPermission("kingdoms.user");
     }
 
@@ -31,17 +31,20 @@ public class VillageResListCommand extends VillageSubCommand {
                 rankMap.put(resident.getVillageRank(), resident);
             }
             for (VillageRank rank : VillageRank.values()) {
-                sender.tell(getMessage("rank"), "residents",
-                        rankMap.get(rank).stream()
-                                .sorted(Comparator.comparing(Resident::getVillageJoin))
-                                .map(res -> MessageUtils.replacePlaceholders(entry,
-                                        "online", res.getPlayer() != null ? online : offline,
-                                        "name", res.getName(),
-                                        "rank", res.getVillageRank().getTag(res.getVillage()),
-                                        "title", res.getTitle()
-                                ))
-                                .collect(Collectors.joining(separator))
-                );
+                if (rankMap.containsKey(rank)) {
+                    sender.tell(getMessage("rank"),
+                            "rank", rank.getTag(sender.getVillage()),
+                            "residents", rankMap.get(rank).stream()
+                                    .sorted(Comparator.comparing(Resident::getVillageJoin))
+                                    .map(res -> MessageUtils.replacePlaceholders(entry,
+                                            "online", res.getPlayer() != null ? online : offline,
+                                            "name", res.getName(),
+                                            "rank", res.getVillageRank().getTag(res.getVillage()),
+                                            "title", res.getTitle()
+                                    ))
+                                    .collect(Collectors.joining(separator))
+                    );
+                }
             }
         });
         return true;
