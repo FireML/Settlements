@@ -5,7 +5,6 @@ import com.google.common.cache.CacheBuilder;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 
@@ -24,12 +23,13 @@ public class VillageDisbandCommand extends VillageSubCommand {
     public boolean run(Resident res, String base, String alias, String... args) {
         if (confirm.getIfPresent(res.getUUID()) == null || args.length == 0 || !args[0].equalsIgnoreCase("confirm")) {
             confirm.put(res.getUUID(), true);
-            res.tell(getMessage("confirm"), "command", base + " " + alias + " confirm");
+            getMessage("confirm").tell(res, "command", base + " " + alias + " confirm");
         } else {
-            MessageUtils.tellResidents(res.getVillage().getOnlineResidents(), getMessage("success"),
+            getMessage("success").tell(res.getVillage().getOnlineResidents(),
                     "rank", VillageRank.CHIEF.getTag(res.getVillage()),
                     "title", res.getTitle(),
                     "state", res.getVillage().getState().getTag(),
+                    "chief", res.getVillage().getName(),
                     "name", res.getVillage().getName()
             );
             VillageManager.getInstance().deleteVillage(res.getVillage());

@@ -540,7 +540,7 @@ command:
       description: Set the description of a settlement
     disband:
       confirm: "&c&lPlease do /{command} to confirm the &r&e&ldisbanding&r&c&l of your settlement."
-      success: "&e&lALERT &r&7Your {chief} has deleted your {state}."
+      success: "&e&lALERT &r&7Your {title} has deleted your {state}."
       description: Disbands the current settlement
     here:
       general: |-
@@ -919,7 +919,7 @@ command:
       description: Set the description of an empire
     disband:
       confirm: "&c&lPlease do /{command} to confirm the &r&e&ldisbanding&r&c&l of your empire."
-      success: "&e&lALERT &r&7Your {chief} has deleted your Empire."
+      success: "&e&lALERT &r&7Your {chieftitle} {chief} has deleted your Empire."
       description: Disbands the current empire
     here:
       general: |-

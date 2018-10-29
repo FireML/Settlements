@@ -7,7 +7,6 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 import java.util.UUID;
@@ -25,13 +24,14 @@ public class EmpireDisbandCommand extends EmpireSubCommand {
     public boolean run(Resident res, String base, String alias, String... args) {
         if (confirm.getIfPresent(res.getUUID()) == null || args.length == 0 || !args[0].equalsIgnoreCase("confirm")) {
             confirm.put(res.getUUID(), true);
-            res.tell(getMessage("confirm"), "command", base + " " + alias + " confirm");
+            getMessage("confirm").tell(res, "command", base + " " + alias + " confirm");
         } else {
-            MessageUtils.tellResidents(res.getVillage().getOnlineResidents(), getMessage("success"),
-                    "rank", VillageRank.CHIEF.getTag(res.getVillage()),
-                    "title", res.getTitle(),
-                    "state", res.getVillage().getState().getTag(),
-                    "name", res.getVillage().getName()
+            getMessage("success").tell(res.getVillage().getEmpire().getOnlineResidents(),
+                    "chief", res.getName(),
+                    "chiefrank", VillageRank.CHIEF.getTag(res.getVillage()),
+                    "chieftitle", res.getTitle(),
+                    "capital", res.getVillage().getName(),
+                    "capitalstate", res.getVillage().getState().getTag()
             );
             EmpireManager.getInstance().deleteEmpire(res.getVillage().getEmpire());
         }
