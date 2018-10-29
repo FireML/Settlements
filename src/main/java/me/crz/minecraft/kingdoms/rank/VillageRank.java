@@ -64,4 +64,13 @@ public enum VillageRank implements Rankable, ConfigKey {
         }
         return titles;
     }
+
+    public String getTitle(Village village, String name) {
+        for (String title : getTitles(village)) {
+            if (title.equalsIgnoreCase(name)) {
+                return title;
+            }
+        }
+        return null;
+    }
 }

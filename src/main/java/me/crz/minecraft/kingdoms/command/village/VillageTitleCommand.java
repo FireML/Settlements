@@ -22,8 +22,8 @@ public class VillageTitleCommand extends VillageSubCommand {
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
-        Collection<String> titles = res.getVillageRank().getTitles(res.getVillage());
         if (args.length < 1) {
+            Collection<String> titles = res.getVillageRank().getTitles(res.getVillage());
             res.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base));
             res.tell(getUsage(base));
             for (String title : titles) {
@@ -34,10 +34,11 @@ public class VillageTitleCommand extends VillageSubCommand {
             }
             return true;
         }
-        if (!titles.contains(args[0])) {
+        String title = res.getVillageRank().getTitle(res.getVillage(), args[0]);
+        if (title == null) {
             getError("invalid-title").tell(res, "title", args[0]);
         } else {
-            res.setTitle(args[0]);
+            res.setTitle(title);
             Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
             Message message = getMessage("success." + res.getVillage().getState().getKey() + "." + res.getVillageRank().getKey());
             if (!message.exists()) {
