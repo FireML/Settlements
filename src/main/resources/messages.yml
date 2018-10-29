@@ -912,6 +912,23 @@ command:
       confirm: "&c&lPlease do /{command} to confirm the &r&e&ldisbanding&r&c&l of your empire."
       success: "&e&lALERT &r&7Your {chief} has deleted your Empire."
       description: Disbands the current empire
+    here:
+      general: |-
+        &8--------&c&l{name}&r&8--------
+        &a&lDescription &r&7{description}
+        &a&lSymbol &r&7{symbol}
+        &6&lLevel &r&7{level}
+        &6&lAccess &r&7{access}
+        &6&lBank &r&7{bank}
+        &6&lBonusclaims &r&7{bonus}
+        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &9&lPerks: &r&7{perks}
+        &6&lCapital &r&7{capitalstate}{capital}
+        &e&lLeader &r&7{chieftitle} {chief}
+        &e&lMembers: &r&7{members}
+      bonus-claims: " Bonus: {amount}"
+      not-in-empire: "&cYou are not currently in an empire world!"
+      description: Show in which empire world you are
     history:
       head: "&7------- &cLog History [{page}]&7 -------"
       entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {type}](&eAt {timestamp})"

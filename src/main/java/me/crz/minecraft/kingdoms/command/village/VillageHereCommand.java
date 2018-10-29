@@ -1,7 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -18,10 +17,10 @@ public class VillageHereCommand extends SubCommand {
     public boolean run(Player player, String base, String alias, String... args) {
         Village village = VillageManager.getInstance().getVillageAt(player.getLocation());
         if (village == null) {
-            MessageUtils.tell(player, getError("no-village"));
-            return false;
+            getError("no-village").tell(player);
+            return true;
         }
-        Utils.runAsync(() -> MessageUtils.tell(player, getMessage("general"), village.getReplacements(VillageHereCommand.this)));
+        Utils.runAsync(() -> getMessage("general").tell(player, village.getReplacements(VillageHereCommand.this)));
         return true;
     }
 }

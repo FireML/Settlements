@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.command.empire.EmpireCreateCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireDepositCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireDescriptionCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireDisbandCommand;
+import me.crz.minecraft.kingdoms.command.empire.EmpireHereCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireHistoryCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireHomeCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireInviteCommand;
@@ -40,6 +41,7 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpireDescriptionCommand(this));
         registerCommand(new EmpireDisbandCommand(this));
         registerCommand(new EmpireHistoryCommand(this, EmpireRank.LEADER, LogType.ALL));
+        registerCommand(new EmpireHereCommand(this));
         registerCommand(new EmpireHomeCommand(this));
         registerCommand(new EmpireInviteCommand(this));
         registerCommand(new EmpireJoinCommand(this));
