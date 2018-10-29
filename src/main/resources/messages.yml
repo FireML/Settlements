@@ -69,11 +69,6 @@ scoreboard:
 
         &3&lKills&3: &e{kills}
         &3&lDeaths&3: &e{deaths}
-  tab:
-    header: "&b&lServer&f&lName"
-    footer: |-
-      &fThere are &6{amount}&f Players online!
-      &fWorld: &6{world}
 levels:
   upgrade: "&d&lLEVEL UP &r&7Your {state} is now level &d{level}"
   upgrade-settlement: "&a&lSUCCESS &r&7The settlement has been upgraded to &e{state}!"
