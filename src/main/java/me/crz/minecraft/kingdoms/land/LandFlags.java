@@ -116,7 +116,7 @@ public class LandFlags extends Base implements LandFlagBase {
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent e) {
         for (Block block : e.blockList()) {
-            if (isAllowed(block.getLocation(), PlotMode.explosions) && isAllowed(block.getLocation(), EmpireMode.explosions)) {
+            if (block == null || (isAllowed(block.getLocation(), PlotMode.explosions) && isAllowed(block.getLocation(), EmpireMode.explosions))) {
                 continue;
             }
             e.setCancelled(true);
@@ -127,7 +127,7 @@ public class LandFlags extends Base implements LandFlagBase {
     @EventHandler
     public void onEntityExplode(BlockExplodeEvent e) {
         for (Block block : e.blockList()) {
-            if (isAllowed(block.getLocation(), PlotMode.explosions) && isAllowed(block.getLocation(), EmpireMode.explosions)) {
+            if (block == null || (isAllowed(block.getLocation(), PlotMode.explosions) && isAllowed(block.getLocation(), EmpireMode.explosions))) {
                 continue;
             }
             e.setCancelled(true);
