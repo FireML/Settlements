@@ -87,7 +87,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         if (data.load(this.getDataFolder())) {
             ConfigManager.getInstance();
             kingdomsWorld = getConfig().getString("kingdoms-world");
-            empiresWorldPrefix = getConfig().getString("empires-world-prefix");
+            empiresWorldPrefix = getConfig().getString("empires-world.prefix");
             try {
                 DatabaseManager.getInstance().connect();
             } catch (Exception e) {
