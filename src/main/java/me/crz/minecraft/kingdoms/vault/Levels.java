@@ -1,13 +1,16 @@
 package me.crz.minecraft.kingdoms.vault;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.village.VillageState;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.Material;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class Levels {
     public static final int VILLAGE_TO_KINGDOM_LEVEL = 5;
@@ -20,22 +23,28 @@ public class Levels {
     }
     
     public static Map<String, Long> getLevelRequirements(VillageState state, int level) {
-        return LEVEL_REQUIREMENTS.computeIfAbsent(state.name() + "_" + level, key -> getLevelRequirements(state.name().toLowerCase() + ".level-" + level + ".requirements"));
+        return LEVEL_REQUIREMENTS.computeIfAbsent(state.name() + "_" + level, key -> getLevelRequirements(state.name().toLowerCase() + ".level-" + level));
     }
 
     public static Map<String, Long> getEmpireLevelRequirements(int level) {
-        return LEVEL_REQUIREMENTS.computeIfAbsent("empire_" + level, key -> getLevelRequirements("empire.level-" + level + ".requirements"));
+        return LEVEL_REQUIREMENTS.computeIfAbsent("empire_" + level, key -> getLevelRequirements("empire.level-" + level));
     }
 
     private static Map<String, Long> getLevelRequirements(String levelPath) {
         Map<String, Long> levelRequirements = new HashMap<>();
         FileConfiguration config = ConfigManager.getInstance().getLevelConfig();
-        for (String key : config.getConfigurationSection(levelPath).getKeys(false)) {
+        ConfigurationSection levelSection = config.getConfigurationSection(levelPath + ".requirements");
+        for (String key : levelSection.getKeys(false)) {
+            long amount = levelSection.getLong(key);
             if (key.equalsIgnoreCase("CASH")) {
-                levelRequirements.put("CASH", config.getLong(levelPath + "." + key));
+                levelRequirements.put("CASH", amount);
             } else {
-                Material material = Material.getMaterial(key);
-                levelRequirements.put(material.name(), config.getLong(levelPath + "." + key));
+                Material material = Material.getMaterial(key.toUpperCase());
+                if (material != null) {
+                    levelRequirements.put(material.name(), amount);
+                } else {
+                    KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, key + " is not a valid requirement (either cash or a material name) for " + levelPath);
+                }
             }
         }
         return levelRequirements;
