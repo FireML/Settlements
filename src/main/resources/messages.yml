@@ -535,7 +535,7 @@ command:
       success: "&a&lSUCCESS &r&7created a new settlement."
       broadcast: "&e{player} has made a settlement called {name}!"
       description: Create a new village.
-    description:
+    setdescription:
       success: "&aSet description of {state} to &r{description}"
       description: Set the description of a settlement
     disband:
@@ -914,9 +914,9 @@ command:
       success: "&a&lSUCCESS &r&7created a new empire."
       broadcast: "&e{player} has made a empire called {name}!"
       description: Create a new empire.
-    description:
+    setdescription:
       success: "&aSet description of your empire to &r{description}"
-      description: Set the description of a empire
+      description: Set the description of an empire
     disband:
       confirm: "&c&lPlease do /{command} to confirm the &r&e&ldisbanding&r&c&l of your empire."
       success: "&e&lALERT &r&7Your {chief} has deleted your Empire."

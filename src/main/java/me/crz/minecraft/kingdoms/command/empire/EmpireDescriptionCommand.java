@@ -9,7 +9,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 
 public class EmpireDescriptionCommand extends EmpireSubCommand {
     public EmpireDescriptionCommand(SubCommand parent) {
-        super(parent, "description <text>", EmpireRank.SENATOR, "board");
+        super(parent, "setdescription <text>", EmpireRank.SENATOR, "description", "setboard", "board");
     }
 
     @Override
