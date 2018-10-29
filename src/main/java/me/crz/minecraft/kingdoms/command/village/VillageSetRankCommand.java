@@ -4,7 +4,6 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -20,16 +19,16 @@ public class VillageSetRankCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length <= 1) {
-            res.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base));
+            getMessage("usage.head").tell(res, "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base));
             res.tell(getUsage(base));
             for (VillageRank rank : VillageRank.values()) {
-                res.tell(getMessage("usage.entry"),
+                getMessage("usage.entry").tell(res,
                         "usage", "/" + base + " " + alias + " " + rank.getTag(res.getVillage()),
                         "description", getText("rank." + rank.getKey())
                 );
             }
             if (getMessage("usage.footer").exists()) {
-                res.tell(getMessage("usage.footer"), "name", name(), "command", "/" + base + " " + alias);
+                getMessage("usage.footer").tell(res, "name", name(), "command", "/" + base + " " + alias);
             }
             return true;
         }
@@ -38,27 +37,27 @@ public class VillageSetRankCommand extends VillageSubCommand {
         Utils.runAsync(() -> {
             Resident tres = ResidentManager.getInstance().getResident(args[0]);
             if (tres == null) {
-                MessageUtils.tell(player, getError("player-not-found"), "name", args[0]);
+                getError("player-not-found").tell(player, "name", args[0]);
                 return;
             } else if (!tres.getVillage().equals(village)) {
-                MessageUtils.tell(player, getError("not-in-current"), "state", village.getState().getTag());
+                getError("not-in-current").tell(player, "state", village.getState().getTag());
                 return;
             }
 
             VillageRank rank = VillageRank.get(args[1]);
 
             if (rank == null) {
-                MessageUtils.tell(player, getError("invalid-rank"), "rank", args[1]);
-            } else if (rank.equals(VillageRank.CHIEF)) {
-                MessageUtils.tell(player, getError("cant-set-chief"), "base", base, "state", village.getState().getTag());
+                getError("invalid-rank").tell(player, "rank", args[1]);
+            } else if (rank == VillageRank.CHIEF) {
+                getError("cant-set-chief").tell(player, "base", base, "state", village.getState().getTag());
             } else if (tres.getVillageRank().atLeast(res.getVillageRank())) {
-                MessageUtils.tell(player, getMessage("cant-set-higher"), "rank", res.getVillageRank().getTag(village));
-            } else  if (res.getVillageRank().ordinal() <= rank.ordinal()) {
-                MessageUtils.tell(player, getError("rank-required"), "rank", VillageRank.values()[rank.ordinal() + 1].getTag(village));
+                getMessage("cant-set-higher").tell(player, "rank", res.getVillageRank().getTag(village));
+            } else  if (rank.atLeast(res.getVillageRank())) {
+                getMessage("rank-required").tell(player, "rank", VillageRank.values()[rank.ordinal() - 1].getTag(village));
             } else {
                 tres.setVillageRank(rank);
                 DatabaseManager.getInstance().saveResident(tres);
-                MessageUtils.tellResidents(village.getOnlineResidents(), getMessage("success"),
+                getMessage("success").tell(village.getOnlineResidents(),
                         "rank", res.getVillageRank().getTag(village),
                         "setter", player.getName(),
                         "target", tres.getName());
