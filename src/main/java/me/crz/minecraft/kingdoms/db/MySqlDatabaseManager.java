@@ -71,7 +71,6 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "name VARCHAR(255) NOT NULL, INDEX (name), UNIQUE (name), "
                     + "capitalId INTEGER NOT NULL,"
                     + "FOREIGN KEY (capitalId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE RESTRICT,"
-                    + "description TEXT, "
                     + "level INTEGER NOT NULL,"
                     + "description TEXT NOT NULL,"
                     + "access VARCHAR(255) NOT NULL,"
@@ -95,7 +94,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "empire_vaults ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "empireId INTEGER,"
+                    + "empireId INTEGER, INDEX(empireId),"
                     + "FOREIGN KEY (empireId) REFERENCES " + tablePrefix + "empires(id) ON DELETE CASCADE,"
                     + "content VARCHAR(255) NOT NULL,"
                     + "amount BIGINT,"
@@ -104,7 +103,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "empire_perks ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "empireId INTEGER, INDEX(settlementId),"
+                    + "empireId INTEGER, INDEX(empireId),"
                     + "FOREIGN KEY (empireId) REFERENCES " + tablePrefix + "empires(id) ON DELETE CASCADE,"
                     + "perk VARCHAR(255) NOT NULL,"
                     + "times INTEGER NOT NULL,"
@@ -158,7 +157,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_vaults ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "settlementId INTEGER,"
+                    + "settlementId INTEGER, INDEX(settlementId),"
                     + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
                     + "content VARCHAR(255) NOT NULL,"
                     + "amount BIGINT,"
