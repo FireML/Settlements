@@ -3,16 +3,11 @@ package me.crz.minecraft.kingdoms.teleporter;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.VillageAccess;
-import me.crz.minecraft.kingdoms.village.VillageGUI;
+import me.crz.minecraft.kingdoms.village.KingdomsGUI;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.Bukkit;
 
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import me.crz.minecraft.kingdoms.cinventory.CInventoryManager;
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -27,9 +22,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import me.crz.minecraft.kingdoms.Base;
-
-public class PrivateTeleportersGUI extends VillageGUI {
+public class PrivateTeleportersGUI extends KingdomsGUI {
     private Set<IdObject> allies = new LinkedHashSet<>();
     private int checks = 0;
     private List<ClickableItem> items = new ArrayList<>();
@@ -54,7 +47,6 @@ public class PrivateTeleportersGUI extends VillageGUI {
                 ci.addItem(item);
             }
         }
-        CInventoryManager.getInstance().addCInvetory(ci);
         ci.build(p);
     }
 

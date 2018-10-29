@@ -8,9 +8,7 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.VillageGUI;
-import me.crz.minecraft.kingdoms.village.VillageManager;
+import me.crz.minecraft.kingdoms.village.KingdomsGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EmpireVaultListener extends VillageGUI implements Listener {
+public class EmpireVaultListener extends KingdomsGUI implements Listener {
     public EmpireVaultListener() {
         super("empirevault");
     }

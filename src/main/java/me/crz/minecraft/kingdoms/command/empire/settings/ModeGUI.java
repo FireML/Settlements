@@ -1,7 +1,6 @@
 package me.crz.minecraft.kingdoms.command.empire.settings;
 
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
-import me.crz.minecraft.kingdoms.cinventory.CInventoryManager;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
@@ -13,7 +12,7 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.VillageGUI;
+import me.crz.minecraft.kingdoms.village.KingdomsGUI;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,7 +20,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
 
-public class ModeGUI extends VillageGUI {
+public class ModeGUI extends KingdomsGUI {
     private static ModeGUI instance;
     public CInventory gui;
 
@@ -29,7 +28,7 @@ public class ModeGUI extends VillageGUI {
         return b ? "Yes" : "No";
     }
 
-    public ModeGUI() {
+    private ModeGUI() {
         super("empire-mode");
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
 
@@ -40,11 +39,11 @@ public class ModeGUI extends VillageGUI {
                     if (village != null && village.hasEmpire()) {
                         String state = yesOrNo(m.get(village.getEmpire()));
                         return m.getItem().setName(getMessage("entry.title").getReplacedText(
-                                "flag", m.getTag(),
-                                "state", state
+                                "mode", m.getTag(),
+                                "value", state
                         )).setLore(getMessage("entry.lore").getReplacedTextList(
-                                "flag", m.getTag(),
-                                "state", state
+                                "mode", m.getTag(),
+                                "value", state
                         )).build();
                     }
                     return null;
@@ -56,8 +55,8 @@ public class ModeGUI extends VillageGUI {
                         boolean state = m.get(res.getVillage().getEmpire());
                         m.set(state, res.getVillage().getEmpire());
                         MessageUtils.tell(p, Message.get("command.empire.mode.success"),
-                                "flag", m.getTag(),
-                                "state", yesOrNo(!state)
+                                "mode", m.getTag(),
+                                "value", yesOrNo(!state)
                         );
                         gui.build(p);
                         return true;
@@ -76,7 +75,6 @@ public class ModeGUI extends VillageGUI {
                 return true;
             }
         });
-        CInventoryManager.getInstance().addCInvetory(gui);
     }
 
     public void open(final Player p) {

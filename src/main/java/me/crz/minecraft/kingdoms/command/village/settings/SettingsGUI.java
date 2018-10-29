@@ -1,31 +1,29 @@
 package me.crz.minecraft.kingdoms.command.village.settings;
 
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
-import me.crz.minecraft.kingdoms.cinventory.CInventoryManager;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.landflags.UseGui;
-import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.VillageGUI;
+import me.crz.minecraft.kingdoms.village.KingdomsGUI;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
-public class SettingsGUI extends VillageGUI {
+public class SettingsGUI extends KingdomsGUI {
     private static SettingsGUI instance;
     public CInventory gui;
 
-    public SettingsGUI() {
+    private SettingsGUI() {
         super("settings");
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
         gui.addItem(new ClickableItem() {
             public ItemStack getItem(Player p) {
-                return new CItem(Material.GRASS).setName(getText("access")).build();
+                return new CItem(Material.IRON_DOOR).setName(getText("access")).build();
             }
 
             public boolean click(Player p, ClickType clickType) {
@@ -35,7 +33,17 @@ public class SettingsGUI extends VillageGUI {
         });
         gui.addItem(new ClickableItem() {
             public ItemStack getItem(Player p) {
-                return new CItem(Material.GRASS).setName(getText("use")).build();
+                return new CItem(Material.DIAMOND_PICKAXE).setName(getText("build")).build();
+            }
+
+            public boolean click(Player p, ClickType clickType) {
+                BuildGui.getInstance().open(p);
+                return true;
+            }
+        });
+        gui.addItem(new ClickableItem() {
+            public ItemStack getItem(Player p) {
+                return new CItem(Material.LEVER).setName(getText("use")).build();
             }
 
             public boolean click(Player p, ClickType clickType) {
@@ -78,11 +86,10 @@ public class SettingsGUI extends VillageGUI {
                 return false;
             }
         });
-        CInventoryManager.getInstance().addCInvetory(gui);
     }
 
     public void open(Player p) {
-        Utils.runAsync(() -> gui.build(p));
+        gui.build(p);
     }
 
     public static SettingsGUI getInstance() {

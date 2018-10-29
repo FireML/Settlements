@@ -2,10 +2,10 @@ package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 
-public abstract class VillageGUI implements ConfigMessages {
+public abstract class KingdomsGUI implements ConfigMessages {
     private final String name;
 
-    public VillageGUI(String name) {
+    public KingdomsGUI(String name) {
         this.name = name;
     }
 

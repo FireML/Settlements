@@ -13,7 +13,7 @@ import java.util.Map;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.VillageGUI;
+import me.crz.minecraft.kingdoms.village.KingdomsGUI;
 import org.bukkit.Material;
 
 import java.util.HashMap;
@@ -27,7 +27,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.Listener;
 
-public class VaultListener extends VillageGUI implements Listener {
+public class VaultListener extends KingdomsGUI implements Listener {
     public VaultListener() {
         super("vault");
     }

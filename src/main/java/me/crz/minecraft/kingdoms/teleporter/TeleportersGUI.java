@@ -2,7 +2,6 @@ package me.crz.minecraft.kingdoms.teleporter;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
-import me.crz.minecraft.kingdoms.cinventory.CInventoryManager;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -10,7 +9,7 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.VillageGUI;
+import me.crz.minecraft.kingdoms.village.KingdomsGUI;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import org.bukkit.Bukkit;
@@ -20,7 +19,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class TeleportersGUI extends VillageGUI {
+public class TeleportersGUI extends KingdomsGUI {
     private CInventory ci;
     private ItemStack locked;
 
@@ -122,7 +121,6 @@ public class TeleportersGUI extends VillageGUI {
                 return false;
             }
         });
-        CInventoryManager.getInstance().addCInvetory(ci);
     }
 
     public void build(Player p) {

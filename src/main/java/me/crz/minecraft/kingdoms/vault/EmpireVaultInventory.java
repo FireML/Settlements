@@ -1,11 +1,11 @@
 package me.crz.minecraft.kingdoms.vault;
 
-import me.crz.minecraft.kingdoms.village.VillageGUI;
+import me.crz.minecraft.kingdoms.village.KingdomsGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-public class EmpireVaultInventory extends VillageGUI {
+public class EmpireVaultInventory extends KingdomsGUI {
     private final Player player;
     private Inventory inv;
     private final int inventorySize = 54;

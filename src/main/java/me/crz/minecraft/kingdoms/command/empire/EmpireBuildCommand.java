@@ -2,8 +2,8 @@ package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.command.EmpireSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.command.empire.settings.BuildGui;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.landflags.BuildGui;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.empire.BuildState;
@@ -18,7 +18,7 @@ public class EmpireBuildCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length < 1) {
-            new BuildGui().open(res.getPlayer());
+            BuildGui.getInstance().open(res.getPlayer());
             return true;
         }
 

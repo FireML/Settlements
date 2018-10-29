@@ -2,8 +2,7 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.landflags.BuildGui;
-import me.crz.minecraft.kingdoms.landflags.PlotBuildState;
+import me.crz.minecraft.kingdoms.command.village.settings.BuildGui;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -20,7 +19,7 @@ public class VillageBuildCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length < 1) {
-            new BuildGui().open(res.getPlayer());
+            BuildGui.getInstance().open(res.getPlayer());
             return true;
         }
 

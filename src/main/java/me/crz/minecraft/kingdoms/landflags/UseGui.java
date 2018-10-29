@@ -1,7 +1,6 @@
 package me.crz.minecraft.kingdoms.landflags;
 
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
-import me.crz.minecraft.kingdoms.cinventory.CInventoryManager;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
@@ -15,7 +14,7 @@ import me.crz.minecraft.kingdoms.village.BuildState;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.VillageGUI;
+import me.crz.minecraft.kingdoms.village.KingdomsGUI;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -24,7 +23,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.stream.Collectors;
 
-public class UseGui extends VillageGUI {
+public class UseGui extends KingdomsGUI {
     private static UseGui instance;
     private CInventory gui;
 
@@ -114,7 +113,6 @@ public class UseGui extends VillageGUI {
                 return true;
             }
         });
-        CInventoryManager.getInstance().addCInvetory(gui);
     }
 
     public void open(Player p) {

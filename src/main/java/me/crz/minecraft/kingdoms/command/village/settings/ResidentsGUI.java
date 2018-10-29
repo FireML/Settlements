@@ -4,9 +4,8 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
 
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.VillageGUI;
+import me.crz.minecraft.kingdoms.village.KingdomsGUI;
 import me.crz.minecraft.kingdoms.village.VillageManager;
-import me.crz.minecraft.kingdoms.cinventory.CInventoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.ClickType;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
@@ -19,7 +18,7 @@ import net.md_5.bungee.api.ChatColor;
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import org.bukkit.inventory.meta.SkullMeta;
 
-public class ResidentsGUI extends VillageGUI {
+public class ResidentsGUI extends KingdomsGUI {
 
     public static String cfc(String string) {
         if (string == null || string.length() == 0) {
@@ -39,7 +38,6 @@ public class ResidentsGUI extends VillageGUI {
     public void open(Player p) {
         Utils.runAsync(() -> {
             CInventory gui = new CInventory(getText("title"), InventorySize.SIX) {};
-            CInventoryManager.getInstance().addCInvetory(gui);
             gui.addItem(53, new ClickableItem() {
                 public ItemStack getItem(Player p) {
                     return new CItem(Material.BARRIER).setName(getText("back")).build();

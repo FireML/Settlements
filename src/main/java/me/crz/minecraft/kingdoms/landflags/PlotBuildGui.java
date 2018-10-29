@@ -1,7 +1,6 @@
 package me.crz.minecraft.kingdoms.landflags;
 
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
-import me.crz.minecraft.kingdoms.cinventory.CInventoryManager;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
@@ -10,14 +9,14 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.VillageGUI;
+import me.crz.minecraft.kingdoms.village.KingdomsGUI;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.stream.Collectors;
 
-public class PlotBuildGui extends VillageGUI {
+public class PlotBuildGui extends KingdomsGUI {
     private static PlotBuildGui instance;
     private CInventory gui;
 
@@ -61,7 +60,6 @@ public class PlotBuildGui extends VillageGUI {
                 }
             });
         }
-        CInventoryManager.getInstance().addCInvetory(gui);
     }
 
     public void open(final Player p) {

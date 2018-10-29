@@ -15,7 +15,7 @@ import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.VillageGUI;
+import me.crz.minecraft.kingdoms.village.KingdomsGUI;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -26,7 +26,7 @@ import org.bukkit.potion.PotionType;
 
 import java.util.Map;
 
-public class PerksGUI extends VillageGUI {
+public class PerksGUI extends KingdomsGUI {
     private final Resident resident;
     public CInventory gui;
 

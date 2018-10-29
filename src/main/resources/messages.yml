@@ -248,6 +248,10 @@ gui:
       title: "&b&l{mode}"
       lore: "&7&lState: &b&l{state}"
     back: "&c&lBack To Settings"
+  empire-build:
+    title: "&3&lEmpire Build Settings"
+    set-state: "&7&lClick to allow building of &b&l{state}"
+    selected-state: "&e&lBuilding is currently set to &b&l{state}"
   empire-mode:
     title: "&3&lEmpire Mode"
     entry:
@@ -282,6 +286,7 @@ gui:
     cooldown: "&aCan be repeated in {cooldown}"
   empire-settings:
     title: "&3&lEmpire Settings"
+    build: "&b&lBuild"
     mode: "&b&lMode"
     perks: "&b&lPerks"
     entry: |-
@@ -326,6 +331,7 @@ gui:
       &7&lLast login &b&l{lastlogin}
   settings:
     title: "&3&lSettlement Settings"
+    build: "&b&lBuild"
     access: "&b&lAccess"
     use: "&b&lUse"
     mode: "&b&lMode"
