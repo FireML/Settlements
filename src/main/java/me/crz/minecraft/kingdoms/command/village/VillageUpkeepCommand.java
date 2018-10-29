@@ -11,8 +11,6 @@ import java.util.concurrent.TimeUnit;
 
 import me.crz.minecraft.kingdoms.land.LandManager;
 
-import java.util.Calendar;
-
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import org.bukkit.ChatColor;
 
@@ -25,19 +23,12 @@ public class VillageUpkeepCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         Village village = res.getVillage();
-        Calendar midnight = Calendar.getInstance();
-        midnight.set(Calendar.HOUR_OF_DAY, 12);
-        midnight.set(Calendar.MINUTE, 0);
-        midnight.set(Calendar.SECOND, 0);
-        midnight.set(Calendar.MILLISECOND, 1);
-        midnight.set(Calendar.DAY_OF_YEAR, midnight.get(Calendar.DAY_OF_YEAR) + 1);
-        long tillNoon = midnight.getTimeInMillis() - System.currentTimeMillis() - 1L;
         int total = LandManager.getInstance().getClaimedLandSize(village) * 500;
 
         res.tell(getMessage("info"),
                 "cost", String.valueOf(total),
                 "upkeep", String.valueOf(Utils.getUpkeepCost()),
-                "time", UtilTime.format((double) TimeUnit.MILLISECONDS.toSeconds(tillNoon)),
+                "time", UtilTime.format((double) TimeUnit.MILLISECONDS.toSeconds(Utils.timeTillNextUpkeep())),
                 "afford", (village.getBank() >= total) ? ChatColor.GREEN + "yes" : ChatColor.RED + "no"
         );
         return true;

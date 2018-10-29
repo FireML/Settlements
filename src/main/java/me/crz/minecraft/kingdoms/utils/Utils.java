@@ -15,11 +15,14 @@ import java.util.ArrayList;
 
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -93,8 +96,8 @@ public class Utils {
     }
 
     public static int getUpkeepCost() {
-        if (ConfigManager.getInstance().getConfig().isInt("upkeep-cost-per-claim")) {
-            return ConfigManager.getInstance().getConfig().getInt("upkeep-cost-per-claim");
+        if (ConfigManager.getInstance().getConfig().isInt("upkeep.cost-per-claim")) {
+            return ConfigManager.getInstance().getConfig().getInt("upkeep.cost-per-claim");
         }
         return 0;
     }
@@ -266,5 +269,20 @@ public class Utils {
             return String.join(" ", split);
         }
         return String.join(" ", split).substring(0, length);
+    }
+
+    public static Date getNextUpkeep() {
+        Calendar nextUpkeep = Calendar.getInstance();
+        nextUpkeep.setTimeZone(TimeZone.getTimeZone(KingdomsPlugin.getInstance().getConfig().getString("upkeep.timezone")));
+        nextUpkeep.set(Calendar.HOUR_OF_DAY, KingdomsPlugin.getInstance().getConfig().getInt("upkeep.hour"));
+        nextUpkeep.set(Calendar.MINUTE, 0);
+        nextUpkeep.set(Calendar.SECOND, 0);
+        nextUpkeep.set(Calendar.MILLISECOND, 1);
+        nextUpkeep.set(Calendar.DAY_OF_YEAR, nextUpkeep.get(Calendar.DAY_OF_YEAR) + 1);
+        return nextUpkeep.getTime();
+    }
+
+    public static long timeTillNextUpkeep() {
+        return getNextUpkeep().getTime() - System.currentTimeMillis();
     }
 }

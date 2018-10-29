@@ -7,6 +7,7 @@ import me.crz.minecraft.kingdoms.empire.EmpireListener;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.integration.LWCIntegration;
 import me.crz.minecraft.kingdoms.land.LandManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.vault.EmpireVaultListener;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.event.Listener;
@@ -16,9 +17,9 @@ import me.crz.minecraft.kingdoms.scoreboard.ScoreboardManager;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.utils.ThreadManager;
-import org.bukkit.Bukkit;
 
-import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -55,12 +56,16 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     private boolean running = false;
     private String kingdomsWorld = "";
     private String empiresWorldPrefix = "";
+    private Timer upkeepTimer = null;
 
     @Override
     public void onDisable() {
         if (running) {
             running = false;
             VillageManager.getInstance().saveAll();
+        }
+        if (upkeepTimer != null) {
+            upkeepTimer.cancel();
         }
     }
 
@@ -116,24 +121,21 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         this.getServer().getPluginManager().disablePlugin(this);
     }
 
-    public void upkeep() {
-        Calendar midnight = Calendar.getInstance();
-        midnight.set(Calendar.HOUR_OF_DAY, 12);
-        midnight.set(Calendar.MINUTE, 0);
-        midnight.set(Calendar.SECOND, 0);
-        midnight.set(Calendar.MILLISECOND, 1);
-        midnight.set(Calendar.DAY_OF_YEAR, midnight.get(Calendar.DAY_OF_YEAR) + 1);
-        long tillNoon = midnight.getTimeInMillis() - System.currentTimeMillis() - 1L;
-        long ticksTillNoon = tillNoon / 50L;
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
-            LandManager.getInstance().checkUnclaim();
-            for (Village village : VillageManager.getInstance().getVillages()) {
-                village.doUpkeep();
+    private void upkeep() {
+        (upkeepTimer = new Timer()).schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Utils.runSync(() -> {
+                    LandManager.getInstance().checkUnclaim();
+                    for (Village village : VillageManager.getInstance().getVillages()) {
+                        village.doUpkeep();
+                    }
+                    for (Empire empire : EmpireManager.getInstance().getEmpires()) {
+                        empire.doUpkeep();
+                    }
+                });
             }
-            for (Empire empire : EmpireManager.getInstance().getEmpires()) {
-                empire.doUpkeep();
-            }
-        }, ticksTillNoon, TimeUnit.DAYS.toSeconds(1L) * 20);
+        }, Utils.getNextUpkeep(), TimeUnit.DAYS.toMillis(1));
     }
 
     public LandPerks getLandPerks() {

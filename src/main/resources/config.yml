@@ -12,7 +12,10 @@ disabled-claiming-worlds: []
 empire-creation-cost: 0
 village-creation-cost: 0
 outpost-creation-cost: 0
-upkeep-cost-per-claim: 500
+upkeep:
+  cost-per-claim: 500
+  hour: 0
+  timezone: EST
 max-village-size: 30
 max-empire-size: 20
 kingdoms-world: "kingdoms"
