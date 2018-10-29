@@ -14,7 +14,7 @@ public class VillageMoneyCommand extends VillageSubCommand {
     private final static DecimalFormat DF = new DecimalFormat("#,###");
 
     public VillageMoneyCommand(SubCommand parent) {
-        super(parent, "bank <deposit|withdraw|balance|history> <amount>", "money");
+        super(parent, "bank <deposit|withdraw|balance|history> <amount>", VillageRank.RESIDENT, "money");
         setPermission("kingdoms.user");
         registerCommand(new VillageSubCommand(this, "balance", VillageRank.RESIDENT) {
             @Override

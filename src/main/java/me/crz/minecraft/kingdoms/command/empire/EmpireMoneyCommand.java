@@ -17,7 +17,7 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
     private final static DecimalFormat DF = new DecimalFormat("#,###");
 
     public EmpireMoneyCommand(SubCommand parent) {
-        super(parent, "bank <deposit|withdraw|balance|history> <amount>", "money");
+        super(parent, "bank <deposit|withdraw|balance|history> <amount>", EmpireRank.NONE, "money");
         setPermission("kingdoms.user");
         registerCommand(new EmpireSubCommand(this, "balance", EmpireRank.NONE) {
             @Override
