@@ -438,7 +438,7 @@ command:
   resident:
     claimtransfer:
       success: "&e&l{title} &r&e{name} &r&7added &6{amount}&r&7 bonus claims to the {state}!"
-      description: Deposit money into the bank
+      description: Add bonus claims to settlements
       not-enough-bonus: "&c&lNot enough bonus claims to transfer &r&6&l{amount}&r&c&l!"
     show:
       info: |-

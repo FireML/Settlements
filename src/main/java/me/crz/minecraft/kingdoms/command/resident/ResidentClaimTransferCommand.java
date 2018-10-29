@@ -1,55 +1,76 @@
 package me.crz.minecraft.kingdoms.command.resident;
 
-/*
- * Kingdoms - kingdoms
- * Copyright (c) 2018 Max Lee aka Phoenix616 (mail@moep.tv)
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.BonusClaimsHolder;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageManager;
 
 public class ResidentClaimTransferCommand extends VillageSubCommand {
     public ResidentClaimTransferCommand(SubCommand parent) {
-        super(parent, "claimtransfer <amount>", VillageRank.RESIDENT, "transferclaims", "bonustransfer", "transferbonus");
+        super(parent, "claimtransfer [<settlement|e:empire>] <amount>", VillageRank.RESIDENT, "transferclaims", "bonustransfer", "transferbonus");
         setPermission("kingdoms.user");
     }
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        if (args.length < 1) {
-            return false;
+        int amountIndex = 1;
+        BonusClaimsHolder target;
+        if (args.length < 2) {
+            if (args.length == 0) {
+                return false;
+            }
+            amountIndex = 0;
+            if (resident.hasVillage()) {
+                target = resident.getVillage();
+            } else {
+                return false;
+            }
+        } else {
+            if (args[0].startsWith("empire:") ||args[0].startsWith("e:")) {
+                target = EmpireManager.getInstance().getEmpireFromName(args[0].split(":")[1]);
+                if (target == null) {
+                    getError("empire-doesnt-exist").tell(resident, "name", args[0].split(":")[1]);
+                    return false;
+                }
+            } else if (args[0].startsWith("village:") ||args[0].startsWith("v:")) {
+                target = VillageManager.getInstance().getVillageFromName(args[0].split(":")[1]);
+                if (target == null) {
+                    getError("village-doesnt-exist").tell(resident, "name", args[0].split(":")[1]);
+                    return false;
+                }
+            } else {
+                target = VillageManager.getInstance().getVillageFromName(args[0]);
+                if (target == null) {
+                    getError("village-doesnt-exist").tell(resident, "name", args[0]);
+                    return false;
+                }
+            }
         }
+
         try {
-            int transfer = Integer.parseInt(args[0]);
+            int transfer = Integer.parseInt(args[amountIndex]);
             if (resident.removeBonusClaims(transfer)) {
-                resident.getVillage().addBonusClaims(transfer);
+                target.addBonusClaims(transfer);
                 Utils.runAsync(() -> {
                     DatabaseManager.getInstance().saveResident(resident);
-                    DatabaseManager.getInstance().saveVillage(resident.getVillage());
+                    if (target instanceof Village) {
+                        DatabaseManager.getInstance().saveVillage((Village) target);
+                    } else if (target instanceof Empire) {
+                        DatabaseManager.getInstance().saveEmpire((Empire) target);
+                    }
                     DatabaseManager.getInstance().log(resident.getVillage(), resident, "deposit", "claim", transfer);
                 });
-                MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("success"),
+                getMessage("success").tell(target.getOnlineResidents(),
                         "rank", resident.getVillageRank().getTag(resident.getVillage()),
                         "title", resident.getTitle(),
-                        "player", resident.getName(),
+                        "name", resident.getName(),
                         "amount", String.valueOf(transfer),
                         "state", resident.getVillage().getState().getTag());
             } else {

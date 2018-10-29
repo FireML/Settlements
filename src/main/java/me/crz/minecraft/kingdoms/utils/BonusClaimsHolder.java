@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.utils;
 
+import me.crz.minecraft.kingdoms.village.Resident;
+
 public interface BonusClaimsHolder {
 
     int getBonusClaims();
@@ -17,4 +19,6 @@ public interface BonusClaimsHolder {
         }
         return false;
     }
+
+    Resident getOnlineResidents();
 }
