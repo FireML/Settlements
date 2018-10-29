@@ -38,8 +38,9 @@ public class VillageHomeCommand extends SubCommand {
             }
         }
 
-        if ((village.getAccess() == VillageAccess.PRIVATE && !village.equals(playerVillage))
-                || (village.getAccess() == VillageAccess.ALLY && (playerVillage == null || !village.getAllies().contains(playerVillage.getId())))) {
+        if (!village.equals(playerVillage)
+                && (village.getAccess() == VillageAccess.PRIVATE
+                || village.getAccess() == VillageAccess.ALLY && (playerVillage == null || !village.getAllies().contains(playerVillage.getId())))) {
             MessageUtils.tell(player, getMessage("no-access"), "state", village.getState().getTag());
             return true;
         }

@@ -265,7 +265,6 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "fireSpread BOOLEAN NOT NULL,"
                     + "explosions BOOLEAN NOT NULL,"
                     + "mobSpawning BOOLEAN NOT NULL,"
-                    + "isOutpost BOOLEAN NOT NULL, "
                     + "buildState VARCHAR(255) NOT NULL,"
                     + "linkX INTEGER,"
                     + "linkZ INTEGER"
@@ -458,7 +457,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return;
         }
         for (OwnedLand land : lands) {
-            Map<String, Object> values = getValues(lands[0].serialize(), "ownerVillage", "uses");
+            Map<String, Object> values = getValues(land.serialize(), "ownerVillage", "uses");
             String sql = "INSERT INTO " + tablePrefix + "claims "
                     + "(`" + String.join("`,`", values.keySet()) + "`)"
                     + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")"
@@ -589,7 +588,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return;
         }
         for (Resident resident : residents) {
-            Map<String, Object> values = getValues(residents[0].serialize(), "channels", "ignores", "friends");
+            Map<String, Object> values = getValues(resident.serialize(), "channels", "ignores", "friends");
             String sql = "INSERT INTO " + tablePrefix + "residents "
                     + "(`" + String.join("`,`", values.keySet()) + "`)"
                     + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")"

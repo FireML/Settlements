@@ -7,6 +7,7 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
+import me.crz.minecraft.kingdoms.world.NamedLocation;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -358,7 +359,6 @@ public class OwnedLand implements ConfigurationSerializable {
         map.put("fireSpread", isFireSpread());
         map.put("explosions", isExplosions());
         map.put("mobSpawning", isMobSpawning());
-        map.put("outpost", isOutpost() ? getOutpostName() : "");
         map.put("buildState", getBuildState().name());
         map.put("linkX", getLinkedTo() != null ? getLinkedTo().getX() : null);
         map.put("linkZ", getLinkedTo() != null ? getLinkedTo().getZ() : null);
@@ -394,7 +394,6 @@ public class OwnedLand implements ConfigurationSerializable {
         land.setFireSpread((Boolean) map.get("fireSpread"));
         land.setExplosions((Boolean) map.get("explosions"));
         land.setMobSpawning((Boolean) map.get("mobSpawning"));
-        land.setOutpost(map.get("outpost") != null ? (String) map.get("outpost") : null);
         land.setBuildState(Utils.parseEnum((String) map.get("buildState"), PlotBuildState.RESIDENTS));
 
         if (map.get("linkX") != null && map.get("linkZ") != null) {
@@ -405,6 +404,11 @@ public class OwnedLand implements ConfigurationSerializable {
         for (Use u : Use.values()) {
             if (uses.containsKey(u.name())) {
                 land.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), PlotBuildState.RESIDENTS));
+            }
+        }
+        for (NamedLocation o : land.getOwnerVillage().getOutpostHomes().values()) {
+            if (land.getLocation().contains(o)) {
+                land.setOutpost(o.getName());
             }
         }
         return land;
@@ -428,5 +432,9 @@ public class OwnedLand implements ConfigurationSerializable {
             }
         }
         return r;
+    }
+
+    public boolean containsHome() {
+        return getLocation().contains(getOwnerVillage().getVillageHome());
     }
 }

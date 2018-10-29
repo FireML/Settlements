@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.land;
 
-import java.security.Permissions;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +24,7 @@ import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
+import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import org.bukkit.Location;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.Chunk;
@@ -90,11 +90,15 @@ public class LandManager {
         Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(lands.toArray(new OwnedLand[0])));
     }
 
-    public OwnedLand claimLand(Location location, Village village) {
-        SimpleChunkLocation chunkLocation = new SimpleChunkLocation(location);
-        OwnedLand land = new OwnedLand(village, chunkLocation);
+    public OwnedLand claimLand(SimpleChunkLocation chunk, Location location, Village village) {
+        OwnedLand land = new OwnedLand(village, chunk);
         if (this.getClaimedLandSize(village) == 0) {
-            village.setVillageHome(location);
+            SimpleLocation home = new SimpleLocation(location);
+            if (chunk.contains(home)) {
+                village.setVillageHome(location);
+            } else {
+                village.setVillageHome(chunk.getCenterBukkitLocation());
+            }
             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
         }
         cacheLand(land);
@@ -232,7 +236,7 @@ public class LandManager {
         if (village.getBank() < Utils.getOutpostCreationCost()) {
             return null;
         }
-        OwnedLand land = this.claimLand(location, village);
+        OwnedLand land = this.claimLand(new SimpleChunkLocation(location), location, village);
         land.setOutpost(name);
         cacheLand(land);
         village.addOutpostHome(name, location);

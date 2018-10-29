@@ -171,7 +171,7 @@ public class Utils {
         Collection<SimpleChunkLocation> chunksAround = new HashSet<>();
         for (int x = baseX - radius; x <= baseX + radius; x++) {
             for (int z = baseZ - radius; z <= baseZ + radius; z++) {
-                if (x != baseX && z != baseZ) {
+                if (x != baseX || z != baseZ) {
                     chunksAround.add(new SimpleChunkLocation(world, x, z));
                 }
             }

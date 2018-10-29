@@ -15,7 +15,9 @@ import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class VillageClaimCommand extends VillageSubCommand {
     public VillageClaimCommand(SubCommand parent) {
@@ -33,11 +35,7 @@ public class VillageClaimCommand extends VillageSubCommand {
         Village village = res.getVillage();
         int amountClaimed = LandManager.getInstance().getClaimedLandSize(village);
         int maxClaimAllowed = village.getMaxClaimableChunks();
-        if (amountClaimed >= maxClaimAllowed) {
-            res.tell(getError("cant-claim-more"), "max", String.valueOf(maxClaimAllowed));
-            return true;
-        }
-        List<SimpleChunkLocation> toClaim = new ArrayList<>();
+        Set<SimpleChunkLocation> toClaim = new LinkedHashSet<>();
         if (args.length == 1) {
             try {
                 int radius = Integer.parseInt(args[0]);
@@ -46,7 +44,8 @@ public class VillageClaimCommand extends VillageSubCommand {
                     getError("radius-too-large").tell(res, "radius", String.valueOf(radius), "max", String.valueOf(maxRadius));
                     return true;
                 }
-                toClaim.addAll(Utils.getChunksAround(player, radius));
+                toClaim.add(new SimpleChunkLocation(player.getLocation()));
+                Utils.getChunksAround(player, radius).stream().filter(toClaim::contains).forEach(toClaim::add);
             } catch (NumberFormatException e) {
                 getError("not-a-number").tell(res, "input", args[0]);
                 return false;
@@ -62,20 +61,27 @@ public class VillageClaimCommand extends VillageSubCommand {
             toClaim.add(new SimpleChunkLocation(player.getLocation()));
         }
 
-        boolean landAround = false;
-        for (SimpleChunkLocation c : toClaim) {
-            for (SimpleChunkLocation chunk : Utils.getChunksAround(c, 1)) {
-                OwnedLand checkLand = LandManager.getInstance().getLand(chunk);
-                if (checkLand != null && checkLand.isOwnedBy(village)) {
-                    landAround = true;
-                    break;
-                }
-            }
+        if (amountClaimed + toClaim.size() > maxClaimAllowed) {
+            res.tell(getError("cant-claim-more"), "max", String.valueOf(maxClaimAllowed));
+            return true;
         }
 
-        if (!landAround) {
-            res.tell(getError("no-land-around"));
-            return true;
+        if (amountClaimed > 0) {
+            boolean landAround = false;
+            for (SimpleChunkLocation c : toClaim) {
+                for (SimpleChunkLocation chunk : Utils.getChunksAround(c, 1)) {
+                    OwnedLand checkLand = LandManager.getInstance().getLand(chunk);
+                    if (checkLand != null && checkLand.isOwnedBy(village)) {
+                        landAround = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!landAround) {
+                res.tell(getError("no-land-around"));
+                return true;
+            }
         }
 
         List<OwnedLand> toSave = new ArrayList<>();
@@ -117,7 +123,7 @@ public class VillageClaimCommand extends VillageSubCommand {
                     }
                 }
             }
-            OwnedLand newLand = LandManager.getInstance().claimLand(player.getLocation(), village);
+            OwnedLand newLand = LandManager.getInstance().claimLand(c, player.getLocation(), village);
             MessageUtils.tellResidents(village.getOnlineResidents(), getMessage("success"),
                     "player", player.getName(),
                     "world", newLand.getWorldName(),

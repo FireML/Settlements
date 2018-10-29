@@ -2,9 +2,14 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveChunkEvent;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ConfigKey;
@@ -18,38 +23,68 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import me.crz.minecraft.kingdoms.land.LandManager;
-import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.VillageManager;
 
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
-public class VillageMapCommand extends SubCommand {
+public class VillageMapCommand extends SubCommand implements Listener {
     private static final int HEIGHT = 13;
     private static final int WIDTH = 29;
+    private Cache<UUID, Boolean> autoMap = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
 
     public VillageMapCommand(SubCommand parent) {
-        super(parent, "map");
+        super(parent, "map [auto]");
         setPermission("kingdoms.user");
+        Bukkit.getPluginManager().registerEvents(this, KingdomsPlugin.getInstance());
     }
 
     @Override
     public boolean run(Player player, String base, String alias, String... args) {
-        Utils.runAsync(() -> sendMap(generateMap(player), player));
+        Utils.runAsync(() -> sendMap(player));
+        if (args.length > 0 && "auto".equalsIgnoreCase(args[0])) {
+            boolean enable = autoMap.getIfPresent(player.getUniqueId()) == null;
+            if (enable) {
+                autoMap.put(player.getUniqueId(), true);
+            } else {
+                autoMap.invalidate(player.getUniqueId());
+            }
+        }
         return true;
+    }
+
+    @EventHandler
+    public void onChunkChange(PlayerMoveChunkEvent event) {
+        if (autoMap.getIfPresent(event.getPlayer().getUniqueId()) != null) {
+            Utils.runAsync(() -> sendMap(event.getPlayer()));
+        }
+    }
+
+    @EventHandler
+    public void onTeleport(PlayerTeleportEvent event) {
+        autoMap.invalidate(event.getPlayer().getUniqueId());
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        autoMap.invalidate(event.getPlayer().getUniqueId());
     }
 
     private BaseComponent[][][] generateMap(Player player) {
         Resident resident = ResidentManager.getInstance().getResident(player);
         BaseComponent[][][] map = new BaseComponent[HEIGHT][WIDTH][0];
-        int x = (player.getLocation().getBlockX() >> 4) - HEIGHT / 2;
-        int z = (player.getLocation().getBlockZ() >> 4) - WIDTH / 2;
-        for (int countX = 0; countX < HEIGHT; countX++) {
-            for (int countZ = 0; countZ < WIDTH; countZ++) {
-                map[countX][countZ] = getSymbol(x + countX, z + countZ, player.getLocation().getWorld(), resident, countX == HEIGHT / 2 && countZ == WIDTH / 2);
+        int x = (player.getLocation().getBlockX() >> 4) - WIDTH / 2;
+        int z = (player.getLocation().getBlockZ() >> 4) - HEIGHT / 2;
+        for (int countX = 0; countX < WIDTH; countX++) {
+            for (int countZ = 0; countZ < HEIGHT; countZ++) {
+                map[countZ][countX] = getSymbol(x + countX, z + countZ, player.getLocation().getWorld(), resident, countX == WIDTH / 2 && countZ == HEIGHT / 2);
             }
         }
         return map;
@@ -71,17 +106,23 @@ public class VillageMapCommand extends SubCommand {
         if (land.isOutpost()) {
             symbol = Symbol.OUTPOST;
         }
-        if (land.getOwnerVillage().equals(resident.getVillage())) {
+
+        if (land.isOwnedBy(resident.getVillage())) {
             relation = Relation.OWN;
+            if (land.isForSale()) {
+                symbol = land.isEmbassy() ? Symbol.EMBASSY : Symbol.FOR_SALE;
+            }
             if (land.isPlot()) {
                 if (land.isPlotOwner(resident)) {
                     relation = Relation.OWN_PLOT;
                 }
                 symbol = Symbol.PLOT;
-            } else if (land.isForSale()) {
-                symbol = land.isEmbassy() ? Symbol.EMBASSY : Symbol.FOR_SALE;
             }
-        } else if (resident.hasVillage() && resident.getVillage().getAllies().contains(land.getOwnerVillage().getId())) {
+            if (land.containsHome()) {
+                symbol = Symbol.HOME;
+            }
+
+        } else if (resident.hasVillage() && resident.getVillage().isAlly(land.getOwnerVillage())) {
             relation = Relation.ALLY;
         } else {
             relation = Relation.ENEMY;
@@ -103,10 +144,14 @@ public class VillageMapCommand extends SubCommand {
         if (current) {
             symbol = Symbol.CURRENT;
         }
-        return new ComponentBuilder(MessageUtils.replaceColorCodes(symbol.getText()))
-                .color(relation.getColor())
-                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover.create()))
-                .create();
+
+        ComponentBuilder cb = new ComponentBuilder(MessageUtils.replaceColorCodes(symbol.getText())).color(relation.getColor());
+        if (land.isOwnedBy(resident.getVillage()) && resident.getVillageRank().atLeast(VillageRank.ELDER)) {
+            hover.append("\n").append(getMessage("hover.click-to-unclaim").getReplacedComponents("location", x + "-" + z));
+            cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/village unclaim " + x + " " + z));
+        }
+
+        return cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover.create())).create();
     }
 
     private String rpGetPlayerDirection(Player playerSelf) {
@@ -181,7 +226,8 @@ public class VillageMapCommand extends SubCommand {
         return 0;
     }
 
-    private void sendMap(BaseComponent[][][] map, Player p) {
+    private void sendMap(Player p) {
+        BaseComponent[][][] map = generateMap(p);
         getMessage("head").tell(p);
         for (int i = 0; i < map.length; ++i) {
             ComponentBuilder cb = new ComponentBuilder("");
