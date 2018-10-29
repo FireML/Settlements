@@ -1,14 +1,19 @@
 package me.crz.minecraft.kingdoms.village;
 
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.perk.Perkable;
 import me.crz.minecraft.kingdoms.perk.VillagePerk;
 import me.crz.minecraft.kingdoms.perk.PerkData;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.BonusClaimsHolder;
+import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
+import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.utils.config.Data;
@@ -22,6 +27,7 @@ import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -43,6 +49,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+
+import static me.crz.minecraft.kingdoms.utils.MessageUtils.yesOrNo;
 
 public class Village implements ConfigurationSerializable, Comparable<Village>, BonusClaimsHolder, Perkable<VillagePerk> {
     private IdObject id = IdObject.get(null);
@@ -409,7 +417,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     }
 
     public int getMaxClaimableChunks() {
-        return Utils.getLevelChunks(getState(), getLevel()) + bonusClaims + getPerks().stream().mapToInt(VillagePerk::getBonusClaims).sum();
+        return Utils.getLevelChunks(getState(), getLevel()) + bonusClaims + getPerks().stream().mapToInt(VillagePerk::getBonusClaims).sum() + (hasEmpire() ? getEmpire().getBonusClaims() : 0);
     }
 
     public int getBonusClaims() {
@@ -614,5 +622,63 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         if (v.getResidentIds().size() != getResidentIds().size())
             return Integer.compare(v.getResidentIds().size(), getResidentIds().size());
         return Long.compare(v.getBank(), getBank());
+    }
+
+    public String[] getReplacements(ConfigMessages configMessages) {
+        Resident chief = getChief();
+        return new String[] {
+                "name", getName(),
+                "description", getDescription(),
+                "state", getState().getTag(),
+                "level", String.valueOf(getLevel()),
+                "land", String.valueOf(LandManager.getInstance().getClaimedLandSize(this)),
+                "maxland", String.valueOf(getMaxClaimableChunks()),
+                "outposts", String.valueOf(getOutpostHomes().size()),
+                "maxoutposts", String.valueOf(getMaxOutposts()),
+                "pvp", yesOrNo(isPvp()),
+                "balance", Utils.CURRENCY_FORMAT.format(getBank()),
+                "tax", Utils.CURRENCY_FORMAT.format(getTax()),
+                "joinfee", Utils.CURRENCY_FORMAT.format(getJoinFee()),
+                "mobspawning", yesOrNo(isMobSpawning()),
+                "firespread", yesOrNo(isFireSpread()),
+                "explosions", yesOrNo(isExplosions()),
+                "buff", yesOrNo(isBuff()),
+                "bank", String.valueOf(getBank()),
+                "bonusclaims", getBonusClaims() > 0 ? configMessages.getMessage("bonus-claims").getReplacedText("amount", String.valueOf(getBonusClaims())) : "",
+                "access", getAccess().getTag(),
+                "perks", getPerks().stream().map(NameTag::getTag).collect(Collectors.joining(", ")),
+                "chiefrank", VillageRank.CHIEF.getTag(this),
+                "chieftitle", chief.getTitle(),
+                "chief", chief.getName(),
+                "residents", getResidentsToString(configMessages)
+        };
+    }
+
+    private String getResidentsToString(ConfigMessages configMessages) {
+        Message rankMessage = configMessages.getMessage("residents.rank");
+        String entry = configMessages.getMessage("residents.entry").getText();
+        String online = configMessages.getMessage("residents.online").getText();
+        String offline = configMessages.getMessage("residents.offline").getText();
+        String separator = configMessages.getMessage("residents.separator").getText();
+        Multimap<VillageRank, Resident> rankMap = MultimapBuilder.enumKeys(VillageRank.class).arrayListValues().build();
+        for (Resident resident : getResidents()) {
+            rankMap.put(resident.getVillageRank(), resident);
+        }
+        List<String> lines = new ArrayList<>();
+        for (VillageRank rank : rankMap.keySet()) {
+            lines.add(rankMessage.getReplacedText(
+                    "rank", rank.getTag(this),
+                    "residents", rankMap.get(rank).stream()
+                            .sorted(Comparator.comparing(Resident::getVillageJoin))
+                            .map(res -> MessageUtils.replacePlaceholders(entry,
+                                    "online", res.getPlayer() != null ? online : offline,
+                                    "name", res.getName(),
+                                    "rank", rank.getTag(this),
+                                    "title", res.getTitle()
+                            ))
+                            .collect(Collectors.joining(separator))
+            ));
+        }
+        return String.join("\n", lines);
     }
 }

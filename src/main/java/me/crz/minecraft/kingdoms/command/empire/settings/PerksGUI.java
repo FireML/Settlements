@@ -31,7 +31,7 @@ public class PerksGUI extends VillageGUI {
     public CInventory gui;
 
     public PerksGUI(Resident resident) {
-        super("perks");
+        super("empireperks");
         this.resident = resident;
 
         if (!resident.hasVillage()) {

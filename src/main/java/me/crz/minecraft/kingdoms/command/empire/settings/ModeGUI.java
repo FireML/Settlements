@@ -30,7 +30,7 @@ public class ModeGUI extends VillageGUI {
     }
 
     public ModeGUI() {
-        super("mode");
+        super("empire-mode");
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
 
         for (EmpireMode m : EmpireMode.values()) {
@@ -55,7 +55,7 @@ public class ModeGUI extends VillageGUI {
                     if (res.hasEmpire() && res.getEmpireRank().atLeast(VillageRank.CHIEF)) {
                         boolean state = m.get(res.getVillage().getEmpire());
                         m.set(state, res.getVillage().getEmpire());
-                        MessageUtils.tell(p, Message.get("command.village.mode.success"),
+                        MessageUtils.tell(p, Message.get("command.empire.mode.success"),
                                 "flag", m.getTag(),
                                 "state", yesOrNo(!state)
                         );

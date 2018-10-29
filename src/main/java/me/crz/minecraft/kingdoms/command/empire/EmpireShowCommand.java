@@ -10,7 +10,7 @@ import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 
-public class EmpireShowCommand extends AbstractEmpireInfoCommand {
+public class EmpireShowCommand extends SubCommand {
 
     public EmpireShowCommand(SubCommand parent) {
         super(parent, "show [<name>]", "info");
@@ -25,7 +25,7 @@ public class EmpireShowCommand extends AbstractEmpireInfoCommand {
                 getError("not-in-empire").tell(player);
                 return false;
             }
-            Utils.runAsync(() -> getMessage("general").tell(player, getReplacements(village.getEmpire())));
+            Utils.runAsync(() -> getMessage("general").tell(player, village.getEmpire().getReplacements(EmpireShowCommand.this)));
         } else if (args.length == 1) {
             String name = args[0];
             Utils.runAsync(() -> {
@@ -33,11 +33,11 @@ public class EmpireShowCommand extends AbstractEmpireInfoCommand {
                 Village village = VillageManager.getInstance().getVillageFromName(name);
                 Resident target = ResidentManager.getInstance().getResident(name);
                 if (empire != null) {
-                    getMessage("general").tell(player, getReplacements(empire));
+                    getMessage("general").tell(player, empire.getReplacements(EmpireShowCommand.this));
                 } else if (village != null && village.hasEmpire()) {
-                    getMessage("general").tell(player, getReplacements(village.getEmpire()));
+                    getMessage("general").tell(player, village.getEmpire().getReplacements(EmpireShowCommand.this));
                 }  else if (target != null && target.hasVillage() && target.getVillage().hasEmpire()) {
-                    getMessage("general").tell(player, getReplacements(target.getVillage().getEmpire()));
+                    getMessage("general").tell(player, target.getVillage().getEmpire().getReplacements(EmpireShowCommand.this));
                 }else{
                     getError("empire-doesnt-exist").tell(player, "name", args[0]);
                 }

@@ -35,14 +35,17 @@ public class EmpireKickCommand extends EmpireSubCommand {
                 return;
             }
             if (!resident.getVillage().getEmpire().equals(village.getEmpire())) {
-                 getError("not-in-current").tell(resident);
+                 getError("not-in-current").tell(resident, "name", village.getName());
                 return;
             }
             if (village.getEmpire().getCapital().equals(village)) {
                  getMessage("cant-kick-capital").tell(resident);
                 return;
             }
-            MessageUtils.tellResidents(village.getEmpire().getOnlineResidents(), getMessage("kicked-alert"), "name", village.getName());
+            MessageUtils.tellResidents(village.getEmpire().getOnlineResidents(), getMessage("kicked-alert"),
+                    "name", village.getName(),
+                    "state", village.getState().getTag()
+            );
             InviteCache.getPendingEmpireInvites().remove(village.getId(), village.getEmpire().getId());
             EmpireManager.getInstance().leaveEmpire(village);
         });

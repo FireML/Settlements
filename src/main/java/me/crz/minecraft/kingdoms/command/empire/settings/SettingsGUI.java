@@ -6,11 +6,9 @@ import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.empire.Empire;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -22,7 +20,7 @@ public class SettingsGUI extends VillageGUI {
     public CInventory gui;
 
     public SettingsGUI() {
-        super("settings");
+        super("empire-settings");
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
         gui.addItem(new ClickableItem() {
             public ItemStack getItem(Player p) {
@@ -51,22 +49,8 @@ public class SettingsGUI extends VillageGUI {
                     return null;
                 }
                 Empire empire = resident.getVillage().getEmpire();
-                Village capital = empire.getCapital();
-                Resident chief = capital.getChief();
                 return new CItem(Material.LIGHT_GRAY_STAINED_GLASS_PANE).setName(
-                        getMessage("entry").getReplacedText(
-                                "name", empire.getName(),
-                                "level", String.valueOf(empire.getLevel()),
-                                "bank", String.valueOf(empire.getBank()),
-                                "bonusClaims", String.valueOf(empire.getBonusClaims()),
-                                "bonus", empire.getBonusClaims() > 0 ? getMessage("bonus").getReplacedText("amount", String.valueOf(empire.getBonusClaims())) : "",
-                                "members", String.valueOf(empire.getMemberIds().size()),
-                                "capital", capital.getName(),
-                                "capitalstate", capital.getState().getTag(),
-                                "chiefRank", VillageRank.CHIEF.getTag(capital),
-                                "chiefTitle", chief.getName(),
-                                "chief", chief.getName()
-                        )
+                        getMessage("entry").getReplacedText(empire.getReplacements(instance))
                 ).build();
             }
 

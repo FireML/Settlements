@@ -19,8 +19,14 @@ public class EmpireLeaveCommand extends EmpireSubCommand {
         if (resident.getVillage().equals(resident.getVillage().getEmpire().getCapital())) {
             getMessage("cant-leave-own").tell(resident);
         } else {
-            getMessage("success").tell(resident);
-            MessageUtils.tellResidents(resident.getVillage().getEmpire().getOnlineResidents(), getMessage("alert"), "name", resident.getVillage().getName());
+            getMessage("success").tell(resident.getVillage().getOnlineResidents(),
+                    "state", resident.getVillage().getState().getTag(),
+                    "empire", resident.getVillage().getEmpire().getName()
+            );
+            MessageUtils.tellResidents(resident.getVillage().getEmpire().getOnlineResidents(), getMessage("alert"),
+                    "name", resident.getVillage().getName(),
+                    "state", resident.getVillage().getState().getTag()
+            );
             EmpireManager.getInstance().leaveEmpire(resident.getVillage());
         }
         return true;

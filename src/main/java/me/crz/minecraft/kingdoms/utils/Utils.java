@@ -9,6 +9,7 @@ import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -33,6 +34,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitTask;
 
 public class Utils {
+    public final static DecimalFormat CURRENCY_FORMAT = new DecimalFormat("#,###");
     public final static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat();
     private static Map<String, Integer> LEVEL_CHUNKS = new HashMap<>();
     private static Map<String, Integer> LEVEL_OUTPOSTS = new HashMap<>();

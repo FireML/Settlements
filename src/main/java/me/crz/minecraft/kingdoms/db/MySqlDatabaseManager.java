@@ -73,6 +73,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "FOREIGN KEY (capitalId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE RESTRICT,"
                     + "level INTEGER NOT NULL,"
                     + "description TEXT NOT NULL,"
+                    + "symbol VARCHAR(16) NOT NULL,"
                     + "access VARCHAR(255) NOT NULL,"
                     + "buildState VARCHAR(255) NOT NULL,"
                     + "pvp BOOLEAN NOT NULL,"

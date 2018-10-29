@@ -32,7 +32,7 @@ public class EmpireInviteCommand extends EmpireSubCommand {
         InviteCache.getPendingEmpireInvites().put(invitedVillage.getId(), res.getVillage().getEmpire().getId());
         getMessage("received").tell(invitedVillage.getOnlineResidents(), "name", res.getVillage().getEmpire().getName());
         getMessage("joinfee").tell(invitedVillage.getOnlineResidents(), "name", res.getVillage().getEmpire().getName(), "amount", String.valueOf(res.getVillage().getEmpire().getJoinFee()));
-        getMessage("alert").tell(res.getVillage().getEmpire().getOnlineResidents(), "player", invitedVillage.getName());
+        getMessage("alert").tell(res.getVillage().getEmpire().getOnlineResidents(), "name", invitedVillage.getName());
         return true;
     }
 }

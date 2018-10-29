@@ -9,7 +9,7 @@ import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 
-public class VillageShowCommand extends AbstractVillageInfoCommand {
+public class VillageShowCommand extends SubCommand {
 
     public VillageShowCommand(SubCommand parent) {
         super(parent, "show [<name>]", "info");
@@ -24,7 +24,7 @@ public class VillageShowCommand extends AbstractVillageInfoCommand {
                 MessageUtils.tell(player, getError("not-in-village"));
                 return false;
             }
-            Utils.runAsync(() -> MessageUtils.tell(player, getMessage("general"), getReplacements(village)));
+            Utils.runAsync(() -> MessageUtils.tell(player, getMessage("general"), village.getReplacements(VillageShowCommand.this)));
         } else if (args.length == 1) {
             String name = args[0];
             Utils.runAsync(() -> {
@@ -32,9 +32,9 @@ public class VillageShowCommand extends AbstractVillageInfoCommand {
                 Resident target = ResidentManager.getInstance().getResident(name);
                 if (target != null) {
                     Village playerVillage = VillageManager.getInstance().getVillageFromResident(target);
-                    MessageUtils.tell(player, getMessage("general"), getReplacements(playerVillage));
+                    MessageUtils.tell(player, getMessage("general"), playerVillage.getReplacements(VillageShowCommand.this));
                 } else if (village2 != null) {
-                    MessageUtils.tell(player, getMessage("general"), getReplacements(village2));
+                    MessageUtils.tell(player, getMessage("general"), village2.getReplacements(VillageShowCommand.this));
                 } else {
                     MessageUtils.tell(player, getError("village-doesnt-exist"), "name", args[0]);
                 }

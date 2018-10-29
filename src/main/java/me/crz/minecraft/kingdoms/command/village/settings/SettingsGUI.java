@@ -5,11 +5,8 @@ import me.crz.minecraft.kingdoms.cinventory.CInventoryManager;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
-import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.landflags.UseGui;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageGUI;
@@ -72,24 +69,8 @@ public class SettingsGUI extends VillageGUI {
                 if (village == null) {
                     return null;
                 }
-                Resident chief = village.getChief();
                 return new CItem(Material.LIGHT_GRAY_STAINED_GLASS_PANE).setName(
-                        getMessage("entry").getReplacedText(
-                                "name", village.getName(),
-                                "level", String.valueOf(village.getLevel()),
-                                "state", village.getState().getTag(),
-                                "bank", String.valueOf(village.getBank()),
-                                "bonusClaims", String.valueOf(village.getBonusClaims()),
-                                "bonus", village.getBonusClaims() > 0 ? getMessage("bonus").getReplacedText("amount", String.valueOf(village.getBonusClaims())) : "",
-                                "land", String.valueOf(LandManager.getInstance().getClaimedLandSize(village)),
-                                "maxLand", String.valueOf(village.getMaxClaimableChunks()),
-                                "outposts", String.valueOf(village.getOutpostHomes().size()),
-                                "maxOutposts", String.valueOf(village.getMaxOutposts()),
-                                "chiefRank", VillageRank.CHIEF.getTag(village),
-                                "chiefTitle", chief.getName(),
-                                "chief", chief.getName(),
-                                "residents", String.valueOf(village.getResidentIds().size())
-                        )
+                        getMessage("entry").getReplacedText(village.getReplacements(instance))
                 ).build();
             }
 

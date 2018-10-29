@@ -5,9 +5,12 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.perk.Perk;
 import me.crz.minecraft.kingdoms.perk.PerkData;
 import me.crz.minecraft.kingdoms.perk.Perkable;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.BonusClaimsHolder;
+import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
+import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.utils.config.Data;
@@ -35,11 +38,14 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+import static me.crz.minecraft.kingdoms.utils.MessageUtils.yesOrNo;
+
 public class Empire implements ConfigurationSerializable, Comparable<Empire>, BonusClaimsHolder, Perkable<Perk> {
     private IdObject id = IdObject.get(null);
     private String name;
     private IdObject capital;
     private String description = "";
+    private String symbol = "";
     private int level;
     private long bank = 0;
     private long joinFee = 0;
@@ -104,6 +110,7 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
         map.put("name", getName());
         map.put("capital", getCapitalId().value());
         map.put("description", getDescription());
+        map.put("symbol", getSymbol());
         map.put("members", getMemberIds().stream().map(IdObject::value).filter(Objects::nonNull).collect(Collectors.toList()));
         map.put("senator", getSenatorIds().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("pvp", isPvp());
@@ -134,6 +141,7 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
                 (Integer) map.get("level")
         );
         empire.setDescription((String) map.get("description"));
+        empire.setSymbol((String) map.get("symbol"));
         ((Collection<String>) map.get("senators")).stream().map(UUID::fromString).forEach(u -> empire.getSenatorIds().add(u));
         if (map.get("members") != null && map.get("members") instanceof Collection) {
             for (Object memberId : (Collection) map.get("members")) {
@@ -310,6 +318,14 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
         return description;
     }
 
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
+
     public List<Resident> getOnlineResidents() {
         return getMembers().stream().flatMap(v -> v.getOnlineResidents().stream()).collect(Collectors.toList());
     }
@@ -416,5 +432,32 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
                 return true;
         }
         return false;
+    }
+
+    public String[] getReplacements(ConfigMessages configMessages) {
+        Village capital = getCapital();
+        Resident chief = capital.getChief();
+        return new String[] {
+                "name", getName(),
+                "description", getDescription(),
+                "symbol", getSymbol(),
+                "level", String.valueOf(getLevel()),
+                "pvp", yesOrNo(isPvp()),
+                "balance", Utils.CURRENCY_FORMAT.format(getBank()),
+                "joinfee", Utils.CURRENCY_FORMAT.format(getBank()),
+                "tax", Utils.CURRENCY_FORMAT.format(getBank()),
+                "mobspawning", yesOrNo(isMobSpawning()),
+                "firespread", yesOrNo(isFireSpread()),
+                "explosions", yesOrNo(isExplosions()),
+                "buff", yesOrNo(isBuff()),
+                "bonusclaims", getBonusClaims() > 0 ? configMessages.getMessage("bonus-claims").getReplacedText("amount", String.valueOf(getBonusClaims())) : "",
+                "capital", capital.getName(),
+                "capitalstate", capital.getState().getTag(),
+                "perks", getPerks().stream().map(NameTag::getTag).collect(Collectors.joining(", ")),
+                "chiefrank", VillageRank.CHIEF.getTag(capital),
+                "chieftitle", chief.getTitle(),
+                "chief", chief.getName(),
+                "members", getMembers().stream().map(v -> v.getState().getTag() + " " + v.getName()).collect(Collectors.joining(", "))
+        };
     }
 }

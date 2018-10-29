@@ -2,6 +2,8 @@ package me.crz.minecraft.kingdoms.command.admin;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.utils.BonusClaimsHolder;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -12,7 +14,7 @@ import org.bukkit.entity.Player;
 
 public class VillageAdminBonusCommand extends SubCommand {
     public VillageAdminBonusCommand(SubCommand parent) {
-        super(parent, "bonus add|set|remove player|village:<name> <amount>", "bonusclaims");
+        super(parent, "bonus add|set|remove player|village|empire:<name> <amount>", "bonusclaims");
         setPermission("kingdoms.admin");
     }
 
@@ -34,8 +36,7 @@ public class VillageAdminBonusCommand extends SubCommand {
             getError("not-a-number").tell(player, "input", args[2]);
             return false;
         }
-        boolean isVillage = args[1].startsWith("village:") || args[1].startsWith("v:");
-        if (isVillage) {
+        if (args[1].startsWith("village:") || args[1].startsWith("v:")) {
             String name = args[1].split(":")[1];
             Village village = VillageManager.getInstance().getVillageFromName(name);
             if (village != null) {
@@ -49,6 +50,21 @@ public class VillageAdminBonusCommand extends SubCommand {
                 }
             } else {
                 getError("village-doesnt-exist").tell(player, "name", name);
+            }
+        } else if (args[1].startsWith("empire:") || args[1].startsWith("e:")) {
+            String name = args[1].split(":")[1];
+            Empire empire = EmpireManager.getInstance().getEmpireFromName(name);
+            if (empire != null) {
+                if (operation.apply(empire, amount)) {
+                    getMessage("success").tell(player,
+                            "operation", operation.name().toLowerCase(),
+                            "amount", String.valueOf(amount),
+                            "name", empire.getName()
+                    );
+                    Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(empire));
+                }
+            } else {
+                getError("empire-doesnt-exist").tell(player, "name", name);
             }
         } else {
             String name = args[1];

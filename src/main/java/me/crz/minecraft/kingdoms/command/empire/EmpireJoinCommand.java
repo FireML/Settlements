@@ -24,13 +24,22 @@ public class EmpireJoinCommand extends EmpireSubCommand {
         }
         Empire joinEmpire = EmpireManager.getInstance().getEmpireFromName(args[0]);
         if (joinEmpire == null) {
-            resident.tell(getError("village-doesnt-exist"));
+            resident.tell(getError("empire-doesnt-exist"));
         } else if (Utils.villageHasInvite(resident.getVillage(), joinEmpire)) {
-            resident.tell(getMessage("no-invite"));
+            resident.tell(getMessage("no-invite"),
+                    "state", resident.getVillage().getState().getTag()
+            );
         } else if (joinEmpire.isFull()) {
-            resident.tell(getMessage("is-full"), "name", joinEmpire.getName());
+            resident.tell(getMessage("is-full"),
+                    "name", joinEmpire.getName(),
+                    "state", resident.getVillage().getState().getTag()
+            );
         } else if (joinEmpire.getJoinFee() > 0 && resident.getVillage().getBank() < joinEmpire.getJoinFee()) {
-            resident.tell(getError("not-enough-money"), "name", joinEmpire.getName(), "amount", String.valueOf(joinEmpire.getJoinFee()));
+            resident.tell(getError("not-enough-money"),
+                    "name", joinEmpire.getName(),
+                    "amount", String.valueOf(joinEmpire.getJoinFee()),
+                    "state", resident.getVillage().getState().getTag()
+            );
         } else {
             if (joinEmpire.getJoinFee() > 0) {
                 resident.getVillage().removeFromBank(joinEmpire.getJoinFee());
@@ -45,8 +54,14 @@ public class EmpireJoinCommand extends EmpireSubCommand {
             resident.addChannel(ChatChannel.EMPIRE);
             InviteCache.getPendingEmpireInvites().remove(resident.getVillage().getId(), joinEmpire.getId());
             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
-            getMessage("success").tell(resident, "name", joinEmpire.getName());
-            MessageUtils.tellResidents(joinEmpire.getOnlineResidents(), getMessage("new-member"), "name", resident.getVillage().getName());
+            getMessage("success").tell(resident.getVillage().getOnlineResidents(),
+                    "name", joinEmpire.getName(),
+                    "state", resident.getVillage().getState().getTag()
+            );
+            MessageUtils.tellResidents(joinEmpire.getOnlineResidents(), getMessage("new-member"),
+                    "name", resident.getVillage().getName(),
+                    "state", resident.getVillage().getState().getTag()
+            );
         }
         return true;
     }

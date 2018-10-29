@@ -205,7 +205,7 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
     }
 
     public String getTitle() {
-        return title;
+        return title + (hasEmpire() ? getVillage().getEmpire().getSymbol() : "");
     }
 
     public void setTitle(String title) {

@@ -247,6 +247,55 @@ gui:
       title: "&b&l{mode}"
       lore: "&7&lState: &b&l{state}"
     back: "&c&lBack To Settings"
+  empire-mode:
+    title: "&3&lEmpire Mode"
+    entry:
+      title: "&b&l{mode}"
+      lore: "&7&lState: &b&l{state}"
+    back: "&c&lBack To Settings"
+  empire-perks:
+    title: "&3&lEmpire Perks"
+    entry:
+      locked: |-
+        &e{name}
+        &cReach Empire {level} to unlock!
+      unlockable: |-
+        &e{name}
+        &bClick to purchase!
+      purchased: |-
+        &e{name}
+        &dPurchased!
+      repeat: |-
+        &e{name}
+        &7Used {used} times.
+        &bClick to buy again!
+    toggleable: "&bRight click to toggle."
+    active: "&aEffect enabled!"
+    inactive: "&cEffect disabled!"
+    repeatable: "&7Usable {amount} times. {left} times left!"
+    unlimited: "&7Can be purchased as often as you want"
+    cost:
+      unlock: "&aUnlock cost:"
+      repeat: "&aRepeat cost:"
+      entry: "{icon}&a{type}&7: {amount}"
+    cooldown: "&aCan be repeated in {cooldown}"
+  empire-settings:
+    title: "&3&lEmpire Settings"
+    mode: "&b&lMode"
+    perks: "&b&lPerks"
+    entry: |-
+      &b&lEmpire Data
+      &8--------&c&l{name}&r&8--------
+      &a&lDescription &r&7{description}
+      &a&lSymbol &r&7{symbol}
+      &6&lLevel &r&7{level}
+      &6&lAccess &r&7{access}
+      &6&lBank &r&7{bank}
+      &6&lBonusclaims &r&7{bonus}
+      &6&lCapital &r&7{capitalstate}{capital}
+      &e&lLeader &r&7{chieftitle} {chief}
+      &e&lMembers: &r&7{members}
+    bonus: " Bonus: {amount}"
   plot-use:
     title: "&3&lPlot Use Settings"
     toggle-all: "&7&lClick to toggle all to &b&l{state}"
@@ -283,6 +332,7 @@ gui:
     entry: |-
       &b&lVillage Data
       &8--------&c&l{name}&r&8--------
+      &a&lDescription &r&7{description}
       &a&lState &r&7{state}
       &6&lLevel &r&7{level}
       &6&lAccess &r&7{access}
@@ -454,20 +504,20 @@ command:
         description: Deposit money into the bank
       description: Commands to interact with the village bank
       balance:
-        balance: "&2&lVillage Balance: &r&7{amount}"
+        balance: "&2&lSettlement Balance: &r&7{amount}"
         description: Check the balance of the bank
       history:
         head: "&7------- &cBank History [{page}]&7 -------"
         entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6${amount}](&eAt {timestamp})"
         description: Show the bank's history
     build:
-      success: "&aSet build state of this plot to {state}"
+      success: "&aSet build state of this settlement to {state}"
       states:
         residents: residents and officers to build in claimed land
         officers: only officers are allowed to build in claimed land
         public: allows everyone to build in your claimed land
         ally: allows your allies to build in your claimed land
-      description: Set who can build in your village
+      description: Set who can build in your settlement
     claim:
       cant-claim-more: "&c&lERROR &r&7Your settlement can only claim &e{max} chunks of land!"
       no-land-around: "&c&lERROR &r&7Your claim must be connected to an existing settlement claim!"
@@ -480,11 +530,11 @@ command:
       description: Create a new village.
     description:
       success: "&aSet description of {state} to &r{description}"
-      description: Set the description of a village
+      description: Set the description of a settlement
     disband:
-      confirm: "&c&lPlease do /{command} to confirm the &r&e&ldisbanding&r&c&l of your village."
+      confirm: "&c&lPlease do /{command} to confirm the &r&e&ldisbanding&r&c&l of your settlement."
       success: "&e&lALERT &r&7Your {chief} has deleted your {state}."
-      description: Disbands the current village
+      description: Disbands the current settlement
     here:
       general: |-
         &8--------&c&l{name}&r&8--------
@@ -514,7 +564,7 @@ command:
       entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {type}](&eAt {timestamp})"
       description: Show the log history
     home:
-      own-no-home: "&c&lYour village doesn't have a home ask your {chief} to set one!"
+      own-no-home: "&c&lYour settlement doesn't have a home ask your {chief} to set one!"
       no-home: "&c&lThat {state} doesn't have a home!"
       no-access: "&c&lYou don't have access to teleport to the home of that {state}!"
       waiting: "&e&lTeleporting in {seconds} seconds..."
@@ -548,7 +598,7 @@ command:
     list:
       description: "List settlements"
       head: "&7------- &c{access}Settlements [{page}]&7 -------"
-      entry: "&8\\[&9*&8] [&e&l{state} &r&e{name} &r&7{access}]({chiefrank}: {chief}\\nSize: {residents} players\\n{description})"
+      entry: "&8\\[&9*&8] [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\\n&8Size: &f{residents} players\\n&f{description})"
     map:
       head: "&8---------------- &eSettlement Map &r&8----------------"
       explanation: |-
@@ -664,7 +714,7 @@ command:
         description: Sets the use flags of a plot
       description: Plot Commands
     rename:
-      success: "&7&lVillage has been renamed to &6&l{name}"
+      success: "&7&lSettlement has been renamed to &6&l{name}"
       description: Renames the current village to something else
     reslist:
       head: "&8&l--------&r&c&lResidents&r&8&l--------"
@@ -701,12 +751,6 @@ command:
       usage:
         footer: "&aNote: Officers = Elder and Builder"
       description: Sets the rank of a resident
-    tax:
-      current: "&7Your village's tax is &e{amount}&7!"
-      description: Settlement taxes
-      set:
-        success: "&e&lALERT &r&7Daily tax was set &e{amount}&7!"
-        description: Sets the tax a player needs to pay each day he is in the settlement
     show:
       general: |-
         &8--------&c&l{name}&r&8--------
@@ -731,6 +775,12 @@ command:
         offline: "&c"
         entry: "{online}{name}"
       description: "Shows information on a village "
+    tax:
+      current: "&7Your village's tax is &e{amount}&7!"
+      description: Settlement taxes
+      set:
+        success: "&e&lALERT &r&7Daily tax was set &e{amount}&7!"
+        description: Sets the tax a player needs to pay each day he is in the settlement
     title:
       description: "Set your title"
       success:
@@ -826,3 +876,166 @@ command:
     reload:
       description: Reload some plugin functionality
       success: "&aConfigs reloaded. Will only affect values that are read directly from the config!"
+  empire:
+    description: Commands for empire management
+    bank:
+      withdraw:
+        not-enough-money: "&c&lNot enough money in the bank to withdraw &r&6&l{amount}&r&c&l!"
+        withdrawn: "&e&l{title} &r&e{name} &r&7withdrew &6{amount}&r&7 from the bank!"
+        description: Withdraw money from the bank
+      deposit:
+        deposited: "&e&l{title} &r&e{name} &r&7deposited &6{amount}&r&7 into the bank!"
+        description: Deposit money into the bank
+      description: Commands to interact with the village bank
+      balance:
+        balance: "&2&lEmpire Balance: &r&7{amount}"
+        description: Check the balance of the bank
+      history:
+        head: "&7------- &cBank History [{page}]&7 -------"
+        entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6${amount}](&eAt {timestamp})"
+        description: Show the bank's history
+    build:
+      success: "&aSet build state of this empire to {state}"
+      states:
+        private: only residents of members can build in empire world
+        public: allows everyone to build in empire world
+        ally: allows member allies to build in empire world
+      description: Set who can build in your empire world
+    create:
+      success: "&a&lSUCCESS &r&7created a new empire."
+      broadcast: "&e{player} has made a empire called {name}!"
+      description: Create a new empire.
+    description:
+      success: "&aSet description of your empire to &r{description}"
+      description: Set the description of a empire
+    disband:
+      confirm: "&c&lPlease do /{command} to confirm the &r&e&ldisbanding&r&c&l of your empire."
+      success: "&e&lALERT &r&7Your {chief} has deleted your Empire."
+      description: Disbands the current empire
+    history:
+      head: "&7------- &cLog History [{page}]&7 -------"
+      entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {type}](&eAt {timestamp})"
+      description: Show the log history
+    home:
+      no-home: "&c&lYour empire doesn't have a home !"
+      waiting: "&e&lTeleporting in {seconds} seconds..."
+      success: "&a&lTeleported to home of {state} {name}"
+      description: Teleport to a empires's home
+    invite:
+      already-in-empire: "&c&l{name} is already in your Empire"
+      joinfee: "&7Fee to join is &e{amount}!"
+      received: "&e&lALERT &r&7Invite received from Empire {name}! Type &e/e join {name} &7to join."
+      alert: "&e&lALERT &r&e{name}&7 has been invited to the empire."
+      description: Invite someone to join your empire
+    join:
+      not-enough-money: "&c&lERROR &r&7Your {state} does not have enough money to pay the join fee of {amount}!"
+      money-paid: "&7Paid &e{amount}&7 to join!"
+      no-invite: "&c&lERROR &r&7Your {state} does not have an invite for this empire."
+      success: "&a&lSUCCESS &r&7Your {state} has joined {state} {name}."
+      new-member: "&e&lALERT &r&e{state} {name}&7 has joined the empire!"
+      is-full: "&e&lALERT &r&7The Empire {name} is full."
+      description: Join an empire
+    kick:
+      cant-kick-yourself: "&cYou cannot kick your own settlement!"
+      cant-kick-capital: "&cYou cannot kick the capital&c!"
+      not-in-current: "&c{name} is not in your Empire!"
+      kicked-alert: "&a&lALERT &r&e{state} {name}&7 has been kicked from the empire."
+      description: Kick a player from your empire
+    leave:
+      cant-leave-own: "&c&lERROR &r&7You cannot leave your own empire. You must delete it."
+      success: "&a&lSUCCESS &r&7Your {state} has left the empire  {empire}."
+      alert: "&e&lALERT &r&e{state} {name}&7 has left the empire."
+      description: Leave your current empire
+    list:
+      description: "List empire"
+      head: "&7------- &cEmpires [{page}]&7 -------"
+      entry: "&8\\[&9*&8] [&r&e{name}](&8Capital: &f{capitalstate}{capital}\\n&8Leader: &f{chieftitle} {chief}\\n&8Size: &f{members} members\\n&f{description})"
+    materials:
+      max-level-reached: "&c&lYour Empire already has the max level!"
+      head: "&8&l--------&r&c&lRequired Materials&r&8&l--------"
+      entry: "&e{amount} &7{material}"
+      description: Shows you the materials required to upgrade
+    mode:
+      modes: "&cAvailable modes: {modes}"
+      success: "&7Empire mode &6{mode}&7 set to &6{value}"
+      description: Changes settings for your empire world
+    rename:
+      success: "&7&lEmpire has been renamed to &6&l{name}"
+      description: Renames the current empire to something else
+    memberlist:
+      head: "&8&l--------&r&c&lMembers&r&8&l--------"
+      entry: "&8\\[&9*&8] [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\\n&8Size: &f{residents} players\\n&f{description})"
+    perks:
+      unlock:
+        success: "&6&l{perk} &7&lhas been unlocked!"
+        level-too-low: "&cCan't unlock &f{perk}&c! It requires a level {level} empire!"
+        not-possible: "&f{perk} &ccan't be unlocked! {reason}"
+        missing-items: "&c&lMissing Items:"
+        already-unlocked: "&cPerk &f{perk} &cis already unlocked"
+        entry: "&6{amount} &e{material}"
+        description: Unlock perks
+      repeat:
+        success: "&6&l{perk} &7&lhas been repeated!"
+        level-too-low: "&cCan't repeat &f{perk}&c! It requires a level {level} empire!"
+        not-possible: "&f{perk} &ccan't be repeated! {reason}"
+        missing-items: "&c&lMissing Items:"
+        entry: "&6{amount} &e{material}"
+        not-unlocked: "&cPerk &f{perk} &cis not unlocked!"
+        already-repeated: "&cPerk &f{perk} &cis already been repeated {amount} times!"
+        description: Repeat perks
+      toggle:
+        active: "&6&l{perk} &7&lhas been &a&lactivated"
+        deactived: "&6&l{perk} &7&lhas been &c&ldeactivated"
+        not-unlocked: "&cPerk &f{perk} &cis not unlocked!"
+        no-effects: "&cPerk &f{perk} &chas no effects that can be toggled!"
+        description: Toggle perks
+      description: Unlock and manage perks
+    sethome:
+      success: "&7&lLeader &f{title} {name} &r&7&l has set the empire home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
+      description: Sets the home for the empire
+    setjoinfee:
+      success: "&e&lALERT &r&7Empire join fee was set &e{amount}&7!"
+      description: Sets the fee a settlement needs to pay to join
+    setrank:
+      invalid-rank: "&c&lERROR &r&c{rank} &7is not a valid rank!"
+      cant-set-chief: "&c&lPlease use &6&c&l/{base} transfer <player>&r&c&l to transfer ownership of the empire"
+      cant-set-higher: "&cYou cannot set the rank of &6{rank} or higher&c!"
+      success: "&e&lALERT &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
+      rank:
+        senator: Allows inviting and kicking
+        none: Default rank for members of this empire
+      description: Sets the rank of an empire resident
+    setsymbol:
+      description: "Set your empire's symbol"
+      success: "&bSet empire symbol to &e{symbol}"
+    show:
+      general: |-
+        &8--------&c&l{name}&r&8--------
+        &a&lDescription &r&7{description}
+        &a&lSymbol &r&7{symbol}
+        &6&lLevel &r&7{level}
+        &6&lAccess &r&7{access}
+        &6&lBank &r&7{bank}
+        &6&lBonusclaims &r&7{bonus}
+        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &9&lPerks: &r&7{perks}
+        &6&lCapital &r&7{capitalstate}{capital}
+        &e&lLeader &r&7{chieftitle} {chief}
+        &e&lMembers: &r&7{members}
+      bonus-claims: " Bonus: {amount}"
+      description: Shows information on an empire
+    tax:
+      current: "&7Your empire's tax is &e{amount}&7!"
+      description: Empire taxes
+      set:
+        success: "&e&lALERT &r&7Daily empire tax was set &e{amount}&7!"
+        description: Sets the tax a settlement needs to pay each day he is in the empire
+    transfer:
+      success: "&e&lALERT &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
+      description: Transfers leadership of your empire
+    upgrade:
+      not-possible: "&cThe empire cannot be leveled up! {reason}"
+      max-level-reached: "&r&c&lMax Level Reached."
+      missing-items: "&c&lMissing Items:"
+      entry: "&6{amount} &e{material}"
+      description: Manually trigger a empire upgrade

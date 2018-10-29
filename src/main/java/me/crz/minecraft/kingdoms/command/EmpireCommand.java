@@ -21,6 +21,7 @@ import me.crz.minecraft.kingdoms.command.empire.EmpireRenameCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireSetHomeCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireSetJoinFeeCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireSetRankCommand;
+import me.crz.minecraft.kingdoms.command.empire.EmpireSetSymbolCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireTaxCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireSettingsCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireShowCommand;
@@ -52,6 +53,7 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpireRenameCommand(this));
         registerCommand(new EmpireSetHomeCommand(this));
         registerCommand(new EmpireSetJoinFeeCommand(this));
+        registerCommand(new EmpireSetSymbolCommand(this));
         registerCommand(new EmpireSetRankCommand(this));
         registerCommand(new EmpireTaxCommand(this));
         registerCommand(new EmpireSettingsCommand(this));

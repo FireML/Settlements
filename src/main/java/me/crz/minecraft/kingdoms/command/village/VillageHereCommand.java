@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 
-public class VillageHereCommand extends AbstractVillageInfoCommand {
+public class VillageHereCommand extends SubCommand {
 
     public VillageHereCommand(SubCommand parent) {
         super(parent, "here");
@@ -21,7 +21,7 @@ public class VillageHereCommand extends AbstractVillageInfoCommand {
             MessageUtils.tell(player, getError("no-village"));
             return false;
         }
-        Utils.runAsync(() -> MessageUtils.tell(player, getMessage("general"), getReplacements(village)));
+        Utils.runAsync(() -> MessageUtils.tell(player, getMessage("general"), village.getReplacements(VillageHereCommand.this)));
         return true;
     }
 }
