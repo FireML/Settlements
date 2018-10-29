@@ -347,7 +347,7 @@ gui:
       &6&lLand &r&7{land}&r&e/&r&7{maxland}{bonus}
       &6&lOutposts &r&7{outposts}&r&e/&r&7{maxoutposts}
       &e&l{chiefrank} &r&7{chief}
-      &e&lResidents: &r&7{residents}
+      &e&lMembers: &r&7{residents}
     bonus: " Bonus: {amount}"
   teleporters:
     title: "&2&lSettlement Teleporters"
@@ -556,7 +556,7 @@ command:
         &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
-        &b&lResidents:
+        &b&lMembers:
         {residents}
       bonus-claims: " Bonus: {amount}"
       residents:
@@ -725,7 +725,7 @@ command:
       success: "&7&lSettlement has been renamed to &6&l{name}"
       description: Renames the current village to something else
     reslist:
-      head: "&8&l--------&r&c&lResidents&r&8&l--------"
+      head: "&8&l--------&r&c&lMembers&r&8&l--------"
       rank: "&6&l{rank}:&r {residents}"
       separator: "&7, "
       online: "&a"
@@ -773,7 +773,7 @@ command:
         &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
-        &b&lResidents:
+        &b&lMembers:
         {residents}
       bonus-claims: " Bonus: {amount}"
       residents:
