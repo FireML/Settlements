@@ -253,6 +253,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "x INTEGER,INDEX(x),"
                     + "z INTEGER,INDEX(z),"
                     + "UNIQUE(world, x, z),"
+                    + "unclaimIn INTEGER,"
                     + "ownerId INTEGER,"
                     + "FOREIGN KEY (ownerId) REFERENCES " + tablePrefix + "residents(id) ON DELETE SET NULL,"
                     + "price INTEGER DEFAULT 0,"

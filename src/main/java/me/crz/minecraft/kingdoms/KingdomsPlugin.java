@@ -126,6 +126,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         long tillNoon = midnight.getTimeInMillis() - System.currentTimeMillis() - 1L;
         long ticksTillNoon = tillNoon / 50L;
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            LandManager.getInstance().checkUnclaim();
             for (Village village : VillageManager.getInstance().getVillages()) {
                 village.doUpkeep();
             }

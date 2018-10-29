@@ -97,6 +97,27 @@ public class Utils {
         return 0;
     }
 
+    public static int getClaimEnemyDistance() {
+        if (ConfigManager.getInstance().getConfig().isInt("claim-enemy-distance")) {
+            return ConfigManager.getInstance().getConfig().getInt("claim-enemy-distance");
+        }
+        return 0;
+    }
+
+    public static int getUnAllyGraceDays() {
+        if (ConfigManager.getInstance().getConfig().isInt("unally-grace-days")) {
+            return ConfigManager.getInstance().getConfig().getInt("unally-grace-days");
+        }
+        return 0;
+    }
+
+    public static boolean getUnallyUnclaimsOutposts() {
+        if (ConfigManager.getInstance().getConfig().isBoolean("unally-unclaims-outposts")) {
+            return ConfigManager.getInstance().getConfig().getBoolean("unally-unclaims-outposts");
+        }
+        return false;
+    }
+
     public static boolean playerIsChief(Player player, Village village) {
         return village != null && village.getChiefId().equals(player.getUniqueId());
     }

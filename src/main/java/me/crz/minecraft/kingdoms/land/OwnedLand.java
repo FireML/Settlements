@@ -38,6 +38,7 @@ public class OwnedLand implements ConfigurationSerializable {
     private Village ownerVillage;
     private UUID plotOwner = null;
     private SimpleChunkLocation location;
+    private int unclaimIn = 0;
     private int price;
     private boolean forSale;
     private boolean pvp = false;
@@ -137,6 +138,14 @@ public class OwnedLand implements ConfigurationSerializable {
 
     public void setWorldName(String worldName) {
         location.setWorld(worldName);
+    }
+
+    public int getUnclaimIn() {
+        return unclaimIn;
+    }
+
+    public void setUnclaimIn(int unclaimIn) {
+        this.unclaimIn = unclaimIn;
     }
 
     /**
@@ -339,6 +348,7 @@ public class OwnedLand implements ConfigurationSerializable {
         map.put("x", getX());
         map.put("z", getZ());
         map.put("world", getWorldName());
+        map.put("unclaimIn", getUnclaimIn());
         map.put("owner", getPlotOwner() != null ? getPlotOwner() : new UUID(0,0));
         map.put("price", getPrice());
         map.put("forSale", isForSale());
@@ -368,6 +378,7 @@ public class OwnedLand implements ConfigurationSerializable {
                 new SimpleChunkLocation((String) map.get("world"), (Integer) map.get("x"), (Integer) map.get("z"))
         );
         land.setId(IdObject.get(map));
+        land.setUnclaimIn((Integer) map.get("unclaimIn"));
         String plotOwnerStr = (String) map.get("owner");
         if (plotOwnerStr != null && !plotOwnerStr.isEmpty()) {
             land.setPlotOwner(UUID.fromString(plotOwnerStr));

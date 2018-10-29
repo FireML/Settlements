@@ -100,7 +100,7 @@ public class VillageClaimCommand extends VillageSubCommand {
                 }
                 return true;
             }
-            for (SimpleChunkLocation chunk : Utils.getChunksAround(c, 4)) {
+            for (SimpleChunkLocation chunk : Utils.getChunksAround(c, Utils.getClaimEnemyDistance())) {
                 OwnedLand checkLand = LandManager.getInstance().getLand(chunk);
                 if (checkLand == null) {
                     continue;

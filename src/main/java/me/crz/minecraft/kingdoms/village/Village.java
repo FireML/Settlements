@@ -35,7 +35,6 @@ import me.crz.minecraft.kingdoms.land.LandManager;
 
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import me.crz.minecraft.kingdoms.landflags.Use;
 
@@ -469,6 +468,11 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
 
     public boolean isMaxLevel() {
         return (getLevel() == Levels.KINGDOMS_MAX_LEVEL && getState() == VillageState.KINGDOM) || Levels.getLevelRequirements(getState(), getLevel() + 1) == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 
     @Override

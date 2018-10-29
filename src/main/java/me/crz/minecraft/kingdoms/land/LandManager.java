@@ -1,11 +1,14 @@
 package me.crz.minecraft.kingdoms.land;
 
+import java.security.Permissions;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
@@ -19,6 +22,7 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.landflags.PlotBuildState;
 import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.utils.IdObject;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Location;
@@ -292,6 +296,58 @@ public class LandManager {
         }
 
         Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(lands));
+    }
+
+    public void checkUnclaim() {
+        Map<Village, Integer> villageUnclaims = new HashMap<>();
+        List<OwnedLand> toUnclaim = new ArrayList<>();
+        List<OwnedLand> toSave = new ArrayList<>();
+        for (OwnedLand land : landTable.values()) {
+            if (land.getUnclaimIn() > 0) {
+                land.setUnclaimIn(land.getUnclaimIn() - 1);
+                if (land.getUnclaimIn() == 0) {
+                    toUnclaim.add(land);
+                    villageUnclaims.put(land.getOwnerVillage(), villageUnclaims.getOrDefault(land.getOwnerVillage(), 0) + 1);
+                } else {
+                    toSave.add(land);
+                }
+            }
+        }
+        unclaimLand(toUnclaim);
+        for (Map.Entry<Village, Integer> e : villageUnclaims.entrySet()) {
+            Message.get("land-unclaim").tell(e.getKey().getOnlineResidents(), "amount", String.valueOf(e.getValue()));
+        }
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(toSave));
+    }
+
+    public void checkUnallyDistance(Village village, Village oldAlly) {
+        if (Utils.getClaimEnemyDistance() > 0) {
+            int graceDays = Utils.getUnAllyGraceDays();
+            boolean unclaimOutposts = Utils.getUnallyUnclaimsOutposts();
+            List<OwnedLand> toSave = new ArrayList<>();
+            List<OwnedLand> toUnclaim = new ArrayList<>();
+            for (OwnedLand land : getClaimedLand(oldAlly)) {
+                if (unclaimOutposts || !land.isOutpost()) {
+                    for (SimpleChunkLocation c : Utils.getChunksAround(land.getLocation(), Utils.getClaimEnemyDistance())) {
+                        OwnedLand around = getLand(c);
+                        if (around != null && around.isOwnedBy(village)) {
+                            if (graceDays > 0) {
+                                if (around.getUnclaimIn() == 0 || around.getUnclaimIn() > graceDays) {
+                                    around.setUnclaimIn(graceDays);
+                                    toSave.add(land);
+                                }
+                            } else {
+                                toUnclaim.add(land);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            unclaimLand(toUnclaim);
+            Message.get("land-unclaim").tell(oldAlly.getOnlineResidents(), "amount", String.valueOf(toUnclaim.size()));
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(toSave));
+        }
     }
 
     public enum FilterResponse {

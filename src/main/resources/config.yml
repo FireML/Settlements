@@ -25,5 +25,8 @@ empires-world:
   environment: normal
   type: normal
   border-radius: 500
+claim-enemy-distance: 4
+unally-grace-days: 4
+unally-unclaims-outposts: false
 only-lock-in-settlement: true
 claim-max-radius: 5

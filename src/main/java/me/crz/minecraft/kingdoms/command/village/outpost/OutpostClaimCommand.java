@@ -44,7 +44,7 @@ public class OutpostClaimCommand extends VillageSubCommand {
                 resident.tell(getError("cant-claim-here"), "owner", land.getOwnerVillage().getName());
             }
         } else {
-            for (SimpleChunkLocation chunk : Utils.getChunksAround(resident.getPlayer(), 4)) {
+            for (SimpleChunkLocation chunk : Utils.getChunksAround(resident.getPlayer(), Utils.getClaimEnemyDistance())) {
                 OwnedLand checkLand = LandManager.getInstance().getLand(chunk);
                 if (checkLand == null) {
                     continue;

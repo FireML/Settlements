@@ -95,6 +95,7 @@ empire-tax:
   removed: "&eRemoved &c{amount}&e of tax from your account!"
   couldnt-pay: "&cYou were not able to pay your tax of &e{amount}&c and have been removed from the Empire {name}!"
 first-to-reach-level: "&6&l{name} &7&l is the first to reach &6&l{state} &7&llevel &6&l{level}"
+land-unclaim: "&e{amount}&7 chunks were automatically unclaimed!"
 village:
   enter-message: "&f[&eKingdoms&f] &7Entering &a{name}{pvp}"
   leave-message: "&f[&eKingdoms&f] &7Leaving &a{name}"
