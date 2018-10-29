@@ -7,6 +7,7 @@ import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -38,7 +39,15 @@ public class Message {
         }
         try {
             components = MineDown.parse(text);
-            text = TextComponent.toLegacyText(components);
+            if (!TextComponent.toPlainText(components).isEmpty()) {
+                String newText = TextComponent.toLegacyText(components);
+                if (newText.startsWith(ChatColor.WHITE.toString()) && !text.startsWith(ChatColor.WHITE.toString())) {
+                    newText = newText.substring(ChatColor.WHITE.toString().length());
+                }
+                text = newText;
+            } else {
+                text = MessageUtils.replaceColorCodes(text);
+            }
         } catch (IllegalArgumentException e) {
             components = TextComponent.fromLegacyText(text);
             text = MessageUtils.replaceColorCodes(text);

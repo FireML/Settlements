@@ -33,8 +33,9 @@ public class ExecuteMoveUtil extends Base {
 
     @EventHandler
     public void on(PlayerMoveBlockEvent e) {
-        if (uuids.remove(e.getPlayer().getUniqueId()) != null) {
-            MessageUtils.tell(e.getPlayer(), "&c" + uuids.get(e.getPlayer().getUniqueId()) + " cancled because you moved!");
+        String action = uuids.remove(e.getPlayer().getUniqueId());
+        if (action != null) {
+            Message.get("move-cancelled").tell(e.getPlayer(), "action", action);
         }
     }
 

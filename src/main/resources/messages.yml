@@ -37,6 +37,7 @@ error:
   unknown-perk: "&cNo unlock with the name &f{perk}&c available!"
   not-in-empire-world: "&cYou are not in your Empire's world!"
   not-unlocked-yet: "&cThis feature only unlocked with {state} level {level}!"
+move-cancelled: "&c{action} cancelled because you moved!"
 banished:
   move:
     title: "&cTurn Around"
