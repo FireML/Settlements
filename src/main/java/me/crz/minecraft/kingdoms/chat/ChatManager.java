@@ -90,6 +90,8 @@ public class ChatManager extends Base {
                 .replace("rank", TextComponent.fromLegacyText(village != null ? res.getVillageRank().getTag(village) : ""))
                 .replace("title", TextComponent.fromLegacyText(res.getTitle()))
                 .replace("state", TextComponent.fromLegacyText(village != null ? village.getState().getTag() : ""))
+                .replace("settlement", TextComponent.fromLegacyText(village != null ? village.getName() : ""))
+                .replace("empire", TextComponent.fromLegacyText(res.hasEmpire() ? village.getEmpire().getName() : ""))
                 .replace("sender", new ComponentBuilder("")
                         .event(getHover(sender, res))
                         .append(getMessage("format.name").getReplacedComponents(
@@ -240,9 +242,15 @@ public class ChatManager extends Base {
                 "prefix", MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(player)),
                 "suffix", MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerSuffix(player)),
                 "balance", getMessage("hover.balance").getReplacedText("balance", BALANCE_FORMAT.format(KingdomsPlugin.getInstance().econ.getBalance(player))),
+                "bonus", getMessage("hover.bonus").getReplacedText("bonus", BALANCE_FORMAT.format(res.getBonusClaims())),
                 "village", res.hasVillage() ? getMessage("hover.village").getReplacedText(
                         "state", res.getVillage().getState().getTag(),
                         "name", res.getVillage().getName()
+                ): "",
+                "empire", res.hasEmpire() ? getMessage("hover.empire").getReplacedText(
+                        "name", res.getVillage().getEmpire().getName(),
+                        "capital", res.getVillage().getEmpire().getCapital().getName(),
+                        "leader", res.getVillage().getEmpire().getCapital().getChief().getName()
                 ): "",
                 "rank", res.hasVillage() ? getMessage("hover.rank").getReplacedText(
                         "state", res.getVillage().getState().getTag(),

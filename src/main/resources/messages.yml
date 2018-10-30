@@ -25,9 +25,9 @@ error:
   claim-too-close: "&c&lERROR &r&7You are too close to &e{owner}'s land !"
   already-own-land: "&e&lALERT &r&7Your settlement already owns this land!"
   cant-claim-here: "&c&lERROR &r&7This land is owned by &e{owner}!"
-  outpost-not-found: |
-    &cUnable to find: &6{name}
-    &cPlease make sure your using the outpost name shown in /s outpost list!
+  outpost-not-found: |-
+    &cUnable to find outpost: &6{name}
+    &cUse [&f/s outpost list](/s outpost list) to view all outposts!
   rank-required: "&c&lYou require the rank &r&6&l{rank} or higher&r&c&l!"
   village-required: "&c&lYou can only do this after you joined a settlement!"
   empire-required: "&c&lYou can only do this after you joined an empire!"
@@ -120,9 +120,11 @@ cannot-attack-animals: "&c&lYou cannot attack another village's animals!"
 chat:
   locked: "&c&lChat is currently locked!"
   hover:
-    info: "&9Name: &7{name}{rank}{balance}{village}"
+    info: "&9Name: &7{name}{rank}{balance}{bonus}{village}{empire}"
     balance: "\n&9Balance: &7{balance}"
+    bonus: "\n&9Bonusclaims: &7{bonus}"
     village: "\n&9{state}: &7{name}"
+    empire: "\n&9Empire: &7{name}"
     rank: "\n&9Rank: &7{title}"
   staff: "&c&lStaff "
   format:
@@ -610,11 +612,12 @@ command:
         &r &a~ &6= player plot
         &r &ae &6= embassy
         &r &aH &6= home
-        &r &a@ &6= outpost
+        &r &2@ &6= outpost
         &r &b- &6= ally
         &r &c- &6= other
         &r &7- &6= unclaimed
         &r &e+ &6= current
+      not-for-sale: "Nor for sale"
       hover:
         click-to-claim: "&9Click to claim &f{location}"
         click-to-unclaim: "&9Click to unclaim &f{location}"
@@ -737,7 +740,7 @@ command:
         private: Allows only members to teleport to home
       description: Sets the access level for the settlement
     sethome:
-      success: "{title} {name} &r&7&l has set the {state} home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
+      success: "{title} {name} &r&7&lhas set the {state} home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
       description: Sets the home for the village
     setjoinfee:
       success: "&e&lALERT &r&7Join fee was set &e{amount}&7!"
