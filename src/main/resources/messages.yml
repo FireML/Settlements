@@ -438,12 +438,13 @@ command:
     show:
       info: |-
         &8------&c&l {name} &8------
-        &a&lSettlement: {settlement}
-        &a&lRank: {title}
+        &a&lSettlement: &f{settlement}
+        &a&lRank: &f{title}
         &a&lBalance: &6${balance}
         &a&lTax owed: &6${taxowed}
-        &a&lJoin Date: {joindate}
-        &a&lLast Login: {lastlogin}
+        &a&lBonus claims: &f{bonus}
+        &a&lJoin Date: &f{joindate}
+        &a&lLast Login: &f{lastlogin}
       friend:
         list:
           head: "&a&lFriends:&r"

@@ -20,7 +20,7 @@ public class ResidentShowCommand extends SubCommand {
     private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
     public ResidentShowCommand(SubCommand parent) {
-        super(parent, "show <name>");
+        super(parent, "show <name>", "data", "info");
         setPermission("kingdoms.user");
     }
 
@@ -44,8 +44,9 @@ public class ResidentShowCommand extends SubCommand {
                     "settlement", (target.getVillage() == null) ? "none" : target.getVillage().getName(),
                     "rank", (target.getVillage() == null) ? "none" : target.getVillageRank().getTag(target.getVillage()),
                     "title", (target.getVillage() == null) ? "none" : target.getTitle(),
-                    "balance", DECIMAL_FORMAT.format(balance),
-                    "taxowed", DECIMAL_FORMAT.format(target.getTaxOwed()),
+                    "balance", Utils.CURRENCY_FORMAT.format(balance),
+                    "bonus", Utils.CURRENCY_FORMAT.format(target.getBonusClaims()),
+                    "taxowed", Utils.CURRENCY_FORMAT.format(target.getTaxOwed()),
                     "joindate", DATE_FORMAT.format(new Date(op.getFirstPlayed())),
                     "lastlogin",  DATE_FORMAT.format(new Date(target.getLastLogin()))
             );
