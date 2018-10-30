@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 
 public class VillageAdminBonusCommand extends SubCommand {
     public VillageAdminBonusCommand(SubCommand parent) {
-        super(parent, "bonus add|set|remove player|village|empire:<name> <amount>", "bonusclaims");
+        super(parent, "bonus add|set|remove <player>|[player|village|empire]:<name> <amount>", "bonusclaims");
         setPermission("kingdoms.admin");
     }
 
