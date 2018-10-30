@@ -1,25 +1,26 @@
 package me.crz.minecraft.kingdoms.command.resident;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.BonusClaimsHolder;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
+import org.bukkit.entity.Player;
 
-public class ResidentClaimTransferCommand extends VillageSubCommand {
+public class ResidentClaimTransferCommand extends SubCommand {
     public ResidentClaimTransferCommand(SubCommand parent) {
-        super(parent, "claimtransfer [<settlement|e:empire>] <amount>", VillageRank.RESIDENT, "transferclaims", "bonustransfer", "transferbonus");
+        super(parent, "claimtransfer <settlement>|empire:<name> <amount>", "transferclaims", "bonustransfer", "transferbonus");
         setPermission("kingdoms.user");
     }
 
     @Override
-    public boolean run(Resident resident, String base, String alias, String... args) {
+    public boolean run(Player player, String base, String alias, String... args) {
+        Resident resident = ResidentManager.getInstance().getResident(player);
         int amountIndex = 1;
         BonusClaimsHolder target;
         if (args.length < 2) {
@@ -33,13 +34,13 @@ public class ResidentClaimTransferCommand extends VillageSubCommand {
                 return false;
             }
         } else {
-            if (args[0].startsWith("empire:") ||args[0].startsWith("e:")) {
+            if (args[0].startsWith("empire:") || args[0].startsWith("e:")) {
                 target = EmpireManager.getInstance().getEmpireFromName(args[0].split(":")[1]);
                 if (target == null) {
                     getError("empire-doesnt-exist").tell(resident, "name", args[0].split(":")[1]);
                     return false;
                 }
-            } else if (args[0].startsWith("village:") ||args[0].startsWith("v:")) {
+            } else if (args[0].startsWith("village:") || args[0].startsWith("v:") || args[0].startsWith("settlement:") || args[0].startsWith("s:")) {
                 target = VillageManager.getInstance().getVillageFromName(args[0].split(":")[1]);
                 if (target == null) {
                     getError("village-doesnt-exist").tell(resident, "name", args[0].split(":")[1]);

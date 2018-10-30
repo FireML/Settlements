@@ -36,7 +36,7 @@ public class VillageAdminBonusCommand extends SubCommand {
             getError("not-a-number").tell(player, "input", args[2]);
             return false;
         }
-        if (args[1].startsWith("village:") || args[1].startsWith("v:")) {
+        if (args[1].startsWith("village:") || args[1].startsWith("v:") || args[1].startsWith("settlement:") || args[1].startsWith("s:")) {
             String name = args[1].split(":")[1];
             Village village = VillageManager.getInstance().getVillageFromName(name);
             if (village != null) {
