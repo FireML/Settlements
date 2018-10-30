@@ -40,9 +40,13 @@ error:
 move-cancelled: "&c{action} cancelled because you moved!"
 banished:
   move:
+    message: ""
+    actionbar: ""
     title: "&cTurn Around"
     subtitle: "&cYou're banished from this settlement!"
   teleport:
+    message: ""
+    actionbar: ""
     title: "&cCan't teleport"
     subtitle: "&cYou're banished from this settlement!"
 broadcast:

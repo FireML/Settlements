@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.banish;
 
 import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveChunkEvent;
 import me.crz.minecraft.kingdoms.land.LandManager;
+import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.TitleBuilder;
@@ -12,7 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-public class BanishListener implements Listener {
+public class BanishListener implements Listener, ConfigMessages {
     
     @EventHandler
     public void on(PlayerMoveChunkEvent e) {
@@ -35,10 +36,21 @@ public class BanishListener implements Listener {
                 "state", village.getState().getTag(),
                 "name", village.getName()
         };
-        MessageUtils.tell(p, Message.get("banished." + type + ".message"), replacements);
+        getMessage(type + ".message").tell(p, replacements);
         new TitleBuilder()
-                .withTitle(Message.get("banished." + type + ".title").getReplacedText(replacements))
-                .withSubtitle(Message.get("banished." + type + ".subtitle").getReplacedText(replacements))
-                .withActionbar(Message.get("banished." + type + ".actionbar").getReplacedText(replacements)).send(p);
+                .withTitle(getMessage(type + ".title").getReplacedText(replacements))
+                .withSubtitle(getMessage(type + ".subtitle").getReplacedText(replacements))
+                .withActionbar(getMessage(type + ".actionbar").getReplacedText(replacements))
+                .send(p);
+    }
+
+    @Override
+    public String type() {
+        return "";
+    }
+
+    @Override
+    public String name() {
+        return "banished";
     }
 }
