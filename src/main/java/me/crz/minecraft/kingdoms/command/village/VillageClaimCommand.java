@@ -45,7 +45,7 @@ public class VillageClaimCommand extends VillageSubCommand {
                     return true;
                 }
                 toClaim.add(new SimpleChunkLocation(player.getLocation()));
-                Utils.getChunksAround(player, radius).stream().filter(toClaim::contains).forEach(toClaim::add);
+                toClaim.addAll(Utils.getChunksAround(player, radius));
             } catch (NumberFormatException e) {
                 getError("not-a-number").tell(res, "input", args[0]);
                 return false;
