@@ -585,7 +585,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         village.getAllies().addAll(((Collection<Object>) map.get("allies")).stream().map(IdObject::get).collect(Collectors.toSet()));
         if (map.get("homeLoc") != null) {
             village.setVillageHome(SimpleLocation.deserialize((Map<String, Object>) map.get("homeLoc")));
-        } else if (map.get("homeLoc_x") != null && map.get("homeLoc_y") != null && map.get("homeLoc_Z") != null
+        } else if (map.get("homeLoc_x") != null && map.get("homeLoc_y") != null && map.get("homeLoc_z") != null
                 && map.get("homeLoc_world") != null && map.get("homeLoc_yaw") != null && map.get("homeLoc_pitch") != null){
             village.setVillageHome(new SimpleLocation(
                     (String) map.get("homeLoc_world"),
