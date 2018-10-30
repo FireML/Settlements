@@ -9,6 +9,7 @@ import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.KingdomsGUI;
 import me.crz.minecraft.kingdoms.village.VillageManager;
+import me.crz.minecraft.kingdoms.village.VillageState;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -23,7 +24,7 @@ public class SettingsGUI extends KingdomsGUI {
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
         gui.addItem(new ClickableItem() {
             public ItemStack getItem(Player p) {
-                return new CItem(Material.IRON_DOOR).setName(getText("access")).build();
+                return new CItem(Material.IRON_DOOR).setName(getText("access")).hideAllFlags(true).build();
             }
 
             public boolean click(Player p, ClickType clickType) {
@@ -33,7 +34,7 @@ public class SettingsGUI extends KingdomsGUI {
         });
         gui.addItem(new ClickableItem() {
             public ItemStack getItem(Player p) {
-                return new CItem(Material.DIAMOND_PICKAXE).setName(getText("build")).build();
+                return new CItem(Material.DIAMOND_PICKAXE).setName(getText("build")).hideAllFlags(true).build();
             }
 
             public boolean click(Player p, ClickType clickType) {
@@ -43,7 +44,7 @@ public class SettingsGUI extends KingdomsGUI {
         });
         gui.addItem(new ClickableItem() {
             public ItemStack getItem(Player p) {
-                return new CItem(Material.LEVER).setName(getText("use")).build();
+                return new CItem(Material.LEVER).setName(getText("use")).hideAllFlags(true).build();
             }
 
             public boolean click(Player p, ClickType clickType) {
@@ -53,7 +54,7 @@ public class SettingsGUI extends KingdomsGUI {
         });
         gui.addItem(new ClickableItem() {
             public ItemStack getItem(Player p) {
-                return new CItem(Material.REDSTONE).setName(getText("mode")).build();
+                return new CItem(Material.REDSTONE).setName(getText("mode")).hideAllFlags(true).build();
             }
 
             public boolean click(Player p, ClickType clickType) {
@@ -63,7 +64,7 @@ public class SettingsGUI extends KingdomsGUI {
         });
         gui.addItem(new ClickableItem() {
             public ItemStack getItem(Player p) {
-                return new CItem(Material.LINGERING_POTION).setName(getText("perks")).build();
+                return new CItem(Material.LINGERING_POTION).setName(getText("perks")).hideAllFlags(true).build();
             }
 
             public boolean click(Player p, ClickType clickType) {
@@ -77,7 +78,7 @@ public class SettingsGUI extends KingdomsGUI {
                 if (village == null) {
                     return null;
                 }
-                return new CItem(Material.LIGHT_GRAY_STAINED_GLASS_PANE).setName(
+                return new CItem(village.getState() == VillageState.KINGDOM ? Material.RED_BED : Material.GREEN_BED).hideAllFlags(true).setName(
                         getMessage("entry").getReplacedText(village.getReplacements(instance))
                 ).build();
             }

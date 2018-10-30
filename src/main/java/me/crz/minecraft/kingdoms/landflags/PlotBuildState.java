@@ -37,6 +37,6 @@ public enum PlotBuildState implements NameTag {
     }
 
     public CItem getItem() {
-        return new CItem(icon);
+        return new CItem(icon).hideAllFlags(true);
     }
 }

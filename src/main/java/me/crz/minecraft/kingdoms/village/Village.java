@@ -470,15 +470,24 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     }
 
     public boolean canLevelUp() {
-        int currentLevel = getLevel();
         if (isMaxLevel()) {
             return false;
         }
-        return has(Levels.getLevelRequirements(getState(), currentLevel + 1));
+        return has(getNextLevelRequirements());
+    }
+
+    public Map<String, Long> getNextLevelRequirements() {
+        int nextLevel = getLevel() + 1;
+        VillageState nextState = getState();
+        if (nextState == VillageState.VILLAGE && nextLevel > Levels.VILLAGE_TO_KINGDOM_LEVEL) {
+            nextState = VillageState.KINGDOM;
+            nextLevel = 1;
+        }
+        return Levels.getLevelRequirements(nextState, nextLevel);
     }
 
     public boolean isMaxLevel() {
-        return (getLevel() == Levels.KINGDOMS_MAX_LEVEL && getState() == VillageState.KINGDOM) || Levels.getLevelRequirements(getState(), getLevel() + 1) == null;
+        return (getLevel() == Levels.KINGDOMS_MAX_LEVEL && getState() == VillageState.KINGDOM) || getNextLevelRequirements() == null;
     }
 
     @Override

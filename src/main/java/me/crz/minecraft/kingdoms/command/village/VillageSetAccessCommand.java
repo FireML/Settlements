@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
+import me.crz.minecraft.kingdoms.command.village.settings.AccessGUI;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -10,14 +11,15 @@ import me.crz.minecraft.kingdoms.village.VillageAccess;
 
 public class VillageSetAccessCommand extends VillageSubCommand {
     public VillageSetAccessCommand(SubCommand parent) {
-        super(parent, "setaccess <access>", VillageRank.CHIEF, "set");
+        super(parent, "setaccess <access>", VillageRank.CHIEF, "set", "access");
         setPermission("kingdoms.user");
     }
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length < 1) {
-            return false;
+            AccessGUI.getInstance().open(resident.getPlayer());
+            return true;
         }
         try {
             VillageAccess access = VillageAccess.valueOf(String.join("_", args).toUpperCase());

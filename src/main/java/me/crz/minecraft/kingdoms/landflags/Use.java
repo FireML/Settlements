@@ -73,7 +73,7 @@ public enum Use implements NameTag {
     }
 
     public CItem getItem() {
-        return new CItem(icon);
+        return new CItem(icon).hideAllFlags(true);
     }
 
     private Collection<Material> getMaterials() {

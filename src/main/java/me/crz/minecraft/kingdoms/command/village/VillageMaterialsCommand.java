@@ -23,7 +23,7 @@ public class VillageMaterialsCommand extends VillageSubCommand {
             return true;
         }
         Village village = resident.getVillage();
-        Map<String, Long> nextLevelReqs = Levels.getLevelRequirements(village.getState(), village.getLevel() + 1);
+        Map<String, Long> nextLevelReqs = village.getNextLevelRequirements();
         if (nextLevelReqs == null || nextLevelReqs.isEmpty()) {
             resident.tell(getMessage("max-level-reached"), "state", resident.getVillage().getState().getTag());
             return true;

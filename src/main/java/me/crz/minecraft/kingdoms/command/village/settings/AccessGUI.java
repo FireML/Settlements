@@ -27,16 +27,6 @@ public class AccessGUI extends KingdomsGUI {
         super("access");
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
 
-        gui.addItem(8, new ClickableItem() {
-            public ItemStack getItem(final Player p) {
-                return new CItem(Material.BARRIER).setName(getText("back")).build();
-            }
-
-            public boolean click(final Player p, final ClickType clickType) {
-                SettingsGUI.getInstance().open(p);
-                return true;
-            }
-        });
         for (VillageAccess access : VillageAccess.values()) {
             gui.addItem(new ClickableItem() {
                 @Override
@@ -73,6 +63,16 @@ public class AccessGUI extends KingdomsGUI {
                 }
             });
         }
+        gui.addItem((gui.getMaxSlot() / 9) * 9 + 8, new ClickableItem() {
+            public ItemStack getItem(final Player p) {
+                return new CItem(Material.BARRIER).setName(getText("back")).build();
+            }
+
+            public boolean click(final Player p, final ClickType clickType) {
+                SettingsGUI.getInstance().open(p);
+                return true;
+            }
+        });
     }
 
     public void open(final Player p) {

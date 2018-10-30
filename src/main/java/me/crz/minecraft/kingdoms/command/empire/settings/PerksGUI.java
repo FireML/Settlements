@@ -4,6 +4,7 @@ import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
+import me.crz.minecraft.kingdoms.command.village.settings.SettingsGUI;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
@@ -16,6 +17,7 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.KingdomsGUI;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -180,6 +182,16 @@ public class PerksGUI extends KingdomsGUI {
                 }
             });
         }
+        gui.addItem((gui.getMaxSlot() / 9) * 9 + 8, new ClickableItem() {
+            public ItemStack getItem(final Player p) {
+                return new CItem(Material.BARRIER).setName(getText("back")).build();
+            }
+
+            public boolean click(final Player p, final ClickType clickType) {
+                SettingsGUI.getInstance().open(p);
+                return true;
+            }
+        });
     }
 
     public void open() {

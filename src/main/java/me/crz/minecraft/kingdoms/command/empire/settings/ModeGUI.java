@@ -7,6 +7,7 @@ import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.command.empire.EmpireMode;
 import me.crz.minecraft.kingdoms.command.village.settings.SettingsGUI;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.utils.BonusClaimsHolder;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -37,14 +38,19 @@ public class ModeGUI extends KingdomsGUI {
                 public ItemStack getItem(Player p) {
                     Village village = VillageManager.getInstance().getVillageFromPlayer(p);
                     if (village != null && village.hasEmpire()) {
-                        String state = yesOrNo(m.get(village.getEmpire()));
-                        return m.getItem().setName(getMessage("entry.title").getReplacedText(
+                        boolean enabled = m.get(village.getEmpire());
+                        String state = yesOrNo(enabled);
+                        CItem item = m.getItem().setName(getMessage("entry.title").getReplacedText(
                                 "mode", m.getTag(),
                                 "value", state
                         )).setLore(getMessage("entry.lore").getReplacedTextList(
                                 "mode", m.getTag(),
                                 "value", state
-                        )).build();
+                        ));
+                        if (enabled) {
+                            item.glow(true);
+                        }
+                        return item.build();
                     }
                     return null;
                 }
@@ -52,11 +58,11 @@ public class ModeGUI extends KingdomsGUI {
                 public boolean click(Player p, ClickType clickType) {
                     Resident res = ResidentManager.getInstance().getResident(p);
                     if (res.hasEmpire() && res.getEmpireRank().atLeast(VillageRank.CHIEF)) {
-                        boolean state = m.get(res.getVillage().getEmpire());
+                        boolean state = !m.get(res.getVillage().getEmpire());
                         m.set(state, res.getVillage().getEmpire());
                         MessageUtils.tell(p, Message.get("command.empire.mode.success"),
                                 "mode", m.getTag(),
-                                "value", yesOrNo(!state)
+                                "value", yesOrNo(state)
                         );
                         gui.build(p);
                         return true;
@@ -65,7 +71,7 @@ public class ModeGUI extends KingdomsGUI {
                 }
             });
         }
-        gui.addItem((gui.getMaxSlot() / 9 ) * 9 + 8, new ClickableItem() {
+        gui.addItem((gui.getMaxSlot() / 9) * 9 + 8, new ClickableItem() {
             public ItemStack getItem(final Player p) {
                 return new CItem(Material.BARRIER).setName(getText("back")).build();
             }

@@ -243,21 +243,23 @@ gui:
     title: "&3&lSettlement Build Settings"
     set-state: "&7&lClick to allow building of &b&l{state}"
     selected-state: "&e&lBuilding is currently set to &b&l{state}"
+    back: "&c&lBack To Settings"
   mode:
     title: "&3&lSettlement Mode"
     entry:
       title: "&b&l{mode}"
-      lore: "&7&lState: &b&l{state}"
+      lore: "&7&lEnabled: &b&l{value}"
     back: "&c&lBack To Settings"
   empire-build:
     title: "&3&lEmpire Build Settings"
     set-state: "&7&lClick to allow building of &b&l{state}"
     selected-state: "&e&lBuilding is currently set to &b&l{state}"
+    back: "&c&lBack To Settings"
   empire-mode:
     title: "&3&lEmpire Mode"
     entry:
       title: "&b&l{mode}"
-      lore: "&7&lState: &b&l{state}"
+      lore: "&7&lEnabled: &b&l{value}"
     back: "&c&lBack To Settings"
   empire-perks:
     title: "&3&lEmpire Perks"
@@ -285,6 +287,7 @@ gui:
       repeat: "&aRepeat cost:"
       entry: "{icon}&a{type}&7: {amount}"
     cooldown: "&aCan be repeated in {cooldown}"
+    back: "&c&lBack To Settings"
   empire-settings:
     title: "&3&lEmpire Settings"
     build: "&b&lBuild"
@@ -298,11 +301,11 @@ gui:
       &6&lLevel &r&7{level}
       &6&lAccess &r&7{access}
       &6&lBank &r&7{bank}
-      &6&lBonusclaims &r&7{bonus}
+      &6&lBonusclaims &r&7{bonusclaims}
       &6&lCapital &r&7{capitalstate}{capital}
       &e&lLeader &r&7{chieftitle} {chief}
       &e&lMembers: &r&7{members}
-    bonus: " Bonus: {amount}"
+    bonus-claims: " Bonus: {amount}"
   plot-use:
     title: "&3&lPlot Use Settings"
     toggle-all: "&7&lClick to toggle all to &b&l{state}"
@@ -345,11 +348,17 @@ gui:
       &6&lLevel &r&7{level}
       &6&lAccess &r&7{access}
       &6&lBank &r&7{bank}
-      &6&lLand &r&7{land}&r&e/&r&7{maxland}{bonus}
+      &6&lLand &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
       &6&lOutposts &r&7{outposts}&r&e/&r&7{maxoutposts}
-      &e&l{chiefrank} &r&7{chief}
-      &e&lMembers: &r&7{residents}
-    bonus: " Bonus: {amount}"
+      &e&lMembers:
+      &r&7{residents}
+    bonus-claims: " Bonus: {amount}"
+    residents:
+      rank: "&6&l{rank}:&r {residents}"
+      separator: "&7, "
+      online: "&a"
+      offline: "&c"
+      entry: "{online}{name}"
   teleporters:
     title: "&2&lSettlement Teleporters"
     locked: "&cLocked"
@@ -384,6 +393,7 @@ gui:
       repeat: "&aRepeat cost:"
       entry: "{icon}&a{type}&7: {amount}"
     cooldown: "&aCan be repeated in {cooldown}"
+    back: "&c&lBack To Settings"
   use:
     title: "&3&lSettlement Use Settings"
     back: "&c&lBack To Settings"
@@ -638,7 +648,7 @@ command:
       description: Shows you the materials required to upgrade
     mode:
       modes: "&cAvailable modes: {modes}"
-      success: "&7Settlement mode &6{mode}&7 set to &6{value}"
+      success: "&7Settlement mode &6{mode}&7: &6{value}"
       description: Changes settings for your village claims
     outpost:
       claim:
@@ -697,7 +707,7 @@ command:
         description: Link surrounding land flags with the current one
       mode:
         modes: "&cAvailable modes: {modes}"
-        success: "&7Plot mode &6{mode}&7 set to &6{value}"
+        success: "&7Plot mode &6{mode}&7: &6{value}"
         description: Sets the modes of a plot
       revoke:
         success: "&aPlot has been revoked ownership!"

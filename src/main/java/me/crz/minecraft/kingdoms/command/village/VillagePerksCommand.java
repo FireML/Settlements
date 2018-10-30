@@ -105,7 +105,8 @@ public class VillagePerksCommand extends VillageSubCommand {
                 }
                 return false;
             }
-        });registerCommand(new VillageSubCommand(this, "toggle <perk>") {
+        });
+        registerCommand(new VillageSubCommand(this, "toggle <perk>") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length > 0) {

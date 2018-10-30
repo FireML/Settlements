@@ -54,7 +54,7 @@ public class VaultListener extends KingdomsGUI implements Listener {
         Map<Material, Long> fail = new HashMap<>();
         Village village = resident.getVillage();
         if (!village.isMaxLevel()) {
-            Map<String, Long> nextLevelReqs = Levels.getLevelRequirements(village.getState(), village.getLevel() + 1);
+            Map<String, Long> nextLevelReqs = village.getNextLevelRequirements();
             Map<String, Long> total = new HashMap<>();
             Map<String, Long> deposited = new HashMap<>();
 

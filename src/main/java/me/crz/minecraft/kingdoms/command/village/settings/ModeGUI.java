@@ -35,14 +35,19 @@ public class ModeGUI extends KingdomsGUI {
                 public ItemStack getItem(Player p) {
                     Village village = VillageManager.getInstance().getVillageFromPlayer(p);
                     if (village != null) {
-                        String state = yesOrNo(m.get(village));
-                        return m.getItem().setName(getMessage("entry.title").getReplacedText(
+                        boolean enabled = m.get(village);
+                        String state = yesOrNo(enabled);
+                        CItem item = m.getItem().setName(getMessage("entry.title").getReplacedText(
                                 "mode", m.getTag(),
                                 "value", state
                         )).setLore(getMessage("entry.lore").getReplacedTextList(
                                 "mode", m.getTag(),
                                 "value", state
-                        )).build();
+                        ));
+                        if (enabled) {
+                            item.glow(true);
+                        }
+                        return item.build();
                     }
                     return null;
                 }
@@ -50,11 +55,11 @@ public class ModeGUI extends KingdomsGUI {
                 public boolean click(Player p, ClickType clickType) {
                     Resident res = ResidentManager.getInstance().getResident(p);
                     if (res.hasVillage() && res.getVillageRank().atLeast(VillageRank.CHIEF)) {
-                        boolean state = m.get(res.getVillage());
+                        boolean state = !m.get(res.getVillage());
                         m.set(state, res.getVillage());
                         MessageUtils.tell(p, Message.get("command.village.mode.success"),
                                 "mode", m.getTag(),
-                                "value", yesOrNo(!state)
+                                "value", yesOrNo(state)
                         );
                         gui.build(p);
                         return true;
@@ -63,7 +68,7 @@ public class ModeGUI extends KingdomsGUI {
                 }
             });
         }
-        gui.addItem((gui.getMaxSlot() / 9 ) * 9 + 8, new ClickableItem() {
+        gui.addItem((gui.getMaxSlot() / 9) * 9 + 8, new ClickableItem() {
             public ItemStack getItem(final Player p) {
                 return new CItem(Material.BARRIER).setName(getText("back")).build();
             }

@@ -239,14 +239,16 @@ public class VillageMapCommand extends SubCommand implements Listener {
             if (resident.hasVillage()) {
                 for (NamedLocation o : resident.getVillage().getOutpostHomes().values()) {
                     OwnedLand outpostLand = LandManager.getInstance().getLand(o.toChunkLocation());
-                    LandManager.getInstance().getAllConnectedLand(outpostLand, search -> {
-                        if (search.isOutpost()) {
-                            return LandManager.FilterResponse.SKIP_BRANCH;
-                        } else if (search.containsHome()) {
-                            return LandManager.FilterResponse.SKIP_BRANCH;
-                        }
-                        return LandManager.FilterResponse.ACCEPT;
-                    }).forEach(l -> ownOutposts.add(l.getLocation()));
+                    if (!outpostLand.containsHome()) {
+                        LandManager.getInstance().getAllConnectedLand(outpostLand, search -> {
+                            if (search.isOutpost()) {
+                                return LandManager.FilterResponse.SKIP_BRANCH;
+                            } else if (search.containsHome()) {
+                                return LandManager.FilterResponse.SKIP_BRANCH;
+                            }
+                            return LandManager.FilterResponse.ACCEPT;
+                        }).forEach(l -> ownOutposts.add(l.getLocation()));
+                    }
                 }
             }
         }

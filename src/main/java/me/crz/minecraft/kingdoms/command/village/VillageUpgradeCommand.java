@@ -22,7 +22,7 @@ public class VillageUpgradeCommand extends VillageSubCommand {
         if (!VillageManager.getInstance().checkLevelUp(v, res)) {
             res.tell(getError("not-possible"), "reason", v.isMaxLevel() ? getText("max-level-reached") :
                 getText("missing-items") + "\n"
-                        + Levels.getLevelRequirements(v.getState(), v.getLevel() + 1).entrySet().stream()
+                        + v.getNextLevelRequirements().entrySet().stream()
                     .filter(e -> !v.getVault().containsKey(e.getKey()) || v.getVault().get(e.getKey()) < e.getValue())
                     .map(e -> getMessage("entry").getReplacedText(
                             "material", e.getKey(),
