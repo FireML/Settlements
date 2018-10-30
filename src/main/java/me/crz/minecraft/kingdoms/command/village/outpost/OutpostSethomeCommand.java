@@ -15,21 +15,17 @@ public class OutpostSethomeCommand extends VillageSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        if (args.length < 1) {
-            return false;
-        }
         OwnedLand land = LandManager.getInstance().getLand(resident.getPlayer().getLocation());
         if (land == null || !land.isOutpost()) {
             resident.tell(getError("not-an-outpost"));
             return true;
         }
-        resident.getVillage().addOutpostHome(args[0], resident.getPlayer().getLocation());
-        land.setOutpost(args[0]);
+        resident.getVillage().addOutpostHome(land.getOutpostName(), resident.getPlayer().getLocation());
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveVillage(resident.getVillage());
             DatabaseManager.getInstance().saveLand(land);
         });
-        resident.tell(getMessage("success"), "name", args[0]);
+        resident.tell(getMessage("success"), "name", land.getOutpostName());
         return true;
     }
 }
