@@ -8,6 +8,7 @@ import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.text.DecimalFormat;
@@ -122,6 +123,13 @@ public class Utils {
             return ConfigManager.getInstance().getConfig().getBoolean("unally-unclaims-outposts");
         }
         return false;
+    }
+
+    public static int getTeleportDelay(String type) {
+        if (ConfigManager.getInstance().getConfig().isInt("teleport-delay." + type)) {
+            return ConfigManager.getInstance().getConfig().getInt("teleport-delay." + type);
+        }
+        return 0;
     }
 
     public static boolean playerIsChief(Player player, Village village) {
@@ -293,5 +301,19 @@ public class Utils {
             icon = ConfigManager.getInstance().getIconRpMapping().getIcon(type, true);
         }
         return icon != null ? icon : "";
+    }
+
+    public static void teleport(Player player, Location loc, String type, String messagePath, String... replacements) {
+        int delay = Utils.getTeleportDelay(type);
+        if (delay > 0) {
+            Message.get(messagePath + "waiting").tell(player, "seconds", String.valueOf(delay));
+            ExecuteMoveUtil.getInstance().execute(player, () -> {
+                player.teleport(loc);
+                Message.get(messagePath + ".success").tell(player, replacements);
+            }, delay, "Teleport");
+        } else {
+            player.teleport(loc);
+            Message.get(messagePath + ".success").tell(player, replacements);
+        }
     }
 }

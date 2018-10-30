@@ -2,11 +2,9 @@ package me.crz.minecraft.kingdoms.command.village.outpost;
 
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.utils.ExecuteMoveUtil;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.world.NamedLocation;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
 public class OutpostTeleportCommand extends VillageSubCommand {
     public OutpostTeleportCommand(VillageSubCommand parent) {
@@ -21,13 +19,7 @@ public class OutpostTeleportCommand extends VillageSubCommand {
         }
         NamedLocation location = resident.getVillage().getOutpostHomes().get(args[0].toLowerCase());
         if (location != null) {
-            Location loc2 = location.toBukkitLocation();
-            resident.tell(getMessage("waiting"), "seconds", String.valueOf(5));
-            Player player = resident.getPlayer();
-            ExecuteMoveUtil.getInstance().execute(player, () -> {
-                player.teleport(loc2);
-                resident.tell(getMessage("success"), "name", location.getName());
-            }, 5, "Teleport");
+            Utils.teleport(resident.getPlayer(), location.toBukkitLocation(), "outpost", getConfigPath(), "name", location.getName());
         } else {
             resident.tell(getError("outpost-not-found"), "name", args[0]);
         }

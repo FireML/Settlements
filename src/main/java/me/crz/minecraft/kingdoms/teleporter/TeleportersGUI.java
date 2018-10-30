@@ -4,6 +4,9 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
+import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.utils.ExecuteMoveUtil;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -13,6 +16,7 @@ import me.crz.minecraft.kingdoms.village.KingdomsGUI;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -72,7 +76,8 @@ public class TeleportersGUI extends KingdomsGUI {
                     return false;
                 }
                 try {
-                    p.teleport(Bukkit.getWorld(KingdomsPlugin.getInstance().getKingdomsWorld()).getSpawnLocation());
+                    Utils.teleport(p, Bukkit.getWorld(KingdomsPlugin.getInstance().getKingdomsWorld()).getSpawnLocation(), "command.village.home", getConfigPath(),
+                            "state", v.getState().getTag(), "name", v.getName());
                 } catch (Exception e) {
                     MessageUtils.tell(p, "&c&lAn error occurred somewhere! warp possibly not set!");
                 }
@@ -84,7 +89,7 @@ public class TeleportersGUI extends KingdomsGUI {
                 Village village = VillageManager.getInstance().getVillageFromPlayer(p);
                 if (village == null || village.getVillageHome() == null) {
                     ItemStack l = locked.clone();
-                    l.setLore(getMessage("empire-home").getTextList());
+                    l.setLore(getMessage("village-home").getTextList());
                     return l;
                 }
                 return Utils.getHead(village.getChiefId(), getText("village-home"));
@@ -96,7 +101,8 @@ public class TeleportersGUI extends KingdomsGUI {
                     return false;
                 }
 
-                p.teleport(v.getVillageHome().toBukkitLocation());
+                Utils.teleport(p, v.getVillageHome().toBukkitLocation(), v.getState().getKey(), "command.village.home",
+                        "state", v.getState().getTag(), "name", v.getName());
                 return false;
             }
         });
@@ -116,8 +122,9 @@ public class TeleportersGUI extends KingdomsGUI {
                 if (!resident.hasEmpire() || resident.getVillage().getEmpire().getHome() == null) {
                     return false;
                 }
-
-                p.teleport(resident.getVillage().getEmpire().getHome().toBukkitLocation());
+                Empire empire = resident.getVillage().getEmpire();
+                Location loc = empire.getHome().toBukkitLocation();
+                Utils.teleport(resident.getPlayer(), loc, "empire", "command.empire.home", "name", empire.getName());
                 return false;
             }
         });

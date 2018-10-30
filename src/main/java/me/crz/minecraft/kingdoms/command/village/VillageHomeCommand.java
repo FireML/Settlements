@@ -2,12 +2,11 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.utils.ExecuteMoveUtil;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageAccess;
 import me.crz.minecraft.kingdoms.village.VillageManager;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class VillageHomeCommand extends SubCommand {
@@ -46,12 +45,8 @@ public class VillageHomeCommand extends SubCommand {
         }
 
         if (village.getVillageHome() != null) {
-            Location loc = village.getVillageHome().toBukkitLocation();
-            MessageUtils.tell(player, getMessage("waiting"), "seconds", String.valueOf(3));
-            ExecuteMoveUtil.getInstance().execute(player, () -> {
-                player.teleport(loc);
-                MessageUtils.tell(player, getMessage("success"), "state", village.getState().getTag(), "name", village.getName());
-            }, 3, "Teleport");
+            Utils.teleport(player, village.getVillageHome().toBukkitLocation(), village.getState().getKey(), getConfigPath(),
+                    "state", village.getState().getTag(), "name", village.getName());
         } else {
             MessageUtils.tell(player, getMessage("no-home"), "state", village.getState().getTag());
         }

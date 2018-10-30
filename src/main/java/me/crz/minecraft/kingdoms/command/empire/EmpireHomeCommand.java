@@ -4,10 +4,8 @@ import me.crz.minecraft.kingdoms.command.EmpireSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
-import me.crz.minecraft.kingdoms.utils.ExecuteMoveUtil;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
 public class EmpireHomeCommand extends EmpireSubCommand {
     public EmpireHomeCommand(SubCommand parent) {
@@ -20,13 +18,7 @@ public class EmpireHomeCommand extends EmpireSubCommand {
         Empire empire = resident.getVillage().getEmpire();
 
         if (empire.getHome() != null) {
-            Location loc = empire.getHome().toBukkitLocation();
-            getMessage("waiting").tell(resident, "seconds", String.valueOf(3));
-            Player player = resident.getPlayer();
-            ExecuteMoveUtil.getInstance().execute(player, () -> {
-                player.teleport(loc);
-                getMessage("success").tell(player, "name", empire.getName());
-            }, 3, "Teleport");
+            Utils.teleport(resident.getPlayer(), empire.getHome().toBukkitLocation(), "empire", getConfigPath(), "name", empire.getName());
         } else {
             getMessage("no-home").tell(resident);
         }
