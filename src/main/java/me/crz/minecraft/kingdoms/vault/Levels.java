@@ -34,18 +34,22 @@ public class Levels {
         Map<String, Long> levelRequirements = new HashMap<>();
         FileConfiguration config = ConfigManager.getInstance().getLevelConfig();
         ConfigurationSection levelSection = config.getConfigurationSection(levelPath + ".requirements");
-        for (String key : levelSection.getKeys(false)) {
-            long amount = levelSection.getLong(key);
-            if (key.equalsIgnoreCase("CASH")) {
-                levelRequirements.put("CASH", amount);
-            } else {
-                Material material = Material.getMaterial(key.toUpperCase());
-                if (material != null) {
-                    levelRequirements.put(material.name(), amount);
+        if (levelSection != null) {
+            for (String key : levelSection.getKeys(false)) {
+                long amount = levelSection.getLong(key);
+                if (key.equalsIgnoreCase("CASH")) {
+                    levelRequirements.put("CASH", amount);
                 } else {
-                    KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, key + " is not a valid requirement (either cash or a material name) for " + levelPath);
+                    Material material = Material.getMaterial(key.toUpperCase());
+                    if (material != null) {
+                        levelRequirements.put(material.name(), amount);
+                    } else {
+                        KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, key + " is not a valid requirement (either cash or a material name) for " + levelPath);
+                    }
                 }
             }
+        } else {
+            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, levelPath + " has no requirements but it seems to be below the max level?");
         }
         return levelRequirements;
     }
