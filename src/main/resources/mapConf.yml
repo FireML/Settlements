@@ -1,5 +1,6 @@
 color:
   own: GREEN
+  own-outpost: DARK_GREEN
   own-plot: YELLOW
   ally: AQUA
   enemy: RED

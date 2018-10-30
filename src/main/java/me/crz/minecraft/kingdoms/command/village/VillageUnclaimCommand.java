@@ -11,7 +11,10 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 public class VillageUnclaimCommand extends VillageSubCommand {
@@ -54,33 +57,57 @@ public class VillageUnclaimCommand extends VillageSubCommand {
             toUnclaim.add(new SimpleChunkLocation(player.getLocation()));
         }
 
-        if (toUnclaim.isEmpty()) {
-            res.tell(getError("no-village"));
-            return true;
-        }
-
+        Set<OwnedLand> unclaimedLand = new LinkedHashSet<>();
         for (SimpleChunkLocation c : toUnclaim) {
             OwnedLand land = LandManager.getInstance().getLand(c);
-            if (!land.isOwnedBy(res.getVillage())) {
-                if (toUnclaim.size() == 1) {
-                    res.tell(getError("not-your-village"), "state", land.getOwnerVillage().getState().getTag());
+            if (land != null) {
+                if (!land.isOwnedBy(res.getVillage())) {
+                    if (toUnclaim.size() == 1) {
+                        res.tell(getError("not-your-village"), "state", land.getOwnerVillage().getState().getTag());
+                    }
+                } else if (land.isOutpost()) {
+                    if (toUnclaim.size() == 1) {
+                        getMessage("outpost").tell(res, "base", base, "outpost", land.getOutpostName());
+                    }
+                } else if (land.containsHome()) {
+                    if (toUnclaim.size() == 1) {
+                        getMessage("home").tell(res, "base", base);
+                    }
+                } else {
+                    unclaimedLand.add(land);
+                    // check for orphaned due to unclaim
+                    LandManager.getInstance().getAllConnectedLand(land, search -> {
+                        if (search.isOutpost()) {
+                            return LandManager.FilterResponse.SKIP_BRANCH;
+                        } else if (search.containsHome()) {
+                            return LandManager.FilterResponse.SKIP_BRANCH;
+                        }
+                        return LandManager.FilterResponse.ACCEPT;
+                    }).forEach(l -> {
+                        if (!toUnclaim.contains(l.getLocation())) {
+                            unclaimedLand.add(l);
+                        }
+                    });
+                    unclaimedLand.add(land);
                 }
-            } else if (land.isOutpost()) {
-                if (toUnclaim.size() == 1) {
-                    getMessage("outpost").tell(res, "base", base, "outpost", land.getOutpostName());
-                }
-            } else if (land.containsHome()) {
-                if (toUnclaim.size() == 1) {
-                    getMessage("home").tell(res, "base", base);
-                }
-            } else {
-                getMessage("success").tell(res.getVillage().getOnlineResidents(),
-                        "player", res.getName(),
-                        "world", land.getWorldName(),
-                        "x", String.valueOf(land.getX() * 16 + 8),
-                        "z", String.valueOf(land.getZ() * 16 + 8));
-                LandManager.getInstance().unclaimLand(land);
             }
+        }
+        if (!unclaimedLand.isEmpty()) {
+            unclaimedLand.forEach(l -> getMessage("success").tell(res.getVillage().getOnlineResidents(),
+                    "player", res.getName(),
+                    "name", res.getName(),
+                    "title", res.getTitle(),
+                    "rank", res.getVillageRank().getTag(res.getVillage()),
+                    "world", l.getWorldName(),
+                    "location", l.getSimpleKey(),
+                    "centerx", String.valueOf(l.getX() * 16 + 8),
+                    "centerz", String.valueOf(l.getZ() * 16 + 8),
+                    "x", String.valueOf(l.getX()),
+                    "z", String.valueOf(l.getZ()))
+            );
+            LandManager.getInstance().unclaimLand(unclaimedLand);
+        } else {
+            getError("no-village").tell(res);
         }
         return true;
     }

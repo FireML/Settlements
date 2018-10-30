@@ -29,7 +29,7 @@ public class PlotLinkCommand extends ResidentSubCommand {
         } else {
             Collection<OwnedLand> connected = LandManager.getInstance().getAllConnectedLand(land, location -> {
                 if (!land.isPlotOwner(res) || land.getLinkedTo() != null) {
-                    return LandManager.FilterResponse.SKIP;
+                    return LandManager.FilterResponse.SKIP_ENTRY;
                 }
                 return LandManager.FilterResponse.ACCEPT;
             });

@@ -437,4 +437,9 @@ public class OwnedLand implements ConfigurationSerializable {
     public boolean containsHome() {
         return getLocation().contains(getOwnerVillage().getVillageHome());
     }
+
+    @Override
+    public int hashCode() {
+        return getLocation().hashCode();
+    }
 }

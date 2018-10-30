@@ -34,13 +34,13 @@ public class OutpostUnclaimCommand extends VillageSubCommand {
 
         Collection<OwnedLand> toUnclaim = LandManager.getInstance().getAllConnectedLand(land, search -> {
             if (search.isOutpost()) {
-                // return an empty set if this is connected to the home chunk
+                // skip branch if this is connected to another outpost chunk
                 getMessage("connected-to-outpost").tell(resident);
-                return LandManager.FilterResponse.ABORT;
-            } else if (search.getLocation().equals(resident.getVillage().getVillageHome().toChunkLocation())) {
-                // return an empty set if this is connected to the home chunk
+                return LandManager.FilterResponse.SKIP_BRANCH;
+            } else if (search.containsHome()) {
+                // skip branch if this is connected to the home chunk
                 getMessage("connected-to-home").tell(resident);
-                return LandManager.FilterResponse.ABORT;
+                return LandManager.FilterResponse.SKIP_BRANCH;
             }
             return LandManager.FilterResponse.ACCEPT;
         });

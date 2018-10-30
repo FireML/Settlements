@@ -619,8 +619,8 @@ command:
         &r &e+ &6= current
       not-for-sale: "Nor for sale"
       hover:
-        click-to-claim: "&9Click to claim &f{location}"
-        click-to-unclaim: "&9Click to unclaim &f{location}"
+        click-to-claim: "&9Click to claim &f{x}-{z}"
+        click-to-unclaim: "&9Click to unclaim &f{x}-{z}"
         own-plot: Your plot
         plot: "Plot Owner: &7{owner}"
         for-sale: "For sale: &7{price}"
@@ -656,9 +656,9 @@ command:
         description: Teleports to a outpost shown in the list
       unclaim:
         not-an-outpost: "&cThis land is not an outpost, please use &7/s unclaim&c to unclaim this land."
-        success: "&aSuccess unclaimed the outpost at {x},{z} and {amount} land around it."
-        connected-to-home: "&cOnly unclaiming the outpost chunk as its land is connected to the home!"
-        connected-to-outpost: "&cOnly unclaiming the outpost chunk as its land is connected to another outpost!"
+        success: "&aSuccessfully unclaimed the outpost at {x},{z} and {amount} chunks connected to it."
+        connected-to-home: "&cOnly unclaiming chunks not connected to the home!"
+        connected-to-outpost: "&cOnly unclaiming chunks not connected to another outpost!"
         description: Unclaims the outpost you are standing in
       description: Claim a seperate chunk of land
     plot:
@@ -808,7 +808,7 @@ command:
     unclaim:
       outpost: "&cThis land is an outpost, please use &7/{base} outpost unclaim&c to unclaim this outpost."
       home: "&cThis land is your home, you have to move it with &7/{base} sethome&c before unclaiming this land."
-      success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at {x},{z}!"
+      success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at &f{x}-{z}!"
       description: Unclaim land which is claimed by your village
     perks:
       unlock:

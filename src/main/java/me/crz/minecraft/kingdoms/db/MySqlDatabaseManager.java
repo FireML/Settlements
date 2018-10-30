@@ -354,7 +354,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
     @Override
     public void saveVillage(Village village) {
         Utils.catchSync();
-        Map<String, Object> values = getValues(village.serialize(), "outpostHomes", "banished", "uses", "vault", "perks");
+        Map<String, Object> values = getValues(village.serialize(), "outposts", "banished", "uses", "vault", "perks");
         String sql = "INSERT INTO " + tablePrefix + "settlements "
                 + "(`" + String.join("`,`", values.keySet()) + "`)"
                 + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")"
@@ -430,7 +430,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 sta.setInt(3, land.getZ());
                 sta.addBatch();
             }
-            sta.executeUpdate();
+            sta.executeBatch();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + lands.length + " claims from database!", e);
         }
@@ -873,7 +873,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
             Object value = values.values().iterator().next();
             Set<String> columns = new LinkedHashSet<>();
             if (value instanceof ConfigurationSerializable) {
-                for (String column : getValues(((ConfigurationSerializable) value).serialize()).keySet()) {
+                for (String column : getValues(((ConfigurationSerializable) value).serialize(), mapKey).keySet()) {
                     if (mapValue.isEmpty()) {
                         columns.add(column);
                     } else {
@@ -882,7 +882,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 }
             } else if (value instanceof Map) {
                 if (((Map) value).keySet().iterator().next() instanceof String) {
-                    for (String column : getValues((Map<String, ?>) value).keySet()) {
+                    for (String column : getValues((Map<String, ?>) value, mapKey).keySet()) {
                         if (mapValue.isEmpty()) {
                             columns.add(column);
                         } else {
@@ -902,15 +902,21 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 insertSta.setInt(1, keyId);
                 insertSta.setObject(2, entry.getKey());
 
-                if (columns.size() > 1) {
-                    int j = 3;
-                    Map<String, Object> serMap = getValues(((ConfigurationSerializable) entry.getValue()).serialize());
+                int j = 3;
+                Map<String, Object> map = null;
+                if (entry.getValue() instanceof ConfigurationSerializable) {
+                    map = ((ConfigurationSerializable) entry.getValue()).serialize();
+                } else if (entry.getValue() instanceof Map) {
+                    map = (Map<String, Object>) entry.getValue();
+                }
+                if (map != null) {
+                    Map<String, Object> serMap = getValues(map, mapKey);
                     for (String column : columns) {
                         insertSta.setObject(j, serMap.get(column));
                         j++;
                     }
                 } else {
-                    insertSta.setObject(3, entry.getValue());
+                    insertSta.setObject(j, entry.getValue());
                 }
                 insertSta.addBatch();
             }

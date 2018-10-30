@@ -13,6 +13,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Multimap;
@@ -101,6 +102,7 @@ public class LandManager {
             }
             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
         }
+        KingdomsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + land.getKey() + " was claimed by " + village.getName() + "");
         cacheLand(land);
         return land;
     }
@@ -148,6 +150,7 @@ public class LandManager {
                     saveVillages.add(land.getOwnerVillage());
                 }
             }
+            KingdomsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + land.getKey() + " owned by " + land.getOwnerVillage().getName() + " was unclaimed");
             land.setOwnerVillage(null);
         }
         Utils.runAsync(() -> {
@@ -163,6 +166,7 @@ public class LandManager {
         List<SimpleChunkLocation> claims = new ArrayList<>(villageLands.get(village.getId()));
         for (SimpleChunkLocation claim : claims) {
             landTable.remove(claim.getWorld(), claim.getSimpleKey());
+            KingdomsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + claim.getKey() + " owned by " + village.getName() + " was unclaimed");
         }
         villageLands.removeAll(village.getId());
         Utils.runAsync(() -> {
@@ -256,37 +260,57 @@ public class LandManager {
 
         int[][] directions = {{1,0}, {0,1}, {-1,0}, {0,-1}};
 
-        List<OwnedLand> ownedLands = new ArrayList<>();
+        List<OwnedLand> found = new ArrayList<>();
         Set<SimpleChunkLocation> checked = new HashSet<>();
-        Queue<SimpleChunkLocation> toSearch = new ArrayDeque<>();
+        checked.add(land.getLocation());
 
-        toSearch.add(land.getLocation());
-        while (!toSearch.isEmpty()) {
-            SimpleChunkLocation current = toSearch.poll();
-            for (int[] direction : directions) {
-                SimpleChunkLocation search = current.copy().add(direction[0], direction[1]);
-                if (!checked.contains(search)) {
-                    checked.add(search);
-                    OwnedLand foundLand = getLand(search);
-                    if (foundLand != null && foundLand.isOwnedBy(land.getOwnerVillage())) {
-                        if (filter != null) {
-                            switch (filter.apply(foundLand)) {
-                                case ABORT:
-                                    return new ArrayList<>();
-                                case RETURN:
-                                    return ownedLands;
-                                case SKIP:
-                                    continue;
-                            }
+        for (int[] branchDir : directions) {
+            Queue<SimpleChunkLocation> toSearch = new ArrayDeque<>();
+            SimpleChunkLocation branch = land.getLocation().copy().add(branchDir[0], branchDir[1]);
+            if (checked.contains(branch)) {
+                continue;
+            }
+            toSearch.add(branch);
+
+            List<OwnedLand> branchFound = new ArrayList<>();
+
+            boolean skipBranch = false;
+            while (!toSearch.isEmpty()) {
+                SimpleChunkLocation search = toSearch.poll();
+                checked.add(search);
+                OwnedLand foundLand = getLand(search);
+                if (foundLand != null && foundLand.isOwnedBy(land.getOwnerVillage())) {
+                    if (filter != null) {
+                        switch (filter.apply(foundLand)) {
+                            case ABORT:
+                                return new ArrayList<>();
+                            case RETURN:
+                                found.addAll(branchFound);
+                                return found;
+                            case SKIP_ENTRY:
+                                continue;
+                            case SKIP_BRANCH:
+                                skipBranch = true;
+                                break;
                         }
-                        ownedLands.add(foundLand);
-                        toSearch.add(search);
+                    }
+                    branchFound.add(foundLand);
+
+                    for (int[] direction : directions) {
+                        SimpleChunkLocation next = search.copy().add(direction[0], direction[1]);
+                        if (!checked.contains(next)) {
+                            toSearch.add(next);
+                        }
                     }
                 }
             }
+
+            if (!skipBranch) {
+                found.addAll(branchFound);
+            }
         }
 
-        return ownedLands;
+        return found;
     }
 
     public void syncAndSave(OwnedLand land) {
@@ -355,9 +379,25 @@ public class LandManager {
     }
 
     public enum FilterResponse {
+        /**
+         * Aborts and returns an empty collection
+         */
         ABORT,
+        /**
+         * Return the current found collection
+         */
         RETURN,
-        SKIP,
+        /**
+         * Skip the current entry
+         */
+        SKIP_ENTRY,
+        /**
+         * Skip the currently searched branch
+         */
+        SKIP_BRANCH,
+        /**
+         * Acceot the entry and continue
+         */
         ACCEPT;
     }
 }

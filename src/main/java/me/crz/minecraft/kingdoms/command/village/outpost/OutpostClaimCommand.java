@@ -58,7 +58,7 @@ public class OutpostClaimCommand extends VillageSubCommand {
                 MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("success"),
                         "cost", String.valueOf(Utils.getOutpostCreationCost()),
                         "player", resident.getName(),
-                        "name", args[1],
+                        "name", args[0],
                         "x", String.valueOf(resident.getPlayer().getLocation().getBlockX()),
                         "z", String.valueOf(resident.getPlayer().getLocation().getBlockZ()));
             } else {
