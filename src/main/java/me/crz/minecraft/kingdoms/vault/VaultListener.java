@@ -128,7 +128,7 @@ public class VaultListener extends KingdomsGUI implements Listener {
         for (Map.Entry<Material, Long> entry : fail.entrySet()) {
             messages.add(getMessage("list-entry").getReplacedText(
                     "amount", String.valueOf(entry.getValue()),
-                    "icon", resident.hasResourcePack() ? ConfigManager.getInstance().getIconRpMapping().getIcon(entry.getKey().name(), true) : "",
+                    "icon", Utils.getIcon(resident, entry.getKey().name()),
                     "material", entry.getKey().name()));
         }
         return messages;
@@ -140,7 +140,7 @@ public class VaultListener extends KingdomsGUI implements Listener {
         for (Map.Entry<String, Long> entry : deposited.entrySet()) {
             messages.add(getMessage("list-entry").getReplacedText(
                 "amount", String.valueOf(entry.getValue()),
-                "icon", resident.hasResourcePack() ? ConfigManager.getInstance().getIconRpMapping().getIcon(entry.getKey(), true) : "",
+                "icon", Utils.getIcon(resident, entry.getKey()),
                 "material", entry.getKey()));
         }
         return messages;

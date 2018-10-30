@@ -566,7 +566,7 @@ command:
       description: "Shows information on the village you are stending in "
     history:
       head: "&7------- &cLog History [{page}]&7 -------"
-      entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {type}](&eAt {timestamp})"
+      entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
       description: Show the log history
     home:
       own-no-home: "&c&lYour settlement doesn't have a home ask your {chief} to set one!"
@@ -860,7 +860,7 @@ command:
       description: Deposit an item into the vault
       history:
         head: "&7------- &cVault History [{page}]&7 -------"
-        entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}{type}](&eAt {timestamp})"
+        entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
         description: Show the vault's history
     rules:
       description: Links you to the rules
@@ -939,7 +939,7 @@ command:
       description: Show in which empire world you are
     history:
       head: "&7------- &cLog History [{page}]&7 -------"
-      entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {type}](&eAt {timestamp})"
+      entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
       description: Show the log history
     home:
       no-home: "&c&lYour empire doesn't have a home !"

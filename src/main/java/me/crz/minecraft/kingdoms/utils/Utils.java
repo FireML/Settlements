@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.utils;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -284,5 +285,13 @@ public class Utils {
 
     public static long timeTillNextUpkeep() {
         return getNextUpkeep().getTime() - System.currentTimeMillis();
+    }
+
+    public static String getIcon(Resident resident, String type) {
+        String icon = null;
+        if (resident.hasResourcePack()) {
+            icon = ConfigManager.getInstance().getIconRpMapping().getIcon(type, true);
+        }
+        return icon != null ? icon : "";
     }
 }

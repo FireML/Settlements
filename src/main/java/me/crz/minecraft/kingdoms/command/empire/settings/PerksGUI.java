@@ -75,7 +75,7 @@ public class PerksGUI extends KingdomsGUI {
                                 for (Map.Entry<String, Long> cost : perk.getRepeatCost().entrySet()) {
                                     item.addLore(getMessage("cost.entry").getReplacedTextList(
                                             "type", cost.getKey(),
-                                            "icon", resident.hasResourcePack() ? ConfigManager.getInstance().getIconRpMapping().getIcon(cost.getKey(), true) : "",
+                                            "icon", Utils.getIcon(resident, cost.getKey()),
                                             "amount", String.valueOf(cost.getValue())
                                     ));
                                 }
@@ -117,7 +117,7 @@ public class PerksGUI extends KingdomsGUI {
                                 for (Map.Entry<String, Long> cost : perk.getRepeatCost().entrySet()) {
                                     item.addLore(getMessage("cost.entry").getReplacedTextList(
                                             "type", cost.getKey(),
-                                            "icon", resident.hasResourcePack() ? ConfigManager.getInstance().getIconRpMapping().getIcon(cost.getKey(), true) : "",
+                                            "icon", Utils.getIcon(resident, cost.getKey()),
                                             "amount", String.valueOf(cost.getValue())
                                     ));
                                 }
@@ -128,7 +128,7 @@ public class PerksGUI extends KingdomsGUI {
                             for (Map.Entry<String, Long> cost : perk.getUnlockCost().entrySet()) {
                                 item.addLore(getMessage("cost.entry").getReplacedTextList(
                                         "type", cost.getKey(),
-                                        "icon", resident.hasResourcePack() ? ConfigManager.getInstance().getIconRpMapping().getIcon(cost.getKey(), true) : "",
+                                        "icon", Utils.getIcon(resident, cost.getKey()),
                                         "amount", String.valueOf(cost.getValue())
                                 ));
                             }

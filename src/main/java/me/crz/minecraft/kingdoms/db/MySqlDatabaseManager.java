@@ -9,6 +9,7 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -282,11 +283,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "logs ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                     + "empireId INTEGER, INDEX(empireId),"
-                    + "FOREIGN KEY (empireId) REFERENCES " + tablePrefix + "empires(id) ON DELETE CASCADE,"
                     + "settlementId INTEGER, INDEX(settlementId),"
-                    + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
                     + "residentId INTEGER, "
-                    + "FOREIGN KEY (residentId) REFERENCES " + tablePrefix + "residents(id) ON DELETE CASCADE,"
+                    + "FOREIGN KEY (residentId) REFERENCES " + tablePrefix + "residents(id),"
                     + "`action` VARCHAR(255) NOT NULL,"
                     + "type VARCHAR(255) NOT NULL,"
                     + "amount BIGINT NOT NULL,"
@@ -681,7 +680,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         if (!resident.getVillageRank().atLeast(VillageRank.CHIEF)) {
             sql += " AND `action` = 'deposit'";
         }
-        sql += " ORDER BY id DESC LIMIT " + start + ",20;";
+        sql += " ORDER BY l.id DESC LIMIT " + start + ",20;";
         try (Connection conn = ds.getConnection();
              PreparedStatement sta = conn.prepareStatement(sql)) {
             sta.setInt(1, (Integer) id.value());
@@ -692,22 +691,28 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     rank = VillageRank.valueOf(rs.getString("playerRank").toUpperCase());
                 } catch (IllegalArgumentException ignored) {}
 
-                Village village = VillageManager.getInstance().getVillageFromId(IdObject.get(rs.getInt("settlementId")));
+                Village village = null;
+                int villageId = rs.getInt("empireId");
+                if (villageId > -1) {
+                    village = VillageManager.getInstance().getVillageFromId(IdObject.get(villageId));
+                }
                 Empire empire = null;
-                if (rs.getInt("empireId") > -1) {
-                    empire = EmpireManager.getInstance().getEmpireFromId(IdObject.get(rs.getInt("empireId")));
+                int empireId = rs.getInt("empireId");
+                if (empireId > -1) {
+                    empire = EmpireManager.getInstance().getEmpireFromId(IdObject.get(empireId));
                 }
 
                 log.add(new String[] {
-                        "village", village.getName(),
-                        "villagestate", village.getState().getTag(),
-                        "empire", empire != null ? empire.getName() : "",
+                        "village", village != null ? village.getName() : villageId > -1 ? "id:" + villageId : "",
+                        "villagestate", village != null ? village.getState().getTag() : villageId > -1 ? "Unknown" : "",
+                        "empire", empire != null ? empire.getName() : empireId > -1 ? "id:" + empireId : "",
                         "name", rs.getString("playerName"),
                         "uuid", rs.getString("playerId"),
                         "rank", rank.getTag(village),
                         "title", rs.getString("playerTitle"),
                         "action", rs.getString("action"),
                         "type", rs.getString("type"),
+                        "icon", Utils.getIcon(resident, rs.getString("type")),
                         "amount", String.valueOf(rs.getInt("amount")),
                         "timestamp", Utils.TIME_FORMAT.format(new Date(rs.getTimestamp("timestamp").getTime()))
                 });

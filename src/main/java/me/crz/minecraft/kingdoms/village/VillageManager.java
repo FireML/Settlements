@@ -198,7 +198,7 @@ public class VillageManager {
         removeLevelRequirements(village, res);
 
         for (VillagePerk perk : getPerks()) {
-            if (village.matchesLevelRequirement(perk)) {
+            if (village.getState() == perk.getState() && village.getLevel() == perk.getLevel()) {
                 if (perk.getUnlockCost().isEmpty()) {
                     MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("levels.perk-unlocked"), "perk", perk.getTag());
                     village.unlockPerk(perk);

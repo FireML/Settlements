@@ -111,7 +111,7 @@ public class EmpireManager {
         removeLevelRequirements(empire, res);
 
         for (Perk perk : getPerks()) {
-            if (empire.matchesLevelRequirement(perk)) {
+            if (empire.getLevel() == perk.getLevel()) {
                 if (perk.getUnlockCost().isEmpty()) {
                     MessageUtils.tellResidents(empire.getOnlineResidents(), Message.get("levels.perk-unlocked"), "perk", perk.getTag());
                     empire.unlockPerk(perk);
