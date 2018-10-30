@@ -231,6 +231,11 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
         return getPlayer() == null ? Collections.EMPTY_LIST : Collections.singletonList(this);
     }
 
+    @Override
+    public boolean isMember(Resident resident) {
+        return equals(resident);
+    }
+
     public long getVillageJoin() {
         return getVillage() != null ? villageJoin : -1;
     }

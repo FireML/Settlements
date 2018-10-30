@@ -343,6 +343,11 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public boolean isMember(Resident resident) {
+        return residents.contains(resident.getUUID());
+    }
+
     public Set<UUID> getResidentIds() {
         return residents;
     }

@@ -330,6 +330,11 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
         return getMembers().stream().flatMap(v -> v.getOnlineResidents().stream()).collect(Collectors.toList());
     }
 
+    @Override
+    public boolean isMember(Resident resident) {
+        return getMembers().stream().anyMatch(v -> v.isMember(resident));
+    }
+
     public boolean isPvp() {
         return pvp;
     }
