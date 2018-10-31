@@ -1,10 +1,8 @@
 package me.crz.minecraft.kingdoms.utils;
 
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
-
-import org.bukkit.entity.Player;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 public class TitleBuilder {
     private String title;
@@ -52,6 +50,7 @@ public class TitleBuilder {
         }
         if (actionBar != null && !actionBar.isEmpty()) {
             p.sendActionBar(actionBar);
+            Bukkit.getScheduler().runTaskLater(KingdomsPlugin.getInstance(), () -> p.sendActionBar(actionBar), 3 * 20);
         }
     }
 }
