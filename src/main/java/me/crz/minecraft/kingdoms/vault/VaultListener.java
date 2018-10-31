@@ -10,10 +10,9 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 
 import java.util.Map;
 
-import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.KingdomsGUI;
+import me.crz.minecraft.kingdoms.KingdomsGUI;
 import org.bukkit.Material;
 
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package me.crz.minecraft.kingdoms.village;
+package me.crz.minecraft.kingdoms;
 
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 

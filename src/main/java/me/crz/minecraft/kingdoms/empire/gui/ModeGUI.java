@@ -1,22 +1,24 @@
-package me.crz.minecraft.kingdoms.command.village.settings;
+package me.crz.minecraft.kingdoms.empire.gui;
 
-import me.crz.minecraft.kingdoms.command.village.Mode;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.KingdomsGUI;
-import org.bukkit.event.inventory.ClickType;
-import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
-import org.bukkit.Material;
-import me.crz.minecraft.kingdoms.village.VillageManager;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
-import me.crz.minecraft.kingdoms.cinventory.CInventory;
+import me.crz.minecraft.kingdoms.command.empire.EmpireMode;
+import me.crz.minecraft.kingdoms.village.gui.SettingsGUI;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.utils.Message;
+import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.KingdomsGUI;
+import me.crz.minecraft.kingdoms.village.VillageManager;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
+
 
 public class ModeGUI extends KingdomsGUI {
     private static ModeGUI instance;
@@ -27,15 +29,15 @@ public class ModeGUI extends KingdomsGUI {
     }
 
     private ModeGUI() {
-        super("mode");
+        super("empire.mode");
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
 
-        for (Mode m : Mode.values()) {
+        for (EmpireMode m : EmpireMode.values()) {
             gui.addItem(new ClickableItem() {
                 public ItemStack getItem(Player p) {
                     Village village = VillageManager.getInstance().getVillageFromPlayer(p);
-                    if (village != null) {
-                        boolean enabled = m.get(village);
+                    if (village != null && village.hasEmpire()) {
+                        boolean enabled = m.get(village.getEmpire());
                         String state = yesOrNo(enabled);
                         CItem item = m.getItem().setName(getMessage("entry.title").getReplacedText(
                                 "mode", m.getTag(),
@@ -54,10 +56,10 @@ public class ModeGUI extends KingdomsGUI {
 
                 public boolean click(Player p, ClickType clickType) {
                     Resident res = ResidentManager.getInstance().getResident(p);
-                    if (res.hasVillage() && res.getVillageRank().atLeast(VillageRank.CHIEF)) {
-                        boolean state = !m.get(res.getVillage());
-                        m.set(state, res.getVillage());
-                        MessageUtils.tell(p, Message.get("command.village.mode.success"),
+                    if (res.hasEmpire() && res.getEmpireRank().atLeast(VillageRank.CHIEF)) {
+                        boolean state = !m.get(res.getVillage().getEmpire());
+                        m.set(state, res.getVillage().getEmpire());
+                        MessageUtils.tell(p, Message.get("command.empire.mode.success"),
                                 "mode", m.getTag(),
                                 "value", yesOrNo(state)
                         );

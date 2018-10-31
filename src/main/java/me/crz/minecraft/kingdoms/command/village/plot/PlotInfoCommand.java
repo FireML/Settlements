@@ -21,17 +21,7 @@ public class PlotInfoCommand extends VillageSubCommand {
             res.tell(getError("not-a-plot"));
             return true;
         }
-        res.tell(getMessage("general"),
-                "state", land.getOwnerVillage().getState().getTag(),
-                "description", land.getDescription(),
-                "settlement", land.getOwnerVillage().getName(),
-                "spawning", String.valueOf(land.isMobSpawning()),
-                "firespread", String.valueOf(land.isFireSpread()),
-                "explosions", String.valueOf(land.isExplosions()),
-                "pvp", String.valueOf(land.isPvp()),
-                "build", land.getBuildState().getTag(),
-                "embassy", String.valueOf(land.isEmbassy())
-        );
+        res.tell(getMessage("general"), land.getReplacements(this));
         if (land.isPlot()) {
             Utils.runAsync(() -> res.tell(getMessage("owner"), "name", ResidentManager.getInstance().getResident(land.getPlotOwner()).getName()));
         } else if (land.isForSale() &&

@@ -1,4 +1,4 @@
-package me.crz.minecraft.kingdoms.command.village.settings;
+package me.crz.minecraft.kingdoms.village.gui;
 
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
@@ -12,7 +12,7 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.BuildState;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.KingdomsGUI;
+import me.crz.minecraft.kingdoms.KingdomsGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;

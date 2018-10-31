@@ -40,8 +40,8 @@ public class LandPerks {
         for (Player player : Bukkit.getOnlinePlayers()) {
             OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
             Resident resident = ResidentManager.getInstance().getResident(player);
-            if ((resident.hasVillage() && (resident.getVillage().isBuff() || resident.getVillage().getPerksMap().isEmpty()))
-                    && (land != null && (!land.getOwnerVillage().isBuff() || land.getOwnerVillage().getPerksMap().isEmpty()))) {
+            if ((resident.hasVillage() && resident.getVillage().getPerksMap().isEmpty())
+                    && (land != null && land.getOwnerVillage().getPerksMap().isEmpty())) {
                 continue;
             }
             giveEffects(player, land, refresh);
@@ -52,11 +52,13 @@ public class LandPerks {
         List<PerkEffect> effects = new ArrayList<>();
         Resident resident = ResidentManager.getInstance().getResident(p);
 
-        if (resident.hasVillage()) {
-            if (resident.hasEmpire()) {
+        if (resident.hasVillage() && (land == null || (land.isOwnedBy(resident.getVillage()) && land.isBuff()))) {
+            if (resident.hasEmpire() && resident.getVillage().getEmpire().isBuff()) {
                 effects.addAll(getEffects(p, resident, land, resident.getVillage().getEmpire(), refresh));
             }
-            effects.addAll(getEffects(p, resident, land, resident.getVillage(), refresh));
+            if (resident.getVillage().isBuff()) {
+                effects.addAll(getEffects(p, resident, land, resident.getVillage(), refresh));
+            }
         }
 
         Empire empire = EmpireManager.getInstance().getEmpireFromWorld(p.getWorld());
@@ -83,7 +85,7 @@ public class LandPerks {
             }
         }
 
-        if (land != null && !land.isOwnedBy(resident.getVillage())) {
+        if (land != null && !land.isOwnedBy(resident.getVillage()) && land.isBuff()) {
             for (VillagePerk perk : land.getOwnerVillage().getPerks()) {
                 if (!land.getOwnerVillage().getPerkData(perk).isActive()) {
                     continue;

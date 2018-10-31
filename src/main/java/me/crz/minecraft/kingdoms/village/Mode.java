@@ -1,10 +1,11 @@
-package me.crz.minecraft.kingdoms.command.village;
+package me.crz.minecraft.kingdoms.village;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
@@ -12,7 +13,6 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.Material;
 
 public enum Mode implements NameTag {
@@ -20,14 +20,7 @@ public enum Mode implements NameTag {
         @Override
         public void set(Boolean bool, Village village) {
             village.setPvp(bool);
-            Collection<OwnedLand> claimedLand = LandManager.getInstance().getClaimedLand(village);
-            for (OwnedLand land : claimedLand) {
-                land.setPvp(bool);
-            }
-            Utils.runAsync(() -> {
-                DatabaseManager.getInstance().saveVillage(village);
-                DatabaseManager.getInstance().saveLand(claimedLand);
-            });
+            applyAndSave(village, land -> land.setPvp(bool));
         }
 
         @Override
@@ -39,14 +32,7 @@ public enum Mode implements NameTag {
         @Override
         public void set(Boolean bool, Village village) {
             village.setMobSpawning(bool);
-            Collection<OwnedLand> claimedLand = LandManager.getInstance().getClaimedLand(village);
-            for (OwnedLand land : claimedLand) {
-                land.setMobSpawning(bool);
-            }
-            Utils.runAsync(() -> {
-                DatabaseManager.getInstance().saveVillage(village);
-                DatabaseManager.getInstance().saveLand(claimedLand);
-            });
+            applyAndSave(village, land -> land.setMobSpawning(bool));
         }
 
         @Override
@@ -58,14 +44,7 @@ public enum Mode implements NameTag {
         @Override
         public void set(Boolean bool, Village village) {
             village.setFireSpread(bool);
-            Collection<OwnedLand> claimedLand = LandManager.getInstance().getClaimedLand(village);
-            for (OwnedLand land : claimedLand) {
-                land.setFireSpread(bool);
-            }
-            Utils.runAsync(() -> {
-                DatabaseManager.getInstance().saveVillage(village);
-                DatabaseManager.getInstance().saveLand(claimedLand);
-            });
+            applyAndSave(village, land -> land.setFireSpread(bool));
         }
 
         @Override
@@ -77,14 +56,7 @@ public enum Mode implements NameTag {
         @Override
         public void set(Boolean bool, Village village) {
             village.setExplosions(bool);
-            Collection<OwnedLand> claimedLand = LandManager.getInstance().getClaimedLand(village);
-            for (OwnedLand land : claimedLand) {
-                land.setExplosions(bool);
-            }
-            Utils.runAsync(() -> {
-                DatabaseManager.getInstance().saveVillage(village);
-                DatabaseManager.getInstance().saveLand(claimedLand);
-            });
+            applyAndSave(village, land -> land.setExplosions(bool));
         }
 
         @Override
@@ -96,7 +68,7 @@ public enum Mode implements NameTag {
         @Override
         public void set(Boolean bool, Village village) {
             village.setBuff(bool);
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
+            applyAndSave(village, land -> land.setBuff(bool));
         }
 
         @Override
@@ -112,6 +84,20 @@ public enum Mode implements NameTag {
     }
 
     public void set(Boolean b, Village village) {
+    }
+
+    private static void applyAndSave(Village village, Function<OwnedLand, Boolean> landApplier) {
+        List<OwnedLand> toSave = new ArrayList<>();
+        Collection<OwnedLand> claimedLand = LandManager.getInstance().getClaimedLand(village);
+        for (OwnedLand land : claimedLand) {
+            if (!land.isPlot() && landApplier.apply(land)) {
+                toSave.add(land);
+            }
+        }
+        Utils.runAsync(() -> {
+            DatabaseManager.getInstance().saveVillage(village);
+            DatabaseManager.getInstance().saveLand(toSave);
+        });
     }
 
     public Boolean get(Village village) {

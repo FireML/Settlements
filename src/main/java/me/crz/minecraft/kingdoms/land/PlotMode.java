@@ -1,4 +1,4 @@
-package me.crz.minecraft.kingdoms.command.village;
+package me.crz.minecraft.kingdoms.land;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -6,11 +6,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.utils.NameTag;
+import org.bukkit.Material;
 
-public enum PlotMode {
-    pvp {
+public enum PlotMode implements NameTag {
+    pvp(Material.IRON_SWORD) {
         @Override
         public void set(Boolean bool, OwnedLand land) {
             land.setPvp(bool);
@@ -21,7 +24,7 @@ public enum PlotMode {
             return land.isPvp();
         }
     },
-    mobspawning {
+    mobspawning(Material.SKELETON_SKULL) {
         @Override
         public void set(Boolean bool, OwnedLand land) {
             land.setMobSpawning(bool);
@@ -32,7 +35,7 @@ public enum PlotMode {
             return land.isMobSpawning();
         }
     },
-    firespread {
+    firespread(Material.FIREWORK_STAR) {
         @Override
         public void set(Boolean bool, OwnedLand land) {
             land.setFireSpread(bool);
@@ -43,7 +46,7 @@ public enum PlotMode {
             return land.isFireSpread();
         }
     },
-    explosions {
+    explosions(Material.TNT) {
         @Override
         public void set(Boolean bool, OwnedLand land) {
             land.setExplosions(bool);
@@ -54,7 +57,18 @@ public enum PlotMode {
             return land.isExplosions();
         }
     },
-    embassy {
+    buff(Material.POTION) {
+        @Override
+        public void set(Boolean bool, OwnedLand land) {
+            land.setBuff(bool);
+        }
+
+        @Override
+        public Boolean get(OwnedLand land) {
+            return land.isBuff();
+        }
+    },
+    embassy(Material.RED_BANNER) {
         @Override
         public void set(Boolean bool, OwnedLand land) {
             land.setEmbassy(bool);
@@ -74,6 +88,15 @@ public enum PlotMode {
         DEFAULT_OPTIONS.put("no", false);
         DEFAULT_OPTIONS.put("true", true);
         DEFAULT_OPTIONS.put("false", false);
+    }
+    private Material icon;
+
+    PlotMode(Material icon) {
+        this.icon = icon;
+    }
+
+    public CItem getItem() {
+        return new CItem(icon).hideAllFlags(true);
     }
 
     public void set(Boolean b, OwnedLand land) {

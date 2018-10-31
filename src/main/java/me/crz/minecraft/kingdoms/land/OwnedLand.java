@@ -1,7 +1,6 @@
 package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.command.village.PlotMode;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -46,6 +45,7 @@ public class OwnedLand implements ConfigurationSerializable {
     private boolean mobSpawning = false;
     private boolean fireSpread = false;
     private boolean explosions = false;
+    private boolean buff;
     private String outpost = null;
     private String description = "";
     private PlotBuildState buildState = PlotBuildState.RESIDENTS;
@@ -208,32 +208,60 @@ public class OwnedLand implements ConfigurationSerializable {
         return pvp;
     }
 
-    public void setPvp(boolean pvp) {
-        this.pvp = pvp;
+    public boolean setPvp(boolean pvp) {
+        if (this.pvp != pvp) {
+            this.pvp = pvp;
+            return true;
+        }
+        return false;
     }
 
     public boolean isMobSpawning() {
         return mobSpawning;
     }
 
-    public void setMobSpawning(boolean mobSpawning) {
-        this.mobSpawning = mobSpawning;
+    public boolean setMobSpawning(boolean mobSpawning) {
+        if (this.mobSpawning != mobSpawning) {
+            this.mobSpawning = mobSpawning;
+            return true;
+        }
+        return false;
     }
 
     public boolean isFireSpread() {
         return fireSpread;
     }
 
-    public void setFireSpread(boolean fireSpread) {
-        this.fireSpread = fireSpread;
+    public boolean setFireSpread(boolean fireSpread) {
+        if (this.fireSpread != fireSpread) {
+            this.fireSpread = fireSpread;
+            return true;
+        }
+        return false;
     }
 
     public boolean isExplosions() {
         return explosions;
     }
 
-    public void setExplosions(boolean explosions) {
-        this.explosions = explosions;
+    public boolean setExplosions(boolean explosions) {
+        if (this.explosions != explosions) {
+            this.explosions = explosions;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean setBuff(boolean buff) {
+        if (this.buff != buff) {
+            this.buff = buff;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isBuff() {
+        return buff;
     }
 
     public String getDescription() {
@@ -359,6 +387,7 @@ public class OwnedLand implements ConfigurationSerializable {
         map.put("fireSpread", isFireSpread());
         map.put("explosions", isExplosions());
         map.put("mobSpawning", isMobSpawning());
+        map.put("buff", isBuff());
         map.put("buildState", getBuildState().name());
         map.put("linkX", getLinkedTo() != null ? getLinkedTo().getX() : null);
         map.put("linkZ", getLinkedTo() != null ? getLinkedTo().getZ() : null);
@@ -394,6 +423,7 @@ public class OwnedLand implements ConfigurationSerializable {
         land.setFireSpread((Boolean) map.get("fireSpread"));
         land.setExplosions((Boolean) map.get("explosions"));
         land.setMobSpawning((Boolean) map.get("mobSpawning"));
+        land.setBuff((Boolean) map.get("buff"));
         land.setBuildState(Utils.parseEnum((String) map.get("buildState"), PlotBuildState.RESIDENTS));
 
         if (map.get("linkX") != null && map.get("linkZ") != null) {
@@ -436,6 +466,20 @@ public class OwnedLand implements ConfigurationSerializable {
 
     public boolean containsHome() {
         return getLocation().contains(getOwnerVillage().getVillageHome());
+    }
+
+    public String[] getReplacements() {
+        return new String[] {
+                "state", getOwnerVillage().getState().getTag(),
+                "description", getDescription(),
+                "settlement", getOwnerVillage().getName(),
+                "spawning", String.valueOf(isMobSpawning()),
+                "firespread", String.valueOf(isFireSpread()),
+                "explosions", String.valueOf(isExplosions()),
+                "pvp", String.valueOf(isPvp()),
+                "build", getBuildState().getTag(),
+                "embassy", String.valueOf(isEmbassy())
+        };
     }
 
     @Override

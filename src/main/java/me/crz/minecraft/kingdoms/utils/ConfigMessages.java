@@ -8,16 +8,17 @@ public interface ConfigMessages extends ConfigKey {
     }
 
     default Message getMessage(String key) {
-        String base = getBase();
-        Message message = Message.get(getConfigPath() + "." + key);
+        String path = getConfigPath();
+        Message message = Message.get(path + "." + key);
         if (message.exists()) {
             return message;
         }
-        if (Message.get(base + key).exists()) {
-            return Message.get(base + key);
-        }
-        if (!base.isEmpty() && Message.get(key).exists()) {
-            return Message.get(key);
+        while (path.contains(".")) {
+            path = path.substring(0, path.indexOf('.'));
+            Message m = Message.get(path + "." + key);
+            if (m.exists()) {
+                return m;
+            }
         }
         return message;
     }

@@ -3,7 +3,6 @@ package me.crz.minecraft.kingdoms.land;
 import com.google.common.collect.ImmutableMap;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.command.empire.EmpireMode;
-import me.crz.minecraft.kingdoms.command.village.PlotMode;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.essentials.events.HostileCreaturePreSpawnEvent;

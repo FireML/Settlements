@@ -1,10 +1,11 @@
 package me.crz.minecraft.kingdoms.command.village.plot;
 
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
-import me.crz.minecraft.kingdoms.command.village.PlotMode;
+import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.command.village.VillagePlotCommand;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.land.gui.ModeGUI;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Resident;
 
@@ -23,7 +24,10 @@ public class PlotModeCommand extends VillageSubCommand {
             getError("not-your-village").tell(res, "state", res.getVillage().getState().getTag());
         } else if (!res.getVillage().equals(land.getOwnerVillage())) {
             getError("not-your-village").tell(res, "state", land.getOwnerVillage().getState().getTag());
-        } else if (args.length < 1 || args.length > 2) {
+        } else if (args.length < 1) {
+            ModeGUI.getInstance().open(res.getPlayer());
+            return true;
+        } else if (args.length > 2) {
             return false;
         } else {
             try {

@@ -1,10 +1,10 @@
-package me.crz.minecraft.kingdoms.command.empire.settings;
+package me.crz.minecraft.kingdoms.empire.gui;
 
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
-import me.crz.minecraft.kingdoms.command.village.settings.SettingsGUI;
+import me.crz.minecraft.kingdoms.village.gui.SettingsGUI;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -13,7 +13,7 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.empire.BuildState;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.KingdomsGUI;
+import me.crz.minecraft.kingdoms.KingdomsGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -26,7 +26,7 @@ public class BuildGui extends KingdomsGUI {
     private CInventory gui;
 
     private BuildGui() {
-        super("empire-build");
+        super("empire.build");
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
         for (BuildState state : BuildState.values()) {
             gui.addItem(new ClickableItem() {

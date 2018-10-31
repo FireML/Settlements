@@ -251,78 +251,51 @@ gui:
       title: "&b&l{mode}"
       lore: "&7&lEnabled: &b&l{value}"
     back: "&c&lBack To Settings"
-  empire-build:
-    title: "&3&lEmpire Build Settings"
-    set-state: "&7&lClick to allow building of &b&l{state}"
-    selected-state: "&e&lBuilding is currently set to &b&l{state}"
-    back: "&c&lBack To Settings"
-  empire-mode:
-    title: "&3&lEmpire Mode"
-    entry:
-      title: "&b&l{mode}"
-      lore: "&7&lEnabled: &b&l{value}"
-    back: "&c&lBack To Settings"
-  empire-perks:
-    title: "&3&lEmpire Perks"
-    entry:
-      locked: |-
-        &e{name}
-        &cReach Empire {level} to unlock!
-      unlockable: |-
-        &e{name}
-        &bClick to purchase!
-      purchased: |-
-        &e{name}
-        &dPurchased!
-      repeat: |-
-        &e{name}
-        &7Used {used} times.
-        &bClick to buy again!
-    toggleable: "&bRight click to toggle."
-    active: "&aEffect enabled!"
-    inactive: "&cEffect disabled!"
-    repeatable: "&7Usable {amount} times. {left} times left!"
-    unlimited: "&7Can be purchased as often as you want"
-    cost:
-      unlock: "&aUnlock cost:"
-      repeat: "&aRepeat cost:"
-      entry: "{icon}&a{type}&7: {amount}"
-    cooldown: "&aCan be repeated in {cooldown}"
-    back: "&c&lBack To Settings"
-  empire-settings:
-    title: "&3&lEmpire Settings"
-    build: "&b&lBuild"
-    mode: "&b&lMode"
-    perks: "&b&lPerks"
-    entry: |-
-      &b&lEmpire Data
-      &8--------&c&l{name}&r&8--------
-      &a&lDescription &r&7{description}
-      &a&lSymbol &r&7{symbol}
-      &6&lLevel &r&7{level}
-      &6&lAccess &r&7{access}
-      &6&lBank &r&7{bank}
-      &6&lBonusclaims &r&7{bonusclaims}
-      &6&lCapital &r&7{capitalstate}{capital}
-      &e&lLeader &r&7{chieftitle} {chief}
-      &e&lMembers: &r&7{members}
-    bonus-claims: " Bonus: {amount}"
-  plot-use:
-    title: "&3&lPlot Use Settings"
-    toggle-all: "&7&lClick to toggle all to &b&l{state}"
-    entry: |-
-      &b&l{flag}
-      &7&lState: &b&l{state}
-    link: |-
-      &7Click to link the permissions of all
-      &7plots connected to this one
-    linked-to: "&bThis plot is linked to {location}"
-    linked: "&e{amount}&b other plots are linked to this one"
-    unlink: "&7Click to unlink!"
-  plot-build:
-    title: "&3&lPlot Build Settings"
-    set-state: "&7&lClick to allow building of &b&l{state}"
-    selected-state: "&e&lBuilding is currently set to &b&l{state}"
+  empire:
+    build:
+      title: "&3&lEmpire Build Settings"
+    mode:
+      title: "&3&lEmpire Mode"
+    perks:
+      title: "&3&lEmpire Perks"
+      entry:
+        locked: |-
+          &e{name}
+          &cReach Empire {level} to unlock!
+    settings:
+      title: "&3&lEmpire Settings"
+      entry: |-
+        &b&lEmpire Data
+        &8--------&c&l{name}&r&8--------
+        &a&lDescription &r&7{description}
+        &a&lSymbol &r&7{symbol}
+        &6&lLevel &r&7{level}
+        &6&lAccess &r&7{access}
+        &6&lBank &r&7{bank}
+        &6&lBonusclaims &r&7{bonusclaims}
+        &6&lCapital &r&7{capitalstate}{capital}
+        &e&lLeader &r&7{chieftitle} {chief}
+        &e&lMembers: &r&7{members}
+  plot:
+    use:
+      title: "&3&lPlot Use Settings"
+    mode:
+      title: "&3&lPlot Mode"
+    build:
+      title: "&3&lPlot Build Settings"
+    settings:
+      title: "&3&lPlot Settings"
+      link: |-
+        &7Click to link the permissions of all
+        &7plots connected to this one
+      linked-to: "&bThis plot is linked to {location}"
+      linked: "&e{amount}&b other plots are linked to this one"
+      unlink: "&7Click to unlink!"
+      entry: |-
+        &8&l-------- &r&c&lPlot Info&r &8&l--------
+        &c&l{state}: &7{settlement}
+        &9&lDescription: &r{description}
+        &9&lModes: &7MobSpawning: &6{spawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explisions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}
   private-teleports:
     title: "&3&lSettlement teleports: &r&7{page}"
     entry: "&b{name}"

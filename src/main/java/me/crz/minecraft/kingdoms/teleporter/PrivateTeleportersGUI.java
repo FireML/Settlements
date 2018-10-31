@@ -3,7 +3,7 @@ package me.crz.minecraft.kingdoms.teleporter;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.VillageAccess;
-import me.crz.minecraft.kingdoms.village.KingdomsGUI;
+import me.crz.minecraft.kingdoms.KingdomsGUI;
 import org.bukkit.event.inventory.ClickType;
 
 import org.bukkit.inventory.ItemStack;

@@ -5,7 +5,7 @@ import me.crz.minecraft.kingdoms.command.village.VillagePlotCommand;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.landflags.PlotBuildState;
-import me.crz.minecraft.kingdoms.landflags.PlotUseGui;
+import me.crz.minecraft.kingdoms.land.gui.UseGui;
 import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -54,7 +54,7 @@ public class PlotUseCommand extends ResidentSubCommand {
         } else if (!land.isPlotOwner(res.getUUID())) {
             res.tell(getError("not-your-plot"));
         } else if (args.length < 2) {
-            PlotUseGui.getInstance().open(res.getPlayer());
+            UseGui.getInstance().open(res.getPlayer());
         } else {
             try {
                 Use u = Use.valueOf(args[0].toUpperCase());

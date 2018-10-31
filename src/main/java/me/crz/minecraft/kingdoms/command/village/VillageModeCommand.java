@@ -2,7 +2,8 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
-import me.crz.minecraft.kingdoms.command.village.settings.ModeGUI;
+import me.crz.minecraft.kingdoms.village.Mode;
+import me.crz.minecraft.kingdoms.village.gui.ModeGUI;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Resident;
 

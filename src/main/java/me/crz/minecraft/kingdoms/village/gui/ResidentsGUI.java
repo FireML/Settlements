@@ -1,10 +1,10 @@
-package me.crz.minecraft.kingdoms.command.village.settings;
+package me.crz.minecraft.kingdoms.village.gui;
 
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
 
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.KingdomsGUI;
+import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.ClickType;

@@ -1,4 +1,4 @@
-package me.crz.minecraft.kingdoms.landflags;
+package me.crz.minecraft.kingdoms.land.gui;
 
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
@@ -7,10 +7,9 @@ import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.KingdomsGUI;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,83 +20,45 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-public class PlotUseGui extends KingdomsGUI {
-    private static PlotUseGui instance;
-    private CInventory gui;
+public class SettingsGUI extends KingdomsGUI {
+    private static SettingsGUI instance;
+    public CInventory gui;
 
-    public PlotUseGui() {
-        super("plot-use");
-        gui = new CInventory(getText("title"), InventorySize.FOUR) {};
-        for (Use u : Use.values()) {
-            gui.addItem(new ClickableItem() {
-                public ItemStack getItem(Player p) {
-                    OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
-                    if (land != null) {
-                        PlotBuildState state = land.getUseState(u);
-                        return u.getItem().setName(getMessage("entry").getReplacedText(
-                                "flag", u.getTag(),
-                                "state", state.getTag()
-                        )).build();
-                    }
-                    return null;
-                }
+    private SettingsGUI() {
+        super("plot.settings");
+        gui = new CInventory(getText("title"), InventorySize.ONE) {};
+        gui.addItem(new ClickableItem() {
+            public ItemStack getItem(Player p) {
+                return new CItem(Material.DIAMOND_PICKAXE).setName(getText("build")).hideAllFlags(true).build();
+            }
 
-                public boolean click(Player p, ClickType clickType) {
-                    OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
-                    if (land != null && land.isPlotOwner(p)) {
-                        PlotBuildState next = PlotBuildState.next(land.getUseState(u));
-                        land.setUseState(u, next);
-                        MessageUtils.tell(p, Message.get("command.village.plot.use.success"),
-                                "flag", u.getTag(),
-                                "state", next.getTag()
-                        );
-                        LandManager.getInstance().syncAndSave(land);
-                        gui.build(p);
-                        return true;
-                    }
-                    return false;
-                }
-            });
-        }
+            public boolean click(Player p, ClickType clickType) {
+                BuildGui.getInstance().open(p);
+                return true;
+            }
+        });
+        gui.addItem(new ClickableItem() {
+            public ItemStack getItem(Player p) {
+                return new CItem(Material.LEVER).setName(getText("use")).hideAllFlags(true).build();
+            }
 
-        int rest = gui.getSize() % 9;
-        int slot = rest == 0 ? gui.getSize() : gui.getSize() + (9 - rest);
-        for (PlotBuildState state : PlotBuildState.values()) {
-            gui.addItem(slot++, new ClickableItem() {
-                @Override
-                public ItemStack getItem(Player p) {
-                    OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
-                    if (land != null && land.isPlotOwner(p)) {
-                        return state.getItem()
-                                .setName(getMessage("toggle-all").getReplacedText("state", state.getTag()))
-                                .setLore(getMessage("toggle-all").getReplacedTextList("state", state.getTag()).stream().skip(1).collect(Collectors.toList()))
-                                .build();
-                    }
-                    return null;
-                }
+            public boolean click(Player p, ClickType clickType) {
+                UseGui.getInstance().open(p);
+                return true;
+            }
+        });
+        gui.addItem(new ClickableItem() {
+            public ItemStack getItem(Player p) {
+                return new CItem(Material.REDSTONE).setName(getText("mode")).hideAllFlags(true).build();
+            }
 
-                @Override
-                public boolean click(Player p, ClickType clickType) {
-                    OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
-                    if (land != null && land.isPlotOwner(p)) {
-                        for (Use u : Use.values()) {
-                            land.setUseState(u, state);
-                        }
-                        MessageUtils.tell(p, Message.get("command.village.plot.use.success-all"),
-                                "state", state.getTag()
-                        );
-                        LandManager.getInstance().syncAndSave(land);
-                        gui.build(p);
-                        return true;
-                    }
-                    return false;
-                }
-            });
-        }
-
-        gui.addItem((slot / 9) * 9 + 8, new ClickableItem() {
+            public boolean click(Player p, ClickType clickType) {
+                ModeGUI.getInstance().open(p);
+                return true;
+            }
+        });
+        gui.addItem(new ClickableItem() {
             @Override
             public ItemStack getItem(Player p) {
                 OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
@@ -154,15 +115,31 @@ public class PlotUseGui extends KingdomsGUI {
                 return false;
             }
         });
+        gui.addItem(8, new ClickableItem() {
+            public ItemStack getItem(Player p) {
+                OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                if (land == null) {
+                    return null;
+                }
+
+                return new CItem(Material.GREEN_BANNER).setName(
+                        getMessage("entry").getReplacedText(land.getReplacements())
+                ).build();
+            }
+
+            public boolean click(Player p, ClickType clickType) {
+                return false;
+            }
+        });
     }
 
-    public void open(final Player p) {
+    public void open(Player p) {
         gui.build(p);
     }
 
-    public static PlotUseGui getInstance() {
+    public static SettingsGUI getInstance() {
         if (instance == null) {
-            instance = new PlotUseGui();
+            instance = new SettingsGUI();
         }
         return instance;
     }

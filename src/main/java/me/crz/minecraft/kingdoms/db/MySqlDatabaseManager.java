@@ -266,6 +266,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "fireSpread BOOLEAN NOT NULL,"
                     + "explosions BOOLEAN NOT NULL,"
                     + "mobSpawning BOOLEAN NOT NULL,"
+                    + "buff BOOLEAN NOT NULL,"
                     + "buildState VARCHAR(255) NOT NULL,"
                     + "linkX INTEGER,"
                     + "linkZ INTEGER"

@@ -1,10 +1,10 @@
-package me.crz.minecraft.kingdoms.command.empire.settings;
+package me.crz.minecraft.kingdoms.empire.gui;
 
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
-import me.crz.minecraft.kingdoms.command.village.settings.SettingsGUI;
+import me.crz.minecraft.kingdoms.village.gui.SettingsGUI;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
@@ -14,9 +14,8 @@ import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.KingdomsGUI;
+import me.crz.minecraft.kingdoms.KingdomsGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -33,7 +32,7 @@ public class PerksGUI extends KingdomsGUI {
     public CInventory gui;
 
     public PerksGUI(Resident resident) {
-        super("empireperks");
+        super("empire.perks");
         this.resident = resident;
 
         if (!resident.hasVillage()) {
