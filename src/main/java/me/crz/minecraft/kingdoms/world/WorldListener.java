@@ -26,7 +26,7 @@ public class WorldListener extends Base {
         if (world.getName().equalsIgnoreCase(KingdomsPlugin.getInstance().getKingdomsWorld()) && !player.hasPermission("kingdoms.staff")) {
             Village village = VillageManager.getInstance().getVillageFromPlayer(player);
             int level = Utils.getKingdomsWorldLevel();
-            if (village.getState() == VillageState.VILLAGE || village.getLevel() < level) {
+            if (village == null || village.getState() == VillageState.VILLAGE || village.getLevel() < level) {
                 Message.get("error.level-required").tell(player, "state", VillageState.KINGDOM.getTag(), "level", String.valueOf(level));
                 return false;
             }
