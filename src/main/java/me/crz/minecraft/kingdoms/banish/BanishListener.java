@@ -20,6 +20,7 @@ public class BanishListener implements Listener, ConfigMessages {
         VillageManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getTo()), e.getPlayer(), (land, p, village) -> {
             sendInfo(p, village, "move");
             e.setCancelled(true);
+            e.getPlayer().teleport(e.getPlayer().getLocation().add(e.getPlayer().getLocation().getDirection().multiply(-1)));
         });
     }
 

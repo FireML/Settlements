@@ -11,8 +11,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.EventHandler;
 import me.crz.minecraft.kingdoms.village.Village;
-import org.bukkit.Bukkit;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveBlockEvent;
 import me.crz.minecraft.kingdoms.Base;
@@ -51,14 +49,14 @@ public class WorldListener extends Base {
     @EventHandler
     public void on(PlayerChangedWorldEvent e) {
         if (!canAccess(e.getPlayer(), e.getPlayer().getWorld())) {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(Utils.getSpawnCommand(), "player", e.getPlayer().getName()));
+            Utils.teleportToSpawn(e.getPlayer());
         }
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         if (!canAccess(event.getPlayer(), event.getPlayer().getWorld())) {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(Utils.getSpawnCommand(), "player", event.getPlayer().getName()));
+            Utils.teleportToSpawn(event.getPlayer());
         }
     }
 }

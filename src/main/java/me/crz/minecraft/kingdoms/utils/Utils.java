@@ -144,7 +144,7 @@ public class Utils {
         if (ConfigManager.getInstance().getConfig().isString("spawn-command")) {
             return ConfigManager.getInstance().getConfig().getString("spawn-command");
         }
-        return "spawn {player}";
+        return "";
     }
 
     public static boolean playerIsChief(Player player, Village village) {
@@ -329,6 +329,15 @@ public class Utils {
         } else {
             player.teleport(loc);
             Message.get(messagePath + ".success").tell(player, replacements);
+        }
+    }
+
+    public static void teleportToSpawn(Player target) {
+        String command = getSpawnCommand();
+        if (!command.isEmpty()) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(Utils.getSpawnCommand(), "player", target.getName()));
+        } else {
+            target.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
         }
     }
 }

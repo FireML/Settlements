@@ -476,18 +476,16 @@ command:
       request-send: "&7&lAlly request sent to &r&6&l{name}"
       description: Ally another village
     banish:
-      list:
-        head: "&7------- &cBanished&7 -------"
-        entry: "&c{name}"
-        separator: "&7, "
-        description: List all banished users
-      add:
-        banished: "&7Player &6{player}&7 has been &cbanished &7from your settlement!"
-        description: Add a player to the banish list
-      remove:
-        unbanished: "&7Player &6{player}&7 has been &cbanished &7from your settlement!"
-        description: Remove a player to the banish list
-      description: Banishes a player from your village
+      banished: "&7Player &6{player}&7 has been &cbanished &7from your settlement!"
+      description: Add a player to the banish list
+    banished:
+      head: "&7------- &cBanished&7 -------"
+      entry: "&c{name}"
+      separator: "&7, "
+      description: List all banished users
+    unbanish:
+      unbanished: "&7Player &6{player}&7 is no longer &cbanished &7from your settlement!"
+      description: Remove a player to the banish list
     bank:
       withdraw:
         not-enough-money: "&c&lNot enough money in the bank to withdraw &r&6&l{amount}&r&c&l!"
