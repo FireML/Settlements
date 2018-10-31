@@ -461,23 +461,25 @@ command:
         &a&lBonus claims: &f{bonus}
         &a&lJoin Date: &f{joindate}
         &a&lLast Login: &f{lastlogin}
-      friend:
-        list:
-          head: "&a&lFriends:&r"
-          entry: "{online}{name}"
-          separator: "&7, "
-          online: "&a"
-          offline: "&c"
       description: Shows you information about a resident
     description: Resident management commands
-    friend:
-      description: Friend based commands
-      add:
-        description: Adds a player to your friend list
-      remove:
-        description: Removes a player to your friend list
-      list:
-        description: Lists all the people on your friends list
+  friend:
+    description: Friend based commands
+    add:
+      already-friends: "&cYou are already friends with &6{name}"
+      success: "&aSuccessfully added &6{name}&a as a friend"
+      description: Adds a player to your friend list
+    remove:
+      not-friends: "&cYou are not friends with &6{name}"
+      success: "&aSuccessfully removed &6{name}&a from your friends list"
+      description: Removes a player to your friend list
+    list:
+      description: Lists all the people on your friends list
+      head: "&a&lFriends:&r"
+      entry: "{online}{name}"
+      separator: "&7, "
+      online: "&a"
+      offline: "&c"
   scoreboard:
     descriptipon: "Set the scoreboard for all players"
     clear:

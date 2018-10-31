@@ -1,4 +1,4 @@
-package me.crz.minecraft.kingdoms.command.resident.friend;
+package me.crz.minecraft.kingdoms.command.friend;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -22,16 +22,16 @@ public class FriendRemoveCommand extends SubCommand {
         Utils.runAsync(() -> {
             Resident target = ResidentManager.getInstance().getResident(args[0]);
             if (target == null ) {
-                MessageUtils.tell(player, "&c&lNo &r&6&lplayer&r&c&l with the name &r&6&l{player}&r&c&l found!", "{player}", args[0]);
+                getError("player-not-found").tell(player, "name", args[0]);
                 return;
             }
             Resident res = ResidentManager.getInstance().getResident(player);
             if (!res.removeFriend(target.getUUID())) {
-                MessageUtils.tell(player, "&c you are not friends with &6" + target.getName());
+                getError("not-friends").tell(player, "name", target.getName());
                 return;
             }
             DatabaseManager.getInstance().saveResident(res);
-            MessageUtils.tell(player, "&cSuccessfully removed &6" + target.getName() + "&c from your friends list");
+            getMessage("success").tell(player, "name", target.getName());
         });
         return true;
     }

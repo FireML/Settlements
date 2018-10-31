@@ -4,7 +4,6 @@ import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.chat.commands.IgnoreCommand;
 import me.crz.minecraft.kingdoms.chat.commands.MessageCommand;
 import me.crz.minecraft.kingdoms.chat.commands.ReplyCommand;
-import me.crz.minecraft.kingdoms.command.resident.ResidentFriendCommand;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.command.Command;
@@ -27,6 +26,7 @@ public class CommandManager extends Base implements CommandExecutor {
         registerCommand(new ChatCommand());
         registerCommand(new VillageAdminCommand());
         registerCommand(new ResidentCommand());
+        registerCommand(new FriendCommand());
         registerCommand(new MessageCommand());
         registerCommand(new ReplyCommand());
         registerCommand(new IgnoreCommand());
@@ -51,7 +51,7 @@ public class CommandManager extends Base implements CommandExecutor {
             } else if (!cmd.execute((Player) sender, null, alias, args)) {
                 if (cmd.getMessage("usage").exists()) {
                     MessageUtils.tell((Player) sender, cmd.getMessage("usage"), "alias", alias);
-                } else if (!cmd.sendUsageMessage((Player) sender, null, alias) && cmd.hasUsage()) {
+                } else if (!cmd.sendUsageMessage((Player) sender, null, alias)) {
                     MessageUtils.tell((Player) sender, "&c" + cmd.getUsage(null));
                 } else {
                     return false;

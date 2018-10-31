@@ -3,22 +3,17 @@ package me.crz.minecraft.kingdoms.command;
 import me.crz.minecraft.kingdoms.chat.commands.IgnoreCommand;
 import me.crz.minecraft.kingdoms.command.resident.ResidentClaimTransferCommand;
 import org.bukkit.entity.Player;
-import me.crz.minecraft.kingdoms.command.resident.ResidentFriendCommand;
 import me.crz.minecraft.kingdoms.command.resident.ResidentShowCommand;
-
-import java.util.Arrays;
 
 public class ResidentCommand extends SubCommand {
 
     private final SubCommand showCommand;
 
     public ResidentCommand() {
-        super(null, "resident <name>");
+        super(null, "resident <name>|show <name>");
+        setForceOwnUsage(true);
         showCommand = new ResidentShowCommand(this);
         registerCommand(showCommand);
-        ResidentFriendCommand friendCommand = new ResidentFriendCommand(this);
-        registerCommand(friendCommand);
-        CommandManager.getInstance().registerCommand(friendCommand);
         registerCommand(new IgnoreCommand());
         registerCommand(new ResidentClaimTransferCommand(this));
     }

@@ -16,12 +16,11 @@ import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
 public class ResidentShowCommand extends SubCommand {
-    private final static DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
-    private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
     public ResidentShowCommand(SubCommand parent) {
         super(parent, "show <name>", "data", "info");
         setPermission("kingdoms.user");
+        setVisible(false);
     }
 
     @Override
@@ -47,8 +46,8 @@ public class ResidentShowCommand extends SubCommand {
                     "balance", Utils.CURRENCY_FORMAT.format(balance),
                     "bonus", Utils.CURRENCY_FORMAT.format(target.getBonusClaims()),
                     "taxowed", Utils.CURRENCY_FORMAT.format(target.getTaxOwed()),
-                    "joindate", DATE_FORMAT.format(new Date(op.getFirstPlayed())),
-                    "lastlogin",  DATE_FORMAT.format(new Date(target.getLastLogin()))
+                    "joindate", Utils.DATE_FORMAT.format(new Date(op.getFirstPlayed())),
+                    "lastlogin",  Utils.DATE_FORMAT.format(new Date(target.getLastLogin()))
             );
         });
         return true;

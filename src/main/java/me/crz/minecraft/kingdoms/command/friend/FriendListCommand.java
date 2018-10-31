@@ -1,4 +1,4 @@
-package me.crz.minecraft.kingdoms.command.resident.friend;
+package me.crz.minecraft.kingdoms.command.friend;
 
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
