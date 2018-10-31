@@ -59,8 +59,9 @@ public class EmpireSetRankCommand extends EmpireSubCommand {
                 tres.setEmpireRank(rank);
                 DatabaseManager.getInstance().saveResident(tres);
                 MessageUtils.tellResidents(empire.getOnlineResidents(), getMessage("success"),
-                        "rank", res.getEmpireRank().getTag(),
-                        "setter", player.getName(),
+                        "rank", rank.getTag(),
+                        "title", res.getTitle(),
+                        "setter", res.getName(),
                         "target", tres.getName());
             }
         });

@@ -58,8 +58,9 @@ public class VillageSetRankCommand extends VillageSubCommand {
                 tres.setVillageRank(rank);
                 DatabaseManager.getInstance().saveResident(tres);
                 getMessage("success").tell(village.getOnlineResidents(),
-                        "rank", res.getVillageRank().getTag(village),
-                        "setter", player.getName(),
+                        "rank", rank.getTag(village),
+                        "setter", res.getName(),
+                        "title", res.getTitle(),
                         "target", tres.getName());
             }
         });

@@ -763,7 +763,7 @@ command:
       invalid-rank: "&c&lERROR &r&c{rank} &7is not a valid rank!"
       cant-set-chief: "&c&lPlease use &6&c&l/{base} transfer <player>&r&c&l to transfer ownership of the {state}"
       cant-set-higher: "&cYou cannot set the rank of &6{rank} or higher&c!"
-      success: "&e&lALERT &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
+      success: "&e&lALERT &r&e{title} {setter} &7set &e{target}s &7rank to &e{rank}&7!"
       rank:
         elder: Allows mode,claiming,invite,bank,plot,setrank
         builder: Allows resident to build on elder and builder only mode
@@ -1039,7 +1039,7 @@ command:
       invalid-rank: "&c&lERROR &r&c{rank} &7is not a valid rank!"
       cant-set-chief: "&c&lPlease use &6&c&l/{base} transfer <player>&r&c&l to transfer ownership of the empire"
       cant-set-higher: "&cYou cannot set the rank of &6{rank} or higher&c!"
-      success: "&e&lALERT &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
+      success: "&e&lALERT &r&e{title} {setter} &7set &e{target}s &7rank to &e{rank}&7!"
       rank:
         senator: Allows inviting and kicking
         none: Default rank for members of this empire
