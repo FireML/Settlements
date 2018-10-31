@@ -36,7 +36,7 @@ public class PlotUseGui extends KingdomsGUI {
                     OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
                     if (land != null) {
                         PlotBuildState state = land.getUseState(u);
-                        return u.getItem().setName(getMessage("entry.title").getReplacedText(
+                        return u.getItem().setName(getMessage("entry").getReplacedText(
                                 "flag", u.getTag(),
                                 "state", state.getTag()
                         )).build();

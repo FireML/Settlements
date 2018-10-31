@@ -310,9 +310,9 @@ gui:
   plot-use:
     title: "&3&lPlot Use Settings"
     toggle-all: "&7&lClick to toggle all to &b&l{state}"
-    entry:
-      title: "&b&l{flag}"
-      lore: "&7&lState: &b&l{state}"
+    entry: |-
+      &b&l{flag}
+      &7&lState: &b&l{state}
     link: |-
       &7Click to link the permissions of all
       &7plots connected to this one
@@ -398,9 +398,9 @@ gui:
     title: "&3&lSettlement Use Settings"
     back: "&c&lBack To Settings"
     toggle-all: "&7&lClick to toggle all to &b&l{state}"
-    entry:
-      title: "&b&l{flag}"
-      lore: "&7&lState: &b&l{state}"
+    entry: |-
+      &b&l{flag}
+      &7&lState: &b&l{state}
   vault:
     title: "&1&lSettlement Vault"
     success-deposit: "&6&l{player} &7&lhas deposited:"

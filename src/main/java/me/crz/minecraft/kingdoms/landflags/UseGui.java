@@ -37,10 +37,7 @@ public class UseGui extends KingdomsGUI {
                     Village village = VillageManager.getInstance().getVillageFromPlayer(p);
                     if (village != null) {
                         BuildState state = village.getUseState(u);
-                        return u.getItem().setName(getMessage("entry.title").getReplacedText(
-                                "flag", u.getTag(),
-                                "state", state.getTag()
-                        )).setLore(getMessage("entry.lore").getReplacedTextList(
+                        return u.getItem().setName(getMessage("entry").getReplacedText(
                                 "flag", u.getTag(),
                                 "state", state.getTag()
                         )).build();
