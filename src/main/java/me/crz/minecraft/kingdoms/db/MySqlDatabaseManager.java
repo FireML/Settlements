@@ -445,7 +445,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         }
 
         try (Connection conn = ds.getConnection();
-             PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE ownerSettlement = ?;")) {
+             PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE settlementId = ?;")) {
             sta.setInt(1, (Integer) village.getId().value());
             sta.executeUpdate();
         } catch (SQLException e) {
