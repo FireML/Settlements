@@ -119,7 +119,7 @@ kingdom:
     resident: Resident
 pvp-is-enabled: " - &c&lPvp is enabled!"
 enter-plot: "&7&lWelcome to&6&l {owner}&7&l’s plot "
-plot-is-for-sale: "&9&lLand is for sale "
+plot-is-for-sale: "&9&lLand is for sale for ${amount}"
 plot-is-embassy: "&e&lEmbassy "
 cannot-attack-animals: "&c&lYou cannot attack another village's animals!"
 chat:

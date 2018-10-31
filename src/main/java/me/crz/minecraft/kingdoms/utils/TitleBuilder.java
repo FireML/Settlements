@@ -51,7 +51,7 @@ public class TitleBuilder {
             p.sendTitle(title, subtitle, in, stay, out);
         }
         if (actionBar != null && !actionBar.isEmpty()) {
-            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(actionBar));
+            p.sendActionBar(actionBar);
         }
     }
 }

@@ -200,24 +200,26 @@ public class LandFlags extends Base implements LandFlagBase {
                     Base.getLandPerks().giveEffects(player, destinationLand, true);
                 }
             }
-            Utils.runAsync(() -> {
-                TitleBuilder tb = new TitleBuilder();
-                StringBuilder actionBar = new StringBuilder();
-                if (destinationLand.isPlot()) {
-                    actionBar.append(Message.get("enter-plot").getReplacedText(
-                            "owner", ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName(),
-                            "description", destinationLand.getDescription()
-                    ));
-                }
-                if (destinationLand.isForSale() && (destinationLand.getOwnerVillage().equals(playerVillage) || destinationLand.isEmbassy())) {
-                    actionBar.append(Message.get("plot-is-for-sale").getText());
-                }
-                if (destinationLand.isEmbassy()) {
-                    actionBar.append(Message.get("plot-is-embassy").getText());
-                }
-                tb.withActionbar(actionBar.toString());
-                tb.send(player);
-            });
+            if (originalLand != null && !originalLand.isPlotOwner(destinationLand.getPlotOwner())) {
+                Utils.runAsync(() -> {
+                    TitleBuilder tb = new TitleBuilder();
+                    StringBuilder actionBar = new StringBuilder();
+                    if (destinationLand.isPlot()) {
+                        actionBar.append(Message.get("enter-plot").getReplacedText(
+                                "owner", ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName(),
+                                "description", destinationLand.getDescription()
+                        ));
+                    }
+                    if (destinationLand.isForSale() && (destinationLand.getOwnerVillage().equals(playerVillage) || destinationLand.isEmbassy())) {
+                        actionBar.append(Message.get("plot-is-for-sale").getReplacedText("amount", Utils.CURRENCY_FORMAT.format(destinationLand.getPrice())));
+                    }
+                    if (destinationLand.isEmbassy()) {
+                        actionBar.append(Message.get("plot-is-embassy").getText());
+                    }
+                    tb.withActionbar(actionBar.toString());
+                    tb.send(player);
+                });
+            }
         }
     }
 }
