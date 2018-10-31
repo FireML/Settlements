@@ -284,6 +284,7 @@ gui:
         &6&lBonusclaims &r&7{bonusclaims}
         &6&lCapital &r&7{capitalstate}{capital}
         &e&lLeader &r&7{chieftitle} {chief}
+        &e&lSenators: &r&7{senators}
         &e&lMembers: &r&7{members}
   plot:
     use:
@@ -1049,6 +1050,7 @@ command:
         &9&lPerks: &r&7{perks}
         &6&lCapital &r&7{capitalstate}{capital}
         &e&lLeader &r&7{chieftitle} {chief}
+        &e&lSenators: &r&7{senators}
         &e&lMembers: &r&7{members}
       bonus-claims: " Bonus: {amount}"
       description: Shows information on an empire

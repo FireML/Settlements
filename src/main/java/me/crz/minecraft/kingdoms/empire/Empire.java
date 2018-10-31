@@ -462,6 +462,7 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
                 "chiefrank", VillageRank.CHIEF.getTag(capital),
                 "chieftitle", chief.getTitle(),
                 "chief", chief.getName(),
+                "senators", getSenators().stream().map(r -> r.getTitle() + " " + r.getName()).collect(Collectors.joining(", ")),
                 "members", getMembers().stream().map(v -> v.getState().getTag() + " " + v.getName()).collect(Collectors.joining(", "))
         };
     }
