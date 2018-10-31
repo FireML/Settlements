@@ -23,7 +23,11 @@ upkeep:
   timezone: EST
 max-village-size: 30
 max-empire-size: 20
+# Used for teleporting players back when they
+# got into a world they shouldn't be in
+spawn-command: "spawn {player}"
 kingdoms-world: "kingdoms"
+kingdoms-world-level: 4
 empires-world:
   prefix: "empire"
 #  generator: "generatorname"

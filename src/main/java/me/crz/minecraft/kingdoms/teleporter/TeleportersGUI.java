@@ -55,10 +55,11 @@ public class TeleportersGUI extends KingdomsGUI {
         ci.addItem(4, new ClickableItem() {
             public ItemStack getItem(Player p) {
                 Village v = VillageManager.getInstance().getVillageFromPlayer(p);
-                if (v == null || v.getState() == VillageState.VILLAGE || v.getLevel() < 10) {
+                int level = Utils.getKingdomsWorldLevel();
+                if (v == null || v.getState() == VillageState.VILLAGE || v.getLevel() < level) {
                     ItemStack item = new ItemStack(locked);
                     ItemMeta pm = item.getItemMeta();
-                    pm.setDisplayName(getText("kingdom-required"));
+                    pm.setDisplayName(getError("level-required").getReplacedText("state", VillageState.KINGDOM.getTag(), "level", String.valueOf(level)));
                     item.setItemMeta(pm);
                     return item;
                 }
@@ -71,8 +72,9 @@ public class TeleportersGUI extends KingdomsGUI {
 
             public boolean click(Player p, ClickType clickType) {
                 Village v = VillageManager.getInstance().getVillageFromPlayer(p);
-                if (v == null || v.getState() == VillageState.VILLAGE || v.getLevel() < 10) {
-                    MessageUtils.tell(p, getMessage("kingdom-required"));
+                int level = Utils.getKingdomsWorldLevel();
+                if (v == null || v.getState() == VillageState.VILLAGE || v.getLevel() < level) {
+                    getError("level-required").tell(p, "state", VillageState.KINGDOM.getTag(), "level", String.valueOf(level));
                     return false;
                 }
                 try {

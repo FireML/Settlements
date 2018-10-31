@@ -1,6 +1,12 @@
 package me.crz.minecraft.kingdoms.world;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.utils.Message;
+import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.village.VillageState;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.EventHandler;
@@ -16,38 +22,43 @@ public class WorldListener extends Base {
         super();
     }
 
-    @EventHandler
-    public void on(final PlayerMoveBlockEvent e) {
-        if (e.getFrom().getWorld().getName().equalsIgnoreCase(KingdomsPlugin.getInstance().getKingdomsWorld())) {
-            final Village village = VillageManager.getInstance().getVillageFromPlayer(e.getPlayer());
-            if (village.getLevel() < 4 && !e.getPlayer().isOp()) {
-                e.setCancelled(true);
-                MessageUtils.tell(e.getPlayer(), "&cYou must be kingdom level 4 to be here!");
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "spawn " + e.getPlayer().getName());
+    private boolean canAccess(Player player, World world) {
+        if (world.getName().equalsIgnoreCase(KingdomsPlugin.getInstance().getKingdomsWorld()) && !player.hasPermission("kingdoms.staff")) {
+            Village village = VillageManager.getInstance().getVillageFromPlayer(player);
+            int level = Utils.getKingdomsWorldLevel();
+            if (village.getState() == VillageState.VILLAGE || village.getLevel() < level) {
+                Message.get("error.level-required").tell(player, "state", VillageState.KINGDOM.getTag(), "level", String.valueOf(level));
+                return false;
             }
+        }
+        return true;
+    }
+
+    @EventHandler
+    public void on(PlayerMoveBlockEvent e) {
+        if (!canAccess(e.getPlayer(), e.getTo().getWorld())) {
+            e.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void on(final PlayerChangedWorldEvent e) {
-        if (e.getFrom().getName().equalsIgnoreCase(KingdomsPlugin.getInstance().getKingdomsWorld())) {
-            final Village village = VillageManager.getInstance().getVillageFromPlayer(e.getPlayer());
-            if (village.getLevel() < 4 && !e.getPlayer().isOp()) {
-                MessageUtils.tell(e.getPlayer(), "&cYou must be kingdom level 4 to be here!");
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "spawn " + e.getPlayer().getName());
-            }
+    public void on(PlayerTeleportEvent e) {
+        if (!canAccess(e.getPlayer(), e.getTo().getWorld())) {
+            e.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void on(final PlayerTeleportEvent e) {
-        if (e.getFrom().getWorld().getName().equalsIgnoreCase(KingdomsPlugin.getInstance().getKingdomsWorld())) {
-            final Village village = VillageManager.getInstance().getVillageFromPlayer(e.getPlayer());
-            if (village.getLevel() < 4 && !e.getPlayer().isOp()) {
-                e.setCancelled(true);
-                MessageUtils.tell(e.getPlayer(), "&cYou must be kingdom level 4 to be here!");
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "spawn " + e.getPlayer().getName());
-            }
+    public void on(PlayerChangedWorldEvent e) {
+        if (!canAccess(e.getPlayer(), e.getPlayer().getWorld())) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(Utils.getSpawnCommand(), "player", e.getPlayer().getName()));
+        }
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        if (!canAccess(event.getPlayer(), event.getPlayer().getWorld())) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(Utils.getSpawnCommand(), "player", event.getPlayer().getName()));
         }
     }
 }

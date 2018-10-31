@@ -132,6 +132,20 @@ public class Utils {
         return 0;
     }
 
+    public static int getKingdomsWorldLevel() {
+        if (ConfigManager.getInstance().getConfig().isInt("kingdoms-world-level")) {
+            return ConfigManager.getInstance().getConfig().getInt("kingdoms-world-level");
+        }
+        return 0;
+    }
+
+    public static String getSpawnCommand() {
+        if (ConfigManager.getInstance().getConfig().isString("spawn-command")) {
+            return ConfigManager.getInstance().getConfig().getString("spawn-command");
+        }
+        return "spawn {player}";
+    }
+
     public static boolean playerIsChief(Player player, Village village) {
         return village != null && village.getChiefId().equals(player.getUniqueId());
     }

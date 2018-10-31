@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.empire;
 
+import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -18,7 +20,7 @@ public class EmpireListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         if (!canAccess(event.getPlayer(), event.getPlayer().getWorld())) {
-            event.getPlayer().teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(Utils.getSpawnCommand(), "player", event.getPlayer().getName()));
         }
     }
 

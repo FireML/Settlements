@@ -37,6 +37,7 @@ error:
   unknown-perk: "&cNo unlock with the name &f{perk}&c available!"
   not-in-empire-world: "&cYou are not in your Empire's world!"
   not-unlocked-yet: "&cThis feature only unlocked with {state} level {level}!"
+  level-required: "&cYou must be in a {state} level {level}!"
 move-cancelled: "&c{action} cancelled because you moved!"
 banished:
   move:
@@ -363,7 +364,6 @@ gui:
     title: "&2&lSettlement Teleporters"
     locked: "&cLocked"
     private: "&e&lPrivate Warps"
-    kingdom-required: "&c&lYou require a level &610 Kingdom&c&l to use this!"
     kingdoms-world: "&e&lKingdoms World"
     village-home: "&e&lVillage Home"
     empire-home: "&e&lEmpire Home"
