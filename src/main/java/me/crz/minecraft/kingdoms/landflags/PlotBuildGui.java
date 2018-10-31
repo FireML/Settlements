@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.landflags;
 
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
+import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
@@ -10,6 +11,7 @@ import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.KingdomsGUI;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -30,13 +32,13 @@ public class PlotBuildGui extends KingdomsGUI {
                     OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
                     if (land != null) {
                         if (state == land.getBuildState()) {
-                            return state.getItem()
+                            return new CItem(Material.LIME_WOOL)
                                     .setName(getMessage("selected-state").getReplacedText("state", state.getTag()))
                                     .setLore(getMessage("selected-state").getReplacedTextList("state", state.getTag()).stream().skip(1).collect(Collectors.toList()))
                                     .glow(true)
                                     .build();
                         }
-                        return state.getItem()
+                        return new CItem(Material.LIGHT_GRAY_WOOL)
                                 .setName(getMessage("set-state").getReplacedText("state", state.getTag()))
                                 .setLore(getMessage("set-state").getReplacedTextList("state", state.getTag()).stream().skip(1).collect(Collectors.toList()))
                                 .build();
