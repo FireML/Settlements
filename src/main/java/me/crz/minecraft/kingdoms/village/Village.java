@@ -207,12 +207,11 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         return banished.contains(uuid);
     }
 
-    public void addOutpostHome(String name, Location loc) {
-        addOutpostHome(new NamedLocation(name, loc));
+    public void setOutpostHome(String name, Location loc) {
+        setOutpostHome(new NamedLocation(name, loc));
     }
 
-    public void addOutpostHome(NamedLocation location) {
-        outpostHomes.values().removeIf(location::inSameChunk);
+    public void setOutpostHome(NamedLocation location) {
         outpostHomes.put(location.getName().toLowerCase(), location);
     }
 
@@ -613,7 +612,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         ((Map<String, Map<String, Object>>) map.get("outposts")).values().stream()
                 .map(NamedLocation::deserialize)
                 .filter(Objects::nonNull)
-                .forEach(village::addOutpostHome);
+                .forEach(village::setOutpostHome);
         village.getBanishedResidents().addAll(((Collection<String>) map.get("banished")).stream().map(UUID::fromString).collect(Collectors.toSet()));
         Map<String, Object> uses = (Map<String, Object>) map.get("uses");
         for (Use u : Use.values()) {

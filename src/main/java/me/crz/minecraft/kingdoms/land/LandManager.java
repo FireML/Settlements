@@ -243,7 +243,7 @@ public class LandManager {
         OwnedLand land = this.claimLand(new SimpleChunkLocation(location), location, village);
         land.setOutpost(name);
         cacheLand(land);
-        village.addOutpostHome(name, location);
+        village.setOutpostHome(name, location);
         village.setBank(village.getBank() - Utils.getOutpostCreationCost());
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveVillage(village);
@@ -285,6 +285,8 @@ public class LandManager {
                             case ABORT:
                                 return new ArrayList<>();
                             case RETURN:
+                                branchFound.add(foundLand);
+                            case RETURN_CURRENT:
                                 found.addAll(branchFound);
                                 return found;
                             case SKIP_ENTRY:
@@ -384,7 +386,11 @@ public class LandManager {
          */
         ABORT,
         /**
-         * Return the current found collection
+         * Return the current found collection without the searched object
+         */
+        RETURN_CURRENT,
+        /**
+         * Return the found collection including the current object
          */
         RETURN,
         /**

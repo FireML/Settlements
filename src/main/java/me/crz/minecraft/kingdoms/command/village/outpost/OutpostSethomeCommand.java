@@ -8,6 +8,8 @@ import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
+import java.util.Collection;
+
 public class OutpostSethomeCommand extends VillageSubCommand {
     public OutpostSethomeCommand(VillageSubCommand parent) {
         super(parent, "sethome", VillageRank.ELDER);
@@ -15,17 +17,44 @@ public class OutpostSethomeCommand extends VillageSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        OwnedLand land = LandManager.getInstance().getLand(resident.getPlayer().getLocation());
-        if (land == null || !land.isOutpost()) {
+        OwnedLand currentLand = LandManager.getInstance().getLand(resident.getPlayer().getLocation());
+        if (currentLand == null) {
             resident.tell(getError("not-an-outpost"));
             return true;
         }
-        resident.getVillage().addOutpostHome(land.getOutpostName(), resident.getPlayer().getLocation());
+        OwnedLand outpostLand = null;
+        if (currentLand.isOutpost()) {
+            outpostLand = currentLand;
+        } else {
+            Collection<OwnedLand> connected = LandManager.getInstance().getAllConnectedLand(currentLand, search -> {
+                if (search.isOutpost()) {
+                    return LandManager.FilterResponse.RETURN;
+                } else if (search.containsHome()) {
+                    return LandManager.FilterResponse.SKIP_ENTRY;
+                }
+                return LandManager.FilterResponse.ACCEPT;
+            });
+            for (OwnedLand l : connected) {
+                if (l.isOutpost()) {
+                    outpostLand = l;
+                    break;
+                }
+            }
+        }
+        if (outpostLand == null) {
+            resident.tell(getError("not-an-outpost"));
+            return true;
+        }
+        resident.getVillage().setOutpostHome(currentLand.getOutpostName(), resident.getPlayer().getLocation());
+        OwnedLand finalOutpostLand = outpostLand;
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveVillage(resident.getVillage());
-            DatabaseManager.getInstance().saveLand(land);
+            DatabaseManager.getInstance().saveLand(currentLand);
+            if (finalOutpostLand != currentLand) {
+                DatabaseManager.getInstance().saveLand(finalOutpostLand);
+            }
         });
-        resident.tell(getMessage("success"), "name", land.getOutpostName());
+        resident.tell(getMessage("success"), "name", currentLand.getOutpostName());
         return true;
     }
 }
