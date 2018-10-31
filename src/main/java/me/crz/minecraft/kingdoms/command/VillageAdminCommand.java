@@ -28,4 +28,8 @@ public class VillageAdminCommand extends SubCommand {
     public boolean run(Player p, String base, String alias, String... args) {
         return false;
     }
+
+    public int ordinal() {
+        return Integer.MAX_VALUE;
+    }
 }

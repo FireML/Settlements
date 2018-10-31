@@ -22,4 +22,8 @@ public abstract class ResidentSubCommand extends SubCommand {
     }
 
     public abstract boolean run(Resident resident, String base, String alias, String... args);
+
+    public int ordinal() {
+        return -1;
+    }
 }

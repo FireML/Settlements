@@ -87,4 +87,8 @@ public abstract class VillageSubCommand extends ResidentSubCommand {
         }
         super.registerCommand(subCommand);
     }
+
+    public int ordinal() {
+        return requiredRank != null ? requiredRank.ordinal() : super.ordinal();
+    }
 }

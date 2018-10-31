@@ -96,4 +96,8 @@ public abstract class EmpireSubCommand extends VillageSubCommand {
         }
         super.registerCommand(subCommand);
     }
+
+    public int ordinal() {
+        return requiredRank != null ? requiredRank.ordinal() : super.ordinal();
+    }
 }

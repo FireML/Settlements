@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command;
 
 
+import me.crz.minecraft.kingdoms.rank.Rankable;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -12,13 +13,14 @@ import org.bukkit.entity.Player;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class SubCommand implements ConfigMessages {
+public abstract class SubCommand implements ConfigMessages, Rankable {
     private SubCommand parent;
     private List<String> aliases;
     private String usage;
@@ -94,9 +96,7 @@ public abstract class SubCommand implements ConfigMessages {
             return true;
         }
         if (!accessibleCommands.isEmpty()) {
-            for (SubCommand s : accessibleCommands) {
-                s.sendUsageList(player, path, s.name(), path + " " + s.name());
-            }
+            accessibleCommands.stream().sorted(Rankable::compareTo).forEachOrdered(s -> s.sendUsageList(player, path, s.name(), path + " " + s.name()));
             return true;
         }
         return false;
@@ -243,5 +243,9 @@ public abstract class SubCommand implements ConfigMessages {
 
     public void setForceOwnUsage(boolean forceOwnUsage) {
         this.forceOwnUsage = forceOwnUsage;
+    }
+
+    public int ordinal() {
+        return Integer.MIN_VALUE;
     }
 }
