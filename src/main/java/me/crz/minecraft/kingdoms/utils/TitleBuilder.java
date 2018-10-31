@@ -38,19 +38,23 @@ public class TitleBuilder {
         return this;
     }
 
-    public void send() {
+    public void send(String... replacements) {
         for (final Player pl : Bukkit.getOnlinePlayers()) {
-            this.send(pl);
+            this.send(pl, replacements);
         }
     }
 
-    public void send(Player p) {
+    public void send(Player p, String... replacements) {
         if ((title != null && !title.isEmpty()) || (subtitle != null && !subtitle.isEmpty())) {
-            p.sendTitle(title, subtitle, in, stay, out);
+            p.sendTitle(
+                    MessageUtils.replacePlaceholders(title, replacements),
+                    MessageUtils.replacePlaceholders(subtitle, replacements),
+                    in, stay, out);
         }
         if (actionBar != null && !actionBar.isEmpty()) {
-            p.sendActionBar(actionBar);
-            Bukkit.getScheduler().runTaskLater(KingdomsPlugin.getInstance(), () -> p.sendActionBar(actionBar), 3 * 20);
+            String replacedActionBar = MessageUtils.replacePlaceholders(actionBar, replacements);
+            p.sendActionBar(replacedActionBar);
+            Bukkit.getScheduler().runTaskLater(KingdomsPlugin.getInstance(), () -> p.sendActionBar(replacedActionBar), 3 * 20);
         }
     }
 }

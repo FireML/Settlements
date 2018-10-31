@@ -126,6 +126,9 @@ public class MessageUtils extends Base {
     }
 
     public static String replacePlaceholders(String message, String... replacements) {
+        if (message == null) {
+            return null;
+        }
         return new Replacer()
                 .placeholderPrefix('{')
                 .placeholderSuffix('}')

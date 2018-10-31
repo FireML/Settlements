@@ -38,7 +38,16 @@ error:
   not-in-empire-world: "&cYou are not in your Empire's world!"
   not-unlocked-yet: "&cThis feature only unlocked with {state} level {level}!"
   level-required: "&cYou must be in a {state} level {level}!"
-move-cancelled: "&c{action} cancelled because you moved!"
+move-cancelled:
+  title: ""
+  subtitle: "&c{action} cancelled because you moved!"
+  actionbar: ""
+  message: ""
+waiting:
+  title: ""
+  subtitle: "&e&l{action}ing in {seconds}s..."
+  actionbar: ""
+  message: ""
 banished:
   move:
     message: ""
@@ -559,7 +568,6 @@ command:
       own-no-home: "&c&lYour settlement doesn't have a home ask your {chief} to set one!"
       no-home: "&c&lThat {state} doesn't have a home!"
       no-access: "&c&lYou don't have access to teleport to the home of that {state}!"
-      waiting: "&e&lTeleporting in {seconds} seconds..."
       success: "&a&lTeleported to home of {state} {name}"
       description: Teleport to a settlement's home
     invite:
@@ -638,7 +646,6 @@ command:
         success: "&a&lOutpost home &6{name} &aset here"
         description: Sets a outpost home on that specific chunk
       teleport:
-        waiting: "&e&lTeleporting in {seconds} seconds..."
         success: "&a&lTeleported to outpost {name}"
         description: Teleports to a outpost shown in the list
       unclaim:
@@ -934,7 +941,6 @@ command:
       description: Show the log history
     home:
       no-home: "&c&lYour empire doesn't have a home !"
-      waiting: "&e&lTeleporting in {seconds} seconds..."
       success: "&a&lTeleported to home of {state} {name}"
       description: Teleport to a empires's home
     invite:
