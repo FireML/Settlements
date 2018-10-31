@@ -8,8 +8,8 @@ public interface ConfigMessages extends ConfigKey {
     }
 
     default Message getMessage(String key) {
-        String base = getConfigPath();
-        Message message = Message.get(base + getKey().toLowerCase() + "." + key);
+        String base = getBase();
+        Message message = Message.get(getConfigPath() + "." + key);
         if (message.exists()) {
             return message;
         }
@@ -22,8 +22,12 @@ public interface ConfigMessages extends ConfigKey {
         return message;
     }
 
-    default String getConfigPath() {
+    default String getBase() {
         return type().isEmpty() ? "" : (type() + ".");
+    }
+
+    default String getConfigPath() {
+        return getBase() + getKey().toLowerCase();
     }
 
     default Message getError(String key) {

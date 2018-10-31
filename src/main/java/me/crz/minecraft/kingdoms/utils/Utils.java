@@ -321,7 +321,7 @@ public class Utils {
     public static void teleport(Player player, Location loc, String type, String messagePath, String... replacements) {
         int delay = Utils.getTeleportDelay(type);
         if (delay > 0) {
-            Message.get(messagePath + "waiting").tell(player, "seconds", String.valueOf(delay));
+            Message.get(messagePath + ".waiting").tell(player, "seconds", String.valueOf(delay));
             ExecuteMoveUtil.getInstance().execute(player, () -> {
                 player.teleport(loc);
                 Message.get(messagePath + ".success").tell(player, replacements);
