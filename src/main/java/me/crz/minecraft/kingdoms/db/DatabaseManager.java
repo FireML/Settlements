@@ -2,9 +2,9 @@ package me.crz.minecraft.kingdoms.db;
 
 import com.google.common.collect.ImmutableMap;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.command.empire.EmpireHistoryCommand;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.utils.BonusClaimsHolder;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 
@@ -84,12 +84,12 @@ public abstract class DatabaseManager {
         log(empire, village, resident, action, ImmutableMap.of(type, amount));
     }
 
-    public void log(Village village, Resident resident, String action, String type, long amount) {
-        log(null, village, resident, action, ImmutableMap.of(type, amount));
-    }
-
-    public void log(Empire empire, Resident resident, String action, String type, long amount) {
-        log(empire, resident.getVillage(), resident, action, ImmutableMap.of(type, amount));
+    public void log(BonusClaimsHolder claimsHolder, Resident resident, String action, String type, long amount) {
+        if (claimsHolder instanceof Village) {
+            log(null, (Village) claimsHolder, resident, action, ImmutableMap.of(type, amount));
+        } else {
+            log((Empire) claimsHolder, null, resident, action, ImmutableMap.of(type, amount));
+        }
     }
 
     public void logDeposit(Village village, Resident resident, long deposited) {

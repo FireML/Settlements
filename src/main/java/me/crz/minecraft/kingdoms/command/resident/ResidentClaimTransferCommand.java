@@ -66,7 +66,7 @@ public class ResidentClaimTransferCommand extends SubCommand {
                     } else if (target instanceof Empire) {
                         DatabaseManager.getInstance().saveEmpire((Empire) target);
                     }
-                    DatabaseManager.getInstance().log(resident.getVillage(), resident, "deposit", "claim", transfer);
+                    DatabaseManager.getInstance().log(target, resident, "deposit", "claim", transfer);
                 });
                 getMessage("success").tell(target.getOnlineResidents(),
                         "rank", resident.getVillageRank().getTag(resident.getVillage()),
