@@ -622,7 +622,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
     @Override
     public void log(Empire empire, Village village, Resident resident, String action, Map<String, Long> values) {
-        if (values.isEmpty()) {
+        if (values.isEmpty() || village.getId().isNull()) {
             return;
         }
         Utils.catchSync();
@@ -633,7 +633,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
              )
         ) {
             for (Map.Entry<String, Long> value : values.entrySet()) {
-                if (!village.getId().isNull()) {
+                if (value.getValue() != 0) {
                     sta.setInt(1, empire != null ? (Integer) empire.getId().value() : -1);
                     sta.setInt(2, (Integer) village.getId().value());
                     sta.setInt(3, resident != null && resident.getId() != null ? (Integer) resident.getId() : -1);
@@ -686,6 +686,10 @@ public class MySqlDatabaseManager extends DatabaseManager {
             sta.setInt(1, (Integer) id.value());
             ResultSet rs = sta.executeQuery();
             while (rs.next()) {
+                int amount = rs.getInt("amount");
+                if (amount == 0) {
+                    continue;
+                }
                 VillageRank rank = VillageRank.RESIDENT;
                 try {
                     rank = VillageRank.valueOf(rs.getString("playerRank").toUpperCase());
@@ -713,7 +717,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                         "action", rs.getString("action"),
                         "type", rs.getString("type"),
                         "icon", Utils.getIcon(resident, rs.getString("type")),
-                        "amount", String.valueOf(rs.getInt("amount")),
+                        "amount", String.valueOf(amount),
                         "timestamp", Utils.TIME_FORMAT.format(new Date(rs.getTimestamp("timestamp").getTime()))
                 });
             }
