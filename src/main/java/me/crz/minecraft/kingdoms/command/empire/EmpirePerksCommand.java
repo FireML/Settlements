@@ -16,94 +16,10 @@ import java.util.stream.Collectors;
 
 public class EmpirePerksCommand extends EmpireSubCommand {
     public EmpirePerksCommand(SubCommand parent) {
-        super(parent, "perks [unlock <perk>]", EmpireRank.SENATOR, "shop", "buffs");
+        super(parent, "perks", EmpireRank.NONE, "buffs");
         setPermission("kingdoms.user");
-        registerCommand(new EmpireSubCommand(this, "unlock <perk>") {
-            @Override
-            public boolean run(Resident resident, String base, String alias, String... args) {
-                if (args.length > 0) {
-                    Perk perk = EmpireManager.getInstance().getPerk(String.join(" ", args));
-                    if (perk == null) {
-                        getError("unknown-perk").tell(resident, "perk", String.join(" ", args));
-                    } else if (!resident.getVillage().getEmpire().matchesLevelRequirement(perk)) {
-                        getError("level-too-low").tell(resident,
-                                "perk", perk.getTag(),
-                                "level", String.valueOf(perk.getLevel())
-                        );
-                    } else if (resident.getVillage().getEmpire().hasUnlocked(perk)) {
-                        getError("already-unlocked").tell(resident, "perk", perk.getTag());
-                    } else if (resident.getVillage().remove(perk.getUnlockCost())) {
-                        resident.getVillage().getEmpire().unlockPerk(perk);
-                        MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("success"), "perk", perk.getTag());
-                        Utils.runAsync(() -> {
-                            DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
-                            DatabaseManager.getInstance().log(resident.getVillage().getEmpire(), resident, "perk-unlock", perk.getUnlockCost());
-                        });
-                    } else {
-                        getError("not-possible").tell(resident, "reason", getText("missing-items") + "\n"
-                                + perk.getUnlockCost().entrySet().stream()
-                                .filter(e -> !resident.getVillage().getEmpire().has(e.getKey(), e.getValue()))
-                                .map(e -> getMessage("entry").getReplacedText(
-                                        "material", e.getKey(),
-                                        "amount", String.valueOf(resident.getVillage().getEmpire().getAmount(e.getKey()))))
-                                .collect(Collectors.joining("\n"))
-                        );
-                    }
-                    return true;
-                }
-                getMessage("usage.head").tell(resident, "name", "Unlock Perks");
-                for (Perk perk : EmpireManager.getInstance().getPerks()) {
-                    if (!resident.getVillage().getEmpire().hasUnlocked(perk)) {
-                        getMessage("usage.entry").tell(resident, "usage", getUsage(base) + " " + perk.name(), "description", perk.getTag());
-                    }
-                }
-                return false;
-            }
-        });
-        registerCommand(new EmpireSubCommand(this, "repeat <perk>") {
-            @Override
-            public boolean run(Resident resident, String base, String alias, String... args) {
-                if (args.length > 0) {
-                    Perk perk = EmpireManager.getInstance().getPerk(String.join(" ", args));
-                    if (perk == null) {
-                        getError("unknown-perk").tell(resident, "perk", String.join(" ", args));
-                    } else if (!resident.getVillage().getEmpire().hasUnlocked(perk)) {
-                        getError("not-unlocked").tell(resident, "perk", perk.getTag());
-                    } else if (!resident.getVillage().getEmpire().matchesLevelRequirement(perk)) {
-                        getError("level-too-low").tell(resident,
-                                "perk", perk.getTag(),
-                                "level", String.valueOf(perk.getLevel())
-                        );
-                    } else if (!resident.getVillage().getEmpire().checkPerkCount(perk)) {
-                        getError("already-repeated").tell(resident, "perk", perk.getTag(), "amount", String.valueOf(perk.getRepeat()));
-                    } else if (resident.getVillage().getEmpire().remove(perk.getRepeatCost())) {
-                        resident.getVillage().getEmpire().repeatPerk(perk);
-                        MessageUtils.tellResidents(resident.getVillage().getEmpire().getOnlineResidents(), getMessage("success"), "perk", perk.getTag());
-                        Utils.runAsync(() -> {
-                            DatabaseManager.getInstance().saveVillage(resident.getVillage());
-                            DatabaseManager.getInstance().log(resident.getVillage().getEmpire(), resident, "perk-repeat", perk.getRepeatCost());
-                        });
-                    } else {
-                        getError("not-possible").tell(resident, "reason", getText("missing-items") + "\n"
-                                + perk.getUnlockCost().entrySet().stream()
-                                .filter(e -> !resident.getVillage().getEmpire().has(e.getKey(), e.getValue()))
-                                .map(e -> getMessage("entry").getReplacedText(
-                                        "material", e.getKey(),
-                                        "amount", String.valueOf(resident.getVillage().getEmpire().getAmount(e.getKey()))))
-                                .collect(Collectors.joining("\n"))
-                        );
-                    }
-                    return true;
-                }
-                getMessage("usage.head").tell(resident, "name", "Repeat Perks");
-                for (Perk perk : EmpireManager.getInstance().getPerks()) {
-                    if (resident.getVillage().getEmpire().hasUnlocked(perk) && resident.getVillage().getEmpire().checkPerkCount(perk)) {
-                        getMessage("usage.entry").tell(resident, "usage", getUsage(base) + " " + perk.name(), "description", perk.getTag());
-                    }
-                }
-                return false;
-            }
-        });registerCommand(new EmpireSubCommand(this, "toggle <perk>") {
+        setForceOwnUsage(true);
+        registerCommand(new EmpireSubCommand(this, "toggle <perk>", EmpireRank.LEADER) {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length > 0) {

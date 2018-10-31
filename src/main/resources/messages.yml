@@ -267,10 +267,12 @@ gui:
       title: "&3&lEmpire Mode"
     perks:
       title: "&3&lEmpire Perks"
-      entry:
-        locked: |-
-          &e{name}
-          &cReach Empire {level} to unlock!
+    shop:
+        title: "&3&lEmpire Perks Shop"
+        entry:
+          locked: |-
+            &e{name}
+            &cReach Empire {level} to unlock!
     settings:
       title: "&3&lEmpire Settings"
       entry: |-
@@ -352,31 +354,36 @@ gui:
     empire-home: "&e&lEmpire Home"
   perks:
     title: "&3&lSettlement Perks"
-    entry:
-      locked: |-
-        &e{name}
-        &cReach {state} {level} to unlock!
-      unlockable: |-
-        &e{name}
-        &bClick to purchase!
-      purchased: |-
-        &e{name}
-        &dPurchased!
-      repeat: |-
-        &e{name}
-        &7Used {used} times.
-        &bClick to buy again!
-    toggleable: "&bRight click to toggle."
+    entry: |-
+      &e{name}
+    toggleable: "&bClick to toggle."
     active: "&aEffect enabled!"
     inactive: "&cEffect disabled!"
-    repeatable: "&7Usable {amount} times. {left} times left!"
-    unlimited: "&7Can be purchased as often as you want"
-    cost:
-      unlock: "&aUnlock cost:"
-      repeat: "&aRepeat cost:"
-      entry: "{icon}&a{type}&7: {amount}"
-    cooldown: "&aCan be repeated in {cooldown}"
     back: "&c&lBack To Settings"
+  shop:
+      title: "&3&lSettlement Perks Shop"
+      entry:
+        locked: |-
+          &e{name}
+          &cReach {state} {level} to unlock!
+        unlockable: |-
+          &e{name}
+          &bClick to purchase!
+        purchased: |-
+          &e{name}
+          &dPurchased!
+        repeat: |-
+          &e{name}
+          &7Used {used} times.
+          &bClick to buy again!
+      repeatable: "&7Usable {amount} times. {left} times left!"
+      unlimited: "&7Can be purchased as often as you want"
+      cost:
+        unlock: "&aUnlock cost:"
+        repeat: "&aRepeat cost:"
+        entry: "{icon}&a{type}&7: {amount}"
+      cooldown: "&aCan be repeated in {cooldown}"
+      back: "&c&lBack To Settings"
   use:
     title: "&3&lSettlement Use Settings"
     back: "&c&lBack To Settings"
@@ -757,6 +764,25 @@ command:
         entry: "&8\\[&9*&8] [&b{rank}](hover=&9Click to add it to your input suggest_command={{usage}) &7- {description}"
         footer: "&aNote: Officers = Elder and Builder"
       description: Sets the rank of a resident
+    shop:
+      description: Purchase perks
+      unlock:
+        success: "&6&l{perk} &7&lhas been unlocked!"
+        level-too-low: "&cCan't unlock &f{perk}&c! It requires a level {level} {state}!"
+        not-possible: "&f{perk} &ccan't be unlocked! {reason}"
+        missing-items: "&c&lMissing Items:"
+        already-unlocked: "&cPerk &f{perk} &cis already unlocked"
+        entry: "&6{amount} &e{material}"
+        description: Unlock perks
+      repeat:
+        success: "&6&l{perk} &7&lhas been repeated!"
+        level-too-low: "&cCan't repeat &f{perk}&c! It requires a level {level} {state}!"
+        not-possible: "&f{perk} &ccan't be repeated! {reason}"
+        missing-items: "&c&lMissing Items:"
+        entry: "&6{amount} &e{material}"
+        not-unlocked: "&cPerk &f{perk} &cis not unlocked!"
+        already-repeated: "&cPerk &f{perk} &cis already been repeated {amount} times!"
+        description: Repeat perks
     show:
       general: |-
         &8--------&c&l{name}&r&8--------
@@ -810,30 +836,13 @@ command:
       success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at &f{x}-{z}!"
       description: Unclaim land which is claimed by your village
     perks:
-      unlock:
-        success: "&6&l{perk} &7&lhas been unlocked!"
-        level-too-low: "&cCan't unlock &f{perk}&c! It requires a level {level} {state}!"
-        not-possible: "&f{perk} &ccan't be unlocked! {reason}"
-        missing-items: "&c&lMissing Items:"
-        already-unlocked: "&cPerk &f{perk} &cis already unlocked"
-        entry: "&6{amount} &e{material}"
-        description: Unlock perks
-      repeat:
-        success: "&6&l{perk} &7&lhas been repeated!"
-        level-too-low: "&cCan't repeat &f{perk}&c! It requires a level {level} {state}!"
-        not-possible: "&f{perk} &ccan't be repeated! {reason}"
-        missing-items: "&c&lMissing Items:"
-        entry: "&6{amount} &e{material}"
-        not-unlocked: "&cPerk &f{perk} &cis not unlocked!"
-        already-repeated: "&cPerk &f{perk} &cis already been repeated {amount} times!"
-        description: Repeat perks
       toggle:
         active: "&6&l{perk} &7&lhas been &a&lactivated"
         deactived: "&6&l{perk} &7&lhas been &c&ldeactivated"
         not-unlocked: "&cPerk &f{perk} &cis not unlocked!"
         no-effects: "&cPerk &f{perk} &chas no effects that can be toggled!"
         description: Toggle perks
-      description: Unlock and manage perks
+      description: Manage unlocked perks
     upgrade:
       not-possible: "&cThe village cannot be leveled up! {reason}"
       max-level-reached: "&r&c&lMax Level Reached."
@@ -988,7 +997,8 @@ command:
     memberlist:
       head: "&8&l--------&r&c&lMembers&r&8&l--------"
       entry: "&8\\[&9*&8] [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{residents} players\n&f{description})"
-    perks:
+    shop:
+      description: Purchase perks
       unlock:
         success: "&6&l{perk} &7&lhas been unlocked!"
         level-too-low: "&cCan't unlock &f{perk}&c! It requires a level {level} empire!"
@@ -1006,13 +1016,14 @@ command:
         not-unlocked: "&cPerk &f{perk} &cis not unlocked!"
         already-repeated: "&cPerk &f{perk} &cis already been repeated {amount} times!"
         description: Repeat perks
+    perks:
       toggle:
         active: "&6&l{perk} &7&lhas been &a&lactivated"
         deactived: "&6&l{perk} &7&lhas been &c&ldeactivated"
         not-unlocked: "&cPerk &f{perk} &cis not unlocked!"
         no-effects: "&cPerk &f{perk} &chas no effects that can be toggled!"
         description: Toggle perks
-      description: Unlock and manage perks
+      description: Manage unlocked perks
     sethome:
       success: "&7&lLeader &f{title} {name} &r&7&l has set the empire home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
       description: Sets the home for the empire

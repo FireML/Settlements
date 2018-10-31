@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.village.gui;
 
+import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
@@ -7,14 +8,10 @@ import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.perk.PerkData;
 import me.crz.minecraft.kingdoms.perk.VillagePerk;
-import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.utils.UtilTime;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -24,8 +21,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
-
-import java.util.Map;
 
 public class PerksGUI extends KingdomsGUI {
     private final Resident resident;
@@ -43,102 +38,26 @@ public class PerksGUI extends KingdomsGUI {
         Village village = resident.getVillage();
 
         for (VillagePerk perk : VillageManager.getInstance().getPerks()) {
-            if (village.getState() == perk.getState() && village.getLevel() + 1 < perk.getLevel()) {
-                continue;
-            }
-
-            if (village.getState().below(perk.getState())) {
+            if (!village.hasUnlocked(perk)) {
                 continue;
             }
 
             gui.addItem(new ClickableItem() {
                 @Override
                 public ItemStack getItem(Player p) {
+                    if (!resident.getVillage().hasUnlocked(perk)) {
+                        return null;
+                    }
                     CItem item = new CItem(perk.getIcon());
-                    if (resident.getVillage().hasUnlocked(perk)) {
-                        PerkData perkData = resident.getVillage().getPerkData(perk);
-                        if (perk.getRepeat() != 0) {
-                            item.setName(getMessage("entry.repeat").getReplacedText(
-                                    "name", perk.getTag(),
-                                    "used", String.valueOf(perkData.getTimes())
-                            )).glow(true);
-                            if (perk.getRepeat() > 0) {
-                                item.addLore(getMessage("repeatable").getReplacedTextList(
-                                        "times", String.valueOf(perk.getRepeat()),
-                                        "used", String.valueOf(perkData.getTimes()),
-                                        "left", String.valueOf(perk.getRepeat() - perkData.getLastUsed())
-                                ));
-                                item.setAmount(perkData.getTimes());
-                            } else {
-                                item.addLore(getMessage("unlimited").getTextList());
-                            }
-                            if (!resident.getVillage().checkPerkCooldown(perk)) {
-                                item.addLore(getMessage("cooldown").getReplacedTextList("cooldown", UtilTime.format(perkData.getLastUsed())));
-                            }
-                            if (!perk.getRepeatCost().isEmpty()) {
-                                item.addLore(getMessage("cost.repeat").getTextList());
-                                for (Map.Entry<String, Long> cost : perk.getRepeatCost().entrySet()) {
-                                    item.addLore(getMessage("cost.entry").getReplacedTextList(
-                                            "type", cost.getKey(),
-                                            "icon", resident.hasResourcePack() ? ConfigManager.getInstance().getIconRpMapping().getIcon(cost.getKey(), true) : "",
-                                            "amount", String.valueOf(cost.getValue())
-                                    ));
-                                }
-                            }
-
+                    PerkData perkData = resident.getVillage().getPerkData(perk);
+                    item.setName(getMessage("entry.available").getReplacedText("name", perk.getTag())).glow(true);
+                    if (perk.hasEffects()) {
+                        if (perkData.isActive()) {
+                            item.addLore(getMessage("active").getReplacedTextList("name", perk.getTag()));
                         } else {
-                            item.setName(getMessage("entry.purchased").getReplacedText("name", perk.getTag())).glow(true);
+                            item.addLore(getMessage("inactive").getReplacedTextList("name", perk.getTag()));
                         }
-                        if (perk.hasEffects()) {
-                            if (perkData.isActive()) {
-                                item.addLore(getMessage("active").getReplacedTextList("name", perk.getTag()));
-                            } else {
-                                item.addLore(getMessage("inactive").getReplacedTextList("name", perk.getTag()));
-                            }
-                            item.addLore(getMessage("toggleable").getReplacedTextList("name", perk.getTag()));
-                        }
-                    } else {
-                        item.setName(getMessage("entry." + (resident.getVillage().canUnlock(perk) ? "unlockable" : "locked")).getReplacedText(
-                                "name", perk.getTag(),
-                                "state", perk.getState().getTag(),
-                                "level", String.valueOf(perk.getLevel()),
-                                "times", String.valueOf(perk.getRepeat()),
-                                "cooldown", UtilTime.format(perk.getCooldown())
-                        ));
-                        if (perk.getRepeat() != 0) {
-                            if (perk.getRepeat() > 0) {
-                                item.addLore(getMessage("repeatable").getReplacedTextList(
-                                        "times", String.valueOf(perk.getRepeat()),
-                                        "used", String.valueOf(0),
-                                        "left", String.valueOf(perk.getRepeat())
-                                ));
-                            } else {
-                                item.addLore(getMessage("unlimited").getTextList());
-                            }
-                            if (perk.getCooldown() > 0) {
-                                item.addLore(getMessage("cooldown").getReplacedTextList("cooldown", UtilTime.format(perk.getCooldown())));
-                            }
-                            if (!perk.getRepeatCost().isEmpty()) {
-                                item.addLore(getMessage("cost.repeat").getTextList());
-                                for (Map.Entry<String, Long> cost : perk.getRepeatCost().entrySet()) {
-                                    item.addLore(getMessage("cost.entry").getReplacedTextList(
-                                            "type", cost.getKey(),
-                                            "icon", resident.hasResourcePack() ? ConfigManager.getInstance().getIconRpMapping().getIcon(cost.getKey(), true) : "",
-                                            "amount", String.valueOf(cost.getValue())
-                                    ));
-                                }
-                            }
-                        }
-                        if (!perk.getUnlockCost().isEmpty()) {
-                            item.addLore(getMessage("cost.unlock").getTextList());
-                            for (Map.Entry<String, Long> cost : perk.getUnlockCost().entrySet()) {
-                                item.addLore(getMessage("cost.entry").getReplacedTextList(
-                                        "type", cost.getKey(),
-                                        "icon", resident.hasResourcePack() ? ConfigManager.getInstance().getIconRpMapping().getIcon(cost.getKey(), true) : "",
-                                        "amount", String.valueOf(cost.getValue())
-                                ));
-                            }
-                        }
+                        item.addLore(getMessage("toggleable").getReplacedTextList("name", perk.getTag()));
                     }
 
                     ItemStack itemStack = item.build();
@@ -159,28 +78,17 @@ public class PerksGUI extends KingdomsGUI {
 
                 @Override
                 public boolean click(Player p, ClickType type) {
-                    if (type == ClickType.RIGHT && perk.hasEffects()) {
+                    if (!resident.hasVillage() || resident.getVillageRank().below(VillageRank.ELDER)) {
+                        return false;
+                    }
+                    if (perk.hasEffects()) {
                         PerkData perkData = resident.getVillage().getPerkData(perk);
                         if (perkData != null) {
                             perkData.toggle();
+                            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
+                            gui.build(p);
                             return true;
                         }
-                    } else if (resident.getVillage().canRepeat(perk) && resident.getVillage().remove(perk.getRepeatCost())) {
-                        resident.getVillage().repeatPerk(perk);
-                        MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), Message.get("command.village.perks.unlock.success"), "perk", perk.getTag());
-                        Utils.runAsync(() -> {
-                            DatabaseManager.getInstance().saveVillage(resident.getVillage());
-                            DatabaseManager.getInstance().log(resident.getVillage(), resident, "perk-repeat", perk.getRepeatCost());
-                        });
-                        return true;
-                    } else if (resident.getVillage().canUnlock(perk) && resident.getVillage().remove(perk.getUnlockCost())) {
-                        resident.getVillage().unlockPerk(perk);
-                        MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), Message.get("command.village.perks.unlock.success"), "perk", perk.getTag());
-                        Utils.runAsync(() -> {
-                            DatabaseManager.getInstance().saveVillage(resident.getVillage());
-                            DatabaseManager.getInstance().log(resident.getVillage(), resident, "perk-unlock", perk.getUnlockCost());
-                        });
-                        return true;
                     }
                     return false;
                 }
