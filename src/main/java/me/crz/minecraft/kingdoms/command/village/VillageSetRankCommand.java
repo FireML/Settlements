@@ -19,16 +19,30 @@ public class VillageSetRankCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length <= 1) {
-            getMessage("usage.head").tell(res, "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base));
-            res.tell(getUsage(base));
+            getMessage("usage.head").tell(res,
+                    "name", name(),
+                    "command", "/" + base + " " + alias,
+                    "usage", getUsage(base),
+                    "aliases", getAliases().isEmpty() ? "" : getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getAliases())),
+                    "description", getText("description")
+            );
             for (VillageRank rank : VillageRank.values()) {
-                getMessage("usage.entry").tell(res,
-                        "usage", "/" + base + " " + alias + " " + rank.getTag(res.getVillage()),
-                        "description", getText("rank." + rank.getKey())
-                );
+                if (rank.below(res.getVillageRank())) {
+                    getMessage("usage.entry").tell(res,
+                            "usage", getUsage(base).replace("<rank>", rank.getTag(res.getVillage())),
+                            "rank", rank.getTag(res.getVillage()),
+                            "description", getText("rank." + rank.getKey())
+                    );
+                }
             }
             if (getMessage("usage.footer").exists()) {
-                getMessage("usage.footer").tell(res, "name", name(), "command", "/" + base + " " + alias);
+                getMessage("usage.footer").tell(res,
+                        "name", name(),
+                        "command", "/" + base + " " + alias, "usage",
+                        getUsage(base),
+                        "aliases", getAliases().isEmpty() ? "" : getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getAliases())),
+                        "description", getText("description")
+                );
             }
             return true;
         }

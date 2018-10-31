@@ -20,16 +20,30 @@ public class EmpireSetRankCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length <= 1) {
-            res.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base));
-            res.tell(getUsage(base));
+            getMessage("usage.head").tell(res,
+                    "name", name(),
+                    "command", "/" + base + " " + alias,
+                    "usage", getUsage(base),
+                    "aliases", getAliases().isEmpty() ? "" : getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getAliases())),
+                    "description", getText("description")
+            );
             for (EmpireRank rank : EmpireRank.values()) {
-                res.tell(getMessage("usage.entry"),
-                        "usage", "/" + base + " " + alias + " " + rank.getTag(),
-                        "description", getText("rank." + rank.getKey())
-                );
+                if (rank.below(res.getVillageRank())) {
+                    getMessage("usage.entry").tell(res,
+                            "usage", getUsage(base).replace("<rank>", rank.getTag()),
+                            "rank", rank.getTag(),
+                            "description", getText("rank." + rank.getKey())
+                    );
+                }
             }
             if (getMessage("usage.footer").exists()) {
-                res.tell(getMessage("usage.footer"), "name", name(), "command", "/" + base + " " + alias);
+                getMessage("usage.footer").tell(res,
+                        "name", name(),
+                        "command", "/" + base + " " + alias, "usage",
+                        getUsage(base),
+                        "aliases", getAliases().isEmpty() ? "" : getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getAliases())),
+                        "description", getText("description")
+                );
             }
             return true;
         }

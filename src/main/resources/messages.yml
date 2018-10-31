@@ -743,6 +743,10 @@ command:
         recruiter: Allows resident to invite players
         resident: Default rank for members of this settlement
       usage:
+        head: |-
+          &8&l--------&r&c&l{name} Commands&r&8&l--------
+          [&b{usage}](hover=&9Click to add it to your input suggest_command={{usage})
+        entry: "&8\\[&9*&8] [&b{rank}](hover=&9Click to add it to your input suggest_command={{usage}) &7- {description}"
         footer: "&aNote: Officers = Elder and Builder"
       description: Sets the rank of a resident
     show:
@@ -1016,6 +1020,12 @@ command:
       rank:
         senator: Allows inviting and kicking
         none: Default rank for members of this empire
+      usage:
+        head: |-
+          &8&l--------&r&c&l{name} Commands&r&8&l--------
+          [&b{usage}](hover=&9Click to add it to your input suggest_command={{usage})
+        entry: "&8\\[&9*&8] [&b{rank}](hover=&9Click to add it to your input suggest_command={{usage}) &7- {description}"
+        footer: "&aNote: Officers = Elder and Builder"
       description: Sets the rank of an empire resident
     setsymbol:
       description: "Set your empire's symbol"
