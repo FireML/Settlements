@@ -439,7 +439,7 @@ command:
     target-is-offline: "&cThe player that messaged you is offline now!"
   resident:
     claimtransfer:
-      success: "&e&l{title} &r&e{name} &r&7added &6{amount}&r&7 bonus claims to the {state}!"
+      success: "&e{name} &r&7added &6{amount}&r&7 bonus claims to the {targetstate} {target}!"
       description: Add bonus claims to settlements
       not-enough-bonus: "&c&lNot enough bonus claims to transfer &r&6&l{amount}&r&c&l!"
     show:

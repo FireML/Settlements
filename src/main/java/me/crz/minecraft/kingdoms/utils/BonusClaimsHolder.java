@@ -25,4 +25,6 @@ public interface BonusClaimsHolder {
     List<Resident> getOnlineResidents();
 
     boolean isMember(Resident resident);
+
+    String getName();
 }

@@ -73,14 +73,16 @@ public class ResidentClaimTransferCommand extends SubCommand {
                         "title", resident.getTitle(),
                         "name", resident.getName(),
                         "amount", String.valueOf(transfer),
-                        "state", resident.getVillage().getState().getTag());
+                        "target", target.getName(),
+                        "targetstate", target instanceof Village ? ((Village) target).getState().getTag() : target.getClass().getSimpleName());
                 if (!target.isMember(resident)) {
                     getMessage("success").tell(resident,
                             "rank", resident.getVillageRank().getTag(resident.getVillage()),
                             "title", resident.getTitle(),
                             "name", resident.getName(),
                             "amount", String.valueOf(transfer),
-                            "state", resident.getVillage().getState().getTag());
+                            "target", target.getName(),
+                            "targetstate", target instanceof Village ? ((Village) target).getState().getTag() : target.getClass().getSimpleName());
                 }
             } else {
                 resident.tell(getError("not-enough-bonus"), "amount", String.valueOf(transfer));
