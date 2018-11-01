@@ -46,7 +46,7 @@ public class VillageAdminJoinCommand extends SubCommand {
             if (targetP != null) {
                 MessageUtils.tell(targetP, Message.get("command.village.join.success"), "name", village.getName(), "state", village.getState().getTag());
             }
-            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("comand.village.join.new-resident"), "player", target.getName());
+            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("command.village.join.new-resident"), "player", target.getName());
         });
         return true;
     }
