@@ -38,6 +38,7 @@ error:
   not-in-empire-world: "&cYou are not in your Empire's world!"
   not-unlocked-yet: "&cThis feature only unlocked with {state} level {level}!"
   level-required: "&cYou must be in a {state} level {level}!"
+  no-allies: "&c&lYou have no allies!"
 move-cancelled:
   title: ""
   subtitle: "&c{action} cancelled because you moved!"
@@ -307,7 +308,12 @@ gui:
         &8&l-------- &r&c&lPlot Info&r &8&l--------
         &c&l{state}: &7{settlement}
         &9&lDescription: &r{description}
-        &9&lModes: &7MobSpawning: &6{spawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explosions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}
+        &9&lModes:
+        &7MobSpawning: &6{spawning}
+        &7FireSpread: &6{firespread}
+        &7Explosions: &6{explosions}
+        &7PvP: &6{pvp}
+        &7Build: &6{build}
   private-teleports:
     title: "&3&lSettlement teleports: &r&7{page}"
     entry: "&b{name}"
@@ -362,29 +368,29 @@ gui:
     inactive: "&cEffect disabled!"
     back: "&c&lBack To Settings"
   shop:
-      title: "&3&lSettlement Perks Shop"
-      entry:
-        locked: |-
-          &e{name}
-          &cReach {state} {level} to unlock!
-        unlockable: |-
-          &e{name}
-          &bClick to purchase!
-        purchased: |-
-          &e{name}
-          &dPurchased!
-        repeat: |-
-          &e{name}
-          &7Used {used} times.
-          &bClick to buy again!
-      repeatable: "&7Usable {amount} times. {left} times left!"
-      unlimited: "&7Can be purchased as often as you want"
-      cost:
-        unlock: "&aUnlock cost:"
-        repeat: "&aRepeat cost:"
-        entry: "{icon}&a{type}&7: {amount}"
-      cooldown: "&aCan be repeated in {cooldown}"
-      back: "&c&lBack To Settings"
+    title: "&3&lSettlement Perks Shop"
+    entry:
+      locked: |-
+        &e{name}
+        &cReach {state} {level} to unlock!
+      unlockable: |-
+        &e{name}
+        &bClick to purchase!
+      purchased: |-
+        &e{name}
+        &dPurchased!
+      repeat: |-
+        &e{name}
+        &7Used {used} times.
+        &bClick to buy again!
+    repeatable: "&7Usable {amount} times. {left} times left!"
+    unlimited: "&7Can be purchased as often as you want"
+    cost:
+      unlock: "&aUnlock cost:"
+      repeat: "&aRepeat cost:"
+      entry: "{icon}&a{type}&7: {amount}"
+    cooldown: "&aCan be repeated in {cooldown}"
+    back: "&c&lBack To Settings"
   use:
     title: "&3&lSettlement Use Settings"
     back: "&c&lBack To Settings"

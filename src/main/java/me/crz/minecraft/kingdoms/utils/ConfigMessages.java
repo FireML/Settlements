@@ -13,11 +13,22 @@ public interface ConfigMessages extends ConfigKey {
         if (message.exists()) {
             return message;
         }
-        while (path.contains(".")) {
-            path = path.substring(0, path.indexOf('.'));
-            Message m = Message.get(path + "." + key);
-            if (m.exists()) {
-                return m;
+        String[] pathParts = path.split("\\.");
+        if (pathParts.length > 1) {
+            for (int sub = 1; sub + 1 < pathParts.length; sub++) {
+                for (int i = pathParts.length - sub; i > 0; i--) {
+                    StringBuilder p = new StringBuilder();
+                    for (int j = 0; j + sub < pathParts.length; j++) {
+                        if (j == i) {
+                            j+=sub;
+                        }
+                        p.append(".").append(pathParts[j]);
+                    }
+                    Message m = Message.get(p + "." + key);
+                    if (m.exists()) {
+                        return m;
+                    }
+                }
             }
         }
         Message keyMessage = Message.get(key);
