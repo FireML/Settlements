@@ -54,7 +54,7 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
     private boolean fireSpread = false;
     private boolean explosions = false;
     private boolean mobSpawning = false;
-    private boolean buff = false;
+    private boolean buff = true;
     private Set<IdObject> members = new LinkedHashSet<>();
     private Set<UUID> senators = new HashSet<>();
     private int bonusClaims = 0;

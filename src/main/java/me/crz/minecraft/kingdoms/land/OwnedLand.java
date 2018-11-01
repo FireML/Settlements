@@ -45,7 +45,7 @@ public class OwnedLand implements ConfigurationSerializable {
     private boolean mobSpawning = false;
     private boolean fireSpread = false;
     private boolean explosions = false;
-    private boolean buff;
+    private boolean buff = true;
     private String outpost = null;
     private String description = "";
     private PlotBuildState buildState = PlotBuildState.RESIDENTS;

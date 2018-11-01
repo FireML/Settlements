@@ -65,7 +65,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     private boolean fireSpread = false;
     private boolean explosions = false;
     private boolean mobSpawning = false;
-    private boolean buff = false;
+    private boolean buff = true;
     private VillageAccess access = VillageAccess.ALLY;
     private long bank = 0;
     private long joinFee = 0;
