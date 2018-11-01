@@ -71,7 +71,7 @@ public class PerkEffect {
     }
 
     public PotionEffect getPotionEffect() {
-        return new PotionEffect(type, length > 0 ? length * 20: 300, strength, ambient, particles, icon);
+        return new PotionEffect(type, length > 0 ? length * 20: 300, strength - 1, ambient, particles, icon);
     }
 
     public enum EffectLocation implements NameTag {

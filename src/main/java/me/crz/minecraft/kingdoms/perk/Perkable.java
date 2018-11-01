@@ -48,11 +48,11 @@ public interface Perkable<T extends Perk> extends Vaultable {
         if (perk.getRepeat() > 0) {
             PerkData p = getPerkData(perk);
             if (p != null) {
-                return p.getTimes() < perk.getRepeat();
+                return p.getTimes() <= perk.getRepeat();
             }
             return true;
         }
-        return false;
+        return perk.getRepeat() < 0;
     }
 
     default boolean checkPerkCooldown(T perk) {

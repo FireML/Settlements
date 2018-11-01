@@ -44,7 +44,7 @@ public class PerksGUI extends KingdomsGUI {
         Empire empire = resident.getVillage().getEmpire();
 
         for (Perk perk : EmpireManager.getInstance().getPerks()) {
-            if (!empire.hasUnlocked(perk)) {
+            if (!empire.hasUnlocked(perk) || !perk.hasEffects()) {
                 continue;
             }
 

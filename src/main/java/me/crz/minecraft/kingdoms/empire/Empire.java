@@ -121,7 +121,7 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
         map.put("bank", getBank());
         map.put("joinFee", getJoinFee());
         map.put("tax", getTax());
-        map.put("bonusClaims", getBonusClaims());
+        map.put("bonusClaims", bonusClaims);
         map.put("buildState", getBuildState().name());
         if (getHome() != null)
             map.put("homeLoc", getHome().serialize());
@@ -192,7 +192,11 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
 
     @Override
     public int getBonusClaims() {
-        return bonusClaims;
+        return bonusClaims + getPerksMap().entrySet().stream().mapToInt(e -> e.getValue().getTimes() * getPerk(e.getKey()).getBonusClaims()).sum();
+    }
+
+    public int getBonusOutposts() {
+        return getPerksMap().entrySet().stream().mapToInt(e -> e.getValue().getTimes() * getPerk(e.getKey()).getBonusOutposts()).sum();
     }
 
     @Override
@@ -458,7 +462,9 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
                 "bonusclaims", getBonusClaims() > 0 ? configMessages.getMessage("bonus-claims").getReplacedText("amount", String.valueOf(getBonusClaims())) : "",
                 "capital", capital.getName(),
                 "capitalstate", capital.getState().getTag(),
-                "perks", getPerks().stream().map(NameTag::getTag).collect(Collectors.joining(", ")),
+                "perks", getPerksMap().entrySet().stream()
+                        .map(e -> (e.getValue().getTimes() > 1 ? e.getValue().getTimes() + "x " : "") + getPerk(e.getKey()).getTag())
+                        .collect(Collectors.joining(", ")),
                 "chiefrank", VillageRank.CHIEF.getTag(capital),
                 "chieftitle", chief.getTitle(),
                 "chief", chief.getName(),

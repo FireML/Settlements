@@ -45,7 +45,7 @@ resistance1:
         # (note that embassy plot owners are treated like they are residents of the village they own a plot in but only on their plot)
         to: resident
   # Allow purchasing extra claims or outposts
-  bonnus:
+  bonus:
     claims: 0
     outposts: 0
   # Run an arbitrary console command for all members of the settlement
@@ -137,7 +137,7 @@ extra-claims:
   state: kingdom
   level: 10
   repeat: -1 # as often as you want
-  bonnus:
+  bonus:
     claims: 10
   cost:
     unlock:
@@ -148,7 +148,7 @@ extra-outpost:
   state: kingdom
   level: 10
   repeat: -1
-  bonnus:
+  bonus:
     outposts: 1
   cost:
     unlock:

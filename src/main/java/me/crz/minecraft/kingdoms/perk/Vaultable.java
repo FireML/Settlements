@@ -61,7 +61,7 @@ public interface Vaultable {
 
     default boolean remove(Map<String, Long> toRemove) {
         if (toRemove == null || toRemove.isEmpty()) {
-            return false;
+            return true;
         }
         if (!has(toRemove)) {
             return false;

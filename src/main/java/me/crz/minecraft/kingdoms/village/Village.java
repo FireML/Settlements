@@ -5,6 +5,7 @@ import com.google.common.collect.MultimapBuilder;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.perk.Perk;
 import me.crz.minecraft.kingdoms.perk.Perkable;
 import me.crz.minecraft.kingdoms.perk.VillagePerk;
 import me.crz.minecraft.kingdoms.perk.PerkData;
@@ -424,11 +425,13 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     }
 
     public int getMaxClaimableChunks() {
-        return Utils.getLevelChunks(getState(), getLevel()) + bonusClaims + getPerks().stream().mapToInt(VillagePerk::getBonusClaims).sum() + (hasEmpire() ? getEmpire().getBonusClaims() : 0);
+        return Utils.getLevelChunks(getState(), getLevel()) + getBonusClaims();
     }
 
     public int getBonusClaims() {
-        return bonusClaims;
+        return bonusClaims
+                + getPerksMap().entrySet().stream().mapToInt(e -> e.getValue().getTimes() * getPerk(e.getKey()).getBonusClaims()).sum()
+                + (hasEmpire() ? getEmpire().getBonusClaims() : 0);
     }
 
     public void setBonusClaims(int bonusClaims) {
@@ -436,7 +439,11 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     }
 
     public int getMaxOutposts() {
-        return Utils.getLevelOutposts(getState(), getLevel()) + getPerks().stream().mapToInt(VillagePerk::getBonusOutposts).sum();
+        return Utils.getLevelOutposts(getState(), getLevel()) + getBonusOutposts() + (hasEmpire() ? getEmpire().getBonusOutposts() : 0);
+    }
+
+    public int getBonusOutposts() {
+        return getPerksMap().entrySet().stream().mapToInt(e -> e.getValue().getTimes() * getPerk(e.getKey()).getBonusOutposts()).sum();
     }
 
     public Empire getEmpire() {
@@ -557,7 +564,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         map.put("bank", getBank());
         map.put("joinFee", getJoinFee());
         map.put("tax", getTax());
-        map.put("bonusClaims", getBonusClaims());
+        map.put("bonusClaims", bonusClaims);
         if (getVillageHome() != null)
             map.put("homeLoc", getVillageHome().serialize());
         map.put("outposts", getOutpostHomes().values().stream().collect(Collectors.toMap(NamedLocation::getName, NamedLocation::serialize)));
@@ -662,7 +669,9 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
                 "bank", String.valueOf(getBank()),
                 "bonusclaims", getBonusClaims() > 0 ? configMessages.getMessage("bonus-claims").getReplacedText("amount", String.valueOf(getBonusClaims())) : "",
                 "access", getAccess().getTag(),
-                "perks", getPerks().stream().map(NameTag::getTag).collect(Collectors.joining(", ")),
+                "perks", getPerksMap().entrySet().stream()
+                        .map(e -> (e.getValue().getTimes() > 1 ? e.getValue().getTimes() + "x " : "") + getPerk(e.getKey()).getTag())
+                        .collect(Collectors.joining(", ")),
                 "chiefrank", VillageRank.CHIEF.getTag(this),
                 "chieftitle", chief.getTitle(),
                 "chief", chief.getName(),

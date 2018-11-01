@@ -12,7 +12,7 @@ public class PerkData implements ConfigurationSerializable {
     private boolean active;
 
     public PerkData() {
-        this.times = 0;
+        this.times = 1;
         this.lastUsed = System.currentTimeMillis();
         this.active = true;
     }

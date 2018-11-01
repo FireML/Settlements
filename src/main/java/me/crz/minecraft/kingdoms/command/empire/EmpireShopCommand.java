@@ -42,7 +42,9 @@ public class EmpireShopCommand extends EmpireSubCommand {
                             DatabaseManager.getInstance().log(resident.getVillage().getEmpire(), resident, "perk-unlock", perk.getUnlockCost());
                         });
                     } else {
-                        getError("not-possible").tell(resident, "reason", getText("missing-items") + "\n"
+                        getError("not-possible").tell(resident,
+                                "perk", perk.getTag(),
+                                "reason", getText("missing-items") + "\n"
                                 + perk.getUnlockCost().entrySet().stream()
                                 .filter(e -> !resident.getVillage().getEmpire().has(e.getKey(), e.getValue()))
                                 .map(e -> getMessage("entry").getReplacedText(
@@ -86,7 +88,9 @@ public class EmpireShopCommand extends EmpireSubCommand {
                             DatabaseManager.getInstance().log(resident.getVillage().getEmpire(), resident, "perk-repeat", perk.getRepeatCost());
                         });
                     } else {
-                        getError("not-possible").tell(resident, "reason", getText("missing-items") + "\n"
+                        getError("not-possible").tell(resident,
+                                "perk", perk.getTag(),
+                                "reason", getText("missing-items") + "\n"
                                 + perk.getUnlockCost().entrySet().stream()
                                 .filter(e -> !resident.getVillage().getEmpire().has(e.getKey(), e.getValue()))
                                 .map(e -> getMessage("entry").getReplacedText(

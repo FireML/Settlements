@@ -74,7 +74,7 @@ public class ShopGUI extends KingdomsGUI {
                                 item.addLore(getMessage("repeatable").getReplacedTextList(
                                         "times", String.valueOf(perk.getRepeat()),
                                         "used", String.valueOf(perkData.getTimes()),
-                                        "left", String.valueOf(perk.getRepeat() - perkData.getLastUsed())
+                                        "left", String.valueOf(perk.getRepeat() + 1 - perkData.getTimes())
                                 ));
                                 item.setAmount(perkData.getTimes());
                             } else {

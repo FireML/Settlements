@@ -946,7 +946,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 return;
             }
             String insertSql = "INSERT IGNORE INTO " + tablePrefix + tableName + " (" + keyColumn + ", " + mapKey + ", " + String.join(",", columns) + ")" +
-                    " VALUES (?,?," + String.join(",", Collections.nCopies(columns.size(), "?")) + ");";
+                    " VALUES (?,?," + String.join(",", Collections.nCopies(columns.size(), "?")) + ")" +
+                    " ON DUPLICATE KEY UPDATE " + columns.stream().map(c -> "`" + c + "`=VALUES(`" + c + "`)").collect(Collectors.joining(",")) + ";";
             PreparedStatement insertSta = conn.prepareStatement(insertSql);
             for (Map.Entry<String, ?> entry : values.entrySet()) {
                 insertSta.setInt(1, keyId);
@@ -970,7 +971,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 }
                 insertSta.addBatch();
             }
-            insertSta.executeUpdate();
+            insertSta.executeBatch();
         }
     }
 
@@ -1030,7 +1031,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 insertSta.setString(2, id.toString());
                 insertSta.addBatch();
             }
-            insertSta.executeUpdate();
+            insertSta.executeBatch();
         }
     }
 
@@ -1064,7 +1065,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 insertSta.setInt(2, (Integer) id.value());
                 insertSta.addBatch();
             }
-            insertSta.executeUpdate();
+            insertSta.executeBatch();
         }
     }
 
@@ -1098,7 +1099,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 insertSta.setString(2, channel.name());
                 insertSta.addBatch();
             }
-            insertSta.executeUpdate();
+            insertSta.executeBatch();
         }
     }
 
