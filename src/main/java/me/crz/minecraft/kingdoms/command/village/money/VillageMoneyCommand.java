@@ -25,7 +25,7 @@ public class VillageMoneyCommand extends VillageSubCommand {
         });
         registerCommand(new MoneyWithdrawCommand(this));
         registerCommand(new MoneyDepositCommand(this));
-        registerCommand(new VillageHistoryCommand(this, VillageRank.RESIDENT, LogType.GENERAL));
+        registerCommand(new VillageHistoryCommand(this, VillageRank.RESIDENT, LogType.BANK));
     }
 
     @Override

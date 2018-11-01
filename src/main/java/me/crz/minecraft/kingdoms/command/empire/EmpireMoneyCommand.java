@@ -92,7 +92,7 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                 return true;
             }
         });
-        registerCommand(new EmpireHistoryCommand(this, EmpireRank.NONE, LogType.GENERAL));
+        registerCommand(new EmpireHistoryCommand(this, EmpireRank.NONE, LogType.BANK));
     }
 
     @Override

@@ -253,8 +253,8 @@ public class MongoDatabaseManager extends DatabaseManager {
             filters.add(Filters.eq("action", "deposit"));
         }
         switch (type) {
-            case GENERAL:
-                filters.add(Filters.or(Filters.eq("type", "cash"), Filters.eq("type", "claim")));
+            case BANK:
+                filters.add(Filters.eq("type", "cash"));
                 break;
             case VAULT:
                 filters.add(Filters.not(Filters.eq("type", "cash")));
@@ -286,8 +286,8 @@ public class MongoDatabaseManager extends DatabaseManager {
             filters.add(Filters.eq("action", "deposit"));
         }
         switch (type) {
-            case GENERAL:
-                filters.add(Filters.or(Filters.eq("type", "cash"), Filters.eq("type", "claim")));
+            case BANK:
+                filters.add(Filters.eq("type", "cash"));
                 break;
             case VAULT:
                 filters.add(Filters.not(Filters.eq("type", "cash")));

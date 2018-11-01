@@ -9,7 +9,6 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -668,8 +667,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 "FROM " + tablePrefix + "logs AS l " +
                 "WHERE l." + column + "=?";
         switch (type) {
-            case GENERAL:
-                sql += " AND (l.type = 'cash' OR l.type = 'claim')";
+            case BANK:
+                sql += " AND l.type = 'cash'";
                 break;
             case VAULT:
                 sql += " AND l.type != 'cash' AND l.type != 'claim'";
@@ -712,8 +711,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 "LEFT JOIN " + tablePrefix + "residents AS r ON l.residentId = r.id " +
                 "WHERE l." + column + "=?";
         switch (type) {
-            case GENERAL:
-                sql += " AND (l.type = 'cash' OR l.type = 'claim')";
+            case BANK:
+                sql += " AND l.type = 'cash'";
                 break;
             case VAULT:
                 sql += " AND l.type != 'cash' AND l.type != 'claim'";

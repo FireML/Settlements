@@ -1,7 +1,7 @@
 package me.crz.minecraft.kingdoms.db;
 
 public enum LogType {
-    GENERAL,
+    BANK,
     VAULT,
     ALL;
 }
