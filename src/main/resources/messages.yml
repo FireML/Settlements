@@ -307,7 +307,7 @@ gui:
         &8&l-------- &r&c&lPlot Info&r &8&l--------
         &c&l{state}: &7{settlement}
         &9&lDescription: &r{description}
-        &9&lModes: &7MobSpawning: &6{spawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explisions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}
+        &9&lModes: &7MobSpawning: &6{spawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explosions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}
   private-teleports:
     title: "&3&lSettlement teleports: &r&7{page}"
     entry: "&b{name}"
@@ -692,7 +692,7 @@ command:
           &8&l-------- &r&c&lPlot Info&r &8&l--------
           &c&l{state}: &7{settlement}
           &9&lDescription: &r{description}
-          &9&lModes: &7MobSpawning: &6{spawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explisions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}
+          &9&lModes: &7MobSpawning: &6{spawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explosions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}
         owner: "&a&lPlot Owner: &7{name}"
         price: "&a&lPlot Price: &7{price}"
         description: Get information about the current plot
