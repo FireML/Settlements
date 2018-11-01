@@ -124,6 +124,10 @@ public abstract class DatabaseManager {
         log(empire, village, resident, "withdraw", "cash", withdrawn);
     }
 
+    public abstract int getLogPageCount(Village village, Resident resident, LogType type);
+
+    public abstract int getLogPageCount(Empire Empire, Resident resident, LogType type);
+
     public abstract List<String[]> getLog(Village village, Resident resident, int page, LogType type);
 
     public abstract List<String[]> getLog(Empire Empire, Resident resident, int page, LogType type);

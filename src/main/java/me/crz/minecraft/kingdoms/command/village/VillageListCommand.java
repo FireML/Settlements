@@ -1,14 +1,25 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import com.google.common.collect.ImmutableMap;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageAccess;
 import me.crz.minecraft.kingdoms.village.VillageManager;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class VillageListCommand extends SubCommand {
     public VillageListCommand(SubCommand parent) {
@@ -47,28 +58,62 @@ public class VillageListCommand extends SubCommand {
         VillageAccess finalAccess = access;
         int finalPage = page;
         Utils.runAsync(() -> {
-            getMessage("head").tell(player,
-                    "access", finalAccess != null ? finalAccess.getTag() : "",
-                    "page", String.valueOf(finalPage)
-            );
-            VillageManager.getInstance().getVillages().stream()
+            List<Village> villages = VillageManager.getInstance().getVillages().stream()
                     .filter(v -> v.getAccess().atLeast(finalAccess))
                     .sorted(Village::compareTo)
-                    .skip((finalPage - 1) * 20)
-                    .forEachOrdered(v -> {
-                        Resident chief = v.getChief();
-                        getMessage("entry").tell(player,
-                                "name", v.getName(),
-                                "level", String.valueOf(v.getLevel()),
-                                "description", v.getDescription(),
-                                "state", v.getState().getTag(),
-                                "access", v.getAccess() != VillageAccess.PRIVATE ? v.getAccess().getTag() : "",
-                                "residents", String.valueOf(v.getResidentIds().size()),
-                                "chief", chief.getName(),
-                                "chieftitle", chief.getTitle(),
-                                "chiefrank", VillageRank.CHIEF.getTag(v)
-                        );
-                    });
+                    .collect(Collectors.toList());
+
+            int pages = (int) Math.ceil(villages.size() / (double) Utils.getEntriesPerPage());
+            getMessage("head").tell(player,
+                    "access", finalAccess != null ? finalAccess.getTag() : "",
+                    "page", String.valueOf(finalPage),
+                    "maxpage", String.valueOf(pages)
+            );
+
+            for (int i = (finalPage - 1) * Utils.getEntriesPerPage(); i < villages.size() && i < finalPage * Utils.getEntriesPerPage(); i++) {
+                Village v = villages.get(i);
+                Resident chief = v.getChief();
+                getMessage("entry").tell(player,
+                        "name", v.getName(),
+                        "level", String.valueOf(v.getLevel()),
+                        "description", v.getDescription(),
+                        "state", v.getState().getTag(),
+                        "access", v.getAccess() != VillageAccess.PRIVATE ? v.getAccess().getTag() : "",
+                        "residents", String.valueOf(v.getResidentIds().size()),
+                        "chief", chief.getName(),
+                        "chieftitle", chief.getTitle(),
+                        "chiefrank", VillageRank.CHIEF.getTag(v)
+                );
+            }
+
+            ComponentBuilder next = new ComponentBuilder("")
+                    .append(getMessage("next").getReplacedComponents("next", String.valueOf(finalPage + 1)));
+            if (finalPage + 1 > pages) {
+                next.color(ChatColor.GRAY);
+            } else {
+                next.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalPage + 1)));
+                next.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(ChatColor.YELLOW + ">>")));
+            }
+            ComponentBuilder previous = new ComponentBuilder("")
+                    .append(getMessage("previous").getReplacedComponents("previous", String.valueOf(finalPage - 1)));
+            if (finalPage - 1 <= 0) {
+                previous.color(ChatColor.GRAY);
+            } else {
+                previous.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalPage - 1)));
+                previous.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(ChatColor.YELLOW + "<<")));
+            }
+
+            MessageUtils.tell(player, MessageUtils.replacePlaceholders(getMessage("footer").getReplacedComponents(
+                    "access", finalAccess != null ? finalAccess.getTag() : "",
+                    "page", String.valueOf(finalPage),
+                    "maxpage", String.valueOf(pages)
+            ), ImmutableMap.of(
+                    "access", TextComponent.fromLegacyText(finalAccess != null ? finalAccess.getTag() : ""),
+                    "page", TextComponent.fromLegacyText(String.valueOf(finalPage)),
+                    "maxpage", TextComponent.fromLegacyText(String.valueOf(pages)),
+                    "next", next.create(),
+                    "previous", previous.create()
+            )));
         });
 
         return true;

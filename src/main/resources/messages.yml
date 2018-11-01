@@ -517,8 +517,11 @@ command:
         balance: "&2&lSettlement Balance: &r&7{amount}"
         description: Check the balance of the bank
       history:
-        head: "&7------- &cBank History [{page}]&7 -------"
+        head: "&7------- &cBank History [{page}/{maxpage}]&7 -------"
         entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6${amount}](&eAt {timestamp})"
+        footer: "&7-------- {previous} {page}/{maxpage}{next} &7 --------"
+        previous: "&b<< Prev "
+        next: "&b Next >>"
         description: Show the bank's history
     build:
       success: "&aSet build state of this settlement to {state}"
@@ -570,8 +573,11 @@ command:
         entry: "{online}{name}"
       description: "Shows information on the village you are stending in "
     history:
-      head: "&7------- &cLog History [{page}]&7 -------"
+      head: "&7------- &cLog History [{page}/{maxpage}]&7 -------"
       entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
+      footer: "&7-------- {previous} {page}/{maxpage}{next} &7 --------"
+      previous: "&b<< Prev "
+      next: "&b Next >>"
       description: Show the log history
     home:
       own-no-home: "&c&lYour settlement doesn't have a home ask your {chief} to set one!"
@@ -606,8 +612,11 @@ command:
       description: Leave your current village
     list:
       description: "List settlements"
-      head: "&7------- &c{access}Settlements [{page}]&7 -------"
+      head: "&7------- &c{access}Settlements [{page}/{maxpage}]&7 -------"
       entry: "&8\\[&9*&8] [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{residents} players\n&f{description})"
+      footer: "&7-------- {previous} {page}/{maxpage}{next} &7 --------"
+      previous: "&b<< Prev "
+      next: "&b Next >>"
     map:
       head: "&8---------------- &eSettlement Map &r&8----------------"
       explanation: |-
@@ -872,8 +881,11 @@ command:
     deposit:
       description: Deposit an item into the vault
       history:
-        head: "&7------- &cVault History [{page}]&7 -------"
+        head: "&7------- &cVault History [{page}/{maxpage}]&7 -------"
         entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
+        footer: "&7-------- {previous} {page}/{maxpage}{next} &7 --------"
+        previous: "&b<< Prev "
+        next: "&b Next >>"
         description: Show the vault's history
     rules:
       description: Links you to the rules
@@ -912,8 +924,11 @@ command:
         balance: "&2&lEmpire Balance: &r&7{amount}"
         description: Check the balance of the bank
       history:
-        head: "&7------- &cBank History [{page}]&7 -------"
+        head: "&7------- &cBank History [{page}/{maxpage}]&7 -------"
         entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6${amount}](&eAt {timestamp})"
+        footer: "&7-------- {previous} {page}/{maxpage}{next} &7 --------"
+        previous: "&b<< Prev "
+        next: "&b Next >>"
         description: Show the bank's history
     build:
       success: "&aSet build state of this empire to {state}"
@@ -951,8 +966,11 @@ command:
       not-in-empire: "&cYou are not currently in an empire world!"
       description: Show in which empire world you are
     history:
-      head: "&7------- &cLog History [{page}]&7 -------"
+      head: "&7------- &cLog History [{page}/{maxpage}]&7 -------"
       entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
+      footer: "&7-------- {previous} {page}/{maxpage}{next} &7 --------"
+      previous: "&b<< Prev "
+      next: "&b Next >>"
       description: Show the log history
     home:
       no-home: "&c&lYour empire doesn't have a home !"
@@ -985,8 +1003,11 @@ command:
       description: Leave your current empire
     list:
       description: "List empire"
-      head: "&7------- &cEmpires [{page}]&7 -------"
+      head: "&7------- &cEmpires [{page}/{maxpage}]&7 -------"
       entry: "&8\\[&9*&8] [&r&e{name}](&8Capital: &f{capitalstate}{capital}\n&8Leader: &f{chieftitle} {chief}\n&8Size: &f{members} members\n&f{description})"
+      footer: "&7-------- {previous} {page}/{maxpage}{next} &7 --------"
+      previous: "&b<< Prev "
+      next: "&b Next >>"
     materials:
       max-level-reached: "&c&lYour Empire already has the max level!"
       head: "&8&l--------&r&c&lRequired Materials&r&8&l--------"
@@ -1002,6 +1023,7 @@ command:
     memberlist:
       head: "&8&l--------&r&c&lMembers&r&8&l--------"
       entry: "&8\\[&9*&8] [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{residents} players\n&f{description})"
+      description: List all empire members
     shop:
       description: Purchase perks
       unlock:

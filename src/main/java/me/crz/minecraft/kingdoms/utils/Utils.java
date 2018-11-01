@@ -140,6 +140,13 @@ public class Utils {
         return 0;
     }
 
+    public static int getEntriesPerPage() {
+        if (ConfigManager.getInstance().getConfig().isInt("entries-per-page")) {
+            return ConfigManager.getInstance().getConfig().getInt("entries-per-page");
+        }
+        return 20;
+    }
+
     public static String getSpawnCommand() {
         if (ConfigManager.getInstance().getConfig().isString("spawn-command")) {
             return ConfigManager.getInstance().getConfig().getString("spawn-command");

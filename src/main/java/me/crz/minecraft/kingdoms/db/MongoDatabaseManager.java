@@ -232,6 +232,39 @@ public class MongoDatabaseManager extends DatabaseManager {
         logsCollection.insertMany(insert);
     }
 
+
+    @Override
+    public int getLogPageCount(Village village, Resident resident, LogType type) {
+        return getLogPageCount("settlementId", village.getId(), resident, type);
+    }
+
+    @Override
+    public int getLogPageCount(Empire empire, Resident resident, LogType type) {
+        return getLogPageCount("empireId", empire.getId(), resident, type);
+    }
+
+    private int getLogPageCount(String column, IdObject id, Resident resident, LogType type) {
+        if (id.isNull()) {
+            return 0;
+        }
+        List<Bson> filters = new ArrayList<>();
+        filters.add(Filters.eq(column, id.value()));
+        if (!resident.getVillageRank().atLeast(VillageRank.CHIEF)) {
+            filters.add(Filters.eq("action", "deposit"));
+        }
+        switch (type) {
+            case GENERAL:
+                filters.add(Filters.or(Filters.eq("type", "cash"), Filters.eq("type", "claim")));
+                break;
+            case VAULT:
+                filters.add(Filters.not(Filters.eq("type", "cash")));
+                filters.add(Filters.not(Filters.eq("type", "claim")));
+                break;
+
+        }
+        return (int) Math.ceil(logsCollection.countDocuments(Filters.and(filters)) / (double) Utils.getEntriesPerPage());
+    }
+
     @Override
     public List<String[]> getLog(Village village, Resident resident, int page, LogType type) {
         return getLog("village", village.getId(), resident, page, type);

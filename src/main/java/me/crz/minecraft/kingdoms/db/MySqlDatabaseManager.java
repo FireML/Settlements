@@ -651,6 +651,47 @@ public class MySqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
+    public int getLogPageCount(Village village, Resident resident, LogType type) {
+        return getLogPageCount("settlementId", village.getId(), resident, type);
+    }
+
+    @Override
+    public int getLogPageCount(Empire empire, Resident resident, LogType type) {
+        return getLogPageCount("empireId", empire.getId(), resident, type);
+    }
+
+    private int getLogPageCount(String column, IdObject id, Resident resident, LogType type) {
+        if (id.isNull()) {
+            return 0;
+        }
+        String sql = "SELECT count(l.id) " +
+                "FROM " + tablePrefix + "logs AS l " +
+                "WHERE l." + column + "=?";
+        switch (type) {
+            case GENERAL:
+                sql += " AND (l.type = 'cash' OR l.type = 'claim')";
+                break;
+            case VAULT:
+                sql += " AND l.type != 'cash' AND l.type != 'claim'";
+                break;
+        }
+        if (!resident.getVillageRank().atLeast(VillageRank.CHIEF)) {
+            sql += " AND `l.action` = 'deposit'";
+        }
+        try (Connection conn = ds.getConnection();
+             PreparedStatement sta = conn.prepareStatement(sql)) {
+            sta.setInt(1, (Integer) id.value());
+            ResultSet rs = sta.executeQuery();
+            if (rs.next()) {
+                return (int) Math.ceil(rs.getInt(1) / (double) Utils.getEntriesPerPage());
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to get log page count for " + id, e);
+        }
+        return 0;
+    }
+
+    @Override
     public List<String[]> getLog(Village village, Resident resident, int page, LogType type) {
         return getLog("settlementId", village.getId(), resident, page, type);
     }
@@ -665,7 +706,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         if (id.isNull() || page < 1) {
             return log;
         }
-        int start = (page-1) * 20;
+        int start = (page-1) * Utils.getEntriesPerPage();
         String sql = "SELECT l.empireId, l.settlementId, l.action, l.type, l.amount, l.timestamp, r.name AS playerName, r.uuid AS playerId, r.rank AS playerRank, r.title AS playerTitle " +
                 "FROM " + tablePrefix + "logs AS l " +
                 "LEFT JOIN " + tablePrefix + "residents AS r ON l.residentId = r.id " +
@@ -679,7 +720,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 break;
         }
         if (!resident.getVillageRank().atLeast(VillageRank.CHIEF)) {
-            sql += " AND `action` = 'deposit'";
+            sql += " AND `l.action` = 'deposit'";
         }
         sql += " ORDER BY l.id DESC LIMIT " + start + ",20;";
         try (Connection conn = ds.getConnection();

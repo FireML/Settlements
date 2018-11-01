@@ -42,3 +42,4 @@ unally-grace-days: 4
 unally-unclaims-outposts: false
 only-lock-in-settlement: true
 claim-max-radius: 5
+entries-per-page: 20
