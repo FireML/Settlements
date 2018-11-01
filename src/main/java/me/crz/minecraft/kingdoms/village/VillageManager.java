@@ -222,7 +222,7 @@ public class VillageManager {
 
     public VillagePerk getPerk(String name) {
         VillagePerk perk = perks.get(name.toLowerCase());
-        if (perk != null) {
+        if (perk == null) {
             perk = perkTags.get(name.toLowerCase());
         }
         return perk;

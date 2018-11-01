@@ -75,7 +75,11 @@ public class EmpireManager {
     }
 
     public Perk getPerk(String name) {
-        return perks.get(name.toLowerCase());
+        Perk perk = perks.get(name.toLowerCase());
+        if (perk == null) {
+            perk = perkTags.get(name.toLowerCase());
+        }
+        return perk;
     }
 
     public void registerNewEmpire(Empire empire) {
