@@ -35,7 +35,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitTask;
 
 public class Utils {
@@ -129,13 +128,6 @@ public class Utils {
     public static int getTeleportDelay(String type) {
         if (ConfigManager.getInstance().getConfig().isInt("teleport-delay." + type)) {
             return ConfigManager.getInstance().getConfig().getInt("teleport-delay." + type);
-        }
-        return 0;
-    }
-
-    public static int getKingdomsWorldLevel() {
-        if (ConfigManager.getInstance().getConfig().isInt("kingdoms-world-level")) {
-            return ConfigManager.getInstance().getConfig().getInt("kingdoms-world-level");
         }
         return 0;
     }

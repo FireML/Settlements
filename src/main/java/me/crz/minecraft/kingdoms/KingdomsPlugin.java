@@ -25,7 +25,6 @@ import java.util.logging.Level;
 
 import me.crz.minecraft.kingdoms.landflags.LandFlagsUseEvents;
 import me.crz.minecraft.kingdoms.landflags.LandFlagsBlockEvents;
-import me.crz.minecraft.kingdoms.world.WorldListener;
 import me.crz.minecraft.kingdoms.land.LandFlags;
 import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.village.VillageListener;
@@ -54,7 +53,6 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     public static Chat chat;
     public UtilChat utilChat = new UtilChat();
     private boolean running = false;
-    private String kingdomsWorld = "";
     private String empiresWorldPrefix = "";
     private Timer upkeepTimer = null;
 
@@ -91,7 +89,6 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         }
         if (data.load(this.getDataFolder())) {
             ConfigManager.getInstance();
-            kingdomsWorld = getConfig().getString("kingdoms-world");
             empiresWorldPrefix = getConfig().getString("empires-world.prefix");
             try {
                 DatabaseManager.getInstance().connect();
@@ -109,7 +106,6 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             this.getServer().getPluginManager().registerEvents(new EmpireListener(), this);
             this.getServer().getPluginManager().registerEvents(new ChatManager(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlags(), this);
-            this.getServer().getPluginManager().registerEvents(new WorldListener(), this);
             this.getServer().getPluginManager().registerEvents(new Advancements(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlagsBlockEvents(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlagsUseEvents(), this);
@@ -198,10 +194,6 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     public boolean isRunning() {
         return running;
-    }
-
-    public String getKingdomsWorld() {
-        return kingdomsWorld;
     }
 
     public String getEmpiresWorldPrefix() {

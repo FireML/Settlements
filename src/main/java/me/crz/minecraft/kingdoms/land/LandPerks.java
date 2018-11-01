@@ -177,10 +177,6 @@ public class LandPerks {
                     continue;
                 }
 
-                if (effect.getApplyIn() == PerkEffect.EffectLocation.KINGDOMS_WORLD
-                        && !p.getWorld().getName().equals(KingdomsPlugin.getInstance().getKingdomsWorld())) {
-                    continue;
-                }
                 if (land == null) {
                     if (effect.getApplyIn() == PerkEffect.EffectLocation.EMPIRE_WORLD
                             && (!resident.hasEmpire() || !resident.getVillage().getEmpire().equals(EmpireManager.getInstance().getEmpireFromWorld(p.getWorld())))) {

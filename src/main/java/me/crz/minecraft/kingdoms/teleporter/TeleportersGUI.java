@@ -1,19 +1,15 @@
 package me.crz.minecraft.kingdoms.teleporter;
 
-import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.empire.Empire;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.village.VillageManager;
-import me.crz.minecraft.kingdoms.village.VillageState;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -52,40 +48,6 @@ public class TeleportersGUI extends KingdomsGUI {
         });
         ci.addItem(4, new ClickableItem() {
             public ItemStack getItem(Player p) {
-                Village v = VillageManager.getInstance().getVillageFromPlayer(p);
-                int level = Utils.getKingdomsWorldLevel();
-                if (v == null || v.getState() == VillageState.VILLAGE || v.getLevel() < level) {
-                    ItemStack item = new ItemStack(locked);
-                    ItemMeta pm = item.getItemMeta();
-                    pm.setDisplayName(getError("level-required").getReplacedText("state", VillageState.KINGDOM.getTag(), "level", String.valueOf(level)));
-                    item.setItemMeta(pm);
-                    return item;
-                }
-                ItemStack item = new ItemStack(Material.GRASS);
-                ItemMeta pm = item.getItemMeta();
-                pm.setDisplayName(MessageUtils.replaceColorCodes(getText("kingdoms-world")));
-                item.setItemMeta(pm);
-                return item;
-            }
-
-            public boolean click(Player p, ClickType clickType) {
-                Village v = VillageManager.getInstance().getVillageFromPlayer(p);
-                int level = Utils.getKingdomsWorldLevel();
-                if (v == null || v.getState() == VillageState.VILLAGE || v.getLevel() < level) {
-                    getError("level-required").tell(p, "state", VillageState.KINGDOM.getTag(), "level", String.valueOf(level));
-                    return false;
-                }
-                try {
-                    Utils.teleport(p, Bukkit.getWorld(KingdomsPlugin.getInstance().getKingdomsWorld()).getSpawnLocation(), "command.village.home", getConfigPath(),
-                            "state", v.getState().getTag(), "name", v.getName());
-                } catch (Exception e) {
-                    MessageUtils.tell(p, "&c&lAn error occurred somewhere! warp possibly not set!");
-                }
-                return true;
-            }
-        });
-        ci.addItem(5, new ClickableItem() {
-            public ItemStack getItem(Player p) {
                 Village village = VillageManager.getInstance().getVillageFromPlayer(p);
                 if (village == null || village.getVillageHome() == null) {
                     ItemStack l = locked.clone();
@@ -106,7 +68,7 @@ public class TeleportersGUI extends KingdomsGUI {
                 return false;
             }
         });
-        ci.addItem(6, new ClickableItem() {
+        ci.addItem(5, new ClickableItem() {
             public ItemStack getItem(Player p) {
                 Resident resident = ResidentManager.getInstance().getResident(p);
                 if (!resident.hasEmpire() || resident.getVillage().getEmpire().getHome() == null) {
