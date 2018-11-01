@@ -25,20 +25,23 @@ public class ExecuteMoveUtil extends Base {
     public void execute(Player p, Runnable r, int delay, String action, String messagePath) {
         if (delay > 0) {
             AtomicInteger waiting = new AtomicInteger(delay);
+            ConfigMessages messages = new PathedConfigMessages(messagePath);
             ActionRunnable waitingRunnable = new ActionRunnable(action) {
                 @Override
                 public void run() {
                     if (waiting.get() > 0) {
                         new TitleBuilder()
-                                .withTitle(Message.get(messagePath + ".waiting.title").getText())
-                                .withSubtitle(Message.get(messagePath + ".waiting.subtitle").getText())
-                                .withActionbar(Message.get(messagePath + ".waiting.actionbar").getText())
+                                .withTitle(messages.getMessage("waiting.title").getText())
+                                .withSubtitle(messages.getMessage("waiting.subtitle").getText())
+                                .withActionbar(messages.getMessage("waiting.actionbar").getText())
+                                .withTimings(0, 21, 0)
                                 .send(p,
                                         "seconds", String.valueOf(waiting.get()),
                                         "action", action
                                 );
                     } else {
-                        if (scheduled.remove(p.getUniqueId(), action) && p.isOnline()) {
+                        ActionRunnable waiting = scheduled.remove(p.getUniqueId());
+                        if (waiting != null && waiting.getTaskId() == getTaskId() && p.isOnline()) {
                             r.run();
                         }
                         cancel();
