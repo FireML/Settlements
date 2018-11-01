@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -52,6 +53,8 @@ public class VillageCreateCommand extends VillageSubCommand {
             VillageManager.getInstance().registerNewVillage(village);
             player.setVillage(village);
             player.setVillageRank(VillageRank.CHIEF);
+            player.addChannel(ChatChannel.SETTLEMENT);
+            player.setActiveChannel(ChatChannel.SETTLEMENT);
             Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(player));
 
             MessageUtils.broadcast(getMessage("broadcast"),

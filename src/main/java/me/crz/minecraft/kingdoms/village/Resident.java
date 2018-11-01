@@ -170,7 +170,7 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
         }
         VillageRank prev = getVillageRank();
         this.rank = rank;
-        if (!rank.isTitleAvailable(getVillage(), getTitle())) {
+        if (!rank.isTitleAvailable(getVillage(), title)) {
             setTitle(rank.getTag(getVillage()));
         } else {
             Collection<String> titles = rank.getTitles(getVillage());

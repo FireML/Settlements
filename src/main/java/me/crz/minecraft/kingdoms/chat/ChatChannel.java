@@ -134,11 +134,4 @@ public enum ChatChannel implements NameTag {
     public static boolean isChannel(String name) {
         return BY_ALIAS.containsKey(name.toLowerCase());
     }
-
-    public void setActiveChatChannel(Player p) {
-        Resident res = ResidentManager.getInstance().getResident(p);
-        if (res.setActiveChannel(this) | res.addChannel(this)) {
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
-        }
-    }
 }

@@ -4,6 +4,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import me.crz.minecraft.kingdoms.utils.ConfigKey;
 import me.crz.minecraft.kingdoms.utils.Message;
+import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import org.bukkit.ChatColor;
@@ -16,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public enum VillageRank implements Rankable, ConfigKey {
+public enum VillageRank implements Rankable, NameTag {
     CHIEF,
     ELDER,
     RECRUITER,
@@ -48,7 +49,7 @@ public enum VillageRank implements Rankable, ConfigKey {
 
     public String getTag(Village village) {
         Collection<String> titles = getTitles(village);
-        return titles != null && !titles.isEmpty() ? titles.iterator().next() : "";
+        return titles != null && !titles.isEmpty() ? titles.iterator().next() : getTag();
     }
 
     public boolean isTitleAvailable(Village village, String title) {

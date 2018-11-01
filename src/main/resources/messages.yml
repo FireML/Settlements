@@ -96,7 +96,7 @@ upkeep:
     downgraded: "&a&lALERT &7Your settlement was downgraded to a level {level} {state} because you couldn't pay the upkeep!"
     deleted: "&a&lALERT &7Your settlement has been &cdeleted&7 because it was &cunable&7 to pay its upkeep!"
     charged: "&a&lALERT &7Your settlement has been charged &6{charged}&7 for upkeep!"
-    cant-pay: "&a&lALERT &7Your settlement is &cunable&7 to pay tomorrows upkeep it will cost &6{amount}&7!"
+    cant-pay: "&a&lALERT &cYour settlement is &6unable&c to pay the next upkeep it will cost &6{amount}&c! Deposit money to avoid deletion!"
 tax:
   removed: "&eRemoved &c{amount}&e of tax from your {state}'s bank!"
   cant-pay: "&cYou can't pay the tax of &e{amount}&c and will be banished tomorrow if you still can't pay tomorrows amount of &e{nextamount}&c!"
@@ -145,20 +145,21 @@ chat:
   format:
     name: "{name}"
     private:
-      sender: "[&8[&a{sender} &7➦ &3{target}&8] &b{message}"
-      target: "{staff}[&8[&3{sender} &7➦ &a{target}&8] &b{message}"
+      sender: "\\[&8[&a{sender} &7➦ &3{target}&8\\] &b{message}"
+      target: "{staff}\\[&8[&3{sender} &7➦ &a{target}&8\\] &b{message}"
       name:
         sender: "you"
         target: "{name}"
-      social-spy: "&7[&6SS&7]&r {sender}  &7➦ &3{target}&7: {message}"
+      social-spy: "&7\\[&6SS&7\\]&r {sender}  &7➦ &3{target}&7: {message}"
     channel:
       general: "&r{prefix}&7{sender}&r{suffix}&r ➦ {message}"
-      local: "&e[Local] &r{prefix}&7{sender}&r{suffix}&r ➦ &e{message}"
-      admin: "&b[Admin] &r{prefix}&7{sender}&r{suffix}&r ➦ &5{message}"
-      staff: "&9[Staff] &r{prefix}&7{sender}&r{suffix}&r ➦ &6{message}"
-      settlement: "&e[{state}] {title} &r{prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
-      trade: "&d[TRADE] &r{prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
-      ally: "&b[Ally] &6{state} {title} &r{prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
+      local: "&e\\[Local\\] &r{prefix}&7{sender}&r{suffix}&r ➦ &e{message}"
+      admin: "&b\\[Admin\\] &r{prefix}&7{sender}&r{suffix}&r ➦ &5{message}"
+      staff: "&9\\[Staff\\] &r{prefix}&7{sender}&r{suffix}&r ➦ &6{message}"
+      settlement: "&e\\[{state}\\] {title}  {prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
+      trade: "&d\\[TRADE\\] &r{prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
+      ally: "&b\\[Ally\\] &6{state} {title}  {prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
+      empire: "&b\\[Empire\\] &6{state} {settlement} {title}  {prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
   ignored: "&cYou cannot message &6{name}&c because they are ignoring you!"
   ignoring: |-
     &cYou cannot message &6{name}&c because you are ignoring them!

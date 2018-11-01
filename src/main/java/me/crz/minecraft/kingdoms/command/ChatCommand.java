@@ -14,6 +14,26 @@ public class ChatCommand extends SubCommand {
 
     public ChatCommand() {
         super(null, "chat <channel>", "c");
+        for (ChatChannel channel : ChatChannel.values()) {
+            registerCommand(new SubCommand(this, channel.name(), channel.getAliases().toArray(new String[0])) {
+                @Override
+                public boolean run(Player p, String base, String alias, String... args) {
+                    if (channel.canChatM(p)) {
+                        Resident res = ResidentManager.getInstance().getResident(p);
+                        if (res.setActiveChannel(channel) | res.addChannel(channel)) {
+                            Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
+                        }
+                        MessageUtils.tell(p, ChatCommand.this.getMessage("joined"), "name", channel.getTag());
+                    }
+                    return true;
+                }
+
+                @Override
+                public boolean isVisible() {
+                    return false;
+                }
+            });
+        }
         registerCommand(new SubCommand(this, "<channel>") {
             @Override
             public boolean run(Player p0, String p1, String p2, String... p3) {
@@ -80,13 +100,6 @@ public class ChatCommand extends SubCommand {
                         MessageUtils.tell(p, getMessage("channel-entry.disabled"), "name", channelName);
                     }
                 }
-            }
-            return true;
-        } else if (ChatChannel.isChannel(args[0])) {
-            ChatChannel channel = ChatChannel.get(args[0].toUpperCase());
-            if (channel.canChatM(p)) {
-                channel.setActiveChatChannel(p);
-                MessageUtils.tell(p, getMessage("joined"), "name", channel.getTag());
             }
             return true;
         }

@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.admin;
 
+import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -40,8 +41,10 @@ public class VillageAdminJoinCommand extends SubCommand {
             }
             target.setVillage(village);
             target.setVillageRank(VillageRank.RESIDENT);
+            target.setActiveChannel(ChatChannel.SETTLEMENT);
+            Message.get("command.chat.joined").tell(target, "name", ChatChannel.SETTLEMENT.getTag());
             DatabaseManager.getInstance().saveResident(target);
-            MessageUtils.tell(player, "&6&l" + target.getName() + "&r&c&l is now in {townName}", "{townName}", village.getName());
+            MessageUtils.tell(player, "&6&l" + target.getName() + "&r&c&l is now in " + village.getName());
             Player targetP = target.getPlayer();
             if (targetP != null) {
                 MessageUtils.tell(targetP, Message.get("command.village.join.success"), "name", village.getName(), "state", village.getState().getTag());

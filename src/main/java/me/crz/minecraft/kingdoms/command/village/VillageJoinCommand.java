@@ -1,12 +1,15 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import com.avaje.ebeaninternal.server.lib.util.MailEvent;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import me.crz.minecraft.kingdoms.command.ChatCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -54,6 +57,8 @@ public class VillageJoinCommand extends VillageSubCommand {
             resident.setVillage(joinVillage);
             resident.setVillageRank(VillageRank.RESIDENT);
             resident.addChannel(ChatChannel.SETTLEMENT);
+            resident.setActiveChannel(ChatChannel.SETTLEMENT);
+            Message.get("command.chat.joined").tell(resident, "name", ChatChannel.SETTLEMENT.getTag());
             InviteCache.getPendingVillageInvites().remove(resident.getUUID(), joinVillage.getId());
             Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(resident));
             resident.tell(getMessage("success"), "name", joinVillage.getName(), "state", joinVillage.getState().getTag());

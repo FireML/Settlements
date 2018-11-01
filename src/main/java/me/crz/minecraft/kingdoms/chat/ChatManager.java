@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -29,7 +30,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-public class ChatManager extends Base {
+public class ChatManager extends Base implements ConfigMessages {
     private static ChatManager instance;
 
     private Map<UUID, UUID> lastMessage = new HashMap<>();
@@ -264,18 +265,20 @@ public class ChatManager extends Base {
         return lastMessage.get(p.getUniqueId());
     }
 
-    private String getText(String key) {
-        return getMessage(key).getText();
-    }
-
-    private Message getMessage(String key) {
-        return Message.get("chat." + key);
-    }
-
     public static ChatManager getInstance() {
         if (instance == null) {
             Base.registerListener(instance = new ChatManager());
         }
         return instance;
+    }
+
+    @Override
+    public String type() {
+        return "";
+    }
+
+    @Override
+    public String name() {
+        return "chat";
     }
 }
