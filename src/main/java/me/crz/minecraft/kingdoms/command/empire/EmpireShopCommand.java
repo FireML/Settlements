@@ -55,8 +55,8 @@ public class EmpireShopCommand extends EmpireSubCommand {
                 }
                 getMessage("usage.head").tell(resident, "name", "Unlock Perks");
                 for (Perk perk : EmpireManager.getInstance().getPerks()) {
-                    if (!resident.getVillage().getEmpire().hasUnlocked(perk)) {
-                        getMessage("usage.entry").tell(resident, "usage", getUsage(base) + " " + perk.name(), "description", perk.getTag());
+                    if (!resident.getVillage().getEmpire().hasUnlocked(perk) && resident.getVillage().getEmpire().matchesLevelRequirement(perk)) {
+                        getMessage("usage.entry").tell(resident, "usage", getUsage(base).replace("<perk>", perk.name()), "description", perk.getTag());
                     }
                 }
                 return false;

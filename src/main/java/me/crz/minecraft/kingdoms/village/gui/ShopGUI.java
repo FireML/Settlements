@@ -46,9 +46,11 @@ public class ShopGUI extends KingdomsGUI {
         Village village = resident.getVillage();
 
         for (VillagePerk perk : VillageManager.getInstance().getPerks()) {
-            if (perk.getState() == VillageState.KINGDOM && perk.getLevel() == 1) {
-                if (village.getState() == VillageState.VILLAGE && village.getLevel() < Levels.VILLAGE_TO_KINGDOM_LEVEL) {
-                    continue;
+            if (perk.getState() == VillageState.KINGDOM) {
+                if (village.getState() == VillageState.VILLAGE) {
+                    if (perk.getLevel() > 1 || village.getLevel() + 1 < Levels.VILLAGE_TO_KINGDOM_LEVEL) {
+                        continue;
+                    }
                 }
             } else if (perk.getState() == village.getState() && village.getLevel() + 1 < perk.getLevel()){
                 continue;

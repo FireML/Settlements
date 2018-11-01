@@ -56,8 +56,8 @@ public class VillageShopCommand extends VillageSubCommand {
                 }
                 getMessage("usage.head").tell(resident, "name", "Unlock Perks");
                 for (VillagePerk perk : VillageManager.getInstance().getPerks()) {
-                    if (!resident.getVillage().hasUnlocked(perk)) {
-                        getMessage("usage.entry").tell(resident, "usage", getUsage(base) + " " + perk.name(), "description", perk.getTag());
+                    if (!resident.getVillage().hasUnlocked(perk) && resident.getVillage().matchesLevelRequirement(perk)) {
+                        getMessage("usage.entry").tell(resident, "usage", getUsage(base).replace("<perk>", perk.name()), "description", perk.getTag());
                     }
                 }
                 return false;
