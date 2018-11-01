@@ -877,6 +877,8 @@ command:
       success: "&7State of &6{flag} &7set to &6{state}"
       success-all: "&7Set all flags to &6{state}"
       description: Set who can use stuff in your village
+      all:
+        description: Sets all flags to a certain state
     description: Settlement management command
     deposit:
       description: Deposit an item into the vault
