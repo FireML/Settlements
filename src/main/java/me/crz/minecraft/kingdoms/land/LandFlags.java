@@ -24,6 +24,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
@@ -48,7 +49,7 @@ public class LandFlags extends Base implements LandFlagBase {
         return empire == null || mode.get(empire);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockIgnite(BlockIgniteEvent e) {
         if (e.getCause().equals(BlockIgniteEvent.IgniteCause.SPREAD) && e.getIgnitingBlock() != null) {
             if (isAllowed(e.getBlock().getLocation(), PlotMode.firespread) && isAllowed(e.getBlock().getLocation(), EmpireMode.firespread)) {
@@ -114,7 +115,7 @@ public class LandFlags extends Base implements LandFlagBase {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent e) {
         for (Block block : e.blockList()) {
             if (block == null || (isAllowed(block.getLocation(), PlotMode.explosions) && isAllowed(block.getLocation(), EmpireMode.explosions))) {
@@ -125,7 +126,7 @@ public class LandFlags extends Base implements LandFlagBase {
     }
 
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityExplode(BlockExplodeEvent e) {
         for (Block block : e.blockList()) {
             if (block == null || (isAllowed(block.getLocation(), PlotMode.explosions) && isAllowed(block.getLocation(), EmpireMode.explosions))) {
@@ -135,7 +136,7 @@ public class LandFlags extends Base implements LandFlagBase {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent e) {
         if (e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
             if (isAllowed(e.getEntity().getLocation(), PlotMode.explosions) && isAllowed(e.getEntity().getLocation(), EmpireMode.explosions)) {
@@ -145,7 +146,7 @@ public class LandFlags extends Base implements LandFlagBase {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onHostileSpawn(HostileCreaturePreSpawnEvent e) {
         OwnedLand land = LandManager.getInstance().getLand(e.getLocation().getChunk());
         if (land != null && !land.isMobSpawning()) {
@@ -153,7 +154,7 @@ public class LandFlags extends Base implements LandFlagBase {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onHostileSpawn(HostileCreatureSpawnEvent e) {
         OwnedLand land = LandManager.getInstance().getLand(e.getLocation().getChunk());
         if (land != null && !land.isMobSpawning()) {
@@ -161,7 +162,7 @@ public class LandFlags extends Base implements LandFlagBase {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerMove(PlayerMoveChunkEvent event) {
         Player player = event.getPlayer();
         Village playerVillage = VillageManager.getInstance().getVillageFromPlayer(player);

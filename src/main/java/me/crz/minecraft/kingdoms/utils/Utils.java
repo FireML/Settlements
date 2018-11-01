@@ -328,7 +328,7 @@ public class Utils {
     public static void teleportToSpawn(Player target) {
         String command = getSpawnCommand();
         if (!command.isEmpty()) {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(Utils.getSpawnCommand(), "player", target.getName()));
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(command, "player", target.getName()));
         } else {
             target.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
         }

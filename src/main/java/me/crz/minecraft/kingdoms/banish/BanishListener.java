@@ -1,13 +1,14 @@
 package me.crz.minecraft.kingdoms.banish;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveChunkEvent;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
-import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.TitleBuilder;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,7 +21,8 @@ public class BanishListener implements Listener, ConfigMessages {
         VillageManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getTo()), e.getPlayer(), (land, p, village) -> {
             sendInfo(p, village, "move");
             e.setCancelled(true);
-            e.getPlayer().teleport(e.getPlayer().getLocation().add(e.getPlayer().getLocation().getDirection().multiply(-1)));
+            Location to = e.getPlayer().getLocation().add(e.getPlayer().getLocation().getDirection().setY(0).multiply(-1));
+            Bukkit.getScheduler().runTask(KingdomsPlugin.getInstance(), () -> e.getPlayer().teleport(to));
         });
     }
 

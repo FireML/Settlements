@@ -41,7 +41,7 @@ public class VillageBanishCommand extends VillageSubCommand {
                 }
             });
             MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("banished"), "player", res.getName());
-            if (res.getVillage().equals(resident.getVillage())) {
+            if (res.hasVillage() && res.getVillage().equals(resident.getVillage())) {
                 VillageManager.getInstance().leaveVillage(res);
             }
             DatabaseManager.getInstance().saveVillage(resident.getVillage());
