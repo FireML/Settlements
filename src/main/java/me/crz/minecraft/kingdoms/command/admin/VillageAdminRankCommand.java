@@ -14,7 +14,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 
 public class VillageAdminRankCommand extends SubCommand {
     public VillageAdminRankCommand(SubCommand parent) {
-        super(parent, "rank <player> <rank>");
+        super(parent, "rank <player> <rank>", "setrank");
         setPermission("kingdoms.admin");
     }
 
@@ -53,8 +53,10 @@ public class VillageAdminRankCommand extends SubCommand {
                 tRes.setVillageRank(r);
                 DatabaseManager.getInstance().saveResident(tRes);
             }
-            MessageUtils.tell(player, Message.get("command.village.setrank.success"), "setter", player.getDisplayName(), "target", tRes.getName(), "rank", r.getTag(village));
-            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("command.village.setrank.success"), "setter", player.getDisplayName(), "target", tRes.getName(), "rank", r.getTag(village));
+            if (!village.getResidentIds().contains(player.getUniqueId())) {
+                MessageUtils.tell(player, Message.get("command.village.setrank.success"), "title", "", "setter", player.getDisplayName(), "target", tRes.getName(), "rank", r.getTag(village));
+            }
+            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("command.village.setrank.success"), "title", "", "setter", player.getDisplayName(), "target", tRes.getName(), "rank", r.getTag(village));
         });
         return true;
     }
