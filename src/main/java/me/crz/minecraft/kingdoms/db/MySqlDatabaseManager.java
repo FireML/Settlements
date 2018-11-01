@@ -108,7 +108,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "FOREIGN KEY (empireId) REFERENCES " + tablePrefix + "empires(id) ON DELETE CASCADE,"
                     + "perk VARCHAR(255) NOT NULL,"
                     + "times INTEGER NOT NULL,"
-                    + "lastUsed TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
+                    + "lastUsed BIGINT,"
                     + "active BOOLEAN,"
                     + "UNIQUE (empireId, perk)"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
@@ -171,7 +171,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
                     + "perk VARCHAR(255) NOT NULL,"
                     + "times INTEGER NOT NULL,"
-                    + "lastUsed TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
+                    + "lastUsed BIGINT,"
                     + "active BOOLEAN,"
                     + "UNIQUE (settlementId, perk)"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");

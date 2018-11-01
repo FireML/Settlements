@@ -621,10 +621,10 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
             }
         }
         ((Map<String, Object>) map.get("vault")).entrySet().stream()
-                .filter(e -> !(e.getValue() instanceof Integer))
+                .filter(e -> e.getValue() instanceof Number)
                 .forEach(e -> village.getVault().put(e.getKey(), (Long) e.getValue()));
         ((Map<String, Object>) map.get("perks")).entrySet().stream()
-                .filter(e -> !(e.getValue() instanceof Map))
+                .filter(e -> e.getValue() instanceof Map)
                 .forEach(e -> village.getPerksMap().put(e.getKey(), PerkData.deserialize((Map<String, Object>) e.getValue())));
         return village;
     }
