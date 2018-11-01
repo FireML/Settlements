@@ -87,19 +87,20 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
 
     private boolean sendUsageList(Player player, String base, String alias, String path) {
         Collection<SubCommand> accessibleCommands = getAccessibleCommands(player);
+        boolean success = false;
         if (isVisible() && (accessibleCommands.isEmpty() || isForceOwnUsage())) {
             getMessage("usage.entry").tell(player,
                     "usage", getUsage(base),
                     "aliases", getAliases().isEmpty() ? "" : getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getAliases())),
                     "description", getDescription()
             );
-            return true;
+            success = true;
         }
         if (!accessibleCommands.isEmpty()) {
             accessibleCommands.stream().sorted(Rankable::compareTo).forEachOrdered(s -> s.sendUsageList(player, path, s.name(), path + " " + s.name()));
-            return true;
+            success = true;
         }
-        return false;
+        return success;
     }
 
     private SubCommand matchSubCommand(String input) {
