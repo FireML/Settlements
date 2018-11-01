@@ -53,7 +53,7 @@ public class EmpireVaultListener extends KingdomsGUI implements Listener {
             Map<String, Long> deposited = new HashMap<>();
 
             for (String type : nextLevelReqs.keySet()) {
-                total.put(type, empire.getVault().getOrDefault(type, (long) 0));
+                total.put(type, empire.getAmount(type));
             }
 
             for (ItemStack item : contents) {
@@ -88,10 +88,10 @@ public class EmpireVaultListener extends KingdomsGUI implements Listener {
             }
             if (!deposited.isEmpty()) {
                 MessageUtils.tellListResidents(empire.getOnlineResidents(), this.buildSuccessDepositMessage(resident, player, deposited));
-                empire.getVault().putAll(total);
+                empire.add(deposited);
                 Utils.runAsync(() -> {
                     DatabaseManager.getInstance().saveEmpire(empire);
-                    DatabaseManager.getInstance().logDeposit(empire, resident.getVillage(), resident, total);
+                    DatabaseManager.getInstance().logDeposit(empire, resident.getVillage(), resident, deposited);
                 });
             }
             if (!fail.isEmpty()) {

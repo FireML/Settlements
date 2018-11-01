@@ -58,7 +58,7 @@ public class VaultListener extends KingdomsGUI implements Listener {
             Map<String, Long> deposited = new HashMap<>();
 
             for (String type : nextLevelReqs.keySet()) {
-                total.put(type, village.getVault().getOrDefault(type, (long) 0));
+                total.put(type, village.getAmount(type));
             }
 
             for (ItemStack item : contents) {
@@ -93,10 +93,10 @@ public class VaultListener extends KingdomsGUI implements Listener {
             }
             if (!deposited.isEmpty()) {
                 MessageUtils.tellListResidents(village.getOnlineResidents(), this.buildSuccessDepositMessage(resident, player, deposited));
-                village.getVault().putAll(total);
+                village.add(deposited);
                 Utils.runAsync(() -> {
                     DatabaseManager.getInstance().saveVillage(village);
-                    DatabaseManager.getInstance().logDeposit(village, resident, total);
+                    DatabaseManager.getInstance().logDeposit(village, resident, deposited);
                 });
             }
             if (!fail.isEmpty()) {

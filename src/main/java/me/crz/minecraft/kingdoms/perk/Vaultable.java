@@ -36,6 +36,21 @@ public interface Vaultable {
         return getVault().getOrDefault(key, (long) 0);
     }
 
+    default boolean add(String key, long amount) {
+        setAmount(key, getAmount(key) + amount);
+        return true;
+    }
+
+    default boolean add(Map<String, Long> toAdd) {
+        if (toAdd == null || toAdd.isEmpty()) {
+            return false;
+        }
+        for (Map.Entry<String, Long> entry : toAdd.entrySet()) {
+            add(entry.getKey(), entry.getValue());
+        }
+        return true;
+    }
+
     default boolean remove(String key, long amount) {
         if (has(key, amount)) {
             setAmount(key, getAmount(key) - amount);
