@@ -326,6 +326,7 @@ gui:
     use: "&b&lUse"
     mode: "&b&lMode"
     perks: "&b&lPerks"
+    shop: "&b&lShop"
     entry: |-
       &b&lVillage Data
       &8--------&c&l{name}&r&8--------

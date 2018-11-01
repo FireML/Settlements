@@ -71,6 +71,16 @@ public class SettingsGUI extends KingdomsGUI {
                 return true;
             }
         });
+        gui.addItem(new ClickableItem() {
+            public ItemStack getItem(Player p) {
+                return new CItem(Material.POTION).setName(getText("shop")).hideAllFlags(true).build();
+            }
+
+            public boolean click(Player p, ClickType clickType) {
+                new ShopGUI(ResidentManager.getInstance().getResident(p)).open();
+                return true;
+            }
+        });
         gui.addItem(8, new ClickableItem() {
             public ItemStack getItem(Player p) {
                 Village village = VillageManager.getInstance().getVillageFromPlayer(p);
