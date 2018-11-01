@@ -20,6 +20,10 @@ public interface ConfigMessages extends ConfigKey {
                 return m;
             }
         }
+        Message keyMessage = Message.get(key);
+        if (keyMessage.exists()) {
+            return keyMessage;
+        }
         return message;
     }
 
