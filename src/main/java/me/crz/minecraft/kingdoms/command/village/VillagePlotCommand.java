@@ -3,7 +3,7 @@ package me.crz.minecraft.kingdoms.command.village;
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.command.village.plot.PlotBuildCommand;
 import me.crz.minecraft.kingdoms.command.village.plot.PlotBuyCommand;
-import me.crz.minecraft.kingdoms.command.village.plot.PlotDescriptionCommand;
+import me.crz.minecraft.kingdoms.command.village.plot.PlotNameCommand;
 import me.crz.minecraft.kingdoms.command.village.plot.PlotLinkCommand;
 import me.crz.minecraft.kingdoms.command.village.plot.PlotSettingsCommand;
 import me.crz.minecraft.kingdoms.command.village.plot.PlotUnlinkCommand;
@@ -27,7 +27,7 @@ public class VillagePlotCommand extends VillageSubCommand {
         registerCommand(new PlotSaleCommand(this));
         registerCommand(new PlotUnsaleCommand(this));
         registerCommand(new PlotInfoCommand(this));
-        registerCommand(new PlotDescriptionCommand(this));
+        registerCommand(new PlotNameCommand(this));
         registerCommand(new PlotBuyCommand(this));
         registerCommand(new PlotRevokeCommand(this));
         registerCommand(new PlotSettingsCommand(this));

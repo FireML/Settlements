@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class PlotUseCommand extends ResidentSubCommand {
     public PlotUseCommand(VillagePlotCommand parent) {
         super(parent, "use <flag> <state>");
+        setForceOwnUsage(true);
         registerCommand(new ResidentSubCommand(this, "all <state>") {
             @Override
             public boolean run(Resident res, String base, String alias, String... args) {

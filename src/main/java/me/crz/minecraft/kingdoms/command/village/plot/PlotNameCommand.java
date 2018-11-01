@@ -9,9 +9,9 @@ import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
-public class PlotDescriptionCommand extends ResidentSubCommand {
-    public PlotDescriptionCommand(VillagePlotCommand parent) {
-        super(parent, "description <text>", "name", "board");
+public class PlotNameCommand extends ResidentSubCommand {
+    public PlotNameCommand(VillagePlotCommand parent) {
+        super(parent, "name <text>", "", "board", "description", "setdescription");
     }
 
     @Override
