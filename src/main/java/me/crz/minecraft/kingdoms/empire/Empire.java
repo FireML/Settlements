@@ -459,7 +459,8 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
                 "firespread", yesOrNo(isFireSpread()),
                 "explosions", yesOrNo(isExplosions()),
                 "buff", yesOrNo(isBuff()),
-                "bonusclaims", getBonusClaims() > 0 ? configMessages.getMessage("bonus-claims").getReplacedText("amount", String.valueOf(getBonusClaims())) : "",
+                "bonusoutposts", String.valueOf(getBonusOutposts()),
+                "bonusclaims", String.valueOf(getBonusClaims()),
                 "capital", capital.getName(),
                 "capitalstate", capital.getState().getTag(),
                 "perks", getPerksMap().entrySet().stream()

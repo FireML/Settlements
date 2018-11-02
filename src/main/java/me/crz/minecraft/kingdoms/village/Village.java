@@ -668,6 +668,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
                 "buff", yesOrNo(isBuff()),
                 "bank", String.valueOf(getBank()),
                 "bonusclaims", getBonusClaims() > 0 ? configMessages.getMessage("bonus-claims").getReplacedText("amount", String.valueOf(getBonusClaims())) : "",
+                "bonusoutposts", getBonusOutposts() > 0 ? configMessages.getMessage("bonus-outposts").getReplacedText("amount", String.valueOf(getBonusOutposts())) : "",
                 "access", getAccess().getTag(),
                 "perks", getPerksMap().entrySet().stream()
                         .map(e -> (e.getValue().getTimes() > 1 ? e.getValue().getTimes() + "x " : "") + getPerk(e.getKey()).getTag())

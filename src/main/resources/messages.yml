@@ -565,7 +565,7 @@ command:
         &6&lBank: &r&7{bank}
         &6&lJoin fee: &r&7{joinfee}
         &6&lDaily tax: &r&7{tax}
-        &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}
+        &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
@@ -814,12 +814,13 @@ command:
         &6&lBank: &r&7{bank}
         &6&lJoin fee: &r&7{joinfee}
         &6&lDaily tax: &r&7{tax}
-        &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}
+        &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
         &b&lMembers:
         {residents}
+      bonus-outposts: " Bonus: {amount}"
       bonus-claims: " Bonus: {amount}"
       residents:
         rank: "&6&l{rank}:&r {residents}"
@@ -965,13 +966,13 @@ command:
         &6&lLevel &r&7{level}
         &6&lAccess &r&7{access}
         &6&lBank &r&7{bank}
-        &6&lBonusclaims &r&7{bonus}
+        &6&lBonusoutposts &r&7{bonusoutposts}
+        &6&lBonusclaims &r&7{bonusclaims}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
         &6&lCapital &r&7{capitalstate}{capital}
         &e&lLeader &r&7{chieftitle} {chief}
         &e&lMembers: &r&7{members}
-      bonus-claims: " Bonus: {amount}"
       not-in-empire: "&cYou are not currently in an empire world!"
       description: Show in which empire world you are
     history:
