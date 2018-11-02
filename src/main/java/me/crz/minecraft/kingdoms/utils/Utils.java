@@ -328,7 +328,9 @@ public class Utils {
     public static void teleportToSpawn(Player target) {
         String command = getSpawnCommand();
         if (!command.isEmpty()) {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(command, "player", target.getName()));
+            if (!Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(command, "player", target.getName()))) {
+                KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not execute spawn teleport command? Is " + command + " a valid command?");
+            }
         } else {
             target.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
         }

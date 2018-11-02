@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveChunkEvent;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.TitleBuilder;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Bukkit;
@@ -31,6 +32,7 @@ public class BanishListener implements Listener, ConfigMessages {
         VillageManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getTo()), e.getPlayer(), (land, p, village) -> {
             sendInfo(p, village, "teleport");
             e.setCancelled(true);
+            Bukkit.getScheduler().runTask(KingdomsPlugin.getInstance(), () -> Utils.teleportToSpawn(p));
         });
     }
 
