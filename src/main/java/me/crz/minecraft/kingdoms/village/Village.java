@@ -695,6 +695,10 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         }
         List<String> lines = new ArrayList<>();
         for (VillageRank rank : rankMap.keySet()) {
+            if (rank == VillageRank.CHIEF) {
+                // should be listed extra
+                continue;
+            }
             lines.add(rankMessage.getReplacedText(
                     "rank", rank.getTag(this),
                     "residents", rankMap.get(rank).stream()
