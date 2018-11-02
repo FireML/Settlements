@@ -50,7 +50,7 @@ public class PerksGUI extends KingdomsGUI {
                     }
                     CItem item = new CItem(perk.getIcon());
                     PerkData perkData = resident.getVillage().getPerkData(perk);
-                    item.setName(getMessage("entry.available").getReplacedText("name", perk.getTag())).glow(true);
+                    item.setName(getMessage("entry").getReplacedText("name", perk.getTag())).glow(true);
                     if (perk.hasEffects()) {
                         if (perkData.isActive()) {
                             item.addLore(getMessage("active").getReplacedTextList("name", perk.getTag()));
