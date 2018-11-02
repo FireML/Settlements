@@ -36,6 +36,7 @@ import org.bukkit.entity.Player;
 public class EmpireCommand extends SubCommand {
     public EmpireCommand() {
         super(null, "empire");
+        registerCommand(new ChatCommand());
         registerCommand(new EmpireBuildCommand(this));
         registerCommand(new EmpireCreateCommand(this));
         registerCommand(new EmpireDepositCommand(this));
