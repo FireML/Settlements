@@ -46,6 +46,10 @@ public class OutpostSethomeCommand extends VillageSubCommand {
             return true;
         }
         resident.getVillage().setOutpostHome(currentLand.getOutpostName(), resident.getPlayer().getLocation());
+        if (outpostLand != currentLand) {
+            currentLand.setOutpost(null);
+            outpostLand.setOutpost(currentLand.getOutpostName());
+        }
         OwnedLand finalOutpostLand = outpostLand;
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveVillage(resident.getVillage());

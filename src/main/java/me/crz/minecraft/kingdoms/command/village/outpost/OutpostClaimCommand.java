@@ -32,7 +32,7 @@ public class OutpostClaimCommand extends VillageSubCommand {
         }
 
         if (resident.getVillage().getBank() < Utils.getOutpostCreationCost()) {
-            resident.tell(getError("not-enough-money"), "amount", String.valueOf(Utils.getVillageCreationCost()));
+            resident.tell(getError("not-enough-money"), "amount", String.valueOf(Utils.getOutpostCreationCost()));
             return true;
         }
 
