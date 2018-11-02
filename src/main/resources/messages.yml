@@ -145,8 +145,8 @@ chat:
   format:
     name: "{name}"
     private:
-      sender: "\\[&8[&a{sender} &7➦ &3{target}&8\\] &b{message}"
-      target: "{staff}\\[&8[&3{sender} &7➦ &a{target}&8\\] &b{message}"
+      sender: "&8\\[&a{sender} &7➦ &3{target}&8\\] &b{message}"
+      target: "{staff}&8\\[&3{sender} &7➦ &a{target}&8\\] &b{message}"
       name:
         sender: "you"
         target: "{name}"
