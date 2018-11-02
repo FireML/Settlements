@@ -24,16 +24,17 @@ public class PlotBuyCommand extends ResidentSubCommand {
         } else if (!land.isForSale()) {
             res.tell(getError("not-for-sale"));
         } else {
-            if (Base.getEconomy().getBalance(res.getPlayer()) < land.getPrice()) {
-                res.tell(getError("not-enough-money"), "amount", String.valueOf(land.getPrice()));
-                return true;
+            if (land.getPrice() > 0) {
+                if (Base.getEconomy().getBalance(res.getPlayer()) < land.getPrice()) {
+                    res.tell(getError("not-enough-money"), "amount", String.valueOf(land.getPrice()));
+                    return true;
+                }
+                Base.getEconomy().withdrawPlayer(res.getPlayer(), (double) land.getPrice());
+                land.getOwnerVillage().setBank(land.getOwnerVillage().getBank() + land.getPrice());
+                Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(land.getOwnerVillage()));
             }
-            Base.getEconomy().withdrawPlayer(res.getPlayer(), (double) land.getPrice());
-            land.getOwnerVillage().setBank(land.getOwnerVillage().getBank() + land.getPrice());
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(land.getOwnerVillage()));
             land.setForSale(false);
             res.tell(getMessage("purchased"), "price", String.valueOf(land.getPrice()));
-            land.setPrice(0);
             LandManager.getInstance().setPlotOwner(land, res.getUUID());
         }
         return true;

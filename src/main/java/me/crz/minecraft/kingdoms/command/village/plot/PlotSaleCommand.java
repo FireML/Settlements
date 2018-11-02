@@ -11,7 +11,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 
 public class PlotSaleCommand extends VillageSubCommand {
     public PlotSaleCommand(VillagePlotCommand parent) {
-        super(parent, "sale [<amount>]", VillageRank.ELDER);
+        super(parent, "sale false|true|<amount>", VillageRank.ELDER);
     }
 
     @Override
@@ -29,17 +29,21 @@ public class PlotSaleCommand extends VillageSubCommand {
             } else {
                 return false;
             }
+        } else if ("false".equalsIgnoreCase(args[0]) || "no".equalsIgnoreCase(args[0])) {
+            land.setForSale(false);
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
+            res.tell(getMessage("no-longer-for-sale"));
+        } else if ("true".equalsIgnoreCase(args[0]) || "yes".equalsIgnoreCase(args[0])) {
+            land.setForSale(true);
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
+            res.tell(getMessage("success"), "price", String.valueOf(land.getPrice()));
         } else {
             try {
                 int price = Integer.valueOf(args[0]);
                 land.setPrice(price);
-                land.setForSale(price > 0);
+                land.setForSale(true);
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
-                if (land.isForSale()) {
-                    res.tell(getMessage("success"), "price", String.valueOf(price));
-                } else {
-                    res.tell(getMessage("no-longer-for-sale"));
-                }
+                res.tell(getMessage("success"), "price", String.valueOf(price));
             } catch (NumberFormatException e) {
                 return false;
             }
