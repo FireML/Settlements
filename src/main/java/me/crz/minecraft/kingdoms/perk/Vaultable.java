@@ -84,7 +84,7 @@ public interface Vaultable {
     }
 
     default boolean removeFromBank(long amount) {
-        if (getBank() > amount) {
+        if (has(amount)) {
             setBank(getBank() - amount);
             return true;
         }

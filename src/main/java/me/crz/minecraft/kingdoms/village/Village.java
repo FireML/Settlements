@@ -143,24 +143,8 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
 
     private void payUpkeep(long lastTax) {
         int total = getUpkeep();
-        if (!has(total)) {
-            if (getLevel() > 1 || getState() == VillageState.KINGDOM) {
-                if (getLevel() == 1 && getState() == VillageState.KINGDOM) {
-                    setState(VillageState.VILLAGE);
-                    setLevel(Levels.VILLAGE_TO_KINGDOM_LEVEL);
-                    MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.downgraded"), "state", getState().getTag(), "level", String.valueOf(getLevel()));
-                } else {
-                    setLevel(getLevel() - 1);
-                    MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.level-removed"), "level", String.valueOf(getLevel()));
-                }
-                Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(this));
-            } else {
-                setBank(0);
-                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.deleted"));
-                VillageManager.getInstance().deleteVillage(this);
-            }
-        } else {
-            removeFromBank(total);
+        if (removeFromBank(total)) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") was charged an upkeep of " + total + "!");
             MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.charged"), "charged", String.valueOf(total));
             if (!has(total - lastTax)) {
                 MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.cant-pay"), "cost", String.valueOf(total));
@@ -169,6 +153,25 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
                 DatabaseManager.getInstance().saveVillage(this);
                 DatabaseManager.getInstance().log(this, null, "upkeep", "cash", total);
             });
+        } else {
+            if (getLevel() > 1 || getState() == VillageState.KINGDOM) {
+                if (getLevel() == 1 && getState() == VillageState.KINGDOM) {
+                    KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and has been downgraded!");
+                    setState(VillageState.VILLAGE);
+                    setLevel(Levels.VILLAGE_TO_KINGDOM_LEVEL);
+                    MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.downgraded"), "state", getState().getTag(), "level", String.valueOf(getLevel()));
+                } else {
+                    KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and has had a level removed!");
+                    setLevel(getLevel() - 1);
+                    MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.level-removed"), "level", String.valueOf(getLevel()));
+                }
+                Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(this));
+            } else {
+                KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and was deleted!");
+                setBank(0);
+                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.deleted"));
+                VillageManager.getInstance().deleteVillage(this);
+            }
         }
     }
 
