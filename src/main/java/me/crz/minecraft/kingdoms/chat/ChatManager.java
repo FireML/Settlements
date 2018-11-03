@@ -7,6 +7,7 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.UtilChat;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Data;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -103,7 +104,7 @@ public class ChatManager extends Base implements ConfigMessages {
                         ))
                         .create());
         BaseComponent[] filteredMessage = replacer
-                .replace("message", KingdomsPlugin.getInstance().utilChat.filterCurses(e.getMessage()))
+                .replace("message", UtilChat.getInstance().filterCurses(e.getMessage()))
                 .getComponents();
         BaseComponent[] unfilteredMessage = replacer
                 .replace("message", e.getMessage())

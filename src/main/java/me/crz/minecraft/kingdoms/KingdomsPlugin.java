@@ -51,7 +51,6 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     public boolean emgcy = false;
     public static Chat chat;
-    public UtilChat utilChat = new UtilChat();
     private boolean running = false;
     private String empiresWorldPrefix = "";
     private Timer upkeepTimer = null;
@@ -150,6 +149,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         ResidentManager.getInstance();
         ScoreboardManager.getInstance();
         CommandManager.getInstance();
+        UtilChat.getInstance();
     }
 
     private boolean setupChat() {

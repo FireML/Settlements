@@ -5,6 +5,7 @@ import java.io.IOException;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.utils.IconRpMapping;
 import me.crz.minecraft.kingdoms.utils.Message;
+import me.crz.minecraft.kingdoms.utils.UtilChat;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -18,6 +19,7 @@ public class ConfigManager {
     private ConfigAccessor settlementPerksConf;
     private ConfigAccessor empirePerksConf;
     private IconRpMapping iconRpMapping;
+    private ConfigAccessor cursesConf;
 
     public ConfigManager() {
         super();
@@ -42,8 +44,12 @@ public class ConfigManager {
         empirePerksConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "empirePerksConf.yml");
         empirePerksConf.saveDefaultConfig();
         empirePerksConf.reloadConfig();
+        cursesConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "curses.yml");
+        cursesConf.saveDefaultConfig();
+        cursesConf.reloadConfig();
         iconRpMapping = new IconRpMapping(KingdomsPlugin.getInstance());
         if (KingdomsPlugin.getInstance().isRunning()) {
+            UtilChat.getInstance().load();
             VillageManager.getInstance().loadPerks();
             Message.clearCache();
         }
@@ -75,6 +81,10 @@ public class ConfigManager {
 
     public FileConfiguration getEmpirePerksConfig() {
         return empirePerksConf.getConfig();
+    }
+
+    public FileConfiguration getCursesConfig() {
+        return cursesConf.getConfig();
     }
 
     public FileConfiguration getConfig() {
