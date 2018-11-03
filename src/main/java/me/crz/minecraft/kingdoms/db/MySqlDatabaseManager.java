@@ -212,7 +212,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "settlementJoin BIGINT(11) NOT NULL,"
                     + "rank VARCHAR(255),"
                     + "empirerank VARCHAR(255),"
-                    + "title VARCHAR(255) NOT NULL,"
+                    + "title INTEGER NOT NULL,"
                     + "bonusClaims INTEGER,"
                     + "taxOwed BIGINT NOT NULL,"
                     + "lastLogin BIGINT(11) NOT NULL,"

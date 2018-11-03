@@ -9,6 +9,7 @@ import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import org.bukkit.ChatColor;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -24,7 +25,7 @@ public enum VillageRank implements Rankable, NameTag {
     BUILDER,
     RESIDENT;
 
-    private Multimap<VillageState, String> titles = MultimapBuilder.enumKeys(VillageState.class).linkedHashSetValues().build();
+    private Multimap<VillageState, String> titles = MultimapBuilder.enumKeys(VillageState.class).arrayListValues().build();
 
     private static Map<String, VillageRank> byTitle = new HashMap<>();
 
@@ -43,8 +44,8 @@ public enum VillageRank implements Rankable, NameTag {
         return byTitle.get(string.toLowerCase());
     }
 
-    public Collection<String> getTitles(Village village) {
-        return village != null ? titles.get(village.getState()) : new LinkedHashSet<>();
+    public List<String> getTitles(Village village) {
+        return village != null ? (List<String>) titles.get(village.getState()) : new ArrayList<>();
     }
 
     public String getTag(Village village) {
@@ -66,12 +67,22 @@ public enum VillageRank implements Rankable, NameTag {
         return titles;
     }
 
-    public String getTitle(Village village, String name) {
+    public int getTitleIndex(Village village, String name) {
+        int i = 0;
         for (String title : getTitles(village)) {
             if (title.equalsIgnoreCase(name)) {
-                return title;
+                return i;
             }
+            i++;
         }
-        return null;
+        return -1;
+    }
+
+    public String getTitle(Village village, int index) {
+        List<String> titles = getTitles(village);
+        if (titles.size() > index) {
+            return titles.get(index);
+        }
+        return getTag(village);
     }
 }

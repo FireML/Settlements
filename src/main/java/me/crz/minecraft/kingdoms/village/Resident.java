@@ -34,7 +34,7 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
     private String name;
     private VillageRank rank = VillageRank.RESIDENT;
     private EmpireRank empireRank = EmpireRank.NONE;
-    private String title = "";
+    private int title = 0;
     private Village village = null;
     private ChatChannel activeChannel = ChatChannel.GENERAL;
     private Set<ChatChannel> channels = new HashSet<>();
@@ -170,14 +170,6 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
         }
         VillageRank prev = getVillageRank();
         this.rank = rank;
-        if (!rank.isTitleAvailable(getVillage(), title)) {
-            setTitle(rank.getTag(getVillage()));
-        } else {
-            Collection<String> titles = rank.getTitles(getVillage());
-            if (titles.size() == 1) {
-                setTitle(titles.iterator().next());
-            }
-        }
         if (hasEmpire() && getVillage().getEmpire().getCapital().equals(getVillage())) {
             if (rank == VillageRank.CHIEF) {
                 setEmpireRank(EmpireRank.LEADER);
@@ -207,15 +199,20 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
     }
 
     public String getTitle() {
-        return (title == null ? "" : title) + (hasEmpire() ? getVillage().getEmpire().getSymbol() : "");
+        return (hasVillage() ? getVillageRank().getTitle(village, title) : "")  + (hasEmpire() ? getVillage().getEmpire().getSymbol() : "");
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public boolean hasTitle() {
-        return getTitle() != null && !getTitle().isEmpty();
+    public boolean setTitle(String title) {
+        if (title != null) {
+            int titleIndex = getVillageRank().getTitleIndex(getVillage(), title);
+            if (titleIndex < 0) {
+                return false;
+            }
+            this.title = titleIndex;
+        } else {
+            this.title = 0;
+        }
+        return true;
     }
 
     public int getBonusClaims() {
@@ -284,7 +281,7 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
         map.put("settlementId", village != null ? village.getId().value() : null);
         map.put("settlementJoin", getVillageJoin());
         map.put("rank", getVillageRank().name());
-        map.put("title", getTitle());
+        map.put("title", title);
         map.put("empirerank", getEmpireRank().name());
         map.put("lastLogin", getLastLogin());
         map.put("channels", getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
@@ -312,7 +309,7 @@ public class Resident implements ConfigurationSerializable, BonusClaimsHolder {
         } catch (IllegalArgumentException e) {
             KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid village rank for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("rank"));
         }
-        resident.setTitle((String) map.get("title"));
+        resident.title = (Integer) map.get("title");
         try {
             resident.setEmpireRank(EmpireRank.valueOf((String) map.get("empirerank")));
         } catch (IllegalArgumentException e) {

@@ -8,9 +8,6 @@ import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.Village;
-import org.bukkit.entity.Player;
 
 import java.util.Collection;
 
@@ -34,11 +31,9 @@ public class VillageTitleCommand extends VillageSubCommand {
             }
             return true;
         }
-        String title = res.getVillageRank().getTitle(res.getVillage(), args[0]);
-        if (title == null) {
+        if (!res.setTitle(args[0])) {
             getError("invalid-title").tell(res, "title", args[0]);
         } else {
-            res.setTitle(title);
             Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
             Message message = getMessage("success." + res.getVillage().getState().getKey() + "." + res.getVillageRank().getKey());
             if (!message.exists()) {
