@@ -36,12 +36,24 @@ public class PlotModeCommand extends VillageSubCommand {
                 if (args.length > 1) {
                     setTo = m.getOptions().get(args[1].toLowerCase());
                     if (setTo == null) {
-                        return false;
+                        if (m == PlotMode.embassy) {
+                            try {
+                                int price = Integer.parseInt(args[1]);
+                                setTo = true;
+                                land.setForSale(true);
+                                land.setPrice(price);
+                            } catch (NumberFormatException e) {
+                                getError("not-a-number").tell(res, "input", args[1]);
+                                return true;
+                            }
+                        } else {
+                            return false;
+                        }
                     }
                 }
                 m.set(setTo, land);
                 LandManager.getInstance().syncAndSave(land);
-                res.tell(getMessage("success"), "mode", m.name(), "value", args[1]);
+                res.tell(getMessage("success"), "mode", m.name(), "value", args.length > 1 ? args[1] : String.valueOf(setTo));
             } catch (IllegalArgumentException e) {
                 res.tell(getMessage("modes"), "modes", Arrays.stream(PlotMode.values()).map(Enum::name).collect(Collectors.joining(", ")));
                 return false;
