@@ -45,10 +45,10 @@ public class OutpostSethomeCommand extends VillageSubCommand {
             resident.tell(getError("not-an-outpost"));
             return true;
         }
-        resident.getVillage().setOutpostHome(currentLand.getOutpostName(), resident.getPlayer().getLocation());
+        resident.getVillage().setOutpostHome(outpostLand.getOutpostName(), resident.getPlayer().getLocation());
         if (outpostLand != currentLand) {
-            currentLand.setOutpost(null);
-            outpostLand.setOutpost(currentLand.getOutpostName());
+            currentLand.setOutpost(outpostLand.getOutpostName());
+            outpostLand.setOutpost(null);
         }
         OwnedLand finalOutpostLand = outpostLand;
         Utils.runAsync(() -> {
