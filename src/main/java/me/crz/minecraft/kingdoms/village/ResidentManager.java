@@ -38,6 +38,9 @@ public class ResidentManager {
 
             private long getDuration(Resident resident) {
                 if (resident != null) {
+                    if (resident.hasVillage()) {
+                        return Long.MAX_VALUE;
+                    }
                     Player player = Bukkit.getPlayer(resident.getUUID());
                     if (player != null && player.isOnline()) {
                         return Long.MAX_VALUE;
@@ -85,6 +88,10 @@ public class ResidentManager {
                     residentsByUuid.put(res.getUUID(), res);
                     return res;
                 });
+
+        for (Village village : VillageManager.getInstance().getVillages()) {
+            village.getResidents(); // pre load all residents in a village
+        }
     }
 
     public void addResident(Resident res) {
