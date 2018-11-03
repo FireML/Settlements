@@ -331,7 +331,12 @@ public class VillageMapCommand extends SubCommand implements Listener {
 
             ComponentBuilder cb = new ComponentBuilder(MessageUtils.replaceColorCodes(symbol.getText())).color(relation.getColor());
             if (land.isOwnedBy(resident.getVillage()) && resident.getVillageRank().atLeast(VillageRank.ELDER)) {
-                hover.append("\n").append(messages.getMessage("hover.click-to-unclaim").getReplacedComponents("location", x + "-" + z));
+                hover.append("\n").append(messages.getMessage("hover.click-to-unclaim")
+                        .getReplacedComponents(
+                                "location", x + "-" + z,
+                                "x", String.valueOf(x),
+                                "z", String.valueOf(z)
+                        ));
                 cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/village unclaim " + x + " " + z));
             }
 
