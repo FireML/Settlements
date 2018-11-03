@@ -170,7 +170,7 @@ public class LandManager {
         }
         villageLands.removeAll(village.getId());
         Utils.runAsync(() -> {
-            if (KingdomsPlugin.getInstance().getConfig().getBoolean("locks.remove-on-unclaim")) {
+            if (KingdomsPlugin.getInstance().getConfig().getBoolean("remove-locks-on-unclaim")) {
                 removeLocks(claims);
             }
             DatabaseManager.getInstance().unclaimLand(village);
