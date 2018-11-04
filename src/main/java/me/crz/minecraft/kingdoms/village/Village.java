@@ -428,13 +428,16 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     }
 
     public int getMaxClaimableChunks() {
-        return Utils.getLevelChunks(getState(), getLevel()) + getBonusClaims();
+        return Utils.getLevelChunks(getState(), getLevel()) + getBonusClaimAmount();
     }
 
     public int getBonusClaims() {
-        return bonusClaims
-                + getPerksMap().entrySet().stream().mapToInt(e -> e.getValue().getTimes() * getPerk(e.getKey()).getBonusClaims()).sum()
-                + (hasEmpire() ? getEmpire().getBonusClaims() : 0);
+        return bonusClaims;
+    }
+
+    public int getBonusClaimAmount() {
+        return getBonusClaims() + getPerksMap().entrySet().stream().mapToInt(e -> e.getValue().getTimes() * getPerk(e.getKey()).getBonusClaims()).sum()
+                + (hasEmpire() ? getEmpire().getBonusClaimAmount() : 0);
     }
 
     public void setBonusClaims(int bonusClaims) {
@@ -567,7 +570,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         map.put("bank", getBank());
         map.put("joinFee", getJoinFee());
         map.put("tax", getTax());
-        map.put("bonusClaims", bonusClaims);
+        map.put("bonusClaims", getBonusClaims());
         if (getVillageHome() != null)
             map.put("homeLoc", getVillageHome().serialize());
         map.put("outposts", getOutpostHomes().values().stream().collect(Collectors.toMap(NamedLocation::getName, NamedLocation::serialize)));
@@ -670,7 +673,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
                 "explosions", yesOrNo(isExplosions()),
                 "buff", yesOrNo(isBuff()),
                 "bank", String.valueOf(getBank()),
-                "bonusclaims", getBonusClaims() > 0 ? configMessages.getMessage("bonus-claims").getReplacedText("amount", String.valueOf(getBonusClaims())) : "",
+                "bonusclaims", getBonusClaimAmount() > 0 ? configMessages.getMessage("bonus-claims").getReplacedText("amount", String.valueOf(getBonusClaimAmount())) : "",
                 "bonusoutposts", getBonusOutposts() > 0 ? configMessages.getMessage("bonus-outposts").getReplacedText("amount", String.valueOf(getBonusOutposts())) : "",
                 "access", getAccess().getTag(),
                 "perks", getPerksMap().entrySet().stream()

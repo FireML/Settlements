@@ -121,7 +121,7 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
         map.put("bank", getBank());
         map.put("joinFee", getJoinFee());
         map.put("tax", getTax());
-        map.put("bonusClaims", bonusClaims);
+        map.put("bonusClaims", getBonusClaims());
         map.put("buildState", getBuildState().name());
         if (getHome() != null)
             map.put("homeLoc", getHome().serialize());
@@ -192,7 +192,11 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
 
     @Override
     public int getBonusClaims() {
-        return bonusClaims + getPerksMap().entrySet().stream().mapToInt(e -> e.getValue().getTimes() * getPerk(e.getKey()).getBonusClaims()).sum();
+        return bonusClaims;
+    }
+
+    public int getBonusClaimAmount() {
+        return getBonusClaims() + getPerksMap().entrySet().stream().mapToInt(e -> e.getValue().getTimes() * getPerk(e.getKey()).getBonusClaims()).sum();
     }
 
     public int getBonusOutposts() {
@@ -460,7 +464,7 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
                 "explosions", yesOrNo(isExplosions()),
                 "buff", yesOrNo(isBuff()),
                 "bonusoutposts", String.valueOf(getBonusOutposts()),
-                "bonusclaims", String.valueOf(getBonusClaims()),
+                "bonusclaims", String.valueOf(getBonusClaimAmount()),
                 "capital", capital.getName(),
                 "capitalstate", capital.getState().getTag(),
                 "perks", getPerksMap().entrySet().stream()

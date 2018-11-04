@@ -42,7 +42,7 @@ public class ScoreBoard implements ScoreboardPolicy {
                 "villagerank", resident.getVillageRank().getTag(resident.getVillage()),
                 "villagetitle", resident.getTitle(),
                 "villagebank", resident.hasVillage() ? String.valueOf(resident.getVillage().getBank()) : "",
-                "villagebonus", resident.hasVillage() ? String.valueOf(resident.getVillage().getBonusClaims()) : ""
+                "villagebonus", resident.hasVillage() ? String.valueOf(resident.getVillage().getBonusClaimAmount()) : ""
         );
     }
 
