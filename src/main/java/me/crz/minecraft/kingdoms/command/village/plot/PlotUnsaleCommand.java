@@ -17,13 +17,14 @@ public class PlotUnsaleCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         OwnedLand land = LandManager.getInstance().getLand(res.getPlayer().getLocation());
-        if (land == null || !res.getVillage().equals(land.getOwnerVillage())) {
+        if (land == null || !land.isOwnedBy(res.getVillage())) {
             res.tell(getError("not-your-village"), "state", res.getVillage().getState().getTag());
         } else if (!land.isForSale()) {
             res.tell(getError("not-for-sale"));
         } else {
             land.setForSale(false);
             land.setPrice(0);
+            land.setEmbassy(false);
             Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
             res.tell(getMessage("success"));
         }

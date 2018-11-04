@@ -23,11 +23,9 @@ public class PlotUseCommand extends ResidentSubCommand {
             public boolean run(Resident res, String base, String alias, String... args) {
                 OwnedLand land = LandManager.getInstance().getLand(res.getPlayer().getLocation());
                 if (land == null) {
-                    res.tell(getError("not-your-village"), "state", res.getVillage().getState().getTag());
-                } else if (!(land.isEmbassy() || res.getVillage().equals(land.getOwnerVillage()))) {
-                    res.tell(getError("not-your-village"), "state", land.getOwnerVillage().getState().getTag());
-                } else if (!land.isPlotOwner(res.getUUID())) {
-                    res.tell(getError("not-your-plot"));
+                    getError("not-a-plot").tell(res);
+                } else if (!(land.isPlotOwner(res.getUUID()) || (land.isOwnedBy(res.getVillage()) && res.getVillageRank().atLeast(VillageRank.ELDER)))) {
+                    getError("not-your-plot").tell(res);
                 } else {
                     try {
                         PlotBuildState state = PlotBuildState.valueOf(String.join("_", args).toUpperCase());
@@ -50,17 +48,12 @@ public class PlotUseCommand extends ResidentSubCommand {
     public boolean run(Resident res, String base, String alias, String... args) {
         OwnedLand land = LandManager.getInstance().getLand(res.getPlayer().getLocation());
         if (land == null) {
-            res.tell(getError("not-your-village"), "state", res.getVillage().getState().getTag());
-        } else if (!(land.isEmbassy() || res.getVillage().equals(land.getOwnerVillage()))) {
-            res.tell(getError("not-your-village"), "state", land.getOwnerVillage().getState().getTag());
+            getError("not-a-plot").tell(res);
         } else if (args.length < 2) {
             UseGui.getInstance().open(res.getPlayer());
+        } else if (!(land.isPlotOwner(res.getUUID()) || (land.isOwnedBy(res.getVillage()) && res.getVillageRank().atLeast(VillageRank.ELDER)))) {
+            getError("not-your-plot").tell(res);
         } else {
-            boolean canAdmin = res.hasVillage() && land.isOwnedBy(res.getVillage()) && res.getVillageRank().atLeast(VillageRank.ELDER);
-            if (!land.isPlotOwner(res) && !canAdmin) {
-                getError("not-your-plot").tell(res, "state", res.getVillage().getState().getTag());
-                return true;
-            }
             try {
                 Use u = Use.valueOf(args[0].toUpperCase());
                 PlotBuildState state = PlotBuildState.valueOf(Arrays.stream(args).skip(1).collect(Collectors.joining("_")).toUpperCase());

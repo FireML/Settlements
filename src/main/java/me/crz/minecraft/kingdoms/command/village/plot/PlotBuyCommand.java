@@ -18,12 +18,16 @@ public class PlotBuyCommand extends ResidentSubCommand {
     public boolean run(Resident res, String base, String alias, String... args) {
         OwnedLand land = LandManager.getInstance().getLand(res.getPlayer().getLocation());
         if (land == null) {
-            res.tell(getError("not-your-village"), "state", res.getVillage().getState().getTag());
-        } else if (!(land.isEmbassy() || res.getVillage().equals(land.getOwnerVillage()))) {
-            res.tell(getError("not-your-village"), "state", land.getOwnerVillage().getState().getTag());
+            getError("not-a-plot").tell(res);
+        } else if (!(land.isEmbassy() || land.getOwnerVillage().equals(res.getVillage()))) {
+            getError("not-your-village").tell(res, "state", land.getOwnerVillage().getState().getTag());
         } else if (!land.isForSale()) {
-            res.tell(getError("not-for-sale"));
+            getError("not-for-sale").tell(res);
         } else {
+            if (land.isEmbassy() && land.isOwnedBy(res.getVillage())) {
+                getError("cant-buy-embassy").tell(res, "state", res.getVillage().getState().getTag());
+                return true;
+            }
             if (land.getPrice() > 0) {
                 if (Base.getEconomy().getBalance(res.getPlayer()) < land.getPrice()) {
                     res.tell(getError("not-enough-money"), "amount", String.valueOf(land.getPrice()));

@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village.plot;
 
+import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.command.village.VillagePlotCommand;
 import me.crz.minecraft.kingdoms.land.LandManager;
@@ -9,9 +10,9 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 
-public class PlotInfoCommand extends VillageSubCommand {
+public class PlotInfoCommand extends ResidentSubCommand {
     public PlotInfoCommand(VillagePlotCommand parent) {
-        super(parent, "info", VillageRank.RESIDENT, "here", "show");
+        super(parent, "info", "here", "show");
     }
 
     @Override

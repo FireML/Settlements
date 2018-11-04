@@ -720,6 +720,7 @@ command:
           friends: allows your friends to build in your claimed land
         description: Sets the build mode of a plot
       buy:
+        cant-buy-embassy: "&cYou can't buy this plot as it is an embassy of your {state}!"
         purchased: "&aSuccessfully purchased the land for {price}."
         description: Buys the chunk you are standing in
       info:

@@ -5,8 +5,10 @@ import me.crz.minecraft.kingdoms.command.village.VillagePlotCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.VillageState;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -22,10 +24,8 @@ public class PlotLinkCommand extends ResidentSubCommand {
     public boolean run(Resident res, String base, String alias, String... args) {
         OwnedLand land = LandManager.getInstance().getLand(res.getPlayer().getLocation());
         if (land == null) {
-            res.tell(getError("not-your-village"), "state", res.getVillage().getState().getTag());
-        } else if (!(land.isEmbassy() || res.getVillage().equals(land.getOwnerVillage()))) {
-            res.tell(getError("not-your-village"), "state", land.getOwnerVillage().getState().getTag());
-        } else if (!land.isPlotOwner(res.getUUID())) {
+            getError("not-a-plot").tell(res);
+        } else if (!(land.isPlotOwner(res.getUUID()) || (land.isOwnedBy(res.getVillage()) && res.getVillageRank().atLeast(VillageRank.ELDER)))) {
             getError("not-your-plot").tell(res);
         } else {
             Collection<OwnedLand> connected = LandManager.getInstance().getAllConnectedLand(land, search -> {

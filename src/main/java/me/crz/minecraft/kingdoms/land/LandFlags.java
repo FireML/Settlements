@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.land;
 
-import com.google.common.collect.ImmutableMap;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.command.empire.EmpireMode;
 import me.crz.minecraft.kingdoms.empire.Empire;
@@ -18,8 +17,6 @@ import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -32,8 +29,6 @@ import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-
-import java.util.Map;
 
 public class LandFlags extends Base implements LandFlagBase {
     private TitleBuilder tbPvp = new TitleBuilder();
