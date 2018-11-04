@@ -317,6 +317,12 @@ gui:
         &e&lSenators: &r&7{senators}
         &e&lMembers: &r&7{members}
   plot:
+    link: |-
+      &7Click to link the permissions of all
+      &7plots connected to this one
+    linked-to: "&bThis plot is linked to {location}"
+    linked: "&e{amount}&b other plots are linked to this one"
+    unlink: "&7Click to unlink!"
     use:
       title: "&3&lPlot Use Settings"
     mode:
@@ -325,12 +331,6 @@ gui:
       title: "&3&lPlot Build Settings"
     settings:
       title: "&3&lPlot Settings"
-      link: |-
-        &7Click to link the permissions of all
-        &7plots connected to this one
-      linked-to: "&bThis plot is linked to {location}"
-      linked: "&e{amount}&b other plots are linked to this one"
-      unlink: "&7Click to unlink!"
       entry: |-
         &8&l-------- &r&c&lPlot Info&r &8&l--------
         &c&l{state}: &7{settlement}

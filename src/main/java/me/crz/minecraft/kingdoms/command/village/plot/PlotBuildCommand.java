@@ -7,6 +7,7 @@ import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.gui.BuildGui;
 import me.crz.minecraft.kingdoms.landflags.PlotBuildState;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -23,11 +24,14 @@ public class PlotBuildCommand extends ResidentSubCommand {
             res.tell(getError("not-your-village"), "state", res.getVillage().getState().getTag());
         } else if (!(land.isEmbassy() || res.getVillage().equals(land.getOwnerVillage()))) {
             res.tell(getError("not-your-village"), "state", land.getOwnerVillage().getState().getTag());
-        } else if (!land.isPlotOwner(res.getUUID())) {
-            res.tell(getError("not-your-plot"));
         } else if (args.length < 1) {
             new BuildGui().open(res.getPlayer());
         } else {
+            boolean canAdmin = res.hasVillage() && land.isOwnedBy(res.getVillage()) && res.getVillageRank().atLeast(VillageRank.ELDER);
+            if (!land.isPlotOwner(res) && !canAdmin) {
+                getError("not-your-plot").tell(res, "state", res.getVillage().getState().getTag());
+                return true;
+            }
             try {
                 PlotBuildState newState = PlotBuildState.valueOf(args[0].toUpperCase());
                 land.setBuildState(newState);

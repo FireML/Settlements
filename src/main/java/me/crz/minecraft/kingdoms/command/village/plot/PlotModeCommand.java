@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class PlotModeCommand extends VillageSubCommand {
     public PlotModeCommand(VillagePlotCommand parent) {
-        super(parent, "mode <mode> <on/off>", VillageRank.ELDER, "set");
+        super(parent, "mode <mode> <on/off>", VillageRank.RESIDENT, "set");
     }
 
     @Override
@@ -22,16 +22,28 @@ public class PlotModeCommand extends VillageSubCommand {
         OwnedLand land = LandManager.getInstance().getLand(res.getPlayer().getLocation());
         if (land == null) {
             getError("not-your-village").tell(res, "state", res.getVillage().getState().getTag());
-        } else if (!res.getVillage().equals(land.getOwnerVillage())) {
-            getError("not-your-village").tell(res, "state", land.getOwnerVillage().getState().getTag());
+        } else if (!(land.isEmbassy() || res.getVillage().equals(land.getOwnerVillage()))) {
+            res.tell(getError("not-your-village"), "state", land.getOwnerVillage().getState().getTag());
         } else if (args.length < 1) {
             ModeGUI.getInstance().open(res.getPlayer());
-            return true;
         } else if (args.length > 2) {
             return false;
         } else {
+            boolean canAdmin = res.hasVillage() && land.isOwnedBy(res.getVillage()) && res.getVillageRank().atLeast(VillageRank.ELDER);
+            if (!land.isPlotOwner(res) && !canAdmin) {
+                getError("not-your-plot").tell(res, "state", res.getVillage().getState().getTag());
+                return true;
+            }
             try {
                 PlotMode m = PlotMode.valueOf(args[0].toLowerCase());
+                if (m == PlotMode.embassy) {
+                    if (land.containsHome() || land.isOutpost()) {
+                        getError("cant-set-embassy").tell(res);
+                        return true;
+                    } else if (!canAdmin) {
+                        return true;
+                    }
+                }
                 Boolean setTo = !m.get(land);
                 if (args.length > 1) {
                     setTo = m.getOptions().get(args[1].toLowerCase());
@@ -50,10 +62,6 @@ public class PlotModeCommand extends VillageSubCommand {
                             return false;
                         }
                     }
-                }
-                if (m == PlotMode.embassy && (land.containsHome() || land.isOutpost())) {
-                    getError("cant-set-embassy").tell(res);
-                    return true;
                 }
                 m.set(setTo, land);
                 LandManager.getInstance().syncAndSave(land);

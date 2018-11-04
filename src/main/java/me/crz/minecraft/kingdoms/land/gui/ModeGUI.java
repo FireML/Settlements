@@ -1,21 +1,23 @@
 package me.crz.minecraft.kingdoms.land.gui;
 
-import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
-import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.land.PlotMode;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
-public class ModeGUI extends KingdomsGUI {
+public class ModeGUI extends PlotGUI {
     private static ModeGUI instance;
     public CInventory gui;
 
@@ -51,21 +53,34 @@ public class ModeGUI extends KingdomsGUI {
 
                 public boolean click(Player p, ClickType clickType) {
                     OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
-                    if (land != null && land.isPlotOwner(p)) {
-                        boolean state = !m.get(land);
-                        m.set(state, land);
-                        LandManager.getInstance().syncAndSave(land);
-                        MessageUtils.tell(p, Message.get("command.village.plot.mode.success"),
-                                "mode", m.getTag(),
-                                "value", yesOrNo(state)
-                        );
-                        gui.build(p);
-                        return true;
+                    if (land != null) {
+                        Resident resident = ResidentManager.getInstance().getResident(p);
+                        boolean canAdmin = resident.hasVillage() && land.isOwnedBy(resident.getVillage()) && resident.getVillageRank().atLeast(VillageRank.ELDER);
+                        if (land.isPlotOwner(p) || canAdmin) {
+                            if (m == PlotMode.embassy) {
+                                if (land.containsHome() || land.isOutpost()) {
+                                    getError("command.village.plot.mode.cant-set-embassy").tell(p);
+                                    return false;
+                                } else if (!canAdmin) {
+                                    return false;
+                                }
+                            }
+                            boolean state = !m.get(land);
+                            m.set(state, land);
+                            LandManager.getInstance().syncAndSave(land);
+                            MessageUtils.tell(p, Message.get("command.village.plot.mode.success"),
+                                    "mode", m.getTag(),
+                                    "value", yesOrNo(state)
+                            );
+                            gui.build(p);
+                            return true;
+                        }
                     }
                     return false;
                 }
             });
         }
+        gui.addItem((gui.getMaxSlot() / 9) * 9 + 7, getPlotLinkItem(gui));
         gui.addItem((gui.getMaxSlot() / 9) * 9 + 8, new ClickableItem() {
             public ItemStack getItem(final Player p) {
                 return new CItem(Material.BARRIER).setName(getText("back")).build();
