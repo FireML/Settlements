@@ -31,6 +31,7 @@ public class PlotSaleCommand extends VillageSubCommand {
             }
         } else if ("false".equalsIgnoreCase(args[0]) || "no".equalsIgnoreCase(args[0])) {
             land.setForSale(false);
+            land.setEmbassy(false);
             Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
             res.tell(getMessage("no-longer-for-sale"));
         } else if ("true".equalsIgnoreCase(args[0]) || "yes".equalsIgnoreCase(args[0])) {

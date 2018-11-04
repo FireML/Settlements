@@ -218,6 +218,7 @@ public class LandManager {
             playerPlots.remove(land.getPlotOwner(), land.getLocation());
         }
         land.removeLink();
+        land.setEmbassy(false);
         land.setPlotOwner(owner);
         land.setBuildState(PlotBuildState.PRIVATE);
         for (Use use : Use.values()) {

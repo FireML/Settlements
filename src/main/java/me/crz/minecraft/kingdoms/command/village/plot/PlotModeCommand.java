@@ -51,6 +51,10 @@ public class PlotModeCommand extends VillageSubCommand {
                         }
                     }
                 }
+                if (m == PlotMode.embassy && (land.containsHome() || land.isOutpost())) {
+                    getError("cant-set-embassy").tell(res);
+                    return true;
+                }
                 m.set(setTo, land);
                 LandManager.getInstance().syncAndSave(land);
                 res.tell(getMessage("success"), "mode", m.name(), "value", args.length > 1 ? args[1] : String.valueOf(setTo));

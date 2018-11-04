@@ -39,6 +39,7 @@ error:
   not-unlocked-yet: "&cThis feature only unlocked with {state} level {level}!"
   level-required: "&cYou must be in a {state} level {level}!"
   no-allies: "&c&lYou have no allies!"
+  cant-set-embassy: "&cYou can't set an embassy here!"
 move-cancelled:
   title: ""
   subtitle: "&c{action} cancelled because you moved!"
