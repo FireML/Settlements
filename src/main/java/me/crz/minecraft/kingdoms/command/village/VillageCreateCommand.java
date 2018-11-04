@@ -54,7 +54,6 @@ public class VillageCreateCommand extends VillageSubCommand {
             player.setVillage(village);
             player.setVillageRank(VillageRank.CHIEF);
             player.addChannel(ChatChannel.SETTLEMENT);
-            player.setActiveChannel(ChatChannel.SETTLEMENT);
             Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(player));
 
             MessageUtils.broadcast(getMessage("broadcast"),
