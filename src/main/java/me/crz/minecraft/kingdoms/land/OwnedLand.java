@@ -18,12 +18,11 @@ import java.util.ArrayList;
 
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -50,9 +49,8 @@ public class OwnedLand implements ConfigurationSerializable {
     private String description = "";
     private PlotBuildState buildState = PlotBuildState.RESIDENTS;
     private EnumMap<Use, PlotBuildState> use = new EnumMap<>(Use.class);
-    private SimpleChunkLocation linkedTo = null;
-    private Set<SimpleChunkLocation> linked = new HashSet<>();
     private boolean embassy;
+    private UUID link;
 
     public OwnedLand(Village ownerVillage, SimpleChunkLocation location) {
         this(ownerVillage, location, null, 0, false);
@@ -272,40 +270,31 @@ public class OwnedLand implements ConfigurationSerializable {
         this.description = description.length() > 255 ? description.substring(0, 255) : description;
     }
 
-    public SimpleChunkLocation getLinkedTo() {
-        return linkedTo;
+    public Collection<SimpleChunkLocation> getLinked() {
+        return LandManager.getInstance().getLinked(this);
     }
 
-    public boolean isLinkedTo(OwnedLand land) {
-        return land != null && land.getLocation().equals(linkedTo);
+    public boolean removeLink() {
+        return LandManager.getInstance().removeLink(this);
     }
 
-    public void setLinkedTo(OwnedLand land) {
-        if (land != null) {
-            setLinkedToLocation(land.getLocation());
-        } else {
-            setLinkedToLocation(null);
-        }
+    public boolean isLinked(OwnedLand land) {
+        return land != null && hasLink() && getLink().equals(land.getLink());
     }
 
-    public void setLinkedToLocation(SimpleChunkLocation connectedTo) {
-        this.linkedTo = connectedTo;
+    public UUID getLink() {
+        return link;
     }
 
-    public Set<SimpleChunkLocation> getLinked() {
-        return linked;
+    /**
+     * Use {@link LandManager#addLink(OwnedLand, UUID)} to ensure data consistency!
+     */
+    public void setLink(UUID link) {
+        this.link = link;
     }
 
-    public boolean addLinked(OwnedLand land) {
-        return linked.add(land.getLocation());
-    }
-
-    public boolean removeLinked(OwnedLand land) {
-        return linked.remove(land.getLocation());
-    }
-
-    public boolean hasLink(OwnedLand land) {
-        return linked.contains(land.getLocation());
+    public boolean hasLink() {
+        return getLink() != null;
     }
 
     public void setId(IdObject id) {
@@ -389,8 +378,7 @@ public class OwnedLand implements ConfigurationSerializable {
         map.put("mobSpawning", isMobSpawning());
         map.put("buff", isBuff());
         map.put("buildState", getBuildState().name());
-        map.put("linkX", getLinkedTo() != null ? getLinkedTo().getX() : null);
-        map.put("linkZ", getLinkedTo() != null ? getLinkedTo().getZ() : null);
+        map.put("link", getLink() != null ? getLink().toString() : null);
         map.put("uses", getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
         return map;
     }
@@ -426,8 +414,8 @@ public class OwnedLand implements ConfigurationSerializable {
         land.setBuff((Boolean) map.get("buff"));
         land.setBuildState(Utils.parseEnum((String) map.get("buildState"), PlotBuildState.RESIDENTS));
 
-        if (map.get("linkX") != null && map.get("linkZ") != null) {
-            land.setLinkedToLocation(new SimpleChunkLocation(land.getWorldName(), (Integer) map.get("connX"), (Integer) map.get("connZ")));
+        if (map.get("link") != null && !((String) map.get("link")).isEmpty()) {
+            land.setLink(UUID.fromString((String) map.get("link")));
         }
 
         Map<String, Object> uses = (Map<String, Object>) map.get("uses");
@@ -445,10 +433,14 @@ public class OwnedLand implements ConfigurationSerializable {
     }
 
     public boolean syncLinked(OwnedLand land) {
-        if (!isOwnedBy(land.getOwnerVillage()) || !isPlotOwner(land.getPlotOwner()) || !isLinkedTo(land)) {
+        if (!isOwnedBy(land.getOwnerVillage()) || !isPlotOwner(land.getPlotOwner()) || !isLinked(land)) {
             return false;
         }
         boolean r = false;
+        if (getBuildState() != land.getBuildState()) {
+            setBuildState(land.getBuildState());
+            r = true;
+        }
         for (PlotMode mode : PlotMode.values()) {
             if (mode.get(this) != mode.get(land)) {
                 mode.set(mode.get(land), this);

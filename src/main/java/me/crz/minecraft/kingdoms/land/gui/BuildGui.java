@@ -55,7 +55,7 @@ public class BuildGui extends KingdomsGUI {
                         MessageUtils.tell(p, Message.get("command.village.plot.build.success"),
                                 "state", state.getTag()
                         );
-                        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
+                        LandManager.getInstance().syncAndSave(land);
                         gui.build(p);
                         return true;
                     }

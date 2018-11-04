@@ -38,7 +38,7 @@ public class ChatManager extends Base implements ConfigMessages {
 
     private final static DecimalFormat BALANCE_FORMAT = new DecimalFormat("#,###.##");
 
-    public ChatManager() {
+    private ChatManager() {
         super();
     }
 

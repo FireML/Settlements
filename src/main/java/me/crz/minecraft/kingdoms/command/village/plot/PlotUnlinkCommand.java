@@ -26,31 +26,15 @@ public class PlotUnlinkCommand extends ResidentSubCommand {
             res.tell(getError("not-your-village"), "state", land.getOwnerVillage().getState().getTag());
         } else if (!land.isPlotOwner(res.getUUID())) {
             getError("not-your-plot").tell(res);
-        } else if (land.getLinkedTo() == null && land.getLinked().isEmpty()) {
+        } else if (!land.hasLink()) {
             getError("none-linked").tell(res);
         } else {
             Collection<OwnedLand> toSave = new ArrayList<>();
-            for (SimpleChunkLocation l : land.getLinked()) {
-                OwnedLand c = LandManager.getInstance().getLand(l);
-                if (c.isLinkedTo(land)) {
-                    c.setLinkedTo(null);
-                    toSave.add(c);
-                }
+            int linked = land.getLinked().size() - 1;
+            getMessage("disconnected").tell(res, "amount", String.valueOf(linked));
+            if (land.removeLink()) {
+                Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
             }
-            OwnedLand lt = LandManager.getInstance().getLand(land.getLinkedTo());
-            if (lt != null) {
-                getMessage("unlink.self").tell(res, "location", land.getLinkedTo().getKey());
-                if (lt.removeLinked(land)) {
-                    toSave.add(lt);
-                }
-                land.setLinkedTo(null);
-            }
-            if (!land.getLinked().isEmpty()) {
-                land.getLinked().clear();
-                getMessage("unlink.others").tell(res, "amount", String.valueOf(toSave.size()));
-            }
-            toSave.add(land); // add to save
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(toSave));
         }
         return true;
     }

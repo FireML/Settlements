@@ -180,6 +180,7 @@ public class VillageMapCommand extends SubCommand implements Listener {
         OWN,
         OWN_OUTPOST,
         OWN_PLOT,
+        OWN_PLOT_LINKED,
         ALLY,
         ENEMY,
         UNCLAIMED,
@@ -229,10 +230,12 @@ public class VillageMapCommand extends SubCommand implements Listener {
         private final Player player;
         private final Resident resident;
         private final ConfigMessages messages;
+        private final OwnedLand playerLand;
 
         private Set<SimpleChunkLocation> ownOutposts = new HashSet<>();
 
         MapGenerator(Player p, ConfigMessages messages) {
+            this.playerLand = LandManager.getInstance().getLand(p.getLocation());
             this.player = p;
             this.resident = ResidentManager.getInstance().getResident(p);
             this.messages = messages;
@@ -298,7 +301,11 @@ public class VillageMapCommand extends SubCommand implements Listener {
                 }
                 if (land.isPlot()) {
                     if (land.isPlotOwner(resident)) {
-                        relation = Relation.OWN_PLOT;
+                        if (land.isLinked(playerLand)) {
+                            relation = Relation.OWN_PLOT_LINKED;
+                        } else {
+                            relation = Relation.OWN_PLOT;
+                        }
                     }
                     symbol = Symbol.PLOT;
                 }

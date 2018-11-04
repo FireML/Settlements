@@ -20,6 +20,10 @@ public class CommandManager extends Base implements CommandExecutor {
     private static CommandManager instance;
     private Map<String, SubCommand> commandMap = new LinkedHashMap<>();
 
+    private CommandManager() {
+        super();
+    }
+
     private void registerCommands() {
         registerCommand(new VillageCommand());
         registerCommand(new EmpireCommand());

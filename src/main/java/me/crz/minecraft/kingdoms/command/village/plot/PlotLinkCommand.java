@@ -9,6 +9,9 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class PlotLinkCommand extends ResidentSubCommand {
     public PlotLinkCommand(VillagePlotCommand parent) {
@@ -24,22 +27,28 @@ public class PlotLinkCommand extends ResidentSubCommand {
             res.tell(getError("not-your-village"), "state", land.getOwnerVillage().getState().getTag());
         } else if (!land.isPlotOwner(res.getUUID())) {
             getError("not-your-plot").tell(res);
-        } else if (land.getLinkedTo() != null) {
-            getError("already-linked").tell(res, "location", land.getLinkedTo().getSimpleKey());
         } else {
-            Collection<OwnedLand> connected = LandManager.getInstance().getAllConnectedLand(land, location -> {
-                if (!land.isPlotOwner(res) || land.getLinkedTo() != null) {
+            Collection<OwnedLand> connected = LandManager.getInstance().getAllConnectedLand(land, search -> {
+                if (!search.isPlotOwner(res)) {
                     return LandManager.FilterResponse.SKIP_ENTRY;
                 }
                 return LandManager.FilterResponse.ACCEPT;
             });
-            for (OwnedLand c : connected) {
-                c.setLinkedTo(land);
-                land.addLinked(c);
-            }
-            connected.add(land); // add to save
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(connected));
+
+
+            UUID link = connected.stream()
+                    .filter(OwnedLand::hasLink)
+                    .map(OwnedLand::getLink)
+                    .findAny().orElse(UUID.randomUUID());
             getMessage("success").tell(res, "amount", String.valueOf(connected.size()));
+            connected.add(land); // add to save
+            Set<OwnedLand> toSave = new LinkedHashSet<>();
+            for (OwnedLand c : connected) {
+                if (LandManager.getInstance().addLink(c, link)) {
+                    toSave.add(c);
+                }
+            }
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(toSave));
         }
         return true;
     }

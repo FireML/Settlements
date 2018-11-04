@@ -16,10 +16,6 @@ import java.util.UUID;
 public abstract class DatabaseManager {
     private static DatabaseManager instance;
 
-    public DatabaseManager() {
-        super();
-    }
-
     public static DatabaseManager getInstance() {
         if (instance == null) {
             String type = KingdomsPlugin.getInstance().getConfig().getString("storage.type");

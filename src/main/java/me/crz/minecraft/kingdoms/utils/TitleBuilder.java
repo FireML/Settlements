@@ -54,7 +54,7 @@ public class TitleBuilder {
         if (actionBar != null && !actionBar.isEmpty()) {
             String replacedActionBar = MessageUtils.replacePlaceholders(actionBar, replacements);
             p.sendActionBar(replacedActionBar);
-            Bukkit.getScheduler().runTaskLater(KingdomsPlugin.getInstance(), () -> p.sendActionBar(replacedActionBar), 3 * 20);
+            Bukkit.getScheduler().runTaskLater(KingdomsPlugin.getInstance(), () -> p.sendActionBar(replacedActionBar), 2 * 20);
         }
     }
 }

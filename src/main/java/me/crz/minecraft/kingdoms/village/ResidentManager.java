@@ -19,7 +19,7 @@ public class ResidentManager {
     private LoadingCache<UUID, Resident> residentsByUuid;
     private LoadingCache<String, Resident> residentsByName;
 
-    public ResidentManager() {
+    private ResidentManager() {
         Expiry<? super Object, Resident> residentExpiry = new Expiry<Object, Resident>() {
             @Override
             public long expireAfterCreate(Object key, Resident resident, long currentTime) {
@@ -88,10 +88,6 @@ public class ResidentManager {
                     residentsByUuid.put(res.getUUID(), res);
                     return res;
                 });
-
-        for (Village village : VillageManager.getInstance().getVillages()) {
-            village.getResidents(); // pre load all residents in a village
-        }
     }
 
     public void addResident(Resident res) {
@@ -151,6 +147,9 @@ public class ResidentManager {
     public static ResidentManager getInstance() {
         if (instance == null) {
             instance = new ResidentManager();
+            for (Village village : VillageManager.getInstance().getVillages()) {
+                village.getResidents(); // pre load all residents in a village
+            }
         }
         return instance;
     }

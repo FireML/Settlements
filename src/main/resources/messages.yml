@@ -630,14 +630,15 @@ command:
       explanation: |-
         &r &a- &6= your land
         &r &a$ &6= for sale
-        &r &a~ &6= player plot
+        &r &ep &6= player plot
+        &r &6p &6= linked plots
         &r &ae &6= embassy
         &r &aH &6= home
-        &r &2@ &6= outpost
+        &r &2o &6= outpost
         &r &b- &6= ally
         &r &c- &6= other
         &r &7- &6= unclaimed
-        &r &e+ &6= current
+        &r &7+ &6= current
       not-for-sale: "Nor for sale"
       hover:
         click-to-claim: "&9Click to claim &f{x}-{z}"
@@ -728,9 +729,7 @@ command:
         description: Gets or sets the price of a claimed chunk
       unlink:
         none-connected: "&c&lERROR: &cNo plots are linked to this one!"
-        disconnected:
-          self: "&r&7Unlinked from {location}"
-          others: "&r&7Unlinked {amount} plots fromthis one!"
+        disconnected: "&r&7Unlinked from {amount} other plots!"
         description: Unlink this plot's flags
       unsale:
         success: "&aThis land is no longer for sale!"

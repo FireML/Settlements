@@ -22,7 +22,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 
 public class VillagePlotCommand extends VillageSubCommand {
     public VillagePlotCommand(SubCommand parent) {
-        super(parent, "plot <options>", VillageRank.RESIDENT);
+        super(parent, "plot <options>", VillageRank.RESIDENT, "p");
         setPermission("kingdoms.user");
         registerCommand(new PlotSaleCommand(this));
         registerCommand(new PlotUnsaleCommand(this));

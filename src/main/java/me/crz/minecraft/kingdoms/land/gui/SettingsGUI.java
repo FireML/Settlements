@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.land.gui;
 
+import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
@@ -7,19 +8,19 @@ import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class SettingsGUI extends KingdomsGUI {
     private static SettingsGUI instance;
@@ -65,11 +66,8 @@ public class SettingsGUI extends KingdomsGUI {
                 if (land != null && land.isPlotOwner(p)) {
                     List<String> description = new ArrayList<>();
                     CItem item = new CItem(Material.MAP);
-                    if (land.getLinkedTo() != null) {
-                        description.add(getMessage("linked-to").getReplacedText("location", land.getLinkedTo().getSimpleKey()));
-                    }
-                    if (!land.getLinked().isEmpty()) {
-                        description.add(getMessage("linked").getReplacedText("amount", String.valueOf(land.getLinked().size())));
+                    if (land.hasLink()) {
+                        description.add(getMessage("linked").getReplacedText("amount", String.valueOf(land.getLinked().size() - 1)));
                     }
                     if (description.isEmpty()) {
                         description.add(getText("link"));
@@ -87,26 +85,33 @@ public class SettingsGUI extends KingdomsGUI {
                 OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
                 if (land != null && land.isPlotOwner(p)) {
                     Set<OwnedLand> toSave = new LinkedHashSet<>();
-                    if (!land.getLinked().isEmpty()) {
-                        for (SimpleChunkLocation c : land.getLinked()) {
-                            OwnedLand linked = LandManager.getInstance().getLand(c);
-                            if (linked != null && linked.isLinkedTo(land)) {
-                                linked.setLinkedTo(null);
-                                toSave.add(linked);
+                    if (land.hasLink()) {
+                        int linked = land.getLinked().size() - 1;
+                        if (land.removeLink()) {
+                            toSave.add(land);
+                        }
+                        Message.get("command.village.plot.unlink.disconnected").tell(p, "amount", String.valueOf(linked));
+                    } else {
+                        Collection<OwnedLand> connected = LandManager.getInstance().getAllConnectedLand(land, search -> {
+                            if (!search.isPlotOwner(p)) {
+                                return LandManager.FilterResponse.SKIP_ENTRY;
+                            }
+                            return LandManager.FilterResponse.ACCEPT;
+                        });
+
+                        UUID link = connected.stream()
+                                .filter(OwnedLand::hasLink)
+                                .map(OwnedLand::getLink)
+                                .findAny().orElse(UUID.randomUUID());
+                        Message.get("command.village.plot.link.success").tell(p, "amount", String.valueOf(connected.size()));
+                        connected.add(land); // add current to save
+                        for (OwnedLand c : connected) {
+                            if (LandManager.getInstance().addLink(c, link)) {
+                                toSave.add(c);
                             }
                         }
-                        Message.get("command.village.plot.unlink.disconnected.others").tell(p, "amount", String.valueOf(toSave.size()));
-                    }
-                    if (land.getLinkedTo() != null) {
-                        OwnedLand linkedTo = LandManager.getInstance().getLand(land.getLinkedTo());
-                        if (linkedTo != null && linkedTo.removeLinked(land)) {
-                            toSave.add(linkedTo);
-                        }
-                        Message.get("command.village.plot.unlink.disconnected.self").tell(p, "location", land.getLinkedTo().getSimpleKey());
-                        land.setLinkedTo(null);
                     }
                     if (!toSave.isEmpty()) {
-                        toSave.add(land);
                         Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(toSave));
                         gui.build(p);
                         return true;

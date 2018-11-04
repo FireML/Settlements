@@ -30,7 +30,7 @@ public class VillageManager {
     private Map<String, VillagePerk> perks;
     private Map<String, VillagePerk> perkTags;
 
-    public VillageManager() {
+    private VillageManager() {
         super();
         loadPerks();
         for (Village village : DatabaseManager.getInstance().getAllVillages()) {

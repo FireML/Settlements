@@ -103,7 +103,6 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             this.getServer().getPluginManager().registerEvents(new EmpireVaultListener(), this);
             this.getServer().getPluginManager().registerEvents(new VillageListener(), this);
             this.getServer().getPluginManager().registerEvents(new EmpireListener(), this);
-            this.getServer().getPluginManager().registerEvents(new ChatManager(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlags(), this);
             this.getServer().getPluginManager().registerEvents(new Advancements(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlagsBlockEvents(), this);
@@ -150,6 +149,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         ScoreboardManager.getInstance();
         CommandManager.getInstance();
         UtilChat.getInstance();
+        ChatManager.getInstance();
     }
 
     private boolean setupChat() {

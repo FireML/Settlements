@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -39,28 +40,13 @@ public class LandManager {
     private HashBasedTable<String, String, OwnedLand> landTable = HashBasedTable.create();
     private Multimap<IdObject, SimpleChunkLocation> villageLands = MultimapBuilder.hashKeys().hashSetValues().build();
     private Multimap<UUID, SimpleChunkLocation> playerPlots = MultimapBuilder.hashKeys().hashSetValues().build();
+    private Multimap<UUID, SimpleChunkLocation> linkedPlots = MultimapBuilder.hashKeys().hashSetValues().build();
     private HashBasedTable<String, String, Boolean> mobData = HashBasedTable.create();
 
-    public LandManager() {
+    private LandManager() {
         super();
         for (OwnedLand land : DatabaseManager.getInstance().getAllLand()) {
-            landTable.put(land.getWorldName(), land.getSimpleKey(), land);
-            villageLands.put(land.getOwnerVillage().getId(), land.getLocation());
-            if (land.isPlot()) {
-                playerPlots.put(land.getPlotOwner(), land.getLocation());
-            }
-        }
-        for (OwnedLand land : landTable.values()) {
-            if (land.getLinkedTo() != null) {
-                OwnedLand connectedTo = getLand(land.getLinkedTo());
-                if (connectedTo != null
-                        && land.isPlotOwner(connectedTo.getPlotOwner())
-                        && land.getOwnerVillage().equals(connectedTo.getOwnerVillage())) {
-                    connectedTo.addLinked(land);
-                } else {
-                    land.setLinkedTo(null);
-                }
-            }
+            cacheLand(land);
         }
     }
 
@@ -78,6 +64,9 @@ public class LandManager {
         villageLands.put(land.getOwnerVillage().getId(), land.getLocation());
         if (land.isPlot()) {
             playerPlots.put(land.getPlotOwner(), land.getLocation());
+        }
+        if (land.hasLink()) {
+            linkedPlots.put(land.getLink(), land.getLocation());
         }
     }
 
@@ -108,7 +97,7 @@ public class LandManager {
     }
 
     public boolean isLandClaimed(Location location) {
-        return this.getLand(new SimpleChunkLocation(location)) != null;
+        return this.getLand(location) != null;
     }
 
     public OwnedLand getLand(Location location) {
@@ -165,6 +154,7 @@ public class LandManager {
     public void unclaimLand(Village village) {
         List<SimpleChunkLocation> claims = new ArrayList<>(villageLands.get(village.getId()));
         for (SimpleChunkLocation claim : claims) {
+            removeLink(getLand(claim));
             landTable.remove(claim.getWorld(), claim.getSimpleKey());
             KingdomsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + claim.getKey() + " owned by " + village.getName() + " was unclaimed");
         }
@@ -175,6 +165,31 @@ public class LandManager {
             }
             DatabaseManager.getInstance().unclaimLand(village);
         });
+    }
+
+    public boolean removeLink(OwnedLand land) {
+        if (land != null && land.hasLink()) {
+            UUID link = land.getLink();
+            land.setLink(null);
+            return linkedPlots.remove(link, land.getLocation());
+        }
+        return false;
+    }
+
+    public boolean addLink(OwnedLand land, UUID link) {
+        if (land != null && link != null && !link.equals(land.getLink())) {
+            removeLink(land);
+            land.setLink(link);
+            return linkedPlots.put(link, land.getLocation());
+        }
+        return false;
+    }
+
+    public Collection<SimpleChunkLocation> getLinked(OwnedLand land) {
+        if (land != null && land.hasLink()) {
+            return linkedPlots.get(land.getLink());
+        }
+        return new HashSet<>();
     }
 
     private void removeLocks(OwnedLand... lands) {
@@ -202,30 +217,16 @@ public class LandManager {
         if (land.isPlot()) {
             playerPlots.remove(land.getPlotOwner(), land.getLocation());
         }
+        land.removeLink();
         land.setPlotOwner(owner);
         land.setBuildState(PlotBuildState.PRIVATE);
         for (Use use : Use.values()) {
             land.setUseState(use, PlotBuildState.PRIVATE);
         }
-        List<OwnedLand> toSave = new ArrayList<>();
-        toSave.add(land);
         if (owner != null) {
             playerPlots.put(owner, land.getLocation());
-        } else {
-            OwnedLand lt = getLand(land.getLinkedTo());
-            if (lt != null && lt.removeLinked(land)) {
-                toSave.add(lt);
-            }
-            land.setLinkedTo(null);
-            for (SimpleChunkLocation c : land.getLinked()) {
-                OwnedLand l = getLand(c);
-                if (l != null && l.removeLinked(land)) {
-                    toSave.add(land);
-                }
-            }
-            land.getLinked().clear();
         }
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(toSave));
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
     }
 
     public int getClaimedLandSize(Village village) {
@@ -252,15 +253,15 @@ public class LandManager {
         return land;
     }
 
-    public Collection<OwnedLand> getAllConnectedLand(OwnedLand land, Function<OwnedLand, FilterResponse> filter) {
+    public Set<OwnedLand> getAllConnectedLand(OwnedLand land, Function<OwnedLand, FilterResponse> filter) {
+        Set<OwnedLand> found = new LinkedHashSet<>();
         Village village = land.getOwnerVillage();
         if (village == null) {
-            return new ArrayList<>();
+            return found;
         }
 
         int[][] directions = {{1,0}, {0,1}, {-1,0}, {0,-1}};
 
-        List<OwnedLand> found = new ArrayList<>();
         Set<SimpleChunkLocation> checked = new HashSet<>();
         checked.add(land.getLocation());
 
@@ -283,7 +284,7 @@ public class LandManager {
                     if (filter != null) {
                         switch (filter.apply(foundLand)) {
                             case ABORT:
-                                return new ArrayList<>();
+                                return new LinkedHashSet<>();
                             case RETURN:
                                 branchFound.add(foundLand);
                             case RETURN_CURRENT:

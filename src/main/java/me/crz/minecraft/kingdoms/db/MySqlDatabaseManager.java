@@ -267,8 +267,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "mobSpawning BOOLEAN NOT NULL,"
                     + "buff BOOLEAN NOT NULL,"
                     + "buildState VARCHAR(255) NOT NULL,"
-                    + "linkX INTEGER,"
-                    + "linkZ INTEGER"
+                    + "link VARCHAR(36)"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "claim_uses ("
@@ -492,7 +491,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
     @Override
     public Collection<OwnedLand> getAllLand() {
         Utils.catchSync();
-        String sql = "SELECT c.*, r.id AS plotOwner FROM " + tablePrefix + "claims AS c LEFT JOIN " + tablePrefix + "residents AS r ON c.ownerId = r.id;";
+        String sql = "SELECT c.*, r.uuid AS `owner` FROM " + tablePrefix + "claims AS c LEFT JOIN " + tablePrefix + "residents AS r ON c.ownerId = r.id;";
         try (Connection conn = ds.getConnection();
              ResultSet rs = conn.createStatement().executeQuery(sql)) {
             List<OwnedLand> claims = new ArrayList<>();

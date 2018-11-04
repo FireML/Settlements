@@ -21,7 +21,7 @@ public class ConfigManager {
     private IconRpMapping iconRpMapping;
     private ConfigAccessor cursesConf;
 
-    public ConfigManager() {
+    private ConfigManager() {
         super();
         reload();
     }
