@@ -55,12 +55,12 @@ banished:
     message: ""
     actionbar: ""
     title: "&cTurn Around"
-    subtitle: "&cYou're banished from this settlement!"
+    subtitle: "&cYou're banished from the {state} {name}!"
   teleport:
     message: ""
     actionbar: ""
     title: "&cCan't teleport"
-    subtitle: "&cYou're banished from this settlement!"
+    subtitle: "&cYou're banished from the {state} {name}!"
 broadcast:
   village-deletion: "&c{state} {name} has fallen!"
 scoreboard:

@@ -3,8 +3,7 @@ package me.crz.minecraft.kingdoms.banish;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveChunkEvent;
 import me.crz.minecraft.kingdoms.land.LandManager;
-import me.crz.minecraft.kingdoms.utils.ConfigMessages;
-import me.crz.minecraft.kingdoms.utils.TitleBuilder;
+import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -15,7 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-public class BanishListener implements Listener, ConfigMessages {
+public class BanishListener implements Listener {
     
     @EventHandler
     public void on(PlayerMoveChunkEvent e) {
@@ -41,21 +40,6 @@ public class BanishListener implements Listener, ConfigMessages {
                 "state", village.getState().getTag(),
                 "name", village.getName()
         };
-        getMessage(type + ".message").tell(p, replacements);
-        new TitleBuilder()
-                .withTitle(getMessage(type + ".title").getReplacedText(replacements))
-                .withSubtitle(getMessage(type + ".subtitle").getReplacedText(replacements))
-                .withActionbar(getMessage(type + ".actionbar").getReplacedText(replacements))
-                .send(p);
-    }
-
-    @Override
-    public String type() {
-        return "";
-    }
-
-    @Override
-    public String name() {
-        return "banished";
+        MessageUtils.tellAdvanced(p, "banished." + type, replacements);
     }
 }
