@@ -196,7 +196,7 @@ public class ChatManager extends Base implements ConfigMessages {
                 "staff", ChatChannel.ADMIN.canChat(sender) ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
         ));
 
-        MessageUtils.tell(sender, getMessage("format.private.target"), ImmutableMap.of(
+        MessageUtils.tell(target, getMessage("format.private.target"), ImmutableMap.of(
                 "sender", new ComponentBuilder(
                         getMessage("format.private.name.target").getReplacedText(getReplacements(target, tres)))
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + sender.getName() + " "))
