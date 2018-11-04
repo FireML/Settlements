@@ -8,10 +8,10 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.VillageState;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -35,17 +35,19 @@ public class PlotLinkCommand extends ResidentSubCommand {
                 return LandManager.FilterResponse.ACCEPT;
             });
 
-
-            UUID link = connected.stream()
-                    .filter(OwnedLand::hasLink)
-                    .map(OwnedLand::getLink)
-                    .findAny().orElse(UUID.randomUUID());
+            Optional<OwnedLand> syncWith = connected.stream().filter(OwnedLand::hasLink).findAny();
             getMessage("success").tell(res, "amount", String.valueOf(connected.size()));
-            connected.add(land); // add to save
             Set<OwnedLand> toSave = new LinkedHashSet<>();
+            if (syncWith.isPresent()) {
+                connected.add(land);
+            } else {
+                land.setLink(UUID.randomUUID());
+                toSave.add(land);
+            }
             for (OwnedLand c : connected) {
-                if (LandManager.getInstance().addLink(c, link)) {
+                if (LandManager.getInstance().addLink(c, syncWith.orElse(land).getLink())) {
                     toSave.add(c);
+                    c.syncLinked(syncWith.orElse(land));
                 }
             }
             Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(toSave));

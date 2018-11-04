@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -73,15 +74,18 @@ public abstract class PlotGUI extends KingdomsGUI {
                                 return LandManager.FilterResponse.ACCEPT;
                             });
 
-                            UUID link = connected.stream()
-                                    .filter(OwnedLand::hasLink)
-                                    .map(OwnedLand::getLink)
-                                    .findAny().orElse(UUID.randomUUID());
+                            Optional<OwnedLand> syncWith = connected.stream().filter(OwnedLand::hasLink).findAny();
                             Message.get("command.village.plot.link.success").tell(p, "amount", String.valueOf(connected.size()));
-                            connected.add(land); // add current to save
+                            if (syncWith.isPresent()) {
+                                connected.add(land);
+                            } else {
+                                land.setLink(UUID.randomUUID());
+                                toSave.add(land);
+                            }
                             for (OwnedLand c : connected) {
-                                if (LandManager.getInstance().addLink(c, link)) {
+                                if (LandManager.getInstance().addLink(c, syncWith.orElse(land).getLink())) {
                                     toSave.add(c);
+                                    c.syncLinked(syncWith.orElse(land));
                                 }
                             }
                         }
