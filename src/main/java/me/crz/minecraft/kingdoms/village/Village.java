@@ -96,7 +96,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
                 long totalTax = 0;
                 Map<Resident, Long> paidTaxes = new LinkedHashMap<>();
                 for (Resident resident : getResidents()) {
-                    if (resident.getId().equals(getChiefId())) {
+                    if (resident.getUUID().equals(getChiefId())) {
                         continue;
                     }
                     Player player = resident.getPlayer();
