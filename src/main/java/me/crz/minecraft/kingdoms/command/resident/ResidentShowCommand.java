@@ -45,7 +45,6 @@ public class ResidentShowCommand extends SubCommand {
                     "title", (target.getVillage() == null) ? "none" : target.getTitle(),
                     "balance", Utils.CURRENCY_FORMAT.format(balance),
                     "bonus", Utils.CURRENCY_FORMAT.format(target.getBonusClaims()),
-                    "taxowed", Utils.CURRENCY_FORMAT.format(target.getTaxOwed()),
                     "joindate", Utils.DATE_FORMAT.format(new Date(op.getFirstPlayed())),
                     "lastlogin",  Utils.DATE_FORMAT.format(new Date(target.getLastLogin()))
             );

@@ -73,33 +73,32 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
     public void doUpkeep() {
         if (getTax() > 0) {
             Utils.runAsync(() -> {
-                Map<Village, Long> paidTaxes = new LinkedHashMap<>();
+                int paidTaxes = 0;
                 for (Village member : getMembers()) {
                     if (member.getId().equals(getCapitalId())) {
                         continue;
                     }
                     if (member.removeFromBank(member.getTax())) {
                         addToBank(getTax());
-                        paidTaxes.put(member, getTax());
+                        paidTaxes += getTax();
                         Message.get("empire-tax.removed").tell(member.getOnlineResidents(),
                                 "amount", String.valueOf(getTax()),
                                 "state", member.getState().getTag(),
+                                "settlement", member.getName(),
                                 "name", getName());
                     } else {
+                        Message.get("empire-tax.couldnt-pay").tell(getOnlineResidents(),
+                                "amount", String.valueOf(getTax()),
+                                "state", member.getState().getTag(),
+                                "settlement", member.getName(),
+                                "name", getName()
+                        );
                         member.setEmpire(null);
                         getMemberIds().remove(member.getId());
-                        paidTaxes.put(member, (long) 0);
-                        Message.get("empire-tax.couldnt-pay").tell(member.getOnlineResidents(),
-                                "amount", String.valueOf(getTax()),
-                                "name", getName());
                     }
                 }
-                DatabaseManager.getInstance().saveVillages(paidTaxes.keySet());
-                for (Map.Entry<Village, Long> e : paidTaxes.entrySet()) {
-                    if (e.getValue() > 0) {
-                        DatabaseManager.getInstance().log(this, e.getKey(), null, "tax", "cash", e.getValue());
-                    }
-                }
+                DatabaseManager.getInstance().saveVillages(getMembers());
+                DatabaseManager.getInstance().log(this, null, null, "tax", "cash", paidTaxes);
             });
         }
     }

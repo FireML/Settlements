@@ -21,6 +21,7 @@ import me.crz.minecraft.kingdoms.utils.config.Data;
 import me.crz.minecraft.kingdoms.vault.Levels;
 import me.crz.minecraft.kingdoms.world.NamedLocation;
 import me.crz.minecraft.kingdoms.world.SimpleLocation;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
@@ -94,47 +95,35 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         if (getTax() > 0) {
             Utils.runAsync(() -> {
                 long totalTax = 0;
-                Map<Resident, Long> paidTaxes = new LinkedHashMap<>();
                 for (Resident resident : getResidents()) {
                     if (resident.getUUID().equals(getChiefId())) {
                         continue;
                     }
-                    Player player = resident.getPlayer();
-                    if (player != null && player.isOnline()) {
-                        resident.addTaxOwed(getTax());
-                        if (KingdomsPlugin.getInstance().econ.withdrawPlayer(player, resident.getTaxOwed()).transactionSuccess()) {
-                            addToBank(resident.getTaxOwed());
-                            totalTax += resident.getTaxOwed();
-                            paidTaxes.put(resident, resident.getTaxOwed());
-                            Message.get("tax.removed").tell(resident,
-                                    "amount", String.valueOf(resident.getTaxOwed()),
-                                    "state", getState().getTag(),
-                                    "name", getName());
-                            resident.setTaxOwed(0);
-                        } else if (resident.getTaxOwed() > getTax()) {
-                            VillageManager.getInstance().leaveVillage(resident);
-                        } else {
-                            Message.get("tax.cant-pay").tell(player,
-                                    "amount", String.valueOf(resident.getTaxOwed()),
-                                    "nextamount", String.valueOf(resident.getTaxOwed() + getTax()));
-                            paidTaxes.put(resident, (long) 0);
-                        }
+                    OfflinePlayer player = resident.getPlayer();
+                    if (player == null) {
+                        player = Bukkit.getOfflinePlayer(resident.getUUID());
+                    }
+                    if (KingdomsPlugin.getInstance().econ.withdrawPlayer(player, getTax()).transactionSuccess()) {
+                        addToBank(getTax());
+                        totalTax += getTax();
+                        Message.get("tax.removed").tell(resident,
+                                "amount", String.valueOf(getTax()),
+                                "state", getState().getTag(),
+                                "name", getName());
                     } else {
-                        resident.addTaxOwed(getTax());
-                        paidTaxes.put(resident, (long) 0);
+                        Message.get("tax.couldnt-pay").tell(getOnlineResidents(),
+                                "player", resident.getName(),
+                                "amount", String.valueOf(getTax()),
+                                "state", getState().getTag(),
+                                "name", getName()
+                        );
+                        addBanishedResident(resident);
+                        VillageManager.getInstance().leaveVillage(resident);
                     }
                 }
                 long finalTotalTax = totalTax;
                 Utils.runSync(() -> payUpkeep(finalTotalTax));
-                DatabaseManager.getInstance().saveResident(paidTaxes.entrySet().stream()
-                        .filter(e -> e.getValue() != getTax())
-                        .map(Map.Entry::getKey)
-                        .collect(Collectors.toList()));
-                for (Map.Entry<Resident, Long> e : paidTaxes.entrySet()) {
-                    if (e.getValue() > 0) {
-                        DatabaseManager.getInstance().log(this, e.getKey(), "tax", "cash", e.getValue());
-                    }
-                }
+                DatabaseManager.getInstance().log(this, null, "tax", "cash", totalTax);
             });
         } else {
             payUpkeep(0);

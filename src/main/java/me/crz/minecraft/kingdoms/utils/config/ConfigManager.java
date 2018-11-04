@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.utils.config;
 import java.io.IOException;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.utils.IconRpMapping;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.UtilChat;
@@ -20,6 +21,7 @@ public class ConfigManager {
     private ConfigAccessor empirePerksConf;
     private IconRpMapping iconRpMapping;
     private ConfigAccessor cursesConf;
+    private ConfigAccessor lastUpkeepConf;
 
     private ConfigManager() {
         super();
@@ -47,6 +49,9 @@ public class ConfigManager {
         cursesConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "curses.yml");
         cursesConf.saveDefaultConfig();
         cursesConf.reloadConfig();
+        lastUpkeepConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "lastUpkeep.yml");
+        lastUpkeepConf.saveDefaultConfig();
+        lastUpkeepConf.reloadConfig();
         iconRpMapping = new IconRpMapping(KingdomsPlugin.getInstance());
         if (KingdomsPlugin.getInstance().isRunning()) {
             UtilChat.getInstance().load();
@@ -100,5 +105,14 @@ public class ConfigManager {
             instance = new ConfigManager();
         }
         return instance;
+    }
+
+    public void updateLastUpkeep() {
+        lastUpkeepConf.getConfig().set("last-upkeep", System.currentTimeMillis());
+        lastUpkeepConf.saveConfig();
+    }
+
+    public long getLastUpkeep() {
+        return lastUpkeepConf.getConfig().getLong("last-upkeep");
     }
 }

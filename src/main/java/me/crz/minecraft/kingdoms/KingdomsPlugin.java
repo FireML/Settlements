@@ -18,8 +18,6 @@ import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.utils.ThreadManager;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -37,6 +35,7 @@ import net.milkbowl.vault.economy.Economy;
 import me.crz.minecraft.kingdoms.land.LandPerks;
 import me.crz.minecraft.kingdoms.utils.config.Data;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 public class KingdomsPlugin extends JavaPlugin implements Listener {
     private static KingdomsPlugin instance;
@@ -53,16 +52,16 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     public static Chat chat;
     private boolean running = false;
     private String empiresWorldPrefix = "";
-    private Timer upkeepTimer = null;
+    private BukkitTask upkeepTask = null;
 
     @Override
     public void onDisable() {
+        if (upkeepTask != null) {
+            upkeepTask.cancel();
+        }
         if (running) {
             running = false;
             VillageManager.getInstance().saveAll();
-        }
-        if (upkeepTimer != null) {
-            upkeepTimer.cancel();
         }
     }
 
@@ -116,20 +115,25 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     }
 
     private void upkeep() {
-        (upkeepTimer = new Timer()).schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Utils.runSync(() -> {
-                    LandManager.getInstance().checkUnclaim();
-                    for (Village village : VillageManager.getInstance().getVillages()) {
-                        village.doUpkeep();
-                    }
-                    for (Empire empire : EmpireManager.getInstance().getEmpires()) {
-                        empire.doUpkeep();
-                    }
-                });
+        Runnable runnable = () -> {
+            ConfigManager.getInstance().updateLastUpkeep();
+            LandManager.getInstance().checkUnclaim();
+            for (Village village : VillageManager.getInstance().getVillages()) {
+                village.doUpkeep();
             }
-        }, Utils.getNextUpkeep(), TimeUnit.DAYS.toMillis(1));
+            for (Empire empire : EmpireManager.getInstance().getEmpires()) {
+                empire.doUpkeep();
+            }
+        };
+
+        long nextUpkeep = (Utils.getNextUpkeep().getTime() - System.currentTimeMillis()) / 1000;
+        upkeepTask = getServer().getScheduler().runTaskTimer(this, runnable, nextUpkeep * 20, TimeUnit.DAYS.toSeconds(1) * 20);
+
+        // check if the last upkeep should have happened while the server was offline
+        long lastUpkeep = ConfigManager.getInstance().getLastUpkeep();
+        if (lastUpkeep > 0 && lastUpkeep + TimeUnit.DAYS.toMillis(1) < System.currentTimeMillis()) {
+            runnable.run();
+        }
     }
 
     public LandPerks getLandPerks() {

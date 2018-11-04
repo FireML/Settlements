@@ -214,7 +214,6 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "empirerank VARCHAR(255),"
                     + "title INTEGER NOT NULL,"
                     + "bonusClaims INTEGER,"
-                    + "taxOwed BIGINT NOT NULL,"
                     + "lastLogin BIGINT(11) NOT NULL,"
                     + "activeChannel VARCHAR(255) NOT NULL,"
                     + "swear BOOLEAN NOT NULL"
@@ -283,8 +282,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                     + "empireId INTEGER, INDEX(empireId),"
                     + "settlementId INTEGER, INDEX(settlementId),"
-                    + "residentId INTEGER, "
-                    + "FOREIGN KEY (residentId) REFERENCES " + tablePrefix + "residents(id),"
+                    + "residentId INTEGER, INDEX(residentId),"
                     + "`action` VARCHAR(255) NOT NULL,"
                     + "type VARCHAR(255) NOT NULL,"
                     + "amount BIGINT NOT NULL,"
@@ -621,7 +619,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
     @Override
     public void log(Empire empire, Village village, Resident resident, String action, Map<String, Long> values) {
-        if (values.isEmpty() || village.getId().isNull()) {
+        if (values.isEmpty()
+                || (village != null && village.getId().isNull())
+                || (empire != null && empire.getId().isNull())) {
             return;
         }
         Utils.catchSync();
@@ -634,7 +634,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
             for (Map.Entry<String, Long> value : values.entrySet()) {
                 if (value.getValue() != 0) {
                     sta.setInt(1, empire != null ? (Integer) empire.getId().value() : -1);
-                    sta.setInt(2, (Integer) village.getId().value());
+                    sta.setInt(2, village != null ? (Integer) village.getId().value() : -1);
                     sta.setInt(3, resident != null && resident.getId() != null ? (Integer) resident.getId() : -1);
                     sta.setString(4, action.toLowerCase());
                     sta.setString(5, value.getKey().toLowerCase());
@@ -730,10 +730,13 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 if (amount == 0) {
                     continue;
                 }
+                boolean hasPlayer = rs.getString("playerId") != null;
                 VillageRank rank = VillageRank.RESIDENT;
-                try {
-                    rank = VillageRank.valueOf(rs.getString("playerRank").toUpperCase());
-                } catch (IllegalArgumentException ignored) {}
+                if (hasPlayer) {
+                    try {
+                        rank = VillageRank.valueOf(rs.getString("playerRank").toUpperCase());
+                    } catch (IllegalArgumentException ignored) {}
+                }
 
                 Village village = null;
                 int villageId = rs.getInt("empireId");
@@ -750,10 +753,10 @@ public class MySqlDatabaseManager extends DatabaseManager {
                         "village", village != null ? village.getName() : villageId > -1 ? "id:" + villageId : "",
                         "villagestate", village != null ? village.getState().getTag() : villageId > -1 ? "Unknown" : "",
                         "empire", empire != null ? empire.getName() : empireId > -1 ? "id:" + empireId : "",
-                        "name", rs.getString("playerName"),
-                        "uuid", rs.getString("playerId"),
-                        "rank", rank.getTag(village),
-                        "title", rs.getString("playerTitle"),
+                        "name", hasPlayer ? rs.getString("playerName") : "",
+                        "uuid", hasPlayer ? rs.getString("playerId") : "",
+                        "rank", hasPlayer ? rank.getTag(village) : "",
+                        "title", hasPlayer ? rs.getString("playerTitle") : "",
                         "action", rs.getString("action"),
                         "type", rs.getString("type"),
                         "icon", Utils.getIcon(resident, rs.getString("type")),

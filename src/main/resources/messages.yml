@@ -101,11 +101,11 @@ upkeep:
 tax:
   removed: "&eRemoved &c{amount}&e of tax from your {state}'s bank!"
   cant-pay: "&cYou can't pay the tax of &e{amount}&c and will be banished tomorrow if you still can't pay tomorrows amount of &e{nextamount}&c!"
-  couldnt-pay: "&cYou were not able to pay your tax of &e{amount}&c and have been banished from the {state} {name}!"
+  couldnt-pay: "&e{player}&c was not able to pay the tax of &e{amount}&c and has been banished from the {state} {name}!"
 empire-tax:
   cant-pay: "&a&lALERT &7Your settlement is &cunable&7 to pay tomorrows empire tax of &6{amount}&7!"
   removed: "&eRemoved &c{amount}&e of tax from your account!"
-  couldnt-pay: "&cYou were not able to pay your tax of &e{amount}&c and have been removed from the Empire {name}!"
+  couldnt-pay: "&e{state} {settlement}&c was not able to pay the tax of &e{amount}&c and has been banished from the empire!"
 first-to-reach-level: "&6&l{name} &7&l is the first to reach &6&l{state} &7&llevel &6&l{level}"
 land-unclaim: "&e{amount}&7 chunks were automatically unclaimed!"
 village:
@@ -482,7 +482,6 @@ command:
         &a&lSettlement: &f{settlement}
         &a&lRank: &f{title}
         &a&lBalance: &6${balance}
-        &a&lTax owed: &6${taxowed}
         &a&lBonus claims: &f{bonus}
         &a&lJoin Date: &f{joindate}
         &a&lLast Login: &f{lastlogin}
