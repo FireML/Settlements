@@ -18,6 +18,7 @@ import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -31,6 +32,8 @@ import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+
+import java.util.Map;
 
 public class LandFlags extends Base implements LandFlagBase {
     private TitleBuilder tbPvp = new TitleBuilder();
@@ -171,7 +174,7 @@ public class LandFlags extends Base implements LandFlagBase {
         boolean sameVillage = originalLand != null && destinationLand != null && originalLand.getOwnerVillage().equals(destinationLand.getOwnerVillage());
 
         if (!sameVillage && originalLand != null) {
-            Message.get(originalLand.getOwnerVillage().getState().getKey() + ".leave-message").tell(player,
+            MessageUtils.tellAdvanced(player, originalLand.getOwnerVillage().getState().getKey() + ".leave",
                     "name", originalLand.getOwnerVillage().getName(),
                     "state", originalLand.getOwnerVillage().getState().getTag()
             );
@@ -182,44 +185,35 @@ public class LandFlags extends Base implements LandFlagBase {
 
         if (destinationLand != null) {
             if (!sameVillage) {
-                if (destinationLand.getOwnerVillage().isPvp()) {
-                    MessageUtils.tell(player, Message.get(destinationLand.getOwnerVillage().getState().getKey() + ".enter-message")
-                            .getReplacedComponents(ImmutableMap.of(
-                                    "pvp", Message.get("pvp-is-enabled").getComponents(),
-                                    "name", TextComponent.fromLegacyText(destinationLand.getOwnerVillage().getName()),
-                                    "state", TextComponent.fromLegacyText(destinationLand.getOwnerVillage().getState().getTag())
-                            ))
-                    );
-                } else {
-                    Message.get(destinationLand.getOwnerVillage().getState().getKey() + ".enter-message").tell(player,
-                            "pvp", "",
-                            "name", destinationLand.getOwnerVillage().getName(),
-                            "state", destinationLand.getOwnerVillage().getState().getTag()
-                    );
-                }
+                MessageUtils.tellAdvanced(player, destinationLand.getOwnerVillage().getState().getKey() + ".enter",
+                        "pvp", destinationLand.isPvp() ? Message.get("pvp-is-enabled").getText() : "",
+                        "name", destinationLand.getOwnerVillage().getName(),
+                        "state", destinationLand.getOwnerVillage().getState().getTag()
+                );
                 if (destinationLand.getOwnerVillage().equals(playerVillage) && destinationLand.getOwnerVillage().isBuff()) {
                     Base.getLandPerks().giveEffects(player, destinationLand, true);
                 }
             }
-            if (originalLand != null && !originalLand.isPlotOwner(destinationLand.getPlotOwner())) {
-                Utils.runAsync(() -> {
-                    TitleBuilder tb = new TitleBuilder();
-                    StringBuilder actionBar = new StringBuilder();
-                    if (destinationLand.isPlot()) {
-                        actionBar.append(Message.get("enter-plot").getReplacedText(
-                                "owner", ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName(),
-                                "description", destinationLand.getDescription()
-                        ));
-                    }
-                    if (destinationLand.isForSale() && (destinationLand.getOwnerVillage().equals(playerVillage) || destinationLand.isEmbassy())) {
-                        actionBar.append(Message.get("plot-is-for-sale").getReplacedText("amount", Utils.CURRENCY_FORMAT.format(destinationLand.getPrice())));
-                    }
-                    if (destinationLand.isEmbassy()) {
-                        actionBar.append(Message.get("plot-is-embassy").getText());
-                    }
-                    tb.withActionbar(actionBar.toString());
-                    tb.send(player);
-                });
+            if (originalLand == null || !originalLand.isPlotOwner(destinationLand.getPlotOwner())) {
+                if (destinationLand.isPlot()) {
+                    Utils.runAsync(() -> MessageUtils.tellAdvanced(player, "plot.owned",
+                            "name", destinationLand.getOwnerVillage().getName(),
+                            "state", destinationLand.getOwnerVillage().getState().getTag(),
+                            "owner", ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName(),
+                            "description", destinationLand.getDescription(),
+                            "pvp", destinationLand.isPvp() ? Message.get("pvp-is-enabled").getText() : "",
+                            "embassy", destinationLand.isEmbassy() ? Message.get("plot-is-embassy").getText() : ""
+                    ));
+                } else if (destinationLand.isForSale() && (destinationLand.getOwnerVillage().equals(playerVillage) || destinationLand.isEmbassy())) {
+                    MessageUtils.tellAdvanced(player, "plot.for-sale",
+                            "name", destinationLand.getOwnerVillage().getName(),
+                            "state", destinationLand.getOwnerVillage().getState().getTag(),
+                            "description", destinationLand.getDescription(),
+                            "pvp", destinationLand.isPvp() ? Message.get("pvp-is-enabled").getText() : "",
+                            "embassy", destinationLand.isEmbassy() ? Message.get("plot-is-embassy").getText() : "",
+                            "amount", Utils.CURRENCY_FORMAT.format(destinationLand.getPrice())
+                    );
+                }
             }
         }
     }

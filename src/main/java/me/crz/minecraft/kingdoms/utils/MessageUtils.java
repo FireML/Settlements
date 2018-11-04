@@ -161,4 +161,22 @@ public class MessageUtils extends Base {
             tell(player, components);
         }
     }
+
+    public static void tellAdvanced(Player player, String key, ImmutableMap<String, BaseComponent[]> replacements) {
+        tell(player, Message.get(key + ".message"), replacements);
+        new TitleBuilder()
+                .withTitle(TextComponent.toLegacyText(Message.get(key + ".title").getReplacedComponents(replacements)))
+                .withSubtitle(TextComponent.toLegacyText(Message.get(key + ".subtitle").getReplacedComponents(replacements)))
+                .withActionbar(TextComponent.toLegacyText(Message.get(key + ".actionbar").getReplacedComponents(replacements)))
+                .send(player);
+    }
+
+    public static void tellAdvanced(Player player, String key, String... replacements) {
+        tell(player, Message.get(key + ".message"), replacements);
+        new TitleBuilder()
+                .withTitle(Message.get(key + ".title").getText())
+                .withSubtitle(Message.get(key + ".subtitle").getText())
+                .withActionbar(Message.get(key + ".actionbar").getText())
+                .send(player, replacements);
+    }
 }
