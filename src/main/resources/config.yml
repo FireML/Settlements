@@ -42,3 +42,4 @@ only-lock-in-settlement: true
 claim-max-radius: 5
 entries-per-page: 20
 remove-locks-on-unclaim: true
+remove-locked-blocks: false

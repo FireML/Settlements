@@ -156,7 +156,7 @@ public class LWCIntegration extends JavaModule implements ConfigMessages, LandFl
                             + " AND z >= " + claim.getZ() * 16
                             + " AND x < " + claim.getX() * 16 + 16
                             + " AND z < " + claim.getZ() * 16 + 16
-                    , false);
+                    , KingdomsPlugin.getInstance().getConfig().getBoolean("remove-locked-blocks"));
         }
         return amount;
     }
