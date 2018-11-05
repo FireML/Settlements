@@ -43,7 +43,7 @@ public class LWCIntegration extends JavaModule implements ConfigMessages, LandFl
 
         if (resident.hasVillage() && resident.getVillageRank().atLeast(VillageRank.ELDER)) {
             OwnedLand land = LandManager.getInstance().getLand(block.getLocation());
-            if (land.isOwnedBy(resident.getVillage())) {
+            if (land != null && land.isOwnedBy(resident.getVillage())) {
                 event.setAccess(Permission.Access.ADMIN);
                 return;
             }
