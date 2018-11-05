@@ -371,7 +371,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
             }
             if (!village.getId().isNull()) {
                 updateUserList(conn, "settlement_banished", "settlementId", (Integer) village.getId().value(), "banishedId", village.getBanishedResidents());
-                updateAllyList(conn, "settlement_allies", "settlementId", (Integer) village.getId().value(), "banishedId", village.getAllies());
+                updateAllyList(conn, "settlement_allies", "settlementId", (Integer) village.getId().value(), "allyId", village.getAllies());
                 updateDataMap(conn, "settlement_vaults", "settlementId", (Integer) village.getId().value(), "content", "amount", village.getVault());
                 updateDataMap(conn, "settlement_outposts", "settlementId", (Integer) village.getId().value(), "name", "", village.getOutpostHomes());
                 updateDataMap(conn, "settlement_uses", "settlementId", (Integer) village.getId().value(), "type", "state",
