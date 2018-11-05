@@ -191,21 +191,19 @@ public class LandFlags extends Base implements LandFlagBase {
             }
             if (originalLand == null || !originalLand.isPlotOwner(destinationLand.getPlotOwner())) {
                 if (destinationLand.isPlot()) {
-                    Utils.runAsync(() -> MessageUtils.tellAdvanced(player, "plot.owned",
+                    Utils.runAsync(() -> MessageUtils.tellAdvanced(player,  (destinationLand.isEmbassy() ? "embassy" : "plot") + ".owned",
                             "name", destinationLand.getOwnerVillage().getName(),
                             "state", destinationLand.getOwnerVillage().getState().getTag(),
                             "owner", ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName(),
                             "description", destinationLand.getDescription(),
-                            "pvp", destinationLand.isPvp() ? Message.get("pvp-is-enabled").getText() : "",
-                            "embassy", destinationLand.isEmbassy() ? Message.get("plot-is-embassy").getText() : ""
+                            "pvp", destinationLand.isPvp() ? Message.get("pvp-is-enabled").getText() : ""
                     ));
                 } else if (destinationLand.isForSale() && (destinationLand.getOwnerVillage().equals(playerVillage) || destinationLand.isEmbassy())) {
-                    MessageUtils.tellAdvanced(player, "plot.for-sale",
+                    MessageUtils.tellAdvanced(player, (destinationLand.isEmbassy() ? "embassy" : "plot") + ".for-sale",
                             "name", destinationLand.getOwnerVillage().getName(),
                             "state", destinationLand.getOwnerVillage().getState().getTag(),
                             "description", destinationLand.getDescription(),
                             "pvp", destinationLand.isPvp() ? Message.get("pvp-is-enabled").getText() : "",
-                            "embassy", destinationLand.isEmbassy() ? Message.get("plot-is-embassy").getText() : "",
                             "amount", Utils.CURRENCY_FORMAT.format(destinationLand.getPrice())
                     );
                 }

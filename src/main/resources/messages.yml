@@ -147,16 +147,26 @@ kingdom:
 plot:
   owned:
     message: ""
-    actionbar: "&7&lWelcome to&6&l {owner}&7&l’s plot{pvp}{embassy}"
+    actionbar: "&7&lWelcome to&6&l {owner}&7&l’s plot{pvp}"
     title: ""
     subtitle: ""
   for-sale:
     message: "&9&lLand is for sale for ${amount}, type [&e/s plot buy](suggest_command=/s plot buy)&9 to buy it"
-    actionbar: "&9&lLand is for sale for ${amount}{embassy}"
+    actionbar: "&9&lLand is for sale for ${amount}"
+    title: ""
+    subtitle: ""
+embassy:
+  owned:
+    message: ""
+    actionbar: "&7&lWelcome to&6&l {owner}&7&l’s embassy{pvp}"
+    title: ""
+    subtitle: ""
+  for-sale:
+    message: "&9&lEmbassy is for sale for ${amount}, type [&e/s plot buy](suggest_command=/s plot buy)&9 to buy it"
+    actionbar: "&9&lEmbassy is for sale for ${amount}"
     title: ""
     subtitle: ""
 pvp-is-enabled: " - &c&lPvp is enabled!&7&l"
-plot-is-embassy: "- &e&lEmbassy "
 cannot-attack-animals: "&c&lYou cannot attack another village's animals!"
 chat:
   locked: "&c&lChat is currently locked!"
