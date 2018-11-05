@@ -48,7 +48,7 @@ public class UseGui extends KingdomsGUI {
                 public boolean click(Player p, ClickType clickType) {
                     Resident res = ResidentManager.getInstance().getResident(p);
                     if (res.hasVillage() && res.getVillageRank().atLeast(VillageRank.CHIEF)) {
-                        BuildState next = BuildState.next(res.getVillage().getUseState(u));
+                        BuildState next = res.getVillage().getUseState(u).next();
                         res.getVillage().setUseState(u, next);
                         MessageUtils.tell(p, Message.get("command.village.use.success"),
                                 "flag", u.getTag(),

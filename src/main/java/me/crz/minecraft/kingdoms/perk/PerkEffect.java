@@ -78,6 +78,7 @@ public class PerkEffect {
         PLOT,
         PLOT_FRIENDS,
         OWN_SETTLEMENT,
+        TRUSTED_SETTLEMENT,
         ALLIED_SETTLEMENT,
         ENEMY_SETTLEMENT,
         UNCLAIMED,
@@ -91,6 +92,7 @@ public class PerkEffect {
         BUILDER(VillageRank.BUILDER),
         ELDER(VillageRank.ELDER),
         CHIEF(VillageRank.CHIEF),
+        TRUSTED(null),
         ALLIES(null),
         ENEMIES(null),
         FREE(null);

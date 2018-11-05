@@ -39,7 +39,8 @@ public class VillageHomeCommand extends SubCommand {
 
         if (!village.equals(playerVillage)
                 && (village.getAccess() == VillageAccess.PRIVATE
-                || village.getAccess() == VillageAccess.ALLY && (playerVillage == null || !village.getAllies().contains(playerVillage.getId())))) {
+                || village.getAccess() == VillageAccess.ALLY && (playerVillage == null || !village.isAlly(playerVillage)))
+                || village.getAccess() == VillageAccess.TRUSTED && (playerVillage == null || !village.isTrusted(playerVillage))) {
             MessageUtils.tell(player, getMessage("no-access"), "state", village.getState().getTag());
             return true;
         }

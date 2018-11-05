@@ -68,7 +68,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     private boolean explosions = false;
     private boolean mobSpawning = false;
     private boolean buff = true;
-    private VillageAccess access = VillageAccess.ALLY;
+    private VillageAccess access = VillageAccess.TRUSTED;
     private long bank = 0;
     private long joinFee = 0;
     private long tax = 0;
@@ -242,6 +242,10 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
 
     public void removeAlly(Village village) {
         allies.remove(village.getId());
+    }
+
+    public boolean isTrusted(Village village) {
+        return isAlly(village) || (hasEmpire() && getEmpire().isMember(village));
     }
 
     public VillageAccess getAccess() {

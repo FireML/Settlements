@@ -181,6 +181,7 @@ public class VillageMapCommand extends SubCommand implements Listener {
         OWN_OUTPOST,
         OWN_PLOT,
         OWN_PLOT_LINKED,
+        EMPIRE,
         ALLY,
         ENEMY,
         UNCLAIMED,
@@ -297,7 +298,7 @@ public class VillageMapCommand extends SubCommand implements Listener {
                     relation = Relation.OWN_OUTPOST;
                 }
                 if (land.isForSale()) {
-                    symbol = land.isEmbassy() ? Symbol.EMBASSY : Symbol.FOR_SALE;
+                    symbol = Symbol.FOR_SALE;
                 }
                 if (land.isPlot()) {
                     if (land.isPlotOwner(resident)) {
@@ -315,8 +316,14 @@ public class VillageMapCommand extends SubCommand implements Listener {
 
             } else if (resident.hasVillage() && resident.getVillage().isAlly(land.getOwnerVillage())) {
                 relation = Relation.ALLY;
+            } else if (resident.hasEmpire() && resident.getVillage().isTrusted(land.getOwnerVillage())) {
+                relation = Relation.EMPIRE;
             } else {
                 relation = Relation.ENEMY;
+            }
+
+            if (land.isEmbassy()) {
+                symbol = Symbol.EMBASSY;
             }
 
             ComponentBuilder hover = new ComponentBuilder(land.getOwnerVillage().getName());

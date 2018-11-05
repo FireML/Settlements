@@ -2,13 +2,15 @@ package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.utils.NameTag;
+import me.crz.minecraft.kingdoms.utils.Next;
 import org.bukkit.Material;
 
-public enum BuildState implements NameTag {
+public enum BuildState implements NameTag, Next<BuildState> {
     RESIDENTS(Material.YELLOW_WOOL),
     OFFICERS(Material.LIGHT_BLUE_WOOL),
-    ALLY(Material.WHITE_WOOL),
-    PUBLIC(Material.LIME_WOOL);
+    ALLY(Material.CYAN_WOOL),
+    TRUSTED(Material.BLUE_WOOL),
+    PUBLIC(Material.WHITE_WOOL);
 
     private final Material icon;
 
@@ -16,14 +18,12 @@ public enum BuildState implements NameTag {
         this.icon = icon;
     }
 
-    public static BuildState next(final BuildState current) {
-        if (current.ordinal() + 1 >= values().length) {
-            return values()[0];
-        }
-        return values()[current.ordinal() + 1];
-    }
-
     public CItem getItem() {
         return new CItem(icon).hideAllFlags(true);
+    }
+
+    @Override
+    public BuildState[] getValues() {
+        return BuildState.values();
     }
 }

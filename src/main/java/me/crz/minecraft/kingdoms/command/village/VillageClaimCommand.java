@@ -111,7 +111,7 @@ public class VillageClaimCommand extends VillageSubCommand {
                 if (checkLand == null) {
                     continue;
                 }
-                if (!checkLand.getOwnerVillage().equals(village) && !checkLand.getOwnerVillage().isAlly(village)) {
+                if (!checkLand.getOwnerVillage().equals(village) && !checkLand.getOwnerVillage().isTrusted(village)) {
                     if (toClaim.size() == 1) {
                         res.tell(getError("claim-too-close"),
                                 "owner", checkLand.getOwnerVillage().getName(),

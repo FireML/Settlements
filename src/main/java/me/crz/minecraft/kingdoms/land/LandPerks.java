@@ -112,7 +112,12 @@ public class LandPerks {
                             }
                             break;
                         case ENEMY_SETTLEMENT:
-                            if (land.getOwnerVillage().isAlly(resident.getVillage())) {
+                            if (land.getOwnerVillage().isTrusted(resident.getVillage())) {
+                                continue;
+                            }
+                            break;
+                        case TRUSTED_SETTLEMENT:
+                            if (!land.getOwnerVillage().isTrusted(resident.getVillage())) {
                                 continue;
                             }
                             break;
@@ -131,6 +136,10 @@ public class LandPerks {
                         }
                     } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.ALLIES) {
                         if (!land.getOwnerVillage().isAlly(resident.getVillage())) {
+                            continue;
+                        }
+                    } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.TRUSTED) {
+                        if (!land.getOwnerVillage().isTrusted(resident.getVillage())) {
                             continue;
                         }
                     }
@@ -203,12 +212,17 @@ public class LandPerks {
                             }
                             break;
                         case ENEMY_SETTLEMENT:
-                            if (land.isOwnedBy(resident.getVillage()) || land.getOwnerVillage().isAlly(resident.getVillage())) {
+                            if (land.isOwnedBy(resident.getVillage()) || land.getOwnerVillage().isTrusted(resident.getVillage())) {
                                 continue;
                             }
                             break;
                         case ALLIED_SETTLEMENT:
                             if (!land.isOwnedBy(resident.getVillage()) && !land.getOwnerVillage().isAlly(resident.getVillage())) {
+                                continue;
+                            }
+                            break;
+                        case TRUSTED_SETTLEMENT:
+                            if (!land.isOwnedBy(resident.getVillage()) && !land.getOwnerVillage().isTrusted(resident.getVillage())) {
                                 continue;
                             }
                             break;
@@ -219,6 +233,10 @@ public class LandPerks {
                         }
                     } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.ALLIES) {
                         if (!land.isOwnedBy(resident.getVillage()) && !land.getOwnerVillage().isAlly(resident.getVillage())) {
+                            continue;
+                        }
+                    } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.TRUSTED) {
+                        if (!land.isOwnedBy(resident.getVillage()) && !land.getOwnerVillage().isTrusted(resident.getVillage())) {
                             continue;
                         }
                     }

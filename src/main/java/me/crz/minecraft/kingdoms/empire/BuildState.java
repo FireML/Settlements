@@ -2,12 +2,13 @@ package me.crz.minecraft.kingdoms.empire;
 
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.utils.NameTag;
+import me.crz.minecraft.kingdoms.utils.Next;
 import org.bukkit.Material;
 
-public enum BuildState implements NameTag {
-    PRIVATE(Material.LIGHT_BLUE_WOOL),
-    ALLY(Material.WHITE_WOOL),
-    PUBLIC(Material.LIME_WOOL);
+public enum BuildState implements NameTag, Next<BuildState> {
+    PRIVATE(Material.BLUE_WOOL),
+    ALLY(Material.CYAN_WOOL),
+    PUBLIC(Material.WHITE_WOOL);
 
     private final Material icon;
 
@@ -15,14 +16,12 @@ public enum BuildState implements NameTag {
         this.icon = icon;
     }
 
-    public static BuildState next(BuildState current) {
-        if (current.ordinal() + 1 >= values().length) {
-            return values()[0];
-        }
-        return values()[current.ordinal() + 1];
-    }
-
     public CItem getItem() {
         return new CItem(icon).hideAllFlags(true);
+    }
+
+    @Override
+    public BuildState[] getValues() {
+        return BuildState.values();
     }
 }

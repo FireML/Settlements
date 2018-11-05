@@ -7,5 +7,6 @@ public enum VillageAccess implements NameTag, Rankable {
     OPEN,
     PUBLIC,
     ALLY,
+    TRUSTED,
     PRIVATE;
 }

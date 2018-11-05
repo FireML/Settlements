@@ -47,7 +47,7 @@ public class UseGui extends PlotGUI {
                         Resident resident = ResidentManager.getInstance().getResident(p);
                         boolean canAdmin = resident.hasVillage() && land.isOwnedBy(resident.getVillage()) && resident.getVillageRank().atLeast(VillageRank.ELDER);
                         if (land.isPlotOwner(p) || canAdmin) {
-                            PlotBuildState next = PlotBuildState.next(land.getUseState(u));
+                            PlotBuildState next = land.getUseState(u).next();
                             land.setUseState(u, next);
                             MessageUtils.tell(p, Message.get("command.village.plot.use.success"),
                                     "flag", u.getTag(),

@@ -3,6 +3,7 @@ color:
   own-outpost: DARK_GREEN
   own-plot: YELLOW
   own-plot-linked: GOLD
+  empire: DARK_AQUA
   ally: AQUA
   enemy: RED
   unclaimed: GRAY

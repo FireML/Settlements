@@ -49,7 +49,7 @@ public class OutpostClaimCommand extends VillageSubCommand {
                 if (checkLand == null) {
                     continue;
                 }
-                if (!checkLand.isOwnedBy(resident.getVillage()) && !checkLand.getOwnerVillage().isAlly(resident.getVillage())) {
+                if (!checkLand.isOwnedBy(resident.getVillage()) && !checkLand.getOwnerVillage().isTrusted(resident.getVillage())) {
                     resident.tell(getError("claim-too-close"), "owner", checkLand.getOwnerVillage().getName());
                     return true;
                 }

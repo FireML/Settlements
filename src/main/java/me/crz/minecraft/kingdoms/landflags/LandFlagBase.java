@@ -90,6 +90,10 @@ public interface LandFlagBase extends ConfigMessages {
                 res = ResidentManager.getInstance().getResident(building);
                 allowed = res.hasVillage() && land.getOwnerVillage().isAlly(res.getVillage());
                 break;
+            case TRUSTED:
+                res = ResidentManager.getInstance().getResident(building);
+                allowed = res.hasVillage() && land.getOwnerVillage().isTrusted(res.getVillage());
+                break;
             case OFFICERS:
                 res = ResidentManager.getInstance().getResident(building);
                 allowed = land.getOwnerVillage().equals(res.getVillage()) && res.getVillageRank().atLeast(VillageRank.BUILDER);
@@ -124,6 +128,10 @@ public interface LandFlagBase extends ConfigMessages {
         switch (state) {
             case PUBLIC:
                 return new Pair<>(true, "");
+            case TRUSTED:
+                res = ResidentManager.getInstance().getResident(building);
+                allowed = res.hasVillage() && village.isTrusted(res.getVillage());
+                break;
             case ALLY:
                 res = ResidentManager.getInstance().getResident(building);
                 allowed = res.hasVillage() && village.isAlly(res.getVillage());

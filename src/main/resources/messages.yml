@@ -275,6 +275,7 @@ gui:
     access:
       open: Allows everyone to join without an invitation
       public: Everyone can tp to home but requires invite to join
+      trusted: Allows allies and fellow empire members to teleport to home
       ally: Allows allies to teleport to home
       private: Allows only members to teleport to home
   build:
@@ -660,6 +661,7 @@ command:
         &r &ae &6= embassy
         &r &aH &6= home
         &r &2o &6= outpost
+        &r &3- &6= empire
         &r &b- &6= ally
         &r &c- &6= other
         &r &7- &6= unclaimed
@@ -715,6 +717,7 @@ command:
           officers: only officers are allowed to build in claimed land
           public: allows everyone to build in your claimed land
           ally: allows your allies to build in your claimed land
+          trusted: allows your allies and fellow empire members to build
           private: allows you to build in your claimed land
           friends: allows your friends to build in your claimed land
         description: Sets the build mode of a plot
