@@ -27,7 +27,8 @@ max-empire-size: 20
 # got into a world they shouldn't be in
 spawn-command: "spawn {player}"
 empires-world:
-  prefix: "empire"
+  prefix: ""
+  suffix: "_Domain"
 #  generator: "generatorname"
 #  generator-settings: "settings"
 #  seed: ""

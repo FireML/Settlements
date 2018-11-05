@@ -419,7 +419,7 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
     }
 
     public String getWorldName() {
-        return KingdomsPlugin.getInstance().getEmpiresWorldPrefix() + getName();
+        return KingdomsPlugin.getInstance().getEmpiresWorldPrefix() + getName() + KingdomsPlugin.getInstance().getEmpiresWorldSuffix();
     }
 
     public boolean isMember(Village village) {

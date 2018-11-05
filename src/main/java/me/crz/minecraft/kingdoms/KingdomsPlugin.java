@@ -52,6 +52,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     public static Chat chat;
     private boolean running = false;
     private String empiresWorldPrefix = "";
+    private String empiresWorldSuffix = "";
     private BukkitTask upkeepTask = null;
 
     @Override
@@ -88,6 +89,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         if (data.load(this.getDataFolder())) {
             ConfigManager.getInstance();
             empiresWorldPrefix = getConfig().getString("empires-world.prefix");
+            empiresWorldSuffix = getConfig().getString("empires-world.suffix");
             try {
                 DatabaseManager.getInstance().connect();
             } catch (Exception e) {
@@ -202,6 +204,10 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     public String getEmpiresWorldPrefix() {
         return empiresWorldPrefix;
+    }
+
+    public String getEmpiresWorldSuffix() {
+        return empiresWorldSuffix;
     }
 
     public LWCIntegration getLWCIntegration() {

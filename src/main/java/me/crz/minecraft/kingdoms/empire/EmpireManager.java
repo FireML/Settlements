@@ -11,7 +11,6 @@ import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.vault.Levels;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -212,8 +211,12 @@ public class EmpireManager {
     }
 
     public Empire getEmpireFromWorld(World world) {
-        if (world.getName().startsWith(KingdomsPlugin.getInstance().getEmpiresWorldPrefix())) {
-            return getEmpireFromName(world.getName().substring(0, KingdomsPlugin.getInstance().getEmpiresWorldPrefix().length()));
+        if (world.getName().startsWith(KingdomsPlugin.getInstance().getEmpiresWorldPrefix())
+                && world.getName().endsWith(KingdomsPlugin.getInstance().getEmpiresWorldSuffix())) {
+            return getEmpireFromName(world.getName().substring(
+                    KingdomsPlugin.getInstance().getEmpiresWorldPrefix().length(),
+                    world.getName().length() - KingdomsPlugin.getInstance().getEmpiresWorldSuffix().length()
+            ));
         }
         return null;
     }
