@@ -52,12 +52,12 @@ waiting:
   message: ""
 banished:
   move:
-    message: ""
+    message: "&cYou're banished from the {state} {name}!"
     actionbar: ""
     title: "&cTurn Around"
     subtitle: "&cYou're banished from the {state} {name}!"
   teleport:
-    message: ""
+    message: "&cYou're banished from the {state} {name}!"
     actionbar: ""
     title: "&cCan't teleport"
     subtitle: "&cYou're banished from the {state} {name}!"
