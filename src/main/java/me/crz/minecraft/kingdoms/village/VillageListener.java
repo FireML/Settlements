@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.teleporter.TeleportersGUI;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -62,7 +63,7 @@ public class VillageListener implements Listener {
             }
         }
         if (res.hasVillage()) {
-            if (!KingdomsPlugin.getInstance().econ.has(event.getPlayer(), res.getVillage().getTax())) {
+            if (res.getVillageRank().below(VillageRank.CHIEF) && !KingdomsPlugin.getInstance().econ.has(event.getPlayer(), res.getVillage().getTax())) {
                 MessageUtils.tell(event.getPlayer(), Message.get("tax.cant-pay"), "amount", String.valueOf(res.getVillage().getTax()));
             }
             long upkeep = res.getVillage().getUpkeep();
