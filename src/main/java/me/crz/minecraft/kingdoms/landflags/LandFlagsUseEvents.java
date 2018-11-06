@@ -133,7 +133,7 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
             if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
                 use = Use.getByMaterial(e.getClickedBlock().getType());
             }
-            if (use != Use.INTERACT) {
+            if (use != null && use != Use.INTERACT) {
                 Pair<Boolean, String> response = this.canUse(e.getPlayer(), use, e.getClickedBlock().getLocation());
                 if (!response.getLeft()) {
                     if (use != Use.PRESSURE_PLATE) {

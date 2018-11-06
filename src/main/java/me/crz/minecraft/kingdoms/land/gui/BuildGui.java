@@ -36,7 +36,6 @@ public class BuildGui extends PlotGUI {
                             return new CItem(Material.LIME_WOOL)
                                     .setName(getMessage("selected-state").getReplacedText("state", state.getTag()))
                                     .setLore(getMessage("selected-state").getReplacedTextList("state", state.getTag()).stream().skip(1).collect(Collectors.toList()))
-                                    .glow(true)
                                     .build();
                         }
                         return new CItem(Material.LIGHT_GRAY_WOOL)

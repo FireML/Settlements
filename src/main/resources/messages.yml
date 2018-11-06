@@ -265,15 +265,17 @@ protection:
   only-in-village: "&c&lYou can only lock things in a settlement claim!"
   state:
     use:
-      residents: "&e&lALERT &r&7This land is owned by &e{village}&7."
+      residents: "&e&lALERT &r&7This land is owned by &e{state} {name}&7."
       officers: "&e&lALERT &r&7This land is in &eofficer only &7mode."
-      ally: "&e&lALERT &r&7You are not allied to &e{village}&7."
+      trusted: "&e&lALERT &r&7You are not allied to or in the same empire as &e{state} {name}&7."
+      ally: "&e&lALERT &r&7You are not allied to &e{state} {name}&7."
       private: "&e&lALERT &r&7Only the &ePlot owner&7 can interact here."
       friends: "&e&lALERT &r&7Only the &ePlot owner's friends&7 can interact here."
     build:
-      residents: "&e&lALERT &r&7This land is owned by &e{village}&7."
+      residents: "&e&lALERT &r&7This land is owned by &e{state} {name}&7."
       officers: "&e&lALERT &r&7This land is in &eofficer only &7mode."
-      ally: "&e&lALERT &r&7You are not allied to &e{village}&7."
+      trusted: "&e&lALERT &r&7You are not allied to or in the same empire as &e{state} {name}&7."
+      ally: "&e&lALERT &r&7You are not allied to &e{state} {name}&7."
       private: "&e&lALERT &r&7Only the &ePlot owner&7 can build here."
       friends: "&e&lALERT &r&7Only the &ePlot owner's friends&7 can build here."
 gui:

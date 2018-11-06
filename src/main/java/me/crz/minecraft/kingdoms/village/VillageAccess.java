@@ -6,7 +6,7 @@ import me.crz.minecraft.kingdoms.rank.Rankable;
 public enum VillageAccess implements NameTag, Rankable {
     OPEN,
     PUBLIC,
-    ALLY,
     TRUSTED,
+    ALLY,
     PRIVATE;
 }

@@ -113,7 +113,7 @@ public interface LandFlagBase extends ConfigMessages {
         }
         return new Pair<>(false, getMessage("state." + type + "." + state.getKey()).getReplacedText(
                 "owner", owner != null ? owner.getName() : land.getPlotOwner().toString(),
-                "village", land.getOwnerVillage().getName(),
+                "name", land.getOwnerVillage().getName(),
                 "state", land.getOwnerVillage().getState().getTag()
         ));
     }
@@ -151,7 +151,7 @@ public interface LandFlagBase extends ConfigMessages {
             return new Pair<>(true, "");
         }
         return new Pair<>(false, getMessage("state." + type + "." + state.getKey()).getReplacedText(
-                "village", village.getName(),
+                "name", village.getName(),
                 "state", village.getState().getTag()
         ));
     }
