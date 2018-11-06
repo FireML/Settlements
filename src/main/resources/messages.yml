@@ -538,6 +538,8 @@ command:
       request-send: "&7&lAlly request sent to &r&6&l{name}"
       description: Ally another village
     banish:
+      cant-banish-yourself: "&cYou can't banish yourself!"
+      cant-banish: "&cYou can't banish &f{title} &f{name}!"
       banished: "&7Player &6{player}&7 has been &cbanished &7from your settlement!"
       description: Add a player to the banish list
     banished:

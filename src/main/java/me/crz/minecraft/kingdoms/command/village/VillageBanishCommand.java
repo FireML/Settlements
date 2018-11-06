@@ -24,10 +24,17 @@ public class VillageBanishCommand extends VillageSubCommand {
         if (args.length < 1) {
             return false;
         }
+        if (resident.getName().equalsIgnoreCase(args[0])) {
+            resident.tell(getError("cant-banish-yourself"));
+            return true;
+        }
         Utils.runAsync(() -> {
             Resident res = ResidentManager.getInstance().getResident(args[0]);
             if (res == null) {
                 resident.tell(getError("player-not-found"), "name", args[0]);
+                return;
+            } else if (res.getVillageRank().atLeast(resident.getVillageRank())) {
+                resident.tell(getError("cant-banish"), "name", res.getName(), "title", res.getTitle());
                 return;
             }
             resident.getVillage().addBanishedResident(res);
