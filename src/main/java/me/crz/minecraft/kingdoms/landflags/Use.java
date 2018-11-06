@@ -41,13 +41,15 @@ public enum Use implements NameTag {
     BECON(Material.BEACON),
     BREWING_STAND(Material.BREWING_STAND),
     FISH(Material.FISHING_ROD),
-    ITEM(Material.IRON_INGOT, Collections.EMPTY_SET),
+    ITEM(BuildState.PUBLIC, Material.IRON_INGOT, Collections.EMPTY_SET),
     REPEATERS(Material.REPEATER, Material.COMPARATOR),
     CAKE(Material.CAKE),
     INTERACT(Material.BARRIER, Collections.EMPTY_SET);
 
     private final Collection<Material> materials;
     private final Material icon;
+
+    private final BuildState defaultState;
 
     private static final Map<Material, Use> BY_MATERIAL = new EnumMap<>(Material.class);
 
@@ -68,6 +70,11 @@ public enum Use implements NameTag {
     }
 
     Use(Material icon, Collection<Material> materials) {
+        this(BuildState.RESIDENTS, icon, materials);
+    }
+
+    Use(BuildState defaultState, Material icon, Collection<Material> materials) {
+        this.defaultState = defaultState;
         this.icon = icon;
         this.materials = materials;
     }
@@ -82,5 +89,9 @@ public enum Use implements NameTag {
 
     public static Use getByMaterial(Material material) {
         return BY_MATERIAL.get(material);
+    }
+
+    public BuildState getDefault() {
+        return defaultState;
     }
 }

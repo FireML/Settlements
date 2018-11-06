@@ -6,10 +6,10 @@ import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.landflags.PlotBuildState;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.Material;
@@ -26,7 +26,7 @@ public class BuildGui extends PlotGUI {
     public BuildGui() {
         super("plot.build");
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
-        for (PlotBuildState state : PlotBuildState.values()) {
+        for (BuildState state : BuildState.values(BuildState.AppliesTo.LAND)) {
             gui.addItem(new ClickableItem() {
                 @Override
                 public ItemStack getItem(Player p) {

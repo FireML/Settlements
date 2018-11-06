@@ -6,7 +6,7 @@ import me.crz.minecraft.kingdoms.village.gui.BuildGui;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.BuildState;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
@@ -24,13 +24,13 @@ public class VillageBuildCommand extends VillageSubCommand {
         }
 
         try {
-            BuildState newState = BuildState.valueOf(args[0].toUpperCase());
+            BuildState newState = BuildState.valueOf(args[0].toUpperCase(), BuildState.AppliesTo.SETTLEMENT);
             res.getVillage().setBuildState(newState);
             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
             res.tell(getMessage("success"), "state", newState.getTag());
         } catch (IllegalArgumentException e) {
             res.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base));
-            for (BuildState state : BuildState.values()) {
+            for (BuildState state : BuildState.values(BuildState.AppliesTo.SETTLEMENT)) {
                 res.tell(getMessage("usage.entry"),
                         "usage", getUsage(base).replace("<state>", state.name().toLowerCase()),
                         "description", getMessage("states." + state.getKey()).getText()

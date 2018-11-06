@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.land;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -30,7 +31,6 @@ import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import me.crz.minecraft.kingdoms.landflags.Use;
-import me.crz.minecraft.kingdoms.landflags.PlotBuildState;
 
 public class OwnedLand implements ConfigurationSerializable {
     private IdObject id;
@@ -47,8 +47,8 @@ public class OwnedLand implements ConfigurationSerializable {
     private boolean buff = true;
     private String outpost = null;
     private String description = "";
-    private PlotBuildState buildState = PlotBuildState.RESIDENTS;
-    private EnumMap<Use, PlotBuildState> use = new EnumMap<>(Use.class);
+    private BuildState buildState = BuildState.PRIVATE;
+    private EnumMap<Use, BuildState> use = new EnumMap<>(Use.class);
     private boolean embassy;
     private UUID link;
 
@@ -64,23 +64,27 @@ public class OwnedLand implements ConfigurationSerializable {
         this.price = price;
     }
 
-    public PlotBuildState getUseState(Use u) {
-        return use.getOrDefault(u, PlotBuildState.RESIDENTS);
+    public BuildState getUseState(Use u) {
+        return use.getOrDefault(u, u.getDefault());
     }
 
-    public void setUseState(Use u, PlotBuildState state) {
-        use.put(u, state);
+    public void setUseState(Use u, BuildState state) {
+        if (state == u.getDefault()) {
+            use.remove(u);
+        } else {
+            use.put(u, state);
+        }
     }
 
-    public Map<Use, PlotBuildState> getUseStates() {
+    public Map<Use, BuildState> getUseStates() {
         return use;
     }
 
-    public PlotBuildState getBuildState() {
+    public BuildState getBuildState() {
         return buildState;
     }
 
-    public void setBuildState(PlotBuildState state) {
+    public void setBuildState(BuildState state) {
         buildState = state;
     }
 
@@ -412,7 +416,7 @@ public class OwnedLand implements ConfigurationSerializable {
         land.setExplosions((Boolean) map.get("explosions"));
         land.setMobSpawning((Boolean) map.get("mobSpawning"));
         land.setBuff((Boolean) map.get("buff"));
-        land.setBuildState(Utils.parseEnum((String) map.get("buildState"), PlotBuildState.RESIDENTS));
+        land.setBuildState(Utils.parseEnum((String) map.get("buildState"), BuildState.PRIVATE));
 
         if (map.get("link") != null && !((String) map.get("link")).isEmpty()) {
             land.setLink(UUID.fromString((String) map.get("link")));
@@ -421,7 +425,7 @@ public class OwnedLand implements ConfigurationSerializable {
         Map<String, Object> uses = (Map<String, Object>) map.get("uses");
         for (Use u : Use.values()) {
             if (uses.containsKey(u.name())) {
-                land.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), PlotBuildState.RESIDENTS));
+                land.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), BuildState.PRIVATE));
             }
         }
         for (NamedLocation o : land.getOwnerVillage().getOutpostHomes().values()) {

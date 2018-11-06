@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.landflags.PlotBuildState;
 import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import org.bukkit.Location;
@@ -219,9 +219,9 @@ public class LandManager {
         }
         land.removeLink();
         land.setPlotOwner(owner);
-        land.setBuildState(PlotBuildState.PRIVATE);
+        land.setBuildState(BuildState.PRIVATE);
         for (Use use : Use.values()) {
-            land.setUseState(use, PlotBuildState.PRIVATE);
+            land.setUseState(use, BuildState.PRIVATE);
         }
         if (owner != null) {
             playerPlots.put(owner, land.getLocation());

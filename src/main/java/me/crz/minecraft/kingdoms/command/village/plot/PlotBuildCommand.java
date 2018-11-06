@@ -6,12 +6,11 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.gui.BuildGui;
-import me.crz.minecraft.kingdoms.landflags.PlotBuildState;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.VillageState;
 
 public class PlotBuildCommand extends ResidentSubCommand {
     public PlotBuildCommand(VillagePlotCommand parent) {
@@ -31,13 +30,13 @@ public class PlotBuildCommand extends ResidentSubCommand {
             getError("not-your-plot").tell(res);
         } else {
             try {
-                PlotBuildState newState = PlotBuildState.valueOf(args[0].toUpperCase());
+                BuildState newState = BuildState.valueOf(args[0].toUpperCase(), BuildState.AppliesTo.LAND);
                 land.setBuildState(newState);
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
                 res.tell(getMessage("success"), "state", newState.getTag());
             } catch (IllegalArgumentException e) {
                 res.tell(Message.get("usage.head"), "name", "Plot Build");
-                for (PlotBuildState state : PlotBuildState.values()) {
+                for (BuildState state : BuildState.values(BuildState.AppliesTo.LAND)) {
                     res.tell(Message.get("usage.entry"),
                             "usage", getUsage(base).replace("<state>", state.name().toLowerCase()),
                             "description", getMessage("states." + state.getKey()).getText()

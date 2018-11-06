@@ -4,14 +4,14 @@ package me.crz.minecraft.kingdoms.rank;
  * Classes (most often enums) that are able to be ranked.
  * When used with enums the methods correspond with the line placement of the enum constants.
  */
-public interface Rankable {
+public interface Rankable<T extends Rankable> {
 
     /**
      * Check if this rankable is at equal or higher than another one
      * @param rankable What to compare this rankable to
      * @return Whether or not the ordinal of this one is equal or below the other one
      */
-    default boolean atLeast(Rankable rankable) {
+    default <T extends Rankable> boolean atLeast(T rankable) {
         return rankable == null || rankable.ordinal() >= this.ordinal();
     }
 
@@ -20,7 +20,7 @@ public interface Rankable {
      * @param rankable What to compare this rankable to
      * @return Whether or not the ordinal of this one is below the other one
      */
-    default boolean above(Rankable rankable) {
+    default <T extends Rankable> boolean above(T rankable) {
         return rankable == null || rankable.ordinal() > this.ordinal();
     }
 
@@ -29,7 +29,7 @@ public interface Rankable {
      * @param rankable What to compare this rankable to
      * @return Whether or not the ordinal of this one is above the other one
      */
-    default boolean below(Rankable rankable) {
+    default <T extends Rankable> boolean below(T rankable) {
         return rankable != null && rankable.ordinal() < this.ordinal();
     }
 

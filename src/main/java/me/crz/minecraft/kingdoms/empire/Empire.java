@@ -10,11 +10,11 @@ import me.crz.minecraft.kingdoms.utils.BonusClaimsHolder;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.utils.config.Data;
 import me.crz.minecraft.kingdoms.vault.Levels;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -435,13 +435,14 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
     }
 
     public boolean canAccess(Resident resident) {
-        switch (getBuildState()) {
-            case PRIVATE:
-                return isMember(resident.getVillage());
-            case ALLY:
-                return isAlly(resident.getVillage());
-            case PUBLIC:
-                return true;
+        if (getBuildState().atLeast(BuildState.PRIVATE)) {
+            return isMember(resident.getVillage());
+        }
+        if (getBuildState().atLeast(BuildState.ALLY)) {
+            return isAlly(resident.getVillage());
+        }
+        if (getBuildState().atLeast(BuildState.PUBLIC)) {
+            return true;
         }
         return false;
     }

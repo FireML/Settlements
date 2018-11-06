@@ -3,25 +3,17 @@ package me.crz.minecraft.kingdoms.landflags;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Entity;
-import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.village.BuildState;
-import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.utils.Pair;
+import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import me.crz.minecraft.kingdoms.utils.TitleBuilder;
-import me.crz.minecraft.kingdoms.Base;
-
-import java.util.UUID;
 
 public interface LandFlagBase extends ConfigMessages {
 
@@ -67,47 +59,46 @@ public interface LandFlagBase extends ConfigMessages {
         return new Pair<>(true, "&cUnknown");
     }
 
-    default Pair<Boolean, String> getCanBuild(Player building, OwnedLand land, PlotBuildState state, String type) {
+    default Pair<Boolean, String> getCanBuild(Player building, OwnedLand land, BuildState state, String type) {
         if (!land.isPlot()) {
             return null;
         }
         if (land.isPlotOwner(building) || land.getOwnerVillage().isChief(building)) {
             return new Pair<>(true, "");
         }
-
-        Resident res;
-        Resident owner = null;
-        boolean allowed = false;
-        switch (state) {
-            case PUBLIC:
-                allowed = true;
-                break;
-            case FRIENDS:
-                owner = ResidentManager.getInstance().getResident(land.getPlotOwner());
-                allowed = owner.getFriends().contains(building.getUniqueId());
-                break;
-            case ALLY:
-                res = ResidentManager.getInstance().getResident(building);
-                allowed = res.hasVillage() && land.getOwnerVillage().isAlly(res.getVillage());
-                break;
-            case TRUSTED:
-                res = ResidentManager.getInstance().getResident(building);
-                allowed = res.hasVillage() && land.getOwnerVillage().isTrusted(res.getVillage());
-                break;
-            case OFFICERS:
-                res = ResidentManager.getInstance().getResident(building);
-                allowed = land.getOwnerVillage().equals(res.getVillage()) && res.getVillageRank().atLeast(VillageRank.BUILDER);
-                break;
-            case RESIDENTS:
-                res = ResidentManager.getInstance().getResident(building);
-                allowed = land.getOwnerVillage().equals(res.getVillage());
-                break;
-            case PRIVATE:
-                allowed = land.isPlotOwner(building);
-                break;
-            default:
-                return null;
+        if (!state.appliesTo(BuildState.AppliesTo.LAND)) {
+            state = BuildState.PRIVATE;
         }
+
+        Resident owner = null;
+        boolean allowed;
+        if (state.atLeast(BuildState.PRIVATE)) {
+            allowed = land.isPlotOwner(building);
+
+        } else if (state.atLeast(BuildState.FRIENDS)) {
+            owner = ResidentManager.getInstance().getResident(land.getPlotOwner());
+            allowed = owner.getFriends().contains(building.getUniqueId());
+
+        } else if (state.atLeast(BuildState.OFFICERS)) {
+            Resident res = ResidentManager.getInstance().getResident(building);
+            allowed = land.getOwnerVillage().equals(res.getVillage()) && res.getVillageRank().atLeast(VillageRank.BUILDER);
+
+        } else if (state.atLeast(BuildState.RESIDENTS)) {
+            allowed = land.getOwnerVillage().equals(VillageManager.getInstance().getVillageFromPlayer(building));
+
+        } else if (state.atLeast(BuildState.ALLY)) {
+            allowed = land.getOwnerVillage().isAlly(VillageManager.getInstance().getVillageFromPlayer(building));
+
+        } else if (state.atLeast(BuildState.TRUSTED)) {
+            allowed = land.getOwnerVillage().isTrusted(VillageManager.getInstance().getVillageFromPlayer(building));
+
+        }  else if (state.atLeast(BuildState.PUBLIC)) {
+            allowed = true;
+
+        } else {
+            return null;
+        }
+
         if (allowed) {
             return new Pair<>(true, "");
         }
@@ -123,30 +114,31 @@ public interface LandFlagBase extends ConfigMessages {
             return new Pair<>(true, "");
         }
 
-        Resident res;
-        boolean allowed = false;
-        switch (state) {
-            case PUBLIC:
-                return new Pair<>(true, "");
-            case TRUSTED:
-                res = ResidentManager.getInstance().getResident(building);
-                allowed = res.hasVillage() && village.isTrusted(res.getVillage());
-                break;
-            case ALLY:
-                res = ResidentManager.getInstance().getResident(building);
-                allowed = res.hasVillage() && village.isAlly(res.getVillage());
-                break;
-            case OFFICERS:
-                res = ResidentManager.getInstance().getResident(building);
-                allowed = village.equals(res.getVillage()) && res.getVillageRank().atLeast(VillageRank.BUILDER);
-                break;
-            case RESIDENTS:
-                res = ResidentManager.getInstance().getResident(building);
-                allowed = village.equals(res.getVillage());
-                break;
-            default:
-                return null;
+        if (!state.appliesTo(BuildState.AppliesTo.SETTLEMENT)) {
+            state = BuildState.RESIDENTS;
         }
+        boolean allowed;
+
+        if (state.atLeast(BuildState.OFFICERS)) {
+            Resident res = ResidentManager.getInstance().getResident(building);
+            allowed = village.equals(res.getVillage()) && res.getVillageRank().atLeast(VillageRank.BUILDER);
+
+        } else if (state.atLeast(BuildState.RESIDENTS)) {
+            allowed = village.equals(VillageManager.getInstance().getVillageFromPlayer(building));
+
+        } else if (state.atLeast(BuildState.ALLY)) {
+            allowed = village.isAlly(VillageManager.getInstance().getVillageFromPlayer(building));
+
+        } else if (state.atLeast(BuildState.TRUSTED)) {
+            allowed = village.isTrusted(VillageManager.getInstance().getVillageFromPlayer(building));
+
+        } else if (state.atLeast(BuildState.PUBLIC)) {
+            allowed = true;
+
+        } else {
+            return null;
+        }
+
         if (allowed) {
             return new Pair<>(true, "");
         }

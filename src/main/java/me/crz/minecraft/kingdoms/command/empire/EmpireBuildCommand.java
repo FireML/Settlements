@@ -6,7 +6,7 @@ import me.crz.minecraft.kingdoms.empire.gui.BuildGui;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.empire.BuildState;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 public class EmpireBuildCommand extends EmpireSubCommand {
@@ -23,13 +23,13 @@ public class EmpireBuildCommand extends EmpireSubCommand {
         }
 
         try {
-            BuildState newState = BuildState.valueOf(args[0].toUpperCase());
+            BuildState newState = BuildState.valueOf(args[0].toUpperCase(), BuildState.AppliesTo.EMPIRE);
             res.getVillage().getEmpire().setBuildState(newState);
             Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire()));
             res.tell(getMessage("success"), "state", newState.getTag());
         } catch (IllegalArgumentException e) {
             res.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base));
-            for (BuildState state : BuildState.values()) {
+            for (BuildState state : BuildState.values(BuildState.AppliesTo.EMPIRE)) {
                 res.tell(getMessage("usage.entry"),
                         "usage", getUsage(base).replace("<state>", state.name().toLowerCase()),
                         "description", getMessage("states." + state.getKey()).getText()

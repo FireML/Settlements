@@ -10,7 +10,7 @@ import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.empire.BuildState;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.KingdomsGUI;
@@ -28,7 +28,7 @@ public class BuildGui extends KingdomsGUI {
     private BuildGui() {
         super("empire.build");
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
-        for (BuildState state : BuildState.values()) {
+        for (BuildState state : BuildState.values(BuildState.AppliesTo.EMPIRE)) {
             gui.addItem(new ClickableItem() {
                 @Override
                 public ItemStack getItem(Player p) {

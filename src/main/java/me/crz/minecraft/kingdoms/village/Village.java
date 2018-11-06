@@ -5,7 +5,7 @@ import com.google.common.collect.MultimapBuilder;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
-import me.crz.minecraft.kingdoms.perk.Perk;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.perk.Perkable;
 import me.crz.minecraft.kingdoms.perk.VillagePerk;
 import me.crz.minecraft.kingdoms.perk.PerkData;
@@ -14,7 +14,6 @@ import me.crz.minecraft.kingdoms.utils.BonusClaimsHolder;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.utils.config.Data;
@@ -173,7 +172,11 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     }
 
     public void setUseState(Use u, BuildState state) {
-        use.put(u, state);
+        if (state == u.getDefault()) {
+            use.remove(u);
+        } else {
+            use.put(u, state);
+        }
     }
 
     public Map<Use, BuildState> getUseStates() {
@@ -233,7 +236,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     }
 
     public boolean isAlly(Village village) {
-        return allies.contains(village.getId());
+        return village != null && allies.contains(village.getId());
     }
 
     public void addAlly(Village village) {

@@ -10,7 +10,7 @@ import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.BuildState;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -48,7 +48,7 @@ public class UseGui extends KingdomsGUI {
                 public boolean click(Player p, ClickType clickType) {
                     Resident res = ResidentManager.getInstance().getResident(p);
                     if (res.hasVillage() && res.getVillageRank().atLeast(VillageRank.CHIEF)) {
-                        BuildState next = res.getVillage().getUseState(u).next();
+                        BuildState next = res.getVillage().getUseState(u).next(BuildState.AppliesTo.SETTLEMENT);
                         res.getVillage().setUseState(u, next);
                         MessageUtils.tell(p, Message.get("command.village.use.success"),
                                 "flag", u.getTag(),
@@ -65,7 +65,7 @@ public class UseGui extends KingdomsGUI {
 
         int rest = gui.getSize() % 9;
         int slot = rest == 0 ? gui.getSize() : gui.getSize() + (9 - rest);
-        for (BuildState state : BuildState.values()) {
+        for (BuildState state : BuildState.values(BuildState.AppliesTo.SETTLEMENT)) {
             gui.addItem(slot++, new ClickableItem() {
                 @Override
                 public ItemStack getItem(Player p) {

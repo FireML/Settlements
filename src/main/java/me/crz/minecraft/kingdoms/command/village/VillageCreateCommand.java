@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import net.milkbowl.vault.economy.EconomyResponse;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.BuildState;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.utils.Utils;

@@ -6,11 +6,11 @@ import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.landflags.PlotBuildState;
 import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.Material;
@@ -32,7 +32,7 @@ public class UseGui extends PlotGUI {
                 public ItemStack getItem(Player p) {
                     OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
                     if (land != null) {
-                        PlotBuildState state = land.getUseState(u);
+                        BuildState state = land.getUseState(u);
                         return u.getItem().setName(getMessage("entry").getReplacedText(
                                 "flag", u.getTag(),
                                 "state", state.getTag()
@@ -47,7 +47,7 @@ public class UseGui extends PlotGUI {
                         Resident resident = ResidentManager.getInstance().getResident(p);
                         boolean canAdmin = resident.hasVillage() && land.isOwnedBy(resident.getVillage()) && resident.getVillageRank().atLeast(VillageRank.ELDER);
                         if (land.isPlotOwner(p) || canAdmin) {
-                            PlotBuildState next = land.getUseState(u).next();
+                            BuildState next = land.getUseState(u).next(BuildState.AppliesTo.LAND);
                             land.setUseState(u, next);
                             MessageUtils.tell(p, Message.get("command.village.plot.use.success"),
                                     "flag", u.getTag(),
@@ -65,7 +65,7 @@ public class UseGui extends PlotGUI {
 
         int rest = gui.getSize() % 9;
         int slot = rest == 0 ? gui.getSize() : gui.getSize() + (9 - rest);
-        for (PlotBuildState state : PlotBuildState.values()) {
+        for (BuildState state : BuildState.values(BuildState.AppliesTo.LAND)) {
             gui.addItem(slot++, new ClickableItem() {
                 @Override
                 public ItemStack getItem(Player p) {
