@@ -636,7 +636,7 @@ command:
     invite:
       already-in-village: "&c&l{name} is already in your {state}"
       joinfee: "&7Fee to join is &e{amount}!"
-      received: "&e&lALERT &r&7Invite received from {state} {name}! Type &e/s join {name} &7to join."
+      received: "&e&lALERT &r&7Invite received from {state} {name}! Click or type [&e/s join {name}](suggest_command=/s join {name}) &7to join."
       alert: "&e&lALERT &r&e{player}&7 has been invited to the settlement."
       description: Invite someone to join your village
     join:
