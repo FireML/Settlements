@@ -85,10 +85,10 @@ scoreboard:
 
         &3&lKills&3: &e{kills}
         &3&lDeaths&3: &e{deaths}
+empire-world-generate: "&a&lCreated your own empire world!"
 levels:
   upgrade: "&d&lLEVEL UP &r&7Your {state} is now level &d{level}"
   upgrade-settlement: "&a&lSUCCESS &r&7The settlement has been upgraded to &e{state}!"
-  empire-world-unlocked: "&a&lUnlocked your own empire world!"
   perk-available: "&7Perk &6&l{perk} &7&lcan be unlocked!"
   perk-unlocked: "&6&l{perk} &7&lhas been unlocked!"
 upkeep:

@@ -87,6 +87,9 @@ public class EmpireManager {
             return;
         }
         empires.put(empire.getName().toLowerCase(), empire);
+
+        createEmpireWorld(empire);
+
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveEmpire(empire);
             if (!empire.getId().isNull()) {
@@ -97,6 +100,53 @@ public class EmpireManager {
         });
     }
 
+    private void createEmpireWorld(Empire empire) {
+        String worldName = empire.getWorldName();
+        World world = Bukkit.getWorld(worldName);
+        ConfigurationSection worldConfig = KingdomsPlugin.getInstance().getConfig().getConfigurationSection("empires-world");
+        if (world == null) {
+            WorldCreator worldCreator = new WorldCreator(worldName);
+            if (worldConfig.isString("generator")) {
+                worldCreator.generator(worldConfig.getString("generator"));
+                if (worldConfig.isString("generator-settings")) {
+                    worldCreator.generatorSettings(worldConfig.getString("generator-settings"));
+                }
+            }
+            if (worldConfig.isSet("seed")) {
+                if (worldConfig.isLong("seed")) {
+                    worldCreator.seed(worldConfig.getLong("seed"));
+                } else {
+                    worldCreator.seed(worldConfig.getString("seed").hashCode());
+                }
+            }
+            if (worldConfig.isBoolean("structures")) {
+                worldCreator.generateStructures(worldConfig.getBoolean("structures"));
+            }
+            if (worldConfig.isString("environment")) {
+                try {
+                    worldCreator.environment(World.Environment.valueOf(worldConfig.getString("environment").toUpperCase()));
+                } catch (IllegalArgumentException e) {
+                    KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, worldConfig.getString("environment") + " is not a valid Environment for the empires world!");
+                }
+            }
+            if (worldConfig.isString("type")) {
+                try {
+                    worldCreator.type(WorldType.valueOf(worldConfig.getString("type").toUpperCase()));
+                } catch (IllegalArgumentException e) {
+                    KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, worldConfig.getString("type") + " is not a valid type for the empires world!");
+                }
+            }
+            world = Bukkit.createWorld(worldCreator);
+        }
+        if (worldConfig.isInt("border-radius")) {
+            world.getWorldBorder().setCenter(0, 0);
+            world.getWorldBorder().setSize(worldConfig.getInt("border-radius") * 2);
+        }
+        world.setSpawnLocation(0, world.getHighestBlockYAt(0, 0), 0);
+        empire.setHome(world.getSpawnLocation());
+
+        Message.get("empire-world-generated").tell(empire.getOnlineResidents());
+    }
 
     /**
      * Check whether or not a empire can level up
@@ -124,55 +174,7 @@ public class EmpireManager {
             }
         }
 
-        if (empire.getLevel() == Levels.EMPIRES_MAX_LEVEL) {
-            String worldName = empire.getWorldName();
-            World world = Bukkit.getWorld(worldName);
-            ConfigurationSection worldConfig = KingdomsPlugin.getInstance().getConfig().getConfigurationSection("empires-world");
-            if (world == null) {
-                WorldCreator worldCreator = new WorldCreator(worldName);
-                if (worldConfig.isString("generator")) {
-                    worldCreator.generator(worldConfig.getString("generator"));
-                    if (worldConfig.isString("generator-settings")) {
-                        worldCreator.generatorSettings(worldConfig.getString("generator-settings"));
-                    }
-                }
-                if (worldConfig.isSet("seed")) {
-                    if (worldConfig.isLong("seed")) {
-                        worldCreator.seed(worldConfig.getLong("seed"));
-                    } else {
-                        worldCreator.seed(worldConfig.getString("seed").hashCode());
-                    }
-                }
-                if (worldConfig.isBoolean("structures")) {
-                    worldCreator.generateStructures(worldConfig.getBoolean("structures"));
-                }
-                if (worldConfig.isString("environment")) {
-                    try {
-                        worldCreator.environment(World.Environment.valueOf(worldConfig.getString("environment").toUpperCase()));
-                    } catch (IllegalArgumentException e) {
-                        KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, worldConfig.getString("environment") + " is not a valid Environment for the empires world!");
-                    }
-                }
-                if (worldConfig.isString("type")) {
-                    try {
-                        worldCreator.type(WorldType.valueOf(worldConfig.getString("type").toUpperCase()));
-                    } catch (IllegalArgumentException e) {
-                        KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, worldConfig.getString("type") + " is not a valid type for the empires world!");
-                    }
-                }
-                world = Bukkit.createWorld(worldCreator);
-            }
-            if (worldConfig.isInt("border-radius")) {
-                world.getWorldBorder().setCenter(0, 0);
-                world.getWorldBorder().setSize(worldConfig.getInt("border-radius") * 2);
-            }
-            world.setSpawnLocation(0, world.getHighestBlockYAt(0, 0), 0);
-            empire.setHome(world.getSpawnLocation());
-
-            Message.get("empire-world-unlocked").tell(empire.getOnlineResidents());
-
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(empire));
-        }
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(empire));
         return true;
     }
 
