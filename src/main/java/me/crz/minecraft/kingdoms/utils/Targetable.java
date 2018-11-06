@@ -4,7 +4,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 
 import java.util.List;
 
-public interface BonusClaimsHolder {
+public interface Targetable {
 
     int getBonusClaims();
 

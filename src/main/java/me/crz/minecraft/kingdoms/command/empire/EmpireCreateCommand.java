@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.command.empire;
 
-import me.crz.minecraft.kingdoms.command.EmpireSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
@@ -8,9 +7,7 @@ import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.vault.Levels;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.VillageState;
 
 import java.util.regex.Pattern;
 
@@ -49,7 +46,7 @@ public class EmpireCreateCommand extends EmpireSubCommand {
                 }
                 resident.getVillage().setBank(resident.getVillage().getBank() - Utils.getEmpireCreationCost());
             }
-            Empire empire = new Empire(name, resident.getVillage().getId(), 1);
+            Empire empire = new Empire(name, resident.getVillage().getId());
             EmpireManager.getInstance().registerNewEmpire(empire);
             resident.getVillage().setEmpire(empire);
             Utils.runAsync(() -> {

@@ -1,7 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.command.village.outpost.OutpostClaimCommand;
 import me.crz.minecraft.kingdoms.command.village.outpost.OutpostListCommand;
 import me.crz.minecraft.kingdoms.command.village.outpost.OutpostSethomeCommand;

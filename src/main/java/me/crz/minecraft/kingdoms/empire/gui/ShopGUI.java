@@ -44,10 +44,6 @@ public class ShopGUI extends KingdomsGUI {
         Empire empire = resident.getVillage().getEmpire();
 
         for (Perk perk : EmpireManager.getInstance().getPerks()) {
-            if (empire.getLevel() + 1 < perk.getLevel()) {
-                continue;
-            }
-
             if (empire.hasUnlocked(perk) && !empire.checkPerkCount(perk)) {
                 continue;
             }
@@ -91,9 +87,8 @@ public class ShopGUI extends KingdomsGUI {
                             item.setName(getMessage("entry.purchased").getReplacedText("name", perk.getTag())).glow(true);
                         }
                     } else {
-                        item.setName(getMessage("entry." + (resident.getVillage().getEmpire().matchesLevelRequirement(perk) ? "unlockable" : "locked")).getReplacedText(
+                        item.setName(getMessage("entry.unlockable").getReplacedText(
                                 "name", perk.getTag(),
-                                "level", String.valueOf(perk.getLevel()),
                                 "times", String.valueOf(perk.getRepeat()),
                                 "cooldown", UtilTime.format(perk.getCooldown())
                         ));

@@ -2,7 +2,6 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -11,10 +10,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 public class VillageUnclaimCommand extends VillageSubCommand {
@@ -63,7 +59,7 @@ public class VillageUnclaimCommand extends VillageSubCommand {
             if (land != null) {
                 if (!land.isOwnedBy(res.getVillage())) {
                     if (toUnclaim.size() == 1) {
-                        res.tell(getError("not-your-village"), "state", land.getOwnerVillage().getState().getTag());
+                        res.tell(getError("not-your-village"), "state", land.getLandOwner().getStateTag());
                     }
                 } else if (land.isOutpost()) {
                     if (toUnclaim.size() == 1) {

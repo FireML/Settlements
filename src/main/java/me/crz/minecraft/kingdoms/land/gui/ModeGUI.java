@@ -55,7 +55,7 @@ public class ModeGUI extends PlotGUI {
                     OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
                     if (land != null) {
                         Resident resident = ResidentManager.getInstance().getResident(p);
-                        boolean canAdmin = resident.hasVillage() && land.isOwnedBy(resident.getVillage()) && resident.getVillageRank().atLeast(VillageRank.ELDER);
+                        boolean canAdmin = land.canAdmin(resident);
                         if (land.isPlotOwner(p) || canAdmin) {
                             if (m == PlotMode.embassy) {
                                 if (land.containsHome() || land.isOutpost()) {

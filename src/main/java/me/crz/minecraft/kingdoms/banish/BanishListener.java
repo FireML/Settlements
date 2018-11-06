@@ -3,10 +3,10 @@ package me.crz.minecraft.kingdoms.banish;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveChunkEvent;
 import me.crz.minecraft.kingdoms.land.LandManager;
+import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.VillageManager;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -18,9 +18,9 @@ public class BanishListener implements Listener {
     
     @EventHandler
     public void on(PlayerMoveChunkEvent e) {
-        VillageManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getTo()), e.getPlayer(), (land, p, village) -> {
+        ResidentManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getTo()), e.getPlayer(), (land, p, landOwner) -> {
             if (!e.getPlayer().hasPermission("kingdoms.admin.banish-bypass")) {
-                sendInfo(p, village, "move");
+                sendInfo(p, landOwner, "move");
                 e.setCancelled(true);
                 Location to = e.getPlayer().getLocation().add(e.getPlayer().getLocation().getDirection().setY(0).multiply(-1));
                 Bukkit.getScheduler().runTask(KingdomsPlugin.getInstance(), () -> e.getPlayer().teleport(to));
@@ -30,8 +30,8 @@ public class BanishListener implements Listener {
 
     @EventHandler
     public void on(PlayerTeleportEvent e) {
-        VillageManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getTo()), e.getPlayer(), (land, p, village) -> {
-            sendInfo(p, village, "teleport");
+        ResidentManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getTo()), e.getPlayer(), (land, p, landOwner) -> {
+            sendInfo(p, landOwner, "teleport");
             if (!e.getPlayer().hasPermission("kingdoms.admin.banish-bypass")) {
                 e.setCancelled(true);
                 Bukkit.getScheduler().runTask(KingdomsPlugin.getInstance(), () -> Utils.teleportToSpawn(p));
@@ -39,10 +39,10 @@ public class BanishListener implements Listener {
         });
     }
 
-    private void sendInfo(Player p, Village village, String type) {
+    private void sendInfo(Player p, LandOwner landOwner, String type) {
         String[] replacements = new String[] {
-                "state", village.getState().getTag(),
-                "name", village.getName()
+                "state", landOwner.getStateTag(),
+                "name", landOwner.getName()
         };
         MessageUtils.tellAdvanced(p, "banished." + type, replacements);
     }

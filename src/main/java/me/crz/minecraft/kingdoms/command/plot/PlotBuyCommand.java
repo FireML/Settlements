@@ -1,8 +1,7 @@
-package me.crz.minecraft.kingdoms.command.village.plot;
+package me.crz.minecraft.kingdoms.command.plot;
 
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
-import me.crz.minecraft.kingdoms.command.village.VillagePlotCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
@@ -10,7 +9,7 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 public class PlotBuyCommand extends ResidentSubCommand {
-    public PlotBuyCommand(VillagePlotCommand parent) {
+    public PlotBuyCommand(PlotCommand parent) {
         super(parent, "buy");
     }
 
@@ -19,12 +18,12 @@ public class PlotBuyCommand extends ResidentSubCommand {
         OwnedLand land = LandManager.getInstance().getLand(res.getPlayer().getLocation());
         if (land == null) {
             getError("not-a-plot").tell(res);
-        } else if (!(land.isEmbassy() || land.getOwnerVillage().equals(res.getVillage()))) {
-            getError("not-your-village").tell(res, "state", land.getOwnerVillage().getState().getTag());
+        } else if (!(land.isEmbassy() || land.isOwnedBy(res))) {
+            getError("not-your-village").tell(res, "state", land.getLandOwner().getStateTag());
         } else if (!land.isForSale()) {
             getError("not-for-sale").tell(res);
         } else {
-            if (land.isEmbassy() && land.isOwnedBy(res.getVillage())) {
+            if (land.isEmbassy() && land.isOwnedBy(res)) {
                 getError("cant-buy-embassy").tell(res, "state", res.getVillage().getState().getTag());
                 return true;
             }
@@ -34,8 +33,8 @@ public class PlotBuyCommand extends ResidentSubCommand {
                     return true;
                 }
                 Base.getEconomy().withdrawPlayer(res.getPlayer(), (double) land.getPrice());
-                land.getOwnerVillage().setBank(land.getOwnerVillage().getBank() + land.getPrice());
-                Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(land.getOwnerVillage()));
+                land.getLandOwner().setBank(land.getLandOwner().getBank() + land.getPrice());
+                Utils.runAsync(() -> DatabaseManager.getInstance().save(land.getLandOwner()));
             }
             land.setForSale(false);
             res.tell(getMessage("purchased"), "price", String.valueOf(land.getPrice()));

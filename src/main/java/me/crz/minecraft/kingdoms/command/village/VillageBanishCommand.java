@@ -1,7 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -37,7 +36,11 @@ public class VillageBanishCommand extends VillageSubCommand {
                 resident.tell(getError("cant-banish"), "name", res.getName(), "title", res.getTitle());
                 return;
             }
-            resident.getVillage().addBanishedResident(res);
+
+            if (!resident.getVillage().addBanishedResident(res)) {
+                getError("already-banished").tell(resident, "name", res.getName());
+                return;
+            }
             Utils.runSync(() -> {
                 Player target = res.getPlayer();
                 if (target != null) {
@@ -47,7 +50,7 @@ public class VillageBanishCommand extends VillageSubCommand {
                     }
                 }
             });
-            MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("banished"), "player", res.getName());
+            MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("banished"), "name", res.getName());
             if (res.hasVillage() && res.getVillage().equals(resident.getVillage())) {
                 VillageManager.getInstance().leaveVillage(res);
             }

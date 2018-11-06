@@ -1,7 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -27,9 +26,12 @@ public class VillageUnbanishCommand extends VillageSubCommand {
                 resident.tell(getError("player-not-found"), "name", args[0]);
                 return;
             }
-            resident.getVillage().removeBanishedResident(res);
+            if (!resident.getVillage().removeBanishedResident(res)) {
+                resident.tell(getError("not-banished"), "name", res.getName());
+                return;
+            }
             DatabaseManager.getInstance().saveVillage(resident.getVillage());
-            MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("unbanished"), "player", res.getName());
+            MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("unbanished"), "name", res.getName());
         });
         return true;
     }

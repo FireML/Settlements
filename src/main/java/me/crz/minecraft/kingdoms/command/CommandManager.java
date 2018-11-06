@@ -4,6 +4,12 @@ import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.chat.commands.IgnoreCommand;
 import me.crz.minecraft.kingdoms.chat.commands.MessageCommand;
 import me.crz.minecraft.kingdoms.chat.commands.ReplyCommand;
+import me.crz.minecraft.kingdoms.command.admin.VillageAdminCommand;
+import me.crz.minecraft.kingdoms.command.empire.EmpireCommand;
+import me.crz.minecraft.kingdoms.command.friend.FriendCommand;
+import me.crz.minecraft.kingdoms.command.plot.PlotCommand;
+import me.crz.minecraft.kingdoms.command.resident.ResidentCommand;
+import me.crz.minecraft.kingdoms.command.village.VillageCommand;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.command.Command;
@@ -25,6 +31,7 @@ public class CommandManager extends Base implements CommandExecutor {
     }
 
     private void registerCommands() {
+        registerCommand(new PlotCommand());
         registerCommand(new VillageCommand());
         registerCommand(new EmpireCommand());
         registerCommand(new ChatCommand());

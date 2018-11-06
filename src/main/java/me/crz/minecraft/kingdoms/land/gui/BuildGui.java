@@ -51,8 +51,7 @@ public class BuildGui extends PlotGUI {
                     OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
                     if (land != null && state != land.getBuildState()) {
                         Resident resident = ResidentManager.getInstance().getResident(p);
-                        boolean canAdmin = resident.hasVillage() && land.isOwnedBy(resident.getVillage()) && resident.getVillageRank().atLeast(VillageRank.ELDER);
-                        if (land.isPlotOwner(p) || canAdmin) {
+                        if (land.isPlotOwner(p) || land.canAdmin(resident)) {
                             land.setBuildState(state);
                             MessageUtils.tell(p, Message.get("command.village.plot.build.success"),
                                     "state", state.getTag()

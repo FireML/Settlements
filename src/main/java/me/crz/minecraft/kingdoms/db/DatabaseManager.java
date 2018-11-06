@@ -3,8 +3,9 @@ package me.crz.minecraft.kingdoms.db;
 import com.google.common.collect.ImmutableMap;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.utils.BonusClaimsHolder;
+import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 
@@ -48,6 +49,9 @@ public abstract class DatabaseManager {
         saveLand(lands.toArray(new OwnedLand[0]));
     }
 
+    /**
+     * To ensure data consistency use {@link me.crz.minecraft.kingdoms.land.LandManager#saveLand(OwnedLand...)}
+     */
     public abstract void saveLand(OwnedLand... lands);
 
     public abstract Collection<OwnedLand> getAllLand();
@@ -80,7 +84,7 @@ public abstract class DatabaseManager {
         log(empire, village, resident, action, ImmutableMap.of(type, amount));
     }
 
-    public void log(BonusClaimsHolder claimsHolder, Resident resident, String action, String type, long amount) {
+    public void log(Targetable claimsHolder, Resident resident, String action, String type, long amount) {
         if (claimsHolder instanceof Village) {
             log(null, (Village) claimsHolder, resident, action, ImmutableMap.of(type, amount));
         } else {
@@ -127,4 +131,12 @@ public abstract class DatabaseManager {
     public abstract List<String[]> getLog(Village village, Resident resident, int page, LogType type);
 
     public abstract List<String[]> getLog(Empire Empire, Resident resident, int page, LogType type);
+
+    public void save(LandOwner landOwner) {
+        if (landOwner instanceof Village) {
+            saveVillage((Village) landOwner);
+        } else if (landOwner instanceof Empire) {
+            saveEmpire((Empire) landOwner);
+        }
+    }
 }

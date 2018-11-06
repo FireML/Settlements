@@ -23,7 +23,7 @@ public class VillageHomeCommand extends SubCommand {
             if (playerVillage == null) {
                 MessageUtils.tell(player, getError("village-required"));
                 return false;
-            } else if (playerVillage.getVillageHome() == null) {
+            } else if (playerVillage.getHome() == null) {
                 MessageUtils.tell(player, getMessage("own-no-home"), "chief", VillageRank.CHIEF.getTag(playerVillage));
                 return true;
             } else {
@@ -45,8 +45,8 @@ public class VillageHomeCommand extends SubCommand {
             return true;
         }
 
-        if (village.getVillageHome() != null) {
-            Utils.teleport(player, village.getVillageHome().toBukkitLocation(), village.getState().getKey(), getConfigPath(),
+        if (village.getHome() != null) {
+            Utils.teleport(player, village.getHome().toBukkitLocation(), village.getState().getKey(), getConfigPath(),
                     "state", village.getState().getTag(), "name", village.getName());
         } else {
             MessageUtils.tell(player, getMessage("no-home"), "state", village.getState().getTag());

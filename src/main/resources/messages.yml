@@ -32,6 +32,7 @@ error:
   village-required: "&c&lYou can only do this after you joined a settlement!"
   empire-required: "&c&lYou can only do this after you joined an empire!"
   free-required: "&c&lYou can only do this if you are not part of a settlement yet!"
+  cant-admin-plots: "&c&lYou can't manage this plot!"
   no-empire-required: "&c&lYou can only do this if you are not part of an empire yet!"
   only-player: "&cMust be ran by player."
   unknown-perk: "&cNo unlock with the name &f{perk}&c available!"
@@ -144,6 +145,21 @@ kingdom:
     builder: Architect
     recruiter: Greeter
     resident: Resident
+empire:
+  enter:
+    message: "&f[&eKingdoms&f] &7Entering &a{name}{pvp}"
+    actionbar: ""
+    title: ""
+    subtitle: ""
+  leave:
+    message: "&f[&eKingdoms&f] &7Leaving &a{name}"
+    actionbar: ""
+    title: ""
+    subtitle: ""
+  rank:
+    leader: Leader
+    senator: Senator
+    none: No Rank
 plot:
   owned:
     message: ""
@@ -280,7 +296,7 @@ protection:
       friends: "&e&lALERT &r&7Only the &ePlot owner's friends&7 can build here."
 gui:
   access:
-    title: "&3&lSettlement Access"
+    title: "&3&l/s access"
     back: "&c&lBack To Settings"
     selected: "&e&l{access}"
     available: "&7{access}"
@@ -291,25 +307,25 @@ gui:
       ally: Allows allies to teleport to home
       private: Allows only members to teleport to home
   build:
-    title: "&3&lSettlement Build Settings"
+    title: "&3&l/s build"
     set-state: "&7&lClick to allow building of &b&l{state}"
     selected-state: "&e&lBuilding is currently set to &b&l{state}"
     back: "&c&lBack To Settings"
   mode:
-    title: "&3&lSettlement Mode"
+    title: "&3&l/s mode"
     entry:
       title: "&b&l{mode}"
       lore: "&7&lEnabled: &b&l{value}"
     back: "&c&lBack To Settings"
   empire:
     build:
-      title: "&3&lEmpire Build Settings"
+      title: "&3&l/e mode"
     mode:
-      title: "&3&lEmpire Mode"
+      title: "&3&l/e mode"
     perks:
-      title: "&3&lEmpire Perks"
+      title: "&3&l/e perks"
     shop:
-        title: "&3&lEmpire Perks Shop"
+        title: "&3&l/e shop"
         entry:
           locked: |-
             &e{name}
@@ -329,6 +345,10 @@ gui:
         &e&lLeader &r&7{chieftitle} {chief}
         &e&lSenators: &r&7{senators}
         &e&lMembers: &r&7{members}
+    use:
+      title: "&3&l/e use"
+    vault:
+      title: "&1&l/e vault"
   plot:
     link: |-
       &7Click to link the permissions of all
@@ -337,11 +357,11 @@ gui:
     linked: "&e{amount}&b other plots are linked to this one"
     unlink: "&7Click to unlink!"
     use:
-      title: "&3&lPlot Use Settings"
+      title: "&3&l/plot use"
     mode:
-      title: "&3&lPlot Mode"
+      title: "&3&l/plot mode"
     build:
-      title: "&3&lPlot Build Settings"
+      title: "&3&l/plot build"
     settings:
       title: "&3&lPlot Settings"
       entry: |-
@@ -401,7 +421,7 @@ gui:
     village-home: "&e&lVillage Home"
     empire-home: "&e&lEmpire Home"
   perks:
-    title: "&3&lSettlement Perks"
+    title: "&3&l/s perks"
     entry: |-
       &e{name}
     toggleable: "&bClick to toggle."
@@ -409,7 +429,7 @@ gui:
     inactive: "&cEffect disabled!"
     back: "&c&lBack To Settings"
   shop:
-    title: "&3&lSettlement Perks Shop"
+    title: "&3&l/s shop"
     entry:
       locked: |-
         &e{name}
@@ -433,14 +453,14 @@ gui:
     cooldown: "&aCan be repeated in {cooldown}"
     back: "&c&lBack To Settings"
   use:
-    title: "&3&lSettlement Use Settings"
+    title: "&3&l/s use"
     back: "&c&lBack To Settings"
     toggle-all: "&7&lClick to toggle all to &b&l{state}"
     entry: |-
       &b&l{flag}
       &7&lState: &b&l{state}
   vault:
-    title: "&1&lSettlement Vault"
+    title: "&1&l/s vault"
     success-deposit: "&6&l{player} &7&lhas deposited:"
     fail-deposit: "&c&lFailed Deposited Items: {reason}"
     max-level-reached: "&r&c&lMax Level Reached"
@@ -517,6 +537,69 @@ command:
       separator: "&7, "
       online: "&a"
       offline: "&c"
+  plot:
+    build:
+      success: "&aSet build state of this plot to {state}"
+      states:
+        residents: residents and officers to build in claimed land
+        officers: only officers are allowed to build in claimed land
+        public: allows everyone to build in your claimed land
+        ally: allows your allies to build in your claimed land
+        trusted: allows your allies and fellow empire members to build
+        private: allows you to build in your claimed land
+        friends: allows your friends to build in your claimed land
+      description: Sets the build mode of a plot
+    buy:
+      cant-buy-embassy: "&cYou can't buy this plot as it is an embassy of your {state}!"
+      purchased: "&aSuccessfully purchased the land for {price}."
+      description: Buys the chunk you are standing in
+    info:
+      general: |-
+        &8&l-------- &r&c&lPlot Info&r &8&l--------
+        &c&l{state}: &7{settlement}
+        &9&lDescription: &r{description}
+        &9&lModes: &7MobSpawning: &6{spawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explosions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}&r&7 | Embassy: &6{embassy}
+      owner: "&a&lPlot Owner: &7{name}"
+      price: "&a&lPlot Price: &7{price}"
+      description: Get information about the current plot
+    link:
+      already-linked: "&c&lERROR: &cAlready linked to plot {location}!"
+      success: "&a&lSUCCESS: &r&7Linked {amount} plots to your current one!"
+      description: Link surrounding land flags with the current one
+    mode:
+      modes: "&cAvailable modes: {modes}"
+      success: "&7Plot mode &6{mode}&7: &6{value}"
+      description: Sets the modes of a plot
+    name:
+      success: "&aSet name of plot to &r{description}"
+      description: Set the name of a plot
+    revoke:
+      success: "&aPlot has been revoked ownership!"
+      description: Revokes ownership of the plot you are standing in
+    settings:
+      description: Manage plot settings
+    sale:
+      current: "&7&lThe current price of this land is: &6&l {price}"
+      already-owned: "&cLand is already owned"
+      success: "&a&lSUCCESS &7This land has been put on sale for &e${price}&7!"
+      no-longer-for-sale: "&a&lSUCCESS &7This land is no longer for sale!"
+      description: Gets or sets the price of a claimed chunk
+    unlink:
+      none-connected: "&c&lERROR: &cNo plots are linked to this one!"
+      disconnected: "&r&7Unlinked from {amount} other plots!"
+      description: Unlink this plot's flags
+    unsale:
+      success: "&aThis land is no longer for sale!"
+      description: Remove the ability to buy a chunk
+    use:
+      flags: "&cAvailable flags: {flags}"
+      states: "&cAvailable states: {states}"
+      success: "&7Plot State of &6{flag} &7set to &6{state}"
+      success-all: "&7Set all flags to &6{state}"
+      description: Sets the use flags of a plot
+      all:
+        description: Sets all flags to a certain state
+    description: Plot Commands
   scoreboard:
     descriptipon: "Set the scoreboard for all players"
     clear:
@@ -542,7 +625,8 @@ command:
     banish:
       cant-banish-yourself: "&cYou can't banish yourself!"
       cant-banish: "&cYou can't banish &f{title} &f{name}!"
-      banished: "&7Player &6{player}&7 has been &cbanished &7from your settlement!"
+      already-banished: "&cPlayer &f{name}&c is already banished!"
+      banished: "&7Player &6{name}&7 has been &cbanished &7from your settlement!"
       description: Add a player to the banish list
     banished:
       head: "&7------- &cBanished&7 -------"
@@ -550,8 +634,9 @@ command:
       separator: "&7, "
       description: List all banished users
     unbanish:
-      unbanished: "&7Player &6{player}&7 is no longer &cbanished &7from your settlement!"
-      description: Remove a player to the banish list
+      not-banished: "&cPlayer &f{name}&c is not banished?"
+      unbanished: "&7Player &6{name}&7 is no longer &cbanished &7from your settlement!"
+      description: Remove a player from the banish list
     bank:
       withdraw:
         not-enough-money: "&c&lNot enough money in the bank to withdraw &r&6&l{amount}&r&c&l!"
@@ -723,69 +808,6 @@ command:
         connected-to-outpost: "&cOnly unclaiming chunks not connected to another outpost!"
         description: Unclaims the outpost you are standing in
       description: Claim a seperate chunk of land
-    plot:
-      build:
-        success: "&aSet build state of this plot to {state}"
-        states:
-          residents: residents and officers to build in claimed land
-          officers: only officers are allowed to build in claimed land
-          public: allows everyone to build in your claimed land
-          ally: allows your allies to build in your claimed land
-          trusted: allows your allies and fellow empire members to build
-          private: allows you to build in your claimed land
-          friends: allows your friends to build in your claimed land
-        description: Sets the build mode of a plot
-      buy:
-        cant-buy-embassy: "&cYou can't buy this plot as it is an embassy of your {state}!"
-        purchased: "&aSuccessfully purchased the land for {price}."
-        description: Buys the chunk you are standing in
-      info:
-        general: |-
-          &8&l-------- &r&c&lPlot Info&r &8&l--------
-          &c&l{state}: &7{settlement}
-          &9&lDescription: &r{description}
-          &9&lModes: &7MobSpawning: &6{spawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explosions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}&r&7 | Embassy: &6{embassy}
-        owner: "&a&lPlot Owner: &7{name}"
-        price: "&a&lPlot Price: &7{price}"
-        description: Get information about the current plot
-      link:
-        already-linked: "&c&lERROR: &cAlready linked to plot {location}!"
-        success: "&a&lSUCCESS: &r&7Linked {amount} plots to your current one!"
-        description: Link surrounding land flags with the current one
-      mode:
-        modes: "&cAvailable modes: {modes}"
-        success: "&7Plot mode &6{mode}&7: &6{value}"
-        description: Sets the modes of a plot
-      name:
-        success: "&aSet name of plot to &r{description}"
-        description: Set the name of a plot
-      revoke:
-        success: "&aPlot has been revoked ownership!"
-        description: Revokes ownership of the plot you are standing in
-      settings:
-        description: Manage plot settings
-      sale:
-        current: "&7&lThe current price of this land is: &6&l {price}"
-        already-owned: "&cLand is already owned"
-        success: "&a&lSUCCESS &7This land has been put on sale for &e${price}&7!"
-        no-longer-for-sale: "&a&lSUCCESS &7This land is no longer for sale!"
-        description: Gets or sets the price of a claimed chunk
-      unlink:
-        none-connected: "&c&lERROR: &cNo plots are linked to this one!"
-        disconnected: "&r&7Unlinked from {amount} other plots!"
-        description: Unlink this plot's flags
-      unsale:
-        success: "&aThis land is no longer for sale!"
-        description: Remove the ability to buy a chunk
-      use:
-        flags: "&cAvailable flags: {flags}"
-        states: "&cAvailable states: {states}"
-        success: "&7Plot State of &6{flag} &7set to &6{state}"
-        success-all: "&7Set all flags to &6{state}"
-        description: Sets the use flags of a plot
-        all:
-          description: Sets all flags to a certain state
-      description: Plot Commands
     rename:
       success: "&7&lSettlement has been renamed to &6&l{name}"
       description: Renames the current village to something else
@@ -984,6 +1006,21 @@ command:
         previous: "&b<< Prev "
         next: "&b Next >>"
         description: Show the bank's history
+    banish:
+      cant-banish-yourself: "&cYou can't banish yourself!"
+      cant-banish: "&cYou can't banish &f{title} &f{name}!"
+      already-banished: "&f{name}&c is already banished!"
+      banished: "&6{name}&7 has been &cbanished &7from your empire world!"
+      description: Add an entry to the banish list
+    banished:
+      head: "&7------- &cBanished&7 -------"
+      entry: "&c{title} &c{name}"
+      separator: "&7, "
+      description: List all banished entries
+    unbanish:
+      not-banished: "&f{name}&c is not banished?"
+      unbanished: "&6{name}&7 is no longer &cbanished &7from your empire world!"
+      description: Remove an entry from the banish list
     build:
       success: "&aSet build state of this empire to {state}"
       states:
@@ -1033,7 +1070,7 @@ command:
     invite:
       already-in-empire: "&c&l{name} is already in your Empire"
       joinfee: "&7Fee to join is &e{amount}!"
-      received: "&e&lALERT &r&7Invite received from Empire {name}! Type &e/e join {name} &7to join."
+      received: "&e&lALERT &r&7Invite received from Empire {name}! Click or type [&e/e join {name}](suggest_command=/e join {name}) &7to join."
       alert: "&e&lALERT &r&e{name}&7 has been invited to the empire."
       description: Invite someone to join your empire
     join:
@@ -1062,11 +1099,6 @@ command:
       footer: "&7-------- {previous} {page}/{maxpage}{next} &7 --------"
       previous: "&b<< Prev "
       next: "&b Next >>"
-    materials:
-      max-level-reached: "&c&lYour Empire already has the max level!"
-      head: "&8&l--------&r&c&lRequired Materials&r&8&l--------"
-      entry: "&e{amount} &7{material}"
-      description: Shows you the materials required to upgrade
     mode:
       modes: "&cAvailable modes: {modes}"
       success: "&7Empire mode &6{mode}&7 set to &6{value}"
@@ -1074,6 +1106,23 @@ command:
     rename:
       success: "&7&lEmpire has been renamed to &6&l{name}"
       description: Renames the current empire to something else
+    map:
+      head: "&8---------------- &eEmpire Map &r&8----------------"
+      explanation: |-
+        &r &a- &6= your land
+        &r &a$ &6= for sale
+        &r &ep &6= player plot
+        &r &6p &6= linked plots
+        &r &ae &6= embassy
+        &r &aH &6= home
+        &r &7+ &6= current
+      not-for-sale: "Nor for sale"
+      hover:
+        own-plot: Your plot
+        plot: "Plot Owner: &7{owner}"
+        for-sale: "For sale: &7{price}"
+        home: Home
+      description: Shows you a map of the surrounding chunks
     memberlist:
       head: "&8&l--------&r&c&lMembers&r&8&l--------"
       entry: "&8\\[&9*&8] [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{residents} players\n&f{description})"
@@ -1082,7 +1131,6 @@ command:
       description: Purchase perks
       unlock:
         success: "&6&l{perk} &7&lhas been unlocked!"
-        level-too-low: "&cCan't unlock &f{perk}&c! It requires a level {level} empire!"
         not-possible: "&f{perk} &ccan't be unlocked! {reason}"
         missing-items: "&c&lMissing Items:"
         already-unlocked: "&cPerk &f{perk} &cis already unlocked"
@@ -1090,7 +1138,6 @@ command:
         description: Unlock perks
       repeat:
         success: "&6&l{perk} &7&lhas been repeated!"
-        level-too-low: "&cCan't repeat &f{perk}&c! It requires a level {level} empire!"
         not-possible: "&f{perk} &ccan't be repeated! {reason}"
         missing-items: "&c&lMissing Items:"
         entry: "&6{amount} &e{material}"
@@ -1155,9 +1202,11 @@ command:
     transfer:
       success: "&e&lALERT &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
       description: Transfers leadership of your empire
-    upgrade:
-      not-possible: "&cThe empire cannot be leveled up! {reason}"
-      max-level-reached: "&r&c&lMax Level Reached."
-      missing-items: "&c&lMissing Items:"
-      entry: "&6{amount} &e{material}"
-      description: Manually trigger a empire upgrade
+    use:
+      flags: "&cAvailable flags: {flags}"
+      states: "&cAvailable states: {states}"
+      success: "&7State of &6{flag} &7set to &6{state}"
+      success-all: "&7Set all flags to &6{state}"
+      description: Set who can use stuff in your empire world
+      all:
+        description: Sets all flags to a certain state

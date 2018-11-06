@@ -57,7 +57,7 @@ public abstract class PlotGUI extends KingdomsGUI {
                 OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
                 if (land != null) {
                     Resident resident = ResidentManager.getInstance().getResident(p);
-                    boolean canAdmin = resident.hasVillage() && land.isOwnedBy(resident.getVillage()) && resident.getVillageRank().atLeast(VillageRank.ELDER);
+                    boolean canAdmin = land.canAdmin(resident);
                     if (land.isPlotOwner(p) || canAdmin) {
                         Set<OwnedLand> toSave = new LinkedHashSet<>();
                         if (land.hasLink()) {

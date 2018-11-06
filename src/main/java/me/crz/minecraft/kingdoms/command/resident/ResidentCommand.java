@@ -1,9 +1,8 @@
-package me.crz.minecraft.kingdoms.command;
+package me.crz.minecraft.kingdoms.command.resident;
 
 import me.crz.minecraft.kingdoms.chat.commands.IgnoreCommand;
-import me.crz.minecraft.kingdoms.command.resident.ResidentClaimTransferCommand;
+import me.crz.minecraft.kingdoms.command.SubCommand;
 import org.bukkit.entity.Player;
-import me.crz.minecraft.kingdoms.command.resident.ResidentShowCommand;
 
 public class ResidentCommand extends SubCommand {
 

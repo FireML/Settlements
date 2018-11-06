@@ -11,11 +11,13 @@ import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.vault.Levels;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -71,6 +73,11 @@ public class EmpireManager {
 
     public Empire getEmpireFromId(IdObject id) {
         return empireIds.get(id);
+    }
+
+    public Empire getEmpireFromPlayer(Player player) {
+        Village village = VillageManager.getInstance().getVillageFromPlayer(player);
+        return village != null ? village.getEmpire() : null;
     }
 
     public Perk getPerk(String name) {
@@ -148,47 +155,6 @@ public class EmpireManager {
         Message.get("empire-world-generated").tell(empire.getOnlineResidents());
     }
 
-    /**
-     * Check whether or not a empire can level up
-     * @param empire The Empire to check
-     * @param res
-     * @return Whether or not the empire was leveled up
-     */
-    public boolean checkLevelUp(Empire empire, Resident res) {
-        if (!empire.canLevelUp()) {
-            return false;
-        }
-
-        empire.setLevel(empire.getLevel() + 1);
-        MessageUtils.tellResidents(empire.getOnlineResidents(), Message.get("levels.upgrade"), "level", Integer.toString(empire.getLevel()), "state", "Empire");
-        removeLevelRequirements(empire, res);
-
-        for (Perk perk : getPerks()) {
-            if (empire.getLevel() == perk.getLevel()) {
-                if (perk.getUnlockCost().isEmpty()) {
-                    MessageUtils.tellResidents(empire.getOnlineResidents(), Message.get("levels.perk-unlocked"), "perk", perk.getTag());
-                    empire.unlockPerk(perk);
-                } else {
-                    MessageUtils.tellResidents(empire.getOnlineResidents(), Message.get("levels.perk-available"), "perk", perk.getTag());
-                }
-            }
-        }
-
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(empire));
-        return true;
-    }
-
-    private void removeLevelRequirements(Empire empire, Resident res) {
-        Map<String, Long> levelReqs = Levels.getEmpireLevelRequirements(empire.getLevel());
-        if (empire.remove(levelReqs)) {
-            Utils.runAsync(() -> {
-                DatabaseManager.getInstance().saveEmpire(empire);
-                DatabaseManager.getInstance().logLevelup(empire, res, levelReqs);
-            });
-        }
-    }
-
-
     public Collection<Perk> getPerks() {
         return perks.values();
     }
@@ -213,11 +179,15 @@ public class EmpireManager {
     }
 
     public Empire getEmpireFromWorld(World world) {
-        if (world.getName().startsWith(KingdomsPlugin.getInstance().getEmpiresWorldPrefix())
-                && world.getName().endsWith(KingdomsPlugin.getInstance().getEmpiresWorldSuffix())) {
-            return getEmpireFromName(world.getName().substring(
+        return getEmpireFromWorld(world.getName());
+    }
+
+    public Empire getEmpireFromWorld(String worldName) {
+        if (worldName.startsWith(KingdomsPlugin.getInstance().getEmpiresWorldPrefix())
+                && worldName.endsWith(KingdomsPlugin.getInstance().getEmpiresWorldSuffix())) {
+            return getEmpireFromName(worldName.substring(
                     KingdomsPlugin.getInstance().getEmpiresWorldPrefix().length(),
-                    world.getName().length() - KingdomsPlugin.getInstance().getEmpiresWorldSuffix().length()
+                    worldName.length() - KingdomsPlugin.getInstance().getEmpiresWorldSuffix().length()
             ));
         }
         return null;

@@ -49,7 +49,7 @@ public class TeleportersGUI extends KingdomsGUI {
         ci.addItem(4, new ClickableItem() {
             public ItemStack getItem(Player p) {
                 Village village = VillageManager.getInstance().getVillageFromPlayer(p);
-                if (village == null || village.getVillageHome() == null) {
+                if (village == null || village.getHome() == null) {
                     ItemStack l = locked.clone();
                     l.setLore(getMessage("village-home").getTextList());
                     return l;
@@ -59,11 +59,11 @@ public class TeleportersGUI extends KingdomsGUI {
 
             public boolean click(Player p, ClickType clickType) {
                 Village v = VillageManager.getInstance().getVillageFromPlayer(p);
-                if (v == null || v.getVillageHome() == null) {
+                if (v == null || v.getHome() == null) {
                     return false;
                 }
 
-                Utils.teleport(p, v.getVillageHome().toBukkitLocation(), v.getState().getKey(), "command.village.home",
+                Utils.teleport(p, v.getHome().toBukkitLocation(), v.getState().getKey(), "command.village.home",
                         "state", v.getState().getTag(), "name", v.getName());
                 return false;
             }

@@ -15,7 +15,6 @@ import java.util.logging.Level;
 public class Levels {
     public static final int VILLAGE_TO_KINGDOM_LEVEL = 5;
     public static final int KINGDOMS_MAX_LEVEL = 10;
-    public static final int EMPIRES_MAX_LEVEL = 10;
     private static final Map<String, Map<String, Long>> LEVEL_REQUIREMENTS = new HashMap<>();
 
     public Levels() {
@@ -24,10 +23,6 @@ public class Levels {
     
     public static Map<String, Long> getLevelRequirements(VillageState state, int level) {
         return LEVEL_REQUIREMENTS.computeIfAbsent(state.name() + "_" + level, key -> getLevelRequirements(state.name().toLowerCase() + ".level-" + level));
-    }
-
-    public static Map<String, Long> getEmpireLevelRequirements(int level) {
-        return LEVEL_REQUIREMENTS.computeIfAbsent("empire_" + level, key -> getLevelRequirements("empire.level-" + level));
     }
 
     private static Map<String, Long> getLevelRequirements(String levelPath) {

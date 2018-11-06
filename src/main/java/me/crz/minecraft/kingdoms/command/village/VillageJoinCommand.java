@@ -1,11 +1,8 @@
 package me.crz.minecraft.kingdoms.command.village;
 
-import com.avaje.ebeaninternal.server.lib.util.MailEvent;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
-import me.crz.minecraft.kingdoms.command.ChatCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -16,7 +13,6 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageAccess;
 import me.crz.minecraft.kingdoms.village.VillageManager;
-import net.milkbowl.vault.economy.EconomyResponse;
 
 public class VillageJoinCommand extends VillageSubCommand {
     public VillageJoinCommand(SubCommand parent) {

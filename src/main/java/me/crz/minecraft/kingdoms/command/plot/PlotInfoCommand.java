@@ -1,17 +1,14 @@
-package me.crz.minecraft.kingdoms.command.village.plot;
+package me.crz.minecraft.kingdoms.command.plot;
 
 import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
-import me.crz.minecraft.kingdoms.command.VillageSubCommand;
-import me.crz.minecraft.kingdoms.command.village.VillagePlotCommand;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 
 public class PlotInfoCommand extends ResidentSubCommand {
-    public PlotInfoCommand(VillagePlotCommand parent) {
+    public PlotInfoCommand(PlotCommand parent) {
         super(parent, "info", "here", "show");
     }
 
@@ -26,7 +23,7 @@ public class PlotInfoCommand extends ResidentSubCommand {
         if (land.isPlot()) {
             Utils.runAsync(() -> res.tell(getMessage("owner"), "name", ResidentManager.getInstance().getResident(land.getPlotOwner()).getName()));
         } else if (land.isForSale() &&
-                (land.isEmbassy() || land.isOwnedBy(res.getVillage()))) {
+                (land.isEmbassy() || land.isOwnedBy(res))) {
             res.tell(getMessage("price"), "price", String.valueOf(land.getPrice()));
         }
         return true;

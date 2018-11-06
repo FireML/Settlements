@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.command.empire;
 
-import me.crz.minecraft.kingdoms.command.EmpireSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.empire.gui.PerksGUI;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
@@ -11,8 +10,6 @@ import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
-
-import java.util.stream.Collectors;
 
 public class EmpirePerksCommand extends EmpireSubCommand {
     public EmpirePerksCommand(SubCommand parent) {

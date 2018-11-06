@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.perk.PerkData;
-import me.crz.minecraft.kingdoms.perk.VillagePerk;
+import me.crz.minecraft.kingdoms.perk.LevelPerk;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -37,7 +37,7 @@ public class PerksGUI extends KingdomsGUI {
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
         Village village = resident.getVillage();
 
-        for (VillagePerk perk : VillageManager.getInstance().getPerks()) {
+        for (LevelPerk perk : VillageManager.getInstance().getPerks()) {
             if (!village.hasUnlocked(perk) || !perk.hasEffects()) {
                 continue;
             }

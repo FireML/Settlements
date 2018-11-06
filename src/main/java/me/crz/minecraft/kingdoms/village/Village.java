@@ -5,12 +5,12 @@ import com.google.common.collect.MultimapBuilder;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
-import me.crz.minecraft.kingdoms.perk.Perkable;
-import me.crz.minecraft.kingdoms.perk.VillagePerk;
+import me.crz.minecraft.kingdoms.perk.LevelPerk;
 import me.crz.minecraft.kingdoms.perk.PerkData;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.utils.BonusClaimsHolder;
+import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -53,7 +53,7 @@ import java.util.stream.Collectors;
 
 import static me.crz.minecraft.kingdoms.utils.MessageUtils.yesOrNo;
 
-public class Village implements ConfigurationSerializable, Comparable<Village>, BonusClaimsHolder, Perkable<VillagePerk> {
+public class Village implements ConfigurationSerializable, Comparable<Village>, LandOwner, Targetable {
     private IdObject id = IdObject.get(null);
     private String name;
     private String description = "";
@@ -168,7 +168,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     }
 
     public BuildState getUseState(Use u) {
-        return use.getOrDefault(u, BuildState.RESIDENTS);
+        return use.getOrDefault(u, u.getDefault());
     }
 
     public void setUseState(Use u, BuildState state) {
@@ -187,16 +187,12 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         return banished;
     }
 
-    public void addBanishedResident(Resident res) {
-        if (!this.isBanished(res.getUUID())) {
-            banished.add(res.getUUID());
-        }
+    public boolean addBanishedResident(Resident res) {
+        return banished.add(res.getUUID());
     }
 
-    public void removeBanishedResident(Resident res) {
-        if (this.isBanished(res.getUUID())) {
-            banished.remove(res.getUUID());
-        }
+    public boolean removeBanishedResident(Resident res) {
+        return banished.remove(res.getUUID());
     }
 
     public boolean isBanished(UUID uuid) {
@@ -215,19 +211,19 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         return outpostHomes;
     }
 
-    public SimpleLocation getVillageHome() {
+    public SimpleLocation getHome() {
         return villageHomeLoc;
     }
 
-    public boolean hasVillageHome() {
-        return this.getVillageHome() != null;
+    public boolean hasHome() {
+        return this.getHome() != null;
     }
 
-    public void setVillageHome(Location location) {
-        setVillageHome(new SimpleLocation(location));
+    public void setHome(Location location) {
+        setHome(new SimpleLocation(location));
     }
 
-    public void setVillageHome(SimpleLocation loc) {
+    public void setHome(SimpleLocation loc) {
         villageHomeLoc = loc;
     }
 
@@ -235,8 +231,8 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         return allies;
     }
 
-    public boolean isAlly(Village village) {
-        return village != null && allies.contains(village.getId());
+    public boolean isAlly(LandOwner landOwner) {
+        return landOwner instanceof Village && allies.contains(landOwner.getId());
     }
 
     public void addAlly(Village village) {
@@ -247,8 +243,10 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         allies.remove(village.getId());
     }
 
-    public boolean isTrusted(Village village) {
-        return isAlly(village) || (hasEmpire() && getEmpire().isMember(village));
+    public boolean isTrusted(LandOwner landOwner) {
+        return isAlly(landOwner)
+                || (landOwner instanceof Empire && landOwner.equals(getEmpire()))
+                || (landOwner instanceof Village && hasEmpire() && getEmpire().isMember((Village) landOwner));
     }
 
     public VillageAccess getAccess() {
@@ -306,6 +304,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         }
     }
 
+    @Override
     public boolean isChief(Player player) {
         return player.getUniqueId().equals(chief);
     }
@@ -329,12 +328,14 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     /**
      * Might run database operation!
      */
+    @Override
     public List<Resident> getResidents() {
         return residents.stream()
                 .map(id -> ResidentManager.getInstance().getResident(id)).filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<Resident> getOnlineResidents() {
         return residents.stream()
                 .map(Bukkit::getPlayer).filter(Objects::nonNull)
@@ -343,8 +344,29 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     }
 
     @Override
+    public boolean canAdminPlots(Resident resident) {
+        return isMember(resident) && resident.getVillageRank().atLeast(VillageRank.ELDER);
+    }
+
+    @Override
+    public boolean isOfficer(Player player) {
+        Resident res = ResidentManager.getInstance().getResident(player);
+        return isMember(res) && res.getVillageRank().atLeast(VillageRank.BUILDER);
+    }
+
+    @Override
     public boolean isMember(Resident resident) {
         return residents.contains(resident.getUUID());
+    }
+
+    @Override
+    public String getStateTag() {
+        return getState().getTag();
+    }
+
+    @Override
+    public String getStateKey() {
+        return getState().getKey();
     }
 
     public Set<UUID> getResidentIds() {
@@ -363,6 +385,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         this.villageState = state;
     }
 
+    @Override
     public BuildState getBuildState() {
         return buildState;
     }
@@ -403,6 +426,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         this.explosions = explosions;
     }
 
+    @Override
     public boolean isBuff() {
         return buff;
     }
@@ -514,37 +538,8 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     }
 
     @Override
-    public VillagePerk getPerk(String name) {
+    public LevelPerk getPerk(String name) {
         return VillageManager.getInstance().getPerk(name);
-    }
-
-    @Override
-    public boolean matchesLevelRequirement(VillagePerk perk) {
-        return getState().above(perk.getState()) || (getState() == perk.getState() && getLevel() >= perk.getLevel());
-    }
-
-    @Override
-    public void runCommands(VillagePerk perk) {
-        Utils.runAsync(() -> {
-            List<String> commands = new ArrayList<>();
-            for (String command : perk.getCommands()) {
-                for (Resident resident : getResidents()) {
-                    commands.add(MessageUtils.replacePlaceholders(command,
-                            "player", resident.getName(),
-                            "playerid", resident.getUUID().toString(),
-                            "settlement", getName(),
-                            "state", getState().getTag(),
-                            "level", String.valueOf(getLevel()),
-                            "perk", perk.getTag()
-                    ));
-                }
-            }
-            Utils.runSync(() -> {
-                for (String command : commands) {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
-                }
-            });
-        });
     }
 
     @Override
@@ -567,8 +562,8 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         map.put("joinFee", getJoinFee());
         map.put("tax", getTax());
         map.put("bonusClaims", getBonusClaims());
-        if (getVillageHome() != null)
-            map.put("homeLoc", getVillageHome().serialize());
+        if (getHome() != null)
+            map.put("homeLoc", getHome().serialize());
         map.put("outposts", getOutpostHomes().values().stream().collect(Collectors.toMap(NamedLocation::getName, NamedLocation::serialize)));
         map.put("banished", getBanishedResidents().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("uses", getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
@@ -606,10 +601,10 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         village.setBonusClaims((Integer) map.get("bonusClaims"));
         village.getAllies().addAll(((Collection<Object>) map.get("allies")).stream().map(IdObject::get).collect(Collectors.toSet()));
         if (map.get("homeLoc") != null) {
-            village.setVillageHome(SimpleLocation.deserialize((Map<String, Object>) map.get("homeLoc")));
+            village.setHome(SimpleLocation.deserialize((Map<String, Object>) map.get("homeLoc")));
         } else if (map.get("homeLoc_x") != null && map.get("homeLoc_y") != null && map.get("homeLoc_z") != null
                 && map.get("homeLoc_world") != null && map.get("homeLoc_yaw") != null && map.get("homeLoc_pitch") != null){
-            village.setVillageHome(new SimpleLocation(
+            village.setHome(new SimpleLocation(
                     (String) map.get("homeLoc_world"),
                     (double) map.get("homeLoc_x"),
                     (double) map.get("homeLoc_y"),
@@ -622,11 +617,11 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
                 .map(NamedLocation::deserialize)
                 .filter(Objects::nonNull)
                 .forEach(village::setOutpostHome);
-        village.getBanishedResidents().addAll(((Collection<String>) map.get("banished")).stream().map(UUID::fromString).collect(Collectors.toSet()));
+        ((Collection<String>) map.get("banished")).stream().map(UUID::fromString).forEach(village.getBanishedResidents()::add);
         Map<String, Object> uses = (Map<String, Object>) map.get("uses");
         for (Use u : Use.values()) {
             if (uses.containsKey(u.name())) {
-                village.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), BuildState.RESIDENTS));
+                village.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), u.getDefault()));
             }
         }
         ((Map<String, Object>) map.get("vault")).entrySet().stream()

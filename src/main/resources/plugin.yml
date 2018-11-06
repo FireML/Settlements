@@ -7,6 +7,9 @@ author: crz
 authors: [Phoenix616]
 api-version: 1.13
 commands:
+  plot:
+    description: Plot Commands.
+    aliases: [p, land]
   village:
     description: Village Commands.
     aliases: [s, settlement, kingdom, k]

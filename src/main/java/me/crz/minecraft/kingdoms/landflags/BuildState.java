@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public enum BuildState implements NameTag, Rankable<BuildState> {
     PRIVATE(Material.RED_WOOL, AppliesTo.LAND, AppliesTo.EMPIRE),
     FRIENDS(Material.ORANGE_WOOL, AppliesTo.LAND),
-    OFFICERS(Material.LIGHT_BLUE_WOOL, AppliesTo.LAND, AppliesTo.SETTLEMENT),
+    OFFICERS(Material.LIGHT_BLUE_WOOL),
     RESIDENTS(Material.YELLOW_WOOL, AppliesTo.LAND, AppliesTo.SETTLEMENT),
     ALLY(Material.CYAN_WOOL),
     TRUSTED(Material.BLUE_WOOL, AppliesTo.LAND, AppliesTo.SETTLEMENT),

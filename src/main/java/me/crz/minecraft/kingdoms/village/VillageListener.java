@@ -103,7 +103,7 @@ public class VillageListener implements Listener {
                 return;
             }
             if (ChatColor.stripColor( lines.get(0)).equalsIgnoreCase("[teleporter]")) {
-                if (land.getOwnerVillage().equals(village)) {
+                if (land.getLandOwner().equals(village)) {
                     new TeleportersGUI().build(e.getPlayer());
                 } else {
                     MessageUtils.tell(e.getPlayer(), "&c&lYou can't use another villages teleporter");

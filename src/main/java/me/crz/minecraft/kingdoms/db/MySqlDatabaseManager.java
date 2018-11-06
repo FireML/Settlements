@@ -71,7 +71,6 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "name VARCHAR(255) NOT NULL, INDEX (name), UNIQUE (name), "
                     + "capitalId INTEGER NOT NULL,"
                     + "FOREIGN KEY (capitalId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE RESTRICT,"
-                    + "level INTEGER NOT NULL,"
                     + "description TEXT NOT NULL,"
                     + "symbol VARCHAR(16) NOT NULL,"
                     + "access VARCHAR(255) NOT NULL,"
@@ -93,6 +92,13 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "homeLoc_pitch FLOAT"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "empire_banished ("
+                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+                    + "empireId INTEGER, INDEX (empireId),"
+                    + "FOREIGN KEY (empireId) REFERENCES " + tablePrefix + "empires(id) ON DELETE CASCADE,"
+                    + "banished VARCHAR(320)"
+                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
+
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "empire_vaults ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                     + "empireId INTEGER, INDEX(empireId),"
@@ -111,6 +117,15 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "lastUsed BIGINT,"
                     + "active BOOLEAN,"
                     + "UNIQUE (empireId, perk)"
+                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
+
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "empire_uses ("
+                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+                    + "empireId INTEGER, INDEX(empireId),"
+                    + "FOREIGN KEY (empireId) REFERENCES " + tablePrefix + "empires(id) ON DELETE CASCADE,"
+                    + "type VARCHAR(255) NOT NULL,"
+                    + "state VARCHAR(255) NOT NULL,"
+                    + "UNIQUE (empireId, type)"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlements ("
@@ -298,7 +313,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
     @Override
     public void saveEmpire(Empire empire) {
         Utils.catchSync();
-        Map<String, Object> values = getValues(empire.serialize(), "senators", "vault", "perks");
+        Map<String, Object> values = getValues(empire.serialize(), "banished", "senators", "vault", "perks");
         String sql = "INSERT INTO " + tablePrefix + "empires "
                 + "(`" + String.join("`,`", values.keySet()) + "`)"
                 + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")"
@@ -318,7 +333,15 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 }
             }
             if (!empire.getId().isNull()) {
+                List<String> banished = new ArrayList<>();
+                empire.getBanishedPlayers().stream().map(UUID::toString).forEach(banished::add);
+                empire.getBanishedVillages().stream().map(v -> "village:" + v.getId()).forEach(banished::add);
+                empire.getBanishedEmpires().stream().map(e -> "empire:" + e.getId()).forEach(banished::add);
+                updateList(conn, "empire_banished", "empireId", (Integer) empire.getId().value(), "banished", banished);
+
                 updateDataMap(conn, "empire_vaults", "empireId", (Integer) empire.getId().value(), "content", "amount", empire.getVault());
+                updateDataMap(conn, "empire_uses", "empireId", (Integer) empire.getId().value(), "type", "state",
+                        empire.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
                 updateDataMap(conn, "empire_perks", "empireId", (Integer) empire.getId().value(), "perk", "",
                         empire.getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
             }
@@ -371,7 +394,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
             }
             if (!village.getId().isNull()) {
                 updateUserList(conn, "settlement_banished", "settlementId", (Integer) village.getId().value(), "banishedId", village.getBanishedResidents());
-                updateAllyList(conn, "settlement_allies", "settlementId", (Integer) village.getId().value(), "allyId", village.getAllies());
+                updateList(conn, "settlement_allies", "settlementId", (Integer) village.getId().value(), "allyId", village.getAllies().stream().map(IdObject::value).collect(Collectors.toList()));
                 updateDataMap(conn, "settlement_vaults", "settlementId", (Integer) village.getId().value(), "content", "amount", village.getVault());
                 updateDataMap(conn, "settlement_outposts", "settlementId", (Integer) village.getId().value(), "name", "", village.getOutpostHomes());
                 updateDataMap(conn, "settlement_uses", "settlementId", (Integer) village.getId().value(), "type", "state",
@@ -607,7 +630,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     }
                 }
                 if (resident.getId() != null) {
-                    updateChannelList(conn, "resident_channels", "userId", (Integer) resident.getId(), "channel", resident.getChannels());
+                    updateList(conn, "resident_channels", "userId", (Integer) resident.getId(), "channel", resident.getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
                     updateUserList(conn, "resident_friends", "userId", (Integer) resident.getId(), "friendId", resident.getFriends());
                     updateUserList(conn, "resident_ignores", "userId", (Integer) resident.getId(), "ignoredId", resident.getIgnore());
                 }
@@ -787,7 +810,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
         Collection<String> senators = new ArrayList<>();
         for (int memberId : members) {
-            PreparedStatement sSta = conn.prepareStatement("SELECT uuid FROM " + tablePrefix + "residents WHERE senator = true AND settlementId = ?;");
+            PreparedStatement sSta = conn.prepareStatement("SELECT uuid FROM " + tablePrefix + "residents WHERE senator = true AND empireId = ?;");
             sSta.setInt(1, memberId);
             ResultSet sRs = sSta.executeQuery();
             while (sRs.next()) {
@@ -796,7 +819,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
         }
         map.put("senators", senators);
 
-        PreparedStatement vSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_vaults WHERE settlementId = ?;");
+        map.put("banished", selectList(conn, "empire_banished", "empireId", id, "banished"));
+
+        PreparedStatement vSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_vaults WHERE empireId = ?;");
         vSta.setInt(1, id);
         ResultSet vRs = vSta.executeQuery();
         Map<String, Long> vault = new LinkedHashMap<>();
@@ -805,7 +830,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         }
         map.put("vault", vault);
 
-        PreparedStatement pSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_perks WHERE settlementId = ?;");
+        PreparedStatement pSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_perks WHERE empireId = ?;");
         pSta.setInt(1, id);
         ResultSet pRs = pSta.executeQuery();
         Map<String, Map<String, Object>> unlockedPerks = new LinkedHashMap<>();
@@ -1003,6 +1028,39 @@ public class MySqlDatabaseManager extends DatabaseManager {
         return uuids;
     }
 
+    private void updateList(Connection conn, String tableName, String keyColumn, int keyId, String entryColumn, Collection<?> entries) throws SQLException {
+        String deleteSql;
+        if (entries.isEmpty()) {
+            deleteSql = "DELETE FROM " + tablePrefix + tableName + " " +
+                    " WHERE " + keyColumn + " = ?;";
+        } else {
+            deleteSql = "DELETE t FROM " + tablePrefix + tableName + " AS t" +
+                    " WHERE t." + keyColumn + " = ?" +
+                    " AND t." + entryColumn + " NOT IN (" + String.join(",", Collections.nCopies(entries.size(), "?")) + ");";
+        }
+
+        PreparedStatement deleteSta = conn.prepareStatement(deleteSql);
+        deleteSta.setInt(1, keyId);
+        int i = 2;
+        for (Object entry : entries) {
+            deleteSta.setObject(i, entry);
+            i++;
+        }
+        deleteSta.executeUpdate();
+
+        if (!entries.isEmpty()) {
+            String insertSql = "INSERT IGNORE INTO " + tablePrefix + tableName + " (" + keyColumn + ", " + entryColumn + ")" +
+                    " VALUES (?,?);";
+            PreparedStatement insertSta = conn.prepareStatement(insertSql);
+            for (Object entry : entries) {
+                insertSta.setInt(1, keyId);
+                insertSta.setObject(2, entry);
+                insertSta.addBatch();
+            }
+            insertSta.executeBatch();
+        }
+    }
+
     private void updateUserList(Connection conn, String tableName, String keyColumn, int keyId, String usersColumn, Collection<UUID> users) throws SQLException {
         String deleteSql;
         if (users.isEmpty()) {
@@ -1031,74 +1089,6 @@ public class MySqlDatabaseManager extends DatabaseManager {
             for (UUID id : users) {
                 insertSta.setInt(1, keyId);
                 insertSta.setString(2, id.toString());
-                insertSta.addBatch();
-            }
-            insertSta.executeBatch();
-        }
-    }
-
-    private void updateAllyList(Connection conn, String tableName, String keyColumn, int keyId, String allyColumn, Collection<IdObject> allies) throws SQLException {
-        String deleteSql;
-        if (allies.isEmpty()) {
-            deleteSql = "DELETE FROM " + tablePrefix + tableName + " " +
-                    " WHERE " + keyColumn + " = ?;";
-        } else {
-            deleteSql = "DELETE t FROM " + tablePrefix + tableName + " AS t" +
-                    " WHERE t." + keyColumn + " = ?" +
-                    " AND t." + allyColumn + " NOT IN " +
-                    "(" + String.join(",", Collections.nCopies(allies.size(), "?")) + ");";
-        }
-
-        PreparedStatement deleteSta = conn.prepareStatement(deleteSql);
-        deleteSta.setInt(1, keyId);
-        int i = 2;
-        for (IdObject id : allies) {
-            deleteSta.setInt(i, (Integer) id.value());
-            i++;
-        }
-        deleteSta.executeUpdate();
-
-        if (!allies.isEmpty()) {
-            String insertSql = "INSERT IGNORE INTO " + tablePrefix + tableName + " (" + keyColumn + ", " + allyColumn + ")" +
-                    " VALUES (?,?);";
-            PreparedStatement insertSta = conn.prepareStatement(insertSql);
-            for (IdObject id : allies) {
-                insertSta.setInt(1, keyId);
-                insertSta.setInt(2, (Integer) id.value());
-                insertSta.addBatch();
-            }
-            insertSta.executeBatch();
-        }
-    }
-
-    private void updateChannelList(Connection conn, String tableName, String keyColumn, int keyId, String channelColumn, Collection<ChatChannel> channels) throws SQLException {
-        String deleteSql;
-        if (channels.isEmpty()) {
-            deleteSql = "DELETE FROM " + tablePrefix + tableName + " " +
-                    " WHERE " + keyColumn + " = ?;";
-        } else {
-            deleteSql = "DELETE t FROM " + tablePrefix + tableName + " AS t" +
-                    " WHERE t." + keyColumn + " = ?" +
-                    " AND t." + channelColumn + " NOT IN " +
-                    "(" + String.join(",", Collections.nCopies(channels.size(), "?")) + ");";
-        }
-
-        PreparedStatement deleteSta = conn.prepareStatement(deleteSql);
-        deleteSta.setInt(1, keyId);
-        int i = 2;
-        for (ChatChannel channel : channels) {
-            deleteSta.setString(i, channel.name());
-            i++;
-        }
-        deleteSta.executeUpdate();
-
-        if (!channels.isEmpty()) {
-            String insertSql = "INSERT IGNORE INTO " + tablePrefix + tableName + " (" + keyColumn + ", " + channelColumn + ")" +
-                    " VALUES (?,?);";
-            PreparedStatement insertSta = conn.prepareStatement(insertSql);
-            for (ChatChannel channel : channels) {
-                insertSta.setInt(1, keyId);
-                insertSta.setString(2, channel.name());
                 insertSta.addBatch();
             }
             insertSta.executeBatch();

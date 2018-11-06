@@ -16,7 +16,6 @@ public class Perk implements NameTag {
 
     private int repeat = 0;
     private long cooldown = 0;
-    private int level;
     private List<PerkEffect> effects = new ArrayList<>();
     private int bonusClaims = 0;
     private int bonusOutposts = 0;
@@ -29,11 +28,6 @@ public class Perk implements NameTag {
         this.icon = Material.valueOf(config.getString("icon", icon.name()).toUpperCase());
         this.repeat = config.getInt("repeat", repeat);
         this.cooldown = config.getLong("cooldown", cooldown);
-        if (config.isInt("level")) {
-            this.level = config.getInt("level");
-        } else {
-            throw new IllegalArgumentException("Config does not contain level!");
-        }
         for (Map<?, ?> map : config.getMapList("effects")) {
             try {
                 effects.add(new PerkEffect((Map<String, Object>) map));
@@ -71,10 +65,6 @@ public class Perk implements NameTag {
 
     public long getCooldown() {
         return cooldown;
-    }
-
-    public int getLevel() {
-        return level;
     }
 
     public List<PerkEffect> getEffects() {

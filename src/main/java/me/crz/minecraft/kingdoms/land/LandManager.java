@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -53,15 +55,16 @@ public class LandManager {
     /**
      * Use {@link DatabaseManager#saveLand(OwnedLand...)}
      */
-    @Deprecated
-    public void saveLand(OwnedLand land) {
-        cacheLand(land);
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
+    public void saveLand(OwnedLand... lands) {
+        for (OwnedLand land : lands) {
+            cacheLand(land);
+        }
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(lands));
     }
 
     private void cacheLand(OwnedLand land) {
         landTable.put(land.getWorldName(), land.getSimpleKey(), land);
-        villageLands.put(land.getOwnerVillage().getId(), land.getLocation());
+        villageLands.put(land.getLandOwner().getId(), land.getLocation());
         if (land.isPlot()) {
             playerPlots.put(land.getPlotOwner(), land.getLocation());
         }
@@ -74,7 +77,7 @@ public class LandManager {
         Collection<OwnedLand> lands = getClaimedLand(village);
         villageLands.removeAll(village.getId());
         for (OwnedLand land : lands) {
-            land.setOwnerVillage(newOwner);
+            land.setLandOwner(newOwner);
             villageLands.put(newOwner.getId(), land.getLocation());
         }
         Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(lands.toArray(new OwnedLand[0])));
@@ -85,9 +88,9 @@ public class LandManager {
         if (this.getClaimedLandSize(village) == 0) {
             SimpleLocation home = new SimpleLocation(location);
             if (chunk.contains(home)) {
-                village.setVillageHome(location);
+                village.setHome(location);
             } else {
-                village.setVillageHome(chunk.getCenterBukkitLocation());
+                village.setHome(chunk.getCenterBukkitLocation());
             }
             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
         }
@@ -111,7 +114,14 @@ public class LandManager {
         if (location == null) {
             return null;
         }
-        return landTable.get(location.getWorld(), location.getSimpleKey());
+        OwnedLand land = landTable.get(location.getWorld(), location.getSimpleKey());
+        if (land == null) {
+            Empire empire = EmpireManager.getInstance().getEmpireFromWorld(location.getWorld());
+            if (empire != null) {
+                land = new OwnedLand(empire, location);
+            }
+        }
+        return land;
     }
 
     public OwnedLand getLand(int x, int z, World world) {
@@ -133,14 +143,14 @@ public class LandManager {
         Set<Village> saveVillages = new HashSet<>();
         for (OwnedLand land : lands) {
             landTable.remove(land.getWorldName(), land.getSimpleKey());
-            villageLands.remove(land.getOwnerVillage().getId(), land.getLocation());
-            if (land.getOwnerVillage() != null && land.isOutpost()) {
-                if (land.getOwnerVillage().getOutpostHomes().remove(land.getOutpostName().toLowerCase()) != null) {
-                    saveVillages.add(land.getOwnerVillage());
+            villageLands.remove(land.getLandOwner().getId(), land.getLocation());
+            if (land.getLandOwner() instanceof Village && land.isOutpost()) {
+                if (((Village) land.getLandOwner()).getOutpostHomes().remove(land.getOutpostName().toLowerCase()) != null) {
+                    saveVillages.add((Village) land.getLandOwner());
                 }
             }
-            KingdomsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + land.getKey() + " owned by " + land.getOwnerVillage().getName() + " was unclaimed");
-            land.setOwnerVillage(null);
+            KingdomsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + land.getKey() + " owned by " + land.getLandOwner().getName() + " was unclaimed");
+            land.setLandOwner(null);
         }
         Utils.runAsync(() -> {
             if (KingdomsPlugin.getInstance().getConfig().getBoolean("remove-locks-on-unclaim")) {
@@ -223,12 +233,10 @@ public class LandManager {
         for (Use use : Use.values()) {
             land.setUseState(use, BuildState.PRIVATE);
         }
-        if (owner != null) {
-            playerPlots.put(owner, land.getLocation());
-        } else {
+        if (owner == null) {
             land.setEmbassy(false);
         }
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));
+        saveLand(land);
     }
 
     public int getClaimedLandSize(Village village) {
@@ -257,8 +265,8 @@ public class LandManager {
 
     public Set<OwnedLand> getAllConnectedLand(OwnedLand land, Function<OwnedLand, FilterResponse> filter) {
         Set<OwnedLand> found = new LinkedHashSet<>();
-        Village village = land.getOwnerVillage();
-        if (village == null) {
+        LandOwner landOwnder = land.getLandOwner();
+        if (landOwnder == null) {
             return found;
         }
 
@@ -282,7 +290,7 @@ public class LandManager {
                 SimpleChunkLocation search = toSearch.poll();
                 checked.add(search);
                 OwnedLand foundLand = getLand(search);
-                if (foundLand != null && foundLand.isOwnedBy(land.getOwnerVillage())) {
+                if (foundLand != null && foundLand.isOwnedBy(land.getLandOwner())) {
                     if (filter != null) {
                         switch (filter.apply(foundLand)) {
                             case ABORT:
@@ -332,7 +340,7 @@ public class LandManager {
     }
 
     public void checkUnclaim() {
-        Map<Village, Integer> villageUnclaims = new HashMap<>();
+        Map<LandOwner, Integer> villageUnclaims = new HashMap<>();
         List<OwnedLand> toUnclaim = new ArrayList<>();
         List<OwnedLand> toSave = new ArrayList<>();
         for (OwnedLand land : landTable.values()) {
@@ -340,14 +348,14 @@ public class LandManager {
                 land.setUnclaimIn(land.getUnclaimIn() - 1);
                 if (land.getUnclaimIn() == 0) {
                     toUnclaim.add(land);
-                    villageUnclaims.put(land.getOwnerVillage(), villageUnclaims.getOrDefault(land.getOwnerVillage(), 0) + 1);
+                    villageUnclaims.put(land.getLandOwner(), villageUnclaims.getOrDefault(land.getLandOwner(), 0) + 1);
                 } else {
                     toSave.add(land);
                 }
             }
         }
         unclaimLand(toUnclaim);
-        for (Map.Entry<Village, Integer> e : villageUnclaims.entrySet()) {
+        for (Map.Entry<LandOwner, Integer> e : villageUnclaims.entrySet()) {
             Message.get("land-unclaim").tell(e.getKey().getOnlineResidents(), "amount", String.valueOf(e.getValue()));
         }
         Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(toSave));

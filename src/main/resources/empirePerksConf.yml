@@ -60,7 +60,6 @@ resistance1:
     repeating:
       cash: 100
 speed1:
-  level: 2
   effects:
     - type: speed
       strength: 1
@@ -68,7 +67,6 @@ speed1:
     unlock:
       cash: 1000
 strength1:
-  level: 3
   effects:
     - type: increase_damage
       strength: 1
@@ -76,7 +74,6 @@ strength1:
     unlock:
       cash: 1000
 regen1:
-  level: 4
   effects:
     - type: regeneration
       strength: 1
@@ -84,7 +81,6 @@ regen1:
     unlock:
       cash: 1000
 speed2:
-  level: 5
   effects:
     - type: speed
       strength: 2
@@ -92,7 +88,6 @@ speed2:
     unlock:
       cash: 1000
 resistance2:
-  level: 6
   effects:
     - type: damage_resistance
       strength: 2
@@ -100,7 +95,6 @@ resistance2:
     unlock:
       cash: 1000
 regen2:
-  level: 8
   effects:
     - type: regeneration
       strength: 2
@@ -108,7 +102,6 @@ regen2:
     unlock:
       cash: 1000
 haste1:
-  level: 9
   effects:
     - type: fast_digging
       strength: 1
@@ -116,7 +109,6 @@ haste1:
     unlock:
       cash: 1000
 haste2:
-  level: 10
   effects:
     - type: fast_digging
       strength: 1
@@ -124,7 +116,6 @@ haste2:
     unlock:
       cash: 1000
 extra-claims:
-  level: 10
   repeat: -1 # as often as you want
   bonus:
     claims: 10
@@ -134,7 +125,6 @@ extra-claims:
     repeat:
       cash: 1000
 extra-outpost:
-  level: 10
   repeat: -1
   bonus:
     outposts: 1

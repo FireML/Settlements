@@ -6,7 +6,7 @@
 
     <groupId>me.crz.minecraft.kingdoms</groupId>
     <artifactId>kingdoms</artifactId>
-    <version>1.1.1</version>
+    <version>1.2.0</version>
     <packaging>jar</packaging>
 
     <name>ApeironKingdoms</name>
@@ -27,6 +27,7 @@
                 </property>
             </activation>
             <properties>
+                <jarName>Kingdoms</jarName>
                 <buildNumber>0</buildNumber>
                 <buildDescription>(compiled at ${maven.build.timestamp})</buildDescription>
             </properties>
@@ -39,6 +40,7 @@
                 </property>
             </activation>
             <properties>
+                <jarName>${project.name}</jarName>
                 <buildNumber>${env.BUILD_NUMBER}</buildNumber>
                 <buildDescription>(build ${env.BUILD_NUMBER})</buildDescription>
             </properties>
@@ -47,7 +49,7 @@
 
     <build>
         <defaultGoal>clean package</defaultGoal>
-        <finalName>${project.name}</finalName>
+        <finalName>${jarName}</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -66,7 +68,7 @@
                         </relocation>
                         <relocation>
                             <pattern>com.github.benmanes.caffeine</pattern>
-                            <shadedPattern>me.crz.minecraft.kingdoms.libs.caffein</shadedPattern>
+                            <shadedPattern>me.crz.minecraft.kingdoms.libs.caffeine</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.apache.commons.io</pattern>

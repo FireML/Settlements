@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 
 public interface Perkable<T extends Perk> extends Vaultable {
 
-    int getLevel();
-
     Map<String, PerkData> getPerksMap();
 
     T getPerk(String name);
@@ -38,10 +36,6 @@ public interface Perkable<T extends Perk> extends Vaultable {
 
     default boolean canRepeat(T perk) {
         return hasUnlocked(perk) && has(perk.getRepeatCost()) && checkPerkCount(perk);
-    }
-
-    default boolean matchesLevelRequirement(T perk) {
-        return getLevel() >= perk.getLevel();
     }
 
     default boolean checkPerkCount(T perk) {

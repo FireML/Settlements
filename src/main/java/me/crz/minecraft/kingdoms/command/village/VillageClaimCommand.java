@@ -2,7 +2,6 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
@@ -96,12 +95,12 @@ public class VillageClaimCommand extends VillageSubCommand {
                 if (toClaim.size() > 1) {
                     continue;
                 }
-                if (land.getOwnerVillage().equals(village)) {
+                if (land.getLandOwner().equals(village)) {
                     MessageUtils.tell(player, getError("already-own-land"));
                 } else {
                     MessageUtils.tell(player, getError("cant-claim-here"),
-                            "owner", land.getOwnerVillage().getName(),
-                            "state", land.getOwnerVillage().getState().getTag()
+                            "owner", land.getLandOwner().getName(),
+                            "state", land.getLandOwner().getStateTag()
                     );
                 }
                 return true;
@@ -111,11 +110,11 @@ public class VillageClaimCommand extends VillageSubCommand {
                 if (checkLand == null) {
                     continue;
                 }
-                if (!checkLand.getOwnerVillage().equals(village) && !checkLand.getOwnerVillage().isTrusted(village)) {
+                if (!checkLand.getLandOwner().equals(village) && !((Village) checkLand.getLandOwner()).isTrusted(village)) {
                     if (toClaim.size() == 1) {
                         res.tell(getError("claim-too-close"),
-                                "owner", checkLand.getOwnerVillage().getName(),
-                                "state", checkLand.getOwnerVillage().getState().getTag()
+                                "owner", checkLand.getLandOwner().getName(),
+                                "state", checkLand.getLandOwner().getStateTag()
                         );
                         return true;
                     } else {

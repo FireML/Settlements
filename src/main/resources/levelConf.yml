@@ -75,34 +75,3 @@ kingdom:
     outposts: 12
     requirements:
       STONE: 1
-empire:
-  level-1:
-    requirements:
-      STONE: 1
-  level-2:
-    requirements:
-      STONE: 1
-  level-3:
-    requirements:
-      STONE: 1
-  level-4:
-    requirements:
-      STONE: 1
-  level-5:
-    requirements:
-      STONE: 1
-  level-6:
-    requirements:
-      STONE: 1
-  level-7:
-    requirements:
-      STONE: 1
-  level-8:
-    requirements:
-      STONE: 1
-  level-9:
-    requirements:
-      STONE: 1
-  level-10:
-    requirements:
-      STONE: 1

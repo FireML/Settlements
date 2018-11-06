@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.command.empire;
 
-import me.crz.minecraft.kingdoms.command.EmpireSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.empire.gui.ModeGUI;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;

@@ -45,8 +45,7 @@ public class UseGui extends PlotGUI {
                     OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
                     if (land != null) {
                         Resident resident = ResidentManager.getInstance().getResident(p);
-                        boolean canAdmin = resident.hasVillage() && land.isOwnedBy(resident.getVillage()) && resident.getVillageRank().atLeast(VillageRank.ELDER);
-                        if (land.isPlotOwner(p) || canAdmin) {
+                        if (land.isPlotOwner(p) || land.canAdmin(resident)) {
                             BuildState next = land.getUseState(u).next(BuildState.AppliesTo.LAND);
                             land.setUseState(u, next);
                             MessageUtils.tell(p, Message.get("command.village.plot.use.success"),
@@ -84,8 +83,7 @@ public class UseGui extends PlotGUI {
                     OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
                     if (land != null) {
                         Resident resident = ResidentManager.getInstance().getResident(p);
-                        boolean canAdmin = resident.hasVillage() && land.isOwnedBy(resident.getVillage()) && resident.getVillageRank().atLeast(VillageRank.ELDER);
-                        if (land.isPlotOwner(p) || canAdmin) {
+                        if (land.isPlotOwner(p) || land.canAdmin(resident)) {
                             for (Use u : Use.values()) {
                                 land.setUseState(u, state);
                             }

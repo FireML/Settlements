@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
@@ -34,12 +35,12 @@ import me.crz.minecraft.kingdoms.landflags.Use;
 
 public class OwnedLand implements ConfigurationSerializable {
     private IdObject id;
-    private Village ownerVillage;
+    private LandOwner landOwner;
     private UUID plotOwner = null;
     private SimpleChunkLocation location;
     private int unclaimIn = 0;
-    private int price;
-    private boolean forSale;
+    private int price = 0;
+    private boolean forSale = false;
     private boolean pvp = false;
     private boolean mobSpawning = false;
     private boolean fireSpread = false;
@@ -52,20 +53,13 @@ public class OwnedLand implements ConfigurationSerializable {
     private boolean embassy;
     private UUID link;
 
-    public OwnedLand(Village ownerVillage, SimpleChunkLocation location) {
-        this(ownerVillage, location, null, 0, false);
-    }
-
-    public OwnedLand(Village ownerVillage, SimpleChunkLocation location, UUID plotOwner, int price, boolean forSale) {
-        this.ownerVillage = ownerVillage;
+    public OwnedLand(LandOwner landOwner, SimpleChunkLocation location) {
+        this.landOwner = landOwner;
         this.location = location;
-        this.plotOwner = plotOwner;
-        this.forSale = forSale;
-        this.price = price;
     }
 
     public BuildState getUseState(Use u) {
-        return use.getOrDefault(u, u.getDefault());
+        return use.getOrDefault(u, landOwner.getUseState(u));
     }
 
     public void setUseState(Use u, BuildState state) {
@@ -107,16 +101,20 @@ public class OwnedLand implements ConfigurationSerializable {
         return outpost;
     }
 
-    public Village getOwnerVillage() {
-        return ownerVillage;
+    public LandOwner getLandOwner() {
+        return landOwner;
     }
 
-    public void setOwnerVillage(Village ownerVillage) {
-        this.ownerVillage = ownerVillage;
+    public void setLandOwner(LandOwner landOwner) {
+        this.landOwner = landOwner;
     }
 
-    public boolean isOwnedBy(Village village) {
-        return getOwnerVillage() != null && getOwnerVillage().equals(village);
+    public boolean isOwnedBy(LandOwner landOwner) {
+        return getLandOwner() != null && getLandOwner().equals(landOwner);
+    }
+
+    public boolean isOwnedBy(Resident resident) {
+        return getLandOwner() != null && getLandOwner().isMember(resident);
     }
 
     public int getX() {
@@ -365,8 +363,8 @@ public class OwnedLand implements ConfigurationSerializable {
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new LinkedHashMap<>();
-        map.put("ownerVillage", getOwnerVillage().getName());
-        map.put("settlementId", getOwnerVillage().getId().value());
+        map.put("landOwner", getLandOwner().getName());
+        map.put("settlementId", getLandOwner().getId().value());
         map.put("x", getX());
         map.put("z", getZ());
         map.put("world", getWorldName());
@@ -392,12 +390,18 @@ public class OwnedLand implements ConfigurationSerializable {
             KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize OwnedLand! (" + map + ")");
             return null;
         }
-        OwnedLand land = new OwnedLand(
-                map.get("ownerVillage") != null
-                        ? VillageManager.getInstance().getVillageFromName((String) map.get("ownerVillage"))
-                        : VillageManager.getInstance().getVillageFromId(IdObject.get(map.get("settlementId"))),
-                new SimpleChunkLocation((String) map.get("world"), (Integer) map.get("x"), (Integer) map.get("z"))
-        );
+        SimpleChunkLocation location = new SimpleChunkLocation((String) map.get("world"), (Integer) map.get("x"), (Integer) map.get("z"));
+        LandOwner landOwner = EmpireManager.getInstance().getEmpireFromWorld(location.getWorld());
+        if (landOwner == null) {
+            landOwner = map.get("landOwner") != null
+                    ? VillageManager.getInstance().getVillageFromName((String) map.get("landOwner"))
+                    : VillageManager.getInstance().getVillageFromId(IdObject.get(map.get("settlementId")));
+        }
+        if (landOwner == null) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not find owner for OwnedLand! (" + map + ")");
+            return null;
+        }
+        OwnedLand land = new OwnedLand(landOwner, location);
         land.setId(IdObject.get(map));
         land.setUnclaimIn((Integer) map.get("unclaimIn"));
         String plotOwnerStr = (String) map.get("owner");
@@ -428,16 +432,18 @@ public class OwnedLand implements ConfigurationSerializable {
                 land.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), BuildState.PRIVATE));
             }
         }
-        for (NamedLocation o : land.getOwnerVillage().getOutpostHomes().values()) {
-            if (land.getLocation().contains(o)) {
-                land.setOutpost(o.getName());
+        if (land.getLandOwner() instanceof Village) {
+            for (NamedLocation o : ((Village) land.getLandOwner()).getOutpostHomes().values()) {
+                if (land.getLocation().contains(o)) {
+                    land.setOutpost(o.getName());
+                }
             }
         }
         return land;
     }
 
     public boolean syncLinked(OwnedLand land) {
-        if (!isOwnedBy(land.getOwnerVillage()) || !isPlotOwner(land.getPlotOwner()) || !isLinked(land)) {
+        if (!isOwnedBy(land.getLandOwner()) || !isPlotOwner(land.getPlotOwner()) || !isLinked(land)) {
             return false;
         }
         boolean r = false;
@@ -461,14 +467,14 @@ public class OwnedLand implements ConfigurationSerializable {
     }
 
     public boolean containsHome() {
-        return getLocation().contains(getOwnerVillage().getVillageHome());
+        return getLocation().contains(getLandOwner().getHome());
     }
 
     public String[] getReplacements() {
         return new String[] {
-                "state", getOwnerVillage().getState().getTag(),
+                "state", getLandOwner().getStateTag(),
                 "description", getDescription(),
-                "settlement", getOwnerVillage().getName(),
+                "landowner", getLandOwner().getName(),
                 "spawning", String.valueOf(isMobSpawning()),
                 "firespread", String.valueOf(isFireSpread()),
                 "explosions", String.valueOf(isExplosions()),
@@ -481,5 +487,9 @@ public class OwnedLand implements ConfigurationSerializable {
     @Override
     public int hashCode() {
         return getLocation().hashCode();
+    }
+
+    public boolean canAdmin(Resident resident) {
+        return getLandOwner().canAdminPlots(resident);
     }
 }

@@ -1,4 +1,4 @@
-package me.crz.minecraft.kingdoms.command;
+package me.crz.minecraft.kingdoms.command.friend;
 
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.friend.FriendListCommand;

@@ -8,7 +8,6 @@ import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.integration.LWCIntegration;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.vault.EmpireVaultListener;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -101,7 +100,6 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             this.getLandPerks().runTimer();
             this.getServer().getPluginManager().registerEvents(new BanishListener(), this);
             this.getServer().getPluginManager().registerEvents(new VaultListener(), this);
-            this.getServer().getPluginManager().registerEvents(new EmpireVaultListener(), this);
             this.getServer().getPluginManager().registerEvents(new VillageListener(), this);
             this.getServer().getPluginManager().registerEvents(new EmpireListener(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlags(), this);

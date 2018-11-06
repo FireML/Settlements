@@ -2,30 +2,34 @@ package me.crz.minecraft.kingdoms.empire;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.land.LandOwner;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
+import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.perk.Perk;
 import me.crz.minecraft.kingdoms.perk.PerkData;
 import me.crz.minecraft.kingdoms.perk.Perkable;
+import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.utils.BonusClaimsHolder;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
+import me.crz.minecraft.kingdoms.utils.NameTag;
+import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
-import me.crz.minecraft.kingdoms.utils.config.Data;
-import me.crz.minecraft.kingdoms.vault.Levels;
-import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.SimpleLocation;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -40,13 +44,12 @@ import java.util.stream.Collectors;
 
 import static me.crz.minecraft.kingdoms.utils.MessageUtils.yesOrNo;
 
-public class Empire implements ConfigurationSerializable, Comparable<Empire>, BonusClaimsHolder, Perkable<Perk> {
+public class Empire implements ConfigurationSerializable, Comparable<Empire>, LandOwner, Perkable<Perk> {
     private IdObject id = IdObject.get(null);
     private String name;
     private IdObject capital;
     private String description = "";
     private String symbol = "";
-    private int level;
     private long bank = 0;
     private long joinFee = 0;
     private long tax = 0;
@@ -62,11 +65,15 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
     private Map<String, PerkData> perks = new LinkedHashMap<>();
     private SimpleLocation home;
     private BuildState buildState = BuildState.PRIVATE;
+    private Map<Use, BuildState> use = new EnumMap<>(Use.class);
 
-    public Empire(String name, IdObject capital, int level) {
+    private Set<UUID> banishedPlayers = new HashSet<>();
+    private Set<Village> banishedVillages = new HashSet<>();
+    private Set<Empire> banishedEmpires = new HashSet<>();
+
+    public Empire(String name, IdObject capital) {
         this.name = name;
         this.capital = capital;
-        this.level = level;
         members.add(capital);
     }
 
@@ -124,6 +131,12 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
         map.put("buildState", getBuildState().name());
         if (getHome() != null)
             map.put("homeLoc", getHome().serialize());
+        List<String> banished = new ArrayList<>();
+        getBanishedPlayers().stream().map(UUID::toString).forEach(banished::add);
+        getBanishedVillages().stream().map(v -> "village:" + v.getName()).forEach(banished::add);
+        getBanishedEmpires().stream().map(e -> "empire:" + e.getName()).forEach(banished::add);
+        map.put("banished", banished);
+        map.put("uses", getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
         map.put("vault", getVault());
         map.put("perks", getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
         return map;
@@ -136,8 +149,7 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
         }
         Empire empire = new Empire(
                 (String) map.get("name"),
-                IdObject.get(map.get("capital")),
-                (Integer) map.get("level")
+                IdObject.get(map.get("capital"))
         );
         empire.setDescription((String) map.get("description"));
         empire.setSymbol((String) map.get("symbol"));
@@ -170,6 +182,44 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
                     (float) map.get("homeLoc_pitch")
             ));
         }
+        Map<String, Object> uses = (Map<String, Object>) map.get("uses");
+        for (Use u : Use.values()) {
+            if (uses.containsKey(u.name())) {
+                empire.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), u.getDefault()));
+            }
+        }
+        ((Collection<String>) map.get("banished")).stream().filter(s -> !s.contains(":")).map(UUID::fromString).forEach(empire.banishedPlayers::add);
+        ((Collection<String>) map.get("banished")).stream()
+                .filter(s -> s.startsWith("village:"))
+                .map(s -> {
+                    String sub = s.split(":")[1];
+                    Village v = null;
+                    try {
+                        v = VillageManager.getInstance().getVillageFromId(IdObject.get(Integer.parseInt(sub)));
+                    } catch (NumberFormatException ignored) {}
+                    if (v == null) {
+                        v = VillageManager.getInstance().getVillageFromName(sub);
+                    }
+                    return v;
+                })
+                .filter(Objects::nonNull)
+                .forEach(empire.banishedVillages::add);
+        ((Collection<String>) map.get("banished")).stream()
+                .filter(s -> s.startsWith("empire:"))
+                .map(s -> {
+                    String sub = s.split(":")[1];
+                    Empire e = null;
+                    try {
+                        e = EmpireManager.getInstance().getEmpireFromId(IdObject.get(Integer.parseInt(sub)));
+                    } catch (NumberFormatException ignored) {}
+                    if (e == null) {
+                        e = EmpireManager.getInstance().getEmpireFromName(sub);
+                    }
+                    return e;
+                })
+                .filter(Objects::nonNull)
+                .forEach(empire.banishedEmpires::add);
+        ((Collection<String>) map.get("banished")).stream().filter(s -> !s.contains(":")).map(UUID::fromString).forEach(empire.banishedPlayers::add);
         ((Map<String, Object>) map.get("vault")).entrySet().stream()
                 .filter(e -> !(e.getValue() instanceof Integer))
                 .forEach(e -> empire.getVault().put(e.getKey(), (Long) e.getValue()));
@@ -182,8 +232,6 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
 
     @Override
     public int compareTo(Empire e) {
-        if (e.getLevel() != getLevel())
-            return Integer.compare(e.getLevel(), getLevel());
         if (e.getMemberIds().size() != getMemberIds().size())
             return Integer.compare(e.getMemberIds().size(), getMemberIds().size());
         return Long.compare(e.getBank(), getBank());
@@ -227,20 +275,9 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
         this.capital = capital.getId();
     }
 
-    public int getLevel() {
-        return level;
-    }
-
-    public boolean canLevelUp() {
-        int currentLevel = getLevel();
-        if (isMaxLevel()) {
-            return false;
-        }
-        return has(Levels.getEmpireLevelRequirements(currentLevel + 1));
-    }
-
-    public boolean isMaxLevel() {
-        return getLevel() == Levels.EMPIRES_MAX_LEVEL || Levels.getEmpireLevelRequirements(getLevel() + 1) == null;
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 
     @Override
@@ -256,20 +293,6 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
     @Override
     public void runCommands(Perk perk) {
         // TODO: Where should commands run?
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-        if (Data.first.getString("empire-" + level).equals("")) {
-            Data.first.put("empire-" + level, this.getName());
-            KingdomsPlugin.data.save(KingdomsPlugin.getInstance().getDataFolder());
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                Message.get("first-to-reach-level").tell(player,
-                        "name", getName(),
-                        "state", "Empire",
-                        "level", String.valueOf(level));
-            }
-        }
     }
 
     public Set<IdObject> getMemberIds() {
@@ -290,6 +313,32 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
 
     public Collection<Resident> getSenators() {
         return getSenatorIds().stream().map(u -> ResidentManager.getInstance().getResident(u)).collect(Collectors.toList());
+    }
+    public BuildState getUseState(Use u) {
+        return use.getOrDefault(u, u.getDefault());
+    }
+
+    @Override
+    public boolean isChief(Player player) {
+        return getCapital().isChief(player);
+    }
+
+    @Override
+    public boolean isOfficer(Player player) {
+        Resident res = ResidentManager.getInstance().getResident(player);
+        return isMember(res) && res.getEmpireRank().atLeast(EmpireRank.SENATOR);
+    }
+
+    public void setUseState(Use u, BuildState state) {
+        if (state == u.getDefault()) {
+            use.remove(u);
+        } else {
+            use.put(u, state);
+        }
+    }
+
+    public Map<Use, BuildState> getUseStates() {
+        return use;
     }
 
     @Override
@@ -333,13 +382,63 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
         this.symbol = symbol;
     }
 
+    @Override
+    public List<Resident> getResidents() {
+        return getMembers().stream().flatMap(v -> v.getResidents().stream()).collect(Collectors.toList());
+    }
+
+    @Override
     public List<Resident> getOnlineResidents() {
         return getMembers().stream().flatMap(v -> v.getOnlineResidents().stream()).collect(Collectors.toList());
     }
 
     @Override
+    public boolean canAdminPlots(Resident resident) {
+        return isMember(resident) && resident.getEmpireRank().atLeast(EmpireRank.LEADER);
+    }
+
+    @Override
     public boolean isMember(Resident resident) {
-        return getMembers().stream().anyMatch(v -> v.isMember(resident));
+        return resident.hasEmpire() && getMembers().stream().anyMatch(v -> v.isMember(resident));
+    }
+
+    @Override
+    public boolean isBanished(UUID playerId) {
+        if (banishedPlayers.contains(playerId)) {
+            return false;
+        }
+        Resident resident = ResidentManager.getInstance().getResident(playerId);
+        if (resident != null && resident.hasVillage()) {
+            if (banishedVillages.contains(resident.getVillage())) {
+                return true;
+            }
+            if (resident.hasEmpire() && banishedEmpires.contains(resident.getVillage().getEmpire())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean addBanished(Targetable target) {
+        if (target instanceof Resident) {
+            return banishedPlayers.add(((Resident) target).getUUID());
+        } else if (target instanceof Village) {
+            return banishedVillages.add((Village) target);
+        } else if (target instanceof Empire) {
+            return banishedEmpires.add((Empire) target);
+        }
+        return false;
+    }
+
+    public boolean removeBanished(Targetable target) {
+        if (target instanceof Resident) {
+            return banishedPlayers.remove(((Resident) target).getUUID());
+        } else if (target instanceof Village) {
+            return banishedVillages.remove((Village) target);
+        } else if (target instanceof Empire) {
+            return banishedEmpires.remove((Empire) target);
+        }
+        return false;
     }
 
     public boolean isPvp() {
@@ -374,6 +473,7 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
         this.mobSpawning = mobSpawning;
     }
 
+    @Override
     public boolean isBuff() {
         return buff;
     }
@@ -384,6 +484,32 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
 
     public SimpleLocation getHome() {
         return home;
+    }
+
+    @Override
+    public String getStateKey() {
+        return State.EMPIRE.getKey();
+    }
+
+    @Override
+    public String getStateTag() {
+        return State.EMPIRE.getTag();
+    }
+
+    public Set<UUID> getBanishedPlayers() {
+        return banishedPlayers;
+    }
+
+    public Set<Village> getBanishedVillages() {
+        return banishedVillages;
+    }
+
+    public Set<Empire> getBanishedEmpires() {
+        return banishedEmpires;
+    }
+
+    private enum State implements NameTag {
+        EMPIRE;
     }
 
     public void setHome(SimpleLocation home) {
@@ -414,6 +540,7 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
         this.buildState = buildState;
     }
 
+    @Override
     public BuildState getBuildState() {
         return this.buildState;
     }
@@ -426,8 +553,14 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
         return village != null && getMemberIds().contains(village.getId());
     }
 
-    public boolean isAlly(Village village) {
-        return village != null && getMembers().stream().anyMatch(v -> v.isAlly(village));
+    @Override
+    public boolean isAlly(LandOwner landOwner) {
+        return landOwner instanceof Village && getMembers().stream().anyMatch(v -> v.isAlly(landOwner));
+    }
+
+    @Override
+    public boolean isTrusted(LandOwner landOwner) {
+        return landOwner instanceof Village && (isAlly(landOwner) || (isMember((Village) landOwner)));
     }
 
     public boolean canAccess(Player player) {
@@ -454,7 +587,6 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, Bo
                 "name", getName(),
                 "description", getDescription(),
                 "symbol", getSymbol(),
-                "level", String.valueOf(getLevel()),
                 "pvp", yesOrNo(isPvp()),
                 "balance", Utils.CURRENCY_FORMAT.format(getBank()),
                 "joinfee", Utils.CURRENCY_FORMAT.format(getBank()),

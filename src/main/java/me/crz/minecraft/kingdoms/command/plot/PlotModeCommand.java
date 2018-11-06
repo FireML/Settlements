@@ -1,8 +1,6 @@
-package me.crz.minecraft.kingdoms.command.village.plot;
+package me.crz.minecraft.kingdoms.command.plot;
 
-import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.land.PlotMode;
-import me.crz.minecraft.kingdoms.command.village.VillagePlotCommand;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.gui.ModeGUI;
@@ -12,19 +10,14 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class PlotModeCommand extends ResidentSubCommand {
-    public PlotModeCommand(VillagePlotCommand parent) {
+public class PlotModeCommand extends PlotSubCommand {
+    public PlotModeCommand(PlotCommand parent) {
         super(parent, "mode <mode> <on/off>", "set");
     }
 
     @Override
-    public boolean run(Resident res, String base, String alias, String... args) {
-        OwnedLand land = LandManager.getInstance().getLand(res.getPlayer().getLocation());
-        if (land == null) {
-            getError("not-a-plot").tell(res);
-        } else if (!(land.isEmbassy() || land.isOwnedBy(res.getVillage()))) {
-            getError("not-your-village").tell(res, "state", land.getOwnerVillage().getState().getTag());
-        } else if (args.length < 1) {
+    public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
+        if (args.length < 1) {
             ModeGUI.getInstance().open(res.getPlayer());
         } else if (args.length > 2) {
             return false;

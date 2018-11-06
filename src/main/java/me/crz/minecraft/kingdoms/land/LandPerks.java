@@ -6,10 +6,11 @@ import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.perk.Perk;
 import me.crz.minecraft.kingdoms.perk.PerkEffect;
 import me.crz.minecraft.kingdoms.perk.Perkable;
-import me.crz.minecraft.kingdoms.perk.VillagePerk;
+import me.crz.minecraft.kingdoms.perk.LevelPerk;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -41,7 +42,7 @@ public class LandPerks {
             OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
             Resident resident = ResidentManager.getInstance().getResident(player);
             if ((resident.hasVillage() && resident.getVillage().getPerksMap().isEmpty())
-                    && (land != null && land.getOwnerVillage().getPerksMap().isEmpty())) {
+                    && (land != null && land.getLandOwner().getPerksMap().isEmpty())) {
                 continue;
             }
             giveEffects(player, land, refresh);
@@ -85,9 +86,10 @@ public class LandPerks {
             }
         }
 
-        if (land != null && !land.isOwnedBy(resident.getVillage()) && land.isBuff()) {
-            for (VillagePerk perk : land.getOwnerVillage().getPerks()) {
-                if (!land.getOwnerVillage().getPerkData(perk).isActive()) {
+        if (land != null && land.getLandOwner() instanceof Village && !land.isOwnedBy(resident.getVillage()) && land.isBuff()) {
+            Village landOwner = (Village) land.getLandOwner();
+            for (Perk perk : land.getLandOwner().getPerks()) {
+                if (!landOwner.getPerkData(perk).isActive()) {
                     continue;
                 }
 
@@ -112,17 +114,17 @@ public class LandPerks {
                             }
                             break;
                         case ENEMY_SETTLEMENT:
-                            if (land.getOwnerVillage().isTrusted(resident.getVillage())) {
+                            if (landOwner.isTrusted(resident.getVillage())) {
                                 continue;
                             }
                             break;
                         case TRUSTED_SETTLEMENT:
-                            if (!land.getOwnerVillage().isTrusted(resident.getVillage())) {
+                            if (!landOwner.isTrusted(resident.getVillage())) {
                                 continue;
                             }
                             break;
                         case ALLIED_SETTLEMENT:
-                            if (!land.getOwnerVillage().isAlly(resident.getVillage())) {
+                            if (!landOwner.isAlly(resident.getVillage())) {
                                 continue;
                             }
                             break;
@@ -131,15 +133,15 @@ public class LandPerks {
                     }
 
                     if (effect.getApplyTo() == PerkEffect.EffectInfluenced.ENEMIES) {
-                        if (land.getOwnerVillage().isAlly(resident.getVillage())) {
+                        if (landOwner.isAlly(resident.getVillage())) {
                             continue;
                         }
                     } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.ALLIES) {
-                        if (!land.getOwnerVillage().isAlly(resident.getVillage())) {
+                        if (!landOwner.isAlly(resident.getVillage())) {
                             continue;
                         }
                     } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.TRUSTED) {
-                        if (!land.getOwnerVillage().isTrusted(resident.getVillage())) {
+                        if (!landOwner.isTrusted(resident.getVillage())) {
                             continue;
                         }
                     }
@@ -172,6 +174,12 @@ public class LandPerks {
 
     private <T extends Perk> Collection<? extends PerkEffect> getEffects(Player p, Resident resident, OwnedLand land, Perkable<T> perkable, boolean refresh) {
         List<PerkEffect> effects = new ArrayList<>();
+
+        Village village = null;
+        if (land.getLandOwner() instanceof Village) {
+            village = (Village) land.getLandOwner();
+        }
+
         for (T perk : perkable.getPerks()) {
             if (!perkable.getPerkData(perk).isActive()) {
                 continue;
@@ -212,32 +220,34 @@ public class LandPerks {
                             }
                             break;
                         case ENEMY_SETTLEMENT:
-                            if (land.isOwnedBy(resident.getVillage()) || land.getOwnerVillage().isTrusted(resident.getVillage())) {
+                            if (land.isOwnedBy(resident.getVillage()) || (village != null && village.isTrusted(resident.getVillage()))) {
                                 continue;
                             }
                             break;
                         case ALLIED_SETTLEMENT:
-                            if (!land.isOwnedBy(resident.getVillage()) && !land.getOwnerVillage().isAlly(resident.getVillage())) {
+                            if (!land.isOwnedBy(resident.getVillage()) && (village == null || !village.isAlly(resident.getVillage()))) {
                                 continue;
                             }
                             break;
                         case TRUSTED_SETTLEMENT:
-                            if (!land.isOwnedBy(resident.getVillage()) && !land.getOwnerVillage().isTrusted(resident.getVillage())) {
+                            if (!land.isOwnedBy(resident.getVillage()) && (village == null || !village.isTrusted(resident.getVillage()))) {
                                 continue;
                             }
                             break;
                     }
-                    if (effect.getApplyTo() == PerkEffect.EffectInfluenced.ENEMIES) {
-                        if (land.isOwnedBy(resident.getVillage()) || land.getOwnerVillage().isAlly(resident.getVillage())) {
-                            continue;
-                        }
-                    } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.ALLIES) {
-                        if (!land.isOwnedBy(resident.getVillage()) && !land.getOwnerVillage().isAlly(resident.getVillage())) {
-                            continue;
-                        }
-                    } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.TRUSTED) {
-                        if (!land.isOwnedBy(resident.getVillage()) && !land.getOwnerVillage().isTrusted(resident.getVillage())) {
-                            continue;
+                    if (village != null) {
+                        if (effect.getApplyTo() == PerkEffect.EffectInfluenced.ENEMIES) {
+                            if (land.isOwnedBy(resident.getVillage()) || village.isAlly(resident.getVillage())) {
+                                continue;
+                            }
+                        } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.ALLIES) {
+                            if (!land.isOwnedBy(resident.getVillage()) && !village.isAlly(resident.getVillage())) {
+                                continue;
+                            }
+                        } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.TRUSTED) {
+                            if (!land.isOwnedBy(resident.getVillage()) && !village.isTrusted(resident.getVillage())) {
+                                continue;
+                            }
                         }
                     }
                 }

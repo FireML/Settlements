@@ -1,5 +1,7 @@
-package me.crz.minecraft.kingdoms.command;
+package me.crz.minecraft.kingdoms.command.empire;
 
+import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;

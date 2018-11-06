@@ -1,7 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.command.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
@@ -23,12 +22,12 @@ public class VillageSetHomeCommand extends VillageSubCommand {
         Village village = res.getVillage();
         Player player = res.getPlayer();
         OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
-        if (land == null || !land.getOwnerVillage().equals(village)) {
+        if (land == null || !land.getLandOwner().equals(village)) {
             res.tell(getError("not-your-village"), "state", res.getVillage().getState().getTag());
             return true;
         }
 
-        village.setVillageHome(player.getLocation());
+        village.setHome(player.getLocation());
         MessageUtils.tellResidents(village.getOnlineResidents(),
                 getMessage("success"),
                 "rank", res.getVillageRank().getTag(village),

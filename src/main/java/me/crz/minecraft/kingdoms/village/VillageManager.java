@@ -2,7 +2,8 @@ package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.banish.CustomRunnable;
-import me.crz.minecraft.kingdoms.perk.VillagePerk;
+import me.crz.minecraft.kingdoms.land.LandOwner;
+import me.crz.minecraft.kingdoms.perk.LevelPerk;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -16,7 +17,6 @@ import org.bukkit.entity.Player;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -28,8 +28,8 @@ public class VillageManager {
     private Map<String, Village> villages = new ConcurrentHashMap<>();
     private Map<IdObject, Village> villageIDs = new ConcurrentHashMap<>();
 
-    private Map<String, VillagePerk> perks;
-    private Map<String, VillagePerk> perkTags;
+    private Map<String, LevelPerk> perks;
+    private Map<String, LevelPerk> perkTags;
 
     private VillageManager() {
         super();
@@ -45,7 +45,7 @@ public class VillageManager {
         perkTags = new LinkedHashMap<>();
         for (String perkName : ConfigManager.getInstance().getPerksConfig().getKeys(false)) {
             try {
-                VillagePerk perk = new VillagePerk(ConfigManager.getInstance().getPerksConfig().getConfigurationSection(perkName));
+                LevelPerk perk = new LevelPerk(ConfigManager.getInstance().getPerksConfig().getConfigurationSection(perkName));
                 perks.put(perk.name().toLowerCase(), perk);
                 perkTags.put(perk.getTag().toLowerCase(), perk);
             } catch (IllegalArgumentException e) {
@@ -83,7 +83,7 @@ public class VillageManager {
 
     public Village getVillageAt(Location location) {
         OwnedLand ownedLand = LandManager.getInstance().getLand(location);
-        return ownedLand != null ? ownedLand.getOwnerVillage() : null;
+        return ownedLand != null && ownedLand.getLandOwner() instanceof Village ? (Village) ownedLand.getLandOwner() : null;
     }
 
     public Village getVillageFromId(IdObject id) {
@@ -126,16 +126,6 @@ public class VillageManager {
                 resident.setVillage(null);
             }
         });
-    }
-
-
-    public void isResBanished(OwnedLand land, Player p, CustomRunnable customRunnable) {
-        if (land != null) {
-            Village village = land.getOwnerVillage();
-            if (village != null && village.isBanished(p.getUniqueId())) {
-                customRunnable.run(land, p, village);
-            }
-        }
     }
 
     /**
@@ -181,7 +171,7 @@ public class VillageManager {
         }
         removeLevelRequirements(village, res);
 
-        for (VillagePerk perk : getPerks()) {
+        for (LevelPerk perk : getPerks()) {
             if (village.getState() == perk.getState() && village.getLevel() == perk.getLevel()) {
                 if (perk.getUnlockCost().isEmpty()) {
                     MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("levels.perk-unlocked"), "perk", perk.getTag());
@@ -204,15 +194,15 @@ public class VillageManager {
         }
     }
 
-    public VillagePerk getPerk(String name) {
-        VillagePerk perk = perks.get(name.toLowerCase());
+    public LevelPerk getPerk(String name) {
+        LevelPerk perk = perks.get(name.toLowerCase());
         if (perk == null) {
             perk = perkTags.get(name.toLowerCase());
         }
         return perk;
     }
 
-    public Collection<VillagePerk> getPerks() {
+    public Collection<LevelPerk> getPerks() {
         return perks.values();
     }
 

@@ -1,6 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village.outpost;
 
-import me.crz.minecraft.kingdoms.command.VillageSubCommand;
+import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -41,7 +41,7 @@ public class OutpostClaimCommand extends VillageSubCommand {
             if (land.isOwnedBy(resident.getVillage())) {
                 resident.tell(getError("already-own-land"));
             } else {
-                resident.tell(getError("cant-claim-here"), "owner", land.getOwnerVillage().getName());
+                resident.tell(getError("cant-claim-here"), "owner", land.getLandOwner().getName());
             }
         } else {
             for (SimpleChunkLocation chunk : Utils.getChunksAround(resident.getPlayer(), Utils.getClaimEnemyDistance())) {
@@ -49,8 +49,8 @@ public class OutpostClaimCommand extends VillageSubCommand {
                 if (checkLand == null) {
                     continue;
                 }
-                if (!checkLand.isOwnedBy(resident.getVillage()) && !checkLand.getOwnerVillage().isTrusted(resident.getVillage())) {
-                    resident.tell(getError("claim-too-close"), "owner", checkLand.getOwnerVillage().getName());
+                if (!checkLand.isOwnedBy(resident.getVillage()) && !checkLand.getLandOwner().isTrusted(resident.getVillage())) {
+                    resident.tell(getError("claim-too-close"), "owner", checkLand.getLandOwner().getName());
                     return true;
                 }
             }

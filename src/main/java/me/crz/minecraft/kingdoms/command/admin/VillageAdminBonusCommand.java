@@ -4,7 +4,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
-import me.crz.minecraft.kingdoms.utils.BonusClaimsHolder;
+import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -69,7 +69,7 @@ public class VillageAdminBonusCommand extends SubCommand {
         } else {
             String name = args[1];
             if (name.contains(":")) {
-                name = name.split(":")[2];
+                name = name.split(":")[1];
             }
             String fName = name;
             Utils.runAsync(() -> {
@@ -95,25 +95,25 @@ public class VillageAdminBonusCommand extends SubCommand {
     private enum Operation {
         ADD() {
             @Override
-            public boolean apply(BonusClaimsHolder holder, int amount) {
+            public boolean apply(Targetable holder, int amount) {
                 holder.addBonusClaims(amount);
                 return true;
             }
         },
         SET() {
             @Override
-            public boolean apply(BonusClaimsHolder holder, int amount) {
+            public boolean apply(Targetable holder, int amount) {
                 holder.setBonusClaims(amount);
                 return true;
             }
         },
         REMOVE() {
             @Override
-            public boolean apply(BonusClaimsHolder holder, int amount) {
+            public boolean apply(Targetable holder, int amount) {
                 return holder.removeBonusClaims(amount);
             }
         };
 
-        public abstract boolean apply(BonusClaimsHolder resident, int amount);
+        public abstract boolean apply(Targetable resident, int amount);
     }
 }

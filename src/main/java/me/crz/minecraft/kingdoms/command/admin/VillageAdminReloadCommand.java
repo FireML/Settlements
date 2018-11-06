@@ -2,7 +2,6 @@ package me.crz.minecraft.kingdoms.command.admin;
 
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.command.VillageAdminCommand;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import org.bukkit.entity.Player;
 

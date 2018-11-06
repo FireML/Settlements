@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.landflags;
 
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -29,7 +30,7 @@ public interface LandFlagBase extends ConfigMessages {
         if (land != null) {
             Pair<Boolean, String> r = getCanBuild(user, land, land.getUseState(use), "use");
             if (r == null) {
-                r = getCanBuild(user, land.getOwnerVillage(), land.getOwnerVillage().getUseState(use), "use");
+                r = getCanBuild(user, land.getLandOwner(), land.getLandOwner().getUseState(use), "use");
             }
             if (r != null) {
                 return r;
@@ -50,7 +51,7 @@ public interface LandFlagBase extends ConfigMessages {
         if (land != null) {
             Pair<Boolean, String> r = getCanBuild(building, land, land.getBuildState(), "build");
             if (r == null) {
-                r = getCanBuild(building, land.getOwnerVillage(), land.getOwnerVillage().getBuildState(), "build");
+                r = getCanBuild(building, land.getLandOwner(), land.getLandOwner().getBuildState(), "build");
             }
             if (r != null) {
                 return r;
@@ -63,7 +64,7 @@ public interface LandFlagBase extends ConfigMessages {
         if (!land.isPlot()) {
             return null;
         }
-        if (land.isPlotOwner(building) || land.getOwnerVillage().isChief(building)) {
+        if (land.isPlotOwner(building) || land.getLandOwner().isChief(building)) {
             return new Pair<>(true, "");
         }
         if (!state.appliesTo(BuildState.AppliesTo.LAND)) {
@@ -81,16 +82,16 @@ public interface LandFlagBase extends ConfigMessages {
 
         } else if (state.atLeast(BuildState.OFFICERS)) {
             Resident res = ResidentManager.getInstance().getResident(building);
-            allowed = land.getOwnerVillage().equals(res.getVillage()) && res.getVillageRank().atLeast(VillageRank.BUILDER);
+            allowed = land.getLandOwner().equals(res.getVillage()) && res.getVillageRank().atLeast(VillageRank.BUILDER);
 
         } else if (state.atLeast(BuildState.RESIDENTS)) {
-            allowed = land.getOwnerVillage().equals(VillageManager.getInstance().getVillageFromPlayer(building));
+            allowed = land.getLandOwner().equals(VillageManager.getInstance().getVillageFromPlayer(building));
 
         } else if (state.atLeast(BuildState.ALLY)) {
-            allowed = land.getOwnerVillage().isAlly(VillageManager.getInstance().getVillageFromPlayer(building));
+            allowed = land.getLandOwner().isAlly(VillageManager.getInstance().getVillageFromPlayer(building));
 
         } else if (state.atLeast(BuildState.TRUSTED)) {
-            allowed = land.getOwnerVillage().isTrusted(VillageManager.getInstance().getVillageFromPlayer(building));
+            allowed = land.getLandOwner().isTrusted(VillageManager.getInstance().getVillageFromPlayer(building));
 
         }  else if (state.atLeast(BuildState.PUBLIC)) {
             allowed = true;
@@ -104,13 +105,13 @@ public interface LandFlagBase extends ConfigMessages {
         }
         return new Pair<>(false, getMessage("state." + type + "." + state.getKey()).getReplacedText(
                 "owner", owner != null ? owner.getName() : land.getPlotOwner().toString(),
-                "name", land.getOwnerVillage().getName(),
-                "state", land.getOwnerVillage().getState().getTag()
+                "name", land.getLandOwner().getName(),
+                "state", land.getLandOwner().getStateTag()
         ));
     }
 
-    default Pair<Boolean, String> getCanBuild(Player building, Village village, BuildState state, String type) {
-        if (village.isChief(building)) {
+    default Pair<Boolean, String> getCanBuild(Player building, LandOwner landOwner, BuildState state, String type) {
+        if (landOwner.isChief(building)) {
             return new Pair<>(true, "");
         }
 
@@ -120,17 +121,16 @@ public interface LandFlagBase extends ConfigMessages {
         boolean allowed;
 
         if (state.atLeast(BuildState.OFFICERS)) {
-            Resident res = ResidentManager.getInstance().getResident(building);
-            allowed = village.equals(res.getVillage()) && res.getVillageRank().atLeast(VillageRank.BUILDER);
+            allowed = landOwner.isOfficer(building);
 
         } else if (state.atLeast(BuildState.RESIDENTS)) {
-            allowed = village.equals(VillageManager.getInstance().getVillageFromPlayer(building));
+            allowed = landOwner.equals(VillageManager.getInstance().getVillageFromPlayer(building));
 
         } else if (state.atLeast(BuildState.ALLY)) {
-            allowed = village.isAlly(VillageManager.getInstance().getVillageFromPlayer(building));
+            allowed = landOwner.isAlly(VillageManager.getInstance().getVillageFromPlayer(building));
 
         } else if (state.atLeast(BuildState.TRUSTED)) {
-            allowed = village.isTrusted(VillageManager.getInstance().getVillageFromPlayer(building));
+            allowed = landOwner.isTrusted(VillageManager.getInstance().getVillageFromPlayer(building));
 
         } else if (state.atLeast(BuildState.PUBLIC)) {
             allowed = true;
@@ -143,8 +143,8 @@ public interface LandFlagBase extends ConfigMessages {
             return new Pair<>(true, "");
         }
         return new Pair<>(false, getMessage("state." + type + "." + state.getKey()).getReplacedText(
-                "name", village.getName(),
-                "state", village.getState().getTag()
+                "name", landOwner.getName(),
+                "state", landOwner.getStateTag()
         ));
     }
 

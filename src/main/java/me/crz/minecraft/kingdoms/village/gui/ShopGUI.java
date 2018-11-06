@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.perk.PerkData;
-import me.crz.minecraft.kingdoms.perk.VillagePerk;
+import me.crz.minecraft.kingdoms.perk.LevelPerk;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -45,7 +45,7 @@ public class ShopGUI extends KingdomsGUI {
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
         Village village = resident.getVillage();
 
-        for (VillagePerk perk : VillageManager.getInstance().getPerks()) {
+        for (LevelPerk perk : VillageManager.getInstance().getPerks()) {
             if (perk.getState() == VillageState.KINGDOM && village.getState() == VillageState.VILLAGE) {
                 if (perk.getLevel() > 1 || village.getLevel() + 1 < Levels.VILLAGE_TO_KINGDOM_LEVEL) {
                     continue;
@@ -98,7 +98,7 @@ public class ShopGUI extends KingdomsGUI {
                             item.setName(getMessage("entry.purchased").getReplacedText("name", perk.getTag())).glow(true);
                         }
                     } else {
-                        item.setName(getMessage("entry." + (resident.getVillage().matchesLevelRequirement(perk) ? "unlockable" : "locked")).getReplacedText(
+                        item.setName(getMessage("entry." + (perk.matchesLevelRequirement(resident.getVillage()) ? "unlockable" : "locked")).getReplacedText(
                                 "name", perk.getTag(),
                                 "state", perk.getState().getTag(),
                                 "level", String.valueOf(perk.getLevel()),

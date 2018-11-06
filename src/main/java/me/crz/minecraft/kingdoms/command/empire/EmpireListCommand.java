@@ -53,19 +53,7 @@ public class EmpireListCommand extends SubCommand {
             );
             for (int i = (finalPage - 1) * Utils.getEntriesPerPage(); i < empires.size() && i < finalPage * Utils.getEntriesPerPage(); i++) {
                 Empire e = empires.get(i);
-                Village capital = e.getCapital();
-                Resident chief = capital.getChief();
-                getMessage("entry").tell(player,
-                        "name", e.getName(),
-                        "level", String.valueOf(e.getLevel()),
-                        "description", e.getDescription(),
-                        "members", String.valueOf(e.getMemberIds().size()),
-                        "capital", capital.getName(),
-                        "capitalstate", capital.getState().getTag(),
-                        "chief", chief.getName(),
-                        "chieftitle", chief.getTitle(),
-                        "chiefrank", VillageRank.CHIEF.getTag(capital)
-                );
+                getMessage("entry").tell(player, e.getReplacements(this));
             }
 
             ComponentBuilder next = new ComponentBuilder("")

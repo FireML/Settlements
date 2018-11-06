@@ -232,6 +232,9 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
     }
 
     public void registerCommand(SubCommand c) {
+        if (c.getPermission() == null || c.getPermission().isEmpty()) {
+            c.setPermission(getPermission());
+        }
         subCommands.put(c.name().toLowerCase(), c);
         for (String alias : c.getAliases()) {
             subCommands.putIfAbsent(alias.toLowerCase(), c);

@@ -2,7 +2,6 @@ package me.crz.minecraft.kingdoms.command.empire;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import me.crz.minecraft.kingdoms.command.EmpireSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;

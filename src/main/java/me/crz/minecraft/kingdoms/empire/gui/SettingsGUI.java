@@ -32,6 +32,16 @@ public class SettingsGUI extends KingdomsGUI {
         });
         gui.addItem(new ClickableItem() {
             public ItemStack getItem(Player p) {
+                return new CItem(Material.LEVER).setName(getText("use")).hideAllFlags(true).build();
+            }
+
+            public boolean click(Player p, ClickType clickType) {
+                UseGui.getInstance().open(p);
+                return true;
+            }
+        });
+        gui.addItem(new ClickableItem() {
+            public ItemStack getItem(Player p) {
                 return new CItem(Material.REDSTONE).setName(getText("mode")).hideAllFlags(true).build();
             }
 

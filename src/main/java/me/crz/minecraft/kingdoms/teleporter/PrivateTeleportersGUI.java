@@ -72,7 +72,7 @@ public class PrivateTeleportersGUI extends KingdomsGUI {
                 }
 
                 public boolean click(Player p, ClickType clickType) {
-                    p.teleport(v.getVillageHome().toBukkitLocation());
+                    p.teleport(v.getHome().toBukkitLocation());
                     return false;
                 }
             });

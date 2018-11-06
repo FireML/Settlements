@@ -166,42 +166,42 @@ public class LandFlags extends Base implements LandFlagBase {
         Village playerVillage = VillageManager.getInstance().getVillageFromPlayer(player);
         OwnedLand originalLand = LandManager.getInstance().getLand(event.getFrom());
         OwnedLand destinationLand = LandManager.getInstance().getLand(event.getTo());
-        boolean sameVillage = originalLand != null && destinationLand != null && originalLand.getOwnerVillage().equals(destinationLand.getOwnerVillage());
+        boolean sameVillage = originalLand != null && destinationLand != null && originalLand.getLandOwner().equals(destinationLand.getLandOwner());
 
         if (!sameVillage && originalLand != null) {
-            MessageUtils.tellAdvanced(player, originalLand.getOwnerVillage().getState().getKey() + ".leave",
-                    "name", originalLand.getOwnerVillage().getName(),
-                    "state", originalLand.getOwnerVillage().getState().getTag()
+            MessageUtils.tellAdvanced(player, originalLand.getLandOwner().getStateKey() + ".leave",
+                    "name", originalLand.getLandOwner().getName(),
+                    "state", originalLand.getLandOwner().getStateTag()
             );
-            if (originalLand.getOwnerVillage().equals(playerVillage) && originalLand.getOwnerVillage().isBuff()) {
+            if (originalLand.getLandOwner().equals(playerVillage) && originalLand.getLandOwner().isBuff()) {
                 Base.getLandPerks().removeEffects(player, originalLand, true);
             }
         }
 
         if (destinationLand != null) {
             if (!sameVillage) {
-                MessageUtils.tellAdvanced(player, destinationLand.getOwnerVillage().getState().getKey() + ".enter",
+                MessageUtils.tellAdvanced(player, destinationLand.getLandOwner().getStateKey() + ".enter",
                         "pvp", destinationLand.isPvp() ? Message.get("pvp-is-enabled").getText() : "",
-                        "name", destinationLand.getOwnerVillage().getName(),
-                        "state", destinationLand.getOwnerVillage().getState().getTag()
+                        "name", destinationLand.getLandOwner().getName(),
+                        "state", destinationLand.getLandOwner().getStateTag()
                 );
-                if (destinationLand.getOwnerVillage().equals(playerVillage) && destinationLand.getOwnerVillage().isBuff()) {
+                if (destinationLand.getLandOwner().equals(playerVillage) && destinationLand.getLandOwner().isBuff()) {
                     Base.getLandPerks().giveEffects(player, destinationLand, true);
                 }
             }
             if (originalLand == null || !originalLand.isPlotOwner(destinationLand.getPlotOwner())) {
                 if (destinationLand.isPlot()) {
                     Utils.runAsync(() -> MessageUtils.tellAdvanced(player,  (destinationLand.isEmbassy() ? "embassy" : "plot") + ".owned",
-                            "name", destinationLand.getOwnerVillage().getName(),
-                            "state", destinationLand.getOwnerVillage().getState().getTag(),
+                            "name", destinationLand.getLandOwner().getName(),
+                            "state", destinationLand.getLandOwner().getStateTag(),
                             "owner", ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName(),
                             "description", destinationLand.getDescription(),
                             "pvp", destinationLand.isPvp() ? Message.get("pvp-is-enabled").getText() : ""
                     ));
-                } else if (destinationLand.isForSale() && (destinationLand.getOwnerVillage().equals(playerVillage) || destinationLand.isEmbassy())) {
+                } else if (destinationLand.isForSale() && (destinationLand.getLandOwner().equals(playerVillage) || destinationLand.isEmbassy())) {
                     MessageUtils.tellAdvanced(player, (destinationLand.isEmbassy() ? "embassy" : "plot") + ".for-sale",
-                            "name", destinationLand.getOwnerVillage().getName(),
-                            "state", destinationLand.getOwnerVillage().getState().getTag(),
+                            "name", destinationLand.getLandOwner().getName(),
+                            "state", destinationLand.getLandOwner().getStateTag(),
                             "description", destinationLand.getDescription(),
                             "pvp", destinationLand.isPvp() ? Message.get("pvp-is-enabled").getText() : "",
                             "amount", Utils.CURRENCY_FORMAT.format(destinationLand.getPrice())

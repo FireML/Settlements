@@ -1,14 +1,7 @@
-package me.crz.minecraft.kingdoms.command;
+package me.crz.minecraft.kingdoms.command.admin;
 
-import me.crz.minecraft.kingdoms.command.admin.VillageAdminBonusCommand;
-import me.crz.minecraft.kingdoms.command.admin.VillageAdminReloadCommand;
+import me.crz.minecraft.kingdoms.command.SubCommand;
 import org.bukkit.entity.Player;
-
-import me.crz.minecraft.kingdoms.command.admin.VillageAdminSocialSpyCommand;
-import me.crz.minecraft.kingdoms.command.admin.VillageEmgcyCommand;
-import me.crz.minecraft.kingdoms.command.admin.VillageAdminJoinCommand;
-import me.crz.minecraft.kingdoms.command.admin.VillageAdminRankCommand;
-import me.crz.minecraft.kingdoms.command.admin.VillageAdminWorldCommand;
 
 public class VillageAdminCommand extends SubCommand {
 

@@ -3,7 +3,10 @@ package me.crz.minecraft.kingdoms.village;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import me.crz.minecraft.kingdoms.banish.CustomRunnable;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import me.crz.minecraft.kingdoms.land.LandOwner;
+import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.config.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -156,5 +159,18 @@ public class ResidentManager {
 
     public boolean doesResidentHaveVillage(Player player) {
         return this.getResident(player).hasVillage();
+    }
+
+    public boolean doesResidentHaveEmpire(Player player) {
+        return this.getResident(player).hasEmpire();
+    }
+
+    public void isResBanished(OwnedLand land, Player p, CustomRunnable customRunnable) {
+        if (land != null) {
+            LandOwner landOwner = land.getLandOwner();
+            if (landOwner != null && landOwner.isBanished(p.getUniqueId())) {
+                customRunnable.run(land, p, landOwner);
+            }
+        }
     }
 }

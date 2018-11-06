@@ -83,7 +83,7 @@ public class LWCIntegration extends JavaModule implements ConfigMessages, LandFl
                         if (land != null) {
                             Pair<Boolean, String> pair = getCanBuild(event.getPlayer(), land, land.getBuildState(), "use");
                             if (pair == null) {
-                                pair = getCanBuild(event.getPlayer(), land.getOwnerVillage(), land.getOwnerVillage().getBuildState(), "use");
+                                pair = getCanBuild(event.getPlayer(), land.getLandOwner(), land.getLandOwner().getBuildState(), "use");
                             }
                             if (pair != null && pair.getLeft()) {
                                 access = permission.getAccess();
