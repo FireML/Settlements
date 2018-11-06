@@ -1,10 +1,16 @@
 package me.crz.minecraft.kingdoms.utils;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
 public class TitleBuilder {
+    private static final Cache<UUID, Long> lastActionBar = CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.SECONDS).build();
     private String title;
     private String subtitle;
     private String actionBar;
@@ -52,9 +58,16 @@ public class TitleBuilder {
                     in, stay, out);
         }
         if (actionBar != null && !actionBar.isEmpty()) {
+            long sendTime = System.currentTimeMillis();
+            lastActionBar.put(p.getUniqueId(), sendTime);
             String replacedActionBar = MessageUtils.replacePlaceholders(actionBar, replacements);
             p.sendActionBar(replacedActionBar);
-            Bukkit.getScheduler().runTaskLater(KingdomsPlugin.getInstance(), () -> p.sendActionBar(replacedActionBar), 2 * 20);
+            Bukkit.getScheduler().runTaskLater(KingdomsPlugin.getInstance(), () -> {
+                Long storedSend = lastActionBar.getIfPresent(p.getUniqueId());
+                if (storedSend != null && storedSend == sendTime) {
+                    p.sendActionBar(replacedActionBar);
+                }
+            }, 2 * 20);
         }
     }
 }

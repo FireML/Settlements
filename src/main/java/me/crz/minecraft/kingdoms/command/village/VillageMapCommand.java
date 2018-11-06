@@ -300,16 +300,6 @@ public class VillageMapCommand extends SubCommand implements Listener {
                 if (land.isForSale()) {
                     symbol = Symbol.FOR_SALE;
                 }
-                if (land.isPlot()) {
-                    if (land.isPlotOwner(resident)) {
-                        if (land.isLinked(playerLand)) {
-                            relation = Relation.OWN_PLOT_LINKED;
-                        } else {
-                            relation = Relation.OWN_PLOT;
-                        }
-                    }
-                    symbol = Symbol.PLOT;
-                }
                 if (land.containsHome()) {
                     symbol = Symbol.HOME;
                 }
@@ -320,6 +310,17 @@ public class VillageMapCommand extends SubCommand implements Listener {
                 relation = Relation.EMPIRE;
             } else {
                 relation = Relation.ENEMY;
+            }
+
+            if (land.isPlot()) {
+                if (land.isPlotOwner(resident)) {
+                    if (land.isLinked(playerLand)) {
+                        relation = Relation.OWN_PLOT_LINKED;
+                    } else {
+                        relation = Relation.OWN_PLOT;
+                    }
+                }
+                symbol = Symbol.PLOT;
             }
 
             if (land.isEmbassy()) {
