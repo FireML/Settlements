@@ -1,6 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
-import me.crz.minecraft.kingdoms.command.VillageSubCommand;
+import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.command.village.plot.PlotBuildCommand;
 import me.crz.minecraft.kingdoms.command.village.plot.PlotBuyCommand;
 import me.crz.minecraft.kingdoms.command.village.plot.PlotNameCommand;
@@ -16,13 +16,11 @@ import me.crz.minecraft.kingdoms.command.village.plot.PlotUseCommand;
 
 import me.crz.minecraft.kingdoms.village.Resident;
 
-import me.crz.minecraft.kingdoms.rank.VillageRank;
-
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillagePlotCommand extends VillageSubCommand {
+public class VillagePlotCommand extends ResidentSubCommand {
     public VillagePlotCommand(SubCommand parent) {
-        super(parent, "plot <options>", VillageRank.RESIDENT, "p");
+        super(parent, "plot <options>", "p");
         setPermission("kingdoms.user");
         registerCommand(new PlotSaleCommand(this));
         registerCommand(new PlotUnsaleCommand(this));
