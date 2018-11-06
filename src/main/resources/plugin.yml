@@ -48,6 +48,9 @@ permissions:
   kingdoms.admin.ss:
     description: Permission to access social spy.
     default: op
+  kingdoms.admin.banish-bypass:
+    description: Permission to bypass being banished from a settlement.
+    default: op
   kingdoms.staff:
     description: Permission for staffs. Gives access to some staff only functions.
     default: op
