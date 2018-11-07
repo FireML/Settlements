@@ -185,7 +185,7 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, La
         Map<String, Object> uses = (Map<String, Object>) map.get("uses");
         for (Use u : Use.values()) {
             if (uses.containsKey(u.name())) {
-                empire.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), u.getDefault()));
+                empire.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), u.getDefault(BuildState.PRIVATE)));
             }
         }
         ((Collection<String>) map.get("banished")).stream().filter(s -> !s.contains(":")).map(UUID::fromString).forEach(empire.banishedPlayers::add);
@@ -310,7 +310,7 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, La
         return getSenatorIds().stream().map(u -> ResidentManager.getInstance().getResident(u)).collect(Collectors.toList());
     }
     public BuildState getUseState(Use u) {
-        return use.getOrDefault(u, u.getDefault());
+        return use.getOrDefault(u, u.getDefault(BuildState.PRIVATE));
     }
 
     @Override
@@ -325,7 +325,7 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, La
     }
 
     public void setUseState(Use u, BuildState state) {
-        if (state == u.getDefault()) {
+        if (state == u.getDefault(BuildState.PRIVATE)) {
             use.remove(u);
         } else {
             use.put(u, state);

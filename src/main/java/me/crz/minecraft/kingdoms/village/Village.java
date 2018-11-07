@@ -168,11 +168,11 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
     }
 
     public BuildState getUseState(Use u) {
-        return use.getOrDefault(u, u.getDefault());
+        return use.getOrDefault(u, u.getDefault(BuildState.RESIDENTS));
     }
 
     public void setUseState(Use u, BuildState state) {
-        if (state == u.getDefault()) {
+        if (state == u.getDefault(BuildState.RESIDENTS)) {
             use.remove(u);
         } else {
             use.put(u, state);
@@ -621,7 +621,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         Map<String, Object> uses = (Map<String, Object>) map.get("uses");
         for (Use u : Use.values()) {
             if (uses.containsKey(u.name())) {
-                village.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), u.getDefault()));
+                village.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), u.getDefault(BuildState.RESIDENTS)));
             }
         }
         ((Map<String, Object>) map.get("vault")).entrySet().stream()

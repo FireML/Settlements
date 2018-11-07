@@ -70,7 +70,7 @@ public enum Use implements NameTag {
     }
 
     Use(Material icon, Collection<Material> materials) {
-        this(BuildState.RESIDENTS, icon, materials);
+        this(null, icon, materials);
     }
 
     Use(BuildState defaultState, Material icon, Collection<Material> materials) {
@@ -93,5 +93,9 @@ public enum Use implements NameTag {
 
     public BuildState getDefault() {
         return defaultState;
+    }
+
+    public BuildState getDefault(BuildState defaultState) {
+        return getDefault() != null ? getDefault() : defaultState;
     }
 }

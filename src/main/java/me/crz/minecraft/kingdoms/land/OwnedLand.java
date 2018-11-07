@@ -63,7 +63,7 @@ public class OwnedLand implements ConfigurationSerializable {
     }
 
     public void setUseState(Use u, BuildState state) {
-        if (state == u.getDefault()) {
+        if (state == u.getDefault(BuildState.PRIVATE)) {
             use.remove(u);
         } else {
             use.put(u, state);

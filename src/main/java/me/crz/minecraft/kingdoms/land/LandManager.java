@@ -231,7 +231,7 @@ public class LandManager {
         land.setPlotOwner(owner);
         land.setBuildState(BuildState.PRIVATE);
         for (Use use : Use.values()) {
-            land.setUseState(use, BuildState.PRIVATE);
+            land.setUseState(use, use.getDefault(BuildState.PRIVATE));
         }
         if (owner == null) {
             land.setEmbassy(false);
