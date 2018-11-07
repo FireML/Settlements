@@ -11,7 +11,7 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.VillageAccess;
+import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Material;
@@ -27,7 +27,7 @@ public class AccessGUI extends KingdomsGUI {
         super("access");
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
 
-        for (VillageAccess access : VillageAccess.values()) {
+        for (LandAccess access : LandAccess.values()) {
             gui.addItem(new ClickableItem() {
                 @Override
                 public ItemStack getItem(Player p) {

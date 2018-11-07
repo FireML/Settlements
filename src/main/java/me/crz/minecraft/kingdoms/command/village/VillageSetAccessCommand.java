@@ -6,7 +6,7 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.VillageAccess;
+import me.crz.minecraft.kingdoms.land.LandAccess;
 
 public class VillageSetAccessCommand extends VillageSubCommand {
     public VillageSetAccessCommand(SubCommand parent) {
@@ -21,13 +21,13 @@ public class VillageSetAccessCommand extends VillageSubCommand {
             return true;
         }
         try {
-            VillageAccess access = VillageAccess.valueOf(String.join("_", args).toUpperCase());
+            LandAccess access = LandAccess.valueOf(String.join("_", args).toUpperCase());
             resident.getVillage().setAccess(access);
             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
             resident.tell(getMessage("success"), "access", access.getTag());
         } catch (IllegalArgumentException e) {
             resident.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base));
-            for (VillageAccess access : VillageAccess.values()) {
+            for (LandAccess access : LandAccess.values()) {
                 resident.tell(getMessage("usage.entry"),
                         "usage", "/" + base + " " + alias + " " + access.getTag(),
                         "description", getText("access." + access.getKey())

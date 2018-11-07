@@ -43,11 +43,11 @@ public class ChatManager extends Base implements ConfigMessages {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void on(AsyncPlayerChatEvent e) {
-        if (e.isCancelled()) {
+    public void on(AsyncPlayerChatEvent event) {
+        if (event.isCancelled()) {
             return;
         }
-        Player sender = e.getPlayer();
+        Player sender = event.getPlayer();
         Resident res = ResidentManager.getInstance().getResident(sender);
         Village village = res.getVillage();
         ChatChannel channel = res.getActiveChannel();
@@ -78,10 +78,10 @@ public class ChatManager extends Base implements ConfigMessages {
         String senderPrefix = MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(sender));
         String senderSuffix = MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerSuffix(sender));
 
-        e.setCancelled(true);
+        event.setCancelled(true);
 
-        if (e.getPlayer().hasPermission("kingdoms.chat.colour")) {
-            e.setMessage(MessageUtils.replaceColorCodes(e.getMessage()));
+        if (event.getPlayer().hasPermission("kingdoms.chat.colour")) {
+            event.setMessage(MessageUtils.replaceColorCodes(event.getMessage()));
         }
 
         Message format = getMessage("format.channel." + channel.getKey());
@@ -104,18 +104,18 @@ public class ChatManager extends Base implements ConfigMessages {
                         ))
                         .create());
         BaseComponent[] filteredMessage = replacer
-                .replace("message", UtilChat.getInstance().filterCurses(e.getMessage()))
+                .replace("message", UtilChat.getInstance().filterCurses(event.getMessage()))
                 .getComponents();
         BaseComponent[] unfilteredMessage = replacer
-                .replace("message", e.getMessage())
+                .replace("message", event.getMessage())
                 .getComponents();
 
         ChatChannel finalChannel = channel;
         switch (channel) {
             case TRADE:
             case GENERAL:
-                if (Data.muteChat && !e.getPlayer().hasPermission("kingdoms.staff")) {
-                    MessageUtils.tell(e.getPlayer(), getMessage("locked"), "channel", channel.name());
+                if (Data.muteChat && !event.getPlayer().hasPermission("kingdoms.staff")) {
+                    MessageUtils.tell(event.getPlayer(), getMessage("locked"), "channel", channel.name());
                     return;
                 }
 
@@ -143,25 +143,35 @@ public class ChatManager extends Base implements ConfigMessages {
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(finalChannel))
                         .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
-                break;
-            case EMPIRE:
-                village.getEmpire().getOnlineResidents().stream()
-                        .filter(r -> r.isListening(finalChannel))
-                        .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
             case ALLY:
                 village.getAllies().stream()
-                        .map(id -> VillageManager.getInstance().getVillageFromId(id))
-                        .filter(Objects::nonNull)
-                        .flatMap(v -> v.getOnlineResidents().stream())
+                        .flatMap(a -> a.getOnlineResidents().stream())
+                        .distinct()
                         .filter(r -> r.isListening(finalChannel))
                         .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                if (village.hasEmpire()) {
+                    village.getEmpire().getAllies().stream()
+                            .filter(a -> !village.isAlly(a))
+                            .flatMap(a -> a.getOnlineResidents().stream())
+                            .distinct()
+                            .filter(r -> r.isListening(finalChannel))
+                            .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                }
+            case EMPIRE:
+                if (village.hasEmpire()) {
+                    village.getEmpire().getMembers().stream()
+                            .filter(a -> !village.isAlly(a) && !village.equals(a))
+                            .flatMap(a -> a.getOnlineResidents().stream())
+                            .filter(r -> r.isListening(finalChannel))
+                            .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                }
             case SETTLEMENT:
                 village.getOnlineResidents().stream()
                         .filter(r -> r.isListening(finalChannel))
                         .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
                 break;
         }
-        toConsole(unfilteredMessage, e.getMessage());
+        toConsole(unfilteredMessage, event.getMessage());
     }
 
     private void toConsole(BaseComponent[] baseMessage, String message) {

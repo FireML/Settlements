@@ -361,7 +361,17 @@ public class LandManager {
         Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(toSave));
     }
 
-    public void checkUnallyDistance(Village village, Village oldAlly) {
+    public void checkUnallyDistance(LandOwner source, LandOwner oldAlly) {
+        if (oldAlly instanceof Village) {
+            checkUnallyDistance(source, (Village) oldAlly);
+        } else if (oldAlly instanceof Empire) {
+            for (Village v : ((Empire) oldAlly).getMembers()) {
+                checkUnallyDistance(source, v);
+            }
+        }
+    }
+
+    public void checkUnallyDistance(LandOwner source, Village oldAlly) {
         if (Utils.getClaimEnemyDistance() > 0) {
             int graceDays = Utils.getUnAllyGraceDays();
             boolean unclaimOutposts = Utils.getUnallyUnclaimsOutposts();
@@ -371,7 +381,7 @@ public class LandManager {
                 if (unclaimOutposts || !land.isOutpost()) {
                     for (SimpleChunkLocation c : Utils.getChunksAround(land.getLocation(), Utils.getClaimEnemyDistance())) {
                         OwnedLand around = getLand(c);
-                        if (around != null && around.isOwnedBy(village)) {
+                        if (around != null && around.isOwnedBy(source)) {
                             if (graceDays > 0) {
                                 if (around.getUnclaimIn() == 0 || around.getUnclaimIn() > graceDays) {
                                     around.setUnclaimIn(graceDays);

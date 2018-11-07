@@ -11,7 +11,7 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.VillageAccess;
+import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 
 public class VillageJoinCommand extends VillageSubCommand {
@@ -28,7 +28,7 @@ public class VillageJoinCommand extends VillageSubCommand {
         Village joinVillage = VillageManager.getInstance().getVillageFromName(args[0]);
         if (joinVillage == null) {
             resident.tell(getError("village-doesnt-exist"));
-        } else if (joinVillage.getAccess().below(VillageAccess.OPEN) && !Utils.playerHasInvite(resident.getUUID(), joinVillage)) {
+        } else if (joinVillage.getAccess().below(LandAccess.OPEN) && !Utils.playerHasInvite(resident.getUUID(), joinVillage)) {
             resident.tell(getMessage("no-invite"));
         } else if (joinVillage.isFull()) {
             resident.tell(getMessage("is-full"), "state", joinVillage.getState().getTag(), "name", joinVillage.getName());

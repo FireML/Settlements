@@ -1,55 +1,54 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.VillageAccess;
 import me.crz.minecraft.kingdoms.village.VillageManager;
-import org.bukkit.entity.Player;
 
-public class VillageHomeCommand extends SubCommand {
+public class VillageHomeCommand extends ResidentSubCommand {
     public VillageHomeCommand(SubCommand parent) {
         super(parent, "home [<name>]");
-        setPermission("kingdoms.user");
     }
 
     @Override
-    public boolean run(Player player, String base, String alias, String... args) {
+    public boolean run(Resident resident, String base, String alias, String... args) {
         Village village;
-        Village playerVillage = VillageManager.getInstance().getVillageFromPlayer(player);
         if (args.length < 1) {
-            if (playerVillage == null) {
-                MessageUtils.tell(player, getError("village-required"));
+            if (!resident.hasVillage()) {
+                MessageUtils.tell(resident, getError("village-required"));
                 return false;
-            } else if (playerVillage.getHome() == null) {
-                MessageUtils.tell(player, getMessage("own-no-home"), "chief", VillageRank.CHIEF.getTag(playerVillage));
+            } else if (resident.getVillage().getHome() == null) {
+                MessageUtils.tell(resident, getMessage("own-no-home"), "chief", VillageRank.CHIEF.getTag(resident.getVillage()));
                 return true;
             } else {
-                village = playerVillage;
+                village = resident.getVillage();
             }
         } else {
             village = VillageManager.getInstance().getVillageFromName(args[0]);
             if (village == null) {
-                MessageUtils.tell(player, getError("village-doesnt-exist"));
+                MessageUtils.tell(resident, getError("village-doesnt-exist"));
                 return true;
             }
         }
 
-        if (!village.equals(playerVillage)
-                && (village.getAccess() == VillageAccess.PRIVATE
-                || village.getAccess() == VillageAccess.ALLY && (playerVillage == null || !village.isAlly(playerVillage))
-                || village.getAccess() == VillageAccess.TRUSTED && (playerVillage == null || !village.isTrusted(playerVillage)))) {
-            MessageUtils.tell(player, getMessage("no-access"), "state", village.getState().getTag());
+        if (!village.isMember(resident)
+                && (village.getAccess() == LandAccess.PRIVATE
+                || (village.getAccess() == LandAccess.ALLY && !village.isAlly(resident))
+                || (village.getAccess() == LandAccess.TRUSTED && !village.isTrusted(resident)))) {
+            MessageUtils.tell(resident, getMessage("no-access"), "state", village.getStateTag());
             return true;
         }
 
         if (village.getHome() != null) {
-            Utils.teleport(player, village.getHome().toBukkitLocation(), village.getState().getKey(), getConfigPath(),
-                    "state", village.getState().getTag(), "name", village.getName());
+            Utils.teleport(resident.getPlayer(), village.getHome().toBukkitLocation(), village.getStateKey(), getConfigPath(),
+                    "state", village.getStateKey(), "name", village.getName());
         } else {
-            MessageUtils.tell(player, getMessage("no-home"), "state", village.getState().getTag());
+            MessageUtils.tell(resident, getMessage("no-home"), "state", village.getStateTag());
         }
         return true;
     }

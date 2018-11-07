@@ -7,8 +7,8 @@ import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
-import me.crz.minecraft.kingdoms.empire.EmpireAccess;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -27,7 +27,7 @@ public class AccessGUI extends KingdomsGUI {
         super("empire.access");
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
 
-        for (EmpireAccess access : EmpireAccess.values()) {
+        for (LandAccess access : LandAccess.values()) {
             gui.addItem(new ClickableItem() {
                 @Override
                 public ItemStack getItem(Player p) {

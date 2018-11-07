@@ -3,8 +3,8 @@ package me.crz.minecraft.kingdoms.command.empire;
 import com.google.common.collect.ImmutableMap;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.empire.Empire;
-import me.crz.minecraft.kingdoms.empire.EmpireAccess;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
@@ -26,13 +26,13 @@ public class EmpireListCommand extends SubCommand {
     @Override
     public boolean run(Player player, String base, String alias, String... args) {
         int page = 1;
-        EmpireAccess access = null;
+        LandAccess access = null;
         if (args.length > 0) {
             try {
                 page = Integer.parseInt(args[0]);
             } catch (IllegalArgumentException e1) {
                 if ("open".equalsIgnoreCase(args[0])) {
-                    access = EmpireAccess.OPEN;
+                    access = LandAccess.OPEN;
                     if (args.length > 1) {
                         try {
                             page = Integer.parseInt(args[1]);
@@ -51,7 +51,7 @@ public class EmpireListCommand extends SubCommand {
             getError("not-a-number").tell(player, "input", String.valueOf(page));
             return false;
         }
-        EmpireAccess finalAccess = access;
+        LandAccess finalAccess = access;
         int finalPage = page;
         Utils.runAsync(() -> {
             List<Empire> empires = EmpireManager.getInstance().getEmpires().stream()

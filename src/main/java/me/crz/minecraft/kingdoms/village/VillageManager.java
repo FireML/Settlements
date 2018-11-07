@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -115,11 +116,8 @@ public class VillageManager {
                 "state", village.getState().getTag());
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().deleteVillage(village);
-            for (IdObject ally : village.getAllies()) {
-                Village al = this.getVillageFromId(ally);
-                if (al != null) {
-                    al.removeAlly(village);
-                }
+            for (LandOwner ally : village.getAllies()) {
+                ally.removeAlly(village);
             }
             for (Resident resident : village.getResidents()) {
                 resident.setVillage(null);

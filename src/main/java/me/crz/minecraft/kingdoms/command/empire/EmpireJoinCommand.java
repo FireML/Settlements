@@ -5,8 +5,8 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.empire.Empire;
-import me.crz.minecraft.kingdoms.empire.EmpireAccess;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -25,7 +25,7 @@ public class EmpireJoinCommand extends EmpireSubCommand {
         Empire joinEmpire = EmpireManager.getInstance().getEmpireFromName(args[0]);
         if (joinEmpire == null) {
             resident.tell(getError("empire-doesnt-exist"));
-        } else if (joinEmpire.getAccess().below(EmpireAccess.OPEN) && !Utils.villageHasInvite(resident.getVillage(), joinEmpire)) {
+        } else if (joinEmpire.getAccess().below(LandAccess.OPEN) && !Utils.villageHasInvite(resident.getVillage(), joinEmpire)) {
             resident.tell(getMessage("no-invite"),
                     "state", resident.getVillage().getState().getTag()
             );

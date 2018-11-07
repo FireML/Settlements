@@ -1,8 +1,8 @@
 package me.crz.minecraft.kingdoms.teleporter;
 
-import me.crz.minecraft.kingdoms.utils.IdObject;
+import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.VillageAccess;
+import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.KingdomsGUI;
 import org.bukkit.event.inventory.ClickType;
 
@@ -18,12 +18,9 @@ import java.util.ArrayList;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 public class PrivateTeleportersGUI extends KingdomsGUI {
-    private Set<IdObject> allies = new LinkedHashSet<>();
     private int checks = 0;
     private List<ClickableItem> items = new ArrayList<>();
 
@@ -51,28 +48,18 @@ public class PrivateTeleportersGUI extends KingdomsGUI {
     }
 
     public void update(Village village) {
-        if (village == null) {
-            allies.clear();
-            return;
-        }
-        if (village.getAllies() == allies && checks < 2) {
-            ++checks;
-            return;
-        }
-        allies = village.getAllies();
         checks = 0;
-        for (IdObject ally : allies) {
-            Village v = VillageManager.getInstance().getVillageFromId(ally);
-            if (v == null || v.getAccess().atLeast(VillageAccess.ALLY)) {
+        for (LandOwner ally : village.getAllies()) {
+            if (ally.getAccess().atLeast(LandAccess.ALLY)) {
                 continue;
             }
             items.add(new ClickableItem() {
                 public ItemStack getItem(Player p) {
-                    return Utils.getHead(v.getChiefId(), getMessage("entry").getReplacedText("name", v.getName()));
+                    return Utils.getHead(ally.getChiefId(), getMessage("entry").getReplacedText("name", ally.getName(), "state", ally.getStateTag()));
                 }
 
                 public boolean click(Player p, ClickType clickType) {
-                    p.teleport(v.getHome().toBukkitLocation());
+                    p.teleport(ally.getHome().toBukkitLocation());
                     return false;
                 }
             });

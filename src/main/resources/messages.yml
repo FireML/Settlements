@@ -609,19 +609,20 @@ command:
   village:
     allies:
       head: "&8&l--------&r&c&lAllies&r&8&l--------"
-      entry: "&a{name}"
+      entry: "&a{state} {name}"
       separator: "&7, "
       description: lists all your allies
     ally:
       cant-ally-yourself: "&c&lYou can't ally yourself!"
-      already-allied: "&c&lYou are already allied to Village &6&l{name}"
-      now-allied-to: "&7&lYou are now allied to &6&l{name}"
+      already-allied: "&c&lYou are already allied to {state} &6&l{name}"
+      now-allied-to: "&7&lYou are now allied to {state} &6&l{name}"
       invite: "&r&6&l{state} {name} &r&7&lwants to ally!"
       accept-info: "&r&6&l/s ally {name} &r&7&lto ally them!"
       request-send: "&7&lAlly request sent to &r&6&l{name}"
-      description: Ally another village
+      description: Ally another settlement or empire
     banish:
       cant-banish-yourself: "&cYou can't banish yourself!"
+      cant-banish-leader: "&cYou can't banish the leader!"
       cant-banish: "&cYou can't banish &f{title} &f{name}!"
       already-banished: "&cPlayer &f{name}&c is already banished!"
       banished: "&7Player &6{name}&7 has been &cbanished &7from your settlement!"
@@ -633,8 +634,8 @@ command:
       description: List all banished users
     unbanish:
       not-banished: "&cPlayer &f{name}&c is not banished?"
-      unbanished: "&7Player &6{name}&7 is no longer &cbanished &7from your settlement!"
-      description: Remove a player from the banish list
+      unbanished: "&6{target}&7 is no longer &cbanished &7from your settlement!"
+      description: Remove an entry from the banish list
     bank:
       withdraw:
         not-enough-money: "&c&lNot enough money in the bank to withdraw &r&6&l{amount}&r&c&l!"
@@ -917,7 +918,7 @@ command:
       cant-unally-yourself: "&c&lYou can't un-ally yourself!"
       not-allied: "&c&lYou are not allied to {state} &r&6&l{name}"
       success: "&7&lAlly &6{name} &7removed!"
-      description: remove an allied village
+      description: Remove an ally
     unclaim:
       outpost: "&cThis land is an outpost, please use &7/{base} outpost unclaim&c to unclaim this outpost."
       home: "&cThis land is your home, you have to move it with &7/{base} sethome&c before unclaiming this land."
@@ -987,6 +988,19 @@ command:
       success: "&aConfigs reloaded. Will only affect values that are read directly from the config!"
   empire:
     description: Commands for empire management
+    allies:
+      head: "&8&l--------&r&c&lAllies&r&8&l--------"
+      entry: "&a{state} {name}"
+      separator: "&7, "
+      description: lists all your allies
+    ally:
+      cant-ally-yourself: "&c&lYou can't ally yourself!"
+      already-allied: "&c&lYou are already allied to {state} &6&l{name}"
+      now-allied-to: "&7&lYou are now allied to {state} &6&l{name}"
+      invite: "&r&6&l{state} {name} &r&7&lwants to ally!"
+      accept-info: "&r&6&l/s ally {name} &r&7&lto ally them!"
+      request-send: "&7&lAlly request sent to &r&6&l{name}"
+      description: Ally another settlement or empire
     bank:
       withdraw:
         not-enough-money: "&c&lNot enough money in the bank to withdraw &r&6&l{amount}&r&c&l!"
@@ -1221,3 +1235,12 @@ command:
       description: Set who can use stuff in your empire world
       all:
         description: Sets all flags to a certain state
+    unally:
+      cant-unally-yourself: "&c&lYou can't un-ally yourself!"
+      not-allied: "&c&lYou are not allied to {state} &r&6&l{name}"
+      success: "&7&lAlly &6{name} &7removed!"
+      description: Remove an ally
+    unbanish:
+      not-banished: "&cPlayer &f{name}&c is not banished?"
+      unbanished: "&6{target}&7 is no longer &cbanished &7from your empire!"
+      description: Remove an entry from the banish list

@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.VillageAccess;
+import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -28,13 +28,13 @@ public class VillageListCommand extends SubCommand {
     @Override
     public boolean run(Player player, String base, String alias, String... args) {
         int page = 1;
-        VillageAccess access = null;
+        LandAccess access = null;
         if (args.length > 0) {
             try {
                 page = Integer.parseInt(args[0]);
             } catch (IllegalArgumentException e1) {
                 if ("open".equalsIgnoreCase(args[0])) {
-                    access = VillageAccess.OPEN;
+                    access = LandAccess.OPEN;
                     if (args.length > 1) {
                         try {
                             page = Integer.parseInt(args[1]);
@@ -53,7 +53,7 @@ public class VillageListCommand extends SubCommand {
             getError("not-a-number").tell(player, "input", String.valueOf(page));
             return false;
         }
-        VillageAccess finalAccess = access;
+        LandAccess finalAccess = access;
         int finalPage = page;
         Utils.runAsync(() -> {
             List<Village> villages = VillageManager.getInstance().getVillages().stream()
@@ -76,7 +76,7 @@ public class VillageListCommand extends SubCommand {
                         "level", String.valueOf(v.getLevel()),
                         "description", v.getDescription(),
                         "state", v.getState().getTag(),
-                        "access", v.getAccess() != VillageAccess.PRIVATE ? v.getAccess().getTag() : "",
+                        "access", v.getAccess() != LandAccess.PRIVATE ? v.getAccess().getTag() : "",
                         "residents", String.valueOf(v.getResidentIds().size()),
                         "chief", chief.getName(),
                         "chieftitle", chief.getTitle(),

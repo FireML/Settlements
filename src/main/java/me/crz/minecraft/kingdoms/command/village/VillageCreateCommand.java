@@ -51,7 +51,7 @@ public class VillageCreateCommand extends VillageSubCommand {
                     return true;
                 }
             }
-            Village village = new Village(name, player.getUUID(), 1, VillageState.VILLAGE, BuildState.RESIDENTS);
+            Village village = new Village(name, player.getUUID(), 1, VillageState.VILLAGE);
             VillageManager.getInstance().registerNewVillage(village);
             player.setVillage(village);
             player.setVillageRank(VillageRank.CHIEF);

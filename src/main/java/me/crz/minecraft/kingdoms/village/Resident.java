@@ -353,4 +353,7 @@ public class Resident implements ConfigurationSerializable, Targetable {
         MessageUtils.tell(this.getPlayer(), message);
     }
 
+    public boolean hasAllies() {
+        return hasVillage() && getVillage().hasAllies() || (hasEmpire() && getVillage().getEmpire().hasAllies());
+    }
 }

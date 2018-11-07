@@ -99,6 +99,13 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "banished VARCHAR(320)"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "empire_allies ("
+                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+                    + "empireId INTEGER, INDEX (empireId),"
+                    + "FOREIGN KEY (empireId) REFERENCES " + tablePrefix + "empires(id) ON DELETE CASCADE,"
+                    + "ally VARCHAR(320)"
+                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
+
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "empire_vaults ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                     + "empireId INTEGER, INDEX(empireId),"
@@ -204,18 +211,14 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                     + "settlementId INTEGER, INDEX (settlementId),"
                     + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
-                    + "banishedId INTEGER,"
-                    + "FOREIGN KEY (banishedId) REFERENCES " + tablePrefix + "residents(id) ON DELETE CASCADE,"
-                    + "UNIQUE (settlementId, banishedId)"
+                    + "banished VARCHAR(320)"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_allies ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                     + "settlementId INTEGER, INDEX (settlementId),"
                     + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
-                    + "allyId INTEGER,"
-                    + "FOREIGN KEY (allyId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
-                    + "UNIQUE (settlementId, allyId)"
+                    + "ally VARCHAR(320)"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "residents ("
@@ -334,10 +337,13 @@ public class MySqlDatabaseManager extends DatabaseManager {
             if (!empire.getId().isNull()) {
                 List<String> banished = new ArrayList<>();
                 empire.getBanishedPlayers().stream().map(UUID::toString).forEach(banished::add);
-                empire.getBanishedVillages().stream().map(v -> "village:" + v.getId()).forEach(banished::add);
-                empire.getBanishedEmpires().stream().map(e -> "empire:" + e.getId()).forEach(banished::add);
+                empire.getBanishedVillageIds().stream().map(id -> "village:" + id).forEach(banished::add);
+                empire.getBanishedEmpireIds().stream().map(id -> "empire:" + id).forEach(banished::add);
                 updateList(conn, "empire_banished", "empireId", (Integer) empire.getId().value(), "banished", banished);
-
+                List<String> allies = new ArrayList<>();
+                empire.getAlliedVillageIds().stream().map(id -> "village:" + id).forEach(allies::add);
+                empire.getAlliedEmpireIds().stream().map(id -> "empire:" + id).forEach(allies::add);
+                updateList(conn, "empire_allies", "empireId", (Integer) empire.getId().value(), "ally", allies);
                 updateDataMap(conn, "empire_vaults", "empireId", (Integer) empire.getId().value(), "content", "amount", empire.getVault());
                 updateDataMap(conn, "empire_uses", "empireId", (Integer) empire.getId().value(), "type", "state",
                         empire.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
@@ -392,8 +398,15 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 }
             }
             if (!village.getId().isNull()) {
-                updateUserList(conn, "settlement_banished", "settlementId", (Integer) village.getId().value(), "banishedId", village.getBanishedResidents());
-                updateList(conn, "settlement_allies", "settlementId", (Integer) village.getId().value(), "allyId", village.getAllies().stream().map(IdObject::value).collect(Collectors.toList()));
+                List<String> banished = new ArrayList<>();
+                village.getBanishedPlayers().stream().map(UUID::toString).forEach(banished::add);
+                village.getBanishedVillageIds().stream().map(id -> "village:" + id).forEach(banished::add);
+                village.getBanishedEmpireIds().stream().map(id -> "empire:" + id).forEach(banished::add);
+                updateList(conn, "settlement_banished", "settlementId", (Integer) village.getId().value(), "banished", banished);
+                List<String> allies = new ArrayList<>();
+                village.getAlliedVillageIds().stream().map(id -> "village:" + id).forEach(allies::add);
+                village.getAlliedEmpireIds().stream().map(id -> "empire:" + id).forEach(allies::add);
+                updateList(conn, "settlement_allies", "settlementId", (Integer) village.getId().value(), "ally", allies);
                 updateDataMap(conn, "settlement_vaults", "settlementId", (Integer) village.getId().value(), "content", "amount", village.getVault());
                 updateDataMap(conn, "settlement_outposts", "settlementId", (Integer) village.getId().value(), "name", "", village.getOutpostHomes());
                 updateDataMap(conn, "settlement_uses", "settlementId", (Integer) village.getId().value(), "type", "state",
@@ -819,6 +832,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         map.put("senators", senators);
 
         map.put("banished", selectList(conn, "empire_banished", "empireId", id, "banished"));
+        map.put("allies", selectList(conn, "empire_allies", "empireId", id, "ally"));
 
         PreparedStatement vSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_vaults WHERE empireId = ?;");
         vSta.setInt(1, id);
@@ -854,7 +868,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
         }
         map.put("residents", residents);
 
-        map.put("allies", selectList(conn, "settlement_allies", "settlementId", rs.getInt("id"), "allyId"));
+        map.put("banished", selectList(conn, "settlement_banished", "settlementId", id, "banished"));
+        map.put("allies", selectList(conn, "settlement_allies", "settlementId", id, "ally"));
 
         PreparedStatement oSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_outposts WHERE settlementId = ?;");
         oSta.setInt(1, id);
@@ -864,8 +879,6 @@ public class MySqlDatabaseManager extends DatabaseManager {
             outposts.put(oRs.getString("name"), toMap(oRs));
         }
         map.put("outposts", outposts);
-
-        map.put("banished", selectResidentList(conn, "settlement_banished", "settlementId", rs.getInt("id"), "banishedId"));
 
         PreparedStatement uSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_uses WHERE settlementId = ?;");
         uSta.setInt(1, id);

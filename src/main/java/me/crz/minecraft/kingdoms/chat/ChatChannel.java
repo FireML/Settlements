@@ -35,7 +35,7 @@ public enum ChatChannel implements NameTag {
         @Override
         public boolean canChat(Player player) {
             Resident resident = ResidentManager.getInstance().getResident(player);
-            return resident.hasVillage() && !resident.getVillage().getAllies().isEmpty();
+            return resident.hasAllies();
         }
 
         @Override

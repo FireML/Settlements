@@ -56,7 +56,7 @@ public interface LandFlagBase extends ConfigMessages {
         if (!land.isPlot()) {
             return null;
         }
-        if (land.isPlotOwner(building) || land.getLandOwner().isChief(building)) {
+        if (land.isPlotOwner(building) || land.getLandOwner().isChief(building.getUniqueId())) {
             return new Pair<>(true, "");
         }
         if (!state.appliesTo(BuildState.AppliesTo.LAND)) {
@@ -103,7 +103,7 @@ public interface LandFlagBase extends ConfigMessages {
     }
 
     default Pair<Boolean, String> getCanBuild(Player building, LandOwner landOwner, BuildState state, String type) {
-        if (landOwner.isChief(building)) {
+        if (landOwner.isChief(building.getUniqueId())) {
             return new Pair<>(true, "");
         }
 
