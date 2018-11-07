@@ -13,6 +13,7 @@ public class UtilChat {
     private static UtilChat instance;
     private final Set<String> literalCurses = new HashSet<>();
     private final Set<Pattern> regexCurses = new HashSet<>();
+    private String replaceWith = "cookie";
 
     public UtilChat() {
         load();
@@ -26,6 +27,8 @@ public class UtilChat {
     }
 
     public void load() {
+        replaceWith = ConfigManager.getInstance().getCursesConfig().getString("replace-with");
+
         literalCurses.addAll(ConfigManager.getInstance().getCursesConfig().getStringList("literal"));
         for (String regex : ConfigManager.getInstance().getCursesConfig().getStringList("regexes")) {
             try {
@@ -40,12 +43,12 @@ public class UtilChat {
         final StringBuilder sb = new StringBuilder();
         for (String s : message.split(" ")) {
             if (literalCurses.contains(s.toLowerCase())) {
-                sb.append("cookie");
+                sb.append(replaceWith);
             } else {
                 boolean found = false;
                 for (Pattern pattern : regexCurses) {
                     if (pattern.matcher(s).matches()) {
-                        sb.append("cookie");
+                        sb.append(replaceWith);
                         found = true;
                         break;
                     }

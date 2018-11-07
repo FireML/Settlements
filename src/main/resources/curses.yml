@@ -1,12 +1,10 @@
+replace-with: "cookie"
 regexes:
-- "c.nt"
+- "h[i|1]tl[e|3]r"
 literal:
 - "cunt"
 - "nazi"
 - "hitler"
-- "h1tler"
-- "h1tl3r"
-- "hitl3r"
 - "fag"
 - "f4g"
 - "gay"

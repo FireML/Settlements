@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.utils.UtilChat;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -22,21 +23,19 @@ public class VillageRenameCommand extends VillageSubCommand {
         if (args.length == 0) {
             return false;
         }
-        String name = args[0];
-        if (villageExists(name)) {
-            res.tell(getError("village-exists"), "name", name);
-            return true;
+        String name = UtilChat.getInstance().filterCurses(args[0]);
+        if (name.toLowerCase().contains("claims")) {
+            getError("invalid-characters").tell(res, "input", name);
+        } else if (villageExists(name)) {
+            getError("village-exists").tell(res, "name", name);
+        } else if (name.length() > 20) {
+            getError("too-long").tell(res, "input", name, "amount", String.valueOf(20));
+        } else if (!allowed.matcher(name).matches()) {
+            getError("invalid-characters").tell(res, "input", name);
+        } else {
+            VillageManager.getInstance().changeName(village, name);
+            getMessage("success").tell(village.getOnlineResidents(), "name", village.getName(), "state", village.getState().getTag());
         }
-        if (name.length() > 20) {
-            res.tell(getError("too-long"), "input", name, "amount", String.valueOf(20));
-            return true;
-        }
-        if (!allowed.matcher(name).matches()) {
-            res.tell(getError("invalid-characters"), "input", name);
-            return true;
-        }
-        VillageManager.getInstance().changeName(village, name);
-        getMessage("success").tell(village.getOnlineResidents(), "name", village.getName(), "state", village.getState().getTag());
         return true;
     }
 

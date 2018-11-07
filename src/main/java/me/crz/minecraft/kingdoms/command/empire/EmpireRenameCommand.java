@@ -4,6 +4,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
+import me.crz.minecraft.kingdoms.utils.UtilChat;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 import java.util.regex.Pattern;
@@ -22,21 +23,19 @@ public class EmpireRenameCommand extends EmpireSubCommand {
         if (args.length == 0) {
             return false;
         }
-        String name = args[0];
-        if (empireExists(name)) {
-            res.tell(getError("empire-exists"), "name", name);
-            return true;
+        String name = UtilChat.getInstance().filterCurses(args[0]);
+        if (name.toLowerCase().contains("claims")) {
+            getError("invalid-characters").tell(res, "input", name);
+        } else if (empireExists(name)) {
+            getError("empire-exists").tell(res, "name", name);
+        } else if (name.length() > 20) {
+            getError("too-long").tell(res, "input", name, "amount", String.valueOf(20));
+        } else if (!allowed.matcher(name).matches()) {
+            getError("invalid-characters").tell(res, "input", name);
+        } else {
+            EmpireManager.getInstance().changeName(empire, name);
+            getMessage("success").tell(empire.getOnlineResidents(), "name", empire.getName());
         }
-        if (name.length() > 20) {
-            res.tell(getError("too-long"), "input", name, "amount", String.valueOf(20));
-            return true;
-        }
-        if (!allowed.matcher(name).matches()) {
-            res.tell(getError("invalid-characters"), "input", name);
-            return true;
-        }
-        EmpireManager.getInstance().changeName(empire, name);
-        getMessage("success").tell(empire.getOnlineResidents(), "name", empire.getName());
         return true;
     }
 

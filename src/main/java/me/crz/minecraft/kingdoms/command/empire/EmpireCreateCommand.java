@@ -6,6 +6,7 @@ import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.UtilChat;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
@@ -31,8 +32,10 @@ public class EmpireCreateCommand extends EmpireSubCommand {
         if (args.length < 1) {
             return false;
         }
-        String name = args[0];
-        if (empireExists(name)) {
+        String name = UtilChat.getInstance().filterCurses(args[0]);
+        if (name.toLowerCase().contains("claims")) {
+            getError("invalid-characters").tell(resident, "input", name);
+        } else if (empireExists(name)) {
             getError("empire-exists").tell(resident, "name", name);
         } else if (name.length() > 20) {
             getError("too-long").tell(resident, "input", name, "amount", String.valueOf(20));

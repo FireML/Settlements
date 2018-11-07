@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.UtilChat;
 import me.crz.minecraft.kingdoms.village.Resident;
 import net.milkbowl.vault.economy.EconomyResponse;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -29,17 +30,19 @@ public class VillageCreateCommand extends VillageSubCommand {
         if (args.length < 1) {
             return false;
         }
-        String name = args[0];
-        if (villageExists(name)) {
-            MessageUtils.tell(player, getError("village-exists"), "name", name);
+        String name = UtilChat.getInstance().filterCurses(args[0]);
+        if (name.toLowerCase().contains("claims")) {
+            getError("invalid-characters").tell(player, "input", name);
+        } else if (villageExists(name)) {
+            getError("village-exists").tell(player, "name", name);
         } else if (name.length() > 20) {
-            MessageUtils.tell(player, getError("too-long"), "input", name, "amount", String.valueOf(20));
+            getError("too-long").tell(player, "input", name, "amount", String.valueOf(20));
         } else if (!allowed.matcher(name).matches()) {
-            MessageUtils.tell(player, getError("invalid-characters"), "input", name);
+            getError("invalid-characters").tell(player, "input", name);
         } else {
             if (Utils.getVillageCreationCost() != 0) {
                 if (Base.getEconomy().getBalance(player.getPlayer()) < Utils.getVillageCreationCost()) {
-                    MessageUtils.tell(player, getError("not-enough-money"), "amount", String.valueOf(Utils.getVillageCreationCost()));
+                    getError("not-enough-money").tell(player, "amount", String.valueOf(Utils.getVillageCreationCost()));
                     return true;
                 }
                 EconomyResponse r = Base.getEconomy().withdrawPlayer(player.getPlayer(), (double) Utils.getVillageCreationCost());
@@ -59,7 +62,7 @@ public class VillageCreateCommand extends VillageSubCommand {
                     "name", village.getName(),
                     "state", village.getState().getTag(),
                     "player", player.getName());
-            MessageUtils.tell(player, getMessage("success"), "name", village.getName());
+            getMessage("success").tell(player, "name", village.getName());
         }
         return true;
     }
