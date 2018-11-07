@@ -318,6 +318,8 @@ gui:
       lore: "&7&lEnabled: &b&l{value}"
     back: "&c&lBack To Settings"
   empire:
+    access:
+      title: "&3&l/e access"
     build:
       title: "&3&l/e mode"
     mode:
@@ -325,11 +327,7 @@ gui:
     perks:
       title: "&3&l/e perks"
     shop:
-        title: "&3&l/e shop"
-        entry:
-          locked: |-
-            &e{name}
-            &cReach Empire {level} to unlock!
+      title: "&3&l/e shop"
     settings:
       title: "&3&lEmpire Settings"
       entry: |-
@@ -747,7 +745,7 @@ command:
       description: "List settlements"
       head: "&7------- &c{access}Settlements [{page}/{maxpage}]&7 -------"
       entry: "&8\\[&9*&8] [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{residents} players\n&f{description})"
-      footer: "&7-------- {previous} {page}/{maxpage}{next} &7 --------"
+      footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
       previous: "&b<< Prev "
       next: "&b Next >>"
     map:
@@ -825,6 +823,7 @@ command:
       access:
         open: Allows everyone to join without an invitation
         public: Everyone can teleport to home but requires invitation to join
+        trusted: Allows allies and empire members to teleport to home
         ally: Allows allies to teleport to home
         private: Allows only members to teleport to home
       description: Sets the access level for the settlement
@@ -1097,9 +1096,9 @@ command:
       description: Leave your current empire
     list:
       description: "List empire"
-      head: "&7------- &cEmpires [{page}/{maxpage}]&7 -------"
+      head: "&7------- &c{access}Empires [{page}/{maxpage}]&7 -------"
       entry: "&8\\[&9*&8] [&r&e{name}](&8Capital: &f{capitalstate}{capital}\n&8Leader: &f{chieftitle} {chief}\n&8Size: &f{members} members\n&f{description})"
-      footer: "&7-------- {previous} {page}/{maxpage}{next} &7 --------"
+      footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
       previous: "&b<< Prev "
       next: "&b Next >>"
     mode:
@@ -1156,6 +1155,14 @@ command:
         no-effects: "&cPerk &f{perk} &chas no effects that can be toggled!"
         description: Toggle perks
       description: Manage unlocked perks
+    setaccess:
+      success: "&7Access changed to &6{access}"
+      access:
+        open: Allows everyone to join without an invitation
+        public: Everyone can teleport to home but requires invitation to join
+        ally: Allows allies to teleport to home
+        private: Allows only members to teleport to home
+      description: Sets the access level for the empire
     sethome:
       success: "&7&lLeader &f{title} {name} &r&7&l has set the empire home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
       description: Sets the home for the empire

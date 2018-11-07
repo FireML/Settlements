@@ -50,7 +50,7 @@ public class AccessGUI extends KingdomsGUI {
                 @Override
                 public boolean click(Player p, ClickType clickType) {
                     Resident resident = ResidentManager.getInstance().getResident(p);
-                    if (resident.getVillage() != null && resident.getVillageRank().atLeast(VillageRank.CHIEF)) {
+                    if (resident.hasVillage() && resident.getVillageRank().atLeast(VillageRank.CHIEF)) {
                         if (resident.getVillage().getAccess() != access) {
                             resident.getVillage().setAccess(access);
                             resident.tell(Message.get("command.village.setaccess.success"), "access", access.getTag());

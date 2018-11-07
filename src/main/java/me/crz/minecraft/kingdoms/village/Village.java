@@ -550,7 +550,7 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         map.put("chief", getChiefId());
         map.put("level", getLevel());
         map.put("settlementState", getState().name());
-        map.put("access", getAccess().toString());
+        map.put("access", getAccess().name());
         map.put("buildState", getBuildState().name());
         map.put("residents", getResidentIds().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("pvp", isPvp());
@@ -588,7 +588,9 @@ public class Village implements ConfigurationSerializable, Comparable<Village>, 
         village.setEmpire(EmpireManager.getInstance().getEmpireFromId(IdObject.get(map.get("empireId"))));
         village.setId(IdObject.get(map));
         village.setDescription((String) map.get("description"));
-        village.setAccess(VillageAccess.valueOf((String) map.get("access")));
+        try {
+            village.setAccess(VillageAccess.valueOf((String) map.get("access")));
+        } catch (IllegalArgumentException ignored) {}
         ((Collection<String>) map.get("residents")).stream().map(UUID::fromString).forEach(u -> village.getResidentIds().add(u));
         village.setPvp((Boolean) map.get("pvp"));
         village.setFireSpread((Boolean) map.get("fireSpread"));

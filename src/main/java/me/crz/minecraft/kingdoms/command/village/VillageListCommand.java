@@ -6,12 +6,10 @@ import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageAccess;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -65,7 +63,7 @@ public class VillageListCommand extends SubCommand {
 
             int pages = (int) Math.ceil(villages.size() / (double) Utils.getEntriesPerPage());
             getMessage("head").tell(player,
-                    "access", finalAccess != null ? finalAccess.getTag() : "",
+                    "access", finalAccess != null ? finalAccess.getTag() + " " : "",
                     "page", String.valueOf(finalPage),
                     "maxpage", String.valueOf(pages)
             );
@@ -91,7 +89,7 @@ public class VillageListCommand extends SubCommand {
             if (finalPage + 1 > pages) {
                 next.color(ChatColor.GRAY);
             } else {
-                next.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalPage + 1)));
+                next.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalAccess != null ? finalAccess.name() + " " : "") + (finalPage + 1)));
                 next.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(ChatColor.YELLOW + ">>")));
             }
             ComponentBuilder previous = new ComponentBuilder("")
@@ -99,18 +97,15 @@ public class VillageListCommand extends SubCommand {
             if (finalPage - 1 <= 0) {
                 previous.color(ChatColor.GRAY);
             } else {
-                previous.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalPage - 1)));
+                previous.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalAccess != null ? finalAccess.name() + " " : "") + (finalPage - 1)));
                 previous.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(ChatColor.YELLOW + "<<")));
             }
 
             MessageUtils.tell(player, MessageUtils.replacePlaceholders(getMessage("footer").getReplacedComponents(
-                    "access", finalAccess != null ? finalAccess.getTag() : "",
+                    "access", finalAccess != null ? finalAccess.getTag() + " " : "",
                     "page", String.valueOf(finalPage),
                     "maxpage", String.valueOf(pages)
             ), ImmutableMap.of(
-                    "access", TextComponent.fromLegacyText(finalAccess != null ? finalAccess.getTag() : ""),
-                    "page", TextComponent.fromLegacyText(String.valueOf(finalPage)),
-                    "maxpage", TextComponent.fromLegacyText(String.valueOf(pages)),
                     "next", next.create(),
                     "previous", previous.create()
             )));

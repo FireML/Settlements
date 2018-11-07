@@ -27,7 +27,6 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -58,6 +57,7 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, La
     private boolean explosions = false;
     private boolean mobSpawning = false;
     private boolean buff = true;
+    private EmpireAccess access = EmpireAccess.PRIVATE;
     private Set<IdObject> members = new LinkedHashSet<>();
     private Set<UUID> senators = new HashSet<>();
     private int bonusClaims = 0;
@@ -129,6 +129,7 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, La
         map.put("tax", getTax());
         map.put("bonusClaims", getBonusClaims());
         map.put("buildState", getBuildState().name());
+        map.put("access", getAccess().name());
         if (getHome() != null)
             map.put("homeLoc", getHome().serialize());
         List<String> banished = new ArrayList<>();
@@ -168,6 +169,9 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, La
         empire.setExplosions((Boolean) map.get("explosions"));
         empire.setMobSpawning((Boolean) map.get("mobSpawning"));
         empire.setBuff((Boolean) map.get("buff"));
+        try {
+            empire.setAccess(EmpireAccess.valueOf((String) map.get("access")));
+        } catch (IllegalArgumentException ignored) {}
         empire.setBonusClaims((Integer) map.get("bonusClaims"));
         if (map.get("homeLoc") != null) {
             empire.setHome(SimpleLocation.deserialize((Map<String, Object>) map.get("homeLoc")));
@@ -503,6 +507,14 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, La
         return banishedEmpires;
     }
 
+    public EmpireAccess getAccess() {
+        return access;
+    }
+
+    public void setAccess(EmpireAccess access) {
+        this.access = access;
+    }
+
     private enum State implements NameTag {
         EMPIRE;
     }
@@ -563,13 +575,13 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, La
     }
 
     public boolean canAccess(Resident resident) {
-        if (getBuildState().atLeast(BuildState.PRIVATE)) {
+        if (getAccess().atLeast(EmpireAccess.PRIVATE)) {
             return isMember(resident.getVillage());
         }
-        if (getBuildState().atLeast(BuildState.ALLY)) {
+        if (getAccess().atLeast(EmpireAccess.ALLY)) {
             return isAlly(resident.getVillage());
         }
-        if (getBuildState().atLeast(BuildState.PUBLIC)) {
+        if (getAccess().atLeast(EmpireAccess.PUBLIC)) {
             return true;
         }
         return false;
@@ -583,6 +595,7 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, La
                 "description", getDescription(),
                 "symbol", getSymbol(),
                 "pvp", yesOrNo(isPvp()),
+                "access", getAccess().getTag(),
                 "balance", Utils.CURRENCY_FORMAT.format(getBank()),
                 "joinfee", Utils.CURRENCY_FORMAT.format(getBank()),
                 "tax", Utils.CURRENCY_FORMAT.format(getBank()),

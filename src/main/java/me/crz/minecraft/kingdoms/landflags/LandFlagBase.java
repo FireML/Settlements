@@ -22,10 +22,6 @@ public interface LandFlagBase extends ConfigMessages {
         if (user.hasPermission("kingdoms.staff")) {
             return new Pair<>(true, "");
         }
-        Empire empire = EmpireManager.getInstance().getEmpireFromWorld(loc.getWorld());
-        if (empire != null) {
-            return new Pair<>(empire.canAccess(user), "&cEmpire world");
-        }
         OwnedLand land = LandManager.getInstance().getLand(loc);
         if (land != null) {
             Pair<Boolean, String> r = getCanBuild(user, land, land.getUseState(use), "use");
@@ -42,10 +38,6 @@ public interface LandFlagBase extends ConfigMessages {
     default Pair<Boolean, String> getCanBuildAll(Player building, Location loc) {
         if (building.hasPermission("kingdoms.staff")) {
             return new Pair<>(true, "");
-        }
-        Empire empire = EmpireManager.getInstance().getEmpireFromWorld(loc.getWorld());
-        if (empire != null) {
-            return new Pair<>(empire.canAccess(building), "&cEmpire world");
         }
         OwnedLand land = LandManager.getInstance().getLand(loc);
         if (land != null) {

@@ -22,6 +22,16 @@ public class SettingsGUI extends KingdomsGUI {
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
         gui.addItem(new ClickableItem() {
             public ItemStack getItem(Player p) {
+                return new CItem(Material.IRON_DOOR).setName(getText("access")).hideAllFlags(true).build();
+            }
+
+            public boolean click(Player p, ClickType clickType) {
+                AccessGUI.getInstance().open(p);
+                return true;
+            }
+        });
+        gui.addItem(new ClickableItem() {
+            public ItemStack getItem(Player p) {
                 return new CItem(Material.DIAMOND_PICKAXE).setName(getText("build")).hideAllFlags(true).build();
             }
 
