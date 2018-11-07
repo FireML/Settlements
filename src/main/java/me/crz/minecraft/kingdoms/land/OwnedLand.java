@@ -364,7 +364,7 @@ public class OwnedLand implements ConfigurationSerializable {
     public Map<String, Object> serialize() {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("landOwner", getLandOwner().getName());
-        map.put("settlementId", getLandOwner().getId().value());
+        map.put("settlementId", getLandOwner() instanceof Village && !getLandOwner().getId().isNull() ? getLandOwner().getId().value() : -1);
         map.put("x", getX());
         map.put("z", getZ());
         map.put("world", getWorldName());

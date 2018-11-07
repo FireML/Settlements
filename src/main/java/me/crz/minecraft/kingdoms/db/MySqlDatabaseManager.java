@@ -263,7 +263,6 @@ public class MySqlDatabaseManager extends DatabaseManager {
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "claims ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                     + "settlementId INTEGER NOT NULL, INDEX (settlementId), "
-                    + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE RESTRICT,"
                     + "world VARCHAR(255),INDEX(world),"
                     + "x INTEGER,INDEX(x),"
                     + "z INTEGER,INDEX(z),"
@@ -479,7 +478,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return;
         }
         for (OwnedLand land : lands) {
-            Map<String, Object> values = getValues(land.serialize(), "ownerVillage", "uses");
+            Map<String, Object> values = getValues(land.serialize(), "landOwner", "uses");
             String sql = "INSERT INTO " + tablePrefix + "claims "
                     + "(`" + String.join("`,`", values.keySet()) + "`)"
                     + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")"
