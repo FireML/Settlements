@@ -32,7 +32,7 @@ public class VillageBanishCommand extends VillageSubCommand {
             if (res == null) {
                 resident.tell(getError("player-not-found"), "name", args[0]);
                 return;
-            } else if (res.getVillageRank().atLeast(resident.getVillageRank())) {
+            } else if (res.getVillage().isMember(res) && res.getVillageRank().atLeast(resident.getVillageRank())) {
                 resident.tell(getError("cant-banish"), "name", res.getName(), "title", res.getTitle());
                 return;
             }

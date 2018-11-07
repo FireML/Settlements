@@ -1009,6 +1009,8 @@ command:
         description: Show the bank's history
     banish:
       cant-banish-yourself: "&cYou can't banish yourself!"
+      cant-banish-leader: "&cYou can't banish the leader!"
+      cant-banish-capital: "&cYou can't banish the capital!"
       cant-banish: "&cYou can't banish &f{title} &f{name}!"
       already-banished: "&f{name}&c is already banished!"
       banished: "&6{name}&7 has been &cbanished &7from your empire world!"

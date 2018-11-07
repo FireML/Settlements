@@ -290,11 +290,6 @@ public class Empire implements ConfigurationSerializable, Comparable<Empire>, La
         return EmpireManager.getInstance().getPerk(name);
     }
 
-    @Override
-    public void runCommands(Perk perk) {
-        // TODO: Where should commands run?
-    }
-
     public Set<IdObject> getMemberIds() {
         return members;
     }

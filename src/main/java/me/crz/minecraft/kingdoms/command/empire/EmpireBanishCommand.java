@@ -64,6 +64,16 @@ public class EmpireBanishCommand extends EmpireSubCommand {
                 return;
             }
 
+            if (target.equals(resident.getVillage().getEmpire().getCapital().getChief())) {
+                getError("cant-banish-leader").tell(resident);
+                return;
+            }
+
+            if (target.equals(resident.getVillage().getEmpire().getCapital())) {
+                getError("cant-banish-capital").tell(resident);
+                return;
+            }
+
             if (!resident.getVillage().getEmpire().addBanished(target)) {
                 getError("already-banished").tell(resident, "name", target.getName());
                 return;
