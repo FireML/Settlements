@@ -16,6 +16,7 @@
         <minecraft.plugin.version>${project.version} ${buildDescription}</minecraft.plugin.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <jarName>${project.name}</jarName>
     </properties>
 
     <profiles>
@@ -27,7 +28,6 @@
                 </property>
             </activation>
             <properties>
-                <jarName>Kingdoms</jarName>
                 <buildNumber>0</buildNumber>
                 <buildDescription>(compiled at ${maven.build.timestamp})</buildDescription>
             </properties>
@@ -40,7 +40,6 @@
                 </property>
             </activation>
             <properties>
-                <jarName>${project.name}</jarName>
                 <buildNumber>${env.BUILD_NUMBER}</buildNumber>
                 <buildDescription>(build ${env.BUILD_NUMBER})</buildDescription>
             </properties>
