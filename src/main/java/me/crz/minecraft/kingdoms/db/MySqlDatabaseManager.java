@@ -353,7 +353,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
     @Override
     public void deleteEmpire(Empire empire) {
         Utils.catchSync();
-        if (empire.getId() != null) {
+        if (!empire.getId().isNull()) {
             try (Connection conn = ds.getConnection();
                  PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "empires WHERE id=?")) {
                 sta.setInt(1, (Integer) empire.getId().value());
@@ -410,7 +410,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
     @Override
     public void deleteVillage(Village village) {
         Utils.catchSync();
-        if (village.getId() != null) {
+        if (!village.getId().isNull()) {
             try (Connection conn = ds.getConnection();
                  PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "settlements WHERE id=?")) {
                 sta.setInt(1, (Integer) village.getId().value());

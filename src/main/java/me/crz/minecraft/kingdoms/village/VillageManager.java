@@ -1,8 +1,6 @@
 package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.banish.CustomRunnable;
-import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -110,6 +108,7 @@ public class VillageManager {
 
     public void deleteVillage(Village village) {
         villages.remove(village.getName().toLowerCase());
+        villageIDs.remove(village.getId());
         LandManager.getInstance().unclaimLand(village);
         MessageUtils.broadcast(Message.get("broadcast.village-deletion"),
                 "name", village.getName(),
