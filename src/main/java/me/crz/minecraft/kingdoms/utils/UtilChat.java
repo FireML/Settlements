@@ -3,11 +3,13 @@ package me.crz.minecraft.kingdoms.utils;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 
 public class UtilChat {
     private static UtilChat instance;
@@ -40,25 +42,18 @@ public class UtilChat {
     }
 
     public String filterCurses(final String message) {
-        final StringBuilder sb = new StringBuilder();
-        for (String s : message.split(" ")) {
-            if (literalCurses.contains(s.toLowerCase())) {
-                sb.append(replaceWith);
-            } else {
-                boolean found = false;
-                for (Pattern pattern : regexCurses) {
-                    if (pattern.matcher(s).matches()) {
-                        sb.append(replaceWith);
-                        found = true;
-                        break;
+        return Arrays.stream(message.split(" "))
+                .map(s -> {
+                    if (literalCurses.contains(s.toLowerCase())) {
+                        return replaceWith;
                     }
-                }
-                if (!found) {
-                    sb.append(s);
-                }
-            }
-            sb.append(" ");
-        }
-        return sb.toString();
+                    for (Pattern pattern : regexCurses) {
+                        if (pattern.matcher(s).matches()) {
+                            return replaceWith;
+                        }
+                    }
+                    return s;
+                })
+                .collect(Collectors.joining(" "));
     }
 }
