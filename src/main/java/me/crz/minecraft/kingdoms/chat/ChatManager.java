@@ -143,6 +143,7 @@ public class ChatManager extends Base implements ConfigMessages {
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(finalChannel))
                         .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                break;
             case ALLY:
                 village.getAllies().stream()
                         .flatMap(a -> a.getOnlineResidents().stream())
