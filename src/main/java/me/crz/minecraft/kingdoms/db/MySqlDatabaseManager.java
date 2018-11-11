@@ -147,6 +147,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "description TEXT NOT NULL,"
                     + "access VARCHAR(255) NOT NULL,"
                     + "buildState VARCHAR(255) NOT NULL,"
+                    + "allowAllyClaim BOOLEAN NOT NULL,"
                     + "pvp BOOLEAN NOT NULL,"
                     + "fireSpread BOOLEAN NOT NULL,"
                     + "explosions BOOLEAN NOT NULL,"

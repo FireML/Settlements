@@ -15,6 +15,7 @@ public class VillageCommand extends SubCommand {
         registerCommand(new ChatCommand());
         registerCommand(new VillageAlliesCommand(this));
         registerCommand(new VillageAllyCommand(this));
+        registerCommand(new VillageAllyclaimCommand(this));
         registerCommand(new VillageBanishedCommand(this));
         registerCommand(new VillageBanishCommand(this));
         registerCommand(new VillageUnbanishCommand(this));

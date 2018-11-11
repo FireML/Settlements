@@ -6,7 +6,6 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
-import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
@@ -48,6 +47,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     private VillageState villageState;
     private Map<String, NamedLocation> outpostHomes = new LinkedHashMap<>();
     private Set<UUID> residents = new LinkedHashSet<>();
+    private boolean allowAllyClaim = false;
 
     protected Village() {
         super();
@@ -152,6 +152,14 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
 
     public boolean hasHome() {
         return this.getHome() != null;
+    }
+
+    public boolean isAllowAllyClaim() {
+        return allowAllyClaim;
+    }
+
+    public void setAllowAllyClaim(boolean allowAllyClaim) {
+        this.allowAllyClaim = allowAllyClaim;
     }
 
     @Override
@@ -326,6 +334,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         Map<String, Object> map = super.serialize();
         map.put("chief", getChiefId());
         map.put("level", getLevel());
+        map.put("allowAllyClaim", isAllowAllyClaim());
         map.put("settlementState", getState().name());
         map.put("residents", getResidentIds().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("outposts", getOutpostHomes().values().stream().collect(Collectors.toMap(NamedLocation::getName, NamedLocation::serialize)));
@@ -352,6 +361,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         village.setChief(UUID.fromString((String) map.get("chief")));
         village.setState(VillageState.valueOf((String) map.get("settlementState")));
         village.setLevel((Integer) map.get("level"));
+        village.setAllowAllyClaim((Boolean) map.get("allowAllyClaim"));
         village.setEmpire(EmpireManager.getInstance().getEmpireFromId(IdObject.get(map.get("empireId"))));
         ((Collection<String>) map.get("residents")).stream().map(UUID::fromString).forEach(u -> village.getResidentIds().add(u));
         ((Map<String, Map<String, Object>>) map.get("outposts")).values().stream()
@@ -387,6 +397,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 "balance", Utils.CURRENCY_FORMAT.format(getBank()),
                 "tax", Utils.CURRENCY_FORMAT.format(getTax()),
                 "joinfee", Utils.CURRENCY_FORMAT.format(getJoinFee()),
+                "allowallyclaim", yesOrNo(isAllowAllyClaim()),
                 "mobspawning", yesOrNo(isMobSpawning()),
                 "firespread", yesOrNo(isFireSpread()),
                 "explosions", yesOrNo(isExplosions()),

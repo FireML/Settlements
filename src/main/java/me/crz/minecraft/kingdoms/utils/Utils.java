@@ -111,16 +111,16 @@ public class Utils {
         return 0;
     }
 
-    public static int getUnAllyGraceDays() {
-        if (ConfigManager.getInstance().getConfig().isInt("unally-grace-days")) {
-            return ConfigManager.getInstance().getConfig().getInt("unally-grace-days");
+    public static int getCloseClaimsGraceDays() {
+        if (ConfigManager.getInstance().getConfig().isInt("close-claims-grace-days")) {
+            return ConfigManager.getInstance().getConfig().getInt("close-claims-grace-days");
         }
         return 0;
     }
 
-    public static boolean getUnallyUnclaimsOutposts() {
-        if (ConfigManager.getInstance().getConfig().isBoolean("unally-unclaims-outposts")) {
-            return ConfigManager.getInstance().getConfig().getBoolean("unally-unclaims-outposts");
+    public static boolean getCloseClaimsUnclaimsOutposts() {
+        if (ConfigManager.getInstance().getConfig().isBoolean("close-claims-unclaims-outposts")) {
+            return ConfigManager.getInstance().getConfig().getBoolean("close-claims-unclaims-outposts");
         }
         return false;
     }
@@ -334,5 +334,22 @@ public class Utils {
         } else {
             target.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
         }
+    }
+
+    public static boolean parseBoolean(String arg) throws IllegalArgumentException {
+        switch (arg.toLowerCase()) {
+            case "true":
+            case "on":
+            case "allow":
+            case "yes":
+                return true;
+            case "false":
+            case "off":
+            case "deny":
+            case "disallow":
+            case "no":
+                return false;
+        }
+        throw new IllegalArgumentException(arg + " is not a valid boolean!");
     }
 }

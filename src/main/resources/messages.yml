@@ -620,6 +620,10 @@ command:
       accept-info: "&r&6&l/s ally {name} &r&7&lto ally them!"
       request-send: "&7&lAlly request sent to &r&6&l{name}"
       description: Ally another settlement or empire
+    allyclaim:
+      enabled: "&7&lAllies &a&lcan now claim&7&l close to your settlement!"
+      disabled: "&7&lAllies can &c&lno longer&7&l claim close to your settlement! Claims that are too close will be unclaimed in {grace} days."
+      description: Allows toggling of close claims of other allies
     banish:
       cant-banish-yourself: "&cYou can't banish yourself!"
       cant-banish-leader: "&cYou can't banish the leader!"

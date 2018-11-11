@@ -7,6 +7,7 @@ import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.Village;
 
 import java.util.stream.Collectors;
 
@@ -70,7 +71,9 @@ public interface AllyCommand extends LandOwnerCommand {
         } else {
             source.removeAlly(target);
             target.removeAlly(source);
-            LandManager.getInstance().checkUnallyDistance(source, target);
+            if (!(source instanceof Village) || ((Village) source).isAllowAllyClaim()) {
+                LandManager.getInstance().checkClaimDistance(source, target);
+            }
 
             Utils.runAsync(() -> {
                 DatabaseManager.getInstance().save(target);
