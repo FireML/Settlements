@@ -96,6 +96,7 @@ public class ChatManager extends Base implements ConfigMessages {
                 .replace("empire", TextComponent.fromLegacyText(res.hasEmpire() ? village.getEmpire().getName() : ""))
                 .replace("sender", new ComponentBuilder("")
                         .event(getHover(sender, res))
+                        .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + sender.getName()))
                         .append(getMessage("format.name").getReplacedComponents(
                                 "name", sender.getName(),
                                 "displayname", sender.getDisplayName(),
@@ -197,6 +198,7 @@ public class ChatManager extends Base implements ConfigMessages {
                 "sender", new ComponentBuilder(
                         getMessage("format.private.name.sender").getReplacedText(getReplacements(sender, res)))
                         .event(senderHover)
+                        .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + sender.getName()))
                         .create(),
                 "target", new ComponentBuilder(
                         getMessage("format.private.name.target").getReplacedText(getReplacements(target, tres)))
@@ -209,12 +211,13 @@ public class ChatManager extends Base implements ConfigMessages {
 
         MessageUtils.tell(target, getMessage("format.private.target"), ImmutableMap.of(
                 "sender", new ComponentBuilder(
-                        getMessage("format.private.name.target").getReplacedText(getReplacements(target, tres)))
+                        getMessage("format.private.name.target").getReplacedText(getReplacements(sender, tres)))
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + sender.getName() + " "))
                         .event(senderHover)
                         .create(),
                 "target", new ComponentBuilder(
-                        getMessage("format.private.name.sender").getReplacedText(getReplacements(sender, res)))
+                        getMessage("format.private.name.sender").getReplacedText(getReplacements(target, res)))
+                        .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + target.getName()))
                         .event(targetHover)
                         .create(),
                 "message", new ComponentBuilder(message).create(),

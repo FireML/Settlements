@@ -199,13 +199,13 @@ chat:
     rank: "\n&9Rank: &7{title}"
   staff: "&c&lStaff "
   format:
-    name: "{name}"
+    name: "{displayname}"
     private:
       sender: "&8\\[&a{sender} &7➦ &3{target}&8] &b{message}"
       target: "{staff}&8\\[&3{sender} &7➦ &a{target}&8] &b{message}"
       name:
         sender: "you"
-        target: "{name}"
+        target: "{displayname}"
       social-spy: "&7[&6SS&7]&r {sender} &7➦ &3{target}&7: {message}"
     channel:
       general: "&r{prefix}&7{sender}&r{suffix}&r ➦ {message}"
