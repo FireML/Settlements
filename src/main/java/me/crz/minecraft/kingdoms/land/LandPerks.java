@@ -176,7 +176,7 @@ public class LandPerks {
         List<PerkEffect> effects = new ArrayList<>();
 
         Village village = null;
-        if (land.getLandOwner() instanceof Village) {
+        if (land != null && land.getLandOwner() instanceof Village) {
             village = (Village) land.getLandOwner();
         }
 
