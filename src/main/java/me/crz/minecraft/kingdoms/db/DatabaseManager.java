@@ -84,7 +84,7 @@ public abstract class DatabaseManager {
         log(empire, village, resident, action, ImmutableMap.of(type, amount));
     }
 
-    public void log(Targetable claimsHolder, Resident resident, String action, String type, long amount) {
+    public void log(LandOwner claimsHolder, Resident resident, String action, String type, long amount) {
         if (claimsHolder instanceof Village) {
             log(null, (Village) claimsHolder, resident, action, ImmutableMap.of(type, amount));
         } else {

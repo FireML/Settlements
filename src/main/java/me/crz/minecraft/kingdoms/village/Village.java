@@ -101,6 +101,13 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     }
 
     private void payUpkeep(long lastTax) {
+        if (hasEmpire() && getEmpire().isCapital(this)) {
+            // no upkeep for empire capitals
+            if (lastTax > 0) {
+                DatabaseManager.getInstance().saveVillage(this);
+            }
+            return;
+        }
         int total = getUpkeep();
         if (removeFromBank(total)) {
             KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") was charged an upkeep of " + total + "!");

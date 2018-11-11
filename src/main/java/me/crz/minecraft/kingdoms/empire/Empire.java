@@ -11,6 +11,7 @@ import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
+import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -52,34 +53,59 @@ public class Empire extends LandOwner implements Comparable<Empire>, Perkable<Pe
 
     public void doUpkeep() {
         if (getTax() > 0) {
-            Utils.runAsync(() -> {
-                int paidTaxes = 0;
-                for (Village member : getMembers()) {
-                    if (member.getId().equals(getCapitalId())) {
-                        continue;
-                    }
-                    if (member.removeFromBank(member.getTax())) {
-                        addToBank(getTax());
-                        paidTaxes += getTax();
-                        Message.get("empire-tax.removed").tell(member.getOnlineResidents(),
-                                "amount", String.valueOf(getTax()),
-                                "state", member.getState().getTag(),
-                                "settlement", member.getName(),
-                                "name", getName());
-                    } else {
-                        Message.get("empire-tax.couldnt-pay").tell(getOnlineResidents(),
-                                "amount", String.valueOf(getTax()),
-                                "state", member.getState().getTag(),
-                                "settlement", member.getName(),
-                                "name", getName()
-                        );
-                        member.setEmpire(null);
-                        getMemberIds().remove(member.getId());
-                    }
+            int paidTaxes = 0;
+            for (Village member : getMembers()) {
+                if (member.getId().equals(getCapitalId())) {
+                    continue;
                 }
+                if (member.removeFromBank(member.getTax())) {
+                    addToBank(getTax());
+                    paidTaxes += getTax();
+                    Message.get("empire-tax.removed").tell(member.getOnlineResidents(),
+                            "amount", String.valueOf(getTax()),
+                            "state", member.getState().getTag(),
+                            "settlement", member.getName(),
+                            "name", getName());
+                } else {
+                    Message.get("empire-tax.couldnt-pay").tell(getOnlineResidents(),
+                            "amount", String.valueOf(getTax()),
+                            "state", member.getState().getTag(),
+                            "settlement", member.getName(),
+                            "name", getName()
+                    );
+                    member.setEmpire(null);
+                    getMemberIds().remove(member.getId());
+                }
+            }
+            payUpkeep(paidTaxes);
+
+            int finalPaidTaxes = paidTaxes;
+            Utils.runAsync(() -> {
                 DatabaseManager.getInstance().saveVillages(getMembers());
-                DatabaseManager.getInstance().log(this, null, null, "tax", "cash", paidTaxes);
+                DatabaseManager.getInstance().log(this, null, null, "tax", "cash", finalPaidTaxes);
             });
+        } else {
+            payUpkeep(0);
+        }
+    }
+
+    private void payUpkeep(long lastTax) {
+        int total = getUpkeep();
+        if (removeFromBank(total)) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " was charged an upkeep of " + total + "!");
+            MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.charged"), "charged", String.valueOf(total));
+            if (!has(total - lastTax)) {
+                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.cant-pay"), "cost", String.valueOf(total));
+            }
+            Utils.runAsync(() -> {
+                DatabaseManager.getInstance().saveEmpire(this);
+                DatabaseManager.getInstance().log(this, null, "upkeep", "cash", total);
+            });
+        } else {
+            KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " wasn't able to pay the upkeep of " + total + " and was deleted!");
+            setBank(0);
+            MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.deleted"));
+            EmpireManager.getInstance().deleteEmpire(this);
         }
     }
 
@@ -241,6 +267,10 @@ public class Empire extends LandOwner implements Comparable<Empire>, Perkable<Pe
     @Override
     public String getStateTag() {
         return State.EMPIRE.getTag();
+    }
+
+    public int getUpkeep() {
+        return KingdomsPlugin.getInstance().getConfig().getInt("upkeep.empire");
     }
 
     private enum State implements NameTag {

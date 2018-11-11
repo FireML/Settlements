@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.village;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -64,16 +65,23 @@ public class VillageListener implements Listener {
         }
         if (res.hasVillage()) {
             if (res.getVillageRank().below(VillageRank.CHIEF) && !KingdomsPlugin.getInstance().econ.has(event.getPlayer(), res.getVillage().getTax())) {
-                MessageUtils.tell(event.getPlayer(), Message.get("tax.cant-pay"), "amount", String.valueOf(res.getVillage().getTax()));
+                Message.get("tax.cant-pay").tell(event.getPlayer(), "amount", String.valueOf(res.getVillage().getTax()));
             }
-            long upkeep = res.getVillage().getUpkeep();
-            if (!res.getVillage().has(upkeep - ((res.getVillage().getResidentIds().size() - 1) * res.getVillage().getTax()))) {
-                MessageUtils.tell(event.getPlayer(), Message.get("upkeep.alert.cant-pay"), "amount", String.valueOf(upkeep));
+            long upkeep = res.getVillage().getUpkeep() - (res.getVillage().getResidentIds().size() - 1) * res.getVillage().getTax();
+            if (!res.getVillage().has(upkeep)) {
+                Message.get("upkeep.alert.cant-pay").tell(event.getPlayer(), "amount", String.valueOf(upkeep));
             }
             if (res.hasEmpire()) {
-                long empireTax = res.getVillage().getEmpire().getTax();
-                if (!res.getVillage().has(empireTax - upkeep)) {
-                    MessageUtils.tell(event.getPlayer(), Message.get("empire-tax.cant-pay"), "amount", String.valueOf(empireTax));
+                Empire empire = res.getVillage().getEmpire();
+                long empireTax = empire.getTax();
+                if (!empire.isCapital(res.getVillage()) && !empire.has(empireTax - upkeep)) {
+                    Message.get("empire-tax.cant-pay").tell(event.getPlayer(), "amount", String.valueOf(empireTax));
+                }
+                if (res.getVillageRank().atLeast(VillageRank.CHIEF)) {
+                    long empireUpkeep = empire.getUpkeep() - (empire.getMemberIds().size() - 1) * empire.getTax();
+                    if (!empire.has(empireUpkeep)) {
+                        Message.get("upkeep.empire-alert.cant-pay").tell(event.getPlayer(), "amount", String.valueOf(empireUpkeep));
+                    }
                 }
             }
         }
