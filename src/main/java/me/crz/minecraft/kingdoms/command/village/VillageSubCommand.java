@@ -3,7 +3,6 @@ package me.crz.minecraft.kingdoms.command.village;
 import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.entity.Player;
@@ -33,17 +32,21 @@ public abstract class VillageSubCommand extends ResidentSubCommand {
         if (resident != null) {
             if (requiredRank == null) {
                 if (resident.hasVillage()) {
-                    MessageUtils.tell(player, getError("free-required"));
+                    getError("free-required").tell(player);
                     return false;
                 }
                 return true;
             } else if (resident.hasVillage()) {
+                if (resident.getVillage().getId().isNull()) {
+                    getError("missing-village-id").tell(player);
+                    return true;
+                }
                 if (resident.getVillageRank().atLeast(requiredRank)) {
                     return true;
                 }
-                MessageUtils.tell(player, getError("rank-required"), "rank", requiredRank.getTag(resident.getVillage()));
+                getError("rank-required").tell(player, "rank", requiredRank.getTag(resident.getVillage()));
             } else {
-                MessageUtils.tell(player, getError("village-required"));
+                getError("village-required").tell(player);
             }
         }
         return false;

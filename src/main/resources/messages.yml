@@ -1,5 +1,7 @@
 server-rules: "&6&llink.to/server-rules&r or rule text"
 error:
+  missing-village-id: "&cInternal error. Village ID is null?"
+  missing-empire-id: "&cInternal error. Empire ID is null?"
   not-a-number: "&c&lERROR &r&c{input} is not a valid number!"
   not-in-current: "&c&lERROR &r&7Not currently in settlement."
   not-in-village: "&c&lTarget player {player} isn't in a village!"

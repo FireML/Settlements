@@ -52,11 +52,7 @@ public class VillageCreateCommand extends VillageSubCommand {
                 }
             }
             Village village = new Village(name, player.getUUID(), 1, VillageState.VILLAGE);
-            VillageManager.getInstance().registerNewVillage(village);
-            player.setVillage(village);
-            player.setVillageRank(VillageRank.CHIEF);
-            player.addChannel(ChatChannel.SETTLEMENT);
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(player));
+            VillageManager.getInstance().registerNewVillage(player, village);
 
             MessageUtils.broadcast(getMessage("broadcast"),
                     "name", village.getName(),

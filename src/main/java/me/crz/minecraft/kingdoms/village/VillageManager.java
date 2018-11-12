@@ -1,14 +1,17 @@
 package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.vault.Levels;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
@@ -20,6 +23,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public class VillageManager {
@@ -64,18 +68,24 @@ public class VillageManager {
         return villages.values();
     }
 
-    public void registerNewVillage(Village village) {
+    public void registerNewVillage(Resident chief, Village village) {
         if (!village.getId().isNull()) {
             KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving " + village.getName() + " to the database! It already had an ID defined?");
+            chief.tell(ChatColor.RED + "Error while saving " + village.getName() + " to the database! It already had an ID defined?");
             return;
         }
         villages.put(village.getName().toLowerCase(), village);
+        chief.setVillage(village);
+        chief.setVillageRank(VillageRank.CHIEF);
+        chief.addChannel(ChatChannel.SETTLEMENT);
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveVillage(village);
             if (!village.getId().isNull()) {
                 villageIDs.put(village.getId(), village);
+                DatabaseManager.getInstance().saveResident(chief);
             } else {
                 KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving " + village.getName() + " to the database! No ID was returned.");
+                chief.tell(ChatColor.RED + "Error while saving " + village.getName() + " to the database! No ID was returned.");
             }
         });
     }

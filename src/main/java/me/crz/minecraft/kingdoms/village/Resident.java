@@ -262,10 +262,13 @@ public class Resident implements ConfigurationSerializable, Targetable {
 
     @Override
     public Map<String, Object> serialize() {
+        if (hasVillage() && getVillage().getId().isNull()) {
+            throw new IllegalArgumentException("Resident had village but village has no ID?");
+        }
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("uuid", getUUID().toString());
         map.put("name", getName());
-        map.put("settlementId", village != null ? village.getId().value() : null);
+        map.put("settlementId", getVillage() != null ? getVillage().getId().value() : null);
         map.put("settlementJoin", getVillageJoin());
         map.put("rank", getVillageRank().name());
         map.put("title", title);
