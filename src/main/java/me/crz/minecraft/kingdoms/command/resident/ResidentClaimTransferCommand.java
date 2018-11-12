@@ -4,7 +4,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
-import me.crz.minecraft.kingdoms.utils.Targetable;
+import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -22,7 +22,7 @@ public class ResidentClaimTransferCommand extends SubCommand {
     public boolean run(Player player, String base, String alias, String... args) {
         Resident resident = ResidentManager.getInstance().getResident(player);
         int amountIndex = 1;
-        Targetable target;
+        LandOwner target;
         if (args.length < 2) {
             if (args.length == 0) {
                 return false;
