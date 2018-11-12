@@ -25,8 +25,8 @@ public class VillageUpkeepCommand extends VillageSubCommand {
         int total = village.getUpkeep();
 
         res.tell(getMessage("info"),
-                "cost", String.valueOf(total),
-                "upkeep", String.valueOf(Utils.getUpkeepCost()),
+                "cost", Utils.CURRENCY_FORMAT.format(total),
+                "upkeep", Utils.CURRENCY_FORMAT.format(Utils.getUpkeepCost()),
                 "time", UtilTime.format((double) TimeUnit.MILLISECONDS.toSeconds(Utils.timeTillNextUpkeep())),
                 "afford", village.has(total) ? ChatColor.GREEN + "yes" : ChatColor.RED + "no"
         );

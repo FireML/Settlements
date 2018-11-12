@@ -24,7 +24,7 @@ public class EmpireUpkeepCommand extends EmpireSubCommand {
     public boolean run(Resident res, String base, String alias, String... args) {
         Empire empire = res.getVillage().getEmpire();
         res.tell(getMessage("info"),
-                "cost", String.valueOf(empire.getUpkeep()),
+                "cost", Utils.CURRENCY_FORMAT.format(empire.getUpkeep()),
                 "time", UtilTime.format((double) TimeUnit.MILLISECONDS.toSeconds(Utils.timeTillNextUpkeep())),
                 "afford", empire.has(empire.getUpkeep()) ? ChatColor.GREEN + "yes" : ChatColor.RED + "no"
         );
