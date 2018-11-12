@@ -88,39 +88,6 @@ public class VillageListener implements Listener {
     }
 
     @EventHandler
-    public void onSign(PlayerInteractEvent e) {
-        if (e.getClickedBlock() == null) {
-            return;
-        }
-        if (e.isCancelled()) {
-            return;
-        }
-        OwnedLand land = LandManager.getInstance().getLand(e.getClickedBlock().getLocation());
-        if (land == null) {
-            return;
-        }
-        if (e.getClickedBlock().getType() == Material.SIGN || e.getClickedBlock().getType() == Material.WALL_SIGN) {
-            Resident res = ResidentManager.getInstance().getResident(e.getPlayer());
-            Village village = VillageManager.getInstance().getVillageFromResident(res);
-            if (village == null) {
-                return;
-            }
-            Sign sign = (Sign) e.getClickedBlock().getState();
-            List<String> lines = Arrays.asList(sign.getLines());
-            if (lines.size() < 1) {
-                return;
-            }
-            if (ChatColor.stripColor( lines.get(0)).equalsIgnoreCase("[teleporter]")) {
-                if (land.getLandOwner().equals(village)) {
-                    new TeleportersGUI().build(e.getPlayer());
-                } else {
-                    MessageUtils.tell(e.getPlayer(), "&c&lYou can't use another villages teleporter");
-                }
-            }
-        }
-    }
-
-    @EventHandler
     public void onResourcePackStatus(PlayerResourcePackStatusEvent event) {
         if (event.getStatus() == PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED) {
             ResidentManager.getInstance().getResident(event.getPlayer()).setResourcePack(true);

@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.teleporter;
 
+import me.crz.minecraft.kingdoms.utils.IdObject;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.village.Village;
 
@@ -8,7 +9,7 @@ import java.util.Map;
 
 public class Teleporters {
     private static Teleporters instance;
-    private Map<String, PrivateTeleportersGUI> privateTeleporters = new HashMap<>();
+    private Map<IdObject, PrivateTeleportersGUI> privateTeleporters = new HashMap<>();
 
     public Teleporters() {
         super();
@@ -18,11 +19,11 @@ public class Teleporters {
         if (v == null) {
             return null;
         }
-        if (privateTeleporters.containsKey(v.getName())) {
-            return privateTeleporters.get(v.getName());
+        if (privateTeleporters.containsKey(v.getId())) {
+            return privateTeleporters.get(v.getId());
         }
         final PrivateTeleportersGUI teleporter = new PrivateTeleportersGUI(v);
-        privateTeleporters.put(v.getName(), teleporter);
+        privateTeleporters.put(v.getId(), teleporter);
         return teleporter;
     }
 

@@ -381,6 +381,10 @@ gui:
   private-teleports:
     title: "&3&lSettlement teleports: &r&7{page}"
     entry: "&b{name}"
+    page:
+      next: "&7Go to next page {page}"
+      previous: "&7Go to previous page {page}"
+    back: "&c&lBack To Teleporters"
   residents:
     title: "&3&lVillage Residents"
     back: "&c&lBack To Settings"
@@ -418,11 +422,10 @@ gui:
       offline: "&c"
       entry: "{online}{name}"
   teleporters:
-    title: "&2&lSettlement Teleporters"
+    title: "&2&l/s teleporters"
     locked: "&cLocked"
     private: "&e&lPrivate Warps"
-    kingdoms-world: "&e&lKingdoms World"
-    village-home: "&e&lVillage Home"
+    village-home: "&e&l{state} Home"
     empire-home: "&e&lEmpire Home"
   perks:
     title: "&3&l/s perks"
@@ -912,6 +915,8 @@ command:
       set:
         success: "&e&lALERT &r&7Daily tax was set &e{amount}&7!"
         description: Sets the tax a player needs to pay each day he is in the settlement
+    teleporters:
+      description: Teleporter GUI
     title:
       description: "Set your title"
       success:

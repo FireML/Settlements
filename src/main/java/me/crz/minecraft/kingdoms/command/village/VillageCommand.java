@@ -6,6 +6,8 @@ import me.crz.minecraft.kingdoms.command.plot.PlotCommand;
 import me.crz.minecraft.kingdoms.command.village.money.VillageMoneyCommand;
 import me.crz.minecraft.kingdoms.db.LogType;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.teleporter.TeleportersGUI;
+import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.entity.Player;
 
 public class VillageCommand extends SubCommand {
@@ -51,6 +53,13 @@ public class VillageCommand extends SubCommand {
         registerCommand(new VillageShopCommand(this));
         registerCommand(new VillageShowCommand(this));
         registerCommand(new VillageTaxCommand(this));
+        registerCommand(new SubCommand(this, "teleporters") {
+            @Override
+            public boolean run(Player player, String base, String alias, String... args) {
+                TeleportersGUI.getInstance().build(player);
+                return true;
+            }
+        });
         registerCommand(new VillageTitleCommand(this));
         registerCommand(new VillageTransferCommand(this));
         registerCommand(new VillageUnAllyCommand(this));

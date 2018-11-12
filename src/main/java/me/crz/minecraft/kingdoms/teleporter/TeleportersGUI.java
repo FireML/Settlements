@@ -10,6 +10,7 @@ import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.village.VillageManager;
+import me.crz.minecraft.kingdoms.village.VillageState;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,10 +19,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class TeleportersGUI extends KingdomsGUI {
+    private static TeleportersGUI instance;
     private CInventory ci;
     private ItemStack locked;
 
-    public TeleportersGUI() {
+    private TeleportersGUI() {
         super("teleporters");
         ci = new CInventory(getText("title"), InventorySize.ONE) {};
         locked = new ItemStack(Material.RED_STAINED_GLASS_PANE);
@@ -42,7 +44,7 @@ public class TeleportersGUI extends KingdomsGUI {
                 if (v == null) {
                     return false;
                 }
-                Teleporters.getInstance().getPrivateTeleporters(v, p).open(p, 0);
+                Teleporters.getInstance().getPrivateTeleporters(v, p).open(p, 1);
                 return true;
             }
         });
@@ -51,10 +53,10 @@ public class TeleportersGUI extends KingdomsGUI {
                 Village village = VillageManager.getInstance().getVillageFromPlayer(p);
                 if (village == null || village.getHome() == null) {
                     ItemStack l = locked.clone();
-                    l.setLore(getMessage("village-home").getTextList());
+                    l.setLore(getMessage("village-home").getReplacedTextList("state", village != null ? village.getStateTag() : VillageState.VILLAGE.getTag()));
                     return l;
                 }
-                return Utils.getHead(village.getChiefId(), getText("village-home"));
+                return Utils.getHead(village.getChiefId(), getMessage("village-home").getReplacedText("state", village.getStateTag()));
             }
 
             public boolean click(Player p, ClickType clickType) {
@@ -94,5 +96,12 @@ public class TeleportersGUI extends KingdomsGUI {
 
     public void build(Player p) {
         ci.build(p);
+    }
+
+    public static TeleportersGUI getInstance() {
+        if (instance == null) {
+            instance = new TeleportersGUI();
+        }
+        return instance;
     }
 }
