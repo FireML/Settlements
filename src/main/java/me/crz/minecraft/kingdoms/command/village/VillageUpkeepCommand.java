@@ -22,13 +22,13 @@ public class VillageUpkeepCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         Village village = res.getVillage();
-        int total = LandManager.getInstance().getClaimedLandSize(village) * 500;
+        int total = village.getUpkeep();
 
         res.tell(getMessage("info"),
                 "cost", String.valueOf(total),
                 "upkeep", String.valueOf(Utils.getUpkeepCost()),
                 "time", UtilTime.format((double) TimeUnit.MILLISECONDS.toSeconds(Utils.timeTillNextUpkeep())),
-                "afford", (village.getBank() >= total) ? ChatColor.GREEN + "yes" : ChatColor.RED + "no"
+                "afford", village.has(total) ? ChatColor.GREEN + "yes" : ChatColor.RED + "no"
         );
         return true;
     }

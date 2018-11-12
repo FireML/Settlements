@@ -960,7 +960,7 @@ command:
         &3&lUpkeep: &e{upkeep}$ &7/&e claim &7/&e day
         &3&lTime Till Upkeep: &e{time}
         &3&lCan afford? {afford}
-      description: upkeep
+      description: Show settlement upkeep information
     use:
       flags: "&cAvailable flags: {flags}"
       states: "&cAvailable states: {states}"
@@ -1242,14 +1242,6 @@ command:
     transfer:
       success: "&e&lALERT &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
       description: Transfers leadership of your empire
-    use:
-      flags: "&cAvailable flags: {flags}"
-      states: "&cAvailable states: {states}"
-      success: "&7State of &6{flag} &7set to &6{state}"
-      success-all: "&7Set all flags to &6{state}"
-      description: Set who can use stuff in your empire world
-      all:
-        description: Sets all flags to a certain state
     unally:
       cant-unally-yourself: "&c&lYou can't un-ally yourself!"
       not-allied: "&c&lYou are not allied to {state} &r&6&l{name}"
@@ -1259,3 +1251,18 @@ command:
       not-banished: "&cPlayer &f{name}&c is not banished?"
       unbanished: "&6{target}&7 is no longer &cbanished &7from your empire!"
       description: Remove an entry from the banish list
+    upkeep:
+      info: |-
+        &7------- &cUpkeep&7 -------
+        &3&lUpkeep cost:&e {cost} &7/&e day
+        &3&lTime Till Upkeep: &e{time}
+        &3&lCan afford? {afford}
+      description: Show empire upkeep information
+    use:
+      flags: "&cAvailable flags: {flags}"
+      states: "&cAvailable states: {states}"
+      success: "&7State of &6{flag} &7set to &6{state}"
+      success-all: "&7Set all flags to &6{state}"
+      description: Set who can use stuff in your empire world
+      all:
+        description: Sets all flags to a certain state
