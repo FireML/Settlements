@@ -96,7 +96,7 @@ public class VillageManager {
     }
 
     public Village getVillageFromId(IdObject id) {
-        if (id == null) {
+        if (id == null || id.isNull()) {
             return null;
         }
         return villageIDs.get(id);

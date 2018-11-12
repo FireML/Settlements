@@ -52,7 +52,7 @@ public abstract class LandOwner implements ConfigurationSerializable, Vaultable,
     private int bonusClaims = 0;
     private Map<String, Long> vault = new HashMap<>();
     private Map<String, PerkData> perks = new LinkedHashMap<>();
-    private SimpleLocation home;
+    private SimpleLocation home = null;
     private BuildState buildState = BuildState.PRIVATE;
     private LandAccess access = LandAccess.PRIVATE;
     private Map<Use, BuildState> use = new EnumMap<>(Use.class);

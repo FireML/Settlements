@@ -25,7 +25,7 @@ public class EmpireShowCommand extends SubCommand {
                 getError("not-in-empire").tell(player);
                 return false;
             }
-            Utils.runAsync(() -> getMessage("general").tell(player, village.getEmpire().getReplacements(EmpireShowCommand.this)));
+            Utils.runAsync(() -> getMessage("general").tell(player, village.getEmpire().getReplacements(this)));
         } else if (args.length == 1) {
             String name = args[0];
             Utils.runAsync(() -> {
@@ -33,11 +33,15 @@ public class EmpireShowCommand extends SubCommand {
                 Village village = VillageManager.getInstance().getVillageFromName(name);
                 Resident target = ResidentManager.getInstance().getResident(name);
                 if (empire != null) {
-                    getMessage("general").tell(player, empire.getReplacements(EmpireShowCommand.this));
+                    if (empire.isAbandoned()) {
+                        getMessage("abandoned").tell(player, empire.getReplacements(this));
+                    } else {
+                        getMessage("general").tell(player, empire.getReplacements(this));
+                    }
                 } else if (village != null && village.hasEmpire()) {
-                    getMessage("general").tell(player, village.getEmpire().getReplacements(EmpireShowCommand.this));
+                    getMessage("general").tell(player, village.getEmpire().getReplacements(this));
                 }  else if (target != null && target.hasVillage() && target.getVillage().hasEmpire()) {
-                    getMessage("general").tell(player, target.getVillage().getEmpire().getReplacements(EmpireShowCommand.this));
+                    getMessage("general").tell(player, target.getVillage().getEmpire().getReplacements(this));
                 }else{
                     getError("empire-doesnt-exist").tell(player, "name", args[0]);
                 }

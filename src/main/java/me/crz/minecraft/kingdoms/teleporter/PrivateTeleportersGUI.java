@@ -98,31 +98,26 @@ public class PrivateTeleportersGUI extends KingdomsGUI {
         }
         updated = System.currentTimeMillis();
         Set<LandOwner> entries = new LinkedHashSet<>();
-        for (LandOwner ally : village.getAllies()) {
-            if (ally.getAccess().atLeast(LandAccess.ALLY)) {
-                entries.add(ally);
-            }
-        }
+        village.getAllies().stream()
+                .filter(v -> v.getAccess().atLeast(LandAccess.ALLY))
+                .forEachOrdered(entries::add);
 
         if (village.hasEmpire()) {
-            for (Village member : village.getEmpire().getMembers()) {
-                if (!member.equals(village) && member.getAccess().atLeast(LandAccess.TRUSTED)) {
-                    entries.add(member);
-                }
-            }
+            village.getEmpire().getMembers().stream()
+                    .filter(v -> !v.equals(village) && v.getAccess().atLeast(LandAccess.TRUSTED))
+                    .sorted(Village::compareTo)
+                    .forEachOrdered(entries::add);
         }
 
-        for (Village v : VillageManager.getInstance().getVillages()) {
-            if (!v.equals(village) && v.getAccess().atLeast(LandAccess.PUBLIC)) {
-                entries.add(v);
-            }
-        }
+        EmpireManager.getInstance().getEmpires().stream()
+                .filter(e -> !e.equals(village.getEmpire()) && e.getAccess().atLeast(LandAccess.PUBLIC))
+                .sorted(Empire::compareTo)
+                .forEachOrdered(entries::add);
 
-        for (Empire e : EmpireManager.getInstance().getEmpires()) {
-            if (!e.equals(village.getEmpire()) && e.getAccess().atLeast(LandAccess.PUBLIC)) {
-                entries.add(e);
-            }
-        }
+        VillageManager.getInstance().getVillages().stream()
+                .filter(v -> !v.equals(village) && v.getAccess().atLeast(LandAccess.PUBLIC))
+                .sorted(Village::compareTo)
+                .forEachOrdered(entries::add);
 
         items = entries.stream().map(landOwner -> new ClickableItem() {
             public ItemStack getItem(Player p) {

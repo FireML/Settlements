@@ -67,7 +67,7 @@ public class EmpireListCommand extends SubCommand {
             );
             for (int i = (finalPage - 1) * Utils.getEntriesPerPage(); i < empires.size() && i < finalPage * Utils.getEntriesPerPage(); i++) {
                 Empire e = empires.get(i);
-                getMessage("entry").tell(player, e.getReplacements(this));
+                getMessage("entry" + (e.isAbandoned() ? "-abandoned" : "")).tell(player, e.getReplacements(this));
             }
 
             ComponentBuilder next = new ComponentBuilder("")

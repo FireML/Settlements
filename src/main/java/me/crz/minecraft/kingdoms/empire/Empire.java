@@ -52,6 +52,12 @@ public class Empire extends LandOwner implements Comparable<Empire>, Perkable<Pe
     }
 
     public void doUpkeep() {
+        if (isAbandoned()) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " was removed because it has been abandoned for a day!");
+            EmpireManager.getInstance().deleteEmpire(this);
+            return;
+        }
+
         if (getTax() > 0) {
             int paidTaxes = 0;
             for (Village member : getMembers()) {
@@ -102,10 +108,10 @@ public class Empire extends LandOwner implements Comparable<Empire>, Perkable<Pe
                 DatabaseManager.getInstance().log(this, null, "upkeep", "cash", total);
             });
         } else {
-            KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " wasn't able to pay the upkeep of " + total + " and was deleted!");
+            KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " wasn't able to pay the upkeep of " + total + " and was abandoned!");
             setBank(0);
-            MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.deleted"));
-            EmpireManager.getInstance().deleteEmpire(this);
+            MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.abandoned"));
+            EmpireManager.getInstance().abandonEmpire(this);
         }
     }
 
@@ -149,6 +155,9 @@ public class Empire extends LandOwner implements Comparable<Empire>, Perkable<Pe
 
     @Override
     public int compareTo(Empire e) {
+        if (isAbandoned()) {
+            return -1;
+        }
         if (e.getMemberIds().size() != getMemberIds().size())
             return Integer.compare(e.getMemberIds().size(), getMemberIds().size());
         return Long.compare(e.getBank(), getBank());
@@ -171,7 +180,7 @@ public class Empire extends LandOwner implements Comparable<Empire>, Perkable<Pe
     }
 
     public void setCapital(Village capital) {
-        this.capital = capital.getId();
+        this.capital = capital != null ? capital.getId() : IdObject.get(null);
     }
 
 
@@ -192,7 +201,7 @@ public class Empire extends LandOwner implements Comparable<Empire>, Perkable<Pe
         return getMemberIds().size() >= ConfigManager.getInstance().getConfig().getInt("max-empire-size");
     }
 
-    private Collection<UUID> getSenatorIds() {
+    public Collection<UUID> getSenatorIds() {
         return senators;
     }
 
@@ -273,6 +282,10 @@ public class Empire extends LandOwner implements Comparable<Empire>, Perkable<Pe
         return KingdomsPlugin.getInstance().getConfig().getInt("upkeep.empire");
     }
 
+    public boolean isAbandoned() {
+        return capital == null || capital.isNull() || members.isEmpty();
+    }
+
     private enum State implements NameTag {
         EMPIRE;
     }
@@ -309,30 +322,32 @@ public class Empire extends LandOwner implements Comparable<Empire>, Perkable<Pe
 
     public String[] getReplacements(ConfigMessages configMessages) {
         Village capital = getCapital();
-        Resident chief = capital.getChief();
+        Resident chief = capital != null ? capital.getChief() : null;
         return new String[] {
                 "name", getName(),
                 "description", getDescription(),
                 "symbol", getSymbol(),
                 "pvp", yesOrNo(isPvp()),
                 "access", getAccess().getTag(),
+                "upkeep", Utils.CURRENCY_FORMAT.format(getUpkeep()),
                 "balance", Utils.CURRENCY_FORMAT.format(getBank()),
-                "joinfee", Utils.CURRENCY_FORMAT.format(getBank()),
-                "tax", Utils.CURRENCY_FORMAT.format(getBank()),
+                "joinfee", Utils.CURRENCY_FORMAT.format(getJoinFee()),
+                "tax", Utils.CURRENCY_FORMAT.format(getTax()),
+                "abandoned", yesOrNo(isMobSpawning()),
                 "mobspawning", yesOrNo(isMobSpawning()),
                 "firespread", yesOrNo(isFireSpread()),
                 "explosions", yesOrNo(isExplosions()),
                 "buff", yesOrNo(isBuff()),
                 "bonusoutposts", String.valueOf(getBonusOutposts()),
                 "bonusclaims", String.valueOf(getBonusClaimAmount()),
-                "capital", capital.getName(),
-                "capitalstate", capital.getState().getTag(),
+                "capital", capital != null ? capital.getName() : "-",
+                "capitalstate", capital != null ? capital.getState().getTag() : "-",
                 "perks", getPerksMap().entrySet().stream()
                         .map(e -> (e.getValue().getTimes() > 1 ? e.getValue().getTimes() + "x " : "") + getPerk(e.getKey()).getTag())
                         .collect(Collectors.joining(", ")),
                 "chiefrank", VillageRank.CHIEF.getTag(capital),
-                "chieftitle", chief.getTitle(),
-                "chief", chief.getName(),
+                "chieftitle", chief != null ? chief.getTitle() : "-",
+                "chief", chief != null ? chief.getName() : "-",
                 "senators", getSenators().stream().map(r -> r.getTitle() + " " + r.getName()).collect(Collectors.joining(", ")),
                 "members", getMembers().stream().map(v -> v.getState().getTag() + " " + v.getName()).collect(Collectors.joining(", "))
         };

@@ -23,7 +23,7 @@ public class EmpireJoinCommand extends EmpireSubCommand {
             return false;
         }
         Empire joinEmpire = EmpireManager.getInstance().getEmpireFromName(args[0]);
-        if (joinEmpire == null) {
+        if (joinEmpire == null || joinEmpire.isAbandoned()) {
             resident.tell(getError("empire-doesnt-exist"));
         } else if (joinEmpire.getAccess().below(LandAccess.OPEN) && !Utils.villageHasInvite(resident.getVillage(), joinEmpire)) {
             resident.tell(getMessage("no-invite"),

@@ -66,6 +66,8 @@ banished:
     subtitle: "&cYou're banished from the {state} {name}!"
 broadcast:
   village-deletion: "&c{state} {name} has fallen!"
+  empire-deletion: "&cEmpire {name} has fallen!"
+  empire-abandoned: "&cEmpire {name} has been abandoned! You have 24 hours to raid it!"
 scoreboard:
   sidebar:
     title: "&b&lServer&f&lName"
@@ -102,7 +104,7 @@ upkeep:
     charged: "&a&lALERT &7Your settlement has been charged &6{charged}&7 for upkeep!"
     cant-pay: "&a&lALERT &cYour settlement is &6unable&c to pay the next upkeep it will cost &6{amount}&c! Deposit money to avoid deletion!"
   empire-alert:
-    deleted: "&a&lALERT &7Your empire has been &cdeleted&7 because it was &cunable&7 to pay its upkeep!"
+    abandoned: "&a&lALERT &7Your empire is in the &cabandoned&7 state for the next 24 hours because it was &cunable&7 to pay its upkeep!"
     charged: "&a&lALERT &7Your empire has been charged &6{charged}&7 for upkeep!"
     cant-pay: "&a&lALERT &cYour empire is &6unable&c to pay the next upkeep it will cost &6{amount}&c! Deposit money to avoid deletion!"
 tax:
@@ -1127,6 +1129,7 @@ command:
       description: "List empire"
       head: "&7------- &c{access}Empires [{page}/{maxpage}]&7 -------"
       entry: "&8\\[&9*&8] [&r&e{name}](&8Capital: &f{capitalstate}{capital}\n&8Leader: &f{chieftitle} {chief}\n&8Size: &f{members} members\n&f{description})"
+      entry-abandoned: "&8\\[&9*&8] [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&f{description})"
       footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
       previous: "&b<< Prev "
       next: "&b Next >>"
@@ -1221,7 +1224,6 @@ command:
         &8--------&c&l{name}&r&8--------
         &a&lDescription &r&7{description}
         &a&lSymbol &r&7{symbol}
-        &6&lLevel &r&7{level}
         &6&lAccess &r&7{access}
         &6&lBank &r&7{bank}
         &6&lBonusclaims &r&7{bonus}
@@ -1231,6 +1233,12 @@ command:
         &e&lLeader &r&7{chieftitle} {chief}
         &e&lSenators: &r&7{senators}
         &e&lMembers: &r&7{members}
+      general: |-
+        &8--------&c&l{name}&r&8--------
+        &c&lABANDONED!!!
+        &a&lDescription &r&7{description}
+        &a&lSymbol &r&7{symbol}
+        &6&lAccess &r&7{access}
       bonus-claims: " Bonus: {amount}"
       description: Shows information on an empire
     tax:
