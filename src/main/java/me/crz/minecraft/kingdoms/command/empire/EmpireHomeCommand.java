@@ -6,7 +6,6 @@ import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
@@ -20,18 +19,19 @@ public class EmpireHomeCommand extends ResidentSubCommand {
         Empire empire;
         if (args.length < 1) {
             if (!resident.hasEmpire()) {
-                MessageUtils.tell(resident, getError("empire-required"));
+                getError("empire-required").tell(resident);
                 return false;
             } else if (resident.getVillage().getEmpire().getHome() == null) {
-                MessageUtils.tell(resident, getMessage("own-no-home"), "chief", EmpireRank.LEADER.getTag());
+                getMessage("own-no-home").tell(resident, "chief", EmpireRank.LEADER.getTag());
                 return true;
             } else {
                 empire = resident.getVillage().getEmpire();
             }
         } else {
-            empire = EmpireManager.getInstance().getEmpireFromName(args[0]);
+            String name = String.join(" ", args);
+            empire = EmpireManager.getInstance().getEmpireFromName(name);
             if (empire == null) {
-                MessageUtils.tell(resident, getError("empire-doesnt-exist"));
+                getError("empire-doesnt-exist").tell(resident, "name", name);
                 return true;
             }
         }
@@ -40,7 +40,7 @@ public class EmpireHomeCommand extends ResidentSubCommand {
                 && (empire.getAccess() == LandAccess.PRIVATE
                 || (empire.getAccess() == LandAccess.ALLY && !empire.isAlly(resident))
                 || (empire.getAccess() == LandAccess.TRUSTED && !empire.isTrusted(resident)))) {
-            MessageUtils.tell(resident, getMessage("no-access"), "state", empire.getStateTag());
+            getMessage("no-access").tell(resident, "state", empire.getStateTag());
             return true;
         }
 
@@ -48,7 +48,7 @@ public class EmpireHomeCommand extends ResidentSubCommand {
             Utils.teleport(resident.getPlayer(), empire.getHome().toBukkitLocation(), empire.getStateKey(), getConfigPath(),
                     "state", empire.getStateKey(), "name", empire.getName());
         } else {
-            MessageUtils.tell(resident, getMessage("no-home"), "state", empire.getStateTag());
+            getMessage("no-home").tell(resident, "state", empire.getStateTag());
         }
         return true;
     }

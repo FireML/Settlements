@@ -1,13 +1,9 @@
 package me.crz.minecraft.kingdoms.command.village;
 
-import me.crz.minecraft.kingdoms.chat.ChatChannel;
-import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.UtilChat;
 import me.crz.minecraft.kingdoms.village.Resident;
 import net.milkbowl.vault.economy.EconomyResponse;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -30,7 +26,7 @@ public class VillageCreateCommand extends VillageSubCommand {
         if (args.length < 1) {
             return false;
         }
-        String name = UtilChat.getInstance().filterCurses(args[0]);
+        String name = UtilChat.getInstance().filterCurses(String.join(" ", args).trim());
         if (name.toLowerCase().contains("claims")) {
             getError("invalid-characters").tell(player, "input", name);
         } else if (villageExists(name)) {

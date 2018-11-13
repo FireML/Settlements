@@ -32,7 +32,7 @@ public class EmpireCreateCommand extends EmpireSubCommand {
         if (args.length < 1) {
             return false;
         }
-        String name = UtilChat.getInstance().filterCurses(args[0]);
+        String name = UtilChat.getInstance().filterCurses(String.join(" ", args).trim());
         if (name.toLowerCase().contains("claims")) {
             getError("invalid-characters").tell(resident, "input", name);
         } else if (empireExists(name)) {

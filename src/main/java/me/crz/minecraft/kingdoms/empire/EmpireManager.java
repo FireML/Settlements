@@ -41,7 +41,7 @@ public class EmpireManager {
         super();
         loadPerks();
         for (Empire empire : DatabaseManager.getInstance().getAllEmpires()) {
-            empires.put(empire.getName().toLowerCase(), empire);
+            empires.put(empire.getName().replace(' ', '_').toLowerCase(), empire);
             empireIds.put(empire.getId(), empire);
             createEmpireWorld(empire);
         }
@@ -69,11 +69,11 @@ public class EmpireManager {
     }
 
     public Collection<Empire> getEmpires () {
-        return empires.values();
+        return empireIds.values();
     }
 
     public Empire getEmpireFromName(String name) {
-        return empires.get(name.toLowerCase());
+        return empires.get(name.replace(' ', '_').toLowerCase());
     }
 
     public Empire getEmpireFromId(IdObject id) {
@@ -103,7 +103,7 @@ public class EmpireManager {
         }
         createEmpireWorld(empire);
 
-        empires.put(empire.getName().toLowerCase(), empire);
+        empires.put(empire.getName().replace(' ', '_').toLowerCase(), empire);
 
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveEmpire(empire);
@@ -223,9 +223,7 @@ public class EmpireManager {
 
     public void leaveEmpire(Village village) {
         village.setEmpire(null);
-        Utils.runAsync(() -> {
-            DatabaseManager.getInstance().saveVillage(village);
-        });
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
     }
 
     public Empire getEmpireFromWorld(World world) {
@@ -244,9 +242,9 @@ public class EmpireManager {
     }
 
     public void changeName(Empire empire, String name) {
-        empires.remove(empire.getName().toLowerCase());
+        empires.remove(empire.getName().replace(' ', '_').toLowerCase());
         empire.setName(name);
-        empires.put(empire.getName().toLowerCase(), empire);
+        empires.put(empire.getName().replace(' ', '_').toLowerCase(), empire);
         Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(empire));
     }
 }

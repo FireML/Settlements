@@ -27,7 +27,7 @@ public class EmpireShowCommand extends SubCommand {
             }
             Utils.runAsync(() -> getMessage("general").tell(player, village.getEmpire().getReplacements(this)));
         } else if (args.length == 1) {
-            String name = args[0];
+            String name = String.join(" ", args);
             Utils.runAsync(() -> {
                 Empire empire = EmpireManager.getInstance().getEmpireFromName(name);
                 Village village = VillageManager.getInstance().getVillageFromName(name);
@@ -43,7 +43,7 @@ public class EmpireShowCommand extends SubCommand {
                 }  else if (target != null && target.hasVillage() && target.getVillage().hasEmpire()) {
                     getMessage("general").tell(player, target.getVillage().getEmpire().getReplacements(this));
                 }else{
-                    getError("empire-doesnt-exist").tell(player, "name", args[0]);
+                    getError("empire-doesnt-exist").tell(player, "name", name);
                 }
             });
         } else {

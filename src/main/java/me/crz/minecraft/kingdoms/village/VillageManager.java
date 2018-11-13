@@ -38,7 +38,7 @@ public class VillageManager {
         super();
         loadPerks();
         for (Village village : DatabaseManager.getInstance().getAllVillages()) {
-            villages.put(village.getName().toLowerCase(), village);
+            villages.put(village.getName().replace(' ', '_').toLowerCase(), village);
             villageIDs.put(village.getId(), village);
         }
     }
@@ -65,7 +65,7 @@ public class VillageManager {
     }
 
     public Collection<Village> getVillages() {
-        return villages.values();
+        return villageIDs.values();
     }
 
     public void registerNewVillage(Resident chief, Village village) {
@@ -74,7 +74,7 @@ public class VillageManager {
             chief.tell(ChatColor.RED + "Error while saving " + village.getName() + " to the database! It already had an ID defined?");
             return;
         }
-        villages.put(village.getName().toLowerCase(), village);
+        villages.put(village.getName().replace(' ', '_').toLowerCase(), village);
         chief.setVillage(village);
         chief.setVillageRank(VillageRank.CHIEF);
         chief.addChannel(ChatChannel.SETTLEMENT);
@@ -103,10 +103,10 @@ public class VillageManager {
     }
 
     public Village getVillageFromName(String name) {
-        if (name.equals("")) {
+        if (name == null || name.isEmpty()) {
             return null;
         }
-        return villages.get(name.toLowerCase());
+        return villages.get(name.replace(' ', '_').toLowerCase());
     }
 
     public Village getVillageFromResident(Resident res) {
@@ -118,7 +118,7 @@ public class VillageManager {
     }
 
     public void deleteVillage(Village village) {
-        villages.remove(village.getName().toLowerCase());
+        villages.remove(village.getName().replace(' ', '_').toLowerCase());
         villageIDs.remove(village.getId());
         LandManager.getInstance().unclaimLand(village);
         MessageUtils.broadcast(Message.get("broadcast.village-deletion"),
@@ -214,9 +214,9 @@ public class VillageManager {
     }
 
     public void changeName(Village village, String name) {
-        villages.remove(village.getName().toLowerCase());
+        villages.remove(village.getName().replace(' ', '_').toLowerCase());
         village.setName(name);
-        villages.put(village.getName().toLowerCase(), village);
+        villages.put(village.getName().replace(' ', '_').toLowerCase(), village);
         Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
     }
 }

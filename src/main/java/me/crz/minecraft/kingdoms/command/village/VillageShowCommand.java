@@ -26,7 +26,7 @@ public class VillageShowCommand extends SubCommand {
             }
             Utils.runAsync(() -> MessageUtils.tell(player, getMessage("general"), village.getReplacements(VillageShowCommand.this)));
         } else if (args.length == 1) {
-            String name = args[0];
+            String name = String.join(" ", args);
             Utils.runAsync(() -> {
                 Village village2 = VillageManager.getInstance().getVillageFromName(name);
                 Resident target = ResidentManager.getInstance().getResident(name);
@@ -36,7 +36,7 @@ public class VillageShowCommand extends SubCommand {
                 } else if (village2 != null) {
                     MessageUtils.tell(player, getMessage("general"), village2.getReplacements(VillageShowCommand.this));
                 } else {
-                    MessageUtils.tell(player, getError("village-doesnt-exist"), "name", args[0]);
+                    MessageUtils.tell(player, getError("village-doesnt-exist"), "name", name);
                 }
             });
         } else {
