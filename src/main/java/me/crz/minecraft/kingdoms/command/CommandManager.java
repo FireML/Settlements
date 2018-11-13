@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command;
 
 import me.crz.minecraft.kingdoms.Base;
+import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.chat.commands.IgnoreCommand;
 import me.crz.minecraft.kingdoms.chat.commands.MessageCommand;
 import me.crz.minecraft.kingdoms.chat.commands.ReplyCommand;
@@ -10,8 +11,12 @@ import me.crz.minecraft.kingdoms.command.friend.FriendCommand;
 import me.crz.minecraft.kingdoms.command.plot.PlotCommand;
 import me.crz.minecraft.kingdoms.command.resident.ResidentCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageCommand;
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -34,7 +39,28 @@ public class CommandManager extends Base implements CommandExecutor {
         registerCommand(new PlotCommand());
         registerCommand(new VillageCommand());
         registerCommand(new EmpireCommand());
-        registerCommand(new ChatCommand());
+        ChatCommand chatCommand = new ChatCommand();
+        registerCommand(chatCommand);
+        for (ChatChannel channel : ChatChannel.values()) {
+            registerCommand(new SubCommand(null, channel.name().toLowerCase() + "chat") {
+                @Override
+                public boolean run(Player p, String base, String alias, String... args) {
+                    if (channel.canChatM(p)) {
+                        Resident res = ResidentManager.getInstance().getResident(p);
+                        if (res.setActiveChannel(channel) | res.addChannel(channel)) {
+                            Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
+                        }
+                        MessageUtils.tell(p, chatCommand.getMessage("joined"), "name", channel.getTag());
+                    }
+                    return true;
+                }
+
+                @Override
+                public boolean isVisible() {
+                    return false;
+                }
+            });
+        }
         registerCommand(new VillageAdminCommand());
         registerCommand(new ResidentCommand());
         registerCommand(new FriendCommand());

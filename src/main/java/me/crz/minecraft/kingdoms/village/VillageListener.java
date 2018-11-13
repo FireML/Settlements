@@ -57,10 +57,11 @@ public class VillageListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Resident res = ResidentManager.getInstance().getResident(event.getPlayer().getUniqueId()); // should be cached
-        res.getChannels().removeIf(chatChannel -> !chatChannel.canChat(event.getPlayer()));
         for (ChatChannel channel : ChatChannel.values()) {
             if (channel.canChat(event.getPlayer())) {
                 res.getChannels().add(channel);
+            } else {
+                res.getChannels().remove(channel);
             }
         }
         if (res.hasVillage()) {

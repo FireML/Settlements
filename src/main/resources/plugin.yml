@@ -25,6 +25,30 @@ commands:
   chat:
     description: Chat Channel Commands.
     aliases: [c]
+  localchat:
+    description: Local chat
+    aliases: [local,lc]
+  tradechat:
+    description: Trade chat
+    aliases: [trade,tc]
+  generalchat:
+    description: General chat
+    aliases: [general,gc]
+  settlementchat:
+    description: Settlement chat
+    aliases: [villagechat,sc,vc]
+  allychat:
+    description: Ally chat
+    aliases: [ally,ac]
+  empirechat:
+    description: Empire chat
+    aliases: [ec]
+  adminchat:
+    description: Admin chat
+    aliases: [admin,adc]
+  staffchat:
+    description: Staff chat
+    aliases: [staff,stc]
   message:
     description: Private message command
     aliases: [msg, tell, pm, m, w, t, whisper, emsg, etell, epm, ewhisper]
