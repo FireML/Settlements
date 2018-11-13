@@ -225,7 +225,7 @@ public class ChatManager extends Base implements ConfigMessages {
         ));
         lastMessage.put(sender.getUniqueId(), target.getUniqueId());
         lastMessage.put(target.getUniqueId(), sender.getUniqueId());
-        BaseComponent[] socialSpy = getMessage("format.social-spy").getReplacedComponents(
+        BaseComponent[] socialSpy = getMessage("format.private.social-spy").getReplacedComponents(
                 "sender", sender.getName(),
                 "senderdisplay", sender.getDisplayName(),
                 "target", target.getName(),
