@@ -213,8 +213,6 @@ public class EmpireManager {
             modifiedResidents.add(senator);
         }
         empire.getSenatorIds().clear();
-
-        empire.setCapital(null);
         empire.setAccess(LandAccess.PUBLIC);
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveEmpire(empire);

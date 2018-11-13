@@ -283,7 +283,7 @@ public class Empire extends LandOwner implements Comparable<Empire>, Perkable<Pe
     }
 
     public boolean isAbandoned() {
-        return capital == null || capital.isNull() || members.isEmpty();
+        return members.isEmpty();
     }
 
     private enum State implements NameTag {
