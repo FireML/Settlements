@@ -1008,7 +1008,9 @@ command:
     world:
       description: Sets if a world is claimable in or not
     join:
-      description: Forces a player to join a village
+      description: Forces a player to join a settlement
+    level:
+      description: Set the state and level of a settlement
     rank:
       description: Set the rank of a  player
     emgcy:

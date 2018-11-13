@@ -24,17 +24,17 @@ public class VillageAdminJoinCommand extends SubCommand {
         if (args.length < 2) {
             return false;
         }
-        if (VillageManager.getInstance().getVillageFromName(args[1].toLowerCase()) == null) {
-            MessageUtils.tell(player, "&c&lNo &r&6&lvillage&r&c&l with the name &r&6&l{village}&r&c&l exists!", "{village}", args[1]);
+        Village village = VillageManager.getInstance().getVillageFromName(args[1]);
+        if (village == null) {
+            getError("village-doesnt-exist").tell(player, "name", args[1]);
             return true;
         }
         Utils.runAsync(() -> {
             Resident target = ResidentManager.getInstance().getResident(args[0]);
             if (target == null) {
-                MessageUtils.tell(player, "&c&lNo &r&6&lplayer&r&c&l with the name &r&6&l{player}&r&c&l found!", "{player}", args[0]);
+                getError("player-not-found").tell(player, "name", args[0]);
                 return;
             }
-            Village village = VillageManager.getInstance().getVillageFromName(args[1]);
             if (target.getVillageName().equals(village.getName())) {
                 MessageUtils.tell(player, "&6&l" + target.getName() + "&r&c&l is already in the &r&6&l" + village.getName());
                 return;
