@@ -4,17 +4,12 @@ import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
+import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.village.gui.SettingsGUI;
-import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
-import me.crz.minecraft.kingdoms.perk.Perk;
 import me.crz.minecraft.kingdoms.perk.PerkData;
-import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.utils.UtilTime;
-import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.KingdomsGUI;
 import org.bukkit.Material;
@@ -25,8 +20,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
-
-import java.util.Map;
 
 public class PerksGUI extends KingdomsGUI {
     private final Resident resident;
@@ -43,7 +36,7 @@ public class PerksGUI extends KingdomsGUI {
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
         Empire empire = resident.getVillage().getEmpire();
 
-        for (Perk perk : EmpireManager.getInstance().getPerks()) {
+        for (EmpirePerk perk : EmpireManager.getInstance().getPerks()) {
             if (!empire.hasUnlocked(perk) || !perk.hasEffects()) {
                 continue;
             }
@@ -88,14 +81,9 @@ public class PerksGUI extends KingdomsGUI {
                     if (!resident.hasEmpire() || resident.getEmpireRank().below(EmpireRank.LEADER)) {
                         return false;
                     }
-                    if (perk.hasEffects()) {
-                        PerkData perkData = resident.getVillage().getEmpire().getPerkData(perk);
-                        if (perkData != null) {
-                            perkData.toggle();
-                            gui.build(p);
-                            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
-                            return true;
-                        }
+                    if (resident.getVillage().getEmpire().togglePerk(perk)) {
+                        gui.build(p);
+                        return true;
                     }
                     return false;
                 }

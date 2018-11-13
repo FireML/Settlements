@@ -3,7 +3,7 @@ package me.crz.minecraft.kingdoms.empire;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
-import me.crz.minecraft.kingdoms.perk.Perk;
+import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -34,8 +34,8 @@ public class EmpireManager {
     private final Map<String, Empire> empires = new HashMap<>();
     private final Map<IdObject, Empire> empireIds = new HashMap<>();
 
-    private Map<String, Perk> perks;
-    private Map<String, Perk> perkTags;
+    private Map<String, EmpirePerk> perks;
+    private Map<String, EmpirePerk> perkTags;
 
     public EmpireManager() {
         super();
@@ -52,7 +52,7 @@ public class EmpireManager {
         perkTags = new LinkedHashMap<>();
         for (String perkName : ConfigManager.getInstance().getPerksConfig().getKeys(false)) {
             try {
-                Perk perk = new Perk(ConfigManager.getInstance().getEmpirePerksConfig().getConfigurationSection(perkName));
+                EmpirePerk perk = new EmpirePerk(ConfigManager.getInstance().getEmpirePerksConfig().getConfigurationSection(perkName));
                 perks.put(perk.name().toLowerCase(), perk);
                 perkTags.put(perk.getTag().toLowerCase(), perk);
             } catch (IllegalArgumentException e) {
@@ -88,8 +88,8 @@ public class EmpireManager {
         return village != null ? village.getEmpire() : null;
     }
 
-    public Perk getPerk(String name) {
-        Perk perk = perks.get(name.toLowerCase());
+    public EmpirePerk getPerk(String name) {
+        EmpirePerk perk = perks.get(name.toLowerCase());
         if (perk == null) {
             perk = perkTags.get(name.toLowerCase());
         }
@@ -153,10 +153,8 @@ public class EmpireManager {
             }
             world = Bukkit.createWorld(worldCreator);
         }
-        if (worldConfig.isInt("border-radius")) {
-            world.getWorldBorder().setCenter(0, 0);
-            world.getWorldBorder().setSize(worldConfig.getInt("border-radius") * 2);
-        }
+        world.getWorldBorder().setCenter(0, 0);
+        world.getWorldBorder().setSize(empire.getWorldRadius() * 2);
         if (empire.getHome() == null) {
             empire.setHome(new SimpleLocation(worldName, 0, world.getHighestBlockYAt(0, 0), 0));
         }
@@ -165,7 +163,7 @@ public class EmpireManager {
         Message.get("empire-world-generated").tell(empire.getOnlineResidents());
     }
 
-    public Collection<Perk> getPerks() {
+    public Collection<EmpirePerk> getPerks() {
         return perks.values();
     }
 

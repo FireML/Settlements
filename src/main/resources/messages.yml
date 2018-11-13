@@ -259,7 +259,7 @@ names:
     repeaters: "Repeaters"
     cake: "Cake"
     interact: "Other"
-  villageperk:
+  levelperk:
     resistance1: Resistance 1 Buff
     resistance2: Resistance 2 Buff
     strength1: Strength 1 Buff
@@ -272,6 +272,20 @@ names:
     haste2: Haste 2 Buff
     extra-claims: 10 Extra Claims
     extra-outpost: 1 Extra Outpost
+  empireperk:
+    resistance1: Resistance 1 Buff
+    resistance2: Resistance 2 Buff
+    strength1: Strength 1 Buff
+    strength2: Strength 2 Buff
+    regen1: Regen 1 Buff
+    regen2: Regen 2 Buff
+    speed1: Speed 1 Buff
+    speed2: Speed 2 Buff
+    haste1: Haste 1 Buff
+    haste2: Haste 2 Buff
+    extra-claims: 20 Extra Claims to all Members
+    extra-radius: 50 Block World Radius
+    flying: Flying in Empire World
   perkeffect:
     effectlocation:
       plot: For owner in plot

@@ -46,6 +46,11 @@ resistance1:
   bonus:
     claims: 0
     outposts: 0
+  world:
+    # Bonus empire world radius
+    radius: 0
+    # Enables flying
+    flying: false
   # Run an arbitrary console command for all members of the settlement
   # Placeholders: player, playerid, settlement, state, level, perk
   # run-command:
@@ -116,20 +121,26 @@ haste2:
     unlock:
       cash: 1000
 extra-claims:
-  repeat: -1 # as often as you want
+  repeat: 24 # as often as you want
   bonus:
-    claims: 10
+    claims: 20
   cost:
     unlock:
       cash: 1000
     repeat:
       cash: 1000
-extra-outpost:
-  repeat: -1
-  bonus:
-    outposts: 1
+extra-radius:
+  repeat: 19
+  world:
+    radius: 50
   cost:
     unlock:
       cash: 1000
     repeat:
+      cash: 1000
+flying:
+  icon: feather
+  flying: true
+  cost:
+    unlock:
       cash: 1000

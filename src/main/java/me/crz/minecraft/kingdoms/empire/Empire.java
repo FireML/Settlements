@@ -4,8 +4,8 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.land.LandOwner;
+import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.perk.Perk;
-import me.crz.minecraft.kingdoms.perk.Perkable;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
@@ -20,7 +20,13 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -35,7 +41,7 @@ import java.util.stream.Collectors;
 
 import static me.crz.minecraft.kingdoms.utils.MessageUtils.yesOrNo;
 
-public class Empire extends LandOwner implements Comparable<Empire>, Perkable<Perk> {
+public class Empire extends LandOwner implements Comparable<Empire> {
     private IdObject capital;
     private String symbol = "";
     private Set<IdObject> members = new LinkedHashSet<>();
@@ -171,6 +177,14 @@ public class Empire extends LandOwner implements Comparable<Empire>, Perkable<Pe
         return getPerksMap().entrySet().stream().mapToInt(e -> e.getValue().getTimes() * getPerk(e.getKey()).getBonusOutposts()).sum();
     }
 
+    public int getBonusRadius() {
+        return getPerksMap().entrySet().stream().mapToInt(e -> e.getValue().getTimes() * getPerk(e.getKey()).getBonusRadius()).sum();
+    }
+
+    public int getWorldRadius() {
+        return Utils.getEmpireWorldRadius() + getBonusRadius();
+    }
+
     public Village getCapital() {
         return VillageManager.getInstance().getVillageFromId(capital);
     }
@@ -183,10 +197,58 @@ public class Empire extends LandOwner implements Comparable<Empire>, Perkable<Pe
         this.capital = capital != null ? capital.getId() : IdObject.get(null);
     }
 
+    @Override
+    public EmpirePerk getPerk(String name) {
+        return EmpireManager.getInstance().getPerk(name);
+    }
 
     @Override
-    public Perk getPerk(String name) {
-        return EmpireManager.getInstance().getPerk(name);
+    public void apply(Perk perk) {
+        super.apply(perk);
+        if (perk instanceof EmpirePerk && ((EmpirePerk) perk).getBonusRadius() > 0) {
+            World world = Bukkit.getWorld(getWorldName());
+            if (world != null) {
+                world.getWorldBorder().setSize(getWorldRadius() * 2, 5);
+            }
+        }
+    }
+
+    @Override
+    public void applyEffects(Perk perk) {
+        super.applyEffects(perk);
+        if (perk instanceof EmpirePerk && ((EmpirePerk) perk).isFlying()) {
+            World world = Bukkit.getWorld(getWorldName());
+            if (world != null) {
+                for (Player player : world.getPlayers()) {
+                    player.setAllowFlight(true);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void removeEffects(Perk perk) {
+        super.removeEffects(perk);
+        if (perk instanceof EmpirePerk && ((EmpirePerk) perk).isFlying()) {
+            World world = Bukkit.getWorld(getWorldName());
+            if (world != null) {
+                for (Player player : world.getPlayers()) {
+                    if (player.getAllowFlight()
+                            && player.getGameMode() != GameMode.CREATIVE
+                            && player.getGameMode() != GameMode.SPECTATOR
+                            && !player.hasPermission("kingdoms.staff")) {
+                        player.setAllowFlight(false);
+                        if (player.isFlying()) {
+                            player.setFlying(false);
+                            if (player.getLocation().subtract(0, -1, 0).getBlock().getType() == Material.AIR
+                                    && player.getLocation().subtract(0, -2, 0).getBlock().getType() == Material.AIR) {
+                                player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 10));
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public Set<IdObject> getMemberIds() {

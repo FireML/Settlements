@@ -146,6 +146,13 @@ public class Utils {
         return "";
     }
 
+    public static int getEmpireWorldRadius() {
+        if (ConfigManager.getInstance().getConfig().isInt("empires-world.border-radius")) {
+            return ConfigManager.getInstance().getConfig().getInt("empires-world.border-radius");
+        }
+        return 500;
+    }
+
     public static boolean playerIsChief(Player player, Village village) {
         return village != null && village.getChiefId().equals(player.getUniqueId());
     }

@@ -4,8 +4,8 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.empire.gui.PerksGUI;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
-import me.crz.minecraft.kingdoms.perk.Perk;
 import me.crz.minecraft.kingdoms.perk.PerkData;
+import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -20,7 +20,7 @@ public class EmpirePerksCommand extends EmpireSubCommand {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length > 0) {
-                    Perk perk = EmpireManager.getInstance().getPerk(String.join(" ", args));
+                    EmpirePerk perk = EmpireManager.getInstance().getPerk(String.join(" ", args));
                     if (perk == null) {
                         getError("unknown-perk").tell(resident, "perk", String.join(" ", args));
                     } else if (!resident.getVillage().getEmpire().hasUnlocked(perk)) {
@@ -36,7 +36,7 @@ public class EmpirePerksCommand extends EmpireSubCommand {
                     return true;
                 }
                 getMessage("usage.head").tell(resident, "name", "Toggle Perks");
-                for (Perk perk : EmpireManager.getInstance().getPerks()) {
+                for (EmpirePerk perk : EmpireManager.getInstance().getPerks()) {
                     if (resident.getVillage().getEmpire().hasUnlocked(perk) && perk.hasEffects()) {
                         getMessage("usage.entry").tell(resident, "usage", getUsage(base) + " " + perk.name(), "description", perk.getTag());
                     }

@@ -1,13 +1,14 @@
 package me.crz.minecraft.kingdoms.land;
 
+import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.perk.Perk;
 import me.crz.minecraft.kingdoms.perk.PerkData;
-import me.crz.minecraft.kingdoms.perk.Perkable;
 import me.crz.minecraft.kingdoms.perk.Vaultable;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -37,7 +38,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public abstract class LandOwner implements ConfigurationSerializable, Vaultable, Perkable<Perk>, Targetable {
+public abstract class LandOwner implements ConfigurationSerializable, Vaultable, Targetable {
     private IdObject id = IdObject.get(null);
     private String name;
     private String description = "";
@@ -112,9 +113,105 @@ public abstract class LandOwner implements ConfigurationSerializable, Vaultable,
         return getId().hashCode();
     }
 
-    @Override
     public Map<String, PerkData> getPerksMap() {
         return perks;
+    }
+
+    public abstract Perk getPerk(String name);
+
+    public boolean hasUnlocked(Perk perk) {
+        return getPerksMap().containsKey(perk.name().toLowerCase());
+    }
+
+    public Collection<Perk> getPerks() {
+        return getPerksMap().keySet().stream()
+                .map(this::getPerk)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+    public PerkData getPerkData(Perk perk) {
+        return getPerksMap().get(perk.getKey().toLowerCase());
+    }
+
+    public boolean canUnlock(Perk perk) {
+        return !hasUnlocked(perk) && has(perk.getUnlockCost());
+    }
+
+    public boolean canRepeat(Perk perk) {
+        return hasUnlocked(perk) && has(perk.getRepeatCost()) && checkPerkCount(perk);
+    }
+
+    public boolean checkPerkCount(Perk perk) {
+        if (perk.getRepeat() > 0) {
+            PerkData p = getPerkData(perk);
+            if (p != null) {
+                return p.getTimes() <= perk.getRepeat();
+            }
+            return true;
+        }
+        return perk.getRepeat() < 0;
+    }
+
+    public boolean checkPerkCooldown(Perk perk) {
+        if (perk.getCooldown() > 0) {
+            PerkData p = getPerkData(perk);
+            if (p != null) {
+                return p.getLastUsed() + perk.getCooldown() * 1000 < System.currentTimeMillis();
+            }
+        }
+        return true;
+    }
+
+    public boolean unlockPerk(Perk perk) {
+        if (!hasUnlocked(perk)) {
+            getPerksMap().put(perk.name().toLowerCase(), new PerkData());
+            apply(perk);
+            return true;
+        }
+        return false;
+    }
+
+    public void apply(Perk perk) {
+        if (perk.hasEffects()) {
+            applyEffects(perk);
+        }
+        runCommands(perk);
+    }
+
+    public boolean repeatPerk(Perk perk) {
+        PerkData p = getPerkData(perk);
+        if (p != null) {
+            p.addUse();
+            apply(perk);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean togglePerk(Perk perk) {
+        if (perk.hasEffects()) {
+            PerkData perkData = getPerkData(perk);
+            if (perkData != null) {
+                perkData.toggle();
+                if (perkData.isActive()) {
+                    applyEffects(perk);
+                } else {
+                    removeEffects(perk);
+                }
+                Utils.runAsync(() -> DatabaseManager.getInstance().save(this));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void applyEffects(Perk perk) {
+        Base.getLandPerks().updateEffects(false);
+    }
+
+    public void removeEffects(Perk perk) {
+        Base.getLandPerks().updateEffects(false);
     }
 
     public String getIdKey() {
@@ -151,8 +248,7 @@ public abstract class LandOwner implements ConfigurationSerializable, Vaultable,
         }
     }
 
-    @Override
-    public void runCommands(Perk perk) {
+    public void runCommands(me.crz.minecraft.kingdoms.perk.Perk perk) {
         Utils.runAsync(() -> {
             List<String> commands = new ArrayList<>();
             for (String command : perk.getCommands()) {

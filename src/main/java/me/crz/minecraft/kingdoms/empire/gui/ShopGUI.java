@@ -8,7 +8,7 @@ import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
-import me.crz.minecraft.kingdoms.perk.Perk;
+import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.perk.PerkData;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -43,7 +43,7 @@ public class ShopGUI extends KingdomsGUI {
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
         Empire empire = resident.getVillage().getEmpire();
 
-        for (Perk perk : EmpireManager.getInstance().getPerks()) {
+        for (EmpirePerk perk : EmpireManager.getInstance().getPerks()) {
             if (empire.hasUnlocked(perk) && !empire.checkPerkCount(perk)) {
                 continue;
             }

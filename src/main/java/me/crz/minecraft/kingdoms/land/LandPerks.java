@@ -3,9 +3,9 @@ package me.crz.minecraft.kingdoms.land;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.perk.Perk;
 import me.crz.minecraft.kingdoms.perk.PerkEffect;
-import me.crz.minecraft.kingdoms.perk.Perkable;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -88,7 +88,7 @@ public class LandPerks {
 
         if (land != null && land.getLandOwner() instanceof Village && !land.isOwnedBy(resident.getVillage()) && land.isBuff()) {
             Village landOwner = (Village) land.getLandOwner();
-            for (Perk perk : land.getLandOwner().getPerks()) {
+            for (Perk perk : landOwner.getPerks()) {
                 if (!landOwner.getPerkData(perk).isActive()) {
                     continue;
                 }
@@ -172,7 +172,7 @@ public class LandPerks {
                 .collect(Collectors.toList());
     }
 
-    private <T extends Perk> Collection<? extends PerkEffect> getEffects(Player p, Resident resident, OwnedLand land, Perkable<T> perkable, boolean refresh) {
+    private <T extends Perk> Collection<? extends PerkEffect> getEffects(Player p, Resident resident, OwnedLand land, LandOwner perkable, boolean refresh) {
         List<PerkEffect> effects = new ArrayList<>();
 
         Village village = null;
@@ -180,7 +180,7 @@ public class LandPerks {
             village = (Village) land.getLandOwner();
         }
 
-        for (T perk : perkable.getPerks()) {
+        for (Perk perk : perkable.getPerks()) {
             if (!perkable.getPerkData(perk).isActive()) {
                 continue;
             }

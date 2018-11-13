@@ -1,7 +1,7 @@
 package me.crz.minecraft.kingdoms.perk;
 
+import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.utils.NameTag;
-import me.crz.minecraft.kingdoms.village.VillageState;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
