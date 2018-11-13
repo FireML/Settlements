@@ -5,7 +5,9 @@ import me.crz.minecraft.kingdoms.banish.BanishListener;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireListener;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.integration.ChestShopIntegration;
 import me.crz.minecraft.kingdoms.integration.LWCIntegration;
+import me.crz.minecraft.kingdoms.integration.PluginIntegration;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -17,6 +19,8 @@ import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.utils.ThreadManager;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -42,10 +46,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     private LandPerks lPerks;
     public Economy econ = null;
 
-    /**
-     * LWC integration
-     */
-    private LWCIntegration lwcIntegration = null;
+    private Set<PluginIntegration> integrations = new LinkedHashSet<>();
 
     public boolean emgcy = false;
     public static Chat chat;
@@ -81,9 +82,14 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         }
         data = new Data();
         if (getServer().getPluginManager().isPluginEnabled("LWC")) {
-            lwcIntegration = new LWCIntegration(LWC.getInstance());
-
+            LWCIntegration lwcIntegration = new LWCIntegration(LWC.getInstance());
+            integrations.add(lwcIntegration);
             getLogger().log(Level.INFO, "Hooked into LWC " + lwcIntegration.getLWC().getPlugin().getDescription().getVersion() + "!");
+        }
+        if (getServer().getPluginManager().isPluginEnabled("ChestShop")) {
+            ChestShopIntegration csIntegration = new ChestShopIntegration();
+            integrations.add(csIntegration);
+            getLogger().log(Level.INFO, "Hooked into ChestShop " + csIntegration.getChestShop().getDescription().getVersion() + "!");
         }
         if (data.load(this.getDataFolder())) {
             ConfigManager.getInstance();
@@ -208,7 +214,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         return empiresWorldSuffix;
     }
 
-    public LWCIntegration getLWCIntegration() {
-        return lwcIntegration;
+    public Set<PluginIntegration> getIntegrations() {
+        return integrations;
     }
 }

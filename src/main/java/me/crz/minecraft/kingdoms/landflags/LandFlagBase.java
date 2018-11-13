@@ -1,14 +1,11 @@
 package me.crz.minecraft.kingdoms.landflags;
 
-import me.crz.minecraft.kingdoms.empire.Empire;
-import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.utils.Pair;

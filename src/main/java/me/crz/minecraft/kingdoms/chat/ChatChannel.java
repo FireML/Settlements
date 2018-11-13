@@ -65,7 +65,7 @@ public enum ChatChannel implements NameTag {
     ADMIN("admin", "ac") {
         @Override
         public boolean canChat(Player player) {
-            return player.hasPermission("kingdoms.admin");
+            return player.hasPermission("kingdoms.channel.admin");
         }
 
         @Override
@@ -80,7 +80,7 @@ public enum ChatChannel implements NameTag {
     STAFF("staff", "sc") {
         @Override
         public boolean canChat(Player player) {
-            return player.hasPermission("kingdoms.staff");
+            return player.hasPermission("kingdoms.channel.staff");
         }
 
         @Override

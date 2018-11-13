@@ -22,6 +22,7 @@ import com.google.common.collect.MultimapBuilder;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.integration.PluginIntegration;
 import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -207,9 +208,7 @@ public class LandManager {
     }
 
     private void removeLocks(Collection<SimpleChunkLocation> claims) {
-        if (KingdomsPlugin.getInstance().getLWCIntegration() != null) {
-            KingdomsPlugin.getInstance().getLWCIntegration().removeChunkProtections(claims);
-        }
+        KingdomsPlugin.getInstance().getIntegrations().forEach(i -> i.removeInChunk(claims));
     }
 
     public static LandManager getInstance() {

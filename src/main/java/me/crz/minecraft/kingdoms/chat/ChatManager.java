@@ -123,7 +123,7 @@ public class ChatManager extends Base implements ConfigMessages {
                 Bukkit.getOnlinePlayers().stream()
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(finalChannel)
-                                && !(r.getIgnore().contains(sender.getUniqueId()) && !ChatChannel.STAFF.canChat(sender)))
+                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
                         .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
                 break;
             case LOCAL:
@@ -134,7 +134,7 @@ public class ChatManager extends Base implements ConfigMessages {
                                 && sender.getLocation().distanceSquared(p.getLocation()) < 200 * 200)
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(finalChannel)
-                                && !(r.getIgnore().contains(sender.getUniqueId()) && !ChatChannel.STAFF.canChat(sender)))
+                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
                         .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
                 break;
             case ADMIN:
@@ -187,7 +187,7 @@ public class ChatManager extends Base implements ConfigMessages {
             MessageUtils.tell(sender, getMessage("ignoring"), "name", target.getName());
             return;
         }
-        if (tres.getIgnore().contains(res.getUUID()) && !ChatChannel.STAFF.canChat(sender)) {
+        if (tres.getIgnore().contains(res.getUUID()) && !sender.hasPermission("kingdoms.bypass.ignore")) {
             MessageUtils.tell(sender, getMessage("ignored"), "name", target.getName());
             return;
         }

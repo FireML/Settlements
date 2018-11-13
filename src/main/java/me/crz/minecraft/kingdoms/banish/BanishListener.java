@@ -19,7 +19,7 @@ public class BanishListener implements Listener {
     @EventHandler
     public void on(PlayerMoveChunkEvent e) {
         ResidentManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getTo()), e.getPlayer(), (land, p, landOwner) -> {
-            if (!e.getPlayer().hasPermission("kingdoms.admin.banish-bypass")) {
+            if (!e.getPlayer().hasPermission("kingdoms.bypass.banish")) {
                 sendInfo(p, landOwner, "move");
                 e.setCancelled(true);
                 Location to = e.getPlayer().getLocation().add(e.getPlayer().getLocation().getDirection().setY(0).multiply(-1));
@@ -32,7 +32,7 @@ public class BanishListener implements Listener {
     public void on(PlayerTeleportEvent e) {
         ResidentManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getTo()), e.getPlayer(), (land, p, landOwner) -> {
             sendInfo(p, landOwner, "teleport");
-            if (!e.getPlayer().hasPermission("kingdoms.admin.banish-bypass")) {
+            if (!e.getPlayer().hasPermission("kingdoms.bypass.banish")) {
                 e.setCancelled(true);
                 Bukkit.getScheduler().runTask(KingdomsPlugin.getInstance(), () -> Utils.teleportToSpawn(p));
             }

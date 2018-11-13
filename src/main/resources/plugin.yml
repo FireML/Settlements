@@ -72,17 +72,32 @@ permissions:
       kingdoms.admin.ss: true
       kingdoms.staff: true
       kingdoms.chat.colour: true
+      kingdoms.channel.admin: true
   kingdoms.admin.ss:
     description: Permission to access social spy.
     default: op
-  kingdoms.admin.banish-bypass:
+  kingdoms.bypass.banish:
     description: Permission to bypass being banished from a settlement.
+    default: op
+  kingdoms.bypass.ignore:
+    description: Permission to bypass being ignored
+    default: op
+  kingdoms.bypass.restriction.chestshop:
+    description: Permission to bypass shop build restrictions.
+    default: op
+  kingdoms.bypass.restriction.lwc:
+    description: Permission to bypass shop build restrictions.
     default: op
   kingdoms.staff:
     description: Permission for staffs. Gives access to some staff only functions.
     default: op
     children:
       kingdoms.user: true
+      kingdoms.bypass.restriction.chestshop: true
+      kingdoms.bypass.restriction.lwc: true
+      kingdoms.bypass.banish: true
+      kingdoms.bypass.ignore: true
+      kingdoms.channel.staff: true
   kingdoms.user:
     description: Permission for users. Gives access to all plugin functions that a user should have.
     default: true

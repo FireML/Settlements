@@ -300,23 +300,26 @@ usage:
     &8&l--------&r&c&l{name} Commands&r&8&l--------
   entry: "&8\\[&9*&8] [&b{usage}](hover=&9Click to add it to your input{aliases} suggest_command={{usage}) &7- {description}"
   aliases: "\n&fAliases: &7{aliases}"
-protection:
-  only-in-village: "&c&lYou can only lock things in a settlement claim!"
-  state:
-    use:
-      residents: "&e&lALERT &r&7This land is owned by &e{state} {name}&7."
-      officers: "&e&lALERT &r&7This land is in &eofficer only &7mode."
-      trusted: "&e&lALERT &r&7You are not allied to or in the same empire as &e{state} {name}&7."
-      ally: "&e&lALERT &r&7You are not allied to &e{state} {name}&7."
-      private: "&e&lALERT &r&7Only the &ePlot owner&7 can interact here."
-      friends: "&e&lALERT &r&7Only the &ePlot owner's friends&7 can interact here."
-    build:
-      residents: "&e&lALERT &r&7This land is owned by &e{state} {name}&7."
-      officers: "&e&lALERT &r&7This land is in &eofficer only &7mode."
-      trusted: "&e&lALERT &r&7You are not allied to or in the same empire as &e{state} {name}&7."
-      ally: "&e&lALERT &r&7You are not allied to &e{state} {name}&7."
-      private: "&e&lALERT &r&7Only the &ePlot owner&7 can build here."
-      friends: "&e&lALERT &r&7Only the &ePlot owner's friends&7 can build here."
+integration:
+  chestshop:
+    not-allowed: "&c&lYou can only create shops in a claim or empire world!"
+  lwc:
+    only-in-village: "&c&lYou can only lock things in a settlement claim!"
+    state:
+      use:
+        residents: "&e&lALERT &r&7This land is owned by &e{state} {name}&7."
+        officers: "&e&lALERT &r&7This land is in &eofficer only &7mode."
+        trusted: "&e&lALERT &r&7You are not allied to or in the same empire as &e{state} {name}&7."
+        ally: "&e&lALERT &r&7You are not allied to &e{state} {name}&7."
+        private: "&e&lALERT &r&7Only the &ePlot owner&7 can interact here."
+        friends: "&e&lALERT &r&7Only the &ePlot owner's friends&7 can interact here."
+      build:
+        residents: "&e&lALERT &r&7This land is owned by &e{state} {name}&7."
+        officers: "&e&lALERT &r&7This land is in &eofficer only &7mode."
+        trusted: "&e&lALERT &r&7You are not allied to or in the same empire as &e{state} {name}&7."
+        ally: "&e&lALERT &r&7You are not allied to &e{state} {name}&7."
+        private: "&e&lALERT &r&7Only the &ePlot owner&7 can build here."
+        friends: "&e&lALERT &r&7Only the &ePlot owner's friends&7 can build here."
 gui:
   access:
     title: "&3&l/s access"

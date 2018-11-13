@@ -25,7 +25,7 @@ import org.bukkit.block.Block;
 
 import java.util.Collection;
 
-public class LWCIntegration extends JavaModule implements ConfigMessages, LandFlagBase {
+public class LWCIntegration extends JavaModule implements PluginIntegration, ConfigMessages {
     private final LWC lwc;
     private final KingdomsPlugin plugin = KingdomsPlugin.getInstance();
 
@@ -123,7 +123,7 @@ public class LWCIntegration extends JavaModule implements ConfigMessages, LandFl
 
     @Override
     public void onRegisterProtection(LWCProtectionRegisterEvent event) {
-        if (!event.getPlayer().hasPermission("kingdoms.staff")) {
+        if (!event.getPlayer().hasPermission("kingdoms.bypass.restriction.lwc")) {
             boolean limitedToVillage = plugin.getConfig().getBoolean("only-lock-in-settlement");
             Resident res = ResidentManager.getInstance().getResident(event.getPlayer());
             if (limitedToVillage) {
@@ -147,7 +147,8 @@ public class LWCIntegration extends JavaModule implements ConfigMessages, LandFl
         return lwc;
     }
 
-    public int removeChunkProtections(Collection<SimpleChunkLocation> chunks) {
+    @Override
+    public int removeInChunk(Collection<SimpleChunkLocation> chunks) {
         int amount = 0;
         for (SimpleChunkLocation claim : chunks) {
             amount += lwc.fastRemoveProtections(Bukkit.getConsoleSender(),
@@ -162,12 +163,7 @@ public class LWCIntegration extends JavaModule implements ConfigMessages, LandFl
     }
 
     @Override
-    public String type() {
-        return "";
-    }
-
-    @Override
     public String name() {
-        return "protection";
+        return "lwc";
     }
 }
