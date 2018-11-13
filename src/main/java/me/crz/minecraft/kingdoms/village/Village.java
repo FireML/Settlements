@@ -390,6 +390,11 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     }
 
     public String[] getReplacements(ConfigMessages configMessages) {
+        Message rankMessage = configMessages.getMessage("residents.rank");
+        Message entry = configMessages.getMessage("residents.entry");
+        String online = configMessages.getMessage("residents.online").getText();
+        String offline = configMessages.getMessage("residents.offline").getText();
+        String separator = configMessages.getMessage("residents.separator").getText();
         Resident chief = getChief();
         return new String[] {
                 "name", getName(),
@@ -419,16 +424,14 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 "chiefrank", VillageRank.CHIEF.getTag(this),
                 "chieftitle", chief.getTitle(),
                 "chief", chief.getName(),
-                "residents", getResidentsToString(configMessages)
+                "chiefonline", chief.getPlayer() != null ? online : offline,
+                "residents", getResidentsToString(rankMessage, entry, online, offline, separator),
+                "rescount", String.valueOf(getResidentIds().size()),
+                "resonlinecount", String.valueOf(residents.stream().map(Bukkit::getPlayer).filter(Objects::nonNull).count())
         };
     }
 
-    private String getResidentsToString(ConfigMessages configMessages) {
-        Message rankMessage = configMessages.getMessage("residents.rank");
-        String entry = configMessages.getMessage("residents.entry").getText();
-        String online = configMessages.getMessage("residents.online").getText();
-        String offline = configMessages.getMessage("residents.offline").getText();
-        String separator = configMessages.getMessage("residents.separator").getText();
+    private String getResidentsToString(Message rankMessage, Message entry, String online, String offline, CharSequence separator) {
         Multimap<VillageRank, Resident> rankMap = MultimapBuilder.enumKeys(VillageRank.class).arrayListValues().build();
         for (Resident resident : getResidents()) {
             rankMap.put(resident.getVillageRank(), resident);
@@ -443,7 +446,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                     "rank", rank.getTag(this),
                     "residents", rankMap.get(rank).stream()
                             .sorted(Comparator.comparing(Resident::getVillageJoin))
-                            .map(res -> MessageUtils.replacePlaceholders(entry,
+                            .map(res -> entry.getReplacedText(
                                     "online", res.getPlayer() != null ? online : offline,
                                     "name", res.getName(),
                                     "rank", rank.getTag(this),

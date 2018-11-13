@@ -321,6 +321,10 @@ public class Empire extends LandOwner implements Comparable<Empire>, Perkable<Pe
     }
 
     public String[] getReplacements(ConfigMessages configMessages) {
+        Message entry = configMessages.getMessage("senators.entry");
+        String online = configMessages.getMessage("senators.online").getText();
+        String offline = configMessages.getMessage("senators.offline").getText();
+        String separator = configMessages.getMessage("senators.separator").getText();
         Village capital = getCapital();
         Resident chief = capital != null ? capital.getChief() : null;
         return new String[] {
@@ -348,7 +352,13 @@ public class Empire extends LandOwner implements Comparable<Empire>, Perkable<Pe
                 "chiefrank", VillageRank.CHIEF.getTag(capital),
                 "chieftitle", chief != null ? chief.getTitle() : "-",
                 "chief", chief != null ? chief.getName() : "-",
-                "senators", getSenators().stream().map(r -> r.getTitle() + " " + r.getName()).collect(Collectors.joining(", ")),
+                "chiefonline", chief != null && chief.getPlayer() != null ? online : offline,
+                "senators", getSenators().stream().map(r -> entry.getReplacedText(
+                        "name", r.getName(),
+                        "title", r.getTitle(),
+                        "rank", r.getVillageRank().getTag(r.getVillage()),
+                        "online", r.getPlayer() != null ? online : offline
+                )).collect(Collectors.joining(separator)),
                 "members", getMembers().stream().map(v -> v.getState().getTag() + " " + v.getName()).collect(Collectors.joining(", "))
         };
     }
