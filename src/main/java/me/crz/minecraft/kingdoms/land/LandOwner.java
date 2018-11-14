@@ -517,6 +517,7 @@ public abstract class LandOwner implements ConfigurationSerializable, Vaultable,
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new LinkedHashMap<>();
+        map.put("id", getId().value());
         map.put("name", getName());
         map.put("description", getDescription());
         map.put("pvp", isPvp());

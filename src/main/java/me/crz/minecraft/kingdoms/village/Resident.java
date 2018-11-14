@@ -266,6 +266,7 @@ public class Resident implements ConfigurationSerializable, Targetable {
             throw new IllegalArgumentException("Resident had village but village has no ID?");
         }
         Map<String, Object> map = new LinkedHashMap<>();
+        map.put("id", getId());
         map.put("uuid", getUUID().toString());
         map.put("name", getName());
         map.put("settlementId", getVillage() != null ? getVillage().getId().value() : null);

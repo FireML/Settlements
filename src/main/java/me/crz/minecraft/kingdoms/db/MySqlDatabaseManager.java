@@ -363,6 +363,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
             try (Connection conn = ds.getConnection();
                  PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "empires WHERE id=?")) {
                 sta.setInt(1, (Integer) empire.getId().value());
+                sta.executeUpdate();
             } catch (SQLException e) {
                 plugin.getLogger().log(Level.SEVERE, "Error while trying to delete empire " + empire.getId().value() + "/" + empire.getName() + " from database!", e);
             }
@@ -370,6 +371,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
             try (Connection conn = ds.getConnection();
                  PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "empires WHERE name LIKE ? LIMIT 1")) {
                 sta.setString(1, empire.getName());
+                sta.executeUpdate();
             } catch (SQLException e) {
                 plugin.getLogger().log(Level.SEVERE, "Error while trying to delete empire " + empire.getId().value() + "/" + empire.getName() + " from database!", e);
             }
@@ -427,6 +429,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
             try (Connection conn = ds.getConnection();
                  PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "settlements WHERE id=?")) {
                 sta.setInt(1, (Integer) village.getId().value());
+                sta.executeUpdate();
             } catch (SQLException e) {
                 plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + village.getId().value() + "/" + village.getName() + " from database!", e);
             }
@@ -434,6 +437,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
             try (Connection conn = ds.getConnection();
                  PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "settlements WHERE name LIKE ? LIMIT 1")) {
                 sta.setString(1, village.getName());
+                sta.executeUpdate();
             } catch (SQLException e) {
                 plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + village.getId().value() + "/" + village.getName() + " from database!", e);
             }
