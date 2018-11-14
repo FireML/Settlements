@@ -50,7 +50,7 @@ public class EmpireManager {
     public void loadPerks() {
         perks = new LinkedHashMap<>();
         perkTags = new LinkedHashMap<>();
-        for (String perkName : ConfigManager.getInstance().getPerksConfig().getKeys(false)) {
+        for (String perkName : ConfigManager.getInstance().getEmpirePerksConfig().getKeys(false)) {
             try {
                 EmpirePerk perk = new EmpirePerk(ConfigManager.getInstance().getEmpirePerksConfig().getConfigurationSection(perkName));
                 perks.put(perk.name().toLowerCase(), perk);
