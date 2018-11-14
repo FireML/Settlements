@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.perk;
 
-import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -24,6 +23,9 @@ public class Perk implements NameTag {
     private Map<String, Long> repeatCost = new HashMap<>();
 
     public Perk(ConfigurationSection config) throws IllegalArgumentException {
+        if (config == null) {
+            throw new IllegalArgumentException("No config section?");
+        }
         this.name = config.getName();
         this.icon = Material.valueOf(config.getString("icon", icon.name()).toUpperCase());
         this.repeat = config.getInt("repeat", repeat);

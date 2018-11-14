@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.perk;
 
-import me.crz.minecraft.kingdoms.empire.Empire;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class EmpirePerk extends Perk {
