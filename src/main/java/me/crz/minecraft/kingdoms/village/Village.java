@@ -142,7 +142,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     }
 
     public int getUpkeep() {
-        return LandManager.getInstance().getClaimedLandSize(this) * Utils.getUpkeepCost();
+        return hasEmpire() && getEmpire().isCapital(this) ? 0 : LandManager.getInstance().getClaimedLandSize(this) * Utils.getUpkeepCost();
     }
 
     public void setOutpostHome(String name, Location loc) {
