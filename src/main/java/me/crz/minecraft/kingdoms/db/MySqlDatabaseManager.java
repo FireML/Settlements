@@ -28,12 +28,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -1152,6 +1154,24 @@ public class MySqlDatabaseManager extends DatabaseManager {
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
             map.put(metaData.getColumnLabel(i), rs.getObject(i));
         }
+        return cascadeMap(map);
+    }
+
+    private Map<String, Object> cascadeMap(Map<String, Object> map) {
+        Map<String, Map<String, Object>> specials = new LinkedHashMap<>();
+        for (Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator(); it.hasNext();) {
+            Map.Entry<String, Object> e = it.next();
+            String[] parts = e.getKey().split("_", 2);
+            if (parts.length > 1) {
+                it.remove();
+                Map<String, Object> cascaded = specials.computeIfAbsent(parts[0], s -> new LinkedHashMap<>());
+                cascaded.put(parts[1], e.getValue());
+            }
+        }
+        for (Map<String, Object> special : specials.values()) {
+            cascadeMap(special);
+        }
+        map.putAll(specials);
         return map;
     }
 

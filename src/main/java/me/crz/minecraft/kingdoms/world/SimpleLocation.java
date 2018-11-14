@@ -153,7 +153,7 @@ public class SimpleLocation implements ConfigurationSerializable {
 
     public static SimpleLocation deserialize(Map<String, Object> map) {
         if (map == null
-                || map.get("x") == null && map.get("y") == null || map.get("y") == null
+                || map.get("x") == null && map.get("y") == null || map.get("z") == null
                 || map.get("yaw") == null && map.get("pitch") == null || map.get("world") == null) {
             return null;
         }

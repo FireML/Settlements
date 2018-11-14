@@ -569,16 +569,6 @@ public abstract class LandOwner implements ConfigurationSerializable, Vaultable,
         } catch (IllegalArgumentException ignored) {}
         if (map.get("homeLoc") != null) {
             landOwner.setHome(SimpleLocation.deserialize((Map<String, Object>) map.get("homeLoc")));
-        } else if (map.get("homeLoc_x") != null && map.get("homeLoc_y") != null && map.get("homeLoc_Z") != null
-                && map.get("homeLoc_world") != null && map.get("homeLoc_yaw") != null && map.get("homeLoc_pitch") != null){
-            landOwner.setHome(new SimpleLocation(
-                    (String) map.get("homeLoc_world"),
-                    (double) map.get("homeLoc_x"),
-                    (double) map.get("homeLoc_y"),
-                    (double) map.get("homeLoc_z"),
-                    (float) map.get("homeLoc_yaw"),
-                    (float) map.get("homeLoc_pitch")
-            ));
         }
         Map<String, Object> uses = (Map<String, Object>) map.get("uses");
         for (Use u : Use.values()) {
