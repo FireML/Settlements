@@ -86,7 +86,7 @@ public class ChatCommand extends SubCommand {
     @Override
     public boolean run(Player p, String base, String alias, String... args) {
         if (args.length < 1) {
-            sendUsageMessage(p, base, alias);
+            sendUsageMessage(p, "", alias);
 
             Resident res = ResidentManager.getInstance().getResident(p);
             for (ChatChannel channel : ChatChannel.values()) {
