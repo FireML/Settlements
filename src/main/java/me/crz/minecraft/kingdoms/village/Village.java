@@ -390,11 +390,18 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     }
 
     public String[] getReplacements(ConfigMessages configMessages) {
-        Message rankMessage = configMessages.getMessage("residents.rank");
-        Message entry = configMessages.getMessage("residents.entry");
-        String online = configMessages.getMessage("residents.online").getText();
-        String offline = configMessages.getMessage("residents.offline").getText();
-        String separator = configMessages.getMessage("residents.separator").getText();
+        Message rankMessage = null;
+        Message entry = null;
+        String online = null;
+        String offline = null;
+        String separator = null;
+        if (configMessages != null) {
+            rankMessage = configMessages.getMessage("residents.rank");
+            entry = configMessages.getMessage("residents.entry");
+            online = configMessages.getMessage("residents.online").getText();
+            offline = configMessages.getMessage("residents.offline").getText();
+            separator = configMessages.getMessage("residents.separator").getText();
+        }
         Resident chief = getChief();
         return new String[] {
                 "name", getName(),
@@ -406,7 +413,8 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 "outposts", String.valueOf(getOutpostHomes().size()),
                 "maxoutposts", String.valueOf(getMaxOutposts()),
                 "pvp", yesOrNo(isPvp()),
-                "balance", Utils.CURRENCY_FORMAT.format(getBank()),
+                "balance", Utils.withSuffix(getBank()),
+                "bank", Utils.CURRENCY_FORMAT.format(getBank()),
                 "tax", Utils.CURRENCY_FORMAT.format(getTax()),
                 "joinfee", Utils.CURRENCY_FORMAT.format(getJoinFee()),
                 "allowallyclaim", yesOrNo(isAllowAllyClaim()),
@@ -414,9 +422,12 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 "firespread", yesOrNo(isFireSpread()),
                 "explosions", yesOrNo(isExplosions()),
                 "buff", yesOrNo(isBuff()),
-                "bank", String.valueOf(getBank()),
-                "bonusclaims", getBonusClaimAmount() > 0 ? configMessages.getMessage("bonus-claims").getReplacedText("amount", String.valueOf(getBonusClaimAmount())) : "",
-                "bonusoutposts", getBonusOutposts() > 0 ? configMessages.getMessage("bonus-outposts").getReplacedText("amount", String.valueOf(getBonusOutposts())) : "",
+                "bonusclaims", configMessages != null
+                        ? getBonusClaimAmount() > 0 ? configMessages.getMessage("bonus-claims").getReplacedText("amount", String.valueOf(getBonusClaimAmount())) : ""
+                        : String.valueOf(getBonusClaimAmount()),
+                "bonusoutposts", configMessages != null
+                        ? getBonusOutposts() > 0 ? configMessages.getMessage("bonus-outposts").getReplacedText("amount", String.valueOf(getBonusOutposts())) : ""
+                        : String.valueOf(getBonusOutposts()),
                 "access", getAccess().getTag(),
                 "perks", getPerksMap().entrySet().stream()
                         .map(e -> (e.getValue().getTimes() > 1 ? e.getValue().getTimes() + "x " : "") + getPerk(e.getKey()).getTag())
@@ -424,10 +435,11 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 "chiefrank", VillageRank.CHIEF.getTag(this),
                 "chieftitle", chief.getTitle(),
                 "chief", chief.getName(),
-                "chiefonline", chief.getPlayer() != null ? online : offline,
-                "residents", getResidentsToString(rankMessage, entry, online, offline, separator),
+                "chiefonline", configMessages != null ? chief.getPlayer() != null ? online : offline : "",
+                "residents", configMessages != null ? getResidentsToString(rankMessage, entry, online, offline, separator) : String.valueOf(getResidentIds().size()),
                 "rescount", String.valueOf(getResidentIds().size()),
-                "resonlinecount", String.valueOf(residents.stream().map(Bukkit::getPlayer).filter(Objects::nonNull).count())
+                "resonlinecount", String.valueOf(residents.stream().map(Bukkit::getPlayer).filter(Objects::nonNull).count()),
+                "resotheronlinecount", String.valueOf(residents.stream().map(Bukkit::getPlayer).filter(Objects::nonNull).count() - 1)
         };
     }
 

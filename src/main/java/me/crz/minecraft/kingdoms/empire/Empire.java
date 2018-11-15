@@ -383,10 +383,21 @@ public class Empire extends LandOwner implements Comparable<Empire> {
     }
 
     public String[] getReplacements(ConfigMessages configMessages) {
-        Message entry = configMessages.getMessage("senators.entry");
-        String online = configMessages.getMessage("senators.online").getText();
-        String offline = configMessages.getMessage("senators.offline").getText();
-        String separator = configMessages.getMessage("senators.separator").getText();
+        Message entry;
+        String online;
+        String offline;
+        String separator;
+        if (configMessages != null) {
+            entry = configMessages.getMessage("senators.entry");
+            online = configMessages.getMessage("senators.online").getText();
+            offline = configMessages.getMessage("senators.offline").getText();
+            separator = configMessages.getMessage("senators.separator").getText();
+        } else {
+            entry = null;
+            online = null;
+            offline = null;
+            separator = null;
+        }
         Village capital = getCapital();
         Resident chief = capital != null ? capital.getChief() : null;
         return new String[] {
@@ -396,7 +407,8 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                 "pvp", yesOrNo(isPvp()),
                 "access", getAccess().getTag(),
                 "upkeep", Utils.CURRENCY_FORMAT.format(getUpkeep()),
-                "balance", Utils.CURRENCY_FORMAT.format(getBank()),
+                "balance", Utils.withSuffix(getBank()),
+                "bank", Utils.CURRENCY_FORMAT.format(getBank()),
                 "joinfee", Utils.CURRENCY_FORMAT.format(getJoinFee()),
                 "tax", Utils.CURRENCY_FORMAT.format(getTax()),
                 "abandoned", yesOrNo(isMobSpawning()),
@@ -414,13 +426,15 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                 "chiefrank", VillageRank.CHIEF.getTag(capital),
                 "chieftitle", chief != null ? chief.getTitle() : "-",
                 "chief", chief != null ? chief.getName() : "-",
-                "chiefonline", chief != null && chief.getPlayer() != null ? online : offline,
-                "senators", getSenators().stream().map(r -> entry.getReplacedText(
-                        "name", r.getName(),
-                        "title", r.getTitle(),
-                        "rank", r.getVillageRank().getTag(r.getVillage()),
-                        "online", r.getPlayer() != null ? online : offline
-                )).collect(Collectors.joining(separator)),
+                "chiefonline", configMessages != null ? chief != null && chief.getPlayer() != null ? online : offline : "",
+                "senators", configMessages != null
+                        ? getSenators().stream().map(r -> entry.getReplacedText(
+                                "name", r.getName(),
+                                "title", r.getTitle(),
+                                "rank", r.getVillageRank().getTag(r.getVillage()),
+                                "online", r.getPlayer() != null ? online : offline
+                        )).collect(Collectors.joining(separator))
+                        : String.valueOf(getSenatorIds().size()),
                 "members", getMembers().stream().map(v -> v.getState().getTag() + " " + v.getName()).collect(Collectors.joining(", "))
         };
     }

@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
@@ -358,5 +359,33 @@ public class Utils {
                 return false;
         }
         throw new IllegalArgumentException(arg + " is not a valid boolean!");
+    }
+
+    public static String[] toArray(Map<String, String> map) {
+        String[] array = new String[map.size() * 2];
+        int i = 0;
+        for (Map.Entry<String, String> e : map.entrySet()) {
+            array[i] = e.getKey();
+            i++;
+            array[i] = e.getValue();
+            i++;
+        }
+        return array;
+    }
+
+    public static Map<String, String> toMap(String... args) {
+        Map<String, String> map = new LinkedHashMap<>();
+        for (int i = 0; i+1 < args.length; i+=2) {
+            map.put(args[i], args[i+1]);
+        }
+        return map;
+    }
+
+    public static String withSuffix(long count) {
+        if (count < 1000L) {
+            return String.valueOf(count);
+        }
+        int exp = (int) (Math.log(count) / Math.log(1000.0));
+        return String.format("%.1f%c", count / Math.pow(1000.0, exp), "kMBTPE".charAt(exp - 1));
     }
 }

@@ -3,7 +3,9 @@ package me.crz.minecraft.kingdoms;
 
 import me.crz.minecraft.kingdoms.scoreboard.ScoreboardManager;
 import me.crz.minecraft.kingdoms.scoreboard.ScoreboardPolicy;
+import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.ChatColor;
@@ -11,6 +13,7 @@ import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Map;
 
 public class ScoreBoard implements ScoreboardPolicy {
     private final ScoreboardManager manager;
@@ -20,30 +23,32 @@ public class ScoreBoard implements ScoreboardPolicy {
         this.manager = manager;
     }
 
-    public static String withSuffix(long count) {
-        if (count < 1000L) {
-            return String.valueOf(count);
-        }
-        int exp = (int) (Math.log(count) / Math.log(1000.0));
-        return String.format("%.1f%c", count / Math.pow(1000.0, exp), "kMBTPE".charAt(exp - 1));
-    }
-
     @Override
     public List<String> getSidebar(Player member) {
         Resident resident = ResidentManager.getInstance().getResident(member);
 
-        return manager.getMessage("sidebar.entries." + (resident.hasVillage() ? "village" : "no-village")).getReplacedTextList(
-                "balance", withSuffix((long) KingdomsPlugin.getInstance().econ.getBalance(member)),
+        Map<String, String> replacements = Utils.toMap(
+                "balance", Utils.withSuffix((long) KingdomsPlugin.getInstance().econ.getBalance(member)),
+                "bank", Utils.CURRENCY_FORMAT.format((long) KingdomsPlugin.getInstance().econ.getBalance(member)),
                 "kills", String.valueOf(member.getStatistic(Statistic.PLAYER_KILLS)),
                 "deaths", String.valueOf(member.getStatistic(Statistic.DEATHS)),
                 "bonus", String.valueOf(resident.getBonusClaims()),
-                "villagename", resident.getVillageName(),
-                "villagestate", resident.hasVillage() ? resident.getVillage().getState().getTag() : "",
-                "villagerank", resident.getVillageRank().getTag(resident.getVillage()),
-                "villagetitle", resident.getTitle(),
-                "villagebank", resident.hasVillage() ? String.valueOf(resident.getVillage().getBank()) : "",
-                "villagebonus", resident.hasVillage() ? String.valueOf(resident.getVillage().getBonusClaimAmount()) : ""
+                "villagetitle", resident.getTitle()
         );
+        if (resident.hasVillage()) {
+            String[] villageRepl = resident.getVillage().getReplacements(null);
+            for (int i = 0; i+1 < villageRepl.length; i+=2) {
+                replacements.put("village" + villageRepl[i], villageRepl[i+1]);
+            }
+            if (resident.hasEmpire()) {
+                String[] empireRepl = resident.getVillage().getEmpire().getReplacements(null);
+                for (int i = 0; i+1 < empireRepl.length; i+=2) {
+                    replacements.put("empire" + empireRepl[i], empireRepl[i+1]);
+                }
+            }
+        }
+
+        return manager.getMessage("sidebar.entries." + (resident.hasVillage() ? resident.hasEmpire() ? "empire" : "village" : "no-village")).getReplacedTextList(Utils.toArray(replacements));
     }
 
     public String c(String input) {
