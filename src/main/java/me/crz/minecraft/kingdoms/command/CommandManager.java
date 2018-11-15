@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.command;
 
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.chat.commands.IgnoreCommand;
 import me.crz.minecraft.kingdoms.chat.commands.MessageCommand;
 import me.crz.minecraft.kingdoms.chat.commands.ReplyCommand;
@@ -45,12 +46,16 @@ public class CommandManager extends Base implements CommandExecutor {
             registerCommand(new SubCommand(null, channel.name().toLowerCase() + "chat") {
                 @Override
                 public boolean run(Player p, String base, String alias, String... args) {
-                    if (channel.canChatM(p)) {
-                        Resident res = ResidentManager.getInstance().getResident(p);
-                        if (res.setActiveChannel(channel) | res.addChannel(channel)) {
-                            Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
+                    if (args.length == 0) {
+                        if (channel.canChatM(p)) {
+                            Resident res = ResidentManager.getInstance().getResident(p);
+                            if (res.setActiveChannel(channel) | res.addChannel(channel)) {
+                                Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
+                            }
+                            MessageUtils.tell(p, chatCommand.getMessage("joined"), "name", channel.getTag());
                         }
-                        MessageUtils.tell(p, chatCommand.getMessage("joined"), "name", channel.getTag());
+                    } else {
+                        ChatManager.getInstance().sendChannelMessage(p, channel, String.join(" ", args));
                     }
                     return true;
                 }

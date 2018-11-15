@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command;
 
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -15,15 +16,19 @@ public class ChatCommand extends SubCommand {
     public ChatCommand() {
         super(null, "chat <channel>", "c");
         for (ChatChannel channel : ChatChannel.values()) {
-            registerCommand(new SubCommand(this, channel.name(), channel.getAliases().toArray(new String[0])) {
+            registerCommand(new SubCommand(this, channel.name().toLowerCase(), channel.getAliases().toArray(new String[0])) {
                 @Override
                 public boolean run(Player p, String base, String alias, String... args) {
-                    if (channel.canChatM(p)) {
-                        Resident res = ResidentManager.getInstance().getResident(p);
-                        if (res.setActiveChannel(channel) | res.addChannel(channel)) {
-                            Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
+                    if (args.length == 0) {
+                        if (channel.canChatM(p)) {
+                            Resident res = ResidentManager.getInstance().getResident(p);
+                            if (res.setActiveChannel(channel) | res.addChannel(channel)) {
+                                Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
+                            }
+                            MessageUtils.tell(p, ChatCommand.this.getMessage("joined"), "name", channel.getTag());
                         }
-                        MessageUtils.tell(p, ChatCommand.this.getMessage("joined"), "name", channel.getTag());
+                    } else {
+                        ChatManager.getInstance().sendChannelMessage(p, channel, String.join(" ", args));
                     }
                     return true;
                 }
