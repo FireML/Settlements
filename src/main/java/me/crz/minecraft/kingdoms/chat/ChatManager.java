@@ -115,7 +115,7 @@ public class ChatManager extends Base implements ConfigMessages {
         switch (channel) {
             case TRADE:
             case GENERAL:
-                if (Data.muteChat && !event.getPlayer().hasPermission("kingdoms.staff")) {
+                if (Data.muteChat && !event.getPlayer().hasPermission("kingdoms.bypass.chatlock")) {
                     MessageUtils.tell(event.getPlayer(), getMessage("locked"), "channel", channel.name());
                     return;
                 }
@@ -206,7 +206,7 @@ public class ChatManager extends Base implements ConfigMessages {
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + target.getName() + " "))
                         .create(),
                 "message", new ComponentBuilder(message).create(),
-                "staff", ChatChannel.ADMIN.canChat(sender) ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
+                "staff", sender.hasPermission("kingdoms.staff") ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
         ));
 
         MessageUtils.tell(target, getMessage("format.private.target"), ImmutableMap.of(
@@ -221,7 +221,7 @@ public class ChatManager extends Base implements ConfigMessages {
                         .event(targetHover)
                         .create(),
                 "message", new ComponentBuilder(message).create(),
-                "staff", ChatChannel.ADMIN.canChat(sender) ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
+                "staff", sender.hasPermission("kingdoms.staff") ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
         ));
         lastMessage.put(sender.getUniqueId(), target.getUniqueId());
         lastMessage.put(target.getUniqueId(), sender.getUniqueId());

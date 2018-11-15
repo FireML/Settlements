@@ -82,6 +82,9 @@ permissions:
   kingdoms.bypass.ignore:
     description: Permission to bypass being ignored
     default: op
+  kingdoms.bypass.chatlock:
+    description: Permission to bypass the chat being locked
+    default: op
   kingdoms.bypass.restriction.chestshop:
     description: Permission to bypass shop build restrictions.
     default: op
@@ -97,6 +100,7 @@ permissions:
       kingdoms.bypass.restriction.lwc: true
       kingdoms.bypass.banish: true
       kingdoms.bypass.ignore: true
+      kingdoms.bypass.chatlock: true
       kingdoms.channel.staff: true
   kingdoms.user:
     description: Permission for users. Gives access to all plugin functions that a user should have.
