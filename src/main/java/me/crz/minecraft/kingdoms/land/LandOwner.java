@@ -290,7 +290,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
 
     public boolean isBanished(UUID playerId) {
         if (banishedPlayers.contains(playerId)) {
-            return false;
+            return true;
         }
         Resident resident = ResidentManager.getInstance().getResident(playerId);
         if (resident != null && resident.hasVillage()) {
