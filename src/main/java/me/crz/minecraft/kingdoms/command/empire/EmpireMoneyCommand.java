@@ -33,6 +33,9 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                 }
                 try {
                     long deposit = Long.parseLong(args[0]);
+                    if (deposit <= 0) {
+                        return false;
+                    }
                     if (Base.getEconomy().getBalance(resident.getPlayer()) >= deposit) {
                         EconomyResponse r2 = Base.getEconomy().withdrawPlayer(resident.getPlayer(), (double) deposit);
                         if (r2.transactionSuccess()) {
@@ -66,6 +69,9 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                 }
                 try {
                     long withdrewInit = Long.parseLong(args[0]);
+                    if (withdrewInit <= 0) {
+                        return false;
+                    }
                     if (withdrewInit <= resident.getVillage().getEmpire().getBank()) {
                         EconomyResponse r = Base.getEconomy().depositPlayer(resident.getPlayer(), (double) withdrewInit);
                         if (r.transactionSuccess()) {

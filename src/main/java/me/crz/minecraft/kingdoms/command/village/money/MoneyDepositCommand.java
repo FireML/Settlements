@@ -22,6 +22,9 @@ public class MoneyDepositCommand extends VillageSubCommand {
         }
         try {
             long deposit = Long.parseLong(args[0]);
+            if (deposit <= 0) {
+                return false;
+            }
             if (Base.getEconomy().getBalance(resident.getPlayer()) >= deposit) {
                 EconomyResponse r2 = Base.getEconomy().withdrawPlayer(resident.getPlayer(), (double) deposit);
                 if (r2.transactionSuccess()) {

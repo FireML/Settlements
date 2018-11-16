@@ -22,6 +22,9 @@ public class MoneyWithdrawCommand extends VillageSubCommand {
         }
         try {
             long withdrewInit = Long.parseLong(args[0]);
+            if (withdrewInit <= 0) {
+                return false;
+            }
             if (withdrewInit <= resident.getVillage().getBank()) {
                 EconomyResponse r = Base.getEconomy().depositPlayer(resident.getPlayer(), (double) withdrewInit);
                 if (r.transactionSuccess()) {
