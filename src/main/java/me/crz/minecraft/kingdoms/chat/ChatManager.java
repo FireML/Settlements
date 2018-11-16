@@ -72,6 +72,7 @@ public class ChatManager extends Base implements ConfigMessages {
         }
         event.setCancelled(true);
 
+        sendChannelMessage(sender, channel, event.getMessage());
     }
 
     public void sendChannelMessage(Player player, ChatChannel channel, String message) {
