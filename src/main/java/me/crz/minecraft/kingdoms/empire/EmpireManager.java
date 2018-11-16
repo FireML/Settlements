@@ -3,6 +3,8 @@ package me.crz.minecraft.kingdoms.empire;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
+import me.crz.minecraft.kingdoms.lock.LockManager;
+import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
@@ -179,6 +181,9 @@ public class EmpireManager {
             for (Player player : empireWorld.getPlayers()) {
                 Utils.teleportToSpawn(player);
             }
+            for (LockProvider lockProvider : KingdomsPlugin.getInstance().getLockProviders()) {
+                lockProvider.removeInWorld(empireWorld);
+            }
             if (Bukkit.unloadWorld(empireWorld, true)) {
                 empireWorld.getWorldFolder().delete();
             } else {
@@ -212,6 +217,12 @@ public class EmpireManager {
         }
         empire.getSenatorIds().clear();
         empire.setAccess(LandAccess.PUBLIC);
+        World empireWorld = Bukkit.getWorld(empire.getWorldName());
+        if (empireWorld != null) {
+            for (LockProvider lockProvider : KingdomsPlugin.getInstance().getLockProviders()) {
+                lockProvider.removeInWorld(empireWorld);
+            }
+        }
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveEmpire(empire);
             DatabaseManager.getInstance().saveVillages(modifiedVillages);

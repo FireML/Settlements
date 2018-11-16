@@ -80,7 +80,7 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                         }
                         return LandManager.FilterResponse.ACCEPT;
                     }).forEach(l -> {
-                        if (!toUnclaim.contains(l.getLocation())) {
+                        if (!toUnclaim.contains(l)) {
                             unclaimedLand.add(l);
                         }
                     });

@@ -35,6 +35,6 @@ public class LockAddCommand extends SubCommand implements TargetParser {
                 }
             });
         }
-        return false;
+        return true;
     }
 }

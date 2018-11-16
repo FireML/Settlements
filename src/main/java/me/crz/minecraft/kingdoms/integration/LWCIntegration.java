@@ -22,6 +22,7 @@ import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 
 import java.util.Collection;
@@ -150,7 +151,7 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
     }
 
     @Override
-    public int removeInChunk(Collection<SimpleChunkLocation> chunks) {
+    public int removeInChunks(Collection<? extends SimpleChunkLocation> chunks) {
         Utils.runAsync(() -> {
             for (SimpleChunkLocation claim : chunks) {
                 lwc.fastRemoveProtections(Bukkit.getConsoleSender(),
@@ -162,6 +163,16 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
                         , KingdomsPlugin.getInstance().getConfig().getBoolean("remove-locked-blocks"));
             }
         });
+        return -1;
+    }
+
+    @Override
+    public int removeInWorld(World world) {
+        Utils.runAsync(() -> lwc.fastRemoveProtections(
+                Bukkit.getConsoleSender(),
+                "world = '" + world.getName() + "'",
+                KingdomsPlugin.getInstance().getConfig().getBoolean("remove-locked-blocks")
+        ));
         return -1;
     }
 

@@ -45,3 +45,10 @@ claim-max-radius: 5
 entries-per-page: 20
 remove-locks-on-unclaim: true
 remove-locked-blocks: false
+lockable:
+- chest
+- trapped_chest
+- dispenser
+- dropper
+- furnace
+- "*shulker_box"

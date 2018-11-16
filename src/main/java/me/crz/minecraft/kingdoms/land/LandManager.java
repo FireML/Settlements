@@ -40,9 +40,9 @@ import org.bukkit.World;
 public class LandManager {
     private static LandManager instance;
     private HashBasedTable<String, String, OwnedLand> landTable = HashBasedTable.create();
-    private Multimap<IdObject, SimpleChunkLocation> villageLands = MultimapBuilder.hashKeys().hashSetValues().build();
-    private Multimap<UUID, SimpleChunkLocation> playerPlots = MultimapBuilder.hashKeys().hashSetValues().build();
-    private Multimap<UUID, SimpleChunkLocation> linkedPlots = MultimapBuilder.hashKeys().hashSetValues().build();
+    private Multimap<IdObject, OwnedLand> villageLands = MultimapBuilder.hashKeys().hashSetValues().build();
+    private Multimap<UUID, OwnedLand> playerPlots = MultimapBuilder.hashKeys().hashSetValues().build();
+    private Multimap<UUID, OwnedLand> linkedPlots = MultimapBuilder.hashKeys().hashSetValues().build();
     private HashBasedTable<String, String, Boolean> mobData = HashBasedTable.create();
 
     private LandManager() {
@@ -61,12 +61,12 @@ public class LandManager {
 
     private void cacheLand(OwnedLand land) {
         landTable.put(land.getWorldName(), land.getSimpleKey(), land);
-        villageLands.put(land.getLandOwner().getId(), land.getLocation());
+        villageLands.put(land.getLandOwner().getId(), land);
         if (land.isPlot()) {
-            playerPlots.put(land.getPlotOwner(), land.getLocation());
+            playerPlots.put(land.getPlotOwner(), land);
         }
         if (land.hasLink()) {
-            linkedPlots.put(land.getLink(), land.getLocation());
+            linkedPlots.put(land.getLink(), land);
         }
     }
 
@@ -75,7 +75,7 @@ public class LandManager {
         villageLands.removeAll(village.getId());
         for (OwnedLand land : lands) {
             land.setLandOwner(newOwner);
-            villageLands.put(newOwner.getId(), land.getLocation());
+            villageLands.put(newOwner.getId(), land);
         }
         Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(lands.toArray(new OwnedLand[0])));
     }
@@ -140,7 +140,7 @@ public class LandManager {
         Set<Village> saveVillages = new HashSet<>();
         for (OwnedLand land : lands) {
             landTable.remove(land.getWorldName(), land.getSimpleKey());
-            villageLands.remove(land.getLandOwner().getId(), land.getLocation());
+            villageLands.remove(land.getLandOwner().getId(), land);
             if (land.getLandOwner() instanceof Village && land.isOutpost()) {
                 if (((Village) land.getLandOwner()).getOutpostHomes().remove(land.getOutpostName().toLowerCase()) != null) {
                     saveVillages.add((Village) land.getLandOwner());
@@ -160,9 +160,9 @@ public class LandManager {
 
     public void unclaimLand(Village village) {
         Utils.runSync(() -> {
-            List<SimpleChunkLocation> claims = new ArrayList<>(villageLands.get(village.getId()));
-            for (SimpleChunkLocation claim : claims) {
-                removeLink(getLand(claim));
+            List<OwnedLand> claims = new ArrayList<>(villageLands.get(village.getId()));
+            for (OwnedLand claim : claims) {
+                removeLink(claim);
                 landTable.remove(claim.getWorld(), claim.getSimpleKey());
                 KingdomsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + claim.getKey() + " owned by " + village.getName() + " was unclaimed");
             }
@@ -178,7 +178,7 @@ public class LandManager {
         if (land != null && land.hasLink()) {
             UUID link = land.getLink();
             land.setLink(null);
-            return linkedPlots.remove(link, land.getLocation());
+            return linkedPlots.remove(link, land);
         }
         return false;
     }
@@ -187,12 +187,12 @@ public class LandManager {
         if (land != null && link != null && !link.equals(land.getLink())) {
             removeLink(land);
             land.setLink(link);
-            return linkedPlots.put(link, land.getLocation());
+            return linkedPlots.put(link, land);
         }
         return false;
     }
 
-    public Collection<SimpleChunkLocation> getLinked(OwnedLand land) {
+    public Collection<OwnedLand> getLinked(OwnedLand land) {
         if (land != null && land.hasLink()) {
             return linkedPlots.get(land.getLink());
         }
@@ -200,11 +200,11 @@ public class LandManager {
     }
 
     private void removeLocks(OwnedLand... lands) {
-        removeLocks(Arrays.stream(lands).map(OwnedLand::getLocation).collect(Collectors.toSet()));
+        removeLocks(Arrays.asList(lands));
     }
 
-    private void removeLocks(Collection<SimpleChunkLocation> claims) {
-        KingdomsPlugin.getInstance().getLockProviders().forEach(i -> i.removeInChunk(claims));
+    private void removeLocks(Collection<? extends SimpleChunkLocation> claims) {
+        KingdomsPlugin.getInstance().getLockProviders().forEach(i -> i.removeInChunks(claims));
     }
 
     public static LandManager getInstance() {
@@ -268,7 +268,7 @@ public class LandManager {
         int[][] directions = {{1,0}, {0,1}, {-1,0}, {0,-1}};
 
         Set<SimpleChunkLocation> checked = new HashSet<>();
-        checked.add(land.getLocation());
+        checked.add(land);
 
         for (int[] branchDir : directions) {
             Queue<SimpleChunkLocation> toSearch = new ArrayDeque<>();
@@ -324,9 +324,8 @@ public class LandManager {
     public void syncAndSave(OwnedLand land) {
         List<OwnedLand> lands = new ArrayList<>();
         lands.add(land);
-        for (SimpleChunkLocation l : land.getLinked()) {
-            OwnedLand c = getLand(l);
-            if (c != null && c.syncLinked(land)) {
+        for (OwnedLand c : land.getLinked()) {
+            if (c.syncLinked(land)) {
                 lands.add(c);
             }
         }
@@ -375,7 +374,7 @@ public class LandManager {
         List<OwnedLand> toUnclaim = new ArrayList<>();
         for (OwnedLand land : getClaimedLand(oldAlly)) {
             if (unclaimOutposts || !land.isOutpost()) {
-                for (SimpleChunkLocation c : Utils.getChunksAround(land.getLocation(), Utils.getClaimEnemyDistance())) {
+                for (SimpleChunkLocation c : Utils.getChunksAround(land, Utils.getClaimEnemyDistance())) {
                     OwnedLand around = getLand(c);
                     if (around != null && around.isOwnedBy(source)) {
                         if (graceDays > 0) {

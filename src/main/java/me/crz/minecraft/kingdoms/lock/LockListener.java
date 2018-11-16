@@ -15,6 +15,7 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.VillageManager;
+import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
@@ -32,14 +33,37 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
+import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class LockListener implements Listener, LandFlagBase, TargetParser {
+
+    // chunk load caching
+    @EventHandler
+    public void onChunkLoad(ChunkLoadEvent event) {
+        LockManager.getInstance().loadChunks(new SimpleChunkLocation(event.getChunk()));
+    }
+
+    @EventHandler
+    public void onWorldLoad(WorldLoadEvent event) {
+        LockManager.getInstance().loadChunks(
+                Arrays.stream(event.getWorld().getLoadedChunks())
+                        .map(SimpleChunkLocation::new)
+                        .toArray(SimpleChunkLocation[]::new));
+    }
+
+    @EventHandler
+    public void onWorldUnload(WorldUnloadEvent event) {
+        LockManager.getInstance().unloadWorld(event.getWorld());
+    }
 
     // block destruction
 
@@ -48,13 +72,19 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
         Lock lock = LockManager.getInstance().getLock(event.getBlock());
         if (lock != null && !lock.isOwner(event.getPlayer()) && !event.getPlayer().hasPermission("kingdoms.bypass.lock")) {
             event.setCancelled(true);
+            Resident owner = lock.getOwner();
+            getError("locked").tell(event.getPlayer(),
+                    "name", owner != null ? owner.getName() : "-",
+                    "title", owner != null? owner.getTitle() : "",
+                    "block", NameTag.getTag(lock.getBlock())
+            );
         }
     }
 
     @EventHandler
     public void onStructureGrow(StructureGrowEvent event) {
         for (BlockState block : event.getBlocks()) {
-            Lock lock = LockManager.getInstance().getLock(block.getLocation());
+            Lock lock = LockManager.getInstance().getLock(block);
             if (lock != null && !lock.isOwner(event.getPlayer())) {
                 event.setCancelled(true);
             }
@@ -130,12 +160,17 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
             owner = lock.getOwner();
             if (!lock.canAccess(event.getPlayer())) {
                 event.setCancelled(true);
-                getError("locked").tell(event.getPlayer(), "name", owner.getName(), "title", owner.getTitle(), "block", NameTag.getTag(lock.getBlock()));
+                getError("locked").tell(event.getPlayer(),
+                        "name", owner != null ? owner.getName() : "-",
+                        "title", owner != null? owner.getTitle() : "",
+                        "block", NameTag.getTag(lock.getBlock())
+                );
             }
         }
         if (event.getHand() == EquipmentSlot.HAND) {
             String action = LockManager.getInstance().pullAction(event.getPlayer().getUniqueId());
             if (action != null) {
+                event.setCancelled(true);
                 if ("lock".equalsIgnoreCase(action)) {
                     if (lock == null) {
                         boolean limitedToVillage = KingdomsPlugin.getInstance().getConfig().getBoolean("only-lock-in-settlement");
@@ -153,6 +188,12 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                                 MessageUtils.tell(event.getPlayer(), response.getRight());
                             }
                         }
+                    } else if (lock.canAccess(event.getPlayer())) {
+                        getError("locked").tell(event.getPlayer(),
+                                "name", owner != null ? owner.getName() : "-",
+                                "title", owner != null? owner.getTitle() : "",
+                                "block", NameTag.getTag(lock.getBlock())
+                        );
                     }
                 } else if (lock == null) {
                     getError("not-locked").tell(event.getPlayer(), "block", NameTag.getTag(event.getClickedBlock().getType()));
@@ -183,7 +224,11 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                             }
                         }
                     } else {
-                        getError("locked").tell(event.getPlayer(), "name", owner.getName(), "title", owner.getTitle(), "block", NameTag.getTag(lock.getBlock()));
+                        getError("locked").tell(event.getPlayer(),
+                                "name", owner != null ? owner.getName() : "-",
+                                "title", owner != null? owner.getTitle() : "",
+                                "block", NameTag.getTag(lock.getBlock())
+                        );
                     }
                 } else if (action.toLowerCase().startsWith("remove")) {
                     if (lock.isOwner(event.getPlayer())) {
@@ -197,13 +242,17 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                             }
                         }
                     } else {
-                        getError("locked").tell(event.getPlayer(), "name", owner.getName(), "title", owner.getTitle(), "block", NameTag.getTag(lock.getBlock()));
+                        getError("locked").tell(event.getPlayer(),
+                                "name", owner != null ? owner.getName() : "-",
+                                "title", owner != null? owner.getTitle() : "",
+                                "block", NameTag.getTag(lock.getBlock())
+                        );
                     }
                 } else if (action.equalsIgnoreCase("info")) {
                     if (lock.canAccess(event.getPlayer()) || lock.canAdministrate(event.getPlayer())) {
                         getMessage("info").tell(event.getPlayer(),
-                                "title", owner.getTitle(),
-                                "owner", owner.getName(),
+                                "title", owner != null? owner.getTitle() : "",
+                                "owner", owner != null ? owner.getName() : "-",
                                 "hoppers", MessageUtils.yesOrNo(lock.isAllowHoppers())
                         );
                         if (!lock.getAllowedPlayers().isEmpty()) {
@@ -243,8 +292,9 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onInventoryOpen(InventoryOpenEvent event) {
         if (event.getPlayer() instanceof Player && event.getInventory().getHolder() instanceof BlockState) {
-            Lock lock = LockManager.getInstance().getLock(((BlockState) event.getInventory().getHolder()).getLocation());
-            if (lock != null && !lock.canAccess((Targetable) event.getPlayer())) {
+            BlockState state = (BlockState) event.getInventory().getHolder();
+            Lock lock = LockManager.getInstance().getLock(state);
+            if (lock != null && !lock.canAccess((Player) event.getPlayer())) {
                 event.setCancelled(true);
             }
         }
@@ -255,14 +305,14 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onHopperMove(InventoryMoveItemEvent event) {
         if (event.getDestination().getHolder() instanceof BlockState) {
-            Lock lock = LockManager.getInstance().getLock(((BlockState) event.getDestination().getHolder()).getLocation());
+            Lock lock = LockManager.getInstance().getLock(((BlockState) event.getDestination().getHolder()));
             if (lock != null && !lock.isAllowHoppers()) {
                 event.setCancelled(true);
                 return;
             }
         }
         if (event.getSource().getHolder() instanceof BlockState) {
-            Lock lock = LockManager.getInstance().getLock(((BlockState) event.getSource().getHolder()).getLocation());
+            Lock lock = LockManager.getInstance().getLock(((BlockState) event.getSource().getHolder()));
             if (lock != null && !lock.isAllowHoppers()) {
                 event.setCancelled(true);
                 return;

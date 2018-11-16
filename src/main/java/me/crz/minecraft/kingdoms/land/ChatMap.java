@@ -144,14 +144,14 @@ public class ChatMap {
                 for (NamedLocation o : resident.getVillage().getOutpostHomes().values()) {
                     OwnedLand outpostLand = LandManager.getInstance().getLand(o.toChunkLocation());
                     if (outpostLand != null && !outpostLand.containsHome()) {
-                        LandManager.getInstance().getAllConnectedLand(outpostLand, search -> {
+                        ownOutposts.addAll(LandManager.getInstance().getAllConnectedLand(outpostLand, search -> {
                             if (search.isOutpost()) {
                                 return LandManager.FilterResponse.SKIP_BRANCH;
                             } else if (search.containsHome()) {
                                 return LandManager.FilterResponse.SKIP_BRANCH;
                             }
                             return LandManager.FilterResponse.ACCEPT;
-                        }).forEach(l -> ownOutposts.add(l.getLocation()));
+                        }));
                     }
                 }
             }
@@ -194,7 +194,7 @@ public class ChatMap {
 
             if (land.isOwnedBy(resident.getVillage())) {
                 relation = Relation.OWN;
-                if (land.isOutpost() || ownOutposts.contains(land.getLocation())) {
+                if (land.isOutpost() || ownOutposts.contains(land)) {
                     relation = Relation.OWN_OUTPOST;
                 }
                 if (land.isForSale()) {

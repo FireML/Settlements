@@ -52,7 +52,7 @@ public class SimpleChunkLocation implements ConfigurationSerializable {
         return world;
     }
 
-    public void setWorld(String world) {
+    protected void setWorld(String world) {
         this.world = world;
     }
 
@@ -60,7 +60,7 @@ public class SimpleChunkLocation implements ConfigurationSerializable {
         return x;
     }
 
-    public void setX(int x) {
+    protected void setX(int x) {
         this.x = x;
     }
 
@@ -68,7 +68,7 @@ public class SimpleChunkLocation implements ConfigurationSerializable {
         return z;
     }
 
-    public void setZ(int z) {
+    protected void setZ(int z) {
         this.z = z;
     }
 

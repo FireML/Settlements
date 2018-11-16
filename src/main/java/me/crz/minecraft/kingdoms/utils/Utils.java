@@ -42,6 +42,7 @@ public class Utils {
     public final static DecimalFormat CURRENCY_FORMAT = new DecimalFormat("#,###");
     public final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
     public final static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat();
+    public static final UUID ZERO_UUID = new UUID(0, 0);
     private static Map<String, Integer> LEVEL_CHUNKS = new HashMap<>();
     private static Map<String, Integer> LEVEL_OUTPOSTS = new HashMap<>();
 

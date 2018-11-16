@@ -11,7 +11,6 @@ import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.NamedLocation;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.Material;
 import org.bukkit.Location;
@@ -34,11 +33,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import me.crz.minecraft.kingdoms.landflags.Use;
 
-public class OwnedLand implements DatabaseSerializable {
+public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializable {
     private IdObject id = IdObject.get(null);
     private LandOwner landOwner;
     private UUID plotOwner = null;
-    private SimpleChunkLocation location;
     private int unclaimIn = 0;
     private int price = 0;
     private boolean forSale = false;
@@ -55,8 +53,8 @@ public class OwnedLand implements DatabaseSerializable {
     private UUID link;
 
     public OwnedLand(LandOwner landOwner, SimpleChunkLocation location) {
+        super(location.getWorld(), location.getX(), location.getZ());
         this.landOwner = landOwner;
-        this.location = location;
     }
 
     public BuildState getUseState(Use u) {
@@ -118,28 +116,12 @@ public class OwnedLand implements DatabaseSerializable {
         return getLandOwner() != null && getLandOwner().isMember(resident);
     }
 
-    public int getX() {
-        return location.getX();
-    }
-
-    public void setX(int x) {
-        this.location.setX(x);
-    }
-
-    public int getZ() {
-        return location.getZ();
-    }
-
-    public void setZ(int z) {
-        this.location.setZ(z);
-    }
-
     public String getWorldName() {
-        return location.getWorld();
+        return getWorld();
     }
 
     public void setWorldName(String worldName) {
-        location.setWorld(worldName);
+        setWorld(worldName);
     }
 
     public int getUnclaimIn() {
@@ -186,11 +168,7 @@ public class OwnedLand implements DatabaseSerializable {
     }
 
     public SimpleChunkLocation getLocation() {
-        return location;
-    }
-
-    public Chunk getChunk() {
-        return location.getChunk();
+        return this;
     }
 
     public List<Player> getPlayers() {
@@ -273,7 +251,7 @@ public class OwnedLand implements DatabaseSerializable {
         this.description = description.length() > 255 ? description.substring(0, 255) : description;
     }
 
-    public Collection<SimpleChunkLocation> getLinked() {
+    public Collection<OwnedLand> getLinked() {
         return LandManager.getInstance().getLinked(this);
     }
 
@@ -314,7 +292,7 @@ public class OwnedLand implements DatabaseSerializable {
 
     @Override
     public String getDbDescription() {
-        return getLocation().getKey();
+        return getKey();
     }
 
     public IdObject getId() {
@@ -366,14 +344,6 @@ public class OwnedLand implements DatabaseSerializable {
         return uuid != null && uuid.equals(getPlotOwner());
     }
 
-    public String getKey() {
-        return location.getKey();
-    }
-
-    public String getSimpleKey() {
-        return location.getSimpleKey();
-    }
-
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new LinkedHashMap<>();
@@ -383,7 +353,7 @@ public class OwnedLand implements DatabaseSerializable {
         map.put("z", getZ());
         map.put("world", getWorldName());
         map.put("unclaimIn", getUnclaimIn());
-        map.put("owner", getPlotOwner() != null ? getPlotOwner() : new UUID(0,0));
+        map.put("owner", getPlotOwner() != null ? getPlotOwner() : Utils.ZERO_UUID);
         map.put("price", getPrice());
         map.put("forSale", isForSale());
         map.put("embassy", isEmbassy());
@@ -421,7 +391,7 @@ public class OwnedLand implements DatabaseSerializable {
         String plotOwnerStr = (String) map.get("owner");
         if (plotOwnerStr != null && !plotOwnerStr.isEmpty()) {
             land.setPlotOwner(UUID.fromString(plotOwnerStr));
-            if (land.getPlotOwner().equals(new UUID(0, 0))) {
+            if (land.getPlotOwner().equals(Utils.ZERO_UUID)) {
                 land.setPlotOwner(null);
             }
         }
@@ -448,7 +418,7 @@ public class OwnedLand implements DatabaseSerializable {
         }
         if (land.getLandOwner() instanceof Village) {
             for (NamedLocation o : ((Village) land.getLandOwner()).getOutpostHomes().values()) {
-                if (land.getLocation().contains(o)) {
+                if (land.contains(o)) {
                     land.setOutpost(o.getName());
                 }
             }
@@ -481,7 +451,7 @@ public class OwnedLand implements DatabaseSerializable {
     }
 
     public boolean containsHome() {
-        return getLocation().contains(getLandOwner().getHome());
+        return contains(getLandOwner().getHome());
     }
 
     public String[] getReplacements() {
@@ -500,7 +470,8 @@ public class OwnedLand implements DatabaseSerializable {
 
     @Override
     public int hashCode() {
-        return getLocation().hashCode();
+        // Do not change or everything breaks!
+        return super.hashCode();
     }
 
     public boolean canAdmin(Resident resident) {

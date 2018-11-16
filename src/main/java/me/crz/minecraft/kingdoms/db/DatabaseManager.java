@@ -9,6 +9,7 @@ import me.crz.minecraft.kingdoms.lock.Lock;
 import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 
 import java.util.Collection;
 import java.util.List;
@@ -79,7 +80,15 @@ public abstract class DatabaseManager {
         deleteLocks(locks.toArray(new Lock[0]));
     }
 
+    public abstract void deleteLocks(String worldName);
+
     public abstract Collection<Lock> getAllLocks();
+
+    public abstract Collection<Lock> getLocks(SimpleChunkLocation... chunks);
+
+    public Collection<Lock> getLocks(Collection<SimpleChunkLocation> chunks) {
+        return getLocks(chunks.toArray(new SimpleChunkLocation[0]));
+    }
 
     public abstract void log(Empire empire, Village village, Resident resident, String action, Map<String, Long> values);
 

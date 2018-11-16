@@ -14,6 +14,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
+import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
@@ -307,6 +308,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "UNIQUE(world, y, x, z),"
                     + "ownerId INTEGER,"
                     + "FOREIGN KEY (ownerId) REFERENCES " + tablePrefix + "residents(id) ON DELETE SET NULL,"
+                    + "`block` VARCHAR(255) NOT NULL,"
                     + "allowHoppers BOOLEAN NOT NULL"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
@@ -338,7 +340,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
     public void saveEmpire(Empire empire) {
         Utils.catchSync();
         try (Connection conn = ds.getConnection()) {
-            save(conn, empire);
+            save(conn, empire, "members");
             if (!empire.getId().isNull()) {
                 updateDataMap(conn, "empire_vaults", "empireId", (Integer) empire.getId().value(), "content", "amount", empire.getVault());
                 updateDataMap(conn, "empire_uses", "empireId", (Integer) empire.getId().value(), "type", "state",
@@ -377,7 +379,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
     public void saveVillage(Village village) {
         Utils.catchSync();
         try (Connection conn = ds.getConnection()) {
-            save(conn, village);
+            save(conn, village, "residents");
             if (!village.getId().isNull()) {
                 updateDataMap(conn, "settlement_vaults", "settlementId", (Integer) village.getId().value(), "content", "amount", village.getVault());
                 updateDataMap(conn, "settlement_outposts", "settlementId", (Integer) village.getId().value(), "name", "", village.getOutpostHomes());
@@ -479,7 +481,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                             land.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
                 }
             } catch (SQLException e) {
-                plugin.getLogger().log(Level.SEVERE, "Error while saving claim " + land.getLocation().getKey() + " to database!", e);
+                plugin.getLogger().log(Level.SEVERE, "Error while saving claim " + land.getKey() + " to database!", e);
             }
         }
 
@@ -623,7 +625,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return;
         }
         for (Lock lock : locks) {
-            save(lock);
+            if (lock.isValid()) {
+                save(lock);
+            }
         }
     }
 
@@ -656,6 +660,18 @@ public class MySqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
+    public void deleteLocks(String worldName) {
+        Utils.catchSync();
+        try (Connection conn = ds.getConnection();
+             PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "locks WHERE world = ?;")) {
+            sta.setString(1, worldName);
+            sta.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to delete locks in world " + worldName + " from database!", e);
+        }
+    }
+
+    @Override
     public Collection<Lock> getAllLocks() {
         Utils.catchSync();
         String sql = "SELECT l.*, r.uuid AS `owner` FROM " + tablePrefix + "locks AS l LEFT JOIN " + tablePrefix + "residents AS r ON l.ownerId = r.id;";
@@ -671,6 +687,38 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return locks;
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to get all locks from database!", e);
+        }
+        return Collections.EMPTY_LIST;
+    }
+
+    @Override
+    public Collection<Lock> getLocks(SimpleChunkLocation... chunks) {
+        if (chunks.length == 0) {
+            return  Collections.EMPTY_LIST;
+        }
+        Utils.catchSync();
+        String sql = "SELECT l.*, r.uuid AS `owner` FROM " + tablePrefix + "locks AS l" +
+                " LEFT JOIN " + tablePrefix + "residents AS r ON l.ownerId = r.id" +
+                " WHERE world = ? AND x BETWEEN ? AND ? AND z BETWEEN ? AND ?;";
+        List<Lock> locks = new ArrayList<>();
+        try (Connection conn = ds.getConnection(); PreparedStatement sta = conn.prepareStatement(sql)) {
+            for (SimpleChunkLocation chunk : chunks) {
+                sta.setString(1, chunk.getWorld());
+                sta.setInt(2, chunk.getX() << 4);
+                sta.setInt(3, chunk.getX() << 4 + 16);
+                sta.setInt(4, chunk.getZ() << 4);
+                sta.setInt(5, chunk.getZ() << 4 + 16);
+                ResultSet rs = sta.executeQuery();
+                while (rs.next()) {
+                    Lock lock = createLock(conn, rs);
+                    if (lock != null) {
+                        locks.add(lock);
+                    }
+                }
+            }
+            return locks;
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to get locks in " + chunks.length + " chunks from database!", e);
         }
         return Collections.EMPTY_LIST;
     }
@@ -996,8 +1044,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
             }
         }
         if (!serializable.getId().isNull()) {
+            Set<String> ignoredSet = new HashSet<>(Arrays.asList(ignored));
             for (Map.Entry<String, Object> e : serialized.entrySet()) {
-                if (e.getValue() instanceof Collection) {
+                if (e.getValue() instanceof Collection && !ignoredSet.contains(e.getKey())) {
                     updateList(conn, serializable.getDbName() + "_" + e.getKey(), serializable.getDbName() + "Id", (Integer) serializable.getId().value(), e.getKey(), (Collection<?>) e.getValue());
                 }
             }
@@ -1190,7 +1239,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     }
                 } else if (entry.getValue() instanceof UUID) {
                     Object id = null;
-                    if (!entry.getValue().equals(new UUID(0, 0))) {
+                    if (!entry.getValue().equals(Utils.ZERO_UUID)) {
                         Resident resident = ResidentManager.getInstance().getResident((UUID) entry.getValue());
                         id = resident != null ? resident.getId() : null;
                     }

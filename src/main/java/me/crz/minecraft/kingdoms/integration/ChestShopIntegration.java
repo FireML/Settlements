@@ -15,6 +15,7 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
@@ -64,24 +65,41 @@ public class ChestShopIntegration implements LockProvider, Listener {
     }
 
     @Override
-    public int removeInChunk(Collection<SimpleChunkLocation> chunks) {
+    public int removeInChunks(Collection<? extends SimpleChunkLocation> chunks) {
+        int amount = 0;
         for (SimpleChunkLocation chunkLocation : chunks) {
             Chunk chunk = chunkLocation.getChunk();
             if (!chunk.isLoaded()) {
                 chunk.load(false);
             }
-            for (BlockState blockState : chunk.getTileEntities()) {
-                if (blockState instanceof Container && ChestShopSign.isShopBlock((Container) blockState)) {
-                    Block block = blockState.getBlock();
-                    Sign sign;
-                    while ((sign = uBlock.findAnyNearbyShopSign(block)) != null) {
-                        new ShopDestroyedEvent(null, sign, (Container) blockState).callEvent();
-                        Arrays.fill(sign.getLines(), "");
-                        sign.update();
-                    }
+            amount += removeInChunk(chunk);
+        }
+        return 0;
+    }
+
+    @Override
+    public int removeInWorld(World world) {
+        int amount = 0;
+        for (Chunk chunk : world.getLoadedChunks()) {
+            amount += removeInChunk(chunk);
+        }
+        return amount;
+    }
+
+    private int removeInChunk(Chunk chunk) {
+        int amount = 0;
+        for (BlockState blockState : chunk.getTileEntities()) {
+            if (blockState instanceof Container && ChestShopSign.isShopBlock((Container) blockState)) {
+                Block block = blockState.getBlock();
+                Sign sign;
+                while ((sign = uBlock.findAnyNearbyShopSign(block)) != null) {
+                    new ShopDestroyedEvent(null, sign, (Container) blockState).callEvent();
+                    Arrays.fill(sign.getLines(), "");
+                    sign.update();
+                    amount++;
                 }
             }
         }
-        return 0;
+        return amount;
     }
 }

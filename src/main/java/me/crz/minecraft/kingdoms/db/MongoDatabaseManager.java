@@ -19,6 +19,7 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
+import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bukkit.configuration.ConfigurationSection;
@@ -70,37 +71,37 @@ public class MongoDatabaseManager extends DatabaseManager {
     @Override
     public void saveEmpire(Empire empire) {
         Utils.catchSync();
-        if (empire.getId().isNull() || empiresCollection.find(new Document("_id", empire.getId().value())).first() == null) {
+        if (empire.getId().isNull() || empiresCollection.find(Filters.eq("_id", empire.getId().value())).first() == null) {
             empiresCollection.insertOne(createDocument(empire));
-            Document document = empiresCollection.find(new Document("name", Pattern.compile(empire.getName(), Pattern.CASE_INSENSITIVE))).first();
+            Document document = empiresCollection.find(Filters.eq("name", Pattern.compile(empire.getName(), Pattern.CASE_INSENSITIVE))).first();
             empire.setId(IdObject.get(document));
         } else {
-            empiresCollection.updateOne(new Document("_id", empire.getId().value()), new Document("$set", createDocument(empire)));
+            empiresCollection.updateOne(Filters.eq("_id", empire.getId().value()), new Document("$set", createDocument(empire)));
         }
     }
 
     @Override
     public void deleteEmpire(Empire village) {
         Utils.catchSync();
-        empiresCollection.deleteOne(new Document("name", Pattern.compile(village.getName(), Pattern.CASE_INSENSITIVE)));
+        empiresCollection.deleteOne(Filters.eq("name", Pattern.compile(village.getName(), Pattern.CASE_INSENSITIVE)));
     }
 
     @Override
     public void saveVillage(Village village) {
         Utils.catchSync();
-        if (village.getId().isNull() || settlementsCollection.find(new Document("_id", village.getId().value())).first() == null) {
+        if (village.getId().isNull() || settlementsCollection.find(Filters.eq("_id", village.getId().value())).first() == null) {
             settlementsCollection.insertOne(createDocument(village));
-            Document document = settlementsCollection.find(new Document("name", Pattern.compile(village.getName(), Pattern.CASE_INSENSITIVE))).first();
+            Document document = settlementsCollection.find(Filters.eq("name", Pattern.compile(village.getName(), Pattern.CASE_INSENSITIVE))).first();
             village.setId(IdObject.get(document));
         } else {
-            settlementsCollection.updateOne(new Document("_id", village.getId().value()), new Document("$set", createDocument(village)));
+            settlementsCollection.updateOne(Filters.eq("_id", village.getId().value()), new Document("$set", createDocument(village)));
         }
     }
 
     @Override
     public void deleteVillage(Village village) {
         Utils.catchSync();
-        settlementsCollection.deleteOne(new Document("name", Pattern.compile(village.getName(), Pattern.CASE_INSENSITIVE)));
+        settlementsCollection.deleteOne(Filters.eq("name", Pattern.compile(village.getName(), Pattern.CASE_INSENSITIVE)));
     }
 
     @Override
@@ -113,21 +114,21 @@ public class MongoDatabaseManager extends DatabaseManager {
     @Override
     public void unclaimLand(OwnedLand... lands) {
         for (OwnedLand land : lands) {
-            landCollection.deleteMany(new Document(land.getLocation().serialize()));
+            landCollection.deleteMany(new Document(land.copy().serialize()));
         }
     }
 
     @Override
     public void unclaimLand(Village village) {
         Utils.catchSync();
-        landCollection.deleteMany(new Document("ownerVillage", Pattern.compile(village.getName(), Pattern.CASE_INSENSITIVE)));
+        landCollection.deleteMany(Filters.eq("ownerVillage", Pattern.compile(village.getName(), Pattern.CASE_INSENSITIVE)));
     }
 
     @Override
     public void saveLand(OwnedLand... lands) {
         Utils.catchSync();
         for (OwnedLand land : lands) {
-            Document filter = new Document(land.getLocation().serialize());
+            Document filter = new Document(land.copy().serialize());
             Document first = landCollection.find(filter).first();
             if (first == null || first.isEmpty()) {
                 landCollection.insertOne(createDocument(land));
@@ -176,27 +177,27 @@ public class MongoDatabaseManager extends DatabaseManager {
     @Override
     public Resident getResident(UUID uuid) {
         Utils.catchSync();
-        return createResident(residentCollection.find(new Document("uuid", uuid.toString())).first());
+        return createResident(residentCollection.find(Filters.eq("uuid", uuid.toString())).first());
     }
 
     @Override
     public Resident getResident(String name) {
         Utils.catchSync();
-        return createResident(residentCollection.find(new Document("name", Pattern.compile(name, Pattern.CASE_INSENSITIVE))).first());
+        return createResident(residentCollection.find(Filters.eq("name", Pattern.compile(name, Pattern.CASE_INSENSITIVE))).first());
     }
 
     @Override
     public void saveResident(Resident... residents) {
         Utils.catchSync();
         for (Resident resident : residents) {
-            if (resident.getId() == null || residentCollection.find(new Document("uuid", resident.getUUID().toString())).first() == null) {
+            if (resident.getId() == null || residentCollection.find(Filters.eq("uuid", resident.getUUID().toString())).first() == null) {
                 residentCollection.insertOne(createDocument(resident));
-                Document document = settlementsCollection.find(new Document("uuid", resident.getUUID().toString())).first();
+                Document document = settlementsCollection.find(Filters.eq("uuid", resident.getUUID().toString())).first();
                 if (document.containsKey("_id")) {
                     resident.setId(document.get("_id"));
                 }
             } else {
-                residentCollection.updateOne(new Document("_id", resident.getId()), new Document("$set", createDocument(resident)));
+                residentCollection.updateOne(Filters.eq("_id", resident.getId()), new Document("$set", createDocument(resident)));
             }
         }
     }
@@ -205,12 +206,14 @@ public class MongoDatabaseManager extends DatabaseManager {
     public void saveLocks(Lock... locks) {
         Utils.catchSync();
         for (Lock lock : locks) {
-            Document filter = new Document(lock.getLocation().serialize());
-            Document first = lockCollection.find(filter).first();
-            if (first == null || first.isEmpty()) {
-                lockCollection.insertOne(createDocument(lock));
-            } else {
-                lockCollection.updateOne(filter, new Document("$set", createDocument(lock)));
+            if (lock.isValid()) {
+                Document filter = new Document(lock.getLocation().serialize());
+                Document first = lockCollection.find(filter).first();
+                if (first == null || first.isEmpty()) {
+                    lockCollection.insertOne(createDocument(lock));
+                } else {
+                    lockCollection.updateOne(filter, new Document("$set", createDocument(lock)));
+                }
             }
         }
     }
@@ -224,11 +227,35 @@ public class MongoDatabaseManager extends DatabaseManager {
     }
 
     @Override
+    public void deleteLocks(String worldName) {
+        Utils.catchSync();
+        lockCollection.deleteMany(Filters.eq("world", worldName));
+    }
+
+    @Override
     public Collection<Lock> getAllLocks() {
         Utils.catchSync();
         List<Lock> locks = new ArrayList<>();
         for (Document doc : lockCollection.find()) {
             locks.add(createLock(doc));
+        }
+        return locks;
+    }
+
+    @Override
+    public Collection<Lock> getLocks(SimpleChunkLocation... chunks) {
+        Utils.catchSync();
+        List<Lock> locks = new ArrayList<>();
+        for (SimpleChunkLocation chunk : chunks) {
+            List<Bson> filters = new ArrayList<>();
+            filters.add(Filters.eq("world", chunk.getWorld()));
+            filters.add(Filters.gte("x", chunk.getX() << 4));
+            filters.add(Filters.gte("z", chunk.getZ() << 4));
+            filters.add(Filters.lt("x", chunk.getX() << 4 + 16));
+            filters.add(Filters.lt("z", chunk.getZ() << 4 + 16));
+            for (Document doc : lockCollection.find(Filters.and(filters))) {
+                locks.add(createLock(doc));
+            }
         }
         return locks;
     }

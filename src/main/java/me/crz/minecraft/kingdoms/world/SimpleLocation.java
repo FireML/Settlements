@@ -17,6 +17,7 @@ public class SimpleLocation implements ConfigurationSerializable {
     private double z;
     private float pitch;
     private float yaw;
+    private SimpleChunkLocation chunk;
 
     public SimpleLocation(String world, double x, double y, double z, float yaw, float pitch) {
         this.world = world;
@@ -52,7 +53,10 @@ public class SimpleLocation implements ConfigurationSerializable {
     }
 
     public SimpleChunkLocation toChunkLocation() {
-        return new SimpleChunkLocation(getWorld(), getChunkX(), getChunkZ());
+        if (chunk == null) {
+            chunk = new SimpleChunkLocation(getWorld(), getChunkX(), getChunkZ());
+        }
+        return chunk;
     }
 
     public boolean inSameChunk(SimpleLocation location) {

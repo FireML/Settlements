@@ -7,6 +7,7 @@ import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Targetable;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -47,7 +48,7 @@ public class Lock implements DatabaseSerializable {
     }
 
     public Resident getOwner() {
-        return ResidentManager.getInstance().getResident(getOwnerId());
+        return isValid() ? ResidentManager.getInstance().getResident(getOwnerId()) : null;
     }
 
     public boolean isOwner(Player player) {
@@ -220,5 +221,9 @@ public class Lock implements DatabaseSerializable {
             }
         }
         return lock;
+    }
+
+    public boolean isValid() {
+        return owner != null && !owner.equals(Utils.ZERO_UUID);
     }
 }
