@@ -538,6 +538,8 @@ gui:
     entry: |-
       &b&l{flag}
       &7&lState: &b&l{state}
+      &7Left click: Next state
+      &7Right click: Previous state
   vault:
     title: "&1&l/s vault"
     success-deposit: "&6&l{player} &7&lhas deposited:"

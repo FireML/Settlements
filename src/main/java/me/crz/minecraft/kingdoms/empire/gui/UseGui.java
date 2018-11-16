@@ -48,13 +48,15 @@ public class UseGui extends KingdomsGUI {
                 public boolean click(Player p, ClickType clickType) {
                     Resident res = ResidentManager.getInstance().getResident(p);
                     if (res.hasEmpire() && res.getEmpireRank().atLeast(EmpireRank.LEADER)) {
-                        BuildState next = res.getVillage().getUseState(u).next(BuildState.AppliesTo.EMPIRE);
-                        res.getVillage().getEmpire().setUseState(u, next);
+                        BuildState changeTo = clickType.isLeftClick()
+                                ? res.getVillage().getUseState(u).next(BuildState.AppliesTo.EMPIRE)
+                                : res.getVillage().getUseState(u).previous(BuildState.AppliesTo.EMPIRE);
+                        res.getVillage().getEmpire().setUseState(u, changeTo);
                         MessageUtils.tell(p, Message.get("command.empire.use.success"),
                                 "flag", u.getTag(),
-                                "state", next.getTag()
+                                "state", changeTo.getTag()
                         );
-                        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
+                        Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire()));
                         gui.build(p);
                         return true;
                     }
@@ -88,7 +90,7 @@ public class UseGui extends KingdomsGUI {
                         MessageUtils.tell(p, Message.get("command.empire.use.success-all"),
                                 "state", state.getTag()
                         );
-                        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
+                        Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire()));
                         gui.build(p);
                         return true;
                     }

@@ -22,7 +22,6 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -55,7 +54,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
     private Map<String, Long> vault = new HashMap<>();
     private Map<String, PerkData> perks = new LinkedHashMap<>();
     private SimpleLocation home = null;
-    private BuildState buildState = BuildState.PRIVATE;
+    private BuildState buildState = getDefaultBuildState();
     private LandAccess access = LandAccess.PRIVATE;
     private Map<Use, BuildState> use = new EnumMap<>(Use.class);
 
@@ -223,7 +222,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
     }
 
     public BuildState getUseState(Use u) {
-        return use.getOrDefault(u, u.getDefault(BuildState.PRIVATE));
+        return use.getOrDefault(u, u.getDefault(getDefaultBuildState()));
     }
 
 
@@ -245,12 +244,14 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
     }
 
     public void setUseState(Use u, BuildState state) {
-        if (state == u.getDefault(BuildState.PRIVATE)) {
+        if (state == u.getDefault(getDefaultBuildState())) {
             use.remove(u);
         } else {
             use.put(u, state);
         }
     }
+
+    protected abstract BuildState getDefaultBuildState();
 
     public void runCommands(me.crz.minecraft.kingdoms.perk.Perk perk) {
         Utils.runAsync(() -> {

@@ -52,10 +52,23 @@ public enum BuildState implements NameTag, Rankable<BuildState> {
 
     public BuildState next(AppliesTo to) {
         List<BuildState> values = values(to);
-        if (ordinal() + 1 < values.size()) {
-            return values.get(ordinal() + 1);
+        int ordinal = values.indexOf(this);
+        if (ordinal + 1 < values.size()) {
+            return values.get(ordinal + 1);
         }
         return values.get(0);
+    }
+
+    public BuildState previous(AppliesTo to) {
+        List<BuildState> values = values(to);
+        int ordinal = values.indexOf(this);
+        if (ordinal > 0) {
+            if (ordinal > values.size()) {
+                ordinal = 1;
+            }
+            return values.get(ordinal - 1);
+        }
+        return values.get(values.size() - 1);
     }
 
     public boolean appliesTo(AppliesTo to) {

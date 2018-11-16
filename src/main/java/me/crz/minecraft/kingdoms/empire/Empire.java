@@ -4,6 +4,7 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.land.LandOwner;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.perk.Perk;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
@@ -249,6 +250,11 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                 }
             }
         }
+    }
+
+    @Override
+    protected BuildState getDefaultBuildState() {
+        return BuildState.PRIVATE;
     }
 
     public Set<IdObject> getMemberIds() {

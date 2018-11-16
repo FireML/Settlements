@@ -8,6 +8,7 @@ import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
@@ -334,6 +335,11 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     @Override
     public LevelPerk getPerk(String name) {
         return VillageManager.getInstance().getPerk(name);
+    }
+
+    @Override
+    protected BuildState getDefaultBuildState() {
+        return BuildState.RESIDENTS;
     }
 
     @Override

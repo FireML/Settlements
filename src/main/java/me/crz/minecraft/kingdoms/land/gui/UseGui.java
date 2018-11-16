@@ -7,7 +7,6 @@ import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.landflags.Use;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
@@ -46,11 +45,13 @@ public class UseGui extends PlotGUI {
                     if (land != null) {
                         Resident resident = ResidentManager.getInstance().getResident(p);
                         if (land.isPlotOwner(p) || land.canAdmin(resident)) {
-                            BuildState next = land.getUseState(u).next(BuildState.AppliesTo.LAND);
-                            land.setUseState(u, next);
+                            BuildState changeTo = clickType.isLeftClick()
+                                    ? land.getUseState(u).next(BuildState.AppliesTo.SETTLEMENT)
+                                    : land.getUseState(u).previous(BuildState.AppliesTo.SETTLEMENT);
+                            land.setUseState(u, changeTo);
                             MessageUtils.tell(p, Message.get("command.village.plot.use.success"),
                                     "flag", u.getTag(),
-                                    "state", next.getTag()
+                                    "state", changeTo.getTag()
                             );
                             LandManager.getInstance().syncAndSave(land);
                             gui.build(p);
