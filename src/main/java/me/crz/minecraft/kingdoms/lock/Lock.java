@@ -189,10 +189,8 @@ public class Lock implements DatabaseSerializable {
     }
 
     public static Lock deserialize(Map<String, Object> map) {
-        if (map == null
-                || map.get("x") == null || map.get("y") == null || map.get("z") == null
-                || map.get("yaw") == null || map.get("pitch") == null || map.get("world") == null) {
-            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize SimpleLocation! (" + map + ")");
+        if (map == null || map.get("owner") == null || map.get("block") == null || map.get("allowHoppers") == null || map.get("allowed") == null) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize Lock! (" + map + ")");
             return null;
         }
         Lock lock = new Lock(
@@ -200,6 +198,9 @@ public class Lock implements DatabaseSerializable {
                 SimpleBlockLocation.deserialize(map),
                 Material.valueOf(((String) map.get("block")).toUpperCase())
         );
+        if (lock.getLocation() == null) {
+            return null;
+        }
         lock.setId(IdObject.get(map));
         lock.setAllowHoppers((Boolean) map.get("allowHoppers"));
         for (String s : ((Collection<String>) map.get("allowed"))) {

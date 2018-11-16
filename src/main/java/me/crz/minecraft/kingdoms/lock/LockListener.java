@@ -155,16 +155,17 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
         }
 
         Lock lock = LockManager.getInstance().getLock(event.getClickedBlock());
-        Resident owner = null;
         if (lock != null) {
-            owner = lock.getOwner();
             if (!lock.canAccess(event.getPlayer())) {
                 event.setCancelled(true);
-                getError("locked").tell(event.getPlayer(),
-                        "name", owner != null ? owner.getName() : "-",
-                        "title", owner != null? owner.getTitle() : "",
-                        "block", NameTag.getTag(lock.getBlock())
-                );
+                Utils.runAsync(() -> {
+                    Resident owner = lock.getOwner();
+                    getError("locked").tell(event.getPlayer(),
+                            "name", owner != null ? owner.getName() : "-",
+                            "title", owner != null? owner.getTitle() : "",
+                            "block", NameTag.getTag(lock.getBlock())
+                    );
+                });
             }
         }
         if (event.getHand() == EquipmentSlot.HAND) {
@@ -189,11 +190,14 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                             }
                         }
                     } else if (lock.canAccess(event.getPlayer())) {
-                        getError("locked").tell(event.getPlayer(),
-                                "name", owner != null ? owner.getName() : "-",
-                                "title", owner != null? owner.getTitle() : "",
-                                "block", NameTag.getTag(lock.getBlock())
-                        );
+                        Utils.runAsync(() -> {
+                            Resident owner = lock.getOwner();
+                            getError("locked").tell(event.getPlayer(),
+                                    "name", owner != null ? owner.getName() : "-",
+                                    "title", owner != null? owner.getTitle() : "",
+                                    "block", NameTag.getTag(lock.getBlock())
+                            );
+                        });
                     }
                 } else if (lock == null) {
                     getError("not-locked").tell(event.getPlayer(), "block", NameTag.getTag(event.getClickedBlock().getType()));
@@ -210,7 +214,14 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                         getMessage("hoppers." + (lock.isAllowHoppers() ? "enabled" : ".disabled")).tell(event.getPlayer(), "block", NameTag.getTag(lock.getBlock()));
                         Utils.runAsync(() -> DatabaseManager.getInstance().saveLocks(lock));
                     } else {
-                        getError("locked").tell(event.getPlayer(), "name", owner.getName(), "title", owner.getTitle(), "block", NameTag.getTag(lock.getBlock()));
+                        Utils.runAsync(() -> {
+                            Resident owner = lock.getOwner();
+                            getError("locked").tell(event.getPlayer(),
+                                    "name", owner != null ? owner.getName() : "-",
+                                    "title", owner != null? owner.getTitle() : "",
+                                    "block", NameTag.getTag(lock.getBlock())
+                            );
+                        });
                     }
                 } else if (action.toLowerCase().startsWith("add")) {
                     if (lock.isOwner(event.getPlayer())) {
@@ -224,11 +235,14 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                             }
                         }
                     } else {
-                        getError("locked").tell(event.getPlayer(),
-                                "name", owner != null ? owner.getName() : "-",
-                                "title", owner != null? owner.getTitle() : "",
-                                "block", NameTag.getTag(lock.getBlock())
-                        );
+                        Utils.runAsync(() -> {
+                            Resident owner = lock.getOwner();
+                            getError("locked").tell(event.getPlayer(),
+                                    "name", owner != null ? owner.getName() : "-",
+                                    "title", owner != null? owner.getTitle() : "",
+                                    "block", NameTag.getTag(lock.getBlock())
+                            );
+                        });
                     }
                 } else if (action.toLowerCase().startsWith("remove")) {
                     if (lock.isOwner(event.getPlayer())) {
@@ -242,38 +256,44 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                             }
                         }
                     } else {
-                        getError("locked").tell(event.getPlayer(),
-                                "name", owner != null ? owner.getName() : "-",
-                                "title", owner != null? owner.getTitle() : "",
-                                "block", NameTag.getTag(lock.getBlock())
-                        );
+                        Utils.runAsync(() -> {
+                            Resident owner = lock.getOwner();
+                            getError("locked").tell(event.getPlayer(),
+                                    "name", owner != null ? owner.getName() : "-",
+                                    "title", owner != null? owner.getTitle() : "",
+                                    "block", NameTag.getTag(lock.getBlock())
+                            );
+                        });
                     }
                 } else if (action.equalsIgnoreCase("info")) {
                     if (lock.canAccess(event.getPlayer()) || lock.canAdministrate(event.getPlayer())) {
-                        getMessage("info").tell(event.getPlayer(),
-                                "title", owner != null? owner.getTitle() : "",
-                                "owner", owner != null ? owner.getName() : "-",
-                                "hoppers", MessageUtils.yesOrNo(lock.isAllowHoppers())
-                        );
-                        if (!lock.getAllowedPlayers().isEmpty()) {
-                            event.getPlayer().sendMessage(lock.getAllowedPlayers().stream()
-                                    .map(id -> ResidentManager.getInstance().getResident(id))
-                                    .filter(Objects::nonNull)
-                                    .map(r -> getMessage("entry").getReplacedText("name", r.getName(), "title", r.getTitle()))
-                                    .collect(Collectors.joining(getMessage("separator").getText())));
-                        }
-                        if (!lock.getAllowedVillageIds().isEmpty()) {
-                            event.getPlayer().sendMessage(lock.getAllowedVillageIds().stream()
-                                    .map(i -> VillageManager.getInstance().getVillageFromId(i))
-                                    .map(v -> getMessage("entry").getReplacedText("name", v.getName(), "title", v.getStateTag()))
-                                    .collect(Collectors.joining(getMessage("separator").getText())));
-                        }
-                        if (!lock.getAllowedEmpireIds().isEmpty()) {
-                            event.getPlayer().sendMessage(lock.getAllowedEmpireIds().stream()
-                                    .map(i -> EmpireManager.getInstance().getEmpireFromId(i))
-                                    .map(e -> getMessage("entry").getReplacedText("name", e.getName(), "title", e.getStateTag()))
-                                    .collect(Collectors.joining(getMessage("separator").getText())));
-                        }
+                        Utils.runAsync(() -> {
+                            Resident owner = lock.getOwner();
+                            getMessage("info.general").tell(event.getPlayer(),
+                                    "title", owner != null? owner.getTitle() : "",
+                                    "owner", owner != null ? owner.getName() : "-",
+                                    "hoppers", MessageUtils.yesOrNo(lock.isAllowHoppers())
+                            );
+                            if (!lock.getAllowedPlayers().isEmpty()) {
+                                event.getPlayer().sendMessage(lock.getAllowedPlayers().stream()
+                                        .map(id -> ResidentManager.getInstance().getResident(id))
+                                        .filter(Objects::nonNull)
+                                        .map(r -> getMessage("info.entry").getReplacedText("name", r.getName(), "title", r.getTitle()))
+                                        .collect(Collectors.joining(getMessage("info.separator").getText())));
+                            }
+                            if (!lock.getAllowedVillageIds().isEmpty()) {
+                                event.getPlayer().sendMessage(lock.getAllowedVillageIds().stream()
+                                        .map(i -> VillageManager.getInstance().getVillageFromId(i))
+                                        .map(v -> getMessage("info.entry").getReplacedText("name", v.getName(), "title", v.getStateTag()))
+                                        .collect(Collectors.joining(getMessage("info.separator").getText())));
+                            }
+                            if (!lock.getAllowedEmpireIds().isEmpty()) {
+                                event.getPlayer().sendMessage(lock.getAllowedEmpireIds().stream()
+                                        .map(i -> EmpireManager.getInstance().getEmpireFromId(i))
+                                        .map(e -> getMessage("info.entry").getReplacedText("name", e.getName(), "title", e.getStateTag()))
+                                        .collect(Collectors.joining(getMessage("info.separator").getText())));
+                            }
+                        });
                     }
                 }
             }
