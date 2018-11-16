@@ -35,6 +35,6 @@ public class LockRemoveCommand extends SubCommand implements TargetParser {
                 }
             });
         }
-        return false;
+        return true;
     }
 }
