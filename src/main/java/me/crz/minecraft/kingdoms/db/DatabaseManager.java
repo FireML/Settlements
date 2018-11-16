@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.lock.Lock;
 import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -69,6 +70,16 @@ public abstract class DatabaseManager {
     }
 
     public abstract void saveResident(Resident... residents);
+
+    public abstract void saveLocks(Lock... locks);
+
+    public abstract void deleteLocks(Lock... locks);
+
+    public void deleteLocks(Collection<Lock> locks) {
+        deleteLocks(locks.toArray(new Lock[0]));
+    }
+
+    public abstract Collection<Lock> getAllLocks();
 
     public abstract void log(Empire empire, Village village, Resident resident, String action, Map<String, Long> values);
 

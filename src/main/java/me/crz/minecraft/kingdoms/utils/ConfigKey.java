@@ -10,6 +10,10 @@ public interface ConfigKey {
         return name().toLowerCase().replace('_', '-');
     }
 
+    static String getKey(Enum e) {
+        return e.name().toLowerCase().replace('_', '-');
+    }
+
     static String toEnumString(String key) {
         return key.toUpperCase().replace('-', '_');
     }

@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.land;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.db.DatabaseSerializable;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
@@ -38,7 +39,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public abstract class LandOwner implements ConfigurationSerializable, Vaultable, Targetable {
+public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targetable {
     private IdObject id = IdObject.get(null);
     private String name;
     private String description = "";
@@ -89,6 +90,9 @@ public abstract class LandOwner implements ConfigurationSerializable, Vaultable,
     }
 
     public void setId(IdObject id) {
+        if (id == null) {
+            id = IdObject.get(null);
+        }
         this.id = id;
     }
 
@@ -515,6 +519,11 @@ public abstract class LandOwner implements ConfigurationSerializable, Vaultable,
     }
 
     @Override
+    public String getDbDescription() {
+        return getStateKey() + " " + getName() + "/" + getId();
+    }
+
+    @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("id", getId().value());
@@ -532,7 +541,11 @@ public abstract class LandOwner implements ConfigurationSerializable, Vaultable,
         map.put("buildState", getBuildState().name());
         map.put("access", getAccess().name());
         if (getHome() != null)
-            map.put("homeLoc", getHome().serialize());
+            map.put("homeLoc", getHome());
+        List<String> allies = new ArrayList<>();
+        getAlliedVillageIds().stream().map(id -> "village:" + id).forEach(allies::add);
+        getAlliedEmpireIds().stream().map(id -> "empire:" + id).forEach(allies::add);
+        map.put("allies", allies);
         List<String> banished = new ArrayList<>();
         getBanishedPlayers().stream().map(UUID::toString).forEach(banished::add);
         getBanishedVillageIds().stream().map(id -> "village:" + id).forEach(banished::add);
@@ -576,29 +589,22 @@ public abstract class LandOwner implements ConfigurationSerializable, Vaultable,
                 landOwner.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), u.getDefault(BuildState.PRIVATE)));
             }
         }
-        ((Collection<String>) map.get("banished")).stream().filter(s -> !s.contains(":")).map(UUID::fromString).forEach(landOwner.getBanishedPlayers()::add);
-        ((Collection<String>) map.get("banished")).stream()
-                .filter(s -> s.startsWith("village:"))
-                .map(s -> {
-                    String sub = s.split(":")[1];
-                    try {
-                        return IdObject.get(Integer.parseInt(sub));
-                    } catch (NumberFormatException ignored) {}
-                    return null;
-                })
-                .filter(Objects::nonNull)
-                .forEach(landOwner.getBanishedVillageIds()::add);
-        ((Collection<String>) map.get("banished")).stream()
-                .filter(s -> s.startsWith("empire:"))
-                .map(s -> {
-                    String sub = s.split(":")[1];
-                    try {
-                        return IdObject.get(Integer.parseInt(sub));
-                    } catch (NumberFormatException ignored) {}
-                    return null;
-                })
-                .filter(Objects::nonNull)
-                .forEach(landOwner.getBanishedEmpireIds()::add);
+        for (String s : ((Collection<String>) map.get("banished"))) {
+            String[] split = s.split(":", 2);
+            try {
+                if (split.length == 1) {
+                    landOwner.getBanishedPlayers().add(UUID.fromString(split[0]));
+                } else {
+                    IdObject id = IdObject.get(Integer.parseInt(split[1]));
+                    switch (split[0]) {
+                        case "village": landOwner.getBanishedVillageIds().add(id);
+                        case "empire": landOwner.getBanishedEmpireIds().add(id);
+                    }
+                }
+            } catch (IllegalArgumentException e) {
+                KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Banish entry " + s + " could not be parsed for " + landOwner.getStateKey() + " " + landOwner.getName() + "/" + landOwner.getId() + "! " + e.getMessage());
+            }
+        }
         ((Map<String, Object>) map.get("vault")).entrySet().stream()
                 .filter(e -> !(e.getValue() instanceof Integer))
                 .forEach(e -> landOwner.getVault().put(e.getKey(), (Long) e.getValue()));

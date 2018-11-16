@@ -469,4 +469,9 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         }
         return String.join("\n", lines);
     }
+
+    @Override
+    public String getDbName() {
+        return "settlement";
+    }
 }

@@ -2,6 +2,8 @@ package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.command.ChatCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.command.lock.LockCommand;
+import me.crz.minecraft.kingdoms.command.lock.UnlockCommand;
 import me.crz.minecraft.kingdoms.command.plot.PlotCommand;
 import me.crz.minecraft.kingdoms.db.LogType;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
@@ -34,6 +36,8 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpireRenameCommand(this));
         registerCommand(new EmpirePerksCommand(this));
         registerCommand(new PlotCommand());
+        registerCommand(new LockCommand());
+        registerCommand(new UnlockCommand());
         registerCommand(new EmpireSetAccessCommand(this));
         registerCommand(new EmpireSetHomeCommand(this));
         registerCommand(new EmpireSetJoinFeeCommand(this));

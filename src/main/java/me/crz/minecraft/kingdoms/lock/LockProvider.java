@@ -1,4 +1,4 @@
-package me.crz.minecraft.kingdoms.integration;
+package me.crz.minecraft.kingdoms.lock;
 
 import me.crz.minecraft.kingdoms.landflags.LandFlagBase;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
@@ -6,7 +6,7 @@ import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 
 import java.util.Collection;
 
-public interface PluginIntegration extends ConfigMessages, LandFlagBase {
+public interface LockProvider extends ConfigMessages, LandFlagBase {
     int removeInChunk(Collection<SimpleChunkLocation> chunks);
 
     @Override

@@ -8,13 +8,14 @@ import com.griefcraft.scripting.event.LWCProtectionRegisterEvent;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.landflags.LandFlagBase;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Pair;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -25,13 +26,14 @@ import org.bukkit.block.Block;
 
 import java.util.Collection;
 
-public class LWCIntegration extends JavaModule implements PluginIntegration, ConfigMessages {
+public class LWCIntegration extends JavaModule implements LockProvider, ConfigMessages {
     private final LWC lwc;
     private final KingdomsPlugin plugin = KingdomsPlugin.getInstance();
 
     public LWCIntegration(LWC lwc) {
         this.lwc = lwc;
         lwc.getModuleLoader().registerModule(plugin, this);
+        plugin.getLockProviders().add(this);
     }
 
     @Override
@@ -149,17 +151,18 @@ public class LWCIntegration extends JavaModule implements PluginIntegration, Con
 
     @Override
     public int removeInChunk(Collection<SimpleChunkLocation> chunks) {
-        int amount = 0;
-        for (SimpleChunkLocation claim : chunks) {
-            amount += lwc.fastRemoveProtections(Bukkit.getConsoleSender(),
-                    "world = '" + claim.getWorld() + "'"
-                            + " AND x >= " + claim.getX() * 16
-                            + " AND z >= " + claim.getZ() * 16
-                            + " AND x < " + claim.getX() * 16 + 16
-                            + " AND z < " + claim.getZ() * 16 + 16
-                    , KingdomsPlugin.getInstance().getConfig().getBoolean("remove-locked-blocks"));
-        }
-        return amount;
+        Utils.runAsync(() -> {
+            for (SimpleChunkLocation claim : chunks) {
+                lwc.fastRemoveProtections(Bukkit.getConsoleSender(),
+                        "world = '" + claim.getWorld() + "'"
+                                + " AND x >= " + claim.getX() * 16
+                                + " AND z >= " + claim.getZ() * 16
+                                + " AND x < " + claim.getX() * 16 + 16
+                                + " AND z < " + claim.getZ() * 16 + 16
+                        , KingdomsPlugin.getInstance().getConfig().getBoolean("remove-locked-blocks"));
+            }
+        });
+        return -1;
     }
 
     @Override

@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public interface BanishCommand extends ConfigMessages, TargetedCommand {
+public interface BanishCommand extends ConfigMessages, TargetParser {
 
     default boolean listBanished(Resident resident, LandOwner landOwner) {
         Utils.runAsync(() -> {

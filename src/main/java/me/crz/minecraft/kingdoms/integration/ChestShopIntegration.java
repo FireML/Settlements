@@ -8,6 +8,7 @@ import com.Acrobot.ChestShop.Utils.uBlock;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -24,11 +25,12 @@ import org.bukkit.event.Listener;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class ChestShopIntegration implements PluginIntegration, Listener {
+public class ChestShopIntegration implements LockProvider, Listener {
     private final ChestShop chestShop;
 
     public ChestShopIntegration() {
         chestShop = (ChestShop) Bukkit.getPluginManager().getPlugin("ChestShop");
+        KingdomsPlugin.getInstance().getLockProviders().add(this);
         Bukkit.getPluginManager().registerEvents(this, KingdomsPlugin.getInstance());
     }
 

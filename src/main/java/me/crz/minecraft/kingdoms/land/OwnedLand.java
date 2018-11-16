@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.db.DatabaseSerializable;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -33,8 +34,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import me.crz.minecraft.kingdoms.landflags.Use;
 
-public class OwnedLand implements ConfigurationSerializable {
-    private IdObject id;
+public class OwnedLand implements DatabaseSerializable {
+    private IdObject id = IdObject.get(null);
     private LandOwner landOwner;
     private UUID plotOwner = null;
     private SimpleChunkLocation location;
@@ -300,7 +301,20 @@ public class OwnedLand implements ConfigurationSerializable {
     }
 
     public void setId(IdObject id) {
+        if (id == null) {
+            id = IdObject.get(null);
+        }
         this.id = id;
+    }
+
+    @Override
+    public String getDbName() {
+        return "claim";
+    }
+
+    @Override
+    public String getDbDescription() {
+        return getLocation().getKey();
     }
 
     public IdObject getId() {

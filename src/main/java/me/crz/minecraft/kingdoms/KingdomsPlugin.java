@@ -7,8 +7,10 @@ import me.crz.minecraft.kingdoms.empire.EmpireListener;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.integration.ChestShopIntegration;
 import me.crz.minecraft.kingdoms.integration.LWCIntegration;
-import me.crz.minecraft.kingdoms.integration.PluginIntegration;
+import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.land.LandManager;
+import me.crz.minecraft.kingdoms.lock.LockListener;
+import me.crz.minecraft.kingdoms.lock.LockManager;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.event.Listener;
@@ -46,7 +48,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     private LandPerks lPerks;
     public Economy econ = null;
 
-    private Set<PluginIntegration> integrations = new LinkedHashSet<>();
+    private Set<LockProvider> lockProviders = new LinkedHashSet<>();
 
     public boolean emgcy = false;
     public static Chat chat;
@@ -83,12 +85,10 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         data = new Data();
         if (getServer().getPluginManager().isPluginEnabled("LWC")) {
             LWCIntegration lwcIntegration = new LWCIntegration(LWC.getInstance());
-            integrations.add(lwcIntegration);
             getLogger().log(Level.INFO, "Hooked into LWC " + lwcIntegration.getLWC().getPlugin().getDescription().getVersion() + "!");
         }
         if (getServer().getPluginManager().isPluginEnabled("ChestShop")) {
             ChestShopIntegration csIntegration = new ChestShopIntegration();
-            integrations.add(csIntegration);
             getLogger().log(Level.INFO, "Hooked into ChestShop " + csIntegration.getChestShop().getDescription().getVersion() + "!");
         }
         if (data.load(this.getDataFolder())) {
@@ -109,6 +109,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             this.getServer().getPluginManager().registerEvents(new VillageListener(), this);
             this.getServer().getPluginManager().registerEvents(new EmpireListener(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlags(), this);
+            this.getServer().getPluginManager().registerEvents(new LockListener(), this);
             this.getServer().getPluginManager().registerEvents(new Advancements(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlagsBlockEvents(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlagsUseEvents(), this);
@@ -156,6 +157,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         VillageManager.getInstance();
         LandManager.getInstance();
         ResidentManager.getInstance();
+        LockManager.getInstance();
         ScoreboardManager.getInstance();
         CommandManager.getInstance();
         UtilChat.getInstance();
@@ -214,7 +216,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         return empiresWorldSuffix;
     }
 
-    public Set<PluginIntegration> getIntegrations() {
-        return integrations;
+    public Set<LockProvider> getLockProviders() {
+        return lockProviders;
     }
 }

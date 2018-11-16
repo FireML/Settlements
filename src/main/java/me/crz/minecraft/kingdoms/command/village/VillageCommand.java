@@ -2,6 +2,8 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.ChatCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.command.lock.LockCommand;
+import me.crz.minecraft.kingdoms.command.lock.UnlockCommand;
 import me.crz.minecraft.kingdoms.command.plot.PlotCommand;
 import me.crz.minecraft.kingdoms.command.village.money.VillageMoneyCommand;
 import me.crz.minecraft.kingdoms.db.LogType;
@@ -42,6 +44,8 @@ public class VillageCommand extends SubCommand {
         registerCommand(new VillageOutPostCommand(this));
         registerCommand(new VillagePerksCommand(this));
         registerCommand(new PlotCommand());
+        registerCommand(new LockCommand());
+        registerCommand(new UnlockCommand());
         registerCommand(new VillageRenameCommand(this));
         registerCommand(new VillageResListCommand(this));
         registerCommand(new VillageRulesCommand(this));

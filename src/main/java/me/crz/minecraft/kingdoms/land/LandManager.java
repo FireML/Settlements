@@ -22,7 +22,6 @@ import com.google.common.collect.MultimapBuilder;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
-import me.crz.minecraft.kingdoms.integration.PluginIntegration;
 import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -53,9 +52,6 @@ public class LandManager {
         }
     }
 
-    /**
-     * Use {@link DatabaseManager#saveLand(OwnedLand...)}
-     */
     public void saveLand(OwnedLand... lands) {
         for (OwnedLand land : lands) {
             cacheLand(land);
@@ -163,19 +159,19 @@ public class LandManager {
     }
 
     public void unclaimLand(Village village) {
-        List<SimpleChunkLocation> claims = new ArrayList<>(villageLands.get(village.getId()));
-        for (SimpleChunkLocation claim : claims) {
-            removeLink(getLand(claim));
-            landTable.remove(claim.getWorld(), claim.getSimpleKey());
-            KingdomsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + claim.getKey() + " owned by " + village.getName() + " was unclaimed");
-        }
-        villageLands.removeAll(village.getId());
-        Utils.runAsync(() -> {
+        Utils.runSync(() -> {
+            List<SimpleChunkLocation> claims = new ArrayList<>(villageLands.get(village.getId()));
+            for (SimpleChunkLocation claim : claims) {
+                removeLink(getLand(claim));
+                landTable.remove(claim.getWorld(), claim.getSimpleKey());
+                KingdomsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + claim.getKey() + " owned by " + village.getName() + " was unclaimed");
+            }
+            villageLands.removeAll(village.getId());
             if (KingdomsPlugin.getInstance().getConfig().getBoolean("remove-locks-on-unclaim")) {
                 removeLocks(claims);
             }
-            DatabaseManager.getInstance().unclaimLand(village);
         });
+        Utils.runAsync(() -> DatabaseManager.getInstance().unclaimLand(village));
     }
 
     public boolean removeLink(OwnedLand land) {
@@ -208,7 +204,7 @@ public class LandManager {
     }
 
     private void removeLocks(Collection<SimpleChunkLocation> claims) {
-        KingdomsPlugin.getInstance().getIntegrations().forEach(i -> i.removeInChunk(claims));
+        KingdomsPlugin.getInstance().getLockProviders().forEach(i -> i.removeInChunk(claims));
     }
 
     public static LandManager getInstance() {

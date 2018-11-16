@@ -12,6 +12,7 @@ import com.mongodb.client.model.Sorts;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.lock.Lock;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -40,6 +41,7 @@ public class MongoDatabaseManager extends DatabaseManager {
     private MongoCollection<Document> settlementsCollection;
     private MongoCollection<Document> residentCollection;
     private MongoCollection<Document> landCollection;
+    private MongoCollection<Document> lockCollection;
     private MongoCollection<Document> logsCollection;
     private MongoCollection<Document> otherData;
 
@@ -60,6 +62,7 @@ public class MongoDatabaseManager extends DatabaseManager {
         settlementsCollection = database.getCollection(tablePrefix + "settlements");
         residentCollection = database.getCollection(tablePrefix + "residents");
         landCollection = database.getCollection(tablePrefix + "lands");
+        lockCollection = database.getCollection(tablePrefix + "locks");
         logsCollection = database.getCollection(tablePrefix + "logs");
         otherData = database.getCollection(tablePrefix + "otherData");
     }
@@ -110,11 +113,7 @@ public class MongoDatabaseManager extends DatabaseManager {
     @Override
     public void unclaimLand(OwnedLand... lands) {
         for (OwnedLand land : lands) {
-            Document filter = new Document();
-            filter.put("x", land.getX());
-            filter.put("z", land.getZ());
-            filter.put("worldName", land.getWorldName());
-            landCollection.deleteMany(filter);
+            landCollection.deleteMany(new Document(land.getLocation().serialize()));
         }
     }
 
@@ -128,10 +127,7 @@ public class MongoDatabaseManager extends DatabaseManager {
     public void saveLand(OwnedLand... lands) {
         Utils.catchSync();
         for (OwnedLand land : lands) {
-            Document filter = new Document();
-            filter.put("x", land.getX());
-            filter.put("z", land.getZ());
-            filter.put("worldName", land.getWorldName());
+            Document filter = new Document(land.getLocation().serialize());
             Document first = landCollection.find(filter).first();
             if (first == null || first.isEmpty()) {
                 landCollection.insertOne(createDocument(land));
@@ -203,6 +199,38 @@ public class MongoDatabaseManager extends DatabaseManager {
                 residentCollection.updateOne(new Document("_id", resident.getId()), new Document("$set", createDocument(resident)));
             }
         }
+    }
+
+    @Override
+    public void saveLocks(Lock... locks) {
+        Utils.catchSync();
+        for (Lock lock : locks) {
+            Document filter = new Document(lock.getLocation().serialize());
+            Document first = lockCollection.find(filter).first();
+            if (first == null || first.isEmpty()) {
+                lockCollection.insertOne(createDocument(lock));
+            } else {
+                lockCollection.updateOne(filter, new Document("$set", createDocument(lock)));
+            }
+        }
+    }
+
+    @Override
+    public void deleteLocks(Lock... locks) {
+        Utils.catchSync();
+        for (Lock lock : locks) {
+            lockCollection.deleteMany(new Document(lock.getLocation().serialize()));
+        }
+    }
+
+    @Override
+    public Collection<Lock> getAllLocks() {
+        Utils.catchSync();
+        List<Lock> locks = new ArrayList<>();
+        for (Document doc : lockCollection.find()) {
+            locks.add(createLock(doc));
+        }
+        return locks;
     }
 
     @Override
@@ -355,5 +383,16 @@ public class MongoDatabaseManager extends DatabaseManager {
             return null;
         }
         return OwnedLand.deserialize(document.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+    }
+
+    private Document createDocument(Lock lock) {
+        return new Document(lock.serialize());
+    }
+
+    private Lock createLock(Document document) {
+        if (document == null || document.isEmpty()) {
+            return null;
+        }
+        return Lock.deserialize(document.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
     }
 }

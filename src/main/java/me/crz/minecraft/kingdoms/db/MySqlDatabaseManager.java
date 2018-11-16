@@ -6,6 +6,7 @@ import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.lock.Lock;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -35,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -298,6 +298,25 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     + "UNIQUE (claimId, type)"
                     + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
 
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "locks ("
+                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+                    + "world VARCHAR(255),INDEX(world),"
+                    + "x INTEGER,INDEX(x),"
+                    + "y INTEGER,INDEX(y),"
+                    + "z INTEGER,INDEX(z),"
+                    + "UNIQUE(world, y, x, z),"
+                    + "ownerId INTEGER,"
+                    + "FOREIGN KEY (ownerId) REFERENCES " + tablePrefix + "residents(id) ON DELETE SET NULL,"
+                    + "allowHoppers BOOLEAN NOT NULL"
+                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
+
+            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "lock_allowed ("
+                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+                    + "lockId INTEGER, INDEX (lockId),"
+                    + "FOREIGN KEY (lockId) REFERENCES " + tablePrefix + "locks(id) ON DELETE CASCADE,"
+                    + "allowed VARCHAR(320)"
+                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
+
             sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "logs ("
                     + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                     + "empireId INTEGER, INDEX(empireId),"
@@ -318,35 +337,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
     @Override
     public void saveEmpire(Empire empire) {
         Utils.catchSync();
-        Map<String, Object> values = getValues(empire.serialize(), "banished", "senators", "vault", "perks");
-        String sql = "INSERT INTO " + tablePrefix + "empires "
-                + "(`" + String.join("`,`", values.keySet()) + "`)"
-                + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")"
-                + " ON DUPLICATE KEY UPDATE " + values.keySet().stream().map(c -> "`" + c + "`=VALUES(`" + c + "`)").collect(Collectors.joining(",")) + ";";
-        try (Connection conn = ds.getConnection();
-             PreparedStatement sta = conn.prepareStatement(sql, empire.getId().isNull() ? PreparedStatement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS)) {
-            int i = 0;
-            for (Object value : values.values()) {
-                i++;
-                sta.setObject(i, value);
-            }
-            sta.executeUpdate();
-            if (empire.getId().isNull()) {
-                ResultSet rs = sta.getGeneratedKeys();
-                if (rs.next()) {
-                    empire.setId(IdObject.get(rs));
-                }
-            }
+        try (Connection conn = ds.getConnection()) {
+            save(conn, empire);
             if (!empire.getId().isNull()) {
-                List<String> banished = new ArrayList<>();
-                empire.getBanishedPlayers().stream().map(UUID::toString).forEach(banished::add);
-                empire.getBanishedVillageIds().stream().map(id -> "village:" + id).forEach(banished::add);
-                empire.getBanishedEmpireIds().stream().map(id -> "empire:" + id).forEach(banished::add);
-                updateList(conn, "empire_banished", "empireId", (Integer) empire.getId().value(), "banished", banished);
-                List<String> allies = new ArrayList<>();
-                empire.getAlliedVillageIds().stream().map(id -> "village:" + id).forEach(allies::add);
-                empire.getAlliedEmpireIds().stream().map(id -> "empire:" + id).forEach(allies::add);
-                updateList(conn, "empire_allies", "empireId", (Integer) empire.getId().value(), "ally", allies);
                 updateDataMap(conn, "empire_vaults", "empireId", (Integer) empire.getId().value(), "content", "amount", empire.getVault());
                 updateDataMap(conn, "empire_uses", "empireId", (Integer) empire.getId().value(), "type", "state",
                         empire.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
@@ -383,35 +376,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
     @Override
     public void saveVillage(Village village) {
         Utils.catchSync();
-        Map<String, Object> values = getValues(village.serialize(), "outposts", "banished", "uses", "vault", "perks");
-        String sql = "INSERT INTO " + tablePrefix + "settlements "
-                + "(`" + String.join("`,`", values.keySet()) + "`)"
-                + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")"
-                + " ON DUPLICATE KEY UPDATE " + values.keySet().stream().map(c -> "`" + c + "`=VALUES(`" + c + "`)").collect(Collectors.joining(",")) + ";";
-        try (Connection conn = ds.getConnection();
-             PreparedStatement sta = conn.prepareStatement(sql, village.getId().isNull() ? PreparedStatement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS)) {
-            int i = 0;
-            for (Object value : values.values()) {
-                i++;
-                sta.setObject(i, value);
-            }
-            sta.executeUpdate();
-            if (village.getId().isNull()) {
-                ResultSet rs = sta.getGeneratedKeys();
-                if (rs.next()) {
-                    village.setId(IdObject.get(rs));
-                }
-            }
+        try (Connection conn = ds.getConnection()) {
+            save(conn, village);
             if (!village.getId().isNull()) {
-                List<String> banished = new ArrayList<>();
-                village.getBanishedPlayers().stream().map(UUID::toString).forEach(banished::add);
-                village.getBanishedVillageIds().stream().map(id -> "village:" + id).forEach(banished::add);
-                village.getBanishedEmpireIds().stream().map(id -> "empire:" + id).forEach(banished::add);
-                updateList(conn, "settlement_banished", "settlementId", (Integer) village.getId().value(), "banished", banished);
-                List<String> allies = new ArrayList<>();
-                village.getAlliedVillageIds().stream().map(id -> "village:" + id).forEach(allies::add);
-                village.getAlliedEmpireIds().stream().map(id -> "empire:" + id).forEach(allies::add);
-                updateList(conn, "settlement_allies", "settlementId", (Integer) village.getId().value(), "ally", allies);
                 updateDataMap(conn, "settlement_vaults", "settlementId", (Integer) village.getId().value(), "content", "amount", village.getVault());
                 updateDataMap(conn, "settlement_outposts", "settlementId", (Integer) village.getId().value(), "name", "", village.getOutpostHomes());
                 updateDataMap(conn, "settlement_uses", "settlementId", (Integer) village.getId().value(), "type", "state",
@@ -461,13 +428,20 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return;
         }
         try (Connection conn = ds.getConnection();
-            PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE world = ? AND x = ? AND z = ?;")) {
+             PreparedStatement idSta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE id = ?;");
+             PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE world = ? AND x = ? AND z = ?;")) {
             for (OwnedLand land : lands) {
-                sta.setString(1, land.getWorldName());
-                sta.setInt(2, land.getX());
-                sta.setInt(3, land.getZ());
-                sta.addBatch();
+                if (land.getId().isNull()) {
+                    sta.setString(1, land.getWorldName());
+                    sta.setInt(2, land.getX());
+                    sta.setInt(3, land.getZ());
+                    sta.addBatch();
+                } else {
+                    idSta.setObject(1, land.getId().value());
+                    idSta.addBatch();
+                }
             }
+            idSta.executeBatch();
             sta.executeBatch();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + lands.length + " claims from database!", e);
@@ -498,26 +472,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return;
         }
         for (OwnedLand land : lands) {
-            Map<String, Object> values = getValues(land.serialize(), "landOwner", "uses");
-            String sql = "INSERT INTO " + tablePrefix + "claims "
-                    + "(`" + String.join("`,`", values.keySet()) + "`)"
-                    + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")"
-                    + " ON DUPLICATE KEY UPDATE " + values.keySet().stream().map(c -> "`" + c + "`=VALUES(`" + c + "`)").collect(Collectors.joining(",")) + ";";
-            try (Connection conn = ds.getConnection();
-                 PreparedStatement sta = conn.prepareStatement(sql, land.getId() == null ? PreparedStatement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS)) {
-                int i = 0;
-                for (Object value : values.values()) {
-                    i++;
-                    sta.setObject(i, value);
-                }
-                sta.executeUpdate();
-                if (land.getId() == null) {
-                    ResultSet rs = sta.getGeneratedKeys();
-                    if (rs.next()) {
-                        land.setId(IdObject.get(rs.getInt(1)));
-                    }
-                }
-                if (land.getId() != null) {
+            try (Connection conn = ds.getConnection()) {
+                save(conn, land, "landOwner", "uses");
+                if (!land.getId().isNull()) {
                     updateDataMap(conn, "claim_uses", "claimId", (Integer) land.getId().value(), "type", "state",
                             land.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
                 }
@@ -629,7 +586,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return;
         }
         for (Resident resident : residents) {
-            Map<String, Object> values = getValues(resident.serialize(), "channels", "ignores", "friends");
+            Map<String, Object> values = getValues(resident.serialize());
             String sql = "INSERT INTO " + tablePrefix + "residents "
                     + "(`" + String.join("`,`", values.keySet()) + "`)"
                     + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")"
@@ -657,6 +614,65 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 plugin.getLogger().log(Level.SEVERE, "Error while saving player " + resident.getName() + "/" + resident.getUUID() + " to database!", e);
             }
         }
+    }
+
+    @Override
+    public void saveLocks(Lock... locks) {
+        Utils.catchSync();
+        if (locks.length == 0) {
+            return;
+        }
+        for (Lock lock : locks) {
+            save(lock);
+        }
+    }
+
+    @Override
+    public void deleteLocks(Lock... locks) {
+        Utils.catchSync();
+        if (locks.length == 0) {
+            return;
+        }
+        try (Connection conn = ds.getConnection();
+             PreparedStatement idSta = conn.prepareStatement("DELETE FROM " + tablePrefix + "locks WHERE id = ?;");
+             PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "locks WHERE world = ? AND x = ? AND y = ? AND z = ?;")) {
+            for (Lock lock : locks) {
+                if (lock.getId().isNull()) {
+                    sta.setString(1, lock.getLocation().getWorld());
+                    sta.setInt(2, lock.getLocation().getX());
+                    sta.setInt(3, lock.getLocation().getY());
+                    sta.setInt(4, lock.getLocation().getZ());
+                    sta.addBatch();
+                } else {
+                    idSta.setObject(1, lock.getId().value());
+                    idSta.addBatch();
+                }
+            }
+            idSta.executeBatch();
+            sta.executeBatch();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + locks.length + " locks from database!", e);
+        }
+    }
+
+    @Override
+    public Collection<Lock> getAllLocks() {
+        Utils.catchSync();
+        String sql = "SELECT l.*, r.uuid AS `owner` FROM " + tablePrefix + "locks AS l LEFT JOIN " + tablePrefix + "residents AS r ON l.ownerId = r.id;";
+        try (Connection conn = ds.getConnection();
+             ResultSet rs = conn.createStatement().executeQuery(sql)) {
+            List<Lock> locks = new ArrayList<>();
+            while (rs.next()) {
+                Lock lock = createLock(conn, rs);
+                if (lock != null) {
+                    locks.add(lock);
+                }
+            }
+            return locks;
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to get all locks from database!", e);
+        }
+        return Collections.EMPTY_LIST;
     }
 
     @Override
@@ -942,7 +958,53 @@ public class MySqlDatabaseManager extends DatabaseManager {
         return OwnedLand.deserialize(map);
     }
 
+    private Lock createLock(Connection conn, ResultSet rs) throws SQLException {
+        Map<String, Object> map = toMap(rs);
+        map.put("allowed", selectList(conn, "lock_allowed", "lockId", rs.getInt("id"), "allowed"));
+        return Lock.deserialize(map);
+    }
+
     // ------ Database operation helpers ----- //
+
+    private IdObject save(DatabaseSerializable serializable, String... ignored) {
+        try (Connection conn = ds.getConnection()) {
+            save(conn, serializable, ignored);
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while saving " + serializable.getDbName() + " " + serializable.getDbDescription() + " to database!", e);
+        }
+        return serializable.getId();
+    }
+
+    private IdObject save(Connection conn, DatabaseSerializable serializable, String... ignored) throws SQLException {
+        Map<String, Object> serialized = serializable.serialize();
+        Map<String, Object> values = getValues(serialized, ignored);
+        String sql = "INSERT INTO " + tablePrefix + serializable.getDbName() + "s "
+                + "(`" + String.join("`,`", values.keySet()) + "`)"
+                + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")"
+                + " ON DUPLICATE KEY UPDATE " + values.keySet().stream().map(c -> "`" + c + "`=VALUES(`" + c + "`)").collect(Collectors.joining(",")) + ";";
+        PreparedStatement sta = conn.prepareStatement(sql, serializable.getId().isNull() ? PreparedStatement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS);
+        int i = 0;
+        for (Object value : values.values()) {
+            i++;
+            sta.setObject(i, value);
+        }
+        sta.executeUpdate();
+        if (serializable.getId().isNull() ) {
+            ResultSet rs = sta.getGeneratedKeys();
+            if (rs.next()) {
+                serializable.setId(IdObject.get(rs.getInt(1)));
+            }
+        }
+        if (!serializable.getId().isNull()) {
+            for (Map.Entry<String, Object> e : serialized.entrySet()) {
+                if (e.getValue() instanceof Collection) {
+                    updateList(conn, serializable.getDbName() + "_" + e.getKey(), serializable.getDbName() + "Id", (Integer) serializable.getId().value(), e.getKey(), (Collection<?>) e.getValue());
+                }
+            }
+        }
+
+        return serializable.getId();
+    }
 
     private void updateDataMap(Connection conn, String tableName, String keyColumn, int keyId, String mapKey, String mapValue, Map<String, ?> values) throws SQLException {
         String deleteSql;
@@ -969,14 +1031,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
             Object value = values.values().iterator().next();
             Set<String> columns = new LinkedHashSet<>();
             if (value instanceof ConfigurationSerializable) {
-                for (String column : getValues(((ConfigurationSerializable) value).serialize(), mapKey).keySet()) {
-                    if (mapValue.isEmpty()) {
-                        columns.add(column);
-                    } else {
-                        columns.add(mapValue + "_" + column);
-                    }
-                }
-            } else if (value instanceof Map) {
+                value = ((ConfigurationSerializable) value).serialize();
+            }
+            if (value instanceof Map) {
                 if (((Map) value).keySet().iterator().next() instanceof String) {
                     for (String column : getValues((Map<String, ?>) value, mapKey).keySet()) {
                         if (mapValue.isEmpty()) {
@@ -1116,15 +1173,17 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
     // ------ Utility methods ----- //
 
-    private <K> Map<K, Object> getValues(Map<K, ?> serialized, K... ignoredKeys) {
-        Set<K> ignored = new HashSet<>(Arrays.asList(ignoredKeys));
-        Map<K, Object> values = new LinkedHashMap<>();
-        for (Map.Entry<K, ?> entry : serialized.entrySet()) {
-            if (!ignored.contains(entry.getKey()) && !(entry.getValue() instanceof Collection)) {
-                if (entry.getValue() instanceof Map) {
-                    for (Map.Entry<K, Object> serEntry : getValues((Map<K, Object>) entry.getValue(), ignoredKeys).entrySet()) {
-                        if (entry.getKey() instanceof String && !((String) entry.getKey()).isEmpty()) {
-                            values.put((K) (entry.getKey() + "_" + serEntry.getKey()), serEntry.getValue());
+    private Map<String, Object> getValues(Map<String, ?> serialized, String... ignoredKeys) {
+        Set<String> ignored = new HashSet<>(Arrays.asList(ignoredKeys));
+        Map<String, Object> values = new LinkedHashMap<>();
+        for (Map.Entry<String, ?> entry : serialized.entrySet()) {
+            if (!ignored.contains(entry.getKey())) {
+                if (entry.getValue() instanceof Collection || entry.getValue() instanceof Map) {
+                    // ignored
+                } else if (entry.getValue() instanceof ConfigurationSerializable) {
+                    for (Map.Entry<String, Object> serEntry : getValues(((ConfigurationSerializable) entry.getValue()).serialize(), ignoredKeys).entrySet()) {
+                        if (!entry.getKey().isEmpty()) {
+                            values.put(entry.getKey() + "_" + serEntry.getKey(), serEntry.getValue());
                         } else {
                             values.put(serEntry.getKey(), serEntry.getValue());
                         }
@@ -1135,8 +1194,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
                         Resident resident = ResidentManager.getInstance().getResident((UUID) entry.getValue());
                         id = resident != null ? resident.getId() : null;
                     }
-                    if (entry.getKey() instanceof String && !((String) entry.getKey()).endsWith("Id")) {
-                        values.put((K) (entry.getKey() + "Id"), id);
+                    if (!entry.getKey().endsWith("Id")) {
+                        values.put(entry.getKey() + "Id", id);
                     } else {
                         values.put(entry.getKey(), id);
                     }

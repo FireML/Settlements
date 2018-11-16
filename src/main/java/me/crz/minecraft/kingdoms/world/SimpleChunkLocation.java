@@ -1,11 +1,17 @@
 package me.crz.minecraft.kingdoms.world;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
-public class SimpleChunkLocation {
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.logging.Level;
+
+public class SimpleChunkLocation implements ConfigurationSerializable {
     private String world;
     private int x;
     private int z;
@@ -22,10 +28,6 @@ public class SimpleChunkLocation {
 
     public SimpleChunkLocation(Location location) {
         this(location.getWorld().getName(), (int) location.getX() >> 4, (int) location.getZ() >> 4);
-    }
-
-    public SimpleChunkLocation(SimpleLocation location) {
-        this(location.getWorld(), location.getChunkX(), location.getChunkZ());
     }
 
     public SimpleChunkLocation copy() {
@@ -94,6 +96,27 @@ public class SimpleChunkLocation {
         hash = hash * 31 + x;
         hash = hash * 31 + z;
         return hash;
+    }
+
+    @Override
+    public Map<String, Object> serialize() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("x", getX());
+        map.put("z", getZ());
+        map.put("world", getWorld());
+        return map;
+    }
+
+    public static SimpleChunkLocation deserialize(Map<String, Object> map) {
+        if (map == null || map.get("x") == null || map.get("z") == null || map.get("world") == null) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize SimpleBlockLocation! (" + map + ")");
+            return null;
+        }
+        return new SimpleChunkLocation(
+                (String) map.get("world"),
+                (int) map.get("x"),
+                (int) map.get("z")
+        );
     }
 
     public String getKey() {

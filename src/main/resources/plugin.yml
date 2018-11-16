@@ -10,6 +10,12 @@ commands:
   plot:
     description: Plot Commands.
     aliases: [p, land]
+  lock:
+    description: Lock Commands.
+    aliases: [protection,secure]
+  unlock:
+    description: Unlock a container.
+    aliases: [unprotection,unsecure]
   village:
     description: Village Commands.
     aliases: [s, settlement, kingdom, k]
@@ -85,6 +91,9 @@ permissions:
   kingdoms.bypass.chatlock:
     description: Permission to bypass the chat being locked
     default: op
+  kingdoms.bypass.lock:
+    description: Permission to bypass locks
+    default: op
   kingdoms.bypass.restriction.chestshop:
     description: Permission to bypass shop build restrictions.
     default: op
@@ -99,6 +108,7 @@ permissions:
       kingdoms.bypass.restriction.chestshop: true
       kingdoms.bypass.restriction.lwc: true
       kingdoms.bypass.banish: true
+      kingdoms.bypass.locks: true
       kingdoms.bypass.ignore: true
       kingdoms.bypass.chatlock: true
       kingdoms.channel.staff: true

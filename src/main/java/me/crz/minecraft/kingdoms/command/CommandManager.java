@@ -9,6 +9,8 @@ import me.crz.minecraft.kingdoms.chat.commands.ReplyCommand;
 import me.crz.minecraft.kingdoms.command.admin.VillageAdminCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireCommand;
 import me.crz.minecraft.kingdoms.command.friend.FriendCommand;
+import me.crz.minecraft.kingdoms.command.lock.LockCommand;
+import me.crz.minecraft.kingdoms.command.lock.UnlockCommand;
 import me.crz.minecraft.kingdoms.command.plot.PlotCommand;
 import me.crz.minecraft.kingdoms.command.resident.ResidentCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageCommand;
@@ -38,6 +40,8 @@ public class CommandManager extends Base implements CommandExecutor {
 
     private void registerCommands() {
         registerCommand(new PlotCommand());
+        registerCommand(new LockCommand());
+        registerCommand(new UnlockCommand());
         registerCommand(new VillageCommand());
         registerCommand(new EmpireCommand());
         ChatCommand chatCommand = new ChatCommand();
@@ -79,6 +83,8 @@ public class CommandManager extends Base implements CommandExecutor {
         PluginCommand command = getPlugin().getCommand(ex.name());
         if (command != null) {
             command.setExecutor(this);
+            command.setPermission(ex.getPermission());
+            command.setPermissionMessage(ex.getError("no-permission").getReplacedText("permission", ex.getPermission()));
         } else {
             getPlugin().getLogger().log(Level.SEVERE, "Tried to register command by the name of " + ex.name() + " but it's not defined in the plugin.yml?");
         }

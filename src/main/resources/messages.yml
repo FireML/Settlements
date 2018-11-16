@@ -333,6 +333,29 @@ integration:
         ally: "&e&lALERT &r&7You are not allied to &e{state} {name}&7."
         private: "&e&lALERT &r&7Only the &ePlot owner&7 can build here."
         friends: "&e&lALERT &r&7Only the &ePlot owner's friends&7 can build here."
+lock:
+  only-in-claim: "&c&lYou can only lock things in a settlement claim!"
+  locked: "&cThis {block} is locked by {title} {name}!"
+  new-lock: "&e{block}&a is now locked!"
+  not-locked: "&a{block}&c is not locked!"
+  cant-unlock: "&cYou cannot unlock this &e{block}&c!"
+  unlocked: "&cYou unlocked this &e{block}&c!"
+  not-lockable: "&cYou cannot lock &e{block}"
+  hoppers:
+    enabled: "&7Hoppers &acan&7 pull items from this {block}!"
+    disabled: "&7Hoppers &ccan not&7 pull items from this {block}!"
+  access:
+    granted: "&e{name}&7 can now access this locked {block}"
+    already-granted: "&e{name}&c could already access this locked {block}?"
+    revoked: "&e{name}&7 can no longer access this locked {block}"
+    already-revoked: "&e{name}&c isn't able to access {block}?"
+  info:
+    general: |-
+      &3&lOwner: &3{title} {owner}
+      &3&lHoppers: &3{hoppers}
+      &3&lAccess granted to:
+    entry: "&f{title} {name}"
+    separator: "&7, "
 gui:
   access:
     title: "&3&l/s access"
@@ -347,7 +370,7 @@ gui:
       private: Allows only members to teleport to home
   build:
     title: "&3&l/s build"
-    set-state: "&7&lClick to allow building of &b&l{state}"
+    set-state: "&7&lClick to grantAccess building of &b&l{state}"
     selected-state: "&e&lBuilding is currently set to &b&l{state}"
     back: "&c&lBack To Settings"
   mode:
@@ -1312,3 +1335,33 @@ command:
       description: Set who can use stuff in your empire world
       all:
         description: Sets all flags to a certain state
+  lock:
+    description: Lock containers
+    click-to-lock: "&aClick a container in the next &e10 seconds&a to lock it!&7 Run [&e/lock help](/lock help)&7 to view possible commands!"
+    toggle:
+      description: Lock multiple containers. (10 minute timeout after last lock)
+      toggled: "&aToggled container locking!&7 Run [&e/lock toggle](/lock toggle)&7 again to toggle it off!"
+      untoggled: "&7Disabled container locking toggle!"
+    add:
+      click-to-add: "&aClick a container in the next &e10 seconds&a to add {target} to it!"
+      toggled: "&aToggled adding of {name} to containers!&7 Run [&e/lock add {target} toggle](/lock add {target} toggle)&7 again to toggle it off!"
+      untoggled: "&7Disabled adding of {name} to containers!"
+    remove:
+      click-to-remove: "&aClick a container in the next &e10 seconds&a to remove {target} from it!"
+      toggled: "&aToggled removing of {name} from containers!&7 Run [&e/lock remove {target} toggle](/lock remove {target} toggle)&7 again to toggle it off!"
+      untoggled: "&7Disabled removing of {name} from containers!"
+    hoppers:
+      click-to-toggle: "&aClick a container in the next &e10 seconds&a to toggle hoppers!"
+      toggled: "&aToggled lock hopper allowance!&7 Run [&e/lock hoppers toggle](/lock hoppers toggle)&7 again to toggle it off!"
+      untoggled: "&7Disabled hopper toggle!"
+    info:
+      click-for-info: "&aClick a container in the next &e10 seconds&a to get information about it!"
+      toggled: "&aToggled container info!&7 Run [&e/lock info toggle](/lock info toggle)&7 again to toggle it off!"
+      untoggled: "&7Disabled container info toggle!"
+  unlock:
+    description: Unlock containers
+    click-to-unlock: "&7Click a container to unlock it!"
+    toggle:
+      description: Unlock multiple containers. (10 minute timeout after last unlock)
+      toggled: "&aToggled container unlocking!&7 Run [&e/unlock toggle](/unlock toggle)&7 again to toggle it off!"
+      untoggled: "&7Disabled container unlocking toggle!"

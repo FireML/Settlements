@@ -124,7 +124,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = super.serialize();
-        map.put("capital", getCapitalId().value());
+        map.put("capitalId", getCapitalId().value());
         map.put("symbol", getSymbol());
         map.put("members", getMemberIds().stream().map(IdObject::value).filter(Objects::nonNull).collect(Collectors.toList()));
         map.put("senator", getSenatorIds().stream().map(UUID::toString).collect(Collectors.toList()));
@@ -144,11 +144,11 @@ public class Empire extends LandOwner implements Comparable<Empire> {
         if (empire == null) {
             return null;
         }
-        if (map == null || map.get("capital") == null) {
+        if (map == null || map.get("capitalId") == null) {
             KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize Empire! (" + map + ")");
             return null;
         }
-        empire.capital = IdObject.get(map.get("capital"));
+        empire.capital = IdObject.get(map.get("capitalId"));
         empire.setSymbol((String) map.get("symbol"));
         ((Collection<String>) map.get("senators")).stream().map(UUID::fromString).forEach(u -> empire.getSenatorIds().add(u));
         if (map.get("members") != null && map.get("members") instanceof Collection) {

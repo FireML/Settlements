@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.world;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -7,6 +8,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class SimpleLocation implements ConfigurationSerializable {
     private String world;
@@ -50,7 +52,7 @@ public class SimpleLocation implements ConfigurationSerializable {
     }
 
     public SimpleChunkLocation toChunkLocation() {
-        return new SimpleChunkLocation(this);
+        return new SimpleChunkLocation(getWorld(), getChunkX(), getChunkZ());
     }
 
     public boolean inSameChunk(SimpleLocation location) {
@@ -153,8 +155,9 @@ public class SimpleLocation implements ConfigurationSerializable {
 
     public static SimpleLocation deserialize(Map<String, Object> map) {
         if (map == null
-                || map.get("x") == null && map.get("y") == null || map.get("z") == null
-                || map.get("yaw") == null && map.get("pitch") == null || map.get("world") == null) {
+                || map.get("x") == null || map.get("y") == null || map.get("z") == null
+                || map.get("yaw") == null || map.get("pitch") == null || map.get("world") == null) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize SimpleLocation! (" + map + ")");
             return null;
         }
         return new SimpleLocation(
