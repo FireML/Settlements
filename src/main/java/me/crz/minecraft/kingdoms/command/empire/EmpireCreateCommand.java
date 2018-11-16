@@ -50,17 +50,13 @@ public class EmpireCreateCommand extends EmpireSubCommand {
                 resident.getVillage().setBank(resident.getVillage().getBank() - Utils.getEmpireCreationCost());
             }
             Empire empire = new Empire(name, resident.getVillage().getId());
-            EmpireManager.getInstance().registerNewEmpire(empire);
-            resident.getVillage().setEmpire(empire);
-            Utils.runAsync(() -> {
-                DatabaseManager.getInstance().saveVillage(resident.getVillage());
-            });
 
             MessageUtils.broadcast(getMessage("broadcast"),
                     "name", empire.getName(),
                     "capital", resident.getVillage().getName(),
                     "capitalstate", resident.getVillage().getState().getTag(),
                     "player", resident.getName());
+            EmpireManager.getInstance().registerNewEmpire(empire);
             getMessage("success").tell(resident, "name", empire.getName());
         }
         return true;

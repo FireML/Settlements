@@ -128,7 +128,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
         map.put("capitalId", getCapitalId().value());
         map.put("symbol", getSymbol());
         map.put("members", getMemberIds().stream().map(IdObject::value).filter(Objects::nonNull).collect(Collectors.toList()));
-        map.put("senator", getSenatorIds().stream().map(UUID::toString).collect(Collectors.toList()));
+        map.put("senators", getSenatorIds().stream().map(UUID::toString).collect(Collectors.toList()));
         return map;
     }
 

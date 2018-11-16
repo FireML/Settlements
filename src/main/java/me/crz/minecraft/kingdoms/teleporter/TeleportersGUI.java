@@ -32,7 +32,7 @@ public class TeleportersGUI extends KingdomsGUI {
         locked.setItemMeta(lm);
         ci.addItem(3, new ClickableItem() {
             public ItemStack getItem(Player p) {
-                ItemStack item = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+                ItemStack item = new ItemStack(Material.PLAYER_HEAD);
                 ItemMeta pm = item.getItemMeta();
                 pm.setDisplayName(getText("private"));
                 item.setItemMeta(pm);
@@ -88,7 +88,7 @@ public class TeleportersGUI extends KingdomsGUI {
                 }
                 Empire empire = resident.getVillage().getEmpire();
                 Location loc = empire.getHome().toBukkitLocation();
-                Utils.teleport(resident.getPlayer(), loc, "empire", "command.empire.home", "name", empire.getName());
+                Utils.teleport(resident.getPlayer(), loc, "empire", "command.empire.home", "name", empire.getName(), "state", empire.getStateTag());
                 return false;
             }
         });

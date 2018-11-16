@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 public class EmpireCommand extends SubCommand {
     public EmpireCommand() {
         super(null, "empire");
+        setPermission("kingdoms.user");
         registerCommand(new ChatCommand());
         registerCommand(new EmpireAlliesCommand(this));
         registerCommand(new EmpireAllyCommand(this));

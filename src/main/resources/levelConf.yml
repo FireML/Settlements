@@ -8,7 +8,7 @@ village:
     requirements:
       CASH: 5 # in bank account
       STONE: 5
-      LOG: 5
+      OAK_LOG: 5
   level-3:
     chunks: 60
     outposts: 1

@@ -71,9 +71,9 @@ public abstract class EmpireSubCommand extends VillageSubCommand {
         Resident resident = ResidentManager.getInstance().getResident(player);
         if (resident != null) {
             if (requiredRank == null) {
-                return !resident.hasVillage();
-            } else if (resident.hasVillage()) {
-                return resident.getVillageRank().atLeast(requiredRank);
+                return !resident.hasEmpire();
+            } else if (resident.hasEmpire()) {
+                return resident.getEmpireRank().atLeast(requiredRank);
             }
         }
         return false;

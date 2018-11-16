@@ -33,7 +33,7 @@ public class ShopGUI extends KingdomsGUI {
     public CInventory gui;
 
     public ShopGUI(Resident resident) {
-        super("empire.perks");
+        super("empire.shop");
         this.resident = resident;
 
         if (!resident.hasVillage()) {

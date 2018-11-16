@@ -103,18 +103,20 @@ public class EmpireManager {
             KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving empire " + empire.getName() + " to the database! It already had an ID defined?");
             return;
         }
-        createEmpireWorld(empire);
-
+        empire.getCapital().setEmpire(empire);
+        empire.getCapital().getChief().setEmpireRank(EmpireRank.LEADER);
         empires.put(empire.getName().replace(' ', '_').toLowerCase(), empire);
-
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveEmpire(empire);
+            DatabaseManager.getInstance().saveVillage(empire.getCapital());
+            DatabaseManager.getInstance().saveResident(empire.getCapital().getChief());
             if (!empire.getId().isNull()) {
                 empireIds.put(empire.getId(), empire);
             } else {
                 KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving empire " + empire.getName() + " to the database! No ID was returned.");
             }
         });
+        createEmpireWorld(empire);
     }
 
     private void createEmpireWorld(Empire empire) {

@@ -340,7 +340,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
     public void saveEmpire(Empire empire) {
         Utils.catchSync();
         try (Connection conn = ds.getConnection()) {
-            save(conn, empire, "members");
+            save(conn, empire, "members", "senators");
             if (!empire.getId().isNull()) {
                 updateDataMap(conn, "empire_vaults", "empireId", (Integer) empire.getId().value(), "content", "amount", empire.getVault());
                 updateDataMap(conn, "empire_uses", "empireId", (Integer) empire.getId().value(), "type", "state",

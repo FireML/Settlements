@@ -39,9 +39,6 @@ public class PrivateTeleportersGUI extends KingdomsGUI {
     public void open(Player p, int page) {
         update(VillageManager.getInstance().getVillageFromPlayer(p));
         CInventory ci = new CInventory(getMessage("title").getReplacedText("page", String.valueOf(page)), InventorySize.FOUR) {};
-        if (items.isEmpty()) {
-            return;
-        }
         for (int j = 18 * (page - 1); j < 18 * page && j < items.size(); ++j) {
             ci.addItem(items.get(j));
         }

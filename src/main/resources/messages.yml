@@ -104,7 +104,7 @@ scoreboard:
 
         &3&lKills&3: &e{kills}
         &3&lDeaths&3: &e{deaths}
-empire-world-generate: "&a&lCreated your own empire world!"
+empire-world-generated: "&a&lCreated your own empire world!"
 levels:
   upgrade: "&d&lLEVEL UP &r&7Your {state} is now level &d{level}"
   upgrade-settlement: "&a&lSUCCESS &r&7The settlement has been upgraded to &e{state}!"
@@ -1138,6 +1138,7 @@ command:
     create:
       success: "&a&lSUCCESS &r&7created a new empire."
       broadcast: "&e{player} has made a empire called {name}!"
+      max-level-kingdom-required: "&cYou need at least a Kingdom with level 10 to create an empire!"
       description: Create a new empire.
     setdescription:
       success: "&aSet description of your empire to &r{description}"
