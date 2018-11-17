@@ -18,11 +18,11 @@ import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import net.md_5.bungee.api.ChatMessageType;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
@@ -55,6 +55,14 @@ public class LandFlags extends Base implements LandFlagBase {
             }
             e.setCancelled(true);
         }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onBlockBurn(BlockBurnEvent e) {
+        if (isAllowed(e.getBlock().getLocation(), PlotMode.firespread) && isAllowed(e.getBlock().getLocation(), EmpireMode.firespread)) {
+            return;
+        }
+        e.setCancelled(true);
     }
 
     @EventHandler
@@ -115,23 +123,21 @@ public class LandFlags extends Base implements LandFlagBase {
 
     @EventHandler(ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent e) {
-        for (Block block : e.blockList()) {
-            if (block == null || (isAllowed(block.getLocation(), PlotMode.explosions) && isAllowed(block.getLocation(), EmpireMode.explosions))) {
-                continue;
-            }
+        if (!isAllowed(e.getLocation(), PlotMode.explosions) || !isAllowed(e.getLocation(), EmpireMode.explosions)) {
             e.setCancelled(true);
+            return;
         }
+        e.blockList().removeIf(block -> !isAllowed(block.getLocation(), PlotMode.explosions) || !isAllowed(block.getLocation(), EmpireMode.explosions));
     }
 
 
     @EventHandler(ignoreCancelled = true)
     public void onEntityExplode(BlockExplodeEvent e) {
-        for (Block block : e.blockList()) {
-            if (block == null || (isAllowed(block.getLocation(), PlotMode.explosions) && isAllowed(block.getLocation(), EmpireMode.explosions))) {
-                continue;
-            }
+        if (!isAllowed(e.getBlock().getLocation(), PlotMode.explosions) || !isAllowed(e.getBlock().getLocation(), EmpireMode.explosions)) {
             e.setCancelled(true);
+            return;
         }
+        e.blockList().removeIf(block -> !isAllowed(block.getLocation(), PlotMode.explosions) || !isAllowed(block.getLocation(), EmpireMode.explosions));
     }
 
     @EventHandler(ignoreCancelled = true)
