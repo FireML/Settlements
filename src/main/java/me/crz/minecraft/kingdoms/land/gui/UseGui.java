@@ -49,7 +49,7 @@ public class UseGui extends PlotGUI {
                                     ? land.getUseState(u).next(BuildState.AppliesTo.SETTLEMENT)
                                     : land.getUseState(u).previous(BuildState.AppliesTo.SETTLEMENT);
                             land.setUseState(u, changeTo);
-                            MessageUtils.tell(p, Message.get("command.village.plot.use.success"),
+                            MessageUtils.tell(p, Message.get("command.plot.use.success"),
                                     "flag", u.getTag(),
                                     "state", changeTo.getTag()
                             );
@@ -88,7 +88,7 @@ public class UseGui extends PlotGUI {
                             for (Use u : Use.values()) {
                                 land.setUseState(u, state);
                             }
-                            MessageUtils.tell(p, Message.get("command.village.plot.use.success-all"),
+                            MessageUtils.tell(p, Message.get("command.plot.use.success-all"),
                                     "state", state.getTag()
                             );
                             LandManager.getInstance().syncAndSave(land);

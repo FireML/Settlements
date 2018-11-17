@@ -59,7 +59,7 @@ public class ModeGUI extends PlotGUI {
                         if (land.isPlotOwner(p) || canAdmin) {
                             if (m == PlotMode.embassy) {
                                 if (land.containsHome() || land.isOutpost()) {
-                                    getError("command.village.plot.mode.cant-set-embassy").tell(p);
+                                    getError("command.plot.mode.cant-set-embassy").tell(p);
                                     return false;
                                 } else if (!canAdmin) {
                                     return false;
@@ -68,7 +68,7 @@ public class ModeGUI extends PlotGUI {
                             boolean state = !m.get(land);
                             m.set(state, land);
                             LandManager.getInstance().syncAndSave(land);
-                            MessageUtils.tell(p, Message.get("command.village.plot.mode.success"),
+                            MessageUtils.tell(p, Message.get("command.plot.mode.success"),
                                     "mode", m.getTag(),
                                     "value", yesOrNo(state)
                             );
