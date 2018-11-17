@@ -394,7 +394,7 @@ gui:
       private: Allows only members to teleport to home
   build:
     title: "&3&l/s build"
-    set-state: "&7&lClick to grantAccess building of &b&l{state}"
+    set-state: "&7&lClick to allow building of &b&l{state}"
     selected-state: "&e&lBuilding is currently set to &b&l{state}"
     back: "&c&lBack To Settings"
   mode:
@@ -442,8 +442,19 @@ gui:
     unlink: "&7Click to unlink!"
     use:
       title: "&3&l/plot use"
+      unset-all: "&7&lClick to unset all states and inherit from parent {parent}"
+      entry:
+        parent: "&7(Inherited from parent {parent})"
+        click-to-unset: |-
+          &7Middle click to inherit &b{value}
+          &7from parent {parent} again
     mode:
       title: "&3&l/plot mode"
+      entry:
+        parent: "&7(Inherited from parent {parent})"
+        click-to-unset: |-
+          &7Middle click to inherit &b{value}
+          &7from parent {parent} again
     build:
       title: "&3&l/plot build"
     settings:
@@ -658,6 +669,7 @@ command:
     mode:
       modes: "&cAvailable modes: {modes}"
       success: "&7Plot mode &6{mode}&7: &6{value}"
+      unset: "&7Unset plot mode &6{mode}&7! Now inherits from parent {parent}: &6{value}"
       description: Sets the modes of a plot
     name:
       success: "&aSet name of plot to &r{description}"
@@ -685,6 +697,8 @@ command:
       states: "&cAvailable states: {states}"
       success: "&7Plot State of &6{flag} &7set to &6{state}"
       success-all: "&7Set all flags to &6{state}"
+      unset: "&7Unset plot state &6{flag}&7! Now inherits from parent {parent}: &6{state}"
+      unset-all: "&7Unset all flags! All flags now inherit from &6{parent}"
       description: Sets the use flags of a plot
       all:
         description: Sets all flags to a certain state

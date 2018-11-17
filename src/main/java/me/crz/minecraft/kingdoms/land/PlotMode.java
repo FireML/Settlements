@@ -23,16 +23,6 @@ public enum PlotMode implements NameTag {
     explosions(Material.TNT),
     buff(Material.POTION, true),
     embassy(Material.RED_BANNER, AppliesTo.LAND);
-
-    private static Map<String, Boolean> DEFAULT_OPTIONS = new HashMap<>();
-    static {
-        DEFAULT_OPTIONS.put("on", true);
-        DEFAULT_OPTIONS.put("off", false);
-        DEFAULT_OPTIONS.put("yes", true);
-        DEFAULT_OPTIONS.put("no", false);
-        DEFAULT_OPTIONS.put("true", true);
-        DEFAULT_OPTIONS.put("false", false);
-    }
     private Material icon;
     private final Set<AppliesTo> appliesTo;
     private boolean defaultValue;
@@ -62,10 +52,6 @@ public enum PlotMode implements NameTag {
 
     public boolean get(ModeAble modeAble) {
         return modeAble.getMode(this);
-    }
-
-    public Map<String, Boolean> getOptions() {
-        return DEFAULT_OPTIONS;
     }
 
     public boolean appliesTo(AppliesTo to) {

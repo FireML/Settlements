@@ -5,14 +5,14 @@ import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.gui.ModeGUI;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
-import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class PlotModeCommand extends PlotSubCommand {
     public PlotModeCommand(PlotCommand parent) {
-        super(parent, "mode <mode> <on/off>", "set");
+        super(parent, "mode <mode> on|off|parent", "set");
     }
 
     @Override
@@ -36,29 +36,41 @@ public class PlotModeCommand extends PlotSubCommand {
                     } else if (!canAdmin) {
                         return true;
                     }
+                } else if (args.length == 1) {
+                    return false;
                 }
-                Boolean setTo = !m.get(land);
-                if (args.length > 1) {
-                    setTo = m.getOptions().get(args[1].toLowerCase());
-                    if (setTo == null) {
-                        if (m == PlotMode.embassy) {
-                            try {
-                                int price = Integer.parseInt(args[1]);
-                                setTo = true;
-                                land.setForSale(true);
-                                land.setPrice(price);
-                            } catch (NumberFormatException e) {
-                                getError("not-a-number").tell(res, "input", args[1]);
-                                return true;
-                            }
+
+                if (m == PlotMode.embassy) {
+                    try {
+                        if (args.length > 1){
+                            int price = Integer.parseInt(args[1]);
+                            land.setForSale(true);
+                            land.setPrice(price);
+                        }
+                        land.setEmbassy(true);
+                        getMessage("success").tell(res, "mode", m.getTag(), "value", "true");
+                    } catch (NumberFormatException e) {
+                        getError("not-a-number").tell(res, "input", args[1]);
+                        return true;
+                    }
+                } else {
+                    try {
+                        m.set(Utils.parseBoolean(args[1]), res.getVillage().getEmpire());
+                        res.tell(getMessage("success"), "mode", m.getTag(), "value", args[1]);
+                    } catch (IllegalArgumentException e) {
+                        if (m.appliesTo(PlotMode.AppliesTo.LAND_OWNER) && ("reset".equalsIgnoreCase(args[1]) || "unset".equalsIgnoreCase(args[1]) || "parent".equalsIgnoreCase(args[1]))) {
+                            land.unsetMode(m);
+                            getMessage("unset").tell(res,
+                                    "mode", m.getTag(),
+                                    "value", String.valueOf(land.getLandOwner().getMode(m)),
+                                    "parent", land.getLandOwner().getStateTag()
+                            );
                         } else {
                             return false;
                         }
                     }
                 }
-                m.set(setTo, land);
                 LandManager.getInstance().syncAndSave(land);
-                res.tell(getMessage("success"), "mode", m.name(), "value", args.length > 1 ? args[1] : String.valueOf(setTo));
             } catch (IllegalArgumentException e) {
                 res.tell(getMessage("modes"), "modes", PlotMode.values(PlotMode.AppliesTo.LAND).stream().map(Enum::name).collect(Collectors.joining(", ")));
                 return false;

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class VillageModeCommand extends VillageSubCommand {
     public VillageModeCommand(SubCommand parent) {
-        super(parent, "mode <mode> <value>", VillageRank.ELDER);
+        super(parent, "mode <mode> on|off", VillageRank.ELDER);
         setPermission("kingdoms.user");
     }
 
@@ -25,12 +25,12 @@ public class VillageModeCommand extends VillageSubCommand {
 
         try {
             PlotMode m = PlotMode.valueOf(args[0].toLowerCase(), PlotMode.AppliesTo.LAND_OWNER);
-            if (m.getOptions().containsKey(args[1].toLowerCase())) {
-                if (m.set(m.getOptions().get(args[1].toLowerCase()), res.getVillage())) {
+            try {
+                if (res.getVillage().setMode(m, Utils.parseBoolean(args[1]))) {
                     Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
                 }
                 res.tell(getMessage("success"), "mode", m.name(), "value", args[1]);
-            } else {
+            } catch (IllegalArgumentException e) {
                 return false;
             }
         } catch (IllegalArgumentException e) {

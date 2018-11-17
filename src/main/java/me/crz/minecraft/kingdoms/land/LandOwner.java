@@ -544,7 +544,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         Map<String, Object> uses = (Map<String, Object>) map.get("uses");
         for (Use u : Use.values()) {
             if (uses.containsKey(u.name())) {
-                landOwner.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), u.getDefault(BuildState.PRIVATE)));
+                landOwner.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), u.getDefault(u.getDefault(landOwner.getDefaultBuildState()))));
             }
         }
         for (String s : ((Collection<String>) map.get("banished"))) {

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class PlotUseCommand extends PlotSubCommand {
     public PlotUseCommand(PlotCommand parent) {
-        super(parent, "use <flag> <state>");
+        super(parent, "use <flag> <state>|parent");
         setForceOwnUsage(true);
         registerCommand(new PlotSubCommand(this, "all <state>") {
             @Override
@@ -26,8 +26,16 @@ public class PlotUseCommand extends PlotSubCommand {
                     LandManager.getInstance().syncAndSave(land);
                     res.tell(getMessage("success-all"), "state", state.getTag());
                 } catch (IllegalArgumentException e) {
-                    res.tell(getMessage("states"), "states", BuildState.values(BuildState.AppliesTo.LAND).stream().map(NameTag::humanizedName).collect(Collectors.joining(", ")));
-                    return false;
+                    if (("reset".equalsIgnoreCase(args[1]) || "unset".equalsIgnoreCase(args[1]) || "parent".equalsIgnoreCase(args[1]))) {
+                        for (Use u : Use.values()) {
+                            land.unsetUseState(u);
+                        }
+                        LandManager.getInstance().syncAndSave(land);
+                        getMessage("unset-all").tell(res, "parent", land.getLandOwner().getStateTag());
+                    } else {
+                        res.tell(getMessage("states"), "states", BuildState.values(BuildState.AppliesTo.LAND).stream().map(NameTag::humanizedName).collect(Collectors.joining(", ")));
+                        return false;
+                    }
                 }
                 return true;
             }
@@ -40,13 +48,22 @@ public class PlotUseCommand extends PlotSubCommand {
             UseGui.getInstance().open(res.getPlayer());
         } else {
             try {
-                Use u = Use.valueOf(args[0].toUpperCase());
-                BuildState state = BuildState.valueOf(Arrays.stream(args).skip(1).collect(Collectors.joining("_")).toUpperCase(), BuildState.AppliesTo.LAND);
-                land.setUseState(u, state);
-                LandManager.getInstance().syncAndSave(land);
-                res.tell(getMessage("success"), "flag", u.name(), "state", state.getTag());
+                Use use = Use.valueOf(args[0].toUpperCase());
+                try {
+                    BuildState state = BuildState.valueOf(Arrays.stream(args).skip(1).collect(Collectors.joining("_")).toUpperCase(), BuildState.AppliesTo.LAND);
+                    land.setUseState(use, state);
+                    LandManager.getInstance().syncAndSave(land);
+                    res.tell(getMessage("success"), "flag", use.name(), "state", state.getTag());
+                } catch (IllegalArgumentException e) {
+                    if ("reset".equalsIgnoreCase(args[1]) || "unset".equalsIgnoreCase(args[1]) || "parent".equalsIgnoreCase(args[1])) {
+                        LandManager.getInstance().syncAndSave(land);
+                        getMessage("unset-all").tell(res, "parent", land.getLandOwner().getStateTag());
+                    } else {
+                        res.tell(getMessage("flags"), "flags", Arrays.stream(Use.values()).map(u -> u.name().toLowerCase()).collect(Collectors.joining(", ")));
+                        return false;
+                    }
+                }
             } catch (IllegalArgumentException e) {
-                res.tell(getMessage("flags"), "flags", Arrays.stream(Use.values()).map(u -> u.name().toLowerCase()).collect(Collectors.joining(", ")));
                 res.tell(getMessage("states"), "states", BuildState.values(BuildState.AppliesTo.LAND).stream().map(NameTag::humanizedName).collect(Collectors.joining(", ")));
                 return false;
             }

@@ -349,7 +349,7 @@ public class Utils {
         switch (arg.toLowerCase()) {
             case "true":
             case "on":
-            case "grantAccess":
+            case "allow":
             case "yes":
                 return true;
             case "false":

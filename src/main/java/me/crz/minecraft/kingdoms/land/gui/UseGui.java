@@ -32,10 +32,21 @@ public class UseGui extends PlotGUI {
                     OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
                     if (land != null) {
                         BuildState state = land.getUseState(u);
-                        return u.getItem().setName(getMessage("entry").getReplacedText(
+                        CItem item = u.getItem().setName(getMessage("entry").getReplacedText(
                                 "flag", u.getTag(),
                                 "state", state.getTag()
-                        )).build();
+                        ));
+                        if (land.hasUseState(u)) {
+                            item.addLore(getMessage("entry.click-to-unset").getReplacedTextList(
+                                    "state", land.getLandOwner().getStateTag()
+                            ));
+                        } else {
+                            item.addLore(getMessage("entry.parent").getReplacedTextList(
+                                    "parent", land.getLandOwner().getStateTag(),
+                                    "value", land.getLandOwner().getUseState(u).getTag()
+                            ));
+                        }
+                        return item.build();
                     }
                     return null;
                 }
@@ -45,14 +56,25 @@ public class UseGui extends PlotGUI {
                     if (land != null) {
                         Resident resident = ResidentManager.getInstance().getResident(p);
                         if (land.isPlotOwner(p) || land.canAdmin(resident)) {
-                            BuildState changeTo = clickType.isLeftClick()
-                                    ? land.getUseState(u).next(BuildState.AppliesTo.SETTLEMENT)
-                                    : land.getUseState(u).previous(BuildState.AppliesTo.SETTLEMENT);
-                            land.setUseState(u, changeTo);
-                            MessageUtils.tell(p, Message.get("command.plot.use.success"),
-                                    "flag", u.getTag(),
-                                    "state", changeTo.getTag()
-                            );
+                            if (clickType == ClickType.MIDDLE) {
+                                if (land.unsetUseState(u) || land.hasLink()) {
+                                    MessageUtils.tell(p, Message.get("command.plot.use.unset"),
+                                            "flag", u.getTag(),
+                                            "parent", land.getLandOwner().getStateTag()
+                                    );
+                                } else {
+                                    return false;
+                                }
+                            } else {
+                                BuildState changeTo = clickType.isLeftClick()
+                                        ? land.getUseState(u).next(BuildState.AppliesTo.SETTLEMENT)
+                                        : land.getUseState(u).previous(BuildState.AppliesTo.SETTLEMENT);
+                                land.setUseState(u, changeTo);
+                                MessageUtils.tell(p, Message.get("command.plot.use.success"),
+                                        "flag", u.getTag(),
+                                        "state", changeTo.getTag()
+                                );
+                            }
                             LandManager.getInstance().syncAndSave(land);
                             gui.build(p);
                             return true;
@@ -73,7 +95,6 @@ public class UseGui extends PlotGUI {
                     if (land != null && land.isPlotOwner(p)) {
                         return state.getItem()
                                 .setName(getMessage("toggle-all").getReplacedText("state", state.getTag()))
-                                .setLore(getMessage("toggle-all").getReplacedTextList("state", state.getTag()).stream().skip(1).collect(Collectors.toList()))
                                 .build();
                     }
                     return null;
@@ -100,8 +121,40 @@ public class UseGui extends PlotGUI {
                 }
             });
         }
-        gui.addItem((gui.getMaxSlot() / 9) * 9 + 7, getPlotLinkItem(gui));
-        gui.addItem((gui.getMaxSlot() / 9) * 9 + 8, new ClickableItem() {
+        gui.addItem((gui.getMaxSlot() / 9 + 1) * 9, new ClickableItem() {
+            @Override
+            public ItemStack getItem(Player p) {
+                OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                if (land != null && land.isPlotOwner(p)) {
+                    return new CItem(Material.EGG)
+                            .setName(getMessage("parent-all").getReplacedText("parent", land.getLandOwner().getStateTag()))
+                            .build();
+                }
+                return null;
+            }
+
+            @Override
+            public boolean click(Player p, ClickType type) {
+                OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                if (land != null) {
+                    Resident resident = ResidentManager.getInstance().getResident(p);
+                    if (land.isPlotOwner(p) || land.canAdmin(resident)) {
+                        for (Use u : Use.values()) {
+                            land.unsetUseState(u);
+                        }
+                        MessageUtils.tell(p, Message.get("command.plot.use.unset-all"),
+                                "parent", land.getLandOwner().getStateTag()
+                        );
+                        LandManager.getInstance().syncAndSave(land);
+                        gui.build(p);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+        gui.addItem((gui.getMaxSlot() / 9 + 1) * 9 + 7, getPlotLinkItem(gui));
+        gui.addItem((gui.getMaxSlot() / 9 + 1) * 9 + 8, new ClickableItem() {
             public ItemStack getItem(final Player p) {
                 return new CItem(Material.BARRIER).setName(getText("back")).build();
             }

@@ -6,9 +6,11 @@ import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.lock.Lock;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
+import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -24,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,6 +38,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -63,276 +67,57 @@ public class MySqlDatabaseManager extends DatabaseManager {
         ds.setConnectionTimeout(5000);
 
         initializeTables();
+        updateClaimUses();
     }
 
     private void initializeTables() throws SQLException {
         try (Connection conn = ds.getConnection(); Statement sta = conn.createStatement()) {
             sta.addBatch("SET FOREIGN_KEY_CHECKS = 0");
 
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "empires ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "name VARCHAR(255) NOT NULL, INDEX (name), UNIQUE (name), "
-                    + "capitalId INTEGER NOT NULL,"
-                    + "FOREIGN KEY (capitalId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE RESTRICT,"
-                    + "description TEXT NOT NULL,"
-                    + "symbol VARCHAR(16) NOT NULL,"
-                    + "access VARCHAR(255) NOT NULL,"
-                    + "buildState VARCHAR(255) NOT NULL,"
-                    + "pvp BOOLEAN NOT NULL,"
-                    + "fireSpread BOOLEAN NOT NULL,"
-                    + "explosions BOOLEAN NOT NULL,"
-                    + "mobSpawning BOOLEAN NOT NULL,"
-                    + "buff BOOLEAN NOT NULL,"
-                    + "bank BIGINT,"
-                    + "joinFee BIGINT,"
-                    + "tax BIGINT,"
-                    + "bonusClaims INTEGER,"
-                    + "homeLoc_world VARCHAR(255),"
-                    + "homeLoc_x DOUBLE,"
-                    + "homeLoc_y DOUBLE,"
-                    + "homeLoc_z DOUBLE,"
-                    + "homeLoc_yaw FLOAT,"
-                    + "homeLoc_pitch FLOAT"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "empire_banished ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "empireId INTEGER, INDEX (empireId),"
-                    + "FOREIGN KEY (empireId) REFERENCES " + tablePrefix + "empires(id) ON DELETE CASCADE,"
-                    + "banished VARCHAR(320)"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "empire_allies ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "empireId INTEGER, INDEX (empireId),"
-                    + "FOREIGN KEY (empireId) REFERENCES " + tablePrefix + "empires(id) ON DELETE CASCADE,"
-                    + "ally VARCHAR(320)"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "empire_vaults ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "empireId INTEGER, INDEX(empireId),"
-                    + "FOREIGN KEY (empireId) REFERENCES " + tablePrefix + "empires(id) ON DELETE CASCADE,"
-                    + "content VARCHAR(255) NOT NULL,"
-                    + "amount BIGINT,"
-                    + "UNIQUE (empireId, content)"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "empire_perks ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "empireId INTEGER, INDEX(empireId),"
-                    + "FOREIGN KEY (empireId) REFERENCES " + tablePrefix + "empires(id) ON DELETE CASCADE,"
-                    + "perk VARCHAR(255) NOT NULL,"
-                    + "times INTEGER NOT NULL,"
-                    + "lastUsed BIGINT,"
-                    + "active BOOLEAN,"
-                    + "UNIQUE (empireId, perk)"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "empire_uses ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "empireId INTEGER, INDEX(empireId),"
-                    + "FOREIGN KEY (empireId) REFERENCES " + tablePrefix + "empires(id) ON DELETE CASCADE,"
-                    + "type VARCHAR(255) NOT NULL,"
-                    + "state VARCHAR(255) NOT NULL,"
-                    + "UNIQUE (empireId, type)"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlements ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "name VARCHAR(255) NOT NULL, INDEX (name), UNIQUE (name), "
-                    + "chiefId INTEGER NOT NULL,"
-                    + "FOREIGN KEY (chiefId) REFERENCES " + tablePrefix + "residents(id) ON DELETE RESTRICT,"
-                    + "level INTEGER NOT NULL,"
-                    + "settlementState VARCHAR(255) NOT NULL,"
-                    + "empireId INTEGER,"
-                    + "FOREIGN KEY (empireId) REFERENCES " + tablePrefix + "empires(id) ON DELETE SET NULL,"
-                    + "description TEXT NOT NULL,"
-                    + "access VARCHAR(255) NOT NULL,"
-                    + "buildState VARCHAR(255) NOT NULL,"
-                    + "allowAllyClaim BOOLEAN NOT NULL,"
-                    + "pvp BOOLEAN NOT NULL,"
-                    + "fireSpread BOOLEAN NOT NULL,"
-                    + "explosions BOOLEAN NOT NULL,"
-                    + "mobSpawning BOOLEAN NOT NULL,"
-                    + "buff BOOLEAN NOT NULL,"
-                    + "bank BIGINT,"
-                    + "joinFee BIGINT,"
-                    + "tax BIGINT,"
-                    + "bonusClaims INTEGER,"
-                    + "homeLoc_world VARCHAR(255),"
-                    + "homeLoc_x DOUBLE,"
-                    + "homeLoc_y DOUBLE,"
-                    + "homeLoc_z DOUBLE,"
-                    + "homeLoc_yaw FLOAT,"
-                    + "homeLoc_pitch FLOAT"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_outposts ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "settlementId INTEGER, INDEX (settlementId),"
-                    + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
-                    + "name VARCHAR(255),"
-                    + "UNIQUE (settlementId, name),"
-                    + "world VARCHAR(255),"
-                    + "x DOUBLE,"
-                    + "y DOUBLE,"
-                    + "z DOUBLE,"
-                    + "yaw FLOAT,"
-                    + "pitch FLOAT"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_vaults ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "settlementId INTEGER, INDEX(settlementId),"
-                    + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
-                    + "content VARCHAR(255) NOT NULL,"
-                    + "amount BIGINT,"
-                    + "UNIQUE (settlementId, content)"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_perks ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "settlementId INTEGER, INDEX(settlementId),"
-                    + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
-                    + "perk VARCHAR(255) NOT NULL,"
-                    + "times INTEGER NOT NULL,"
-                    + "lastUsed BIGINT,"
-                    + "active BOOLEAN,"
-                    + "UNIQUE (settlementId, perk)"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_uses ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "settlementId INTEGER, INDEX(settlementId),"
-                    + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
-                    + "type VARCHAR(255) NOT NULL,"
-                    + "state VARCHAR(255) NOT NULL,"
-                    + "UNIQUE (settlementId, type)"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_banished ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "settlementId INTEGER, INDEX (settlementId),"
-                    + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
-                    + "banished VARCHAR(320)"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "settlement_allies ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "settlementId INTEGER, INDEX (settlementId),"
-                    + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE CASCADE,"
-                    + "ally VARCHAR(320)"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "residents ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "uuid CHAR(36) NOT NULL, UNIQUE (uuid),"
-                    + "name VARCHAR(16) NOT NULL,"
-                    + "settlementId INTEGER,"
-                    + "FOREIGN KEY (settlementId) REFERENCES " + tablePrefix + "settlements(id) ON DELETE SET NULL,"
-                    + "settlementJoin BIGINT(11) NOT NULL,"
-                    + "rank VARCHAR(255),"
-                    + "empirerank VARCHAR(255),"
-                    + "title INTEGER NOT NULL,"
-                    + "bonusClaims INTEGER,"
-                    + "lastLogin BIGINT(11) NOT NULL,"
-                    + "activeChannel VARCHAR(255) NOT NULL,"
-                    + "swear BOOLEAN NOT NULL"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "resident_channels ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "userId INTEGER, INDEX (userId),"
-                    + "FOREIGN KEY (userId) REFERENCES " + tablePrefix + "residents(id) ON DELETE CASCADE,"
-                    + "channel VARCHAR(255),"
-                    + "UNIQUE (userId, channel)"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "resident_friends ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "userId INTEGER, INDEX (userId),"
-                    + "FOREIGN KEY (userId) REFERENCES " + tablePrefix + "residents(id) ON DELETE CASCADE,"
-                    + "friendId INTEGER,"
-                    + "FOREIGN KEY (friendId) REFERENCES " + tablePrefix + "residents(id) ON DELETE CASCADE,"
-                    + "UNIQUE (userId, friendId)"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "resident_ignores ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "userId INTEGER, INDEX (userId),"
-                    + "FOREIGN KEY (userId) REFERENCES " + tablePrefix + "residents(id) ON DELETE CASCADE,"
-                    + "ignoredId INTEGER,"
-                    + "FOREIGN KEY (ignoredId) REFERENCES " + tablePrefix + "residents(id) ON DELETE CASCADE,"
-                    + "UNIQUE (userId, ignoredId)"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "claims ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "settlementId INTEGER NOT NULL, INDEX (settlementId), "
-                    + "world VARCHAR(255),INDEX(world),"
-                    + "x INTEGER,INDEX(x),"
-                    + "z INTEGER,INDEX(z),"
-                    + "UNIQUE(world, x, z),"
-                    + "unclaimIn INTEGER,"
-                    + "ownerId INTEGER,"
-                    + "FOREIGN KEY (ownerId) REFERENCES " + tablePrefix + "residents(id) ON DELETE SET NULL,"
-                    + "price INTEGER DEFAULT 0,"
-                    + "forSale BOOLEAN NOT NULL,"
-                    + "embassy BOOLEAN NOT NULL,"
-                    + "description TEXT,"
-                    + "pvp BOOLEAN NOT NULL,"
-                    + "fireSpread BOOLEAN NOT NULL,"
-                    + "explosions BOOLEAN NOT NULL,"
-                    + "mobSpawning BOOLEAN NOT NULL,"
-                    + "buff BOOLEAN NOT NULL,"
-                    + "buildState VARCHAR(255) NOT NULL,"
-                    + "link VARCHAR(36)"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "claim_uses ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "claimId INTEGER, INDEX(claimId),"
-                    + "FOREIGN KEY (claimId) REFERENCES " + tablePrefix + "claims(id) ON DELETE CASCADE,"
-                    + "type VARCHAR(255) NOT NULL,"
-                    + "state VARCHAR(255) NOT NULL,"
-                    + "UNIQUE (claimId, type)"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "locks ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "world VARCHAR(255),INDEX(world),"
-                    + "x INTEGER,INDEX(x),"
-                    + "y INTEGER,INDEX(y),"
-                    + "z INTEGER,INDEX(z),"
-                    + "UNIQUE(world, y, x, z),"
-                    + "ownerId INTEGER,"
-                    + "FOREIGN KEY (ownerId) REFERENCES " + tablePrefix + "residents(id) ON DELETE SET NULL,"
-                    + "`block` VARCHAR(255) NOT NULL,"
-                    + "allowHoppers BOOLEAN NOT NULL"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "lock_allowed ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "lockId INTEGER, INDEX (lockId),"
-                    + "FOREIGN KEY (lockId) REFERENCES " + tablePrefix + "locks(id) ON DELETE CASCADE,"
-                    + "allowed VARCHAR(320)"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
-
-            sta.addBatch("CREATE TABLE IF NOT EXISTS " + tablePrefix + "logs ("
-                    + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                    + "empireId INTEGER, INDEX(empireId),"
-                    + "settlementId INTEGER, INDEX(settlementId),"
-                    + "residentId INTEGER, INDEX(residentId),"
-                    + "`action` VARCHAR(255) NOT NULL,"
-                    + "type VARCHAR(255) NOT NULL,"
-                    + "amount BIGINT NOT NULL,"
-                    + "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
-                    + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;");
+            for (MySqlTable table : MySqlTable.values()) {
+                sta.addBatch(table.getSql(tablePrefix));
+            }
 
             sta.addBatch("SET FOREIGN_KEY_CHECKS = 1");
 
             sta.executeBatch();
+        }
+    }
+
+    private void updateClaimUses() {
+        String sql = "SELECT * FROM " + tablePrefix + "claims;";
+        try (Connection conn = ds.getConnection();
+             Statement sta = conn.createStatement()) {
+            boolean found = false;
+            ResultSet rs = sta.executeQuery(sql);
+            while (rs.next()) {
+                found = true;
+                try {
+                    rs.getBoolean("pvp"); // test if column exists
+                    updateDataMap(conn, "claim_modes", "claimId", rs.getInt("id"), "mode", "enabled", PlotMode.values(PlotMode.AppliesTo.LAND_OWNER).stream()
+                            .map(m -> {
+                                try {
+                                    return new Pair<>(m.name(), rs.getBoolean(m.name()));
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                    return null;
+                                }
+                            }).filter(Objects::nonNull).collect(Collectors.toMap(Pair::getLeft, Pair::getRight)));
+                } catch (SQLException e) {
+                    // column doesn't exist -> already updated. Don't do anything
+                    return;
+                }
+            }
+            if (found) {
+                sta.execute("ALTER TABLE " + tablePrefix + "claims "
+                        + PlotMode.values(PlotMode.AppliesTo.LAND_OWNER).stream().map(m -> "DROP COLUMN " + m.name()).collect(Collectors.joining(","))
+                        +";");
+            } else {
+                sta.execute("DROP TABLE " + tablePrefix + "claims");
+                sta.execute(MySqlTable.CLAIMS.getSql(tablePrefix));
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to get all claims from database!", e);
         }
     }
 
@@ -475,10 +260,14 @@ public class MySqlDatabaseManager extends DatabaseManager {
         }
         for (OwnedLand land : lands) {
             try (Connection conn = ds.getConnection()) {
-                save(conn, land, "landOwner", "uses");
+                save(conn, land, "landOwner", "uses", "modes");
                 if (!land.getId().isNull()) {
                     updateDataMap(conn, "claim_uses", "claimId", (Integer) land.getId().value(), "type", "state",
                             land.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
+                    updateDataMap(conn, "claim_modes", "claimId", (Integer) land.getId().value(), "mode", "enabled",
+                            land.getModes().entrySet().stream()
+                                    .filter(e -> e.getKey().appliesTo(PlotMode.AppliesTo.LAND_OWNER))
+                                    .collect(Collectors.toMap(e -> e.getKey().name(), Map.Entry::getValue)));
                 }
             } catch (SQLException e) {
                 plugin.getLogger().log(Level.SEVERE, "Error while saving claim " + land.getKey() + " to database!", e);
@@ -905,23 +694,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
         map.put("banished", selectList(conn, "empire_banished", "empireId", id, "banished"));
         map.put("allies", selectList(conn, "empire_allies", "empireId", id, "ally"));
 
-        PreparedStatement uSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_uses WHERE empireId = ?;");
-        uSta.setInt(1, id);
-        ResultSet uRs = uSta.executeQuery();
-        Map<String, String> use = new LinkedHashMap<>();
-        while (uRs.next()) {
-            use.put(uRs.getString("type"), uRs.getString("state"));
-        }
-        map.put("uses", use);
-
-        PreparedStatement vSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_vaults WHERE empireId = ?;");
-        vSta.setInt(1, id);
-        ResultSet vRs = vSta.executeQuery();
-        Map<String, Long> vault = new LinkedHashMap<>();
-        while (vRs.next()) {
-            vault.put(vRs.getString("content"), vRs.getLong("amount"));
-        }
-        map.put("vault", vault);
+        map.put("uses", selectMap(conn, "empire_uses", "empireId", id, "type", "state", String.class));
+        map.put("vault", selectMap(conn, "empire_vaults", "empireId", id, "content", "amount", Long.class));
 
         PreparedStatement pSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_perks WHERE empireId = ?;");
         pSta.setInt(1, id);
@@ -951,6 +725,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
         map.put("banished", selectList(conn, "settlement_banished", "settlementId", id, "banished"));
         map.put("allies", selectList(conn, "settlement_allies", "settlementId", id, "ally"));
 
+        map.put("uses", selectMap(conn, "settlement_uses", "settlementId", id, "type", "state", String.class));
+        map.put("vault", selectMap(conn, "settlement_vaults", "settlementId", id, "content", "amount", Long.class));
+
         PreparedStatement oSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_outposts WHERE settlementId = ?;");
         oSta.setInt(1, id);
         ResultSet oRs = oSta.executeQuery();
@@ -959,24 +736,6 @@ public class MySqlDatabaseManager extends DatabaseManager {
             outposts.put(oRs.getString("name"), toMap(oRs));
         }
         map.put("outposts", outposts);
-
-        PreparedStatement uSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_uses WHERE settlementId = ?;");
-        uSta.setInt(1, id);
-        ResultSet uRs = uSta.executeQuery();
-        Map<String, String> use = new LinkedHashMap<>();
-        while (uRs.next()) {
-            use.put(uRs.getString("type"), uRs.getString("state"));
-        }
-        map.put("uses", use);
-
-        PreparedStatement vSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_vaults WHERE settlementId = ?;");
-        vSta.setInt(1, id);
-        ResultSet vRs = vSta.executeQuery();
-        Map<String, Long> vault = new LinkedHashMap<>();
-        while (vRs.next()) {
-            vault.put(vRs.getString("content"), vRs.getLong("amount"));
-        }
-        map.put("vault", vault);
 
         PreparedStatement pSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_perks WHERE settlementId = ?;");
         pSta.setInt(1, id);
@@ -1002,16 +761,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
     private OwnedLand createLand(Connection conn, ResultSet rs) throws SQLException {
         Map<String, Object> map = toMap(rs);
         int id = rs.getInt("id");
-
-        PreparedStatement uSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "claim_uses WHERE claimId = ?;");
-        uSta.setInt(1, id);
-        ResultSet uRs = uSta.executeQuery();
-        Map<String, String> use = new LinkedHashMap<>();
-        while (uRs.next()) {
-            use.put(uRs.getString("type"), uRs.getString("state"));
-        }
-        map.put("uses", use);
-
+        map.put("modes", selectMap(conn, "claim_modes", "claimId", id, "mode", "enabled", Boolean.class));
+        map.put("uses", selectMap(conn, "claim_uses", "claimId", id, "type", "state", String.class));
         return OwnedLand.deserialize(map);
     }
 
@@ -1134,6 +885,17 @@ public class MySqlDatabaseManager extends DatabaseManager {
             }
             insertSta.executeBatch();
         }
+    }
+
+    private <T> Map<String, T> selectMap(Connection conn, String table, String idColumn, int id, String keyColumn, String valueColumn, Class<T> valueClass) throws SQLException {
+        PreparedStatement sta = conn.prepareStatement("SELECT * FROM " + tablePrefix + table + " WHERE " + idColumn + " = ?;");
+        sta.setInt(1, id);
+        ResultSet rs = sta.executeQuery();
+        Map<String, T> map = new LinkedHashMap<>();
+        while (rs.next()) {
+            map.put(rs.getString(keyColumn), (T) rs.getObject(valueColumn));
+        }
+        return map;
     }
 
     private List<Object> selectList(Connection conn, String tableName, String keyColumn, int keyValue, String valueColumn) throws SQLException {

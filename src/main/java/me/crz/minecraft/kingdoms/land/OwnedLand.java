@@ -56,12 +56,16 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         return use.getOrDefault(u, landOwner.getUseState(u));
     }
 
-    public void setUseState(Use u, BuildState state) {
-        if (state == u.getDefault(BuildState.PRIVATE)) {
-            use.remove(u);
-        } else {
-            use.put(u, state);
-        }
+    public boolean setUseState(Use u, BuildState state) {
+        return use.put(u, state) != null;
+    }
+
+    public boolean hasUseState(Use u) {
+        return use.containsKey(u);
+    }
+
+    public boolean unsetUseState(Use u) {
+        return use.remove(u) != null;
     }
 
     public Map<Use, BuildState> getUseStates() {
@@ -183,6 +187,14 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         return modes;
     }
 
+    public boolean unsetMode(PlotMode mode) {
+        return getModes().remove(mode) != null;
+    }
+
+    public boolean hasMode(PlotMode mode) {
+        return getModes().containsKey(mode);
+    }
+
     @Override
     public boolean getMode(PlotMode mode) {
         return getModes().getOrDefault(mode, getLandOwner().getMode(mode));
@@ -302,9 +314,8 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         map.put("price", getPrice());
         map.put("forSale", isForSale());
         map.put("description", getDescription());
-        for (PlotMode mode : PlotMode.values(PlotMode.AppliesTo.LAND)) {
-            map.put(mode.name(), getMode(mode));
-        }
+        map.put("embassy", isEmbassy());
+        map.put("modes", getModes().entrySet().stream().filter(e -> e.getKey().appliesTo(PlotMode.AppliesTo.LAND_OWNER)).collect(Collectors.toMap(e -> e.getKey().name(), Map.Entry::getValue)));
         map.put("buildState", getBuildState().name());
         map.put("link", getLink() != null ? getLink().toString() : null);
         map.put("uses", getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
@@ -337,18 +348,17 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
                 land.setPlotOwner(null);
             }
         }
+        land.setDescription((String) map.get("description"));
         land.setPrice((Integer) map.get("price"));
         land.setForSale((Boolean) map.get("forSale"));
         land.setEmbassy((Boolean) map.get("embassy"));
-        land.setDescription((String) map.get("description"));
-        for (PlotMode mode : PlotMode.values(PlotMode.AppliesTo.LAND)) {
-            boolean ownerValue = land.getLandOwner().getMode(mode);
-            boolean value = (Boolean) map.getOrDefault(mode.name(), ownerValue);
-            if (value != ownerValue) {
-                landOwner.setMode(mode, value);
+        Map<String, Object> modes = (Map<String, Object>) map.get("modes");
+        for (PlotMode mode : PlotMode.values()) {
+            if (modes.containsKey(mode.name())) {
+                land.setMode(mode, (Boolean) modes.get(mode.name()));
             }
         }
-        land.setBuildState(Utils.parseEnum((String) map.get("buildState"), BuildState.PRIVATE));
+        land.setBuildState(Utils.parseEnum((String) map.get("buildState"), land.getBuildState()));
 
         if (map.get("link") != null && !((String) map.get("link")).isEmpty()) {
             land.setLink(UUID.fromString((String) map.get("link")));
@@ -357,7 +367,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         Map<String, Object> uses = (Map<String, Object>) map.get("uses");
         for (Use u : Use.values()) {
             if (uses.containsKey(u.name())) {
-                land.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), BuildState.PRIVATE));
+                land.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), u.getDefault(land.getBuildState())));
             }
         }
         if (land.getLandOwner() instanceof Village) {
@@ -379,16 +389,18 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
             setBuildState(land.getBuildState());
             r = true;
         }
-        for (PlotMode mode : PlotMode.values()) {
-            if (mode.get(this) != mode.get(land)) {
-                mode.set(mode.get(land), this);
-                r = true;
+        for (PlotMode mode : PlotMode.values(PlotMode.AppliesTo.LAND)) {
+            if (land.hasMode(mode)) {
+                r |= setMode(mode, land.getMode(mode));
+            } else {
+                r |= unsetMode(mode);
             }
         }
         for (Use use : Use.values()) {
-            if (getUseState(use) != land.getUseState(use)) {
-                setUseState(use, land.getUseState(use));
-                r = true;
+            if (land.hasUseState(use)) {
+                r |= setUseState(use, land.getUseState(use));
+            } else if (hasUseState(use)) {
+                r |= unsetUseState(use);
             }
         }
         return r;

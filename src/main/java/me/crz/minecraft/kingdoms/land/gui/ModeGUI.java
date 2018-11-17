@@ -7,9 +7,7 @@ import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.PlotMode;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.Material;
@@ -39,10 +37,22 @@ public class ModeGUI extends PlotGUI {
                         CItem item = m.getItem().setName(getMessage("entry.title").getReplacedText(
                                 "mode", m.getTag(),
                                 "value", state
-                        )).setLore(getMessage("entry.lore").getReplacedTextList(
+                        )).addLore(getMessage("entry.lore").getReplacedTextList(
                                 "mode", m.getTag(),
                                 "value", state
                         ));
+                        if (m.appliesTo(PlotMode.AppliesTo.LAND_OWNER)) {
+                            if (land.hasMode(m)) {
+                                item.addLore(getMessage("entry.click-to-unset").getReplacedTextList(
+                                        "parent", land.getLandOwner().getStateTag(),
+                                        "value", yesOrNo(land.getLandOwner().getMode(m))
+                                ));
+                            } else {
+                                item.addLore(getMessage("entry.parent").getReplacedTextList(
+                                        "parent", land.getLandOwner().getStateTag()
+                                ));
+                            }
+                        }
                         if (enabled) {
                             item.glow(true);
                         }
@@ -65,13 +75,25 @@ public class ModeGUI extends PlotGUI {
                                     return false;
                                 }
                             }
-                            boolean state = !m.get(land);
-                            m.set(state, land);
+                            if (clickType == ClickType.MIDDLE) {
+                                if (land.unsetMode(m) || land.hasLink()) {
+                                    Message.get("command.plot.mode.unset").tell(p,
+                                            "mode", m.getTag(),
+                                            "value", yesOrNo(land.getLandOwner().getMode(m)),
+                                            "parent", land.getLandOwner().getStateTag()
+                                    );
+                                } else {
+                                    return false;
+                                }
+                            } else {
+                                boolean state = !m.get(land);
+                                land.setMode(m, state);
+                                Message.get("command.plot.mode.success").tell(p,
+                                        "mode", m.getTag(),
+                                        "value", yesOrNo(state)
+                                );
+                            }
                             LandManager.getInstance().syncAndSave(land);
-                            MessageUtils.tell(p, Message.get("command.plot.mode.success"),
-                                    "mode", m.getTag(),
-                                    "value", yesOrNo(state)
-                            );
                             gui.build(p);
                             return true;
                         }

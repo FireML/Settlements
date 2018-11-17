@@ -10,7 +10,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 
 public class VillageAllyclaimCommand extends VillageSubCommand {
     public VillageAllyclaimCommand(SubCommand parent) {
-        super(parent, "allyclaim <grantAccess|deny>", VillageRank.CHIEF, "setallyclaim");
+        super(parent, "allyclaim <allow|deny>", VillageRank.CHIEF, "setallyclaim");
         setPermission("kingdoms.user");
     }
 

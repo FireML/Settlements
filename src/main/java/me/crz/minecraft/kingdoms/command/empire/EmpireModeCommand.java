@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class EmpireModeCommand extends EmpireSubCommand {
     public EmpireModeCommand(SubCommand parent) {
-        super(parent, "mode <mode> <value>", EmpireRank.SENATOR);
+        super(parent, "mode <mode> on|off", EmpireRank.SENATOR);
         setPermission("kingdoms.user");
     }
 
@@ -21,16 +21,18 @@ public class EmpireModeCommand extends EmpireSubCommand {
         if (args.length < 1) {
             ModeGUI.getInstance().open(res.getPlayer());
             return true;
+        } else if (args.length < 2) {
+            return false;
         }
 
         try {
             PlotMode m = PlotMode.valueOf(args[0].toLowerCase(), PlotMode.AppliesTo.LAND_OWNER);
-            if (m.getOptions().containsKey(args[1].toLowerCase())) {
-                if (m.set(m.getOptions().get(args[1].toLowerCase()), res.getVillage().getEmpire())) {
+            try {
+                if (res.getVillage().getEmpire().setMode(m, Utils.parseBoolean(args[1]))) {
                     Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire()));
                 }
                 res.tell(getMessage("success"), "mode", m.name(), "value", args[1]);
-            } else {
+            } catch (IllegalArgumentException e) {
                 return false;
             }
         } catch (IllegalArgumentException e) {
