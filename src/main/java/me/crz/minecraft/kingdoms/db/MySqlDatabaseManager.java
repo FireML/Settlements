@@ -905,6 +905,15 @@ public class MySqlDatabaseManager extends DatabaseManager {
         map.put("banished", selectList(conn, "empire_banished", "empireId", id, "banished"));
         map.put("allies", selectList(conn, "empire_allies", "empireId", id, "ally"));
 
+        PreparedStatement uSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_uses WHERE empireId = ?;");
+        uSta.setInt(1, id);
+        ResultSet uRs = uSta.executeQuery();
+        Map<String, String> use = new LinkedHashMap<>();
+        while (uRs.next()) {
+            use.put(uRs.getString("type"), uRs.getString("state"));
+        }
+        map.put("uses", use);
+
         PreparedStatement vSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_vaults WHERE empireId = ?;");
         vSta.setInt(1, id);
         ResultSet vRs = vSta.executeQuery();
