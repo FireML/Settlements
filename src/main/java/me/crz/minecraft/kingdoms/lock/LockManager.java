@@ -11,12 +11,19 @@ import me.crz.minecraft.kingdoms.world.SimpleBlockLocation;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.DoubleChest;
+import org.bukkit.block.data.Bisected;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Chest;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -178,16 +185,63 @@ public class LockManager implements LockProvider {
     }
 
     public Lock getLock(Block block) {
-        return getLock(new SimpleBlockLocation(block.getLocation()), block.getType());
+        return getLock(block.getLocation(), block.getBlockData());
     }
 
-    public Lock getLock(BlockState block) {
-        return getLock(new SimpleBlockLocation(block.getLocation()), block.getType());
+    public Lock getLock(InventoryHolder holder) {
+        if (holder instanceof DoubleChest) {
+            return getLock((DoubleChest) holder);
+        }
+        if (holder instanceof BlockState) {
+            return getLock(((BlockState) holder).getLocation(), ((BlockState) holder).getBlockData());
+        }
+        return null;
     }
 
-    private Lock getLock(SimpleBlockLocation location, Material type) {
+    private Lock getLock(DoubleChest doubleChest) {
         Lock lock = null;
-        if (lockTable.containsKey(location.getWorld())) {
+        if (doubleChest.getLeftSide() instanceof BlockState) {
+            lock = getLock(((BlockState) doubleChest.getLeftSide()).getLocation(), ((BlockState) doubleChest.getLeftSide()).getType());
+        }
+        if (lock == null && doubleChest.getRightSide() instanceof BlockState) {
+            lock = getLock(((BlockState) doubleChest.getRightSide()).getLocation(), ((BlockState) doubleChest.getRightSide()).getType());
+        }
+        return lock;
+    }
+
+    private Lock getLock(Location location, BlockData data) {
+        Lock lock = getLock(location, data.getMaterial());
+        if (lock == null && data instanceof Bisected) {
+            lock = getLock(location.add(0, ((Bisected) data).getHalf() == Bisected.Half.TOP ? -1 : 1, 0), data.getMaterial());
+        }
+        if (lock == null && data instanceof Chest && ((Chest) data).getType() != Chest.Type.SINGLE) {
+            Vector mod;
+            if (((Chest) data).getType() == Chest.Type.LEFT) {
+                // Get mod to the RIGHT
+                mod = new Vector(
+                        ((Chest) data).getFacing().getModZ() * -1,
+                        0,
+                        ((Chest) data).getFacing().getModX()
+                );
+            } else if (((Chest) data).getType() == Chest.Type.RIGHT) {
+                // Get mod to the LEFT
+                mod = new Vector(
+                        ((Chest) data).getFacing().getModZ(),
+                        0,
+                        ((Chest) data).getFacing().getModX() * -1
+                );
+            } else {
+                mod = new Vector(0, 0, 0);
+            }
+            lock = getLock(location.add(mod), data.getMaterial());
+        }
+        return lock;
+    }
+
+    private Lock getLock(Location bukkitLocation, Material type) {
+        Lock lock = null;
+        if (lockTable.containsKey(bukkitLocation.getWorld().getName())) {
+            SimpleBlockLocation location = new SimpleBlockLocation(bukkitLocation);
             Map<String, Lock> chunkMap = lockTable.get(location.getWorld()).getIfPresent(location.toChunkLocation());
             if (chunkMap != null && !chunkMap.containsKey(LOADING_KEY)) {
                 // Chunk was cached

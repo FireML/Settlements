@@ -52,3 +52,6 @@ lockable:
 - dropper
 - furnace
 - "*shulker_box"
+- "*_door"
+- "*_trapdoor"
+- "*_fence_gate"

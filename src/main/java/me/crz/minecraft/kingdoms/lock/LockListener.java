@@ -40,6 +40,7 @@ import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -81,46 +82,46 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onStructureGrow(StructureGrowEvent event) {
-        for (BlockState block : event.getBlocks()) {
-            Lock lock = LockManager.getInstance().getLock(block);
-            if (lock != null && !lock.isOwner(event.getPlayer())) {
-                event.setCancelled(true);
+        for (Iterator<BlockState> it = event.getBlocks().iterator(); it.hasNext();) {
+            Lock lock = LockManager.getInstance().getLock(it.next().getBlock());
+            if (lock != null) {
+                it.remove();
             }
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPistonExtend(BlockPistonExtendEvent event) {
         if (containsLocked(event.getBlocks())) {
             event.setCancelled(true);
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPistonRetract(BlockPistonRetractEvent event) {
         if (containsLocked(event.getBlocks())) {
             event.setCancelled(true);
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockExplode(BlockExplodeEvent event) {
         Lock lock = LockManager.getInstance().getLock(event.getBlock());
-        if (lock != null || containsLocked(event.blockList())) {
+        if (lock != null) {
             event.setCancelled(true);
+        } else {
+            event.blockList().removeIf(b -> LockManager.getInstance().getLock(b) != null);
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent event) {
-        if ( containsLocked(event.blockList())) {
-            event.setCancelled(true);
-        }
+        event.blockList().removeIf(b -> LockManager.getInstance().getLock(b) != null);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockBurn(BlockBurnEvent event) {
         Lock lock = LockManager.getInstance().getLock(event.getBlock());
         if (lock != null) {
@@ -128,7 +129,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityChangeBlock(EntityChangeBlockEvent event) {
         Lock lock = LockManager.getInstance().getLock(event.getBlock());
         if (lock != null) {
@@ -210,7 +211,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                     }
                 } else if ("hoppers".equalsIgnoreCase(action)) {
                     if (lock.isOwner(event.getPlayer())) {
-                        lock.setAllowHoppers(lock.isAllowHoppers());
+                        lock.setAllowHoppers(!lock.isAllowHoppers());
                         getMessage("hoppers." + (lock.isAllowHoppers() ? "enabled" : ".disabled")).tell(event.getPlayer(), "block", NameTag.getTag(lock.getBlock()));
                         Utils.runAsync(() -> DatabaseManager.getInstance().saveLocks(lock));
                     } else {
@@ -313,9 +314,8 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onInventoryOpen(InventoryOpenEvent event) {
-        if (event.getPlayer() instanceof Player && event.getInventory().getHolder() instanceof BlockState) {
-            BlockState state = (BlockState) event.getInventory().getHolder();
-            Lock lock = LockManager.getInstance().getLock(state);
+        if (event.getPlayer() instanceof Player) {
+            Lock lock = LockManager.getInstance().getLock(event.getInventory().getHolder());
             if (lock != null && !lock.canAccess((Player) event.getPlayer())) {
                 event.setCancelled(true);
             }
@@ -326,19 +326,15 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onHopperMove(InventoryMoveItemEvent event) {
-        if (event.getDestination().getHolder() instanceof BlockState) {
-            Lock lock = LockManager.getInstance().getLock(((BlockState) event.getDestination().getHolder()));
-            if (lock != null && !lock.isAllowHoppers()) {
-                event.setCancelled(true);
-                return;
-            }
+        Lock sourceLock = LockManager.getInstance().getLock(event.getSource().getHolder());
+        if (sourceLock != null && !sourceLock.isAllowHoppers()) {
+            event.setCancelled(true);
+            return;
         }
-        if (event.getSource().getHolder() instanceof BlockState) {
-            Lock lock = LockManager.getInstance().getLock(((BlockState) event.getSource().getHolder()));
-            if (lock != null && !lock.isAllowHoppers()) {
-                event.setCancelled(true);
-                return;
-            }
+        Lock destinationLock = LockManager.getInstance().getLock(event.getDestination().getHolder());
+        if (destinationLock != null && !destinationLock.isAllowHoppers()) {
+            event.setCancelled(true);
+            return;
         }
     }
 

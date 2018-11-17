@@ -372,6 +372,14 @@ lock:
       &3&lAccess granted to:
     entry: "&f{title} {name}"
     separator: "&7, "
+  state:
+    build:
+      residents: "&e&lALERT &r&7This land is owned by &e{state} {name}&7."
+      officers: "&e&lALERT &r&7This land is in &eofficer only &7mode."
+      trusted: "&e&lALERT &r&7You are not allied to or in the same empire as &e{state} {name}&7."
+      ally: "&e&lALERT &r&7You are not allied to &e{state} {name}&7."
+      private: "&e&lALERT &r&7Only the &ePlot owner&7 can build here."
+      friends: "&e&lALERT &r&7Only the &ePlot owner's friends&7 can build here."
 gui:
   access:
     title: "&3&l/s access"
