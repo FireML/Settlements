@@ -464,7 +464,7 @@ gui:
         &c&l{state}: &7{settlement}
         &9&lDescription: &r{description}
         &9&lModes:
-        &7MobSpawning: &6{spawning}
+        &7MobSpawning: &6{mobspawning}
         &7FireSpread: &6{firespread}
         &7Explosions: &6{explosions}
         &7PvP: &6{pvp}
@@ -658,7 +658,7 @@ command:
         &8&l-------- &r&c&lPlot Info&r &8&l--------
         &c&l{state}: &7{landowner}
         &9&lDescription: &r{description}
-        &9&lModes: &7MobSpawning: &6{spawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explosions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}&r&7 | Embassy: &6{embassy}
+        &9&lModes: &7MobSpawning: &6{mobspawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explosions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}&r&7 | Embassy: &6{embassy}
       owner: "&a&lPlot Owner: &7{name}"
       price: "&a&lPlot Price: &7{price}"
       description: Get information about the current plot

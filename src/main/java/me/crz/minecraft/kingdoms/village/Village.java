@@ -424,7 +424,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 "tax", Utils.CURRENCY_FORMAT.format(getTax()),
                 "joinfee", Utils.CURRENCY_FORMAT.format(getJoinFee()),
                 "allowallyclaim", yesOrNo(isAllowAllyClaim()),
-                "spawning", String.valueOf(getMode(PlotMode.mobSpawning)),
+                "mobspawning", String.valueOf(getMode(PlotMode.mobSpawning)),
                 "firespread", String.valueOf(getMode(PlotMode.fireSpread)),
                 "explosions", String.valueOf(getMode(PlotMode.explosions)),
                 "pvp", String.valueOf(getMode(PlotMode.pvp)),

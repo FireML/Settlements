@@ -415,7 +415,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
                 "state", getLandOwner().getStateTag(),
                 "description", getDescription(),
                 "landowner", getLandOwner().getName(),
-                "spawning", String.valueOf(getMode(PlotMode.mobSpawning)),
+                "mobspawning", String.valueOf(getMode(PlotMode.mobSpawning)),
                 "firespread", String.valueOf(getMode(PlotMode.fireSpread)),
                 "explosions", String.valueOf(getMode(PlotMode.explosions)),
                 "pvp", String.valueOf(getMode(PlotMode.pvp)),

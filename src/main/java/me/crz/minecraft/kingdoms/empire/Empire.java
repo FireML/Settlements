@@ -418,7 +418,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                 "joinfee", Utils.CURRENCY_FORMAT.format(getJoinFee()),
                 "tax", Utils.CURRENCY_FORMAT.format(getTax()),
                 "abandoned", yesOrNo(isAbandoned()),
-                "spawning", String.valueOf(getMode(PlotMode.mobSpawning)),
+                "mobspawning", String.valueOf(getMode(PlotMode.mobSpawning)),
                 "firespread", String.valueOf(getMode(PlotMode.fireSpread)),
                 "explosions", String.valueOf(getMode(PlotMode.explosions)),
                 "pvp", String.valueOf(getMode(PlotMode.pvp)),
