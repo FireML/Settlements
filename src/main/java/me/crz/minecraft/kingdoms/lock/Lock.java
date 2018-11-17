@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.lock;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseSerializable;
 import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.IdObject;
@@ -11,6 +12,7 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.SimpleBlockLocation;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -212,9 +214,17 @@ public class Lock implements DatabaseSerializable {
                     IdObject id = IdObject.get(Integer.parseInt(split[1]));
                     switch (split[0]) {
                         case "village":
-                            lock.getAllowedVillageIds().add(id);
+                            Village village = VillageManager.getInstance().getVillageFromId(id);
+                            if (village != null) {
+                                lock.getAllowedVillageIds().add(id);
+                            }
+                            break;
                         case "empire":
-                            lock.getAllowedEmpireIds().add(id);
+                            Empire empire = EmpireManager.getInstance().getEmpireFromId(id);
+                            if (empire != null) {
+                                lock.getAllowedEmpireIds().add(id);
+                            }
+                            break;
                     }
                 }
             } catch (IllegalArgumentException e) {

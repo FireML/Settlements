@@ -284,12 +284,14 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                             if (!lock.getAllowedVillageIds().isEmpty()) {
                                 event.getPlayer().sendMessage(lock.getAllowedVillageIds().stream()
                                         .map(i -> VillageManager.getInstance().getVillageFromId(i))
+                                        .filter(Objects::nonNull)
                                         .map(v -> getMessage("info.entry").getReplacedText("name", v.getName(), "title", v.getStateTag()))
                                         .collect(Collectors.joining(getMessage("info.separator").getText())));
                             }
                             if (!lock.getAllowedEmpireIds().isEmpty()) {
                                 event.getPlayer().sendMessage(lock.getAllowedEmpireIds().stream()
                                         .map(i -> EmpireManager.getInstance().getEmpireFromId(i))
+                                        .filter(Objects::nonNull)
                                         .map(e -> getMessage("info.entry").getReplacedText("name", e.getName(), "title", e.getStateTag()))
                                         .collect(Collectors.joining(getMessage("info.separator").getText())));
                             }
