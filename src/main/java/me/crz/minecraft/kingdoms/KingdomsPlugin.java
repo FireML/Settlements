@@ -7,6 +7,7 @@ import me.crz.minecraft.kingdoms.empire.EmpireListener;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.integration.ChestShopIntegration;
 import me.crz.minecraft.kingdoms.integration.LWCIntegration;
+import me.crz.minecraft.kingdoms.integration.MultiverseIntegration;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.lock.LockListener;
@@ -47,6 +48,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     public static Data data;
     private LandPerks lPerks;
     public Economy econ = null;
+    private MultiverseIntegration multiverse = null;
 
     private Set<LockProvider> lockProviders = new LinkedHashSet<>();
 
@@ -83,6 +85,10 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             return;
         }
         data = new Data();
+        if (getServer().getPluginManager().isPluginEnabled("Multiverse-Core")) {
+            multiverse = new MultiverseIntegration(this);
+            this.getLogger().log(Level.INFO, "Hooked into Multiverse-Core v" + multiverse.getVersion());
+        }
         if (getServer().getPluginManager().isPluginEnabled("LWC")) {
             LWCIntegration lwcIntegration = new LWCIntegration(LWC.getInstance());
             getLogger().log(Level.INFO, "Hooked into LWC " + lwcIntegration.getLWC().getPlugin().getDescription().getVersion() + "!");
@@ -175,7 +181,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             return false;
         }
         chat = rsp.getProvider();
-        this.getLogger().log(Level.INFO, "Hooked into chat service provider " + chat.getName());
+        this.getLogger().log(Level.INFO, "Hooked into chat service provider " + chat.getName() + " " + rsp.getPlugin().getDescription().getVersion());
         return chat != null;
     }
 
@@ -190,7 +196,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             return false;
         }
         econ = rsp.getProvider();
-        this.getLogger().log(Level.INFO, "Hooked into economy service provider " + econ.getName());
+        this.getLogger().log(Level.INFO, "Hooked into economy service provider " + econ.getName() + " " + rsp.getPlugin().getDescription().getVersion());
         return econ != null;
     }
 
@@ -218,5 +224,9 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     public Set<LockProvider> getLockProviders() {
         return lockProviders;
+    }
+
+    public MultiverseIntegration getMultiverse() {
+        return multiverse;
     }
 }

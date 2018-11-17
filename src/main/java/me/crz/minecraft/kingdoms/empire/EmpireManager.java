@@ -3,7 +3,6 @@ package me.crz.minecraft.kingdoms.empire;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
-import me.crz.minecraft.kingdoms.lock.LockManager;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
@@ -163,6 +162,9 @@ public class EmpireManager {
             empire.setHome(new SimpleLocation(worldName, 0, world.getHighestBlockYAt(0, 0), 0));
         }
         world.setSpawnLocation(empire.getHome().toBukkitLocation());
+        if (KingdomsPlugin.getInstance().getMultiverse() != null) {
+            KingdomsPlugin.getInstance().getMultiverse().importWorld(world);
+        }
 
         Message.get("empire-world-generated").tell(empire.getOnlineResidents());
     }
@@ -186,16 +188,26 @@ public class EmpireManager {
             for (LockProvider lockProvider : KingdomsPlugin.getInstance().getLockProviders()) {
                 lockProvider.removeInWorld(empireWorld);
             }
-            if (Bukkit.unloadWorld(empireWorld, true)) {
-                empireWorld.getWorldFolder().delete();
-            } else {
-                KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not unload and delete the world of empire " + empire.getName());
-            }
+            deleteWorld(empireWorld);
         }
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().deleteEmpire(empire);
             DatabaseManager.getInstance().saveVillages(empire.getMembers());
         });
+    }
+
+    private void deleteWorld(World empireWorld) {
+        if (KingdomsPlugin.getInstance().getMultiverse() == null) {
+            if (Bukkit.unloadWorld(empireWorld, true)) {
+                if (!empireWorld.getWorldFolder().delete()) {
+                    KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could delete the files of world " + empireWorld.getName());
+                }
+            } else {
+                KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not unload and delete the world " + empireWorld.getName());
+            }
+        } else if (!KingdomsPlugin.getInstance().getMultiverse().deleteWorld(empireWorld)) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Multiverse could not unload and delete the world " + empireWorld.getName());
+        }
     }
 
     public void abandonEmpire(Empire empire) {

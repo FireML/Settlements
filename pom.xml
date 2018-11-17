@@ -132,6 +132,20 @@
             <id>lwc-repo</id>
             <url>http://repo.dmulloy2.net/nexus/repository/snapshots/</url>
         </repository>
+        <repository>
+            <id>multiverse-repo</id>
+            <url>http://repo.onarandombox.com/content/repositories/multiverse</url>
+        </repository>
+        <repository>
+            <id>elmakers-repo</id>
+            <url>http://maven.elmakers.com/repository/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -194,6 +208,30 @@
             <artifactId>VaultAPI</artifactId>
             <version>1.6</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.onarandombox.multiversecore</groupId>
+            <artifactId>Multiverse-Core</artifactId>
+            <version>2.6.0</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.spigotmc</groupId>
+                    <artifactId>spigot-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.bukkit</groupId>
+                    <artifactId>bukkit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.milkbowl.vault</groupId>
+                    <artifactId>VaultAPI</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mcstats.bukkit</groupId>
+                    <artifactId>metrics</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.acrobot.chestshop</groupId>
