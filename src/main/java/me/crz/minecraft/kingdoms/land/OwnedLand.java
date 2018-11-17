@@ -183,6 +183,11 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         return modes;
     }
 
+    @Override
+    public boolean getMode(PlotMode mode) {
+        return getModes().getOrDefault(mode, getLandOwner().getMode(mode));
+    }
+
     public String getDescription() {
         return description;
     }
@@ -337,7 +342,11 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         land.setEmbassy((Boolean) map.get("embassy"));
         land.setDescription((String) map.get("description"));
         for (PlotMode mode : PlotMode.values(PlotMode.AppliesTo.LAND)) {
-            landOwner.setMode(mode, (Boolean) map.getOrDefault(mode.name(), mode.getDefault()));
+            boolean ownerValue = land.getLandOwner().getMode(mode);
+            boolean value = (Boolean) map.getOrDefault(mode.name(), ownerValue);
+            if (value != ownerValue) {
+                landOwner.setMode(mode, value);
+            }
         }
         land.setBuildState(Utils.parseEnum((String) map.get("buildState"), BuildState.PRIVATE));
 
