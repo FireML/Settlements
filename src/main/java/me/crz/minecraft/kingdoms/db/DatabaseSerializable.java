@@ -11,7 +11,7 @@ public interface DatabaseSerializable extends ConfigurationSerializable {
 
     default String getDbName() {
         return getClass().getSimpleName().toLowerCase();
-    };
+    }
 
     String getDbDescription();
 }

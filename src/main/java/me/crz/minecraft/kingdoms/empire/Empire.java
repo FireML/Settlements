@@ -4,6 +4,7 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.land.LandOwner;
+import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.perk.Perk;
@@ -410,18 +411,18 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                 "name", getName(),
                 "description", getDescription(),
                 "symbol", getSymbol(),
-                "pvp", yesOrNo(isPvp()),
                 "access", getAccess().getTag(),
                 "upkeep", Utils.CURRENCY_FORMAT.format(getUpkeep()),
                 "balance", Utils.withSuffix(getBank()),
                 "bank", Utils.CURRENCY_FORMAT.format(getBank()),
                 "joinfee", Utils.CURRENCY_FORMAT.format(getJoinFee()),
                 "tax", Utils.CURRENCY_FORMAT.format(getTax()),
-                "abandoned", yesOrNo(isMobSpawning()),
-                "mobspawning", yesOrNo(isMobSpawning()),
-                "firespread", yesOrNo(isFireSpread()),
-                "explosions", yesOrNo(isExplosions()),
-                "buff", yesOrNo(isBuff()),
+                "abandoned", yesOrNo(isAbandoned()),
+                "spawning", String.valueOf(getMode(PlotMode.mobSpawning)),
+                "firespread", String.valueOf(getMode(PlotMode.fireSpread)),
+                "explosions", String.valueOf(getMode(PlotMode.explosions)),
+                "pvp", String.valueOf(getMode(PlotMode.pvp)),
+                "buff", String.valueOf(getMode(PlotMode.buff)),
                 "bonusoutposts", String.valueOf(getBonusOutposts()),
                 "bonusclaims", String.valueOf(getBonusClaimAmount()),
                 "capital", capital != null ? capital.getName() : "-",

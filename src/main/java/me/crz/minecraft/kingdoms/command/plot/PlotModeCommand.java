@@ -28,7 +28,7 @@ public class PlotModeCommand extends PlotSubCommand {
                 return true;
             }
             try {
-                PlotMode m = PlotMode.valueOf(args[0].toLowerCase());
+                PlotMode m = PlotMode.valueOf(args[0].toLowerCase(), PlotMode.AppliesTo.LAND);
                 if (m == PlotMode.embassy) {
                     if (land.containsHome() || land.isOutpost()) {
                         getError("cant-set-embassy").tell(res);
@@ -60,7 +60,7 @@ public class PlotModeCommand extends PlotSubCommand {
                 LandManager.getInstance().syncAndSave(land);
                 res.tell(getMessage("success"), "mode", m.name(), "value", args.length > 1 ? args[1] : String.valueOf(setTo));
             } catch (IllegalArgumentException e) {
-                res.tell(getMessage("modes"), "modes", Arrays.stream(PlotMode.values()).map(Enum::name).collect(Collectors.joining(", ")));
+                res.tell(getMessage("modes"), "modes", PlotMode.values(PlotMode.AppliesTo.LAND).stream().map(Enum::name).collect(Collectors.joining(", ")));
                 return false;
             }
         }

@@ -29,7 +29,7 @@ public class ModeGUI extends PlotGUI {
         super("plot.mode");
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
 
-        for (PlotMode m : PlotMode.values()) {
+        for (PlotMode m : PlotMode.values(PlotMode.AppliesTo.LAND)) {
             gui.addItem(new ClickableItem() {
                 public ItemStack getItem(Player p) {
                     OwnedLand land = LandManager.getInstance().getLand(p.getLocation());

@@ -1,8 +1,10 @@
 package me.crz.minecraft.kingdoms.village.gui;
 
-import me.crz.minecraft.kingdoms.village.Mode;
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.KingdomsGUI;
 import org.bukkit.event.inventory.ClickType;
@@ -30,7 +32,7 @@ public class ModeGUI extends KingdomsGUI {
         super("mode");
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
 
-        for (Mode m : Mode.values()) {
+        for (PlotMode m : PlotMode.values(PlotMode.AppliesTo.LAND_OWNER)) {
             gui.addItem(new ClickableItem() {
                 public ItemStack getItem(Player p) {
                     Village village = VillageManager.getInstance().getVillageFromPlayer(p);
@@ -56,7 +58,9 @@ public class ModeGUI extends KingdomsGUI {
                     Resident res = ResidentManager.getInstance().getResident(p);
                     if (res.hasVillage() && res.getVillageRank().atLeast(VillageRank.CHIEF)) {
                         boolean state = !m.get(res.getVillage());
-                        m.set(state, res.getVillage());
+                        if (m.set(state, res.getVillage())) {
+                            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
+                        }
                         MessageUtils.tell(p, Message.get("command.village.mode.success"),
                                 "mode", m.getTag(),
                                 "value", yesOrNo(state)

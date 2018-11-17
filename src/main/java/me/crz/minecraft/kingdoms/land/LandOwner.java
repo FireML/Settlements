@@ -38,18 +38,14 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targetable {
+public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targetable, ModeAble {
     private IdObject id = IdObject.get(null);
     private String name;
     private String description = "";
     private long bank = 0;
     private long joinFee = 0;
     private long tax = 0;
-    private boolean pvp = false;
-    private boolean fireSpread = false;
-    private boolean explosions = false;
-    private boolean mobSpawning = false;
-    private boolean buff = true;
+    private Map<PlotMode, Boolean> modes = new EnumMap<>(PlotMode.class);
     private int bonusClaims = 0;
     private Map<String, Long> vault = new HashMap<>();
     private Map<String, PerkData> perks = new LinkedHashMap<>();
@@ -367,44 +363,9 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
                 || (resident.hasEmpire() && isTrusted(resident.getVillage().getEmpire()));
     }
 
-    public boolean isPvp() {
-        return pvp;
-    }
-
-    public void setPvp(boolean pvp) {
-        this.pvp = pvp;
-    }
-
-    public boolean isFireSpread() {
-        return fireSpread;
-    }
-
-    public void setFireSpread(boolean fireSpread) {
-        this.fireSpread = fireSpread;
-    }
-
-    public boolean isExplosions() {
-        return explosions;
-    }
-
-    public void setExplosions(boolean explosions) {
-        this.explosions = explosions;
-    }
-
-    public boolean isMobSpawning() {
-        return mobSpawning;
-    }
-
-    public void setMobSpawning(boolean mobSpawning) {
-        this.mobSpawning = mobSpawning;
-    }
-
-    public boolean isBuff() {
-        return buff;
-    }
-
-    public void setBuff(boolean buff) {
-        this.buff = buff;
+    @Override
+    public Map<PlotMode, Boolean> getModes() {
+        return modes;
     }
 
     public SimpleLocation getHome() {
@@ -530,11 +491,9 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         map.put("id", getId().value());
         map.put("name", getName());
         map.put("description", getDescription());
-        map.put("pvp", isPvp());
-        map.put("fireSpread", isFireSpread());
-        map.put("explosions", isExplosions());
-        map.put("mobSpawning", isMobSpawning());
-        map.put("buff", isBuff());
+        for (PlotMode mode : PlotMode.values(PlotMode.AppliesTo.LAND_OWNER)) {
+            map.put(mode.name(), getMode(mode));
+        }
         map.put("bank", getBank());
         map.put("joinFee", getJoinFee());
         map.put("tax", getTax());
@@ -569,11 +528,9 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         landOwner.setBank((Long) map.get("bank"));
         landOwner.setJoinFee((Long) map.get("joinFee"));
         landOwner.setTax((Long) map.get("tax"));
-        landOwner.setPvp((Boolean) map.get("pvp"));
-        landOwner.setFireSpread((Boolean) map.get("fireSpread"));
-        landOwner.setExplosions((Boolean) map.get("explosions"));
-        landOwner.setMobSpawning((Boolean) map.get("mobSpawning"));
-        landOwner.setBuff((Boolean) map.get("buff"));
+        for (PlotMode mode : PlotMode.values(PlotMode.AppliesTo.LAND_OWNER)) {
+            landOwner.setMode(mode, (Boolean) map.getOrDefault(mode.name(), mode.getDefault()));
+        }
         landOwner.setBonusClaims((Integer) map.get("bonusClaims"));
         try {
             landOwner.setBuildState(BuildState.valueOf((String) map.get("buildState")));

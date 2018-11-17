@@ -33,23 +33,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import me.crz.minecraft.kingdoms.landflags.Use;
 
-public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializable {
+public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializable, ModeAble {
     private IdObject id = IdObject.get(null);
     private LandOwner landOwner;
     private UUID plotOwner = null;
     private int unclaimIn = 0;
     private int price = 0;
     private boolean forSale = false;
-    private boolean pvp = false;
-    private boolean mobSpawning = false;
-    private boolean fireSpread = false;
-    private boolean explosions = false;
-    private boolean buff = true;
+    private Map<PlotMode, Boolean> modes = new EnumMap<>(PlotMode.class);
     private String outpost = null;
     private String description = "";
     private BuildState buildState = BuildState.PRIVATE;
     private EnumMap<Use, BuildState> use = new EnumMap<>(Use.class);
-    private boolean embassy;
     private UUID link;
 
     public OwnedLand(LandOwner landOwner, SimpleChunkLocation location) {
@@ -160,11 +155,11 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     public boolean isEmbassy() {
-        return embassy;
+        return getMode(PlotMode.embassy);
     }
 
     public void setEmbassy(boolean embassy) {
-        this.embassy = embassy;
+        setMode(PlotMode.embassy, embassy);
     }
 
     public SimpleChunkLocation getLocation() {
@@ -183,64 +178,9 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         return players;
     }
 
-    public boolean isPvp() {
-        return pvp;
-    }
-
-    public boolean setPvp(boolean pvp) {
-        if (this.pvp != pvp) {
-            this.pvp = pvp;
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isMobSpawning() {
-        return mobSpawning;
-    }
-
-    public boolean setMobSpawning(boolean mobSpawning) {
-        if (this.mobSpawning != mobSpawning) {
-            this.mobSpawning = mobSpawning;
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isFireSpread() {
-        return fireSpread;
-    }
-
-    public boolean setFireSpread(boolean fireSpread) {
-        if (this.fireSpread != fireSpread) {
-            this.fireSpread = fireSpread;
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isExplosions() {
-        return explosions;
-    }
-
-    public boolean setExplosions(boolean explosions) {
-        if (this.explosions != explosions) {
-            this.explosions = explosions;
-            return true;
-        }
-        return false;
-    }
-
-    public boolean setBuff(boolean buff) {
-        if (this.buff != buff) {
-            this.buff = buff;
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isBuff() {
-        return buff;
+    @Override
+    public Map<PlotMode, Boolean> getModes() {
+        return modes;
     }
 
     public String getDescription() {
@@ -356,13 +296,10 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         map.put("owner", getPlotOwner() != null ? getPlotOwner() : Utils.ZERO_UUID);
         map.put("price", getPrice());
         map.put("forSale", isForSale());
-        map.put("embassy", isEmbassy());
         map.put("description", getDescription());
-        map.put("pvp", isPvp());
-        map.put("fireSpread", isFireSpread());
-        map.put("explosions", isExplosions());
-        map.put("mobSpawning", isMobSpawning());
-        map.put("buff", isBuff());
+        for (PlotMode mode : PlotMode.values(PlotMode.AppliesTo.LAND)) {
+            map.put(mode.name(), getMode(mode));
+        }
         map.put("buildState", getBuildState().name());
         map.put("link", getLink() != null ? getLink().toString() : null);
         map.put("uses", getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
@@ -399,11 +336,9 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         land.setForSale((Boolean) map.get("forSale"));
         land.setEmbassy((Boolean) map.get("embassy"));
         land.setDescription((String) map.get("description"));
-        land.setPvp((Boolean) map.get("pvp"));
-        land.setFireSpread((Boolean) map.get("fireSpread"));
-        land.setExplosions((Boolean) map.get("explosions"));
-        land.setMobSpawning((Boolean) map.get("mobSpawning"));
-        land.setBuff((Boolean) map.get("buff"));
+        for (PlotMode mode : PlotMode.values(PlotMode.AppliesTo.LAND)) {
+            landOwner.setMode(mode, (Boolean) map.getOrDefault(mode.name(), mode.getDefault()));
+        }
         land.setBuildState(Utils.parseEnum((String) map.get("buildState"), BuildState.PRIVATE));
 
         if (map.get("link") != null && !((String) map.get("link")).isEmpty()) {
@@ -459,10 +394,11 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
                 "state", getLandOwner().getStateTag(),
                 "description", getDescription(),
                 "landowner", getLandOwner().getName(),
-                "spawning", String.valueOf(isMobSpawning()),
-                "firespread", String.valueOf(isFireSpread()),
-                "explosions", String.valueOf(isExplosions()),
-                "pvp", String.valueOf(isPvp()),
+                "spawning", String.valueOf(getMode(PlotMode.mobSpawning)),
+                "firespread", String.valueOf(getMode(PlotMode.fireSpread)),
+                "explosions", String.valueOf(getMode(PlotMode.explosions)),
+                "pvp", String.valueOf(getMode(PlotMode.pvp)),
+                "buff", String.valueOf(getMode(PlotMode.buff)),
                 "build", getBuildState().getTag(),
                 "embassy", String.valueOf(isEmbassy())
         };

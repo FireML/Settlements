@@ -3,10 +3,8 @@ package me.crz.minecraft.kingdoms.land;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
-import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.perk.Perk;
 import me.crz.minecraft.kingdoms.perk.PerkEffect;
-import me.crz.minecraft.kingdoms.perk.LevelPerk;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -53,11 +51,11 @@ public class LandPerks {
         List<PerkEffect> effects = new ArrayList<>();
         Resident resident = ResidentManager.getInstance().getResident(p);
 
-        if (resident.hasVillage() && (land == null || (land.isOwnedBy(resident.getVillage()) && land.isBuff()))) {
-            if (resident.hasEmpire() && resident.getVillage().getEmpire().isBuff()) {
+        if (resident.hasVillage() && (land == null || (land.isOwnedBy(resident.getVillage()) && land.getMode(PlotMode.buff)))) {
+            if (resident.hasEmpire() && resident.getVillage().getEmpire().getMode(PlotMode.buff)) {
                 effects.addAll(getEffects(p, resident, land, resident.getVillage().getEmpire(), refresh));
             }
-            if (resident.getVillage().isBuff()) {
+            if (resident.getVillage().getMode(PlotMode.buff)) {
                 effects.addAll(getEffects(p, resident, land, resident.getVillage(), refresh));
             }
         }
@@ -86,7 +84,7 @@ public class LandPerks {
             }
         }
 
-        if (land != null && land.getLandOwner() instanceof Village && !land.isOwnedBy(resident.getVillage()) && land.isBuff()) {
+        if (land != null && land.getLandOwner() instanceof Village && !land.isOwnedBy(resident.getVillage()) && land.getMode(PlotMode.buff)) {
             Village landOwner = (Village) land.getLandOwner();
             for (Perk perk : landOwner.getPerks()) {
                 if (!landOwner.getPerkData(perk).isActive()) {

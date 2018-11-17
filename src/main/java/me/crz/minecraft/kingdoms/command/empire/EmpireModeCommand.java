@@ -1,11 +1,13 @@
 package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.gui.ModeGUI;
+import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
-import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class EmpireModeCommand extends EmpireSubCommand {
@@ -22,15 +24,17 @@ public class EmpireModeCommand extends EmpireSubCommand {
         }
 
         try {
-            EmpireMode m = EmpireMode.valueOf(args[0].toLowerCase());
+            PlotMode m = PlotMode.valueOf(args[0].toLowerCase(), PlotMode.AppliesTo.LAND_OWNER);
             if (m.getOptions().containsKey(args[1].toLowerCase())) {
-                m.set(m.getOptions().get(args[1].toLowerCase()), res.getVillage().getEmpire());
+                if (m.set(m.getOptions().get(args[1].toLowerCase()), res.getVillage().getEmpire())) {
+                    Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire()));
+                }
                 res.tell(getMessage("success"), "mode", m.name(), "value", args[1]);
             } else {
                 return false;
             }
         } catch (IllegalArgumentException e) {
-            res.tell(getMessage("modes"), "modes", Arrays.stream(EmpireMode.values()).map(Enum::name).collect(Collectors.joining(", ")));
+            res.tell(getMessage("modes"), "modes", PlotMode.values(PlotMode.AppliesTo.LAND_OWNER).stream().map(Enum::name).collect(Collectors.joining(", ")));
             return false;
         }
         return true;

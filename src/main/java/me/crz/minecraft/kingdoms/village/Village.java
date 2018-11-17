@@ -8,6 +8,7 @@ import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
+import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -418,16 +419,16 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 "maxland", String.valueOf(getMaxClaimableChunks()),
                 "outposts", String.valueOf(getOutpostHomes().size()),
                 "maxoutposts", String.valueOf(getMaxOutposts()),
-                "pvp", yesOrNo(isPvp()),
                 "balance", Utils.withSuffix(getBank()),
                 "bank", Utils.CURRENCY_FORMAT.format(getBank()),
                 "tax", Utils.CURRENCY_FORMAT.format(getTax()),
                 "joinfee", Utils.CURRENCY_FORMAT.format(getJoinFee()),
                 "allowallyclaim", yesOrNo(isAllowAllyClaim()),
-                "mobspawning", yesOrNo(isMobSpawning()),
-                "firespread", yesOrNo(isFireSpread()),
-                "explosions", yesOrNo(isExplosions()),
-                "buff", yesOrNo(isBuff()),
+                "spawning", String.valueOf(getMode(PlotMode.mobSpawning)),
+                "firespread", String.valueOf(getMode(PlotMode.fireSpread)),
+                "explosions", String.valueOf(getMode(PlotMode.explosions)),
+                "pvp", String.valueOf(getMode(PlotMode.pvp)),
+                "buff", String.valueOf(getMode(PlotMode.buff)),
                 "bonusclaims", configMessages != null
                         ? getBonusClaimAmount() > 0 ? configMessages.getMessage("bonus-claims").getReplacedText("amount", String.valueOf(getBonusClaimAmount())) : ""
                         : String.valueOf(getBonusClaimAmount()),

@@ -1,9 +1,6 @@
 package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.Base;
-import me.crz.minecraft.kingdoms.command.empire.EmpireMode;
-import me.crz.minecraft.kingdoms.empire.Empire;
-import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.essentials.events.HostileCreaturePreSpawnEvent;
 import me.crz.minecraft.kingdoms.essentials.events.HostileCreatureSpawnEvent;
 import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureDamageEvent;
@@ -42,15 +39,10 @@ public class LandFlags extends Base implements LandFlagBase {
         return land == null || mode.get(land);
     }
 
-    private boolean isAllowed(Location location, EmpireMode mode) {
-        Empire empire = EmpireManager.getInstance().getEmpireFromWorld(location.getWorld());
-        return empire == null || mode.get(empire);
-    }
-
     @EventHandler(ignoreCancelled = true)
     public void onBlockIgnite(BlockIgniteEvent e) {
         if (e.getCause().equals(BlockIgniteEvent.IgniteCause.SPREAD) && e.getIgnitingBlock() != null) {
-            if (isAllowed(e.getBlock().getLocation(), PlotMode.firespread) && isAllowed(e.getBlock().getLocation(), EmpireMode.firespread)) {
+            if (isAllowed(e.getBlock().getLocation(), PlotMode.fireSpread)) {
                 return;
             }
             e.setCancelled(true);
@@ -59,7 +51,7 @@ public class LandFlags extends Base implements LandFlagBase {
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockBurn(BlockBurnEvent e) {
-        if (isAllowed(e.getBlock().getLocation(), PlotMode.firespread) && isAllowed(e.getBlock().getLocation(), EmpireMode.firespread)) {
+        if (isAllowed(e.getBlock().getLocation(), PlotMode.fireSpread)) {
             return;
         }
         e.setCancelled(true);
@@ -91,7 +83,7 @@ public class LandFlags extends Base implements LandFlagBase {
                 return;
             }
 
-            if (isAllowed(e.getEntity().getLocation(), PlotMode.pvp) && isAllowed(e.getEntity().getLocation(), EmpireMode.pvp)) {
+            if (isAllowed(e.getEntity().getLocation(), PlotMode.pvp)) {
                 return;
             }
             if (damager.hasPermission("kindoms.staff")) {
@@ -109,7 +101,7 @@ public class LandFlags extends Base implements LandFlagBase {
             if (land == null) {
                 return;
             }
-            if (isAllowed(e.getEntity().getLocation(), PlotMode.pvp) && isAllowed(e.getEntity().getLocation(), EmpireMode.pvp)) {
+            if (land.getMode(PlotMode.pvp)) {
                 return;
             }
             Player damager = (Player) ((Projectile) e.getCombuster()).getShooter();
@@ -123,27 +115,27 @@ public class LandFlags extends Base implements LandFlagBase {
 
     @EventHandler(ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent e) {
-        if (!isAllowed(e.getLocation(), PlotMode.explosions) || !isAllowed(e.getLocation(), EmpireMode.explosions)) {
+        if (!isAllowed(e.getLocation(), PlotMode.explosions)) {
             e.setCancelled(true);
             return;
         }
-        e.blockList().removeIf(block -> !isAllowed(block.getLocation(), PlotMode.explosions) || !isAllowed(block.getLocation(), EmpireMode.explosions));
+        e.blockList().removeIf(block -> !isAllowed(block.getLocation(), PlotMode.explosions));
     }
 
 
     @EventHandler(ignoreCancelled = true)
     public void onEntityExplode(BlockExplodeEvent e) {
-        if (!isAllowed(e.getBlock().getLocation(), PlotMode.explosions) || !isAllowed(e.getBlock().getLocation(), EmpireMode.explosions)) {
+        if (!isAllowed(e.getBlock().getLocation(), PlotMode.explosions)) {
             e.setCancelled(true);
             return;
         }
-        e.blockList().removeIf(block -> !isAllowed(block.getLocation(), PlotMode.explosions) || !isAllowed(block.getLocation(), EmpireMode.explosions));
+        e.blockList().removeIf(block -> !isAllowed(block.getLocation(), PlotMode.explosions));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent e) {
         if (e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
-            if (isAllowed(e.getEntity().getLocation(), PlotMode.explosions) && isAllowed(e.getEntity().getLocation(), EmpireMode.explosions)) {
+            if (isAllowed(e.getEntity().getLocation(), PlotMode.explosions)) {
                 return;
             }
             e.setCancelled(true);
@@ -152,16 +144,14 @@ public class LandFlags extends Base implements LandFlagBase {
 
     @EventHandler(ignoreCancelled = true)
     public void onHostileSpawn(HostileCreaturePreSpawnEvent e) {
-        OwnedLand land = LandManager.getInstance().getLand(e.getLocation().getChunk());
-        if (land != null && !land.isMobSpawning()) {
+        if (!isAllowed(e.getLocation(), PlotMode.mobSpawning)) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onHostileSpawn(HostileCreatureSpawnEvent e) {
-        OwnedLand land = LandManager.getInstance().getLand(e.getLocation().getChunk());
-        if (land != null && !land.isMobSpawning()) {
+        if (!isAllowed(e.getLocation(), PlotMode.mobSpawning)) {
             e.setCancelled(true);
         }
     }
@@ -179,7 +169,7 @@ public class LandFlags extends Base implements LandFlagBase {
                     "name", originalLand.getLandOwner().getName(),
                     "state", originalLand.getLandOwner().getStateTag()
             );
-            if (originalLand.getLandOwner().equals(playerVillage) && originalLand.getLandOwner().isBuff()) {
+            if (originalLand.getLandOwner().equals(playerVillage) && originalLand.getLandOwner().getMode(PlotMode.buff)) {
                 Base.getLandPerks().removeEffects(player, originalLand, true);
             }
         }
@@ -187,11 +177,11 @@ public class LandFlags extends Base implements LandFlagBase {
         if (destinationLand != null) {
             if (!sameVillage) {
                 MessageUtils.tellAdvanced(player, destinationLand.getLandOwner().getStateKey() + ".enter",
-                        "pvp", destinationLand.isPvp() ? Message.get("pvp-is-enabled").getText() : "",
+                        "pvp", destinationLand.getMode(PlotMode.pvp) ? Message.get("pvp-is-enabled").getText() : "",
                         "name", destinationLand.getLandOwner().getName(),
                         "state", destinationLand.getLandOwner().getStateTag()
                 );
-                if (destinationLand.getLandOwner().equals(playerVillage) && destinationLand.getLandOwner().isBuff()) {
+                if (destinationLand.getLandOwner().equals(playerVillage) && destinationLand.getLandOwner().getMode(PlotMode.buff)) {
                     Base.getLandPerks().giveEffects(player, destinationLand, true);
                 }
             }
@@ -202,14 +192,14 @@ public class LandFlags extends Base implements LandFlagBase {
                             "state", destinationLand.getLandOwner().getStateTag(),
                             "owner", ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName(),
                             "description", destinationLand.getDescription(),
-                            "pvp", destinationLand.isPvp() ? Message.get("pvp-is-enabled").getText() : ""
+                            "pvp", destinationLand.getMode(PlotMode.pvp) ? Message.get("pvp-is-enabled").getText() : ""
                     ));
                 } else if (destinationLand.isForSale() && (destinationLand.getLandOwner().equals(playerVillage) || destinationLand.isEmbassy())) {
                     MessageUtils.tellAdvanced(player, (destinationLand.isEmbassy() ? "embassy" : "plot") + ".for-sale",
                             "name", destinationLand.getLandOwner().getName(),
                             "state", destinationLand.getLandOwner().getStateTag(),
                             "description", destinationLand.getDescription(),
-                            "pvp", destinationLand.isPvp() ? Message.get("pvp-is-enabled").getText() : "",
+                            "pvp", destinationLand.getMode(PlotMode.pvp) ? Message.get("pvp-is-enabled").getText() : "",
                             "amount", Utils.CURRENCY_FORMAT.format(destinationLand.getPrice())
                     );
                 }
