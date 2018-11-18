@@ -419,6 +419,9 @@ gui:
         &6&lLevel &r&7{level}
         &6&lAccess &r&7{access}
         &6&lBank &r&7{bank}
+        &6&lUpkeep: &r&7{upkeep}
+        &6&lJoin fee: &r&7{joinfee}
+        &6&lDaily tax: &r&7{tax}
         &6&lBonusclaims &r&7{bonusclaims}
         &6&lCapital &r&7{capitalstate}{capital}
         &e&lLeader &r&7{chieftitle} {chief}
@@ -495,6 +498,9 @@ gui:
       &6&lLevel &r&7{level}
       &6&lAccess &r&7{access}
       &6&lBank &r&7{bank}
+      &6&lUpkeep: &r&7{upkeep}
+      &6&lJoin fee: &r&7{joinfee}
+      &6&lDaily tax: &r&7{tax}
       &6&lLand &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
       &6&lOutposts &r&7{outposts}&r&e/&r&7{maxoutposts}
       &e&l{chieftitle}: &r&7{chief}
@@ -997,6 +1003,7 @@ command:
         &6&lAccess: &r&7{access}
         &6&lLevel: &r&7{level}
         &6&lBank: &r&7{bank}
+        &6&lUpkeep: &r&7{upkeep}
         &6&lJoin fee: &r&7{joinfee}
         &6&lDaily tax: &r&7{tax}
         &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
@@ -1333,6 +1340,9 @@ command:
         &a&lSymbol &r&7{symbol}
         &6&lAccess &r&7{access}
         &6&lBank &r&7{bank}
+        &6&lUpkeep: &r&7{upkeep}
+        &6&lJoin fee: &r&7{joinfee}
+        &6&lDaily tax: &r&7{tax}
         &6&lBonusclaims &r&7{bonus}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
