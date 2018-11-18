@@ -68,14 +68,13 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
                 resident.tell(getError("cant-banish"), "name", target.getName(), "title", ((Resident) target).getTitle());
                 return;
             }
-
-            if (!source.addBanished(target)) {
-                getError("already-banished").tell(resident, "name", target.getName());
-                return;
-            }
-
-            MessageUtils.tellResidents(source.getOnlineResidents(), getMessage("banished"), "name", target.getName());
             Utils.runSync(() -> {
+                if (!source.addBanished(target)) {
+                    getError("already-banished").tell(resident, "name", target.getName());
+                    return;
+                }
+
+                MessageUtils.tellResidents(source.getOnlineResidents(), getMessage("banished"), "name", target.getName());
                 for (Resident r : target.getOnlineResidents()) {
                     Player p = r.getPlayer();
                     if (p != null) {
@@ -86,8 +85,9 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
                     }
                 }
                 source.removeMember(target);
+
+                Utils.runAsync(() -> DatabaseManager.getInstance().save(source));
             });
-            DatabaseManager.getInstance().save(source);
         });
         return true;
     }
@@ -99,13 +99,15 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
         Utils.runAsync(() -> {
             Targetable target = getTarget(resident, args);
 
-            if (!source.removeBanished(target)) {
-                resident.tell(getError("not-banished"), "name", target.getName());
-                return;
-            }
+            Utils.runSync(() -> {
+                if (!source.removeBanished(target)) {
+                    resident.tell(getError("not-banished"), "name", target.getName());
+                    return;
+                }
 
-            MessageUtils.tellResidents(source.getOnlineResidents(), getMessage("unbanished"), "target", target.getName());
-            DatabaseManager.getInstance().save(source);
+                MessageUtils.tellResidents(source.getOnlineResidents(), getMessage("unbanished"), "target", target.getName());
+                Utils.runAsync(() -> DatabaseManager.getInstance().save(source));
+            });
         });
         return true;
     }

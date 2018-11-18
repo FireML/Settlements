@@ -31,17 +31,21 @@ public class VillageTransferCommand extends VillageSubCommand {
                 res.tell(getError("not-in-current"), "name", village.getName(), "state", village.getState().getTag());
                 return;
             }
-            tres.setVillageRank(VillageRank.CHIEF);
-            res.setVillageRank(VillageRank.ELDER);
-            village.setChief(tres.getUUID());
-            DatabaseManager.getInstance().saveResident(res);
-            DatabaseManager.getInstance().saveResident(tres);
-            DatabaseManager.getInstance().saveVillage(village);
-            MessageUtils.tellResidents(village.getOnlineResidents(), getMessage("success"),
-                    "rank", VillageRank.CHIEF.getTag(village),
-                    "setter", res.getName(),
-                    "target", tres.getName()
-            );
+            Utils.runSync(() -> {
+                tres.setVillageRank(VillageRank.CHIEF);
+                res.setVillageRank(VillageRank.ELDER);
+                village.setChief(tres.getUUID());
+                Utils.runAsync(() -> {
+                    DatabaseManager.getInstance().saveResident(res);
+                    DatabaseManager.getInstance().saveResident(tres);
+                    DatabaseManager.getInstance().saveVillage(village);
+                });
+                MessageUtils.tellResidents(village.getOnlineResidents(), getMessage("success"),
+                        "rank", VillageRank.CHIEF.getTag(village),
+                        "setter", res.getName(),
+                        "target", tres.getName()
+                );
+            });
         });
         return true;
     }

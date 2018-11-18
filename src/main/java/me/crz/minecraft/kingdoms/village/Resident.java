@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
@@ -25,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -37,9 +39,9 @@ public class Resident implements ConfigurationSerializable, Targetable {
     private int title = 0;
     private Village village = null;
     private ChatChannel activeChannel = ChatChannel.GENERAL;
-    private Set<ChatChannel> channels = new HashSet<>();
-    private Set<UUID> ignore = new HashSet<>();
-    private Set<UUID> friends = new HashSet<>();
+    private Set<ChatChannel> channels = EnumSet.noneOf(ChatChannel.class);
+    private Set<UUID> ignore = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private Set<UUID> friends = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private boolean swear = true;
     private int bonusClaims = 0;
     private long lastLogin = 0;

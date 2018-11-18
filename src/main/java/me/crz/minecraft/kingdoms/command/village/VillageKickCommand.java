@@ -40,8 +40,10 @@ public class VillageKickCommand extends VillageSubCommand {
                 return;
             }
             MessageUtils.tellResidents(res.getVillage().getOnlineResidents(), getMessage("kicked-alert"), "player", res.getName());
-            InviteCache.getPendingVillageInvites().remove(res.getUUID(), res.getVillage().getId());
-            VillageManager.getInstance().leaveVillage(res);
+            Utils.runSync(() -> {
+                InviteCache.getPendingVillageInvites().remove(res.getUUID(), res.getVillage().getId());
+                VillageManager.getInstance().leaveVillage(res);
+            });
         });
         return true;
     }

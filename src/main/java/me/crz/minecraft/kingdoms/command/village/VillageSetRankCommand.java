@@ -68,13 +68,15 @@ public class VillageSetRankCommand extends VillageSubCommand {
             } else  if (rank.atLeast(res.getVillageRank())) {
                 getMessage("rank-required").tell(player, "rank", VillageRank.values()[rank.ordinal() - 1].getTag(village));
             } else {
-                tres.setVillageRank(rank);
-                DatabaseManager.getInstance().saveResident(tres);
-                getMessage("success").tell(village.getOnlineResidents(),
-                        "rank", rank.getTag(village),
-                        "setter", res.getName(),
-                        "title", res.getTitle(),
-                        "target", tres.getName());
+                Utils.runSync(() -> {
+                    tres.setVillageRank(rank);
+                    Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(tres));
+                    getMessage("success").tell(village.getOnlineResidents(),
+                            "rank", rank.getTag(village),
+                            "setter", res.getName(),
+                            "title", res.getTitle(),
+                            "target", tres.getName());
+                });
             }
         });
         return true;
