@@ -90,7 +90,7 @@ public class LandFlags extends Base implements LandFlagBase {
                 return;
             }
             e.setCancelled(true);
-            tbPvp.send((Player) e.getDamager());
+            tbPvp.send(damager);
         }
     }
 
