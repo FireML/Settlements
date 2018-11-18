@@ -41,6 +41,7 @@ public class SimpleChunkLocation implements ConfigurationSerializable {
         }
         return null;
     }
+
     public boolean contains(SimpleLocation location) {
         return location != null
                 && world.equals(location.getWorld())

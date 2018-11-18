@@ -8,6 +8,7 @@ import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
+import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
@@ -25,6 +26,9 @@ import me.crz.minecraft.kingdoms.world.NamedLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -331,6 +335,26 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
 
     public boolean isMaxLevel() {
         return (getLevel() == Levels.KINGDOMS_MAX_LEVEL && getState() == VillageState.KINGDOM) || getNextLevelRequirements() == null;
+    }
+
+    @Override
+    public boolean setMode(PlotMode mode, boolean value) {
+        if (super.setMode(mode, value)) {
+            if (KingdomsPlugin.getInstance().isRunning() && mode == PlotMode.mobSpawning && !value) {
+                for (OwnedLand land : LandManager.getInstance().getClaimedLand(this)) {
+                    World world = Bukkit.getWorld(land.getWorldName());
+                    if (world != null && world.isChunkLoaded(land.getX(), land.getZ())) {
+                        for (Entity entity : land.getChunk().getEntities()) {
+                            if (entity instanceof LivingEntity && Utils.isHostile((LivingEntity) entity)) {
+                                entity.remove();
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override

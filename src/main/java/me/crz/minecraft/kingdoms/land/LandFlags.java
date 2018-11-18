@@ -15,6 +15,8 @@ import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import net.md_5.bungee.api.ChatMessageType;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -22,10 +24,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 
 public class LandFlags extends Base implements LandFlagBase {
     private TitleBuilder tbPvp = new TitleBuilder();
@@ -37,6 +41,18 @@ public class LandFlags extends Base implements LandFlagBase {
     private boolean isAllowed(Location location, PlotMode mode) {
         OwnedLand land = LandManager.getInstance().getLand(location);
         return land == null || mode.get(land);
+    }
+
+    @EventHandler
+    public void onChunkLoad(ChunkLoadEvent event) {
+        OwnedLand land = LandManager.getInstance().getLand(event.getChunk());
+        if (land != null && !land.getMode(PlotMode.mobSpawning)) {
+            for (Entity entity : event.getChunk().getEntities()) {
+                if (entity instanceof LivingEntity && Utils.isHostile((LivingEntity) entity)) {
+                    entity.remove();
+                }
+            }
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -144,14 +160,20 @@ public class LandFlags extends Base implements LandFlagBase {
 
     @EventHandler(ignoreCancelled = true)
     public void onHostileSpawn(HostileCreaturePreSpawnEvent e) {
-        if (!isAllowed(e.getLocation(), PlotMode.mobSpawning)) {
+        if (e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.NATURAL
+                && e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.SPAWNER_EGG
+                && e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.SPAWNER
+                && !isAllowed(e.getLocation(), PlotMode.mobSpawning)) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onHostileSpawn(HostileCreatureSpawnEvent e) {
-        if (!isAllowed(e.getLocation(), PlotMode.mobSpawning)) {
+        if (e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.CUSTOM
+                && e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.SPAWNER_EGG
+                && e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.SPAWNER
+                && !isAllowed(e.getLocation(), PlotMode.mobSpawning)) {
             e.setCancelled(true);
         }
     }

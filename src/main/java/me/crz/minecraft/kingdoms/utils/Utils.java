@@ -20,11 +20,13 @@ import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -32,6 +34,9 @@ import java.util.logging.Level;
 import org.bukkit.World;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.Material;
@@ -45,6 +50,10 @@ public class Utils {
     public static final UUID ZERO_UUID = new UUID(0, 0);
     private static Map<String, Integer> LEVEL_CHUNKS = new HashMap<>();
     private static Map<String, Integer> LEVEL_OUTPOSTS = new HashMap<>();
+    private static final Set<EntityType> SPECIAL_HOSTILE = EnumSet.of(
+            EntityType.SLIME,
+            EntityType.PHANTOM
+    );
 
     public Utils() {
         super();
@@ -388,5 +397,9 @@ public class Utils {
         }
         int exp = (int) (Math.log(count) / Math.log(1000.0));
         return String.format("%.1f%c", count / Math.pow(1000.0, exp), "kMBTPE".charAt(exp - 1));
+    }
+
+    public static boolean isHostile(LivingEntity entity) {
+        return entity instanceof Monster || SPECIAL_HOSTILE.contains(entity.getType());
     }
 }

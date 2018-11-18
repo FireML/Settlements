@@ -4,6 +4,7 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.land.LandOwner;
+import me.crz.minecraft.kingdoms.land.ModeAble;
 import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
@@ -26,6 +27,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -370,6 +372,24 @@ public class Empire extends LandOwner implements Comparable<Empire> {
     @Override
     public boolean isTrusted(LandOwner landOwner) {
         return landOwner instanceof Village && (isAlly(landOwner) || (isMember((Village) landOwner)));
+    }
+
+    @Override
+    public boolean setMode(PlotMode mode, boolean value) {
+        if (super.setMode(mode, value)) {
+            if (KingdomsPlugin.getInstance().isRunning() && mode == PlotMode.mobSpawning && !value) {
+                World world = Bukkit.getWorld(getWorldName());
+                if (world != null) {
+                    for (LivingEntity entity : world.getLivingEntities()) {
+                        if (Utils.isHostile(entity)) {
+                            entity.remove();
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     public boolean canAccess(Player player) {

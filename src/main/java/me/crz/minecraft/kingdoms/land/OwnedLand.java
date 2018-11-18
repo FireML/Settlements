@@ -11,6 +11,8 @@ import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.NamedLocation;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
+import org.bukkit.World;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.Material;
 import org.bukkit.Location;
@@ -198,6 +200,24 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     @Override
     public boolean getMode(PlotMode mode) {
         return getModes().getOrDefault(mode, getLandOwner().getMode(mode));
+    }
+
+    @Override
+    public boolean setMode(PlotMode mode, boolean value) {
+        if (ModeAble.super.setMode(mode, value)) {
+            if (KingdomsPlugin.getInstance().isRunning() && mode == PlotMode.mobSpawning && !value) {
+                World world = Bukkit.getWorld(getWorldName());
+                if (world != null && world.isChunkLoaded(getX(), getZ())) {
+                    for (Entity entity : getChunk().getEntities()) {
+                        if (entity instanceof LivingEntity && Utils.isHostile((LivingEntity) entity)) {
+                            entity.remove();
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     public String getDescription() {
