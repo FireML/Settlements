@@ -39,7 +39,7 @@ public enum MySqlTable {
             + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
             + "empireId INTEGER, INDEX (empireId),"
             + "FOREIGN KEY (empireId) REFERENCES {tablePrefix}empires(id) ON DELETE CASCADE,"
-            + "ally VARCHAR(320)"
+            + "allies VARCHAR(320)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     EMPIRE_VAULTS("CREATE TABLE IF NOT EXISTS {tablePrefix}empire_vaults ("
@@ -155,7 +155,7 @@ public enum MySqlTable {
             + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
             + "settlementId INTEGER, INDEX (settlementId),"
             + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
-            + "ally VARCHAR(320)"
+            + "allies VARCHAR(320)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     RESIDENTS("CREATE TABLE IF NOT EXISTS {tablePrefix}residents ("
@@ -275,5 +275,9 @@ public enum MySqlTable {
 
     public String getSql(String tablePrefix) {
         return sql.replace("{tablePrefix}", tablePrefix);
+    }
+
+    public String getDbName() {
+        return name().toLowerCase();
     }
 }

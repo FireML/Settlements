@@ -26,7 +26,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -68,6 +67,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
         initializeTables();
         updateClaimUses();
+        updateAllies();
     }
 
     private void initializeTables() throws SQLException {
@@ -118,6 +118,27 @@ public class MySqlDatabaseManager extends DatabaseManager {
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to get all claims from database!", e);
+        }
+    }
+
+    private void updateAllies() {
+        alterOrRecreate(MySqlTable.SETTLEMENT_ALLIES, "ALTER TABLE `" + tablePrefix + MySqlTable.SETTLEMENT_ALLIES.getDbName() + "` CHANGE COLUMN `ally` `allies` VARCHAR(320) NOT NULL;");
+        alterOrRecreate(MySqlTable.EMPIRE_ALLIES, "ALTER TABLE `" + tablePrefix + MySqlTable.SETTLEMENT_ALLIES.getDbName() + "` CHANGE COLUMN `ally` `allies` VARCHAR(320) NOT NULL;");
+    }
+
+    private void alterOrRecreate(MySqlTable table, String alterSql) {
+        String sql = "SELECT * FROM " + tablePrefix + table.getDbName() + " LIMIT 1";
+        try (Connection conn = ds.getConnection();
+             Statement sta = conn.createStatement()) {
+            ResultSet rs = sta.executeQuery(sql);
+            if (rs.next()) {
+                sta.execute(alterSql);
+            } else {
+                sta.execute("DROP TABLE " + tablePrefix + table.getDbName());
+                sta.execute(table.getSql(tablePrefix));
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to alter table " + table.getDbName(), e);
         }
     }
 
@@ -691,8 +712,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
         }
         map.put("senators", senators);
 
-        map.put("banished", selectList(conn, "empire_banished", "empireId", id, "banished"));
-        map.put("allies", selectList(conn, "empire_allies", "empireId", id, "ally"));
+        map.put("banished", selectList(conn, "empire", id, "banished"));
+        map.put("allies", selectList(conn, "empire", id, "allies"));
 
         map.put("uses", selectMap(conn, "empire_uses", "empireId", id, "type", "state", String.class));
         map.put("vault", selectMap(conn, "empire_vaults", "empireId", id, "content", "amount", Long.class));
@@ -722,8 +743,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
         }
         map.put("residents", residents);
 
-        map.put("banished", selectList(conn, "settlement_banished", "settlementId", id, "banished"));
-        map.put("allies", selectList(conn, "settlement_allies", "settlementId", id, "ally"));
+        map.put("banished", selectList(conn, "settlement", id, "banished"));
+        map.put("allies", selectList(conn, "settlement", id, "allies"));
 
         map.put("uses", selectMap(conn, "settlement_uses", "settlementId", id, "type", "state", String.class));
         map.put("vault", selectMap(conn, "settlement_vaults", "settlementId", id, "content", "amount", Long.class));
@@ -896,6 +917,10 @@ public class MySqlDatabaseManager extends DatabaseManager {
             map.put(rs.getString(keyColumn), (T) rs.getObject(valueColumn));
         }
         return map;
+    }
+
+    private List<Object> selectList(Connection conn, String ownerType, int id, String valueType) throws SQLException {
+        return selectList(conn, ownerType + "_" + valueType, ownerType + "Id", id, valueType);
     }
 
     private List<Object> selectList(Connection conn, String tableName, String keyColumn, int keyValue, String valueColumn) throws SQLException {
