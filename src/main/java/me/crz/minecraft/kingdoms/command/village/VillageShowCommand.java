@@ -28,13 +28,12 @@ public class VillageShowCommand extends SubCommand {
         } else if (args.length == 1) {
             String name = String.join(" ", args);
             Utils.runAsync(() -> {
-                Village village2 = VillageManager.getInstance().getVillageFromName(name);
+                Village village = VillageManager.getInstance().getVillageFromName(name);
                 Resident target = ResidentManager.getInstance().getResident(name);
-                if (target != null) {
-                    Village playerVillage = VillageManager.getInstance().getVillageFromResident(target);
-                    MessageUtils.tell(player, getMessage("general"), playerVillage.getReplacements(VillageShowCommand.this));
-                } else if (village2 != null) {
-                    MessageUtils.tell(player, getMessage("general"), village2.getReplacements(VillageShowCommand.this));
+                if (target != null && target.hasVillage()) {
+                    MessageUtils.tell(player, getMessage("general"), target.getVillage().getReplacements(VillageShowCommand.this));
+                } else if (village != null) {
+                    MessageUtils.tell(player, getMessage("general"), village.getReplacements(VillageShowCommand.this));
                 } else {
                     MessageUtils.tell(player, getError("village-doesnt-exist"), "name", name);
                 }
