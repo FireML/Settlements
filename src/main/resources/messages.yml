@@ -440,7 +440,9 @@ gui:
     unlink: "&7Click to unlink!"
     use:
       title: "&3&l/plot use"
-      unset-all: "&7&lClick to unset all states and inherit from parent {parent}"
+      unset-all: |-
+        &7Click to unset all states and
+        &7inherit from parent {parent}
       entry:
         parent: "&7(Inherited from parent {parent})"
         click-to-unset: |-

@@ -38,7 +38,8 @@ public class UseGui extends PlotGUI {
                         ));
                         if (land.hasUseState(u)) {
                             item.addLore(getMessage("entry.click-to-unset").getReplacedTextList(
-                                    "state", land.getLandOwner().getStateTag()
+                                    "parent", land.getLandOwner().getStateTag(),
+                                    "value", land.getLandOwner().getUseState(u).getTag()
                             ));
                         } else {
                             item.addLore(getMessage("entry.parent").getReplacedTextList(
@@ -92,10 +93,13 @@ public class UseGui extends PlotGUI {
                 @Override
                 public ItemStack getItem(Player p) {
                     OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
-                    if (land != null && land.isPlotOwner(p)) {
-                        return state.getItem()
-                                .setName(getMessage("toggle-all").getReplacedText("state", state.getTag()))
-                                .build();
+                    if (land != null) {
+                        Resident resident = ResidentManager.getInstance().getResident(p);
+                        if (land.isPlotOwner(p) || land.canAdmin(resident)) {
+                            return state.getItem()
+                                    .setName(getMessage("toggle-all").getReplacedText("state", state.getTag()))
+                                    .build();
+                        }
                     }
                     return null;
                 }
@@ -121,14 +125,17 @@ public class UseGui extends PlotGUI {
                 }
             });
         }
-        gui.addItem((gui.getMaxSlot() / 9 + 1) * 9, new ClickableItem() {
+        gui.addItem(slot++, new ClickableItem() {
             @Override
             public ItemStack getItem(Player p) {
                 OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
-                if (land != null && land.isPlotOwner(p)) {
-                    return new CItem(Material.EGG)
-                            .setName(getMessage("parent-all").getReplacedText("parent", land.getLandOwner().getStateTag()))
-                            .build();
+                if (land != null) {
+                    Resident resident = ResidentManager.getInstance().getResident(p);
+                    if (land.isPlotOwner(p) || land.canAdmin(resident)) {
+                        return new CItem(Material.EGG)
+                                .setName(getMessage("unset-all").getReplacedText("parent", land.getLandOwner().getStateTag()))
+                                .build();
+                    }
                 }
                 return null;
             }
@@ -153,8 +160,13 @@ public class UseGui extends PlotGUI {
                 return false;
             }
         });
-        gui.addItem((gui.getMaxSlot() / 9 + 1) * 9 + 7, getPlotLinkItem(gui));
-        gui.addItem((gui.getMaxSlot() / 9 + 1) * 9 + 8, new ClickableItem() {
+        rest = slot % 9;
+        int bottomSlot = (gui.getMaxSlot() / 9) * 9;
+        if (rest == 0 || rest > 7) {
+            bottomSlot += 9;
+        }
+        gui.addItem(bottomSlot + 7, getPlotLinkItem(gui));
+        gui.addItem(bottomSlot + 8, new ClickableItem() {
             public ItemStack getItem(final Player p) {
                 return new CItem(Material.BARRIER).setName(getText("back")).build();
             }

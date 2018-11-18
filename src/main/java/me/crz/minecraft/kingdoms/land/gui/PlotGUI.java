@@ -35,18 +35,21 @@ public abstract class PlotGUI extends KingdomsGUI {
             @Override
             public ItemStack getItem(Player p) {
                 OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
-                if (land != null && land.isPlotOwner(p)) {
-                    List<String> description = new ArrayList<>();
-                    CItem item = new CItem(Material.MAP);
-                    if (land.hasLink()) {
-                        description.add(getMessage("linked").getReplacedText("amount", String.valueOf(land.getLinked().size() - 1)));
-                    }
+                Resident resident = ResidentManager.getInstance().getResident(p);
+                List<String> description = new ArrayList<>();
+                CItem item = new CItem(Material.MAP);
+                if (land.hasLink()) {
+                    description.add(getMessage("linked").getReplacedText("amount", String.valueOf(land.getLinked().size() - 1)));
+                    item.glow(true);
+                }
+                if (land.isPlotOwner(p) || (land.canAdmin(resident) && (land.isPlot() || land.hasLink()))) {
                     if (description.isEmpty()) {
                         description.add(getText("link"));
                     } else {
                         description.add(getText("unlink"));
-                        item.glow(true);
                     }
+                }
+                if (!description.isEmpty()) {
                     return item.setName(String.join("\n", description)).build();
                 }
                 return null;
