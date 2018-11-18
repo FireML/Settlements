@@ -8,6 +8,7 @@ import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 import java.text.DecimalFormat;
@@ -16,16 +17,20 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
     private final static DecimalFormat DF = new DecimalFormat("#,###");
 
     public EmpireMoneyCommand(SubCommand parent) {
-        super(parent, "bank <deposit|withdraw|balance|history> <amount>", EmpireRank.NONE, "money");
+        super(parent, "bank <deposit|withdraw|balance|history> <amount>", EmpireRank.MEMBER, "money");
         setPermission("kingdoms.user");
-        registerCommand(new EmpireSubCommand(this, "balance", EmpireRank.NONE) {
+        for (EmpireRank rank : EmpireRank.values()) {
+            getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), rank));
+        }
+        getHelpCommand().setDefaultTypeProvider(player -> ResidentManager.getInstance().doesResidentHaveEmpire(player) ? "member" : "none");
+        registerCommand(new EmpireSubCommand(this, "balance", EmpireRank.MEMBER) {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 getMessage("balance").tell(resident, "amount", DF.format(resident.getVillage().getEmpire().getBank()));
                 return true;
             }
         });
-        registerCommand(new EmpireSubCommand(this, "deposit <amount>", EmpireRank.NONE) {
+        registerCommand(new EmpireSubCommand(this, "deposit <amount>", EmpireRank.MEMBER) {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length < 1) {
@@ -97,7 +102,7 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                 return true;
             }
         });
-        registerCommand(new EmpireHistoryCommand(this, EmpireRank.NONE, LogType.BANK));
+        registerCommand(new EmpireHistoryCommand(this, EmpireRank.MEMBER, LogType.BANK));
     }
 
     @Override

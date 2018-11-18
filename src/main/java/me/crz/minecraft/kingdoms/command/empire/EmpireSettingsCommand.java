@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 
 public class EmpireSettingsCommand extends EmpireSubCommand {
     public EmpireSettingsCommand(SubCommand parent) {
-        super(parent, "settings", EmpireRank.LEADER);
+        super(parent, "settings", EmpireRank.SENATOR);
         setPermission("kingdoms.user");
     }
 

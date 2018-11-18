@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class LockAddCommand extends SubCommand implements TargetParser {
     public LockAddCommand(LockCommand parent) {
-        super(parent, "add <player>|<settlement:name>|<empire:name> [toggle]", "grant");
+        super(parent, "add <player>|s:<settlement>|e:<empire> [toggle]", "grant");
     }
 
     @Override

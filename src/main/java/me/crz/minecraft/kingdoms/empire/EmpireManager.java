@@ -223,10 +223,10 @@ public class EmpireManager {
 
         // Update ranks
         Set<Resident> modifiedResidents = new HashSet<>();
-        empire.getCapital().getChief().setEmpireRank(EmpireRank.NONE);
+        empire.getCapital().getChief().setEmpireRank(EmpireRank.MEMBER);
         modifiedResidents.add(empire.getCapital().getChief());
         for (Resident senator : empire.getSenators()) {
-            senator.setEmpireRank(EmpireRank.NONE);
+            senator.setEmpireRank(EmpireRank.MEMBER);
             modifiedResidents.add(senator);
         }
         empire.getSenatorIds().clear();

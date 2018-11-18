@@ -17,7 +17,7 @@ public class VillageShopCommand extends VillageSubCommand {
         super(parent, "shop", VillageRank.RESIDENT, "buyperks");
         setPermission("kingdoms.user");
         setForceOwnUsage(true);
-        registerCommand(new VillageSubCommand(this, "unlock <perk>", VillageRank.ELDER, "buy") {
+        registerCommand(new VillageSubCommand(this, "unlock <perk>", VillageRank.CHIEF, "buy") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length > 0) {
@@ -62,7 +62,7 @@ public class VillageShopCommand extends VillageSubCommand {
                 return false;
             }
         });
-        registerCommand(new VillageSubCommand(this, "repeat <perk>", VillageRank.ELDER) {
+        registerCommand(new VillageSubCommand(this, "repeat <perk>", VillageRank.CHIEF) {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length > 0) {

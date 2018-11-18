@@ -9,7 +9,7 @@ public interface ConfigMessages extends ConfigKey {
 
     default Message getMessage(String key) {
         String path = getConfigPath();
-        Message message = Message.get(path + "." + key);
+        Message message = Message.get(path + (key.isEmpty() ? "" : "." + key));
         if (message.exists()) {
             return message;
         }
@@ -24,7 +24,7 @@ public interface ConfigMessages extends ConfigKey {
                         }
                         p.append(".").append(pathParts[j]);
                     }
-                    Message m = Message.get(p + "." + key);
+                    Message m = Message.get(p + (key.isEmpty() ? "" : "." + key));
                     if (m.exists()) {
                         return m;
                     }

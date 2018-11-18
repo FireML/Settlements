@@ -7,6 +7,7 @@ public class PlotCommand extends ResidentSubCommand {
     public PlotCommand() {
         super(null, "plot <options>", "p");
         setPermission("kingdoms.user");
+        getHelpCommand().registerCommand(new PlotHelpCommand(getHelpCommand()));
         registerCommand(new PlotSaleCommand(this));
         registerCommand(new PlotUnsaleCommand(this));
         registerCommand(new PlotInfoCommand(this));

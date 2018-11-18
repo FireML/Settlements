@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class LockRemoveCommand extends SubCommand implements TargetParser {
     public LockRemoveCommand(LockCommand parent) {
-        super(parent, "remove <player>|<settlement:name>|<empire:name> [toggle]", "revoke");
+        super(parent, "remove <player>|s:<settlement>|e:<empire> [toggle]", "revoke");
     }
 
     @Override

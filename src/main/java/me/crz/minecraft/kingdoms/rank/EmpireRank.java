@@ -5,7 +5,7 @@ import me.crz.minecraft.kingdoms.utils.NameTag;
 public enum EmpireRank implements NameTag, Rankable {
     LEADER,
     SENATOR,
-    NONE;
+    MEMBER;
 
     public static EmpireRank get(String name) {
         try {

@@ -308,11 +308,6 @@ names:
       enemy-settlement: In enemies settlements
       unclaimed: In unclaimed area
       everywhere: Globally
-usage:
-  head: |-
-    &8&l--------&r&c&l{name} Commands&r&8&l--------
-  entry: "&8\\[&9*&8] [&b{usage}](hover=&9Click to add it to your input{aliases} suggest_command={{usage}) &7- {description}"
-  aliases: "\n&fAliases: &7{aliases}"
 integration:
   chestshop:
     not-allowed: "&c&lYou can only create shops in a claim or empire world!"
@@ -565,6 +560,16 @@ gui:
     fail-deposit: "&c&lFailed Deposited Items: {reason}"
     max-level-reached: "&r&c&lMax Level Reached"
     list-entry: "&6{amount} {icon}&e{material}"
+
+usage:
+  head: "&8&l--------&r&c&l{type}{name} Commands&r&8&l--------"
+  entry: "&8\\[&9*&8] [&b{usage}](hover=&9Click to add it to your input{aliases} suggest_command={{usage}) &7- {description}"
+  aliases: "\n&fAliases: &7{aliases}"
+  footer: ""
+  pagination:
+    footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
+    previous: "&b<< Prev "
+    next: "&b Next >>"
 command:
   chat:
     description: "Chat command"
@@ -575,6 +580,9 @@ command:
       disabled: "&8\\[&9*&8] [&b{name}](suggest_command=/chat {name}) &7&l[&c&lDisabled&7&l]"
     "<channel>":
       description: "Join a chat channel"
+    usage:
+      footer: "&bAvailable channels:"
+    footer: ""
     leave:
       description: "Disable the chat of the channel"
       success: "&7You have left Chat Channel {name}&6"
@@ -671,6 +679,8 @@ command:
       success: "&7Plot mode &6{mode}&7: &6{value}"
       unset: "&7Unset plot mode &6{mode}&7! Now inherits from parent {parent}: &6{value}"
       description: Sets the modes of a plot
+    set:
+      embassy: The plot can be purchased by players outside of the settlement
     name:
       success: "&aSet name of plot to &r{description}"
       description: Set the name of a plot
@@ -760,7 +770,7 @@ command:
       history:
         head: "&7------- &cBank History [{page}/{maxpage}]&7 -------"
         entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6${amount}](&eAt {timestamp})"
-        footer: "&7-------- {previous} {page}/{maxpage}{next} &7 --------"
+        footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
         previous: "&b<< Prev "
         next: "&b Next >>"
         description: Show the bank's history
@@ -816,7 +826,7 @@ command:
     history:
       head: "&7------- &cLog History [{page}/{maxpage}]&7 -------"
       entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
-      footer: "&7-------- {previous} {page}/{maxpage}{next} &7 --------"
+      footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
       previous: "&b<< Prev "
       next: "&b Next >>"
       description: Show the log history
@@ -1071,7 +1081,7 @@ command:
       history:
         head: "&7------- &cVault History [{page}/{maxpage}]&7 -------"
         entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
-        footer: "&7-------- {previous} {page}/{maxpage}{next} &7 --------"
+        footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
         previous: "&b<< Prev "
         next: "&b Next >>"
         description: Show the vault's history
@@ -1129,7 +1139,7 @@ command:
       history:
         head: "&7------- &cBank History [{page}/{maxpage}]&7 -------"
         entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6${amount}](&eAt {timestamp})"
-        footer: "&7-------- {previous} {page}/{maxpage}{next} &7 --------"
+        footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
         previous: "&b<< Prev "
         next: "&b Next >>"
         description: Show the bank's history
@@ -1189,7 +1199,7 @@ command:
     history:
       head: "&7------- &cLog History [{page}/{maxpage}]&7 -------"
       entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
-      footer: "&7-------- {previous} {page}/{maxpage}{next} &7 --------"
+      footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
       previous: "&b<< Prev "
       next: "&b Next >>"
       description: Show the log history

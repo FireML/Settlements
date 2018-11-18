@@ -9,7 +9,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 
 public class EmpireLeaveCommand extends EmpireSubCommand {
     public EmpireLeaveCommand(SubCommand parent) {
-        super(parent, "leave", EmpireRank.NONE, VillageRank.ELDER);
+        super(parent, "leave", EmpireRank.MEMBER, VillageRank.ELDER);
         setPermission("kingdoms.user");
     }
 

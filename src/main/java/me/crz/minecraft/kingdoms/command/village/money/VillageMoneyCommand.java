@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village.money;
 
+import me.crz.minecraft.kingdoms.command.village.VillageHelpCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageHistoryCommand;
 import me.crz.minecraft.kingdoms.db.LogType;
@@ -9,6 +10,7 @@ import me.crz.minecraft.kingdoms.rank.VillageRank;
 import java.text.DecimalFormat;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
 
 public class VillageMoneyCommand extends VillageSubCommand {
     private final static DecimalFormat DF = new DecimalFormat("#,###");
@@ -16,6 +18,10 @@ public class VillageMoneyCommand extends VillageSubCommand {
     public VillageMoneyCommand(SubCommand parent) {
         super(parent, "bank <deposit|withdraw|balance|history> <amount>", VillageRank.RESIDENT, "money");
         setPermission("kingdoms.user");
+        for (VillageRank rank : VillageRank.values()) {
+            getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), rank));
+        }
+        getHelpCommand().setDefaultTypeProvider(player -> ResidentManager.getInstance().doesResidentHaveVillage(player) ? "resident" : "none");
         registerCommand(new VillageSubCommand(this, "balance", VillageRank.RESIDENT) {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {

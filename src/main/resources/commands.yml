@@ -1,0 +1,196 @@
+entries-per-page: 10
+help-order:
+  village:
+    none:
+    - create
+    - join
+    - show
+    - list
+    - home
+    - map
+    resident:
+    - invite
+    - show
+    - list
+    - map
+    - materials
+    - deposit
+    - home
+    - chat
+    - reslist
+    - history
+    - plot
+    - outpost
+    - teleport
+    - bank
+    - upkeep
+    - allies
+    - help elder
+    - help chief
+    - rules
+    - lock
+    - leave
+    - help all
+    elder:
+    - claim
+    - unclaim
+    - plot help staff
+    - outpost
+    - ally
+    - unally
+    - invite
+    - kick
+    - settings
+    chief:
+    - settings
+    - claim
+    - unclaim
+    - sethome
+    - setrank
+    - ally
+    - unally
+    - invite
+    - kick
+    - banish
+    - unbanish
+    - history
+    - plot help staff
+    - shop
+    - title
+    - rename
+    - setdescription
+    - transfer
+    - disband
+    outpost:
+      resident:
+      - list
+      - teleport
+      elder:
+      - list
+      - teleport
+      - sethome
+      - claim
+      chief:
+      - list
+      - teleport
+      - sethome
+      - claim
+      - unclaim
+    bank:
+      resident:
+      - balance
+      - deposit
+      - history
+      - village tax
+      chief:
+      - balance
+      - deposit
+      - withdraw
+      - history
+      - village tax
+      - village tax set
+      - village setjoinfee
+    banish:
+      general:
+      - banish
+      - unbanish
+      - banished
+  empire:
+    none:
+    - show
+    - list
+    - home
+    member:
+    - show
+    - list
+    - home
+    - chat
+    - memberlist
+    - history
+    - plot
+    - bank
+    - upkeep
+    - allies
+    - help senator
+    - help leader
+    - help chief
+    senator:
+    - mode
+    - kick
+    - plot help staff
+    - settings
+    - ally
+    - unally
+    - invite
+    - kick
+    - setdescription
+    leader:
+    - settings
+    - sethome
+    - setrank
+    - invite
+    - kick
+    - banish
+    - ally
+    - unally
+    - history
+    - plot help staff
+    - shop
+    - title
+    - rename
+    - setdescription
+    - transfer
+    - disband
+    bank:
+      member:
+      - balance
+      - deposit
+      - history
+      - empire tax
+      leader:
+      - balance
+      - deposit
+      - withdraw
+      - history
+      - empire tax
+      - empire tax set
+      - empire setjoinfee
+    banish:
+      general:
+      - banish
+      - unbanish
+      - banished
+  plot:
+    general:
+    - buy
+    - settings
+    - name
+    - info
+    - link
+    - unlink
+    - friend
+    staff:
+    - sale
+    - unsale
+    - revoke
+    - plot set embassy <amount>
+  lock:
+  - lock
+  - toggle
+  - unlock
+  - info
+  - hoppers
+  - add
+  - remove
+  friend:
+  - add
+  - list
+  - remove
+  chat:
+  - "<channel>"
+  - leave
+  - lock
+  - swear
+
+
+

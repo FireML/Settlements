@@ -7,12 +7,21 @@ import me.crz.minecraft.kingdoms.command.lock.UnlockCommand;
 import me.crz.minecraft.kingdoms.command.plot.PlotCommand;
 import me.crz.minecraft.kingdoms.db.LogType;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.entity.Player;
 
 public class EmpireCommand extends SubCommand {
     public EmpireCommand() {
         super(null, "empire");
         setPermission("kingdoms.user");
+        getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), VillageRank.RECRUITER));
+        getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), VillageRank.BUILDER));
+        getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), VillageRank.ELDER));
+        getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), VillageRank.CHIEF));
+        getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), EmpireRank.SENATOR));
+        getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), EmpireRank.LEADER));
+        getHelpCommand().setDefaultTypeProvider(player -> ResidentManager.getInstance().doesResidentHaveEmpire(player) ? "member" : "none");
         registerCommand(new ChatCommand());
         registerCommand(new EmpireAlliesCommand(this));
         registerCommand(new EmpireAllyCommand(this));

@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 
 public class VillageUnAllyCommand extends VillageSubCommand implements AllyCommand {
     public VillageUnAllyCommand(SubCommand parent) {
-        super(parent, "unally <name>", VillageRank.ELDER);
+        super(parent, "unally s:<settlement>|e:<empire>", VillageRank.ELDER);
         setPermission("kingdoms.user");
     }
 

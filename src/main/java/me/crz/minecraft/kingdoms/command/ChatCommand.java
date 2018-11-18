@@ -15,6 +15,7 @@ public class ChatCommand extends SubCommand {
 
     public ChatCommand() {
         super(null, "chat <channel>", "c");
+        setHelpCommand(new HelpCommand(this));
         for (ChatChannel channel : ChatChannel.values()) {
             registerCommand(new SubCommand(this, channel.name().toLowerCase(), channel.getAliases().toArray(new String[0])) {
                 @Override
@@ -91,7 +92,7 @@ public class ChatCommand extends SubCommand {
     @Override
     public boolean run(Player p, String base, String alias, String... args) {
         if (args.length < 1) {
-            sendUsageMessage(p, "", alias);
+            getHelpCommand().run(p, alias, "help");
 
             Resident res = ResidentManager.getInstance().getResident(p);
             for (ChatChannel channel : ChatChannel.values()) {
@@ -106,6 +107,7 @@ public class ChatCommand extends SubCommand {
                     }
                 }
             }
+            getMessage("footer").tell(p);
             return true;
         }
         return false;

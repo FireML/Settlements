@@ -8,7 +8,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 
 public class EmpireTaxCommand extends EmpireSubCommand {
     public EmpireTaxCommand(SubCommand parent) {
-        super(parent, "tax [set <amount>]", EmpireRank.NONE);
+        super(parent, "tax [set <amount>]", EmpireRank.MEMBER);
         setPermission("kingdoms.user");
         registerCommand(new EmpireSubCommand(this, "set <amount>", EmpireRank.LEADER) {
             @Override

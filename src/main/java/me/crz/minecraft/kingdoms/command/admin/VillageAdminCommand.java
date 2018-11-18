@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.admin;
 
+import me.crz.minecraft.kingdoms.command.HelpCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import org.bukkit.entity.Player;
 
@@ -8,6 +9,7 @@ public class VillageAdminCommand extends SubCommand {
     public VillageAdminCommand() {
         super(null, "villageadmin", "va");
         setPermission("kingdoms.admin");
+        setHelpCommand(new HelpCommand(this));
         this.registerCommand(new VillageAdminBonusCommand(this));
         this.registerCommand(new VillageAdminWorldCommand(this));
         this.registerCommand(new VillageAdminRankCommand(this));

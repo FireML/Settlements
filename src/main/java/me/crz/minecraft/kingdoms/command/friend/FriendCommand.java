@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.friend;
 
+import me.crz.minecraft.kingdoms.command.HelpCommand;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.friend.FriendListCommand;
 import me.crz.minecraft.kingdoms.command.friend.FriendRemoveCommand;
@@ -12,6 +13,7 @@ public class FriendCommand extends SubCommand {
     public FriendCommand() {
         super(null, "friend");
         setPermission("kingdoms.user");
+        setHelpCommand(new HelpCommand(this));
         registerCommand(new FriendAddCommand(this));
         registerCommand(new FriendRemoveCommand(this));
         registerCommand(new FriendListCommand(this));

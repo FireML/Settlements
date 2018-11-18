@@ -93,13 +93,13 @@ public class CommandManager extends Base implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
         if (sender instanceof Player) {
-            SubCommand cmd = commandMap.get(command.getName().toLowerCase());
+            SubCommand cmd = getCommand(command.getName());
             if (cmd == null) {
                 MessageUtils.tell((Player) sender, "&c&lUnknown command!");
             } else if (!cmd.execute((Player) sender, null, alias, args)) {
                 if (cmd.getMessage("usage").exists()) {
                     MessageUtils.tell((Player) sender, cmd.getMessage("usage"), "alias", alias);
-                } else if (!cmd.sendUsageMessage((Player) sender, null, alias)) {
+                } else if (!cmd.getHelpCommand().run((Player) sender, alias, "help")) {
                     MessageUtils.tell((Player) sender, "&c" + cmd.getUsage(null));
                 } else {
                     return false;
@@ -109,6 +109,10 @@ public class CommandManager extends Base implements CommandExecutor {
             sender.sendMessage(Message.get("error.only-player").getText());
         }
         return true;
+    }
+
+    public SubCommand getCommand(String name) {
+        return commandMap.get(name.toLowerCase());
     }
 
     public static CommandManager getInstance() {

@@ -8,7 +8,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 public class EmpireBanishCommand extends EmpireSubCommand implements BanishCommand {
 
     public EmpireBanishCommand(SubCommand parent) {
-        super(parent, "banish <player>|[player|village|empire]:<name>", EmpireRank.LEADER);
+        super(parent, "banish <player>|s:<settlement>|e:<empire>", EmpireRank.LEADER);
     }
 
     @Override

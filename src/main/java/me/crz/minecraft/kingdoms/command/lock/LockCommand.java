@@ -10,6 +10,7 @@ public class LockCommand extends ResidentSubCommand {
     public LockCommand() {
         super(null, "lock", "protection", "secure");
         setPermission("kingdoms.user");
+        getHelpCommand();
         registerCommand(new SubCommand(this, "toggle") {
             @Override
             public boolean run(Player player, String base, String alias, String... args) {

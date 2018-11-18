@@ -28,26 +28,28 @@ public class VillageUnclaimCommand extends VillageSubCommand {
         }
 
         Set<SimpleChunkLocation> toUnclaim = new LinkedHashSet<>();
-        if (args.length == 1) {
-            try {
-                int radius = Integer.parseInt(args[0]);
-                int maxRadius = KingdomsPlugin.getInstance().getConfig().getInt("claim-max-radius");
-                if (radius > maxRadius) {
-                    getError("radius-too-large").tell(res, "radius", String.valueOf(radius), "max", String.valueOf(maxRadius));
-                    return true;
+        if (res.getVillageRank().atLeast(VillageRank.CHIEF)) {
+            if (args.length == 1) {
+                try {
+                    int radius = Integer.parseInt(args[0]);
+                    int maxRadius = KingdomsPlugin.getInstance().getConfig().getInt("claim-max-radius");
+                    if (radius > maxRadius) {
+                        getError("radius-too-large").tell(res, "radius", String.valueOf(radius), "max", String.valueOf(maxRadius));
+                        return true;
+                    }
+                    toUnclaim.add(new SimpleChunkLocation(player.getLocation()));
+                    toUnclaim.addAll(Utils.getChunksAround(player, radius));
+                } catch (NumberFormatException e) {
+                    getError("not-a-number").tell(res, "input", args[0]);
+                    return false;
                 }
-                toUnclaim.add(new SimpleChunkLocation(player.getLocation()));
-                toUnclaim.addAll(Utils.getChunksAround(player, radius));
-            } catch (NumberFormatException e) {
-                getError("not-a-number").tell(res, "input", args[0]);
-                return false;
-            }
-        } else if (args.length  == 2) {
-            try {
-                toUnclaim.add(new SimpleChunkLocation(player.getWorld().getName(), Integer.parseInt(args[0]), Integer.parseInt(args[1])));
-            } catch (NumberFormatException e) {
-                getError("not-a-number").tell(res, "input", args[0] + " " + args[1]);
-                return false;
+            } else if (args.length  == 2) {
+                try {
+                    toUnclaim.add(new SimpleChunkLocation(player.getWorld().getName(), Integer.parseInt(args[0]), Integer.parseInt(args[1])));
+                } catch (NumberFormatException e) {
+                    getError("not-a-number").tell(res, "input", args[0] + " " + args[1]);
+                    return false;
+                }
             }
         } else {
             toUnclaim.add(new SimpleChunkLocation(player.getLocation()));

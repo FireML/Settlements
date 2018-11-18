@@ -9,13 +9,18 @@ import me.crz.minecraft.kingdoms.command.village.money.VillageMoneyCommand;
 import me.crz.minecraft.kingdoms.db.LogType;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.teleporter.TeleportersGUI;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.entity.Player;
 
 public class VillageCommand extends SubCommand {
     public VillageCommand() {
         super(null, "village");
         setPermission("kingdoms.user");
+        for (VillageRank rank : VillageRank.values()) {
+            getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), rank));
+        }
+        getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), null));
+        getHelpCommand().setDefaultTypeProvider(player -> ResidentManager.getInstance().doesResidentHaveVillage(player) ? "resident" : "none");
         registerCommand(new ChatCommand());
         registerCommand(new VillageAlliesCommand(this));
         registerCommand(new VillageAllyCommand(this));

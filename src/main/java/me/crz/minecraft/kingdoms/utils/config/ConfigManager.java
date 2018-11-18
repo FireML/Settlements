@@ -15,6 +15,7 @@ import java.io.File;
 public class ConfigManager {
     private static ConfigManager instance;
     private ConfigAccessor messages;
+    private ConfigAccessor commands;
     private ConfigAccessor levelConf;
     private ConfigAccessor mapConf;
     private ConfigAccessor settlementPerksConf;
@@ -34,6 +35,9 @@ public class ConfigManager {
         messages = new ConfigAccessor(KingdomsPlugin.getInstance(), "messages.yml");
         messages.saveDefaultConfig();
         messages.reloadConfig();
+        commands = new ConfigAccessor(KingdomsPlugin.getInstance(), "commands.yml");
+        commands.saveDefaultConfig();
+        commands.reloadConfig();
         levelConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "levelConf.yml");
         levelConf.saveDefaultConfig();
         levelConf.reloadConfig();
@@ -71,6 +75,10 @@ public class ConfigManager {
 
     public FileConfiguration getMessagesConfig() {
         return messages.getConfig();
+    }
+
+    public FileConfiguration getCommandsConfig() {
+        return commands.getConfig();
     }
 
     public FileConfiguration getLevelConfig() {

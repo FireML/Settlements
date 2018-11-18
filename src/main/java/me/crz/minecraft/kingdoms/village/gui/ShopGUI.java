@@ -159,7 +159,7 @@ public class ShopGUI extends KingdomsGUI {
 
                 @Override
                 public boolean click(Player p, ClickType type) {
-                    if (!resident.hasVillage() || resident.getVillageRank().below(VillageRank.ELDER)) {
+                    if (!resident.hasVillage() || resident.getVillageRank().below(VillageRank.CHIEF)) {
                         return false;
                     }
                     if (resident.getVillage().canRepeat(perk) && resident.getVillage().remove(perk.getRepeatCost())) {

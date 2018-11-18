@@ -245,7 +245,7 @@ public class ChatMap {
             }
 
             ComponentBuilder cb = new ComponentBuilder(MessageUtils.replaceColorCodes(symbol.getText())).color(relation.getColor());
-            if (claimable && land.isOwnedBy(resident.getVillage()) && resident.getVillageRank().atLeast(VillageRank.ELDER)) {
+            if (claimable && land.isOwnedBy(resident.getVillage()) && resident.getVillageRank().atLeast(VillageRank.CHIEF)) {
                 hover.append("\n").append(messages.getMessage("hover.click-to-unclaim")
                         .getReplacedComponents(
                                 "location", x + "-" + z,

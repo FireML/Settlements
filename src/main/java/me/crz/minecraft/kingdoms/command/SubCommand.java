@@ -30,6 +30,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
 
     private Map<String, SubCommand> subCommands = new LinkedHashMap<>();
     private boolean forceOwnUsage = false;
+    private HelpCommand helpCommand = null;
 
     public SubCommand(SubCommand parent, String usage, String... aliases) {
         super();
@@ -53,12 +54,24 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
                     return true;
                 }
                 if (!subCommand.execute(player, path, args[0].toLowerCase(), Arrays.copyOfRange(args, 1, args.length))) {
-                    return subCommand.sendUsageMessage(player, path, args[0]);
+                    return subCommand.getHelpCommand().run(player, path + " " + args[0], "help");
                 }
                 return true;
             }
         }
         return run(player, base, alias, args);
+    }
+
+    public void setHelpCommand(HelpCommand helpCommand) {
+        this.helpCommand = helpCommand;
+        registerCommand(helpCommand);
+    }
+
+    public HelpCommand getHelpCommand() {
+        if (helpCommand == null) {
+            setHelpCommand(new HelpCommand(this));
+        }
+        return helpCommand;
     }
 
     protected boolean sendUsageMessage(Player player, String base, String alias) {
@@ -73,16 +86,29 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
             return true;
         }
 
-        if (!getAccessibleCommands(player).isEmpty()) {
+        boolean hasCommands = !getAccessibleCommands(player).isEmpty();
+        if (hasCommands) {
             getMessage("usage.head").tell(player,
                     "usage", getUsage(base),
-                    "name", StringUtils.capitalize(name()),
-                    "alias", StringUtils.capitalize(alias),
+                    "type", "All ",
+                    "name", WordUtils.capitalizeFully(name()),
+                    "alias", WordUtils.capitalizeFully(alias),
                     "aliases", getAliases().isEmpty() ? "" : getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getAliases())),
-                    "path", WordUtils.capitalize(path)
+                    "path", WordUtils.capitalizeFully(path)
             );
         }
-        return sendUsageList(player, base, alias, path);
+        boolean success = sendUsageList(player, base, alias, path);
+        if (hasCommands) {
+            getMessage("usage.footer").tell(player,
+                    "usage", getUsage(base),
+                    "type", "All ",
+                    "name", WordUtils.capitalizeFully(name()),
+                    "alias", WordUtils.capitalizeFully(alias),
+                    "aliases", getAliases().isEmpty() ? "" : getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getAliases())),
+                    "path", WordUtils.capitalizeFully(path)
+            );
+        }
+        return success;
     }
 
     private boolean sendUsageList(Player player, String base, String alias, String path) {
@@ -103,7 +129,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
         return success;
     }
 
-    private SubCommand matchSubCommand(String input) {
+    public SubCommand matchSubCommand(String input) {
         input = input.toLowerCase();
         if (!subCommands.containsKey(input)) {
             SubCommand subCommand = null;
@@ -125,7 +151,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
     public Collection<SubCommand> getAccessibleCommands(Player player) {
         Collection<SubCommand> accessibleCommands = new LinkedHashSet<>();
         for (SubCommand subCommand : subCommands.values()) {
-            if (subCommand != null && subCommand.hasAccess(player)) {
+            if (subCommand != null && subCommand.hasAccess(player) && !(subCommand instanceof HelpCommand)) {
                 accessibleCommands.add(subCommand);
             }
         }

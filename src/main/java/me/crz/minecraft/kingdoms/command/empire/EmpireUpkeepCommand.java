@@ -1,22 +1,18 @@
 package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.empire.Empire;
-import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.ChatColor;
 
 import java.util.concurrent.TimeUnit;
 
 public class EmpireUpkeepCommand extends EmpireSubCommand {
     public EmpireUpkeepCommand(SubCommand parent) {
-        super(parent, "upkeep", EmpireRank.NONE);
+        super(parent, "upkeep", EmpireRank.MEMBER);
         setPermission("kingdoms.user");
     }
 

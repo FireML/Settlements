@@ -8,7 +8,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 public class VillageBanishCommand extends VillageSubCommand implements BanishCommand {
 
     public VillageBanishCommand(SubCommand parent) {
-        super(parent, "banish <name>", VillageRank.CHIEF);
+        super(parent, "banish <player>|s:<settlement>|e:<empire>", VillageRank.CHIEF);
         setPermission("kingdoms.user");
     }
 

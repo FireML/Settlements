@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command.resident;
 
 import me.crz.minecraft.kingdoms.chat.commands.IgnoreCommand;
+import me.crz.minecraft.kingdoms.command.HelpCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import org.bukkit.entity.Player;
 
@@ -11,6 +12,7 @@ public class ResidentCommand extends SubCommand {
     public ResidentCommand() {
         super(null, "resident <name>|show <name>");
         setForceOwnUsage(true);
+        setHelpCommand(new HelpCommand(this));
         showCommand = new ResidentShowCommand(this);
         registerCommand(showCommand);
         registerCommand(new IgnoreCommand());

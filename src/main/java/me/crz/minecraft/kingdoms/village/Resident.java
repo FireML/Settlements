@@ -33,7 +33,7 @@ public class Resident implements ConfigurationSerializable, Targetable {
     private UUID uuid;
     private String name;
     private VillageRank rank = VillageRank.RESIDENT;
-    private EmpireRank empireRank = EmpireRank.NONE;
+    private EmpireRank empireRank = EmpireRank.MEMBER;
     private int title = 0;
     private Village village = null;
     private ChatChannel activeChannel = ChatChannel.GENERAL;
@@ -153,7 +153,7 @@ public class Resident implements ConfigurationSerializable, Targetable {
             setVillageJoin(System.currentTimeMillis());
         } else {
             setVillageRank(VillageRank.RESIDENT);
-            setEmpireRank(EmpireRank.NONE);
+            setEmpireRank(EmpireRank.MEMBER);
             setVillageJoin(-1);
             setTitle(null);
         }
@@ -186,7 +186,7 @@ public class Resident implements ConfigurationSerializable, Targetable {
         if (hasEmpire()) {
             return empireRank;
         }
-        return EmpireRank.NONE;
+        return EmpireRank.MEMBER;
     }
 
     public void setEmpireRank(EmpireRank rank) {

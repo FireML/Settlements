@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 
 public class VillageSettingsCommand extends VillageSubCommand {
     public VillageSettingsCommand(SubCommand parent) {
-        super(parent, "settings", VillageRank.CHIEF);
+        super(parent, "settings", VillageRank.ELDER);
         setPermission("kingdoms.user");
     }
 
