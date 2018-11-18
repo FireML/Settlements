@@ -1,12 +1,13 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 
-public class VillageHereCommand extends SubCommand {
+public class VillageHereCommand extends PlayerSubCommand {
 
     public VillageHereCommand(SubCommand parent) {
         super(parent, "here");

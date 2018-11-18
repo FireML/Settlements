@@ -5,14 +5,12 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.OfflinePlayer;
 
 import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.text.DecimalFormat;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.Bukkit;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
 public class ResidentShowCommand extends SubCommand {
@@ -24,21 +22,21 @@ public class ResidentShowCommand extends SubCommand {
     }
 
     @Override
-    public boolean run(Player player, String base, String alias, String... args) {
+    public boolean run(CommandSender sender, String base, String alias, String... args) {
         if (args.length < 1) {
             return false;
         }
         Utils.runAsync(() -> {
             Resident target = ResidentManager.getInstance().getResident(args[0]);
             if (target == null) {
-                MessageUtils.tell(player, getError("player-not-found"), "name", args[0]);
+                MessageUtils.tell(sender, getError("player-not-found"), "name", args[0]);
                 return;
             }
 
             OfflinePlayer op = Bukkit.getOfflinePlayer(target.getUUID());
             double balance = KingdomsPlugin.getInstance().econ.getBalance(op);
 
-            MessageUtils.tell(player, getMessage("info"),
+            MessageUtils.tell(sender, getMessage("info"),
                     "name", target.getName(),
                     "settlement", (target.getVillage() == null) ? "none" : target.getVillage().getName(),
                     "rank", (target.getVillage() == null) ? "none" : target.getVillageRank().getTag(target.getVillage()),

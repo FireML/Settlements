@@ -1,11 +1,12 @@
 package me.crz.minecraft.kingdoms.command.admin;
 
+import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.config.Data;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageAdminSocialSpyCommand extends SubCommand {
+public class VillageAdminSocialSpyCommand extends PlayerSubCommand {
     public VillageAdminSocialSpyCommand(SubCommand parent) {
         super(parent, "ss", "socialspy");
         setPermission("kingdoms.admin.ss");

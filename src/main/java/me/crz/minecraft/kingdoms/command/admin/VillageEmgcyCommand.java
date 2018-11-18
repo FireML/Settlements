@@ -1,7 +1,7 @@
 package me.crz.minecraft.kingdoms.command.admin;
 
 import me.crz.minecraft.kingdoms.Base;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
 public class VillageEmgcyCommand extends SubCommand {
@@ -12,7 +12,7 @@ public class VillageEmgcyCommand extends SubCommand {
     }
 
     @Override
-    public boolean run(final Player player, final String base, final String alias, final String... args) {
+    public boolean run(final CommandSender sender, final String base, final String alias, final String... args) {
         Base.getPlugin().emgcy = !Base.getPlugin().emgcy;
         return true;
     }

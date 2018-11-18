@@ -9,7 +9,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.WordUtils;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -19,7 +19,7 @@ import java.util.function.Function;
 
 public class HelpCommand extends SubCommand {
     private int entriesPerPage = 10;
-    private Function<Player, String> defaultTypeProvider;
+    private Function<CommandSender, String> defaultTypeProvider;
 
     public HelpCommand(SubCommand parent) {
         super(parent, "help [<rank>] [<page>]", "usage");
@@ -30,15 +30,15 @@ public class HelpCommand extends SubCommand {
         entriesPerPage = ConfigManager.getInstance().getCommandsConfig().getInt("entries-per-page", entriesPerPage);
         registerCommand(new SubCommand(this, "all") {
             @Override
-            public boolean run(Player player, String base, String alias, String... args) {
+            public boolean run(CommandSender sender, String base, String alias, String... args) {
                 base = base.substring(0, base.lastIndexOf(' '));
-                return parent.sendUsageMessage(player, base.contains(" ") ? base.substring(0, base.lastIndexOf(' ')) : null, base.contains(" ") ? base.substring(base.lastIndexOf(' ')) : base);
+                return parent.sendUsageMessage(sender, base.contains(" ") ? base.substring(0, base.lastIndexOf(' ')) : null, base.contains(" ") ? base.substring(base.lastIndexOf(' ')) : base);
             }
         });
     }
 
     @Override
-    public boolean run(Player player, String base, String alias, String... args) {
+    public boolean run(CommandSender sender, String base, String alias, String... args) {
         if (base == null) {
             base = "";
         }
@@ -53,7 +53,7 @@ public class HelpCommand extends SubCommand {
             }
         }
 
-        String defaultType = defaultTypeProvider != null ? defaultTypeProvider.apply(player) : "general";
+        String defaultType = defaultTypeProvider != null ? defaultTypeProvider.apply(sender) : "general";
         String type = defaultType;
         String key = getParent().getKey();
         if (typeIndex >= 0 && args.length > typeIndex) {
@@ -89,7 +89,7 @@ public class HelpCommand extends SubCommand {
                         subCommand = subCommand.matchSubCommand(part);
                     }
                 }
-                if (subCommand == null || subCommand.hasAccess(player)) {
+                if (subCommand == null || subCommand.hasAccess(sender)) {
                     commands.put(commandPath, subCommand);
                 }
             }
@@ -99,7 +99,7 @@ public class HelpCommand extends SubCommand {
                 if (page > maxPage) {
                     page = maxPage;
                 }
-                getParent().getMessage("usage.head").tell(player,
+                getParent().getMessage("usage.head").tell(sender,
                         "type", direct ? "" : WordUtils.capitalizeFully(type) + " ",
                         "usage", getParent().getUsage(base.contains(" ") ? base.substring(0, base.lastIndexOf(' ')) : ""),
                         "name", WordUtils.capitalizeFully(getParent().name()),
@@ -141,13 +141,13 @@ public class HelpCommand extends SubCommand {
                         description = s.getDescription();
                         aliases.addAll(s.getAliases());
                     }
-                    getParent().getMessage("usage.entry").tell(player,
+                    getParent().getMessage("usage.entry").tell(sender,
                             "usage", usage,
                             "aliases", aliases.isEmpty() ? "" : getParent().getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", aliases)),
                             "description",description
                     );
                 });
-                getParent().getMessage("usage.footer").tell(player,
+                getParent().getMessage("usage.footer").tell(sender,
                         "type", direct ? "" : WordUtils.capitalizeFully(type) + " ",
                         "usage", getParent().getUsage(base.contains(" ") ? base.substring(0, base.lastIndexOf(' ')) : ""),
                         "name", WordUtils.capitalizeFully(getParent().name()),
@@ -172,7 +172,7 @@ public class HelpCommand extends SubCommand {
                         previous.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(net.md_5.bungee.api.ChatColor.YELLOW + "<<")));
                     }
 
-                    MessageUtils.tell(player, MessageUtils.replacePlaceholders(getParent().getMessage("usage.pagination.footer").getReplacedComponents(
+                    MessageUtils.tell(sender, MessageUtils.replacePlaceholders(getParent().getMessage("usage.pagination.footer").getReplacedComponents(
                             "type", WordUtils.capitalizeFully(type),
                             "page", String.valueOf(page),
                             "maxpage", String.valueOf(maxPage)
@@ -186,7 +186,7 @@ public class HelpCommand extends SubCommand {
         }
 
         int helpIndex = base.lastIndexOf(" help");
-        return getParent().sendUsageMessage(player, helpIndex > -1 ? base.substring(0, helpIndex) : null, helpIndex > -1 ? base.substring(helpIndex) : base);
+        return getParent().sendUsageMessage(sender, helpIndex > -1 ? base.substring(0, helpIndex) : null, helpIndex > -1 ? base.substring(helpIndex) : base);
     }
 
     private String stripParameters(String string) {
@@ -200,7 +200,7 @@ public class HelpCommand extends SubCommand {
         return command.trim();
     }
 
-    public void setDefaultTypeProvider(Function<Player, String> typeProvider) {
+    public void setDefaultTypeProvider(Function<CommandSender, String> typeProvider) {
         this.defaultTypeProvider = typeProvider;
     }
 }

@@ -8,7 +8,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -100,8 +100,8 @@ public class Message {
         return new MessageReplacer(this);
     }
 
-    public void tell(Player player, String... replacements) {
-        MessageUtils.tell(player, this, replacements);
+    public void tell(CommandSender sender, String... replacements) {
+        MessageUtils.tell(sender, this, replacements);
     }
 
     public void tell(Collection<Resident> residents, String... replacements) {

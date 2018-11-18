@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 public class VillageAdminLevelCommand extends SubCommand {
     public VillageAdminLevelCommand(SubCommand parent) {
@@ -16,13 +16,13 @@ public class VillageAdminLevelCommand extends SubCommand {
     }
 
     @Override
-    public boolean run(Player player, String base, String alias, String... args) {
+    public boolean run(CommandSender sender, String base, String alias, String... args) {
         if (args.length < 3) {
             return false;
         }
         Village village = VillageManager.getInstance().getVillageFromName(args[0]);
         if (village == null) {
-            getError("village-doesnt-exist").tell(player, "name", args[0]);
+            getError("village-doesnt-exist").tell(sender, "name", args[0]);
             return true;
         }
         try {
@@ -33,10 +33,10 @@ public class VillageAdminLevelCommand extends SubCommand {
             village.setLevel(level);
             village.getVault().clear();
 
-            player.sendMessage(ChatColor.RED + "Set " + village.getName() + " to " + state.getTag() + "/" + level);
+            sender.sendMessage(ChatColor.RED + "Set " + village.getName() + " to " + state.getTag() + "/" + level);
             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
         } catch (NumberFormatException e) {
-            getError("not-a-number").tell(player, "input", args[2]);
+            getError("not-a-number").tell(sender, "input", args[2]);
         } catch (IllegalArgumentException e) {
             return false;
         }

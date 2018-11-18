@@ -14,6 +14,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class VillageListCommand extends SubCommand {
     }
 
     @Override
-    public boolean run(Player player, String base, String alias, String... args) {
+    public boolean run(CommandSender sender, String base, String alias, String... args) {
         int page = 1;
         LandAccess access = null;
         if (args.length > 0) {
@@ -39,18 +40,18 @@ public class VillageListCommand extends SubCommand {
                         try {
                             page = Integer.parseInt(args[1]);
                         } catch (IllegalArgumentException e2) {
-                            getError("not-a-number").tell(player, "input", args[1]);
+                            getError("not-a-number").tell(sender, "input", args[1]);
                             return false;
                         }
                     }
                 } else {
-                    getError("not-a-number").tell(player, "input", args[0]);
+                    getError("not-a-number").tell(sender, "input", args[0]);
                     return false;
                 }
             }
         }
         if (page < 1) {
-            getError("not-a-number").tell(player, "input", String.valueOf(page));
+            getError("not-a-number").tell(sender, "input", String.valueOf(page));
             return false;
         }
         LandAccess finalAccess = access;
@@ -62,7 +63,7 @@ public class VillageListCommand extends SubCommand {
                     .collect(Collectors.toList());
 
             int pages = (int) Math.ceil(villages.size() / (double) Utils.getEntriesPerPage());
-            getMessage("head").tell(player,
+            getMessage("head").tell(sender,
                     "access", finalAccess != null ? finalAccess.getTag() + " " : "",
                     "page", String.valueOf(finalPage),
                     "maxpage", String.valueOf(pages)
@@ -71,7 +72,7 @@ public class VillageListCommand extends SubCommand {
             for (int i = (finalPage - 1) * Utils.getEntriesPerPage(); i < villages.size() && i < finalPage * Utils.getEntriesPerPage(); i++) {
                 Village v = villages.get(i);
                 Resident chief = v.getChief();
-                getMessage("entry").tell(player,
+                getMessage("entry").tell(sender,
                         "name", v.getName(),
                         "level", String.valueOf(v.getLevel()),
                         "description", v.getDescription(),
@@ -101,7 +102,7 @@ public class VillageListCommand extends SubCommand {
                 previous.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(ChatColor.YELLOW + "<<")));
             }
 
-            MessageUtils.tell(player, MessageUtils.replacePlaceholders(getMessage("footer").getReplacedComponents(
+            MessageUtils.tell(sender, MessageUtils.replacePlaceholders(getMessage("footer").getReplacedComponents(
                     "access", finalAccess != null ? finalAccess.getTag() + " " : "",
                     "page", String.valueOf(finalPage),
                     "maxpage", String.valueOf(pages)

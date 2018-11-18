@@ -11,13 +11,13 @@ import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class ChatCommand extends SubCommand {
+public class ChatCommand extends PlayerSubCommand {
 
     public ChatCommand() {
         super(null, "chat <channel>", "c");
         setHelpCommand(new HelpCommand(this));
         for (ChatChannel channel : ChatChannel.values()) {
-            registerCommand(new SubCommand(this, channel.name().toLowerCase(), channel.getAliases().toArray(new String[0])) {
+            registerCommand(new PlayerSubCommand(this, channel.name().toLowerCase(), channel.getAliases().toArray(new String[0])) {
                 @Override
                 public boolean run(Player p, String base, String alias, String... args) {
                     if (args.length == 0) {
@@ -40,13 +40,13 @@ public class ChatCommand extends SubCommand {
                 }
             });
         }
-        registerCommand(new SubCommand(this, "<channel>") {
+        registerCommand(new PlayerSubCommand(this, "<channel>") {
             @Override
             public boolean run(Player p0, String p1, String p2, String... p3) {
                 return false;
             }
         });
-        registerCommand(new SubCommand(this, "leave <channel>") {
+        registerCommand(new PlayerSubCommand(this, "leave <channel>") {
             @Override
             public boolean run(Player p, String base, String alias, String... args) {
                 if (args.length < 1) {
@@ -64,7 +64,7 @@ public class ChatCommand extends SubCommand {
                 return true;
             }
         });
-        registerCommand(new PermissionSubCommand(this, "lock", "kingdoms.staff") {
+        registerCommand(new PermissionPlayerSubCommand(this, "lock", "kingdoms.staff") {
             @Override
             public boolean run(Player p, String base, String alias, String... args) {
                 if (Data.muteChat) {
@@ -77,7 +77,7 @@ public class ChatCommand extends SubCommand {
                 return true;
             }
         });
-        registerCommand(new SubCommand(this, "swear") {
+        registerCommand(new PlayerSubCommand(this, "swear") {
             @Override
             public boolean run(Player p, String base, String alias, String... args) {
                 Resident res = ResidentManager.getInstance().getResident(p);
@@ -113,8 +113,8 @@ public class ChatCommand extends SubCommand {
         return false;
     }
 
-    private abstract class PermissionSubCommand extends SubCommand {
-        public PermissionSubCommand(ChatCommand parent, String name, String permission) {
+    private abstract class PermissionPlayerSubCommand extends PlayerSubCommand {
+        public PermissionPlayerSubCommand(ChatCommand parent, String name, String permission) {
             super(parent, name);
             setPermission(permission);
         }

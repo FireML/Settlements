@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.ChatCommand;
+import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.lock.LockCommand;
 import me.crz.minecraft.kingdoms.command.lock.UnlockCommand;
@@ -10,6 +11,7 @@ import me.crz.minecraft.kingdoms.db.LogType;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.teleporter.TeleportersGUI;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class VillageCommand extends SubCommand {
@@ -20,7 +22,7 @@ public class VillageCommand extends SubCommand {
             getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), rank));
         }
         getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), null));
-        getHelpCommand().setDefaultTypeProvider(player -> ResidentManager.getInstance().doesResidentHaveVillage(player) ? "resident" : "none");
+        getHelpCommand().setDefaultTypeProvider(s -> s instanceof Player && ResidentManager.getInstance().doesResidentHaveVillage((Player) s) ? "resident" : "none");
         registerCommand(new ChatCommand());
         registerCommand(new VillageAlliesCommand(this));
         registerCommand(new VillageAllyCommand(this));
@@ -62,7 +64,7 @@ public class VillageCommand extends SubCommand {
         registerCommand(new VillageShopCommand(this));
         registerCommand(new VillageShowCommand(this));
         registerCommand(new VillageTaxCommand(this));
-        registerCommand(new SubCommand(this, "teleporters") {
+        registerCommand(new PlayerSubCommand(this, "teleporters") {
             @Override
             public boolean run(Player player, String base, String alias, String... args) {
                 TeleportersGUI.getInstance().build(player);
@@ -79,7 +81,7 @@ public class VillageCommand extends SubCommand {
     }
 
     @Override
-    public boolean run(Player p, String base, String alias, String... args) {
+    public boolean run(CommandSender p, String base, String alias, String... args) {
         return false;
     }
 }

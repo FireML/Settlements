@@ -9,6 +9,7 @@ import me.crz.minecraft.kingdoms.db.LogType;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class EmpireCommand extends SubCommand {
@@ -21,7 +22,7 @@ public class EmpireCommand extends SubCommand {
         getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), VillageRank.CHIEF));
         getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), EmpireRank.SENATOR));
         getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), EmpireRank.LEADER));
-        getHelpCommand().setDefaultTypeProvider(player -> ResidentManager.getInstance().doesResidentHaveEmpire(player) ? "member" : "none");
+        getHelpCommand().setDefaultTypeProvider(s -> s instanceof Player && ResidentManager.getInstance().doesResidentHaveEmpire((Player) s) ? "member" : "none");
         registerCommand(new ChatCommand());
         registerCommand(new EmpireAlliesCommand(this));
         registerCommand(new EmpireAllyCommand(this));
@@ -65,7 +66,7 @@ public class EmpireCommand extends SubCommand {
     }
 
     @Override
-    public boolean run(Player p, String base, String alias, String... args) {
+    public boolean run(CommandSender s, String base, String alias, String... args) {
         return false;
     }
 }

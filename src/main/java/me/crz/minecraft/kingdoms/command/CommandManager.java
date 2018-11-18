@@ -47,7 +47,7 @@ public class CommandManager extends Base implements CommandExecutor {
         ChatCommand chatCommand = new ChatCommand();
         registerCommand(chatCommand);
         for (ChatChannel channel : ChatChannel.values()) {
-            registerCommand(new SubCommand(null, channel.name().toLowerCase() + "chat") {
+            registerCommand(new PlayerSubCommand(null, channel.name().toLowerCase() + "chat") {
                 @Override
                 public boolean run(Player p, String base, String alias, String... args) {
                     if (args.length == 0) {
@@ -92,21 +92,17 @@ public class CommandManager extends Base implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
-        if (sender instanceof Player) {
-            SubCommand cmd = getCommand(command.getName());
-            if (cmd == null) {
-                MessageUtils.tell((Player) sender, "&c&lUnknown command!");
-            } else if (!cmd.execute((Player) sender, null, alias, args)) {
-                if (cmd.getMessage("usage").exists()) {
-                    MessageUtils.tell((Player) sender, cmd.getMessage("usage"), "alias", alias);
-                } else if (!cmd.getHelpCommand().run((Player) sender, alias, "help")) {
-                    MessageUtils.tell((Player) sender, "&c" + cmd.getUsage(null));
-                } else {
-                    return false;
-                }
+        SubCommand cmd = getCommand(command.getName());
+        if (cmd == null) {
+            MessageUtils.tell(sender, "&c&lUnknown command!");
+        } else if (!cmd.execute(sender, null, alias, args)) {
+            if (cmd.getMessage("usage").exists()) {
+                cmd.getMessage("usage").tell(sender, "alias", alias);
+            } else if (!cmd.getHelpCommand().run(sender, alias, "help")) {
+                MessageUtils.tell(sender, "&c" + cmd.getUsage(null));
+            } else {
+                return false;
             }
-        } else {
-            sender.sendMessage(Message.get("error.only-player").getText());
         }
         return true;
     }

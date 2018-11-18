@@ -1,15 +1,13 @@
 package me.crz.minecraft.kingdoms.scoreboard.commands;
 
-import java.util.ArrayList;
-
 import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.scoreboard.ScoreboardManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import org.bukkit.entity.Player;
-import me.crz.minecraft.kingdoms.scoreboard.ScoreboardManager;
 
 public class CommandScoreboard extends SubCommand {
     private static final int MAX_WIDTH = 40;
@@ -19,27 +17,27 @@ public class CommandScoreboard extends SubCommand {
         setPermission("kingdoms.scoreboard");
         registerCommand(new SubCommand(this, "clear", "reset", "remove") {
             @Override
-            public boolean run(Player p, String base, String alias, String... args) {
+            public boolean run(CommandSender s, String base, String alias, String... args) {
                 manager.addCustomLines(null);
                 manager.update();
-                MessageUtils.tell(p, getMessage("cleared"));
+                MessageUtils.tell(s, getMessage("cleared"));
                 return true;
             }
         });
         registerCommand(new SubCommand(this, "add <line>") {
             @Override
-            public boolean run(Player p, String base, String alias, String... args) {
+            public boolean run(CommandSender s, String base, String alias, String... args) {
                 String line = ChatColor.translateAlternateColorCodes('&', String.join(" ", args));
                 manager.addCustomLines(listByWidth(line));
                 manager.update();
-                MessageUtils.tell(p, getMessage("added"), "line", line);
+                MessageUtils.tell(s, getMessage("added"), "line", line);
                 return true;
             }
         });
     }
 
     @Override
-    public boolean run(Player p, String base, String alias, String... args) {
+    public boolean run(CommandSender s, String base, String alias, String... args) {
         return false;
     }
 

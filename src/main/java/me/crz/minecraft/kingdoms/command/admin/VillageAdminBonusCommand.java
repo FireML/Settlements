@@ -10,7 +10,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 public class VillageAdminBonusCommand extends SubCommand {
     public VillageAdminBonusCommand(SubCommand parent) {
@@ -19,7 +19,7 @@ public class VillageAdminBonusCommand extends SubCommand {
     }
 
     @Override
-    public boolean run(Player player, String base, String alias, String... args) {
+    public boolean run(CommandSender sender, String base, String alias, String... args) {
         if (args.length < 3) {
             return false;
         }
@@ -33,7 +33,7 @@ public class VillageAdminBonusCommand extends SubCommand {
         try {
             amount = Integer.parseInt(args[2]);
         } catch (NumberFormatException e) {
-            getError("not-a-number").tell(player, "input", args[2]);
+            getError("not-a-number").tell(sender, "input", args[2]);
             return false;
         }
         if (args[1].startsWith("village:") || args[1].startsWith("v:") || args[1].startsWith("settlement:") || args[1].startsWith("s:")) {
@@ -41,7 +41,7 @@ public class VillageAdminBonusCommand extends SubCommand {
             Village village = VillageManager.getInstance().getVillageFromName(name);
             if (village != null) {
                 if (operation.apply(village, amount)) {
-                    getMessage("success").tell(player,
+                    getMessage("success").tell(sender,
                             "operation", operation.name().toLowerCase(),
                             "amount", String.valueOf(amount),
                             "name", village.getName()
@@ -49,14 +49,14 @@ public class VillageAdminBonusCommand extends SubCommand {
                     Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
                 }
             } else {
-                getError("village-doesnt-exist").tell(player, "name", name);
+                getError("village-doesnt-exist").tell(sender, "name", name);
             }
         } else if (args[1].startsWith("empire:") || args[1].startsWith("e:")) {
             String name = args[1].split(":")[1];
             Empire empire = EmpireManager.getInstance().getEmpireFromName(name);
             if (empire != null) {
                 if (operation.apply(empire, amount)) {
-                    getMessage("success").tell(player,
+                    getMessage("success").tell(sender,
                             "operation", operation.name().toLowerCase(),
                             "amount", String.valueOf(amount),
                             "name", empire.getName()
@@ -64,7 +64,7 @@ public class VillageAdminBonusCommand extends SubCommand {
                     Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(empire));
                 }
             } else {
-                getError("empire-doesnt-exist").tell(player, "name", name);
+                getError("empire-doesnt-exist").tell(sender, "name", name);
             }
         } else {
             String name = args[1];
@@ -76,7 +76,7 @@ public class VillageAdminBonusCommand extends SubCommand {
                 Resident resident = ResidentManager.getInstance().getResident(fName);
                 if (resident != null) {
                     if (operation.apply(resident, amount)) {
-                        getMessage("success").tell(player,
+                        getMessage("success").tell(sender,
                                 "operation", operation.name().toLowerCase(),
                                 "amount", String.valueOf(amount),
                                 "name", resident.getName()
@@ -84,7 +84,7 @@ public class VillageAdminBonusCommand extends SubCommand {
                         DatabaseManager.getInstance().saveResident(resident);
                     }
                 } else {
-                    getError("player-not-found").tell(player, "name", fName);
+                    getError("player-not-found").tell(sender, "name", fName);
                 }
             });
         }

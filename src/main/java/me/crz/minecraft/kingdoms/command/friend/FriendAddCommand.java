@@ -1,15 +1,14 @@
 package me.crz.minecraft.kingdoms.command.friend;
 
+import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
-import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class FriendAddCommand extends SubCommand {
-    public FriendAddCommand(SubCommand parent) {
+public class FriendAddCommand extends PlayerSubCommand {
+    public FriendAddCommand(PlayerSubCommand parent) {
         super(parent, "add <name>");
         setPermission("kingdoms.user");
     }

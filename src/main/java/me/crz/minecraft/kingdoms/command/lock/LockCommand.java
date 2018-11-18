@@ -1,17 +1,15 @@
 package me.crz.minecraft.kingdoms.command.lock;
 
-import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
-import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
 import me.crz.minecraft.kingdoms.lock.LockManager;
-import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.entity.Player;
 
-public class LockCommand extends ResidentSubCommand {
+public class LockCommand extends PlayerSubCommand {
     public LockCommand() {
         super(null, "lock", "protection", "secure");
         setPermission("kingdoms.user");
         getHelpCommand();
-        registerCommand(new SubCommand(this, "toggle") {
+        registerCommand(new PlayerSubCommand(this, "toggle") {
             @Override
             public boolean run(Player player, String base, String alias, String... args) {
                 if (LockManager.getInstance().toggleAction(player.getUniqueId(), "lock")) {
@@ -22,7 +20,7 @@ public class LockCommand extends ResidentSubCommand {
                 return true;
             }
         });
-        registerCommand(new SubCommand(this, "info") {
+        registerCommand(new PlayerSubCommand(this, "info") {
             @Override
             public boolean run(Player player, String base, String alias, String... args) {
                 if (args.length > 0 && "toggle".equalsIgnoreCase(args[0])) {
@@ -38,7 +36,7 @@ public class LockCommand extends ResidentSubCommand {
                 return true;
             }
         });
-        registerCommand(new SubCommand(this, "hoppers", "hopperallow", "allowhoppers") {
+        registerCommand(new PlayerSubCommand(this, "hoppers", "hopperallow", "allowhoppers") {
             @Override
             public boolean run(Player player, String base, String alias, String... args) {
                 if (args.length > 0 && "toggle".equalsIgnoreCase(args[0])) {
@@ -59,9 +57,9 @@ public class LockCommand extends ResidentSubCommand {
     }
 
     @Override
-    public boolean run(Resident res, String base, String alias, String... args) {
-        LockManager.getInstance().addAction(res.getUUID(), "lock");
-        getMessage("click-to-lock").tell(res);
+    public boolean run(Player player, String base, String alias, String... args) {
+        LockManager.getInstance().addAction(player.getUniqueId(), "lock");
+        getMessage("click-to-lock").tell(player);
         return true;
     }
 }

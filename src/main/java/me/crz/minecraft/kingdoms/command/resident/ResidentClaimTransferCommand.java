@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.resident;
 
+import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
@@ -7,20 +8,17 @@ import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
-import org.bukkit.entity.Player;
 
-public class ResidentClaimTransferCommand extends SubCommand {
+public class ResidentClaimTransferCommand extends ResidentSubCommand {
     public ResidentClaimTransferCommand(SubCommand parent) {
         super(parent, "claimtransfer <settlement>|empire:<name> <amount>", "transferclaims", "bonustransfer", "transferbonus");
         setPermission("kingdoms.user");
     }
 
     @Override
-    public boolean run(Player player, String base, String alias, String... args) {
-        Resident resident = ResidentManager.getInstance().getResident(player);
+    public boolean run(Resident resident, String base, String alias, String... args) {
         int amountIndex = 1;
         LandOwner target;
         if (args.length < 2) {

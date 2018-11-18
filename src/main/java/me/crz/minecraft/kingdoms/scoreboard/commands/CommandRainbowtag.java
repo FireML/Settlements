@@ -1,11 +1,11 @@
 package me.crz.minecraft.kingdoms.scoreboard.commands;
 
-import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
 import me.crz.minecraft.kingdoms.scoreboard.ScoreboardManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 
-public class CommandRainbowtag extends SubCommand {
+public class CommandRainbowtag extends PlayerSubCommand {
     private final ScoreboardManager manager;
 
     public CommandRainbowtag(ScoreboardManager manager) {

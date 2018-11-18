@@ -8,6 +8,7 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -40,26 +41,26 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
         name = usage.split(" ")[0];
     }
 
-    public abstract boolean run(Player player, String base, String alias, String... args);
+    public abstract boolean run(CommandSender sender, String base, String alias, String... args);
 
-    public boolean execute(Player player, String base, String alias, String... args) {
-        if (!testAccess(player)) {
+    public boolean execute(CommandSender sender, String base, String alias, String... args) {
+        if (!testAccess(sender)) {
             return true;
         }
         if (args.length > 0) {
             String path = base != null && !base.isEmpty() ? (base + " " + alias) : alias;
             SubCommand subCommand = matchSubCommand(args[0]);
             if (subCommand != null) {
-                if (!subCommand.testAccess(player)) {
+                if (!subCommand.testAccess(sender)) {
                     return true;
                 }
-                if (!subCommand.execute(player, path, args[0].toLowerCase(), Arrays.copyOfRange(args, 1, args.length))) {
-                    return subCommand.getHelpCommand().run(player, path + " " + args[0], "help");
+                if (!subCommand.execute(sender, path, args[0].toLowerCase(), Arrays.copyOfRange(args, 1, args.length))) {
+                    return subCommand.getHelpCommand().run(sender, path + " " + args[0], "help");
                 }
                 return true;
             }
         }
-        return run(player, base, alias, args);
+        return run(sender, base, alias, args);
     }
 
     public void setHelpCommand(HelpCommand helpCommand) {
@@ -74,10 +75,10 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
         return helpCommand;
     }
 
-    protected boolean sendUsageMessage(Player player, String base, String alias) {
+    protected boolean sendUsageMessage(CommandSender sender, String base, String alias) {
         String path = base != null && !base.isEmpty() ? (base + " " + alias) : alias;
         if (getMessage("usage").exists()) {
-            getMessage("usage").tell(player,
+            getMessage("usage").tell(sender,
                     "alias", path,
                     "usage", getUsage(base),
                     "aliases", getAliases().isEmpty() ? "" : getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getAliases())),
@@ -86,9 +87,9 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
             return true;
         }
 
-        boolean hasCommands = !getAccessibleCommands(player).isEmpty();
+        boolean hasCommands = !getAccessibleCommands(sender).isEmpty();
         if (hasCommands) {
-            getMessage("usage.head").tell(player,
+            getMessage("usage.head").tell(sender,
                     "usage", getUsage(base),
                     "type", "All ",
                     "name", WordUtils.capitalizeFully(name()),
@@ -97,9 +98,9 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
                     "path", WordUtils.capitalizeFully(path)
             );
         }
-        boolean success = sendUsageList(player, base, alias, path);
+        boolean success = sendUsageList(sender, base, alias, path);
         if (hasCommands) {
-            getMessage("usage.footer").tell(player,
+            getMessage("usage.footer").tell(sender,
                     "usage", getUsage(base),
                     "type", "All ",
                     "name", WordUtils.capitalizeFully(name()),
@@ -111,11 +112,11 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
         return success;
     }
 
-    private boolean sendUsageList(Player player, String base, String alias, String path) {
-        Collection<SubCommand> accessibleCommands = getAccessibleCommands(player);
+    private boolean sendUsageList(CommandSender sender, String base, String alias, String path) {
+        Collection<SubCommand> accessibleCommands = getAccessibleCommands(sender);
         boolean success = false;
         if (isVisible() && (accessibleCommands.isEmpty() || isForceOwnUsage())) {
-            getMessage("usage.entry").tell(player,
+            getMessage("usage.entry").tell(sender,
                     "usage", getUsage(base),
                     "aliases", getAliases().isEmpty() ? "" : getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getAliases())),
                     "description", getDescription()
@@ -123,7 +124,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
             success = true;
         }
         if (!accessibleCommands.isEmpty()) {
-            accessibleCommands.stream().sorted(Rankable::compareTo).forEachOrdered(s -> s.sendUsageList(player, path, s.name(), path + " " + s.name()));
+            accessibleCommands.stream().sorted(Rankable::compareTo).forEachOrdered(s -> s.sendUsageList(sender, path, s.name(), path + " " + s.name()));
             success = true;
         }
         return success;
@@ -148,29 +149,29 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
         return subCommands.get(input);
     }
 
-    public Collection<SubCommand> getAccessibleCommands(Player player) {
+    public Collection<SubCommand> getAccessibleCommands(CommandSender sender) {
         Collection<SubCommand> accessibleCommands = new LinkedHashSet<>();
         for (SubCommand subCommand : subCommands.values()) {
-            if (subCommand != null && subCommand.hasAccess(player) && !(subCommand instanceof HelpCommand)) {
+            if (subCommand != null && subCommand.hasAccess(sender) && !(subCommand instanceof HelpCommand)) {
                 accessibleCommands.add(subCommand);
             }
         }
         return accessibleCommands;
     }
 
-    public boolean testAccess(Player player) {
-        if (!hasAccess(player)) {
-            MessageUtils.tell(player, getError("no-permission"), "permission", getPermission());
+    public boolean testAccess(CommandSender sender) {
+        if (!hasAccess(sender)) {
+            MessageUtils.tell(sender, getError("no-permission"), "permission", getPermission());
             return false;
         }
         return true;
     }
 
-    public boolean hasAccess(Player player) {
-        if (parent != null && !parent.hasAccess(player)) {
+    public boolean hasAccess(CommandSender sender) {
+        if (parent != null && !parent.hasAccess(sender)) {
             return false;
         }
-        return getPermission() == null || getPermission().isEmpty() || player.hasPermission(getPermission());
+        return getPermission() == null || getPermission().isEmpty() || sender.hasPermission(getPermission());
     }
 
     @Override

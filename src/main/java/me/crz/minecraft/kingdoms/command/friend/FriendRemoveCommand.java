@@ -6,10 +6,10 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
-import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
 
-public class FriendRemoveCommand extends SubCommand {
-    public FriendRemoveCommand(SubCommand parent) {
+public class FriendRemoveCommand extends PlayerSubCommand {
+    public FriendRemoveCommand(PlayerSubCommand parent) {
         super(parent, "remove <name>");
         setPermission("kingdoms.user");
     }

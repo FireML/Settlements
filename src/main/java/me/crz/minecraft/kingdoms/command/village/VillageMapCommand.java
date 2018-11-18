@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.command.village;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveChunkEvent;
 import me.crz.minecraft.kingdoms.land.ChatMap;
@@ -17,7 +18,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class VillageMapCommand extends SubCommand implements Listener {
+public class VillageMapCommand extends PlayerSubCommand implements Listener {
     private Cache<UUID, Boolean> autoMap = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
 
     public VillageMapCommand(SubCommand parent) {

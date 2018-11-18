@@ -1,6 +1,6 @@
 package me.crz.minecraft.kingdoms.chat.commands;
 
-import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.stream.Collectors;
 
-public class IgnoreCommand extends SubCommand {
+public class IgnoreCommand extends PlayerSubCommand {
 
     public IgnoreCommand() {
         super(null, "ignore list|<player>");

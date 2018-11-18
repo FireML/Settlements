@@ -1,7 +1,7 @@
 package me.crz.minecraft.kingdoms.chat.commands;
 
 import me.crz.minecraft.kingdoms.chat.ChatManager;
-import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class MessageCommand extends SubCommand {
+public class MessageCommand extends PlayerSubCommand {
 
     public MessageCommand() {
         super(null, "message <name> <message>", "msg", "tell", "pm", "m", "w", "t", "whisper", "emsg", "etell", "epm", "ewhisper");

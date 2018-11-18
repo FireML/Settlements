@@ -1,14 +1,14 @@
 package me.crz.minecraft.kingdoms.chat.commands;
 
 import me.crz.minecraft.kingdoms.chat.ChatManager;
-import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class ReplyCommand extends SubCommand {
+public class ReplyCommand extends PlayerSubCommand {
     public ReplyCommand() {
         super(null, "reply <message>", "r");
     }

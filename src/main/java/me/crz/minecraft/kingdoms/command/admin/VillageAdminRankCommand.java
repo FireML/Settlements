@@ -9,6 +9,7 @@ import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
@@ -19,24 +20,24 @@ public class VillageAdminRankCommand extends SubCommand {
     }
 
     @Override
-    public boolean run(Player player, String base, String alias, String... args) {
+    public boolean run(CommandSender sender, String base, String alias, String... args) {
         if (args.length < 2) {
             return false;
         }
         String rank = args[1].toUpperCase();
         if (!this.rankIsValid(rank)) {
-            MessageUtils.tell(player, getError("invalid-rank"), "rank", rank);
+            MessageUtils.tell(sender, getError("invalid-rank"), "rank", rank);
             return true;
         }
         Utils.runAsync(() -> {
             Resident tRes = ResidentManager.getInstance().getResident(args[0]);
             if (tRes == null) {
-                MessageUtils.tell(player, getError("player-not-found"), "player", args[0]);
+                MessageUtils.tell(sender, getError("player-not-found"), "player", args[0]);
                 return;
             }
             Village village = VillageManager.getInstance().getVillageFromName(tRes.getVillageName());
             if (village == null) {
-                MessageUtils.tell(player, getError("not-in-village"), "player", tRes.getName());
+                MessageUtils.tell(sender, getError("not-in-village"), "player", tRes.getName());
                 return;
             }
             Resident res = village.getChief();
@@ -53,10 +54,10 @@ public class VillageAdminRankCommand extends SubCommand {
                 tRes.setVillageRank(r);
                 DatabaseManager.getInstance().saveResident(tRes);
             }
-            if (!village.getResidentIds().contains(player.getUniqueId())) {
-                MessageUtils.tell(player, Message.get("command.village.setrank.success"), "title", "", "setter", player.getDisplayName(), "target", tRes.getName(), "rank", r.getTag(village));
+            if (sender instanceof Player && !village.getResidentIds().contains(((Player) sender).getUniqueId())) {
+                MessageUtils.tell(sender, Message.get("command.village.setrank.success"), "title", "", "setter", sender.getName(), "target", tRes.getName(), "rank", r.getTag(village));
             }
-            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("command.village.setrank.success"), "title", "", "setter", player.getDisplayName(), "target", tRes.getName(), "rank", r.getTag(village));
+            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("command.village.setrank.success"), "title", "", "setter", sender.getName(), "target", tRes.getName(), "rank", r.getTag(village));
         });
         return true;
     }

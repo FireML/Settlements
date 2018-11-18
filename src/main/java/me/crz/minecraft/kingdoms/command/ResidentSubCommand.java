@@ -5,7 +5,7 @@ import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public abstract class ResidentSubCommand extends SubCommand {
+public abstract class ResidentSubCommand extends PlayerSubCommand {
 
     public ResidentSubCommand(SubCommand parent, String usage, String... aliases) {
         super(parent, usage, aliases);

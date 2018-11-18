@@ -2,7 +2,7 @@ package me.crz.minecraft.kingdoms.command.admin;
 
 import me.crz.minecraft.kingdoms.command.HelpCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 public class VillageAdminCommand extends SubCommand {
 
@@ -21,7 +21,7 @@ public class VillageAdminCommand extends SubCommand {
     }
 
     @Override
-    public boolean run(Player p, String base, String alias, String... args) {
+    public boolean run(CommandSender s, String base, String alias, String... args) {
         return false;
     }
 

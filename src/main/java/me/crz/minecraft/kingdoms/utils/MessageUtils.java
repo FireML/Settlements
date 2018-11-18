@@ -2,13 +2,13 @@ package me.crz.minecraft.kingdoms.utils;
 
 import com.google.common.collect.ImmutableMap;
 import de.themoep.minedown.Replacer;
-import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 
 import org.bukkit.Bukkit;
 import me.crz.minecraft.kingdoms.village.Resident;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -23,55 +23,55 @@ public class MessageUtils extends Base {
         super();
     }
 
-    public static void tell(Player player, Message message, String... replacements) {
-        tell(player, message.getComponents(), replacements);
+    public static void tell(CommandSender sender, Message message, String... replacements) {
+        tell(sender, message.getComponents(), replacements);
     }
 
     public static void tell(Resident resident, Message message, String... replacements) {
         tell(resident.getPlayer(), message.getComponents(), replacements);
     }
 
-    public static void tell(Player player, BaseComponent[] message, String... replacements) {
-        if (player == null || message.length == 0 || TextComponent.toPlainText(message).isEmpty()) {
+    public static void tell(CommandSender sender, BaseComponent[] message, String... replacements) {
+        if (sender == null || message.length == 0 || TextComponent.toPlainText(message).isEmpty()) {
             return;
         }
         if (replacements != null && replacements.length > 0) {
             message = replacePlaceholders(message, replacements);
         }
-        player.spigot().sendMessage(message);
+        sender.spigot().sendMessage(message);
     }
 
-    public static void tell(Player player, Message message, Map<String,BaseComponent[]> replacements) {
-        tell(player, message.getComponents(), replacements);
+    public static void tell(CommandSender sender, Message message, Map<String,BaseComponent[]> replacements) {
+        tell(sender, message.getComponents(), replacements);
     }
 
-    public static void tell(Player player, BaseComponent[] message, String placeholder, BaseComponent[] value) {
-        tell(player, message, ImmutableMap.of(placeholder, value));
+    public static void tell(CommandSender sender, BaseComponent[] message, String placeholder, BaseComponent[] value) {
+        tell(sender, message, ImmutableMap.of(placeholder, value));
     }
 
-    public static void tell(Player player, BaseComponent[] message, Map<String,BaseComponent[]> replacements) {
-        if (player == null || message.length == 0 || TextComponent.toPlainText(message).isEmpty()) {
+    public static void tell(CommandSender sender, BaseComponent[] message, Map<String,BaseComponent[]> replacements) {
+        if (sender == null || message.length == 0 || TextComponent.toPlainText(message).isEmpty()) {
             return;
         }
         if (replacements != null && !replacements.isEmpty()) {
             message = replacePlaceholders(message, replacements);
         }
-        player.spigot().sendMessage(message);
+        sender.spigot().sendMessage(message);
     }
 
     public static void tell(Resident player, String message, String... replacements) {
         tell(player.getPlayer(), message, replacements);
     }
 
-    public static void tell(Player player, String message, String... replacements) {
-        if (player == null || message == null || message.isEmpty()) {
+    public static void tell(CommandSender sender, String message, String... replacements) {
+        if (sender == null || message == null || message.isEmpty()) {
             return;
         }
         if (replacements != null && replacements.length > 0) {
             message = replacePlaceholders(message, replacements);
         }
         message = replaceColorCodes(message);
-        player.sendMessage(message);
+        sender.sendMessage(message);
     }
 
     public static void tellResidents(Collection<Resident> residents, Message message, String... replacements) {
@@ -92,12 +92,12 @@ public class MessageUtils extends Base {
         }
     }
 
-    public static void tellList(Player player, List<String> messages) {
+    public static void tellList(CommandSender sender, List<String> messages) {
         if (messages == null) {
             return;
         }
         for (String message : messages) {
-            player.sendMessage(replaceColorCodes(message));
+            sender.sendMessage(replaceColorCodes(message));
         }
     }
 

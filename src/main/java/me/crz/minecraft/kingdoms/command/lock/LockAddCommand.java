@@ -1,6 +1,6 @@
 package me.crz.minecraft.kingdoms.command.lock;
 
-import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
 import me.crz.minecraft.kingdoms.command.common.TargetParser;
 import me.crz.minecraft.kingdoms.lock.LockManager;
 import me.crz.minecraft.kingdoms.utils.Targetable;
@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
-public class LockAddCommand extends SubCommand implements TargetParser {
+public class LockAddCommand extends PlayerSubCommand implements TargetParser {
     public LockAddCommand(LockCommand parent) {
         super(parent, "add <player>|s:<settlement>|e:<empire> [toggle]", "grant");
     }

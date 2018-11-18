@@ -1,12 +1,13 @@
 package me.crz.minecraft.kingdoms.command.admin;
 
+import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
 import me.crz.minecraft.kingdoms.utils.Utils;
 
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 
-public class VillageAdminWorldCommand extends SubCommand {
+public class VillageAdminWorldCommand extends PlayerSubCommand {
     public VillageAdminWorldCommand(SubCommand parent) {
         super(parent, "world <yes|no>");
         setPermission("kingdoms.admin");

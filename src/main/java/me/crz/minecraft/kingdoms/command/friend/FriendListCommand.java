@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.entity.Player;
-import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
 
-public class FriendListCommand extends SubCommand {
-    public FriendListCommand(SubCommand parent) {
+public class FriendListCommand extends PlayerSubCommand {
+    public FriendListCommand(PlayerSubCommand parent) {
         super(parent, "list");
         setPermission("kingdoms.user");
     }

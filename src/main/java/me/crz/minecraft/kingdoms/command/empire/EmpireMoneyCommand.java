@@ -10,6 +10,7 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import net.milkbowl.vault.economy.EconomyResponse;
+import org.bukkit.entity.Player;
 
 import java.text.DecimalFormat;
 
@@ -22,7 +23,7 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
         for (EmpireRank rank : EmpireRank.values()) {
             getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), rank));
         }
-        getHelpCommand().setDefaultTypeProvider(player -> ResidentManager.getInstance().doesResidentHaveEmpire(player) ? "member" : "none");
+        getHelpCommand().setDefaultTypeProvider(s -> s instanceof Player && ResidentManager.getInstance().doesResidentHaveEmpire((Player) s) ? "member" : "none");
         registerCommand(new EmpireSubCommand(this, "balance", EmpireRank.MEMBER) {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
