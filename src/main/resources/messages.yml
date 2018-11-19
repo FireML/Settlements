@@ -1043,6 +1043,7 @@ command:
         entry: "&8\\[&9*&8] [&b{usage}](suggest_command={{usage})"
     transfer:
       success: "&e&lALERT &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
+      already-chief: "&c&lYou can't transfer leadership to your self!"
       description: Transfers leadership of your village
     unally:
       cant-unally-yourself: "&c&lYou can't un-ally yourself!"
@@ -1373,6 +1374,7 @@ command:
         description: Sets the tax a settlement needs to pay each day he is in the empire
     transfer:
       success: "&e&lALERT &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
+      already-capital: "&c&lYour village is already the capital."
       description: Transfers leadership of your empire
     unally:
       cant-unally-yourself: "&c&lYou can't un-ally yourself!"

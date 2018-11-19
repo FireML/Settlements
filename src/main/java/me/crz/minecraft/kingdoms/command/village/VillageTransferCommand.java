@@ -31,9 +31,13 @@ public class VillageTransferCommand extends VillageSubCommand {
                 res.tell(getError("not-in-current"), "name", village.getName(), "state", village.getState().getTag());
                 return;
             }
+            if (village.isChief(tres)) {
+                getError("already-chief").tell(res, "name", tres.getName());
+                return;
+            }
             Utils.runSync(() -> {
-                tres.setVillageRank(VillageRank.CHIEF);
                 res.setVillageRank(VillageRank.ELDER);
+                tres.setVillageRank(VillageRank.CHIEF);
                 village.setChief(tres.getUUID());
                 Utils.runAsync(() -> {
                     DatabaseManager.getInstance().saveResident(res);

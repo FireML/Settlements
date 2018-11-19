@@ -32,6 +32,10 @@ public class EmpireTransferCommand extends EmpireSubCommand {
                 res.tell(getError("not-in-empire"), "name", empire.getName());
                 return;
             }
+            if (empire.isCapital(targetVillage)) {
+                res.tell(getError("already-capital"), "name", targetVillage.getName(), "state", targetVillage.getStateTag());
+                return;
+            }
             Resident oldLeader = empire.getCapital().getChief();
             oldLeader.setEmpireRank(EmpireRank.SENATOR);
             Resident newLeader = targetVillage.getChief();
