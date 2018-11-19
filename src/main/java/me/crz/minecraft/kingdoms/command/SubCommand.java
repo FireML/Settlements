@@ -77,9 +77,11 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
 
     protected boolean sendUsageMessage(CommandSender sender, String base, String alias) {
         String path = base != null && !base.isEmpty() ? (base + " " + alias) : alias;
+        String coolPath = getPath();
         if (getMessage("usage").exists()) {
             getMessage("usage").tell(sender,
                     "alias", path,
+                    "path", getPath(),
                     "usage", getUsage(base),
                     "aliases", getAliases().isEmpty() ? "" : getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getAliases())),
                     "description", getDescription()
@@ -91,6 +93,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
         if (hasCommands) {
             getMessage("usage.head").tell(sender,
                     "usage", getUsage(base),
+                    "path", getPath(),
                     "type", "All ",
                     "name", WordUtils.capitalizeFully(name()),
                     "alias", WordUtils.capitalizeFully(alias),
@@ -102,6 +105,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
         if (hasCommands) {
             getMessage("usage.footer").tell(sender,
                     "usage", getUsage(base),
+                    "path", getPath(),
                     "type", "All ",
                     "name", WordUtils.capitalizeFully(name()),
                     "alias", WordUtils.capitalizeFully(alias),
@@ -118,6 +122,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
         if (isVisible() && (accessibleCommands.isEmpty() || isForceOwnUsage())) {
             getMessage("usage.entry").tell(sender,
                     "usage", getUsage(base),
+                    "path", getPath(),
                     "aliases", getAliases().isEmpty() ? "" : getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getAliases())),
                     "description", getDescription()
             );
@@ -187,6 +192,10 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
     @Override
     public String getKey() {
         return parent != null ? (parent.getKey() + "." + name()) : name();
+    }
+
+    protected String getPath() {
+        return parent != null ? parent.getPath() + " " + getShortestAlias(): getShortestAlias();
     }
 
     public void setPermission(String perm) {
@@ -278,5 +287,15 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
 
     public int ordinal() {
         return Integer.MIN_VALUE;
+    }
+
+    public String getShortestAlias() {
+        String shortestAlias = name();
+        for (String alias : getAliases()) {
+            if (alias.length() < shortestAlias.length()) {
+                shortestAlias = alias;
+            }
+        }
+        return shortestAlias;
     }
 }

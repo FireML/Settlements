@@ -11,7 +11,9 @@ public class PlotHelpCommand extends PlotSubCommand {
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
-        return getParent().run(res.getPlayer(), base.substring(0, base.lastIndexOf(' ')), base.substring(base.lastIndexOf(' ')), (name() + " " + String.join(" ", args)).split(" "));
+        return getParent().run(res.getPlayer(),
+                base.contains(" ") ? base.substring(0, base.lastIndexOf(' ')) : "",
+                base.contains(" ") ? base.substring(base.lastIndexOf(' ')) : base, (name() + " " + String.join(" ", args)).split(" "));
     }
 
     @Override

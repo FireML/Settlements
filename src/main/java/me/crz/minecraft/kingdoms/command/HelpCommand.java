@@ -110,16 +110,18 @@ public class HelpCommand extends SubCommand {
                 commands.entrySet().stream().skip((page - 1) * entriesPerPage).limit(entriesPerPage).forEachOrdered(e -> {
                     SubCommand s = e.getValue();
                     String usage;
+                    String displayPath;
                     String description;
                     List<String> aliases = new ArrayList<>();
                     if (s == null) {
                         usage = "/" + e.getKey();
-                        String directPath = stripParameters(e.getKey()).replace(' ', '.');
-                        Message message = Message.get("command." + directPath + ".description");
+                        displayPath = stripParameters(e.getKey());
+                        String configPath = displayPath.replace(' ', '.');
+                        Message message = Message.get("command." + configPath + ".description");
                         if (message.exists()) {
                             description = message.getText();
                         } else {
-                            Message m = Message.get("command." + directPath);
+                            Message m = Message.get("command." + configPath);
                             if (m.exists()) {
                                 description = m.getText();
                             } else {
@@ -127,22 +129,19 @@ public class HelpCommand extends SubCommand {
                             }
                         }
                     } else {
-                        if (getParent().name().equalsIgnoreCase(e.getKey().split(" ")[0]) || getParent().getAliases().contains(e.getKey().split(" ")[0].toLowerCase())) {
-                            usage = "/" + e.getKey();
+                        SubCommand startCommand = CommandManager.getInstance().getCommand(e.getKey().split(" ")[0]);
+                        if (startCommand != null && startCommand.getParent() == null) {
+                            displayPath = stripParameters(e.getKey());
                         } else {
-                            StringBuilder pathEnd = new StringBuilder();
-                            SubCommand parent = s.getParent();
-                            while (parent != null && !parent.equals(getParent())) {
-                                pathEnd.insert(0, " " + parent.name());
-                                parent = parent.getParent();
-                            }
-                            usage = s.getUsage(finalBase + pathEnd);
+                            displayPath = s.getPath();
                         }
+                        usage = s.getUsage(displayPath.contains(" ") ? displayPath.substring(0, displayPath.lastIndexOf(' ')) : "");
                         description = s.getDescription();
                         aliases.addAll(s.getAliases());
                     }
                     getParent().getMessage("usage.entry").tell(sender,
                             "usage", usage,
+                            "path", displayPath,
                             "aliases", aliases.isEmpty() ? "" : getParent().getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", aliases)),
                             "description",description
                     );

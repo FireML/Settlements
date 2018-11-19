@@ -571,7 +571,7 @@ gui:
 
 usage:
   head: "&8&l--------&r&c&l{type}{name} Commands&r&8&l--------"
-  entry: "&8\\[&9*&8] [&b{usage}](hover=&9Click to add it to your input{aliases} suggest_command={{usage}) &7- {description}"
+  entry: "&8\\[&9*&8] [&b/{path}](hover=&f{usage}\n&9Click to add it to your input{aliases} suggest_command={/{path}) &7- {description}"
   aliases: "\n&fAliases: &7{aliases}"
   footer: ""
   pagination:

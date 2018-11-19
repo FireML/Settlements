@@ -10,7 +10,7 @@ public class ResidentCommand extends SubCommand {
     private final SubCommand showCommand;
 
     public ResidentCommand() {
-        super(null, "resident <name>|show <name>");
+        super(null, "resident <name>|show <name>", "res");
         setForceOwnUsage(true);
         setHelpCommand(new HelpCommand(this));
         showCommand = new ResidentShowCommand(this);

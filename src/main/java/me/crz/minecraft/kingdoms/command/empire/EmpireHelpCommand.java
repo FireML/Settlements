@@ -16,6 +16,8 @@ public class EmpireHelpCommand extends EmpireSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        return getParent().run(resident.getPlayer(), base.substring(0, base.lastIndexOf(' ')), base.substring(base.lastIndexOf(' ')), (name() + " " + String.join(" ", args)).split(" "));
+        return getParent().run(resident.getPlayer(),
+                base.contains(" ") ? base.substring(0, base.lastIndexOf(' ')) : "",
+                base.contains(" ") ? base.substring(base.lastIndexOf(' ')) : base, (name() + " " + String.join(" ", args)).split(" "));
     }
 }

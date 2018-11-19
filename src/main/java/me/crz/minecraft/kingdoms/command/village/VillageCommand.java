@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 
 public class VillageCommand extends SubCommand {
     public VillageCommand() {
-        super(null, "village");
+        super(null, "village", "settlement", "s", "v");
         setPermission("kingdoms.user");
         for (VillageRank rank : VillageRank.values()) {
             getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), rank));

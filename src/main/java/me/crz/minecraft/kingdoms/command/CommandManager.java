@@ -80,6 +80,9 @@ public class CommandManager extends Base implements CommandExecutor {
 
     public void registerCommand(SubCommand ex) {
         commandMap.put(ex.name().toLowerCase(), ex);
+        for (String alias : ex.getAliases()) {
+            commandMap.put(alias, ex);
+        }
         PluginCommand command = getPlugin().getCommand(ex.name());
         if (command != null) {
             command.setExecutor(this);
@@ -98,7 +101,7 @@ public class CommandManager extends Base implements CommandExecutor {
         } else if (!cmd.execute(sender, null, alias, args)) {
             if (cmd.getMessage("usage").exists()) {
                 cmd.getMessage("usage").tell(sender, "alias", alias);
-            } else if (!cmd.getHelpCommand().run(sender, alias, "help")) {
+            } else if (!cmd.getHelpCommand().run(sender, cmd.getShortestAlias(), "help")) {
                 MessageUtils.tell(sender, "&c" + cmd.getUsage(null));
             } else {
                 return false;
