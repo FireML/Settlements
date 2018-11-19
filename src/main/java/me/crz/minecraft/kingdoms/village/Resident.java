@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.integration.IgnoreProvider;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.IdObject;
@@ -74,10 +75,12 @@ public class Resident implements ConfigurationSerializable, Targetable {
     }
 
     public boolean addIgnore(UUID ignore) {
+        KingdomsPlugin.getInstance().getIgnoreProviders().forEach(i -> i.addIgnore(this, ignore));
         return this.ignore.add(ignore);
     }
 
     public boolean removeIgnore(UUID ignore) {
+        KingdomsPlugin.getInstance().getIgnoreProviders().forEach(i -> i.removeIgnore(this, ignore));
         return this.ignore.remove(ignore);
     }
 

@@ -6,6 +6,8 @@ import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireListener;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.integration.ChestShopIntegration;
+import me.crz.minecraft.kingdoms.integration.CmiIntegration;
+import me.crz.minecraft.kingdoms.integration.IgnoreProvider;
 import me.crz.minecraft.kingdoms.integration.LWCIntegration;
 import me.crz.minecraft.kingdoms.integration.MultiverseIntegration;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
@@ -51,6 +53,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     private MultiverseIntegration multiverse = null;
 
     private Set<LockProvider> lockProviders = new LinkedHashSet<>();
+    private Set<IgnoreProvider> ignoreProviders = new LinkedHashSet<>();
 
     public boolean emgcy = false;
     public static Chat chat;
@@ -96,6 +99,10 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         if (getServer().getPluginManager().isPluginEnabled("ChestShop")) {
             ChestShopIntegration csIntegration = new ChestShopIntegration();
             getLogger().log(Level.INFO, "Hooked into ChestShop " + csIntegration.getChestShop().getDescription().getVersion() + "!");
+        }
+        if (getServer().getPluginManager().isPluginEnabled("CMI")) {
+            CmiIntegration cmiIntegration = new CmiIntegration();
+            getLogger().log(Level.INFO, "Hooked into CMI " + cmiIntegration.getCmi().getDescription().getVersion() + "!");
         }
         if (data.load(this.getDataFolder())) {
             ConfigManager.getInstance();
@@ -224,6 +231,10 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     public Set<LockProvider> getLockProviders() {
         return lockProviders;
+    }
+
+    public Set<IgnoreProvider> getIgnoreProviders() {
+        return ignoreProviders;
     }
 
     public MultiverseIntegration getMultiverse() {
