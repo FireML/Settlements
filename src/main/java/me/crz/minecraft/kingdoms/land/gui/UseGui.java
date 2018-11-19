@@ -17,8 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.stream.Collectors;
-
 public class UseGui extends PlotGUI {
     private static UseGui instance;
     private CInventory gui;
@@ -68,8 +66,8 @@ public class UseGui extends PlotGUI {
                                 }
                             } else {
                                 BuildState changeTo = clickType.isLeftClick()
-                                        ? land.getUseState(u).next(BuildState.AppliesTo.SETTLEMENT)
-                                        : land.getUseState(u).previous(BuildState.AppliesTo.SETTLEMENT);
+                                        ? land.getUseState(u).next(BuildState.AppliesTo.LAND)
+                                        : land.getUseState(u).previous(BuildState.AppliesTo.LAND);
                                 land.setUseState(u, changeTo);
                                 MessageUtils.tell(p, Message.get("command.plot.use.success"),
                                         "flag", u.getTag(),
