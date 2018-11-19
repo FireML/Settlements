@@ -169,6 +169,7 @@ help-order:
     - link
     - unlink
     - friend
+    - staff
     staff:
     - sale
     - unsale
