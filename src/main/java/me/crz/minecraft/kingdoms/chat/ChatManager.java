@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.chat;
 import com.google.common.collect.ImmutableMap;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.chat.events.ChannelChatEvent;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -44,7 +45,7 @@ public class ChatManager extends Base implements ConfigMessages {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void on(AsyncPlayerChatEvent event) {
-        if (event.isCancelled()) {
+        if (event.isCancelled() || event instanceof ChannelChatEvent) {
             return;
         }
         Player sender = event.getPlayer();
@@ -72,14 +73,18 @@ public class ChatManager extends Base implements ConfigMessages {
         }
         event.setCancelled(true);
 
-        sendChannelMessage(sender, channel, event.getMessage());
+        sendChannelMessage(sender, ResidentManager.getInstance().getResident(sender), channel, event.getMessage());
     }
 
     public void sendChannelMessage(Player player, ChatChannel channel, String message) {
-        sendChannelMessage(player, ResidentManager.getInstance().getResident(player), channel, message);
+        Utils.runAsync(() -> {
+            if (new ChannelChatEvent(true, player, message, channel).callEvent()) {
+                sendChannelMessage(player, ResidentManager.getInstance().getResident(player), channel, message);
+            }
+        });
     }
 
-    public void sendChannelMessage(Player sender, Resident res, ChatChannel channel, String message) {
+    private void sendChannelMessage(Player sender, Resident res, ChatChannel channel, String message) {
         if (!channel.canChatM(sender)) {
             return;
         }
