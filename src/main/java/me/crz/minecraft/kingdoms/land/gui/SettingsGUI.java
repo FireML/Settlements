@@ -48,7 +48,7 @@ public class SettingsGUI extends PlotGUI {
                 return true;
             }
         });
-        gui.addItem(7, getPlotLinkItem(gui));
+        gui.addItem(getPlotLinkItem(gui));
         gui.addItem(8, new ClickableItem() {
             public ItemStack getItem(Player p) {
                 OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
