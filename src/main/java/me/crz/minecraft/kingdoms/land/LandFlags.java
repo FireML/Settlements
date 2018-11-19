@@ -29,7 +29,9 @@ import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.inventory.meta.SpawnEggMeta;
 
 public class LandFlags extends Base implements LandFlagBase {
     private TitleBuilder tbPvp = new TitleBuilder();
@@ -160,9 +162,7 @@ public class LandFlags extends Base implements LandFlagBase {
 
     @EventHandler(ignoreCancelled = true)
     public void onHostileSpawn(HostileCreaturePreSpawnEvent e) {
-        if (e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.NATURAL
-                && e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.SPAWNER_EGG
-                && e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.SPAWNER
+        if (e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.CUSTOM
                 && !isAllowed(e.getLocation(), PlotMode.mobSpawning)) {
             e.setCancelled(true);
         }
@@ -171,10 +171,18 @@ public class LandFlags extends Base implements LandFlagBase {
     @EventHandler(ignoreCancelled = true)
     public void onHostileSpawn(HostileCreatureSpawnEvent e) {
         if (e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.CUSTOM
-                && e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.SPAWNER_EGG
-                && e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.SPAWNER
                 && !isAllowed(e.getLocation(), PlotMode.mobSpawning)) {
             e.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerSpawnEggClick(PlayerInteractEvent event) {
+        if (event.getClickedBlock() != null
+                && event.getItem() != null
+                && event.getItem().getType().name().endsWith("SPAWN_EGG")
+                && !isAllowed(event.getClickedBlock().getLocation(), PlotMode.mobSpawning)) {
+            event.setCancelled(true);
         }
     }
 
