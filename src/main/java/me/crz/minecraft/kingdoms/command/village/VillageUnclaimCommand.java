@@ -50,7 +50,9 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                     return false;
                 }
             }
-        } else {
+        }
+
+        if (toUnclaim.isEmpty()) {
             toUnclaim.add(new SimpleChunkLocation(player.getLocation()));
         }
 
