@@ -215,7 +215,7 @@ public class ChatManager extends Base implements ConfigMessages {
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + target.getName() + " "))
                         .create(),
                 "message", new ComponentBuilder(message).create(),
-                "staff", sender.hasPermission("kingdoms.staff") ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
+                "staff", sender.hasPermission("kingdoms.prefix.staff") ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
         ));
 
         MessageUtils.tell(target, getMessage("format.private.target"), ImmutableMap.of(
@@ -230,7 +230,7 @@ public class ChatManager extends Base implements ConfigMessages {
                         .event(targetHover)
                         .create(),
                 "message", new ComponentBuilder(message).create(),
-                "staff", sender.hasPermission("kingdoms.staff") ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
+                "staff", sender.hasPermission("kingdoms.prefix.staff") ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
         ));
         lastMessage.put(sender.getUniqueId(), target.getUniqueId());
         lastMessage.put(target.getUniqueId(), sender.getUniqueId());
@@ -243,7 +243,7 @@ public class ChatManager extends Base implements ConfigMessages {
         );
         for (String sUUID : Data.socialSpy) {
             Player pl = Bukkit.getPlayer(UUID.fromString(sUUID));
-            if (pl != null && pl != sender && pl != target && pl.isOnline()) {
+            if (pl != null && pl != sender && pl != target && pl.isOnline() && pl.hasPermission("kingdoms.admin.ss")) {
                 MessageUtils.tell(pl, socialSpy);
             }
         }

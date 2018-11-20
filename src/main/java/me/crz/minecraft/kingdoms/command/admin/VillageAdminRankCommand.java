@@ -16,7 +16,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageAdminRankCommand extends SubCommand {
     public VillageAdminRankCommand(SubCommand parent) {
         super(parent, "rank <player> <rank>", "setrank");
-        setPermission("kingdoms.admin");
+        setPermission("kingdoms.admin.command.rank");
     }
 
     @Override

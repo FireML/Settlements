@@ -64,7 +64,7 @@ public class ChatCommand extends PlayerSubCommand {
                 return true;
             }
         });
-        registerCommand(new PermissionPlayerSubCommand(this, "lock", "kingdoms.staff") {
+        registerCommand(new PermissionPlayerSubCommand(this, "lock", "kingdoms.chat.lock") {
             @Override
             public boolean run(Player p, String base, String alias, String... args) {
                 if (Data.muteChat) {

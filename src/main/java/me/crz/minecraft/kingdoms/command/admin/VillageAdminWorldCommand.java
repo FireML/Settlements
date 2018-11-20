@@ -10,7 +10,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageAdminWorldCommand extends PlayerSubCommand {
     public VillageAdminWorldCommand(SubCommand parent) {
         super(parent, "world <yes|no>");
-        setPermission("kingdoms.admin");
+        setPermission("kingdoms.admin.command.world");
     }
 
     @Override

@@ -17,7 +17,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageAdminJoinCommand extends SubCommand {
     public VillageAdminJoinCommand(SubCommand parent) {
         super(parent, "join <player> <village>");
-        setPermission("kingdoms.admin");
+        setPermission("kingdoms.admin.command.join");
     }
 
     @Override

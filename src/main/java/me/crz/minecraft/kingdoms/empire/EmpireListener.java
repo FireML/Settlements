@@ -56,7 +56,7 @@ public class EmpireListener implements Listener {
                 && player.getAllowFlight()
                 && player.getGameMode() != GameMode.CREATIVE
                 && player.getGameMode() != GameMode.SPECTATOR
-                && !player.hasPermission("kingdoms.staff")) {
+                && !player.hasPermission("kingdoms.bypass.flyremoval")) {
             player.setAllowFlight(false);
             if (player.isFlying()) {
                 player.setFlying(false);

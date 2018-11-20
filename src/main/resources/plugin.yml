@@ -76,12 +76,45 @@ permissions:
     default: op
     children:
       kingdoms.admin.ss: true
+      kingdoms.admin.command: true
+      kingdoms.admin.command.bonus: true
+      kingdoms.admin.command.join: true
+      kingdoms.admin.command.level: true
+      kingdoms.admin.command.rank: true
+      kingdoms.admin.command.reload: true
+      kingdoms.admin.command.world: true
+      kingdoms.admin.command.emgcy: true
       kingdoms.staff: true
       kingdoms.chat.colour: true
       kingdoms.channel.admin: true
+      kingdoms.bypass.flyremoval: true
   kingdoms.admin.ss:
     description: Permission to access social spy.
-    default: op
+    default: false
+  kingdoms.admin.command:
+    description: Permission to access the admincommand.
+    default: false
+  kingdoms.admin.command.bonus:
+    description: Permission to access the admin bonus command.
+    default: false
+  kingdoms.admin.command.join:
+    description: Permission to access the admin join command.
+    default: false
+  kingdoms.admin.command.level:
+    description: Permission to access the admin level command.
+    default: false
+  kingdoms.admin.command.rank:
+    description: Permission to access the admin rank command.
+    default: false
+  kingdoms.admin.command.reload:
+    description: Permission to access the admin reload command.
+    default: false
+  kingdoms.admin.command.world:
+    description: Permission to access the admin world command.
+    default: false
+  kingdoms.admin.command.emgcy:
+    description: Permission to access the admin emgcy command.
+    default: false
   kingdoms.bypass.banish:
     description: Permission to bypass being banished from a settlement.
     default: op
@@ -94,14 +127,35 @@ permissions:
   kingdoms.bypass.lock:
     description: Permission to bypass locks
     default: op
+  kingdoms.bypass.use:
+    description: Permission to bypass claim/world use restriction
+    default: op
+  kingdoms.bypass.build:
+    description: Permission to bypass claim/world build restriction
+    default: op
+  kingdoms.bypass.flyremoval:
+    description: Permission to bypass the removal of flight when leaving empire worlds
+    default: op
   kingdoms.bypass.restriction.chestshop:
     description: Permission to bypass shop build restrictions.
     default: op
   kingdoms.bypass.restriction.lwc:
     description: Permission to bypass shop build restrictions.
     default: op
+  kingdoms.prefix.staff:
+    description: Show the staff prefix in private chat.
+    default: op
   kingdoms.staff:
     description: Permission for staffs. Gives access to some staff only functions.
+    default: op
+    children:
+      kingdoms.user: true
+      kingdoms.bypass.chatlock: true
+      kingdoms.channel.staff: true
+      kingdoms.prefix.staff: true
+      kingdoms.chat.lock: true
+  kingdoms.mod:
+    description: Permission for mods. Gives access to bypasses to feature limitations
     default: op
     children:
       kingdoms.user: true
@@ -109,14 +163,17 @@ permissions:
       kingdoms.bypass.restriction.lwc: true
       kingdoms.bypass.banish: true
       kingdoms.bypass.locks: true
+      kingdoms.bypass.use: true
+      kingdoms.bypass.build: true
       kingdoms.bypass.ignore: true
-      kingdoms.bypass.chatlock: true
-      kingdoms.channel.staff: true
   kingdoms.user:
     description: Permission for users. Gives access to all plugin functions that a user should have.
     default: true
   kingdoms.chat.colour:
     description: Gives permission to use colours in chat
+    default: op
+  kingdoms.chat.lock:
+    description: Gives permission to lock the chat
     default: op
   kingdoms.rainbowtag:
     description: Gives permission to use the rainbowtag command

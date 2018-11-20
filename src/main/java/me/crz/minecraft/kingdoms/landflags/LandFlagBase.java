@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 public interface LandFlagBase extends ConfigMessages {
 
     default Pair<Boolean, String> canUse(Player user, Use use, Location loc) {
-        if (user.hasPermission("kingdoms.staff")) {
+        if (user.hasPermission("kingdoms.bypass.use")) {
             return new Pair<>(true, "");
         }
         OwnedLand land = LandManager.getInstance().getLand(loc);
@@ -33,7 +33,7 @@ public interface LandFlagBase extends ConfigMessages {
     }
 
     default Pair<Boolean, String> getCanBuildAll(Player building, Location loc) {
-        if (building.hasPermission("kingdoms.staff")) {
+        if (building.hasPermission("kingdoms.bypass.build")) {
             return new Pair<>(true, "");
         }
         OwnedLand land = LandManager.getInstance().getLand(loc);

@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageEmgcyCommand extends SubCommand {
     public VillageEmgcyCommand(SubCommand parent) {
         super(parent, "emgcy");
-        setPermission("kingdoms.admin");
+        setPermission("kingdoms.admin.command.emgcy");
         setVisible(false);
     }
 

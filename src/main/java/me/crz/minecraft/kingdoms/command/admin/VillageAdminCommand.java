@@ -8,7 +8,7 @@ public class VillageAdminCommand extends SubCommand {
 
     public VillageAdminCommand() {
         super(null, "villageadmin", "va");
-        setPermission("kingdoms.admin");
+        setPermission("kingdoms.admin.command");
         setHelpCommand(new HelpCommand(this));
         this.registerCommand(new VillageAdminBonusCommand(this));
         this.registerCommand(new VillageAdminWorldCommand(this));

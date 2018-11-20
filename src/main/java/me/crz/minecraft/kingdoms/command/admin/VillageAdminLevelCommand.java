@@ -12,7 +12,7 @@ import org.bukkit.command.CommandSender;
 public class VillageAdminLevelCommand extends SubCommand {
     public VillageAdminLevelCommand(SubCommand parent) {
         super(parent, "level <settlement> village|kingdom <level>", "setlevel", "state", "setstate");
-        setPermission("kingdoms.admin");
+        setPermission("kingdoms.admin.command.level");
     }
 
     @Override
