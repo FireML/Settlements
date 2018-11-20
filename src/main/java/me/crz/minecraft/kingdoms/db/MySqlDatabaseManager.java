@@ -122,24 +122,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
     }
 
     private void updateAllies() {
-        alterOrRecreate(MySqlTable.SETTLEMENT_ALLIES, "ALTER TABLE `" + tablePrefix + MySqlTable.SETTLEMENT_ALLIES.getDbName() + "` CHANGE COLUMN `ally` `allies` VARCHAR(320) NOT NULL;");
-        alterOrRecreate(MySqlTable.EMPIRE_ALLIES, "ALTER TABLE `" + tablePrefix + MySqlTable.SETTLEMENT_ALLIES.getDbName() + "` CHANGE COLUMN `ally` `allies` VARCHAR(320) NOT NULL;");
-    }
-
-    private void alterOrRecreate(MySqlTable table, String alterSql) {
-        String sql = "SELECT * FROM " + tablePrefix + table.getDbName() + " LIMIT 1";
-        try (Connection conn = ds.getConnection();
-             Statement sta = conn.createStatement()) {
-            ResultSet rs = sta.executeQuery(sql);
-            if (rs.next()) {
-                sta.execute(alterSql);
-            } else {
-                sta.execute("DROP TABLE " + tablePrefix + table.getDbName());
-                sta.execute(table.getSql(tablePrefix));
-            }
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while trying to alter table " + table.getDbName(), e);
-        }
+        alterColumnOrRecreate(MySqlTable.SETTLEMENT_ALLIES, "ally", "allies", "VARCHAR(320) NOT NULL");
+        alterColumnOrRecreate(MySqlTable.EMPIRE_ALLIES, "ally", "allies", "VARCHAR(320) NOT NULL");
     }
 
     @Override
@@ -1013,6 +997,42 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 insertSta.addBatch();
             }
             insertSta.executeBatch();
+        }
+    }
+
+    private void alterOrRecreate(MySqlTable table, String alterSql) {
+        String sql = "SELECT * FROM " + tablePrefix + table.getDbName() + " LIMIT 1";
+        try (Connection conn = ds.getConnection();
+             Statement sta = conn.createStatement()) {
+            ResultSet rs = sta.executeQuery(sql);
+            if (rs.next()) {
+                sta.execute(alterSql);
+            } else {
+                sta.execute("DROP TABLE " + tablePrefix + table.getDbName());
+                sta.execute(table.getSql(tablePrefix));
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to alter table " + table.getDbName(), e);
+        }
+    }
+
+    private void alterColumnOrRecreate(MySqlTable table, String oldColumn, String newColumn, String columnDefinition) {
+        String sql = "SELECT * FROM " + tablePrefix + table.getDbName() + " LIMIT 1";
+        try (Connection conn = ds.getConnection();
+             Statement sta = conn.createStatement()) {
+            ResultSet rs = sta.executeQuery(sql);
+            if (rs.next()) {
+                try {
+                    rs.getObject(newColumn);
+                } catch (SQLException columnNotFound) {
+                    sta.execute("ALTER TABLE `" + tablePrefix + table.getDbName() + "` CHANGE COLUMN `" + oldColumn + "` `" + newColumn + "` " + columnDefinition + ";");
+                }
+            } else {
+                sta.execute("DROP TABLE " + tablePrefix + table.getDbName());
+                sta.execute(table.getSql(tablePrefix));
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to alter table " + table.getDbName(), e);
         }
     }
 
