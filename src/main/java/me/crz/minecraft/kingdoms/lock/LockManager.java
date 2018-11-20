@@ -26,16 +26,14 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -45,7 +43,7 @@ public class LockManager implements LockProvider {
     private static final String LOADING_KEY = "LOADING_MARKER";
     private static LockManager instance;
     private final Set<Material> lockable = EnumSet.noneOf(Material.class);
-    private final Map<String, Cache<SimpleChunkLocation, Map<String, Lock>>> lockTable = new HashMap<>();
+    private final Map<String, Cache<SimpleChunkLocation, Map<String, Lock>>> lockTable = new ConcurrentHashMap<>();
     private final Expiry<SimpleChunkLocation, Map<String, Lock>> chunkExpiry = new Expiry<SimpleChunkLocation, Map<String, Lock>>() {
         @Override
         public long expireAfterCreate(@Nonnull SimpleChunkLocation key, @Nonnull Map<String, Lock> value, long currentTime) {
@@ -105,7 +103,7 @@ public class LockManager implements LockProvider {
             Map<String, Lock> chunkMap = worldCache.getIfPresent(chunk);
             if (chunkMap == null) {
                 notLoaded.add(chunk);
-                worldCache.put(chunk, new HashMap<>(ImmutableMap.of(LOADING_KEY, new Lock(null, null, null))));
+                worldCache.put(chunk, new ConcurrentHashMap<>(ImmutableMap.of(LOADING_KEY, new Lock(null, null, null))));
             }
         }
         return Utils.runAsync(() -> {
@@ -168,7 +166,7 @@ public class LockManager implements LockProvider {
     private void cacheLock(Lock lock) {
         if (lock.isValid()) {
             Map<String, Lock> lockMap = lockTable.computeIfAbsent(lock.getLocation().getWorld(), s -> Caffeine.newBuilder().expireAfter(chunkExpiry).build())
-                    .get(lock.getLocation().toChunkLocation(), location -> new HashMap<>());
+                    .get(lock.getLocation().toChunkLocation(), location -> new ConcurrentHashMap<>());
             lockMap.put(lock.getLocation().getSimpleKey(), lock);
             lockMap.remove(LOADING_KEY);
         }
@@ -277,32 +275,19 @@ public class LockManager implements LockProvider {
     }
 
     @Override
-    public int removeInChunks(Collection<? extends SimpleChunkLocation> chunks) {
-        List<Lock> locks = new ArrayList<>();
+    public void removeInChunks(Collection<? extends SimpleChunkLocation> chunks) {
         for (SimpleChunkLocation chunk : chunks) {
             if (lockTable.containsKey(chunk.getWorld())) {
-                Map<String, Lock> chunkMap = lockTable.get(chunk.getWorld()).getIfPresent(chunk);
-                if (chunkMap != null) {
-                    locks.addAll(chunkMap.values());
-                }
                 lockTable.get(chunk.getWorld()).invalidate(chunk);
             }
         }
-        Utils.runAsync(() -> DatabaseManager.getInstance().deleteLocks(locks));
-        return locks.size();
+        Utils.runAsync(() -> DatabaseManager.getInstance().deleteLocks(DatabaseManager.getInstance().getLocks(chunks.toArray(new SimpleChunkLocation[0]))));
     }
 
     @Override
-    public int removeInWorld(World world) {
-        List<Lock> locks = new ArrayList<>();
-        if (lockTable.containsKey(world.getName())) {
-            for (Map<String, Lock> chunkMap : lockTable.get(world.getName()).asMap().values()) {
-                locks.addAll(chunkMap.values());
-            }
-            lockTable.remove(world.getName());
-        }
+    public void removeInWorld(World world) {
+        lockTable.remove(world.getName());
         Utils.runAsync(() -> DatabaseManager.getInstance().deleteLocks(world.getName()));
-        return locks.size();
     }
 
     public static LockManager getInstance() {

@@ -8,12 +8,12 @@ import org.bukkit.World;
 import java.util.Collection;
 
 public interface LockProvider extends ConfigMessages, LandFlagBase {
-    int removeInChunks(Collection<? extends SimpleChunkLocation> chunks);
+    void removeInChunks(Collection<? extends SimpleChunkLocation> chunks);
 
     @Override
     default String type() {
         return "integration";
     }
 
-    int removeInWorld(World world);
+    void removeInWorld(World world);
 }

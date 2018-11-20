@@ -151,7 +151,7 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
     }
 
     @Override
-    public int removeInChunks(Collection<? extends SimpleChunkLocation> chunks) {
+    public void removeInChunks(Collection<? extends SimpleChunkLocation> chunks) {
         Utils.runAsync(() -> {
             for (SimpleChunkLocation claim : chunks) {
                 lwc.fastRemoveProtections(Bukkit.getConsoleSender(),
@@ -163,17 +163,15 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
                         , KingdomsPlugin.getInstance().getConfig().getBoolean("remove-locked-blocks"));
             }
         });
-        return -1;
     }
 
     @Override
-    public int removeInWorld(World world) {
+    public void removeInWorld(World world) {
         Utils.runAsync(() -> lwc.fastRemoveProtections(
                 Bukkit.getConsoleSender(),
                 "world = '" + world.getName() + "'",
                 KingdomsPlugin.getInstance().getConfig().getBoolean("remove-locked-blocks")
         ));
-        return -1;
     }
 
     @Override

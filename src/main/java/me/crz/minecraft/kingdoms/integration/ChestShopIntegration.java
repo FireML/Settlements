@@ -16,12 +16,13 @@ import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.SignChangeEvent;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,23 +36,18 @@ public class ChestShopIntegration implements LockProvider, Listener {
         Bukkit.getPluginManager().registerEvents(this, KingdomsPlugin.getInstance());
     }
 
-    @EventHandler
-    public void onShopCreation(PreShopCreationEvent event) {
+    @EventHandler(priority = EventPriority.LOW)
+    public void onShopCreation(SignChangeEvent event) {
         if (event.getPlayer().hasPermission("kingdoms.bypass.restriction.chestshop")
-                || !Utils.isWorldClaimable(event.getSign().getWorld())) {
+                || !Utils.isWorldClaimable(event.getBlock().getWorld())) {
             return;
         }
-        OwnedLand land = LandManager.getInstance().getLand(event.getSign().getLocation());
-        if (land == null) {
-            event.setCancelled(true);
-            getError("not-allowed").tell(event.getPlayer());
-            return;
-        }
-
-        Pair<Boolean, String> response = getCanBuildAll(event.getPlayer(), event.getSign().getLocation());
-        if (!response.getLeft()) {
-            MessageUtils.tell(event.getPlayer(), response.getRight());
-            event.setOutcome(PreShopCreationEvent.CreationOutcome.NO_PERMISSION_FOR_TERRAIN);
+        if (ChestShopSign.isValidPreparedSign(event.getLines())) {
+            OwnedLand land = LandManager.getInstance().getLand(event.getBlock().getLocation());
+            if (land == null) {
+                event.setCancelled(true);
+                getError("not-allowed").tell(event.getPlayer());
+            }
         }
     }
 
@@ -65,39 +61,36 @@ public class ChestShopIntegration implements LockProvider, Listener {
     }
 
     @Override
-    public int removeInChunks(Collection<? extends SimpleChunkLocation> chunks) {
-        int amount = 0;
-        for (SimpleChunkLocation chunkLocation : chunks) {
-            Chunk chunk = chunkLocation.getChunk();
-            if (!chunk.isLoaded()) {
-                chunk.load(false);
+    public void removeInChunks(Collection<? extends SimpleChunkLocation> chunks) {
+        Utils.runSync(() -> {
+            for (SimpleChunkLocation chunkLocation : chunks) {
+                World world = Bukkit.getWorld(chunkLocation.getWorld());
+                if (world != null) {
+                    world.getChunkAtAsync(chunkLocation.getX(), chunkLocation.getZ()).thenAccept(this::removeInChunk);
+                }
             }
-            amount += removeInChunk(chunk);
-        }
-        return 0;
+        });
     }
 
     @Override
-    public int removeInWorld(World world) {
-        int amount = 0;
-        for (Chunk chunk : world.getLoadedChunks()) {
-            amount += removeInChunk(chunk);
-        }
-        return amount;
+    public void removeInWorld(World world) {
+        Utils.runSync(() -> {
+            for (Chunk chunk : world.getLoadedChunks()) {
+                removeInChunk(chunk);
+            }
+        });
     }
 
     private int removeInChunk(Chunk chunk) {
         int amount = 0;
         for (BlockState blockState : chunk.getTileEntities()) {
-            if (blockState instanceof Container && ChestShopSign.isShopBlock((Container) blockState)) {
-                Block block = blockState.getBlock();
-                Sign sign;
-                while ((sign = uBlock.findAnyNearbyShopSign(block)) != null) {
-                    new ShopDestroyedEvent(null, sign, (Container) blockState).callEvent();
-                    Arrays.fill(sign.getLines(), "");
-                    sign.update();
-                    amount++;
-                }
+            if (blockState instanceof Sign && ChestShopSign.isValid((Sign) blockState)) {
+                Sign sign = (Sign) blockState;
+                Container container = uBlock.findConnectedContainer(sign);
+                new ShopDestroyedEvent(null, (Sign) sign.getBlock().getState(), container).callEvent();
+                Arrays.fill(sign.getLines(), "");
+                sign.update(true);
+                amount++;
             }
         }
         return amount;
