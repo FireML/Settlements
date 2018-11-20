@@ -66,7 +66,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         ds.setConnectionTimeout(5000);
 
         initializeTables();
-        updateClaimUses();
+        updateClaimModes();
         updateAllies();
     }
 
@@ -84,7 +84,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         }
     }
 
-    private void updateClaimUses() {
+    private void updateClaimModes() {
         String sql = "SELECT * FROM " + tablePrefix + "claims;";
         try (Connection conn = ds.getConnection();
              Statement sta = conn.createStatement()) {
@@ -113,11 +113,14 @@ public class MySqlDatabaseManager extends DatabaseManager {
                         + PlotMode.values(PlotMode.AppliesTo.LAND_OWNER).stream().map(m -> "DROP COLUMN " + m.name()).collect(Collectors.joining(","))
                         +";");
             } else {
-                sta.execute("DROP TABLE " + tablePrefix + "claims");
-                sta.execute(MySqlTable.CLAIMS.getSql(tablePrefix));
+                sta.addBatch("SET FOREIGN_KEY_CHECKS = 0");
+                sta.addBatch("DROP TABLE " + tablePrefix + "claims;");
+                sta.addBatch(MySqlTable.CLAIMS.getSql(tablePrefix));
+                sta.addBatch("SET FOREIGN_KEY_CHECKS = 1");
+                sta.executeBatch();
             }
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while trying to get all claims from database!", e);
+            plugin.getLogger().log(Level.SEVERE, "Error while trying update claim's table to new mode format!", e);
         }
     }
 
@@ -1017,7 +1020,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
     }
 
     private void alterColumnOrRecreate(MySqlTable table, String oldColumn, String newColumn, String columnDefinition) {
-        String sql = "SELECT * FROM " + tablePrefix + table.getDbName() + " LIMIT 1";
+        String sql = "SELECT * FROM " + tablePrefix + table.getDbName() + " LIMIT 1;";
         try (Connection conn = ds.getConnection();
              Statement sta = conn.createStatement()) {
             ResultSet rs = sta.executeQuery(sql);
@@ -1028,8 +1031,11 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     sta.execute("ALTER TABLE `" + tablePrefix + table.getDbName() + "` CHANGE COLUMN `" + oldColumn + "` `" + newColumn + "` " + columnDefinition + ";");
                 }
             } else {
-                sta.execute("DROP TABLE " + tablePrefix + table.getDbName());
-                sta.execute(table.getSql(tablePrefix));
+                sta.addBatch("SET FOREIGN_KEY_CHECKS = 0");
+                sta.addBatch("DROP TABLE " + tablePrefix + table.getDbName() + ";");
+                sta.addBatch(table.getSql(tablePrefix));
+                sta.addBatch("SET FOREIGN_KEY_CHECKS = 1");
+                sta.executeBatch();
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to alter table " + table.getDbName(), e);
