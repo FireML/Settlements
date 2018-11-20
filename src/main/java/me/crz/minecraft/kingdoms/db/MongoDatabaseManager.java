@@ -352,8 +352,8 @@ public class MongoDatabaseManager extends DatabaseManager {
         }
         FindIterable<Document> logIt = logsCollection.find(Filters.and(filters))
                 .sort(Sorts.descending("timestamp"))
-                .skip((page-1) * 20)
-                .limit(20);
+                .skip((page-1) * Utils.getEntriesPerPage())
+                .limit(Utils.getEntriesPerPage());
         for (Document document : logIt) {
             Village village = VillageManager.getInstance().getVillageFromId(IdObject.get(document.get("village")));
             VillageRank rank = VillageRank.RESIDENT;
@@ -364,7 +364,7 @@ public class MongoDatabaseManager extends DatabaseManager {
                     "name", document.getString("name"),
                     "uuid", document.getString("uuid"),
                     "rank", rank.getTag(village),
-                    "title", document.getString("title"),
+                    "title", rank.getTitle(village, document.getInteger("title")),
                     "action", document.getString("action"),
                     "type", document.getString("type"),
                     "amount", String.valueOf(document.getInteger("amount")),
