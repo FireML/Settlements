@@ -12,7 +12,6 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageBuildCommand extends VillageSubCommand {
     public VillageBuildCommand(SubCommand parent) {
         super(parent, "build <state>", VillageRank.CHIEF);
-        this.setPermission("kingdoms.user");
     }
 
     @Override

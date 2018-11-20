@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 public class EmpireShopCommand extends EmpireSubCommand {
     public EmpireShopCommand(SubCommand parent) {
         super(parent, "shop", EmpireRank.MEMBER, "buyperks");
-        setPermission("kingdoms.user");
         setForceOwnUsage(true);
         registerCommand(new EmpireSubCommand(this, "unlock <perk>", EmpireRank.LEADER, "buy") {
             @Override

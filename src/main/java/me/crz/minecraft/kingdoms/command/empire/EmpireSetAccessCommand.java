@@ -11,7 +11,6 @@ import me.crz.minecraft.kingdoms.village.Resident;
 public class EmpireSetAccessCommand extends EmpireSubCommand {
     public EmpireSetAccessCommand(SubCommand parent) {
         super(parent, "setaccess <access>", EmpireRank.LEADER, "set", "access");
-        setPermission("kingdoms.user");
     }
 
     @Override

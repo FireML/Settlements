@@ -11,7 +11,6 @@ public class EmpireHereCommand extends PlayerSubCommand {
 
     public EmpireHereCommand(SubCommand parent) {
         super(parent, "here");
-        setPermission("kingdoms.user");
     }
 
     @Override

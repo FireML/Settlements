@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 public class VillageUseCommand extends VillageSubCommand {
     public VillageUseCommand(SubCommand parent) {
         super(parent, "use <name> <state>", VillageRank.CHIEF);
-        setPermission("kingdoms.user");
         registerCommand(new VillageSubCommand(this, "all <state>") {
             @Override
             public boolean run(Resident res, String base, String alias, String... args) {

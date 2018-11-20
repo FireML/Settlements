@@ -10,7 +10,6 @@ import me.crz.minecraft.kingdoms.village.ResidentManager;
 public class VillageInviteCommand extends VillageSubCommand {
     public VillageInviteCommand(SubCommand parent) {
         super(parent, "invite <player>", VillageRank.RECRUITER);
-        setPermission("kingdoms.user");
     }
 
     @Override

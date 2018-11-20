@@ -17,7 +17,6 @@ public class EmpireCreateCommand extends EmpireSubCommand {
 
     public EmpireCreateCommand(SubCommand parent) {
         super(parent, "create <name>", VillageRank.CHIEF);
-        setPermission("kingdoms.user");
     }
 
     @Override

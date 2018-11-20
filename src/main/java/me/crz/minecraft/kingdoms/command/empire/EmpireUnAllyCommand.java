@@ -8,7 +8,6 @@ import me.crz.minecraft.kingdoms.village.Resident;
 public class EmpireUnAllyCommand extends EmpireSubCommand implements AllyCommand {
     public EmpireUnAllyCommand(SubCommand parent) {
         super(parent, "unally s:<settlement>|e:<empire>", EmpireRank.LEADER);
-        setPermission("kingdoms.user");
     }
 
     @Override

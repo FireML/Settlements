@@ -16,7 +16,6 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 public class VillageJoinCommand extends VillageSubCommand {
     public VillageJoinCommand(SubCommand parent) {
         super(parent, "join <name>");
-        setPermission("kingdoms.user");
     }
 
     @Override

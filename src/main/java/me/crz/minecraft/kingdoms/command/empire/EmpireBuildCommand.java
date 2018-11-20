@@ -11,7 +11,6 @@ import me.crz.minecraft.kingdoms.village.Resident;
 public class EmpireBuildCommand extends EmpireSubCommand {
     public EmpireBuildCommand(SubCommand parent) {
         super(parent, "build <state>", EmpireRank.LEADER);
-        this.setPermission("kingdoms.user");
     }
 
     @Override

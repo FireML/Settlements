@@ -9,7 +9,6 @@ public class VillageBanishCommand extends VillageSubCommand implements BanishCom
 
     public VillageBanishCommand(SubCommand parent) {
         super(parent, "banish <player>|s:<settlement>|e:<empire>", VillageRank.CHIEF);
-        setPermission("kingdoms.user");
     }
 
     @Override

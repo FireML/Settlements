@@ -13,7 +13,6 @@ import java.util.Collection;
 public class VillageTitleCommand extends VillageSubCommand {
     public VillageTitleCommand(SubCommand parent) {
         super(parent, "title <title>", VillageRank.RESIDENT);
-        setPermission("kingdoms.user");
     }
 
     @Override

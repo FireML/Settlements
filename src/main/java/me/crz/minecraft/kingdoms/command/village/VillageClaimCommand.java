@@ -21,7 +21,6 @@ import java.util.Set;
 public class VillageClaimCommand extends VillageSubCommand {
     public VillageClaimCommand(SubCommand parent) {
         super(parent, "claim [<radius>]", VillageRank.ELDER);
-        setPermission("kingdoms.user");
     }
 
     @Override

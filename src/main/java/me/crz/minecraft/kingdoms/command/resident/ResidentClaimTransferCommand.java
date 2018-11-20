@@ -14,7 +14,6 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 public class ResidentClaimTransferCommand extends ResidentSubCommand {
     public ResidentClaimTransferCommand(SubCommand parent) {
         super(parent, "claimtransfer <settlement>|empire:<name> <amount>", "transferclaims", "bonustransfer", "transferbonus");
-        setPermission("kingdoms.user");
     }
 
     @Override

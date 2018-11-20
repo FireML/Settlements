@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 public class VillageListCommand extends SubCommand {
     public VillageListCommand(SubCommand parent) {
         super(parent, "list [open] [<page>]");
-        setPermission("kingdoms.user");
     }
 
     @Override

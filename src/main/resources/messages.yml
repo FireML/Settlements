@@ -971,7 +971,7 @@ command:
         builder: Allows resident to build on elder and builder only mode
         recruiter: Allows resident to invite players
         resident: Default rank for members of this settlement
-      usage:
+      rank-usage:
         head: |-
           &8&l--------&r&c&l{name} Commands&r&8&l--------
           [&b{usage}](hover=&9Click to add it to your input suggest_command={{usage})
@@ -1326,7 +1326,7 @@ command:
       rank:
         senator: Allows inviting and kicking
         none: Default rank for members of this empire
-      usage:
+      rank-usage:
         head: |-
           &8&l--------&r&c&l{name} Commands&r&8&l--------
           [&b{usage}](hover=&9Click to add it to your input suggest_command={{usage})

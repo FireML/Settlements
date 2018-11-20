@@ -10,6 +10,7 @@ import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -203,6 +204,19 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
     }
 
     public String getPermission() {
+        if (permission == null || permission.isEmpty()) {
+            if (getParent() != null) {
+                permission = getParent().getPermission() + "." + name();
+                Permission subPerm = Bukkit.getPluginManager().getPermission(permission);
+                if (subPerm == null) {
+                    subPerm = new Permission(permission, "Allows access to the command /" + getPath());
+                    Bukkit.getPluginManager().addPermission(subPerm);
+                }
+                subPerm.addParent(getParent().getPermission(), true);
+            } else {
+                permission = "kingdoms.command." + name();
+            }
+        }
         return permission;
     }
 
@@ -268,9 +282,6 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
     }
 
     public void registerCommand(SubCommand c) {
-        if (c.getPermission() == null || c.getPermission().isEmpty()) {
-            c.setPermission(getPermission());
-        }
         subCommands.put(c.name().toLowerCase(), c);
         for (String alias : c.getAliases()) {
             subCommands.putIfAbsent(alias.toLowerCase(), c);

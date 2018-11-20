@@ -14,7 +14,6 @@ import me.crz.minecraft.kingdoms.perk.LevelPerk;
 public class VillagePerksCommand extends VillageSubCommand {
     public VillagePerksCommand(SubCommand parent) {
         super(parent, "perks", VillageRank.RESIDENT, "buffs");
-        setPermission("kingdoms.user");
         setForceOwnUsage(true);
         registerCommand(new VillageSubCommand(this, "toggle <perk>", VillageRank.ELDER) {
             @Override

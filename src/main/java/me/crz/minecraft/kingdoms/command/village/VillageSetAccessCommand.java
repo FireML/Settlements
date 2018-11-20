@@ -11,7 +11,6 @@ import me.crz.minecraft.kingdoms.land.LandAccess;
 public class VillageSetAccessCommand extends VillageSubCommand {
     public VillageSetAccessCommand(SubCommand parent) {
         super(parent, "setaccess <access>", VillageRank.CHIEF, "set", "access");
-        setPermission("kingdoms.user");
     }
 
     @Override

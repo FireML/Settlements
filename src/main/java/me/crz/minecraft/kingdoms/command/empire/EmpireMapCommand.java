@@ -25,7 +25,6 @@ public class EmpireMapCommand extends PlayerSubCommand implements Listener {
 
     public EmpireMapCommand(SubCommand parent) {
         super(parent, "map [auto]");
-        setPermission("kingdoms.user");
         Bukkit.getPluginManager().registerEvents(this, KingdomsPlugin.getInstance());
     }
 

@@ -10,7 +10,6 @@ import me.crz.minecraft.kingdoms.village.Resident;
 public class VillageDepositCommand extends VillageSubCommand {
     public VillageDepositCommand(SubCommand parent) {
         super(parent, "deposit", VillageRank.RESIDENT);
-        setPermission("kingdoms.user");
         registerCommand(new VillageHistoryCommand(this, VillageRank.RESIDENT, LogType.VAULT));
     }
 

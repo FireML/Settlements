@@ -77,13 +77,6 @@ permissions:
     children:
       kingdoms.admin.ss: true
       kingdoms.admin.command: true
-      kingdoms.admin.command.bonus: true
-      kingdoms.admin.command.join: true
-      kingdoms.admin.command.level: true
-      kingdoms.admin.command.rank: true
-      kingdoms.admin.command.reload: true
-      kingdoms.admin.command.world: true
-      kingdoms.admin.command.emgcy: true
       kingdoms.staff: true
       kingdoms.chat.colour: true
       kingdoms.channel.admin: true
@@ -93,27 +86,6 @@ permissions:
     default: false
   kingdoms.admin.command:
     description: Permission to access the admincommand.
-    default: false
-  kingdoms.admin.command.bonus:
-    description: Permission to access the admin bonus command.
-    default: false
-  kingdoms.admin.command.join:
-    description: Permission to access the admin join command.
-    default: false
-  kingdoms.admin.command.level:
-    description: Permission to access the admin level command.
-    default: false
-  kingdoms.admin.command.rank:
-    description: Permission to access the admin rank command.
-    default: false
-  kingdoms.admin.command.reload:
-    description: Permission to access the admin reload command.
-    default: false
-  kingdoms.admin.command.world:
-    description: Permission to access the admin world command.
-    default: false
-  kingdoms.admin.command.emgcy:
-    description: Permission to access the admin emgcy command.
     default: false
   kingdoms.bypass.banish:
     description: Permission to bypass being banished from a settlement.

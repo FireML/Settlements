@@ -9,7 +9,6 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 public class VillageLeaveCommand extends VillageSubCommand {
     public VillageLeaveCommand(SubCommand parent) {
         super(parent, "leave", VillageRank.RESIDENT);
-        setPermission("kingdoms.user");
     }
 
     @Override

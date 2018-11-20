@@ -13,7 +13,6 @@ public class VillageOutPostCommand extends VillageSubCommand {
 
     public VillageOutPostCommand(SubCommand parent) {
         super(parent, "outpost <options>", VillageRank.RESIDENT);
-        setPermission("kingdoms.user");
         getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), VillageRank.RECRUITER));
         getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), VillageRank.BUILDER));
         getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), VillageRank.ELDER));

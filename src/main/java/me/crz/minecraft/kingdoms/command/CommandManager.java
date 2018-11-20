@@ -20,11 +20,13 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -70,7 +72,7 @@ public class CommandManager extends Base implements CommandExecutor {
                 }
             });
         }
-        registerCommand(new VillageAdminCommand());
+        registerCommand(new VillageAdminCommand(), false);
         registerCommand(new ResidentCommand());
         registerCommand(new FriendCommand());
         registerCommand(new MessageCommand());
@@ -79,6 +81,18 @@ public class CommandManager extends Base implements CommandExecutor {
     }
 
     public void registerCommand(SubCommand ex) {
+        registerCommand(ex, true);
+    }
+
+    private void registerCommand(SubCommand ex, boolean isUserCommand) {
+        if (isUserCommand) {
+            Permission commandPerm = Bukkit.getPluginManager().getPermission(ex.getPermission());
+            if (commandPerm == null) {
+                commandPerm = new Permission(ex.getPermission(), "Allows access to the command /" + ex.getPath());
+                Bukkit.getPluginManager().addPermission(commandPerm);
+            }
+            commandPerm.addParent("kingdoms.user", true);
+        }
         commandMap.put(ex.name().toLowerCase(), ex);
         for (String alias : ex.getAliases()) {
             commandMap.put(alias, ex);

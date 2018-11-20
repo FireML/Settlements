@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 
 public class VillageAdminReloadCommand extends SubCommand {
     public VillageAdminReloadCommand(VillageAdminCommand parent) {
-        super(parent, "reload", "kingdoms.admin.command.reload");
+        super(parent, "reload");
     }
 
     @Override

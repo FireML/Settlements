@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 public class LockCommand extends PlayerSubCommand {
     public LockCommand() {
         super(null, "lock", "protection", "secure");
-        setPermission("kingdoms.user");
         getHelpCommand();
         registerCommand(new PlayerSubCommand(this, "toggle") {
             @Override

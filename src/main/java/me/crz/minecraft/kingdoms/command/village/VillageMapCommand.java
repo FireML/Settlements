@@ -23,7 +23,6 @@ public class VillageMapCommand extends PlayerSubCommand implements Listener {
 
     public VillageMapCommand(SubCommand parent) {
         super(parent, "map [auto]");
-        setPermission("kingdoms.user");
         Bukkit.getPluginManager().registerEvents(this, KingdomsPlugin.getInstance());
     }
 

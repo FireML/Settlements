@@ -14,7 +14,6 @@ public class VillageRenameCommand extends VillageSubCommand {
 
     public VillageRenameCommand(SubCommand parent) {
         super(parent, "rename <name>", VillageRank.CHIEF);
-        setPermission("kingdoms.user");
     }
 
     @Override

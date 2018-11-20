@@ -14,7 +14,6 @@ import me.crz.minecraft.kingdoms.village.Resident;
 public class EmpirePerksCommand extends EmpireSubCommand {
     public EmpirePerksCommand(SubCommand parent) {
         super(parent, "perks", EmpireRank.MEMBER, "buffs");
-        setPermission("kingdoms.user");
         setForceOwnUsage(true);
         registerCommand(new EmpireSubCommand(this, "toggle <perk>", EmpireRank.LEADER) {
             @Override

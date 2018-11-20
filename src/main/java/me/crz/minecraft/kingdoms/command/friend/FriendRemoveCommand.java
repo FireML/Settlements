@@ -11,7 +11,6 @@ import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
 public class FriendRemoveCommand extends PlayerSubCommand {
     public FriendRemoveCommand(PlayerSubCommand parent) {
         super(parent, "remove <name>");
-        setPermission("kingdoms.user");
     }
 
     @Override

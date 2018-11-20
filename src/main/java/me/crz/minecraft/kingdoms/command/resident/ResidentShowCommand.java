@@ -17,7 +17,6 @@ public class ResidentShowCommand extends SubCommand {
 
     public ResidentShowCommand(SubCommand parent) {
         super(parent, "show <name>", "data", "info");
-        setPermission("kingdoms.user");
         setVisible(false);
     }
 

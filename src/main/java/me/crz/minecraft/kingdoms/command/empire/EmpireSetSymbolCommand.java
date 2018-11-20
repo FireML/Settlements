@@ -9,7 +9,6 @@ import me.crz.minecraft.kingdoms.village.Resident;
 public class EmpireSetSymbolCommand extends EmpireSubCommand {
     public EmpireSetSymbolCommand(SubCommand parent) {
         super(parent, "setsymbol <symbol>", EmpireRank.LEADER, "symbol");
-        setPermission("kingdoms.user");
     }
 
     @Override

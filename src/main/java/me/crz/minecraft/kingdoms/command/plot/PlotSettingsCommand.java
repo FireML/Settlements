@@ -8,7 +8,6 @@ import me.crz.minecraft.kingdoms.village.Resident;
 public class PlotSettingsCommand extends PlotSubCommand {
     public PlotSettingsCommand(SubCommand parent) {
         super(parent, "settings");
-        setPermission("kingdoms.user");
     }
 
     @Override

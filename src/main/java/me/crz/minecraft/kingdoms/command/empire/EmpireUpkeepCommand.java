@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 public class EmpireUpkeepCommand extends EmpireSubCommand {
     public EmpireUpkeepCommand(SubCommand parent) {
         super(parent, "upkeep", EmpireRank.MEMBER);
-        setPermission("kingdoms.user");
     }
 
     @Override

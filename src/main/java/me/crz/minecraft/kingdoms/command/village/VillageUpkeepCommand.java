@@ -16,7 +16,6 @@ import org.bukkit.ChatColor;
 public class VillageUpkeepCommand extends VillageSubCommand {
     public VillageUpkeepCommand(SubCommand parent) {
         super(parent, "upkeep", VillageRank.RESIDENT);
-        setPermission("kingdoms.user");
     }
 
     @Override

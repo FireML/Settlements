@@ -10,7 +10,6 @@ import java.util.Map;
 public class VillageMaterialsCommand extends VillageSubCommand {
     public VillageMaterialsCommand(SubCommand parent) {
         super(parent, "materials", VillageRank.RESIDENT);
-        setPermission("kingdoms.user");
     }
 
     @Override

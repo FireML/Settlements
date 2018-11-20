@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 public class EmpireUseCommand extends EmpireSubCommand {
     public EmpireUseCommand(SubCommand parent) {
         super(parent, "use <name> <state>", EmpireRank.LEADER);
-        setPermission("kingdoms.user");
         registerCommand(new EmpireSubCommand(this, "all <state>") {
             @Override
             public boolean run(Resident res, String base, String alias, String... args) {

@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 public class VillageUpgradeCommand extends VillageSubCommand {
     public VillageUpgradeCommand(SubCommand parent) {
         super(parent, "upgrade", VillageRank.RESIDENT);
-        setPermission("kingdoms.user");
     }
 
     @Override

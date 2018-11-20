@@ -10,7 +10,6 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 public class EmpireInviteCommand extends EmpireSubCommand {
     public EmpireInviteCommand(SubCommand parent) {
         super(parent, "invite <settlement>", EmpireRank.SENATOR);
-        setPermission("kingdoms.user");
     }
 
     @Override

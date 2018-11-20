@@ -9,7 +9,6 @@ import me.crz.minecraft.kingdoms.village.Resident;
 public class EmpireSetJoinFeeCommand extends EmpireSubCommand {
     public EmpireSetJoinFeeCommand(SubCommand parent) {
         super(parent, "setjoinfee <amount>", EmpireRank.LEADER, "joinfee");
-        setPermission("kingdoms.user");
     }
 
     @Override

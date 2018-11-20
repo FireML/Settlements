@@ -16,7 +16,6 @@ public class EmpireDisbandCommand extends EmpireSubCommand {
 
     public EmpireDisbandCommand(SubCommand parent) {
         super(parent, "disband [confirm]", EmpireRank.LEADER);
-        setPermission("kingdoms.user");
     }
 
     @Override

@@ -8,7 +8,6 @@ import me.crz.minecraft.kingdoms.village.Resident;
 public class EmpireAlliesCommand extends EmpireSubCommand implements AllyCommand {
     public EmpireAlliesCommand(SubCommand parent) {
         super(parent, "allies", EmpireRank.LEADER);
-        this.setPermission("kingdoms.user");
     }
 
     @Override

@@ -15,7 +15,6 @@ public class VillageDisbandCommand extends VillageSubCommand {
 
     public VillageDisbandCommand(SubCommand parent) {
         super(parent, "disband [confirm]", VillageRank.CHIEF);
-        setPermission("kingdoms.user");
     }
 
     @Override

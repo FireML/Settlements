@@ -14,7 +14,6 @@ import me.crz.minecraft.kingdoms.village.Resident;
 public class EmpireJoinCommand extends EmpireSubCommand {
     public EmpireJoinCommand(SubCommand parent) {
         super(parent, "join <name>");
-        setPermission("kingdoms.user");
     }
 
     @Override

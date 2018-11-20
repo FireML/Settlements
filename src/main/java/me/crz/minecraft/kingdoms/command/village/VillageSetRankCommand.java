@@ -12,35 +12,32 @@ import org.bukkit.entity.Player;
 public class VillageSetRankCommand extends VillageSubCommand {
     public VillageSetRankCommand(SubCommand parent) {
         super(parent, "setrank <player> <rank>", VillageRank.ELDER, "rank");
-        setPermission("kingdoms.user");
     }
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length <= 1) {
-            getMessage("usage.head").tell(res,
+            getMessage("rank-usage.head").tell(res,
                     "name", name(),
                     "command", "/" + base + " " + alias,
                     "usage", getUsage(base),
-                    "aliases", getAliases().isEmpty() ? "" : getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getAliases())),
-                    "description", getText("description")
+                    "description", getDescription()
             );
             for (VillageRank rank : VillageRank.values()) {
                 if (rank.below(res.getVillageRank())) {
-                    getMessage("usage.entry").tell(res,
+                    getMessage("rank-usage.entry").tell(res,
                             "usage", getUsage(base).replace("<rank>", rank.getTag(res.getVillage())),
                             "rank", rank.getTag(res.getVillage()),
                             "description", getText("rank." + rank.getKey())
                     );
                 }
             }
-            if (getMessage("usage.footer").exists()) {
-                getMessage("usage.footer").tell(res,
+            if (getMessage("rank-usage.footer").exists()) {
+                getMessage("rank-usage.footer").tell(res,
                         "name", name(),
-                        "command", "/" + base + " " + alias, "usage",
-                        getUsage(base),
-                        "aliases", getAliases().isEmpty() ? "" : getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getAliases())),
-                        "description", getText("description")
+                        "command", "/" + base + " " + alias,
+                        "usage", getUsage(base),
+                        "description", getDescription()
                 );
             }
             return true;

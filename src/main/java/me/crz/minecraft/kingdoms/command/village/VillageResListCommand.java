@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 public class VillageResListCommand extends VillageSubCommand {
     public VillageResListCommand(SubCommand parent) {
         super(parent, "reslist", VillageRank.RESIDENT, "roster", "members", "memberlist");
-        setPermission("kingdoms.user");
     }
 
     @Override

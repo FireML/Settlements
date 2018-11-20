@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 public class FriendAddCommand extends PlayerSubCommand {
     public FriendAddCommand(PlayerSubCommand parent) {
         super(parent, "add <name>");
-        setPermission("kingdoms.user");
     }
 
     @Override

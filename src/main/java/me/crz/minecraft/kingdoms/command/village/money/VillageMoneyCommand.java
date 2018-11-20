@@ -18,7 +18,6 @@ public class VillageMoneyCommand extends VillageSubCommand {
 
     public VillageMoneyCommand(SubCommand parent) {
         super(parent, "bank <deposit|withdraw|balance|history> <amount>", VillageRank.RESIDENT, "money");
-        setPermission("kingdoms.user");
         for (VillageRank rank : VillageRank.values()) {
             getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), rank));
         }

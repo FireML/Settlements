@@ -9,7 +9,6 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 public class VillageAllyCommand extends VillageSubCommand implements AllyCommand {
     public VillageAllyCommand(SubCommand parent) {
         super(parent, "ally s:<settlement>|e:<empire>", VillageRank.ELDER);
-        setPermission("kingdoms.user");
     }
 
     @Override

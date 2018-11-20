@@ -18,7 +18,6 @@ public class VillageCreateCommand extends VillageSubCommand {
 
     public VillageCreateCommand(SubCommand parent) {
         super(parent, "create <name>");
-        setPermission("kingdoms.user");
     }
 
     @Override

@@ -14,7 +14,6 @@ import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
 public class FriendListCommand extends PlayerSubCommand {
     public FriendListCommand(PlayerSubCommand parent) {
         super(parent, "list");
-        setPermission("kingdoms.user");
     }
 
     @Override

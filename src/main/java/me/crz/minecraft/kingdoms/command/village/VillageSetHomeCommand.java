@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 public class VillageSetHomeCommand extends VillageSubCommand {
     public VillageSetHomeCommand(SubCommand parent) {
         super(parent, "sethome", VillageRank.CHIEF);
-        setPermission("kingdoms.user");
     }
 
     @Override

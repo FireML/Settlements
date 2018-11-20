@@ -14,7 +14,6 @@ public class EmpireRenameCommand extends EmpireSubCommand {
 
     public EmpireRenameCommand(SubCommand parent) {
         super(parent, "rename <name>", EmpireRank.LEADER);
-        setPermission("kingdoms.user");
     }
 
     @Override

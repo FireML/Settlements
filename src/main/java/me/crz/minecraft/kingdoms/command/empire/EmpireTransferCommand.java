@@ -13,7 +13,6 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 public class EmpireTransferCommand extends EmpireSubCommand {
     public EmpireTransferCommand(SubCommand parent) {
         super(parent, "transfer <player>", EmpireRank.LEADER);
-        setPermission("kingdoms.user");
     }
 
     @Override

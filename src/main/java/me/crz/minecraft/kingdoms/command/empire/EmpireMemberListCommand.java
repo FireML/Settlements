@@ -9,7 +9,6 @@ import me.crz.minecraft.kingdoms.village.Village;
 public class EmpireMemberListCommand extends EmpireSubCommand {
     public EmpireMemberListCommand(SubCommand parent) {
         super(parent, "memberlist", EmpireRank.MEMBER, "roster", "members");
-        setPermission("kingdoms.user");
     }
 
     @Override

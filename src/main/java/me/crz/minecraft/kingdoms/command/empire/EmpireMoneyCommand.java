@@ -19,7 +19,6 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
 
     public EmpireMoneyCommand(SubCommand parent) {
         super(parent, "bank <deposit|withdraw|balance|history> <amount>", EmpireRank.MEMBER, "money");
-        setPermission("kingdoms.user");
         for (EmpireRank rank : EmpireRank.values()) {
             getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), rank));
         }

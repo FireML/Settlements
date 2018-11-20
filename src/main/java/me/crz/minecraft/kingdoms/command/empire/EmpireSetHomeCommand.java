@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 public class EmpireSetHomeCommand extends EmpireSubCommand {
     public EmpireSetHomeCommand(SubCommand parent) {
         super(parent, "sethome", EmpireRank.LEADER);
-        setPermission("kingdoms.user");
     }
 
     @Override

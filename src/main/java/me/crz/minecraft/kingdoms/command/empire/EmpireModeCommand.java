@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 public class EmpireModeCommand extends EmpireSubCommand {
     public EmpireModeCommand(SubCommand parent) {
         super(parent, "mode <mode> on|off", EmpireRank.SENATOR);
-        setPermission("kingdoms.user");
     }
 
     @Override

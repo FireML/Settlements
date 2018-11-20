@@ -8,7 +8,6 @@ public class FriendCommand extends PlayerSubCommand {
 
     public FriendCommand() {
         super(null, "friend");
-        setPermission("kingdoms.user");
         setHelpCommand(new HelpCommand(this));
         registerCommand(new FriendAddCommand(this));
         registerCommand(new FriendRemoveCommand(this));

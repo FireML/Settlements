@@ -9,7 +9,6 @@ import me.crz.minecraft.kingdoms.village.Resident;
 public class VillageSetJoinFeeCommand extends VillageSubCommand {
     public VillageSetJoinFeeCommand(SubCommand parent) {
         super(parent, "setjoinfee <amount>", VillageRank.CHIEF, "joinfee");
-        setPermission("kingdoms.user");
     }
 
     @Override

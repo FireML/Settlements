@@ -15,7 +15,6 @@ public class EmpireShowCommand extends SubCommand {
 
     public EmpireShowCommand(SubCommand parent) {
         super(parent, "show [<name>]", "info");
-        setPermission("kingdoms.user");
     }
 
     @Override

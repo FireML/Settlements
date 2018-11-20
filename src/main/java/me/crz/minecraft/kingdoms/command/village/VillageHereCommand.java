@@ -11,7 +11,6 @@ public class VillageHereCommand extends PlayerSubCommand {
 
     public VillageHereCommand(SubCommand parent) {
         super(parent, "here");
-        setPermission("kingdoms.user");
     }
 
     @Override

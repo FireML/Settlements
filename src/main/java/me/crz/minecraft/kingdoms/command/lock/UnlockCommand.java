@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 public class UnlockCommand extends PlayerSubCommand {
     public UnlockCommand() {
         super(null, "unlock", "unprotection", "unsecure");
-        setPermission("kingdoms.user");
         registerCommand(new PlayerSubCommand(this, "toggle") {
             @Override
             public boolean run(Player player, String base, String alias, String... args) {

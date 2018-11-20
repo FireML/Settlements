@@ -12,7 +12,6 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 public class VillageKickCommand extends VillageSubCommand {
     public VillageKickCommand(SubCommand parent) {
         super(parent, "kick <name>", VillageRank.RECRUITER);
-        setPermission("kingdoms.user");
     }
 
     @Override

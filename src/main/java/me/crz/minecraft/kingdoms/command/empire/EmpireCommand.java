@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 public class EmpireCommand extends SubCommand {
     public EmpireCommand() {
         super(null, "empire", "e");
-        setPermission("kingdoms.user");
         getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), VillageRank.RECRUITER));
         getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), VillageRank.BUILDER));
         getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), VillageRank.ELDER));

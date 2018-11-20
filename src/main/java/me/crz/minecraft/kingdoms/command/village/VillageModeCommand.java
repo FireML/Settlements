@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 public class VillageModeCommand extends VillageSubCommand {
     public VillageModeCommand(SubCommand parent) {
         super(parent, "mode <mode> on|off", VillageRank.ELDER);
-        setPermission("kingdoms.user");
     }
 
     @Override

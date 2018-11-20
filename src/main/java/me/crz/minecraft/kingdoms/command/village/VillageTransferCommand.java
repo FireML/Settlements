@@ -12,7 +12,6 @@ import me.crz.minecraft.kingdoms.village.Village;
 public class VillageTransferCommand extends VillageSubCommand {
     public VillageTransferCommand(SubCommand parent) {
         super(parent, "transfer <player>", VillageRank.CHIEF);
-        setPermission("kingdoms.user");
     }
 
     @Override

@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 public class EmpireListCommand extends SubCommand {
     public EmpireListCommand(SubCommand parent) {
         super(parent, "list [open] [<page>]");
-        setPermission("kingdoms.user");
     }
 
     @Override
