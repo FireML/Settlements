@@ -42,7 +42,7 @@ close-claims-grace-days: 4
 close-claims-unclaims-outposts: false
 only-lock-in-settlement: true
 claim-max-radius: 5
-entries-per-page: 20
+entries-per-page: 10
 remove-locks-on-unclaim: true
 remove-locked-blocks: false
 lockable:

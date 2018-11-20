@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.command;
 import com.google.common.collect.ImmutableMap;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -18,7 +19,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class HelpCommand extends SubCommand {
-    private int entriesPerPage = 10;
     private Function<CommandSender, String> defaultTypeProvider;
 
     public HelpCommand(SubCommand parent) {
@@ -27,7 +27,6 @@ public class HelpCommand extends SubCommand {
         if (parent == null) {
             throw new IllegalArgumentException("Parent sub command cannot be null!");
         }
-        entriesPerPage = ConfigManager.getInstance().getCommandsConfig().getInt("entries-per-page", entriesPerPage);
         registerCommand(new SubCommand(this, "all") {
             @Override
             public boolean run(CommandSender sender, String base, String alias, String... args) {
@@ -95,6 +94,7 @@ public class HelpCommand extends SubCommand {
             }
 
             if (!commands.isEmpty()) {
+                int entriesPerPage = Utils.getEntriesPerPage();
                 int maxPage = (int) Math.ceil(commands.size() / (double) entriesPerPage);
                 if (page > maxPage) {
                     page = maxPage;

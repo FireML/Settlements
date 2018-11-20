@@ -620,7 +620,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         if (!resident.getVillageRank().atLeast(VillageRank.CHIEF)) {
             sql += " AND l.action = 'deposit'";
         }
-        sql += " ORDER BY l.id DESC LIMIT " + start + ",20;";
+        sql += " ORDER BY l.id DESC LIMIT " + start + "," + Utils.getEntriesPerPage() + ";";
         try (Connection conn = ds.getConnection();
              PreparedStatement sta = conn.prepareStatement(sql)) {
             sta.setInt(1, (Integer) id.value());
