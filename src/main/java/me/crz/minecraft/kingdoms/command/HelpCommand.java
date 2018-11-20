@@ -185,7 +185,9 @@ public class HelpCommand extends SubCommand {
         }
 
         int helpIndex = base.lastIndexOf(" help");
-        return getParent().sendUsageMessage(sender, helpIndex > -1 ? base.substring(0, helpIndex) : null, helpIndex > -1 ? base.substring(helpIndex) : base);
+        base = helpIndex > -1 ? base.substring(0, helpIndex) : base;
+        int spaceIndex = base.lastIndexOf(' ');
+        return getParent().sendUsageMessage(sender, spaceIndex > -1 ? base.substring(0, spaceIndex) : "", spaceIndex > -1 ? base.substring(spaceIndex) : base);
     }
 
     private String stripParameters(String string) {
