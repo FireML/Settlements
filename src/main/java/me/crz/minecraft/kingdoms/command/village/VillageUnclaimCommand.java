@@ -63,14 +63,17 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                 if (!land.isOwnedBy(res.getVillage())) {
                     if (toUnclaim.size() == 1) {
                         res.tell(getError("not-your-village"), "state", land.getLandOwner().getStateTag());
+                        return true;
                     }
                 } else if (land.isOutpost()) {
                     if (toUnclaim.size() == 1) {
                         getMessage("outpost").tell(res, "base", base, "outpost", land.getOutpostName());
+                        return true;
                     }
-                } else if (land.containsHome()) {
+                } else if (land.containsHome() && (toUnclaim.size() > 1 || LandManager.getInstance().getClaimedLandSize(res.getVillage()) > 1)) {
                     if (toUnclaim.size() == 1) {
                         getMessage("home").tell(res, "base", base);
+                        return true;
                     }
                 } else {
                     unclaimedLand.add(land);
@@ -105,7 +108,7 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                     "z", String.valueOf(l.getZ()))
             );
             LandManager.getInstance().unclaimLand(unclaimedLand);
-        } else {
+        } else if (toUnclaim.size() == 1) {
             getError("no-village").tell(res);
         }
         return true;

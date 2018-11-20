@@ -502,6 +502,8 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         map.put("access", getAccess().name());
         if (getHome() != null)
             map.put("homeLoc", getHome());
+        else
+            map.put("homeLoc", new SimpleLocation(null, 0, 0, 0));
         List<String> allies = new ArrayList<>();
         getAlliedVillageIds().stream().map(id -> "village:" + id).forEach(allies::add);
         getAlliedEmpireIds().stream().map(id -> "empire:" + id).forEach(allies::add);

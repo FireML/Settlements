@@ -139,6 +139,9 @@ public class LandManager {
     public void unclaimLand(OwnedLand... lands) {
         Set<Village> saveVillages = new HashSet<>();
         for (OwnedLand land : lands) {
+            if (land.containsHome()) {
+                land.getLandOwner().setHome((SimpleLocation) null);
+            }
             landTable.remove(land.getWorldName(), land.getSimpleKey());
             villageLands.remove(land.getLandOwner().getId(), land);
             if (land.getLandOwner() instanceof Village && land.isOutpost()) {
