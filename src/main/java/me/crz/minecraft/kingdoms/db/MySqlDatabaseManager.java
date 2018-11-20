@@ -618,7 +618,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 break;
         }
         if (!resident.getVillageRank().atLeast(VillageRank.CHIEF)) {
-            sql += " AND `l.action` = 'deposit'";
+            sql += " AND l.action = 'deposit'";
         }
         sql += " ORDER BY l.id DESC LIMIT " + start + ",20;";
         try (Connection conn = ds.getConnection();
@@ -656,7 +656,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                         "name", hasPlayer ? rs.getString("playerName") : "",
                         "uuid", hasPlayer ? rs.getString("playerId") : "",
                         "rank", hasPlayer ? rank.getTag(village) : "",
-                        "title", hasPlayer ? rs.getString("playerTitle") : "",
+                        "title", hasPlayer ? rank.getTitle(village, rs.getInt("playerTitle")) : "",
                         "action", rs.getString("action"),
                         "type", rs.getString("type"),
                         "icon", Utils.getIcon(resident, rs.getString("type")),
