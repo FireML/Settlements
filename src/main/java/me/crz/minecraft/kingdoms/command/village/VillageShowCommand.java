@@ -30,10 +30,10 @@ public class VillageShowCommand extends SubCommand {
             Utils.runAsync(() -> {
                 Village village = VillageManager.getInstance().getVillageFromName(name);
                 Resident target = ResidentManager.getInstance().getResident(name);
-                if (target != null && target.hasVillage()) {
-                    MessageUtils.tell(sender, getMessage("general"), target.getVillage().getReplacements(VillageShowCommand.this));
-                } else if (village != null) {
+                if (village != null) {
                     MessageUtils.tell(sender, getMessage("general"), village.getReplacements(VillageShowCommand.this));
+                } else if (target != null && target.hasVillage()) {
+                    MessageUtils.tell(sender, getMessage("general"), target.getVillage().getReplacements(VillageShowCommand.this));
                 } else {
                     MessageUtils.tell(sender, getError("village-doesnt-exist"), "name", name);
                 }
