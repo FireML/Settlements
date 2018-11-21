@@ -9,6 +9,7 @@ storage:
   url-parameters: ""
 resident-cache-duration: 120 # in seconds
 disabled-claiming-worlds: []
+reset-channel-on-login: true
 empire-creation-cost: 0
 village-creation-cost: 0
 outpost-creation-cost: 0

@@ -55,10 +55,9 @@ public class CommandManager extends Base implements CommandExecutor {
                     if (args.length == 0) {
                         if (channel.canChatM(p)) {
                             Resident res = ResidentManager.getInstance().getResident(p);
-                            if (res.setActiveChannel(channel) | res.addChannel(channel)) {
+                            if ((res.setActiveChannel(channel) && !Utils.shouldResetChannelOnLogin()) | res.addChannel(channel)) {
                                 Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
                             }
-                            MessageUtils.tell(p, chatCommand.getMessage("joined"), "name", channel.getTag());
                         }
                     } else {
                         ChatManager.getInstance().sendChannelMessage(p, channel, String.join(" ", args));

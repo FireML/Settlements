@@ -41,7 +41,7 @@ public class VillageAdminJoinCommand extends SubCommand {
             }
             target.setVillage(village);
             target.setVillageRank(VillageRank.RESIDENT);
-            target.setActiveChannel(ChatChannel.SETTLEMENT);
+            target.addChannel(ChatChannel.SETTLEMENT);
             Message.get("command.chat.joined").tell(target, "name", ChatChannel.SETTLEMENT.getTag());
             DatabaseManager.getInstance().saveResident(target);
             MessageUtils.tell(sender, "&6&l" + target.getName() + "&r&c&l is now in " + village.getName());

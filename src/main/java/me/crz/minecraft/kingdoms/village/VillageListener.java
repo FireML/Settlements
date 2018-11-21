@@ -10,6 +10,7 @@ import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.teleporter.TeleportersGUI;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -46,6 +47,10 @@ public class VillageListener implements Listener {
                     ResidentManager.getInstance().invalidateName(res.getName());
                     res.setName(event.getName());
                     ResidentManager.getInstance().addResident(res);
+                }
+                if (Utils.shouldResetChannelOnLogin()) {
+                    res.setActiveChannel(ChatChannel.GENERAL);
+                    Message.get("command.chat.joined").tell(res, "name", ChatChannel.GENERAL.getTag());
                 }
             }
             Resident finalRes = res;

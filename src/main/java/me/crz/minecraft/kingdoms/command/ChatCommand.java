@@ -23,10 +23,9 @@ public class ChatCommand extends PlayerSubCommand {
                     if (args.length == 0) {
                         if (channel.canChatM(p)) {
                             Resident res = ResidentManager.getInstance().getResident(p);
-                            if (res.setActiveChannel(channel) | res.addChannel(channel)) {
+                            if ((res.setActiveChannel(channel) && !Utils.shouldResetChannelOnLogin()) | res.addChannel(channel)) {
                                 Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
                             }
-                            MessageUtils.tell(p, ChatCommand.this.getMessage("joined"), "name", channel.getTag());
                         }
                     } else {
                         ChatManager.getInstance().sendChannelMessage(p, channel, String.join(" ", args));
@@ -55,7 +54,6 @@ public class ChatCommand extends PlayerSubCommand {
                 Resident res = ResidentManager.getInstance().getResident(p);
                 ChatChannel channel = ChatChannel.get(args[0]);
                 if (channel != null && res.getChannels().contains(channel)) {
-                    MessageUtils.tell(p, getMessage("success"), "name", channel.name());
                     res.removeChannel(channel);
                     Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
                 } else {

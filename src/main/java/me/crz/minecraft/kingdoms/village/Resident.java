@@ -113,10 +113,12 @@ public class Resident implements ConfigurationSerializable, Targetable {
     }
 
     public boolean addChannel(ChatChannel channel) {
+        Message.get("command.chat.joined").tell(this, "name", channel.getTag());
         return channels.add(channel);
     }
 
     public boolean removeChannel(ChatChannel channel) {
+        Message.get("command.chat.leave.success").tell(this, "name", channel.getTag());
         return channels.remove(channel);
     }
 
@@ -321,7 +323,7 @@ public class Resident implements ConfigurationSerializable, Targetable {
         ((Collection<String>) map.get("channels")).stream()
                 .map(s -> Utils.parseEnum(ChatChannel.class, s.toUpperCase()))
                 .filter(Objects::nonNull)
-                .forEach(resident::addChannel);
+                .forEach(c -> resident.getChannels().add(c));
         try {
             resident.setActiveChannel(ChatChannel.valueOf(((String) map.get("activeChannel")).toUpperCase()));
         } catch (Exception e) {

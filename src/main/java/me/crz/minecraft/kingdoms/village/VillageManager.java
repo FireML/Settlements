@@ -151,6 +151,8 @@ public class VillageManager {
             }
         }
         resident.setVillage(null);
+        resident.removeChannel(ChatChannel.SETTLEMENT);
+        resident.removeChannel(ChatChannel.EMPIRE);
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveResident(resident);
             DatabaseManager.getInstance().saveVillage(village);

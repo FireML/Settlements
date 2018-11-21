@@ -164,6 +164,13 @@ public class Utils {
         return 500;
     }
 
+    public static boolean shouldResetChannelOnLogin() {
+        if (ConfigManager.getInstance().getConfig().isBoolean("reset-channel-on-login")) {
+            return ConfigManager.getInstance().getConfig().getBoolean("reset-channel-on-login");
+        }
+        return true;
+    }
+
     public static boolean playerIsChief(Player player, Village village) {
         return village != null && village.getChiefId().equals(player.getUniqueId());
     }

@@ -53,7 +53,6 @@ public class VillageJoinCommand extends VillageSubCommand {
             resident.setVillage(joinVillage);
             resident.setVillageRank(VillageRank.RESIDENT);
             resident.addChannel(ChatChannel.SETTLEMENT);
-            Message.get("command.chat.joined").tell(resident, "name", ChatChannel.SETTLEMENT.getTag());
             InviteCache.getPendingVillageInvites().remove(resident.getUUID(), joinVillage.getId());
             Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(resident));
             resident.tell(getMessage("success"), "name", joinVillage.getName(), "state", joinVillage.getState().getTag());

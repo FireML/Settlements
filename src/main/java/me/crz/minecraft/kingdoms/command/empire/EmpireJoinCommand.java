@@ -50,7 +50,9 @@ public class EmpireJoinCommand extends EmpireSubCommand {
                 });
             }
             resident.getVillage().setEmpire(joinEmpire);
-            resident.addChannel(ChatChannel.EMPIRE);
+            for (Resident member : resident.getVillage().getOnlineResidents()) {
+                member.addChannel(ChatChannel.EMPIRE);
+            }
             InviteCache.getPendingEmpireInvites().remove(resident.getVillage().getId(), joinEmpire.getId());
             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
             getMessage("success").tell(resident.getVillage().getOnlineResidents(),

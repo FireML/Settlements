@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.empire;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
@@ -246,6 +247,9 @@ public class EmpireManager {
 
     public void leaveEmpire(Village village) {
         village.setEmpire(null);
+        for (Resident member : village.getOnlineResidents()) {
+            member.removeChannel(ChatChannel.EMPIRE);
+        }
         Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
     }
 
