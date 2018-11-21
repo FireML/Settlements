@@ -9,6 +9,7 @@ import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.utils.Pair;
+import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -77,10 +78,12 @@ public interface LandFlagBase extends ConfigMessages {
             allowed = land.getLandOwner().equals(VillageManager.getInstance().getVillageFromPlayer(building));
 
         } else if (state.atLeast(BuildState.ALLY)) {
-            allowed = land.getLandOwner().isAlly(VillageManager.getInstance().getVillageFromPlayer(building));
+            Village playerVillage = VillageManager.getInstance().getVillageFromPlayer(building);
+            allowed = land.getLandOwner().equals(playerVillage) || land.getLandOwner().isAlly(playerVillage);
 
         } else if (state.atLeast(BuildState.TRUSTED)) {
-            allowed = land.getLandOwner().isTrusted(VillageManager.getInstance().getVillageFromPlayer(building));
+            Village playerVillage = VillageManager.getInstance().getVillageFromPlayer(building);
+            allowed = land.getLandOwner().equals(playerVillage) || land.getLandOwner().isTrusted(playerVillage);
 
         }  else if (state.atLeast(BuildState.PUBLIC)) {
             allowed = true;
@@ -116,10 +119,12 @@ public interface LandFlagBase extends ConfigMessages {
             allowed = landOwner.equals(VillageManager.getInstance().getVillageFromPlayer(building));
 
         } else if (state.atLeast(BuildState.ALLY)) {
-            allowed = landOwner.isAlly(VillageManager.getInstance().getVillageFromPlayer(building));
+            Village playerVillage = VillageManager.getInstance().getVillageFromPlayer(building);
+            allowed = landOwner.equals(playerVillage) || landOwner.isAlly(playerVillage);
 
         } else if (state.atLeast(BuildState.TRUSTED)) {
-            allowed = landOwner.isTrusted(VillageManager.getInstance().getVillageFromPlayer(building));
+            Village playerVillage = VillageManager.getInstance().getVillageFromPlayer(building);
+            allowed = landOwner.equals(playerVillage) || landOwner.isTrusted(playerVillage);
 
         } else if (state.atLeast(BuildState.PUBLIC)) {
             allowed = true;

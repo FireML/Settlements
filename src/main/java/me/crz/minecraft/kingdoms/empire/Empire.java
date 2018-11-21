@@ -371,7 +371,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
 
     @Override
     public boolean isTrusted(LandOwner landOwner) {
-        return landOwner instanceof Village && (isAlly(landOwner) || (isMember((Village) landOwner)));
+        return landOwner instanceof Village && (isAlly(landOwner) || isMember((Village) landOwner));
     }
 
     @Override
