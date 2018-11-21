@@ -118,7 +118,7 @@
         </repository>
         <repository>
             <id>paper-repo</id>
-            <url>https://papermc.io/repo/</url>
+            <url>https://papermc.io/repo/repository/maven-snapshots/</url>
         </repository>
         <repository>
             <id>vault-repo</id>
