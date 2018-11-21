@@ -1,6 +1,6 @@
 help-order:
   village:
-    none:
+    no:
     - create
     - join
     - show
@@ -84,7 +84,9 @@ help-order:
     - s allies
     - s allyclaim
   empire:
-    none:
+    no:
+    - create
+    - join
     - show
     - list
     - home

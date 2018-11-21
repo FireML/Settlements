@@ -21,7 +21,7 @@ public class EmpireCommand extends SubCommand {
         getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), VillageRank.CHIEF));
         getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), EmpireRank.SENATOR));
         getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), EmpireRank.LEADER));
-        getHelpCommand().setDefaultTypeProvider(s -> s instanceof Player && ResidentManager.getInstance().doesResidentHaveEmpire((Player) s) ? "member" : "none");
+        getHelpCommand().setDefaultTypeProvider(s -> s instanceof Player && ResidentManager.getInstance().doesResidentHaveEmpire((Player) s) ? "member" : "no");
         registerCommand(new ChatCommand());
         registerCommand(new EmpireAlliesCommand(this));
         registerCommand(new EmpireAllyCommand(this));

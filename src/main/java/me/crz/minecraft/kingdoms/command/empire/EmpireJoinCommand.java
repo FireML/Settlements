@@ -7,13 +7,14 @@ import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 public class EmpireJoinCommand extends EmpireSubCommand {
     public EmpireJoinCommand(SubCommand parent) {
-        super(parent, "join <name>");
+        super(parent, "join <name>", VillageRank.CHIEF);
     }
 
     @Override
@@ -23,9 +24,12 @@ public class EmpireJoinCommand extends EmpireSubCommand {
         }
         Empire joinEmpire = EmpireManager.getInstance().getEmpireFromName(args[0]);
         if (joinEmpire == null || joinEmpire.isAbandoned()) {
-            resident.tell(getError("empire-doesnt-exist"));
+            resident.tell(getError("empire-doesnt-exist"), "name", args[0]);
+        } else if (joinEmpire.getId().isNull()) {
+            getError("missing-empire-id").tell(resident, "name", joinEmpire.getName());
         } else if (joinEmpire.getAccess().below(LandAccess.OPEN) && !Utils.villageHasInvite(resident.getVillage(), joinEmpire)) {
             resident.tell(getMessage("no-invite"),
+                    "name", joinEmpire.getName(),
                     "state", resident.getVillage().getState().getTag()
             );
         } else if (joinEmpire.isFull()) {

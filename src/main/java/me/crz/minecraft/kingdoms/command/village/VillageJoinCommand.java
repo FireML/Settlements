@@ -25,11 +25,11 @@ public class VillageJoinCommand extends VillageSubCommand {
         }
         Village joinVillage = VillageManager.getInstance().getVillageFromName(args[0]);
         if (joinVillage == null) {
-            getError("village-doesnt-exist").tell(resident);
+            getError("village-doesnt-exist").tell(resident, "name", args[0]);
         } else if (joinVillage.getId().isNull()) {
-            getError("missing-village-id").tell(resident);
+            getError("missing-village-id").tell(resident, "name", joinVillage.getName());
         } else if (joinVillage.getAccess().below(LandAccess.OPEN) && !Utils.playerHasInvite(resident.getUUID(), joinVillage)) {
-            getMessage("no-invite").tell(resident);
+            getMessage("no-invite").tell(resident, "name", joinVillage.getName(), "state", joinVillage.getStateTag());
         } else if (joinVillage.isFull()) {
             getMessage("is-full").tell(resident, "state", joinVillage.getState().getTag(), "name", joinVillage.getName());
         } else if (joinVillage.isBanished(resident.getUUID())) {
