@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.landflags;
 
+import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureDamageEvent;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Pair;
 import org.bukkit.Material;
@@ -64,6 +65,20 @@ public class LandFlagsBlockEvents implements LandFlagBase, Listener {
             if (this.isLandClaimed(e.getEntity().getLocation())) {
                 e.setCancelled(true);
             }
+        }
+    }
+
+    @EventHandler
+    public void onPassiveDamage(PassiveCreatureDamageEvent e) {
+        if (e.getEntity() == null) {
+            return;
+        }
+        if (e.getDamager() == null) {
+            return;
+        }
+        if (!getCanBuildAll(e.getDamager(), e.getEntity().getLocation()).getLeft()) {
+            e.setCancelled(true);
+            e.getDamager().sendActionBar(getText("cannot-attack-animals"));
         }
     }
 }

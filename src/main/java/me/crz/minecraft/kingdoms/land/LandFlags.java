@@ -3,7 +3,6 @@ package me.crz.minecraft.kingdoms.land;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.essentials.events.HostileCreaturePreSpawnEvent;
 import me.crz.minecraft.kingdoms.essentials.events.HostileCreatureSpawnEvent;
-import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureDamageEvent;
 import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveChunkEvent;
 import me.crz.minecraft.kingdoms.landflags.LandFlagBase;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -13,7 +12,6 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
-import net.md_5.bungee.api.ChatMessageType;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -31,7 +29,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
-import org.bukkit.inventory.meta.SpawnEggMeta;
 
 public class LandFlags extends Base implements LandFlagBase {
     private TitleBuilder tbPvp = new TitleBuilder();
@@ -76,20 +73,6 @@ public class LandFlags extends Base implements LandFlagBase {
     }
 
     @EventHandler
-    public void onPassiveDamage(PassiveCreatureDamageEvent e) {
-        if (e.getEntity() == null) {
-            return;
-        }
-        if (e.getDamager() == null) {
-            return;
-        }
-        if (!getCanBuildAll(e.getDamager(), e.getEntity().getLocation()).getLeft()) {
-            e.setCancelled(true);
-            e.getDamager().spigot().sendMessage(ChatMessageType.ACTION_BAR, Message.get("cannot-attack-animals").getComponents());
-        }
-    }
-
-    @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
         if (e.getEntity() instanceof Player) {
             Player damager;
@@ -104,7 +87,7 @@ public class LandFlags extends Base implements LandFlagBase {
             if (isAllowed(e.getEntity().getLocation(), PlotMode.pvp)) {
                 return;
             }
-            if (damager.hasPermission("kindoms.staff")) {
+            if (damager.hasPermission("kingdoms.bypass.pvp")) {
                 return;
             }
             e.setCancelled(true);
@@ -114,20 +97,23 @@ public class LandFlags extends Base implements LandFlagBase {
 
     @EventHandler
     public void onEntityCombust(EntityCombustByEntityEvent e) {
-        if (e.getEntity() instanceof Player && e.getCombuster() instanceof Projectile && ((Projectile) e.getCombuster()).getShooter() instanceof Player) {
-            OwnedLand land = LandManager.getInstance().getLand(e.getEntity().getLocation());
-            if (land == null) {
+        if (e.getEntity() instanceof Player) {
+            Player combuster;
+            if (e.getCombuster() instanceof Player) {
+                combuster = (Player) e.getCombuster();
+            } else if (e.getCombuster() instanceof Projectile && ((Projectile) e.getCombuster()).getShooter() instanceof Player) {
+                combuster = (Player) ((Projectile) e.getCombuster()).getShooter();
+            } else {
                 return;
             }
-            if (land.getMode(PlotMode.pvp)) {
+
+            if (isAllowed(e.getEntity().getLocation(), PlotMode.pvp)) {
                 return;
             }
-            Player damager = (Player) ((Projectile) e.getCombuster()).getShooter();
-            if (damager.hasPermission("kindoms.staff")) {
+            if (combuster.hasPermission("kingdoms.bypass.pvp")) {
                 return;
             }
             e.setCancelled(true);
-            tbPvp.send(damager);
         }
     }
 

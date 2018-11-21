@@ -78,6 +78,7 @@ permissions:
       kingdoms.admin.ss: true
       kingdoms.admin.command: true
       kingdoms.staff: true
+      kingdoms.mod: true
       kingdoms.chat.colour: true
       kingdoms.channel.admin: true
       kingdoms.bypass.flyremoval: true
@@ -105,6 +106,9 @@ permissions:
   kingdoms.bypass.build:
     description: Permission to bypass claim/world build restriction
     default: op
+  kingdoms.bypass.pvp:
+    description: Permission to bypass claim/world pvp restriction
+    default: op
   kingdoms.bypass.flyremoval:
     description: Permission to bypass the removal of flight when leaving empire worlds
     default: op
@@ -131,6 +135,7 @@ permissions:
     default: op
     children:
       kingdoms.user: true
+      kingdoms.bypass.pvp: true
       kingdoms.bypass.restriction.chestshop: true
       kingdoms.bypass.restriction.lwc: true
       kingdoms.bypass.banish: true
