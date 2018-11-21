@@ -80,7 +80,7 @@ public class VillageListener implements Listener {
             if (res.hasEmpire()) {
                 Empire empire = res.getVillage().getEmpire();
                 long empireTax = empire.getTax();
-                if (!empire.isCapital(res.getVillage()) && !empire.has(empireTax - upkeep)) {
+                if (!empire.isCapital(res.getVillage()) && !res.getVillage().has(empireTax + upkeep)) {
                     Message.get("empire-tax.cant-pay").tell(event.getPlayer(), "amount", String.valueOf(empireTax));
                 }
                 if (res.getVillageRank().atLeast(VillageRank.CHIEF)) {
