@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.utils.config;
 import java.io.IOException;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.land.LandFlags;
 import me.crz.minecraft.kingdoms.lock.LockManager;
 import me.crz.minecraft.kingdoms.utils.IconRpMapping;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -62,6 +63,7 @@ public class ConfigManager {
             VillageManager.getInstance().loadPerks();
             Message.clearCache();
             LockManager.getInstance().loadLockables();
+            KingdomsPlugin.getInstance().getLandFlags().reload();
         }
     }
 

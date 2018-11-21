@@ -61,6 +61,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     private String empiresWorldPrefix = "";
     private String empiresWorldSuffix = "";
     private BukkitTask upkeepTask = null;
+    private LandFlags landFlags;
 
     @Override
     public void onDisable() {
@@ -121,7 +122,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             this.getServer().getPluginManager().registerEvents(new VaultListener(), this);
             this.getServer().getPluginManager().registerEvents(new VillageListener(), this);
             this.getServer().getPluginManager().registerEvents(new EmpireListener(), this);
-            this.getServer().getPluginManager().registerEvents(new LandFlags(), this);
+            this.getServer().getPluginManager().registerEvents((landFlags = new LandFlags()), this);
             this.getServer().getPluginManager().registerEvents(new LockListener(), this);
             this.getServer().getPluginManager().registerEvents(new Advancements(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlagsBlockEvents(), this);
@@ -239,5 +240,9 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     public MultiverseIntegration getMultiverse() {
         return multiverse;
+    }
+
+    public LandFlags getLandFlags() {
+        return landFlags;
     }
 }

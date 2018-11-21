@@ -43,6 +43,10 @@ close-claims-grace-days: 4
 close-claims-unclaims-outposts: false
 only-lock-in-settlement: true
 claim-max-radius: 5
+# How often (in seconds) should the plugin check for mobs
+# that wandered into claims that had mob spawning disabled?
+# Setting this to 0 or anything below will disable this check!
+mob-flag-check-period: 30
 entries-per-page: 10
 remove-locks-on-unclaim: true
 remove-locked-blocks: false

@@ -43,7 +43,6 @@ public class LandManager {
     private Multimap<IdObject, OwnedLand> villageLands = MultimapBuilder.hashKeys().hashSetValues().build();
     private Multimap<UUID, OwnedLand> playerPlots = MultimapBuilder.hashKeys().hashSetValues().build();
     private Multimap<UUID, OwnedLand> linkedPlots = MultimapBuilder.hashKeys().hashSetValues().build();
-    private HashBasedTable<String, String, Boolean> mobData = HashBasedTable.create();
 
     private LandManager() {
         super();
@@ -98,6 +97,10 @@ public class LandManager {
 
     public boolean isLandClaimed(Location location) {
         return this.getLand(location) != null;
+    }
+
+    public boolean hasLand(World world) {
+        return world != null && landTable.containsRow(world.getName());
     }
 
     public OwnedLand getLand(Location location) {

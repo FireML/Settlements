@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.utils;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.db.InviteCache;
@@ -54,6 +55,7 @@ public class Utils {
             EntityType.SLIME,
             EntityType.PHANTOM
     );
+    private static Set<String> disabledClaimingWorlds = null;
 
     public Utils() {
         super();
@@ -73,18 +75,22 @@ public class Utils {
     }
 
     public static boolean isWorldClaimable(World world) {
-        return !getDisabledClaimingWorlds().contains(world.getName());
+        return !getDisabledClaimingWorlds().contains(world.getName()) || EmpireManager.getInstance().getEmpireFromWorld(world) != null;
     }
 
     public static Collection<String> getDisabledClaimingWorlds() {
+        if (disabledClaimingWorlds != null) {
+            return disabledClaimingWorlds;
+        }
         FileConfiguration config = KingdomsPlugin.getInstance().getConfig();
         if (config.contains("disabled-claiming-worlds")) {
-            return new HashSet<>(config.getStringList("disabled-claiming-worlds"));
+            return (disabledClaimingWorlds = new HashSet<>(config.getStringList("disabled-claiming-worlds")));
         }
+        disabledClaimingWorlds = new HashSet<>();
         List<String> temp = new ArrayList<>();
         config.set("disabled-claiming-worlds", temp);
         KingdomsPlugin.getInstance().saveConfig();
-        return temp;
+        return disabledClaimingWorlds;
     }
 
     public static int getEmpireCreationCost() {

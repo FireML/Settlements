@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.Base;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.essentials.events.HostileCreaturePreSpawnEvent;
 import me.crz.minecraft.kingdoms.essentials.events.HostileCreatureSpawnEvent;
 import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveChunkEvent;
@@ -9,10 +10,13 @@ import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.TitleBuilder;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -29,12 +33,49 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.scheduler.BukkitTask;
+
+import java.util.logging.Level;
 
 public class LandFlags extends Base implements LandFlagBase {
     private TitleBuilder tbPvp = new TitleBuilder();
+    private BukkitTask mobCheckTask = null;
+    private int mobCheckPeriod = 0;
 
     public LandFlags() {
         super();
+        reload();
+    }
+
+    public void reload() {
+        int oldMobCheckPeriod = mobCheckPeriod;
+        mobCheckPeriod = ConfigManager.getInstance().getConfig().getInt("mob-flag-check-period", 30);
+        if (mobCheckPeriod != oldMobCheckPeriod) {
+            if (mobCheckTask != null) {
+                mobCheckTask.cancel();
+            }
+            if (mobCheckPeriod > 0) {
+                mobCheckTask = Bukkit.getScheduler().runTaskTimer(KingdomsPlugin.getInstance(), () -> {
+                    int amount = 0;
+                    for (World world : Bukkit.getWorlds()) {
+                        if (Utils.isWorldClaimable(world) && LandManager.getInstance().hasLand(world)) {
+                            for (LivingEntity entity : world.getLivingEntities()) {
+                                if (Utils.isHostile(entity)) {
+                                    OwnedLand land = LandManager.getInstance().getLand(entity.getLocation());
+                                    if (land != null && !land.getMode(PlotMode.mobSpawning)) {
+                                        entity.remove();
+                                        amount++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (amount > 0) {
+                        KingdomsPlugin.getInstance().getLogger().log(Level.INFO, "Removed " + amount + " hostile mob" + (amount > 1 ? "s" : "") + " that wandered into no-mobs-claims");
+                    }
+                }, mobCheckPeriod * 20, mobCheckPeriod * 20);
+            }
+        }
     }
 
     private boolean isAllowed(Location location, PlotMode mode) {
