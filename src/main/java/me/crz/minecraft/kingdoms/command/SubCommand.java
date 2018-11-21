@@ -207,17 +207,23 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
         if (permission == null || permission.isEmpty()) {
             if (getParent() != null) {
                 permission = getParent().getPermission() + "." + name();
-                Permission subPerm = Bukkit.getPluginManager().getPermission(permission);
-                if (subPerm == null) {
-                    subPerm = new Permission(permission, "Allows access to the command /" + getPath());
-                    Bukkit.getPluginManager().addPermission(subPerm);
-                }
-                subPerm.addParent(getParent().getPermission(), true);
             } else {
                 permission = "kingdoms.command." + name();
             }
         }
         return permission;
+    }
+
+    public void registerPermission() {
+        Permission subPerm = Bukkit.getPluginManager().getPermission(getPermission());
+        if (subPerm == null) {
+            subPerm = new Permission(getPermission(), "Allows access to the command /" + getPath());
+            Bukkit.getPluginManager().addPermission(subPerm);
+        }
+        if (getParent() != null) {
+            subPerm.addParent(getParent().getPermission(), true);
+        }
+        getSubCommands().values().forEach(SubCommand::registerPermission);
     }
 
     public void setUsage(String... u) {

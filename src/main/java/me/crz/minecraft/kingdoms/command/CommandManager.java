@@ -84,6 +84,7 @@ public class CommandManager extends Base implements CommandExecutor {
     }
 
     private void registerCommand(SubCommand ex, boolean isUserCommand) {
+        ex.registerPermission();
         if (isUserCommand) {
             Permission commandPerm = Bukkit.getPluginManager().getPermission(ex.getPermission());
             if (commandPerm == null) {
