@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.empire;
 
+import co.aikar.timings.Timing;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
@@ -380,9 +381,11 @@ public class Empire extends LandOwner implements Comparable<Empire> {
             if (KingdomsPlugin.getInstance().isRunning() && mode == PlotMode.mobSpawning && !value) {
                 World world = Bukkit.getWorld(getWorldName());
                 if (world != null) {
-                    for (LivingEntity entity : world.getLivingEntities()) {
-                        if (Utils.isHostile(entity)) {
-                            entity.remove();
+                    try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire mob spawning mode toggle")) {
+                        for (LivingEntity entity : world.getLivingEntities()) {
+                            if (Utils.isHostile(entity)) {
+                                entity.remove();
+                            }
                         }
                     }
                 }

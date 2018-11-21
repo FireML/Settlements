@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.empire;
 
+import co.aikar.timings.Timing;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
@@ -45,7 +46,9 @@ public class EmpireManager {
         for (Empire empire : DatabaseManager.getInstance().getAllEmpires()) {
             empires.put(empire.getName().replace(' ', '_').toLowerCase(), empire);
             empireIds.put(empire.getId(), empire);
-            createEmpireWorld(empire);
+            try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
+                createEmpireWorld(empire);
+            }
         }
     }
 
@@ -116,7 +119,9 @@ public class EmpireManager {
                 KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving empire " + empire.getName() + " to the database! No ID was returned.");
             }
         });
-        createEmpireWorld(empire);
+        try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
+            createEmpireWorld(empire);
+        }
     }
 
     private void createEmpireWorld(Empire empire) {
@@ -183,13 +188,15 @@ public class EmpireManager {
         }
         World empireWorld = Bukkit.getWorld(empire.getWorldName());
         if (empireWorld != null) {
-            for (Player player : empireWorld.getPlayers()) {
-                Utils.teleportToSpawn(player);
+            try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire world removal")) {
+                for (Player player : empireWorld.getPlayers()) {
+                    Utils.teleportToSpawn(player);
+                }
+                for (LockProvider lockProvider : KingdomsPlugin.getInstance().getLockProviders()) {
+                    lockProvider.removeInWorld(empireWorld);
+                }
+                deleteWorld(empireWorld);
             }
-            for (LockProvider lockProvider : KingdomsPlugin.getInstance().getLockProviders()) {
-                lockProvider.removeInWorld(empireWorld);
-            }
-            deleteWorld(empireWorld);
         }
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().deleteEmpire(empire);

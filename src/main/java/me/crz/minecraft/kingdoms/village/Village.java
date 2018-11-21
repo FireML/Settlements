@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.village;
 
+import co.aikar.timings.Timing;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
@@ -341,12 +342,14 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     public boolean setMode(PlotMode mode, boolean value) {
         if (super.setMode(mode, value)) {
             if (KingdomsPlugin.getInstance().isRunning() && mode == PlotMode.mobSpawning && !value) {
-                for (OwnedLand land : LandManager.getInstance().getClaimedLand(this)) {
-                    World world = Bukkit.getWorld(land.getWorldName());
-                    if (world != null && world.isChunkLoaded(land.getX(), land.getZ())) {
-                        for (Entity entity : land.getChunk().getEntities()) {
-                            if (entity instanceof LivingEntity && Utils.isHostile((LivingEntity) entity)) {
-                                entity.remove();
+                try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Village mob spawning mode toggle")) {
+                    for (OwnedLand land : LandManager.getInstance().getClaimedLand(this)) {
+                        World world = Bukkit.getWorld(land.getWorldName());
+                        if (world != null && world.isChunkLoaded(land.getX(), land.getZ())) {
+                            for (Entity entity : land.getChunk().getEntities()) {
+                                if (entity instanceof LivingEntity && Utils.isHostile((LivingEntity) entity)) {
+                                    entity.remove();
+                                }
                             }
                         }
                     }

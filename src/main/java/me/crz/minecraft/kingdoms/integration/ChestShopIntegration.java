@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.integration;
 
+import co.aikar.timings.Timing;
 import com.Acrobot.ChestShop.ChestShop;
 import com.Acrobot.ChestShop.Events.PreShopCreationEvent;
 import com.Acrobot.ChestShop.Events.ShopDestroyedEvent;
@@ -83,14 +84,16 @@ public class ChestShopIntegration implements LockProvider, Listener {
 
     private int removeInChunk(Chunk chunk) {
         int amount = 0;
-        for (BlockState blockState : chunk.getTileEntities()) {
-            if (blockState instanceof Sign && ChestShopSign.isValid((Sign) blockState)) {
-                Sign sign = (Sign) blockState;
-                Container container = uBlock.findConnectedContainer(sign);
-                new ShopDestroyedEvent(null, (Sign) sign.getBlock().getState(), container).callEvent();
-                Arrays.fill(sign.getLines(), "");
-                sign.update(true);
-                amount++;
+        try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("ChestShop chunk shop removal")) {
+            for (BlockState blockState : chunk.getTileEntities()) {
+                if (blockState instanceof Sign && ChestShopSign.isValid((Sign) blockState)) {
+                    Sign sign = (Sign) blockState;
+                    Container container = uBlock.findConnectedContainer(sign);
+                    new ShopDestroyedEvent(null, (Sign) sign.getBlock().getState(), container).callEvent();
+                    Arrays.fill(sign.getLines(), "");
+                    sign.update(true);
+                    amount++;
+                }
             }
         }
         return amount;

@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms;
 
+import co.aikar.timings.Timing;
+import co.aikar.timings.Timings;
 import com.griefcraft.lwc.LWC;
 import me.crz.minecraft.kingdoms.banish.BanishListener;
 import me.crz.minecraft.kingdoms.empire.Empire;
@@ -62,6 +64,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     private String empiresWorldSuffix = "";
     private BukkitTask upkeepTask = null;
     private LandFlags landFlags;
+    private Timing pluginTimings;
 
     @Override
     public void onDisable() {
@@ -76,6 +79,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        pluginTimings = Timings.of(this, "Plugin actions");
         instance = this;
         this.checkDataFolder();
         if (!this.setupEconomy()) {
@@ -244,5 +248,13 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     public LandFlags getLandFlags() {
         return landFlags;
+    }
+
+    public Timing getTiming(String name) {
+        return Timings.of(KingdomsPlugin.getInstance(), name, pluginTimings);
+    }
+
+    public Timing getAndStartTiming(String name) {
+        return Timings.ofStart(KingdomsPlugin.getInstance(), name, pluginTimings);
     }
 }
