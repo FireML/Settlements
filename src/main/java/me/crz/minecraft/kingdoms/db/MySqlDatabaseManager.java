@@ -642,7 +642,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 }
 
                 Village village = null;
-                int villageId = rs.getInt("empireId");
+                int villageId = rs.getInt("settlementId");
                 if (villageId > -1) {
                     village = VillageManager.getInstance().getVillageFromId(IdObject.get(villageId));
                 }

@@ -11,6 +11,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.lock.Lock;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -277,7 +278,9 @@ public class MongoDatabaseManager extends DatabaseManager {
             if (empire != null) {
                 map.put("empire", empire.getId().value());
             }
-            map.put("village", village.getId().value());
+            if (village != null) {
+                map.put("village", village.getId().value());
+            }
             map.put("action", action);
             map.put("type", entry.getKey().toLowerCase());
             map.put("amount", entry.getValue());
@@ -356,11 +359,15 @@ public class MongoDatabaseManager extends DatabaseManager {
                 .limit(Utils.getEntriesPerPage());
         for (Document document : logIt) {
             Village village = VillageManager.getInstance().getVillageFromId(IdObject.get(document.get("village")));
+            Empire empire = EmpireManager.getInstance().getEmpireFromId(IdObject.get(document.get("empire")));
             VillageRank rank = VillageRank.RESIDENT;
             try {
                 rank = VillageRank.valueOf(document.getString("rank").toUpperCase());
             } catch (IllegalArgumentException ignored) {}
             log.add(new String[]{
+                    "village", village != null ? village.getName() : "",
+                    "villagestate", village != null ? village.getState().getTag(): "",
+                    "empire", empire != null ? empire.getName() : "",
                     "name", document.getString("name"),
                     "uuid", document.getString("uuid"),
                     "rank", rank.getTag(village),
