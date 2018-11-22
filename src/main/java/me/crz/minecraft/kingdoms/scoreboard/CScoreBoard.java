@@ -54,14 +54,15 @@ public class CScoreBoard {
     }
 
     public void updateSidebar() {
-        if (manager.getCustomLines() == null && manager.getScoreboardPolicy().getSidebar(p) == null) {
+        List<String> sidebarText = manager.getCustomLines() == null ? manager.getScoreboardPolicy().getSidebar(p) : manager.getCustomLines();
+        if (sidebarText == null) {
             if (sidebarObjective != null) {
                 sidebarObjective.unregister();
                 sidebarObjective = null;
             }
             return;
         }
-        setSidebar((manager.getCustomLines() == null) ? manager.getScoreboardPolicy().getSidebar(p) : manager.getCustomLines());
+        setSidebar(sidebarText);
     }
 
     public void updateTeams() {

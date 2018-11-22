@@ -142,6 +142,10 @@ public class ResidentManager {
         return resident;
     }
 
+    public Resident getResidentIfPreset(UUID playerId) {
+        return residentsByUuid.getIfPresent(playerId);
+    }
+
     public String getResidentName(UUID uuid) {
         Resident resident = getResident(uuid);
         return resident != null ? resident.getName() : uuid.toString();

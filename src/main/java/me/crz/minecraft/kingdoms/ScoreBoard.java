@@ -25,7 +25,13 @@ public class ScoreBoard implements ScoreboardPolicy {
 
     @Override
     public List<String> getSidebar(Player member) {
-        Resident resident = ResidentManager.getInstance().getResident(member);
+        if (member == null || !member.isOnline()) {
+            return null;
+        }
+        Resident resident = ResidentManager.getInstance().getResidentIfPreset(member.getUniqueId());
+        if (resident == null) {
+            return null;
+        }
 
         Map<String, String> replacements = Utils.toMap(
                 "balance", Utils.withSuffix((long) KingdomsPlugin.getInstance().econ.getBalance(member)),
