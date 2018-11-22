@@ -46,6 +46,8 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class Utils {
     public final static DecimalFormat CURRENCY_FORMAT = new DecimalFormat("#,###");
+    public final static DecimalFormat SUFFIX_FORMAT = new DecimalFormat("#.##");
+    private final static char[] SUFFIXES = {'k', 'M', 'B', 'T', 'P', 'E'};
     public final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
     public final static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat();
     public static final UUID ZERO_UUID = new UUID(0, 0);
@@ -409,7 +411,7 @@ public class Utils {
             return String.valueOf(count);
         }
         int exp = (int) (Math.log(count) / Math.log(1000.0));
-        return String.format("%.1f%c", count / Math.pow(1000.0, exp), "kMBTPE".charAt(exp - 1));
+        return SUFFIX_FORMAT.format(((long) Math.floor(count / Math.pow(1000.0, exp) * 100)) / 100d) + (SUFFIXES.length >= exp ? SUFFIXES[exp - 1] : "k^" + exp);
     }
 
     public static boolean isHostile(LivingEntity entity) {
