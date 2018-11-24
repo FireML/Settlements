@@ -28,7 +28,7 @@ public class ScoreBoard implements ScoreboardPolicy {
             return null;
         }
         Resident resident = ResidentManager.getInstance().getResidentIfPreset(member.getUniqueId());
-        if (resident == null || resident.showSidebar()) {
+        if (resident == null || !resident.showSidebar()) {
             return null;
         }
 
