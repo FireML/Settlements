@@ -48,6 +48,7 @@ claim-max-radius: 5
 # Setting this to 0 or anything below will disable this check!
 mob-flag-check-period: 30
 entries-per-page: 10
+allow-firespread-outside-claim: false
 remove-locks-on-unclaim: true
 remove-locked-blocks: false
 lockable:
