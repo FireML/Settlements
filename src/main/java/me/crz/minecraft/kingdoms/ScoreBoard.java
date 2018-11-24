@@ -3,7 +3,6 @@ package me.crz.minecraft.kingdoms;
 
 import me.crz.minecraft.kingdoms.scoreboard.ScoreboardManager;
 import me.crz.minecraft.kingdoms.scoreboard.ScoreboardPolicy;
-import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -29,7 +28,7 @@ public class ScoreBoard implements ScoreboardPolicy {
             return null;
         }
         Resident resident = ResidentManager.getInstance().getResidentIfPreset(member.getUniqueId());
-        if (resident == null) {
+        if (resident == null || resident.showSidebar()) {
             return null;
         }
 

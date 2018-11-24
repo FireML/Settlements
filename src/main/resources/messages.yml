@@ -721,6 +721,10 @@ command:
       all:
         description: Sets all flags to a certain state
     description: Plot Commands
+  scoreboard:
+    descriptipon: "Toggle the scoreboard sidebar"
+    enabled: "&eEnabled &7the scoreboard!"
+    disabled: "&cDisabled &7the scoreboard!"
   scoreboardadmin:
     descriptipon: "Set the scoreboard for all players"
     clear:

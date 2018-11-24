@@ -47,7 +47,10 @@ public class Resident implements ConfigurationSerializable, Targetable {
     private int bonusClaims = 0;
     private long lastLogin = 0;
     private long villageJoin;
+
+    // Temporary, per session settings:
     private boolean resourcePack = false;
+    private boolean showSidebar = true;
 
     public Resident(UUID uuid, String name) {
         this.uuid = uuid;
@@ -259,12 +262,32 @@ public class Resident implements ConfigurationSerializable, Targetable {
         this.lastLogin = lastLogin;
     }
 
+    /**
+     * Temporary, per session setting
+     */
     public void setResourcePack(boolean resourcePack) {
         this.resourcePack = resourcePack;
     }
 
+    /**
+     * Temporary, per session setting
+     */
     public boolean hasResourcePack() {
         return resourcePack;
+    }
+
+    /**
+     * Temporary, per session setting
+     */
+    public boolean showSidebar() {
+        return showSidebar;
+    }
+
+    /**
+     * Temporary, per session setting
+     */
+    public void showSidebar(boolean showSidebar) {
+        this.showSidebar = showSidebar;
     }
 
     @Override

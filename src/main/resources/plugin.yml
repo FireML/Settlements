@@ -152,6 +152,8 @@ permissions:
   kingdoms.user:
     description: Permission for users. Gives access to all plugin functions that a user should have.
     default: true
+  kingdoms.command.scoreboard:
+    description: Permission for toggling the scoreboard on or off. Does not hide custom scoreboards set with /scoreboardadmin!
   kingdoms.chat.colour:
     description: Gives permission to use colours in chat
     default: op
