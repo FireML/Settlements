@@ -5,7 +5,7 @@ import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.ScoreBoard;
 import me.crz.minecraft.kingdoms.command.CommandManager;
 import me.crz.minecraft.kingdoms.scoreboard.commands.CommandRainbowtag;
-import me.crz.minecraft.kingdoms.scoreboard.commands.CommandScoreboard;
+import me.crz.minecraft.kingdoms.scoreboard.commands.CommandScoreboardAdmin;
 import me.crz.minecraft.kingdoms.scoreboard.listeners.ScoreboardListeners;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import org.bukkit.ChatColor;
@@ -44,8 +44,8 @@ public class ScoreboardManager implements ConfigMessages {
         title = getText("sidebar.title");
         Base.registerListener(new ScoreboardListeners(this));
         Base.registerListener(new ScoreboardAnimation(this));
-        CommandManager.getInstance().registerCommand(new CommandScoreboard(this));
-        CommandManager.getInstance().registerCommand(new CommandRainbowtag(this));
+        CommandManager.getInstance().registerCommand(new CommandScoreboardAdmin(this), false);
+        CommandManager.getInstance().registerCommand(new CommandRainbowtag(this), false);
     }
 
     public void update() {

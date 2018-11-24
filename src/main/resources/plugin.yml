@@ -68,6 +68,8 @@ commands:
     description: Player ignore command
   scoreboard:
     description: Scoreboard command
+  scoreboardadmin:
+    description: Scoreboard admin command
   rainbowtag:
     description: Rainbow tag command
 permissions:
@@ -82,11 +84,15 @@ permissions:
       kingdoms.chat.colour: true
       kingdoms.channel.admin: true
       kingdoms.bypass.flyremoval: true
+      kingdoms.admin.scoreboard: true
   kingdoms.admin.ss:
     description: Permission to access social spy.
     default: false
   kingdoms.admin.command:
-    description: Permission to access the admincommand.
+    description: Permission to access the villageadmin command.
+    default: false
+  kingdoms.admin.scoreboard:
+    description: Permission to access the scoreboardadmin command.
     default: false
   kingdoms.bypass.banish:
     description: Permission to bypass being banished from a settlement.

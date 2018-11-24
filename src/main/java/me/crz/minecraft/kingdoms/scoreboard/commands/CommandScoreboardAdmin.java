@@ -9,12 +9,12 @@ import org.bukkit.command.CommandSender;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandScoreboard extends SubCommand {
+public class CommandScoreboardAdmin extends SubCommand {
     private static final int MAX_WIDTH = 40;
 
-    public CommandScoreboard(ScoreboardManager manager) {
-        super(null, "scoreboard clear|add <line>", "sb", "board", "sidebar", "side");
-        setPermission("kingdoms.scoreboard");
+    public CommandScoreboardAdmin(ScoreboardManager manager) {
+        super(null, "scoreboardadmin clear|add <line>", "sba", "boardadmin", "sidebaradmin", "sideadmin");
+        setPermission("kingdoms.admin.scoreboard");
         registerCommand(new SubCommand(this, "clear", "reset", "remove") {
             @Override
             public boolean run(CommandSender s, String base, String alias, String... args) {

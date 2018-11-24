@@ -721,7 +721,7 @@ command:
       all:
         description: Sets all flags to a certain state
     description: Plot Commands
-  scoreboard:
+  scoreboardadmin:
     descriptipon: "Set the scoreboard for all players"
     clear:
       description: "Clear custom lines from the scoreboard for all players"
