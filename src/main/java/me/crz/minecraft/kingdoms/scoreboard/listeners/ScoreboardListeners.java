@@ -17,7 +17,6 @@ public class ScoreboardListeners implements Listener {
         super();
         this.manager = manager;
         Bukkit.getScheduler().scheduleSyncRepeatingTask(KingdomsPlugin.getInstance(), this::onUpdate, 0L, 200L);
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(KingdomsPlugin.getInstance(), this::onUpdateRainbowTag, 0L, 5L);
     }
 
     @EventHandler
@@ -40,14 +39,5 @@ public class ScoreboardListeners implements Listener {
 
     public void onUpdate() {
         manager.update();
-    }
-
-    public void onUpdateRainbowTag() {
-        if (manager.getRainbowTags().isEmpty()) {
-            return;
-        }
-        for (CScoreBoard scoreboard : manager.getScoreboards().values()) {
-            scoreboard.updateTeams();
-        }
     }
 }

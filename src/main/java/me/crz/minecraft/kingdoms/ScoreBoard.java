@@ -62,10 +62,6 @@ public class ScoreBoard implements ScoreboardPolicy {
 
     @Override
     public String getPrefix(Player perspective, Player subject) {
-        if (subject.isOp() && manager.hasRainbowTag(subject)) {
-            return String.valueOf(c(KingdomsPlugin.chat.getPlayerPrefix(subject).toLowerCase()))
-                    + ChatColor.RESET + manager.getNextRainbowColor(subject) + " ";
-        }
         return this.c(KingdomsPlugin.chat.getPlayerPrefix(subject));
     }
 

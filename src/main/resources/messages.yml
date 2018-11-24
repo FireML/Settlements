@@ -612,10 +612,6 @@ command:
       separator: "&7, "
   message:
     description: "Message another player"
-  rainbowtag:
-    description: "Make your nametag flash like a rainbow!"
-    disabled: "&cDisabled rainbow tag."
-    enabled: "&a&lEnabled rainbow tag."
   reply:
     description: "Replies to the last person who messaged you."
     no-one-messaged: "&cNo one messaged you!"
