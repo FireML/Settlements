@@ -3,24 +3,24 @@ help-order:
     no:
     - create
     - join
-    - show
+    - s show <name>
     - list
     - home
     - map
     resident:
     - invite
-    - show
+    - show <name>
     - list
     - map
     - materials
     - deposit
     - home
-    - chat
+    - s chat
     - reslist
     - history
-    - plot
+    - s plot
     - outpost
-    - teleport
+    - teleporters
     - bank
     - upkeep
     - allies
@@ -33,7 +33,7 @@ help-order:
     elder:
     - claim
     - unclaim
-    - plot staff
+    - s plot staff
     - outpost
     - ally
     - unally
@@ -45,7 +45,7 @@ help-order:
     - claim
     - unclaim
     - sethome
-    - setrank
+    - s setrank
     - ally
     - unally
     - invite
@@ -53,7 +53,7 @@ help-order:
     - banish
     - unbanish
     - history
-    - plot staff
+    - s plot staff
     - shop
     - title
     - rename
@@ -73,7 +73,7 @@ help-order:
     - history
     - s tax
     - s tax set
-    - s setjoinfee
+    - s joinfee set
     banish:
     - s banish
     - s unbanish
@@ -94,10 +94,10 @@ help-order:
     - show
     - list
     - home
-    - chat
+    - e chat
     - memberlist
     - history
-    - plot
+    - e plot
     - bank
     - upkeep
     - allies
@@ -107,7 +107,7 @@ help-order:
     senator:
     - mode
     - kick
-    - plot help staff
+    - e plot staff
     - settings
     - ally
     - unally
@@ -117,14 +117,14 @@ help-order:
     leader:
     - settings
     - sethome
-    - setrank
+    - e setrank
     - invite
     - kick
     - banish
     - ally
     - unally
     - history
-    - plot help staff
+    - e plot staff
     - shop
     - title
     - rename
@@ -138,7 +138,7 @@ help-order:
     - history
     - e tax
     - e tax set
-    - e setjoinfee
+    - e joinfee set
     banish:
     - e banish
     - e unbanish
@@ -157,12 +157,12 @@ help-order:
     - link
     - unlink
     - friend
-    - staff
+    - plot staff
     staff:
     - sale
     - unsale
     - revoke
-    - p set embassy <amount>
+    - plot set embassy <amount>
   lock:
   - lock
   - toggle

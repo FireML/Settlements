@@ -18,7 +18,10 @@ public class VillageTaxCommand extends VillageSubCommand {
                 try {
                     long amount = Long.parseLong(args[0]);
                     resident.getVillage().setTax(amount);
-                    getMessage("success").tell(resident.getVillage().getOnlineResidents(), "amount", String.valueOf(amount));
+                    getMessage("success").tell(resident.getVillage().getOnlineResidents(),
+                            "state", resident.getVillage().getStateTag(),
+                            "amount", String.valueOf(amount)
+                    );
                     Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(resident, "input", args[0]);
@@ -32,7 +35,10 @@ public class VillageTaxCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length == 0) {
-            getMessage("current").tell(resident, "amount", String.valueOf(resident.getVillage().getTax()));
+            getMessage("current").tell(resident,
+                    "state", resident.getVillage().getStateTag(),
+                    "amount", String.valueOf(resident.getVillage().getTax())
+            );
             return true;
         }
         return false;

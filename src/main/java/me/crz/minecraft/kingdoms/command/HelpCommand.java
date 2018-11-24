@@ -13,10 +13,12 @@ import org.apache.commons.lang.WordUtils;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class HelpCommand extends SubCommand {
     private Function<CommandSender, String> defaultTypeProvider;
@@ -80,7 +82,7 @@ public class HelpCommand extends SubCommand {
                 SubCommand subCommand = null;
                 for (String part : stripParameters(commandPath).split(" ")) {
                     if (subCommand == null) {
-                        subCommand = getParent().matchSubCommand(part);
+                        subCommand = getParent().getSubCommands().get(part.toLowerCase());
                         if (subCommand == null) {
                             subCommand = CommandManager.getInstance().getCommand(part);
                         }
@@ -128,13 +130,21 @@ public class HelpCommand extends SubCommand {
                             }
                         }
                     } else {
-                        SubCommand startCommand = CommandManager.getInstance().getCommand(e.getKey().split(" ")[0]);
-                        if (startCommand != null && startCommand.getParent() == null) {
-                            displayPath = stripParameters(e.getKey());
-                        } else {
-                            displayPath = s.getPath();
+                        displayPath = s.getPath();
+                        if (!e.getKey().toLowerCase().startsWith(s.name())) {
+                            SubCommand startCommand = CommandManager.getInstance().getCommand(e.getKey().split(" ")[0]);
+                            if (startCommand != null && startCommand.getParent() == null) {
+                                displayPath = stripParameters(e.getKey());
+                            }
                         }
-                        usage = s.getUsage(displayPath.contains(" ") ? displayPath.substring(0, displayPath.lastIndexOf(' ')) : "");
+                        usage = "/" + displayPath;
+                        int arrowIndex = e.getKey().indexOf('<');
+                        int bracketIndex = e.getKey().indexOf('[');
+                        if (arrowIndex > 0 && (bracketIndex < 0 || arrowIndex < bracketIndex)) {
+                            usage += " " + e.getKey().substring(arrowIndex);
+                        } else if (bracketIndex > 0 && (arrowIndex < 0 || bracketIndex < arrowIndex)) {
+                            usage += " " + e.getKey().substring(bracketIndex);
+                        }
                         description = s.getDescription();
                         aliases.addAll(s.getAliases());
                     }
@@ -197,7 +207,8 @@ public class HelpCommand extends SubCommand {
         if (command.contains("[")) {
             command = command.substring(0, command.indexOf('['));
         }
-        return command.trim();
+        command = command.trim();
+        return command.isEmpty() ? string : command;
     }
 
     public void setDefaultTypeProvider(Function<CommandSender, String> typeProvider) {

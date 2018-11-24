@@ -57,7 +57,7 @@ public class VillageCommand extends SubCommand {
         registerCommand(new VillageRulesCommand(this));
         registerCommand(new VillageSetAccessCommand(this));
         registerCommand(new VillageSetHomeCommand(this));
-        registerCommand(new VillageSetJoinFeeCommand(this));
+        registerCommand(new VillageJoinFeeCommand(this));
         registerCommand(new VillageSetRankCommand(this));
         registerCommand(new VillageSettingsCommand(this));
         registerCommand(new VillageShopCommand(this));

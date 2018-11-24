@@ -50,7 +50,7 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new UnlockCommand());
         registerCommand(new EmpireSetAccessCommand(this));
         registerCommand(new EmpireSetHomeCommand(this));
-        registerCommand(new EmpireSetJoinFeeCommand(this));
+        registerCommand(new EmpireJoinFeeCommand(this));
         registerCommand(new EmpireSetSymbolCommand(this));
         registerCommand(new EmpireSetRankCommand(this));
         registerCommand(new EmpireSettingsCommand(this));

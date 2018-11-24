@@ -571,7 +571,7 @@ gui:
 
 usage:
   head: "&8&l--------&r&c&l{type}{name} Commands&r&8&l--------"
-  entry: "&8\\[&9*&8] [&b/{path}](hover=&f{usage}\n&9Click to add it to your input{aliases} suggest_command={/{path}) &7- {description}"
+  entry: "&8\\[&9*&8] [&b{usage}](hover=&f{usage}\n&9Click to add it to your input{aliases} suggest_command={/{path}) &7- {description}"
   aliases: "\n&fAliases: &7{aliases}"
   footer: ""
   pagination:
@@ -962,9 +962,12 @@ command:
     sethome:
       success: "{title} {name} &r&7&lhas set the {state} home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
       description: Sets the home for the village
-    setjoinfee:
-      success: "&e&lALERT &r&7Join fee was set &e{amount}&7!"
-      description: Sets the fee a player needs to pay to join
+    joinfee:
+      description: Get and set the fee a player needs to pay to join
+      current: "&7Your {state}'s join fee is &e{amount}&7!"
+      set:
+        success: "&e&lALERT &r&7{state} join fee was set &e{amount}&7!"
+        description: Sets the fee a player needs to pay to join
     setrank:
       invalid-rank: "&c&lERROR &r&c{rank} &7is not a valid rank!"
       cant-set-chief: "&c&lPlease use &6&c&l/{base} transfer <player>&r&c&l to transfer ownership of the {state}"
@@ -1029,10 +1032,10 @@ command:
         entry: "{online}{name}"
       description: "Shows information on a village "
     tax:
-      current: "&7Your village's tax is &e{amount}&7!"
+      current: "&7Your {state}'s tax is &e{amount}&7!"
       description: Settlement taxes
       set:
-        success: "&e&lALERT &r&7Daily tax was set &e{amount}&7!"
+        success: "&e&lALERT &r&7Daily {state} tax was set &e{amount}&7!"
         description: Sets the tax a player needs to pay each day he is in the settlement
     teleporters:
       description: Teleporter GUI
@@ -1319,9 +1322,12 @@ command:
     sethome:
       success: "&7&lLeader &f{title} {name} &r&7&l has set the empire home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
       description: Sets the home for the empire
-    setjoinfee:
-      success: "&e&lALERT &r&7Empire join fee was set &e{amount}&7!"
-      description: Sets the fee a settlement needs to pay to join
+    joinfee:
+      description: Get and set the fee a settlement needs to pay to join
+      current: "&7Your empire's join fee is &e{amount}&7!"
+      set:
+        success: "&e&lALERT &r&7Empire join fee was set &e{amount}&7!"
+        description: Sets the fee a settlement needs to pay to join
     setrank:
       invalid-rank: "&c&lERROR &r&c{rank} &7is not a valid rank!"
       cant-set-chief: "&c&lPlease use &6&c&l/{base} transfer <player>&r&c&l to transfer ownership of the empire"

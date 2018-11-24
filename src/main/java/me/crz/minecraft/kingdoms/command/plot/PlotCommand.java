@@ -6,7 +6,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 
 public class PlotCommand extends ResidentSubCommand {
     public PlotCommand() {
-        super(null, "plot <options>", "p");
+        super(null, "plot <options>");
         PlotHelpCommand staffHelpCommand = new PlotHelpCommand(getHelpCommand());
         getHelpCommand().registerCommand(staffHelpCommand);
         registerCommand(new PlotSubCommand(getHelpCommand(), "staff [<page>]", true) {

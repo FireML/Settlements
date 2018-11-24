@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command;
 
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.rank.Rankable;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -9,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
@@ -31,6 +33,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
     private String name;
 
     private Map<String, SubCommand> subCommands = new LinkedHashMap<>();
+    private Map<String, SubCommand> subCommandAliases = new LinkedHashMap<>();
     private boolean forceOwnUsage = false;
     private HelpCommand helpCommand = null;
 
@@ -138,21 +141,23 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
 
     public SubCommand matchSubCommand(String input) {
         input = input.toLowerCase();
-        if (!subCommands.containsKey(input)) {
-            SubCommand subCommand = null;
-            for (Map.Entry<String, SubCommand> s : subCommands.entrySet()) {
-                if (s.getKey().startsWith(input)) {
-                    if (subCommand == null) {
-                        subCommand = s.getValue();
+        SubCommand subCommand = subCommands.get(input.toLowerCase());
+        if (subCommand == null) {
+            subCommand = subCommandAliases.get(input.toLowerCase());
+            if (subCommand == null) {
+                for (Map.Entry<String, SubCommand> s : subCommands.entrySet()) {
+                    if (s.getKey().startsWith(input)) {
+                        if (subCommand == null) {
+                            subCommand = s.getValue();
+                        }
                     }
                 }
+                if (subCommand != null) {
+                    subCommandAliases.putIfAbsent(input, subCommand);
+                }
             }
-            if (subCommand != null) {
-                subCommands.put(input, subCommand);
-            }
-            return subCommand;
         }
-        return subCommands.get(input);
+        return subCommand;
     }
 
     public Collection<SubCommand> getAccessibleCommands(CommandSender sender) {
@@ -290,7 +295,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
     public void registerCommand(SubCommand c) {
         subCommands.put(c.name().toLowerCase(), c);
         for (String alias : c.getAliases()) {
-            subCommands.putIfAbsent(alias.toLowerCase(), c);
+            subCommandAliases.putIfAbsent(alias.toLowerCase(), c);
         }
     }
 
