@@ -46,7 +46,7 @@ public class HelpCommand extends SubCommand {
         if (args.length > 0) {
             try {
                 page = Integer.parseInt(args[args.length - 1]);
-                typeIndex = 1;
+                typeIndex = args.length - 2;
             } catch (NumberFormatException e) {
                 typeIndex = 0;
             }
@@ -106,7 +106,6 @@ public class HelpCommand extends SubCommand {
                         "aliases", getParent().getAliases().isEmpty() ? "" : getParent().getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getParent().getAliases())),
                         "path", WordUtils.capitalizeFully(base)
                 );
-                String finalBase = base;
                 commands.entrySet().stream().skip((page - 1) * entriesPerPage).limit(entriesPerPage).forEachOrdered(e -> {
                     SubCommand s = e.getValue();
                     String usage;
