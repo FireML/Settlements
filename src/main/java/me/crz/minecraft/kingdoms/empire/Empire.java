@@ -5,7 +5,6 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.land.LandOwner;
-import me.crz.minecraft.kingdoms.land.ModeAble;
 import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
@@ -142,6 +141,23 @@ public class Empire extends LandOwner implements Comparable<Empire> {
         if (target instanceof Village && isMember((Village) target)) {
             EmpireManager.getInstance().leaveEmpire((Village) target);
         }
+    }
+
+    @Override
+    public boolean removeAlly(LandOwner landOwner) {
+        if (super.removeAlly(landOwner)) {
+            for (Resident resident : landOwner.getResidents()) {
+                Player player = resident.getPlayer();
+                if (player != null) {
+                    Empire empire = EmpireManager.getInstance().getEmpireFromWorld(player.getWorld());
+                    if (!empire.canAccess(resident)) {
+                        Utils.teleportToSpawn(player);
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     public static Empire deserialize(Map<String, Object> map) {
@@ -404,7 +420,10 @@ public class Empire extends LandOwner implements Comparable<Empire> {
             return isMember(resident.getVillage());
         }
         if (getAccess().atLeast(LandAccess.ALLY)) {
-            return isAlly(resident.getVillage());
+            return isAlly(resident);
+        }
+        if (getAccess().atLeast(LandAccess.TRUSTED)) {
+            return isTrusted(resident);
         }
         if (getAccess().atLeast(LandAccess.PUBLIC)) {
             return true;

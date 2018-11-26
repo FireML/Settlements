@@ -2,6 +2,8 @@ package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -23,7 +25,6 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public class VillageManager {
@@ -153,6 +154,13 @@ public class VillageManager {
         resident.setVillage(null);
         resident.removeChannel(ChatChannel.SETTLEMENT);
         resident.removeChannel(ChatChannel.EMPIRE);
+        Player player = resident.getPlayer();
+        if (player != null) {
+            Empire empire = EmpireManager.getInstance().getEmpireFromWorld(player.getWorld());
+            if (empire != null && !empire.canAccess(player)) {
+                Utils.teleportToSpawn(player);
+            }
+        }
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveResident(resident);
             DatabaseManager.getInstance().saveVillage(village);

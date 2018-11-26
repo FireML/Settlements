@@ -253,9 +253,20 @@ public class EmpireManager {
     }
 
     public void leaveEmpire(Village village) {
+        Empire empire = village.getEmpire();
+        if (empire == null) {
+            return;
+        }
         village.setEmpire(null);
-        for (Resident member : village.getOnlineResidents()) {
+        for (Resident member : village.getResidents()) {
             member.removeChannel(ChatChannel.EMPIRE);
+            Player player = member.getPlayer();
+            if (player != null) {
+                Empire e = EmpireManager.getInstance().getEmpireFromWorld(player.getWorld());
+                if (!e.canAccess(member)) {
+                    Utils.teleportToSpawn(player);
+                }
+            }
         }
         Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
     }
