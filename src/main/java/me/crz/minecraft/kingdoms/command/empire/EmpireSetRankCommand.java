@@ -50,7 +50,7 @@ public class EmpireSetRankCommand extends EmpireSubCommand {
             if (tres == null) {
                 getError("player-not-found").tell(player, "name", args[0]);
                 return;
-            } else if (!empire.equals(tres.getVillage().getEmpire())) {
+            } else if (!empire.isMember(tres)) {
                 getError("not-in-empire").tell(player);
                 return;
             }

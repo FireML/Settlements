@@ -253,7 +253,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
 
     @Override
     public boolean isMember(Resident resident) {
-        return residents.contains(resident.getUUID());
+        return equals(resident.getVillage());
     }
 
     @Override

@@ -353,7 +353,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
 
     @Override
     public boolean isMember(Resident resident) {
-        return resident.hasEmpire() && getMembers().stream().anyMatch(v -> v.isMember(resident));
+        return resident.hasVillage() && equals(resident.getVillage().getEmpire());
     }
 
     @Override
