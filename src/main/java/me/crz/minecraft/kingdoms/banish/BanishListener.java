@@ -12,10 +12,11 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class BanishListener implements Listener {
-    
+
     @EventHandler
     public void on(PlayerMoveChunkEvent e) {
         ResidentManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getTo()), e.getPlayer(), (land, p, landOwner) -> {
@@ -39,6 +40,16 @@ public class BanishListener implements Listener {
         });
     }
 
+    @EventHandler
+    public void on(PlayerJoinEvent e) {
+        Bukkit.getScheduler().runTask(KingdomsPlugin.getInstance(), () -> ResidentManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getPlayer().getLocation()), e.getPlayer(), (land, p, landOwner) -> {
+            sendInfo(p, landOwner, "join");
+            if (!e.getPlayer().hasPermission("kingdoms.bypass.banish")) {
+                Utils.teleportToSpawn(p);
+            }
+        }));
+    }
+
     private void sendInfo(Player p, LandOwner landOwner, String type) {
         String[] replacements = new String[] {
                 "state", landOwner.getStateTag(),
@@ -46,4 +57,5 @@ public class BanishListener implements Listener {
         };
         MessageUtils.tellAdvanced(p, "banished." + type, replacements);
     }
+
 }

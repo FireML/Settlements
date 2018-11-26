@@ -64,6 +64,11 @@ banished:
     actionbar: ""
     title: "&cCan't teleport"
     subtitle: "&cYou're banished from the {state} {name}!"
+  join:
+    message: "&cYou're banished from the {state} {name}!"
+    actionbar: ""
+    title: "&cCan't stay"
+    subtitle: "&cYou're banished from the {state} {name}!"
 broadcast:
   village-deletion: "&c{state} {name} has fallen!"
   empire-deletion: "&cEmpire {name} has fallen!"
