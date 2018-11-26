@@ -1,8 +1,8 @@
 package me.crz.minecraft.kingdoms.village;
 
+import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
-import com.github.benmanes.caffeine.cache.LoadingCache;
 import me.crz.minecraft.kingdoms.banish.CustomRunnable;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.land.LandOwner;
@@ -19,8 +19,8 @@ import java.util.concurrent.TimeUnit;
 public class ResidentManager {
     private static final Object RESIDENT_LOCK = new Object();
     private static ResidentManager instance;
-    private LoadingCache<UUID, Resident> residentsByUuid;
-    private LoadingCache<String, Resident> residentsByName;
+    private Cache<Object, Resident> residentsByUuid;
+    private Cache<Object, Resident> residentsByName;
 
     private ResidentManager() {
         Expiry<? super Object, Resident> residentExpiry = new Expiry<Object, Resident>() {
@@ -52,45 +52,8 @@ public class ResidentManager {
                 return TimeUnit.SECONDS.toNanos(Data.residentCacheDuration);
             }
         };
-        residentsByUuid = Caffeine.newBuilder()
-                .expireAfter(residentExpiry)
-                .build(uuid -> {
-                    Resident res = DatabaseManager.getInstance().getResident(uuid);
-                    if (res == null) {
-                        return null;
-                    }
-
-                    Resident resByName = residentsByName.getIfPresent(res.getName().toLowerCase());
-                    if (resByName != null) {
-                        if (resByName.getUUID().equals(uuid)) {
-                            return resByName;
-                        } if (resByName.getLastLogin() > res.getLastLogin()) {
-                            return res;
-                        }
-                    }
-                    residentsByName.put(res.getName().toLowerCase(), res);
-                    return res;
-                });
-        residentsByName = Caffeine.newBuilder()
-                .expireAfter(residentExpiry)
-                .build(name -> {
-                    Resident res = DatabaseManager.getInstance().getResident(name);
-                    if (res == null) {
-                        return null;
-                    }
-
-                    Resident resByUuid = residentsByUuid.getIfPresent(res.getUUID());
-                    if (resByUuid != null) {
-                        if (!resByUuid.getName().equalsIgnoreCase(res.getName())
-                                && resByUuid.getLastLogin() < res.getLastLogin()) {
-                            resByUuid.setName(res.getName());
-                        }
-                        return resByUuid;
-                    }
-
-                    residentsByUuid.put(res.getUUID(), res);
-                    return res;
-                });
+        residentsByUuid = Caffeine.newBuilder().expireAfter(residentExpiry).build();
+        residentsByName = Caffeine.newBuilder().expireAfter(residentExpiry).build();
     }
 
     public void addResident(Resident res) {
@@ -119,7 +82,15 @@ public class ResidentManager {
         Resident resident = residentsByUuid.getIfPresent(uuid);
         if (resident == null) {
             synchronized (RESIDENT_LOCK) {
-                resident = residentsByUuid.get(uuid);
+                resident = DatabaseManager.getInstance().getResident(uuid);
+                if (resident != null) {
+                    Resident resByName = residentsByName.getIfPresent(resident.getName().toLowerCase());
+                    if (resByName != null && resByName.getUUID().equals(uuid) && resByName.getLastLogin() > resident.getLastLogin()) {
+                        resident = resByName;
+                    } else {
+                        addResident(resident);
+                    }
+                }
             }
         }
         return resident;
@@ -136,7 +107,20 @@ public class ResidentManager {
         Resident resident = residentsByName.getIfPresent(name.toLowerCase());
         if (resident == null) {
             synchronized (RESIDENT_LOCK) {
-                resident = residentsByName.get(name.toLowerCase());
+                resident = DatabaseManager.getInstance().getResident(name);
+                if (resident != null) {
+                    Resident resByUuid = residentsByUuid.getIfPresent(resident.getUUID());
+                    if (resByUuid != null) {
+                        if (!resByUuid.getName().equalsIgnoreCase(resident.getName())
+                                && resByUuid.getLastLogin() < resident.getLastLogin()) {
+                            resByUuid.setName(resident.getName());
+                        }
+                        resident = resByUuid;
+                        residentsByName.put(resident.getName().toLowerCase(), resident);
+                    } else {
+                        addResident(resident);
+                    }
+                }
             }
         }
         return resident;
