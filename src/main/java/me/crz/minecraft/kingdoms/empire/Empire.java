@@ -353,7 +353,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
 
     @Override
     public boolean isMember(Resident resident) {
-        return resident.hasVillage() && equals(resident.getVillage().getEmpire());
+        return isMember(resident.getVillage());
     }
 
     @Override
@@ -383,12 +383,12 @@ public class Empire extends LandOwner implements Comparable<Empire> {
     }
 
     public boolean isMember(Village village) {
-        return village != null && getMemberIds().contains(village.getId());
+        return village != null && equals(village.getEmpire());
     }
 
     @Override
     public boolean isTrusted(LandOwner landOwner) {
-        return landOwner instanceof Village && (isAlly(landOwner) || isMember((Village) landOwner));
+        return landOwner instanceof Village && isMember((Village) landOwner);
     }
 
     @Override
@@ -417,7 +417,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
 
     public boolean canAccess(Resident resident) {
         if (getAccess().atLeast(LandAccess.PRIVATE)) {
-            return isMember(resident.getVillage());
+            return isMember(resident);
         }
         if (getAccess().atLeast(LandAccess.ALLY)) {
             return isAlly(resident);

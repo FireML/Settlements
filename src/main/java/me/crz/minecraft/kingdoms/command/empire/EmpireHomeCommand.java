@@ -36,10 +36,7 @@ public class EmpireHomeCommand extends ResidentSubCommand {
             }
         }
 
-        if (!empire.isMember(resident)
-                && (empire.getAccess() == LandAccess.PRIVATE
-                || (empire.getAccess() == LandAccess.ALLY && !empire.isAlly(resident))
-                || (empire.getAccess() == LandAccess.TRUSTED && !empire.isTrusted(resident)))) {
+        if (!empire.canAccess(resident)) {
             getMessage("no-access").tell(resident, "state", empire.getStateTag());
             return true;
         }

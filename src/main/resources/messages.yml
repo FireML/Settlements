@@ -1224,6 +1224,7 @@ command:
     home:
       no-home: "&c&lYour empire doesn't have a home !"
       success: "&a&lTeleported to home of {state} {name}"
+      no-access: "&c&lYou don't have access to teleport to the home of that empire!"
       description: Teleport to a empires's home
     invite:
       already-in-empire: "&c&l{name} is already in your Empire"
