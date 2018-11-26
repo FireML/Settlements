@@ -6,6 +6,7 @@ import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
+import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -152,6 +153,8 @@ public class VillageManager {
             }
         }
         resident.setVillage(null);
+        resident.setVillageRank(VillageRank.RESIDENT);
+        resident.setEmpireRank(EmpireRank.MEMBER);
         resident.removeChannel(ChatChannel.SETTLEMENT);
         resident.removeChannel(ChatChannel.EMPIRE);
         Player player = resident.getPlayer();

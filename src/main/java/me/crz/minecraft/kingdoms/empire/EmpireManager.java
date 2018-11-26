@@ -24,10 +24,12 @@ import org.bukkit.WorldType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -258,7 +260,12 @@ public class EmpireManager {
             return;
         }
         village.setEmpire(null);
+        List<Resident> toSave = new ArrayList<>();
         for (Resident member : village.getResidents()) {
+            if (member.getEmpireRank().above(EmpireRank.MEMBER)) {
+                toSave.add(member);
+                member.setEmpireRank(EmpireRank.MEMBER);
+            }
             member.removeChannel(ChatChannel.EMPIRE);
             Player player = member.getPlayer();
             if (player != null) {
@@ -268,7 +275,10 @@ public class EmpireManager {
                 }
             }
         }
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
+        Utils.runAsync(() -> {
+            DatabaseManager.getInstance().saveVillage(village);
+            DatabaseManager.getInstance().saveResident(toSave);
+        });
     }
 
     public Empire getEmpireFromWorld(World world) {
