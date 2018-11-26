@@ -18,7 +18,7 @@ public enum BuildState implements NameTag, Rankable<BuildState> {
     OFFICERS(Material.LIGHT_BLUE_WOOL),
     RESIDENTS(Material.YELLOW_WOOL, AppliesTo.LAND, AppliesTo.SETTLEMENT),
     ALLY(Material.CYAN_WOOL),
-    TRUSTED(Material.BLUE_WOOL, AppliesTo.LAND, AppliesTo.SETTLEMENT),
+    TRUSTED(Material.BLUE_WOOL),
     PUBLIC(Material.WHITE_WOOL);
 
     private final Material icon;

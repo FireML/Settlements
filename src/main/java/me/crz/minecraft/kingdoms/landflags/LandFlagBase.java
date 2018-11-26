@@ -71,19 +71,18 @@ public interface LandFlagBase extends ConfigMessages {
             allowed = owner.getFriends().contains(building.getUniqueId());
 
         } else if (state.atLeast(BuildState.OFFICERS)) {
-            Resident res = ResidentManager.getInstance().getResident(building);
-            allowed = land.getLandOwner().equals(res.getVillage()) && res.getVillageRank().atLeast(VillageRank.BUILDER);
+            allowed = land.getLandOwner().isOfficer(building);
 
         } else if (state.atLeast(BuildState.RESIDENTS)) {
-            allowed = land.getLandOwner().equals(VillageManager.getInstance().getVillageFromPlayer(building));
+            allowed = land.getLandOwner().isMember(ResidentManager.getInstance().getResident(building));
 
         } else if (state.atLeast(BuildState.ALLY)) {
-            Village playerVillage = VillageManager.getInstance().getVillageFromPlayer(building);
-            allowed = land.getLandOwner().equals(playerVillage) || land.getLandOwner().isAlly(playerVillage);
+            Resident resident = ResidentManager.getInstance().getResident(building);
+            allowed = land.getLandOwner().equals(resident.getVillage()) || land.getLandOwner().isAlly(resident);
 
         } else if (state.atLeast(BuildState.TRUSTED)) {
-            Village playerVillage = VillageManager.getInstance().getVillageFromPlayer(building);
-            allowed = land.getLandOwner().equals(playerVillage) || land.getLandOwner().isTrusted(playerVillage);
+            Resident resident = ResidentManager.getInstance().getResident(building);
+            allowed = land.getLandOwner().equals(resident.getVillage()) || land.getLandOwner().isTrusted(resident);
 
         }  else if (state.atLeast(BuildState.PUBLIC)) {
             allowed = true;
@@ -119,12 +118,12 @@ public interface LandFlagBase extends ConfigMessages {
             allowed = landOwner.equals(VillageManager.getInstance().getVillageFromPlayer(building));
 
         } else if (state.atLeast(BuildState.ALLY)) {
-            Village playerVillage = VillageManager.getInstance().getVillageFromPlayer(building);
-            allowed = landOwner.equals(playerVillage) || landOwner.isAlly(playerVillage);
+            Resident resident = ResidentManager.getInstance().getResident(building);
+            allowed = landOwner.equals(resident.getVillage()) || landOwner.isAlly(resident);
 
         } else if (state.atLeast(BuildState.TRUSTED)) {
-            Village playerVillage = VillageManager.getInstance().getVillageFromPlayer(building);
-            allowed = landOwner.equals(playerVillage) || landOwner.isTrusted(playerVillage);
+            Resident resident = ResidentManager.getInstance().getResident(building);
+            allowed = landOwner.equals(resident.getVillage()) || landOwner.isTrusted(resident);
 
         } else if (state.atLeast(BuildState.PUBLIC)) {
             allowed = true;
