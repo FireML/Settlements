@@ -62,7 +62,7 @@ help-order:
     - disband
     outpost:
     - list
-    - tp
+    - s outpost tp <name>
     - sethome
     - claim
     - unclaim

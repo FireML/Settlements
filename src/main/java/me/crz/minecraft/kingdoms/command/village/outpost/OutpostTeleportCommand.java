@@ -14,8 +14,7 @@ public class OutpostTeleportCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length < 1) {
-            resident.tell("/s outpost tp <name>");
-            return true;
+            return false;
         }
         NamedLocation location = resident.getVillage().getOutpostHomes().get(args[0].toLowerCase());
         if (location != null) {
