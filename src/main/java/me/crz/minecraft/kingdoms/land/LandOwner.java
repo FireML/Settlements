@@ -549,6 +549,20 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
                 landOwner.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), u.getDefault(u.getDefault(landOwner.getDefaultBuildState()))));
             }
         }
+        for (String s : ((Collection<String>) map.get("allies"))) {
+            String[] split = s.split(":", 2);
+            try {
+                if (split.length > 1) {
+                    IdObject id = IdObject.get(Integer.parseInt(split[1]));
+                    switch (split[0]) {
+                        case "village": landOwner.getAlliedVillageIds().add(id);
+                        case "empire": landOwner.getAlliedEmpireIds().add(id);
+                    }
+                }
+            } catch (IllegalArgumentException e) {
+                KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Ally entry " + s + " could not be parsed for " + landOwner.getStateKey() + " " + landOwner.getName() + "/" + landOwner.getId() + "! " + e.getMessage());
+            }
+        }
         for (String s : ((Collection<String>) map.get("banished"))) {
             String[] split = s.split(":", 2);
             try {
