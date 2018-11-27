@@ -396,7 +396,14 @@ gui:
     title: "&3&l/s build"
     set-state: "&7&lClick to allow building of &b&l{state}"
     selected-state: "&e&lBuilding is currently set to &b&l{state}"
+    description: "&7{description}"
     back: "&c&lBack To Settings"
+    build:
+      public: Allows everyone to build
+      trusted: Allows residents, allies and fellow empire members to build
+      ally: Allows residents and allies to build
+      residents: Allows only residents to build
+      officers: Allows everyone above elder to build
   mode:
     title: "&3&l/s mode"
     entry:
@@ -407,7 +414,13 @@ gui:
     access:
       title: "&3&l/e access"
     build:
-      title: "&3&l/e mode"
+      title: "&3&l/e build"
+      build:
+        public: Allows everyone to build
+        ally: Allows members and allies to build
+        officers: Allows the leader and senators to build
+        trusted: Allows only residents of member settlements to build
+        private: Allows only residents of the capital to build
     mode:
       title: "&3&l/e mode"
     perks:
@@ -462,6 +475,14 @@ gui:
           &7from parent {parent} again
     build:
       title: "&3&l/plot build"
+      build:
+        public: Allows everyone to build
+        trusted: Allows residents, allies and fellow empire members to build
+        ally: Allows residents and allies to build
+        residents: Allows only residents to build
+        officers: Allows everyone above elder to build
+        friends: Allows only the owner and his friends to build
+        private: Allows only the owner to build
     settings:
       title: "&3&lPlot Settings"
       entry: |-

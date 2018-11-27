@@ -34,13 +34,13 @@ public class BuildGui extends PlotGUI {
                     if (land != null) {
                         if (state == land.getBuildState()) {
                             return new CItem(Material.LIME_WOOL)
-                                    .setName(getMessage("selected-state").getReplacedText("state", state.getTag()))
-                                    .setLore(getMessage("selected-state").getReplacedTextList("state", state.getTag()).stream().skip(1).collect(Collectors.toList()))
+                                    .setName(getMessage("selected-state").getReplacedText("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
+                                    .addLore(getMessage("description").getReplacedTextList("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
                                     .build();
                         }
                         return new CItem(Material.LIGHT_GRAY_WOOL)
-                                .setName(getMessage("set-state").getReplacedText("state", state.getTag()))
-                                .setLore(getMessage("set-state").getReplacedTextList("state", state.getTag()).stream().skip(1).collect(Collectors.toList()))
+                                .setName(getMessage("set-state").getReplacedText("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
+                                .addLore(getMessage("description").getReplacedTextList("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
                                 .build();
                     }
                     return null;
