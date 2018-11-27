@@ -1214,13 +1214,6 @@ command:
         &e&lMembers: &r&7{members}
       not-in-empire: "&cYou are not currently in an empire world!"
       description: Show in which empire world you are
-    history:
-      head: "&7------- &cLog History [{page}/{maxpage}]&7 -------"
-      entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
-      footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
-      previous: "&b<< Prev "
-      next: "&b Next >>"
-      description: Show the log history
     home:
       no-home: "&c&lYour empire doesn't have a home !"
       success: "&a&lTeleported to home of {state} {name}"

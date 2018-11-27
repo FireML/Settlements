@@ -31,7 +31,6 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpireCreateCommand(this));
         registerCommand(new EmpireDescriptionCommand(this));
         registerCommand(new EmpireDisbandCommand(this));
-        registerCommand(new EmpireHistoryCommand(this, EmpireRank.LEADER, LogType.ALL));
         registerCommand(new EmpireHereCommand(this));
         registerCommand(new EmpireHomeCommand(this));
         registerCommand(new EmpireInviteCommand(this));
