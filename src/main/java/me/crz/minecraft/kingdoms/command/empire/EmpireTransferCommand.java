@@ -35,6 +35,13 @@ public class EmpireTransferCommand extends EmpireSubCommand {
                 res.tell(getError("already-capital"), "name", targetVillage.getName(), "state", targetVillage.getStateTag());
                 return;
             }
+            if (!targetVillage.isMaxLevel()) {
+                getError("max-level-kingdom-required").tell(res,
+                        "state", targetVillage.getState().getTag(),
+                        "level", String.valueOf(targetVillage.getLevel())
+                );
+                return;
+            }
             Resident oldLeader = empire.getCapital().getChief();
             oldLeader.setEmpireRank(EmpireRank.SENATOR);
             Resident newLeader = targetVillage.getChief();

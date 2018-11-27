@@ -12,7 +12,7 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 
 public class EmpireKickCommand extends EmpireSubCommand {
     public EmpireKickCommand(SubCommand parent) {
-        super(parent, "kick <name>", EmpireRank.SENATOR);
+        super(parent, "kick <settlement>", EmpireRank.SENATOR);
     }
 
     @Override

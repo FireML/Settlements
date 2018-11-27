@@ -1380,6 +1380,7 @@ command:
     transfer:
       success: "&e&lALERT &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
       already-capital: "&c&lYour village is already the capital."
+      max-level-kingdom-required: "&cThe settlement needs to be a Kingdom with level 10 to be the capital of an empire!"
       description: Transfers leadership of your empire
     unally:
       cant-unally-yourself: "&c&lYou can't un-ally yourself!"
