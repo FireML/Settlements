@@ -96,7 +96,6 @@ help-order:
     - home
     - e chat
     - memberlist
-    - history
     - e plot
     - bank
     - upkeep
@@ -123,7 +122,6 @@ help-order:
     - banish
     - ally
     - unally
-    - history
     - e plot staff
     - shop
     - title
@@ -135,7 +133,6 @@ help-order:
     - balance
     - deposit
     - withdraw
-    - history
     - e tax
     - e tax set
     - e joinfee set
