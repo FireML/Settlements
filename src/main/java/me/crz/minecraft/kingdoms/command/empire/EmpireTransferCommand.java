@@ -50,6 +50,7 @@ public class EmpireTransferCommand extends EmpireSubCommand {
             DatabaseManager.getInstance().saveEmpire(empire);
             DatabaseManager.getInstance().saveResident(oldLeader, newLeader);
             MessageUtils.tellResidents(empire.getOnlineResidents(), getMessage("success"),
+                    "rank", EmpireRank.LEADER.getTag(),
                     "setter", res.getName(),
                     "target", targetVillage.getName(),
                     "empire", empire.getName()
