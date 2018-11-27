@@ -50,6 +50,8 @@ public class Empire extends LandOwner implements Comparable<Empire> {
     private String symbol = "";
     private Set<IdObject> members = new LinkedHashSet<>();
     private Set<UUID> senators = new HashSet<>();
+    private boolean inRename = false;
+    private long lastRename = 0;
 
     protected Empire() {
         super();
@@ -372,6 +374,19 @@ public class Empire extends LandOwner implements Comparable<Empire> {
 
     public boolean isAbandoned() {
         return members.isEmpty();
+    }
+
+    public void setInRename(boolean inRename) {
+        lastRename = System.currentTimeMillis();
+        this.inRename = inRename;
+    }
+
+    public boolean isInRename() {
+        return inRename;
+    }
+
+    public long getLastRename() {
+        return lastRename;
     }
 
     private enum State implements NameTag {

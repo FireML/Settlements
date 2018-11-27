@@ -38,6 +38,7 @@ empires-world:
   environment: normal
   type: normal
   border-radius: 500
+  cooldown: 30
 claim-enemy-distance: 4
 close-claims-grace-days: 4
 close-claims-unclaims-outposts: false

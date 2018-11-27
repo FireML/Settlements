@@ -1259,6 +1259,9 @@ command:
       description: Changes settings for your empire world
     rename:
       success: "&7&lEmpire has been renamed to &6&l{name}"
+      rename-in-progress: "&c&lERROR &r&7Renaming of empire is already in progress!"
+      rename-on-cooldown: "&c&lERROR &r&7You have to wait at least {cooldown} seconds between each rename!"
+      cant-rename: "&c&lERROR &r&7Can't rename empire! Please contact an admin!"
       description: Renames the current empire to something else
     map:
       head: "&8---------------- &eEmpire Map &r&8----------------"

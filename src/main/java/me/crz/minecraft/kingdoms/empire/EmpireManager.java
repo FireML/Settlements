@@ -18,13 +18,18 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.SimpleLocation;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -124,10 +129,11 @@ public class EmpireManager {
         });
         try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
             createEmpireWorld(empire);
+            Message.get("empire-world-generated").tell(empire.getOnlineResidents());
         }
     }
 
-    private void createEmpireWorld(Empire empire) {
+    private World createEmpireWorld(Empire empire) {
         String worldName = empire.getWorldName();
         World world = Bukkit.getWorld(worldName);
         ConfigurationSection worldConfig = KingdomsPlugin.getInstance().getConfig().getConfigurationSection("empires-world");
@@ -174,8 +180,7 @@ public class EmpireManager {
         if (KingdomsPlugin.getInstance().getMultiverse() != null) {
             KingdomsPlugin.getInstance().getMultiverse().importWorld(world);
         }
-
-        Message.get("empire-world-generated").tell(empire.getOnlineResidents());
+        return world;
     }
 
     public Collection<EmpirePerk> getPerks() {
@@ -300,10 +305,62 @@ public class EmpireManager {
         return null;
     }
 
-    public void changeName(Empire empire, String name) {
-        empires.remove(empire.getName().replace(' ', '_').toLowerCase());
+    public boolean changeName(Empire empire, String name) {
+        String oldName = empire.getName();
+        World world = Bukkit.getWorld(empire.getWorldName());
         empire.setName(name);
-        empires.put(empire.getName().replace(' ', '_').toLowerCase(), empire);
+
+        empire.setInRename(true);
+        if (!renameWorld(empire, world)) {
+            empire.setName(oldName);
+            empire.setInRename(false);
+            return false;
+        }
+        empire.setInRename(false);
+
+        empires.remove(oldName.replace(' ', '_').toLowerCase());
+        empires.put(name.replace(' ', '_').toLowerCase(), empire);
+
         Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(empire));
+        return true;
+    }
+
+    private boolean renameWorld(Empire empire, World world) {
+        if (world == null) {
+            return false;
+        }
+
+        if (KingdomsPlugin.getInstance().getMultiverse() != null) {
+            return KingdomsPlugin.getInstance().getMultiverse().renameWorld(world, empire.getWorldName());
+        } else {
+            Map<Player, Location> positions = new LinkedHashMap<>();
+            for (Player player : world.getPlayers()) {
+                positions.put(player, player.getLocation());
+                Utils.teleportToSpawn(player);
+            }
+            File worldFolder = world.getWorldFolder();
+            File newFolder = new File(Bukkit.getWorldContainer(), empire.getWorldName());
+            if (newFolder.exists()) {
+                KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "World with name " + empire.getWorldName() + " already exists?");
+                return false;
+            }
+            Bukkit.unloadWorld(world, true);
+            try {
+                FileUtils.moveDirectory(worldFolder, newFolder);
+            } catch (IOException e) {
+                KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Error while copying world " + worldFolder.getName() + " to " + empire.getWorldName() + "!", e);
+                return false;
+            }
+
+            World newWorld = createEmpireWorld(empire);
+
+            for (Map.Entry<Player, Location> e : positions.entrySet()) {
+                if (e.getKey().isOnline()) {
+                    e.getValue().setWorld(newWorld);
+                    e.getKey().teleport(e.getValue());
+                }
+            }
+        }
+        return true;
     }
 }

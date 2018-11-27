@@ -179,6 +179,13 @@ public class Utils {
         return 500;
     }
 
+    public static int getEmpireWorldCooldown() {
+        if (ConfigManager.getInstance().getConfig().isInt("empires-world.cooldown")) {
+            return ConfigManager.getInstance().getConfig().getInt("empires-world.cooldown");
+        }
+        return 30;
+    }
+
     public static boolean shouldResetChannelOnLogin() {
         if (ConfigManager.getInstance().getConfig().isBoolean("reset-channel-on-login")) {
             return ConfigManager.getInstance().getConfig().getBoolean("reset-channel-on-login");
