@@ -75,25 +75,20 @@ public class MessageUtils extends Base {
     }
 
     public static void tellResidents(Collection<Resident> residents, Message message, String... replacements) {
+        BaseComponent[] components = message.getReplacedComponents(replacements);
         for (Resident res : residents) {
-            Player player = Bukkit.getPlayer(res.getUUID());
-            if (player != null && player.isOnline()) {
-                tell(player, message, replacements);
-            }
+            tell(res.getPlayer(), components);
         }
     }
 
     public static void tellListResidents(Collection<Resident> residents, List<String> message) {
         for (Resident res : residents) {
-            Player player = Bukkit.getPlayer(res.getUUID());
-            if (player != null && player.isOnline()) {
-                tellList(player, message);
-            }
+            tellList(res.getPlayer(), message);
         }
     }
 
     public static void tellList(CommandSender sender, List<String> messages) {
-        if (messages == null) {
+        if (sender == null || messages == null) {
             return;
         }
         for (String message : messages) {
