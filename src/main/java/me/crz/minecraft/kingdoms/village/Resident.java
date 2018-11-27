@@ -173,6 +173,14 @@ public class Resident implements ConfigurationSerializable, Targetable {
         return village;
     }
 
+    public boolean leaveVillage() {
+        if (hasVillage()) {
+            getVillage().removeMember(this);
+            return true;
+        }
+        return false;
+    }
+
     public void setVillageRank(VillageRank rank) {
         if (this.rank == rank) {
             return;

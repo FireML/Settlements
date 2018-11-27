@@ -137,8 +137,8 @@ public class Empire extends LandOwner implements Comparable<Empire> {
 
     @Override
     public void removeMember(Targetable target) {
-        super.removeMember(target);
         if (target instanceof Village && isMember((Village) target)) {
+            members.remove(((Village) target).getId());
             EmpireManager.getInstance().leaveEmpire((Village) target);
         }
     }
@@ -282,7 +282,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
     }
 
     public Collection<Village> getMembers() {
-        return getMemberIds().stream().map(i -> VillageManager.getInstance().getVillageFromId(i)).collect(Collectors.toList());
+        return getMemberIds().stream().map(i -> VillageManager.getInstance().getVillageFromId(i)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     public boolean isFull() {
@@ -294,7 +294,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
     }
 
     public Collection<Resident> getSenators() {
-        return getSenatorIds().stream().map(u -> ResidentManager.getInstance().getResident(u)).collect(Collectors.toList());
+        return getSenatorIds().stream().map(u -> ResidentManager.getInstance().getResident(u)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     @Override

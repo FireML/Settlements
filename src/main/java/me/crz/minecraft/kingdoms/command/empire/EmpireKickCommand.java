@@ -44,7 +44,7 @@ public class EmpireKickCommand extends EmpireSubCommand {
                     "state", village.getState().getTag()
             );
             InviteCache.getPendingEmpireInvites().remove(village.getId(), village.getEmpire().getId());
-            EmpireManager.getInstance().leaveEmpire(village);
+            village.leaveEmpire();
         });
         return true;
     }

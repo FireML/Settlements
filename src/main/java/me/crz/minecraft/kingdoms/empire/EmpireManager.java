@@ -11,6 +11,7 @@ import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -254,7 +255,10 @@ public class EmpireManager {
         });
     }
 
-    public void leaveEmpire(Village village) {
+    /**
+     * Should not be used directly! Use {@link Empire#removeMember(Targetable)}!
+     */
+    void leaveEmpire(Village village) {
         Empire empire = village.getEmpire();
         if (empire == null) {
             return;

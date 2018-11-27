@@ -95,7 +95,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                                 "name", getName()
                         );
                         addBanished(resident);
-                        VillageManager.getInstance().leaveVillage(resident);
+                        removeMember(resident);
                     }
                 }
                 long finalTotalTax = totalTax;
@@ -384,10 +384,18 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
 
     @Override
     public void removeMember(Targetable target) {
-        super.removeMember(target);
         if (target instanceof Resident && isMember((Resident) target)) {
+            residents.remove(((Resident) target).getUUID());
             VillageManager.getInstance().leaveVillage((Resident) target);
         }
+    }
+
+    public boolean leaveEmpire() {
+        if (hasEmpire()) {
+            getEmpire().removeMember(this);
+            return true;
+        }
+        return false;
     }
 
     public static Village deserialize(Map<String, Object> map) {

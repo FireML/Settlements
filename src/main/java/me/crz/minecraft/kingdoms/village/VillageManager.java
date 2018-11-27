@@ -11,6 +11,7 @@ import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.vault.Levels;
@@ -122,17 +123,23 @@ public class VillageManager {
     public void deleteVillage(Village village) {
         villages.remove(village.getName().replace(' ', '_').toLowerCase());
         villageIDs.remove(village.getId());
+        if (village.hasEmpire()) {
+            village.getEmpire().getMemberIds().remove(village.getId());
+        }
         MessageUtils.broadcast(Message.get("broadcast.village-deletion"),
                 "name", village.getName(),
                 "state", village.getState().getTag());
+        for (Resident resident : village.getResidents()) {
+            resident.setVillage(null);
+            resident.setVillageRank(VillageRank.RESIDENT);
+            resident.setEmpireRank(EmpireRank.MEMBER);
+        }
         Utils.runAsync(() -> {
             LandManager.getInstance().unclaimLand(village);
             DatabaseManager.getInstance().deleteVillage(village);
+            DatabaseManager.getInstance().saveResident(village.getResidents());
             for (LandOwner ally : village.getAllies()) {
                 ally.removeAlly(village);
-            }
-            for (Resident resident : village.getResidents()) {
-                resident.setVillage(null);
             }
         });
     }
@@ -144,7 +151,10 @@ public class VillageManager {
         DatabaseManager.getInstance().saveVillages(villages.values());
     }
 
-    public void leaveVillage(Resident resident) {
+    /**
+     * Use {@link Village#removeMember(Targetable)} instead!
+     */
+    void leaveVillage(Resident resident) {
         Collection<OwnedLand> lands = LandManager.getInstance().getOwnedPlot(resident.getUUID());
         Village village = resident.getVillage();
         for (OwnedLand land : lands) {

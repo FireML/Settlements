@@ -41,7 +41,7 @@ public class VillageKickCommand extends VillageSubCommand {
             MessageUtils.tellResidents(res.getVillage().getOnlineResidents(), getMessage("kicked-alert"), "player", res.getName());
             Utils.runSync(() -> {
                 InviteCache.getPendingVillageInvites().remove(res.getUUID(), res.getVillage().getId());
-                VillageManager.getInstance().leaveVillage(res);
+                res.leaveVillage();
             });
         });
         return true;

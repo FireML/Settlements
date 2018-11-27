@@ -25,7 +25,7 @@ public class EmpireLeaveCommand extends EmpireSubCommand {
                     "name", resident.getVillage().getName(),
                     "state", resident.getVillage().getState().getTag()
             );
-            EmpireManager.getInstance().leaveEmpire(resident.getVillage());
+            resident.getVillage().leaveEmpire();
         }
         return true;
     }

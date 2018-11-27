@@ -18,7 +18,7 @@ public class VillageLeaveCommand extends VillageSubCommand {
         } else {
             resident.tell(getMessage("success"));
             MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("alert"), "player", resident.getName());
-            VillageManager.getInstance().leaveVillage(resident);
+            resident.leaveVillage();
         }
         return true;
     }

@@ -467,11 +467,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         this.access = access;
     }
 
-    public void removeMember(Targetable target) {
-        if (target instanceof LandOwner) {
-            removeAlly((LandOwner) target);
-        }
-    }
+    public abstract void removeMember(Targetable target);
 
     public boolean isChief(Targetable target) {
         if (target instanceof Resident) {
