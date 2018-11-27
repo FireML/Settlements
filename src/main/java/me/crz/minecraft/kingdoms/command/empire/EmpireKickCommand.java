@@ -35,7 +35,7 @@ public class EmpireKickCommand extends EmpireSubCommand {
                  getError("not-in-current").tell(resident, "name", village.getName());
                 return;
             }
-            if (village.getEmpire().getCapital().equals(village)) {
+            if (village.isCapital()) {
                  getMessage("cant-kick-capital").tell(resident);
                 return;
             }

@@ -14,7 +14,7 @@ public class EmpireLeaveCommand extends EmpireSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        if (resident.getVillage().equals(resident.getVillage().getEmpire().getCapital())) {
+        if (resident.getVillage().isCapital()) {
             getMessage("cant-leave-own").tell(resident);
         } else {
             getMessage("success").tell(resident.getVillage().getOnlineResidents(),

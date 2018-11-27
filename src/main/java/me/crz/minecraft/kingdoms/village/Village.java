@@ -398,6 +398,10 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         return false;
     }
 
+    public boolean isCapital() {
+        return hasEmpire() && getEmpire().isCapital(this);
+    }
+
     public static Village deserialize(Map<String, Object> map) {
         Village village = LandOwner.deserialize(new Village(), map);
         if (village == null) {

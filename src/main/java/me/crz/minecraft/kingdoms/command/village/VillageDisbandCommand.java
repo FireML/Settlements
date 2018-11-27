@@ -19,7 +19,9 @@ public class VillageDisbandCommand extends VillageSubCommand {
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
-        if (confirm.getIfPresent(res.getUUID()) == null || args.length == 0 || !args[0].equalsIgnoreCase("confirm")) {
+        if (res.getVillage().isCapital()) {
+            getMessage("capital-cant-disband").tell(res, "state", res.getVillage().getStateTag(), "name", res.getVillage().getName());
+        } else if (confirm.getIfPresent(res.getUUID()) == null || args.length == 0 || !args[0].equalsIgnoreCase("confirm")) {
             confirm.put(res.getUUID(), true);
             getMessage("confirm").tell(res, "command", base + " " + alias + " confirm");
         } else {
