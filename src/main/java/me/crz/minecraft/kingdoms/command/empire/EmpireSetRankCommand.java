@@ -61,10 +61,10 @@ public class EmpireSetRankCommand extends EmpireSubCommand {
                 getError("invalid-rank").tell(player, "rank", args[1]);
             } else if (rank.equals(EmpireRank.LEADER)) {
                 getError("cant-set-leader").tell(player, "base", base);
-            } else if (tres.getEmpireRank().atLeast(res.getEmpireRank())) {
+            } else if (!res.getEmpireRank().above(tres.getEmpireRank())) {
                 getMessage("cant-set-higher").tell(player, "rank", res.getEmpireRank().getTag());
-            } else  if (res.getEmpireRank().ordinal() <= rank.ordinal()) {
-                getError("rank-required").tell(player, "rank", EmpireRank.values()[rank.ordinal() + 1].getTag());
+            } else  if (!res.getEmpireRank().above(rank)) {
+                getError("rank-required").tell(player, "rank", EmpireRank.values().length > rank.ordinal() + 1 ? EmpireRank.values()[rank.ordinal() + 1].getTag() : "-");
             } else {
                 tres.setEmpireRank(rank);
                 DatabaseManager.getInstance().saveResident(tres);
