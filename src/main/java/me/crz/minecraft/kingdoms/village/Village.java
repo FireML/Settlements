@@ -380,6 +380,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         Map<String, Object> map = super.serialize();
         map.put("chief", getChiefId());
         map.put("level", getLevel());
+        map.put("empireId", hasEmpire() ? getEmpire().getId().value() : null);
         map.put("allowAllyClaim", isAllowAllyClaim());
         map.put("settlementState", getState().name());
         map.put("residents", getResidentIds().stream().map(UUID::toString).collect(Collectors.toList()));
