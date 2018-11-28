@@ -505,6 +505,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                                 "online", r.getPlayer() != null ? online : offline
                         )).collect(Collectors.joining(separator))
                         : String.valueOf(getSenatorIds().size()),
+                "size", String.valueOf(getMembers().size()),
                 "members", getMembers().stream().map(v -> v.getState().getTag() + " " + v.getName()).collect(Collectors.joining(", "))
         };
     }
