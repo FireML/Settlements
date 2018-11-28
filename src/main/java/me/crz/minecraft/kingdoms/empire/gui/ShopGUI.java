@@ -81,6 +81,9 @@ public class ShopGUI extends KingdomsGUI {
                                             "amount", String.valueOf(cost.getValue())
                                     ));
                                 }
+                                if (!resident.getVillage().getEmpire().has(perk.getRepeatCost())) {
+                                    item.addLore(getMessage("cost.too-expensive").getTextList());
+                                }
                             }
 
                         } else {
@@ -114,6 +117,9 @@ public class ShopGUI extends KingdomsGUI {
                                             "amount", String.valueOf(cost.getValue())
                                     ));
                                 }
+                                if (!resident.getVillage().getEmpire().has(perk.getRepeatCost())) {
+                                    item.addLore(getMessage("cost.too-expensive").getTextList());
+                                }
                             }
                         }
                         if (!perk.getUnlockCost().isEmpty()) {
@@ -124,6 +130,9 @@ public class ShopGUI extends KingdomsGUI {
                                         "icon", Utils.getIcon(resident, cost.getKey()),
                                         "amount", String.valueOf(cost.getValue())
                                 ));
+                            }
+                            if (!resident.getVillage().getEmpire().has(perk.getUnlockCost())) {
+                                item.addLore(getMessage("cost.too-expensive").getTextList());
                             }
                         }
                     }

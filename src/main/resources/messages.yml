@@ -577,6 +577,7 @@ gui:
       unlock: "&aUnlock cost:"
       repeat: "&aRepeat cost:"
       entry: "{icon}&a{type}&7: {amount}"
+      too-expensive: "&cYou can't pay the cost!"
     cooldown: "&aCan be repeated in {cooldown}"
     back: "&c&lBack To Settings"
   use:

@@ -92,6 +92,9 @@ public class ShopGUI extends KingdomsGUI {
                                             "amount", String.valueOf(cost.getValue())
                                     ));
                                 }
+                                if (!resident.getVillage().has(perk.getRepeatCost())) {
+                                    item.addLore(getMessage("cost.too-expensive").getTextList());
+                                }
                             }
 
                         } else {
@@ -127,6 +130,9 @@ public class ShopGUI extends KingdomsGUI {
                                             "amount", String.valueOf(cost.getValue())
                                     ));
                                 }
+                                if (!resident.getVillage().has(perk.getRepeatCost())) {
+                                    item.addLore(getMessage("cost.too-expensive").getTextList());
+                                }
                             }
                         }
                         if (!perk.getUnlockCost().isEmpty()) {
@@ -137,6 +143,9 @@ public class ShopGUI extends KingdomsGUI {
                                         "icon", resident.hasResourcePack() ? ConfigManager.getInstance().getIconRpMapping().getIcon(cost.getKey(), true) : "",
                                         "amount", String.valueOf(cost.getValue())
                                 ));
+                            }
+                            if (!resident.getVillage().has(perk.getUnlockCost())) {
+                                item.addLore(getMessage("cost.too-expensive").getTextList());
                             }
                         }
                     }
