@@ -91,8 +91,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                             "settlement", member.getName(),
                             "name", getName()
                     );
-                    member.setEmpire(null);
-                    getMemberIds().remove(member.getId());
+                    removeMember(member);
                 }
             }
             payUpkeep(paidTaxes);
