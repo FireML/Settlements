@@ -29,7 +29,6 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -175,6 +174,8 @@ public class EmpireManager {
         world.getWorldBorder().setSize(empire.getWorldRadius() * 2);
         if (empire.getHome() == null) {
             empire.setHome(new SimpleLocation(worldName, 0, world.getHighestBlockYAt(0, 0), 0));
+        } else {
+            empire.getHome().setWorld(worldName);
         }
         world.setSpawnLocation(empire.getHome().toBukkitLocation());
         if (KingdomsPlugin.getInstance().getMultiverse() != null) {
