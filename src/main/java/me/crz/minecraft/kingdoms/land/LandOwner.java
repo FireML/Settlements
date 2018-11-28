@@ -247,7 +247,9 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         }
     }
 
-    protected abstract BuildState getDefaultBuildState();
+    public abstract BuildState getDefaultBuildState();
+
+    public abstract BuildState.AppliesTo getBuildStateType();
 
     public void runCommands(me.crz.minecraft.kingdoms.perk.Perk perk) {
         Utils.runAsync(() -> {

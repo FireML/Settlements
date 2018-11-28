@@ -1,15 +1,14 @@
 package me.crz.minecraft.kingdoms.landflags;
 
+import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.utils.Pair;
-import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -106,30 +105,40 @@ public interface LandFlagBase extends ConfigMessages {
             return new Pair<>(true, "");
         }
 
-        if (!state.appliesTo(BuildState.AppliesTo.SETTLEMENT)) {
-            state = BuildState.RESIDENTS;
+        if (!state.appliesTo(landOwner.getBuildStateType())) {
+            state = landOwner.getDefaultBuildState();
         }
         boolean allowed;
 
-        if (state.atLeast(BuildState.OFFICERS)) {
-            allowed = landOwner.isOfficer(building);
-
-        } else if (state.atLeast(BuildState.RESIDENTS)) {
-            allowed = landOwner.equals(VillageManager.getInstance().getVillageFromPlayer(building));
-
-        } else if (state.atLeast(BuildState.ALLY)) {
-            Resident resident = ResidentManager.getInstance().getResident(building);
-            allowed = landOwner.equals(resident.getVillage()) || landOwner.isAlly(resident);
-
-        } else if (state.atLeast(BuildState.TRUSTED)) {
-            Resident resident = ResidentManager.getInstance().getResident(building);
-            allowed = landOwner.equals(resident.getVillage()) || landOwner.isTrusted(resident);
-
-        } else if (state.atLeast(BuildState.PUBLIC)) {
-            allowed = true;
-
-        } else {
-            return null;
+        Resident resident;
+        switch (state) {
+            case OFFICERS:
+                allowed = landOwner.isOfficer(building);
+                break;
+            case PRIVATE:
+                resident = ResidentManager.getInstance().getResident(building);
+                if (landOwner instanceof Empire) {
+                    allowed = ((Empire) landOwner).getCapital().isMember(resident);
+                } else {
+                    allowed = landOwner.isMember(resident);
+                }
+                break;
+            case RESIDENTS:
+                allowed = landOwner.equals(VillageManager.getInstance().getVillageFromPlayer(building));
+                break;
+            case ALLY:
+                resident = ResidentManager.getInstance().getResident(building);
+                allowed = landOwner.equals(resident.getVillage()) || landOwner.isAlly(resident);
+                break;
+            case TRUSTED:
+                resident = ResidentManager.getInstance().getResident(building);
+                allowed = landOwner.equals(resident.getVillage()) || landOwner.isTrusted(resident);
+                break;
+            case PUBLIC:
+                allowed = true;
+                break;
+            default:
+                return null;
         }
 
         if (allowed) {

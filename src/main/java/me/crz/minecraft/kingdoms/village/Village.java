@@ -366,8 +366,13 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     }
 
     @Override
-    protected BuildState getDefaultBuildState() {
+    public BuildState getDefaultBuildState() {
         return BuildState.RESIDENTS;
+    }
+
+    @Override
+    public BuildState.AppliesTo getBuildStateType() {
+        return BuildState.AppliesTo.SETTLEMENT;
     }
 
     @Override

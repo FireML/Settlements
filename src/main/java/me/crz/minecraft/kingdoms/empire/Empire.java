@@ -275,8 +275,13 @@ public class Empire extends LandOwner implements Comparable<Empire> {
     }
 
     @Override
-    protected BuildState getDefaultBuildState() {
+    public BuildState getDefaultBuildState() {
         return BuildState.PRIVATE;
+    }
+
+    @Override
+    public BuildState.AppliesTo getBuildStateType() {
+        return BuildState.AppliesTo.EMPIRE;
     }
 
     public Set<IdObject> getMemberIds() {
