@@ -8,6 +8,7 @@ import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.lock.Lock;
+import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Pair;
@@ -690,8 +691,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
         Collection<String> senators = new ArrayList<>();
         for (int memberId : members) {
-            PreparedStatement sSta = conn.prepareStatement("SELECT uuid FROM " + tablePrefix + "residents WHERE senator = true AND empireId = ?;");
-            sSta.setInt(1, memberId);
+            PreparedStatement sSta = conn.prepareStatement("SELECT uuid FROM " + tablePrefix + "residents WHERE empirerank = ? AND settlementId = ?;");
+            sSta.setString(1, EmpireRank.SENATOR.name());
+            sSta.setInt(2, memberId);
             ResultSet sRs = sSta.executeQuery();
             while (sRs.next()) {
                 senators.add(sRs.getString("uuid"));
