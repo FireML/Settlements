@@ -32,8 +32,9 @@ resistance1:
         # allied-settlement - Effect in own and all allied settlements
         # enemy-settlement - Effect only while in enemy settlement
         # unclaimed - only in unclaimed chunks
+        # empire-world - in the world of your empire
         # everywhere - everywhere
-        in: own-settlement
+        in: empire-world
         # Who should get the effect
         # can be:
         # each rank above the specified like resident (default), recruiter, builder, elder, chief - applied for the specific rank

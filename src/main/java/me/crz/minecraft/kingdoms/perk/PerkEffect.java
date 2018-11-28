@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.perk;
 
 import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.utils.ConfigKey;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import org.apache.commons.lang.Validate;
 import org.bukkit.potion.PotionEffect;
@@ -24,18 +25,18 @@ public class PerkEffect {
         this.type = type;
     }
 
-    public PerkEffect(Map<String, Object> map) {
+    public PerkEffect(Map<String, Object> map, EffectLocation applyIn) {
         this(PotionEffectType.getByName((String) map.get("type")));
-        strength = (int) map.getOrDefault("strength", strength);
-        if (strength <= 0) {
-            strength = 1;
+        this.strength = (int) map.getOrDefault("strength", strength);
+        if (this.strength <= 0) {
+            this.strength = 1;
         }
-        length = (int) map.getOrDefault("length", length);
-        ambient = (boolean) map.getOrDefault("ambient", ambient);
-        particles = (boolean) map.getOrDefault("particles", particles);
-        icon = (boolean) map.getOrDefault("icon", icon);
-        applyIn = EffectLocation.valueOf((String) map.getOrDefault("apply.in", applyIn.name()));
-        applyTo = EffectInfluenced.valueOf((String) map.getOrDefault("apply.to", applyTo.name()));
+        this.length = (int) map.getOrDefault("length", length);
+        this.ambient = (boolean) map.getOrDefault("ambient", ambient);
+        this.particles = (boolean) map.getOrDefault("particles", particles);
+        this.icon = (boolean) map.getOrDefault("icon", icon);
+        this.applyIn = EffectLocation.valueOf(ConfigKey.toEnumString((String) map.getOrDefault("apply.in", applyIn.name())));
+        this.applyTo = EffectInfluenced.valueOf(ConfigKey.toEnumString((String) map.getOrDefault("apply.to", applyTo.name())));
     }
 
     public PotionEffectType getType() {

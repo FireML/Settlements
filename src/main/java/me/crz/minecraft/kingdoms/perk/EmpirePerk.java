@@ -21,6 +21,11 @@ public class EmpirePerk extends Perk {
     }
 
     @Override
+    protected PerkEffect.EffectLocation getDefaultEffectLocation() {
+        return PerkEffect.EffectLocation.EMPIRE_WORLD;
+    }
+
+    @Override
     public boolean hasEffects() {
         return super.hasEffects() || isFlying();
     }

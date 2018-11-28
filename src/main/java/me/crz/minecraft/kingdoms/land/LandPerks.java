@@ -268,7 +268,7 @@ public class LandPerks {
         if (effects == null || effects.isEmpty()) {
             return;
         }
-        for (PotionEffect effect : getApplicablePotionEffects(player, land, refresh)) {
+        for (PotionEffect effect : effects) {
             player.addPotionEffect(effect, true);
         }
     }

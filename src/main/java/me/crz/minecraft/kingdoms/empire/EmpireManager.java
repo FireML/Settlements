@@ -53,9 +53,6 @@ public class EmpireManager {
         for (Empire empire : DatabaseManager.getInstance().getAllEmpires()) {
             empires.put(empire.getName().replace(' ', '_').toLowerCase(), empire);
             empireIds.put(empire.getId(), empire);
-            try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
-                createEmpireWorld(empire);
-            }
         }
     }
 
@@ -69,6 +66,14 @@ public class EmpireManager {
                 perkTags.put(perk.getTag().toLowerCase(), perk);
             } catch (IllegalArgumentException e) {
                 KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Config for Perk " + perkName + " was invalid! " + e.getMessage());
+            }
+        }
+    }
+
+    public void loadEmpireWorlds() {
+        try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
+            for (Empire empire : getEmpires()) {
+                createEmpireWorld(empire);
             }
         }
     }

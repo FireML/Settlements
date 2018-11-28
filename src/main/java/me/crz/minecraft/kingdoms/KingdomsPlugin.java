@@ -131,6 +131,9 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             this.getServer().getPluginManager().registerEvents(new Advancements(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlagsBlockEvents(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlagsUseEvents(), this);
+
+            EmpireManager.getInstance().loadEmpireWorlds();
+
             this.upkeep();
             running = true;
             return;

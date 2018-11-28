@@ -32,7 +32,7 @@ public class Perk implements NameTag {
         this.cooldown = config.getLong("cooldown", cooldown);
         for (Map<?, ?> map : config.getMapList("effects")) {
             try {
-                effects.add(new PerkEffect((Map<String, Object>) map));
+                effects.add(new PerkEffect((Map<String, Object>) map, getDefaultEffectLocation()));
             } catch (ClassCastException e) {
                 throw new IllegalArgumentException("Effect is not valid! " + e.getMessage());
             }
@@ -50,6 +50,10 @@ public class Perk implements NameTag {
                 repeatCost.put(type, config.getLong("cost.repeating." + type));
             }
         }
+    }
+
+    protected PerkEffect.EffectLocation getDefaultEffectLocation() {
+        return PerkEffect.EffectLocation.OWN_SETTLEMENT;
     }
 
     @Override
