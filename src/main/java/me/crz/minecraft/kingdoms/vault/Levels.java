@@ -48,4 +48,8 @@ public class Levels {
         }
         return levelRequirements;
     }
+
+    public static void clearRequirements() {
+        LEVEL_REQUIREMENTS.clear();
+    }
 }

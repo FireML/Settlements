@@ -8,6 +8,7 @@ import me.crz.minecraft.kingdoms.lock.LockManager;
 import me.crz.minecraft.kingdoms.utils.IconRpMapping;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.UtilChat;
+import me.crz.minecraft.kingdoms.vault.Levels;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -64,6 +65,7 @@ public class ConfigManager {
             Message.clearCache();
             LockManager.getInstance().loadLockables();
             KingdomsPlugin.getInstance().getLandFlags().reload();
+            Levels.clearRequirements();
         }
     }
 
