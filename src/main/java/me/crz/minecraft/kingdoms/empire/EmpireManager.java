@@ -198,7 +198,11 @@ public class EmpireManager {
         empireIds.remove(empire.getId());
         MessageUtils.broadcast(Message.get("broadcast.empire-deletion"), "name", empire.getName());
         for (Village member : empire.getMembers()) {
-            member.setEmpire(null);
+            if (empire.equals(member.getEmpire())) {
+                member.setEmpire(null);
+            } else {
+                empire.getMemberIds().remove(member.getId());
+            }
         }
         World empireWorld = Bukkit.getWorld(empire.getWorldName());
         if (empireWorld != null) {
