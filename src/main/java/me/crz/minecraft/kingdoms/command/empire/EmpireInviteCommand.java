@@ -19,7 +19,7 @@ public class EmpireInviteCommand extends EmpireSubCommand {
         }
         Village invitedVillage = VillageManager.getInstance().getVillageFromName(args[0]);
         if (invitedVillage == null) {
-            getError("village-not-found").tell(res, "name", args[0]);
+            getError("village-doesnt-exist").tell(res, "name", args[0]);
             return true;
         }
         if (invitedVillage.hasEmpire()) {
