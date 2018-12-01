@@ -416,6 +416,12 @@ gui:
   empire:
     access:
       title: "&3&l/e access"
+      access:
+        open: Allows everyone to join without an invitation
+        public: Everyone can tp to home but requires invite to join
+        ally: Allows allies to teleport to home
+        trusted: Allows only residents of member settlements to teleport to home
+        private: Allows only capital residents to teleport to home
     build:
       title: "&3&l/e build"
       build:
