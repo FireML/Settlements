@@ -8,7 +8,10 @@ public interface ConfigMessages extends ConfigKey {
     }
 
     default Message getMessage(String key) {
-        String path = getConfigPath();
+        return getMessage(null, key);
+    }
+    default Message getMessage(String extraPath, String key) {
+        String path = getConfigPath() + (extraPath != null && !extraPath.isEmpty() ? "." + extraPath : "");
         Message message = Message.get(path + (key.isEmpty() ? "" : "." + key));
         if (message.exists()) {
             return message;

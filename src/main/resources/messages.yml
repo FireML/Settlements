@@ -345,6 +345,13 @@ protection:
       ally: "&e&lALERT &r&7You are not allied to &e{state} {name}&7."
       private: "&e&lALERT &r&7Only the &ePlot owner&7 can interact here."
       friends: "&e&lALERT &r&7Only the &ePlot owner's friends&7 can interact here."
+      empire:
+        trusted: "&e&lALERT &r&7You are not in the same empire as &e{state} {name}&7."
+        landowner:
+          private: "&e&lALERT &r&7Only the Capital of {state} {name} can interact here."
+      village:
+        landowner:
+          private: "&e&lALERT &r&7Only the Residents of {state} {name} can interact here."
     build:
       residents: "&e&lALERT &r&7This land is owned by &e{state} {name}&7."
       officers: "&e&lALERT &r&7This land is in &eofficer only &7mode."
@@ -352,6 +359,13 @@ protection:
       ally: "&e&lALERT &r&7You are not allied to &e{state} {name}&7."
       private: "&e&lALERT &r&7Only the &ePlot owner&7 can build here."
       friends: "&e&lALERT &r&7Only the &ePlot owner's friends&7 can build here."
+      empire:
+        trusted: "&e&lALERT &r&7You are not in the same empire as &e{state} {name}&7."
+        landowner:
+          private: "&e&lALERT &r&7Only the Capital of {state} {name} can build here."
+      village:
+        landowner:
+          private: "&e&lALERT &r&7Only the Residents of {state} {name} can build here."
 lock:
   only-in-claim: "&c&lYou can only lock things in a settlement claim!"
   locked: "&cThis {block} is locked by {title} {name}!"

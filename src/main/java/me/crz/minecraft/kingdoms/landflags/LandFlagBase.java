@@ -22,8 +22,11 @@ public interface LandFlagBase extends ConfigMessages {
         OwnedLand land = LandManager.getInstance().getLand(loc);
         if (land != null) {
             Pair<Boolean, String> r = getCanBuild(user, land, land.getUseState(use), "use");
-            if (r == null) {
-                r = getCanBuild(user, land.getLandOwner(), land.getLandOwner().getUseState(use), "use");
+            if (r == null || (!land.isPlot() && !r.getLeft())) {
+                Pair<Boolean, String> rOwner = getCanBuild(user, land.getLandOwner(), land.getLandOwner().getUseState(use), "use");
+                if (r == null || (rOwner != null && !rOwner.getLeft() && !land.isPlot())) {
+                    r = rOwner;
+                }
             }
             if (r != null) {
                 return r;
@@ -39,8 +42,11 @@ public interface LandFlagBase extends ConfigMessages {
         OwnedLand land = LandManager.getInstance().getLand(loc);
         if (land != null) {
             Pair<Boolean, String> r = getCanBuild(building, land, land.getBuildState(), "build");
-            if (r == null) {
-                r = getCanBuild(building, land.getLandOwner(), land.getLandOwner().getBuildState(), "build");
+            if (r == null || (!land.isPlot() && !r.getLeft())) {
+                Pair<Boolean, String> rOwner = getCanBuild(building, land.getLandOwner(), land.getLandOwner().getBuildState(), "build");
+                if (r == null || (rOwner != null && !rOwner.getLeft() && !land.isPlot())) {
+                    r = rOwner;
+                }
             }
             if (r != null) {
                 return r;
@@ -50,9 +56,6 @@ public interface LandFlagBase extends ConfigMessages {
     }
 
     default Pair<Boolean, String> getCanBuild(Player building, OwnedLand land, BuildState state, String type) {
-        if (!land.isPlot()) {
-            return null;
-        }
         if (land.isPlotOwner(building) || land.getLandOwner().isChief(building.getUniqueId())) {
             return new Pair<>(true, "");
         }
@@ -83,7 +86,7 @@ public interface LandFlagBase extends ConfigMessages {
             Resident resident = ResidentManager.getInstance().getResident(building);
             allowed = land.getLandOwner().equals(resident.getVillage()) || land.getLandOwner().isTrusted(resident);
 
-        }  else if (state.atLeast(BuildState.PUBLIC)) {
+        } else if (state.atLeast(BuildState.PUBLIC)) {
             allowed = true;
 
         } else {
@@ -93,8 +96,8 @@ public interface LandFlagBase extends ConfigMessages {
         if (allowed) {
             return new Pair<>(true, "");
         }
-        return new Pair<>(false, getMessage("state." + type + "." + state.getKey()).getReplacedText(
-                "owner", owner != null ? owner.getName() : land.getPlotOwner().toString(),
+        return new Pair<>(false, getMessage("state." + type + "." + land.getClass().getSimpleName().toLowerCase() + ".plot", state.getKey()).getReplacedText(
+                "owner", owner != null ? owner.getName() : land.getPlotOwner() != null ? land.getPlotOwner().toString() : "-",
                 "name", land.getLandOwner().getName(),
                 "state", land.getLandOwner().getStateTag()
         ));
@@ -144,7 +147,7 @@ public interface LandFlagBase extends ConfigMessages {
         if (allowed) {
             return new Pair<>(true, "");
         }
-        return new Pair<>(false, getMessage("state." + type + "." + state.getKey()).getReplacedText(
+        return new Pair<>(false, getMessage("state." + type + "." + landOwner.getClass().getSimpleName().toLowerCase() + ".landowner", state.getKey()).getReplacedText(
                 "name", landOwner.getName(),
                 "state", landOwner.getStateTag()
         ));
