@@ -1,12 +1,13 @@
 package me.crz.minecraft.kingdoms.scoreboard;
 
 import me.crz.minecraft.kingdoms.Base;
-import me.crz.minecraft.kingdoms.ScoreBoard;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.command.CommandManager;
 import me.crz.minecraft.kingdoms.scoreboard.commands.CommandScoreboard;
 import me.crz.minecraft.kingdoms.scoreboard.commands.CommandScoreboardAdmin;
 import me.crz.minecraft.kingdoms.scoreboard.listeners.ScoreboardListeners;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import java.util.HashMap;
@@ -20,14 +21,19 @@ public class ScoreboardManager implements ConfigMessages {
     private Map<UUID, CScoreBoard> scoreboards = new HashMap<>();
     private List<String> customLines;
 
-    private ScoreboardPolicy scoreboardPolicy = new ScoreBoard(this);
+    private ScoreBoard scoreboardPolicy = new ScoreBoard(this);
     private String title;
     private long lastUpdate = System.currentTimeMillis();
+    private long updateRate;
 
     public ScoreboardManager() {
         super();
         title = getText("sidebar.title");
         Base.registerListener(new ScoreboardListeners(this));
+        updateRate = KingdomsPlugin.getInstance().getConfig().getLong("scoreboard.update");
+        if (updateRate > 0) {
+            Bukkit.getScheduler().scheduleSyncRepeatingTask(KingdomsPlugin.getInstance(), this::update, 0L, updateRate * 20);
+        }
         Base.registerListener(new ScoreboardAnimation(this));
         CommandManager.getInstance().registerCommand(new CommandScoreboard());
         CommandManager.getInstance().registerCommand(new CommandScoreboardAdmin(this), false);
@@ -47,12 +53,8 @@ public class ScoreboardManager implements ConfigMessages {
         return scoreboards;
     }
 
-    public ScoreboardPolicy getScoreboardPolicy() {
+    public ScoreBoard getScoreboardPolicy() {
         return scoreboardPolicy;
-    }
-
-    public void setScoreboardPolicy(ScoreboardPolicy scoreboardPolicy) {
-        this.scoreboardPolicy = scoreboardPolicy;
     }
 
     public String getTitle() {
@@ -72,6 +74,10 @@ public class ScoreboardManager implements ConfigMessages {
 
     public List<String> getCustomLines() {
         return customLines;
+    }
+
+    public long getUpdateRate() {
+        return updateRate;
     }
 
     public void addCustomLines(List<String> customLines) {

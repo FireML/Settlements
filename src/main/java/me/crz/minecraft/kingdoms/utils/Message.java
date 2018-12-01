@@ -80,7 +80,15 @@ public class Message {
         return MessageUtils.replacePlaceholders(text, replacements);
     }
 
+    public String getReplacedText(Map<String, String> replacements) {
+        return MessageUtils.replacePlaceholders(text, replacements);
+    }
+
     public List<String> getReplacedTextList(String... replacements) {
+        return Arrays.asList(getReplacedText(replacements).split("\n"));
+    }
+
+    public List<String> getReplacedTextList(Map<String, String> replacements) {
         return Arrays.asList(getReplacedText(replacements).split("\n"));
     }
 

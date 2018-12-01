@@ -1,9 +1,7 @@
 package me.crz.minecraft.kingdoms.scoreboard.listeners;
 
-import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.scoreboard.CScoreBoard;
 import me.crz.minecraft.kingdoms.scoreboard.ScoreboardManager;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,7 +14,6 @@ public class ScoreboardListeners implements Listener {
     public ScoreboardListeners(ScoreboardManager manager) {
         super();
         this.manager = manager;
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(KingdomsPlugin.getInstance(), this::onUpdate, 0L, 200L);
     }
 
     @EventHandler
@@ -35,9 +32,5 @@ public class ScoreboardListeners implements Listener {
             manager.getScoreboards().get(e.getPlayer().getUniqueId()).unregister();
         }
         manager.getScoreboards().remove(e.getPlayer().getUniqueId());
-    }
-
-    public void onUpdate() {
-        manager.update();
     }
 }

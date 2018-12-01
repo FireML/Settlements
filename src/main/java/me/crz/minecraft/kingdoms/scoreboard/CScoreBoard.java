@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.scoreboard;
 
+import co.aikar.timings.Timing;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.ChatColor;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -27,7 +28,6 @@ import static me.crz.minecraft.kingdoms.utils.Utils.trim;
 public class CScoreBoard {
     private final ScoreboardManager manager;
 
-    private Map<String, UUID> staticNametags = new HashMap<>();
     private Player p;
     private Scoreboard scoreboard;
     private Objective sidebarObjective;
@@ -40,21 +40,22 @@ public class CScoreBoard {
         this.manager = manager;
         this.p = p;
         scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        for (UUID staticNametag : staticNametags.values()) {
-            setStaticNametag0(Bukkit.getPlayer(staticNametag));
-        }
         getPlayer().setScoreboard(scoreboard);
     }
 
     public void update() {
-        updateSidebar();
-        updateTeams();
-        updateUndername();
-        updateTablist();
+        try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Scoreboard Update Sidebar")) {
+            updateSidebar();
+        }
+        if (manager.getUpdateRate() > 0) {
+            try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Scoreboard Update Teams")) {
+                updateTeams();
+            }
+        }
     }
 
     public void updateSidebar() {
-        List<String> sidebarText = manager.getCustomLines() == null ? manager.getScoreboardPolicy().getSidebar(p) : manager.getCustomLines();
+        List<String> sidebarText = manager.getCustomLines() == null && manager.getUpdateRate() > 0 ? manager.getScoreboardPolicy().getSidebar(p) : manager.getCustomLines();
         if (sidebarText == null) {
             if (sidebarObjective != null) {
                 sidebarObjective.unregister();
@@ -67,9 +68,6 @@ public class CScoreBoard {
 
     public void updateTeams() {
         for (Team team : new ArrayList<>(scoreboard.getTeams())) {
-            if (staticNametags.containsKey(team.getName())) {
-                continue;
-            }
             Player pl = Bukkit.getPlayer(team.getName().split("-")[1]);
             if (pl == null) {
                 team.unregister();
@@ -104,52 +102,6 @@ public class CScoreBoard {
                     team2.setSuffix(trim(suffix2, 16));
                 }
                 team2.addEntry(pl2.getName());
-            }
-        }
-    }
-
-    public void updateUndername() {
-        if (manager.getScoreboardPolicy().getUndername(p) == null) {
-            if (undernameObjective != null) {
-                undernameObjective.unregister();
-                undernameObjective = null;
-            }
-            return;
-        }
-        if (undernameObjective == null) {
-            (undernameObjective = scoreboard.registerNewObjective("undername", "dummy", "undername")).setDisplaySlot(DisplaySlot.BELOW_NAME);
-        }
-        if (!undernameObjective.getDisplayName().equals(manager.getScoreboardPolicy().getUndername(p))) {
-            undernameObjective.setDisplayName(manager.getScoreboardPolicy().getUndername(p));
-        }
-        for (Player pl : Bukkit.getOnlinePlayers()) {
-            String name = pl.getName();
-            int score = manager.getScoreboardPolicy().getUndernameScore(p, pl);
-            if (undernameObjective.getScore(name).getScore() != score) {
-                undernameObjective.getScore(name).setScore(score);
-            }
-        }
-    }
-
-    public void updateTablist() {
-        if (manager.getScoreboardPolicy().getTablist(p) == null) {
-            if (tablistObjective != null) {
-                tablistObjective.unregister();
-                tablistObjective = null;
-            }
-            return;
-        }
-        if (tablistObjective == null) {
-            (tablistObjective = scoreboard.registerNewObjective("tablist", "dummy", "tablist")).setDisplaySlot(DisplaySlot.PLAYER_LIST);
-        }
-        if (!tablistObjective.getDisplayName().equals(manager.getScoreboardPolicy().getTablist(p))) {
-            tablistObjective.setDisplayName(manager.getScoreboardPolicy().getTablist(p));
-        }
-        for (Player pl : Bukkit.getOnlinePlayers()) {
-            String name = pl.getName();
-            int score = manager.getScoreboardPolicy().getTablistScore(p, pl);
-            if (tablistObjective.getScore(name).getScore() != score) {
-                tablistObjective.getScore(name).setScore(score);
             }
         }
     }
@@ -204,15 +156,6 @@ public class CScoreBoard {
         }
     }
 
-    public void setStaticNametag(Player player) {
-        if (!staticNametags.containsKey(getTeamName(player))) {
-            staticNametags.put(getTeamName(player), player.getUniqueId());
-        }
-        for (CScoreBoard scoreboard : manager.getScoreboards().values()) {
-            scoreboard.setStaticNametag0(player);
-        }
-    }
-
     private void setStaticNametag0(Player p) {
         if (p == null) {
             return;
@@ -231,11 +174,6 @@ public class CScoreBoard {
             team.setSuffix(suffix);
         }
         team.addEntry(p.getName());
-        if (undernameObjective == null) {
-            (undernameObjective = scoreboard.registerNewObjective("undername", "dummy", "undername")).setDisplaySlot(DisplaySlot.BELOW_NAME);
-            undernameObjective.setDisplayName(manager.getScoreboardPolicy().getUndername(p));
-        }
-        undernameObjective.getScore(p.getName()).setScore(manager.getScoreboardPolicy().getUndernameScore(null, p));
     }
 
     public static String getTeamName(Player subject) {
@@ -246,10 +184,6 @@ public class CScoreBoard {
         String displayName = String.valueOf(sort) + "-" + subject.getName();
         displayName = Utils.trim(displayName, 16);
         return displayName;
-    }
-
-    public Map<String, UUID> getStaticNametags() {
-        return staticNametags;
     }
 
     public Player getPlayer() {

@@ -8,6 +8,9 @@ storage:
   password: password
   url-parameters: ""
 resident-cache-duration: 120 # in seconds
+scoreboard:
+  animation-speed: 2 # in ticks (disables if set to 0 or below)
+  update: 10 # in seconds (disables scoreboard completely if set to 0 or below)
 disabled-claiming-worlds: []
 reset-channel-on-login: true
 empire-creation-cost: 0

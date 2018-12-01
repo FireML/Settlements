@@ -131,6 +131,17 @@ public class MessageUtils extends Base {
                 .replaceIn(message);
     }
 
+    public static String replacePlaceholders(String message, Map<String, String> replacements) {
+        if (message == null) {
+            return null;
+        }
+        return new Replacer()
+                .placeholderPrefix('{')
+                .placeholderSuffix('}')
+                .replace(replacements)
+                .replaceIn(message);
+    }
+
     public static String replaceColorCodes(String message) {
         return message != null ? ChatColor.translateAlternateColorCodes('&', message) : null;
     }

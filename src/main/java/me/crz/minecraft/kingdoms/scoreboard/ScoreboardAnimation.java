@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.scoreboard;
 
+import co.aikar.timings.Timing;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.ChatColor;
@@ -27,10 +28,14 @@ public class ScoreboardAnimation implements Listener {
         SECONDARY = ChatColor.getLastColors(SECONDARYT);
         stage = false;
         counter = -1;
-        KingdomsPlugin.getInstance().getServer().getScheduler().scheduleSyncRepeatingTask(KingdomsPlugin.getInstance(), this::onUpdate, 0L, 2L);
+        long speed = KingdomsPlugin.getInstance().getConfig().getLong("scoreboard.animation-speed");
+        if (speed > 0) {
+            KingdomsPlugin.getInstance().getServer().getScheduler().scheduleSyncRepeatingTask(KingdomsPlugin.getInstance(), this::onUpdate, speed, speed);
+        }
     }
 
     public void onUpdate() {
+        Timing timing = KingdomsPlugin.getInstance().getAndStartTiming("Scoreboard Title Animation");
         ++counter;
         String s;
         if (counter < 0) {
@@ -53,5 +58,6 @@ public class ScoreboardAnimation implements Listener {
             s = String.valueOf(SECONDARY) + title.substring(0, counter) + PRIMARY + title.substring(counter, title.length());
         }
         manager.setTitle(s);
+        timing.stopTiming();
     }
 }
