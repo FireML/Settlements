@@ -26,6 +26,7 @@ import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.utils.ThreadManager;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -146,10 +147,10 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         Runnable runnable = () -> {
             ConfigManager.getInstance().updateLastUpkeep();
             LandManager.getInstance().checkUnclaim();
-            for (Village village : VillageManager.getInstance().getVillages()) {
+            for (Village village : new ArrayList<>(VillageManager.getInstance().getVillages())) {
                 village.doUpkeep();
             }
-            for (Empire empire : EmpireManager.getInstance().getEmpires()) {
+            for (Empire empire : new ArrayList<>(EmpireManager.getInstance().getEmpires())) {
                 empire.doUpkeep();
             }
         };
