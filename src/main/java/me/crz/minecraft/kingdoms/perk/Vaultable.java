@@ -75,8 +75,9 @@ public interface Vaultable {
     default void setAmount(String key, long amount) {
         if ("cash".equalsIgnoreCase(key)) {
             setBank(amount);
+        } else {
+            getVault().put(key, amount);
         }
-        getVault().put(key, amount);
     }
 
     default void addToBank(long amount) {
