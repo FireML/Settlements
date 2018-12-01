@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 
 public class VillageBanishedCommand extends VillageSubCommand implements BanishCommand {
     public VillageBanishedCommand(SubCommand parent) {
-        super(parent, "banished", VillageRank.CHIEF, "banishlist", "listbanished");
+        super(parent, "banished", VillageRank.ELDER, "banishlist", "listbanished");
     }
 
     @Override

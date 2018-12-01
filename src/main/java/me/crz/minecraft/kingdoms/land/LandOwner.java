@@ -68,6 +68,8 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
 
     public abstract List<Resident> getResidents();
 
+    public abstract boolean canAdminLocks(Resident resident);
+
     public abstract boolean canAdminPlots(Resident resident);
 
     public abstract boolean isTrusted(LandOwner landOwner);

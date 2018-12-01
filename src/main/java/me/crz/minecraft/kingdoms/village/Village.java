@@ -241,6 +241,11 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     }
 
     @Override
+    public boolean canAdminLocks(Resident resident) {
+        return isMember(resident) && resident.getVillageRank().atLeast(VillageRank.CHIEF);
+    }
+
+    @Override
     public boolean canAdminPlots(Resident resident) {
         return isMember(resident) && resident.getVillageRank().atLeast(VillageRank.ELDER);
     }

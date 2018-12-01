@@ -353,6 +353,11 @@ public class Empire extends LandOwner implements Comparable<Empire> {
     }
 
     @Override
+    public boolean canAdminLocks(Resident resident) {
+        return isMember(resident) && resident.getEmpireRank().atLeast(EmpireRank.LEADER);
+    }
+
+    @Override
     public boolean canAdminPlots(Resident resident) {
         return isMember(resident) && resident.getEmpireRank().atLeast(EmpireRank.LEADER);
     }

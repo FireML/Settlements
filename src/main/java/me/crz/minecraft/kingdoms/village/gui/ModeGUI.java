@@ -56,7 +56,7 @@ public class ModeGUI extends KingdomsGUI {
 
                 public boolean click(Player p, ClickType clickType) {
                     Resident res = ResidentManager.getInstance().getResident(p);
-                    if (res.hasVillage() && res.getVillageRank().atLeast(VillageRank.CHIEF)) {
+                    if (res.hasVillage() && res.getVillageRank().atLeast(VillageRank.ELDER)) {
                         boolean state = !m.get(res.getVillage());
                         if (m.set(state, res.getVillage())) {
                             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
