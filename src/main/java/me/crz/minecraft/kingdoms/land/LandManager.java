@@ -60,7 +60,9 @@ public class LandManager {
 
     private void cacheLand(OwnedLand land) {
         landTable.put(land.getWorldName(), land.getSimpleKey(), land);
-        villageLands.put(land.getLandOwner().getId(), land);
+        if (land.getLandOwner() instanceof Village) {
+            villageLands.put(land.getLandOwner().getId(), land);
+        }
         if (land.isPlot()) {
             playerPlots.put(land.getPlotOwner(), land);
         }
@@ -330,6 +332,7 @@ public class LandManager {
     public void syncAndSave(OwnedLand land) {
         List<OwnedLand> lands = new ArrayList<>();
         lands.add(land);
+        cacheLand(land);
         for (OwnedLand c : land.getLinked()) {
             if (c.syncLinked(land)) {
                 lands.add(c);
