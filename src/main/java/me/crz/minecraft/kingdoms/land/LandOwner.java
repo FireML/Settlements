@@ -578,7 +578,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
             }
         }
         ((Map<String, Object>) map.get("vault")).entrySet().stream()
-                .filter(e -> e.getValue() instanceof Integer)
+                .filter(e -> e.getValue() instanceof Number)
                 .forEach(e -> landOwner.getVault().put(e.getKey(), (Long) e.getValue()));
         ((Map<String, Object>) map.get("perks")).entrySet().stream()
                 .filter(e -> e.getValue() instanceof Map)
