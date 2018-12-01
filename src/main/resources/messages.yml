@@ -17,6 +17,9 @@ error:
   empire-exists: "&7&lAn empire with the name &6&l{name}&7&l already exists!"
   village-doesnt-exist: "&c&lNo settlement with the name &6&l{name}&c&l found!"
   empire-doesnt-exist: "&c&lNo empire with the name &6&l{name}&c&l found!"
+  ambiguous-target: |-
+    &6&l{name}&c&l can both refer to a Settlement or Empire!
+    Use the prefixes &6&le:&c&l or &6&ls:&c&l in front of the name to specify whether you mean the Settlement or Empire!
   invalid-characters: "&c{input} contains invalid characters!"
   too-long: "&c{input} is too long, only {amount} characters are allowed!"
   player-not-found: "&c&lNo &r&6&lplayer&r&c&l with the name &r&6&l{name}&r&c&l found!"

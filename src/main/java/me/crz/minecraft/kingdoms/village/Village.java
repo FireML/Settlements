@@ -441,9 +441,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
             return v.getState().compareTo(getState());
         if (v.getLevel() != getLevel())
             return Integer.compare(v.getLevel(), getLevel());
-        if (v.getResidentIds().size() != getResidentIds().size())
-            return Integer.compare(v.getResidentIds().size(), getResidentIds().size());
-        return Long.compare(v.getBank(), getBank());
+        return 0;
     }
 
     public String[] getReplacements(ConfigMessages configMessages) {
