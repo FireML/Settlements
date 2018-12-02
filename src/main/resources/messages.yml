@@ -848,6 +848,8 @@ command:
       success: "&a&lSUCCESS &r&e{player} &7has claimed land for your settlement at {x},{z}!"
       radius-too-large: "&c&lERROR &r&7Can't use an radius of {radius} for claiming as the maximum is {max}!"
       description: Claim a chunk of land
+      "<radius>":
+        description: "Claims all the chunks in the stated radius (max is 5)"
     create:
       success: "&a&lSUCCESS &r&7created a new settlement."
       broadcast: "&e{player} has made a settlement called {name}!"
@@ -1111,6 +1113,8 @@ command:
       home: "&cThis land is your home, you have to move it with &7/{base} sethome&c before unclaiming this land."
       success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at &f{x}-{z}!"
       description: Unclaim land which is claimed by your village
+      "<radius>":
+        description: "Unclaims all the chunks in the stated radius (max is 5)"
     perks:
       toggle:
         active: "&6&l{perk} &7&lhas been &a&lactivated"

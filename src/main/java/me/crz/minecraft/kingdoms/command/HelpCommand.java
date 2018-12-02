@@ -79,16 +79,9 @@ public class HelpCommand extends SubCommand {
             Map<String, SubCommand> commands = new LinkedHashMap<>();
 
             for (String commandPath : ConfigManager.getInstance().getCommandsConfig().getStringList(path)) {
-                SubCommand subCommand = null;
-                for (String part : stripParameters(commandPath).split(" ")) {
-                    if (subCommand == null) {
-                        subCommand = getParent().getSubCommands().get(part.toLowerCase());
-                        if (subCommand == null) {
-                            subCommand = CommandManager.getInstance().getCommand(part);
-                        }
-                    } else {
-                        subCommand = subCommand.matchSubCommand(part);
-                    }
+                SubCommand subCommand = getSubCommand(commandPath);
+                if (subCommand == null) {
+                    subCommand = getSubCommand(stripParameters(commandPath));
                 }
                 if (subCommand == null || subCommand.hasAccess(sender)) {
                     commands.put(commandPath, subCommand);
@@ -206,6 +199,21 @@ public class HelpCommand extends SubCommand {
         base = helpIndex > -1 ? base.substring(0, helpIndex) : base;
         int spaceIndex = base.lastIndexOf(' ');
         return getParent().sendUsageMessage(sender, spaceIndex > -1 ? base.substring(0, spaceIndex) : "", spaceIndex > -1 ? base.substring(spaceIndex) : base);
+    }
+
+    private SubCommand getSubCommand(String commandPath) {
+        SubCommand subCommand = null;
+        for (String part : commandPath.split(" ")) {
+            if (subCommand == null) {
+                subCommand = getParent().getSubCommands().get(part.toLowerCase());
+                if (subCommand == null) {
+                    subCommand = CommandManager.getInstance().getCommand(part);
+                }
+            } else {
+                subCommand = subCommand.matchSubCommand(part);
+            }
+        }
+        return subCommand;
     }
 
     private String stripParameters(String string) {

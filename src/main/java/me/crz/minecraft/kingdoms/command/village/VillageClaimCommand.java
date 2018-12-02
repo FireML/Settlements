@@ -21,6 +21,12 @@ import java.util.Set;
 public class VillageClaimCommand extends VillageSubCommand {
     public VillageClaimCommand(SubCommand parent) {
         super(parent, "claim [<radius>]", VillageRank.ELDER);
+        registerCommand(new VillageSubCommand(this, "<radius>", "<#>") {
+            @Override
+            public boolean run(Resident resident, String base, String alias, String... args) {
+                return false;
+            }
+        });
     }
 
     @Override

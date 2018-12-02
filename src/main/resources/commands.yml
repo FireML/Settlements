@@ -32,7 +32,9 @@ help-order:
     - help all
     elder:
     - claim
+    - s claim <#>
     - unclaim
+    - s unclaim <#>
     - s plot staff
     - outpost
     - ally
@@ -43,7 +45,9 @@ help-order:
     chief:
     - settings
     - claim
+    - s claim <#>
     - unclaim
+    - s unclaim <#>
     - sethome
     - s setrank
     - ally
