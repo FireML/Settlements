@@ -66,11 +66,19 @@ public interface LandFlagBase extends ConfigMessages {
         Resident owner = null;
         boolean allowed;
         if (state.atLeast(BuildState.PRIVATE)) {
-            allowed = land.isPlotOwner(building);
+            if (land.isPlot()) {
+                allowed = land.isPlotOwner(building);
+            } else {
+                return null;
+            }
 
         } else if (state.atLeast(BuildState.FRIENDS)) {
-            owner = ResidentManager.getInstance().getResident(land.getPlotOwner());
-            allowed = owner.getFriends().contains(building.getUniqueId());
+            if (land.isPlot()) {
+                owner = ResidentManager.getInstance().getResident(land.getPlotOwner());
+                allowed = owner.getFriends().contains(building.getUniqueId());
+            } else {
+                return null;
+            }
 
         } else if (state.atLeast(BuildState.OFFICERS)) {
             allowed = land.getLandOwner().isOfficer(building);

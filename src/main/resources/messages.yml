@@ -498,6 +498,8 @@ gui:
           &7from parent {parent} again
     build:
       title: "&3&l/plot build"
+      plot-state: "&7&lPlot build is set to &b&l{state}&7&l but overridden!"
+      inherited-state: "&e&lBuilding state &b&l{state}&e&l is inherited!"
       build:
         public: Allows everyone to build
         trusted: Allows residents, allies and fellow empire members to build

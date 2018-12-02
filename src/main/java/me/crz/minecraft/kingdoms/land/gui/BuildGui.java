@@ -33,8 +33,20 @@ public class BuildGui extends PlotGUI {
                     OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
                     if (land != null) {
                         if (state == land.getBuildState()) {
-                            return new CItem(Material.LIME_WOOL)
-                                    .setName(getMessage("selected-state").getReplacedText("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
+                            if (land.isPlot() || state.appliesTo(BuildState.AppliesTo.SETTLEMENT)) {
+                                return new CItem(Material.LIME_WOOL)
+                                        .setName(getMessage("selected-state").getReplacedText("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
+                                        .addLore(getMessage("description").getReplacedTextList("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
+                                        .build();
+                            } else {
+                                return new CItem(Material.WHITE_WOOL)
+                                        .setName(getMessage("plot-state").getReplacedText("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
+                                        .addLore(getMessage("description").getReplacedTextList("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
+                                        .build();
+                            }
+                        } else if (state == land.getLandOwner().getBuildState() && !land.isPlot() && !land.getBuildState().appliesTo(BuildState.AppliesTo.SETTLEMENT)) {
+                            return new CItem(Material.LIGHT_BLUE_WOOL)
+                                    .setName(getMessage("inherited-state").getReplacedText("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
                                     .addLore(getMessage("description").getReplacedTextList("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
                                     .build();
                         }
