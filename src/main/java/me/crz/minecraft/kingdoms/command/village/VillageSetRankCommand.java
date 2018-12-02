@@ -62,7 +62,7 @@ public class VillageSetRankCommand extends VillageSubCommand {
                 getError("cant-set-chief").tell(player, "base", base, "state", village.getState().getTag());
             } else if (!res.getVillageRank().above(tres.getVillageRank())) {
                 getMessage("cant-set-higher").tell(player, "rank", res.getVillageRank().getTag(village));
-            } else  if (!res.getEmpireRank().above(rank)) {
+            } else  if (!res.getVillageRank().above(rank)) {
                 getError("rank-required").tell(player, "rank", VillageRank.values().length > rank.ordinal() + 1 ? VillageRank.values()[rank.ordinal() + 1].getTag() : "-");
             } else {
                 Utils.runSync(() -> {
