@@ -108,7 +108,16 @@ public class HelpCommand extends SubCommand {
                         "aliases", getParent().getAliases().isEmpty() ? "" : getParent().getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getParent().getAliases())),
                         "path", WordUtils.capitalizeFully(base)
                 );
-                commands.entrySet().stream().skip((page - 1) * entriesPerPage).limit(entriesPerPage).forEachOrdered(e -> {
+                int overflow = Math.min(entriesPerPage / 3, maxPage);
+                if (commands.size() - (maxPage * entriesPerPage) <= overflow) {
+                    maxPage--;
+                    entriesPerPage = (int) Math.ceil(commands.size() / (double) maxPage);
+                }
+                int limit = entriesPerPage;
+                if (page == maxPage) {
+                    limit *= 2;
+                }
+                commands.entrySet().stream().skip((page - 1) * entriesPerPage).limit(limit).forEachOrdered(e -> {
                     SubCommand s = e.getValue();
                     String usage;
                     String displayPath;
