@@ -102,7 +102,7 @@ public class HelpCommand extends SubCommand {
                         "path", WordUtils.capitalizeFully(base)
                 );
                 int overflow = Math.min(entriesPerPage / 3, maxPage);
-                if (commands.size() - (maxPage * entriesPerPage) <= overflow) {
+                if (commands.size() - ((maxPage - 1) * entriesPerPage) <= overflow) {
                     maxPage--;
                     entriesPerPage = (int) Math.ceil(commands.size() / (double) maxPage);
                 }
