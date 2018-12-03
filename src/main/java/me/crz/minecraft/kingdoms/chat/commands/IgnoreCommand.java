@@ -39,7 +39,8 @@ public class IgnoreCommand extends PlayerSubCommand {
             }
             Resident target = ResidentManager.getInstance().getResident(args[0]);
             if (target != null) {
-                if (res.removeIgnore(target.getUUID())) {
+                if (res.getIgnore().contains(target.getUUID())) {
+                    res.removeIgnore(target.getUUID());
                     MessageUtils.tell(p, getMessage("unignored"), "name", target.getName());
                 } else {
                     res.addIgnore(target.getUUID());
@@ -50,6 +51,6 @@ public class IgnoreCommand extends PlayerSubCommand {
             }
             MessageUtils.tell(p, getError("player-not-found"), "name", args[0]);
         });
-        return false;
+        return true;
     }
 }
