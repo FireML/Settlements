@@ -155,7 +155,8 @@ public class ChatManager extends Base implements ConfigMessages {
                 Bukkit.getOnlinePlayers().stream()
                         .filter(channel::canChat)
                         .map(p -> ResidentManager.getInstance().getResident(p))
-                        .filter(r -> r.isListening(channel))
+                        .filter(r -> r.isListening(channel)
+                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
                         .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
                 break;
             case ALLY:
@@ -169,7 +170,8 @@ public class ChatManager extends Base implements ConfigMessages {
                             .filter(a -> !village.isAlly(a))
                             .flatMap(a -> a.getOnlineResidents().stream())
                             .distinct()
-                            .filter(r -> r.isListening(channel))
+                            .filter(r -> r.isListening(channel)
+                                    && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
                             .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
                 }
             case EMPIRE:
@@ -177,12 +179,14 @@ public class ChatManager extends Base implements ConfigMessages {
                     village.getEmpire().getMembers().stream()
                             .filter(a -> !village.isAlly(a) && !village.equals(a))
                             .flatMap(a -> a.getOnlineResidents().stream())
-                            .filter(r -> r.isListening(channel))
+                            .filter(r -> r.isListening(channel)
+                                    && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
                             .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
                 }
             case SETTLEMENT:
                 village.getOnlineResidents().stream()
-                        .filter(r -> r.isListening(channel))
+                        .filter(r -> r.isListening(channel)
+                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
                         .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
                 break;
         }
