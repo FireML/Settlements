@@ -41,6 +41,7 @@ help-order:
     - unally
     - invite
     - kick
+    - banished
     - settings
     chief:
     - settings
@@ -54,6 +55,7 @@ help-order:
     - unally
     - invite
     - kick
+    - banished
     - banish
     - unbanish
     - history
