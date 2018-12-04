@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.util.NumberConversions;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -26,6 +27,10 @@ public class SimpleBlockLocation implements ConfigurationSerializable {
 
     public SimpleBlockLocation(Location location) {
         this(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+    }
+
+    public SimpleBlockLocation(SimpleLocation location) {
+        this(location.getWorld(),  NumberConversions.floor(location.getX()),  NumberConversions.floor(location.getY()), NumberConversions.floor(location.getZ()));
     }
 
     public SimpleBlockLocation(SimpleBlockLocation location) {

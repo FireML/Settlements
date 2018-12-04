@@ -10,7 +10,9 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.world.SimpleBlockLocation;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
+import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -136,6 +138,18 @@ public class VillageClaimCommand extends VillageSubCommand {
                     "world", newLand.getWorldName(),
                     "x", String.valueOf(newLand.getX()),
                     "z", String.valueOf(newLand.getZ()));
+            if (newLand.containsHome()) {
+                SimpleBlockLocation home = new SimpleBlockLocation(newLand.getLandOwner().getHome());
+                getMessage("success").tell(village.getOnlineResidents(),
+                        "rank", res.getVillageRank().getTag(village),
+                        "title", res.getTitle(),
+                        "name", player.getName(),
+                        "state", res.getVillage().getState().getTag(),
+                        "world", home.getWorld(),
+                        "x", String.valueOf(home.getX()),
+                        "y", String.valueOf(home.getY()),
+                        "z", String.valueOf(home.getZ()));
+            }
             toSave.add(newLand);
             amountClaimed++;
         }
