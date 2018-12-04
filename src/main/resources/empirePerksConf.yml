@@ -141,7 +141,8 @@ extra-radius:
       cash: 1000
 flying:
   icon: feather
-  flying: true
+  world:
+    flying: true
   cost:
     unlock:
       cash: 1000
