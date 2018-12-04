@@ -851,7 +851,9 @@ command:
       "<radius>":
         description: "Claims all the chunks in the stated radius (max is 5)"
     create:
-      success: "&a&lSUCCESS &r&7created a new settlement."
+      success: |-
+        &a&lSUCCESS &r&7created a new settlement.
+        &7&lNOTE:&r&7 Make sure to deposit money into your  &a/s bank&7 for the daily &a/s upkeep
       broadcast: "&e{player} has made a settlement called {name}!"
       description: Create a new village.
     setdescription:
@@ -1238,7 +1240,9 @@ command:
         ally: allows member allies to build in empire world
       description: Set who can build in your empire world
     create:
-      success: "&a&lSUCCESS &r&7created a new empire."
+      success: |-
+        &a&lSUCCESS &r&7created a new empire.
+        &7&lNOTE:&r&7 Make sure to deposit money into your &a/e bank&7 for the daily &a/e upkeep
       broadcast: "&e{player} has made a empire called {name}!"
       max-level-kingdom-required: "&cYou need at least a Kingdom with level 10 to create an empire!"
       description: Create a new empire.
