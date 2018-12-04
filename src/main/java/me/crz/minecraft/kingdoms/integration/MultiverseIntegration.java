@@ -54,6 +54,8 @@ public class MultiverseIntegration {
             Utils.teleportToSpawn(player);
         }
 
+        boolean wasAutoSave = world.isAutoSave();
+        world.setAutoSave(false);
         if (!mvCore.getMVWorldManager().cloneWorld(world.getName(), newWorldName)) {
             KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not clone world " + world.getName() + " to " + newWorldName);
             return false;
@@ -108,6 +110,10 @@ public class MultiverseIntegration {
             FileUtils.deleteDirectory(worldFolder);
         } catch (IOException e) {
             KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not delete old world folder " + worldFolder.getName() + "!", e);
+        }
+
+        if (wasAutoSave) {
+            newWorld.setAutoSave(true);
         }
 
         for (Map.Entry<Player, Location> e : positions.entrySet()) {
