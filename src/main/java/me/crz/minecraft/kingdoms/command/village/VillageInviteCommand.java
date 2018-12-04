@@ -24,7 +24,7 @@ public class VillageInviteCommand extends VillageSubCommand {
                 return;
             }
             if (invitedPlayer.hasVillage()) {
-                res.tell(getMessage("already-in-village"), "name", invitedPlayer.getName(), "state", res.getVillage().getState().getTag());
+                res.tell(getMessage("already-in-village"), "name", invitedPlayer.getName(), "state", invitedPlayer.getVillage().getState().getTag());
                 return;
             }
             Utils.runSync(() -> {

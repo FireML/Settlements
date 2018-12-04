@@ -900,7 +900,7 @@ command:
       success: "&a&lTeleported to home of {state} {name}"
       description: Teleport to a settlement's home
     invite:
-      already-in-village: "&c&l{name} is already in your {state}"
+      already-in-village: "&c&l{name} is already in a {state}"
       joinfee: "&7Fee to join is &e{amount}!"
       received: "&e&lALERT &r&7Invite received from {state} {name}! Click or type [&e/s join {name}](suggest_command=/s join {name}) &7to join."
       alert: "&e&lALERT &r&e{player}&7 has been invited to the settlement."
@@ -1272,7 +1272,7 @@ command:
       no-access: "&c&lYou don't have access to teleport to the home of that empire!"
       description: Teleport to a empires's home
     invite:
-      already-in-empire: "&c&l{name} is already in your Empire"
+      already-in-empire: "&c&l{name} is already in an Empire"
       joinfee: "&7Fee to join is &e{amount}!"
       received: "&e&lALERT &r&7Invite received from Empire {name}! Click or type [&e/e join {name}](suggest_command=/e join {name}) &7to join."
       alert: "&e&lALERT &r&e{name}&7 has been invited to the empire."
