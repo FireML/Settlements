@@ -301,6 +301,9 @@ public class EmpireManager {
     }
 
     public Empire getEmpireFromWorld(World world) {
+        if (world == null) {
+            return null;
+        }
         return getEmpireFromWorld(world.getName());
     }
 

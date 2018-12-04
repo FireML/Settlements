@@ -51,6 +51,7 @@ public class Resident implements ConfigurationSerializable, Targetable {
     // Temporary, per session settings:
     private boolean resourcePack = false;
     private boolean showSidebar = true;
+    private boolean hasEmpireFlight = false;
 
     public Resident(UUID uuid, String name) {
         this.uuid = uuid;
@@ -397,5 +398,13 @@ public class Resident implements ConfigurationSerializable, Targetable {
 
     public boolean hasAllies() {
         return hasVillage() && getVillage().hasAllies() || (hasEmpire() && getVillage().getEmpire().hasAllies());
+    }
+
+    public boolean hasEmpireFlight() {
+        return hasEmpireFlight;
+    }
+
+    public void setHasEmpireFlight(boolean hasEmpireFlight) {
+        this.hasEmpireFlight = hasEmpireFlight;
     }
 }

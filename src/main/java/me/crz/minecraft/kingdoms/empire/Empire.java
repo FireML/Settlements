@@ -243,6 +243,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
             if (world != null) {
                 for (Player player : world.getPlayers()) {
                     player.setAllowFlight(true);
+                    ResidentManager.getInstance().getResident(player).setHasEmpireFlight(true);
                 }
             }
         }
@@ -260,6 +261,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                             && player.getGameMode() != GameMode.SPECTATOR
                             && !player.hasPermission("kingdoms.bypass.flyremoval")) {
                         player.setAllowFlight(false);
+                        ResidentManager.getInstance().getResident(player).setHasEmpireFlight(false);
                         if (player.isFlying()) {
                             player.setFlying(false);
                             if (player.getLocation().subtract(0, -1, 0).getBlock().getType() == Material.AIR

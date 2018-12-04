@@ -61,7 +61,7 @@ public class VillageListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Resident res = ResidentManager.getInstance().getResident(event.getPlayer().getUniqueId()); // should be cached
+        Resident res = ResidentManager.getInstance().getResident(event.getPlayer()); // should be cached
         for (ChatChannel channel : ChatChannel.values()) {
             if (channel.canChat(event.getPlayer())) {
                 res.getChannels().add(channel);
