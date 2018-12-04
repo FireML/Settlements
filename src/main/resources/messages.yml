@@ -792,7 +792,7 @@ command:
       already-allied: "&c&lYou are already allied to {state} &6&l{name}"
       now-allied-to: "&7&lYou are now allied to {state} &6&l{name}"
       invite: "&r&6&l{state} {name} &r&7&lwants to ally!"
-      accept-info: "&r&6&l/s ally {name} &r&7&lto ally them!"
+      accept-info: "[&6&l/s ally {name}](/s ally {name}) &r&7&lto ally them!"
       request-send: "&7&lAlly request sent to &r&6&l{name}"
       description: Ally another settlement or empire
     allyclaim:
@@ -1194,7 +1194,7 @@ command:
       already-allied: "&c&lYou are already allied to {state} &6&l{name}"
       now-allied-to: "&7&lYou are now allied to {state} &6&l{name}"
       invite: "&r&6&l{state} {name} &r&7&lwants to ally!"
-      accept-info: "&r&6&l/s ally {name} &r&7&lto ally them!"
+      accept-info: "[&6&l/e ally {name}](/e ally {name}) &r&7&lto ally them!"
       request-send: "&7&lAlly request sent to &r&6&l{name}"
       description: Ally another settlement or empire
     bank:
