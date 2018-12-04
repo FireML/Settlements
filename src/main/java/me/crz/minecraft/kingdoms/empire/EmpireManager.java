@@ -291,7 +291,7 @@ public class EmpireManager {
             Player player = member.getPlayer();
             if (player != null) {
                 Empire e = EmpireManager.getInstance().getEmpireFromWorld(player.getWorld());
-                if (!e.canAccess(member)) {
+                if (e != null && !e.canAccess(member)) {
                     Utils.teleportToSpawn(player);
                 }
             }
