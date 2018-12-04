@@ -400,6 +400,14 @@ public class Empire extends LandOwner implements Comparable<Empire> {
         return lastRename;
     }
 
+    public boolean removeSenator(Resident resident) {
+        return senators.remove(resident.getUUID());
+    }
+
+    public boolean addSenator(Resident resident) {
+        return senators.add(resident.getUUID());
+    }
+
     private enum State implements NameTag {
         EMPIRE;
     }
@@ -494,6 +502,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                 "buff", String.valueOf(getMode(PlotMode.buff)),
                 "bonusoutposts", String.valueOf(getBonusOutposts()),
                 "bonusclaims", String.valueOf(getBonusClaimAmount()),
+                "bonus", String.valueOf(getBonusClaimAmount()),
                 "capital", capital != null ? capital.getName() : "-",
                 "capitalstate", capital != null ? capital.getState().getTag() : "-",
                 "perks", getPerksMap().entrySet().stream()

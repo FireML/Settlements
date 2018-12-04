@@ -133,6 +133,9 @@ public class VillageManager {
             resident.setVillage(null);
             resident.setVillageRank(VillageRank.RESIDENT);
             resident.setEmpireRank(EmpireRank.MEMBER);
+            if (village.hasEmpire()) {
+                village.getEmpire().removeSenator(resident);
+            }
         }
         Utils.runAsync(() -> {
             LandManager.getInstance().unclaimLand(village);
@@ -165,6 +168,9 @@ public class VillageManager {
         resident.setVillage(null);
         resident.setVillageRank(VillageRank.RESIDENT);
         resident.setEmpireRank(EmpireRank.MEMBER);
+        if (village.hasEmpire()) {
+            village.getEmpire().removeSenator(resident);
+        }
         resident.removeChannel(ChatChannel.SETTLEMENT);
         resident.removeChannel(ChatChannel.EMPIRE);
         Player player = resident.getPlayer();

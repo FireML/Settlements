@@ -67,6 +67,11 @@ public class EmpireSetRankCommand extends EmpireSubCommand {
                 getError("rank-required").tell(player, "rank", EmpireRank.values().length > rank.ordinal() + 1 ? EmpireRank.values()[rank.ordinal() + 1].getTag() : "-");
             } else {
                 tres.setEmpireRank(rank);
+                if (rank == EmpireRank.SENATOR) {
+                    empire.addSenator(tres);
+                } else {
+                    empire.removeSenator(tres);
+                }
                 DatabaseManager.getInstance().saveResident(tres);
                 MessageUtils.tellResidents(empire.getOnlineResidents(), getMessage("success"),
                         "rank", rank.getTag(),

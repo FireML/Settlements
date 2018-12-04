@@ -253,6 +253,7 @@ public class EmpireManager {
         modifiedResidents.add(empire.getCapital().getChief());
         for (Resident senator : empire.getSenators()) {
             senator.setEmpireRank(EmpireRank.MEMBER);
+            empire.removeSenator(senator);
             modifiedResidents.add(senator);
         }
         empire.getSenatorIds().clear();
@@ -284,6 +285,7 @@ public class EmpireManager {
             if (member.getEmpireRank().above(EmpireRank.MEMBER)) {
                 toSave.add(member);
                 member.setEmpireRank(EmpireRank.MEMBER);
+                empire.removeSenator(member);
             }
             member.removeChannel(ChatChannel.EMPIRE);
             Player player = member.getPlayer();

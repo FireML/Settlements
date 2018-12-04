@@ -1383,6 +1383,13 @@ command:
       set:
         success: "&e&lALERT &r&7Empire join fee was set &e{amount}&7!"
         description: Sets the fee a settlement needs to pay to join
+    senators:
+      description: Show all empire senators
+      head: "&8&l--------&r&c&lSenators&r&8&l--------"
+      separator: "&7, "
+      online: "&a"
+      offline: "&c"
+      entry: "&8\\[&9*&8] [&7{title} &r{online}{name}](&8{state} &f{settlement})"
     setrank:
       invalid-rank: "&c&lERROR &r&c{rank} &7is not a valid rank!"
       cant-set-chief: "&c&lPlease use &6&c&l/{base} transfer <player>&r&c&l to transfer ownership of the empire"
@@ -1414,7 +1421,7 @@ command:
         &6&lBonusclaims &r&7{bonus}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
-        &6&lCapital &r&7{capitalstate}{capital}
+        &6&lCapital &r&7{capitalstate} {capital}
         &e&lLeader &r&7{chieftitle} {chiefonline}{chief}
         &e&lSenators: &r&7{senators}
         &e&lMembers: &r&7{members}
