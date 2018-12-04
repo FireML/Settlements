@@ -62,12 +62,4 @@ public class ScoreBoard {
     public String c(String input) {
         return MessageUtils.replaceColorCodes(input);
     }
-
-    public String getPrefix(Player perspective, Player subject) {
-        return this.c(KingdomsPlugin.chat.getPlayerPrefix(subject));
-    }
-
-    public String getSuffix(Player perspective, Player subject) {
-        return this.c(KingdomsPlugin.chat.getPlayerSuffix(subject));
-    }
 }
