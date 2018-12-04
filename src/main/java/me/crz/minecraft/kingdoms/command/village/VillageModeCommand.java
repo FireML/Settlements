@@ -23,7 +23,7 @@ public class VillageModeCommand extends VillageSubCommand {
         }
 
         try {
-            PlotMode m = PlotMode.valueOf(args[0].toLowerCase(), PlotMode.AppliesTo.LAND_OWNER);
+            PlotMode m = PlotMode.get(args[0], PlotMode.AppliesTo.LAND_OWNER);
             try {
                 if (res.getVillage().setMode(m, Utils.parseBoolean(args[1]))) {
                     Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));

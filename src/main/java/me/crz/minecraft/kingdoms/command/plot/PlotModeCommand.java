@@ -28,7 +28,7 @@ public class PlotModeCommand extends PlotSubCommand {
                 return true;
             }
             try {
-                PlotMode m = PlotMode.valueOf(args[0].toLowerCase(), PlotMode.AppliesTo.LAND);
+                PlotMode m = PlotMode.get(args[0], PlotMode.AppliesTo.LAND);
                 if (m == PlotMode.embassy) {
                     if (land.containsHome() || land.isOutpost()) {
                         getError("cant-set-embassy").tell(res);

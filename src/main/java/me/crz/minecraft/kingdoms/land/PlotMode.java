@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import me.crz.minecraft.kingdoms.cinventory.CItem;
+import me.crz.minecraft.kingdoms.command.plot.PlotHelpCommand;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
@@ -62,12 +63,25 @@ public enum PlotMode implements NameTag {
         return Arrays.stream(values()).filter(v -> v.appliesTo(to)).collect(Collectors.toList());
     }
 
-    public static PlotMode valueOf(String s, AppliesTo to) {
-        PlotMode state = valueOf(s);
+    public static PlotMode get(String s, AppliesTo to) {
+        PlotMode state = get(s);
         if (state.appliesTo(to)) {
             return state;
         }
         throw new IllegalArgumentException("No enum constant " + s + " applying to " + to + " found!");
+    }
+
+    private static PlotMode get(String s) {
+        try {
+            return valueOf(s);
+        } catch (IllegalArgumentException e) {
+            for (PlotMode mode : values()) {
+                if (mode.name().equalsIgnoreCase(s)) {
+                    return mode;
+                }
+            }
+        }
+        throw new IllegalArgumentException("No PlotMode with name " + s + " found!");
     }
 
     public boolean getDefault() {
