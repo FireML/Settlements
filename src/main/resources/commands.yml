@@ -56,8 +56,8 @@ help-order:
     - invite
     - kick
     - banished
-    - banish
-    - unbanish
+    - s banish <player>|s:<settlement>|e:<empire>
+    - s unbanish <player>|s:<settlement>|e:<empire>
     - history
     - s plot staff
     - shop
@@ -81,8 +81,8 @@ help-order:
     - s tax set
     - s joinfee set
     banish:
-    - s banish
-    - s unbanish
+    - s banish <player>|s:<settlement>|e:<empire>
+    - s unbanish <player>|s:<settlement>|e:<empire>
     - s banished
     ally:
     - s ally
@@ -125,7 +125,8 @@ help-order:
     - e setrank
     - invite
     - kick
-    - banish
+    - e banish <player>|s:<settlement>|e:<empire>
+    - e unbanish <player>|s:<settlement>|e:<empire>
     - ally
     - unally
     - e plot staff
@@ -143,8 +144,8 @@ help-order:
     - e tax set
     - e joinfee set
     banish:
-    - e banish
-    - e unbanish
+    - e banish <player>|s:<settlement>|e:<empire>
+    - e unbanish <player>|s:<settlement>|e:<empire>
     - e banished
     ally:
     - e ally
