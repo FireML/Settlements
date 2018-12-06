@@ -140,7 +140,7 @@ public class Lock implements DatabaseSerializable {
         OwnedLand land = LandManager.getInstance().getLand(getLocation().toChunkLocation());
         if (land != null) {
             Resident resident = ResidentManager.getInstance().getResident(player);
-            if (land.canAdmin(resident)) {
+            if (land.getLandOwner().canAdminLocks(resident)) {
                 return true;
             }
         }

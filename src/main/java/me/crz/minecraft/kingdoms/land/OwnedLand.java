@@ -452,6 +452,6 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     public boolean canAdmin(Resident resident) {
-        return getLandOwner().canAdminLocks(resident);
+        return getLandOwner().canAdminPlots(resident);
     }
 }
