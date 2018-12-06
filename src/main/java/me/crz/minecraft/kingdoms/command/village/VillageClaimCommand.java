@@ -140,7 +140,7 @@ public class VillageClaimCommand extends VillageSubCommand {
                     "z", String.valueOf(newLand.getZ()));
             if (newLand.containsHome()) {
                 SimpleBlockLocation home = new SimpleBlockLocation(newLand.getLandOwner().getHome());
-                getMessage("success").tell(village.getOnlineResidents(),
+                getMessage("home-set").tell(village.getOnlineResidents(),
                         "rank", res.getVillageRank().getTag(village),
                         "title", res.getTitle(),
                         "name", player.getName(),
