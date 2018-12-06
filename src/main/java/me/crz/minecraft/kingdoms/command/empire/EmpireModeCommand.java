@@ -20,17 +20,19 @@ public class EmpireModeCommand extends EmpireSubCommand {
         if (args.length < 1) {
             ModeGUI.getInstance().open(res.getPlayer());
             return true;
-        } else if (args.length < 2) {
-            return false;
         }
 
         try {
             PlotMode m = PlotMode.get(args[0], PlotMode.AppliesTo.LAND_OWNER);
             try {
-                if (res.getVillage().getEmpire().setMode(m, Utils.parseBoolean(args[1]))) {
+                boolean value = !res.getVillage().getEmpire().getMode(m);
+                if (args.length > 1) {
+                    value = Utils.parseBoolean(args[1]);
+                }
+                if (res.getVillage().getEmpire().setMode(m, value)) {
                     Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire()));
                 }
-                res.tell(getMessage("success"), "mode", m.name(), "value", args[1]);
+                res.tell(getMessage("success"), "mode", m.name(), "value", String.valueOf(value));
             } catch (IllegalArgumentException e) {
                 return false;
             }

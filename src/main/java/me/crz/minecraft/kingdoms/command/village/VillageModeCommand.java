@@ -25,10 +25,14 @@ public class VillageModeCommand extends VillageSubCommand {
         try {
             PlotMode m = PlotMode.get(args[0], PlotMode.AppliesTo.LAND_OWNER);
             try {
-                if (res.getVillage().setMode(m, Utils.parseBoolean(args[1]))) {
+                boolean value = !res.getVillage().getMode(m);
+                if (args.length > 1) {
+                    value = Utils.parseBoolean(args[1]);
+                }
+                if (res.getVillage().setMode(m, value)) {
                     Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
                 }
-                res.tell(getMessage("success"), "mode", m.name(), "value", args[1]);
+                res.tell(getMessage("success"), "mode", m.name(), "value", String.valueOf(value));
             } catch (IllegalArgumentException e) {
                 return false;
             }
