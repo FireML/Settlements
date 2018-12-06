@@ -588,7 +588,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 break;
         }
         if (!resident.getVillageRank().atLeast(VillageRank.CHIEF)) {
-            sql += " AND `l.action` = 'deposit'";
+            sql += " AND l.`action` = 'deposit'";
         }
         try (Connection conn = ds.getConnection();
              PreparedStatement sta = conn.prepareStatement(sql)) {
@@ -632,7 +632,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 break;
         }
         if (!resident.getVillageRank().atLeast(VillageRank.CHIEF)) {
-            sql += " AND l.action = 'deposit'";
+            sql += " AND `l.action` = 'deposit'";
         }
         sql += " ORDER BY l.id DESC LIMIT " + start + "," + Utils.getEntriesPerPage() + ";";
         try (Connection conn = ds.getConnection();
