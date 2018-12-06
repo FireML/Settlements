@@ -233,7 +233,7 @@ public enum MySqlTable {
             + "FOREIGN KEY (claimId) REFERENCES {tablePrefix}claims(id) ON DELETE CASCADE,"
             + "mode VARCHAR(255) NOT NULL,"
             + "enabled BOOLEAN NOT NULL,"
-            + "UNIQUE (mode, enabled)"
+            + "UNIQUE (claimId, mode)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     LOCKS("CREATE TABLE IF NOT EXISTS {tablePrefix}locks ("

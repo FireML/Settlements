@@ -68,6 +68,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
         initializeTables();
         updateClaimModes();
+        updateClaimModesUniqueKey();
         updateAllies();
     }
 
@@ -122,6 +123,15 @@ public class MySqlDatabaseManager extends DatabaseManager {
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying update claim's table to new mode format!", e);
+        }
+    }
+
+    private void updateClaimModesUniqueKey() {
+        try (Connection conn = ds.getConnection()) {
+            conn.createStatement().execute("DROP INDEX mode ON " + tablePrefix + MySqlTable.CLAIM_MODES.getDbName());
+            conn.createStatement().execute("ALTER IGNORE TABLE " + tablePrefix + MySqlTable.CLAIM_MODES.getDbName() + " ADD UNIQUE( `claimId`, `mode`);");
+        } catch (SQLException e) {
+            // index doesn't exist
         }
     }
 
