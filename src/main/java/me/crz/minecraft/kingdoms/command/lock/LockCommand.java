@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.lock;
 
+import me.crz.minecraft.kingdoms.command.HelpCommand;
 import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
 import me.crz.minecraft.kingdoms.lock.LockManager;
 import org.bukkit.entity.Player;
@@ -7,7 +8,7 @@ import org.bukkit.entity.Player;
 public class LockCommand extends PlayerSubCommand {
     public LockCommand() {
         super(null, "lock", "protection", "secure");
-        getHelpCommand();
+        setHelpCommand(new HelpCommand(this));
         registerCommand(new PlayerSubCommand(this, "toggle") {
             @Override
             public boolean run(Player player, String base, String alias, String... args) {

@@ -74,7 +74,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
 
     public HelpCommand getHelpCommand() {
         if (helpCommand == null) {
-            setHelpCommand(new HelpCommand(this));
+            helpCommand = new HelpCommand(this);
         }
         return helpCommand;
     }

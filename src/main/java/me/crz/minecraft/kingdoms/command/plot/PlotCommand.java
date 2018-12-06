@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.plot;
 
+import me.crz.minecraft.kingdoms.command.HelpCommand;
 import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -7,6 +8,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 public class PlotCommand extends ResidentSubCommand {
     public PlotCommand() {
         super(null, "plot <options>");
+        setHelpCommand(new HelpCommand(this));
         PlotHelpCommand staffHelpCommand = new PlotHelpCommand(getHelpCommand());
         getHelpCommand().registerCommand(staffHelpCommand);
         registerCommand(new PlotSubCommand(getHelpCommand(), "staff [<page>]", true) {

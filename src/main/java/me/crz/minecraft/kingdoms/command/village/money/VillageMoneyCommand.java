@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village.money;
 
+import me.crz.minecraft.kingdoms.command.HelpCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageHelpCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageHistoryCommand;
@@ -18,6 +19,7 @@ public class VillageMoneyCommand extends VillageSubCommand {
 
     public VillageMoneyCommand(SubCommand parent) {
         super(parent, "bank <deposit|withdraw|balance|history> <amount>", VillageRank.RESIDENT, "money");
+        setHelpCommand(new HelpCommand(this));
         for (VillageRank rank : VillageRank.values()) {
             getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), rank));
         }

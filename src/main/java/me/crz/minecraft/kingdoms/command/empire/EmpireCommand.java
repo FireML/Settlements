@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.command.ChatCommand;
+import me.crz.minecraft.kingdoms.command.HelpCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.lock.LockCommand;
 import me.crz.minecraft.kingdoms.command.lock.UnlockCommand;
@@ -15,6 +16,7 @@ import org.bukkit.entity.Player;
 public class EmpireCommand extends SubCommand {
     public EmpireCommand() {
         super(null, "empire", "e");
+        setHelpCommand(new HelpCommand(this));
         getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), VillageRank.RECRUITER));
         getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), VillageRank.BUILDER));
         getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), VillageRank.ELDER));
