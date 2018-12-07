@@ -4,17 +4,12 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
-import me.crz.minecraft.kingdoms.perk.EmpirePerk;
-import me.crz.minecraft.kingdoms.perk.Perk;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public interface AllyCommand extends LandOwnerCommand {
@@ -55,7 +50,7 @@ public interface AllyCommand extends LandOwnerCommand {
         } else {
             InviteCache.addPendingAlly(target, source);
             MessageUtils.tellResidents(target.getOnlineResidents(), getMessage("invite"), "name", source.getName(), "state", source.getStateTag());
-            MessageUtils.tellResidents(target.getOnlineResidents(), getMessage("accept-info"), "name", source.getName(), "state", source.getStateTag());
+            MessageUtils.tellResidents(target.getOnlineResidents(), Message.get("command." + target.getClass().getSimpleName() + ".ally.accept-info"), "name", source.getName(), "state", source.getStateTag());
             resident.tell(getMessage("request-send"), "name", target.getName(), "state", target.getStateTag());
         }
         return true;
