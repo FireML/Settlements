@@ -191,7 +191,7 @@ public class Resident implements ConfigurationSerializable, Targetable {
         }
         VillageRank prev = getVillageRank();
         this.rank = rank;
-        if (hasEmpire() && getVillage().getEmpire().getCapital().equals(getVillage())) {
+        if (hasEmpire() && getVillage().getEmpire().isCapital(getVillage())) {
             if (rank == VillageRank.CHIEF) {
                 setEmpireRank(EmpireRank.LEADER);
                 getVillage().getEmpire().removeSenator(this);

@@ -22,30 +22,29 @@ public class EmpireKickCommand extends EmpireSubCommand {
         }
 
         if (args[0].equalsIgnoreCase(resident.getVillage().getName())) {
-             getMessage("cant-kick-yourself").tell(resident);
+            getMessage("cant-kick-yourself").tell(resident);
             return true;
         }
-        Utils.runAsync(() -> {
-            Village village = VillageManager.getInstance().getVillageFromName(args[0]);
-            if (village == null) {
-                 getError("village-doesnt-exist").tell(resident);
-                return;
-            }
-            if (!resident.getVillage().getEmpire().equals(village.getEmpire())) {
-                 getError("not-in-current").tell(resident, "name", village.getName());
-                return;
-            }
-            if (village.isCapital()) {
-                 getMessage("cant-kick-capital").tell(resident);
-                return;
-            }
-            MessageUtils.tellResidents(village.getEmpire().getOnlineResidents(), getMessage("kicked-alert"),
-                    "name", village.getName(),
-                    "state", village.getState().getTag()
-            );
-            InviteCache.getPendingEmpireInvites().remove(village.getId(), village.getEmpire().getId());
-            village.leaveEmpire();
-        });
+
+        Village village = VillageManager.getInstance().getVillageFromName(args[0]);
+        if (village == null) {
+            getError("village-doesnt-exist").tell(resident);
+            return true;
+        }
+        if (!resident.getVillage().getEmpire().isMember(village)) {
+            getError("not-in-current").tell(resident, "name", village.getName());
+            return true;
+        }
+        if (village.isCapital()) {
+            getMessage("cant-kick-capital").tell(resident);
+            return true;
+        }
+        MessageUtils.tellResidents(village.getEmpire().getOnlineResidents(), getMessage("kicked-alert"),
+                "name", village.getName(),
+                "state", village.getState().getTag()
+        );
+        InviteCache.getPendingEmpireInvites().remove(village.getId(), village.getEmpire().getId());
+        village.leaveEmpire();
         return true;
     }
 }

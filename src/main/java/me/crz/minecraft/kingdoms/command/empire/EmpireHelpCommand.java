@@ -7,11 +7,11 @@ import me.crz.minecraft.kingdoms.village.Resident;
 
 public class EmpireHelpCommand extends EmpireSubCommand {
     public EmpireHelpCommand(HelpCommand parent, VillageRank rank) {
-        super(parent, rank.name().toLowerCase() + " [<page>]");
+        super(parent, rank.name().toLowerCase() + " [<page>]", rank);
     }
 
     public EmpireHelpCommand(HelpCommand parent, EmpireRank rank) {
-        super(parent, rank.name().toLowerCase() + " [<page>]");
+        super(parent, rank.name().toLowerCase() + " [<page>]", rank);
     }
 
     @Override
