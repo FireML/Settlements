@@ -150,8 +150,17 @@ public class Empire extends LandOwner implements Comparable<Empire> {
             for (Resident resident : landOwner.getResidents()) {
                 Player player = resident.getPlayer();
                 if (player != null) {
-                    Empire empire = EmpireManager.getInstance().getEmpireFromWorld(player.getWorld());
-                    if (!empire.canAccess(resident)) {
+                    Empire e = EmpireManager.getInstance().getEmpireFromWorld(player.getWorld());
+                    if (e != null && !e.canAccess(resident)) {
+                        Utils.teleportToSpawn(player);
+                    }
+                }
+            }
+            for (Resident resident : getResidents()) {
+                Player player = resident.getPlayer();
+                if (player != null) {
+                    Empire e = EmpireManager.getInstance().getEmpireFromWorld(player.getWorld());
+                    if (e != null && !e.canAccess(resident)) {
                         Utils.teleportToSpawn(player);
                     }
                 }
