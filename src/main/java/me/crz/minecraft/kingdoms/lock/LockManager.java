@@ -47,27 +47,27 @@ public class LockManager implements LockProvider {
     private final Expiry<SimpleChunkLocation, Map<String, Lock>> chunkExpiry = new Expiry<SimpleChunkLocation, Map<String, Lock>>() {
         @Override
         public long expireAfterCreate(@Nonnull SimpleChunkLocation key, @Nonnull Map<String, Lock> value, long currentTime) {
-            return getDuration(key);
+            return getDuration(key, value);
         }
 
         @Override
         public long expireAfterUpdate(@Nonnull SimpleChunkLocation key, @Nonnull Map<String, Lock> value, long currentTime, long currentDuration) {
-            return getDuration(key);
+            return getDuration(key, value);
         }
 
         @Override
         public long expireAfterRead(@Nonnull SimpleChunkLocation key, @Nonnull Map<String, Lock> value, long currentTime, long currentDuration) {
-            return getDuration(key);
+            return getDuration(key, value);
         }
 
-        private long getDuration(SimpleChunkLocation chunk) {
+        private long getDuration(SimpleChunkLocation chunk, Map<String, Lock> value) {
             if (chunk != null) {
                 World world = Bukkit.getWorld(chunk.getWorld());
                 if (world == null) {
                     return 0;
                 }
 
-                if (world.isChunkLoaded(chunk.getX(), chunk.getZ())) {
+                if (!KingdomsPlugin.getInstance().isRunning() || value.containsKey(LOADING_KEY) || world.isChunkLoaded(chunk.getX(), chunk.getZ())) {
                     return Long.MAX_VALUE;
                 }
             }
