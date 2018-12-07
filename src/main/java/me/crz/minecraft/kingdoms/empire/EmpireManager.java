@@ -346,7 +346,16 @@ public class EmpireManager {
         }
 
         if (KingdomsPlugin.getInstance().getMultiverse() != null) {
-            return KingdomsPlugin.getInstance().getMultiverse().renameWorld(world, empire.getWorldName());
+            if (KingdomsPlugin.getInstance().getMultiverse().renameWorld(world, empire.getWorldName())) {
+                if (empire.getHome() == null) {
+                    empire.setHome(new SimpleLocation(empire.getWorldName(), 0, world.getHighestBlockYAt(0, 0), 0));
+                } else {
+                    empire.getHome().setWorld(empire.getWorldName());
+                }
+                world.setSpawnLocation(empire.getHome().toBukkitLocation());
+                return true;
+            }
+            return false;
         } else {
             Map<Player, Location> positions = new LinkedHashMap<>();
             for (Player player : world.getPlayers()) {
