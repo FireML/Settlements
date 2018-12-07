@@ -466,7 +466,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
             return isTrusted(resident);
         }
         if (getAccess().atLeast(LandAccess.ALLY)) {
-            return isAlly(resident);
+            return isTrusted(resident) || isAlly(resident);
         }
         if (getAccess().atLeast(LandAccess.PRIVATE)) {
             return getCapital().isMember(resident);
