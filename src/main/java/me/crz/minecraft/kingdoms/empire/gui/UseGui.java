@@ -49,8 +49,8 @@ public class UseGui extends KingdomsGUI {
                     Resident res = ResidentManager.getInstance().getResident(p);
                     if (res.hasEmpire() && res.getEmpireRank().atLeast(EmpireRank.LEADER)) {
                         BuildState changeTo = clickType.isLeftClick()
-                                ? res.getVillage().getUseState(u).next(BuildState.AppliesTo.EMPIRE)
-                                : res.getVillage().getUseState(u).previous(BuildState.AppliesTo.EMPIRE);
+                                ? res.getVillage().getEmpire().getUseState(u).next(BuildState.AppliesTo.EMPIRE)
+                                : res.getVillage().getEmpire().getUseState(u).previous(BuildState.AppliesTo.EMPIRE);
                         res.getVillage().getEmpire().setUseState(u, changeTo);
                         MessageUtils.tell(p, Message.get("command.empire.use.success"),
                                 "flag", u.getTag(),
