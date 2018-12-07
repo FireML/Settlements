@@ -128,8 +128,12 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
     private void updateClaimModesUniqueKey() {
         try (Connection conn = ds.getConnection()) {
-            conn.createStatement().execute("DROP INDEX mode ON " + tablePrefix + MySqlTable.CLAIM_MODES.getDbName());
-            conn.createStatement().execute("ALTER IGNORE TABLE " + tablePrefix + MySqlTable.CLAIM_MODES.getDbName() + " ADD UNIQUE( `claimId`, `mode`);");
+            Statement sta = conn.createStatement();
+            // test if index exists:
+            sta.execute("DROP INDEX mode ON " + tablePrefix + MySqlTable.CLAIM_MODES.getDbName());
+            // if it exists remove the table and create new one
+            sta.execute("DROP TABLE " + tablePrefix + MySqlTable.CLAIM_MODES.getDbName());
+            sta.execute(MySqlTable.CLAIM_MODES.getSql(tablePrefix));
         } catch (SQLException e) {
             // index doesn't exist
         }
