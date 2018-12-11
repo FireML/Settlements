@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.util.UnclaimHelper;
 import me.crz.minecraft.kingdoms.utils.ConfigKey;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -144,14 +145,16 @@ public class ChatMap {
                 for (NamedLocation o : resident.getVillage().getOutpostHomes().values()) {
                     OwnedLand outpostLand = LandManager.getInstance().getLand(o.toChunkLocation());
                     if (outpostLand != null && !outpostLand.containsHome()) {
-                        ownOutposts.addAll(LandManager.getInstance().getAllConnectedLand(outpostLand, search -> {
+                        ownOutposts.addAll(UnclaimHelper.getConnected(LandManager.getInstance(), outpostLand));
+
+                        /*ownOutposts.addAll(LandManager.getInstance().getAllConnectedLand(outpostLand, search -> {
                             if (search.isOutpost()) {
                                 return LandManager.FilterResponse.SKIP_BRANCH;
                             } else if (search.containsHome()) {
                                 return LandManager.FilterResponse.SKIP_BRANCH;
                             }
                             return LandManager.FilterResponse.ACCEPT;
-                        }));
+                        }));*/
                     }
                 }
             }
@@ -176,13 +179,13 @@ public class ChatMap {
                 if (claimable && resident.hasVillage() && resident.getVillageRank().atLeast(VillageRank.ELDER)) {
                     cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/village claim " + x + " " + z));
                     cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, messages.getMessage("hover.click-to-claim")
-                            .getReplacedComponents(
-                                    "location", x + "-" + z,
-                                    "centerx", String.valueOf(x * 16 + 8),
-                                    "centerz", String.valueOf(z * 16 + 8),
-                                    "x", String.valueOf(x),
-                                    "z", String.valueOf(z)
-                            )));
+                        .getReplacedComponents(
+                            "location", x + "-" + z,
+                            "centerx", String.valueOf(x * 16 + 8),
+                            "centerz", String.valueOf(z * 16 + 8),
+                            "x", String.valueOf(x),
+                            "z", String.valueOf(z)
+                        )));
                 }
                 return cb.color(Relation.UNCLAIMED.getColor()).create();
             }
@@ -233,10 +236,10 @@ public class ChatMap {
             }
             if (messages.getMessage("hover." + symbol.getKey()).exists()) {
                 hover.append("\n").append(messages.getMessage("hover." + symbol.getKey()).getReplacedComponents(
-                        "owner", land.isPlot() ? ResidentManager.getInstance().getResidentName(land.getPlotOwner()) : "none",
-                        "price", land.isForSale() ? String.valueOf(land.getPrice()) : messages.getText("not-for-sale"),
-                        "description", land.getDescription(),
-                        "name", land.getOutpostName()
+                    "owner", land.isPlot() ? ResidentManager.getInstance().getResidentName(land.getPlotOwner()) : "none",
+                    "price", land.isForSale() ? String.valueOf(land.getPrice()) : messages.getText("not-for-sale"),
+                    "description", land.getDescription(),
+                    "name", land.getOutpostName()
                 ));
             }
 
@@ -247,11 +250,11 @@ public class ChatMap {
             ComponentBuilder cb = new ComponentBuilder(MessageUtils.replaceColorCodes(symbol.getText())).color(relation.getColor());
             if (claimable && land.isOwnedBy(resident.getVillage()) && resident.getVillageRank().atLeast(VillageRank.CHIEF)) {
                 hover.append("\n").append(messages.getMessage("hover.click-to-unclaim")
-                        .getReplacedComponents(
-                                "location", x + "-" + z,
-                                "x", String.valueOf(x),
-                                "z", String.valueOf(z)
-                        ));
+                    .getReplacedComponents(
+                        "location", x + "-" + z,
+                        "x", String.valueOf(x),
+                        "z", String.valueOf(z)
+                    ));
                 cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/village unclaim " + x + " " + z));
             }
 
