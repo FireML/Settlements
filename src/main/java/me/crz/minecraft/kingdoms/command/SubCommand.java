@@ -225,7 +225,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
             subPerm = new Permission(getPermission(), "Allows access to the command /" + getPath());
             Bukkit.getPluginManager().addPermission(subPerm);
         }
-        if (getParent() != null) {
+        if (getParent() != null && getPermission().startsWith(getParent().getPermission())) {
             subPerm.addParent(getParent().getPermission(), true);
         }
         getSubCommands().values().forEach(SubCommand::registerPermission);
