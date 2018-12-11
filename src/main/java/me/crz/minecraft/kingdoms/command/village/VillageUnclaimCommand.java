@@ -5,11 +5,13 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.util.UnclaimHelper;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.entity.Player;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -48,7 +50,7 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                     getError("not-a-number").tell(res, "input", args[0]);
                     return false;
                 }
-            } else if (args.length  == 2) {
+            } else if (args.length == 2) {
                 try {
                     toUnclaim.add(new SimpleChunkLocation(player.getWorld().getName(), Integer.parseInt(args[0]), Integer.parseInt(args[1])));
                 } catch (NumberFormatException e) {
@@ -62,7 +64,7 @@ public class VillageUnclaimCommand extends VillageSubCommand {
             toUnclaim.add(new SimpleChunkLocation(player.getLocation()));
         }
 
-        Set<OwnedLand> unclaimedLand = new LinkedHashSet<>();
+        Set<OwnedLand> unclaimedLand = new HashSet<>();
         for (SimpleChunkLocation c : toUnclaim) {
             OwnedLand land = LandManager.getInstance().getLand(c);
             if (land != null) {
@@ -83,35 +85,26 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                     }
                 } else {
                     unclaimedLand.add(land);
-                    // check for orphaned due to unclaim
-                    LandManager.getInstance().getAllConnectedLand(land, search -> {
-                        if (search.isOutpost()) {
-                            return LandManager.FilterResponse.SKIP_BRANCH;
-                        } else if (search.containsHome()) {
-                            return LandManager.FilterResponse.SKIP_BRANCH;
-                        }
-                        return LandManager.FilterResponse.ACCEPT;
-                    }).forEach(l -> {
+                    UnclaimHelper.getUnclaimConnected(LandManager.getInstance(), land).forEach(l -> {
                         if (!toUnclaim.contains(l)) {
                             unclaimedLand.add(l);
                         }
                     });
-                    unclaimedLand.add(land);
                 }
             }
         }
         if (!unclaimedLand.isEmpty()) {
             unclaimedLand.forEach(l -> getMessage("success").tell(res.getVillage().getOnlineResidents(),
-                    "player", res.getName(),
-                    "name", res.getName(),
-                    "title", res.getTitle(),
-                    "rank", res.getVillageRank().getTag(res.getVillage()),
-                    "world", l.getWorldName(),
-                    "location", l.getSimpleKey(),
-                    "centerx", String.valueOf(l.getX() * 16 + 8),
-                    "centerz", String.valueOf(l.getZ() * 16 + 8),
-                    "x", String.valueOf(l.getX()),
-                    "z", String.valueOf(l.getZ()))
+                "player", res.getName(),
+                "name", res.getName(),
+                "title", res.getTitle(),
+                "rank", res.getVillageRank().getTag(res.getVillage()),
+                "world", l.getWorldName(),
+                "location", l.getSimpleKey(),
+                "centerx", String.valueOf(l.getX() * 16 + 8),
+                "centerz", String.valueOf(l.getZ() * 16 + 8),
+                "x", String.valueOf(l.getX()),
+                "z", String.valueOf(l.getZ()))
             );
             LandManager.getInstance().unclaimLand(unclaimedLand);
         } else if (toUnclaim.size() == 1) {
