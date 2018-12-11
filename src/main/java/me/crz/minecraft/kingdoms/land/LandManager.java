@@ -1,12 +1,12 @@
 package me.crz.minecraft.kingdoms.land;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -279,7 +279,7 @@ public class LandManager {
         checked.add(land);
 
         for (int[] branchDir : directions) {
-            Queue<SimpleChunkLocation> toSearch = new ArrayDeque<>();
+            Queue<SimpleChunkLocation> toSearch = new LinkedList<>();
             SimpleChunkLocation branch = land.getLocation().copy().add(branchDir[0], branchDir[1]);
             if (checked.contains(branch)) {
                 continue;
@@ -313,10 +313,16 @@ public class LandManager {
                     branchFound.add(foundLand);
 
                     for (int[] direction : directions) {
-                        SimpleChunkLocation next = search.copy().add(direction[0], direction[1]);
-                        if (!checked.contains(next)) {
-                            toSearch.add(next);
+                        if (direction != branchDir) {
+                            SimpleChunkLocation next = search.copy().add(direction[0], direction[1]);
+                            if (!checked.contains(next) && !toSearch.contains(next)) {
+                                toSearch.add(next);
+                            }
                         }
+                    }
+                    SimpleChunkLocation next = search.copy().add(branchDir[0], branchDir[1]);
+                    if (!checked.contains(next)) {
+                        toSearch.add(next);
                     }
                 }
                 checked.add(search);
