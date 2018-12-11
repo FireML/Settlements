@@ -289,9 +289,9 @@ public class LandManager {
             List<OwnedLand> branchFound = new ArrayList<>();
 
             boolean skipBranch = false;
+            BRANCH:
             while (!toSearch.isEmpty()) {
                 SimpleChunkLocation search = toSearch.poll();
-                checked.add(search);
                 OwnedLand foundLand = getLand(search);
                 if (foundLand != null && foundLand.isOwnedBy(land.getLandOwner())) {
                     if (filter != null) {
@@ -304,10 +304,10 @@ public class LandManager {
                                 found.addAll(branchFound);
                                 return found;
                             case SKIP_ENTRY:
-                                continue;
+                                continue BRANCH;
                             case SKIP_BRANCH:
                                 skipBranch = true;
-                                break;
+                                break BRANCH;
                         }
                     }
                     branchFound.add(foundLand);
@@ -319,6 +319,7 @@ public class LandManager {
                         }
                     }
                 }
+                checked.add(search);
             }
 
             if (!skipBranch) {

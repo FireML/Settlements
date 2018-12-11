@@ -10,6 +10,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.entity.Player;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -48,7 +49,7 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                     getError("not-a-number").tell(res, "input", args[0]);
                     return false;
                 }
-            } else if (args.length  == 2) {
+            } else if (args.length == 2) {
                 try {
                     toUnclaim.add(new SimpleChunkLocation(player.getWorld().getName(), Integer.parseInt(args[0]), Integer.parseInt(args[1])));
                 } catch (NumberFormatException e) {
@@ -62,7 +63,7 @@ public class VillageUnclaimCommand extends VillageSubCommand {
             toUnclaim.add(new SimpleChunkLocation(player.getLocation()));
         }
 
-        Set<OwnedLand> unclaimedLand = new LinkedHashSet<>();
+        Set<OwnedLand> unclaimedLand = new HashSet<>();
         for (SimpleChunkLocation c : toUnclaim) {
             OwnedLand land = LandManager.getInstance().getLand(c);
             if (land != null) {
@@ -83,20 +84,14 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                     }
                 } else {
                     unclaimedLand.add(land);
-                    // check for orphaned due to unclaim
-                    LandManager.getInstance().getAllConnectedLand(land, search -> {
+                    unclaimedLand.addAll(LandManager.getInstance().getAllConnectedLand(land, search -> {
                         if (search.isOutpost()) {
                             return LandManager.FilterResponse.SKIP_BRANCH;
                         } else if (search.containsHome()) {
                             return LandManager.FilterResponse.SKIP_BRANCH;
                         }
                         return LandManager.FilterResponse.ACCEPT;
-                    }).forEach(l -> {
-                        if (!toUnclaim.contains(l)) {
-                            unclaimedLand.add(l);
-                        }
-                    });
-                    unclaimedLand.add(land);
+                    }));
                 }
             }
         }
