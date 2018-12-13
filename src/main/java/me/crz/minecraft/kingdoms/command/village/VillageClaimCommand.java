@@ -12,7 +12,6 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.world.SimpleBlockLocation;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
-import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -75,7 +74,7 @@ public class VillageClaimCommand extends VillageSubCommand {
         if (amountClaimed > 0) {
             boolean landAround = false;
             for (SimpleChunkLocation c : toClaim) {
-                for (SimpleChunkLocation chunk : Utils.getChunksAround(c, 1)) {
+                for (SimpleChunkLocation chunk : Utils.getChunksAdjacent(c)) {
                     OwnedLand checkLand = LandManager.getInstance().getLand(chunk);
                     if (checkLand != null && checkLand.isOwnedBy(village)) {
                         landAround = true;

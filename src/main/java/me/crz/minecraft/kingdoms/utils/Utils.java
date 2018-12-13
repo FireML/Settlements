@@ -10,6 +10,7 @@ import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.text.DecimalFormat;
@@ -57,6 +58,12 @@ public class Utils {
             EntityType.SLIME,
             EntityType.PHANTOM
     );
+    private static final BlockFace[] ADJACENT = {
+            BlockFace.NORTH,
+            BlockFace.EAST,
+            BlockFace.SOUTH,
+            BlockFace.WEST
+    };
     private static Set<String> disabledClaimingWorlds = null;
 
     public Utils() {
@@ -238,18 +245,23 @@ public class Utils {
     }
 
     public static Collection<SimpleChunkLocation> getChunksAround(SimpleChunkLocation location, int radius) {
-        String world = location.getWorld();
-        int baseX = location.getX();
-        int baseZ = location.getZ();
         Collection<SimpleChunkLocation> chunksAround = new HashSet<>();
-        for (int x = baseX - radius; x <= baseX + radius; x++) {
-            for (int z = baseZ - radius; z <= baseZ + radius; z++) {
-                if (x != baseX || z != baseZ) {
-                    chunksAround.add(new SimpleChunkLocation(world, x, z));
+        for (int x = -radius; x <= radius; x++) {
+            for (int z = -radius; z <= +radius; z++) {
+                if (x != 0 || z != 0) {
+                    chunksAround.add(location.copy().add(x, z));
                 }
             }
         }
         return chunksAround;
+    }
+
+    public static Collection<SimpleChunkLocation> getChunksAdjacent(SimpleChunkLocation location) {
+        Collection<SimpleChunkLocation> chunksAdjacent = new HashSet<>();
+        for (BlockFace direction : ADJACENT) {
+            chunksAdjacent.add(location.copy().add(direction.getModX(), direction.getModZ()));
+        }
+        return chunksAdjacent;
     }
 
     /**
