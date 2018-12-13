@@ -18,6 +18,7 @@ public class VillageAdminCommand extends SubCommand {
         this.registerCommand(new VillageAdminReloadCommand(this));
         this.registerCommand(new VillageEmgcyCommand(this));
         this.registerCommand(new VillageAdminSocialSpyCommand(this));
+        this.registerCommand(new VillageAdminLockCommand(this));
     }
 
     @Override

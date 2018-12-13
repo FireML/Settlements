@@ -37,6 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class LockManager implements LockProvider {
@@ -326,5 +327,18 @@ public class LockManager implements LockProvider {
             interactActions.invalidate(playerId);
         }
         return action;
+    }
+
+    public Collection<Lock> getLocks() {
+        return lockTable.values().stream()
+                .map(c -> c.asMap().values())
+                .flatMap((Function<Collection<Map<String, Lock>>, Stream<Lock>>) maps
+                        -> maps.stream().map(Map::values).flatMap(Collection::stream)).collect(Collectors.toSet());
+    }
+
+    public Collection<Lock> getLocks(String world) {
+        return lockTable.get(world.toLowerCase()).asMap().values().stream()
+                .flatMap((Function<Map<String, Lock>, Stream<Lock>>) stringLockMap
+                        -> stringLockMap.values().stream()).collect(Collectors.toSet());
     }
 }
