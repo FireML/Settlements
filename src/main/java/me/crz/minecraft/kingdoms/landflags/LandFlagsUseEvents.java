@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.landflags;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -123,7 +124,7 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void on(PlayerInteractEvent e) {
         if (e.getAction() == Action.PHYSICAL || e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
             Use use = Use.INTERACT;

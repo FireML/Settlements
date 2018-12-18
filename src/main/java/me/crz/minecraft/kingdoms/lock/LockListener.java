@@ -149,7 +149,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
 
     // block interacting
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void onInteract(PlayerInteractEvent event) {
         if (event.getClickedBlock() == null) {
             return;
