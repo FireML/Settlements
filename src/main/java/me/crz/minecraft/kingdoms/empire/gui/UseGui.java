@@ -28,7 +28,7 @@ public class UseGui extends KingdomsGUI {
     private CInventory gui;
 
     public UseGui() {
-        super("use");
+        super("empire.use");
         gui = new CInventory(getText("title"), InventorySize.FOUR) {};
 
         for (Use u : Use.values()) {
