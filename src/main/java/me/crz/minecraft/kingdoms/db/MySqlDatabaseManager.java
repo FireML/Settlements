@@ -517,9 +517,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
             for (SimpleChunkLocation chunk : chunks) {
                 sta.setString(1, chunk.getWorld());
                 sta.setInt(2, chunk.getX() << 4);
-                sta.setInt(3, chunk.getX() << 4 + 16);
+                sta.setInt(3, (chunk.getX() << 4) + 16);
                 sta.setInt(4, chunk.getZ() << 4);
-                sta.setInt(5, chunk.getZ() << 4 + 16);
+                sta.setInt(5, (chunk.getZ() << 4) + 16);
                 ResultSet rs = sta.executeQuery();
                 while (rs.next()) {
                     Lock lock = createLock(conn, rs);
