@@ -338,6 +338,24 @@ integration:
         ally: "&e&lALERT &r&7You are not allied to &e{state} {name}&7."
         private: "&e&lALERT &r&7Only the &ePlot owner&7 can build here."
         friends: "&e&lALERT &r&7Only the &ePlot owner's friends&7 can build here."
+  placeholder-api:
+    none: "-"
+    bonus-outposts: " Bonus: {amount}"
+    bonus-claims: " Bonus: {amount}"
+    residents:
+      rank: "&6&l{rank}:&r {residents}"
+      separator: "&7, "
+      online: "&a"
+      offline: "&c"
+      entry: "{online}{name}"
+    top-ten-settlements:
+      entry: "&9{place}. &e&l{state} &r&e{name}"
+    top-ten-villages:
+      entry: "&9{place}. &r&e{name}"
+    top-ten-kingdoms:
+      entry: "&9{place}. &r&e{name}"
+    top-ten-empires:
+      entry: "&9{place}. &r&e{name}"
 protection:
   state:
     use:

@@ -12,6 +12,7 @@ import me.crz.minecraft.kingdoms.integration.CmiIntegration;
 import me.crz.minecraft.kingdoms.integration.IgnoreProvider;
 import me.crz.minecraft.kingdoms.integration.LWCIntegration;
 import me.crz.minecraft.kingdoms.integration.MultiverseIntegration;
+import me.crz.minecraft.kingdoms.integration.PlaceholderApiIntegration;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.lock.LockListener;
@@ -109,6 +110,10 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         if (getServer().getPluginManager().isPluginEnabled("CMI")) {
             CmiIntegration cmiIntegration = new CmiIntegration();
             getLogger().log(Level.INFO, "Hooked into CMI " + cmiIntegration.getCmi().getDescription().getVersion() + "!");
+        }
+        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            PlaceholderApiIntegration placeholderApiIntegration = new PlaceholderApiIntegration();
+            getLogger().log(Level.INFO, "Hooked into PlaceholderAPI " + placeholderApiIntegration.getPlaceholderAPI().getDescription().getVersion() + "!");
         }
         if (data.load(this.getDataFolder())) {
             ConfigManager.getInstance();
