@@ -16,7 +16,6 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PlaceholderApiIntegration implements ConfigMessages {
@@ -64,23 +63,17 @@ public class PlaceholderApiIntegration implements ConfigMessages {
             }
         } else {
             // get top 10
-            List<Village> topTen = villageStream
-                    .sorted(Village::compareTo)
-                    .limit(10)
-                    .collect(Collectors.toList());
             List<String> lines = new ArrayList<>();
-            for (int i = 0; i < topTen.size(); i++) {
-                Village v = topTen.get(i);
-                lines.add(getMessage("top-ten-" + args[1].toLowerCase() + ".entry").getReplacedText(
-                        "place", String.valueOf(i + 1),
-                        "name", v.getName(),
-                        "level", String.valueOf(v.getLevel()),
-                        "description", v.getDescription(),
-                        "state", v.getStateTag(),
-                        "access", v.getAccess() != LandAccess.PRIVATE ? v.getAccess().getTag() : "",
-                        "residents", String.valueOf(v.getResidentIds().size())
-                ));
-            }
+            villageStream.sorted(Village::compareTo).limit(10)
+                    .forEachOrdered(v -> lines.add(getMessage("top-ten-" + args[1].toLowerCase() + ".entry").getReplacedText(
+                            "place", String.valueOf(lines.size() + 1),
+                            "name", v.getName(),
+                            "level", String.valueOf(v.getLevel()),
+                            "description", v.getDescription(),
+                            "state", v.getStateTag(),
+                            "access", v.getAccess() != LandAccess.PRIVATE ? v.getAccess().getTag() : "",
+                            "residents", String.valueOf(v.getResidentIds().size())
+                    )));
             return String.join("\n", lines);
         }
     }
@@ -105,22 +98,16 @@ public class PlaceholderApiIntegration implements ConfigMessages {
             }
         } else {
             // get top 10
-            List<Empire> topTen = empireStream
-                    .sorted(Empire::compareTo)
-                    .limit(10)
-                    .collect(Collectors.toList());
             List<String> lines = new ArrayList<>();
-            for (int i = 0; i < topTen.size(); i++) {
-                Empire e = topTen.get(i);
-                lines.add(getMessage("top-ten-empires.entry").getReplacedText(
-                        "place", String.valueOf(i + 1),
-                        "name", e.getName(),
-                        "description", e.getDescription(),
-                        "state", e.getStateTag(),
-                        "access", e.getAccess() != LandAccess.PRIVATE ? e.getAccess().getTag() : "",
-                        "members", String.valueOf(e.getMemberIds().size())
-                ));
-            }
+            empireStream.sorted(Empire::compareTo).limit(10)
+                    .forEachOrdered(e -> lines.add(getMessage("top-ten-empires.entry").getReplacedText(
+                            "place", String.valueOf(lines.size() + 1),
+                            "name", e.getName(),
+                            "description", e.getDescription(),
+                            "state", e.getStateTag(),
+                            "access", e.getAccess() != LandAccess.PRIVATE ? e.getAccess().getTag() : "",
+                            "members", String.valueOf(e.getMemberIds().size())
+                    )));
             return String.join("\n", lines);
         }
     }
