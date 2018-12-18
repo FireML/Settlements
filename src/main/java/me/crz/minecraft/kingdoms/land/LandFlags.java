@@ -12,9 +12,9 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.TitleBuilder;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
+import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -226,7 +226,8 @@ public class LandFlags extends Base implements LandFlagBase {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerMove(PlayerMoveChunkEvent event) {
         Player player = event.getPlayer();
-        Village playerVillage = VillageManager.getInstance().getVillageFromPlayer(player);
+        Resident resident = ResidentManager.getInstance().getResident(player);
+        Village playerVillage = resident.getVillage();
         OwnedLand originalLand = LandManager.getInstance().getLand(event.getFrom());
         OwnedLand destinationLand = LandManager.getInstance().getLand(event.getTo());
         boolean sameVillage = originalLand != null && destinationLand != null && originalLand.getLandOwner().equals(destinationLand.getLandOwner());
@@ -261,7 +262,7 @@ public class LandFlags extends Base implements LandFlagBase {
                             "description", destinationLand.getDescription(),
                             "pvp", destinationLand.getMode(PlotMode.pvp) ? Message.get("pvp-is-enabled").getText() : ""
                     ));
-                } else if (destinationLand.isForSale() && (destinationLand.getLandOwner().equals(playerVillage) || destinationLand.isEmbassy())) {
+                } else if (destinationLand.isForSale() && (destinationLand.getLandOwner().isMember(resident) || destinationLand.isEmbassy())) {
                     MessageUtils.tellAdvanced(player, (destinationLand.isEmbassy() ? "embassy" : "plot") + ".for-sale",
                             "name", destinationLand.getLandOwner().getName(),
                             "state", destinationLand.getLandOwner().getStateTag(),

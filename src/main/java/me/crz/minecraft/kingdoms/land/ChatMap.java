@@ -192,7 +192,7 @@ public class ChatMap {
                 symbol = Symbol.OUTPOST;
             }
 
-            if (land.isOwnedBy(resident.getVillage())) {
+            if (land.getLandOwner().isMember(resident)) {
                 relation = Relation.OWN;
                 if (land.isOutpost() || ownOutposts.contains(land)) {
                     relation = Relation.OWN_OUTPOST;
