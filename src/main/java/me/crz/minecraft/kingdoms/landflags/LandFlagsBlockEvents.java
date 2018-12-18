@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.landflags;
 
+import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureCombustEvent;
 import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureDamageEvent;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Pair;
@@ -83,6 +84,19 @@ public class LandFlagsBlockEvents implements LandFlagBase, Listener {
         if (!getCanBuildAll(e.getDamager(), e.getEntity().getLocation()).getLeft()) {
             e.setCancelled(true);
             e.getDamager().sendActionBar(getText("cannot-attack-animals"));
+        }
+    }
+
+    @EventHandler
+    public void onPassiveCombust(PassiveCreatureCombustEvent e) {
+        if (e.getEntity() == null) {
+            return;
+        }
+        if (e.getCombuster() == null) {
+            return;
+        }
+        if (!getCanBuildAll(e.getCombuster(), e.getEntity().getLocation()).getLeft()) {
+            e.setCancelled(true);
         }
     }
 
