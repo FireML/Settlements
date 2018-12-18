@@ -24,7 +24,7 @@ public class Message {
     private final boolean exists;
     private BaseComponent[] components;
 
-    public Message(String key) {
+    protected Message(String key) {
         this.key = key;
         String text = "&cUnknown message &6" + key;
         if (ConfigManager.getInstance().getMessagesConfig().isString(key)) {
@@ -125,7 +125,7 @@ public class Message {
     public static Message get(String key) {
         Message message = messages.get(key.toLowerCase());
         if (message == null) {
-            message = new Message(key);
+            message = new Message(key.toLowerCase());
             messages.put(key.toLowerCase(), message);
         }
         return message;
