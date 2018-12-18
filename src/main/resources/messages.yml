@@ -291,6 +291,7 @@ names:
     speed2: Speed 2 Buff
     haste1: Haste 1 Buff
     haste2: Haste 2 Buff
+    nightvision: Nightvision Buff
     extra-claims: 10 Extra Claims
     extra-outpost: 1 Extra Outpost
   empireperk:
@@ -304,6 +305,7 @@ names:
     speed2: Speed 2 Buff
     haste1: Haste 1 Buff
     haste2: Haste 2 Buff
+    nightvision: Nightvision Buff
     extra-claims: 20 Extra Claims to all Members
     extra-radius: 50 Block World Radius
     flying: Flying in Empire World

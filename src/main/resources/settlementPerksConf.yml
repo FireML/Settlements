@@ -133,6 +133,15 @@ haste2:
   cost:
     unlock:
       cash: 1000
+nightvision:
+  state: kingdom
+  level: 10
+  effects:
+    - type: night_vision
+      strength: 1
+  cost:
+    unlock:
+      cash: 1000
 extra-claims:
   state: kingdom
   level: 10
