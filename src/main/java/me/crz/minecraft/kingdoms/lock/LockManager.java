@@ -28,6 +28,7 @@ import org.bukkit.util.Vector;
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Map;
@@ -337,8 +338,11 @@ public class LockManager implements LockProvider {
     }
 
     public Collection<Lock> getLocks(String world) {
-        return lockTable.get(world.toLowerCase()).asMap().values().stream()
-                .flatMap((Function<Map<String, Lock>, Stream<Lock>>) stringLockMap
-                        -> stringLockMap.values().stream()).collect(Collectors.toSet());
+        if (lockTable.get(world.toLowerCase()) != null) {
+            return lockTable.get(world.toLowerCase()).asMap().values().stream()
+                    .flatMap((Function<Map<String, Lock>, Stream<Lock>>) stringLockMap
+                            -> stringLockMap.values().stream()).collect(Collectors.toSet());
+        }
+        return new HashSet<>();
     }
 }
