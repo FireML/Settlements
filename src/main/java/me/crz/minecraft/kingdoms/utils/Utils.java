@@ -123,6 +123,20 @@ public class Utils {
         return 0;
     }
 
+    public static int getVillageMaxTax() {
+        if (ConfigManager.getInstance().getConfig().isInt("village-max-tax")) {
+            return ConfigManager.getInstance().getConfig().getInt("village-max-tax");
+        }
+        return -1;
+    }
+
+    public static int getEmpireMaxTax() {
+        if (ConfigManager.getInstance().getConfig().isInt("empire-max-tax")) {
+            return ConfigManager.getInstance().getConfig().getInt("empire-max-tax");
+        }
+        return -1;
+    }
+
     public static int getUpkeepCost() {
         if (ConfigManager.getInstance().getConfig().isInt("upkeep.cost-per-claim")) {
             return ConfigManager.getInstance().getConfig().getInt("upkeep.cost-per-claim");

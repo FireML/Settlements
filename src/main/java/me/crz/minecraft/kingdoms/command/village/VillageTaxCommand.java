@@ -17,6 +17,14 @@ public class VillageTaxCommand extends VillageSubCommand {
                 }
                 try {
                     long amount = Long.parseLong(args[0]);
+                    int maxTax = Utils.getVillageMaxTax();
+                    if (maxTax > -1 && amount > maxTax) {
+                        getMessage("above-max").tell(resident,
+                                "amount", String.valueOf(amount),
+                                "max", String.valueOf(maxTax)
+                        );
+                        return true;
+                    }
                     resident.getVillage().setTax(amount);
                     getMessage("success").tell(resident.getVillage().getOnlineResidents(),
                             "state", resident.getVillage().getStateTag(),

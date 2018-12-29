@@ -72,6 +72,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         if (getTax() > 0) {
             Utils.runAsync(() -> {
                 long totalTax = 0;
+                long tax = getTax();
                 for (Resident resident : getResidents()) {
                     if (resident.getUUID().equals(getChiefId())) {
                         continue;
@@ -80,17 +81,17 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                     if (player == null) {
                         player = Bukkit.getOfflinePlayer(resident.getUUID());
                     }
-                    if (KingdomsPlugin.getInstance().econ.withdrawPlayer(player, getTax()).transactionSuccess()) {
-                        addToBank(getTax());
-                        totalTax += getTax();
+                    if (KingdomsPlugin.getInstance().econ.withdrawPlayer(player, tax).transactionSuccess()) {
+                        addToBank(tax);
+                        totalTax += tax;
                         Message.get("tax.removed").tell(resident,
-                                "amount", String.valueOf(getTax()),
+                                "amount", String.valueOf(tax),
                                 "state", getState().getTag(),
                                 "name", getName());
                     } else {
                         Message.get("tax.couldnt-pay").tell(getOnlineResidents(),
                                 "player", resident.getName(),
-                                "amount", String.valueOf(getTax()),
+                                "amount", String.valueOf(tax),
                                 "state", getState().getTag(),
                                 "name", getName()
                         );
@@ -399,6 +400,15 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
             residents.remove(((Resident) target).getUUID());
             VillageManager.getInstance().leaveVillage((Resident) target);
         }
+    }
+
+    @Override
+    public long getTax() {
+        int maxTax = Utils.getVillageMaxTax();
+        if (maxTax > -1 && super.getTax() > maxTax) {
+            return maxTax;
+        }
+        return super.getTax();
     }
 
     public boolean leaveEmpire() {

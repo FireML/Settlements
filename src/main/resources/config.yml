@@ -16,6 +16,8 @@ reset-channel-on-login: true
 empire-creation-cost: 0
 village-creation-cost: 0
 outpost-creation-cost: 0
+empire-max-tax: 1000000
+village-max-tax: -1
 teleport-delay:
   outpost: 3
   village: 3

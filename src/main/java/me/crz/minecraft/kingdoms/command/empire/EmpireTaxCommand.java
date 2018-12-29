@@ -17,6 +17,14 @@ public class EmpireTaxCommand extends EmpireSubCommand {
                 }
                 try {
                     long amount = Long.parseLong(args[0]);
+                    int maxTax = Utils.getEmpireMaxTax();
+                    if (maxTax > -1 && amount > maxTax) {
+                        getMessage("above-max").tell(resident,
+                                "amount", String.valueOf(amount),
+                                "max", String.valueOf(maxTax)
+                        );
+                        return true;
+                    }
                     resident.getVillage().getEmpire().setTax(amount);
                     getMessage("success").tell(resident.getVillage().getEmpire().getOnlineResidents(), "amount", String.valueOf(amount));
                     Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire()));

@@ -71,22 +71,23 @@ public class Empire extends LandOwner implements Comparable<Empire> {
         }
 
         if (getTax() > 0) {
-            int paidTaxes = 0;
+            long paidTaxes = 0;
+            long tax = getTax();
             for (Village member : getMembers()) {
                 if (member.getId().equals(getCapitalId())) {
                     continue;
                 }
-                if (member.removeFromBank(member.getTax())) {
-                    addToBank(getTax());
-                    paidTaxes += getTax();
+                if (member.removeFromBank(tax)) {
+                    addToBank(tax);
+                    paidTaxes += tax;
                     Message.get("empire-tax.removed").tell(member.getOnlineResidents(),
-                            "amount", String.valueOf(getTax()),
+                            "amount", String.valueOf(tax),
                             "state", member.getState().getTag(),
                             "settlement", member.getName(),
                             "name", getName());
                 } else {
                     Message.get("empire-tax.couldnt-pay").tell(getOnlineResidents(),
-                            "amount", String.valueOf(getTax()),
+                            "amount", String.valueOf(tax),
                             "state", member.getState().getTag(),
                             "settlement", member.getName(),
                             "name", getName()
@@ -96,7 +97,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
             }
             payUpkeep(paidTaxes);
 
-            int finalPaidTaxes = paidTaxes;
+            long finalPaidTaxes = paidTaxes;
             Utils.runAsync(() -> {
                 DatabaseManager.getInstance().saveVillages(getMembers());
                 DatabaseManager.getInstance().log(this, null, null, "tax", "cash", finalPaidTaxes);
@@ -168,6 +169,15 @@ public class Empire extends LandOwner implements Comparable<Empire> {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public long getTax() {
+        int maxTax = Utils.getEmpireMaxTax();
+        if (maxTax > -1 && super.getTax() > maxTax) {
+            return maxTax;
+        }
+        return super.getTax();
     }
 
     public static Empire deserialize(Map<String, Object> map) {
