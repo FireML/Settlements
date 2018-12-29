@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class VillageListCommand extends SubCommand {
     public VillageListCommand(SubCommand parent) {
-        super(parent, "list [open] [<page>]");
+        super(parent, "list [open] [<page>]", "top");
     }
 
     @Override
@@ -80,7 +80,8 @@ public class VillageListCommand extends SubCommand {
                         "residents", String.valueOf(v.getResidentIds().size()),
                         "chief", chief.getName(),
                         "chieftitle", chief.getTitle(),
-                        "chiefrank", VillageRank.CHIEF.getTag(v)
+                        "chiefrank", VillageRank.CHIEF.getTag(v),
+                        "place", String.valueOf(i + 1)
                 );
             }
 

@@ -438,9 +438,17 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     @Override
     public int compareTo(Village v) {
         if (v.getState() != getState())
-            return v.getState().compareTo(getState());
+            return getState().compareTo(v.getState());
         if (v.getLevel() != getLevel())
             return Integer.compare(v.getLevel(), getLevel());
+        int otherClaimed = LandManager.getInstance().getClaimedLandSize(v);
+        int claimed = LandManager.getInstance().getClaimedLandSize(this);
+        if (otherClaimed != claimed)
+            return Integer.compare(otherClaimed, claimed);
+        if (v.getResidentIds().size() != getResidentIds().size())
+            return Long.compare(v.getResidentIds().size(), getResidentIds().size());
+        if (v.getBank() != getBank())
+            return Long.compare(v.getBank(), getBank());
         return 0;
     }
 

@@ -951,7 +951,7 @@ command:
     list:
       description: "List settlements"
       head: "&7------- &c{access}Settlements [{page}/{maxpage}]&7 -------"
-      entry: "&8\\[&9*&8] [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{residents} players\n&f{description})"
+      entry: "&8\\[&9{place}.&8] [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{residents} players\n&f{description})"
       footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
       previous: "&b<< Prev "
       next: "&b Next >>"
@@ -1325,8 +1325,8 @@ command:
     list:
       description: "List empire"
       head: "&7------- &c{access}Empires [{page}/{maxpage}]&7 -------"
-      entry: "&8\\[&9*&8] [&r&e{name}](&8Capital: &f{capitalstate}{capital}\n&8Leader: &f{chieftitle} {chief}\n&8Size: &f{size} members\n&f{description})"
-      entry-abandoned: "&8\\[&9*&8] [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&f{description})"
+      entry: "&8\\[&9{place}.&8] [&r&e{name}](&8Capital: &f{capitalstate}{capital}\n&8Leader: &f{chieftitle} {chief}\n&8Size: &f{size} members\n&f{description})"
+      entry-abandoned: "&8\\[&9{place}.&8] [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&f{description})"
       footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
       previous: "&b<< Prev "
       next: "&b Next >>"

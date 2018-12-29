@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 
 public class EmpireListCommand extends SubCommand {
     public EmpireListCommand(SubCommand parent) {
-        super(parent, "list [open] [<page>]");
+        super(parent, "list [open] [<page>]", "top");
     }
 
     @Override
@@ -67,7 +68,18 @@ public class EmpireListCommand extends SubCommand {
             );
             for (int i = (finalPage - 1) * Utils.getEntriesPerPage(); i < empires.size() && i < finalPage * Utils.getEntriesPerPage(); i++) {
                 Empire e = empires.get(i);
-                getMessage("entry" + (e.isAbandoned() ? "-abandoned" : "")).tell(sender, e.getReplacements(this));
+                getMessage("entry" + (e.isAbandoned() ? "-abandoned" : "")).tell(sender,
+                        "name", e.getName(),
+                        "description", e.getDescription(),
+                        "access", e.getAccess() != LandAccess.PRIVATE ? e.getAccess().getTag() : "",
+                        "size", String.valueOf(e.getMemberIds().size()),
+                        "capital", e.getCapital() != null ? e.getCapital().getName() : "-",
+                        "capitalstate", e.getCapital() != null ? e.getCapital().getStateTag() : "-",
+                        "chief", e.getCapital() != null ? e.getCapital().getChief().getName() : "-",
+                        "chieftitle", e.getCapital() != null ? e.getCapital().getChief().getTitle() : "-",
+                        "chiefrank", VillageRank.CHIEF.getTag(e.getCapital()),
+                        "place", String.valueOf(i + 1)
+                );
             }
 
             ComponentBuilder next = new ComponentBuilder("")
