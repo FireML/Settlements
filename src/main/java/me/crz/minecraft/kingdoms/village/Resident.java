@@ -40,7 +40,7 @@ public class Resident implements ConfigurationSerializable, Targetable {
     private int title = 0;
     private Village village = null;
     private ChatChannel activeChannel = ChatChannel.GENERAL;
-    private Set<ChatChannel> channels = EnumSet.noneOf(ChatChannel.class);
+    private Set<ChatChannel> channels = EnumSet.of(ChatChannel.GENERAL);
     private Set<UUID> ignore = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private Set<UUID> friends = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private boolean swear = true;

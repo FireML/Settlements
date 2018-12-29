@@ -66,7 +66,11 @@ public class ChatManager extends Base implements ConfigMessages {
         }
 
         if (resetChannel) {
-            channel = ChatChannel.GENERAL;
+            if (res.isListening(ChatChannel.GENERAL)) {
+                channel = ChatChannel.GENERAL;
+            } else {
+                channel = res.getChannels().iterator().next();
+            }
             if (res.setActiveChannel(channel) && !Utils.shouldResetChannelOnLogin()) {
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
             }

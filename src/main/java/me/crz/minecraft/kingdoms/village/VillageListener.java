@@ -48,7 +48,7 @@ public class VillageListener implements Listener {
                     res.setName(event.getName());
                     ResidentManager.getInstance().addResident(res);
                 }
-                if (Utils.shouldResetChannelOnLogin()) {
+                if (Utils.shouldResetChannelOnLogin() && res.isListening(ChatChannel.GENERAL)) {
                     res.setActiveChannel(ChatChannel.GENERAL);
                     Message.get("command.chat.joined").tell(res, "name", ChatChannel.GENERAL.getTag());
                 }
@@ -62,12 +62,21 @@ public class VillageListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Resident res = ResidentManager.getInstance().getResident(event.getPlayer()); // should be cached
+        boolean activeChanged = false;
         for (ChatChannel channel : ChatChannel.values()) {
-            if (channel.canChat(event.getPlayer())) {
-                res.getChannels().add(channel);
-            } else {
-                res.getChannels().remove(channel);
+            if (channel != ChatChannel.GENERAL) {
+                if (channel.canChat(event.getPlayer())) {
+                    res.getChannels().add(channel);
+                } else {
+                    res.getChannels().remove(channel);
+                    if (res.getActiveChannel() == channel) {
+                        activeChanged = res.setActiveChannel(res.getChannels().iterator().next());
+                    }
+                }
             }
+        }
+        if (activeChanged) {
+            Message.get("command.chat.joined").tell(res, "name", res.getActiveChannel().getTag());
         }
         if (res.hasVillage()) {
             if (res.getVillageRank().below(VillageRank.CHIEF) && !KingdomsPlugin.getInstance().econ.has(event.getPlayer(), res.getVillage().getTax())) {
