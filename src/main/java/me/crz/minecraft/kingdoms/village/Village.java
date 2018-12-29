@@ -189,7 +189,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
 
     public void setLevel(int level) {
         this.level = level;
-        if (Data.first.getString(villageState.getKey() + "-" + level).equals("")) {
+        if (!Data.first.has(villageState.getKey() + "-" + level) || Data.first.getString(villageState.getKey() + "-" + level).equals("")) {
             Data.first.put(villageState.getKey() + "-" + level, this.getName());
             KingdomsPlugin.data.save(KingdomsPlugin.getInstance().getDataFolder());
             for (Player player : Bukkit.getOnlinePlayers()) {
