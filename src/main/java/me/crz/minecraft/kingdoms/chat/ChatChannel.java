@@ -15,6 +15,7 @@ import java.util.Map;
 public enum ChatChannel implements NameTag {
     LOCAL("local", "l"),
     TRADE("trade", "t"),
+    EVENT("event", "ev"),
     GENERAL("general", "g"),
     SETTLEMENT("settlement", "s", "village") {
         @Override

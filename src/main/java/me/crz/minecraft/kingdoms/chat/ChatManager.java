@@ -130,19 +130,6 @@ public class ChatManager extends Base implements ConfigMessages {
                 .getComponents();
 
         switch (channel) {
-            case TRADE:
-            case GENERAL:
-                if (Data.muteChat && !sender.hasPermission("kingdoms.bypass.chatlock")) {
-                    getMessage("locked").tell(sender, "channel", channel.name());
-                    return;
-                }
-
-                Bukkit.getOnlinePlayers().stream()
-                        .map(p -> ResidentManager.getInstance().getResident(p))
-                        .filter(r -> r.isListening(channel)
-                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                        .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
-                break;
             case LOCAL:
                 MessageUtils.tell(sender, unfilteredMessage);
                 Bukkit.getOnlinePlayers().stream()
@@ -189,6 +176,18 @@ public class ChatManager extends Base implements ConfigMessages {
                 }
             case SETTLEMENT:
                 village.getOnlineResidents().stream()
+                        .filter(r -> r.isListening(channel)
+                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
+                        .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                break;
+            default:
+                if (Data.muteChat && !sender.hasPermission("kingdoms.bypass.chatlock")) {
+                    getMessage("locked").tell(sender, "channel", channel.name());
+                    return;
+                }
+
+                Bukkit.getOnlinePlayers().stream()
+                        .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
                         .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));

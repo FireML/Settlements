@@ -40,6 +40,9 @@ commands:
   generalchat:
     description: General chat
     aliases: [general,gc]
+  eventchat:
+    description: Event chat
+    aliases: [event,evc]
   settlementchat:
     description: Settlement chat
     aliases: [villagechat,sc,vc]

@@ -235,6 +235,7 @@ chat:
       social-spy: "&7[&6SS&7]&r {sender} &7➦ &3{target}&7: {message}"
     channel:
       general: "&r{prefix}&7{sender}&r{suffix}&r ➦ {message}"
+      event: "&a[Event] &r{prefix}&7{sender}&r{suffix}&r ➦ &a{message}"
       local: "&e[Local] &r{prefix}&7{sender}&r{suffix}&r ➦ &e{message}"
       admin: "&b[Admin] &r{prefix}&7{sender}&r{suffix}&r ➦ &5{message}"
       staff: "&9[Staff] &r{prefix}&7{sender}&r{suffix}&r ➦ &6{message}"
