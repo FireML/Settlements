@@ -325,13 +325,13 @@ public class EmpireManager {
         World world = Bukkit.getWorld(empire.getWorldName());
         empire.setName(name);
 
-        empire.setInRename(true);
+        empire.setInRegen(true);
         if (!renameWorld(empire, world)) {
             empire.setName(oldName);
-            empire.setInRename(false);
+            empire.setInRegen(false);
             return false;
         }
-        empire.setInRename(false);
+        empire.setInRegen(false);
 
         empires.remove(oldName.replace(' ', '_').toLowerCase());
         empires.put(name.replace(' ', '_').toLowerCase(), empire);
@@ -386,5 +386,14 @@ public class EmpireManager {
             }
         }
         return true;
+    }
+
+    public boolean regenWorld(Empire empire) {
+        World world = Bukkit.getWorld(empire.getWorldName());
+        empire.setInRegen(true);
+        deleteWorld(world);
+        createEmpireWorld(empire);
+        empire.setInRegen(false);
+        return false;
     }
 }

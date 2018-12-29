@@ -134,6 +134,7 @@ help-order:
     - shop
     - title
     - rename
+    - regen
     - setdescription
     - transfer
     - disband

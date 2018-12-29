@@ -207,6 +207,13 @@ public class Utils {
         return 30;
     }
 
+    public static int getEmpireWorldRegenDuration() {
+        if (ConfigManager.getInstance().getConfig().isInt("empires-world.regen-duration")) {
+            return ConfigManager.getInstance().getConfig().getInt("empires-world.regen-duration");
+        }
+        return 0;
+    }
+
     public static boolean shouldResetChannelOnLogin() {
         if (ConfigManager.getInstance().getConfig().isBoolean("reset-channel-on-login")) {
             return ConfigManager.getInstance().getConfig().getBoolean("reset-channel-on-login");

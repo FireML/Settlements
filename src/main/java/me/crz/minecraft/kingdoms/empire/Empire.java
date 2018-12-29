@@ -50,7 +50,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
     private String symbol = "";
     private Set<IdObject> members = new LinkedHashSet<>();
     private Set<UUID> senators = new HashSet<>();
-    private boolean inRename = false;
+    private boolean inRegen = false;
     private long lastRename = 0;
 
     protected Empire() {
@@ -131,6 +131,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
     public Map<String, Object> serialize() {
         Map<String, Object> map = super.serialize();
         map.put("capitalId", getCapitalId().value());
+        map.put("lastRename", getLastRename());
         map.put("symbol", getSymbol());
         map.put("members", getMemberIds().stream().map(IdObject::value).filter(Objects::nonNull).collect(Collectors.toList()));
         map.put("senators", getSenatorIds().stream().map(UUID::toString).collect(Collectors.toList()));
@@ -190,6 +191,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
             return null;
         }
         empire.capital = IdObject.get(map.get("capitalId"));
+        empire.lastRename = (Long) map.get("lastRename");
         empire.setSymbol((String) map.get("symbol"));
         ((Collection<String>) map.get("senators")).stream().map(UUID::fromString).forEach(u -> empire.getSenatorIds().add(u));
         if (map.get("members") != null && map.get("members") instanceof Collection) {
@@ -406,13 +408,13 @@ public class Empire extends LandOwner implements Comparable<Empire> {
         return members.isEmpty();
     }
 
-    public void setInRename(boolean inRename) {
+    public void setInRegen(boolean inRegen) {
         lastRename = System.currentTimeMillis();
-        this.inRename = inRename;
+        this.inRegen = inRegen;
     }
 
-    public boolean isInRename() {
-        return inRename;
+    public boolean isInRegen() {
+        return inRegen;
     }
 
     public long getLastRename() {

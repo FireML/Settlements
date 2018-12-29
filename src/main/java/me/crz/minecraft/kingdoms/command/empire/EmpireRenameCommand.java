@@ -32,7 +32,7 @@ public class EmpireRenameCommand extends EmpireSubCommand {
             getError("too-long").tell(res, "input", name, "amount", String.valueOf(20));
         } else if (!allowed.matcher(name).matches()) {
             getError("invalid-characters").tell(res, "input", name);
-        } else if (empire.isInRename()) {
+        } else if (empire.isInRegen()) {
             getError("rename-in-progress").tell(res);
         } else if (empire.getLastRename() + Utils.getEmpireWorldCooldown() * 1000 > System.currentTimeMillis()) {
             getError("rename-on-cooldown").tell(res, "cooldown", String.valueOf(Utils.getEmpireWorldCooldown()));

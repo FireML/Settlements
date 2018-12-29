@@ -70,6 +70,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         updateClaimModes();
         updateClaimModesUniqueKey();
         updateAllies();
+        updateLandOwnersMissingCollumns();
     }
 
     private void initializeTables() throws SQLException {
@@ -142,6 +143,12 @@ public class MySqlDatabaseManager extends DatabaseManager {
     private void updateAllies() {
         alterColumnOrRecreate(MySqlTable.SETTLEMENT_ALLIES, "ally", "allies", "VARCHAR(320) NOT NULL");
         alterColumnOrRecreate(MySqlTable.EMPIRE_ALLIES, "ally", "allies", "VARCHAR(320) NOT NULL");
+    }
+
+    private void updateLandOwnersMissingCollumns() {
+        addColumn(MySqlTable.SETTLEMENTS, "created", "BIGINT DEFAULT 0 AFTER description");
+        addColumn(MySqlTable.EMPIRES, "created", "BIGINT DEFAULT 0 AFTER description");
+        addColumn(MySqlTable.EMPIRES, "lastRename", "BIGINT DEFAULT 0 AFTER created");
     }
 
     @Override
@@ -1055,6 +1062,15 @@ public class MySqlDatabaseManager extends DatabaseManager {
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to alter table " + table.getDbName(), e);
+        }
+    }
+
+    private void addColumn(MySqlTable table, String column, String definition) {
+        try (Connection conn = ds.getConnection();
+             Statement sta = conn.createStatement()) {
+            sta.execute("ALTER TABLE `" + tablePrefix + table.getDbName() + "` ADD COLUMN `" + column + "` " + definition + ";");
+        } catch (SQLException ignored) {
+            // column exists
         }
     }
 

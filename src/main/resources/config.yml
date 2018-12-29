@@ -43,7 +43,10 @@ empires-world:
   environment: normal
   type: normal
   border-radius: 500
+  # Rename cooldown in seconds
   cooldown: 30
+  # Amount of time a world can be regenerated after creation in seconds
+  regen-duration: 3600
 claim-enemy-distance: 4
 close-claims-grace-days: 4
 close-claims-unclaims-outposts: false
