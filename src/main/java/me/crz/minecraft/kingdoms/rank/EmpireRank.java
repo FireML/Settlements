@@ -1,17 +1,38 @@
 package me.crz.minecraft.kingdoms.rank;
 
-import me.crz.minecraft.kingdoms.utils.NameTag;
+import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import org.bukkit.configuration.ConfigurationSection;
 
-public enum EmpireRank implements NameTag, Rankable {
-    LEADER,
-    SENATOR,
-    MEMBER;
+public class EmpireRank extends Rank {
+    @Deprecated
+    public static EmpireRank LEADER = new EmpireRank("", null);
+    @Deprecated
+    public static EmpireRank SENATOR = new EmpireRank("", null);
+    @Deprecated
+    public static EmpireRank MEMBER = new EmpireRank("", null);
+
+    public EmpireRank(String name, ConfigurationSection config) {
+        super(name, config);
+    }
+
+    @Override
+    public EmpireRank getInheritedRank() {
+        return get(getInherits());
+    }
 
     public static EmpireRank get(String name) {
-        try {
-            return EmpireRank.valueOf(name.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return null;
+        return EmpireManager.getInstance().getRank(name);
+    }
+
+    public static EmpireRank valueOf(String string) throws IllegalArgumentException {
+        EmpireRank rank = get(string);
+        if (rank == null) {
+            throw new IllegalArgumentException("No EmpireRank with name " + string);
         }
+        return rank;
+    }
+
+    public static EmpireRank[] values() {
+        return EmpireManager.getInstance().getRanks().toArray(new EmpireRank[0]);
     }
 }

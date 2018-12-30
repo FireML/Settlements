@@ -6,8 +6,6 @@ import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
-import org.bukkit.entity.Player;
 
 public abstract class EmpireSubCommand extends VillageSubCommand {
     private EmpireRank requiredRank = null;
@@ -29,20 +27,14 @@ public abstract class EmpireSubCommand extends VillageSubCommand {
         this(parent, usage, VillageRank.RESIDENT, aliases);
     }
 
-    @Override
-    public boolean testAccess(Player player) {
-        return testRank(player) && super.testAccess(player);
-    }
-
-    private boolean testRank(Player player) {
-        if (!testParentRank(player)) {
+    private boolean testRank(Resident resident) {
+        if (!testParentRank(resident)) {
             return false;
         }
-        Resident resident = ResidentManager.getInstance().getResident(player);
         if (resident != null) {
             if (requiredRank == null) {
                 if (resident.hasEmpire()) {
-                    MessageUtils.tell(player, getError("no-empire-required"));
+                    MessageUtils.tell(resident, getError("no-empire-required"));
                     return false;
                 }
                 return true;
@@ -50,25 +42,19 @@ public abstract class EmpireSubCommand extends VillageSubCommand {
                 if (resident.getEmpireRank().atLeast(requiredRank)) {
                     return true;
                 }
-                MessageUtils.tell(player, getError("rank-required"), "rank", requiredRank.getTag());
+                MessageUtils.tell(resident, getError("rank-required"), "rank", requiredRank.getTag());
             } else {
-                MessageUtils.tell(player, getError("empire-required"));
+                MessageUtils.tell(resident, getError("empire-required"));
             }
         }
         return false;
     }
 
-    private boolean testParentRank(Player player) {
-        return !(getParent() instanceof EmpireSubCommand) || ((EmpireSubCommand) getParent()).testRank(player);
+    private boolean testParentRank(Resident resident) {
+        return !(getParent() instanceof EmpireSubCommand) || ((EmpireSubCommand) getParent()).testRank(resident);
     }
 
-    @Override
-    public boolean hasAccess(Player player) {
-        return super.hasAccess(player) && hasRank(player);
-    }
-
-    private boolean hasRank(Player player) {
-        Resident resident = ResidentManager.getInstance().getResident(player);
+    private boolean hasRank(Resident resident) {
         if (resident != null) {
             if (requiredRank == null) {
                 return !resident.hasEmpire();

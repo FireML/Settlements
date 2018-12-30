@@ -21,6 +21,10 @@ public class EmpireCreateCommand extends EmpireSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
+        if (resident.hasEmpire()) {
+            getError("no-empire-required").tell(resident);
+            return true;
+        }
         if (!resident.getVillage().isMaxLevel()) {
             getError("max-level-kingdom-required").tell(resident,
                     "state", resident.getVillage().getState().getTag(),

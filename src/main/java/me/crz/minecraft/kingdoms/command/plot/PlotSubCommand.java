@@ -58,14 +58,8 @@ public abstract class PlotSubCommand extends ResidentSubCommand {
         return false;
     }
 
-    @Override
-    public boolean hasAccess(Player player) {
-        return super.hasAccess(player) && isPlotAdmin(player);
-    }
-
-    private boolean isPlotAdmin(Player player) {
+    private boolean isPlotAdmin(Resident resident) {
         if (adminCommand) {
-            Resident resident = ResidentManager.getInstance().getResident(player);
             if (resident != null) {
                 if (resident.hasVillage() && resident.getVillage().canAdminPlots(resident)) {
                     return true;

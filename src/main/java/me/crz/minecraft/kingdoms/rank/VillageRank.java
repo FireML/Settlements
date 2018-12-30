@@ -2,12 +2,13 @@ package me.crz.minecraft.kingdoms.rank;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import me.crz.minecraft.kingdoms.utils.ConfigKey;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,37 +16,55 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public enum VillageRank implements Rankable, NameTag {
-    CHIEF,
-    ELDER,
-    RECRUITER,
-    BUILDER,
-    RESIDENT;
+public class VillageRank extends Rank {
+    @Deprecated
+    public static VillageRank CHIEF = new VillageRank("", null);
+    @Deprecated
+    public static VillageRank ELDER = new VillageRank("", null);
+    @Deprecated
+    public static VillageRank RECRUITER = new VillageRank("", null);
+    @Deprecated
+    public static VillageRank BUILDER = new VillageRank("", null);
+    @Deprecated
+    public static VillageRank RESIDENT = new VillageRank("", null);
 
     private Multimap<VillageState, String> titles = MultimapBuilder.enumKeys(VillageState.class).arrayListValues().build();
 
-    private static Map<String, VillageRank> byTitle = new HashMap<>();
-
-    static {
-        for (VillageRank rank : values()) {
-            for (VillageState state : VillageState.values()) {
-                List<String> titles = Message.get(state.getKey() + ".rank." + rank.getKey()).getTextList().stream().map(ChatColor::stripColor).collect(Collectors.toList());
-                rank.titles.putAll(state, titles);
-                byTitle.put(rank.name().toLowerCase(), rank);
-                byTitle.putAll(titles.stream().collect(Collectors.toMap(String::toLowerCase, t -> rank)));
-            }
+    public VillageRank(String name, ConfigurationSection config) {
+        super(name, config);
+        for (VillageState state : VillageState.values()) {
+            List<String> titles = Message.get(state.getKey() + ".rank." + getKey()).getTextList().stream().map(ChatColor::stripColor).collect(Collectors.toList());
+            this.titles.putAll(state, titles);
         }
     }
 
+    @Override
+    public VillageRank getInheritedRank() {
+        return get(getInherits());
+    }
+
     public static VillageRank get(String string) {
-        return byTitle.get(string.toLowerCase());
+        return VillageManager.getInstance().getRank(string);
+    }
+
+    public static VillageRank valueOf(String string) throws IllegalArgumentException {
+        VillageRank rank = get(string);
+        if (rank == null) {
+            throw new IllegalArgumentException("No VillageRank with name " + string);
+        }
+        return rank;
     }
 
     public List<String> getTitles(Village village) {
-        return village != null ? (List<String>) titles.get(village.getState()) : new ArrayList<>();
+        return village != null ? getTitles(village.getState()) : new ArrayList<>();
+    }
+
+    public List<String> getTitles(VillageState state) {
+        return (List<String>) titles.get(state);
     }
 
     public String getTag(Village village) {
@@ -65,6 +84,10 @@ public enum VillageRank implements Rankable, NameTag {
             }
         }
         return titles;
+    }
+
+    public static VillageRank[] values() {
+        return VillageManager.getInstance().getRanks().toArray(new VillageRank[0]);
     }
 
     public int getTitleIndex(Village village, String name) {

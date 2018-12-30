@@ -152,6 +152,7 @@ village:
     subtitle: ""
   rank:
     chief: Chief
+    assistant: Assistant
     elder: Elder
     builder: Builder
     recruiter: Recruiter
@@ -171,6 +172,7 @@ kingdom:
     chief:
     - King
     - Queen
+    assistant: Assistant
     elder: Noble
     builder: Architect
     recruiter: Greeter

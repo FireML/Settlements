@@ -4,8 +4,6 @@ import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
-import org.bukkit.entity.Player;
 
 public abstract class VillageSubCommand extends ResidentSubCommand {
     private VillageRank requiredRank = null;
@@ -19,50 +17,38 @@ public abstract class VillageSubCommand extends ResidentSubCommand {
         super(parent, usage, aliases);
     }
 
-    @Override
-    public boolean testAccess(Player player) {
-        return testRank(player) && super.testAccess(player);
-    }
-
-    private boolean testRank(Player player) {
-        if (!testParentRank(player)) {
+    private boolean testRank(Resident resident) {
+        if (!testParentRank(resident)) {
             return false;
         }
-        Resident resident = ResidentManager.getInstance().getResident(player);
         if (resident != null) {
             if (requiredRank == null) {
                 if (resident.hasVillage()) {
-                    getError("free-required").tell(player);
+                    getError("free-required").tell(resident);
                     return false;
                 }
                 return true;
             } else if (resident.hasVillage()) {
                 if (resident.getVillage().getId().isNull()) {
-                    getError("missing-village-id").tell(player);
+                    getError("missing-village-id").tell(resident);
                     return true;
                 }
                 if (resident.getVillageRank().atLeast(requiredRank)) {
                     return true;
                 }
-                getError("rank-required").tell(player, "rank", requiredRank.getTag(resident.getVillage()));
+                getError("rank-required").tell(resident, "rank", requiredRank.getTag(resident.getVillage()));
             } else {
-                getError("village-required").tell(player);
+                getError("village-required").tell(resident);
             }
         }
         return false;
     }
 
-    private boolean testParentRank(Player player) {
-        return !(getParent() instanceof VillageSubCommand) || ((VillageSubCommand) getParent()).testRank(player);
+    private boolean testParentRank(Resident resident) {
+        return !(getParent() instanceof VillageSubCommand) || ((VillageSubCommand) getParent()).testRank(resident);
     }
 
-    @Override
-    public boolean hasAccess(Player player) {
-        return super.hasAccess(player) && hasRank(player);
-    }
-
-    private boolean hasRank(Player player) {
-        Resident resident = ResidentManager.getInstance().getResident(player);
+    private boolean hasRank(Resident resident) {
         if (resident != null) {
             if (requiredRank == null) {
                 return !resident.hasVillage();

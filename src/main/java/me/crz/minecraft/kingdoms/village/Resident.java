@@ -1,7 +1,7 @@
 package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.integration.IgnoreProvider;
+import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.IdObject;
@@ -16,7 +16,6 @@ import org.bukkit.entity.Player;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashSet;
 
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -25,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,8 +35,8 @@ public class Resident implements ConfigurationSerializable, Targetable {
     private Object id = null;
     private UUID uuid;
     private String name;
-    private VillageRank rank = VillageRank.RESIDENT;
-    private EmpireRank empireRank = EmpireRank.MEMBER;
+    private VillageRank rank = VillageManager.getInstance().getDefaultRank();
+    private EmpireRank empireRank = EmpireManager.getInstance().getDefaultRank();
     private int title = 0;
     private Village village = null;
     private ChatChannel activeChannel = ChatChannel.GENERAL;
@@ -56,6 +56,33 @@ public class Resident implements ConfigurationSerializable, Targetable {
     public Resident(UUID uuid, String name) {
         this.uuid = uuid;
         this.name = name;
+    }
+
+    /**
+     * Tests if a resident has a certain permission based on his rank. Does not test Player/Bukkit permissions!
+     * @param permission    Permission to check
+     * @return              The value of the permission or false if it's not set or not a "kingdoms.command" permission
+     */
+    public boolean hasPermission(String permission) {
+        if (permission.startsWith("kingdoms.command.")) {
+            String rankPerm = permission.substring("kingdoms.command.".length());
+            if (!hasVillage()) {
+                return VillageManager.getInstance().getNoRank().getPermissionValue(rankPerm).orElse(false);
+            }
+
+            Optional<Boolean> villageValue = getVillage().getEffectivePermissionValue(getVillageRank(), rankPerm);
+            if (villageValue.isPresent()) {
+                return villageValue.get();
+            }
+
+            if (getVillage().hasEmpire()) {
+                Optional<Boolean> empireValue = getVillage().getEmpire().getEffectivePermissionValue(getEmpireRank(), rankPerm);
+                if (empireValue.isPresent()) {
+                    return empireValue.get();
+                }
+            }
+        }
+        return false;
     }
 
     public boolean hasVillage() {
@@ -192,11 +219,11 @@ public class Resident implements ConfigurationSerializable, Targetable {
         VillageRank prev = getVillageRank();
         this.rank = rank;
         if (hasEmpire() && getVillage().getEmpire().isCapital(getVillage())) {
-            if (rank == VillageRank.CHIEF) {
-                setEmpireRank(EmpireRank.LEADER);
+            if (rank == VillageManager.getInstance().getChiefRank()) {
+                setEmpireRank(EmpireManager.getInstance().getLeaderRank());
                 getVillage().getEmpire().removeSenator(this);
-            } else if (prev == VillageRank.CHIEF) {
-                setEmpireRank(EmpireRank.SENATOR);
+            } else if (prev == VillageManager.getInstance().getChiefRank()) {
+                setEmpireRank(EmpireManager.getInstance().getLeaderRank().getInheritedRank());
                 getVillage().getEmpire().addSenator(this);
             }
         }

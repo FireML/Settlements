@@ -24,6 +24,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -47,9 +48,16 @@ public class EmpireManager {
     private Map<String, EmpirePerk> perks;
     private Map<String, EmpirePerk> perkTags;
 
+    private Map<String, EmpireRank> ranks = new LinkedHashMap<>();
+
+    private EmpireRank noRank = null;
+    private EmpireRank leaderRank = null;
+    private EmpireRank defaultRank = null;
+
     public EmpireManager() {
         super();
         loadPerks();
+        loadRanks();
         for (Empire empire : DatabaseManager.getInstance().getAllEmpires()) {
             empires.put(empire.getName().replace(' ', '_').toLowerCase(), empire);
             empireIds.put(empire.getId(), empire);
@@ -67,6 +75,36 @@ public class EmpireManager {
             } catch (IllegalArgumentException e) {
                 KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Config for Perk " + perkName + " was invalid! " + e.getMessage());
             }
+        }
+    }
+
+    private void loadRanks() {
+        Configuration config = ConfigManager.getInstance().getSettlementRanksConf().getConfig();
+        for (String rankName : config.getKeys(false)) {
+            EmpireRank rank = new EmpireRank(rankName, config.getConfigurationSection(rankName));
+            if (rankName.equalsIgnoreCase("none")) {
+                noRank = rank;
+            } else {
+                ranks.put(rankName.toLowerCase(), rank);
+            }
+        }
+        EmpireRank lastRank = null;
+        for (EmpireRank rank : ranks.values()) {
+            if (leaderRank == null) {
+                leaderRank = rank;
+            }
+            if (lastRank != null) {
+                lastRank.setInherits(rank.name());
+                rank.setOrdinal(lastRank.ordinal() + 1);
+            } else {
+                rank.setOrdinal(0);
+            }
+            lastRank = rank;
+        }
+        defaultRank = lastRank;
+        if (noRank == null) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "No empire rank with name 'none' defined! This rank is used for people that are not in an Empire!");
+            noRank = new EmpireRank("none", null);
         }
     }
 
@@ -113,13 +151,37 @@ public class EmpireManager {
         return perk;
     }
 
+    public Collection<EmpirePerk> getPerks() {
+        return perks.values();
+    }
+
+    public Collection<EmpireRank> getRanks() {
+        return ranks.values();
+    }
+
+    public EmpireRank getRank(String name) {
+        return ranks.get(name.toLowerCase());
+    }
+
+    public EmpireRank getLeaderRank() {
+        return leaderRank;
+    }
+
+    public EmpireRank getDefaultRank() {
+        return defaultRank;
+    }
+
+    public EmpireRank getNoRank() {
+        return noRank;
+    }
+
     public void registerNewEmpire(Empire empire) {
         if (!empire.getId().isNull()) {
             KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving empire " + empire.getName() + " to the database! It already had an ID defined?");
             return;
         }
         empire.getCapital().setEmpire(empire);
-        empire.getCapital().getChief().setEmpireRank(EmpireRank.LEADER);
+        empire.getCapital().getChief().setEmpireRank(getLeaderRank());
         empires.put(empire.getName().replace(' ', '_').toLowerCase(), empire);
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveEmpire(empire);
@@ -189,10 +251,6 @@ public class EmpireManager {
         return world;
     }
 
-    public Collection<EmpirePerk> getPerks() {
-        return perks.values();
-    }
-
     public void deleteEmpire(Empire empire) {
         empires.remove(empire.getName().toLowerCase());
         empireIds.remove(empire.getId());
@@ -249,7 +307,7 @@ public class EmpireManager {
 
         // Update ranks
         Set<Resident> modifiedResidents = new HashSet<>();
-        empire.getCapital().getChief().setEmpireRank(EmpireRank.MEMBER);
+        empire.getCapital().getChief().setEmpireRank(getDefaultRank());
         modifiedResidents.add(empire.getCapital().getChief());
         for (Resident senator : empire.getSenators()) {
             senator.setEmpireRank(EmpireRank.MEMBER);
@@ -282,9 +340,9 @@ public class EmpireManager {
         village.setEmpire(null);
         List<Resident> toSave = new ArrayList<>();
         for (Resident member : village.getResidents()) {
-            if (member.getEmpireRank().above(EmpireRank.MEMBER)) {
+            if (member.getEmpireRank().above(getDefaultRank())) {
                 toSave.add(member);
-                member.setEmpireRank(EmpireRank.MEMBER);
+                member.setEmpireRank(getDefaultRank());
                 empire.removeSenator(member);
             }
             member.removeChannel(ChatChannel.EMPIRE);

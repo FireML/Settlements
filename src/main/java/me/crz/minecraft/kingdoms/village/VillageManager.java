@@ -6,7 +6,6 @@ import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -19,11 +18,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,9 +39,16 @@ public class VillageManager {
     private Map<String, LevelPerk> perks;
     private Map<String, LevelPerk> perkTags;
 
+    private Map<String, VillageRank> ranks = new LinkedHashMap<>();
+    private Map<String, VillageRank> byTitle = new HashMap<>();
+
+    private VillageRank noRank = null;
+
+    private VillageRank chiefRank = null;
+    private VillageRank defaultRank = null;
     private VillageManager() {
-        super();
         loadPerks();
+        loadRanks();
         for (Village village : DatabaseManager.getInstance().getAllVillages()) {
             villages.put(village.getName().replace(' ', '_').toLowerCase(), village);
             villageIDs.put(village.getId(), village);
@@ -57,6 +66,43 @@ public class VillageManager {
             } catch (IllegalArgumentException e) {
                 KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Config for Perk " + perkName + " was invalid! " + e.getMessage());
             }
+        }
+    }
+
+    private void loadRanks() {
+        Configuration config = ConfigManager.getInstance().getSettlementRanksConf().getConfig();
+        for (String rankName : config.getKeys(false)) {
+            VillageRank rank = new VillageRank(rankName, config.getConfigurationSection(rankName));
+            if (rankName.equalsIgnoreCase("none")) {
+                noRank = rank;
+            } else {
+                ranks.put(rankName.toLowerCase(), rank);
+            }
+        }
+        VillageRank lastRank = null;
+        for (VillageRank rank : ranks.values()) {
+            if (chiefRank == null) {
+                chiefRank = rank;
+            }
+            if (lastRank != null) {
+                lastRank.setInherits(rank.name());
+                rank.setOrdinal(lastRank.ordinal() + 1);
+            } else {
+                rank.setOrdinal(0);
+            }
+            lastRank = rank;
+        }
+        defaultRank = lastRank;
+        for (VillageRank rank : new ArrayList<>(ranks.values())) {
+            for (VillageState state : VillageState.values()) {
+                for (String title : rank.getTitles(state)) {
+                    byTitle.put(title.toLowerCase(), rank);
+                }
+            }
+        }
+        if (noRank == null) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "No settlement rank with name 'none' defined! This rank is used for people that are not in a Village!");
+            noRank = new VillageRank("none", null);
         }
     }
 
@@ -79,7 +125,7 @@ public class VillageManager {
         }
         villages.put(village.getName().replace(' ', '_').toLowerCase(), village);
         chief.setVillage(village);
-        chief.setVillageRank(VillageRank.CHIEF);
+        chief.setVillageRank(getChiefRank());
         chief.addChannel(ChatChannel.SETTLEMENT);
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveVillage(village);
@@ -131,8 +177,8 @@ public class VillageManager {
                 "state", village.getState().getTag());
         for (Resident resident : village.getResidents()) {
             resident.setVillage(null);
-            resident.setVillageRank(VillageRank.RESIDENT);
-            resident.setEmpireRank(EmpireRank.MEMBER);
+            resident.setVillageRank(getDefaultRank());
+            resident.setEmpireRank(EmpireManager.getInstance().getDefaultRank());
             if (village.hasEmpire()) {
                 village.getEmpire().removeSenator(resident);
             }
@@ -166,8 +212,8 @@ public class VillageManager {
             }
         }
         resident.setVillage(null);
-        resident.setVillageRank(VillageRank.RESIDENT);
-        resident.setEmpireRank(EmpireRank.MEMBER);
+        resident.setVillageRank(getDefaultRank());
+        resident.setEmpireRank(EmpireManager.getInstance().getDefaultRank());
         if (village.hasEmpire()) {
             village.getEmpire().removeSenator(resident);
         }
@@ -240,6 +286,26 @@ public class VillageManager {
 
     public Collection<LevelPerk> getPerks() {
         return perks.values();
+    }
+
+    public Collection<VillageRank> getRanks() {
+        return ranks.values();
+    }
+
+    public VillageRank getRank(String name) {
+        return ranks.getOrDefault(name.toLowerCase(), byTitle.get(name.toLowerCase()));
+    }
+
+    public VillageRank getChiefRank() {
+        return chiefRank;
+    }
+
+    public VillageRank getDefaultRank() {
+        return defaultRank;
+    }
+
+    public VillageRank getNoRank() {
+        return noRank;
     }
 
     public void changeName(Village village, String name) {

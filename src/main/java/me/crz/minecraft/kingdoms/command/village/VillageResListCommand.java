@@ -24,7 +24,7 @@ public class VillageResListCommand extends VillageSubCommand {
             String online = getMessage("online").getText();
             String offline = getMessage("offline").getText();
             String separator = getMessage("separator").getText();
-            Multimap<VillageRank, Resident> rankMap = MultimapBuilder.enumKeys(VillageRank.class).arrayListValues().build();
+            Multimap<VillageRank, Resident> rankMap = MultimapBuilder.hashKeys().arrayListValues().build();
             for (Resident resident : sender.getVillage().getResidents()) {
                 rankMap.put(resident.getVillageRank(), resident);
             }

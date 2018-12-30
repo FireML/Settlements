@@ -518,13 +518,13 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     }
 
     private String getResidentsToString(Message rankMessage, Message entry, String online, String offline, CharSequence separator) {
-        Multimap<VillageRank, Resident> rankMap = MultimapBuilder.enumKeys(VillageRank.class).arrayListValues().build();
+        Multimap<VillageRank, Resident> rankMap = MultimapBuilder.hashKeys().arrayListValues().build();
         for (Resident resident : getResidents()) {
             rankMap.put(resident.getVillageRank(), resident);
         }
         List<String> lines = new ArrayList<>();
         for (VillageRank rank : rankMap.keySet()) {
-            if (rank == VillageRank.CHIEF) {
+            if (rank == VillageManager.getInstance().getChiefRank()) {
                 // should be listed extra
                 continue;
             }

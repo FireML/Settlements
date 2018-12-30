@@ -1,0 +1,22 @@
+none:
+  permissions:
+  - village.create
+chief:
+  permissions:
+  - empire.create
+  - village.remove
+assistant:
+  permissions:
+  -
+elder:
+  permissions:
+  -
+recruiter:
+  permissions:
+  -
+builder:
+  permissions:
+  -
+resident:
+  permissions:
+  -
