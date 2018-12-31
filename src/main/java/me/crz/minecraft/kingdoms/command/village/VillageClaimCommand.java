@@ -5,7 +5,6 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -21,7 +20,7 @@ import java.util.Set;
 
 public class VillageClaimCommand extends VillageSubCommand {
     public VillageClaimCommand(SubCommand parent) {
-        super(parent, "claim [<radius>]", VillageRank.ELDER);
+        super(parent, "claim [<radius>]");
         registerCommand(new VillageSubCommand(this, "<radius>", "<#>") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
@@ -42,25 +41,29 @@ public class VillageClaimCommand extends VillageSubCommand {
         int maxClaimAllowed = village.getMaxClaimableChunks();
         Set<SimpleChunkLocation> toClaim = new LinkedHashSet<>();
         if (args.length == 1) {
-            try {
-                int radius = Integer.parseInt(args[0]);
-                int maxRadius = KingdomsPlugin.getInstance().getConfig().getInt("claim-max-radius");
-                if (radius > maxRadius) {
-                    getError("radius-too-large").tell(res, "radius", String.valueOf(radius), "max", String.valueOf(maxRadius));
-                    return true;
+            if (res.hasPermission("kingdoms.command.village.claim.radius")) {
+                try {
+                    int radius = Integer.parseInt(args[0]);
+                    int maxRadius = KingdomsPlugin.getInstance().getConfig().getInt("claim-max-radius");
+                    if (radius > maxRadius) {
+                        getError("radius-too-large").tell(res, "radius", String.valueOf(radius), "max", String.valueOf(maxRadius));
+                        return true;
+                    }
+                    toClaim.add(new SimpleChunkLocation(player.getLocation()));
+                    toClaim.addAll(Utils.getChunksAround(player, radius));
+                } catch (NumberFormatException e) {
+                    getError("not-a-number").tell(res, "input", args[0]);
+                    return false;
                 }
-                toClaim.add(new SimpleChunkLocation(player.getLocation()));
-                toClaim.addAll(Utils.getChunksAround(player, radius));
-            } catch (NumberFormatException e) {
-                getError("not-a-number").tell(res, "input", args[0]);
-                return false;
             }
         } else if (args.length  == 2) {
-            try {
-                toClaim.add(new SimpleChunkLocation(player.getWorld().getName(), Integer.parseInt(args[0]), Integer.parseInt(args[1])));
-            } catch (NumberFormatException e) {
-                getError("not-a-number").tell(res, "input", args[0] + " " + args[1]);
-                return false;
+            if (res.hasPermission("kingdoms.command.village.claim.coords")) {
+                try {
+                    toClaim.add(new SimpleChunkLocation(player.getWorld().getName(), Integer.parseInt(args[0]), Integer.parseInt(args[1])));
+                } catch (NumberFormatException e) {
+                    getError("not-a-number").tell(res, "input", args[0] + " " + args[1]);
+                    return false;
+                }
             }
         } else {
             toClaim.add(new SimpleChunkLocation(player.getLocation()));

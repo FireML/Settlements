@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 public class VillageSetRankCommand extends VillageSubCommand {
     public VillageSetRankCommand(SubCommand parent) {
-        super(parent, "setrank <player> <rank>", VillageRank.ELDER, "rank");
+        super(parent, "setrank <player> <rank>", "rank");
     }
 
     @Override

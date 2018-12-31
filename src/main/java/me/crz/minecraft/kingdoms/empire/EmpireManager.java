@@ -50,7 +50,6 @@ public class EmpireManager {
 
     private Map<String, EmpireRank> ranks = new LinkedHashMap<>();
 
-    private EmpireRank noRank = null;
     private EmpireRank leaderRank = null;
     private EmpireRank defaultRank = null;
 
@@ -81,12 +80,7 @@ public class EmpireManager {
     private void loadRanks() {
         Configuration config = ConfigManager.getInstance().getSettlementRanksConf().getConfig();
         for (String rankName : config.getKeys(false)) {
-            EmpireRank rank = new EmpireRank(rankName, config.getConfigurationSection(rankName));
-            if (rankName.equalsIgnoreCase("none")) {
-                noRank = rank;
-            } else {
-                ranks.put(rankName.toLowerCase(), rank);
-            }
+            ranks.put(rankName.toLowerCase(), new EmpireRank(rankName, config.getConfigurationSection(rankName)));
         }
         EmpireRank lastRank = null;
         for (EmpireRank rank : ranks.values()) {
@@ -102,10 +96,6 @@ public class EmpireManager {
             lastRank = rank;
         }
         defaultRank = lastRank;
-        if (noRank == null) {
-            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "No empire rank with name 'none' defined! This rank is used for people that are not in an Empire!");
-            noRank = new EmpireRank("none", null);
-        }
     }
 
     public void loadEmpireWorlds() {
@@ -169,10 +159,6 @@ public class EmpireManager {
 
     public EmpireRank getDefaultRank() {
         return defaultRank;
-    }
-
-    public EmpireRank getNoRank() {
-        return noRank;
     }
 
     public void registerNewEmpire(Empire empire) {

@@ -1,12 +1,14 @@
 package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
-import me.crz.minecraft.kingdoms.utils.Targetable;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
@@ -16,10 +18,6 @@ import org.bukkit.entity.Player;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
-
-import me.crz.minecraft.kingdoms.chat.ChatChannel;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,15 +57,25 @@ public class Resident implements ConfigurationSerializable, Targetable {
     }
 
     /**
-     * Tests if a resident has a certain permission based on his rank. Does not test Player/Bukkit permissions!
+     * Tests if a resident has a certain permission based on his rank or Bukkit permissions
      * @param permission    Permission to check
-     * @return              The value of the permission or false if it's not set or not a "kingdoms.command" permission
+     * @return              The value of the permission or false
      */
     public boolean hasPermission(String permission) {
+        if (hasCommandPermission(permission)) {
+            Player player = getPlayer();
+            if (player != null) {
+                return player.hasPermission(permission);
+            }
+        }
+        return false;
+    }
+
+    private boolean hasCommandPermission(String permission) {
         if (permission.startsWith("kingdoms.command.")) {
             String rankPerm = permission.substring("kingdoms.command.".length());
             if (!hasVillage()) {
-                return VillageManager.getInstance().getNoRank().getPermissionValue(rankPerm).orElse(false);
+                return false;
             }
 
             Optional<Boolean> villageValue = getVillage().getEffectivePermissionValue(getVillageRank(), rankPerm);
@@ -81,8 +89,9 @@ public class Resident implements ConfigurationSerializable, Targetable {
                     return empireValue.get();
                 }
             }
+            return false;
         }
-        return false;
+        return true;
     }
 
     public boolean hasVillage() {

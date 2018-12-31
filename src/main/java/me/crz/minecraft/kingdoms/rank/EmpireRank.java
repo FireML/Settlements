@@ -1,9 +1,10 @@
 package me.crz.minecraft.kingdoms.rank;
 
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.utils.Next;
 import org.bukkit.configuration.ConfigurationSection;
 
-public class EmpireRank extends Rank {
+public class EmpireRank extends Rank implements Next<EmpireRank> {
     @Deprecated
     public static EmpireRank LEADER = new EmpireRank("", null);
     @Deprecated
@@ -34,5 +35,10 @@ public class EmpireRank extends Rank {
 
     public static EmpireRank[] values() {
         return EmpireManager.getInstance().getRanks().toArray(new EmpireRank[0]);
+    }
+
+    @Override
+    public EmpireRank[] getValues() {
+        return values();
     }
 }

@@ -1,22 +1,76 @@
-none:
-  permissions:
-  - village.create
+# Ranks for people in a settlement. Top ones inherit from the ones below them
 chief:
   permissions:
   - empire.create
-  - village.remove
+  - empire.join
+  - empire.help.chief
+  - village.allyclaim
+  - village.banish
+  - village.bank.withdraw
+  - village.build
+  - village.claim.radius
+  - village.claim.coords
+  - village.history
+  - village.joinfee.set
+  - village.outpost.help.chief
+  - village.outpost.unclaim
+  - village.setaccess
+  - village.sethome
+  - village.shop.repeat
+  - village.shop.unlock
+  - village.tax.set
+  - village.unbanish
+  - village.unclaim.radius
+  - village.unclaim.coords
+  - village.use
 assistant:
   permissions:
-  -
+  - village.disband
+  - village.transfer
+  - village.rename
 elder:
   permissions:
-  -
+  - empire.leave
+  - village.ally
+  - village.banished
+  - village.mode
+  - village.outpost.help.elder
+  - village.outpost.claim
+  - village.outpost.sethome
+  - village.perks.toggle
+  - village.setdescription
+  - village.setrank
+  - village.settings
+  - village.unally
+  - village.unclaim
 recruiter:
   permissions:
-  -
+  - village.invite
+  - village.kick
 builder:
   permissions:
   -
 resident:
   permissions:
-  -
+  - village.allies
+  - village.bank
+  - village.bank.help
+  - village.bank.balance
+  - village.bank.deposit
+  - village.bank.history
+  - village.deposit
+  - village.deposit.history
+  - village.joinfee
+  - village.leave
+  - village.materials
+  - village.outpost
+  - village.outpost.help
+  - village.outpost.list
+  - village.outpost.teleport
+  - village.perks
+  - village.reslist
+  - village.shop
+  - village.tax
+  - village.title
+  - village.upgrade
+  - village.upkeep

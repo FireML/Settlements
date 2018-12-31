@@ -27,6 +27,20 @@ public abstract class EmpireSubCommand extends VillageSubCommand {
         this(parent, usage, VillageRank.RESIDENT, aliases);
     }
 
+    @Override
+    public boolean testAccess(Resident resident) {
+        if (!resident.hasEmpire()) {
+            MessageUtils.tell(resident, getError("empire-required"));
+            return false;
+        }
+        return super.testAccess(resident);
+    }
+
+    @Override
+    public boolean hasAccess(Resident resident) {
+        return resident.hasEmpire() && super.hasAccess(resident);
+    }
+
     private boolean testRank(Resident resident) {
         if (!testParentRank(resident)) {
             return false;

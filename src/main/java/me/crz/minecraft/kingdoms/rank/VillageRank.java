@@ -3,7 +3,7 @@ package me.crz.minecraft.kingdoms.rank;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.utils.NameTag;
+import me.crz.minecraft.kingdoms.utils.Next;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.village.VillageState;
@@ -12,15 +12,12 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class VillageRank extends Rank {
+public class VillageRank extends Rank implements Next<VillageRank> {
     @Deprecated
     public static VillageRank CHIEF = new VillageRank("", null);
     @Deprecated
@@ -107,5 +104,10 @@ public class VillageRank extends Rank {
             return titles.get(index);
         }
         return getTag(village);
+    }
+
+    @Override
+    public VillageRank[] getValues() {
+        return values();
     }
 }

@@ -5,7 +5,6 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.empire.gui.ShopGUI;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -14,9 +13,9 @@ import java.util.stream.Collectors;
 
 public class EmpireShopCommand extends EmpireSubCommand {
     public EmpireShopCommand(SubCommand parent) {
-        super(parent, "shop", EmpireRank.MEMBER, "buyperks");
+        super(parent, "shop", "buyperks");
         setForceOwnUsage(true);
-        registerCommand(new EmpireSubCommand(this, "unlock <perk>", EmpireRank.LEADER, "buy") {
+        registerCommand(new EmpireSubCommand(this, "unlock <perk>", "buy") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length > 0) {

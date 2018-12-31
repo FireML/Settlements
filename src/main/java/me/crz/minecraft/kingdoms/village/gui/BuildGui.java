@@ -1,24 +1,21 @@
 package me.crz.minecraft.kingdoms.village.gui;
 
+import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.KingdomsGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.stream.Collectors;
 
 public class BuildGui extends KingdomsGUI {
     private static BuildGui instance;
@@ -50,7 +47,7 @@ public class BuildGui extends KingdomsGUI {
                 @Override
                 public boolean click(Player p, ClickType clickType) {
                     Resident res = ResidentManager.getInstance().getResident(p);
-                    if (res.hasVillage() && state != res.getVillage().getBuildState() && res.getVillageRank().atLeast(VillageRank.CHIEF)) {
+                    if (res.hasVillage() && state != res.getVillage().getBuildState() && res.hasPermission("village.build")) {
                         res.getVillage().setBuildState(state);
                         MessageUtils.tell(p, Message.get("command.village.build.success"),
                                 "state", state.getTag()

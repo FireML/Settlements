@@ -2,9 +2,12 @@ package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
+import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
@@ -16,12 +19,8 @@ import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.vault.Levels;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import me.crz.minecraft.kingdoms.land.LandManager;
-import me.crz.minecraft.kingdoms.land.OwnedLand;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
-
-import me.crz.minecraft.kingdoms.db.DatabaseManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,8 +40,6 @@ public class VillageManager {
 
     private Map<String, VillageRank> ranks = new LinkedHashMap<>();
     private Map<String, VillageRank> byTitle = new HashMap<>();
-
-    private VillageRank noRank = null;
 
     private VillageRank chiefRank = null;
     private VillageRank defaultRank = null;
@@ -72,12 +69,7 @@ public class VillageManager {
     private void loadRanks() {
         Configuration config = ConfigManager.getInstance().getSettlementRanksConf().getConfig();
         for (String rankName : config.getKeys(false)) {
-            VillageRank rank = new VillageRank(rankName, config.getConfigurationSection(rankName));
-            if (rankName.equalsIgnoreCase("none")) {
-                noRank = rank;
-            } else {
-                ranks.put(rankName.toLowerCase(), rank);
-            }
+            ranks.put(rankName.toLowerCase(), new VillageRank(rankName, config.getConfigurationSection(rankName)));
         }
         VillageRank lastRank = null;
         for (VillageRank rank : ranks.values()) {
@@ -99,10 +91,6 @@ public class VillageManager {
                     byTitle.put(title.toLowerCase(), rank);
                 }
             }
-        }
-        if (noRank == null) {
-            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "No settlement rank with name 'none' defined! This rank is used for people that are not in a Village!");
-            noRank = new VillageRank("none", null);
         }
     }
 
@@ -302,10 +290,6 @@ public class VillageManager {
 
     public VillageRank getDefaultRank() {
         return defaultRank;
-    }
-
-    public VillageRank getNoRank() {
-        return noRank;
     }
 
     public void changeName(Village village, String name) {

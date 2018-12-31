@@ -1,12 +1,47 @@
-none:
-  permissions:
-  -
+# Ranks for people in an empire. Top ones inherit from the ones below them
 leader:
   permissions:
-  -
+  - empire.ally
+  - empire.banish
+  - empire.banished
+  - empire.build
+  - empire.help.leader
+  - empire.disband
+  - empire.joinfee.set
+  - empire.bank.withdraw
+  - empire.perks.toggle
+  - empire.regen
+  - empire.rename
+  - empire.setaccess
+  - empire.sethome
+  - empire.setrank
+  - empire.setsymbol
+  - empire.shop.unlock
+  - empire.shop.repeat
+  - empire.tax.set
+  - empire.transfer
+  - empire.unally
+  - empire.unbanish
+  - empire.use
 senator:
   permissions:
-  -
+  - empire.help.senator
+  - empire.invite
+  - empire.kick
+  - empire.mode
+  - empire.setdescription
+  - empire.settings
 member:
   permissions:
-  -
+  - empire.allies
+  - empire.joinfee
+  - empire.memberlist
+  - empire.bank
+  - empire.bank.balance
+  - empire.bank.deposit
+  - empire.bank.history
+  - empire.perks
+  - empire.senators
+  - empire.shop
+  - empire.tax
+  - empire.upkeep

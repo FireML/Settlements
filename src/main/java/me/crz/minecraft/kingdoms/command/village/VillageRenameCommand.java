@@ -1,11 +1,10 @@
 package me.crz.minecraft.kingdoms.command.village;
 
-import me.crz.minecraft.kingdoms.utils.UtilChat;
-import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.utils.UtilChat;
+import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageManager;
 
 import java.util.regex.Pattern;
 
@@ -13,7 +12,7 @@ public class VillageRenameCommand extends VillageSubCommand {
     private Pattern allowed = Pattern.compile("[\\w-]+");
 
     public VillageRenameCommand(SubCommand parent) {
-        super(parent, "rename <name>", VillageRank.CHIEF);
+        super(parent, "rename <name>");
     }
 
     @Override

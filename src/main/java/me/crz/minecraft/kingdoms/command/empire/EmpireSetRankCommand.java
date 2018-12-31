@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.command.empire;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -12,7 +13,7 @@ import org.bukkit.entity.Player;
 
 public class EmpireSetRankCommand extends EmpireSubCommand {
     public EmpireSetRankCommand(SubCommand parent) {
-        super(parent, "setrank <player> <rank>", EmpireRank.LEADER, "rank");
+        super(parent, "setrank <player> <rank>", "rank");
     }
 
     @Override
@@ -59,7 +60,7 @@ public class EmpireSetRankCommand extends EmpireSubCommand {
 
             if (rank == null) {
                 getError("invalid-rank").tell(player, "rank", args[1]);
-            } else if (rank.equals(EmpireRank.LEADER)) {
+            } else if (rank.equals(EmpireManager.getInstance().getLeaderRank())) {
                 getError("cant-set-leader").tell(player, "base", base);
             } else if (!res.getEmpireRank().above(tres.getEmpireRank())) {
                 getMessage("cant-set-higher").tell(player, "rank", res.getEmpireRank().getTag());
@@ -67,7 +68,7 @@ public class EmpireSetRankCommand extends EmpireSubCommand {
                 getError("rank-required").tell(player, "rank", EmpireRank.values().length > rank.ordinal() + 1 ? EmpireRank.values()[rank.ordinal() + 1].getTag() : "-");
             } else {
                 tres.setEmpireRank(rank);
-                if (rank == EmpireRank.SENATOR) {
+                if (rank.name().equalsIgnoreCase("senator")) {
                     empire.addSenator(tres);
                 } else {
                     empire.removeSenator(tres);

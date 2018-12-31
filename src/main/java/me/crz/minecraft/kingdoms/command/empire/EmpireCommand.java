@@ -6,10 +6,11 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.lock.LockCommand;
 import me.crz.minecraft.kingdoms.command.lock.UnlockCommand;
 import me.crz.minecraft.kingdoms.command.plot.PlotCommand;
-import me.crz.minecraft.kingdoms.db.LogType;
+import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -17,12 +18,16 @@ public class EmpireCommand extends SubCommand {
     public EmpireCommand() {
         super(null, "empire", "e");
         setHelpCommand(new HelpCommand(this));
-        getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), VillageRank.RECRUITER));
-        getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), VillageRank.BUILDER));
-        getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), VillageRank.ELDER));
-        getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), VillageRank.CHIEF));
-        getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), EmpireRank.SENATOR));
-        getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), EmpireRank.LEADER));
+        for (VillageRank rank : VillageManager.getInstance().getRanks()) {
+            if (rank != VillageManager.getInstance().getDefaultRank()) {
+                getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), rank));
+            }
+        }
+        for (EmpireRank rank : EmpireManager.getInstance().getRanks()) {
+            if (rank != EmpireManager.getInstance().getDefaultRank()) {
+                getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), rank));
+            }
+        }
         getHelpCommand().setDefaultTypeProvider(s -> s instanceof Player && ResidentManager.getInstance().doesResidentHaveEmpire((Player) s) ? "member" : "no");
         registerCommand(new ChatCommand());
         registerCommand(new EmpireAlliesCommand(this));

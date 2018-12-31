@@ -4,13 +4,12 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.gui.AccessGUI;
 import me.crz.minecraft.kingdoms.land.LandAccess;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 public class EmpireSetAccessCommand extends EmpireSubCommand {
     public EmpireSetAccessCommand(SubCommand parent) {
-        super(parent, "setaccess <access>", EmpireRank.LEADER, "set", "access");
+        super(parent, "setaccess <access>", "set", "access");
     }
 
     @Override

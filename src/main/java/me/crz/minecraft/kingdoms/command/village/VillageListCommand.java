@@ -2,12 +2,11 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import com.google.common.collect.ImmutableMap;
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -15,7 +14,6 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -80,7 +78,7 @@ public class VillageListCommand extends SubCommand {
                         "residents", String.valueOf(v.getResidentIds().size()),
                         "chief", chief.getName(),
                         "chieftitle", chief.getTitle(),
-                        "chiefrank", VillageRank.CHIEF.getTag(v),
+                        "chiefrank", chief.getVillageRank().getTag(v),
                         "place", String.valueOf(i + 1)
                 );
             }

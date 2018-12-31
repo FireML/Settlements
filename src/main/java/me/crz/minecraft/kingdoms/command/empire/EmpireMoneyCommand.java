@@ -19,20 +19,20 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
     private final static DecimalFormat DF = new DecimalFormat("#,###");
 
     public EmpireMoneyCommand(SubCommand parent) {
-        super(parent, "bank <deposit|withdraw|balance|history> <amount>", EmpireRank.MEMBER, "money");
+        super(parent, "bank <deposit|withdraw|balance|history> <amount>", "money");
         setHelpCommand(new HelpCommand(this));
         for (EmpireRank rank : EmpireRank.values()) {
             getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), rank));
         }
         getHelpCommand().setDefaultTypeProvider(s -> s instanceof Player && ResidentManager.getInstance().doesResidentHaveEmpire((Player) s) ? "member" : "none");
-        registerCommand(new EmpireSubCommand(this, "balance", EmpireRank.MEMBER) {
+        registerCommand(new EmpireSubCommand(this, "balance") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 getMessage("balance").tell(resident, "amount", DF.format(resident.getVillage().getEmpire().getBank()));
                 return true;
             }
         });
-        registerCommand(new EmpireSubCommand(this, "deposit <amount>", EmpireRank.MEMBER) {
+        registerCommand(new EmpireSubCommand(this, "deposit <amount>") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length < 1) {
@@ -68,7 +68,7 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                 return true;
             }
         });
-        registerCommand(new EmpireSubCommand(this, "withdraw <amount>", EmpireRank.LEADER) {
+        registerCommand(new EmpireSubCommand(this, "withdraw <amount>") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length < 1) {
@@ -104,7 +104,7 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                 return true;
             }
         });
-        registerCommand(new EmpireHistoryCommand(this, EmpireRank.MEMBER, LogType.BANK));
+        registerCommand(new EmpireHistoryCommand(this, LogType.BANK));
     }
 
     @Override

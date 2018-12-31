@@ -4,10 +4,8 @@ import me.crz.minecraft.kingdoms.utils.NameTag;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 public abstract class Rank implements Rankable, NameTag {
 

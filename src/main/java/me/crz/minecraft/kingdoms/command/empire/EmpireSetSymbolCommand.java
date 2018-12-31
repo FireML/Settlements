@@ -2,13 +2,12 @@ package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 public class EmpireSetSymbolCommand extends EmpireSubCommand {
     public EmpireSetSymbolCommand(SubCommand parent) {
-        super(parent, "setsymbol <symbol>", EmpireRank.LEADER, "symbol");
+        super(parent, "setsymbol <symbol>", "symbol");
     }
 
     @Override

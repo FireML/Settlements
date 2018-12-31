@@ -4,8 +4,6 @@ import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
-import me.crz.minecraft.kingdoms.land.LandAccess;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
@@ -22,7 +20,7 @@ public class EmpireHomeCommand extends ResidentSubCommand {
                 getError("empire-required").tell(resident);
                 return false;
             } else if (resident.getVillage().getEmpire().getHome() == null) {
-                getMessage("own-no-home").tell(resident, "chief", EmpireRank.LEADER.getTag());
+                getMessage("own-no-home").tell(resident, "chief", EmpireManager.getInstance().getLeaderRank().getTag());
                 return true;
             } else {
                 empire = resident.getVillage().getEmpire();

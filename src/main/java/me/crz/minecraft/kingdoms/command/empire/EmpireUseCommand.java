@@ -5,7 +5,6 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.gui.UseGui;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.landflags.Use;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -15,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class EmpireUseCommand extends EmpireSubCommand {
     public EmpireUseCommand(SubCommand parent) {
-        super(parent, "use <name> <state>", EmpireRank.LEADER);
+        super(parent, "use <name> <state>");
         registerCommand(new EmpireSubCommand(this, "all <state>") {
             @Override
             public boolean run(Resident res, String base, String alias, String... args) {

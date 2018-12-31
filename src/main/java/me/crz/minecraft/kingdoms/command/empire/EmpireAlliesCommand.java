@@ -2,12 +2,11 @@ package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.common.AllyCommand;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 public class EmpireAlliesCommand extends EmpireSubCommand implements AllyCommand {
     public EmpireAlliesCommand(SubCommand parent) {
-        super(parent, "allies", EmpireRank.LEADER);
+        super(parent, "allies");
     }
 
     @Override

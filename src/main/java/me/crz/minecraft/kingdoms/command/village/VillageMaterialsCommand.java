@@ -1,7 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 
@@ -9,7 +8,7 @@ import java.util.Map;
 
 public class VillageMaterialsCommand extends VillageSubCommand {
     public VillageMaterialsCommand(SubCommand parent) {
-        super(parent, "materials", VillageRank.RESIDENT);
+        super(parent, "materials");
     }
 
     @Override

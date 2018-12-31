@@ -2,14 +2,13 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 public class VillageJoinFeeCommand extends VillageSubCommand {
     public VillageJoinFeeCommand(SubCommand parent) {
-        super(parent, "joinfee [set <amount>]", VillageRank.RESIDENT);
-        registerCommand(new VillageSubCommand(this, "set <amount>", VillageRank.CHIEF) {
+        super(parent, "joinfee [set <amount>]");
+        registerCommand(new VillageSubCommand(this, "set <amount>") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length == 0) {

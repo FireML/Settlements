@@ -172,7 +172,9 @@ kingdom:
     chief:
     - King
     - Queen
-    assistant: Assistant
+    assistant:
+    - Duke
+    - Duchess
     elder: Noble
     builder: Architect
     recruiter: Greeter

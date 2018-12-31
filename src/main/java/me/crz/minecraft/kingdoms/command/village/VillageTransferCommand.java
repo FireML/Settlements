@@ -2,17 +2,17 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageManager;
 
 public class VillageTransferCommand extends VillageSubCommand {
     public VillageTransferCommand(SubCommand parent) {
-        super(parent, "transfer <player>", VillageRank.CHIEF);
+        super(parent, "transfer <player>");
     }
 
     @Override
@@ -36,13 +36,13 @@ public class VillageTransferCommand extends VillageSubCommand {
                 return;
             }
             Utils.runSync(() -> {
-                res.setVillageRank(VillageRank.ELDER);
-                tres.setVillageRank(VillageRank.CHIEF);
+                res.setVillageRank(VillageManager.getInstance().getChiefRank().next());
+                tres.setVillageRank(VillageManager.getInstance().getChiefRank());
                 village.setChief(tres.getUUID());
-                if (village.hasEmpire() && res.getEmpireRank() == EmpireRank.LEADER) {
-                    res.setEmpireRank(EmpireRank.SENATOR);
+                if (village.hasEmpire() && village.getEmpire().isChief(res)) {
+                    res.setEmpireRank(EmpireManager.getInstance().getLeaderRank().next());
                     village.getEmpire().addSenator(res);
-                    tres.setEmpireRank(EmpireRank.LEADER);
+                    tres.setEmpireRank(EmpireManager.getInstance().getLeaderRank());
                     village.getEmpire().removeSenator(tres);
                 }
                 Utils.runAsync(() -> {
@@ -51,7 +51,7 @@ public class VillageTransferCommand extends VillageSubCommand {
                     DatabaseManager.getInstance().saveVillage(village);
                 });
                 MessageUtils.tellResidents(village.getOnlineResidents(), getMessage("success"),
-                        "rank", VillageRank.CHIEF.getTag(village),
+                        "rank", VillageManager.getInstance().getChiefRank().getTag(village),
                         "setter", res.getName(),
                         "target", tres.getName()
                 );

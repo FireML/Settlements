@@ -9,16 +9,18 @@ import me.crz.minecraft.kingdoms.command.village.outpost.OutpostTeleportCommand;
 import me.crz.minecraft.kingdoms.command.village.outpost.OutpostUnclaimCommand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.VillageManager;
 
 public class VillageOutPostCommand extends VillageSubCommand {
 
     public VillageOutPostCommand(SubCommand parent) {
-        super(parent, "outpost <options>", VillageRank.RESIDENT);
+        super(parent, "outpost <options>");
         setHelpCommand(new HelpCommand(this));
-        getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), VillageRank.RECRUITER));
-        getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), VillageRank.BUILDER));
-        getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), VillageRank.ELDER));
-        getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), VillageRank.CHIEF));
+        for (VillageRank rank : VillageManager.getInstance().getRanks()) {
+            if (rank != VillageManager.getInstance().getDefaultRank()) {
+                getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), rank));
+            }
+        }
         registerCommand(new OutpostClaimCommand(this));
         registerCommand(new OutpostUnclaimCommand(this));
         registerCommand(new OutpostSethomeCommand(this));

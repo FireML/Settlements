@@ -2,23 +2,27 @@ package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
-public class EmpireJoinCommand extends EmpireSubCommand {
+public class EmpireJoinCommand extends VillageSubCommand {
     public EmpireJoinCommand(SubCommand parent) {
-        super(parent, "join <name>", VillageRank.CHIEF);
+        super(parent, "join <name>");
     }
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
+        if (resident.hasEmpire()) {
+            getError("no-empire-required").tell(resident);
+            return true;
+        }
         if (args.length < 1) {
             return false;
         }

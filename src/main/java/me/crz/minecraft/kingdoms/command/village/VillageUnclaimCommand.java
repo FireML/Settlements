@@ -4,7 +4,6 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
@@ -16,7 +15,7 @@ import java.util.Set;
 
 public class VillageUnclaimCommand extends VillageSubCommand {
     public VillageUnclaimCommand(SubCommand parent) {
-        super(parent, "unclaim [<radius>]", VillageRank.ELDER);
+        super(parent, "unclaim [<radius>]");
         registerCommand(new VillageSubCommand(this, "<radius>", "<#>") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
@@ -34,8 +33,8 @@ public class VillageUnclaimCommand extends VillageSubCommand {
         }
 
         Set<SimpleChunkLocation> toUnclaim = new LinkedHashSet<>();
-        if (res.getVillageRank().atLeast(VillageRank.CHIEF)) {
-            if (args.length == 1) {
+        if (args.length == 1) {
+            if (res.hasPermission("kingdoms.command.village.unclaim.radius")) {
                 try {
                     int radius = Integer.parseInt(args[0]);
                     int maxRadius = KingdomsPlugin.getInstance().getConfig().getInt("claim-max-radius");
@@ -49,7 +48,9 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                     getError("not-a-number").tell(res, "input", args[0]);
                     return false;
                 }
-            } else if (args.length == 2) {
+            }
+        } else if (args.length == 2) {
+            if (res.hasPermission("kingdoms.command.village.unclaim.coords")) {
                 try {
                     toUnclaim.add(new SimpleChunkLocation(player.getWorld().getName(), Integer.parseInt(args[0]), Integer.parseInt(args[1])));
                 } catch (NumberFormatException e) {
