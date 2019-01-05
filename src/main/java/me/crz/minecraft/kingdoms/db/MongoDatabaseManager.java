@@ -126,6 +126,18 @@ public class MongoDatabaseManager extends DatabaseManager {
     }
 
     @Override
+    public void unclaimLand(String worldName) {
+        Utils.catchSync();
+        landCollection.deleteMany(Filters.eq("world", worldName));
+    }
+
+    @Override
+    public void renameLandWorld(String oldName, String newName) {
+        Utils.catchSync();
+        landCollection.updateMany(Filters.eq("world", oldName), new Document("$set", new Document("world", newName)));
+    }
+
+    @Override
     public void saveLand(OwnedLand... lands) {
         Utils.catchSync();
         for (OwnedLand land : lands) {

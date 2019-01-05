@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
@@ -39,7 +41,7 @@ import org.bukkit.World;
 
 public class LandManager {
     private static LandManager instance;
-    private HashBasedTable<String, String, OwnedLand> landTable = HashBasedTable.create();
+    private Table<String, String, OwnedLand> landTable = HashBasedTable.create();
     private Multimap<IdObject, OwnedLand> villageLands = MultimapBuilder.hashKeys().hashSetValues().build();
     private Multimap<UUID, OwnedLand> playerPlots = MultimapBuilder.hashKeys().hashSetValues().build();
     private Multimap<UUID, OwnedLand> linkedPlots = MultimapBuilder.hashKeys().hashSetValues().build();
@@ -135,6 +137,21 @@ public class LandManager {
             return null;
         }
         return getLand(new SimpleChunkLocation(chunk));
+    }
+
+    public void renameWorld(String oldName, String newName) {
+        Table<String, String, OwnedLand> newEntries = landTable.row(oldName).entrySet().stream().collect(Tables.toTable(e -> newName, Map.Entry::getKey, e -> {
+            e.getValue().setWorldName(newName);
+            return e.getValue();
+        }, HashBasedTable::create));
+        landTable.row(oldName).clear();
+        landTable.putAll(newEntries);
+        Utils.runAsync(() -> DatabaseManager.getInstance().renameLandWorld(oldName, newName));
+    }
+
+    public void removeWorld(String worldName) {
+        landTable.row(worldName).clear();
+        Utils.runAsync(() -> DatabaseManager.getInstance().unclaimLand(worldName));
     }
 
     public void unclaimLand(Collection<OwnedLand> lands) {

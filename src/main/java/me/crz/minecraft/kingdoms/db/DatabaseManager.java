@@ -47,6 +47,10 @@ public abstract class DatabaseManager {
 
     public abstract void unclaimLand(Village village);
 
+    public abstract void unclaimLand(String worldName);
+
+    public abstract void renameLandWorld(String oldName, String newName);
+
     public void saveLand(Collection<OwnedLand> lands) {
         saveLand(lands.toArray(new OwnedLand[0]));
     }

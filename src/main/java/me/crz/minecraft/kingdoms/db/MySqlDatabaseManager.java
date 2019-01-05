@@ -283,6 +283,33 @@ public class MySqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
+    public void unclaimLand(String worldName) {
+        Utils.catchSync();
+
+        try (Connection conn = ds.getConnection();
+             PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE world = ?;")) {
+            sta.setString(1, worldName);
+            sta.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to delete claims of world " + worldName + " from database! ", e);
+        }
+    }
+
+    @Override
+    public void renameLandWorld(String oldName, String newName) {
+        Utils.catchSync();
+
+        try (Connection conn = ds.getConnection();
+             PreparedStatement sta = conn.prepareStatement("UPDATE " + tablePrefix + "claims SET world = ? WHERE world = ?;")) {
+            sta.setString(1, newName);
+            sta.setString(2, oldName);
+            sta.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to change claims world from " + oldName + " to " + newName + " in database! ", e);
+        }
+    }
+
+    @Override
     public void saveLand(OwnedLand... lands) {
         Utils.catchSync();
         if (lands.length == 0) {
