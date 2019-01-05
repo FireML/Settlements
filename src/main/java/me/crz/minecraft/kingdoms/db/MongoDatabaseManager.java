@@ -150,6 +150,12 @@ public class MongoDatabaseManager extends DatabaseManager {
     }
 
     @Override
+    public void deleteLand(IdObject idObject) {
+        Utils.catchSync();
+        landCollection.deleteOne(Filters.eq("_id", idObject.value()));
+    }
+
+    @Override
     public Collection<Empire> getAllEmpires() {
         Utils.catchSync();
         List<Empire> empires = new ArrayList<>();

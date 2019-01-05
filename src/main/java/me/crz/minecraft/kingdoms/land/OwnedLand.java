@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.db.DatabaseSerializable;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.utils.IdObject;
@@ -355,7 +356,8 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
                     : VillageManager.getInstance().getVillageFromId(IdObject.get(map.get("settlementId")));
         }
         if (landOwner == null) {
-            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not find owner for OwnedLand! (" + map + ")");
+            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not find owner for OwnedLand! Removing it from database... (" + map + ")");
+            DatabaseManager.getInstance().deleteLand(IdObject.get(map));
             return null;
         }
         OwnedLand land = new OwnedLand(landOwner, location);

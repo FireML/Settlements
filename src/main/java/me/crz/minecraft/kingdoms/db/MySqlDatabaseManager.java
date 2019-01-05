@@ -327,6 +327,19 @@ public class MySqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
+    public void deleteLand(IdObject idObject) {
+        Utils.catchSync();
+        String sql = "DELETE FROM " + tablePrefix + "claims WHERE id = ?;";
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, (Integer) idObject.value());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to delete claims " + idObject + " from database!", e);
+        }
+    }
+
+    @Override
     public Collection<Village> getAllVillages() {
         Utils.catchSync();
         String sql = "SELECT s.*, r.uuid AS chief FROM " + tablePrefix + "settlements AS s LEFT JOIN " + tablePrefix + "residents AS r ON s.chiefId = r.id;";

@@ -6,7 +6,7 @@ import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.lock.Lock;
-import me.crz.minecraft.kingdoms.utils.Targetable;
+import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
@@ -57,6 +57,8 @@ public abstract class DatabaseManager {
     public abstract void saveLand(OwnedLand... lands);
 
     public abstract Collection<OwnedLand> getAllLand();
+
+    public abstract void deleteLand(IdObject idObject);
 
     public abstract Collection<Village> getAllVillages();
 
