@@ -180,6 +180,18 @@ public class ChatManager extends Base implements ConfigMessages {
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
                         .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
                 break;
+            case EVENT:
+                if (Data.muteChat && !sender.hasPermission("kingdoms.bypass.chatlock")) {
+                    getMessage("locked").tell(sender, "channel", channel.name());
+                    return;
+                }
+
+                sender.getWorld().getPlayers().stream()
+                        .map(p -> ResidentManager.getInstance().getResident(p))
+                        .filter(r -> r.isListening(channel)
+                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
+                        .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                break;
             default:
                 if (Data.muteChat && !sender.hasPermission("kingdoms.bypass.chatlock")) {
                     getMessage("locked").tell(sender, "channel", channel.name());
