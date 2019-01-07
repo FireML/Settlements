@@ -993,6 +993,7 @@ command:
       description: Changes settings for your village claims
     outpost:
       claim:
+        no-home: "&c&lERROR &r&7You need to claim a normal chunk as your home fist!"
         max-outpost-chunks: "&c&lERROR &r&7Your settlement can only claim &e{max}&r&7 outpost chunks!"
         success: "&a&lSUCCESS &r&e{player} &7has claimed &coutpost&7 &e{name}&7 for your settlement at {x},{z}!"
         not-enough-money: "&c&lNot enough money in the bank to pay &r&6&l{amount}&r&c&l to create a new outpost!"

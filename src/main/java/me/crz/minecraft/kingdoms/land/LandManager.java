@@ -264,7 +264,7 @@ public class LandManager {
     }
 
     public Collection<OwnedLand> getClaimedLand(Village village) {
-        return villageLands.get(village.getId()).stream().map(this::getLand).collect(Collectors.toList());
+        return villageLands.get(village.getId());
     }
 
     public OwnedLand claimOutpost(Location location, Village village, String name) {

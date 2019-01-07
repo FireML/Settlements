@@ -24,6 +24,11 @@ public class OutpostClaimCommand extends VillageSubCommand {
             return false;
         }
 
+        if (LandManager.getInstance().getClaimedLand(resident.getVillage()).isEmpty()) {
+            getError("no-home").tell(resident);
+            return true;
+        }
+
         int amountClaimed = resident.getVillage().getOutpostHomes().size();
         int maxClaimAllowed = resident.getVillage().getMaxOutposts();
         if (amountClaimed >= maxClaimAllowed) {
