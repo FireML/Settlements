@@ -14,7 +14,6 @@ import me.crz.minecraft.kingdoms.utils.config.Data;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.VillageManager;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -28,9 +27,10 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ChatManager extends Base implements ConfigMessages {
     private static ChatManager instance;
@@ -132,14 +132,18 @@ public class ChatManager extends Base implements ConfigMessages {
         switch (channel) {
             case LOCAL:
                 MessageUtils.tell(sender, unfilteredMessage);
-                Bukkit.getOnlinePlayers().stream()
+                List<Resident> nearbyPlayers = sender.getWorld().getPlayers().stream()
                         .filter(p -> !p.equals(sender)
-                                && sender.getLocation().getWorld().equals(p.getWorld())
                                 && sender.getLocation().distanceSquared(p.getLocation()) < 200 * 200)
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                        .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                        .collect(Collectors.toList());
+                if (!nearbyPlayers.isEmpty()) {
+                    nearbyPlayers.forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                } else {
+                    getMessage("chat.nobody-nearby").tell(sender);
+                }
                 break;
             case ADMIN:
             case STAFF:
