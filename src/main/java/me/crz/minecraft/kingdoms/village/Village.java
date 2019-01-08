@@ -112,7 +112,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         if (hasEmpire() && getEmpire().isCapital(this)) {
             // no upkeep for empire capitals
             if (lastTax > 0) {
-                DatabaseManager.getInstance().saveVillage(this);
+                Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(this));
             }
             return;
         }
