@@ -32,6 +32,7 @@ import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.scheduler.BukkitTask;
@@ -190,6 +191,16 @@ public class LandFlags extends Base implements LandFlagBase {
     @EventHandler(ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent e) {
         if (e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
+            if (isAllowed(e.getEntity().getLocation(), PlotMode.explosions)) {
+                return;
+            }
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onHangingBreak(HangingBreakEvent e) {
+        if (e.getCause() == HangingBreakEvent.RemoveCause.EXPLOSION) {
             if (isAllowed(e.getEntity().getLocation(), PlotMode.explosions)) {
                 return;
             }
