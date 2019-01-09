@@ -27,7 +27,7 @@ public class SimpleChunkLocation implements ConfigurationSerializable {
     }
 
     public SimpleChunkLocation(Location location) {
-        this(location.getWorld().getName(), (int) location.getX() >> 4, (int) location.getZ() >> 4);
+        this(location.getWorld().getName(), location.getBlockX() >> 4, location.getBlockZ() >> 4);
     }
 
     public SimpleChunkLocation copy() {

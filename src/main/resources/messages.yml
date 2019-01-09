@@ -217,9 +217,9 @@ embassy:
     title: ""
     subtitle: ""
 pvp-is-enabled: " - &c&lPvp is enabled!&7&l"
-cannot-attack-animals: "&c&lYou cannot attack another village's animals!"
 chat:
   locked: "&c&lChat is currently locked!"
+  nobody-nearby: "&c&lThere is nobody around you who could hear you!"
   hover:
     info: "&9Name: &7{name}{rank}{balance}{bonus}{village}{empire}"
     balance: "\n&9Balance: &7{balance}"
@@ -275,6 +275,7 @@ names:
     armor-stand: "Armorstands"
     item-frame: "Item Frames"
     crafting-table: "Crafting tables"
+    animal: "Attack Animals"
     sheer: "Sheering Animals"
     milk: "Milking Cows"
     leash: "Leashing Animals"
@@ -996,6 +997,7 @@ command:
       description: Changes settings for your village claims
     outpost:
       claim:
+        no-home: "&c&lERROR &r&7You need to claim a normal chunk as your home fist!"
         max-outpost-chunks: "&c&lERROR &r&7Your settlement can only claim &e{max}&r&7 outpost chunks!"
         success: "&a&lSUCCESS &r&e{player} &7has claimed &coutpost&7 &e{name}&7 for your settlement at {x},{z}!"
         not-enough-money: "&c&lNot enough money in the bank to pay &r&6&l{amount}&r&c&l to create a new outpost!"

@@ -182,13 +182,6 @@ public class VillageManager {
     }
 
     /**
-     * Runs database operation!
-     */
-    public void saveAll() {
-        DatabaseManager.getInstance().saveVillages(villages.values());
-    }
-
-    /**
      * Use {@link Village#removeMember(Targetable)} instead!
      */
     void leaveVillage(Resident resident) {

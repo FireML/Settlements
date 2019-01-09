@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.landflags;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
+import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -29,6 +30,7 @@ public interface LandFlagBase extends ConfigMessages {
                 }
             }
             if (r != null) {
+                r.setRight(MessageUtils.replacePlaceholders(r.getRight(), "use", use.getTag()));
                 return r;
             }
         }

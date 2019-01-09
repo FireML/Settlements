@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class Message {
+    private final String rawText;
     private final String text;
     private final String key;
     private final boolean exists;
@@ -26,16 +27,20 @@ public class Message {
 
     protected Message(String key) {
         this.key = key;
-        String text = "&cUnknown message &6" + key;
         if (ConfigManager.getInstance().getMessagesConfig().isString(key)) {
-            text = ConfigManager.getInstance().getMessagesConfig().getString(key);
+            rawText = ConfigManager.getInstance().getMessagesConfig().getString(key);
             exists = true;
         } else if (ConfigManager.getInstance().getMessagesConfig().isList(key)) {
             List<?> list = ConfigManager.getInstance().getMessagesConfig().getList(key);
-            text = list.stream().map(String::valueOf).collect(Collectors.joining("\n"));
+            rawText = list.stream().map(String::valueOf).collect(Collectors.joining("\n"));
             exists = true;
         } else {
+            rawText = "";
             exists = false;
+        }
+        String text = rawText;
+        if (!exists) {
+            text = "&cUnknown message &6" + key;
         }
         try {
             components = MineDown.parse(text);
@@ -62,6 +67,10 @@ public class Message {
 
     private String getKey() {
         return key;
+    }
+
+    public String getRawText() {
+        return rawText;
     }
 
     public String getText() {

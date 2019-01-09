@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
+import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
@@ -308,6 +309,7 @@ public class EmpireManager {
                 lockProvider.removeInWorld(empireWorld);
             }
         }
+        LandManager.getInstance().removeWorld(empire.getWorldName());
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveEmpire(empire);
             DatabaseManager.getInstance().saveVillages(modifiedVillages);
@@ -390,16 +392,15 @@ public class EmpireManager {
         }
 
         if (KingdomsPlugin.getInstance().getMultiverse() != null) {
-            if (KingdomsPlugin.getInstance().getMultiverse().renameWorld(world, empire.getWorldName())) {
-                if (empire.getHome() == null) {
-                    empire.setHome(new SimpleLocation(empire.getWorldName(), 0, world.getHighestBlockYAt(0, 0), 0));
-                } else {
-                    empire.getHome().setWorld(empire.getWorldName());
-                }
-                world.setSpawnLocation(empire.getHome().toBukkitLocation());
-                return true;
+            if (!KingdomsPlugin.getInstance().getMultiverse().renameWorld(world, empire.getWorldName())) {
+                return false;
             }
-            return false;
+            if (empire.getHome() == null) {
+                empire.setHome(new SimpleLocation(empire.getWorldName(), 0, world.getHighestBlockYAt(0, 0), 0));
+            } else {
+                empire.getHome().setWorld(empire.getWorldName());
+            }
+            world.setSpawnLocation(empire.getHome().toBukkitLocation());
         } else {
             Map<Player, Location> positions = new LinkedHashMap<>();
             for (Player player : world.getPlayers()) {
@@ -429,6 +430,7 @@ public class EmpireManager {
                 }
             }
         }
+        LandManager.getInstance().renameWorld(world.getName(), empire.getWorldName());
         return true;
     }
 

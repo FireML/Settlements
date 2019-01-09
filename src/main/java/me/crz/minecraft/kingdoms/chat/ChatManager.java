@@ -1,6 +1,8 @@
 package me.crz.minecraft.kingdoms.chat;
 
 import com.google.common.collect.ImmutableMap;
+import de.themoep.minedown.MineDown;
+import de.themoep.minedown.Replacer;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.events.ChannelChatEvent;
@@ -14,7 +16,6 @@ import me.crz.minecraft.kingdoms.utils.config.Data;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.VillageManager;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -28,9 +29,10 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ChatManager extends Base implements ConfigMessages {
     private static ChatManager instance;
@@ -102,8 +104,18 @@ public class ChatManager extends Base implements ConfigMessages {
 
         Village village = res.getVillage();
 
-        Message format = getMessage("format.channel." + channel.getKey());
-        Message.MessageReplacer replacer = format.getReplacer()
+        BaseComponent[] format;
+        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null) {
+            format = MineDown.parse(
+                    KingdomsPlugin.getInstance().getPlaceholderApi().setPlaceholders(
+                            sender, getMessage("format.channel." + channel.getKey()).getRawText()));
+        } else {
+            format = getMessage("format.channel." + channel.getKey()).getComponents();
+        }
+
+        Replacer replacer = new Replacer()
+                .placeholderPrefix('{')
+                .placeholderSuffix('}')
                 .replace("channel", channel.getTag())
                 .replace("prefix", TextComponent.fromLegacyText(senderPrefix))
                 .replace("suffix", TextComponent.fromLegacyText(senderSuffix))
@@ -124,22 +136,26 @@ public class ChatManager extends Base implements ConfigMessages {
                         .create());
         BaseComponent[] filteredMessage = replacer
                 .replace("message", UtilChat.getInstance().filterCurses(message))
-                .getComponents();
+                .replaceIn(format);
         BaseComponent[] unfilteredMessage = replacer
                 .replace("message", message)
-                .getComponents();
+                .replaceIn(format);
 
         switch (channel) {
             case LOCAL:
                 MessageUtils.tell(sender, unfilteredMessage);
-                Bukkit.getOnlinePlayers().stream()
+                List<Resident> nearbyPlayers = sender.getWorld().getPlayers().stream()
                         .filter(p -> !p.equals(sender)
-                                && sender.getLocation().getWorld().equals(p.getWorld())
                                 && sender.getLocation().distanceSquared(p.getLocation()) < 200 * 200)
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                        .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                        .collect(Collectors.toList());
+                if (!nearbyPlayers.isEmpty()) {
+                    nearbyPlayers.forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                } else {
+                    getMessage("chat.nobody-nearby").tell(sender);
+                }
                 break;
             case ADMIN:
             case STAFF:
@@ -180,6 +196,18 @@ public class ChatManager extends Base implements ConfigMessages {
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
                         .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
                 break;
+            case EVENT:
+                if (Data.muteChat && !sender.hasPermission("kingdoms.bypass.chatlock")) {
+                    getMessage("locked").tell(sender, "channel", channel.name());
+                    return;
+                }
+
+                sender.getWorld().getPlayers().stream()
+                        .map(p -> ResidentManager.getInstance().getResident(p))
+                        .filter(r -> r.isListening(channel)
+                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
+                        .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                break;
             default:
                 if (Data.muteChat && !sender.hasPermission("kingdoms.bypass.chatlock")) {
                     getMessage("locked").tell(sender, "channel", channel.name());
@@ -210,7 +238,15 @@ public class ChatManager extends Base implements ConfigMessages {
         HoverEvent senderHover = getHover(sender, res);
         HoverEvent targetHover = getHover(target, tres);
 
-        MessageUtils.tell(sender, getMessage("format.private.sender"), ImmutableMap.of(
+        BaseComponent[] senderFormat;
+        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null) {
+            senderFormat = MineDown.parse(
+                    KingdomsPlugin.getInstance().getPlaceholderApi().setPlaceholders(
+                            sender, getMessage("format.private.sender").getRawText()));
+        } else {
+            senderFormat = getMessage("format.private.sender").getComponents();
+        }
+        MessageUtils.tell(sender, senderFormat, ImmutableMap.of(
                 "sender", new ComponentBuilder(
                         getMessage("format.private.name.sender").getReplacedText(getReplacements(sender, res)))
                         .event(senderHover)
@@ -225,7 +261,15 @@ public class ChatManager extends Base implements ConfigMessages {
                 "staff", sender.hasPermission("kingdoms.prefix.staff") ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
         ));
 
-        MessageUtils.tell(target, getMessage("format.private.target"), ImmutableMap.of(
+        BaseComponent[] targetFormat;
+        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null) {
+            targetFormat = MineDown.parse(
+                    KingdomsPlugin.getInstance().getPlaceholderApi().setPlaceholders(
+                            target, getMessage("format.private.target").getRawText()));
+        } else {
+            targetFormat = getMessage("format.private.target").getComponents();
+        }
+        MessageUtils.tell(target, targetFormat, ImmutableMap.of(
                 "sender", new ComponentBuilder(
                         getMessage("format.private.name.target").getReplacedText(getReplacements(sender, tres)))
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + sender.getName() + " "))
@@ -268,7 +312,15 @@ public class ChatManager extends Base implements ConfigMessages {
     }
 
     private HoverEvent getHover(Player player, Resident res) {
-        return new HoverEvent(HoverEvent.Action.SHOW_TEXT, getMessage("hover.info").getReplacedComponents(
+        BaseComponent[] hover;
+        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null) {
+            hover = MineDown.parse(
+                    KingdomsPlugin.getInstance().getPlaceholderApi().setPlaceholders(
+                            player, getMessage("hover.info").getRawText()));
+        } else {
+            hover = getMessage("hover.info").getComponents();
+        }
+        return new HoverEvent(HoverEvent.Action.SHOW_TEXT, MessageUtils.replacePlaceholders(hover,
                 "name", player.getName(),
                 "displayname", player.getDisplayName(),
                 "prefix", MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(player)),
