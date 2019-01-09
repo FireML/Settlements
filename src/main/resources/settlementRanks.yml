@@ -14,6 +14,8 @@ chief:
   - village.joinfee.set
   - village.outpost.help.chief
   - village.outpost.unclaim
+  - village.perms.set
+  - village.perms.unset
   - village.setaccess
   - village.sethome
   - village.shop.repeat
@@ -38,6 +40,8 @@ elder:
   - village.outpost.claim
   - village.outpost.sethome
   - village.perks.toggle
+  - village.perms
+  - village.perms.show
   - village.setdescription
   - village.setrank
   - village.settings

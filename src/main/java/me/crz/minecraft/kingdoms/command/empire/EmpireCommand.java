@@ -52,6 +52,7 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpireRenameCommand(this));
         registerCommand(new EmpireRegenCommand(this));
         registerCommand(new EmpirePerksCommand(this));
+        registerCommand(new EmpirePermsCommand(this));
         registerCommand(new PlotCommand());
         registerCommand(new LockCommand());
         registerCommand(new UnlockCommand());

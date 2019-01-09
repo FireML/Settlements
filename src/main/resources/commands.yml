@@ -43,6 +43,11 @@ help-order:
     - kick
     - banished
     - settings
+    - perms show
+    assistant:
+    - disband
+    - transfer
+    - rename
     chief:
     - settings
     - claim
@@ -51,6 +56,7 @@ help-order:
     - s unclaim <#>
     - sethome
     - s setrank
+    - perms
     - ally
     - unally
     - invite
@@ -62,10 +68,7 @@ help-order:
     - s plot staff
     - shop
     - title
-    - rename
     - setdescription
-    - transfer
-    - disband
     outpost:
     - list
     - s outpost tp <name>
@@ -115,6 +118,7 @@ help-order:
     - kick
     - e plot staff
     - settings
+    - perms show
     - ally
     - unally
     - invite
@@ -124,6 +128,7 @@ help-order:
     - settings
     - sethome
     - e setrank
+    - perms
     - invite
     - kick
     - e banish <player>|s:<settlement>|e:<empire>

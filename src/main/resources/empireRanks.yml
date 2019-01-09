@@ -10,6 +10,8 @@ leader:
   - empire.joinfee.set
   - empire.bank.withdraw
   - empire.perks.toggle
+  - empire.perms.set
+  - empire.perms.unset
   - empire.regen
   - empire.rename
   - empire.setaccess
@@ -29,6 +31,8 @@ senator:
   - empire.invite
   - empire.kick
   - empire.mode
+  - empire.perms
+  - empire.perms.show
   - empire.setdescription
   - empire.settings
 member:

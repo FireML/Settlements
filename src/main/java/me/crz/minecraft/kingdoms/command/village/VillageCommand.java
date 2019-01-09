@@ -54,6 +54,7 @@ public class VillageCommand extends SubCommand {
         registerCommand(new PlotCommand());
         registerCommand(new LockCommand());
         registerCommand(new UnlockCommand());
+        registerCommand(new VillagePermsCommand(this));
         registerCommand(new VillageRenameCommand(this));
         registerCommand(new VillageResListCommand(this));
         registerCommand(new VillageRulesCommand(this));
