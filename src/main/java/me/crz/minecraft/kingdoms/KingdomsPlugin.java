@@ -55,6 +55,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     private LandPerks lPerks;
     public Economy econ = null;
     private MultiverseIntegration multiverse = null;
+    private PlaceholderApiIntegration placeholderApi = null;
 
     private Set<LockProvider> lockProviders = new LinkedHashSet<>();
     private Set<IgnoreProvider> ignoreProviders = new LinkedHashSet<>();
@@ -111,8 +112,8 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             getLogger().log(Level.INFO, "Hooked into CMI " + cmiIntegration.getCmi().getDescription().getVersion() + "!");
         }
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            PlaceholderApiIntegration placeholderApiIntegration = new PlaceholderApiIntegration();
-            getLogger().log(Level.INFO, "Hooked into PlaceholderAPI " + placeholderApiIntegration.getPlaceholderAPI().getDescription().getVersion() + "!");
+            placeholderApi = new PlaceholderApiIntegration();
+            getLogger().log(Level.INFO, "Hooked into PlaceholderAPI " + placeholderApi.getPlaceholderAPI().getDescription().getVersion() + "!");
         }
         if (data.load(this.getDataFolder())) {
             ConfigManager.getInstance();
@@ -252,6 +253,10 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     public MultiverseIntegration getMultiverse() {
         return multiverse;
+    }
+
+    public PlaceholderApiIntegration getPlaceholderApi() {
+        return placeholderApi;
     }
 
     public LandFlags getLandFlags() {

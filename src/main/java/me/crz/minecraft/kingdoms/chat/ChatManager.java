@@ -1,6 +1,8 @@
 package me.crz.minecraft.kingdoms.chat;
 
 import com.google.common.collect.ImmutableMap;
+import de.themoep.minedown.MineDown;
+import de.themoep.minedown.Replacer;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.events.ChannelChatEvent;
@@ -102,8 +104,18 @@ public class ChatManager extends Base implements ConfigMessages {
 
         Village village = res.getVillage();
 
-        Message format = getMessage("format.channel." + channel.getKey());
-        Message.MessageReplacer replacer = format.getReplacer()
+        BaseComponent[] format;
+        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null) {
+            format = MineDown.parse(
+                    KingdomsPlugin.getInstance().getPlaceholderApi().setPlaceholders(
+                            sender, getMessage("format.channel." + channel.getKey()).getRawText()));
+        } else {
+            format = getMessage("format.channel." + channel.getKey()).getComponents();
+        }
+
+        Replacer replacer = new Replacer()
+                .placeholderPrefix('{')
+                .placeholderSuffix('}')
                 .replace("channel", channel.getTag())
                 .replace("prefix", TextComponent.fromLegacyText(senderPrefix))
                 .replace("suffix", TextComponent.fromLegacyText(senderSuffix))
@@ -124,10 +136,10 @@ public class ChatManager extends Base implements ConfigMessages {
                         .create());
         BaseComponent[] filteredMessage = replacer
                 .replace("message", UtilChat.getInstance().filterCurses(message))
-                .getComponents();
+                .replaceIn(format);
         BaseComponent[] unfilteredMessage = replacer
                 .replace("message", message)
-                .getComponents();
+                .replaceIn(format);
 
         switch (channel) {
             case LOCAL:
@@ -226,7 +238,15 @@ public class ChatManager extends Base implements ConfigMessages {
         HoverEvent senderHover = getHover(sender, res);
         HoverEvent targetHover = getHover(target, tres);
 
-        MessageUtils.tell(sender, getMessage("format.private.sender"), ImmutableMap.of(
+        BaseComponent[] senderFormat;
+        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null) {
+            senderFormat = MineDown.parse(
+                    KingdomsPlugin.getInstance().getPlaceholderApi().setPlaceholders(
+                            sender, getMessage("format.private.sender").getRawText()));
+        } else {
+            senderFormat = getMessage("format.private.sender").getComponents();
+        }
+        MessageUtils.tell(sender, senderFormat, ImmutableMap.of(
                 "sender", new ComponentBuilder(
                         getMessage("format.private.name.sender").getReplacedText(getReplacements(sender, res)))
                         .event(senderHover)
@@ -241,7 +261,15 @@ public class ChatManager extends Base implements ConfigMessages {
                 "staff", sender.hasPermission("kingdoms.prefix.staff") ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
         ));
 
-        MessageUtils.tell(target, getMessage("format.private.target"), ImmutableMap.of(
+        BaseComponent[] targetFormat;
+        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null) {
+            targetFormat = MineDown.parse(
+                    KingdomsPlugin.getInstance().getPlaceholderApi().setPlaceholders(
+                            target, getMessage("format.private.target").getRawText()));
+        } else {
+            targetFormat = getMessage("format.private.target").getComponents();
+        }
+        MessageUtils.tell(target, targetFormat, ImmutableMap.of(
                 "sender", new ComponentBuilder(
                         getMessage("format.private.name.target").getReplacedText(getReplacements(sender, tres)))
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + sender.getName() + " "))
@@ -284,7 +312,15 @@ public class ChatManager extends Base implements ConfigMessages {
     }
 
     private HoverEvent getHover(Player player, Resident res) {
-        return new HoverEvent(HoverEvent.Action.SHOW_TEXT, getMessage("hover.info").getReplacedComponents(
+        BaseComponent[] hover;
+        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null) {
+            hover = MineDown.parse(
+                    KingdomsPlugin.getInstance().getPlaceholderApi().setPlaceholders(
+                            player, getMessage("hover.info").getRawText()));
+        } else {
+            hover = getMessage("hover.info").getComponents();
+        }
+        return new HoverEvent(HoverEvent.Action.SHOW_TEXT, MessageUtils.replacePlaceholders(hover,
                 "name", player.getName(),
                 "displayname", player.getDisplayName(),
                 "prefix", MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(player)),
