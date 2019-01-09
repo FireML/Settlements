@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.landflags;
 
+import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureCombustEvent;
+import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureDamageEvent;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Projectile;
@@ -179,6 +181,34 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
                     e.setCancelled(true);
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onPassiveDamage(PassiveCreatureDamageEvent e) {
+        if (e.getEntity() == null) {
+            return;
+        }
+        if (e.getDamager() == null) {
+            return;
+        }
+        Pair<Boolean, String> response = this.canUse(e.getDamager(), Use.ANIMAL, e.getEntity().getLocation());
+        if (!response.getLeft()) {
+            MessageUtils.tell(e.getDamager(), response.getRight());
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPassiveCombust(PassiveCreatureCombustEvent e) {
+        if (e.getEntity() == null) {
+            return;
+        }
+        if (e.getCombuster() == null) {
+            return;
+        }
+        if (!this.canUse(e.getCombuster(), Use.ANIMAL, e.getEntity().getLocation()).getLeft()) {
+            e.setCancelled(true);
         }
     }
 }

@@ -35,6 +35,7 @@ public enum Use implements NameTag {
     ARMOR_STAND(Material.ARMOR_STAND),
     ITEM_FRAME(Material.ITEM_FRAME),
     CRAFTING_TABLE(Material.CRAFTING_TABLE),
+    ANIMAL(Material.LEATHER),
     SHEER(Material.SHEARS),
     MILK(Material.MILK_BUCKET),
     LEASH(Material.LEAD),

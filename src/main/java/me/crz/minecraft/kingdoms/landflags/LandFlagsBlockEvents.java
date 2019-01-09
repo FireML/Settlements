@@ -90,33 +90,6 @@ public class LandFlagsBlockEvents implements LandFlagBase, Listener {
     }
 
     @EventHandler
-    public void onPassiveDamage(PassiveCreatureDamageEvent e) {
-        if (e.getEntity() == null) {
-            return;
-        }
-        if (e.getDamager() == null) {
-            return;
-        }
-        if (!getCanBuildAll(e.getDamager(), e.getEntity().getLocation()).getLeft()) {
-            e.setCancelled(true);
-            e.getDamager().sendActionBar(getText("cannot-attack-animals"));
-        }
-    }
-
-    @EventHandler
-    public void onPassiveCombust(PassiveCreatureCombustEvent e) {
-        if (e.getEntity() == null) {
-            return;
-        }
-        if (e.getCombuster() == null) {
-            return;
-        }
-        if (!getCanBuildAll(e.getCombuster(), e.getEntity().getLocation()).getLeft()) {
-            e.setCancelled(true);
-        }
-    }
-
-    @EventHandler
     public void onEntityBlockForm(EntityBlockFormEvent e) {
         if (e.getEntity() instanceof LivingEntity) {
             if (e.getEntity() instanceof Player) {

@@ -213,7 +213,6 @@ embassy:
     title: ""
     subtitle: ""
 pvp-is-enabled: " - &c&lPvp is enabled!&7&l"
-cannot-attack-animals: "&c&lYou cannot attack another village's animals!"
 chat:
   locked: "&c&lChat is currently locked!"
   nobody-nearby: "&c&lThere is nobody around you who could hear you!"
@@ -272,6 +271,7 @@ names:
     armor-stand: "Armorstands"
     item-frame: "Item Frames"
     crafting-table: "Crafting tables"
+    animal: "Attack Animals"
     sheer: "Sheering Animals"
     milk: "Milking Cows"
     leash: "Leashing Animals"
