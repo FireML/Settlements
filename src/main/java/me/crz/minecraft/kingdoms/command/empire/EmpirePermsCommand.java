@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public class EmpirePermsCommand extends EmpireSubCommand {
     public EmpirePermsCommand(SubCommand parent) {
-        super(parent, "perms [<rank>|show|set|unset", "permissions");
+        super(parent, "perms [<rank>|show|set|unset", "permissions", "rights");
         registerCommand(new EmpireSubCommand(this, "show <rank>", "get", "list") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
@@ -42,7 +42,7 @@ public class EmpirePermsCommand extends EmpireSubCommand {
                 return false;
             }
         });
-        registerCommand(new EmpireSubCommand(this, "set <rank> <permission> [true|false]", "give", "add") {
+        registerCommand(new EmpireSubCommand(this, "set <rank> <permission> [true|false]", "give", "add", "grant") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length < 2) {
@@ -89,7 +89,7 @@ public class EmpirePermsCommand extends EmpireSubCommand {
                     }
                 }
                 resident.getVillage().getEmpire().setPermission(rank, permission, value);
-                Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire()));
+                Utils.runAsync(() -> DatabaseManager.getInstance().save(resident.getVillage().getEmpire()));
                 getMessage("success").tell(resident,
                         "rank", rank.getTag(),
                         "permission", permission,
@@ -98,7 +98,7 @@ public class EmpirePermsCommand extends EmpireSubCommand {
                 return true;
             }
         });
-        registerCommand(new EmpireSubCommand(this, "unset <rank> [<permission>]", "remove", "delete", "reset") {
+        registerCommand(new EmpireSubCommand(this, "unset <rank> [<permission>]", "remove", "delete", "reset", "revoke") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length < 2) {
@@ -137,7 +137,7 @@ public class EmpirePermsCommand extends EmpireSubCommand {
 
                 resident.getVillage().getEmpire().unsetPermission(rank, permission);
                 Optional<Boolean> value = resident.getVillage().getEmpire().getEffectivePermissionValue(rank, permission);
-                Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire()));
+                Utils.runAsync(() -> DatabaseManager.getInstance().save(resident.getVillage().getEmpire()));
                 getMessage("success").tell(resident,
                         "rank", rank.getTag(),
                         "permission", permission,

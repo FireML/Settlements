@@ -21,6 +21,11 @@ public class EmpireRank extends Rank implements Next<EmpireRank> {
         return get(getInherits());
     }
 
+    @Override
+    public EmpireRank getParentRank() {
+        return get(getParent());
+    }
+
     public static EmpireRank get(String name) {
         return EmpireManager.getInstance().getRank(name);
     }

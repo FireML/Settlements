@@ -44,6 +44,11 @@ public class VillageRank extends Rank implements Next<VillageRank> {
         return get(getInherits());
     }
 
+    @Override
+    public VillageRank getParentRank() {
+        return get(getParent());
+    }
+
     public static VillageRank get(String string) {
         return VillageManager.getInstance().getRank(string);
     }

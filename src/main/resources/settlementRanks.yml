@@ -1,5 +1,6 @@
 # Ranks for people in a settlement. Top ones inherit from the ones below them
 chief:
+  icon: diamond_sword
   permissions:
   - empire.create
   - empire.join
@@ -26,11 +27,13 @@ chief:
   - village.unclaim.coords
   - village.use
 assistant:
+  icon: golden_sword
   permissions:
   - village.disband
   - village.transfer
   - village.rename
 elder:
+  icon: iron_sword
   permissions:
   - empire.leave
   - village.ally
@@ -48,13 +51,16 @@ elder:
   - village.unally
   - village.unclaim
 recruiter:
+  icon: stone_sword
   permissions:
   - village.invite
   - village.kick
 builder:
+  icon: stone_shovel
   permissions:
   -
 resident:
+  icon: stone_pickaxe
   permissions:
   - village.allies
   - village.bank

@@ -27,7 +27,6 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -237,23 +236,63 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         return Optional.empty();
     }
 
-    public Optional<Boolean> getEffectivePermissionValue(Rank rank, String permission) {
+    public Optional<Boolean> getInheritedPermissionValue(Rank rank, String permission) {
         Optional<Boolean> value = getPermissionValue(rank, permission);
         if (value.isPresent()) {
             return value;
         }
-        return rank.getEffectivePermissionValue(permission);
+        if (rank.getInherits() != null) {
+            return getInheritedPermissionValue(rank.getInheritedRank(), permission);
+        }
+        return value;
+    }
+
+    public Optional<Boolean> getEffectivePermissionValue(Rank rank, String permission) {
+        Optional<Boolean> value = getInheritedPermissionValue(rank, permission);
+        if (value.isPresent()) {
+            return value;
+        }
+        return rank.getInheritedPermissionValue(permission);
     }
 
     public boolean setPermission(Rank rank, String permission, boolean value) {
-        return ranksPermissions.computeIfAbsent(rank.name().toLowerCase(), k -> new LinkedHashMap<>())
+        Boolean previous = ranksPermissions.computeIfAbsent(rank.name().toLowerCase(), k -> new LinkedHashMap<>())
                 .put(permission.toLowerCase(), value);
+        if (previous != null && previous != value) {
+            if (!value) {
+                if (previous && rank.getParent() != null) {
+                    setPermission(rank.getParentRank(), permission, true);
+                }
+                Rank inheritedRank = rank;
+                while (inheritedRank.getInherits() != null) {
+                    inheritedRank = inheritedRank.getInheritedRank();
+                    Optional<Boolean> iValue = getPermissionValue(inheritedRank, permission);
+                    Optional<Boolean> irValue = inheritedRank.getPermissionValue(permission);
+                    if (iValue.isPresent()) {
+                        if (iValue.get()) {
+                            setPermission(inheritedRank, permission, false);
+                            break;
+                        } else if (!irValue.orElse(false)) {
+                            unsetPermission(inheritedRank, permission);
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     public boolean unsetPermission(Rank rank, String permission) {
         Map<String, Boolean> map = ranksPermissions.get(rank.name().toLowerCase());
         if (map != null) {
-            return map.remove(permission.toLowerCase());
+            Boolean previous = map.remove(permission.toLowerCase());
+            if (previous != null) {
+                if (previous && rank.getParent() != null) {
+                    setPermission(rank.getParentRank(), permission, true);
+                }
+                return true;
+            }
         }
         return false;
     }

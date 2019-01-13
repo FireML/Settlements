@@ -22,7 +22,7 @@ public class SettingsGUI extends KingdomsGUI {
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
         gui.addItem(new ClickableItem() {
             public ItemStack getItem(Player p) {
-                return new CItem(Material.IRON_DOOR).setName(getText("access")).hideAllFlags(true).build();
+                return new CItem(Material.IRON_DOOR).setName(getText("access")).build();
             }
 
             public boolean click(Player p, ClickType clickType) {
@@ -32,7 +32,7 @@ public class SettingsGUI extends KingdomsGUI {
         });
         gui.addItem(new ClickableItem() {
             public ItemStack getItem(Player p) {
-                return new CItem(Material.DIAMOND_PICKAXE).setName(getText("build")).hideAllFlags(true).build();
+                return new CItem(Material.DIAMOND_PICKAXE).setName(getText("build")).build();
             }
 
             public boolean click(Player p, ClickType clickType) {
@@ -42,7 +42,7 @@ public class SettingsGUI extends KingdomsGUI {
         });
         gui.addItem(new ClickableItem() {
             public ItemStack getItem(Player p) {
-                return new CItem(Material.LEVER).setName(getText("use")).hideAllFlags(true).build();
+                return new CItem(Material.LEVER).setName(getText("use")).build();
             }
 
             public boolean click(Player p, ClickType clickType) {
@@ -52,7 +52,7 @@ public class SettingsGUI extends KingdomsGUI {
         });
         gui.addItem(new ClickableItem() {
             public ItemStack getItem(Player p) {
-                return new CItem(Material.REDSTONE).setName(getText("mode")).hideAllFlags(true).build();
+                return new CItem(Material.REDSTONE).setName(getText("mode")).build();
             }
 
             public boolean click(Player p, ClickType clickType) {
@@ -62,7 +62,17 @@ public class SettingsGUI extends KingdomsGUI {
         });
         gui.addItem(new ClickableItem() {
             public ItemStack getItem(Player p) {
-                return new CItem(Material.LINGERING_POTION).setName(getText("perks")).hideAllFlags(true).build();
+                return new CItem(Material.DIAMOND_SWORD).setName(getText("perms")).build();
+            }
+
+            public boolean click(Player p, ClickType clickType) {
+                PermsGUI.getInstance().open(p);
+                return true;
+            }
+        });
+        gui.addItem(new ClickableItem() {
+            public ItemStack getItem(Player p) {
+                return new CItem(Material.LINGERING_POTION).setName(getText("perks")).build();
             }
 
             public boolean click(Player p, ClickType clickType) {
@@ -72,7 +82,7 @@ public class SettingsGUI extends KingdomsGUI {
         });
         gui.addItem(new ClickableItem() {
             public ItemStack getItem(Player p) {
-                return new CItem(Material.POTION).setName(getText("shop")).hideAllFlags(true).build();
+                return new CItem(Material.POTION).setName(getText("shop")).build();
             }
 
             public boolean click(Player p, ClickType clickType) {

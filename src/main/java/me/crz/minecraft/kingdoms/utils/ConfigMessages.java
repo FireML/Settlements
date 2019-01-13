@@ -3,8 +3,8 @@ package me.crz.minecraft.kingdoms.utils;
 public interface ConfigMessages extends ConfigKey {
     String type();
 
-    default String getText(String key) {
-        return getMessage(key).getText();
+    default String getText(String key, String... replacements) {
+        return getMessage(key).getReplacedText(replacements);
     }
 
     default Message getMessage(String key) {

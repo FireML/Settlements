@@ -474,6 +474,10 @@ gui:
       title: "&3&l/e mode"
     perks:
       title: "&3&l/e perks"
+    perms:
+      title: "&3&l/e perms"
+    rank-perms:
+      title: "&3&l/e perms &e&l{rank}"
     shop:
       title: "&3&l/e shop"
     settings:
@@ -498,6 +502,25 @@ gui:
       title: "&3&l/e use"
     vault:
       title: "&1&l/e vault"
+  perms:
+    title: "&3&l/s perms"
+    entry:
+      title: "&3{rank}"
+      edit: "&7Click to edit permissions."
+  rank-perms:
+    title: "&3&l/s perms &e&l{rank}"
+    entry:
+      title: |-
+        {color}{perm}
+        &9{description}
+      unset: |-
+        &7Middle click to unset
+      grant: |-
+        &7Click to grant to &f{rank}
+        &7and all ranks above it.
+      revoke: |-
+        &7Click to revoke from &f{rank}
+        &7and all ranks below it.
   plot:
     link: |-
       &7Click to link the permissions of all

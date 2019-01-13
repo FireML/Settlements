@@ -78,6 +78,7 @@ public class VillageManager {
             }
             if (lastRank != null) {
                 lastRank.setInherits(rank.name());
+                rank.setParent(lastRank.name());
                 rank.setOrdinal(lastRank.ordinal() + 1);
             } else {
                 rank.setOrdinal(0);
@@ -274,7 +275,7 @@ public class VillageManager {
     }
 
     public VillageRank getRank(String name) {
-        return ranks.getOrDefault(name.toLowerCase(), byTitle.get(name.toLowerCase()));
+        return name != null ? ranks.getOrDefault(name.toLowerCase(), byTitle.get(name.toLowerCase())) : null;
     }
 
     public VillageRank getChiefRank() {

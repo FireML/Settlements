@@ -1,5 +1,6 @@
 # Ranks for people in an empire. Top ones inherit from the ones below them
 leader:
+  icon: diamond_sword
   permissions:
   - empire.ally
   - empire.banish
@@ -26,6 +27,7 @@ leader:
   - empire.unbanish
   - empire.use
 senator:
+  icon: gold_sword
   permissions:
   - empire.help.senator
   - empire.invite
@@ -36,6 +38,7 @@ senator:
   - empire.setdescription
   - empire.settings
 member:
+  icon: iron_sword
   permissions:
   - empire.allies
   - empire.joinfee

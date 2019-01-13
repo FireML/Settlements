@@ -90,6 +90,7 @@ public class EmpireManager {
             }
             if (lastRank != null) {
                 lastRank.setInherits(rank.name());
+                rank.setParent(lastRank.name());
                 rank.setOrdinal(lastRank.ordinal() + 1);
             } else {
                 rank.setOrdinal(0);
@@ -151,7 +152,7 @@ public class EmpireManager {
     }
 
     public EmpireRank getRank(String name) {
-        return ranks.get(name.toLowerCase());
+        return name != null ? ranks.get(name.toLowerCase()) : null;
     }
 
     public EmpireRank getLeaderRank() {
