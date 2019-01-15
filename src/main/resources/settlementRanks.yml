@@ -38,6 +38,7 @@ elder:
   - empire.leave
   - village.ally
   - village.banished
+  - village.claim
   - village.mode
   - village.outpost.help.elder
   - village.outpost.claim

@@ -79,7 +79,7 @@ public class EmpireManager {
     }
 
     private void loadRanks() {
-        Configuration config = ConfigManager.getInstance().getSettlementRanksConf().getConfig();
+        Configuration config = ConfigManager.getInstance().getEmpireRanksConf().getConfig();
         for (String rankName : config.getKeys(false)) {
             ranks.put(rankName.toLowerCase(), new EmpireRank(rankName, config.getConfigurationSection(rankName)));
         }

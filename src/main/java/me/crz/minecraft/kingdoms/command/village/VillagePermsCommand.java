@@ -40,7 +40,7 @@ public class VillagePermsCommand extends VillageSubCommand {
                 }
                 getMessage("footer").tell(resident, "rank", rank.getTag(resident.getVillage()));
                 //TODO: Pagination for permissions? Inherited values?
-                return false;
+                return true;
             }
         });
         registerCommand(new VillageSubCommand(this, "set <rank> <permission> [true|false]", "give", "add", "grant") {

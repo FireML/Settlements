@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.command.empire;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.empire.gui.PermsGUI;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 public class EmpirePermsCommand extends EmpireSubCommand {
     public EmpirePermsCommand(SubCommand parent) {
-        super(parent, "perms [<rank>|show|set|unset", "permissions", "rights");
+        super(parent, "perms [<rank>|show|set|unset]", "permissions", "rights");
         registerCommand(new EmpireSubCommand(this, "show <rank>", "get", "list") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
@@ -39,7 +40,7 @@ public class EmpirePermsCommand extends EmpireSubCommand {
                 }
                 getMessage("footer").tell(resident, "rank", rank.getTag());
                 //TODO: Pagination for permissions? Inherited values?
-                return false;
+                return true;
             }
         });
         registerCommand(new EmpireSubCommand(this, "set <rank> <permission> [true|false]", "give", "add", "grant") {
@@ -150,7 +151,18 @@ public class EmpirePermsCommand extends EmpireSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        // TODO: Show GUI
-        return true;
+        if (args.length == 0) {
+            PermsGUI.getInstance().open(resident.getPlayer());
+            return true;
+        } else if (args.length == 1) {
+            EmpireRank rank = EmpireManager.getInstance().getRank(args[0]);
+            if (rank == null) {
+                getError("invalid-rank").tell(resident);
+                return false;
+            }
+
+            return true;
+        }
+        return false;
     }
 }

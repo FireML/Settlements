@@ -8,12 +8,10 @@ import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -23,21 +21,38 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class RankPermsGUI extends KingdomsGUI {
-    private static Map<String, RankPermsGUI> instances = new HashMap<>();
+    private static Map<String, RankPermsGUI> instances = new ConcurrentHashMap<>();
     public CInventory gui;
+    private Map<UUID, Integer> playerPage = new HashMap<>();
 
     private RankPermsGUI(String rankName) {
         super("rank-perms");
-        gui = new CInventory(getText("title", "rank", rankName), InventorySize.ONE) {};
+        gui = new CInventory(getText("title", "rank", rankName), InventorySize.SIX) {};
 
-        EmpireManager.getInstance().getLeaderRank().getInheritedPermissions().keySet().stream().sorted(Comparator.naturalOrder()).forEachOrdered(perm -> {
-            gui.addItem(new ClickableItem() {
+        List<String> perms = EmpireManager.getInstance().getLeaderRank().getInheritedPermissions().keySet().stream()
+                .filter(s -> !s.contains(".help"))
+                .sorted(Comparator.naturalOrder())
+                .collect(Collectors.toList());
+
+        boolean paged = perms.size() > InventorySize.SIX.getSize() - 1;
+        for (int i = 0; i < (paged ? InventorySize.FIVE.getSize() : InventorySize.SIX.getSize()); i++) {
+            int finalI = i;
+            gui.addItem(i, new ClickableItem() {
                 @Override
                 public ItemStack getItem(Player p) {
+                    int permIndex = getPage(p) * InventorySize.FIVE.getSize() + finalI;
+                    if (perms.size() <= permIndex) {
+                        return null;
+                    }
+                    String perm = perms.get(permIndex);
                     EmpireRank rank = EmpireRank.get(rankName);
                     Resident res = ResidentManager.getInstance().getResident(p);
                     if (rank != null && res.hasEmpire()) {
@@ -50,29 +65,22 @@ public class RankPermsGUI extends KingdomsGUI {
                         Optional<Boolean> rankValue = rank.getInheritedPermissionValue(perm);
                         if (value.isPresent()) {
                             if (value.get()) {
-                                item = new CItem(Material.LIME_WOOL);
+                                item = new CItem(Material.GREEN_WOOL);
                             } else {
                                 item = new CItem(Material.RED_WOOL);
                             }
-                            if (res.hasPermission("kingdoms.command.empire.perms.unset")) {
+                            if (res.getEmpireRank().above(rank) && res.hasPermission("kingdoms.command.empire.perms.unset")) {
                                 item.addLore(getMessage("entry.unset").getReplacedTextList(
                                         "perm", permName,
                                         "rank", rank.getTag()
                                 ));
                             }
+                        } else if (rankValue.orElse(false)) {
+                            item = new CItem(Material.LIME_WOOL);
                         } else {
-                            if (rankValue.isPresent()) {
-                                if (rankValue.get()) {
-                                    item = new CItem(Material.LIGHT_BLUE_WOOL);
-                                } else {
-                                    item = new CItem(Material.ORANGE_WOOL);
-                                }
-                            } else {
-                                // This shouldn't be possible...
-                                return null;
-                            }
+                            item = new CItem(Material.ORANGE_WOOL);
                         }
-                        if (res.getVillageRank().above(rank)) {
+                        if (res.getEmpireRank().above(rank)) {
                             if (res.hasPermission("kingdoms.command.empire.perms.set") && res.hasPermission("kingdoms.command." + perm)) {
                                 if (value.orElse(false) || rankValue.orElse(false)) {
                                     item.addLore(getMessage("entry.revoke").getReplacedTextList(
@@ -100,6 +108,11 @@ public class RankPermsGUI extends KingdomsGUI {
 
                 @Override
                 public boolean click(Player p, ClickType type) {
+                    int permIndex = getPage(p) * InventorySize.FIVE.getSize() + finalI;
+                    if (perms.size() < permIndex) {
+                        return false;
+                    }
+                    String perm = perms.get(permIndex);
                     EmpireRank rank = EmpireRank.get(rankName);
                     Resident res = ResidentManager.getInstance().getResident(p);
                     if (rank != null && res.hasEmpire() && res.getEmpireRank().above(rank)) {
@@ -125,21 +138,85 @@ public class RankPermsGUI extends KingdomsGUI {
                     return false;
                 }
             });
-        });
+        }
 
-        gui.addItem((gui.getMaxSlot() / 9) * 9 + 8, new ClickableItem() {
-            public ItemStack getItem(final Player p) {
-                return new CItem(Material.BARRIER).setName(getText("back")).build();
-            }
+        if (paged) {
+            gui.addItem(InventorySize.FIVE.getSize(), new ClickableItem() {
+                public ItemStack getItem(final Player p) {
+                    if (getPage(p) > 0) {
+                        return new CItem(Material.SIGN).setName(getText("previous")).build();
+                    }
+                    return null;
+                }
 
-            public boolean click(final Player p, final ClickType clickType) {
-                PermsGUI.getInstance().open(p);
-                return true;
-            }
-        });
+                public boolean click(final Player p, final ClickType clickType) {
+                    int page = getPage(p);
+                    if (page > 0) {
+                        setPage(p, page - 1);
+                        gui.build(p);
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
+            gui.addItem(InventorySize.FIVE.getSize() + 4, new ClickableItem() {
+                public ItemStack getItem(final Player p) {
+                    return new CItem(Material.BARRIER).setName(getText("back")).build();
+                }
+
+                public boolean click(final Player p, final ClickType clickType) {
+                    PermsGUI.getInstance().open(p);
+                    return true;
+                }
+            });
+
+            gui.addItem(InventorySize.FIVE.getSize() + 8, new ClickableItem() {
+                public ItemStack getItem(final Player p) {
+                    if (perms.size() > (getPage(p) + 1) * InventorySize.FIVE.getSize()) {
+                        return new CItem(Material.SIGN).setName(getText("next")).build();
+                    }
+                    return null;
+                }
+
+                public boolean click(final Player p, final ClickType clickType) {
+                    int page = getPage(p);
+                    if (perms.size() > (page + 1) * InventorySize.FIVE.getSize()) {
+                        setPage(p, page + 1);
+                        gui.build(p);
+                        return true;
+                    }
+                    return false;
+                }
+            });
+        } else {
+            gui.addItem(InventorySize.FIVE.getSize() + 8, new ClickableItem() {
+                public ItemStack getItem(final Player p) {
+                    return new CItem(Material.BARRIER).setName(getText("back")).build();
+                }
+
+                public boolean click(final Player p, final ClickType clickType) {
+                    PermsGUI.getInstance().open(p);
+                    return true;
+                }
+            });
+        }
+    }
+
+    private void setPage(Player p, int page) {
+        if (page == 0) {
+            playerPage.remove(p.getUniqueId());
+        } else {
+            playerPage.put(p.getUniqueId(), page);
+        }
+    }
+
+    private int getPage(Player p) {
+        return playerPage.getOrDefault(p.getUniqueId(), 0);
     }
 
     public void open(final Player p) {
+        playerPage.remove(p.getUniqueId());
         gui.build(p);
     }
 

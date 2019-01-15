@@ -225,7 +225,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
     }
 
     public Map<String, Boolean> getPermissions(Rank rank) {
-        return ranksPermissions.get(rank.name().toLowerCase());
+        return ranksPermissions.getOrDefault(rank.name().toLowerCase(), new HashMap<>());
     }
 
     public Optional<Boolean> getPermissionValue(Rank rank, String permission) {
@@ -258,9 +258,9 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
     public boolean setPermission(Rank rank, String permission, boolean value) {
         Boolean previous = ranksPermissions.computeIfAbsent(rank.name().toLowerCase(), k -> new LinkedHashMap<>())
                 .put(permission.toLowerCase(), value);
-        if (previous != null && previous != value) {
+        if (previous == null || previous != value) {
             if (!value) {
-                if (previous && rank.getParent() != null) {
+                if (rank.getParent() != null) {
                     setPermission(rank.getParentRank(), permission, true);
                 }
                 Rank inheritedRank = rank;
