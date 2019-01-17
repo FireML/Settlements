@@ -32,6 +32,7 @@ assistant:
   - village.disband
   - village.transfer
   - village.rename
+  - village.lock.admin
 elder:
   icon: iron_sword
   permissions:
@@ -46,6 +47,7 @@ elder:
   - village.perks.toggle
   - village.perms
   - village.perms.show
+  - village.plot.admin
   - village.setdescription
   - village.setrank
   - village.settings
@@ -59,7 +61,7 @@ recruiter:
 builder:
   icon: stone_shovel
   permissions:
-  -
+  - village.officer
 resident:
   icon: stone_pickaxe
   permissions:

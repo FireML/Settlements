@@ -77,7 +77,7 @@ public class EmpireListCommand extends SubCommand {
                         "capitalstate", e.getCapital() != null ? e.getCapital().getStateTag() : "-",
                         "chief", e.getCapital() != null ? e.getCapital().getChief().getName() : "-",
                         "chieftitle", e.getCapital() != null ? e.getCapital().getChief().getTitle() : "-",
-                        "chiefrank", VillageRank.CHIEF.getTag(e.getCapital()),
+                        "chiefrank", VillageRank.getChief().getTag(e.getCapital()),
                         "place", String.valueOf(i + 1)
                 );
             }

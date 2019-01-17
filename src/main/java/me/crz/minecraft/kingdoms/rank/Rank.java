@@ -1,9 +1,13 @@
 package me.crz.minecraft.kingdoms.rank;
 
 import me.crz.minecraft.kingdoms.cinventory.CItem;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.NameTag;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,10 +29,19 @@ public abstract class Rank implements Rankable, NameTag {
         this.name = name;
         if (config != null) {
             for (String permission : config.getStringList("permissions")) {
+                String permName = permission.toLowerCase();
+                boolean permValue = true;
                 if (permission.startsWith("-")) {
-                    permissions.put(permission.substring(1).toLowerCase(), false);
-                } else {
-                    permissions.put(permission.toLowerCase(), true);
+                    permName = permName.substring(1);
+                    permValue = false;
+                }
+                permissions.put(permName, permValue);
+                if (Bukkit.getPluginManager().getPermission("kingdoms.command." + permName) == null) {
+                    Bukkit.getPluginManager().addPermission(new Permission(
+                            "kingdoms.command." + permName,
+                            Message.get("command." + permName).getText(),
+                            PermissionDefault.TRUE
+                    ));
                 }
             }
             if (config.isString("icon")) {

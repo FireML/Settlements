@@ -33,6 +33,7 @@ senator:
   - empire.invite
   - empire.kick
   - empire.mode
+  - empire.officer
   - empire.perms
   - empire.perms.show
   - empire.setdescription

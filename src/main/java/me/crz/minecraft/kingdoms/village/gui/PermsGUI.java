@@ -31,7 +31,7 @@ public class PermsGUI extends KingdomsGUI {
                         CItem item = rank.getItem().setName(getMessage("entry.title").getReplacedText(
                                 "rank", rank.getTag(res.getVillage())
                         ));
-                        if (res.getVillageRank().above(rank) || res.getVillageRank() == VillageManager.getInstance().getChiefRank()) {
+                        if (res.getVillageRank().above(rank) || res.getVillageRank() == VillageRank.getChief()) {
                             item.addLore(getMessage("entry.edit").getReplacedTextList(
                                     "rank",  rank.getTag(res.getVillage())
                             ));

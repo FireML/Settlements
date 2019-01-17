@@ -638,7 +638,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 sql += " AND l.type != 'cash' AND l.type != 'claim'";
                 break;
         }
-        if (!resident.getVillageRank().atLeast(VillageRank.CHIEF)) {
+        if (!resident.getVillageRank().atLeast(VillageRank.getChief())) {
             sql += " AND l.`action` = 'deposit'";
         }
         try (Connection conn = ds.getConnection();
@@ -682,7 +682,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 sql += " AND l.type != 'cash' AND l.type != 'claim'";
                 break;
         }
-        if (!resident.getVillageRank().atLeast(VillageRank.CHIEF)) {
+        if (!resident.getVillageRank().atLeast(VillageRank.getChief())) {
             sql += " AND `l.action` = 'deposit'";
         }
         sql += " ORDER BY l.id DESC LIMIT " + start + "," + Utils.getEntriesPerPage() + ";";
@@ -696,7 +696,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     continue;
                 }
                 boolean hasPlayer = rs.getString("playerId") != null;
-                VillageRank rank = VillageRank.RESIDENT;
+                VillageRank rank = VillageRank.getDefault();
                 if (hasPlayer) {
                     try {
                         rank = VillageRank.valueOf(rs.getString("playerRank").toUpperCase());
@@ -753,7 +753,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         Collection<String> senators = new ArrayList<>();
         for (int memberId : members) {
             PreparedStatement sSta = conn.prepareStatement("SELECT uuid FROM " + tablePrefix + "residents WHERE empirerank = ? AND settlementId = ?;");
-            sSta.setString(1, EmpireRank.SENATOR.name());
+            sSta.setString(1, EmpireRank.getLeader().next().name());
             sSta.setInt(2, memberId);
             ResultSet sRs = sSta.executeQuery();
             while (sRs.next()) {

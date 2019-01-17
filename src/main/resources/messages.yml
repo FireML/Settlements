@@ -992,6 +992,8 @@ command:
       footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
       previous: "&b<< Prev "
       next: "&b Next >>"
+    lock:
+      admin: "Allows administrating of locks inside the settlement's claims"
     map:
       head: "&8---------------- &eSettlement Map &r&8----------------"
       explanation: |-
@@ -1027,6 +1029,8 @@ command:
       modes: "&cAvailable modes: {modes}"
       success: "&7Settlement mode &6{mode}&7: &6{value}"
       description: Changes settings for your village claims
+    officer:
+      description: Members that should have officer build access
     outpost:
       claim:
         no-home: "&c&lERROR &r&7You need to claim a normal chunk as your home fist!"
@@ -1068,6 +1072,8 @@ command:
         description: Unset the permissions of a rank
         success: "&aUnset permission &e{permission}&a for rank &a{rank}&a! Is now &a{value}!"
         success-all: "&aUnset all permissions for rank &a{rank}&a!"
+    plot:
+      admin: "Allows administrating of settlement plots"
     rename:
       success: "&7&lSettlement has been renamed to &6&l{name}"
       description: Renames the current village to something else
@@ -1389,6 +1395,8 @@ command:
       footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
       previous: "&b<< Prev "
       next: "&b Next >>"
+    lock:
+      admin: "Allows administrating of locks inside the settlement's claims"
     mode:
       modes: "&cAvailable modes: {modes}"
       success: "&7Empire mode &6{mode}&7 set to &6{value}"
@@ -1428,6 +1436,8 @@ command:
       head: "&8&l--------&r&c&lMembers&r&8&l--------"
       entry: "&8\\[&9*&8] [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{residents} players\n&f{description})"
       description: List all empire members
+    officer:
+      description: Members that should have officer build access
     perms:
       description: Manage rank permissions
       show:
@@ -1444,6 +1454,16 @@ command:
         description: Unset the permissions of a rank
         success: "&aUnset permission &e{permission}&a for rank &a{rank}&a! Is now &a{value}!"
         success-all: "&aUnset all permissions for rank &a{rank}&a!"
+    perks:
+      toggle:
+        active: "&6&l{perk} &7&lhas been &a&lactivated"
+        deactived: "&6&l{perk} &7&lhas been &c&ldeactivated"
+        not-unlocked: "&cPerk &f{perk} &cis not unlocked!"
+        no-effects: "&cPerk &f{perk} &chas no effects that can be toggled!"
+        description: Toggle perks
+      description: Manage unlocked perks
+    plot:
+      admin: "Allows administrating of settlement plots"
     shop:
       description: Purchase perks
       unlock:
@@ -1461,14 +1481,6 @@ command:
         not-unlocked: "&cPerk &f{perk} &cis not unlocked!"
         already-repeated: "&cPerk &f{perk} &cis already been repeated {amount} times!"
         description: Repeat perks
-    perks:
-      toggle:
-        active: "&6&l{perk} &7&lhas been &a&lactivated"
-        deactived: "&6&l{perk} &7&lhas been &c&ldeactivated"
-        not-unlocked: "&cPerk &f{perk} &cis not unlocked!"
-        no-effects: "&cPerk &f{perk} &chas no effects that can be toggled!"
-        description: Toggle perks
-      description: Manage unlocked perks
     setaccess:
       success: "&7Access changed to &6{access}"
       access:

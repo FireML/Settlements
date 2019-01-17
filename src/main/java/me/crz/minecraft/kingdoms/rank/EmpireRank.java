@@ -5,12 +5,6 @@ import me.crz.minecraft.kingdoms.utils.Next;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class EmpireRank extends Rank implements Next<EmpireRank> {
-    @Deprecated
-    public static EmpireRank LEADER = new EmpireRank("", null);
-    @Deprecated
-    public static EmpireRank SENATOR = new EmpireRank("", null);
-    @Deprecated
-    public static EmpireRank MEMBER = new EmpireRank("", null);
 
     public EmpireRank(String name, ConfigurationSection config) {
         super(name, config);
@@ -28,6 +22,14 @@ public class EmpireRank extends Rank implements Next<EmpireRank> {
 
     public static EmpireRank get(String name) {
         return EmpireManager.getInstance().getRank(name);
+    }
+
+    public static EmpireRank getDefault() {
+        return EmpireManager.getInstance().getDefaultRank();
+    }
+
+    public static EmpireRank getLeader() {
+        return EmpireManager.getInstance().getLeaderRank();
     }
 
     public static EmpireRank valueOf(String string) throws IllegalArgumentException {

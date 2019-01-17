@@ -4,8 +4,8 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.VillageManager;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +25,7 @@ public class EmpireDisbandCommand extends EmpireSubCommand {
         } else {
             getMessage("success").tell(res.getVillage().getEmpire().getOnlineResidents(),
                     "chief", res.getName(),
-                    "chiefrank", VillageManager.getInstance().getChiefRank().getTag(res.getVillage()),
+                    "chiefrank", VillageRank.getChief().getTag(res.getVillage()),
                     "chieftitle", res.getTitle(),
                     "capital", res.getVillage().getName(),
                     "capitalstate", res.getVillage().getState().getTag()

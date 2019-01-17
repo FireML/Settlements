@@ -56,8 +56,8 @@ public class EmpireManager {
 
     public EmpireManager() {
         super();
-        loadPerks();
         loadRanks();
+        loadPerks();
         for (Empire empire : DatabaseManager.getInstance().getAllEmpires()) {
             empires.put(empire.getName().replace(' ', '_').toLowerCase(), empire);
             empireIds.put(empire.getId(), empire);
@@ -298,7 +298,7 @@ public class EmpireManager {
         empire.getCapital().getChief().setEmpireRank(getDefaultRank());
         modifiedResidents.add(empire.getCapital().getChief());
         for (Resident senator : empire.getSenators()) {
-            senator.setEmpireRank(EmpireRank.MEMBER);
+            senator.setEmpireRank(getDefaultRank());
             empire.removeSenator(senator);
             modifiedResidents.add(senator);
         }

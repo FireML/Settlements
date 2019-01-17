@@ -44,11 +44,20 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
 
         Block block = event.getProtection().getBlock();
 
-        if (resident.hasVillage() && resident.getVillageRank().atLeast(VillageRank.ELDER)) {
+        if (resident.hasVillage()) {
             OwnedLand land = LandManager.getInstance().getLand(block.getLocation());
-            if (land != null && land.isOwnedBy(resident.getVillage())) {
-                event.setAccess(Permission.Access.ADMIN);
-                return;
+            if (land != null) {
+                if (land.isOwnedBy(resident.getVillage())) {
+                    if (resident.hasPermission("kingdoms.command.village.lock.admin")) {
+                        event.setAccess(Permission.Access.ADMIN);
+                        return;
+                    }
+                } else if (resident.hasEmpire() && land.isOwnedBy(resident.getVillage().getEmpire())) {
+                    if (resident.hasPermission("kingdoms.command.empire.lock.admin")) {
+                        event.setAccess(Permission.Access.ADMIN);
+                        return;
+                    }
+                }
             }
         }
 

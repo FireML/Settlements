@@ -11,7 +11,6 @@ import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -37,7 +36,7 @@ public class RankPermsGUI extends KingdomsGUI {
         super("rank-perms");
         gui = new CInventory(getText("title", "rank", rankName), InventorySize.SIX) {};
 
-        List<String> perms = VillageManager.getInstance().getChiefRank().getInheritedPermissions().keySet().stream()
+        List<String> perms = VillageRank.getChief().getInheritedPermissions().keySet().stream()
                 .filter(s -> !s.contains(".help"))
                 .sorted(Comparator.naturalOrder())
                 .collect(Collectors.toList());

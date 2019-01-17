@@ -44,8 +44,8 @@ public class VillageManager {
     private VillageRank chiefRank = null;
     private VillageRank defaultRank = null;
     private VillageManager() {
-        loadPerks();
         loadRanks();
+        loadPerks();
         for (Village village : DatabaseManager.getInstance().getAllVillages()) {
             villages.put(village.getName().replace(' ', '_').toLowerCase(), village);
             villageIDs.put(village.getId(), village);

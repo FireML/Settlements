@@ -74,8 +74,8 @@ public class Resident implements ConfigurationSerializable, Targetable {
     private boolean hasCommandPermission(String permission) {
         if (permission.startsWith("kingdoms.command.")) {
             String rankPerm = permission.substring("kingdoms.command.".length());
-            if (!hasVillage()) {
-                return false;
+            if (!hasVillage() && !VillageRank.getChief().getInheritedPermissionValue(rankPerm).isPresent()) {
+                return true;
             }
 
             Optional<Boolean> villageValue = getVillage().getEffectivePermissionValue(getVillageRank(), rankPerm);
@@ -83,7 +83,11 @@ public class Resident implements ConfigurationSerializable, Targetable {
                 return villageValue.get();
             }
 
-            if (getVillage().hasEmpire()) {
+            if (rankPerm.startsWith("empire.")) {
+                if (!getVillage().hasEmpire() && !VillageRank.getChief().getInheritedPermissionValue(rankPerm).isPresent() ) {
+                    return true;
+                }
+
                 Optional<Boolean> empireValue = getVillage().getEmpire().getEffectivePermissionValue(getEmpireRank(), rankPerm);
                 if (empireValue.isPresent()) {
                     return empireValue.get();
@@ -202,8 +206,8 @@ public class Resident implements ConfigurationSerializable, Targetable {
             village.getResidentIds().add(getUUID());
             setVillageJoin(System.currentTimeMillis());
         } else {
-            setVillageRank(VillageRank.RESIDENT);
-            setEmpireRank(EmpireRank.MEMBER);
+            setVillageRank(VillageRank.getDefault());
+            setEmpireRank(EmpireRank.getDefault());
             setVillageJoin(-1);
             setTitle(null);
         }
@@ -228,11 +232,11 @@ public class Resident implements ConfigurationSerializable, Targetable {
         VillageRank prev = getVillageRank();
         this.rank = rank;
         if (hasEmpire() && getVillage().getEmpire().isCapital(getVillage())) {
-            if (rank == VillageManager.getInstance().getChiefRank()) {
-                setEmpireRank(EmpireManager.getInstance().getLeaderRank());
+            if (rank == VillageRank.getChief()) {
+                setEmpireRank(EmpireRank.getLeader());
                 getVillage().getEmpire().removeSenator(this);
-            } else if (prev == VillageManager.getInstance().getChiefRank()) {
-                setEmpireRank(EmpireManager.getInstance().getLeaderRank().getInheritedRank());
+            } else if (prev == VillageRank.getChief()) {
+                setEmpireRank(EmpireRank.getLeader().getInheritedRank());
                 getVillage().getEmpire().addSenator(this);
             }
         }

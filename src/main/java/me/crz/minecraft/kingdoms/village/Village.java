@@ -243,18 +243,18 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
 
     @Override
     public boolean canAdminLocks(Resident resident) {
-        return isMember(resident) && resident.getVillageRank().atLeast(VillageRank.CHIEF);
+        return isMember(resident) && resident.hasPermission("kingdoms.command.village.lock.admin");
     }
 
     @Override
     public boolean canAdminPlots(Resident resident) {
-        return isMember(resident) && resident.getVillageRank().atLeast(VillageRank.ELDER);
+        return isMember(resident) && resident.hasPermission("kingdoms.command.village.plot.admin");
     }
 
     @Override
     public boolean isOfficer(Player player) {
         Resident res = ResidentManager.getInstance().getResident(player);
-        return isMember(res) && res.getVillageRank().atLeast(VillageRank.BUILDER);
+        return isMember(res) && res.hasPermission("kingdoms.command.village.officer");
     }
 
     @Override
@@ -506,7 +506,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 "perks", getPerksMap().entrySet().stream()
                         .map(e -> (e.getValue().getTimes() > 1 ? e.getValue().getTimes() + "x " : "") + getPerk(e.getKey()).getTag())
                         .collect(Collectors.joining(", ")),
-                "chiefrank", VillageRank.CHIEF.getTag(this),
+                "chiefrank", VillageRank.getChief().getTag(this),
                 "chieftitle", chief.getTitle(),
                 "chief", chief.getName(),
                 "chiefonline", configMessages != null ? chief.getPlayer() != null ? online : offline : "",
@@ -524,7 +524,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         }
         List<String> lines = new ArrayList<>();
         for (VillageRank rank : rankMap.keySet()) {
-            if (rank == VillageManager.getInstance().getChiefRank()) {
+            if (rank == VillageRank.getChief()) {
                 // should be listed extra
                 continue;
             }

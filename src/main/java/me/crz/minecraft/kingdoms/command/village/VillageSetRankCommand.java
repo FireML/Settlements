@@ -58,7 +58,7 @@ public class VillageSetRankCommand extends VillageSubCommand {
 
             if (rank == null) {
                 getError("invalid-rank").tell(player, "rank", args[1]);
-            } else if (rank == VillageRank.CHIEF) {
+            } else if (rank == VillageRank.getChief()) {
                 getError("cant-set-chief").tell(player, "base", base, "state", village.getState().getTag());
             } else if (!res.getVillageRank().above(tres.getVillageRank())) {
                 getMessage("cant-set-higher").tell(player, "rank", res.getVillageRank().getTag(village));

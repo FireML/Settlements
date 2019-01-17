@@ -37,7 +37,7 @@ public class RankPermsGUI extends KingdomsGUI {
         super("rank-perms");
         gui = new CInventory(getText("title", "rank", rankName), InventorySize.SIX) {};
 
-        List<String> perms = EmpireManager.getInstance().getLeaderRank().getInheritedPermissions().keySet().stream()
+        List<String> perms = EmpireRank.getLeader().getInheritedPermissions().keySet().stream()
                 .filter(s -> !s.contains(".help"))
                 .sorted(Comparator.naturalOrder())
                 .collect(Collectors.toList());

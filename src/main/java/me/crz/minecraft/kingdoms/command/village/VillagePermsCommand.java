@@ -61,11 +61,11 @@ public class VillagePermsCommand extends VillageSubCommand {
                     permission = "village." + permission;
                 }
 
-                if (rank != VillageManager.getInstance().getChiefRank() && rank.atLeast(resident.getVillageRank())) {
+                if (rank != VillageRank.getChief() && rank.atLeast(resident.getVillageRank())) {
                     getError("rank-required").tell(resident, "rank", rank.next().getTag(resident.getVillage()));
                     return true;
                 }
-                if (rank == VillageManager.getInstance().getChiefRank()) {
+                if (rank == VillageRank.getChief()) {
                     if (resident.getVillageRank() != rank) {
                         getError("rank-required").tell(resident, "rank", rank.getTag(resident.getVillage()));
                         return true;
@@ -115,11 +115,11 @@ public class VillagePermsCommand extends VillageSubCommand {
                     permission = "village." + permission;
                 }
 
-                if (rank != VillageManager.getInstance().getChiefRank() && rank.atLeast(resident.getVillageRank())) {
+                if (rank != VillageRank.getChief() && rank.atLeast(resident.getVillageRank())) {
                     getError("rank-required").tell(resident, "rank", rank.next().getTag(resident.getVillage()));
                     return true;
                 }
-                if (rank == VillageManager.getInstance().getChiefRank()) {
+                if (rank == VillageRank.getChief()) {
                     if (resident.getVillageRank() != rank) {
                         getError("rank-required").tell(resident, "rank", rank.getTag(resident.getVillage()));
                         return true;

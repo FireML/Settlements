@@ -61,11 +61,11 @@ public class EmpirePermsCommand extends EmpireSubCommand {
                     permission = "empire." + permission;
                 }
 
-                if (rank != EmpireManager.getInstance().getLeaderRank() && rank.atLeast(resident.getEmpireRank())) {
+                if (rank != EmpireRank.getLeader() && rank.atLeast(resident.getEmpireRank())) {
                     getError("rank-required").tell(resident, "rank", rank.next().getTag());
                     return true;
                 }
-                if (rank == EmpireManager.getInstance().getLeaderRank()) {
+                if (rank == EmpireRank.getLeader()) {
                     if (resident.getEmpireRank() != rank) {
                         getError("rank-required").tell(resident, "rank", rank.getTag());
                         return true;
@@ -116,11 +116,11 @@ public class EmpirePermsCommand extends EmpireSubCommand {
                     permission = "empire." + permission;
                 }
 
-                if (rank != EmpireManager.getInstance().getLeaderRank() && rank.atLeast(resident.getEmpireRank())) {
+                if (rank != EmpireRank.getLeader() && rank.atLeast(resident.getEmpireRank())) {
                     getError("rank-required").tell(resident, "rank", rank.next().getTag());
                     return true;
                 }
-                if (rank == EmpireManager.getInstance().getLeaderRank()) {
+                if (rank == EmpireRank.getLeader()) {
                     if (resident.getEmpireRank() != rank) {
                         getError("rank-required").tell(resident, "rank", rank.getTag());
                         return true;

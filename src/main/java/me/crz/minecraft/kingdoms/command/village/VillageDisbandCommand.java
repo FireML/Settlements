@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.command.village;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 
@@ -25,7 +26,7 @@ public class VillageDisbandCommand extends VillageSubCommand {
             getMessage("confirm").tell(res, "command", base + " " + alias + " confirm");
         } else {
             getMessage("success").tell(res.getVillage().getOnlineResidents(),
-                    "rank", VillageManager.getInstance().getChiefRank().getTag(res.getVillage()),
+                    "rank", VillageRank.getChief().getTag(res.getVillage()),
                     "title", res.getTitle(),
                     "state", res.getVillage().getState().getTag(),
                     "chief", res.getVillage().getName(),
