@@ -17,6 +17,7 @@ import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.lock.LockListener;
 import me.crz.minecraft.kingdoms.lock.LockManager;
+import me.crz.minecraft.kingdoms.rank.RankManager;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.event.Listener;
@@ -180,6 +181,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     public void loadManagers() {
         ThreadManager.getInstance();
         DatabaseManager.getInstance();
+        RankManager.getInstance();
         EmpireManager.getInstance();
         VillageManager.getInstance();
         LandManager.getInstance();

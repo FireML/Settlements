@@ -33,8 +33,8 @@ public class Resident implements ConfigurationSerializable, Targetable {
     private Object id = null;
     private UUID uuid;
     private String name;
-    private VillageRank rank = VillageManager.getInstance().getDefaultRank();
-    private EmpireRank empireRank = EmpireManager.getInstance().getDefaultRank();
+    private VillageRank rank = VillageRank.getDefault();
+    private EmpireRank empireRank = EmpireRank.getDefault();
     private int title = 0;
     private Village village = null;
     private ChatChannel activeChannel = ChatChannel.GENERAL;

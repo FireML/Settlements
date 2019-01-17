@@ -5,7 +5,6 @@ import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
-import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -22,7 +21,7 @@ public class PermsGUI extends KingdomsGUI {
         super("perms");
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
 
-        for (EmpireRank rank : EmpireManager.getInstance().getRanks()) {
+        for (EmpireRank rank : EmpireRank.values()) {
             gui.addItem(new ClickableItem() {
                 @Override
                 public ItemStack getItem(Player p) {

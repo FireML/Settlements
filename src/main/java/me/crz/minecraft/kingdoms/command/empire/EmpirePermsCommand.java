@@ -2,7 +2,6 @@ package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.empire.gui.PermsGUI;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -22,7 +21,7 @@ public class EmpirePermsCommand extends EmpireSubCommand {
                     return false;
                 }
 
-                EmpireRank rank = EmpireManager.getInstance().getRank(args[0]);
+                EmpireRank rank = EmpireRank.get(args[0]);
                 if (rank == null) {
                     getError("invalid-rank").tell(resident);
                     return false;
@@ -50,7 +49,7 @@ public class EmpirePermsCommand extends EmpireSubCommand {
                     return false;
                 }
 
-                EmpireRank rank = EmpireManager.getInstance().getRank(args[0]);
+                EmpireRank rank = EmpireRank.get(args[0]);
                 if (rank == null) {
                     getError("invalid-rank").tell(resident);
                     return false;
@@ -106,7 +105,7 @@ public class EmpirePermsCommand extends EmpireSubCommand {
                     return false;
                 }
 
-                EmpireRank rank = EmpireManager.getInstance().getRank(args[0]);
+                EmpireRank rank = EmpireRank.get(args[0]);
                 if (rank == null) {
                     getError("invalid-rank").tell(resident);
                     return false;
@@ -155,7 +154,7 @@ public class EmpirePermsCommand extends EmpireSubCommand {
             PermsGUI.getInstance().open(resident.getPlayer());
             return true;
         } else if (args.length == 1) {
-            EmpireRank rank = EmpireManager.getInstance().getRank(args[0]);
+            EmpireRank rank = EmpireRank.get(args[0]);
             if (rank == null) {
                 getError("invalid-rank").tell(resident);
                 return false;

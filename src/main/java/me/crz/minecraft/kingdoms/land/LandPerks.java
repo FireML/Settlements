@@ -72,8 +72,30 @@ public class LandPerks {
                         continue;
                     }
 
-                    if (resident.hasVillage() && effect.getApplyTo() == PerkEffect.EffectInfluenced.FREE) {
-                        continue;
+                    if (resident.hasVillage()) {
+                        if (effect.getApplyTo() == PerkEffect.EffectInfluenced.FREE) {
+                            continue;
+                        } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.ALLIES) {
+                            if (!empire.isAlly(resident.getVillage()) && !empire.isAlly(resident.getVillage().getEmpire())) {
+                                continue;
+                            }
+                        } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.TRUSTED) {
+                            if (!empire.isTrusted(resident.getVillage())) {
+                                continue;
+                            }
+                        } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.MEMBERS) {
+                            if (!empire.isMember(resident)) {
+                                continue;
+                            }
+                        }
+                    }
+                    if (effect.getApplyTo() == PerkEffect.EffectInfluenced.ENEMIES) {
+                        if (empire.isAlly(resident.getVillage())
+                                || (resident.hasEmpire() && empire.isAlly(resident.getVillage().getEmpire()))
+                                || empire.isMember(resident)
+                                || empire.isTrusted(resident.getVillage())) {
+                            continue;
+                        }
                     }
 
                     if (effect.getApplyIn() != PerkEffect.EffectLocation.EVERYWHERE && effect.getApplyIn() != PerkEffect.EffectLocation.EMPIRE_WORLD) {
@@ -140,6 +162,10 @@ public class LandPerks {
                         }
                     } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.TRUSTED) {
                         if (!landOwner.isTrusted(resident.getVillage())) {
+                            continue;
+                        }
+                    } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.MEMBERS) {
+                        if (!landOwner.isMember(resident)) {
                             continue;
                         }
                     }

@@ -7,6 +7,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.land.LandAccess;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -54,7 +55,7 @@ public class VillageJoinCommand extends ResidentSubCommand {
                 }
             }
             resident.setVillage(joinVillage);
-            resident.setVillageRank(VillageManager.getInstance().getDefaultRank());
+            resident.setVillageRank(VillageRank.getDefault());
             resident.addChannel(ChatChannel.SETTLEMENT);
             InviteCache.getPendingVillageInvites().remove(resident.getUUID(), joinVillage.getId());
             Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(resident));

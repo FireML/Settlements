@@ -8,7 +8,6 @@ import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -22,7 +21,7 @@ public class PermsGUI extends KingdomsGUI {
         super("perms");
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
 
-        for (VillageRank rank : VillageManager.getInstance().getRanks()) {
+        for (VillageRank rank : VillageRank.values()) {
             gui.addItem(new ClickableItem() {
                 @Override
                 public ItemStack getItem(Player p) {

@@ -8,7 +8,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.Map;
 
 public class PerkEffect {
@@ -20,7 +19,7 @@ public class PerkEffect {
     private boolean icon = true;
 
     private EffectLocation applyIn = EffectLocation.OWN_SETTLEMENT;
-    private EffectInfluenced applyTo = EffectInfluenced.valueOf(VillageRank.getDefault().name());
+    private EffectInfluenced applyTo = EffectInfluenced.MEMBERS;
 
     public PerkEffect(PotionEffectType type) {
         Validate.notNull(type, "Unknown type!");
@@ -92,12 +91,13 @@ public class PerkEffect {
     public static class EffectInfluenced implements NameTag {
         private final String name;
 
+        private static final Map<String, EffectInfluenced> byName = new HashMap<>();
+
         public static final EffectInfluenced TRUSTED = new EffectInfluenced("trusted");
         public static final EffectInfluenced ALLIES = new EffectInfluenced("allies");
         public static final EffectInfluenced ENEMIES = new EffectInfluenced("enemies");
+        public static final EffectInfluenced MEMBERS = new EffectInfluenced("members");
         public static final EffectInfluenced FREE = new EffectInfluenced("free");
-
-        private static final Map<String, EffectInfluenced> byName = new HashMap<>();
 
         public EffectInfluenced(String name) {
             this.name = name;

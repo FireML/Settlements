@@ -43,15 +43,15 @@ public class VillageRank extends Rank implements Next<VillageRank> {
     }
 
     public static VillageRank get(String string) {
-        return VillageManager.getInstance().getRank(string);
+        return RankManager.getInstance().getVillageRank(string);
     }
 
     public static VillageRank getDefault() {
-        return VillageManager.getInstance().getDefaultRank();
+        return RankManager.getInstance().getVillageDefaultRank();
     }
 
     public static VillageRank getChief() {
-        return VillageManager.getInstance().getChiefRank();
+        return RankManager.getInstance().getVillageChiefRank();
     }
 
     public static VillageRank valueOf(String string) throws IllegalArgumentException {
@@ -90,7 +90,7 @@ public class VillageRank extends Rank implements Next<VillageRank> {
     }
 
     public static VillageRank[] values() {
-        return VillageManager.getInstance().getRanks().toArray(new VillageRank[0]);
+        return RankManager.getInstance().getVillageRanks().toArray(new VillageRank[0]);
     }
 
     public int getTitleIndex(Village village, String name) {

@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.rank;
 
-import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.utils.Next;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -21,15 +20,15 @@ public class EmpireRank extends Rank implements Next<EmpireRank> {
     }
 
     public static EmpireRank get(String name) {
-        return EmpireManager.getInstance().getRank(name);
+        return RankManager.getInstance().getEmpireRank(name);
     }
 
     public static EmpireRank getDefault() {
-        return EmpireManager.getInstance().getDefaultRank();
+        return RankManager.getInstance().getEmpireDefaultRank();
     }
 
     public static EmpireRank getLeader() {
-        return EmpireManager.getInstance().getLeaderRank();
+        return RankManager.getInstance().getEmpireLeaderRank();
     }
 
     public static EmpireRank valueOf(String string) throws IllegalArgumentException {
@@ -41,7 +40,7 @@ public class EmpireRank extends Rank implements Next<EmpireRank> {
     }
 
     public static EmpireRank[] values() {
-        return EmpireManager.getInstance().getRanks().toArray(new EmpireRank[0]);
+        return RankManager.getInstance().getEmpireRanks().toArray(new EmpireRank[0]);
     }
 
     @Override

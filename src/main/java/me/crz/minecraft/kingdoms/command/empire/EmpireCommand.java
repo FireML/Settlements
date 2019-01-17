@@ -6,11 +6,9 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.lock.LockCommand;
 import me.crz.minecraft.kingdoms.command.lock.UnlockCommand;
 import me.crz.minecraft.kingdoms.command.plot.PlotCommand;
-import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -18,13 +16,13 @@ public class EmpireCommand extends SubCommand {
     public EmpireCommand() {
         super(null, "empire", "e");
         setHelpCommand(new HelpCommand(this));
-        for (VillageRank rank : VillageManager.getInstance().getRanks()) {
-            if (rank != VillageManager.getInstance().getDefaultRank()) {
+        for (VillageRank rank : VillageRank.values()) {
+            if (rank != VillageRank.getDefault()) {
                 getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), rank));
             }
         }
-        for (EmpireRank rank : EmpireManager.getInstance().getRanks()) {
-            if (rank != EmpireManager.getInstance().getDefaultRank()) {
+        for (EmpireRank rank : EmpireRank.values()) {
+            if (rank != EmpireRank.getDefault()) {
                 getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), rank));
             }
         }

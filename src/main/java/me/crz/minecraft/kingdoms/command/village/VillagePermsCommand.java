@@ -5,7 +5,6 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.village.gui.PermsGUI;
 import org.bukkit.ChatColor;
 
@@ -22,7 +21,7 @@ public class VillagePermsCommand extends VillageSubCommand {
                     return false;
                 }
 
-                VillageRank rank = VillageManager.getInstance().getRank(args[0]);
+                VillageRank rank = VillageRank.get(args[0]);
                 if (rank == null) {
                     getError("invalid-rank").tell(resident);
                     return false;
@@ -50,7 +49,7 @@ public class VillagePermsCommand extends VillageSubCommand {
                     return false;
                 }
 
-                VillageRank rank = VillageManager.getInstance().getRank(args[0]);
+                VillageRank rank = VillageRank.get(args[0]);
                 if (rank == null) {
                     getError("invalid-rank").tell(resident);
                     return false;
@@ -105,7 +104,7 @@ public class VillagePermsCommand extends VillageSubCommand {
                 if (args.length < 2) {
                     return false;
                 }
-                VillageRank rank = VillageManager.getInstance().getRank(args[0]);
+                VillageRank rank = VillageRank.get(args[0]);
                 if (rank == null) {
                     getError("invalid-rank").tell(resident);
                     return false;
@@ -154,7 +153,7 @@ public class VillagePermsCommand extends VillageSubCommand {
             PermsGUI.getInstance().open(resident.getPlayer());
             return true;
         } else if (args.length == 1) {
-            VillageRank rank = VillageManager.getInstance().getRank(args[0]);
+            VillageRank rank = VillageRank.get(args[0]);
             if (rank == null) {
                 getError("invalid-rank").tell(resident);
                 return false;
