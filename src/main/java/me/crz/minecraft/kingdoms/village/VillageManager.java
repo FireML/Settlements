@@ -175,7 +175,6 @@ public class VillageManager {
         }
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveResident(resident);
-            DatabaseManager.getInstance().saveVillage(village);
         });
     }
 

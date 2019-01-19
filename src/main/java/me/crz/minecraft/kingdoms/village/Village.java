@@ -70,39 +70,47 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
 
     public void doUpkeep() {
         if (getTax() > 0) {
-            Utils.runAsync(() -> {
-                long totalTax = 0;
-                long tax = getTax();
-                for (Resident resident : getResidents()) {
-                    if (resident.getUUID().equals(getChiefId())) {
-                        continue;
-                    }
-                    OfflinePlayer player = resident.getPlayer();
-                    if (player == null) {
-                        player = Bukkit.getOfflinePlayer(resident.getUUID());
-                    }
-                    if (KingdomsPlugin.getInstance().econ.withdrawPlayer(player, tax).transactionSuccess()) {
-                        addToBank(tax);
-                        totalTax += tax;
-                        Message.get("tax.removed").tell(resident,
+            long totalTax = 0;
+            long tax = getTax();
+            for (UUID residentId : residents) {
+                if (residentId.equals(getChiefId())) {
+                    continue;
+                }
+                OfflinePlayer player = Bukkit.getPlayer(residentId);
+                if (player == null) {
+                    player = Bukkit.getOfflinePlayer(residentId);
+                }
+                if (KingdomsPlugin.getInstance().econ.withdrawPlayer(player, tax).transactionSuccess()) {
+                    addToBank(tax);
+                    totalTax += tax;
+                    if (player instanceof Player) {
+                        Message.get("tax.removed").tell((Player) player,
                                 "amount", String.valueOf(tax),
                                 "state", getState().getTag(),
                                 "name", getName());
+                    }
+                } else {
+                    Message.get("tax.couldnt-pay").tell(getOnlineResidents(),
+                            "player", player.getName(),
+                            "amount", String.valueOf(tax),
+                            "state", getState().getTag(),
+                            "name", getName()
+                    );
+                    getBanishedPlayers().add(residentId);
+                    residents.remove(residentId);
+                    if (player instanceof Player) {
+                        VillageManager.getInstance().leaveVillage(ResidentManager.getInstance().getResident(residentId));
                     } else {
-                        Message.get("tax.couldnt-pay").tell(getOnlineResidents(),
-                                "player", resident.getName(),
-                                "amount", String.valueOf(tax),
-                                "state", getState().getTag(),
-                                "name", getName()
-                        );
-                        addBanished(resident);
-                        removeMember(resident);
+                        Utils.runAsync(() -> {
+                            Resident resident = ResidentManager.getInstance().getResident(residentId);
+                            Utils.runSync(() -> VillageManager.getInstance().leaveVillage(resident));
+                        });
                     }
                 }
-                long finalTotalTax = totalTax;
-                Utils.runSync(() -> payUpkeep(finalTotalTax));
-                DatabaseManager.getInstance().log(this, null, "tax", "cash", totalTax);
-            });
+            }
+            long finalTotalTax = totalTax;
+            Utils.runAsync(() -> DatabaseManager.getInstance().log(this, null, "tax", "cash", finalTotalTax));
+            payUpkeep(totalTax);
         } else {
             payUpkeep(0);
         }
