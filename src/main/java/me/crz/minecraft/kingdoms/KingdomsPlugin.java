@@ -27,7 +27,9 @@ import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.utils.ThreadManager;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -150,22 +152,30 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     private void upkeep() {
         Runnable runnable = () -> {
+            getLogger().log(Level.INFO, "UPKEEP");
             ConfigManager.getInstance().updateLastUpkeep();
+            getLogger().log(Level.INFO, "Checking chunk unclaiming...");
             LandManager.getInstance().checkUnclaim();
+            getLogger().log(Level.INFO, "Handling settlement taxes and upkeep...");
             for (Village village : new ArrayList<>(VillageManager.getInstance().getVillages())) {
                 village.doUpkeep();
             }
+            getLogger().log(Level.INFO, "Handling empire taxes and upkeep...");
             for (Empire empire : new ArrayList<>(EmpireManager.getInstance().getEmpires())) {
                 empire.doUpkeep();
             }
+            getLogger().log(Level.INFO, "UPKEEP FINISHED!");
         };
 
-        long nextUpkeep = (Utils.getNextUpkeep().getTime() - System.currentTimeMillis()) / 1000;
+        Date nextUpkeepDate = Utils.getNextUpkeep();
+        long nextUpkeep = (nextUpkeepDate.getTime() - System.currentTimeMillis()) / 1000;
+        getLogger().log(Level.INFO, "Next upkeep: " + new SimpleDateFormat().format(nextUpkeepDate) + " which is in " + nextUpkeep + " seconds!");
         upkeepTask = getServer().getScheduler().runTaskTimer(this, runnable, nextUpkeep * 20, TimeUnit.DAYS.toSeconds(1) * 20);
 
         // check if the last upkeep should have happened while the server was offline
         long lastUpkeep = ConfigManager.getInstance().getLastUpkeep();
         if (lastUpkeep > 0 && lastUpkeep + TimeUnit.DAYS.toMillis(1) < System.currentTimeMillis()) {
+            getLogger().log(Level.INFO, "Last upkeep was at " + new SimpleDateFormat().format(new Date(lastUpkeep)) + "(" + lastUpkeep + ") which is longer ago than a day, running upkeep once to catch up!");
             runnable.run();
         }
     }
