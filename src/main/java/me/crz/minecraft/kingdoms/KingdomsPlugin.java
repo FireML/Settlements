@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -67,15 +69,13 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     private boolean running = false;
     private String empiresWorldPrefix = "";
     private String empiresWorldSuffix = "";
-    private BukkitTask upkeepTask = null;
+    private Timer upkeepTimer = new Timer();
     private LandFlags landFlags;
     private Timing pluginTimings;
 
     @Override
     public void onDisable() {
-        if (upkeepTask != null) {
-            upkeepTask.cancel();
-        }
+        upkeepTimer.cancel();
         if (running) {
             running = false;
         }
@@ -167,17 +167,30 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             getLogger().log(Level.INFO, "UPKEEP FINISHED!");
         };
 
-        Date nextUpkeepDate = Utils.getNextUpkeep();
-        long nextUpkeep = (nextUpkeepDate.getTime() - System.currentTimeMillis()) / 1000;
-        getLogger().log(Level.INFO, "Next upkeep: " + new SimpleDateFormat().format(nextUpkeepDate) + " which is in " + nextUpkeep + " seconds!");
-        upkeepTask = getServer().getScheduler().runTaskTimer(this, runnable, nextUpkeep * 20, TimeUnit.DAYS.toSeconds(1) * 20);
-
         // check if the last upkeep should have happened while the server was offline
         long lastUpkeep = ConfigManager.getInstance().getLastUpkeep();
         if (lastUpkeep > 0 && lastUpkeep + TimeUnit.DAYS.toMillis(1) < System.currentTimeMillis()) {
-            getLogger().log(Level.INFO, "Last upkeep was at " + new SimpleDateFormat().format(new Date(lastUpkeep)) + "(" + lastUpkeep + ") which is longer ago than a day, running upkeep once to catch up!");
+            getLogger().log(Level.INFO, "Last upkeep was at " + Utils.ISO_TIME_FORMAT.format(new Date(lastUpkeep)) + " (" + lastUpkeep + ") which is longer ago than a day, running upkeep once to catch up!");
             runnable.run();
+        } else {
+            getLogger().log(Level.INFO, "Last upkeep was at " + Utils.ISO_TIME_FORMAT.format(new Date(lastUpkeep)) + " (" + lastUpkeep + ")");
         }
+
+        scheduleUpkeep(runnable);
+    }
+
+    private void scheduleUpkeep(Runnable runnable) {
+        Date nextUpkeepDate = Utils.getNextUpkeep();
+        getLogger().log(Level.INFO, "Next upkeep: " + Utils.ISO_TIME_FORMAT.format(nextUpkeepDate) + " (" + nextUpkeepDate.getTime() + ")!");
+        upkeepTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Utils.runSync(() -> {
+                    runnable.run();
+                    scheduleUpkeep(runnable);
+                });
+            }
+        }, nextUpkeepDate);
     }
 
     public LandPerks getLandPerks() {

@@ -51,6 +51,7 @@ public class Utils {
     private final static char[] SUFFIXES = {'k', 'M', 'B', 'T', 'P', 'E'};
     public final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
     public final static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat();
+    public static final SimpleDateFormat ISO_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
     public static final UUID ZERO_UUID = new UUID(0, 0);
     private static Map<String, Integer> LEVEL_CHUNKS = new HashMap<>();
     private static Map<String, Integer> LEVEL_OUTPOSTS = new HashMap<>();
@@ -377,11 +378,13 @@ public class Utils {
     public static Date getNextUpkeep() {
         Calendar nextUpkeep = Calendar.getInstance();
         nextUpkeep.setTimeZone(TimeZone.getTimeZone(KingdomsPlugin.getInstance().getConfig().getString("upkeep.timezone")));
+        if (nextUpkeep.get(Calendar.HOUR_OF_DAY) > KingdomsPlugin.getInstance().getConfig().getInt("upkeep.hour")) {
+            nextUpkeep.set(Calendar.DAY_OF_YEAR, nextUpkeep.get(Calendar.DAY_OF_YEAR) + 1);
+        }
         nextUpkeep.set(Calendar.HOUR_OF_DAY, KingdomsPlugin.getInstance().getConfig().getInt("upkeep.hour"));
         nextUpkeep.set(Calendar.MINUTE, 0);
         nextUpkeep.set(Calendar.SECOND, 0);
         nextUpkeep.set(Calendar.MILLISECOND, 1);
-        nextUpkeep.set(Calendar.DAY_OF_YEAR, nextUpkeep.get(Calendar.DAY_OF_YEAR) + 1);
         return nextUpkeep.getTime();
     }
 
