@@ -378,7 +378,7 @@ public class Utils {
     public static Date getNextUpkeep() {
         Calendar nextUpkeep = Calendar.getInstance();
         nextUpkeep.setTimeZone(TimeZone.getTimeZone(KingdomsPlugin.getInstance().getConfig().getString("upkeep.timezone")));
-        if (nextUpkeep.get(Calendar.HOUR_OF_DAY) > KingdomsPlugin.getInstance().getConfig().getInt("upkeep.hour")) {
+        if (nextUpkeep.get(Calendar.HOUR_OF_DAY) >= KingdomsPlugin.getInstance().getConfig().getInt("upkeep.hour")) {
             nextUpkeep.set(Calendar.DAY_OF_YEAR, nextUpkeep.get(Calendar.DAY_OF_YEAR) + 1);
         }
         nextUpkeep.set(Calendar.HOUR_OF_DAY, KingdomsPlugin.getInstance().getConfig().getInt("upkeep.hour"));
