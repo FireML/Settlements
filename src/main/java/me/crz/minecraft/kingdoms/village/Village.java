@@ -90,22 +90,20 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                                 "name", getName());
                     }
                 } else {
-                    Message.get("tax.couldnt-pay").tell(getOnlineResidents(),
-                            "player", player.getName(),
-                            "amount", String.valueOf(tax),
-                            "state", getState().getTag(),
-                            "name", getName()
-                    );
-                    getBanishedPlayers().add(residentId);
-                    residents.remove(residentId);
-                    if (player instanceof Player) {
-                        VillageManager.getInstance().leaveVillage(ResidentManager.getInstance().getResident(residentId));
-                    } else {
-                        Utils.runAsync(() -> {
-                            Resident resident = ResidentManager.getInstance().getResident(residentId);
-                            Utils.runSync(() -> VillageManager.getInstance().leaveVillage(resident));
+                    Utils.runAsync(() -> {
+                        Resident resident = ResidentManager.getInstance().getResident(residentId);
+                        Utils.runSync(() -> {
+                            Message.get("tax.couldnt-pay").tell(getOnlineResidents(),
+                                    "player", resident.getName(),
+                                    "amount", String.valueOf(tax),
+                                    "state", getState().getTag(),
+                                    "name", getName()
+                            );
+                            getBanishedPlayers().add(residentId);
+                            residents.remove(residentId);
+                            VillageManager.getInstance().leaveVillage(resident);
                         });
-                    }
+                    });
                 }
             }
             long finalTotalTax = totalTax;
