@@ -165,4 +165,6 @@ public abstract class DatabaseManager {
             saveEmpire((Empire) landOwner);
         }
     }
+
+    public abstract void disable();
 }

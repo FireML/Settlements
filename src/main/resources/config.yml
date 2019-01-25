@@ -7,6 +7,9 @@ storage:
   table-prefix: kingdoms_
   password: password
   url-parameters: ""
+  queue:
+    size: 100 # Max the queue before saving happens
+    wait: 2 # Time to wait in seconds before saving queued entries
 resident-cache-duration: 120 # in seconds
 scoreboard:
   animation-speed: 2 # in ticks (disables if set to 0 or below)

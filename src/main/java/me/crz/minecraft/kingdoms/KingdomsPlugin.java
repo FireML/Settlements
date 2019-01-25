@@ -79,6 +79,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         if (running) {
             running = false;
         }
+        DatabaseManager.getInstance().disable();
     }
 
     @Override

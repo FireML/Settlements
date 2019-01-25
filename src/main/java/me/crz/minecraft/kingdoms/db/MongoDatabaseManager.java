@@ -351,6 +351,11 @@ public class MongoDatabaseManager extends DatabaseManager {
         return getLog("empire", empire.getId(), resident, page, type);
     }
 
+    @Override
+    public void disable() {
+        mongo.close();
+    }
+
     private List<String[]> getLog(String column, IdObject id, Resident resident, int page, LogType type) {
         List<String[]> log = new ArrayList<>();
         if (id.isNull()) {
