@@ -55,6 +55,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
     private SaveQueue<Village> villageQueue;
     private SaveQueue<Empire> empireQueue;
+    private SaveQueue<Resident> residentQueue;
+    private SaveQueue<OwnedLand> landQueue;
+    private SaveQueue<Lock> lockQueue;
 
     @Override
     public void connect() throws Exception {
@@ -78,6 +81,15 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
         villageQueue = new SaveQueue<>(ds, queueSize, queueWait, this::saveVillage);
         empireQueue = new SaveQueue<>(ds, queueSize, queueWait, this::saveEmpire);
+        residentQueue = new SaveQueue<>(ds, queueSize, queueWait, this::saveResident);
+        landQueue = new SaveQueue<>(ds, queueSize, queueWait, this::saveLand);
+        lockQueue = new SaveQueue<>(ds, queueSize, queueWait, (conn, lock) -> {
+            try {
+                save(conn, lock);
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "Error while saving lock at " + lock.getLocation().getKey() + " to database!", e);
+            }
+        });
 
         initializeTables();
         updateClaimModes();
@@ -167,14 +179,6 @@ public class MySqlDatabaseManager extends DatabaseManager {
     @Override
     public void saveEmpire(Empire empire) {
         Utils.catchSync();
-        if (empire.getId().isNull()) {
-            try (Connection conn = ds.getConnection()) {
-                saveEmpire(conn, empire);
-            } catch (SQLException e) {
-                plugin.getLogger().log(Level.SEVERE, "Error while saving empire " + empire.getName() + " to database!", e);
-            }
-            return;
-        }
         empireQueue.add(empire.getId(), empire);
     }
 
@@ -218,14 +222,6 @@ public class MySqlDatabaseManager extends DatabaseManager {
     @Override
     public void saveVillage(Village village) {
         Utils.catchSync();
-        if (village.getId().isNull()) {
-            try (Connection conn = ds.getConnection()) {
-                saveVillage(conn, village);
-            } catch (SQLException e) {
-                plugin.getLogger().log(Level.SEVERE, "Error while saving village " + village.getName() + " to database!", e);
-            }
-            return;
-        }
         villageQueue.add(village.getId(), village);
     }
 
@@ -349,29 +345,25 @@ public class MySqlDatabaseManager extends DatabaseManager {
     @Override
     public void saveLand(OwnedLand... lands) {
         Utils.catchSync();
-        if (lands.length == 0) {
-            return;
+        for (OwnedLand land : lands) {
+            landQueue.add(land.getKey(), land);
         }
-        try (Connection conn = ds.getConnection()) {
-            for (OwnedLand land : lands) {
-                try {
-                    save(conn, land, "landOwner", "uses", "modes");
-                    if (!land.getId().isNull()) {
-                        updateDataMap(conn, "claim_uses", "claimId", (Integer) land.getId().value(), "type", "state",
-                                land.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
-                        updateDataMap(conn, "claim_modes", "claimId", (Integer) land.getId().value(), "mode", "enabled",
-                                land.getModes().entrySet().stream()
-                                        .filter(e -> e.getKey().appliesTo(PlotMode.AppliesTo.LAND_OWNER))
-                                        .collect(Collectors.toMap(e -> e.getKey().name(), Map.Entry::getValue)));
-                    }
-                } catch (SQLException e) {
-                    plugin.getLogger().log(Level.SEVERE, "Error while saving claim " + land.getKey() + " to database!", e);
-                }
+    }
+
+    private void saveLand(Connection conn, OwnedLand land) {
+        try {
+            save(conn, land, "landOwner", "uses", "modes");
+            if (!land.getId().isNull()) {
+                updateDataMap(conn, "claim_uses", "claimId", (Integer) land.getId().value(), "type", "state",
+                        land.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
+                updateDataMap(conn, "claim_modes", "claimId", (Integer) land.getId().value(), "mode", "enabled",
+                        land.getModes().entrySet().stream()
+                                .filter(e -> e.getKey().appliesTo(PlotMode.AppliesTo.LAND_OWNER))
+                                .collect(Collectors.toMap(e -> e.getKey().name(), Map.Entry::getValue)));
             }
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while saving " + lands.length + " claims to database!", e);
+            plugin.getLogger().log(Level.SEVERE, "Error while saving claim " + land.getKey() + " to database!", e);
         }
-
     }
 
     @Override
@@ -484,59 +476,49 @@ public class MySqlDatabaseManager extends DatabaseManager {
     @Override
     public void saveResident(Resident... residents) {
         Utils.catchSync();
-        if (residents.length == 0) {
-            return;
+        for (Resident resident : residents) {
+            residentQueue.add(resident.getUUID(), resident);
         }
-        try (Connection conn = ds.getConnection()) {
-            for (Resident resident : residents) {
-                Map<String, Object> values = getValues(resident.serialize());
-                String sql = "INSERT INTO " + tablePrefix + "residents "
-                        + "(`" + String.join("`,`", values.keySet()) + "`)"
-                        + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")"
-                        + " ON DUPLICATE KEY UPDATE " + values.keySet().stream().map(c -> "`" + c + "`=VALUES(`" + c + "`)").collect(Collectors.joining(",")) + ";";
-                try {
-                    PreparedStatement sta = conn.prepareStatement(sql, resident.getId() == null ? PreparedStatement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS);
-                    int i = 0;
-                    for (Object value : values.values()) {
-                        i++;
-                        sta.setObject(i, value);
-                    }
-                    sta.executeUpdate();
-                    if (resident.getId() == null) {
-                        ResultSet rs = sta.getGeneratedKeys();
-                        rs.close();
-                        if (rs.next()) {
-                            resident.setId(rs.getInt(1));
-                        }
-                    }
-                    if (resident.getId() != null) {
-                        updateList(conn, "resident_channels", "userId", (Integer) resident.getId(), "channel", resident.getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
-                        updateUserList(conn, "resident_friends", "userId", (Integer) resident.getId(), "friendId", resident.getFriends());
-                        updateUserList(conn, "resident_ignores", "userId", (Integer) resident.getId(), "ignoredId", resident.getIgnore());
-                    }
-                } catch (SQLException e) {
-                    plugin.getLogger().log(Level.SEVERE, "Error while saving player " + resident.getName() + "/" + resident.getUUID() + " to database!", e);
+    }
+
+    private void saveResident(Connection conn, Resident resident) {
+        Map<String, Object> values = getValues(resident.serialize());
+        String sql = "INSERT INTO " + tablePrefix + "residents "
+                + "(`" + String.join("`,`", values.keySet()) + "`)"
+                + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")"
+                + " ON DUPLICATE KEY UPDATE " + values.keySet().stream().map(c -> "`" + c + "`=VALUES(`" + c + "`)").collect(Collectors.joining(",")) + ";";
+        try {
+            PreparedStatement sta = conn.prepareStatement(sql, resident.getId() == null ? PreparedStatement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS);
+            int i = 0;
+            for (Object value : values.values()) {
+                i++;
+                sta.setObject(i, value);
+            }
+            sta.executeUpdate();
+            if (resident.getId() == null) {
+                ResultSet rs = sta.getGeneratedKeys();
+                rs.close();
+                if (rs.next()) {
+                    resident.setId(rs.getInt(1));
                 }
             }
+            if (resident.getId() != null) {
+                updateList(conn, "resident_channels", "userId", (Integer) resident.getId(), "channel", resident.getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
+                updateUserList(conn, "resident_friends", "userId", (Integer) resident.getId(), "friendId", resident.getFriends());
+                updateUserList(conn, "resident_ignores", "userId", (Integer) resident.getId(), "ignoredId", resident.getIgnore());
+            }
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while saving " + residents.length + " players to database!", e);
+            plugin.getLogger().log(Level.SEVERE, "Error while saving player " + resident.getName() + "/" + resident.getUUID() + " to database!", e);
         }
     }
 
     @Override
     public void saveLocks(Lock... locks) {
         Utils.catchSync();
-        if (locks.length == 0) {
-            return;
-        }
-        try (Connection conn = ds.getConnection()) {
-            for (Lock lock : locks) {
-                if (lock.isValid()) {
-                    save(conn, lock);
-                }
+        for (Lock lock : locks) {
+            if (lock.isValid()) {
+                lockQueue.add(lock.getLocation().getKey(), lock);
             }
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while saving " + locks.length + " locks to database!", e);
         }
     }
 
@@ -718,6 +700,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
     public void disable() {
         villageQueue.saving.run();
         empireQueue.saving.run();
+        residentQueue.saving.run();
+        landQueue.saving.run();
+        lockQueue.saving.run();
         ds.close();
     }
 
@@ -1283,17 +1268,19 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     task.cancel();
                     task = null;
                 }
-                String name = null;
-                try (Connection conn = ds.getConnection()) {
-                    for (T t : queue.values()) {
-                        handleSave.accept(conn, t);
-                        if (name == null) {
-                            name = t.getClass().getSimpleName();
+                if (!queue.isEmpty()) {
+                    String name = null;
+                    try (Connection conn = ds.getConnection()) {
+                        for (T t : queue.values()) {
+                            handleSave.accept(conn, t);
+                            if (name == null) {
+                                name = t.getClass().getSimpleName();
+                            }
                         }
+                        queue.clear();
+                    } catch (SQLException e) {
+                        KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Error while saving " + queue.size() + " " + (name != null ? name : "object") + "s to database!", e);
                     }
-                    queue.clear();
-                } catch (SQLException e) {
-                    KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Error while saving " + queue.size() + " " + (name != null ? name : "object") + "s to database!", e);
                 }
             }
         };
