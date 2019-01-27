@@ -180,6 +180,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
     public void saveEmpire(Empire empire) {
         Utils.catchSync();
         empireQueue.add(empire.getId(), empire);
+        empireQueue.finishAdding();
     }
 
     private void saveEmpire(Connection conn, Empire empire) {
@@ -223,6 +224,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
     public void saveVillage(Village village) {
         Utils.catchSync();
         villageQueue.add(village.getId(), village);
+        villageQueue.finishAdding();
     }
 
     private void saveVillage(Connection conn, Village village) {
@@ -245,8 +247,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
     public void saveVillages(Collection<Village> villages) {
         Utils.catchSync();
         for (Village village : villages) {
-            saveVillage(village);
+            villageQueue.add(village.getId(), village);
         }
+        villageQueue.finishAdding();
     }
 
     @Override
@@ -346,8 +349,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
     public void saveLand(OwnedLand... lands) {
         Utils.catchSync();
         for (OwnedLand land : lands) {
-            landQueue.add(land.getKey(), land);
+            landQueue.add(land.getId(), land);
         }
+        landQueue.finishAdding();
     }
 
     private void saveLand(Connection conn, OwnedLand land) {
@@ -477,8 +481,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
     public void saveResident(Resident... residents) {
         Utils.catchSync();
         for (Resident resident : residents) {
-            residentQueue.add(resident.getUUID(), resident);
+            residentQueue.add(IdObject.get(resident.getId()), resident);
         }
+        residentQueue.finishAdding();
     }
 
     private void saveResident(Connection conn, Resident resident) {
@@ -497,7 +502,6 @@ public class MySqlDatabaseManager extends DatabaseManager {
             sta.executeUpdate();
             if (resident.getId() == null) {
                 ResultSet rs = sta.getGeneratedKeys();
-                rs.close();
                 if (rs.next()) {
                     resident.setId(rs.getInt(1));
                 }
@@ -517,9 +521,10 @@ public class MySqlDatabaseManager extends DatabaseManager {
         Utils.catchSync();
         for (Lock lock : locks) {
             if (lock.isValid()) {
-                lockQueue.add(lock.getLocation().getKey(), lock);
+                lockQueue.add(lock.getId(), lock);
             }
         }
+        lockQueue.finishAdding();
     }
 
     @Override
@@ -1261,9 +1266,10 @@ public class MySqlDatabaseManager extends DatabaseManager {
         private BiConsumer<Connection, T> handleSave;
 
         private BukkitTask task = null;
-        private final Map<Object, T> queue = new ConcurrentHashMap<>();
+        private final Map<IdObject, T> queue = new ConcurrentHashMap<>();
         private Runnable saving = () -> {
             synchronized (queue) {
+                forceSave = false;
                 if (task != null) {
                     task.cancel();
                     task = null;
@@ -1286,6 +1292,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         };
         private int maxSize;
         private int saveWait;
+        private boolean forceSave = false;
 
         public SaveQueue(HikariDataSource ds, int maxSize, int saveWait, BiConsumer<Connection, T> handleSave) {
             this.ds = ds;
@@ -1294,15 +1301,31 @@ public class MySqlDatabaseManager extends DatabaseManager {
             this.handleSave = handleSave;
         }
 
-        public void add(Object id, T object) {
+        public void add(IdObject id, T object) {
+            if (id.isNull()) {
+                id = IdObject.get(object.hashCode());
+                forceSave = true;
+            }
             synchronized (queue) {
                 queue.put(id, object);
             }
             if (queue.size() >= maxSize) {
                 saving.run();
-            } else if (task == null) {
+            } else if (!forceSave && task == null) {
                 task = Bukkit.getScheduler().runTaskLaterAsynchronously(KingdomsPlugin.getInstance(), saving, saveWait * 20);
             }
+        }
+
+        /**
+         * Finish up adding to this queue and check if we should save or not
+         * @return Whether or not a save was run due to finishing up
+         */
+        public boolean finishAdding() {
+             if (forceSave || queue.size()  > maxSize / 2) {
+                 saving.run();
+                 return true;
+             }
+             return false;
         }
     }
 }
