@@ -4,7 +4,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Resident;
 
@@ -15,7 +14,7 @@ public class EmpireDisbandCommand extends EmpireSubCommand {
     private Cache<UUID, Boolean> confirm = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
 
     public EmpireDisbandCommand(SubCommand parent) {
-        super(parent, "disband [confirm]", EmpireRank.LEADER);
+        super(parent, "disband [confirm]");
     }
 
     @Override
@@ -26,7 +25,7 @@ public class EmpireDisbandCommand extends EmpireSubCommand {
         } else {
             getMessage("success").tell(res.getVillage().getEmpire().getOnlineResidents(),
                     "chief", res.getName(),
-                    "chiefrank", VillageRank.CHIEF.getTag(res.getVillage()),
+                    "chiefrank", VillageRank.getChief().getTag(res.getVillage()),
                     "chieftitle", res.getTitle(),
                     "capital", res.getVillage().getName(),
                     "capitalstate", res.getVillage().getState().getTag()

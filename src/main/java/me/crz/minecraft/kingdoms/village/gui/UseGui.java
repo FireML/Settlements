@@ -1,20 +1,19 @@
 package me.crz.minecraft.kingdoms.village.gui;
 
+import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
-import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
+import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -47,7 +46,7 @@ public class UseGui extends KingdomsGUI {
 
                 public boolean click(Player p, ClickType clickType) {
                     Resident res = ResidentManager.getInstance().getResident(p);
-                    if (res.hasVillage() && res.getVillageRank().atLeast(VillageRank.CHIEF)) {
+                    if (res.hasVillage() && res.hasPermission("village.use")) {
                         BuildState changeTo = clickType.isLeftClick()
                                 ? res.getVillage().getUseState(u).next(BuildState.AppliesTo.SETTLEMENT)
                                 : res.getVillage().getUseState(u).previous(BuildState.AppliesTo.SETTLEMENT);
@@ -83,7 +82,7 @@ public class UseGui extends KingdomsGUI {
                 @Override
                 public boolean click(Player p, ClickType clickType) {
                     Resident res = ResidentManager.getInstance().getResident(p);
-                    if (res.hasVillage() && res.getVillageRank().atLeast(VillageRank.CHIEF)) {
+                    if (res.hasVillage() && res.hasPermission("village.use")) {
                         for (Use u : Use.values()) {
                             res.getVillage().setUseState(u, state);
                         }

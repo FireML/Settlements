@@ -3,7 +3,6 @@ package me.crz.minecraft.kingdoms.command.village.outpost;
 import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -11,7 +10,7 @@ import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 
 public class OutpostClaimCommand extends VillageSubCommand {
     public OutpostClaimCommand(VillageSubCommand parent) {
-        super(parent, "claim <name>", VillageRank.ELDER);
+        super(parent, "claim <name>");
     }
 
     @Override

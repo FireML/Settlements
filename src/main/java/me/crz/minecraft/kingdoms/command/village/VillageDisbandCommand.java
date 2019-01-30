@@ -14,7 +14,7 @@ public class VillageDisbandCommand extends VillageSubCommand {
     private Cache<UUID, Boolean> confirm = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
 
     public VillageDisbandCommand(SubCommand parent) {
-        super(parent, "disband [confirm]", VillageRank.CHIEF);
+        super(parent, "disband [confirm]");
     }
 
     @Override
@@ -26,7 +26,7 @@ public class VillageDisbandCommand extends VillageSubCommand {
             getMessage("confirm").tell(res, "command", base + " " + alias + " confirm");
         } else {
             getMessage("success").tell(res.getVillage().getOnlineResidents(),
-                    "rank", VillageRank.CHIEF.getTag(res.getVillage()),
+                    "rank", VillageRank.getChief().getTag(res.getVillage()),
                     "title", res.getTitle(),
                     "state", res.getVillage().getState().getTag(),
                     "chief", res.getVillage().getName(),

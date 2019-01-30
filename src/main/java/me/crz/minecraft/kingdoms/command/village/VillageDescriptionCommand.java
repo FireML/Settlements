@@ -2,14 +2,13 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.UtilChat;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 public class VillageDescriptionCommand extends VillageSubCommand {
     public VillageDescriptionCommand(SubCommand parent) {
-        super(parent, "setdescription <text>", VillageRank.ELDER, "description", "setboard", "board");
+        super(parent, "setdescription <text>", "description", "setboard", "board");
     }
 
     @Override

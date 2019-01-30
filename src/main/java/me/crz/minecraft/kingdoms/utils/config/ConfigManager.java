@@ -26,6 +26,9 @@ public class ConfigManager {
     private ConfigAccessor cursesConf;
     private ConfigAccessor lastUpkeepConf;
 
+    private ConfigAccessor settlementRanksConf;
+    private ConfigAccessor empireRanksConf;
+
     private ConfigManager() {
         super();
         reload();
@@ -52,6 +55,12 @@ public class ConfigManager {
         empirePerksConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "empirePerksConf.yml");
         empirePerksConf.saveDefaultConfig();
         empirePerksConf.reloadConfig();
+        settlementRanksConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "settlementRanks.yml");
+        settlementRanksConf.saveDefaultConfig();
+        settlementRanksConf.reloadConfig();
+        empireRanksConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "empireRanks.yml");
+        empireRanksConf.saveDefaultConfig();
+        empireRanksConf.reloadConfig();
         cursesConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "curses.yml");
         cursesConf.saveDefaultConfig();
         cursesConf.reloadConfig();
@@ -99,6 +108,14 @@ public class ConfigManager {
 
     public FileConfiguration getEmpirePerksConfig() {
         return empirePerksConf.getConfig();
+    }
+
+    public ConfigAccessor getSettlementRanksConf() {
+        return settlementRanksConf;
+    }
+
+    public ConfigAccessor getEmpireRanksConf() {
+        return empireRanksConf;
     }
 
     public FileConfiguration getCursesConfig() {

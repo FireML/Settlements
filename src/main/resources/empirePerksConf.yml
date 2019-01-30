@@ -37,12 +37,13 @@ resistance1:
         in: empire-world
         # Who should get the effect
         # can be:
-        # each rank above the specified like resident (default), recruiter, builder, elder, chief - applied for the specific rank
+        # each rank above the specified like resident, recruiter, builder, elder, chief - applied for the specific rank
+        # members - members of the empire (default)
         # allies - applies to all allies
         # enemies - applies to all enemies
         # free - applies to everyone without a settlement
         # (note that embassy plot owners are treated like they are residents of the village they own a plot in but only on their plot)
-        to: resident
+        to: members
   # Allow purchasing extra claims or outposts
   bonus:
     claims: 0

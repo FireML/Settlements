@@ -12,7 +12,7 @@ import me.crz.minecraft.kingdoms.village.Village;
 
 public class VillageTransferCommand extends VillageSubCommand {
     public VillageTransferCommand(SubCommand parent) {
-        super(parent, "transfer <player>", VillageRank.CHIEF);
+        super(parent, "transfer <player>");
     }
 
     @Override
@@ -36,13 +36,13 @@ public class VillageTransferCommand extends VillageSubCommand {
                 return;
             }
             Utils.runSync(() -> {
-                res.setVillageRank(VillageRank.ELDER);
-                tres.setVillageRank(VillageRank.CHIEF);
+                res.setVillageRank(VillageRank.getChief().next());
+                tres.setVillageRank(VillageRank.getChief());
                 village.setChief(tres.getUUID());
-                if (village.hasEmpire() && res.getEmpireRank() == EmpireRank.LEADER) {
-                    res.setEmpireRank(EmpireRank.SENATOR);
+                if (village.hasEmpire() && village.getEmpire().isChief(res)) {
+                    res.setEmpireRank(EmpireRank.getLeader().next());
                     village.getEmpire().addSenator(res);
-                    tres.setEmpireRank(EmpireRank.LEADER);
+                    tres.setEmpireRank(EmpireRank.getLeader());
                     village.getEmpire().removeSenator(tres);
                 }
                 Utils.runAsync(() -> {
@@ -51,7 +51,7 @@ public class VillageTransferCommand extends VillageSubCommand {
                     DatabaseManager.getInstance().saveVillage(village);
                 });
                 MessageUtils.tellResidents(village.getOnlineResidents(), getMessage("success"),
-                        "rank", VillageRank.CHIEF.getTag(village),
+                        "rank", VillageRank.getChief().getTag(village),
                         "setter", res.getName(),
                         "target", tres.getName()
                 );

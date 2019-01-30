@@ -41,7 +41,7 @@ public class VillageAdminRankCommand extends SubCommand {
             }
             Resident res = village.getChief();
             VillageRank r = VillageRank.valueOf(rank);
-            if (r.equals(VillageRank.CHIEF)) {
+            if (r == VillageRank.getChief()) {
                 res.setVillageRank(tRes.getVillageRank());
                 tRes.setVillageRank(r);
                 village.setChief(tRes.getUUID());

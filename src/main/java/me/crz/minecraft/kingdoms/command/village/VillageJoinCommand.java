@@ -2,24 +2,28 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 
-public class VillageJoinCommand extends VillageSubCommand {
+public class VillageJoinCommand extends ResidentSubCommand {
     public VillageJoinCommand(SubCommand parent) {
         super(parent, "join <name>");
     }
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
+        if (resident.hasEmpire()) {
+            getError("free-required").tell(resident);
+            return true;
+        }
         if (args.length < 1) {
             return false;
         }
@@ -51,7 +55,7 @@ public class VillageJoinCommand extends VillageSubCommand {
                 }
             }
             resident.setVillage(joinVillage);
-            resident.setVillageRank(VillageRank.RESIDENT);
+            resident.setVillageRank(VillageRank.getDefault());
             resident.addChannel(ChatChannel.SETTLEMENT);
             InviteCache.getPendingVillageInvites().remove(resident.getUUID(), joinVillage.getId());
             Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(resident));

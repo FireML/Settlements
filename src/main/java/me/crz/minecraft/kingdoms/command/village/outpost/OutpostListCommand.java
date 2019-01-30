@@ -1,7 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village.outpost;
 
 import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.world.NamedLocation;
 
@@ -11,7 +10,7 @@ public class OutpostListCommand extends VillageSubCommand {
     private static final DecimalFormat DOUBLE_FORMAT = new DecimalFormat("#.#");
 
     public OutpostListCommand(VillageSubCommand parent) {
-        super(parent, "list", VillageRank.RESIDENT);
+        super(parent, "list");
     }
 
     @Override

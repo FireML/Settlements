@@ -80,10 +80,6 @@ public class Utils {
         return item;
     }
 
-    public static boolean playerIsElder(Player player) {
-        return ResidentManager.getInstance().getResident(player).getVillageRank().equals(VillageRank.ELDER);
-    }
-
     public static boolean isWorldClaimable(World world) {
         return !getDisabledClaimingWorlds().contains(world.getName()) || EmpireManager.getInstance().getEmpireFromWorld(world) != null;
     }

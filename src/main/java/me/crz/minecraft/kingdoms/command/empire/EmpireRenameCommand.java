@@ -3,7 +3,6 @@ package me.crz.minecraft.kingdoms.command.empire;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.UtilChat;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -14,7 +13,7 @@ public class EmpireRenameCommand extends EmpireSubCommand {
     private Pattern allowed = Pattern.compile("[\\w-]+");
 
     public EmpireRenameCommand(SubCommand parent) {
-        super(parent, "rename <name>", EmpireRank.LEADER);
+        super(parent, "rename <name>");
     }
 
     @Override

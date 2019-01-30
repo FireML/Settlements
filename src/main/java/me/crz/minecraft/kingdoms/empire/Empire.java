@@ -350,7 +350,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
     @Override
     public boolean isOfficer(Player player) {
         Resident res = ResidentManager.getInstance().getResident(player);
-        return isMember(res) && res.getEmpireRank().atLeast(EmpireRank.SENATOR);
+        return isMember(res) && res.hasPermission("kingdoms.command.empire.officer");
     }
 
     public boolean isCapital(Village village) {
@@ -377,12 +377,12 @@ public class Empire extends LandOwner implements Comparable<Empire> {
 
     @Override
     public boolean canAdminLocks(Resident resident) {
-        return isMember(resident) && resident.getEmpireRank().atLeast(EmpireRank.LEADER);
+        return isMember(resident) && resident.hasPermission("kingdoms.command.empire.lock.admin");
     }
 
     @Override
     public boolean canAdminPlots(Resident resident) {
-        return isMember(resident) && resident.getEmpireRank().atLeast(EmpireRank.LEADER);
+        return isMember(resident) && resident.hasPermission("kingdoms.command.empire.plot.admin");
     }
 
     @Override
@@ -529,7 +529,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                 "perks", getPerksMap().entrySet().stream()
                         .map(e -> (e.getValue().getTimes() > 1 ? e.getValue().getTimes() + "x " : "") + getPerk(e.getKey()).getTag())
                         .collect(Collectors.joining(", ")),
-                "chiefrank", VillageRank.CHIEF.getTag(capital),
+                "chiefrank", VillageRank.getChief().getTag(capital),
                 "chieftitle", chief != null ? chief.getTitle() : "-",
                 "chief", chief != null ? chief.getName() : "-",
                 "chiefonline", configMessages != null ? chief != null && chief.getPlayer() != null ? online : offline : "",

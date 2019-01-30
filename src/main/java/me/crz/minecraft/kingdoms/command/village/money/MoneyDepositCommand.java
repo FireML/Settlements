@@ -4,7 +4,6 @@ import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -12,7 +11,7 @@ import net.milkbowl.vault.economy.EconomyResponse;
 
 public class MoneyDepositCommand extends VillageSubCommand {
     public MoneyDepositCommand(SubCommand parent) {
-        super(parent, "deposit <amount>", VillageRank.RESIDENT);
+        super(parent, "deposit <amount>");
     }
 
     @Override

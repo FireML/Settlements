@@ -9,7 +9,6 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -50,7 +49,7 @@ public class AccessGUI extends KingdomsGUI {
                 @Override
                 public boolean click(Player p, ClickType clickType) {
                     Resident resident = ResidentManager.getInstance().getResident(p);
-                    if (resident.hasEmpire() && resident.getEmpireRank().atLeast(EmpireRank.LEADER)) {
+                    if (resident.hasEmpire() && resident.hasPermission("empire.setaccess")) {
                         if (resident.getVillage().getEmpire().getAccess() != access) {
                             resident.getVillage().getEmpire().setAccess(access);
                             resident.tell(Message.get("command.empire.setaccess.success"), "access", access.getTag());

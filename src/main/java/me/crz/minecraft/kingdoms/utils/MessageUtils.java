@@ -97,6 +97,9 @@ public class MessageUtils extends Base {
     }
 
     public static BaseComponent[] replacePlaceholders(BaseComponent[] message, String... replacements) {
+        if (replacements.length == 0) {
+            return message;
+        }
         return new Replacer()
                 .placeholderPrefix('{')
                 .placeholderSuffix('}')
@@ -105,6 +108,9 @@ public class MessageUtils extends Base {
     }
 
     public static BaseComponent[] replacePlaceholders(BaseComponent[] message, Map<String, BaseComponent[]> replacements) {
+        if (replacements.isEmpty()) {
+            return message;
+        }
         Replacer replacer = new Replacer()
                 .placeholderPrefix('{')
                 .placeholderSuffix('}');
@@ -123,6 +129,8 @@ public class MessageUtils extends Base {
     public static String replacePlaceholders(String message, String... replacements) {
         if (message == null) {
             return null;
+        } else if (replacements.length == 0) {
+            return message;
         }
         return new Replacer()
                 .placeholderPrefix('{')
@@ -134,6 +142,8 @@ public class MessageUtils extends Base {
     public static String replacePlaceholders(String message, Map<String, String> replacements) {
         if (message == null) {
             return null;
+        } else if (replacements.isEmpty()) {
+            return message;
         }
         return new Replacer()
                 .placeholderPrefix('{')

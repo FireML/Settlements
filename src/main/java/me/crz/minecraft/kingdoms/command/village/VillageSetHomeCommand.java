@@ -4,7 +4,6 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -13,7 +12,7 @@ import org.bukkit.entity.Player;
 
 public class VillageSetHomeCommand extends VillageSubCommand {
     public VillageSetHomeCommand(SubCommand parent) {
-        super(parent, "sethome", VillageRank.CHIEF);
+        super(parent, "sethome");
     }
 
     @Override

@@ -2,7 +2,6 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -12,7 +11,7 @@ import java.util.Collection;
 
 public class VillageTitleCommand extends VillageSubCommand {
     public VillageTitleCommand(SubCommand parent) {
-        super(parent, "title <title>", VillageRank.RESIDENT);
+        super(parent, "title <title>");
     }
 
     @Override

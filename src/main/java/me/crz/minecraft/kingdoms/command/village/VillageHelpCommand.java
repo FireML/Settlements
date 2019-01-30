@@ -6,7 +6,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 
 public class VillageHelpCommand extends VillageSubCommand {
     public VillageHelpCommand(HelpCommand parent, VillageRank rank) {
-        super(parent, rank != null ? rank.name().toLowerCase() : "no" + " [<page>]", rank);
+        super(parent, rank != null ? rank.name().toLowerCase() : "no" + " [<page>]");
     }
 
     @Override

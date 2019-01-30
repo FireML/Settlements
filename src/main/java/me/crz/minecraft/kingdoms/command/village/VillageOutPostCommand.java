@@ -13,12 +13,13 @@ import me.crz.minecraft.kingdoms.village.Resident;
 public class VillageOutPostCommand extends VillageSubCommand {
 
     public VillageOutPostCommand(SubCommand parent) {
-        super(parent, "outpost <options>", VillageRank.RESIDENT);
+        super(parent, "outpost <options>");
         setHelpCommand(new HelpCommand(this));
-        getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), VillageRank.RECRUITER));
-        getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), VillageRank.BUILDER));
-        getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), VillageRank.ELDER));
-        getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), VillageRank.CHIEF));
+        for (VillageRank rank : VillageRank.values()) {
+            if (rank != VillageRank.getDefault()) {
+                getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), rank));
+            }
+        }
         registerCommand(new OutpostClaimCommand(this));
         registerCommand(new OutpostUnclaimCommand(this));
         registerCommand(new OutpostSethomeCommand(this));

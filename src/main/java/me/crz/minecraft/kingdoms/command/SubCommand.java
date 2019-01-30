@@ -1,23 +1,18 @@
 package me.crz.minecraft.kingdoms.command;
 
 
-import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.rank.Rankable;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
-import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -85,7 +80,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
         if (getMessage("usage").exists()) {
             getMessage("usage").tell(sender,
                     "alias", path,
-                    "path", getPath(),
+                    "path", coolPath,
                     "usage", getUsage(base),
                     "aliases", getAliases().isEmpty() ? "" : getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getAliases())),
                     "description", getDescription()
@@ -97,7 +92,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
         if (hasCommands) {
             getMessage("usage.head").tell(sender,
                     "usage", getUsage(base),
-                    "path", getPath(),
+                    "path", coolPath,
                     "type", "All ",
                     "name", WordUtils.capitalizeFully(name()),
                     "alias", WordUtils.capitalizeFully(alias),
@@ -109,7 +104,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
         if (hasCommands) {
             getMessage("usage.footer").tell(sender,
                     "usage", getUsage(base),
-                    "path", getPath(),
+                    "path", coolPath,
                     "type", "All ",
                     "name", WordUtils.capitalizeFully(name()),
                     "alias", WordUtils.capitalizeFully(alias),
@@ -201,7 +196,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
     }
 
     protected String getPath() {
-        return parent != null ? parent.getPath() + " " + getShortestAlias(): getShortestAlias();
+        return parent != null ? parent.getPath() + " " + getShortestAlias() : getShortestAlias();
     }
 
     public void setPermission(String perm) {
@@ -314,7 +309,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
     public String getShortestAlias() {
         String shortestAlias = name();
         for (String alias : getAliases()) {
-            if (alias.length() < shortestAlias.length()) {
+            if (shortestAlias.startsWith(alias) && alias.length() < shortestAlias.length()) {
                 shortestAlias = alias;
             }
         }

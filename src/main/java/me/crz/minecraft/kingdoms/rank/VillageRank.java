@@ -2,50 +2,72 @@ package me.crz.minecraft.kingdoms.rank;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import me.crz.minecraft.kingdoms.utils.ConfigKey;
+import me.crz.minecraft.kingdoms.perk.PerkEffect;
 import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.utils.NameTag;
+import me.crz.minecraft.kingdoms.utils.Next;
 import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public enum VillageRank implements Rankable, NameTag {
-    CHIEF,
-    ELDER,
-    RECRUITER,
-    BUILDER,
-    RESIDENT;
+public class VillageRank extends Rank implements Next<VillageRank> {
 
     private Multimap<VillageState, String> titles = MultimapBuilder.enumKeys(VillageState.class).arrayListValues().build();
 
-    private static Map<String, VillageRank> byTitle = new HashMap<>();
-
-    static {
-        for (VillageRank rank : values()) {
-            for (VillageState state : VillageState.values()) {
-                List<String> titles = Message.get(state.getKey() + ".rank." + rank.getKey()).getTextList().stream().map(ChatColor::stripColor).collect(Collectors.toList());
-                rank.titles.putAll(state, titles);
-                byTitle.put(rank.name().toLowerCase(), rank);
-                byTitle.putAll(titles.stream().collect(Collectors.toMap(String::toLowerCase, t -> rank)));
-            }
+    public VillageRank(String name, ConfigurationSection config) {
+        super(name, config);
+        for (VillageState state : VillageState.values()) {
+            List<String> titles = Message.get(state.getKey() + ".rank." + getKey()).getTextList().stream().map(ChatColor::stripColor).collect(Collectors.toList());
+            this.titles.putAll(state, titles);
         }
+        PerkEffect.EffectInfluenced.register(new PerkEffect.EffectInfluenced(name));
+    }
+
+
+    @Override
+    public VillageRank getInheritedRank() {
+        return get(getInherits());
+    }
+
+    @Override
+    public VillageRank getParentRank() {
+        return get(getParent());
     }
 
     public static VillageRank get(String string) {
-        return byTitle.get(string.toLowerCase());
+        return RankManager.getInstance().getVillageRank(string);
+    }
+
+    public static VillageRank getDefault() {
+        return RankManager.getInstance().getVillageDefaultRank();
+    }
+
+    public static VillageRank getChief() {
+        return RankManager.getInstance().getVillageChiefRank();
+    }
+
+    public static VillageRank valueOf(String string) throws IllegalArgumentException {
+        VillageRank rank = get(string);
+        if (rank == null) {
+            throw new IllegalArgumentException("No VillageRank with name " + string);
+        }
+        return rank;
     }
 
     public List<String> getTitles(Village village) {
-        return village != null ? (List<String>) titles.get(village.getState()) : new ArrayList<>();
+        return village != null ? getTitles(village.getState()) : new ArrayList<>();
+    }
+
+    public List<String> getTitles(VillageState state) {
+        return (List<String>) titles.get(state);
     }
 
     public String getTag(Village village) {
@@ -67,6 +89,10 @@ public enum VillageRank implements Rankable, NameTag {
         return titles;
     }
 
+    public static VillageRank[] values() {
+        return RankManager.getInstance().getVillageRanks().toArray(new VillageRank[0]);
+    }
+
     public int getTitleIndex(Village village, String name) {
         int i = 0;
         for (String title : getTitles(village)) {
@@ -84,5 +110,10 @@ public enum VillageRank implements Rankable, NameTag {
             return titles.get(index);
         }
         return getTag(village);
+    }
+
+    @Override
+    public VillageRank[] getValues() {
+        return values();
     }
 }

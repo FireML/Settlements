@@ -1,21 +1,20 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.village.gui.PerksGUI;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.perk.LevelPerk;
 import me.crz.minecraft.kingdoms.perk.PerkData;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.VillageManager;
-import me.crz.minecraft.kingdoms.perk.LevelPerk;
+import me.crz.minecraft.kingdoms.village.gui.PerksGUI;
 
 public class VillagePerksCommand extends VillageSubCommand {
     public VillagePerksCommand(SubCommand parent) {
-        super(parent, "perks", VillageRank.RESIDENT, "buffs");
+        super(parent, "perks", "buffs");
         setForceOwnUsage(true);
-        registerCommand(new VillageSubCommand(this, "toggle <perk>", VillageRank.ELDER) {
+        registerCommand(new VillageSubCommand(this, "toggle <perk>") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length > 0) {

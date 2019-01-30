@@ -26,4 +26,22 @@ public abstract class ResidentSubCommand extends PlayerSubCommand {
     public int ordinal() {
         return -1;
     }
+
+    @Override
+    public boolean testAccess(Player player) {
+        return testAccess(ResidentManager.getInstance().getResident(player)) && super.testAccess(player);
+    }
+
+    public boolean testAccess(Resident resident) {
+        return true;
+    }
+
+    @Override
+    public boolean hasAccess(Player player) {
+        return super.hasAccess(player) && hasAccess(ResidentManager.getInstance().getResident(player));
+    }
+
+    public boolean hasAccess(Resident resident) {
+        return true;
+    }
 }

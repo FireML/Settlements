@@ -2,20 +2,19 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.landflags.Use;
-import me.crz.minecraft.kingdoms.village.gui.UseGui;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.gui.UseGui;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class VillageUseCommand extends VillageSubCommand {
     public VillageUseCommand(SubCommand parent) {
-        super(parent, "use <name> <state>", VillageRank.CHIEF);
+        super(parent, "use <name> <state>");
         registerCommand(new VillageSubCommand(this, "all <state>") {
             @Override
             public boolean run(Resident res, String base, String alias, String... args) {

@@ -2,12 +2,11 @@ package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.common.AllyCommand;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 public class EmpireUnAllyCommand extends EmpireSubCommand implements AllyCommand {
     public EmpireUnAllyCommand(SubCommand parent) {
-        super(parent, "unally s:<settlement>|e:<empire>", EmpireRank.LEADER);
+        super(parent, "unally s:<settlement>|e:<empire>");
     }
 
     @Override

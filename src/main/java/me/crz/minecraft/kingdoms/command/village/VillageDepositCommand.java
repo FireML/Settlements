@@ -2,15 +2,14 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.LogType;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.vault.VaultInventory;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 public class VillageDepositCommand extends VillageSubCommand {
     public VillageDepositCommand(SubCommand parent) {
-        super(parent, "deposit", VillageRank.RESIDENT);
-        registerCommand(new VillageHistoryCommand(this, VillageRank.RESIDENT, LogType.VAULT));
+        super(parent, "deposit");
+        registerCommand(new VillageHistoryCommand(this, LogType.VAULT));
     }
 
     @Override

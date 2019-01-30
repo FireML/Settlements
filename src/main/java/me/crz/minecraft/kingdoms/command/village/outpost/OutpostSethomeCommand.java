@@ -4,7 +4,6 @@ import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
@@ -12,7 +11,7 @@ import java.util.Collection;
 
 public class OutpostSethomeCommand extends VillageSubCommand {
     public OutpostSethomeCommand(VillageSubCommand parent) {
-        super(parent, "sethome", VillageRank.ELDER);
+        super(parent, "sethome");
     }
 
     @Override

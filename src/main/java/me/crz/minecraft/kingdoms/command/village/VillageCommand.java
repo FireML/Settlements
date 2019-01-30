@@ -38,7 +38,7 @@ public class VillageCommand extends SubCommand {
         registerCommand(new VillageDescriptionCommand(this));
         registerCommand(new VillageDisbandCommand(this));
         registerCommand(new VillageHereCommand(this));
-        registerCommand(new VillageHistoryCommand(this, VillageRank.CHIEF, LogType.ALL));
+        registerCommand(new VillageHistoryCommand(this, LogType.ALL));
         registerCommand(new VillageHomeCommand(this));
         registerCommand(new VillageInviteCommand(this));
         registerCommand(new VillageJoinCommand(this));
@@ -51,9 +51,10 @@ public class VillageCommand extends SubCommand {
         registerCommand(new VillageMoneyCommand(this));
         registerCommand(new VillageOutPostCommand(this));
         registerCommand(new VillagePerksCommand(this));
-        registerCommand(new PlotCommand());
+        registerCommand(new PlotCommand(this));
         registerCommand(new LockCommand());
         registerCommand(new UnlockCommand());
+        registerCommand(new VillagePermsCommand(this));
         registerCommand(new VillageRenameCommand(this));
         registerCommand(new VillageResListCommand(this));
         registerCommand(new VillageRulesCommand(this));

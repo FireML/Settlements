@@ -1,7 +1,6 @@
 package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ConfigKey;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -134,6 +133,8 @@ public class ChatMap {
         private final boolean claimable;
 
         private Set<SimpleChunkLocation> ownOutposts = new HashSet<>();
+        private boolean canClaimCoords = false;
+        private boolean canUnclaimCoords = false;
 
         public MapGenerator(Player p) {
             this.playerLand = LandManager.getInstance().getLand(p.getLocation());
@@ -141,6 +142,8 @@ public class ChatMap {
             this.player = p;
             this.resident = ResidentManager.getInstance().getResident(p);
             if (resident.hasVillage()) {
+                this.canClaimCoords = resident.hasPermission("kingdoms.command.village.claim.coords");
+                this.canUnclaimCoords = resident.hasPermission("kingdoms.command.village.unclaim.coords");
                 for (NamedLocation o : resident.getVillage().getOutpostHomes().values()) {
                     OwnedLand outpostLand = LandManager.getInstance().getLand(o.toChunkLocation());
                     if (outpostLand != null && !outpostLand.containsHome()) {
@@ -173,7 +176,7 @@ public class ChatMap {
             OwnedLand land = LandManager.getInstance().getLand(x, z, world);
             if (land == null) {
                 ComponentBuilder cb = new ComponentBuilder((current ? Symbol.CURRENT : Symbol.NORMAL).getText());
-                if (claimable && resident.hasVillage() && resident.getVillageRank().atLeast(VillageRank.ELDER)) {
+                if (claimable && resident.hasVillage() && canClaimCoords) {
                     cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/village claim " + x + " " + z));
                     cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, messages.getMessage("hover.click-to-claim")
                             .getReplacedComponents(
@@ -245,7 +248,7 @@ public class ChatMap {
             }
 
             ComponentBuilder cb = new ComponentBuilder(MessageUtils.replaceColorCodes(symbol.getText())).color(relation.getColor());
-            if (claimable && land.isOwnedBy(resident.getVillage()) && resident.getVillageRank().atLeast(VillageRank.CHIEF)) {
+            if (claimable && land.isOwnedBy(resident.getVillage()) && canUnclaimCoords) {
                 hover.append("\n").append(messages.getMessage("hover.click-to-unclaim")
                         .getReplacedComponents(
                                 "location", x + "-" + z,

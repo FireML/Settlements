@@ -2,14 +2,13 @@ package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.InviteCache;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 
 public class EmpireInviteCommand extends EmpireSubCommand {
     public EmpireInviteCommand(SubCommand parent) {
-        super(parent, "invite <settlement>", EmpireRank.SENATOR);
+        super(parent, "invite <settlement>");
     }
 
     @Override

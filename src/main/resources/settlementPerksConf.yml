@@ -38,8 +38,10 @@ resistance1:
         in: own-settlement
         # Who should get the effect
         # can be:
-        # each rank above the specified like resident (default), recruiter, builder, elder, chief - applied for the specific rank
+        # each rank above the specified like resident, recruiter, builder, elder, chief - applied for the specific rank
+        # members - all members of the settlement (default)
         # allies - applies to all allies
+        # trusted - applies to all members of the same empire
         # enemies - applies to all enemies
         # free - applies to everyone without a settlement
         # (note that embassy plot owners are treated like they are residents of the village they own a plot in but only on their plot)

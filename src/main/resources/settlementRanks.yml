@@ -1,0 +1,95 @@
+# Ranks for people in a settlement. Top ones inherit from the ones below them
+chief:
+  icon: diamond_sword
+  permissions:
+  - empire.create
+  - empire.join
+  - empire.help.chief
+  - village.allyclaim
+  - village.banish
+  - village.bank.withdraw
+  - village.build
+  - village.claim.radius
+  - village.claim.coords
+  - village.history
+  - village.joinfee.set
+  - village.outpost.help.chief
+  - village.outpost.unclaim
+  - village.perms.set
+  - village.perms.unset
+  - village.setaccess
+  - village.sethome
+  - village.shop.repeat
+  - village.shop.unlock
+  - village.tax.set
+  - village.unbanish
+  - village.unclaim.radius
+  - village.unclaim.coords
+  - village.use
+  - village.help.chief
+assistant:
+  icon: golden_sword
+  permissions:
+  - village.disband
+  - village.transfer
+  - village.rename
+  - village.lock.admin
+  - village.help.assistant
+elder:
+  icon: iron_sword
+  permissions:
+  - empire.leave
+  - village.ally
+  - village.banished
+  - village.claim
+  - village.mode
+  - village.outpost.help.elder
+  - village.outpost.claim
+  - village.outpost.sethome
+  - village.perks.toggle
+  - village.perms
+  - village.perms.show
+  - village.plot.admin
+  - village.setdescription
+  - village.setrank
+  - village.settings
+  - village.unally
+  - village.unclaim
+  - village.help.elder
+recruiter:
+  icon: stone_sword
+  permissions:
+  - village.invite
+  - village.kick
+  - village.help.recruiter
+builder:
+  icon: stone_shovel
+  permissions:
+  - village.officer
+  - village.help.builder
+resident:
+  icon: stone_pickaxe
+  permissions:
+  - village.allies
+  - village.bank
+  - village.bank.help
+  - village.bank.balance
+  - village.bank.deposit
+  - village.bank.history
+  - village.deposit
+  - village.deposit.history
+  - village.help.resident
+  - village.joinfee
+  - village.leave
+  - village.materials
+  - village.outpost
+  - village.outpost.help
+  - village.outpost.list
+  - village.outpost.teleport
+  - village.perks
+  - village.reslist
+  - village.shop
+  - village.tax
+  - village.title
+  - village.upgrade
+  - village.upkeep

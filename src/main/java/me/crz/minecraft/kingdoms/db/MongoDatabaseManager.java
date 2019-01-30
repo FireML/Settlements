@@ -325,7 +325,7 @@ public class MongoDatabaseManager extends DatabaseManager {
         }
         List<Bson> filters = new ArrayList<>();
         filters.add(Filters.eq(column, id.value()));
-        if (!resident.getVillageRank().atLeast(VillageRank.CHIEF)) {
+        if (!resident.getVillageRank().atLeast(VillageRank.getChief())) {
             filters.add(Filters.eq("action", "deposit"));
         }
         switch (type) {
@@ -363,7 +363,7 @@ public class MongoDatabaseManager extends DatabaseManager {
         }
         List<Bson> filters = new ArrayList<>();
         filters.add(Filters.eq(column, id.value()));
-        if (!resident.getVillageRank().atLeast(VillageRank.CHIEF)) {
+        if (!resident.getVillageRank().atLeast(VillageRank.getChief())) {
             filters.add(Filters.eq("action", "deposit"));
         }
         switch (type) {
@@ -383,7 +383,7 @@ public class MongoDatabaseManager extends DatabaseManager {
         for (Document document : logIt) {
             Village village = VillageManager.getInstance().getVillageFromId(IdObject.get(document.get("village")));
             Empire empire = EmpireManager.getInstance().getEmpireFromId(IdObject.get(document.get("empire")));
-            VillageRank rank = VillageRank.RESIDENT;
+            VillageRank rank = VillageRank.getDefault();
             try {
                 rank = VillageRank.valueOf(document.getString("rank").toUpperCase());
             } catch (IllegalArgumentException ignored) {}

@@ -6,7 +6,6 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.lock.LockCommand;
 import me.crz.minecraft.kingdoms.command.lock.UnlockCommand;
 import me.crz.minecraft.kingdoms.command.plot.PlotCommand;
-import me.crz.minecraft.kingdoms.db.LogType;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -17,12 +16,16 @@ public class EmpireCommand extends SubCommand {
     public EmpireCommand() {
         super(null, "empire", "e");
         setHelpCommand(new HelpCommand(this));
-        getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), VillageRank.RECRUITER));
-        getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), VillageRank.BUILDER));
-        getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), VillageRank.ELDER));
-        getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), VillageRank.CHIEF));
-        getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), EmpireRank.SENATOR));
-        getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), EmpireRank.LEADER));
+        for (VillageRank rank : VillageRank.values()) {
+            if (rank != VillageRank.getDefault()) {
+                getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), rank));
+            }
+        }
+        for (EmpireRank rank : EmpireRank.values()) {
+            if (rank != EmpireRank.getDefault()) {
+                getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), rank));
+            }
+        }
         getHelpCommand().setDefaultTypeProvider(s -> s instanceof Player && ResidentManager.getInstance().doesResidentHaveEmpire((Player) s) ? "member" : "no");
         registerCommand(new ChatCommand());
         registerCommand(new EmpireAlliesCommand(this));
@@ -47,7 +50,8 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpireRenameCommand(this));
         registerCommand(new EmpireRegenCommand(this));
         registerCommand(new EmpirePerksCommand(this));
-        registerCommand(new PlotCommand());
+        registerCommand(new EmpirePermsCommand(this));
+        registerCommand(new PlotCommand(this));
         registerCommand(new LockCommand());
         registerCommand(new UnlockCommand());
         registerCommand(new EmpireSenatorsCommand(this));

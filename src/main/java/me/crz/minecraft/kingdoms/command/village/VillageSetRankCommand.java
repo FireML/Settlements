@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 public class VillageSetRankCommand extends VillageSubCommand {
     public VillageSetRankCommand(SubCommand parent) {
-        super(parent, "setrank <player> <rank>", VillageRank.ELDER, "rank");
+        super(parent, "setrank <player> <rank>", "rank");
     }
 
     @Override
@@ -58,7 +58,7 @@ public class VillageSetRankCommand extends VillageSubCommand {
 
             if (rank == null) {
                 getError("invalid-rank").tell(player, "rank", args[1]);
-            } else if (rank == VillageRank.CHIEF) {
+            } else if (rank == VillageRank.getChief()) {
                 getError("cant-set-chief").tell(player, "base", base, "state", village.getState().getTag());
             } else if (!res.getVillageRank().above(tres.getVillageRank())) {
                 getMessage("cant-set-higher").tell(player, "rank", res.getVillageRank().getTag(village));

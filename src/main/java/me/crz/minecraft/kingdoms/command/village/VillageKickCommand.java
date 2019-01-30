@@ -2,16 +2,14 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.InviteCache;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.VillageManager;
 
 public class VillageKickCommand extends VillageSubCommand {
     public VillageKickCommand(SubCommand parent) {
-        super(parent, "kick <name>", VillageRank.RECRUITER);
+        super(parent, "kick <name>");
     }
 
     @Override
