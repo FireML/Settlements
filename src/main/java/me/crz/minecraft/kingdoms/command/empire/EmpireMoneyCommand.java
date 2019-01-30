@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.command.HelpCommand;
+import me.crz.minecraft.kingdoms.command.RankHelpCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.db.LogType;
@@ -22,7 +23,7 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
         super(parent, "bank <deposit|withdraw|balance|history> <amount>", "money");
         setHelpCommand(new HelpCommand(this));
         for (EmpireRank rank : EmpireRank.values()) {
-            getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), rank));
+            getHelpCommand().registerCommand(new RankHelpCommand(getHelpCommand(), rank));
         }
         getHelpCommand().setDefaultTypeProvider(s -> s instanceof Player && ResidentManager.getInstance().doesResidentHaveEmpire((Player) s) ? "member" : "none");
         registerCommand(new EmpireSubCommand(this, "balance") {

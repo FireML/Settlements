@@ -1,12 +1,11 @@
-package me.crz.minecraft.kingdoms.command.empire;
+package me.crz.minecraft.kingdoms.command;
 
-import me.crz.minecraft.kingdoms.command.HelpCommand;
 import me.crz.minecraft.kingdoms.rank.Rank;
 import me.crz.minecraft.kingdoms.village.Resident;
 
-public class EmpireHelpCommand extends EmpireSubCommand {
-    public EmpireHelpCommand(HelpCommand parent, Rank rank) {
-        super(parent, rank.name().toLowerCase() + " [<page>]");
+public class RankHelpCommand extends ResidentPermsSubCommand {
+    public RankHelpCommand(HelpCommand parent, Rank rank) {
+        super(parent, rank != null ? rank.name().toLowerCase() : "no" + " [<page>]");
     }
 
     @Override

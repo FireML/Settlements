@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.command.ChatCommand;
 import me.crz.minecraft.kingdoms.command.HelpCommand;
+import me.crz.minecraft.kingdoms.command.RankHelpCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.lock.LockCommand;
 import me.crz.minecraft.kingdoms.command.lock.UnlockCommand;
@@ -18,12 +19,12 @@ public class EmpireCommand extends SubCommand {
         setHelpCommand(new HelpCommand(this));
         for (VillageRank rank : VillageRank.values()) {
             if (rank != VillageRank.getDefault()) {
-                getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), rank));
+                getHelpCommand().registerCommand(new RankHelpCommand(getHelpCommand(), rank));
             }
         }
         for (EmpireRank rank : EmpireRank.values()) {
             if (rank != EmpireRank.getDefault()) {
-                getHelpCommand().registerCommand(new EmpireHelpCommand(getHelpCommand(), rank));
+                getHelpCommand().registerCommand(new RankHelpCommand(getHelpCommand(), rank));
             }
         }
         getHelpCommand().setDefaultTypeProvider(s -> s instanceof Player && ResidentManager.getInstance().doesResidentHaveEmpire((Player) s) ? "member" : "no");

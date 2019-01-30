@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.HelpCommand;
+import me.crz.minecraft.kingdoms.command.RankHelpCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.village.outpost.OutpostClaimCommand;
 import me.crz.minecraft.kingdoms.command.village.outpost.OutpostListCommand;
@@ -17,7 +18,7 @@ public class VillageOutPostCommand extends VillageSubCommand {
         setHelpCommand(new HelpCommand(this));
         for (VillageRank rank : VillageRank.values()) {
             if (rank != VillageRank.getDefault()) {
-                getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), rank));
+                getHelpCommand().registerCommand(new RankHelpCommand(getHelpCommand(), rank));
             }
         }
         registerCommand(new OutpostClaimCommand(this));

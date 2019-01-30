@@ -18,7 +18,7 @@ commands:
     aliases: [unprotection,unsecure]
   village:
     description: Village Commands.
-    aliases: [s, settlement, kingdom, k]
+    aliases: [s, settlement, kingdom, k, v]
   empire:
     description: Empire Commands.
     aliases: [e, nation]

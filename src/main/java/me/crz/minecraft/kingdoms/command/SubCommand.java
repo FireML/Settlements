@@ -309,7 +309,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
     public String getShortestAlias() {
         String shortestAlias = name();
         for (String alias : getAliases()) {
-            if (shortestAlias.startsWith(alias) && alias.length() < shortestAlias.length()) {
+            if ((getParent() == null || shortestAlias.startsWith(alias)) && alias.length() < shortestAlias.length()) {
                 shortestAlias = alias;
             }
         }

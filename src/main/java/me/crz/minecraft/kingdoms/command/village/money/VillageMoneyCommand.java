@@ -1,8 +1,8 @@
 package me.crz.minecraft.kingdoms.command.village.money;
 
 import me.crz.minecraft.kingdoms.command.HelpCommand;
+import me.crz.minecraft.kingdoms.command.RankHelpCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.command.village.VillageHelpCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageHistoryCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.LogType;
@@ -20,7 +20,7 @@ public class VillageMoneyCommand extends VillageSubCommand {
         super(parent, "bank <deposit|withdraw|balance|history> <amount>", "money");
         setHelpCommand(new HelpCommand(this));
         for (VillageRank rank : VillageRank.values()) {
-            getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), rank));
+            getHelpCommand().registerCommand(new RankHelpCommand(getHelpCommand(), rank));
         }
         getHelpCommand().setDefaultTypeProvider(s -> s instanceof Player && ResidentManager.getInstance().doesResidentHaveVillage((Player) s) ? "resident" : "none");
         registerCommand(new VillageSubCommand(this, "balance") {

@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.command.village;
 import me.crz.minecraft.kingdoms.command.ChatCommand;
 import me.crz.minecraft.kingdoms.command.HelpCommand;
 import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
+import me.crz.minecraft.kingdoms.command.RankHelpCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.lock.LockCommand;
 import me.crz.minecraft.kingdoms.command.lock.UnlockCommand;
@@ -17,13 +18,13 @@ import org.bukkit.entity.Player;
 
 public class VillageCommand extends SubCommand {
     public VillageCommand() {
-        super(null, "village", "settlement", "s", "v");
+        super(null, "village", "settlement", "kingdom", "s", "v", "k");
         setHelpCommand(new HelpCommand(this));
         for (VillageRank rank : VillageRank.values()) {
-            getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), rank));
+            getHelpCommand().registerCommand(new RankHelpCommand(getHelpCommand(), rank));
         }
-        getHelpCommand().registerCommand(new VillageHelpCommand(getHelpCommand(), null));
-        getHelpCommand().setDefaultTypeProvider(s -> s instanceof Player && ResidentManager.getInstance().doesResidentHaveVillage((Player) s) ? "resident" : "none");
+        getHelpCommand().registerCommand(new RankHelpCommand(getHelpCommand(), null));
+        getHelpCommand().setDefaultTypeProvider(s -> s instanceof Player && ResidentManager.getInstance().doesResidentHaveVillage((Player) s) ? "resident" : "no");
         registerCommand(new ChatCommand());
         registerCommand(new VillageAlliesCommand(this));
         registerCommand(new VillageAllyCommand(this));
