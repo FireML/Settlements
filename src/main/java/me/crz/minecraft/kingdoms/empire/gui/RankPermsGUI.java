@@ -6,8 +6,8 @@ import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
+import me.crz.minecraft.kingdoms.rank.RankManager;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -33,11 +34,11 @@ public class RankPermsGUI extends KingdomsGUI {
     public CInventory gui;
     private Map<UUID, Integer> playerPage = new HashMap<>();
 
-    private RankPermsGUI(String rankName) {
+    private RankPermsGUI(EmpireRank rank) {
         super("rank-perms");
-        gui = new CInventory(getText("title", "rank", rankName), InventorySize.SIX) {};
+        gui = new CInventory(getText("title", "rank", rank.getTag()), InventorySize.SIX) {};
 
-        List<String> perms = EmpireRank.getLeader().getInheritedPermissions().keySet().stream()
+        List<String> perms = EmpireRank.getLeader().getInheritedPermissions().stream()
                 .filter(s -> !s.contains(".help"))
                 .sorted(Comparator.naturalOrder())
                 .collect(Collectors.toList());
@@ -53,51 +54,76 @@ public class RankPermsGUI extends KingdomsGUI {
                         return null;
                     }
                     String perm = perms.get(permIndex);
-                    EmpireRank rank = EmpireRank.get(rankName);
                     Resident res = ResidentManager.getInstance().getResident(p);
-                    if (rank != null && res.hasEmpire()) {
+                    if (res.hasEmpire()) {
                         String permName = WordUtils.capitalizeFully(perm.replace('.', ' '));
                         if (permName.startsWith("Empire ")) {
                             permName = permName.substring("Empire ".length());
                         }
                         CItem item;
-                        Optional<Boolean> value = res.getVillage().getEmpire().getInheritedPermissionValue(rank, perm);
-                        Optional<Boolean> rankValue = rank.getInheritedPermissionValue(perm);
-                        if (value.isPresent()) {
-                            if (value.get()) {
-                                item = new CItem(Material.GREEN_WOOL);
-                            } else {
-                                item = new CItem(Material.RED_WOOL);
+
+                        Optional<Boolean> value = res.getVillage().getEmpire().getEffectivePermissionValue(rank, perm);
+
+                        EmpireRank fromRank = rank;
+                        ChatColor color;
+                        if (value.orElse(false)) {
+                            for (EmpireRank r : RankManager.getInstance().getEmpireRanks()) {
+                                if (r.below(rank) && res.getVillage().getEmpire().getEffectivePermissionValue(r, perm).orElse(false)) {
+                                    fromRank = r;
+                                }
                             }
-                            if (res.getEmpireRank().above(rank) && res.hasPermission("kingdoms.command.empire.perms.unset")) {
+                            if (fromRank == rank) {
+                                item = new CItem(Material.LIME_WOOL);
+                                color = ChatColor.GREEN;
+                            } else {
+                                item = new CItem(Material.GREEN_WOOL).addLore(getMessage("entry.inherited").getReplacedTextList(
+                                        "perm", permName,
+                                        "rank", rank.getTag(),
+                                        "from", fromRank.getTag()
+                                ));
+                                color = ChatColor.DARK_GREEN;
+                            }
+                        } else {
+                            item = new CItem(Material.RED_WOOL);
+                            color = ChatColor.RED;
+                        }
+
+                        boolean defaultValue = rank.getInheritedPermissionValue(perm).orElse(false);
+                        if (res.getVillage().getEffectivePermissionValue(rank, perm).orElse(false) != defaultValue) {
+                            if (res.getVillageRank().above(rank) && res.hasPermission("kingdoms.command.empire.perms.unset")) {
                                 item.addLore(getMessage("entry.unset").getReplacedTextList(
                                         "perm", permName,
-                                        "rank", rank.getTag()
+                                        "rank", rank.getTag(),
+                                        "default", String.valueOf(defaultValue)
                                 ));
                             }
-                        } else if (rankValue.orElse(false)) {
-                            item = new CItem(Material.LIME_WOOL);
-                        } else {
-                            item = new CItem(Material.ORANGE_WOOL);
                         }
-                        if (res.getEmpireRank().above(rank)) {
-                            if (res.hasPermission("kingdoms.command.empire.perms.set") && res.hasPermission("kingdoms.command." + perm)) {
-                                if (value.orElse(false) || rankValue.orElse(false)) {
+                        if (res.getEmpireRank().above(rank) && res.hasPermission("kingdoms.command.empire.perms.set") && res.hasPermission("kingdoms.command." + perm)) {
+                            if (value.orElse(false)) {
+                                if (fromRank == rank) {
                                     item.addLore(getMessage("entry.revoke").getReplacedTextList(
                                             "perm", permName,
                                             "rank", rank.getTag()
                                     ));
                                 } else {
-                                    item.addLore(getMessage("entry.grant").getReplacedTextList(
+                                    item.addLore(getMessage("entry.revoke-inherited").getReplacedTextList(
                                             "perm", permName,
-                                            "rank", rank.getTag()
+                                            "rank", rank.getTag(),
+                                            "from", fromRank.getTag()
                                     ));
                                 }
+                            } else {
+                                item.addLore(getMessage("entry.grant").getReplacedTextList(
+                                        "perm", permName,
+                                        "rank", rank.getTag()
+                                ));
                             }
+                        } else {
+                            item.addLore(new ArrayList<>());
                         }
 
                         return item.setName(getText("entry.title",
-                                "color", value.orElse(false) || rankValue.orElse(false) ? ChatColor.GREEN.toString() : ChatColor.RED.toString(),
+                                "color", color.toString(),
                                 "perm", permName,
                                 "rank", rank.getTag(),
                                 "description", Message.get("command." + perm + ".description").getText()
@@ -113,9 +139,8 @@ public class RankPermsGUI extends KingdomsGUI {
                         return false;
                     }
                     String perm = perms.get(permIndex);
-                    EmpireRank rank = EmpireRank.get(rankName);
                     Resident res = ResidentManager.getInstance().getResident(p);
-                    if (rank != null && res.hasEmpire() && res.getEmpireRank().above(rank)) {
+                    if (res.hasEmpire() && res.getEmpireRank().above(rank)) {
                         if (type != ClickType.MIDDLE) {
                             if (res.hasPermission("kingdoms.command.empire.perms.set") && res.hasPermission("kingdoms.command." + perm)) {
                                 Optional<Boolean> value = res.getVillage().getEmpire().getEffectivePermissionValue(rank, perm);
@@ -127,7 +152,7 @@ public class RankPermsGUI extends KingdomsGUI {
                             }
                         } else {
                             if (res.hasPermission("kingdoms.command.empire.perms.unset")) {
-                                if (res.getVillage().getEmpire().unsetPermission(rank, perm)) {
+                                if (res.getVillage().getEmpire().setDefaultPermission(rank, perm)) {
                                     Utils.runAsync(() -> DatabaseManager.getInstance().save(res.getVillage().getEmpire()));
                                     gui.build(p);
                                     return true;
@@ -221,6 +246,6 @@ public class RankPermsGUI extends KingdomsGUI {
     }
 
     public static RankPermsGUI getInstance(EmpireRank rank) {
-        return instances.computeIfAbsent(rank.name(), RankPermsGUI::new);
+        return instances.computeIfAbsent(rank.name(), n -> new RankPermsGUI(rank));
     }
 }

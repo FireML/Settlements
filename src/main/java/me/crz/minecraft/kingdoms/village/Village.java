@@ -13,6 +13,7 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
+import me.crz.minecraft.kingdoms.rank.RankManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.IdObject;
@@ -375,6 +376,11 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     @Override
     public LevelPerk getPerk(String name) {
         return VillageManager.getInstance().getPerk(name);
+    }
+
+    @Override
+    protected Set<String> getPermissions() {
+        return RankManager.getInstance().getVillageChiefRank().getInheritedPermissions();
     }
 
     @Override

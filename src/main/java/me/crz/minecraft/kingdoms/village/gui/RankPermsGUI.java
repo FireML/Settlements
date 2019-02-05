@@ -1,16 +1,21 @@
 package me.crz.minecraft.kingdoms.village.gui;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.rank.RankManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.village.Village;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,25 +23,25 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class RankPermsGUI extends KingdomsGUI {
-    private static Map<String, RankPermsGUI> instances = new ConcurrentHashMap<>();
+    private static Table<String, IdObject, RankPermsGUI> instances = HashBasedTable.create();
     public CInventory gui;
     private Map<UUID, Integer> playerPage = new HashMap<>();
 
-    private RankPermsGUI(String rankName) {
+    private RankPermsGUI(Village village, VillageRank rank) {
         super("rank-perms");
-        gui = new CInventory(getText("title", "rank", rankName), InventorySize.SIX) {};
+        gui = new CInventory(getText("title", "rank", rank.getTag(village)), InventorySize.SIX) {};
 
-        List<String> perms = VillageRank.getChief().getInheritedPermissions().keySet().stream()
+        List<String> perms = VillageRank.getChief().getInheritedPermissions().stream()
                 .filter(s -> !s.contains(".help"))
                 .sorted(Comparator.naturalOrder())
                 .collect(Collectors.toList());
@@ -52,51 +57,75 @@ public class RankPermsGUI extends KingdomsGUI {
                         return null;
                     }
                     String perm = perms.get(permIndex);
-                    VillageRank rank = VillageRank.get(rankName);
                     Resident res = ResidentManager.getInstance().getResident(p);
-                    if (rank != null && res.hasVillage()) {
+                    if (res.hasVillage()) {
                         String permName = WordUtils.capitalizeFully(perm.replace('.', ' '));
                         if (permName.startsWith("Village ")) {
                             permName = permName.substring("Village ".length());
                         }
                         CItem item;
-                        Optional<Boolean> value = res.getVillage().getInheritedPermissionValue(rank, perm);
-                        Optional<Boolean> rankValue = rank.getInheritedPermissionValue(perm);
-                        if (value.isPresent()) {
-                            if (value.get()) {
-                                item = new CItem(Material.GREEN_WOOL);
-                            } else {
-                                item = new CItem(Material.RED_WOOL);
+                        Optional<Boolean> value = res.getVillage().getEffectivePermissionValue(rank, perm);
+
+                        VillageRank fromRank = rank;
+                        ChatColor color;
+                        if (value.orElse(false)) {
+                            for (VillageRank r : RankManager.getInstance().getVillageRanks()) {
+                                if (r.below(rank) && res.getVillage().getEffectivePermissionValue(r, perm).orElse(false)) {
+                                    fromRank = r;
+                                }
                             }
+                            if (fromRank == rank) {
+                                item = new CItem(Material.LIME_WOOL);
+                                color = ChatColor.GREEN;
+                            } else {
+                                item = new CItem(Material.GREEN_WOOL).addLore(getMessage("entry.inherited").getReplacedTextList(
+                                        "perm", permName,
+                                        "rank", rank.getTag(res.getVillage()),
+                                        "from", fromRank.getTag(res.getVillage())
+                                ));
+                                color = ChatColor.DARK_GREEN;
+                            }
+                        } else {
+                            item = new CItem(Material.RED_WOOL);
+                            color = ChatColor.RED;
+                        }
+
+                        boolean defaultValue = rank.getInheritedPermissionValue(perm).orElse(false);
+                        if (res.getVillage().getEffectivePermissionValue(rank, perm).orElse(false) != defaultValue) {
                             if (res.getVillageRank().above(rank) && res.hasPermission("kingdoms.command.village.perms.unset")) {
                                 item.addLore(getMessage("entry.unset").getReplacedTextList(
                                         "perm", permName,
-                                        "rank", rank.getTag(res.getVillage())
+                                        "rank", rank.getTag(res.getVillage()),
+                                        "default", String.valueOf(defaultValue)
                                 ));
                             }
-                        } else if (rankValue.orElse(false)) {
-                            item = new CItem(Material.LIME_WOOL);
-                        } else {
-                            item = new CItem(Material.ORANGE_WOOL);
                         }
-                        if (res.getVillageRank().above(rank)) {
-                            if (res.hasPermission("kingdoms.command.village.perms.set") && res.hasPermission("kingdoms.command." + perm)) {
-                                if (value.orElse(false) || rankValue.orElse(false)) {
+                        if (res.getVillageRank().above(rank) && res.hasPermission("kingdoms.command.village.perms.set") && res.hasPermission("kingdoms.command." + perm)) {
+                            if (value.orElse(false)) {
+                                if (fromRank == rank) {
                                     item.addLore(getMessage("entry.revoke").getReplacedTextList(
                                             "perm", permName,
                                             "rank", rank.getTag(res.getVillage())
                                     ));
                                 } else {
-                                    item.addLore(getMessage("entry.grant").getReplacedTextList(
+                                    item.addLore(getMessage("entry.revoke-inherited").getReplacedTextList(
                                             "perm", permName,
-                                            "rank", rank.getTag(res.getVillage())
+                                            "rank", rank.getTag(res.getVillage()),
+                                            "from", fromRank.getTag(res.getVillage())
                                     ));
                                 }
+                            } else {
+                                item.addLore(getMessage("entry.grant").getReplacedTextList(
+                                        "perm", permName,
+                                        "rank", rank.getTag(res.getVillage())
+                                ));
                             }
+                        } else {
+                            item.addLore(new ArrayList<>());
                         }
 
                         return item.setName(getText("entry.title",
-                                "color", value.orElse(false) || rankValue.orElse(false) ? ChatColor.GREEN.toString() : ChatColor.RED.toString(),
+                                "color", color.toString(),
                                 "perm", permName,
                                 "rank", rank.getTag(res.getVillage()),
                                 "description", Message.get("command." + perm + ".description").getText()
@@ -112,13 +141,12 @@ public class RankPermsGUI extends KingdomsGUI {
                         return false;
                     }
                     String perm = perms.get(permIndex);
-                    VillageRank rank = VillageRank.get(rankName);
                     Resident res = ResidentManager.getInstance().getResident(p);
-                    if (rank != null && res.hasVillage() && res.getVillageRank().above(rank)) {
+                    if (res.hasVillage() && res.getVillageRank().above(rank)) {
                         if (type != ClickType.MIDDLE) {
                             if (res.hasPermission("kingdoms.command.village.perms.set") && res.hasPermission("kingdoms.command." + perm)) {
                                 Optional<Boolean> value = res.getVillage().getEffectivePermissionValue(rank, perm);
-                                if (value.isPresent() && res.getVillage().setPermission(rank, perm, !value.get())) {
+                                if (res.getVillage().setPermission(rank, perm, !value.orElse(false))) {
                                     Utils.runAsync(() -> DatabaseManager.getInstance().save(res.getVillage()));
                                     gui.build(p);
                                     return true;
@@ -126,7 +154,7 @@ public class RankPermsGUI extends KingdomsGUI {
                             }
                         } else {
                             if (res.hasPermission("kingdoms.command.village.perms.unset")) {
-                                if (res.getVillage().unsetPermission(rank, perm)) {
+                                if (res.getVillage().setDefaultPermission(rank, perm)) {
                                     Utils.runAsync(() -> DatabaseManager.getInstance().save(res.getVillage()));
                                     gui.build(p);
                                     return true;
@@ -219,7 +247,16 @@ public class RankPermsGUI extends KingdomsGUI {
         gui.build(p);
     }
 
-    public static RankPermsGUI getInstance(VillageRank rank) {
-        return instances.computeIfAbsent(rank.name(), RankPermsGUI::new);
+    public static void open(Resident resident, VillageRank rank) {
+        getInstance(resident.getVillage(), rank).open(resident.getPlayer());
+    }
+
+    public static RankPermsGUI getInstance(Village village, VillageRank rank) {
+        RankPermsGUI gui = instances.get(rank.name(), village.getId());
+        if (gui == null) {
+            gui = new RankPermsGUI(village, rank);
+            instances.put(rank.name(), village.getId(), gui);
+        }
+        return gui;
     }
 }

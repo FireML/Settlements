@@ -3,6 +3,10 @@ package me.crz.minecraft.kingdoms.rank;
 import me.crz.minecraft.kingdoms.utils.Next;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 public class EmpireRank extends Rank implements Next<EmpireRank> {
 
     public EmpireRank(String name, ConfigurationSection config) {

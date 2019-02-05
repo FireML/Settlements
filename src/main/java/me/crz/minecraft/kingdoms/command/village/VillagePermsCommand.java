@@ -6,6 +6,7 @@ import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.gui.PermsGUI;
+import me.crz.minecraft.kingdoms.village.gui.RankPermsGUI;
 import org.bukkit.ChatColor;
 
 import java.util.Map;
@@ -28,13 +29,13 @@ public class VillagePermsCommand extends VillageSubCommand {
                 }
 
                 getMessage("head").tell(resident, "rank", rank.getTag(resident.getVillage()));
-                for (Map.Entry<String, Boolean> e : resident.getVillage().getPermissions(rank).entrySet()) {
+                for (Map.Entry<String, Optional<Boolean>> e : resident.getVillage().getEffectivePermissions(rank).entrySet()) {
                     getMessage("entry").tell(resident,
                             "rank", rank.name(),
                             "permission", e.getKey(),
                             "value", String.valueOf(e.getValue()),
-                            "opposite", String.valueOf(!e.getValue()),
-                            "color",  String.valueOf(e.getValue() ? ChatColor.GREEN : ChatColor.RED)
+                            "opposite", String.valueOf(!e.getValue().orElse(false)),
+                            "color",  String.valueOf(e.getValue().orElse(false) ? ChatColor.GREEN : ChatColor.RED)
                     );
                 }
                 getMessage("footer").tell(resident, "rank", rank.getTag(resident.getVillage()));
@@ -98,7 +99,7 @@ public class VillagePermsCommand extends VillageSubCommand {
                 return true;
             }
         });
-        registerCommand(new VillageSubCommand(this, "unset <rank> [<permission>]", "remove", "delete", "reset", "revoke") {
+        registerCommand(new VillageSubCommand(this, "unset <rank> [<permission>]", "remove", "default", "reset") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length < 2) {
@@ -134,7 +135,7 @@ public class VillagePermsCommand extends VillageSubCommand {
                     return true;
                 }
 
-                resident.getVillage().unsetPermission(rank, permission);
+                resident.getVillage().setDefaultPermission(rank, permission);
                 Optional<Boolean> value = resident.getVillage().getEffectivePermissionValue(rank, permission);
                 Utils.runAsync(() -> DatabaseManager.getInstance().save(resident.getVillage()));
                 getMessage("success").tell(resident,
@@ -158,7 +159,7 @@ public class VillagePermsCommand extends VillageSubCommand {
                 getError("invalid-rank").tell(resident);
                 return false;
             }
-
+            RankPermsGUI.open(resident, rank);
             return true;
         }
         return false;

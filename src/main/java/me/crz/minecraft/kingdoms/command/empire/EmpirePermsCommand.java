@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.command.empire;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.gui.PermsGUI;
+import me.crz.minecraft.kingdoms.empire.gui.RankPermsGUI;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -28,13 +29,13 @@ public class EmpirePermsCommand extends EmpireSubCommand {
                 }
 
                 getMessage("head").tell(resident, "rank", rank.getTag());
-                for (Map.Entry<String, Boolean> e : resident.getVillage().getEmpire().getPermissions(rank).entrySet()) {
+                for (Map.Entry<String, Optional<Boolean>> e : resident.getVillage().getEmpire().getEffectivePermissions(rank).entrySet()) {
                     getMessage("entry").tell(resident,
                             "rank", rank.name(),
                             "permission", e.getKey(),
                             "value", String.valueOf(e.getValue()),
-                            "opposite", String.valueOf(!e.getValue()),
-                            "color",  String.valueOf(e.getValue() ? ChatColor.GREEN : ChatColor.RED)
+                            "opposite", String.valueOf(!e.getValue().orElse(false)),
+                            "color",  String.valueOf(e.getValue().orElse(false) ? ChatColor.GREEN : ChatColor.RED)
                     );
                 }
                 getMessage("footer").tell(resident, "rank", rank.getTag());
@@ -98,7 +99,7 @@ public class EmpirePermsCommand extends EmpireSubCommand {
                 return true;
             }
         });
-        registerCommand(new EmpireSubCommand(this, "unset <rank> [<permission>]", "remove", "delete", "reset", "revoke") {
+        registerCommand(new EmpireSubCommand(this, "unset <rank> [<permission>]", "default", "reset") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length < 2) {
@@ -135,7 +136,7 @@ public class EmpirePermsCommand extends EmpireSubCommand {
                     return true;
                 }
 
-                resident.getVillage().getEmpire().unsetPermission(rank, permission);
+                resident.getVillage().getEmpire().setDefaultPermission(rank, permission);
                 Optional<Boolean> value = resident.getVillage().getEmpire().getEffectivePermissionValue(rank, permission);
                 Utils.runAsync(() -> DatabaseManager.getInstance().save(resident.getVillage().getEmpire()));
                 getMessage("success").tell(resident,
@@ -159,7 +160,7 @@ public class EmpirePermsCommand extends EmpireSubCommand {
                 getError("invalid-rank").tell(resident);
                 return false;
             }
-
+            RankPermsGUI.getInstance(rank).open(resident.getPlayer());
             return true;
         }
         return false;

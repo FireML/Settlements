@@ -47,7 +47,7 @@ public class PermsGUI extends KingdomsGUI {
                 public boolean click(Player p, ClickType type) {
                     Resident res = ResidentManager.getInstance().getResident(p);
                     if (res.hasVillage()) {
-                        RankPermsGUI.getInstance(rank).open(p);
+                        RankPermsGUI.open(res, rank);
                         return true;
                     }
                     return false;

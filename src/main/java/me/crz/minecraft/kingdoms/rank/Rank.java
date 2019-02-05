@@ -9,11 +9,14 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
-public abstract class Rank implements Rankable, NameTag {
+public abstract class Rank implements Rankable, NameTag, Comparable<Rank> {
 
     private final String name;
 
@@ -22,7 +25,7 @@ public abstract class Rank implements Rankable, NameTag {
     private String inherits = null;
     private String parent = null;
 
-    private final Map<String, Boolean> permissions = new LinkedHashMap<>();
+    private final LinkedHashSet<String> permissions = new LinkedHashSet<>();
     private Material icon = Material.WOODEN_SHOVEL;
 
     public Rank(String name, ConfigurationSection config) {
@@ -30,12 +33,7 @@ public abstract class Rank implements Rankable, NameTag {
         if (config != null) {
             for (String permission : config.getStringList("permissions")) {
                 String permName = permission.toLowerCase();
-                boolean permValue = true;
-                if (permission.startsWith("-")) {
-                    permName = permName.substring(1);
-                    permValue = false;
-                }
-                permissions.put(permName, permValue);
+                permissions.add(permName);
                 if (Bukkit.getPluginManager().getPermission("kingdoms.command." + permName) == null) {
                     Bukkit.getPluginManager().addPermission(new Permission(
                             "kingdoms.command." + permName,
@@ -53,28 +51,26 @@ public abstract class Rank implements Rankable, NameTag {
         }
     }
 
-    public Map<String, Boolean> getPermissions() {
+    public LinkedHashSet<String> getPermissions() {
         return permissions;
     }
 
-    public Map<String, Boolean> getInheritedPermissions() {
-        Map<String, Boolean> inheritedPerms = new LinkedHashMap<>(permissions);
+    public Set<String> getInheritedPermissions() {
+        Set<String> inheritedPerms = new LinkedHashSet<>(permissions);
         if (getInherits() != null) {
-            for (Map.Entry<String, Boolean> entry : getInheritedRank().getInheritedPermissions().entrySet()) {
-                inheritedPerms.putIfAbsent(entry.getKey(), entry.getValue());
-            }
+            inheritedPerms.addAll(getInheritedRank().getInheritedPermissions());
         }
         return inheritedPerms;
     }
 
-    public Optional<Boolean> getPermissionValue(String permission) {
-        return Optional.ofNullable(permissions.get(permission));
+    public boolean getPermissionValue(String permission) {
+        return permissions.contains(permission);
     }
 
     public Optional<Boolean> getInheritedPermissionValue(String permission) {
-        Optional<Boolean> value = getPermissionValue(permission);
-        if (value.isPresent()) {
-            return value;
+        boolean value = getPermissionValue(permission);
+        if (value) {
+            return Optional.of(true);
         } else if (getInherits() == null) {
             return Optional.empty();
         }
@@ -82,6 +78,16 @@ public abstract class Rank implements Rankable, NameTag {
     }
 
     public abstract Rank getInheritedRank();
+
+    public Collection<Rank> getInheritedRanks() {
+        List<Rank> ranks = new ArrayList<>();
+        Rank rank = this;
+        while (rank.getInherits() != null) {
+            ranks.add(rank.getInheritedRank());
+            rank = rank.getInheritedRank();
+        }
+        return ranks;
+    }
 
     public String getInherits() {
         return inherits;
@@ -92,6 +98,16 @@ public abstract class Rank implements Rankable, NameTag {
     }
 
     public abstract Rank getParentRank();
+
+    public Collection<Rank> getParentRanks() {
+        List<Rank> ranks = new ArrayList<>();
+        Rank rank = this;
+        while (rank.getParent() != null) {
+            ranks.add(rank.getParentRank());
+            rank = rank.getParentRank();
+        }
+        return ranks;
+    }
 
     public String getParent() {
         return parent;
@@ -117,5 +133,10 @@ public abstract class Rank implements Rankable, NameTag {
 
     public CItem getItem() {
         return new CItem(icon).hideAllFlags(true);
+    }
+
+    @Override
+    public int compareTo(Rank o) {
+        return Integer.compare(ordinal(), o.ordinal());
     }
 }

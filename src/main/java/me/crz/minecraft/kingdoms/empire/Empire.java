@@ -10,6 +10,7 @@ import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.perk.Perk;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
+import me.crz.minecraft.kingdoms.rank.RankManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.IdObject;
@@ -294,6 +295,11 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                 }
             }
         }
+    }
+
+    @Override
+    public Set<String> getPermissions() {
+        return RankManager.getInstance().getEmpireLeaderRank().getInheritedPermissions();
     }
 
     @Override
