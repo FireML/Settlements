@@ -136,7 +136,7 @@ public class LandFlags extends Base implements LandFlagBase {
                 return;
             }
 
-            if (isAllowed(e.getEntity().getLocation(), PlotMode.pvp)) {
+            if (isAllowed(e.getEntity().getLocation(), PlotMode.pvp) && isAllowed(damager.getLocation(), PlotMode.pvp)) {
                 return;
             }
             if (damager.hasPermission("kingdoms.bypass.pvp")) {
@@ -159,7 +159,7 @@ public class LandFlags extends Base implements LandFlagBase {
                 return;
             }
 
-            if (isAllowed(e.getEntity().getLocation(), PlotMode.pvp)) {
+            if (isAllowed(e.getEntity().getLocation(), PlotMode.pvp) && isAllowed(combuster.getLocation(), PlotMode.pvp)) {
                 return;
             }
             if (combuster.hasPermission("kingdoms.bypass.pvp")) {
