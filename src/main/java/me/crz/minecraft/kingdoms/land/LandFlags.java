@@ -229,7 +229,7 @@ public class LandFlags extends Base implements LandFlagBase {
         if (event.getClickedBlock() != null
                 && event.getItem() != null
                 && event.getItem().getType().name().endsWith("SPAWN_EGG")
-                && !isAllowed(event.getClickedBlock().getLocation(), PlotMode.mobSpawning)) {
+                && !isAllowed(event.getClickedBlock().getRelative(event.getBlockFace()).getLocation(), PlotMode.mobSpawning)) {
             event.setCancelled(true);
         }
     }

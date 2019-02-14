@@ -1,7 +1,5 @@
 package me.crz.minecraft.kingdoms.landflags;
 
-import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureCombustEvent;
-import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureDamageEvent;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
@@ -55,7 +53,7 @@ public class LandFlagsBlockEvents implements LandFlagBase, Listener {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getPlayer().getEquipment().getItemInMainHand() != null) {
             Material mat = e.getPlayer().getEquipment().getItemInMainHand().getType();
             if (Tag.ITEMS_BOATS.isTagged(mat) || mat == Material.ITEM_FRAME || mat == Material.PAINTING || mat == Material.ARMOR_STAND) {
-                Pair<Boolean, String> response = this.getCanBuildAll(e.getPlayer(), e.getClickedBlock().getLocation());
+                Pair<Boolean, String> response = this.getCanBuildAll(e.getPlayer(), e.getClickedBlock().getRelative(e.getBlockFace()).getLocation());
                 if (!response.getLeft()) {
                     MessageUtils.tell(e.getPlayer(), response.getRight());
                     e.setCancelled(true);
@@ -93,7 +91,7 @@ public class LandFlagsBlockEvents implements LandFlagBase, Listener {
     public void onEntityBlockForm(EntityBlockFormEvent e) {
         if (e.getEntity() instanceof LivingEntity) {
             if (e.getEntity() instanceof Player) {
-                if (!getCanBuildAll((Player) e.getEntity(), e.getEntity().getLocation()).getLeft()) {
+                if (!getCanBuildAll((Player) e.getEntity(), e.getBlock().getLocation()).getLeft()) {
                     e.setCancelled(true);
                 }
             } else if (Utils.isHostile((LivingEntity) e.getEntity())) {

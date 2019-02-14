@@ -150,7 +150,7 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
 
     @EventHandler
     public void on(PlayerBucketFillEvent e) {
-        Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.BUCKET, e.getBlockClicked().getLocation());
+        Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.BUCKET, e.getBlockClicked().getRelative(e.getBlockFace()).getLocation());
         if (!response.getLeft()) {
             MessageUtils.tell(e.getPlayer(), response.getRight());
             e.setCancelled(true);
@@ -159,7 +159,7 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
 
     @EventHandler
     public void on(PlayerBucketEmptyEvent e) {
-        Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.BUCKET, e.getBlockClicked().getLocation());
+        Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.BUCKET, e.getBlockClicked().getRelative(e.getBlockFace()).getLocation());
         if (!response.getLeft()) {
             MessageUtils.tell(e.getPlayer(), response.getRight());
             e.setCancelled(true);
