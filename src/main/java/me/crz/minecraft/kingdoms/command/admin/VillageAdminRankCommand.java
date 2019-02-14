@@ -23,11 +23,14 @@ public class VillageAdminRankCommand extends SubCommand {
         if (args.length < 2) {
             return false;
         }
-        String rank = args[1].toUpperCase();
-        if (!this.rankIsValid(rank)) {
-            MessageUtils.tell(sender, getError("invalid-rank"), "rank", rank);
+        VillageRank rank;
+        try {
+            rank = VillageRank.valueOf(args[1]);
+        } catch (IllegalArgumentException e) {
+            MessageUtils.tell(sender, getError("invalid-rank"), "rank", args[1]);
             return true;
         }
+        VillageRank r = rank;
         Utils.runAsync(() -> {
             Resident tRes = ResidentManager.getInstance().getResident(args[0]);
             if (tRes == null) {
@@ -40,7 +43,6 @@ public class VillageAdminRankCommand extends SubCommand {
                 return;
             }
             Resident res = village.getChief();
-            VillageRank r = VillageRank.valueOf(rank);
             if (r == VillageRank.getChief()) {
                 res.setVillageRank(tRes.getVillageRank());
                 tRes.setVillageRank(r);
@@ -59,16 +61,5 @@ public class VillageAdminRankCommand extends SubCommand {
             MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("command.village.setrank.success"), "title", "", "setter", sender.getName(), "target", tRes.getName(), "rank", r.getTag(village));
         });
         return true;
-    }
-
-    private boolean rankIsValid(String arg) {
-        VillageRank[] values;
-        for (int length = (values = VillageRank.values()).length, i = 0; i < length; ++i) {
-            VillageRank rank = values[i];
-            if (rank.name().equals(arg)) {
-                return true;
-            }
-        }
-        return false;
     }
 }
