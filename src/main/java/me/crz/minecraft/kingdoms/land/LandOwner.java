@@ -58,7 +58,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
     private LandAccess access = LandAccess.PRIVATE;
     private Map<Use, BuildState> use = new EnumMap<>(Use.class);
 
-    private Map<String, Set<String>> ranksPermissions = new HashMap<>();
+    private Map<String, Map<String, Boolean>> ranksPermissions = new HashMap<>();
 
     private Set<IdObject> alliedVillages = new LinkedHashSet<>();
 
@@ -221,14 +221,14 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         Base.getLandPerks().updateEffects(false);
     }
 
-    public Map<String, Set<String>> getRanksPermissions() {
+    public Map<String, Map<String, Boolean>> getRanksPermissions() {
         return ranksPermissions;
     }
 
     protected abstract Set<String> getPermissions();
 
-    public Set<String> getPermissions(Rank rank) {
-        return ranksPermissions.getOrDefault(rank.name().toLowerCase(), Collections.emptySet());
+    public Map<String, Boolean> getPermissions(Rank rank) {
+        return ranksPermissions.getOrDefault(rank.name().toLowerCase(), Collections.emptyMap());
     }
 
     public Map<String, Optional<Boolean>> getEffectivePermissions(Rank rank) {
@@ -239,15 +239,15 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         return map;
     }
 
-    public boolean getPermissionValue(Rank rank, String permission) {
-        Set<String> set = ranksPermissions.get(rank.name().toLowerCase());
-        return set != null && set.contains(permission.toLowerCase());
+    public Optional<Boolean> getPermissionValue(Rank rank, String permission) {
+        Map<String, Boolean> map = ranksPermissions.get(rank.name().toLowerCase());
+        return Optional.ofNullable(map != null ? map.get(permission.toLowerCase()) : null);
     }
 
     public boolean getInheritedPermissionValue(Rank rank, String permission) {
-        boolean value = getPermissionValue(rank, permission);
-        if (value) {
-            return true;
+        Optional<Boolean> value = getPermissionValue(rank, permission);
+        if (value.isPresent()) {
+            return value.get();
         }
         if (rank.getInherits() != null) {
             return getInheritedPermissionValue(rank.getInheritedRank(), permission);
@@ -255,22 +255,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         return false;
     }
 
-    public boolean getParentedPermissionValue(Rank rank, String permission) {
-        if (rank.getParent() != null) {
-            boolean value = getPermissionValue(rank.getParentRank(), permission);
-            if (value) {
-                return true;
-            }
-            return getParentedPermissionValue(rank.getParentRank(), permission);
-        }
-        return false;
-    }
-
     public Optional<Boolean> getEffectivePermissionValue(Rank rank, String permission) {
-        boolean parentValue = getParentedPermissionValue(rank, permission);
-        if (parentValue) {
-            return Optional.of(false);
-        }
         boolean inheritValue = getInheritedPermissionValue(rank, permission);
         if (inheritValue) {
             return Optional.of(true);
@@ -279,41 +264,15 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
     }
 
     public boolean setPermission(Rank rank, String permission, boolean value) {
-        boolean save = false;
         if (getEffectivePermissionValue(rank, permission).orElse(false) == value) {
             return false;
         }
 
-        if (value) {
-            save |= this.setPermission(rank, permission);
-            if (rank.getParent() != null) {
-                for (Rank parent : rank.getParentRanks()) {
-                    unsetPermission(parent, permission);
-                }
-            }
-        } else {
-            save |= rank.getParent() != null
-                    && !rank.getParentRank().getPermissionValue(permission)
-                    && this.setPermission(rank.getParentRank(), permission);
-            for (Rank i : rank.getInheritedRanks()) {
-                save |= unsetPermission(i, permission);
-            }
-            save |= unsetPermission(rank, permission);
-        }
-        return save;
+        return ranksPermissions.computeIfAbsent(rank.name().toLowerCase(), k -> new LinkedHashMap<>()).put(permission.toLowerCase(), value) != null;
     }
 
     public boolean setDefaultPermission(Rank rank, String permission) {
         return setPermission(rank, permission, rank.getInheritedPermissionValue(permission).orElse(false));
-    }
-
-    private boolean setPermission(Rank rank, String permission) {
-        return ranksPermissions.computeIfAbsent(rank.name().toLowerCase(), k -> new LinkedHashSet<>()).add(permission.toLowerCase());
-    }
-
-    private boolean unsetPermission(Rank rank, String permission) {
-        Set<String> set = ranksPermissions.get(rank.name().toLowerCase());
-        return set != null && set.remove(permission.toLowerCase());
     }
 
     public String getIdKey() {
@@ -699,7 +658,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
                 .forEach(e -> landOwner.getPerksMap().put(e.getKey(), PerkData.deserialize((Map<String, Object>) e.getValue())));
         ((Map<String, Object>) map.get("permissions")).entrySet().stream()
                 .filter(e -> e.getValue() instanceof Set)
-                .forEach(e -> landOwner.getRanksPermissions().put(e.getKey(), (Set<String>) e.getValue()));
+                .forEach(e -> landOwner.getRanksPermissions().put(e.getKey(), (Map<String, Boolean>) e.getValue()));
         return landOwner;
     }
 }

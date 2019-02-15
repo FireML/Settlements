@@ -19,6 +19,17 @@ public class EmpireRank extends Rank implements Next<EmpireRank> {
     }
 
     @Override
+    public Collection<EmpireRank> getInheritedRanks() {
+        List<EmpireRank> ranks = new ArrayList<>();
+        EmpireRank rank = this;
+        while (rank.getInherits() != null) {
+            ranks.add(rank.getInheritedRank());
+            rank = rank.getInheritedRank();
+        }
+        return ranks;
+    }
+
+    @Override
     public EmpireRank getParentRank() {
         return get(getParent());
     }

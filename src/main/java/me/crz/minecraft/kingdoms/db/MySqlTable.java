@@ -79,6 +79,7 @@ public enum MySqlTable {
             + "FOREIGN KEY (empireId) REFERENCES {tablePrefix}empires(id) ON DELETE CASCADE,"
             + "rank VARCHAR(255) NOT NULL,"
             + "permission VARCHAR(255) NOT NULL,"
+            + "value BOOLEAN NOT NULL,"
             + "UNIQUE (empireId, rank, permission)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
@@ -176,6 +177,7 @@ public enum MySqlTable {
             + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
             + "rank VARCHAR(255) NOT NULL,"
             + "permission VARCHAR(255) NOT NULL,"
+            + "value BOOLEAN NOT NULL,"
             + "UNIQUE (settlementId, rank, permission)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 

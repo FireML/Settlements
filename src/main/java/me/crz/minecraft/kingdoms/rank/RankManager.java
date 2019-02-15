@@ -39,7 +39,6 @@ public class RankManager {
                 villageChiefRank = rank;
             }
             if (lastRank != null) {
-                lastRank.setInherits(rank.name());
                 rank.setParent(lastRank.name());
                 rank.setOrdinal(lastRank.ordinal() + 1);
             } else {
@@ -68,7 +67,6 @@ public class RankManager {
                 empireLeaderRank = rank;
             }
             if (lastRank != null) {
-                lastRank.setInherits(rank.name());
                 rank.setParent(lastRank.name());
                 rank.setOrdinal(lastRank.ordinal() + 1);
             } else {

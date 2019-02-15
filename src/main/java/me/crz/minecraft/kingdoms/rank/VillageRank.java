@@ -6,7 +6,6 @@ import me.crz.minecraft.kingdoms.perk.PerkEffect;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Next;
 import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -31,10 +30,20 @@ public class VillageRank extends Rank implements Next<VillageRank> {
         PerkEffect.EffectInfluenced.register(new PerkEffect.EffectInfluenced(name));
     }
 
-
     @Override
     public VillageRank getInheritedRank() {
         return get(getInherits());
+    }
+
+    @Override
+    public Collection<VillageRank> getInheritedRanks() {
+        List<VillageRank> ranks = new ArrayList<>();
+        VillageRank rank = this;
+        while (rank.getInherits() != null) {
+            ranks.add(rank.getInheritedRank());
+            rank = rank.getInheritedRank();
+        }
+        return ranks;
     }
 
     @Override

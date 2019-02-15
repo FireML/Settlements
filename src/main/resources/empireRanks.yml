@@ -1,6 +1,7 @@
 # Ranks for people in an empire. Top ones inherit from the ones below them
 leader:
   icon: diamond_sword
+  inherits: member
   permissions:
   - empire.ally
   - empire.banish
@@ -26,8 +27,31 @@ leader:
   - empire.unally
   - empire.unbanish
   - empire.use
+  - empire.help.senator
+  - empire.invite
+  - empire.kick
+  - empire.mode
+  - empire.officer
+  - empire.perms
+  - empire.perms.show
+  - empire.setdescription
+  - empire.settings
+  - empire.allies
+  - empire.joinfee
+  - empire.memberlist
+  - empire.bank
+  - empire.bank.balance
+  - empire.bank.deposit
+  - empire.bank.history
+  - empire.help.member
+  - empire.perks
+  - empire.senators
+  - empire.shop
+  - empire.tax
+  - empire.upkeep
 senator:
   icon: gold_sword
+  inherits: member
   permissions:
   - empire.help.senator
   - empire.invite
@@ -38,6 +62,19 @@ senator:
   - empire.perms.show
   - empire.setdescription
   - empire.settings
+  - empire.allies
+  - empire.joinfee
+  - empire.memberlist
+  - empire.bank
+  - empire.bank.balance
+  - empire.bank.deposit
+  - empire.bank.history
+  - empire.help.member
+  - empire.perks
+  - empire.senators
+  - empire.shop
+  - empire.tax
+  - empire.upkeep
 member:
   icon: iron_sword
   permissions:

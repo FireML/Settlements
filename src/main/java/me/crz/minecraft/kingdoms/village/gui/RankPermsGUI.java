@@ -8,6 +8,7 @@ import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.rank.Rank;
 import me.crz.minecraft.kingdoms.rank.RankManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
@@ -69,8 +70,8 @@ public class RankPermsGUI extends KingdomsGUI {
                         VillageRank fromRank = rank;
                         ChatColor color;
                         if (value.orElse(false)) {
-                            for (VillageRank r : RankManager.getInstance().getVillageRanks()) {
-                                if (r.below(rank) && res.getVillage().getEffectivePermissionValue(r, perm).orElse(false)) {
+                            for (VillageRank r : rank.getInheritedRanks()) {
+                                if (res.getVillage().getEffectivePermissionValue(r, perm).orElse(false)) {
                                     fromRank = r;
                                 }
                             }
@@ -102,18 +103,10 @@ public class RankPermsGUI extends KingdomsGUI {
                         }
                         if (res.getVillageRank().above(rank) && res.hasPermission("kingdoms.command.village.perms.set") && res.hasPermission("kingdoms.command." + perm)) {
                             if (value.orElse(false)) {
-                                if (fromRank == rank) {
-                                    item.addLore(getMessage("entry.revoke").getReplacedTextList(
-                                            "perm", permName,
-                                            "rank", rank.getTag(res.getVillage())
-                                    ));
-                                } else {
-                                    item.addLore(getMessage("entry.revoke-inherited").getReplacedTextList(
-                                            "perm", permName,
-                                            "rank", rank.getTag(res.getVillage()),
-                                            "from", fromRank.getTag(res.getVillage())
-                                    ));
-                                }
+                                item.addLore(getMessage("entry.revoke").getReplacedTextList(
+                                        "perm", permName,
+                                        "rank", rank.getTag(res.getVillage())
+                                ));
                             } else {
                                 item.addLore(getMessage("entry.grant").getReplacedTextList(
                                         "perm", permName,

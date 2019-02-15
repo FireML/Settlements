@@ -67,8 +67,8 @@ public class RankPermsGUI extends KingdomsGUI {
                         EmpireRank fromRank = rank;
                         ChatColor color;
                         if (value.orElse(false)) {
-                            for (EmpireRank r : RankManager.getInstance().getEmpireRanks()) {
-                                if (r.below(rank) && res.getVillage().getEmpire().getEffectivePermissionValue(r, perm).orElse(false)) {
+                            for (EmpireRank r : rank.getInheritedRanks()) {
+                                if (res.getVillage().getEmpire().getEffectivePermissionValue(r, perm).orElse(false)) {
                                     fromRank = r;
                                 }
                             }
@@ -100,18 +100,10 @@ public class RankPermsGUI extends KingdomsGUI {
                         }
                         if (res.getEmpireRank().above(rank) && res.hasPermission("kingdoms.command.empire.perms.set") && res.hasPermission("kingdoms.command." + perm)) {
                             if (value.orElse(false)) {
-                                if (fromRank == rank) {
-                                    item.addLore(getMessage("entry.revoke").getReplacedTextList(
-                                            "perm", permName,
-                                            "rank", rank.getTag()
-                                    ));
-                                } else {
-                                    item.addLore(getMessage("entry.revoke-inherited").getReplacedTextList(
-                                            "perm", permName,
-                                            "rank", rank.getTag(),
-                                            "from", fromRank.getTag()
-                                    ));
-                                }
+                                item.addLore(getMessage("entry.revoke").getReplacedTextList(
+                                        "perm", permName,
+                                        "rank", rank.getTag()
+                                ));
                             } else {
                                 item.addLore(getMessage("entry.grant").getReplacedTextList(
                                         "perm", permName,

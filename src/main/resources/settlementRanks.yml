@@ -1,6 +1,7 @@
 # Ranks for people in a settlement. Top ones inherit from the ones below them
 chief:
   icon: diamond_sword
+  inherits: resident
   permissions:
   - empire.create
   - empire.join
@@ -27,16 +28,69 @@ chief:
   - village.unclaim.coords
   - village.use
   - village.help.chief
+  - village.disband
+  - village.transfer
+  - village.rename
+  - village.lock.admin
+  - village.help.assistant
+  - empire.leave
+  - village.ally
+  - village.banished
+  - village.claim
+  - village.mode
+  - village.outpost.help.elder
+  - village.outpost.claim
+  - village.outpost.sethome
+  - village.perks.toggle
+  - village.perms
+  - village.perms.show
+  - village.plot.admin
+  - village.setdescription
+  - village.setrank
+  - village.settings
+  - village.unally
+  - village.unclaim
+  - village.help.elder
+  - village.invite
+  - village.kick
+  - village.help.recruiter
+  - village.officer
+  - village.help.builder
 assistant:
   icon: golden_sword
+  inherits: resident
   permissions:
   - village.disband
   - village.transfer
   - village.rename
   - village.lock.admin
   - village.help.assistant
+  - empire.leave
+  - village.ally
+  - village.banished
+  - village.claim
+  - village.mode
+  - village.outpost.help.elder
+  - village.outpost.claim
+  - village.outpost.sethome
+  - village.perks.toggle
+  - village.perms
+  - village.perms.show
+  - village.plot.admin
+  - village.setdescription
+  - village.setrank
+  - village.settings
+  - village.unally
+  - village.unclaim
+  - village.help.elder
+  - village.invite
+  - village.kick
+  - village.help.recruiter
+  - village.officer
+  - village.help.builder
 elder:
   icon: iron_sword
+  inherits: resident
   permissions:
   - empire.leave
   - village.ally
@@ -56,14 +110,23 @@ elder:
   - village.unally
   - village.unclaim
   - village.help.elder
+  - village.invite
+  - village.kick
+  - village.help.recruiter
+  - village.officer
+  - village.help.builder
 recruiter:
   icon: stone_sword
+  inherits: resident
   permissions:
   - village.invite
   - village.kick
   - village.help.recruiter
+  - village.officer
+  - village.help.builder
 builder:
   icon: stone_shovel
+  inherits: resident
   permissions:
   - village.officer
   - village.help.builder

@@ -526,9 +526,6 @@ gui:
         &7Click to grant to &f{rank}
       revoke: |-
         &7Click to revoke from &f{rank}
-      revoke-inherited: |-
-        &7Click to revoke from &f{from}
-        &7up to this rank (&f{rank}&7)!
   plot:
     link: |-
       &7Click to link the permissions of all

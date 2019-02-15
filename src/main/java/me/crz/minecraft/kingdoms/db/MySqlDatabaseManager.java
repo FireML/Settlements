@@ -193,7 +193,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                         empire.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
                 updateDataMap(conn, "empire_perks", "empireId", (Integer) empire.getId().value(), "perk", "",
                         empire.getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
-                updateDataMap(conn, "empire_permissions", "settlementId", (Integer) empire.getId().value(), "rank", "permission", empire.getRanksPermissions());
+                updateDataMap(conn, "empire_permissions", "settlementId", (Integer) empire.getId().value(), "rank", "permission", empire.getRanksPermissions(), "value");
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while saving empire " + empire.getName() + " to database!", e);
@@ -239,7 +239,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                         village.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
                 updateDataMap(conn, "settlement_perks", "settlementId", (Integer) village.getId().value(), "perk", "",
                         village.getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
-                updateDataMap(conn, "settlement_permissions", "settlementId", (Integer) village.getId().value(), "rank", "permission", village.getRanksPermissions());
+                updateDataMap(conn, "settlement_permissions", "settlementId", (Integer) village.getId().value(), "rank", "permission", village.getRanksPermissions(), "value");
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while saving village " + village.getName() + " to database!", e);
@@ -830,9 +830,10 @@ public class MySqlDatabaseManager extends DatabaseManager {
         PreparedStatement rpSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_permissions WHERE empireId = ?;");
         rpSta.setInt(1, id);
         ResultSet rpRs = rpSta.executeQuery();
-        Map<String, Set<String>> rankPermissions = new LinkedHashMap<>();
+        Map<String, Map<String, Boolean>> rankPermissions = new LinkedHashMap<>();
         while (rpRs.next()) {
-            rankPermissions.computeIfAbsent(rpRs.getString("rank"), k -> new LinkedHashSet<>()).add(rpRs.getString("permission"));
+            rankPermissions.computeIfAbsent(rpRs.getString("rank"), k -> new LinkedHashMap<>())
+                    .put(rpRs.getString("permission"), rpRs.getBoolean("value"));
         }
         map.put("permissions", rankPermissions);
 
@@ -879,9 +880,10 @@ public class MySqlDatabaseManager extends DatabaseManager {
         PreparedStatement rpSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_permissions WHERE settlementId = ?;");
         rpSta.setInt(1, id);
         ResultSet rpRs = rpSta.executeQuery();
-        Map<String, Set<String>> rankPermissions = new LinkedHashMap<>();
+        Map<String, Map<String, Boolean>> rankPermissions = new LinkedHashMap<>();
         while (rpRs.next()) {
-            rankPermissions.computeIfAbsent(rpRs.getString("rank"), k -> new LinkedHashSet<>()).add(rpRs.getString("permission"));
+            rankPermissions.computeIfAbsent(rpRs.getString("rank"), k -> new LinkedHashMap<>())
+                    .put(rpRs.getString("permission"), rpRs.getBoolean("value"));
         }
         map.put("permissions", rankPermissions);
 
@@ -947,7 +949,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         return serializable.getId();
     }
 
-    private void updateDataMap(Connection conn, String tableName, String keyColumn, int keyId, String mapKey, String mapValue, Map<String, ?> values) throws SQLException {
+    private void updateDataMap(Connection conn, String tableName, String keyColumn, int keyId, String mapKey, String mapValue, Map<String, ?> values, String... mapValueColumns) throws SQLException {
         String deleteSql;
         Map<Integer, Object> deleteObjects = new HashMap<>();
         deleteObjects.put(1, keyId);
@@ -1012,18 +1014,24 @@ public class MySqlDatabaseManager extends DatabaseManager {
             if (value instanceof ConfigurationSerializable) {
                 value = ((ConfigurationSerializable) value).serialize();
             }
-            if (value instanceof Map && ((Map) value).keySet().iterator().next() instanceof String) {
-                for (String column : getValues((Map<String, ?>) value, mapKey).keySet()) {
-                    if (mapValue.isEmpty()) {
-                        columns.add(column);
-                    } else {
-                        columns.add(mapValue + "_" + column);
+            if (value instanceof Map && mapValueColumns.length == 0) {
+                if (((Map) value).keySet().iterator().next() instanceof String) {
+                    for (String column : getValues((Map<String, ?>) value, mapKey).keySet()) {
+                        if (mapValue.isEmpty()) {
+                            columns.add(column);
+                        } else {
+                            columns.add(mapValue + "_" + column);
+                        }
                     }
                 }
-            } else if (!mapValue.isEmpty()) {
-                columns.add(mapValue);
-            } else {
-                return;
+            }
+            if (columns.isEmpty()) {
+                if (!mapValue.isEmpty()) {
+                    columns.add(mapValue);
+                    Collections.addAll(columns, mapValueColumns);
+                } else {
+                    return;
+                }
             }
             String insertSql = "INSERT IGNORE INTO " + tablePrefix + tableName + " (" + keyColumn + ", " + mapKey + ", " + String.join(",", columns) + ")" +
                     " VALUES (?,?," + String.join(",", Collections.nCopies(columns.size(), "?")) + ")" +
@@ -1035,6 +1043,14 @@ public class MySqlDatabaseManager extends DatabaseManager {
                         insertSta.setInt(1, keyId);
                         insertSta.setObject(2, entry.getKey());
                         insertSta.setObject(3, o);
+                        insertSta.addBatch();
+                    }
+                } else if (entry.getValue() instanceof Map && mapValueColumns.length > 0) {
+                    for (Map.Entry<Object, Object> o : ((Map<Object, Object>) entry.getValue()).entrySet()) {
+                        insertSta.setInt(1, keyId);
+                        insertSta.setObject(2, entry.getKey());
+                        insertSta.setObject(3, o.getKey());
+                        insertSta.setObject(4, o.getValue());
                         insertSta.addBatch();
                     }
                 } else {

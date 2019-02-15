@@ -48,6 +48,9 @@ public abstract class Rank implements Rankable, NameTag, Comparable<Rank> {
                     icon = Material.WOODEN_SHOVEL;
                 }
             }
+            if (config.isString("inherits")) {
+                inherits = config.getString("inherits");
+            }
         }
     }
 
@@ -79,15 +82,7 @@ public abstract class Rank implements Rankable, NameTag, Comparable<Rank> {
 
     public abstract Rank getInheritedRank();
 
-    public Collection<Rank> getInheritedRanks() {
-        List<Rank> ranks = new ArrayList<>();
-        Rank rank = this;
-        while (rank.getInherits() != null) {
-            ranks.add(rank.getInheritedRank());
-            rank = rank.getInheritedRank();
-        }
-        return ranks;
-    }
+    public abstract Collection<? extends Rank> getInheritedRanks();
 
     public String getInherits() {
         return inherits;
