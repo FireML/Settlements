@@ -46,6 +46,10 @@ public class EmpireRank extends Rank implements Next<EmpireRank> {
         return RankManager.getInstance().getEmpireLeaderRank();
     }
 
+    public static Collection<String> getToggleablePermissions() {
+        return RankManager.getInstance().getToggleableEmpirePerms();
+    }
+
     public static EmpireRank valueOf(String string) throws IllegalArgumentException {
         EmpireRank rank = get(string);
         if (rank == null) {

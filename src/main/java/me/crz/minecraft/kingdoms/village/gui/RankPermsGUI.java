@@ -42,7 +42,7 @@ public class RankPermsGUI extends KingdomsGUI {
         super("rank-perms");
         gui = new CInventory(getText("title", "rank", rank.getTag(village)), InventorySize.SIX) {};
 
-        List<String> perms = VillageRank.getChief().getInheritedPermissions().stream()
+        List<String> perms = VillageRank.getToggleablePermissions().stream()
                 .filter(s -> !s.contains(".help"))
                 .sorted(Comparator.naturalOrder())
                 .collect(Collectors.toList());

@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -61,6 +62,10 @@ public class VillageRank extends Rank implements Next<VillageRank> {
 
     public static VillageRank getChief() {
         return RankManager.getInstance().getVillageChiefRank();
+    }
+
+    public static Collection<String> getToggleablePermissions() {
+        return RankManager.getInstance().getToggleableVillagePerms();
     }
 
     public static VillageRank valueOf(String string) throws IllegalArgumentException {

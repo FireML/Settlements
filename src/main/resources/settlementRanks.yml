@@ -1,158 +1,211 @@
+# Permissions that a user can toggle
+toggleable-perms:
+- empire.join
+- village.allies
+- village.ally
+- village.allyclaim
+- village.banish
+- village.banished
+- village.bank.history
+- village.bank.withdraw
+- village.build
+- village.claim
+- village.claim.coords
+- village.claim.radius
+- village.deposit.history
+- village.disband
+- village.history
+- village.invite
+- village.joinfee.set
+- village.kick
+- village.lock.admin
+- village.mode
+- village.outpost.claim
+- village.outpost.sethome
+- village.outpost.teleport
+- village.outpost.unclaim
+- village.perks
+- village.perks.toggle
+- village.perms
+- village.perms.set
+- village.perms.show
+- village.perms.unset
+- village.plot.admin
+- village.rename
+- village.setaccess
+- village.setdescription
+- village.sethome
+- village.setrank
+- village.settings
+- village.shop
+- village.shop.repeat
+- village.shop.unlock
+- village.tax.set
+- village.title
+- village.unally
+- village.unbanish
+- village.unclaim
+- village.unclaim.coords
+- village.unclaim.radius
+- village.upgrade
+- village.use
+
 # Ranks for people in a settlement. Top ones inherit from the ones below them
-chief:
-  icon: diamond_sword
-  inherits: resident
-  permissions:
-  - empire.create
-  - empire.join
-  - empire.help.chief
-  - village.allyclaim
-  - village.banish
-  - village.bank.withdraw
-  - village.build
-  - village.claim.radius
-  - village.claim.coords
-  - village.history
-  - village.joinfee.set
-  - village.outpost.help.chief
-  - village.outpost.unclaim
-  - village.perms.set
-  - village.perms.unset
-  - village.setaccess
-  - village.sethome
-  - village.shop.repeat
-  - village.shop.unlock
-  - village.tax.set
-  - village.unbanish
-  - village.unclaim.radius
-  - village.unclaim.coords
-  - village.use
-  - village.help.chief
-  - village.disband
-  - village.transfer
-  - village.rename
-  - village.lock.admin
-  - village.help.assistant
-  - empire.leave
-  - village.ally
-  - village.banished
-  - village.claim
-  - village.mode
-  - village.outpost.help.elder
-  - village.outpost.claim
-  - village.outpost.sethome
-  - village.perks.toggle
-  - village.perms
-  - village.perms.show
-  - village.plot.admin
-  - village.setdescription
-  - village.setrank
-  - village.settings
-  - village.unally
-  - village.unclaim
-  - village.help.elder
-  - village.invite
-  - village.kick
-  - village.help.recruiter
-  - village.officer
-  - village.help.builder
-assistant:
-  icon: golden_sword
-  inherits: resident
-  permissions:
-  - village.disband
-  - village.transfer
-  - village.rename
-  - village.lock.admin
-  - village.help.assistant
-  - empire.leave
-  - village.ally
-  - village.banished
-  - village.claim
-  - village.mode
-  - village.outpost.help.elder
-  - village.outpost.claim
-  - village.outpost.sethome
-  - village.perks.toggle
-  - village.perms
-  - village.perms.show
-  - village.plot.admin
-  - village.setdescription
-  - village.setrank
-  - village.settings
-  - village.unally
-  - village.unclaim
-  - village.help.elder
-  - village.invite
-  - village.kick
-  - village.help.recruiter
-  - village.officer
-  - village.help.builder
-elder:
-  icon: iron_sword
-  inherits: resident
-  permissions:
-  - empire.leave
-  - village.ally
-  - village.banished
-  - village.claim
-  - village.mode
-  - village.outpost.help.elder
-  - village.outpost.claim
-  - village.outpost.sethome
-  - village.perks.toggle
-  - village.perms
-  - village.perms.show
-  - village.plot.admin
-  - village.setdescription
-  - village.setrank
-  - village.settings
-  - village.unally
-  - village.unclaim
-  - village.help.elder
-  - village.invite
-  - village.kick
-  - village.help.recruiter
-  - village.officer
-  - village.help.builder
-recruiter:
-  icon: stone_sword
-  inherits: resident
-  permissions:
-  - village.invite
-  - village.kick
-  - village.help.recruiter
-  - village.officer
-  - village.help.builder
-builder:
-  icon: stone_shovel
-  inherits: resident
-  permissions:
-  - village.officer
-  - village.help.builder
-resident:
-  icon: stone_pickaxe
-  permissions:
-  - village.allies
-  - village.bank
-  - village.bank.help
-  - village.bank.balance
-  - village.bank.deposit
-  - village.bank.history
-  - village.deposit
-  - village.deposit.history
-  - village.help.resident
-  - village.joinfee
-  - village.leave
-  - village.materials
-  - village.outpost
-  - village.outpost.help
-  - village.outpost.list
-  - village.outpost.teleport
-  - village.perks
-  - village.reslist
-  - village.shop
-  - village.tax
-  - village.title
-  - village.upgrade
-  - village.upkeep
+ranks:
+  chief:
+    icon: diamond_sword
+    inherits: resident
+    permissions:
+    - empire.create
+    - empire.join
+    - empire.help.chief
+    - village.allyclaim
+    - village.banish
+    - village.bank.withdraw
+    - village.build
+    - village.claim.radius
+    - village.claim.coords
+    - village.history
+    - village.joinfee.set
+    - village.outpost.help.chief
+    - village.outpost.unclaim
+    - village.perms.set
+    - village.perms.unset
+    - village.setaccess
+    - village.sethome
+    - village.shop.repeat
+    - village.shop.unlock
+    - village.tax.set
+    - village.unbanish
+    - village.unclaim.radius
+    - village.unclaim.coords
+    - village.use
+    - village.help.chief
+    - village.disband
+    - village.transfer
+    - village.rename
+    - village.lock.admin
+    - village.help.assistant
+    - empire.leave
+    - village.ally
+    - village.banished
+    - village.claim
+    - village.mode
+    - village.outpost.help.elder
+    - village.outpost.claim
+    - village.outpost.sethome
+    - village.perks.toggle
+    - village.perms
+    - village.perms.show
+    - village.plot.admin
+    - village.setdescription
+    - village.setrank
+    - village.settings
+    - village.unally
+    - village.unclaim
+    - village.help.elder
+    - village.invite
+    - village.kick
+    - village.help.recruiter
+    - village.officer
+    - village.help.builder
+  assistant:
+    icon: golden_sword
+    inherits: resident
+    permissions:
+    - village.disband
+    - village.transfer
+    - village.rename
+    - village.lock.admin
+    - village.help.assistant
+    - empire.leave
+    - village.ally
+    - village.banished
+    - village.claim
+    - village.mode
+    - village.outpost.help.elder
+    - village.outpost.claim
+    - village.outpost.sethome
+    - village.perks.toggle
+    - village.perms
+    - village.perms.show
+    - village.plot.admin
+    - village.setdescription
+    - village.setrank
+    - village.settings
+    - village.unally
+    - village.unclaim
+    - village.help.elder
+    - village.invite
+    - village.kick
+    - village.help.recruiter
+    - village.officer
+    - village.help.builder
+  elder:
+    icon: iron_sword
+    inherits: resident
+    permissions:
+    - empire.leave
+    - village.ally
+    - village.banished
+    - village.claim
+    - village.mode
+    - village.outpost.help.elder
+    - village.outpost.claim
+    - village.outpost.sethome
+    - village.perks.toggle
+    - village.perms
+    - village.perms.show
+    - village.plot.admin
+    - village.setdescription
+    - village.setrank
+    - village.settings
+    - village.unally
+    - village.unclaim
+    - village.help.elder
+    - village.invite
+    - village.kick
+    - village.help.recruiter
+    - village.officer
+    - village.help.builder
+  recruiter:
+    icon: stone_sword
+    inherits: resident
+    permissions:
+    - village.invite
+    - village.kick
+    - village.help.recruiter
+    - village.officer
+    - village.help.builder
+  builder:
+    icon: stone_shovel
+    inherits: resident
+    permissions:
+    - village.officer
+    - village.help.builder
+  resident:
+    icon: stone_pickaxe
+    permissions:
+    - village.allies
+    - village.bank
+    - village.bank.help
+    - village.bank.balance
+    - village.bank.deposit
+    - village.bank.history
+    - village.deposit
+    - village.deposit.history
+    - village.help.resident
+    - village.joinfee
+    - village.leave
+    - village.materials
+    - village.outpost
+    - village.outpost.help
+    - village.outpost.list
+    - village.outpost.teleport
+    - village.perks
+    - village.reslist
+    - village.shop
+    - village.tax
+    - village.title
+    - village.upgrade
+    - village.upkeep

@@ -1,93 +1,131 @@
+# Permissions that a user can toggle
+toggleable-perms:
+- empire.allies
+- empire.ally
+- empire.banish
+- empire.banished
+- empire.bank.history
+- empire.bank.withdraw
+- empire.build
+- empire.disband
+- empire.invite
+- empire.joinfee.set
+- empire.kick
+- empire.mode
+- empire.officer
+- empire.perks
+- empire.perks.toggle
+- empire.perms
+- empire.perms.set
+- empire.perms.show
+- empire.perms.unset
+- empire.regen
+- empire.rename
+- empire.setaccess
+- empire.setdescription
+- empire.sethome
+- empire.setrank
+- empire.setsymbol
+- empire.settings
+- empire.shop
+- empire.shop.repeat
+- empire.shop.unlock
+- empire.tax.set
+- empire.unally
+- empire.unbanish
+- empire.use
+
 # Ranks for people in an empire. Top ones inherit from the ones below them
-leader:
-  icon: diamond_sword
-  inherits: member
-  permissions:
-  - empire.ally
-  - empire.banish
-  - empire.banished
-  - empire.build
-  - empire.help.leader
-  - empire.disband
-  - empire.joinfee.set
-  - empire.bank.withdraw
-  - empire.perks.toggle
-  - empire.perms.set
-  - empire.perms.unset
-  - empire.regen
-  - empire.rename
-  - empire.setaccess
-  - empire.sethome
-  - empire.setrank
-  - empire.setsymbol
-  - empire.shop.unlock
-  - empire.shop.repeat
-  - empire.tax.set
-  - empire.transfer
-  - empire.unally
-  - empire.unbanish
-  - empire.use
-  - empire.help.senator
-  - empire.invite
-  - empire.kick
-  - empire.mode
-  - empire.officer
-  - empire.perms
-  - empire.perms.show
-  - empire.setdescription
-  - empire.settings
-  - empire.allies
-  - empire.joinfee
-  - empire.memberlist
-  - empire.bank
-  - empire.bank.balance
-  - empire.bank.deposit
-  - empire.bank.history
-  - empire.help.member
-  - empire.perks
-  - empire.senators
-  - empire.shop
-  - empire.tax
-  - empire.upkeep
-senator:
-  icon: gold_sword
-  inherits: member
-  permissions:
-  - empire.help.senator
-  - empire.invite
-  - empire.kick
-  - empire.mode
-  - empire.officer
-  - empire.perms
-  - empire.perms.show
-  - empire.setdescription
-  - empire.settings
-  - empire.allies
-  - empire.joinfee
-  - empire.memberlist
-  - empire.bank
-  - empire.bank.balance
-  - empire.bank.deposit
-  - empire.bank.history
-  - empire.help.member
-  - empire.perks
-  - empire.senators
-  - empire.shop
-  - empire.tax
-  - empire.upkeep
-member:
-  icon: iron_sword
-  permissions:
-  - empire.allies
-  - empire.joinfee
-  - empire.memberlist
-  - empire.bank
-  - empire.bank.balance
-  - empire.bank.deposit
-  - empire.bank.history
-  - empire.help.member
-  - empire.perks
-  - empire.senators
-  - empire.shop
-  - empire.tax
-  - empire.upkeep
+ranks:
+  leader:
+    icon: diamond_sword
+    inherits: member
+    permissions:
+    - empire.ally
+    - empire.banish
+    - empire.banished
+    - empire.build
+    - empire.help.leader
+    - empire.disband
+    - empire.joinfee.set
+    - empire.bank.withdraw
+    - empire.perks.toggle
+    - empire.perms.set
+    - empire.perms.unset
+    - empire.regen
+    - empire.rename
+    - empire.setaccess
+    - empire.sethome
+    - empire.setrank
+    - empire.setsymbol
+    - empire.shop.unlock
+    - empire.shop.repeat
+    - empire.tax.set
+    - empire.transfer
+    - empire.unally
+    - empire.unbanish
+    - empire.use
+    - empire.help.senator
+    - empire.invite
+    - empire.kick
+    - empire.mode
+    - empire.officer
+    - empire.perms
+    - empire.perms.show
+    - empire.setdescription
+    - empire.settings
+    - empire.allies
+    - empire.joinfee
+    - empire.memberlist
+    - empire.bank
+    - empire.bank.balance
+    - empire.bank.deposit
+    - empire.bank.history
+    - empire.help.member
+    - empire.perks
+    - empire.senators
+    - empire.shop
+    - empire.tax
+    - empire.upkeep
+  senator:
+    icon: gold_sword
+    inherits: member
+    permissions:
+    - empire.help.senator
+    - empire.invite
+    - empire.kick
+    - empire.mode
+    - empire.officer
+    - empire.perms
+    - empire.perms.show
+    - empire.setdescription
+    - empire.settings
+    - empire.allies
+    - empire.joinfee
+    - empire.memberlist
+    - empire.bank
+    - empire.bank.balance
+    - empire.bank.deposit
+    - empire.bank.history
+    - empire.help.member
+    - empire.perks
+    - empire.senators
+    - empire.shop
+    - empire.tax
+    - empire.upkeep
+  member:
+    icon: iron_sword
+    permissions:
+    - empire.allies
+    - empire.joinfee
+    - empire.memberlist
+    - empire.bank
+    - empire.bank.balance
+    - empire.bank.deposit
+    - empire.bank.history
+    - empire.help.member
+    - empire.perks
+    - empire.senators
+    - empire.shop
+    - empire.tax
+    - empire.upkeep

@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.rank.RankManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -76,7 +77,7 @@ public class VillagePermsCommand extends VillageSubCommand {
                     }
                 }
 
-                if (!resident.hasPermission("kingdoms.command." + permission)) {
+                if (!resident.hasPermission("kingdoms.command." + permission) || !VillageRank.getToggleablePermissions().contains(permission.toLowerCase())) {
                     getError("cant-edit-permission").tell(resident, "permission", permission);
                     return true;
                 }
@@ -130,7 +131,7 @@ public class VillagePermsCommand extends VillageSubCommand {
                     }
                 }
 
-                if (!resident.hasPermission("kingdoms.command." + permission)) {
+                if (!resident.hasPermission("kingdoms.command." + permission) || !VillageRank.getToggleablePermissions().contains(permission.toLowerCase())) {
                     getError("cant-edit-permission").tell(resident, "permission", permission);
                     return true;
                 }

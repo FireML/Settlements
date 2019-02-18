@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.gui.PermsGUI;
 import me.crz.minecraft.kingdoms.empire.gui.RankPermsGUI;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
+import me.crz.minecraft.kingdoms.rank.RankManager;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.ChatColor;
@@ -76,7 +77,7 @@ public class EmpirePermsCommand extends EmpireSubCommand {
                     }
                 }
 
-                if (!resident.hasPermission("kingdoms.command." + permission)) {
+                if (!resident.hasPermission("kingdoms.command." + permission) || !EmpireRank.getToggleablePermissions().contains(permission.toLowerCase())) {
                     getError("cant-edit-permission").tell(resident, "permission", permission);
                     return true;
                 }
@@ -131,7 +132,7 @@ public class EmpirePermsCommand extends EmpireSubCommand {
                     }
                 }
 
-                if (!resident.hasPermission("kingdoms.command." + permission)) {
+                if (!resident.hasPermission("kingdoms.command." + permission) || !EmpireRank.getToggleablePermissions().contains(permission.toLowerCase())) {
                     getError("cant-edit-permission").tell(resident, "permission", permission);
                     return true;
                 }
