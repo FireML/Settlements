@@ -41,6 +41,7 @@ toggleable-perms:
 - village.shop.repeat
 - village.shop.unlock
 - village.tax.set
+- village.tax.exempt
 - village.title
 - village.unally
 - village.unbanish
@@ -76,6 +77,7 @@ ranks:
     - village.shop.repeat
     - village.shop.unlock
     - village.tax.set
+    - village.tax.exempt
     - village.unbanish
     - village.unclaim.radius
     - village.unclaim.coords

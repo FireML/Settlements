@@ -1174,6 +1174,8 @@ command:
         success: "&e&lALERT &r&7Daily {state} tax was set &e{amount}&7!"
         above-max: "&c&lERROR: &cMax tax amount is &e{max}&c!"
         description: Sets the tax a player needs to pay each day he is in the settlement
+      exempt:
+        description: Exempts a resident from having to pay the tax
     teleporters:
       description: Teleporter GUI
     title:

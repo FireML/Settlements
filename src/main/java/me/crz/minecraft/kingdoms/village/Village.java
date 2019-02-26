@@ -77,6 +77,10 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 if (residentId.equals(getChiefId())) {
                     continue;
                 }
+                Resident resident = ResidentManager.getInstance().getResident(residentId); // should already be cached!
+                if (getEffectivePermissionValue(resident.getVillageRank(), "village.tax.exempt").orElse(false)) {
+                    continue;
+                }
                 OfflinePlayer player = Bukkit.getPlayer(residentId);
                 if (player == null) {
                     player = Bukkit.getOfflinePlayer(residentId);
@@ -91,20 +95,15 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                                 "name", getName());
                     }
                 } else {
-                    Utils.runAsync(() -> {
-                        Resident resident = ResidentManager.getInstance().getResident(residentId);
-                        Utils.runSync(() -> {
-                            Message.get("tax.couldnt-pay").tell(getOnlineResidents(),
-                                    "player", resident.getName(),
-                                    "amount", String.valueOf(tax),
-                                    "state", getState().getTag(),
-                                    "name", getName()
-                            );
-                            getBanishedPlayers().add(residentId);
-                            residents.remove(residentId);
-                            VillageManager.getInstance().leaveVillage(resident);
-                        });
-                    });
+                    Message.get("tax.couldnt-pay").tell(getOnlineResidents(),
+                            "player", resident.getName(),
+                            "amount", String.valueOf(tax),
+                            "state", getState().getTag(),
+                            "name", getName()
+                    );
+                    getBanishedPlayers().add(residentId);
+                    residents.remove(residentId);
+                    VillageManager.getInstance().leaveVillage(resident);
                 }
             }
             long finalTotalTax = totalTax;
