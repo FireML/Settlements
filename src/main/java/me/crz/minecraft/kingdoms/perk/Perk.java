@@ -45,9 +45,9 @@ public class Perk implements NameTag {
                 unlockCost.put(type, config.getLong("cost.unlock." + type));
             }
         }
-        if (config.isConfigurationSection("cost.repeating")) {
-            for (String type : config.getConfigurationSection("cost.repeating").getKeys(false)) {
-                repeatCost.put(type, config.getLong("cost.repeating." + type));
+        if (config.isConfigurationSection("cost.repeat")) {
+            for (String type : config.getConfigurationSection("cost.repeat").getKeys(false)) {
+                repeatCost.put(type, config.getLong("cost.repeat." + type));
             }
         }
     }
