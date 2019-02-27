@@ -244,21 +244,21 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         return Optional.ofNullable(map != null ? map.get(permission.toLowerCase()) : null);
     }
 
-    public boolean getInheritedPermissionValue(Rank rank, String permission) {
+    public Optional<Boolean> getInheritedPermissionValue(Rank rank, String permission) {
         Optional<Boolean> value = getPermissionValue(rank, permission);
         if (value.isPresent()) {
-            return value.get();
+            return value;
         }
         if (rank.getInherits() != null) {
             return getInheritedPermissionValue(rank.getInheritedRank(), permission);
         }
-        return false;
+        return Optional.empty();
     }
 
     public Optional<Boolean> getEffectivePermissionValue(Rank rank, String permission) {
-        boolean inheritValue = getInheritedPermissionValue(rank, permission);
-        if (inheritValue) {
-            return Optional.of(true);
+        Optional<Boolean> inheritValue = getInheritedPermissionValue(rank, permission);
+        if (inheritValue.isPresent()) {
+            return inheritValue;
         }
         return rank.getInheritedPermissionValue(permission);
     }
