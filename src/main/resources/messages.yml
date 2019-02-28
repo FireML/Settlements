@@ -1074,7 +1074,8 @@ command:
         success: "&aUnset permission &e{permission}&a for rank &a{rank}&a! Is now &a{value}!"
         success-all: "&aUnset all permissions for rank &a{rank}&a!"
     plot:
-      admin: "Allows administrating of settlement plots"
+      admin:
+        description: "Allows administrating of settlement plots"
     rename:
       success: "&7&lSettlement has been renamed to &6&l{name}"
       description: Renames the current village to something else
@@ -1466,7 +1467,8 @@ command:
         description: Toggle perks
       description: Manage unlocked perks
     plot:
-      admin: "Allows administrating of settlement plots"
+      admin:
+        description: "Allows administrating of empire plots"
     shop:
       description: Purchase perks
       unlock:
