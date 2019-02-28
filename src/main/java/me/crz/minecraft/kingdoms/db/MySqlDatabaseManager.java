@@ -193,7 +193,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                         empire.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
                 updateDataMap(conn, "empire_perks", "empireId", (Integer) empire.getId().value(), "perk", "",
                         empire.getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
-                updateDataMap(conn, "empire_permissions", "settlementId", (Integer) empire.getId().value(), "rank", "permission", empire.getRanksPermissions(), "value");
+                updateDataMap(conn, "empire_permissions", "empireId", (Integer) empire.getId().value(), "rank", "permission", empire.getRanksPermissions(), "value");
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while saving empire " + empire.getName() + " to database!", e);
