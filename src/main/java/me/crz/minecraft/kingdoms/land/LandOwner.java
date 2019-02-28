@@ -256,9 +256,11 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
     }
 
     public Optional<Boolean> getEffectivePermissionValue(Rank rank, String permission) {
-        Optional<Boolean> inheritValue = getInheritedPermissionValue(rank, permission);
-        if (inheritValue.isPresent()) {
-            return inheritValue;
+        if (rank.getParent() != null) {
+            Optional<Boolean> inheritValue = getInheritedPermissionValue(rank, permission);
+            if (inheritValue.isPresent()) {
+                return inheritValue;
+            }
         }
         return rank.getInheritedPermissionValue(permission);
     }
