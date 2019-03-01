@@ -91,8 +91,8 @@ public class RankPermsGUI extends KingdomsGUI {
                             color = ChatColor.RED;
                         }
 
-                        boolean defaultValue = rank.getInheritedPermissionValue(perm).orElse(false);
-                        if (res.getVillage().getEffectivePermissionValue(rank, perm).orElse(false) != defaultValue) {
+                        boolean defaultValue = rank.getPermissionValue(perm);
+                        if (fromRank == rank && res.getVillage().getPermissionValue(rank, perm).orElse(false) != defaultValue) {
                             if (res.getVillageRank().above(rank) && res.hasPermission("kingdoms.command.village.perms.unset")) {
                                 item.addLore(getMessage("entry.unset").getReplacedTextList(
                                         "perm", permName,
@@ -103,10 +103,12 @@ public class RankPermsGUI extends KingdomsGUI {
                         }
                         if (res.getVillageRank().above(rank) && res.hasPermission("kingdoms.command.village.perms.set") && res.hasPermission("kingdoms.command." + perm)) {
                             if (value.orElse(false)) {
-                                item.addLore(getMessage("entry.revoke").getReplacedTextList(
-                                        "perm", permName,
-                                        "rank", rank.getTag(res.getVillage())
-                                ));
+                                if (fromRank == rank) {
+                                    item.addLore(getMessage("entry.revoke").getReplacedTextList(
+                                            "perm", permName,
+                                            "rank", rank.getTag(res.getVillage())
+                                    ));
+                                }
                             } else {
                                 item.addLore(getMessage("entry.grant").getReplacedTextList(
                                         "perm", permName,
@@ -139,10 +141,20 @@ public class RankPermsGUI extends KingdomsGUI {
                         if (type != ClickType.MIDDLE) {
                             if (res.hasPermission("kingdoms.command.village.perms.set") && res.hasPermission("kingdoms.command." + perm)) {
                                 Optional<Boolean> value = res.getVillage().getEffectivePermissionValue(rank, perm);
-                                if (res.getVillage().setPermission(rank, perm, !value.orElse(false))) {
-                                    Utils.runAsync(() -> DatabaseManager.getInstance().save(res.getVillage()));
-                                    gui.build(p);
-                                    return true;
+                                VillageRank fromRank = rank;
+                                if (value.orElse(false)) {
+                                    for (VillageRank r : rank.getInheritedRanks()) {
+                                        if (res.getVillage().getEffectivePermissionValue(r, perm).orElse(false)) {
+                                            fromRank = r;
+                                        }
+                                    }
+                                }
+                                if (!value.orElse(false) || fromRank == rank) {
+                                    if (res.getVillage().setPermission(rank, perm, !value.orElse(false))) {
+                                        Utils.runAsync(() -> DatabaseManager.getInstance().save(res.getVillage()));
+                                        gui.build(p);
+                                        return true;
+                                    }
                                 }
                             }
                         } else {

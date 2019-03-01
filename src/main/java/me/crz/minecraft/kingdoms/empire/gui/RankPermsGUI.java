@@ -88,8 +88,8 @@ public class RankPermsGUI extends KingdomsGUI {
                             color = ChatColor.RED;
                         }
 
-                        boolean defaultValue = rank.getInheritedPermissionValue(perm).orElse(false);
-                        if (res.getVillage().getEffectivePermissionValue(rank, perm).orElse(false) != defaultValue) {
+                        boolean defaultValue = rank.getPermissionValue(perm);
+                        if (fromRank == rank && res.getVillage().getPermissionValue(rank, perm).orElse(false) != defaultValue) {
                             if (res.getVillageRank().above(rank) && res.hasPermission("kingdoms.command.empire.perms.unset")) {
                                 item.addLore(getMessage("entry.unset").getReplacedTextList(
                                         "perm", permName,
@@ -100,10 +100,12 @@ public class RankPermsGUI extends KingdomsGUI {
                         }
                         if (res.getEmpireRank().above(rank) && res.hasPermission("kingdoms.command.empire.perms.set") && res.hasPermission("kingdoms.command." + perm)) {
                             if (value.orElse(false)) {
-                                item.addLore(getMessage("entry.revoke").getReplacedTextList(
-                                        "perm", permName,
-                                        "rank", rank.getTag()
-                                ));
+                                if (fromRank == rank) {
+                                    item.addLore(getMessage("entry.revoke").getReplacedTextList(
+                                            "perm", permName,
+                                            "rank", rank.getTag()
+                                    ));
+                                }
                             } else {
                                 item.addLore(getMessage("entry.grant").getReplacedTextList(
                                         "perm", permName,
@@ -136,10 +138,20 @@ public class RankPermsGUI extends KingdomsGUI {
                         if (type != ClickType.MIDDLE) {
                             if (res.hasPermission("kingdoms.command.empire.perms.set") && res.hasPermission("kingdoms.command." + perm)) {
                                 Optional<Boolean> value = res.getVillage().getEmpire().getEffectivePermissionValue(rank, perm);
-                                if (value.isPresent() && res.getVillage().getEmpire().setPermission(rank, perm, !value.get())) {
-                                    Utils.runAsync(() -> DatabaseManager.getInstance().save(res.getVillage().getEmpire()));
-                                    gui.build(p);
-                                    return true;
+                                EmpireRank fromRank = rank;
+                                if (value.orElse(false)) {
+                                    for (EmpireRank r : rank.getInheritedRanks()) {
+                                        if (res.getVillage().getEmpire().getEffectivePermissionValue(r, perm).orElse(false)) {
+                                            fromRank = r;
+                                        }
+                                    }
+                                }
+                                if (!value.orElse(false) || fromRank == rank) {
+                                    if (res.getVillage().getEmpire().setPermission(rank, perm, !value.orElse(false))) {
+                                        Utils.runAsync(() -> DatabaseManager.getInstance().save(res.getVillage().getEmpire()));
+                                        gui.build(p);
+                                        return true;
+                                    }
                                 }
                             }
                         } else {

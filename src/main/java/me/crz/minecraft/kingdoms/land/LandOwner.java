@@ -270,12 +270,16 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
             return false;
         }
 
+        if (rank.getPermissionValue(permission) == value) {
+            return setDefaultPermission(rank, permission);
+        }
+
         Boolean prev = ranksPermissions.computeIfAbsent(rank.name().toLowerCase(), k -> new LinkedHashMap<>()).put(permission.toLowerCase(), value);
         return prev == null || prev != value;
     }
 
     public boolean setDefaultPermission(Rank rank, String permission) {
-        return setPermission(rank, permission, rank.getInheritedPermissionValue(permission).orElse(false));
+        return ranksPermissions.getOrDefault(rank.name().toLowerCase(), new LinkedHashMap<>()).remove(permission.toLowerCase()) != null;
     }
 
     public String getIdKey() {
