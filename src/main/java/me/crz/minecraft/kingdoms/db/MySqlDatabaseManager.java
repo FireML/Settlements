@@ -991,6 +991,24 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 deleteSql += " OR ((" + String.join(") OR (", rankQuery) + "))";
             }
             deleteSql += ";";
+        } else if (values.values().iterator().next() instanceof Map) {
+            List<String> entries = new ArrayList<>();
+            for (Map.Entry<String, ?> entry : values.entrySet()) {
+                if (entry.getValue() instanceof Map) {
+                    for (Object value : ((Map<Object, Object>) entry.getValue()).keySet()) {
+                        entries.add("(?,?)");
+                        deleteObjects.put(i, entry.getKey());
+                        i++;
+                        deleteObjects.put(i, value);
+                        i++;
+                    }
+                }
+            }
+
+            deleteSql = "DELETE FROM " + tablePrefix + tableName +
+                    " WHERE " + keyColumn + " = ?" +
+                    " AND (" + mapKey + "," + mapValue + ") NOT IN (" + String.join(",", entries) + ");";
+
         } else {
             deleteSql = "DELETE FROM " + tablePrefix + tableName +
                     " WHERE " + keyColumn + " = ?" +
