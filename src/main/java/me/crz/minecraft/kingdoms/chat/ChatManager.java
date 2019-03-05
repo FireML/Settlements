@@ -31,6 +31,7 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -167,29 +168,29 @@ public class ChatManager extends Base implements ConfigMessages {
                         .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
                 break;
             case ALLY:
-                village.getAllies().stream()
+                Set<Resident> residentSet = village.getAllies().stream()
                         .flatMap(a -> a.getOnlineResidents().stream())
-                        .distinct()
-                        .filter(r -> r.isListening(channel))
-                        .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                        .collect(Collectors.toSet());
+                residentSet.addAll(village.getOnlineResidents());
                 if (village.hasEmpire()) {
+                    residentSet.addAll(village.getEmpire().getOnlineResidents());
                     village.getEmpire().getAllies().stream()
-                            .filter(a -> !village.isAlly(a))
                             .flatMap(a -> a.getOnlineResidents().stream())
-                            .distinct()
-                            .filter(r -> r.isListening(channel)
-                                    && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                            .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                            .forEach(residentSet::add);
                 }
+                residentSet.stream()
+                        .filter(r -> r.isListening(channel)
+                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
+                        .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                break;
             case EMPIRE:
                 if (village.hasEmpire()) {
-                    village.getEmpire().getMembers().stream()
-                            .filter(a -> !village.isAlly(a) && !village.equals(a))
-                            .flatMap(a -> a.getOnlineResidents().stream())
+                    village.getEmpire().getOnlineResidents().stream()
                             .filter(r -> r.isListening(channel)
                                     && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
                             .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
                 }
+                break;
             case SETTLEMENT:
                 village.getOnlineResidents().stream()
                         .filter(r -> r.isListening(channel)

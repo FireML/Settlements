@@ -1,7 +1,6 @@
 package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.integration.IgnoreProvider;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.IdObject;
@@ -16,7 +15,6 @@ import org.bukkit.entity.Player;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashSet;
 
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -408,5 +406,10 @@ public class Resident implements ConfigurationSerializable, Targetable {
 
     public void setHasEmpireFlight(boolean hasEmpireFlight) {
         this.hasEmpireFlight = hasEmpireFlight;
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode() * 31 + (id == null ? 0 : id.hashCode());
     }
 }
