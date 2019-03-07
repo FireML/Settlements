@@ -107,7 +107,7 @@ public class UseGui extends KingdomsGUI {
             }
 
             public boolean click(Player p, ClickType clickType) {
-                SettingsGUI.getInstance().open(p);
+                new SettingsGUI(p).open();
                 return true;
             }
         });

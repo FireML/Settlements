@@ -90,7 +90,7 @@ public class RankPermsGUI extends KingdomsGUI {
 
                         boolean defaultValue = rank.getPermissionValue(perm);
                         if (fromRank == rank && res.getVillage().getPermissionValue(rank, perm).orElse(false) != defaultValue) {
-                            if (res.getVillageRank().above(rank) && res.hasPermission("kingdoms.command.empire.perms.unset")) {
+                            if (res.getVillageRank().above(rank) && res.hasPermission("empire.perms.unset")) {
                                 item.addLore(getMessage("entry.unset").getReplacedTextList(
                                         "perm", permName,
                                         "rank", rank.getTag(),
@@ -98,7 +98,7 @@ public class RankPermsGUI extends KingdomsGUI {
                                 ));
                             }
                         }
-                        if (res.getEmpireRank().above(rank) && res.hasPermission("kingdoms.command.empire.perms.set") && res.hasPermission("kingdoms.command." + perm)) {
+                        if (res.getEmpireRank().above(rank) && res.hasPermission("empire.perms.set") && res.hasPermission(perm)) {
                             if (value.orElse(false)) {
                                 if (fromRank == rank) {
                                     item.addLore(getMessage("entry.revoke").getReplacedTextList(
@@ -136,7 +136,7 @@ public class RankPermsGUI extends KingdomsGUI {
                     Resident res = ResidentManager.getInstance().getResident(p);
                     if (res.hasEmpire() && res.getEmpireRank().above(rank)) {
                         if (type != ClickType.MIDDLE) {
-                            if (res.hasPermission("kingdoms.command.empire.perms.set") && res.hasPermission("kingdoms.command." + perm)) {
+                            if (res.hasPermission("empire.perms.set") && res.hasPermission(perm)) {
                                 Optional<Boolean> value = res.getVillage().getEmpire().getEffectivePermissionValue(rank, perm);
                                 EmpireRank fromRank = rank;
                                 if (value.orElse(false)) {
@@ -155,7 +155,7 @@ public class RankPermsGUI extends KingdomsGUI {
                                 }
                             }
                         } else {
-                            if (res.hasPermission("kingdoms.command.empire.perms.unset")) {
+                            if (res.hasPermission("empire.perms.unset")) {
                                 if (res.getVillage().getEmpire().setDefaultPermission(rank, perm)) {
                                     Utils.runAsync(() -> DatabaseManager.getInstance().save(res.getVillage().getEmpire()));
                                     gui.build(p);

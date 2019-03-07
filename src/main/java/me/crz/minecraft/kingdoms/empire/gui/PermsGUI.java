@@ -46,7 +46,7 @@ public class PermsGUI extends KingdomsGUI {
                 @Override
                 public boolean click(Player p, ClickType type) {
                     Resident res = ResidentManager.getInstance().getResident(p);
-                    if (res.hasEmpire()) {
+                    if (res.hasEmpire() && res.hasPermission("empire.perms")) {
                         RankPermsGUI.getInstance(rank).open(p);
                         return true;
                     }
@@ -60,7 +60,7 @@ public class PermsGUI extends KingdomsGUI {
             }
 
             public boolean click(final Player p, final ClickType clickType) {
-                SettingsGUI.getInstance().open(p);
+                new SettingsGUI(p).open();
                 return true;
             }
         });

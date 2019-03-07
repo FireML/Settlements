@@ -11,7 +11,7 @@ public class EmpireSettingsCommand extends EmpireSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        SettingsGUI.getInstance().open(resident.getPlayer());
+        new SettingsGUI(resident).open();
         return true;
     }
 }

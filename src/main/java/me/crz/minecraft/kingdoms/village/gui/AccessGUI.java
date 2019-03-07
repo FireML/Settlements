@@ -68,7 +68,7 @@ public class AccessGUI extends KingdomsGUI {
             }
 
             public boolean click(final Player p, final ClickType clickType) {
-                SettingsGUI.getInstance().open(p);
+                new SettingsGUI(p).open();
                 return true;
             }
         });
