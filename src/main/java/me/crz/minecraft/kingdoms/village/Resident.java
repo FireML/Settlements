@@ -87,8 +87,8 @@ public class Resident implements ConfigurationSerializable, Targetable {
             }
 
             if (rankPerm.startsWith("empire.")) {
-                if (!getVillage().hasEmpire() && !VillageRank.getChief().getInheritedPermissionValue(rankPerm).isPresent() ) {
-                    return true;
+                if (!getVillage().hasEmpire()) {
+                    return !VillageRank.getChief().getInheritedPermissionValue(rankPerm).isPresent();
                 }
 
                 Optional<Boolean> empireValue = getVillage().getEmpire().getEffectivePermissionValue(getEmpireRank(), rankPerm);
