@@ -62,6 +62,9 @@ public class Resident implements ConfigurationSerializable, Targetable {
      * @return              The value of the permission or false
      */
     public boolean hasPermission(String permission) {
+        if (!permission.startsWith("kingdoms.")) {
+            permission = "kingdoms.command." + permission;
+        }
         if (hasCommandPermission(permission)) {
             Player player = getPlayer();
             if (player != null) {
