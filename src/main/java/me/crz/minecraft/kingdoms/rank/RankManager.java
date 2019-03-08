@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,14 +18,14 @@ public class RankManager {
     private Map<String, EmpireRank> empireRanks = new LinkedHashMap<>();
     private EmpireRank empireLeaderRank = null;
     private EmpireRank empireDefaultRank = null;
-    private Set<String> toggleableEmpirePerms = new LinkedHashSet<>();
+    private Map<String, PermissionGroup> empirePermGroups = new LinkedHashMap<>();
 
     private Map<String, VillageRank> villageRanks = new LinkedHashMap<>();
     private Map<String, VillageRank> villageRanksbyTitle = new HashMap<>();
 
     private VillageRank villageChiefRank = null;
     private VillageRank villageDefaultRank = null;
-    private Set<String> toggleableVillagePerms = new LinkedHashSet<>();
+    private Map<String, PermissionGroup> villagePermGroups = new LinkedHashMap<>();
 
     private RankManager() {
         loadEmpireRanks();
@@ -61,8 +60,9 @@ public class RankManager {
             }
         }
 
-        for (String perm : config.getStringList("toggleable-perms")) {
-            toggleableVillagePerms.add(perm.toLowerCase());
+        ConfigurationSection groups = config.getConfigurationSection("perm-groups");
+        for (String groupName : groups.getKeys(false)) {
+            villagePermGroups.put(groupName.toLowerCase(), new PermissionGroup(groups.getConfigurationSection(groupName)));
         }
     }
 
@@ -87,8 +87,9 @@ public class RankManager {
         }
         empireDefaultRank = lastRank;
 
-        for (String perm : config.getStringList("toggleable-perms")) {
-            toggleableEmpirePerms.add(perm.toLowerCase());
+        ConfigurationSection groups = config.getConfigurationSection("perm-groups");
+        for (String groupName : groups.getKeys(false)) {
+            empirePermGroups.put(groupName.toLowerCase(), new PermissionGroup(groups.getConfigurationSection(groupName)));
         }
     }
 
@@ -131,11 +132,38 @@ public class RankManager {
         return villageDefaultRank;
     }
 
-    Set<String> getToggleableEmpirePerms() {
-        return toggleableEmpirePerms;
+    boolean isToggleableEmpirePerm(String permission) {
+        for (PermissionGroup group : empirePermGroups.values()) {
+            if (group.getPermissions().contains(permission.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    Set<String> getToggleableVillagePerms() {
-        return toggleableVillagePerms;
+    public Collection<PermissionGroup> getEmpirePermGroups() {
+        return empirePermGroups.values();
     }
+
+    PermissionGroup getEmpirePermGroup(String group) {
+        return empirePermGroups.get(group.toLowerCase());
+    }
+
+    boolean isToggleableVillagePerm(String permission) {
+        for (PermissionGroup group : villagePermGroups.values()) {
+            if (group.getPermissions().contains(permission.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Collection<PermissionGroup> getVillagePermGroups() {
+        return villagePermGroups.values();
+    }
+
+    PermissionGroup getVillagePermGroup(String group) {
+        return villagePermGroups.get(group.toLowerCase());
+    }
+
 }

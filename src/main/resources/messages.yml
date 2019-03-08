@@ -13,6 +13,7 @@ error:
   not-your-village: "&c&lThis is not your {state}!"
   no-village: "&c&lNo village at your location!"
   invalid-rank: "&c&lERROR &r&c{rank} &7is not a valid rank!"
+  invalid-group: "&c&lERROR &r&c{group} &7is not a valid group!"
   village-exists: "&7&lA settlement with the name &6&l{name}&7&l already exists!"
   empire-exists: "&7&lAn empire with the name &6&l{name}&7&l already exists!"
   village-doesnt-exist: "&c&lNo settlement with the name &6&l{name}&c&l found!"
@@ -476,8 +477,10 @@ gui:
       title: "&3&l/e perks"
     perms:
       title: "&3&l/e perms"
-    rank-perms:
+    rank-perm-groups:
       title: "&3&l/e perms &e&l{rank}"
+    rank-perms:
+      title: "&3&l/e perms &e&l{rank} {group}"
     shop:
       title: "&3&l/e shop"
     settings:
@@ -508,9 +511,25 @@ gui:
     entry:
       title: "&3{rank}"
       edit: "&7Click to edit permissions."
-  rank-perms:
+  rank-perm-groups:
     title: "&3&l/s perms &e&l{rank}"
     back: "&c&lBack to rank selection"
+    groups:
+      general: |-
+        &3General
+        General permissions for
+        residents of the {state}
+      officer: |-
+        &3Officer
+        {state} management permissions
+      settings: |-
+        &3Settings
+        Permissions for editing
+        {state} settings
+
+  rank-perms:
+    title: "&3&l/s perms &e&l{rank}"
+    back: "&c&lBack to group selection"
     previous: "&7Previous page"
     next: "&7Next page"
     entry:
@@ -994,7 +1013,8 @@ command:
       previous: "&b<< Prev "
       next: "&b Next >>"
     lock:
-      admin: "Allows administrating of locks inside the settlement's claims"
+      admin:
+        description: "Allows administrating of locks inside the settlement's claims"
     map:
       head: "&8---------------- &eSettlement Map &r&8----------------"
       explanation: |-
@@ -1062,7 +1082,7 @@ command:
       show:
         description: Show all permissions that a certain rank has
         head: "&8&l--------&r&c&l{rank} Perms&r&8&l--------"
-        entry: "&8\\[&9*&8] &f[{color}{permission}](hover={color}{value}\n&9Click to set {opposite} run_command=/s perms set {rank} {permission} {opposite})"
+        entry: "&8\\[&9*&8] &f[{color}{permission}](hover={{color}{value}\n&9Click to set {opposite}} run_command=/s perms set {rank} {permission} {opposite})"
         footer: "&7-------- /s perms &7 --------" # TODO: Pagination
       set:
         description: Set the permissions of a rank
@@ -1400,7 +1420,8 @@ command:
       previous: "&b<< Prev "
       next: "&b Next >>"
     lock:
-      admin: "Allows administrating of locks inside the settlement's claims"
+      admin:
+        description: "Allows administrating of locks inside the settlement's claims"
     mode:
       modes: "&cAvailable modes: {modes}"
       success: "&7Empire mode &6{mode}&7 set to &6{value}"
@@ -1447,7 +1468,7 @@ command:
       show:
         description: Show all permissions that a certain rank has
         head: "&8&l--------&r&c&l{rank} Perms&r&8&l--------"
-        entry: "&8\\[&9*&8] &f[{color}{permission}](hover={color}{value}\n&9Click to set {opposite} run_command=/s perms set {rank} {permission} {opposite})"
+        entry: "&8\\[&9*&8] &f[{color}{permission}](hover={{color}{value}\n&9Click to set {opposite}} run_command=/s perms set {rank} {permission} {opposite})"
         footer: "&7-------- /s perms &7 --------" # TODO: Pagination
       set:
         description: Set the permissions of a rank

@@ -1,55 +1,61 @@
 # Permissions that a user can toggle
-toggleable-perms:
-- empire.join
-- village.allies
-- village.ally
-- village.allyclaim
-- village.banish
-- village.banished
-- village.bank.history
-- village.bank.withdraw
-- village.build
-- village.claim
-- village.claim.coords
-- village.claim.radius
-- village.deposit.history
-- village.disband
-- village.history
-- village.invite
-- village.joinfee.set
-- village.kick
-- village.lock.admin
-- village.mode
-- village.outpost.claim
-- village.outpost.sethome
-- village.outpost.teleport
-- village.outpost.unclaim
-- village.perks
-- village.perks.toggle
-- village.perms
-- village.perms.set
-- village.perms.show
-- village.perms.unset
-- village.plot.admin
-- village.rename
-- village.setaccess
-- village.setdescription
-- village.sethome
-- village.setrank
-- village.settings
-- village.shop
-- village.shop.repeat
-- village.shop.unlock
-- village.tax.set
-- village.tax.exempt
-- village.title
-- village.unally
-- village.unbanish
-- village.unclaim
-- village.unclaim.coords
-- village.unclaim.radius
-- village.upgrade
-- village.use
+perm-groups:
+  general:
+    icon: GRASS_BLOCK
+    permissions:
+    - village.allies
+    - village.banished
+    - village.bank.history
+    - village.deposit.history
+    - village.outpost.teleport
+    - village.perms.show
+  settings:
+    icon: REDSTONE_BLOCK
+    permissions:
+    - village.build
+    - village.mode
+    - village.perks
+    - village.perks.toggle
+    - village.setaccess
+    - village.settings
+    - village.use
+  officer:
+    icon: DIAMOND_SWORD
+    permissions:
+    - empire.join
+    - empire.leave
+    - village.ally
+    - village.allyclaim
+    - village.banish
+    - village.bank.withdraw
+    - village.claim
+    - village.disband
+    - village.history
+    - village.invite
+    - village.joinfee.set
+    - village.kick
+    - village.lock.admin
+    - village.outpost.claim
+    - village.outpost.sethome
+    - village.outpost.unclaim
+    - village.perms
+    - village.perms.set
+    - village.perms.show
+    - village.perms.unset
+    - village.plot.admin
+    - village.rename
+    - village.setdescription
+    - village.sethome
+    - village.setrank
+    - village.shop
+    - village.shop.repeat
+    - village.shop.unlock
+    - village.tax.set
+    - village.tax.exempt
+    - village.title
+    - village.unally
+    - village.unbanish
+    - village.unclaim
 
 # Ranks for people in a settlement. Top ones inherit from the ones below them
 ranks:
@@ -64,8 +70,6 @@ ranks:
     - village.banish
     - village.bank.withdraw
     - village.build
-    - village.claim.radius
-    - village.claim.coords
     - village.history
     - village.joinfee.set
     - village.outpost.help.chief
@@ -79,8 +83,7 @@ ranks:
     - village.tax.set
     - village.tax.exempt
     - village.unbanish
-    - village.unclaim.radius
-    - village.unclaim.coords
+    - village.unclaim
     - village.use
     - village.help.chief
     - village.disband

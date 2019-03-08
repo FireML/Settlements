@@ -1,39 +1,48 @@
 # Permissions that a user can toggle
-toggleable-perms:
-- empire.allies
-- empire.ally
-- empire.banish
-- empire.banished
-- empire.bank.history
-- empire.bank.withdraw
-- empire.build
-- empire.disband
-- empire.invite
-- empire.joinfee.set
-- empire.kick
-- empire.mode
-- empire.officer
-- empire.perks
-- empire.perks.toggle
-- empire.perms
-- empire.perms.set
-- empire.perms.show
-- empire.perms.unset
-- empire.regen
-- empire.rename
-- empire.setaccess
-- empire.setdescription
-- empire.sethome
-- empire.setrank
-- empire.setsymbol
-- empire.settings
-- empire.shop
-- empire.shop.repeat
-- empire.shop.unlock
-- empire.tax.set
-- empire.unally
-- empire.unbanish
-- empire.use
+perm-groups:
+  general:
+    icon: GRASS_BLOCK
+    permissions:
+    - empire.allies
+    - empire.banished
+    - empire.bank.history
+    - empire.perms.show
+  settings:
+    icon: REDSTONE_BLOCK
+    permissions:
+    - empire.build
+    - empire.mode
+    - empire.perks
+    - empire.perks.toggle
+    - empire.setaccess
+    - empire.settings
+    - empire.use
+  officer:
+    icon: DIAMOND_SWORD
+    permissions:
+    - empire.ally
+    - empire.banish
+    - empire.bank.withdraw
+    - empire.disband
+    - empire.invite
+    - empire.joinfee.set
+    - empire.kick
+    - empire.officer
+    - empire.perms
+    - empire.perms.set
+    - empire.perms.unset
+    - empire.regen
+    - empire.rename
+    - empire.setdescription
+    - empire.sethome
+    - empire.setrank
+    - empire.setsymbol
+    - empire.shop
+    - empire.shop.repeat
+    - empire.shop.unlock
+    - empire.tax.set
+    - empire.unally
+    - empire.unbanish
 
 # Ranks for people in an empire. Top ones inherit from the ones below them
 ranks:

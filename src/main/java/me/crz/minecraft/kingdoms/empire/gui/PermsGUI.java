@@ -30,7 +30,9 @@ public class PermsGUI extends KingdomsGUI {
                         CItem item = rank.getItem().setName(getMessage("entry.title").getReplacedText(
                                 "rank", rank.getTag()
                         ));
-                        if (res.getEmpireRank().above(rank) || res.getEmpireRank() == EmpireRank.getLeader()) {
+                        if (res.getEmpireRank() == EmpireRank.getLeader()
+                                || (res.getEmpireRank().above(rank)
+                                        && (res.hasPermission("empire.perms.set") || res.hasPermission("empire.perms.unset")))) {
                             item.addLore(getMessage("entry.edit").getReplacedTextList(
                                     "rank",  rank.getTag()
                             ));
@@ -47,7 +49,7 @@ public class PermsGUI extends KingdomsGUI {
                 public boolean click(Player p, ClickType type) {
                     Resident res = ResidentManager.getInstance().getResident(p);
                     if (res.hasEmpire() && res.hasPermission("empire.perms")) {
-                        RankPermsGUI.getInstance(rank).open(p);
+                        RankPermGroupsGUI.getInstance(rank).open(p);
                         return true;
                     }
                     return false;

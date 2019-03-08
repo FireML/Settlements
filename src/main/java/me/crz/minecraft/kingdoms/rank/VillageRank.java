@@ -64,8 +64,16 @@ public class VillageRank extends Rank implements Next<VillageRank> {
         return RankManager.getInstance().getVillageChiefRank();
     }
 
-    public static Collection<String> getToggleablePermissions() {
-        return RankManager.getInstance().getToggleableVillagePerms();
+    public static boolean isToggleablePermission(String permission) {
+        return RankManager.getInstance().isToggleableVillagePerm(permission);
+    }
+
+    public static Collection<PermissionGroup> getPermGroups() {
+        return RankManager.getInstance().getVillagePermGroups();
+    }
+
+    public static PermissionGroup getPermGroup(String group) {
+        return RankManager.getInstance().getVillagePermGroup(group);
     }
 
     public static VillageRank valueOf(String string) throws IllegalArgumentException {

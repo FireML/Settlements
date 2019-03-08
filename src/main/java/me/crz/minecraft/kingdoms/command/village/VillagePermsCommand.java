@@ -2,11 +2,13 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.rank.PermissionGroup;
 import me.crz.minecraft.kingdoms.rank.RankManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.gui.PermsGUI;
+import me.crz.minecraft.kingdoms.village.gui.RankPermGroupsGUI;
 import me.crz.minecraft.kingdoms.village.gui.RankPermsGUI;
 import org.bukkit.ChatColor;
 
@@ -34,7 +36,7 @@ public class VillagePermsCommand extends VillageSubCommand {
                     getMessage("entry").tell(resident,
                             "rank", rank.name(),
                             "permission", e.getKey(),
-                            "value", String.valueOf(e.getValue()),
+                            "value", String.valueOf(e.getValue().orElse(false)),
                             "opposite", String.valueOf(!e.getValue().orElse(false)),
                             "color",  String.valueOf(e.getValue().orElse(false) ? ChatColor.GREEN : ChatColor.RED)
                     );
@@ -77,7 +79,7 @@ public class VillagePermsCommand extends VillageSubCommand {
                     }
                 }
 
-                if (!resident.hasPermission("kingdoms.command." + permission) || !VillageRank.getToggleablePermissions().contains(permission.toLowerCase())) {
+                if (!resident.hasPermission("kingdoms.command." + permission) || !VillageRank.isToggleablePermission(permission)) {
                     getError("cant-edit-permission").tell(resident, "permission", permission);
                     return true;
                 }
@@ -131,7 +133,7 @@ public class VillagePermsCommand extends VillageSubCommand {
                     }
                 }
 
-                if (!resident.hasPermission("kingdoms.command." + permission) || !VillageRank.getToggleablePermissions().contains(permission.toLowerCase())) {
+                if (!resident.hasPermission("kingdoms.command." + permission) || !VillageRank.isToggleablePermission(permission)) {
                     getError("cant-edit-permission").tell(resident, "permission", permission);
                     return true;
                 }
@@ -154,14 +156,23 @@ public class VillagePermsCommand extends VillageSubCommand {
         if (args.length == 0) {
             PermsGUI.getInstance().open(resident.getPlayer());
             return true;
-        } else if (args.length == 1) {
-            VillageRank rank = VillageRank.get(args[0]);
-            if (rank == null) {
-                getError("invalid-rank").tell(resident);
-                return false;
-            }
-            RankPermsGUI.open(resident, rank);
+        }
+
+        VillageRank rank = VillageRank.get(args[0]);
+        if (rank == null) {
+            getError("invalid-rank").tell(resident, "rank", args[0]);
+            return false;
+        }
+        if (args.length == 1) {
+            RankPermGroupsGUI.open(resident, rank);
             return true;
+        } else if (args.length == 2) {
+            PermissionGroup group = VillageRank.getPermGroup(args[1]);
+            if (group != null) {
+                RankPermsGUI.open(resident, rank, group);
+                return true;
+            }
+            getError("invalid-group").tell(resident, "group", args[1]);
         }
         return false;
     }

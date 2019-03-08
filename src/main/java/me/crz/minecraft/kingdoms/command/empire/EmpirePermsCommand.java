@@ -3,9 +3,10 @@ package me.crz.minecraft.kingdoms.command.empire;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.gui.PermsGUI;
+import me.crz.minecraft.kingdoms.empire.gui.RankPermGroupsGUI;
 import me.crz.minecraft.kingdoms.empire.gui.RankPermsGUI;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
-import me.crz.minecraft.kingdoms.rank.RankManager;
+import me.crz.minecraft.kingdoms.rank.PermissionGroup;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.ChatColor;
@@ -34,7 +35,7 @@ public class EmpirePermsCommand extends EmpireSubCommand {
                     getMessage("entry").tell(resident,
                             "rank", rank.name(),
                             "permission", e.getKey(),
-                            "value", String.valueOf(e.getValue()),
+                            "value", String.valueOf(e.getValue().orElse(false)),
                             "opposite", String.valueOf(!e.getValue().orElse(false)),
                             "color",  String.valueOf(e.getValue().orElse(false) ? ChatColor.GREEN : ChatColor.RED)
                     );
@@ -77,7 +78,7 @@ public class EmpirePermsCommand extends EmpireSubCommand {
                     }
                 }
 
-                if (!resident.hasPermission("kingdoms.command." + permission) || !EmpireRank.getToggleablePermissions().contains(permission.toLowerCase())) {
+                if (!resident.hasPermission("kingdoms.command." + permission) || !EmpireRank.isToggleablePermission(permission)) {
                     getError("cant-edit-permission").tell(resident, "permission", permission);
                     return true;
                 }
@@ -132,7 +133,7 @@ public class EmpirePermsCommand extends EmpireSubCommand {
                     }
                 }
 
-                if (!resident.hasPermission("kingdoms.command." + permission) || !EmpireRank.getToggleablePermissions().contains(permission.toLowerCase())) {
+                if (!resident.hasPermission("kingdoms.command." + permission) || !EmpireRank.isToggleablePermission(permission)) {
                     getError("cant-edit-permission").tell(resident, "permission", permission);
                     return true;
                 }
@@ -155,14 +156,23 @@ public class EmpirePermsCommand extends EmpireSubCommand {
         if (args.length == 0) {
             PermsGUI.getInstance().open(resident.getPlayer());
             return true;
-        } else if (args.length == 1) {
-            EmpireRank rank = EmpireRank.get(args[0]);
-            if (rank == null) {
-                getError("invalid-rank").tell(resident);
-                return false;
-            }
-            RankPermsGUI.getInstance(rank).open(resident.getPlayer());
+        }
+
+        EmpireRank rank = EmpireRank.get(args[0]);
+        if (rank == null) {
+            getError("invalid-rank").tell(resident, "rank", args[0]);
+            return false;
+        }
+        if (args.length == 1) {
+            RankPermGroupsGUI.getInstance(rank).open(resident.getPlayer());
             return true;
+        } else if (args.length == 2) {
+            PermissionGroup group = EmpireRank.getPermGroup(args[1]);
+            if (group != null) {
+                RankPermsGUI.getInstance(rank, group).open(resident.getPlayer());
+                return true;
+            }
+            getError("invalid-group").tell(resident, "group", args[1]);
         }
         return false;
     }

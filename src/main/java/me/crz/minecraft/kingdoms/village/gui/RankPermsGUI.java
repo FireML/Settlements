@@ -1,13 +1,12 @@
 package me.crz.minecraft.kingdoms.village.gui;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.rank.PermissionGroup;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -29,29 +28,37 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class RankPermsGUI extends KingdomsGUI {
-    private static Table<String, IdObject, RankPermsGUI> instances = HashBasedTable.create();
+    private static Map<String, Map<IdObject, Map<String, RankPermsGUI>>> instances = new ConcurrentHashMap<>();
     public CInventory gui;
     private Map<UUID, Integer> playerPage = new HashMap<>();
 
-    private RankPermsGUI(Village village, VillageRank rank) {
+    private RankPermsGUI(Village village, VillageRank rank, PermissionGroup group) {
         super("rank-perms");
-        gui = new CInventory(getText("title", "rank", rank.getTag(village)), InventorySize.SIX) {};
-
-        List<String> perms = VillageRank.getToggleablePermissions().stream()
+        List<String> perms = group.getPermissions().stream()
                 .filter(s -> !s.contains(".help"))
                 .sorted(Comparator.naturalOrder())
                 .collect(Collectors.toList());
+        InventorySize size = InventorySize.getMatchingSize(perms.size());
+        if (size == null) {
+            size = InventorySize.SIX;
+        }
+        gui = new CInventory(getText("title",
+                "rank", rank.getTag(village),
+                "group", group.getName()
+        ), size) {};
 
-        boolean paged = perms.size() > InventorySize.SIX.getSize() - 1;
-        for (int i = 0; i < (paged ? InventorySize.FIVE.getSize() : InventorySize.SIX.getSize()); i++) {
+        boolean paged = perms.size() > size.getSize() - 1;
+        int permsPerPage = paged ? size.getSize() - 9 : size.getSize();
+        for (int i = 0; i < permsPerPage; i++) {
             int finalI = i;
             gui.addItem(i, new ClickableItem() {
                 @Override
                 public ItemStack getItem(Player p) {
-                    int permIndex = getPage(p) * InventorySize.FIVE.getSize() + finalI;
+                    int permIndex = getPage(p) * permsPerPage + finalI;
                     if (perms.size() <= permIndex) {
                         return null;
                     }
@@ -129,7 +136,7 @@ public class RankPermsGUI extends KingdomsGUI {
 
                 @Override
                 public boolean click(Player p, ClickType type) {
-                    int permIndex = getPage(p) * InventorySize.FIVE.getSize() + finalI;
+                    int permIndex = getPage(p) * permsPerPage + finalI;
                     if (perms.size() < permIndex) {
                         return false;
                     }
@@ -171,7 +178,7 @@ public class RankPermsGUI extends KingdomsGUI {
         }
 
         if (paged) {
-            gui.addItem(InventorySize.FIVE.getSize(), new ClickableItem() {
+            gui.addItem(permsPerPage, new ClickableItem() {
                 public ItemStack getItem(final Player p) {
                     if (getPage(p) > 0) {
                         return new CItem(Material.SIGN).setName(getText("previous")).build();
@@ -190,7 +197,7 @@ public class RankPermsGUI extends KingdomsGUI {
                 }
             });
 
-            gui.addItem(InventorySize.FIVE.getSize() + 4, new ClickableItem() {
+            gui.addItem(permsPerPage + 4, new ClickableItem() {
                 public ItemStack getItem(final Player p) {
                     return new CItem(Material.BARRIER).setName(getText("back")).build();
                 }
@@ -201,9 +208,9 @@ public class RankPermsGUI extends KingdomsGUI {
                 }
             });
 
-            gui.addItem(InventorySize.FIVE.getSize() + 8, new ClickableItem() {
+            gui.addItem(permsPerPage + 8, new ClickableItem() {
                 public ItemStack getItem(final Player p) {
-                    if (perms.size() > (getPage(p) + 1) * InventorySize.FIVE.getSize()) {
+                    if (perms.size() > (getPage(p) + 1) * InventorySize.THREE.getSize()) {
                         return new CItem(Material.SIGN).setName(getText("next")).build();
                     }
                     return null;
@@ -211,7 +218,7 @@ public class RankPermsGUI extends KingdomsGUI {
 
                 public boolean click(final Player p, final ClickType clickType) {
                     int page = getPage(p);
-                    if (perms.size() > (page + 1) * InventorySize.FIVE.getSize()) {
+                    if (perms.size() > (page + 1) * InventorySize.THREE.getSize()) {
                         setPage(p, page + 1);
                         gui.build(p);
                         return true;
@@ -220,14 +227,18 @@ public class RankPermsGUI extends KingdomsGUI {
                 }
             });
         } else {
-            gui.addItem(InventorySize.FIVE.getSize() + 8, new ClickableItem() {
+            gui.addItem(size.getSize() - 1, new ClickableItem() {
                 public ItemStack getItem(final Player p) {
                     return new CItem(Material.BARRIER).setName(getText("back")).build();
                 }
 
                 public boolean click(final Player p, final ClickType clickType) {
-                    PermsGUI.getInstance().open(p);
-                    return true;
+                    Resident resident = ResidentManager.getInstance().getResident(p);
+                    if (resident.hasVillage()) {
+                        RankPermGroupsGUI.getInstance(resident.getVillage(), rank).open(p);
+                        return true;
+                    }
+                    return false;
                 }
             });
         }
@@ -250,16 +261,14 @@ public class RankPermsGUI extends KingdomsGUI {
         gui.build(p);
     }
 
-    public static void open(Resident resident, VillageRank rank) {
-        getInstance(resident.getVillage(), rank).open(resident.getPlayer());
+    public static void open(Resident resident, VillageRank rank, PermissionGroup group) {
+        getInstance(resident.getVillage(), rank, group).open(resident.getPlayer());
     }
 
-    public static RankPermsGUI getInstance(Village village, VillageRank rank) {
-        RankPermsGUI gui = instances.get(rank.name(), village.getId());
-        if (gui == null) {
-            gui = new RankPermsGUI(village, rank);
-            instances.put(rank.name(), village.getId(), gui);
-        }
-        return gui;
+    public static RankPermsGUI getInstance(Village village, VillageRank rank, PermissionGroup group) {
+        return instances
+                .computeIfAbsent(rank.name(), n -> new ConcurrentHashMap<>())
+                .computeIfAbsent(village.getId(), id -> new ConcurrentHashMap<>())
+                .computeIfAbsent(group.getName().toLowerCase(), g -> new RankPermsGUI(village, rank, group));
     }
 }
