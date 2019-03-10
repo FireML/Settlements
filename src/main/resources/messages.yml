@@ -916,6 +916,8 @@ command:
         public: allows everyone to build in your claimed land
         ally: allows your allies to build in your claimed land
       description: Set who can build in your settlement
+      permission:
+        description: Allows changing of the settlement build setting
     claim:
       cant-claim-more: "&c&lERROR &r&7Your settlement can only claim &e{max} chunks of land!"
       no-land-around: "&c&lERROR &r&7Your claim must be connected to an existing settlement claim!"
@@ -1096,6 +1098,8 @@ command:
     plot:
       admin:
         description: "Allows administrating of settlement plots"
+        permission:
+          name: Plot Manager
     rename:
       success: "&7&lSettlement has been renamed to &6&l{name}"
       description: Renames the current village to something else
@@ -1152,6 +1156,8 @@ command:
         already-unlocked: "&cPerk &f{perk} &cis already unlocked"
         entry: "&6{amount} &e{material}"
         description: Unlock perks
+        permission:
+          description: Buy perks in shop
       repeat:
         success: "&6&l{perk} &7&lhas been repeated!"
         level-too-low: "&cCan't repeat &f{perk}&c! It requires a level {level} {state}!"
@@ -1161,6 +1167,8 @@ command:
         not-unlocked: "&cPerk &f{perk} &cis not unlocked!"
         already-repeated: "&cPerk &f{perk} &cis already been repeated {amount} times!"
         description: Repeat perks
+        permission:
+          description: Buy perks again in the shop
     show:
       general: |-
         &8--------&c&l{name}&r&8--------
@@ -1235,7 +1243,11 @@ command:
         not-unlocked: "&cPerk &f{perk} &cis not unlocked!"
         no-effects: "&cPerk &f{perk} &chas no effects that can be toggled!"
         description: Toggle perks
+        permission:
+          description: Allows toggling of perks
       description: Manage unlocked perks
+      permission:
+        description: Allows viewing unlocked perks
     upgrade:
       not-possible: "&cThe village cannot be leveled up! {reason}"
       max-level-reached: "&r&c&lMax Level Reached."
@@ -1350,6 +1362,8 @@ command:
         public: allows everyone to build in empire world
         ally: allows member allies to build in empire world
       description: Set who can build in your empire world
+      permission:
+        description: Allows changing of the empire world build setting
     create:
       success: |-
         &a&lSUCCESS &r&7created a new empire.
@@ -1486,10 +1500,16 @@ command:
         not-unlocked: "&cPerk &f{perk} &cis not unlocked!"
         no-effects: "&cPerk &f{perk} &chas no effects that can be toggled!"
         description: Toggle perks
+        permission:
+          description: Allows toggling of perks
       description: Manage unlocked perks
+      permission:
+        description: Allows viewing of perks
     plot:
       admin:
         description: "Allows administrating of empire plots"
+        permission:
+          name: Plot Manager
     shop:
       description: Purchase perks
       unlock:
@@ -1499,6 +1519,8 @@ command:
         already-unlocked: "&cPerk &f{perk} &cis already unlocked"
         entry: "&6{amount} &e{material}"
         description: Unlock perks
+        permission:
+          description: Buy perks in the shop
       repeat:
         success: "&6&l{perk} &7&lhas been repeated!"
         not-possible: "&f{perk} &ccan't be repeated! {reason}"
@@ -1507,6 +1529,8 @@ command:
         not-unlocked: "&cPerk &f{perk} &cis not unlocked!"
         already-repeated: "&cPerk &f{perk} &cis already been repeated {amount} times!"
         description: Repeat perks
+        permission:
+          description: Buy perks again in the shop
     setaccess:
       success: "&7Access changed to &6{access}"
       access:

@@ -37,7 +37,7 @@ public abstract class Rank implements Rankable, NameTag, Comparable<Rank> {
                 if (Bukkit.getPluginManager().getPermission("kingdoms.command." + permName) == null) {
                     Bukkit.getPluginManager().addPermission(new Permission(
                             "kingdoms.command." + permName,
-                            Message.get("command." + permName).getText(),
+                            Message.orElse("command." + permName + ".permission.description", Message.get("command." + permName + ".description")).getText(),
                             PermissionDefault.TRUE
                     ));
                 }

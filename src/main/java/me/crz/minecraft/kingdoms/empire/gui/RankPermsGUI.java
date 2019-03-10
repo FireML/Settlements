@@ -60,7 +60,7 @@ public class RankPermsGUI extends KingdomsGUI {
                     String perm = perms.get(permIndex);
                     Resident res = ResidentManager.getInstance().getResident(p);
                     if (res.hasEmpire()) {
-                        String permName = WordUtils.capitalizeFully(perm.replace('.', ' '));
+                        String permName = Message.get("command." + perm + ".permission.name").orElse(WordUtils.capitalizeFully(perm.replace('.', ' ')));
                         if (permName.startsWith("Empire ")) {
                             permName = permName.substring("Empire ".length());
                         }
@@ -124,7 +124,7 @@ public class RankPermsGUI extends KingdomsGUI {
                                 "color", color.toString(),
                                 "perm", permName,
                                 "rank", rank.getTag(),
-                                "description", Message.get("command." + perm + ".description").getText()
+                                "description", Message.orElse("command." + perm + ".permission.description", Message.get("command." + perm + ".description")).getText()
                         )).build();
                     }
                     return null;

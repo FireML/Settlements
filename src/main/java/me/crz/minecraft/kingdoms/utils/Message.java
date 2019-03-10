@@ -77,6 +77,13 @@ public class Message {
         return text;
     }
 
+    public String orElse(String fallback) {
+        if (exists()) {
+            return text;
+        }
+        return fallback;
+    }
+
     public List<String> getTextList() {
         return Arrays.asList(text.split("\n"));
     }
@@ -136,6 +143,18 @@ public class Message {
         if (message == null) {
             message = new Message(key.toLowerCase());
             messages.put(key.toLowerCase(), message);
+        }
+        return message;
+    }
+
+    public static Message orElse(String key, Message fallback) {
+        Message message = messages.get(key.toLowerCase());
+        if (message == null) {
+            message = new Message(key.toLowerCase());
+            messages.put(key.toLowerCase(), message);
+        }
+        if (!message.exists() && (fallback == null || fallback.exists())) {
+            return fallback;
         }
         return message;
     }
