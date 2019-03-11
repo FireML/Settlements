@@ -426,7 +426,7 @@ lock:
       friends: "&e&lALERT &r&7Only the &ePlot owner's friends&7 can build here."
 gui:
   access:
-    title: "&3&l/s access"
+    title: "&2&l/s access"
     back: "&c&lBack To Settings"
     selected: "&e&l{access}"
     available: "&7{access}"
@@ -437,9 +437,9 @@ gui:
       ally: Allows allies to teleport to home
       private: Allows only members to teleport to home
   build:
-    title: "&3&l/s build"
-    set-state: "&7&lClick to allow building of &b&l{state}"
-    selected-state: "&e&lBuilding is currently set to &b&l{state}"
+    title: "&2&l/s build"
+    set-state: "&7&lClick to allow building of &a&l{state}"
+    selected-state: "&e&lBuilding is currently set to &a&l{state}"
     description: "&7{description}"
     back: "&c&lBack To Settings"
     build:
@@ -449,14 +449,14 @@ gui:
       residents: Allows only residents to build
       officers: Allows everyone above elder to build
   mode:
-    title: "&3&l/s mode"
+    title: "&2&l/s mode"
     entry:
-      title: "&b&l{mode}"
-      lore: "&7&lEnabled: &b&l{value}"
+      title: "&a&l{mode}"
+      lore: "&7&lEnabled: &a&l{value}"
     back: "&c&lBack To Settings"
   empire:
     access:
-      title: "&3&l/e access"
+      title: "&2&l/e access"
       access:
         open: Allows everyone to join without an invitation
         public: Everyone can tp to home but requires invite to join
@@ -464,7 +464,7 @@ gui:
         trusted: Allows only residents of member settlements to teleport to home
         private: Allows only capital residents to teleport to home
     build:
-      title: "&3&l/e build"
+      title: "&2&l/e build"
       build:
         public: Allows everyone to build
         ally: Allows members and allies to build
@@ -472,21 +472,21 @@ gui:
         trusted: Allows only residents of member settlements to build
         private: Allows only residents of the capital to build
     mode:
-      title: "&3&l/e mode"
+      title: "&2&l/e mode"
     perks:
-      title: "&3&l/e perks"
+      title: "&2&l/e perks"
     perms:
-      title: "&3&l/e perms"
+      title: "&2&l/e perms"
     rank-perm-groups:
-      title: "&3&l/e perms &e&l{rank}"
+      title: "&2&l/e perms &e&l{rank}"
     rank-perms:
-      title: "&3&l/e perms &e&l{rank} {group}"
+      title: "&2&l/e perms &e&l{rank} {group}"
     shop:
-      title: "&3&l/e shop"
+      title: "&2&l/e shop"
     settings:
-      title: "&3&lEmpire Settings"
+      title: "&2&lEmpire Settings"
       entry: |-
-        &b&lEmpire Data
+        &a&lEmpire Data
         &8--------&c&l{name}&r&8--------
         &a&lDescription &r&7{description}
         &a&lSymbol &r&7{symbol}
@@ -502,17 +502,17 @@ gui:
         &e&lSenators: &r&7{senators}
         &e&lMembers: &r&7{members}
     use:
-      title: "&3&l/e use"
+      title: "&2&l/e use"
     vault:
-      title: "&1&l/e vault"
+      title: "&2&l/e vault"
   perms:
-    title: "&3&l/s perms"
+    title: "&2&l/s perms"
     back: "&c&lBack To Settings"
     entry:
       title: "&3{rank}"
       edit: "&7Click to edit permissions."
   rank-perm-groups:
-    title: "&3&l/s perms &e&l{rank}"
+    title: "&2&l/s perms &e&l{rank}"
     back: "&c&lBack to rank selection"
     groups:
       general: |-
@@ -528,7 +528,7 @@ gui:
         {state} settings
 
   rank-perms:
-    title: "&3&l/s perms &e&l{rank}"
+    title: "&2&l/s perms &e&l{rank}"
     back: "&c&lBack to group selection"
     previous: "&7Previous page"
     next: "&7Next page"
@@ -553,7 +553,7 @@ gui:
     linked: "&e{amount}&b other plots are linked to this one"
     unlink: "&7Click to unlink!"
     use:
-      title: "&3&l/plot use"
+      title: "&2&l/plot use"
       unset-all: |-
         &7Click to unset all states and
         &7inherit from parent {parent}
@@ -563,16 +563,16 @@ gui:
           &7Middle click to inherit &b{value}
           &7from parent {parent} again
     mode:
-      title: "&3&l/plot mode"
+      title: "&2&l/plot mode"
       entry:
         parent: "&7(Inherited from parent {parent})"
         click-to-unset: |-
           &7Middle click to inherit &b{value}
           &7from parent {parent} again
     build:
-      title: "&3&l/plot build"
-      plot-state: "&7&lPlot build is set to &b&l{state}&7&l but overridden!"
-      inherited-state: "&e&lBuilding state &b&l{state}&e&l is inherited!"
+      title: "&2&l/plot build"
+      plot-state: "&7&lPlot build is set to &a&l{state}&7&l but overridden!"
+      inherited-state: "&e&lBuilding state &a&l{state}&e&l is inherited!"
       build:
         public: Allows everyone to build
         trusted: Allows residents, allies and fellow empire members to build
@@ -582,7 +582,7 @@ gui:
         friends: Allows only the owner and his friends to build
         private: Allows only the owner to build
     settings:
-      title: "&3&lPlot Settings"
+      title: "&2&l/plot settings"
       entry: |-
         &8&l-------- &r&c&lPlot Info&r &8&l--------
         &c&l{state}: &7{settlement}
@@ -594,31 +594,31 @@ gui:
         &7PvP: &6{pvp}
         &7Build: &6{build}
   private-teleports:
-    title: "&3&lSettlement teleports: &r&7{page}"
+    title: "&2&lSettlement teleports: &r&7{page}"
     entry: "&b{name}"
     page:
       next: "&7Go to next page {page}"
       previous: "&7Go to previous page {page}"
     back: "&c&lBack To Teleporters"
   residents:
-    title: "&3&lVillage Residents"
+    title: "&2&lVillage Residents"
     back: "&c&lBack To Settings"
     entry: |-
       &c&l{name}
-      &7&lRole &b&l{title}
-      &7&lJoined &b&l{joined}
-      &7&lLast login &b&l{lastlogin}
+      &7&lRole &a&l{title}
+      &7&lJoined &a&l{joined}
+      &7&lLast login &a&l{lastlogin}
   settings:
-    title: "&3&lSettlement Settings"
-    build: "&b&lBuild"
-    access: "&b&lAccess"
-    use: "&b&lUse"
-    mode: "&b&lMode"
-    perms: "&b&lRank Perms"
-    perks: "&b&lPerks"
-    shop: "&b&lShop"
+    title: "&2&lSettlement Settings"
+    build: "&a&lBuild"
+    access: "&a&lAccess"
+    use: "&a&lUse"
+    mode: "&a&lMode"
+    perms: "&a&lRank Perms"
+    perks: "&a&lPerks"
+    shop: "&a&lShop"
     entry: |-
-      &b&lVillage Data
+      &a&lVillage Data
       &8--------&c&l{name}&r&8--------
       &a&lDescription &r&7{description}
       &a&lState &r&7{state}
@@ -647,7 +647,7 @@ gui:
     village-home: "&e&l{state} Home"
     empire-home: "&e&lEmpire Home"
   perks:
-    title: "&3&l/s perks"
+    title: "&2&l/s perks"
     entry: |-
       &e{name}
     toggleable: "&bClick to toggle."
@@ -655,7 +655,7 @@ gui:
     inactive: "&cEffect disabled!"
     back: "&c&lBack To Settings"
   shop:
-    title: "&3&l/s shop"
+    title: "&2&l/s shop"
     entry:
       locked: |-
         &e{name}
@@ -680,28 +680,28 @@ gui:
     cooldown: "&aCan be repeated in {cooldown}"
     back: "&c&lBack To Settings"
   use:
-    title: "&3&l/s use"
+    title: "&2&l/s use"
     back: "&c&lBack To Settings"
-    toggle-all: "&7&lClick to toggle all to &b&l{state}"
+    toggle-all: "&7&lClick to toggle all to &a&l{state}"
     entry: |-
-      &b&l{flag}
-      &7&lState: &b&l{state}
+      &a&l{flag}
+      &7&lState: &a&l{state}
       &7Left click: Next state
       &7Right click: Previous state
   vault:
-    title: "&1&l/s vault"
+    title: "&2&l/s vault"
     success-deposit: "&6&l{player} &7&lhas deposited:"
     fail-deposit: "&c&lFailed Deposited Items: {reason}"
     max-level-reached: "&r&c&lMax Level Reached"
     list-entry: "&6{amount} {icon}&e{material}"
 
 usage:
-  head: "&8&l--------&r&c&l{type}{name} Commands&r&8&l--------"
-  entry: "&8\\[&9*&8] [&b{usage}](hover=&f{usage}\n&9Click to add it to your input{aliases} suggest_command={/{path}) &7- {description}"
+  head: "&a⊱&m━━━━&r&6{{type}{name} Commands}&a&m━━━━&a⊰"
+  entry: "&e• [&e{usage}](hover=&f{usage}\n&9Click to add it to your input{aliases} suggest_command={/{path}) &7- {description}"
   aliases: "\n&fAliases: &7{aliases}"
   footer: ""
   pagination:
-    footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
+    footer: "&a⊱&m━━━━&r&6{{previous}{page}/{maxpage}{next}}&a&m━━━━&a⊰"
     previous: "&b<< Prev "
     next: "&b Next >>"
 command:
@@ -709,9 +709,9 @@ command:
     description: "Chat command"
     joined: "&7You have joined Chat Channel &6{name}"
     channel-entry:
-      active: "&8\\[&9*&8] &b{name} &7&l[&a&lActive&7&l] &3&l<"
-      enabled: "&8\\[&9*&8] [&b{name}](suggest_command=/chat {name}) &7&l[&a&lEnabled&7&l]"
-      disabled: "&8\\[&9*&8] [&b{name}](suggest_command=/chat {name}) &7&l[&c&lDisabled&7&l]"
+      active: "&e• &e{name} &7&l[&a&lActive&7&l] &3&l<"
+      enabled: "&e• [&e{name}](suggest_command=/chat {name}) &7&l[&a&lEnabled&7&l]"
+      disabled: "&e• [&e{name}](suggest_command=/chat {name}) &7&l[&c&lDisabled&7&l]"
     "<channel>":
       description: "Join a chat channel"
     usage:
@@ -733,7 +733,7 @@ command:
     ignored: "&7Player &6{name}&7 has been &cignored&7!"
     unignored: "&7Player &6{name}&7 has been &aun-ignored&7!"
     list:
-      head: "&7------- &cIgnored&7 -------"
+      head: "&a⊱&m━━━━&r&6{Ignored}&a&m━━━━&a⊰"
       entry: "&c{name}"
       separator: "&7, "
   message:
@@ -749,7 +749,7 @@ command:
       not-enough-bonus: "&c&lNot enough bonus claims to transfer &r&6&l{amount}&r&c&l!"
     show:
       info: |-
-        &8------&c&l {name} &8------
+        &a⊱&m━━━━&r&6{{name}}&a&m━━━━&a⊰
         &a&lSettlement: &f{settlement}
         &a&lRank: &f{title}
         &a&lBalance: &6${balance}
@@ -793,7 +793,7 @@ command:
       description: Buys the chunk you are standing in
     info:
       general: |-
-        &8&l-------- &r&c&lPlot Info&r &8&l--------
+        &a⊱&m━━━━&r&6{Plot Info}&a&m━━━━&a⊰
         &c&l{state}: &7{landowner}
         &9&lDescription: &r{description}
         &9&lModes: &7MobSpawning: &6{mobspawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explosions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}&r&7 | Embassy: &6{embassy}
@@ -857,7 +857,7 @@ command:
       added: "&7Added '&f{line}&7' to the scoreboard."
   village:
     allies:
-      head: "&8&l--------&r&c&lAllies&r&8&l--------"
+      head: "&a⊱&m━━━━&r&6{Allies}&a&m━━━━&a⊰"
       entry: "&a{state} {name}"
       separator: "&7, "
       description: lists all your allies
@@ -881,7 +881,7 @@ command:
       banished: "&7Player &6{name}&7 has been &cbanished &7from your settlement!"
       description: Add a player to the banish list
     banished:
-      head: "&7------- &cBanished&7 -------"
+      head: "&a⊱&m━━━━&r&6{Banished}&a&m━━━━&a⊰"
       entry: "&c{name}"
       separator: "&7, "
       description: List all banished users
@@ -902,9 +902,9 @@ command:
         balance: "&2&lSettlement Balance: &r&7{amount}"
         description: Check the balance of the bank
       history:
-        head: "&7------- &cBank History [{page}/{maxpage}]&7 -------"
-        entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6${amount}](&eAt {timestamp})"
-        footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
+        head: "&a⊱&m━━━━&r&6{Bank History [{page}/{maxpage}]}&a&m━━━━&a⊰"
+        entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6${amount}](&eAt {timestamp})"
+        footer: "&a⊱&m━━━━&r&6{{previous}{page}/{maxpage}{next}}&a&m━━━━&a⊰"
         previous: "&b<< Prev "
         next: "&b Next >>"
         description: Show the bank's history
@@ -947,7 +947,7 @@ command:
       description: Disbands the current settlement
     here:
       general: |-
-        &8--------&c&l{name}&r&8--------
+        &a⊱&m━━━━&r&6{{name}}&a&m━━━━&a⊰
         &a&lDescription: &r&7{description}
         &a&lState: &r&7{state}
         &6&lAccess: &r&7{access}
@@ -970,9 +970,9 @@ command:
         entry: "{online}{name}"
       description: "Shows information on the village you are stending in "
     history:
-      head: "&7------- &cLog History [{page}/{maxpage}]&7 -------"
-      entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
-      footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
+      head: "&a⊱&m━━━━&r&6{Log History [{page}/{maxpage}]}&a&m━━━━&a⊰"
+      entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
+      footer: "&a⊱&m━━━━&r&6{{previous}{page}/{maxpage}{next}}&a&m━━━━&a⊰"
       previous: "&b<< Prev "
       next: "&b Next >>"
       description: Show the log history
@@ -1009,16 +1009,16 @@ command:
       description: Leave your current village
     list:
       description: "List settlements"
-      head: "&7------- &c{access}Settlements [{page}/{maxpage}]&7 -------"
-      entry: "&8\\[&9{place}.&8] [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{residents} players\n&f{description})"
-      footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
+      head: "&a⊱&m━━━━&r&6{{access}Settlements [{page}/{maxpage}]}&a&m━━━━&a⊰"
+      entry: "&e• {place}. [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{residents} players\n&f{description})"
+      footer: "&a⊱&m━━━━&r&6{{previous}{page}/{maxpage}{next}}&a&m━━━━&a⊰"
       previous: "&b<< Prev "
       next: "&b Next >>"
     lock:
       admin:
         description: "Allows administrating of locks inside the settlement's claims"
     map:
-      head: "&8---------------- &eSettlement Map &r&8----------------"
+      head: "&a⊱&m━━━━━━━━━━━━━━━&r&6{Settlement Map}&a&m━━━━━━━━━━━━━━&a⊰"
       explanation: |-
         &r &a- &6= your land
         &r &a$ &6= for sale
@@ -1045,7 +1045,7 @@ command:
       description: Shows you a map of the surrounding chunks
     materials:
       max-level-reached: "&c&lYour {state} already has the max level!"
-      head: "&8&l--------&r&c&lRequired Materials&r&8&l--------"
+      head: "&a⊱&m━━━━&r&6{Required Materials}&a&m━━━━&a⊰"
       entry: "&e{amount} &7{material}"
       description: Shows you the materials required to upgrade
     mode:
@@ -1062,7 +1062,7 @@ command:
         not-enough-money: "&c&lNot enough money in the bank to pay &r&6&l{amount}&r&c&l to create a new outpost!"
         description: Claims an outpost for your settlement
       list:
-        head: "&7------- &cOutPosts&7 -------"
+        head: "&a⊱&m━━━━&r&6{OutPosts}&a&m━━━━&a⊰"
         entry: "&a{name} (World: {world}, X: {x}, Z: {z}"
         description: List all your outposts
       sethome:
@@ -1083,9 +1083,9 @@ command:
       description: Manage rank permissions
       show:
         description: Show all permissions that a certain rank has
-        head: "&8&l--------&r&c&l{rank} Perms&r&8&l--------"
-        entry: "&8\\[&9*&8] &f[{color}{permission}](hover={{color}{value}\n&9Click to set {opposite}} run_command=/s perms set {rank} {permission} {opposite})"
-        footer: "&7-------- /s perms &7 --------" # TODO: Pagination
+        head: "&a⊱&m━━━━&r&6{{rank} Perms}&a&m━━━━&a⊰"
+        entry: "&e• &f[{color}{permission}](hover={{color}{value}\n&9Click to set {opposite}} run_command=/s perms set {rank} {permission} {opposite})"
+        footer: "&a⊱&m━━━━&r&6{/s perms}&a&m━━━━&a⊰" # TODO: Pagination
       set:
         description: Set the permissions of a rank
         cant-edit-perms-permission: "&cYou can't edit the perms managing permission from the chief rank!"
@@ -1104,7 +1104,7 @@ command:
       success: "&7&lSettlement has been renamed to &6&l{name}"
       description: Renames the current village to something else
     reslist:
-      head: "&8&l--------&r&c&lMembers&r&8&l--------"
+      head: "&a⊱&m━━━━&r&6{Members}&a&m━━━━&a⊰"
       rank: "&6&l{rank}:&r {residents}"
       separator: "&7, "
       online: "&a"
@@ -1141,9 +1141,9 @@ command:
         resident: Default rank for members of this settlement
       rank-usage:
         head: |-
-          &8&l--------&r&c&l{name} Commands&r&8&l--------
+          &a⊱&m━━━━&r&6{{name} Commands}&a&m━━━━&a⊰
           [&b{usage}](hover=&9Click to add it to your input suggest_command={{usage})
-        entry: "&8\\[&9*&8] [&b{rank}](hover=&9Click to add it to your input suggest_command={{usage}) &7- {description}"
+        entry: "&e• [&e{rank}](hover=&9Click to add it to your input suggest_command={{usage}) &7- {description}"
         footer: "&aNote: Officers = Elder and Builder"
       description: Sets the rank of a resident
     shop:
@@ -1171,7 +1171,7 @@ command:
           description: Buy perks again in the shop
     show:
       general: |-
-        &8--------&c&l{name}&r&8--------
+        &a⊱&m━━━━&r&6{{name}}&a&m━━━━&a⊰
         &a&lDescription: &r&7{description}
         &a&lState: &r&7{state}
         &6&lAccess: &r&7{access}
@@ -1215,7 +1215,7 @@ command:
           chief: "&e{name}&7 crowned themselves &e{title}&7!"
       invalid-title: "&c{title} is not a title available to you!"
       usage:
-        entry: "&8\\[&9*&8] [&b{usage}](suggest_command={{usage})"
+        entry: "&e• [eb{usage}](suggest_command={{usage})"
     transfer:
       success: "&e&lALERT &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
       already-chief: "&c&lYou can't transfer leadership to your self!"
@@ -1256,7 +1256,7 @@ command:
       description: Manually trigger a village upgrade
     upkeep:
       info: |-
-        &7------- &cUpkeep&7 -------
+        &a⊱&m━━━━&r&6{Upkeep}&a&m━━━━&a⊰
         &3&lUpkeep cost:&e {cost}
         &3&lUpkeep: &e{upkeep}$ &7/&e claim &7/&e day
         &3&lTime Till Upkeep: &e{time}
@@ -1274,9 +1274,9 @@ command:
     deposit:
       description: Deposit an item into the vault
       history:
-        head: "&7------- &cVault History [{page}/{maxpage}]&7 -------"
-        entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
-        footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
+        head: "&a⊱&m━━━━&r&6{Vault History [{page}/{maxpage}]}&a&m━━━━&a⊰"
+        entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
+        footer: "&a⊱&m━━━━&r&6{{previous}{page}/{maxpage}{next}}&a&m━━━━&a⊰"
         previous: "&b<< Prev "
         next: "&b Next >>"
         description: Show the vault's history
@@ -1307,7 +1307,7 @@ command:
   empire:
     description: Commands for empire management
     allies:
-      head: "&8&l--------&r&c&lAllies&r&8&l--------"
+      head: "&a⊱&m━━━━&r&6{Allies}&a&m━━━━&a⊰"
       entry: "&a{state} {name}"
       separator: "&7, "
       description: lists all your allies
@@ -1332,9 +1332,9 @@ command:
         balance: "&2&lEmpire Balance: &r&7{amount}"
         description: Check the balance of the bank
       history:
-        head: "&7------- &cBank History [{page}/{maxpage}]&7 -------"
-        entry: "&8\\[&9*&8] [&e&l{title} &r&e{name} - &r&7{action} - &6${amount}](&eAt {timestamp})"
-        footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
+        head: "&a⊱&m━━━━&r&6{Bank History [{page}/{maxpage}]}&a&m━━━━&a⊰"
+        entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6${amount}](&eAt {timestamp})"
+        footer: "&a⊱&m━━━━&r&6{{previous}{page}/{maxpage}{next}}&a&m━━━━&a⊰"
         previous: "&b<< Prev "
         next: "&b Next >>"
         description: Show the bank's history
@@ -1347,7 +1347,7 @@ command:
       banished: "&6{name}&7 has been &cbanished &7from your empire world!"
       description: Add an entry to the banish list
     banished:
-      head: "&7------- &cBanished&7 -------"
+      head: "&a⊱&m━━━━&r&6{Banished}&a&m━━━━&a⊰"
       entry: "&c{title} &c{name}"
       separator: "&7, "
       description: List all banished entries
@@ -1380,7 +1380,7 @@ command:
       description: Disbands the current empire
     here:
       general: |-
-        &8--------&c&l{name}&r&8--------
+        &a⊱&m━━━━&r&6{{name}}&a&m━━━━&a⊰
         &a&lDescription &r&7{description}
         &a&lSymbol &r&7{symbol}
         &6&lLevel &r&7{level}
@@ -1427,10 +1427,10 @@ command:
       description: Leave your current empire
     list:
       description: "List empire"
-      head: "&7------- &c{access}Empires [{page}/{maxpage}]&7 -------"
-      entry: "&8\\[&9{place}.&8] [&r&e{name}](&8Capital: &f{capitalstate}{capital}\n&8Leader: &f{chieftitle} {chief}\n&8Size: &f{size} members\n&f{description})"
-      entry-abandoned: "&8\\[&9{place}.&8] [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&f{description})"
-      footer: "&7-------- {previous}{page}/{maxpage}{next} &7 --------"
+      head: "&a⊱&m━━━━&r&6{{access}Empires [{page}/{maxpage}]}&a&m━━━━&a⊰"
+      entry: "&e• {place}. [&r&e{name}](&8Capital: &f{capitalstate}{capital}\n&8Leader: &f{chieftitle} {chief}\n&8Size: &f{size} members\n&f{description})"
+      entry-abandoned: "&e{place}. [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&f{description})"
+      footer: "&a⊱&m━━━━&r&6{{previous}{page}/{maxpage}{next}}&a&m━━━━&a⊰"
       previous: "&b<< Prev "
       next: "&b Next >>"
     lock:
@@ -1454,7 +1454,7 @@ command:
       cant-regen: "&c&lERROR &r&7Can't regenerate empire! Please contact an admin!"
       description: Regenerates the empire empire world
     map:
-      head: "&8---------------- &eEmpire Map &r&8----------------"
+      head: "&a⊱&m━━━━━━━━━━━━━━━&r&6{Empire Map}&a&m━━━━━━━━━━━━━━&a⊰"
       explanation: |-
         &r &a- &6= your land
         &r &a$ &6= for sale
@@ -1472,8 +1472,8 @@ command:
         home: Home
       description: Shows you a map of the surrounding chunks
     memberlist:
-      head: "&8&l--------&r&c&lMembers&r&8&l--------"
-      entry: "&8\\[&9*&8] [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{residents} players\n&f{description})"
+      head: "&a⊱&m━━━━&r&6{Members}&a&m━━━━&a⊰"
+      entry: "&e• [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{residents} players\n&f{description})"
       description: List all empire members
     officer:
       description: Members that should have officer build access
@@ -1481,9 +1481,9 @@ command:
       description: Manage rank permissions
       show:
         description: Show all permissions that a certain rank has
-        head: "&8&l--------&r&c&l{rank} Perms&r&8&l--------"
-        entry: "&8\\[&9*&8] &f[{color}{permission}](hover={{color}{value}\n&9Click to set {opposite}} run_command=/s perms set {rank} {permission} {opposite})"
-        footer: "&7-------- /s perms &7 --------" # TODO: Pagination
+        head: "&a⊱&m━━━━&r&6{{rank} Perms&r&8&l--------"
+        entry: "&e• &f[{color}{permission}](hover={{color}{value}\n&9Click to set {opposite}} run_command=/s perms set {rank} {permission} {opposite})"
+        footer: "&a⊱&m━━━━&r&6{/s perms}&a&m━━━━&a⊰" # TODO: Pagination
       set:
         description: Set the permissions of a rank
         cant-edit-perms-permission: "&cYou can't edit the perms managing permission from the chief rank!"
@@ -1552,11 +1552,11 @@ command:
         description: Sets the fee a settlement needs to pay to join
     senators:
       description: Show all empire senators
-      head: "&8&l--------&r&c&lSenators&r&8&l--------"
+      head: "&a⊱&m━━━━&r&6{Senators}&a&m━━━━&a⊰"
       separator: "&7, "
       online: "&a"
       offline: "&c"
-      entry: "&8\\[&9*&8] [&7{title} &r{online}{name}](&8{state} &f{settlement})"
+      entry: "&e• [&7{title} &r{online}{name}](&8{state} &f{settlement})"
     setrank:
       invalid-rank: "&c&lERROR &r&c{rank} &7is not a valid rank!"
       cant-set-chief: "&c&lPlease use &6&c&l/{base} transfer <player>&r&c&l to transfer ownership of the empire"
@@ -1567,9 +1567,9 @@ command:
         member: Default rank for members of this empire
       rank-usage:
         head: |-
-          &8&l--------&r&c&l{name} Commands&r&8&l--------
+          &a⊱&m━━━━&r&6{{name} Commands}&a&m━━━━&a⊰
           [&b{usage}](hover=&9Click to add it to your input suggest_command={{usage})
-        entry: "&8\\[&9*&8] [&b{rank}](hover=&9Click to add it to your input suggest_command={{usage}) &7- {description}"
+        entry: "&e• [&e{rank}](hover=&9Click to add it to your input suggest_command={{usage}) &7- {description}"
         footer: "&aNote: Officers = Senators"
       description: Sets the rank of an empire resident
     setsymbol:
@@ -1577,7 +1577,7 @@ command:
       success: "&bSet empire symbol to &e{symbol}"
     show:
       general: |-
-        &8--------&c&l{name}&r&8--------
+        &a⊱&m━━━━&r&6{{name}}&a&m━━━━&a⊰
         &a&lDescription &r&7{description}
         &a&lSymbol &r&7{symbol}
         &6&lAccess &r&7{access}
@@ -1598,7 +1598,7 @@ command:
         offline: "&c"
         entry: "{title} {online}{name}"
       abandoned: |-
-        &8--------&c&l{name}&r&8--------
+        &a⊱&m━━━━&r&6{{name}}&a&m━━━━&a⊰
         &c&lABANDONED!!!
         &a&lDescription &r&7{description}
         &a&lSymbol &r&7{symbol}
@@ -1628,7 +1628,7 @@ command:
       description: Remove an entry from the banish list
     upkeep:
       info: |-
-        &7------- &cUpkeep&7 -------
+        &a⊱&m━━━━&r&6{Upkeep}&a&m━━━━&a⊰
         &3&lUpkeep cost:&e {cost} &7/&e day
         &3&lTime Till Upkeep: &e{time}
         &3&lCan afford? {afford}
