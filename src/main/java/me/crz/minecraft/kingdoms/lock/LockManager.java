@@ -283,7 +283,7 @@ public class LockManager implements LockProvider {
                 lockTable.get(chunk.getWorld()).invalidate(chunk);
             }
         }
-        Utils.runAsync(() -> DatabaseManager.getInstance().deleteLocks(DatabaseManager.getInstance().getLocks(chunks.toArray(new SimpleChunkLocation[0]))));
+        Utils.runAsync(() -> DatabaseManager.getInstance().deleteLocksInChunks(chunks));
     }
 
     @Override
@@ -338,8 +338,8 @@ public class LockManager implements LockProvider {
     }
 
     public Collection<Lock> getLocks(String world) {
-        if (lockTable.get(world.toLowerCase()) != null) {
-            return lockTable.get(world.toLowerCase()).asMap().values().stream()
+        if (lockTable.get(world) != null) {
+            return lockTable.get(world).asMap().values().stream()
                     .flatMap((Function<Map<String, Lock>, Stream<Lock>>) stringLockMap
                             -> stringLockMap.values().stream()).collect(Collectors.toSet());
         }

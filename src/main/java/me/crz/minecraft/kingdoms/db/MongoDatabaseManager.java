@@ -246,6 +246,11 @@ public class MongoDatabaseManager extends DatabaseManager {
     }
 
     @Override
+    public void deleteLocksInChunks(Collection<? extends SimpleChunkLocation> chunks) {
+        deleteLocks(getLocks(chunks));
+    }
+
+    @Override
     public void deleteLocks(String worldName) {
         Utils.catchSync();
         lockCollection.deleteMany(Filters.eq("world", worldName));

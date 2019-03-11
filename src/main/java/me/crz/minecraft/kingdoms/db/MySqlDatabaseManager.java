@@ -556,6 +556,30 @@ public class MySqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
+    public void deleteLocksInChunks(Collection<? extends SimpleChunkLocation> chunks) {
+        Utils.catchSync();
+        if (chunks.isEmpty()) {
+            return;
+        }
+
+        String sql = "DELETE FROM " + tablePrefix + "locks" +
+                " WHERE world = ? AND x BETWEEN ? AND ? AND z BETWEEN ? AND ?;";
+        try (Connection conn = ds.getConnection(); PreparedStatement sta = conn.prepareStatement(sql)) {
+            for (SimpleChunkLocation chunk : chunks) {
+                sta.setString(1, chunk.getWorld());
+                sta.setInt(2, chunk.getX() << 4);
+                sta.setInt(3, (chunk.getX() << 4) + 16);
+                sta.setInt(4, chunk.getZ() << 4);
+                sta.setInt(5, (chunk.getZ() << 4) + 16);
+                sta.addBatch();
+            }
+            sta.executeBatch();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to delete locks in " + chunks.size() + " chunks from database!", e);
+        }
+    }
+
+    @Override
     public void deleteLocks(String worldName) {
         Utils.catchSync();
         try (Connection conn = ds.getConnection();

@@ -86,13 +86,15 @@ public abstract class DatabaseManager {
         deleteLocks(locks.toArray(new Lock[0]));
     }
 
+    public abstract void deleteLocksInChunks(Collection<? extends SimpleChunkLocation> chunks);
+
     public abstract void deleteLocks(String worldName);
 
     public abstract Collection<Lock> getAllLocks();
 
     public abstract Collection<Lock> getLocks(SimpleChunkLocation... chunks);
 
-    public Collection<Lock> getLocks(Collection<SimpleChunkLocation> chunks) {
+    public Collection<Lock> getLocks(Collection<? extends SimpleChunkLocation> chunks) {
         return getLocks(chunks.toArray(new SimpleChunkLocation[0]));
     }
 
