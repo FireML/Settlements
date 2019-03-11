@@ -128,22 +128,22 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void on(PlayerInteractEvent e) {
-        if (e.getAction() == Action.PHYSICAL || e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
-            Use use = Use.INTERACT;
+        if (e.getAction() == Action.PHYSICAL || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            Use use;
             if (e.getAction() == Action.PHYSICAL && MaterialUtils.PRESSURE_PLATES.contains(e.getClickedBlock().getType())) {
                 use = Use.PRESSURE_PLATE;
-            }
-            if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+            } else {
                 use = Use.getByMaterial(e.getClickedBlock().getType());
             }
-            if (use != null && use != Use.INTERACT) {
-                Pair<Boolean, String> response = this.canUse(e.getPlayer(), use, e.getClickedBlock().getLocation());
-                if (!response.getLeft()) {
-                    if (use != Use.PRESSURE_PLATE) {
-                        MessageUtils.tell(e.getPlayer(), response.getRight());
-                    }
-                    e.setCancelled(true);
+            if (use == null) {
+                use = Use.INTERACT;
+            }
+            Pair<Boolean, String> response = this.canUse(e.getPlayer(), use, e.getClickedBlock().getLocation());
+            if (!response.getLeft()) {
+                if (use != Use.PRESSURE_PLATE) {
+                    MessageUtils.tell(e.getPlayer(), response.getRight());
                 }
+                e.setCancelled(true);
             }
         }
     }
