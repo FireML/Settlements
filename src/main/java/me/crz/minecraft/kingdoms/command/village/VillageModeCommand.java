@@ -4,15 +4,14 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.gui.ModeGUI;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.gui.ModeGUI;
 
 import java.util.stream.Collectors;
 
 public class VillageModeCommand extends VillageSubCommand {
     public VillageModeCommand(SubCommand parent) {
-        super(parent, "mode <mode> on|off", VillageRank.ELDER);
+        super(parent, "mode <mode> on|off");
     }
 
     @Override

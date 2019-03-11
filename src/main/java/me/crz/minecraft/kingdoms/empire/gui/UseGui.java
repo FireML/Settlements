@@ -10,7 +10,6 @@ import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.landflags.Use;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -47,7 +46,7 @@ public class UseGui extends KingdomsGUI {
 
                 public boolean click(Player p, ClickType clickType) {
                     Resident res = ResidentManager.getInstance().getResident(p);
-                    if (res.hasEmpire() && res.getEmpireRank().atLeast(EmpireRank.LEADER)) {
+                    if (res.hasEmpire() && res.hasPermission("empire.use")) {
                         BuildState changeTo = clickType.isLeftClick()
                                 ? res.getVillage().getEmpire().getUseState(u).next(BuildState.AppliesTo.EMPIRE)
                                 : res.getVillage().getEmpire().getUseState(u).previous(BuildState.AppliesTo.EMPIRE);
@@ -83,7 +82,7 @@ public class UseGui extends KingdomsGUI {
                 @Override
                 public boolean click(Player p, ClickType clickType) {
                     Resident res = ResidentManager.getInstance().getResident(p);
-                    if (res.hasEmpire() && res.getVillageRank().atLeast(EmpireRank.LEADER)) {
+                    if (res.hasEmpire() && res.hasPermission("empire.use")) {
                         for (Use u : Use.values()) {
                             res.getVillage().getEmpire().setUseState(u, state);
                         }
@@ -108,7 +107,7 @@ public class UseGui extends KingdomsGUI {
             }
 
             public boolean click(Player p, ClickType clickType) {
-                SettingsGUI.getInstance().open(p);
+                new SettingsGUI(p).open();
                 return true;
             }
         });

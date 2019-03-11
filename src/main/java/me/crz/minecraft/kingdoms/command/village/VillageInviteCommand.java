@@ -2,14 +2,13 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.InviteCache;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 
 public class VillageInviteCommand extends VillageSubCommand {
     public VillageInviteCommand(SubCommand parent) {
-        super(parent, "invite <player>", VillageRank.RECRUITER);
+        super(parent, "invite <player>");
     }
 
     @Override

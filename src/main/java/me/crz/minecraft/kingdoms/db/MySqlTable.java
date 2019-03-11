@@ -73,6 +73,16 @@ public enum MySqlTable {
             + "UNIQUE (empireId, type)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
+    EMPIRE_PERMISSIONS("CREATE TABLE IF NOT EXISTS {tablePrefix}empire_permissions ("
+            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+            + "empireId INTEGER, INDEX(empireId),"
+            + "FOREIGN KEY (empireId) REFERENCES {tablePrefix}empires(id) ON DELETE CASCADE,"
+            + "rank VARCHAR(255) NOT NULL,"
+            + "permission VARCHAR(255) NOT NULL,"
+            + "value BOOLEAN NOT NULL,"
+            + "UNIQUE (empireId, rank, permission)"
+            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
+
     SETTLEMENTS("CREATE TABLE IF NOT EXISTS {tablePrefix}settlements ("
             + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
             + "name VARCHAR(255) NOT NULL, INDEX (name), UNIQUE (name), "
@@ -159,6 +169,16 @@ public enum MySqlTable {
             + "settlementId INTEGER, INDEX (settlementId),"
             + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
             + "allies VARCHAR(320)"
+            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
+
+    SETTLEMENT_PERMISSIONS("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_permissions ("
+            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+            + "settlementId INTEGER, INDEX(settlementId),"
+            + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
+            + "rank VARCHAR(255) NOT NULL,"
+            + "permission VARCHAR(255) NOT NULL,"
+            + "value BOOLEAN NOT NULL,"
+            + "UNIQUE (settlementId, rank, permission)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     RESIDENTS("CREATE TABLE IF NOT EXISTS {tablePrefix}residents ("

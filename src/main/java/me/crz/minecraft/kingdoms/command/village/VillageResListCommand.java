@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class VillageResListCommand extends VillageSubCommand {
     public VillageResListCommand(SubCommand parent) {
-        super(parent, "reslist", VillageRank.RESIDENT, "roster", "members", "memberlist");
+        super(parent, "reslist", "roster", "members", "memberlist");
     }
 
     @Override
@@ -24,7 +24,7 @@ public class VillageResListCommand extends VillageSubCommand {
             String online = getMessage("online").getText();
             String offline = getMessage("offline").getText();
             String separator = getMessage("separator").getText();
-            Multimap<VillageRank, Resident> rankMap = MultimapBuilder.enumKeys(VillageRank.class).arrayListValues().build();
+            Multimap<VillageRank, Resident> rankMap = MultimapBuilder.hashKeys().arrayListValues().build();
             for (Resident resident : sender.getVillage().getResidents()) {
                 rankMap.put(resident.getVillageRank(), resident);
             }

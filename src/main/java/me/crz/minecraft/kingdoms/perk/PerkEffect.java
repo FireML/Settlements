@@ -7,6 +7,7 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class PerkEffect {
@@ -18,7 +19,7 @@ public class PerkEffect {
     private boolean icon = true;
 
     private EffectLocation applyIn = EffectLocation.OWN_SETTLEMENT;
-    private EffectInfluenced applyTo = EffectInfluenced.RESIDENT;
+    private EffectInfluenced applyTo = EffectInfluenced.MEMBERS;
 
     public PerkEffect(PotionEffectType type) {
         Validate.notNull(type, "Unknown type!");
@@ -87,25 +88,41 @@ public class PerkEffect {
         EVERYWHERE
     }
 
-    public enum EffectInfluenced implements NameTag {
-        RESIDENT(VillageRank.RESIDENT),
-        RECRUITER(VillageRank.RECRUITER),
-        BUILDER(VillageRank.BUILDER),
-        ELDER(VillageRank.ELDER),
-        CHIEF(VillageRank.CHIEF),
-        TRUSTED(null),
-        ALLIES(null),
-        ENEMIES(null),
-        FREE(null);
+    public static class EffectInfluenced implements NameTag {
+        private final String name;
 
-        private final VillageRank rank;
+        private static final Map<String, EffectInfluenced> byName = new HashMap<>();
 
-        EffectInfluenced(VillageRank rank) {
-            this.rank = rank;
+        public static final EffectInfluenced TRUSTED = new EffectInfluenced("trusted");
+        public static final EffectInfluenced ALLIES = new EffectInfluenced("allies");
+        public static final EffectInfluenced ENEMIES = new EffectInfluenced("enemies");
+        public static final EffectInfluenced MEMBERS = new EffectInfluenced("members");
+        public static final EffectInfluenced FREE = new EffectInfluenced("free");
+
+        public EffectInfluenced(String name) {
+            this.name = name;
+            register(this);
+        }
+
+        public static void register(EffectInfluenced influenced) {
+            byName.put(influenced.name.toLowerCase(), influenced);
         }
 
         public VillageRank getRank() {
-            return rank;
+            return VillageRank.get(name);
+        }
+
+        public static EffectInfluenced valueOf(String string) {
+            EffectInfluenced influenced = byName.get(string.toLowerCase());
+            if (influenced == null) {
+                throw new IllegalArgumentException("No value for " + string + " exists!");
+            }
+            return influenced;
+        }
+
+        @Override
+        public String name() {
+            return name;
         }
     }
 }

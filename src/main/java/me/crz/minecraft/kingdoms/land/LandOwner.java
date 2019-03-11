@@ -11,6 +11,7 @@ import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.perk.Perk;
 import me.crz.minecraft.kingdoms.perk.PerkData;
 import me.crz.minecraft.kingdoms.perk.Vaultable;
+import me.crz.minecraft.kingdoms.rank.Rank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Targetable;
@@ -26,6 +27,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -33,6 +35,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -55,12 +58,14 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
     private LandAccess access = LandAccess.PRIVATE;
     private Map<Use, BuildState> use = new EnumMap<>(Use.class);
 
+    private Map<String, Map<String, Boolean>> ranksPermissions = new HashMap<>();
+
     private Set<IdObject> alliedVillages = new LinkedHashSet<>();
+
     private Set<IdObject> alliedEmpires = new LinkedHashSet<>();
     private Set<UUID> banishedPlayers = new LinkedHashSet<>();
     private Set<IdObject> banishedVillages = new LinkedHashSet<>();
     private Set<IdObject> banishedEmpires = new LinkedHashSet<>();
-
     protected LandOwner() {}
 
     public LandOwner(String name) {
@@ -214,6 +219,67 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
 
     public void removeEffects(Perk perk) {
         Base.getLandPerks().updateEffects(false);
+    }
+
+    public Map<String, Map<String, Boolean>> getRanksPermissions() {
+        return ranksPermissions;
+    }
+
+    protected abstract Set<String> getPermissions();
+
+    public Map<String, Boolean> getPermissions(Rank rank) {
+        return ranksPermissions.getOrDefault(rank.name().toLowerCase(), Collections.emptyMap());
+    }
+
+    public Map<String, Optional<Boolean>> getEffectivePermissions(Rank rank) {
+        Map<String, Optional<Boolean>> map = new LinkedHashMap<>();
+        for (String perm : getPermissions()) {
+            map.put(perm, getEffectivePermissionValue(rank, perm));
+        }
+        return map;
+    }
+
+    public Optional<Boolean> getPermissionValue(Rank rank, String permission) {
+        Map<String, Boolean> map = ranksPermissions.get(rank.name().toLowerCase());
+        return Optional.ofNullable(map != null ? map.get(permission.toLowerCase()) : null);
+    }
+
+    public Optional<Boolean> getInheritedPermissionValue(Rank rank, String permission) {
+        Optional<Boolean> value = getPermissionValue(rank, permission);
+        if (value.isPresent()) {
+            return value;
+        }
+        if (rank.getInherits() != null) {
+            return getInheritedPermissionValue(rank.getInheritedRank(), permission);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<Boolean> getEffectivePermissionValue(Rank rank, String permission) {
+        if (rank.getParent() != null) {
+            Optional<Boolean> inheritValue = getInheritedPermissionValue(rank, permission);
+            if (inheritValue.isPresent()) {
+                return inheritValue;
+            }
+        }
+        return rank.getInheritedPermissionValue(permission);
+    }
+
+    public boolean setPermission(Rank rank, String permission, boolean value) {
+        if (getEffectivePermissionValue(rank, permission).orElse(false) == value) {
+            return false;
+        }
+
+        if (rank.getPermissionValue(permission) == value) {
+            return setDefaultPermission(rank, permission);
+        }
+
+        Boolean prev = ranksPermissions.computeIfAbsent(rank.name().toLowerCase(), k -> new LinkedHashMap<>()).put(permission.toLowerCase(), value);
+        return prev == null || prev != value;
+    }
+
+    public boolean setDefaultPermission(Rank rank, String permission) {
+        return ranksPermissions.getOrDefault(rank.name().toLowerCase(), new LinkedHashMap<>()).remove(permission.toLowerCase()) != null;
     }
 
     public String getIdKey() {
@@ -526,6 +592,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         map.put("uses", getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
         map.put("vault", getVault());
         map.put("perks", getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
+        map.put("permissions", getRanksPermissions());
         return map;
     }
 
@@ -596,7 +663,9 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         ((Map<String, Object>) map.get("perks")).entrySet().stream()
                 .filter(e -> e.getValue() instanceof Map)
                 .forEach(e -> landOwner.getPerksMap().put(e.getKey(), PerkData.deserialize((Map<String, Object>) e.getValue())));
-
+        ((Map<String, Object>) map.get("permissions")).entrySet().stream()
+                .filter(e -> e.getValue() instanceof Map)
+                .forEach(e -> landOwner.getRanksPermissions().put(e.getKey(), (Map<String, Boolean>) e.getValue()));
         return landOwner;
     }
 }

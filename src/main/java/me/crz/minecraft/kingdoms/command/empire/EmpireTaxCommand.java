@@ -2,14 +2,13 @@ package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 public class EmpireTaxCommand extends EmpireSubCommand {
     public EmpireTaxCommand(SubCommand parent) {
-        super(parent, "tax [set <amount>]", EmpireRank.MEMBER);
-        registerCommand(new EmpireSubCommand(this, "set <amount>", EmpireRank.LEADER) {
+        super(parent, "tax [set <amount>]");
+        registerCommand(new EmpireSubCommand(this, "set <amount>") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length == 0) {

@@ -6,9 +6,8 @@ import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.perk.PerkData;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.perk.PerkData;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -78,7 +77,7 @@ public class PerksGUI extends KingdomsGUI {
 
                 @Override
                 public boolean click(Player p, ClickType type) {
-                    if (!resident.hasVillage() || resident.getVillageRank().below(VillageRank.ELDER)) {
+                    if (!resident.hasVillage() || !resident.hasPermission("village.perks.toggle")) {
                         return false;
                     }
                     if (perk.hasEffects()) {
@@ -100,7 +99,7 @@ public class PerksGUI extends KingdomsGUI {
             }
 
             public boolean click(final Player p, final ClickType clickType) {
-                SettingsGUI.getInstance().open(p);
+                new SettingsGUI(p).open();
                 return true;
             }
         });

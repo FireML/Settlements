@@ -3,7 +3,6 @@ package me.crz.minecraft.kingdoms.command.village;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -14,9 +13,9 @@ import java.util.stream.Collectors;
 
 public class VillageShopCommand extends VillageSubCommand {
     public VillageShopCommand(SubCommand parent) {
-        super(parent, "shop", VillageRank.RESIDENT, "buyperks");
+        super(parent, "shop", "buyperks");
         setForceOwnUsage(true);
-        registerCommand(new VillageSubCommand(this, "unlock <perk>", VillageRank.CHIEF, "buy") {
+        registerCommand(new VillageSubCommand(this, "unlock <perk>", "buy") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length > 0) {
@@ -61,7 +60,7 @@ public class VillageShopCommand extends VillageSubCommand {
                 return false;
             }
         });
-        registerCommand(new VillageSubCommand(this, "repeat <perk>", VillageRank.CHIEF) {
+        registerCommand(new VillageSubCommand(this, "repeat <perk>") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length > 0) {

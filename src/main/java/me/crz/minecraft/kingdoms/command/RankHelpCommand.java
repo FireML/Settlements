@@ -1,12 +1,11 @@
-package me.crz.minecraft.kingdoms.command.village;
+package me.crz.minecraft.kingdoms.command;
 
-import me.crz.minecraft.kingdoms.command.HelpCommand;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.rank.Rank;
 import me.crz.minecraft.kingdoms.village.Resident;
 
-public class VillageHelpCommand extends VillageSubCommand {
-    public VillageHelpCommand(HelpCommand parent, VillageRank rank) {
-        super(parent, rank != null ? rank.name().toLowerCase() : "no" + " [<page>]", rank);
+public class RankHelpCommand extends ResidentPermsSubCommand {
+    public RankHelpCommand(HelpCommand parent, Rank rank) {
+        super(parent, rank != null ? rank.name().toLowerCase() : "no" + " [<page>]");
     }
 
     @Override

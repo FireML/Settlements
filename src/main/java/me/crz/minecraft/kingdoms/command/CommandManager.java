@@ -41,7 +41,7 @@ public class CommandManager extends Base implements CommandExecutor {
     }
 
     private void registerCommands() {
-        registerCommand(new PlotCommand());
+        registerCommand(new PlotCommand(null));
         registerCommand(new LockCommand());
         registerCommand(new UnlockCommand());
         registerCommand(new VillageCommand());

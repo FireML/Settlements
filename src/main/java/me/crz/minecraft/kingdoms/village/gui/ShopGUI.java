@@ -6,9 +6,8 @@ import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.perk.PerkData;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.perk.PerkData;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.UtilTime;
@@ -168,10 +167,10 @@ public class ShopGUI extends KingdomsGUI {
 
                 @Override
                 public boolean click(Player p, ClickType type) {
-                    if (!resident.hasVillage() || resident.getVillageRank().below(VillageRank.CHIEF)) {
+                    if (!resident.hasVillage()) {
                         return false;
                     }
-                    if (resident.getVillage().canRepeat(perk) && resident.getVillage().remove(perk.getRepeatCost())) {
+                    if (resident.hasPermission("village.shop.repeat") && resident.getVillage().canRepeat(perk) && resident.getVillage().remove(perk.getRepeatCost())) {
                         resident.getVillage().repeatPerk(perk);
                         MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), Message.get("command.village.shop.unlock.success"), "perk", perk.getTag());
                         Utils.runAsync(() -> {
@@ -180,7 +179,7 @@ public class ShopGUI extends KingdomsGUI {
                         });
                         gui.build(p);
                         return true;
-                    } else if (resident.getVillage().canUnlock(perk) && resident.getVillage().remove(perk.getUnlockCost())) {
+                    } else if (resident.hasPermission("village.shop.unlock") && resident.getVillage().canUnlock(perk) && resident.getVillage().remove(perk.getUnlockCost())) {
                         resident.getVillage().unlockPerk(perk);
                         MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), Message.get("command.village.shop.unlock.success"), "perk", perk.getTag());
                         Utils.runAsync(() -> {
@@ -200,7 +199,7 @@ public class ShopGUI extends KingdomsGUI {
             }
 
             public boolean click(final Player p, final ClickType clickType) {
-                SettingsGUI.getInstance().open(p);
+                new SettingsGUI(p).open();
                 return true;
             }
         });

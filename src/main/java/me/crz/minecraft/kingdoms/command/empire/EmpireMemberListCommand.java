@@ -1,14 +1,13 @@
 package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 
 public class EmpireMemberListCommand extends EmpireSubCommand {
     public EmpireMemberListCommand(SubCommand parent) {
-        super(parent, "memberlist", EmpireRank.MEMBER, "roster", "members");
+        super(parent, "memberlist", "roster", "members");
     }
 
     @Override

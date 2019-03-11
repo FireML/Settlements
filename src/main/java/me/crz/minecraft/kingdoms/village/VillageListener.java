@@ -79,7 +79,7 @@ public class VillageListener implements Listener {
             Message.get("command.chat.joined").tell(res, "name", res.getActiveChannel().getTag());
         }
         if (res.hasVillage()) {
-            if (res.getVillageRank().below(VillageRank.CHIEF) && !KingdomsPlugin.getInstance().econ.has(event.getPlayer(), res.getVillage().getTax())) {
+            if (res.getVillageRank().below(VillageRank.getChief()) && !KingdomsPlugin.getInstance().econ.has(event.getPlayer(), res.getVillage().getTax())) {
                 Message.get("tax.cant-pay").tell(event.getPlayer(), "amount", String.valueOf(res.getVillage().getTax()));
             }
             long upkeep = res.getVillage().getUpkeep() - (res.getVillage().getResidentIds().size() - 1) * res.getVillage().getTax();
@@ -92,7 +92,7 @@ public class VillageListener implements Listener {
                 if (!empire.isCapital(res.getVillage()) && !res.getVillage().has(empireTax + upkeep)) {
                     Message.get("empire-tax.cant-pay").tell(event.getPlayer(), "amount", String.valueOf(empireTax));
                 }
-                if (res.getVillageRank().atLeast(VillageRank.CHIEF)) {
+                if (res.getVillageRank().atLeast(VillageRank.getChief())) {
                     long empireUpkeep = empire.getUpkeep() - (empire.getMemberIds().size() - 1) * empire.getTax();
                     if (!empire.has(empireUpkeep)) {
                         Message.get("upkeep.empire-alert.cant-pay").tell(event.getPlayer(), "amount", String.valueOf(empireUpkeep));

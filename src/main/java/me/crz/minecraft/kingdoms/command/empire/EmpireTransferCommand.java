@@ -12,7 +12,7 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 
 public class EmpireTransferCommand extends EmpireSubCommand {
     public EmpireTransferCommand(SubCommand parent) {
-        super(parent, "transfer <player>", EmpireRank.LEADER);
+        super(parent, "transfer <player>");
     }
 
     @Override
@@ -43,16 +43,16 @@ public class EmpireTransferCommand extends EmpireSubCommand {
                 return;
             }
             Resident oldLeader = empire.getCapital().getChief();
-            oldLeader.setEmpireRank(EmpireRank.SENATOR);
+            oldLeader.setEmpireRank(EmpireRank.getLeader().next());
             empire.addSenator(oldLeader);
             Resident newLeader = targetVillage.getChief();
-            newLeader.setEmpireRank(EmpireRank.LEADER);
+            newLeader.setEmpireRank(EmpireRank.getLeader());
             empire.removeSenator(newLeader);
             empire.setCapital(targetVillage);
             DatabaseManager.getInstance().saveEmpire(empire);
             DatabaseManager.getInstance().saveResident(oldLeader, newLeader);
             MessageUtils.tellResidents(empire.getOnlineResidents(), getMessage("success"),
-                    "rank", EmpireRank.LEADER.getTag(),
+                    "rank", EmpireRank.getLeader().getTag(),
                     "setter", res.getName(),
                     "target", targetVillage.getName(),
                     "empire", empire.getName()

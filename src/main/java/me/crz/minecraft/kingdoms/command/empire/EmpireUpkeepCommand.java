@@ -2,7 +2,6 @@ package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.empire.Empire;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -12,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 public class EmpireUpkeepCommand extends EmpireSubCommand {
     public EmpireUpkeepCommand(SubCommand parent) {
-        super(parent, "upkeep", EmpireRank.MEMBER);
+        super(parent, "upkeep");
     }
 
     @Override

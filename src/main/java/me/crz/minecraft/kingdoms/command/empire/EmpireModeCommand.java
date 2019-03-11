@@ -4,7 +4,6 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.gui.ModeGUI;
 import me.crz.minecraft.kingdoms.land.PlotMode;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
@@ -12,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class EmpireModeCommand extends EmpireSubCommand {
     public EmpireModeCommand(SubCommand parent) {
-        super(parent, "mode <mode> on|off", EmpireRank.SENATOR);
+        super(parent, "mode <mode> on|off");
     }
 
     @Override

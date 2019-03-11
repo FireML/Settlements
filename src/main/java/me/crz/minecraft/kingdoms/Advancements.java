@@ -4,6 +4,7 @@ import me.crz.minecraft.kingdoms.essentials.KingdomsEssentialsPlugin;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -22,7 +23,7 @@ public class Advancements extends Base {
             Resident res = ResidentManager.getInstance().getResident(p);
             KingdomsEssentialsPlugin plugin = KingdomsEssentialsPlugin.getInstance();
             if (res != null && res.hasVillage()) {
-                if (res.getVillageRank().atLeast(VillageRank.CHIEF)) {
+                if (res.getVillageRank().atLeast(VillageRank.getChief())) {
                     plugin.grantAdvancement(p, "root");
                 }
             }

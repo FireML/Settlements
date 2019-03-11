@@ -1,17 +1,15 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.village.gui.BuildGui;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.landflags.BuildState;
-
-import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.village.gui.BuildGui;
 
 public class VillageBuildCommand extends VillageSubCommand {
     public VillageBuildCommand(SubCommand parent) {
-        super(parent, "build <state>", VillageRank.CHIEF);
+        super(parent, "build <state>");
     }
 
     @Override

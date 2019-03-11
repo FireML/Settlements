@@ -9,7 +9,6 @@ import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.perk.PerkData;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -77,7 +76,7 @@ public class PerksGUI extends KingdomsGUI {
 
                 @Override
                 public boolean click(Player p, ClickType type) {
-                    if (!resident.hasEmpire() || resident.getEmpireRank().below(EmpireRank.LEADER)) {
+                    if (!resident.hasEmpire() || !resident.hasPermission("empire.perk.toggle")) {
                         return false;
                     }
                     if (resident.getVillage().getEmpire().togglePerk(perk)) {
@@ -94,7 +93,7 @@ public class PerksGUI extends KingdomsGUI {
             }
 
             public boolean click(final Player p, final ClickType clickType) {
-                SettingsGUI.getInstance().open(p);
+                new SettingsGUI(p).open();
                 return true;
             }
         });

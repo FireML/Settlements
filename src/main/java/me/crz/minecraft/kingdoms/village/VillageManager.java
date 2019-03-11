@@ -2,9 +2,12 @@ package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
+import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -17,11 +20,7 @@ import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.vault.Levels;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import me.crz.minecraft.kingdoms.land.LandManager;
-import me.crz.minecraft.kingdoms.land.OwnedLand;
 import org.bukkit.entity.Player;
-
-import me.crz.minecraft.kingdoms.db.DatabaseManager;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -38,7 +37,6 @@ public class VillageManager {
     private Map<String, LevelPerk> perkTags;
 
     private VillageManager() {
-        super();
         loadPerks();
         for (Village village : DatabaseManager.getInstance().getAllVillages()) {
             villages.put(village.getName().replace(' ', '_').toLowerCase(), village);
@@ -79,7 +77,7 @@ public class VillageManager {
         }
         villages.put(village.getName().replace(' ', '_').toLowerCase(), village);
         chief.setVillage(village);
-        chief.setVillageRank(VillageRank.CHIEF);
+        chief.setVillageRank(VillageRank.getChief());
         chief.addChannel(ChatChannel.SETTLEMENT);
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveVillage(village);
@@ -131,8 +129,8 @@ public class VillageManager {
                 "state", village.getState().getTag());
         for (Resident resident : village.getResidents()) {
             resident.setVillage(null);
-            resident.setVillageRank(VillageRank.RESIDENT);
-            resident.setEmpireRank(EmpireRank.MEMBER);
+            resident.setVillageRank(VillageRank.getDefault());
+            resident.setEmpireRank(EmpireRank.getDefault());
             if (village.hasEmpire()) {
                 village.getEmpire().removeSenator(resident);
             }
@@ -159,8 +157,8 @@ public class VillageManager {
             }
         }
         resident.setVillage(null);
-        resident.setVillageRank(VillageRank.RESIDENT);
-        resident.setEmpireRank(EmpireRank.MEMBER);
+        resident.setVillageRank(VillageRank.getDefault());
+        resident.setEmpireRank(EmpireRank.getDefault());
         if (village.hasEmpire()) {
             village.getEmpire().removeSenator(resident);
         }

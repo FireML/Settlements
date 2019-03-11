@@ -1,11 +1,13 @@
 package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
-import me.crz.minecraft.kingdoms.utils.Targetable;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
@@ -15,14 +17,11 @@ import org.bukkit.entity.Player;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
-
-import me.crz.minecraft.kingdoms.chat.ChatChannel;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,8 +32,8 @@ public class Resident implements ConfigurationSerializable, Targetable {
     private Object id = null;
     private UUID uuid;
     private String name;
-    private VillageRank rank = VillageRank.RESIDENT;
-    private EmpireRank empireRank = EmpireRank.MEMBER;
+    private VillageRank rank = VillageRank.getDefault();
+    private EmpireRank empireRank = EmpireRank.getDefault();
     private int title = 0;
     private Village village = null;
     private ChatChannel activeChannel = ChatChannel.GENERAL;
@@ -54,6 +53,51 @@ public class Resident implements ConfigurationSerializable, Targetable {
     public Resident(UUID uuid, String name) {
         this.uuid = uuid;
         this.name = name;
+    }
+
+    /**
+     * Tests if a resident has a certain permission based on his rank or Bukkit permissions
+     * @param permission    Permission to check
+     * @return              The value of the permission or false
+     */
+    public boolean hasPermission(String permission) {
+        if (!permission.startsWith("kingdoms.")) {
+            permission = "kingdoms.command." + permission;
+        }
+        if (hasCommandPermission(permission)) {
+            Player player = getPlayer();
+            if (player != null) {
+                return player.hasPermission(permission);
+            }
+        }
+        return false;
+    }
+
+    private boolean hasCommandPermission(String permission) {
+        if (permission.startsWith("kingdoms.command.")) {
+            String rankPerm = permission.substring("kingdoms.command.".length());
+            if (!hasVillage() && !VillageRank.getChief().getInheritedPermissionValue(rankPerm).isPresent()) {
+                return true;
+            }
+
+            Optional<Boolean> villageValue = getVillage().getEffectivePermissionValue(getVillageRank(), rankPerm);
+            if (villageValue.isPresent()) {
+                return villageValue.get();
+            }
+
+            if (rankPerm.startsWith("empire.")) {
+                if (!getVillage().hasEmpire()) {
+                    return !VillageRank.getChief().getInheritedPermissionValue(rankPerm).isPresent();
+                }
+
+                Optional<Boolean> empireValue = getVillage().getEmpire().getEffectivePermissionValue(getEmpireRank(), rankPerm);
+                if (empireValue.isPresent()) {
+                    return empireValue.get();
+                }
+            }
+            return false;
+        }
+        return true;
     }
 
     public boolean hasVillage() {
@@ -164,8 +208,8 @@ public class Resident implements ConfigurationSerializable, Targetable {
             village.getResidentIds().add(getUUID());
             setVillageJoin(System.currentTimeMillis());
         } else {
-            setVillageRank(VillageRank.RESIDENT);
-            setEmpireRank(EmpireRank.MEMBER);
+            setVillageRank(VillageRank.getDefault());
+            setEmpireRank(EmpireRank.getDefault());
             setVillageJoin(-1);
             setTitle(null);
         }
@@ -190,11 +234,11 @@ public class Resident implements ConfigurationSerializable, Targetable {
         VillageRank prev = getVillageRank();
         this.rank = rank;
         if (hasEmpire() && getVillage().getEmpire().isCapital(getVillage())) {
-            if (rank == VillageRank.CHIEF) {
-                setEmpireRank(EmpireRank.LEADER);
+            if (rank == VillageRank.getChief()) {
+                setEmpireRank(EmpireRank.getLeader());
                 getVillage().getEmpire().removeSenator(this);
-            } else if (prev == VillageRank.CHIEF) {
-                setEmpireRank(EmpireRank.SENATOR);
+            } else if (prev == VillageRank.getChief()) {
+                setEmpireRank(EmpireRank.getLeader().getInheritedRank());
                 getVillage().getEmpire().addSenator(this);
             }
         }

@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.db.LogType;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -19,8 +18,8 @@ import java.util.List;
 public class EmpireHistoryCommand extends EmpireSubCommand {
     private final LogType type;
 
-    public EmpireHistoryCommand(SubCommand parent, EmpireRank rank, LogType type) {
-        super(parent, "history [<page>]", rank, "log");
+    public EmpireHistoryCommand(SubCommand parent, LogType type) {
+        super(parent, "history [<page>]", "log");
         this.type = type;
     }
 

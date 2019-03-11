@@ -13,6 +13,7 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
+import me.crz.minecraft.kingdoms.rank.RankManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.IdObject;
@@ -76,6 +77,10 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 if (residentId.equals(getChiefId())) {
                     continue;
                 }
+                Resident resident = ResidentManager.getInstance().getResident(residentId); // should already be cached!
+                if (getEffectivePermissionValue(resident.getVillageRank(), "village.tax.exempt").orElse(false)) {
+                    continue;
+                }
                 OfflinePlayer player = Bukkit.getPlayer(residentId);
                 if (player == null) {
                     player = Bukkit.getOfflinePlayer(residentId);
@@ -90,20 +95,15 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                                 "name", getName());
                     }
                 } else {
-                    Utils.runAsync(() -> {
-                        Resident resident = ResidentManager.getInstance().getResident(residentId);
-                        Utils.runSync(() -> {
-                            Message.get("tax.couldnt-pay").tell(getOnlineResidents(),
-                                    "player", resident.getName(),
-                                    "amount", String.valueOf(tax),
-                                    "state", getState().getTag(),
-                                    "name", getName()
-                            );
-                            getBanishedPlayers().add(residentId);
-                            residents.remove(residentId);
-                            VillageManager.getInstance().leaveVillage(resident);
-                        });
-                    });
+                    Message.get("tax.couldnt-pay").tell(getOnlineResidents(),
+                            "player", resident.getName(),
+                            "amount", String.valueOf(tax),
+                            "state", getState().getTag(),
+                            "name", getName()
+                    );
+                    getBanishedPlayers().add(residentId);
+                    residents.remove(residentId);
+                    VillageManager.getInstance().leaveVillage(resident);
                 }
             }
             long finalTotalTax = totalTax;
@@ -249,18 +249,18 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
 
     @Override
     public boolean canAdminLocks(Resident resident) {
-        return isMember(resident) && resident.getVillageRank().atLeast(VillageRank.CHIEF);
+        return isMember(resident) && resident.hasPermission("kingdoms.command.village.lock.admin");
     }
 
     @Override
     public boolean canAdminPlots(Resident resident) {
-        return isMember(resident) && resident.getVillageRank().atLeast(VillageRank.ELDER);
+        return isMember(resident) && resident.hasPermission("kingdoms.command.village.plot.admin");
     }
 
     @Override
     public boolean isOfficer(Player player) {
         Resident res = ResidentManager.getInstance().getResident(player);
-        return isMember(res) && res.getVillageRank().atLeast(VillageRank.BUILDER);
+        return isMember(res) && res.hasPermission("kingdoms.command.village.officer");
     }
 
     @Override
@@ -375,6 +375,11 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     @Override
     public LevelPerk getPerk(String name) {
         return VillageManager.getInstance().getPerk(name);
+    }
+
+    @Override
+    protected Set<String> getPermissions() {
+        return RankManager.getInstance().getVillageChiefRank().getInheritedPermissions();
     }
 
     @Override
@@ -512,7 +517,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 "perks", getPerksMap().entrySet().stream()
                         .map(e -> (e.getValue().getTimes() > 1 ? e.getValue().getTimes() + "x " : "") + getPerk(e.getKey()).getTag())
                         .collect(Collectors.joining(", ")),
-                "chiefrank", VillageRank.CHIEF.getTag(this),
+                "chiefrank", VillageRank.getChief().getTag(this),
                 "chieftitle", chief.getTitle(),
                 "chief", chief.getName(),
                 "chiefonline", configMessages != null ? chief.getPlayer() != null ? online : offline : "",
@@ -524,13 +529,13 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     }
 
     private String getResidentsToString(Message rankMessage, Message entry, String online, String offline, CharSequence separator) {
-        Multimap<VillageRank, Resident> rankMap = MultimapBuilder.enumKeys(VillageRank.class).arrayListValues().build();
+        Multimap<VillageRank, Resident> rankMap = MultimapBuilder.hashKeys().arrayListValues().build();
         for (Resident resident : getResidents()) {
             rankMap.put(resident.getVillageRank(), resident);
         }
         List<String> lines = new ArrayList<>();
         for (VillageRank rank : rankMap.keySet()) {
-            if (rank == VillageRank.CHIEF) {
+            if (rank == VillageRank.getChief()) {
                 // should be listed extra
                 continue;
             }

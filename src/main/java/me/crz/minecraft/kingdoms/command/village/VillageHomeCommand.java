@@ -22,7 +22,7 @@ public class VillageHomeCommand extends ResidentSubCommand {
                 getError("village-required").tell(resident);
                 return false;
             } else if (resident.getVillage().getHome() == null) {
-                getMessage("own-no-home").tell(resident, "chief", VillageRank.CHIEF.getTag(resident.getVillage()));
+                getMessage("own-no-home").tell(resident, "chief", VillageRank.getChief().getTag(resident.getVillage()));
                 return true;
             } else {
                 village = resident.getVillage();
