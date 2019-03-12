@@ -27,7 +27,7 @@ public abstract class PlayerSubCommand extends SubCommand {
 
     @Override
     public boolean testAccess(CommandSender sender) {
-        return super.testAccess(sender) && sender instanceof Player && testAccess((Player) sender);
+        return sender instanceof Player && testAccess((Player) sender) && super.testAccess(sender);
     }
 
     public boolean testAccess(Player player) {
