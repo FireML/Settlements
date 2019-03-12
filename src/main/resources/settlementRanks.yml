@@ -8,7 +8,6 @@ perm-groups:
     - village.bank.history
     - village.deposit.history
     - village.outpost.teleport
-    - village.perms.show
   settings:
     icon: REDSTONE_BLOCK
     permissions:
@@ -39,9 +38,6 @@ perm-groups:
     - village.outpost.sethome
     - village.outpost.unclaim
     - village.perms
-    - village.perms.set
-    - village.perms.show
-    - village.perms.unset
     - village.plot.admin
     - village.rename
     - village.setdescription
@@ -49,7 +45,6 @@ perm-groups:
     - village.setrank
     - village.shop
     - village.shop.repeat
-    - village.shop.unlock
     - village.tax.set
     - village.tax.exempt
     - village.title
@@ -74,12 +69,9 @@ ranks:
     - village.joinfee.set
     - village.outpost.help.chief
     - village.outpost.unclaim
-    - village.perms.set
-    - village.perms.unset
     - village.setaccess
     - village.sethome
     - village.shop.repeat
-    - village.shop.unlock
     - village.tax.set
     - village.tax.exempt
     - village.unbanish
@@ -101,7 +93,6 @@ ranks:
     - village.outpost.sethome
     - village.perks.toggle
     - village.perms
-    - village.perms.show
     - village.plot.admin
     - village.setdescription
     - village.setrank
@@ -132,8 +123,6 @@ ranks:
     - village.outpost.claim
     - village.outpost.sethome
     - village.perks.toggle
-    - village.perms
-    - village.perms.show
     - village.plot.admin
     - village.setdescription
     - village.setrank
@@ -159,8 +148,6 @@ ranks:
     - village.outpost.claim
     - village.outpost.sethome
     - village.perks.toggle
-    - village.perms
-    - village.perms.show
     - village.plot.admin
     - village.setdescription
     - village.setrank

@@ -1081,6 +1081,8 @@ command:
       description: Claim a seperate chunk of land
     perms:
       description: Manage rank permissions
+      permission:
+        name: "Manage perms"
       show:
         description: Show all permissions that a certain rank has
         head: "&a⊱&m━━━━&r&6{rank} Perms&a&m━━━━&a⊰"
@@ -1479,6 +1481,8 @@ command:
       description: Members that should have officer build access
     perms:
       description: Manage rank permissions
+      permission:
+        name: "Manage perms"
       show:
         description: Show all permissions that a certain rank has
         head: "&a⊱&m━━━━&r&6{rank} Perms&r&8&l--------"
