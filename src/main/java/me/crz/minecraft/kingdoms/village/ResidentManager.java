@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
 import me.crz.minecraft.kingdoms.banish.CustomRunnable;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.config.Data;
@@ -42,6 +43,9 @@ public class ResidentManager {
             private long getDuration(Resident resident) {
                 if (resident != null) {
                     if (resident.hasVillage()) {
+                        return Long.MAX_VALUE;
+                    }
+                    if (LandManager.getInstance().ownsPlot(resident.getUUID())) {
                         return Long.MAX_VALUE;
                     }
                     Player player = Bukkit.getPlayer(resident.getUUID());

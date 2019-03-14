@@ -29,6 +29,7 @@ import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import org.bukkit.Location;
@@ -67,6 +68,8 @@ public class LandManager {
         }
         if (land.isPlot()) {
             playerPlots.put(land.getPlotOwner(), land);
+            // Cache plot owner
+            ResidentManager.getInstance().getResident(land.getPlotOwner());
         }
         if (land.hasLink()) {
             linkedPlots.put(land.getLink(), land);
@@ -241,6 +244,10 @@ public class LandManager {
 
     public Collection<OwnedLand> getOwnedPlot(UUID uniqueId) {
         return playerPlots.get(uniqueId).stream().map(this::getLand).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    public boolean ownsPlot(UUID playerId) {
+        return playerPlots.containsKey(playerId);
     }
 
     public void setPlotOwner(OwnedLand land, UUID owner) {
