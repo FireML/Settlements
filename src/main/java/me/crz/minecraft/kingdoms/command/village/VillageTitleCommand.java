@@ -17,7 +17,7 @@ public class VillageTitleCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length < 1) {
-            Collection<String> titles = res.getVillageRank().getTitles(res.getVillage());
+            Collection<String> titles = res.getVillage().getTitles(res.getVillageRank());
             res.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base), "type", "");
             res.tell(getMessage("usage.entry"), "usage", getUsage(base));
             for (String title : titles) {

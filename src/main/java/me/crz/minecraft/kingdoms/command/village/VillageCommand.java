@@ -75,6 +75,7 @@ public class VillageCommand extends SubCommand {
             }
         });
         registerCommand(new VillageTitleCommand(this));
+        registerCommand(new VillageTitlesCommand(this));
         registerCommand(new VillageTransferCommand(this));
         registerCommand(new VillageUnAllyCommand(this));
         registerCommand(new VillageUnclaimCommand(this));

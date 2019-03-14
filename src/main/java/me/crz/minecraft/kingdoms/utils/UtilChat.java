@@ -56,4 +56,18 @@ public class UtilChat {
                 })
                 .collect(Collectors.joining(" "));
     }
+
+    public boolean containsCurses(String message) {
+        for (String literalCurse : literalCurses) {
+            if (message.toLowerCase().contains(literalCurse)) {
+                return true;
+            }
+        }
+        for (Pattern pattern : regexCurses) {
+            if (pattern.matcher(message).matches()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

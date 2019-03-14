@@ -8,6 +8,7 @@ perm-groups:
     - village.bank.history
     - village.deposit.history
     - village.outpost.teleport
+    - village.title
   settings:
     icon: REDSTONE_BLOCK
     permissions:
@@ -47,7 +48,7 @@ perm-groups:
     - village.shop.repeat
     - village.tax.set
     - village.tax.exempt
-    - village.title
+    - village.titles
     - village.unally
     - village.unbanish
     - village.unclaim
@@ -80,6 +81,7 @@ ranks:
     - village.help.chief
     - village.disband
     - village.transfer
+    - village.titles
     - village.rename
     - village.lock.admin
     - village.help.assistant
@@ -134,6 +136,7 @@ ranks:
     - village.kick
     - village.help.recruiter
     - village.officer
+    - village.titles
     - village.help.builder
   elder:
     icon: iron_sword

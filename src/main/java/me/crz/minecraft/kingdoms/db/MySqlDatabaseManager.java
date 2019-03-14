@@ -11,6 +11,7 @@ import me.crz.minecraft.kingdoms.lock.Lock;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -19,6 +20,7 @@ import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.scheduler.BukkitTask;
@@ -29,6 +31,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -97,6 +100,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         updateClaimModesUniqueKey();
         updateAllies();
         updateLandOwnersMissingCollumns();
+        updateResidentTitles();
     }
 
     private void initializeTables() throws SQLException {
@@ -112,6 +116,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
             sta.executeBatch();
         }
     }
+
+    // Update database
 
     private void updateClaimModes() {
         String sql = "SELECT * FROM " + tablePrefix + "claims;";
@@ -143,7 +149,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                         +";");
             } else {
                 sta.addBatch("SET FOREIGN_KEY_CHECKS = 0");
-                sta.addBatch("DROP TABLE " + tablePrefix + "claims;");
+                sta.addBatch("DROP TABLE " + tablePrefix + "claims");
                 sta.addBatch(MySqlTable.CLAIMS.getSql(tablePrefix));
                 sta.addBatch("SET FOREIGN_KEY_CHECKS = 1");
                 sta.executeBatch();
@@ -176,6 +182,45 @@ public class MySqlDatabaseManager extends DatabaseManager {
         addColumn(MySqlTable.EMPIRES, "created", "BIGINT DEFAULT 0 AFTER description");
         addColumn(MySqlTable.EMPIRES, "lastRename", "BIGINT DEFAULT 0 AFTER created");
     }
+
+    private void updateResidentTitles() {
+        try (Connection conn = ds.getConnection()) {
+            Statement sta = conn.createStatement();
+            String table = tablePrefix + MySqlTable.RESIDENTS.getDbName();
+            ResultSet rs = sta.executeQuery("SELECT title FROM " + table + " LIMIT 1;");
+            if (rs.getMetaData().getColumnType(1) != Types.VARCHAR) {
+                if (rs.next()) {
+                    sta.execute("ALTER TABLE " + table + " CHANGE COLUMN title titleIndex INTEGER NOT NULL");
+                    sta.execute("ALTER TABLE " + table + " ADD COLUMN title VARCHAR(16) after empirerank");
+
+                    ResultSet rsr = sta.executeQuery("SELECT res.id AS id, res.rank AS rank, res.titleIndex AS title, settlement.settlementState AS state" +
+                            " FROM " + table + " AS res" +
+                            " LEFT JOIN " + tablePrefix + MySqlTable.SETTLEMENTS.getDbName() + " AS settlement ON res.settlementId <=> settlement.id" +
+                            " WHERE res.settlementId IS NOT NULL AND res.titleIndex != 0");
+                    PreparedStatement pSta = conn.prepareStatement("UPDATE " + table + " SET title=? WHERE id=?");
+                    while (rsr.next()) {
+                        int titleIndex = rsr.getInt("title");
+                        List<String> titles = Message.get(rsr.getString("state").toLowerCase() + ".rank." + rsr.getString("rank").toLowerCase())
+                                .getTextList().stream().map(ChatColor::stripColor).collect(Collectors.toList());
+                        if (titles.size() > titleIndex) {
+                            pSta.setString(1, titles.get(titleIndex));
+                            pSta.setInt(2, rsr.getInt("id"));
+                            pSta.addBatch();
+                        }
+                    }
+                    pSta.executeBatch();
+                    sta.execute("ALTER TABLE " + table + " DROP COLUMN titleIndex");
+                } else {
+                    sta.execute("ALTER TABLE " + table + " DROP COLUMN title");
+                    sta.execute("ALTER TABLE " + table + " ADD COLUMN title VARCHAR(16) after empirerank");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Implement DatabaseManager methods
 
     @Override
     public void saveEmpire(Empire empire) {
@@ -240,6 +285,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 updateDataMap(conn, "settlement_perks", "settlementId", (Integer) village.getId().value(), "perk", "",
                         village.getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
                 updateDataMap(conn, "settlement_permissions", "settlementId", (Integer) village.getId().value(), "rank", "permission", village.getRanksPermissions(), "value");
+                updateDataMap(conn, "settlement_titles", "settlementId", (Integer) village.getId().value(), "rank", "title", village.getRankTitles());
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while saving village " + village.getName() + " to database!", e);
@@ -795,7 +841,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                         "name", hasPlayer ? rs.getString("playerName") : "",
                         "uuid", hasPlayer ? rs.getString("playerId") : "",
                         "rank", hasPlayer ? rank.getTag(village) : "",
-                        "title", hasPlayer ? rank.getTitle(village, rs.getInt("playerTitle")) : "",
+                        "title", hasPlayer ? rs.getString("playerTitle") : "",
                         "action", rs.getString("action"),
                         "type", rs.getString("type"),
                         "icon", Utils.getIcon(resident, rs.getString("type")),
@@ -910,6 +956,16 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     .put(rpRs.getString("permission"), rpRs.getBoolean("value"));
         }
         map.put("permissions", rankPermissions);
+
+        PreparedStatement tpSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_titles WHERE settlementId = ?;");
+        tpSta.setInt(1, id);
+        ResultSet tpRs = tpSta.executeQuery();
+        Map<String, Collection<String>> rankTitles = new LinkedHashMap<>();
+        while (tpRs.next()) {
+            rankTitles.computeIfAbsent(rpRs.getString("rank"), k -> new LinkedHashSet<>()).add(rpRs.getString("title"));
+        }
+        map.put("titles", rankTitles);
+
 
         return Village.deserialize(map);
     }

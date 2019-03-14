@@ -93,45 +93,12 @@ public class VillageRank extends Rank implements Next<VillageRank> {
     }
 
     public String getTag(Village village) {
-        Collection<String> titles = getTitles(village);
+        Collection<String> titles = village.getTitles(this);
         return titles != null && !titles.isEmpty() ? titles.iterator().next() : getTag();
-    }
-
-    public boolean isTitleAvailable(Village village, String title) {
-        return title != null && getAvailableTitles(village).contains(title);
-    }
-
-    private Collection<String> getAvailableTitles(Village village) {
-        Set<String> titles = new LinkedHashSet<>();
-        if (village != null) {
-            for (int i = ordinal(); i < values().length; i++) {
-                titles.addAll(values()[i].getTitles(village));
-            }
-        }
-        return titles;
     }
 
     public static VillageRank[] values() {
         return RankManager.getInstance().getVillageRanks().toArray(new VillageRank[0]);
-    }
-
-    public int getTitleIndex(Village village, String name) {
-        int i = 0;
-        for (String title : getTitles(village)) {
-            if (title.equalsIgnoreCase(name)) {
-                return i;
-            }
-            i++;
-        }
-        return -1;
-    }
-
-    public String getTitle(Village village, int index) {
-        List<String> titles = getTitles(village);
-        if (titles.size() > index) {
-            return titles.get(index);
-        }
-        return getTag(village);
     }
 
     @Override

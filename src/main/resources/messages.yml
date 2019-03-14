@@ -1217,7 +1217,29 @@ command:
           chief: "&e{name}&7 crowned themselves &e{title}&7!"
       invalid-title: "&c{title} is not a title available to you!"
       usage:
-        entry: "&e• [eb{usage}](suggest_command={{usage})"
+        entry: "&e• [&e&b{usage}](suggest_command={{usage})"
+    titles:
+      description: "Manage settlement titles"
+      list:
+        description: "List all available titles"
+        head: "&a⊱&m━━━━&r&6{state} Titles&a&m━━━━&a⊰"
+        rank: "&6&l{rank}:&r {titles}"
+        separator: "&7, "
+        entry: "&f{title}"
+        footer: "&7Use &e/s titles add|remove&7 to edit titles!"
+      add:
+        description: "Add new titles"
+        cant-edit-higher: "&cYou cannot edit titles of ranks above your own!"
+        too-long: "&e{input}&c is too long! Titles have to be shorter than 16 characters!"
+        invalid-characters: "&e{input}&c contains invalid characters. Only letters, numbers, minus and underscores are allowed!"
+        prohibited-words: "&e{input}&c contains prohibited words!"
+        success: "&e{title}&7 was added to rank &e{rank}"
+        already-exists: "&e{rank}&c already has a title with the name &e{input}&c defined!"
+      remove:
+        description: "Remove titles"
+        cant-edit-higher: "&cYou cannot edit titles of ranks above your own!"
+        success: "&e{title}&7 was removed from rank &e{rank}"
+        already-exists: "&e{rank}&c has no title with the name &e{input}&c defined!"
     transfer:
       success: "&e&lALERT &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
       already-chief: "&c&lYou can't transfer leadership to your self!"

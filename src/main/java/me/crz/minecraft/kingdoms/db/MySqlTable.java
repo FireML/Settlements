@@ -181,6 +181,15 @@ public enum MySqlTable {
             + "UNIQUE (settlementId, rank, permission)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
+    SETTLEMENT_TITLES("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_titles ("
+            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+            + "settlementId INTEGER, INDEX(settlementId),"
+            + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
+            + "rank VARCHAR(255) NOT NULL,"
+            + "title VARCHAR(16) NOT NULL,"
+            + "UNIQUE (settlementId, rank, title)"
+            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
+
     RESIDENTS("CREATE TABLE IF NOT EXISTS {tablePrefix}residents ("
             + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
             + "uuid CHAR(36) NOT NULL, UNIQUE (uuid),"
@@ -190,7 +199,7 @@ public enum MySqlTable {
             + "settlementJoin BIGINT(11) NOT NULL,"
             + "rank VARCHAR(255),"
             + "empirerank VARCHAR(255),"
-            + "title INTEGER NOT NULL,"
+            + "title VARCHAR(16),"
             + "bonusClaims INTEGER,"
             + "lastLogin BIGINT(11) NOT NULL,"
             + "activeChannel VARCHAR(255) NOT NULL,"

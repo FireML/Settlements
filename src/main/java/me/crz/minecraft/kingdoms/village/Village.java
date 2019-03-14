@@ -54,6 +54,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     private Empire empire;
     private VillageState villageState;
     private Map<String, NamedLocation> outpostHomes = new LinkedHashMap<>();
+    private Multimap<String, String> rankTitles = MultimapBuilder.hashKeys().hashSetValues().build();
     private Set<UUID> residents = new LinkedHashSet<>();
     private boolean allowAllyClaim = false;
 
@@ -402,6 +403,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         map.put("settlementState", getState().name());
         map.put("residents", getResidentIds().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("outposts", getOutpostHomes().values().stream().collect(Collectors.toMap(NamedLocation::getName, NamedLocation::serialize)));
+        map.put("titles", rankTitles.asMap());
         return map;
     }
 
@@ -453,6 +455,9 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 .map(NamedLocation::deserialize)
                 .filter(Objects::nonNull)
                 .forEach(village::setOutpostHome);
+        for (Map.Entry<String, Collection<String>> entry : ((Map<String, Collection<String>>) map.get("titles")).entrySet()) {
+            village.rankTitles.putAll(entry.getKey(), entry.getValue());
+        }
         return village;
     }
 
@@ -558,5 +563,47 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     @Override
     public String getDbName() {
         return "settlement";
+    }
+
+    public Collection<String> getTitles(VillageRank rank) {
+        Collection<String> titles = rankTitles.get(rank.name().toLowerCase());
+        if (titles.isEmpty()) {
+            return rank.getTitles(this);
+        }
+        return titles;
+    }
+
+    public boolean addTitle(VillageRank rank, String title) {
+        if (rankTitles.get(rank.name().toLowerCase()).isEmpty()) {
+            if (rank.getTitles(this).contains(title)) {
+                return false;
+            } else {
+                rankTitles.putAll(rank.name().toLowerCase(), rank.getTitles(this));
+            }
+        }
+        if (rankTitles.put(rank.name().toLowerCase(), title)) {
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(this));
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeTitle(VillageRank rank, String title) {
+        if (rankTitles.get(rank.name().toLowerCase()).isEmpty()) {
+            if (rank.getTitles(this).contains(title)) {
+                rankTitles.putAll(rank.name().toLowerCase(), rank.getTitles(this));
+            } else {
+                return false;
+            }
+        }
+        if (rankTitles.remove(rank.name().toLowerCase(), title)) {
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(this));
+            return true;
+        }
+        return false;
+    }
+
+    public Map<String, Collection<String>> getRankTitles() {
+        return rankTitles.asMap();
     }
 }

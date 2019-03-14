@@ -287,7 +287,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
         return subCommands;
     }
 
-    public void registerCommand(SubCommand c) {
+    public <T extends SubCommand> void registerCommand(T c) {
         subCommands.put(c.name().toLowerCase(), c);
         for (String alias : c.getAliases()) {
             subCommandAliases.putIfAbsent(alias.toLowerCase(), c);

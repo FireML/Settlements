@@ -399,7 +399,7 @@ public class MongoDatabaseManager extends DatabaseManager {
                     "name", document.getString("name"),
                     "uuid", document.getString("uuid"),
                     "rank", rank.getTag(village),
-                    "title", rank.getTitle(village, document.getInteger("title")),
+                    "title", String.valueOf(document.get("title")),
                     "action", document.getString("action"),
                     "type", document.getString("type"),
                     "amount", String.valueOf(document.getInteger("amount")),
