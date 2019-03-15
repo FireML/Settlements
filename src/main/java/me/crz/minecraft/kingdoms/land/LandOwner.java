@@ -514,6 +514,8 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         this.joinFee = joinFee;
     }
 
+    public abstract long getTaxIncome();
+
     public long getTax() {
         return tax;
     }

@@ -65,7 +65,7 @@ public class Resident implements ConfigurationSerializable, Targetable {
         if (!permission.startsWith("kingdoms.")) {
             permission = "kingdoms.command." + permission;
         }
-        if (hasCommandPermission(permission)) {
+        if (hasRankPermission(permission)) {
             Player player = getPlayer();
             if (player != null) {
                 return player.hasPermission(permission);
@@ -74,7 +74,10 @@ public class Resident implements ConfigurationSerializable, Targetable {
         return false;
     }
 
-    private boolean hasCommandPermission(String permission) {
+    public boolean hasRankPermission(String permission) {
+        if (!permission.startsWith("kingdoms.")) {
+            permission = "kingdoms.command." + permission;
+        }
         if (permission.startsWith("kingdoms.command.")) {
             String rankPerm = permission.substring("kingdoms.command.".length());
             if (!hasVillage() && !VillageRank.getChief().getInheritedPermissionValue(rankPerm).isPresent()) {

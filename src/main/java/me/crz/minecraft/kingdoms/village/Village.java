@@ -79,7 +79,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                     continue;
                 }
                 Resident resident = ResidentManager.getInstance().getResident(residentId); // should already be cached!
-                if (getEffectivePermissionValue(resident.getVillageRank(), "village.tax.exempt").orElse(false)) {
+                if (resident.hasRankPermission("village.tax.exempt")) {
                     continue;
                 }
                 OfflinePlayer player = Bukkit.getPlayer(residentId);
@@ -413,6 +413,17 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
             residents.remove(((Resident) target).getUUID());
             VillageManager.getInstance().leaveVillage((Resident) target);
         }
+    }
+
+    @Override
+    public long getTaxIncome() {
+        long income = 0;
+        for (Resident resident : getResidents()) {
+            if (!resident.hasRankPermission("village.tax.exempt")) {
+                income += getTax();
+            }
+        }
+        return income;
     }
 
     @Override

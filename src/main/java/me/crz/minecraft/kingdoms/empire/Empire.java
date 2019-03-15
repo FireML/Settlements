@@ -174,6 +174,17 @@ public class Empire extends LandOwner implements Comparable<Empire> {
     }
 
     @Override
+    public long getTaxIncome() {
+        long income = 0;
+        for (Village member : getMembers()) {
+            if (!member.getId().equals(getCapitalId()) && member.has(getTax())) {
+                income += getTax();
+            }
+        }
+        return income;
+    }
+
+    @Override
     public long getTax() {
         int maxTax = Utils.getEmpireMaxTax();
         if (maxTax > -1 && super.getTax() > maxTax) {

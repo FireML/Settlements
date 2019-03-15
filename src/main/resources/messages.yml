@@ -1291,7 +1291,8 @@ command:
         &3&lUpkeep cost:&e {cost}
         &3&lUpkeep: &e{upkeep}$ &7/&e claim &7/&e day
         &3&lTime Till Upkeep: &e{time}
-        &3&lCan afford? {afford}
+        &3&lCan afford for: &r{afford} days
+      afford-infinite: "infinite"
       description: Show settlement upkeep information
     use:
       flags: "&cAvailable flags: {flags}"
@@ -1664,7 +1665,8 @@ command:
         &a⊱&m━━━━&r&6Upkeep&a&m━━━━&a⊰
         &3&lUpkeep cost:&e {cost} &7/&e day
         &3&lTime Till Upkeep: &e{time}
-        &3&lCan afford? {afford}
+        &3&lCan afford for: &r{afford} days
+      afford-infinite: "infinite"
       description: Show empire upkeep information
     use:
       flags: "&cAvailable flags: {flags}"
