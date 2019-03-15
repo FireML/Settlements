@@ -1,8 +1,10 @@
 village:
   level-1:
+    claim-upkeep: 500
     chunks: 20
     outposts: 1
   level-2:
+    claim-upkeep: 480
     chunks: 40
     outposts: 1
     requirements:
@@ -10,67 +12,80 @@ village:
       STONE: 5
       OAK_LOG: 5
   level-3:
+    claim-upkeep: 460
     chunks: 60
     outposts: 1
     requirements:
       SAND: 10
   level-4:
+    claim-upkeep: 440
     chunks: 80
     outposts: 2
     requirements:
       COBBLESTONE: 64
   level-5:
+    claim-upkeep: 420
     chunks: 100
     outposts: 2
     requirements:
       SAND: 64
 kingdom:
   level-1:
+    claim-upkeep: 400
     chunks: 150
     outposts: 4
     requirements:
       STONE: 1
   level-2:
+    claim-upkeep: 380
     chunks: 175
     outposts: 4
     requirements:
       STONE: 1
   level-3:
+    claim-upkeep: 360
     chunks: 200
     outposts: 6
     requirements:
       STONE: 1
   level-4:
+    claim-upkeep: 340
     chunks: 250
     outposts: 6
     requirements:
       STONE: 1
   level-5:
+    claim-upkeep: 320
     chunks: 300
     outposts: 6
     requirements:
       STONE: 1
   level-6:
+    claim-upkeep: 300
     chunks: 400
     outposts: 8
     requirements:
       STONE: 1
   level-7:
+    claim-upkeep: 280
     chunks: 650
     outposts: 8
     requirements:
       STONE: 1
   level-8:
+    claim-upkeep: 260
     chunks: 800
     outposts: 8
     requirements:
       STONE: 1
   level-9:
+    claim-upkeep: 240
     chunks: 1000
     outposts: 12
     requirements:
       STONE: 1
   level-10:
+    claim-upkeep: 200
     chunks: 1000
     outposts: 12
     requirements:

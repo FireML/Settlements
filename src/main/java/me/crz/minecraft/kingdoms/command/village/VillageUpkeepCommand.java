@@ -29,7 +29,7 @@ public class VillageUpkeepCommand extends VillageSubCommand {
 
         res.tell(getMessage("info"),
                 "cost", Utils.CURRENCY_FORMAT.format(total),
-                "upkeep", Utils.CURRENCY_FORMAT.format(Utils.getUpkeepCost()),
+                "upkeep", Utils.CURRENCY_FORMAT.format(total <= 0 ? 0 : Utils.getUpkeepCost(village.getState(), village.getLevel())),
                 "time", UtilTime.format((double) TimeUnit.MILLISECONDS.toSeconds(Utils.timeTillNextUpkeep())),
                 "afford", afford
         );

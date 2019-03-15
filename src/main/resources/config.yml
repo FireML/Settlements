@@ -27,7 +27,6 @@ teleport-delay:
   kingdom: 3
   empire: 3
 upkeep:
-  cost-per-claim: 500
   empire: 1000
   hour: 0
   timezone: EST

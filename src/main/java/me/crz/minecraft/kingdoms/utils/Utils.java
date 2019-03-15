@@ -34,8 +34,6 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.World;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
@@ -55,6 +53,7 @@ public class Utils {
     public static final UUID ZERO_UUID = new UUID(0, 0);
     private static Map<String, Integer> LEVEL_CHUNKS = new HashMap<>();
     private static Map<String, Integer> LEVEL_OUTPOSTS = new HashMap<>();
+    private static Map<String, Integer> LEVEL_UPKEEP = new HashMap<>();
     private static final Set<EntityType> SPECIAL_HOSTILE = EnumSet.of(
             EntityType.SLIME,
             EntityType.PHANTOM
@@ -134,11 +133,9 @@ public class Utils {
         return -1;
     }
 
-    public static int getUpkeepCost() {
-        if (ConfigManager.getInstance().getConfig().isInt("upkeep.cost-per-claim")) {
-            return ConfigManager.getInstance().getConfig().getInt("upkeep.cost-per-claim");
-        }
-        return 0;
+    public static int getUpkeepCost(VillageState state, int level) {
+        return LEVEL_UPKEEP.computeIfAbsent(state.name() + "_" + level,
+                key -> ConfigManager.getInstance().getLevelConfig().getInt(state.name().toLowerCase() + ".level-" + level + ".claim-upkeep"));
     }
 
     public static int getClaimEnemyDistance() {
