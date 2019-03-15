@@ -388,6 +388,11 @@ public class Empire extends LandOwner implements Comparable<Empire> {
     }
 
     @Override
+    public long getOnlineCount() {
+        return getMembers().stream().mapToLong(Village::getOnlineCount).sum();
+    }
+
+    @Override
     public List<Resident> getOnlineResidents() {
         return getMembers().stream().flatMap(v -> v.getOnlineResidents().stream()).collect(Collectors.toList());
     }
@@ -559,7 +564,9 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                         )).collect(Collectors.joining(separator))
                         : String.valueOf(getSenatorIds().size()),
                 "size", String.valueOf(getMembers().size()),
-                "members", getMembers().stream().map(v -> v.getState().getTag() + " " + v.getName()).collect(Collectors.joining(", "))
+                "members", getMembers().stream().map(v -> v.getState().getTag() + " " + v.getName()).collect(Collectors.joining(", ")),
+                "resonlinecount", String.valueOf(getOnlineCount()),
+                "resotheronlinecount", String.valueOf(getOnlineCount() - 1)
         };
     }
 }

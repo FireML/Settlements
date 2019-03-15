@@ -249,6 +249,11 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     }
 
     @Override
+    public long getOnlineCount() {
+        return residents.stream().map(Bukkit::getPlayer).filter(Objects::nonNull).count();
+    }
+
+    @Override
     public boolean canAdminLocks(Resident resident) {
         return isMember(resident) && resident.hasPermission("kingdoms.command.village.lock.admin");
     }
@@ -539,8 +544,8 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 "chiefonline", configMessages != null ? chief.getPlayer() != null ? online : offline : "",
                 "residents", configMessages != null ? getResidentsToString(rankMessage, entry, online, offline, separator) : String.valueOf(getResidentIds().size()),
                 "rescount", String.valueOf(getResidentIds().size()),
-                "resonlinecount", String.valueOf(residents.stream().map(Bukkit::getPlayer).filter(Objects::nonNull).count()),
-                "resotheronlinecount", String.valueOf(residents.stream().map(Bukkit::getPlayer).filter(Objects::nonNull).count() - 1)
+                "resonlinecount", String.valueOf(getOnlineCount()),
+                "resotheronlinecount", String.valueOf(getOnlineCount() - 1)
         };
     }
 

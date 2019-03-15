@@ -103,13 +103,16 @@ scoreboard:
       empire: |-
         &3{villagestate} &l{villagename}
         &3&lEmpire {empirename}
-        &3&lRank&3: {villagetitle}
-        &3&lOnline&3: {villageresonlinecount}
+        &3&l{villagestate} Rank&3: {villagetitle}
+        &3&lEmpire Rank&3: {empirerank}
+        &3&l{villagestate} Online&3: {villageresonlinecount}
+        &3&lEmpire Online&3: {empireresonlinecount}
 
         &3&lBal&3: &b$&e{balance}
         &3&lBonus&e: &e{bonus}
-        &3&lBank: &b$&e{villagebalance}
-        &3&lVillage-Bonus&e: &e{villagebonusclaims}
+        &3&lEmpire Bank: &b$&e{empirebalance}
+        &3&l{villagestate} Bank: &b$&e{villagebalance}
+        &3&l{villagestate} Bonus&e: &e{villagebonusclaims}
 
         &3&lKills&3: &e{kills}
         &3&lDeaths&3: &e{deaths}
