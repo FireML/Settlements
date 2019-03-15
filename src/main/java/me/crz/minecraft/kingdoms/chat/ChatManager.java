@@ -8,7 +8,6 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.events.ChannelChatEvent;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
-import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.UtilChat;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -228,12 +227,20 @@ public class ChatManager extends Base implements ConfigMessages {
     public void sendPrivateMessage(Player sender, Player target, String message) {
         Resident res = ResidentManager.getInstance().getResident(sender);
         Resident tres = ResidentManager.getInstance().getResident(target);
+        if (!res.hasMessagesEnabled()) {
+            getMessage("messages-disabled").tell(sender, "name", target.getName());
+            return;
+        }
+        if (!tres.hasMessagesEnabled()) {
+            getMessage("target-messages-disabled").tell(sender, "name", target.getName());
+            return;
+        }
         if (res.getIgnore().contains(tres.getUUID())) {
-            MessageUtils.tell(sender, getMessage("ignoring"), "name", target.getName());
+            getMessage("ignoring").tell(sender, "name", target.getName());
             return;
         }
         if (tres.getIgnore().contains(res.getUUID()) && !sender.hasPermission("kingdoms.bypass.ignore")) {
-            MessageUtils.tell(sender, getMessage("ignored"), "name", target.getName());
+            getMessage("ignored").tell(sender, "name", target.getName());
             return;
         }
         HoverEvent senderHover = getHover(sender, res);

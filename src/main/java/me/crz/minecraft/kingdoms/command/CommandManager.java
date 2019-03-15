@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.chat.commands.IgnoreCommand;
 import me.crz.minecraft.kingdoms.chat.commands.MessageCommand;
+import me.crz.minecraft.kingdoms.chat.commands.MsgToggleCommand;
 import me.crz.minecraft.kingdoms.chat.commands.ReplyCommand;
 import me.crz.minecraft.kingdoms.command.admin.VillageAdminCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireCommand;
@@ -77,6 +78,7 @@ public class CommandManager extends Base implements CommandExecutor {
         registerCommand(new MessageCommand());
         registerCommand(new ReplyCommand());
         registerCommand(new IgnoreCommand());
+        registerCommand(new MsgToggleCommand());
     }
 
     public void registerCommand(SubCommand ex) {

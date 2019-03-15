@@ -49,6 +49,7 @@ public class Resident implements ConfigurationSerializable, Targetable {
     private boolean resourcePack = false;
     private boolean showSidebar = true;
     private boolean hasEmpireFlight = false;
+    private boolean hasMessagesEnabled = true;
 
     public Resident(UUID uuid, String name) {
         this.uuid = uuid;
@@ -453,6 +454,14 @@ public class Resident implements ConfigurationSerializable, Targetable {
 
     public void setHasEmpireFlight(boolean hasEmpireFlight) {
         this.hasEmpireFlight = hasEmpireFlight;
+    }
+
+    public boolean hasMessagesEnabled() {
+        return hasMessagesEnabled;
+    }
+
+    public void setHasMessagesEnabled(boolean hasMessagesEnabled) {
+        this.hasMessagesEnabled = hasMessagesEnabled;
     }
 
     @Override

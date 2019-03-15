@@ -20,11 +20,11 @@ public class ReplyCommand extends PlayerSubCommand {
         }
         UUID targetId = ChatManager.getInstance().getLastMessaged(p);
         if (targetId == null) {
-            MessageUtils.tell(p, getMessage("no-one-messaged"));
+            getMessage("no-one-messaged").tell(p);
         } else {
             Player target = Bukkit.getPlayer(targetId);
             if (target == null) {
-                MessageUtils.tell(p, getMessage("target-is-offline"));
+                getMessage("target-is-offline").tell(p);
             } else {
                 ChatManager.getInstance().sendPrivateMessage(p, target, String.join(" ", args));
             }

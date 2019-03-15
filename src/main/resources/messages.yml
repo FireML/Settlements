@@ -252,6 +252,8 @@ chat:
   ignoring: |-
     &cYou cannot message &6{name}&c because you are ignoring them!
     &6[/ignore {name}](/ignore {name})&c to un-ignore them
+  messages-disabled: "&cYou cannot message &6{name}&c because you have private messages disabled! Use [&e/msgtoggle](/msgtoggle on)&c to enable it."
+  target-messages-disabled: "&cYou cannot message &6{name}&c because he has private messages disabled!"
 names:
   use:
     chest: "Chests"
@@ -738,6 +740,11 @@ command:
       separator: "&7, "
   message:
     description: "Message another player"
+  msgtoggle:
+    description: "Toggle private messaging"
+    invalid-option: "&e{input}&c is not a valid toggle option!"
+    enabled: "&7Private messaging is now &aenabled&7!"
+    enabled: "&7Private messaging is now &cdisabled&7!"
   reply:
     description: "Replies to the last person who messaged you."
     no-one-messaged: "&cNo one messaged you!"

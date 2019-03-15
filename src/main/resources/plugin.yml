@@ -69,6 +69,9 @@ commands:
     description: Friending command
   ignore:
     description: Player ignore command
+  msgtoggle:
+    description: Toggle private messages on or off
+    aliases: [messagetoggle, togglemsg, togglemessages]
   scoreboard:
     description: Scoreboard command
   scoreboardadmin:

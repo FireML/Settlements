@@ -22,7 +22,7 @@ public class MessageCommand extends PlayerSubCommand {
         }
         Player target = getPlayer(args[0]);
         if (target == null) {
-            MessageUtils.tell(p, getError("player-not-found"), "name", args[0]);
+            getError("player-not-found").tell(p, "name", args[0]);
             return true;
         }
         ChatManager.getInstance().sendPrivateMessage(p, target, Arrays.stream(args).skip(1).collect(Collectors.joining(" ")));
