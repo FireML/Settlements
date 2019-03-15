@@ -35,15 +35,17 @@ public class ResidentShowCommand extends SubCommand {
             OfflinePlayer op = Bukkit.getOfflinePlayer(target.getUUID());
             double balance = KingdomsPlugin.getInstance().econ.getBalance(op);
 
-            MessageUtils.tell(sender, getMessage("info"),
+            getMessage("info." + (target.hasVillage() ? target.hasEmpire() ? "in-empire" : "in-village" : "free")).tell(sender,
                     "name", target.getName(),
-                    "settlement", (target.getVillage() == null) ? "none" : target.getVillage().getName(),
-                    "rank", (target.getVillage() == null) ? "none" : target.getVillageRank().getTag(target.getVillage()),
-                    "title", (target.getVillage() == null) ? "none" : target.getTitle(),
+                    "empire", target.hasEmpire() ? target.getVillage().getEmpire().getName() : "none",
+                    "empirerank", target.hasEmpire() ? target.getEmpireRank().getTag() : "none",
+                    "settlement", target.hasVillage() ? target.getVillage().getName() : "none",
+                    "rank", target.hasVillage() ? target.getVillageRank().getTag(target.getVillage()) : "none",
+                    "title", target.hasVillage() ? target.getTitle() : "none",
                     "balance", Utils.CURRENCY_FORMAT.format(balance),
                     "bonus", Utils.CURRENCY_FORMAT.format(target.getBonusClaims()),
                     "joindate", Utils.DATE_FORMAT.format(new Date(op.getFirstPlayed())),
-                    "lastlogin",  Utils.DATE_FORMAT.format(new Date(target.getLastLogin()))
+                    "lastlogin", Utils.DATE_FORMAT.format(new Date(target.getLastLogin()))
             );
         });
         return true;

@@ -755,14 +755,32 @@ command:
       description: Add bonus claims to settlements
       not-enough-bonus: "&c&lNot enough bonus claims to transfer &r&6&l{amount}&r&c&l!"
     show:
-      info: |-
-        &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-        &a&lSettlement: &f{settlement}
-        &a&lRank: &f{title}
-        &a&lBalance: &6${balance}
-        &a&lBonus claims: &f{bonus}
-        &a&lJoin Date: &f{joindate}
-        &a&lLast Login: &f{lastlogin}
+      info:
+        free: |-
+          &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
+          &a&lSettlement: &fnone
+          &a&lBalance: &6${balance}
+          &a&lBonus claims: &f{bonus}
+          &a&lJoin Date: &f{joindate}
+          &a&lLast Login: &f{lastlogin}
+        in-village: |-
+          &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
+          &a&lSettlement: &f{settlement}
+          &a&lRank: &f{title}
+          &a&lBalance: &6${balance}
+          &a&lBonus claims: &f{bonus}
+          &a&lJoin Date: &f{joindate}
+          &a&lLast Login: &f{lastlogin}
+        in-empire: |-
+          &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
+          &a&lEmpire: &f{empire}
+          &a&lEmpire Rank: &f{empirerank}
+          &a&lSettlement: &f{settlement}
+          &a&lRank: &f{title}
+          &a&lBalance: &6${balance}
+          &a&lBonus claims: &f{bonus}
+          &a&lJoin Date: &f{joindate}
+          &a&lLast Login: &f{lastlogin}
       description: Shows you information about a resident
     description: Resident management commands
   friend:
