@@ -26,6 +26,7 @@ public class VillageCommand extends SubCommand {
         getHelpCommand().registerCommand(new RankHelpCommand(getHelpCommand(), null));
         getHelpCommand().setDefaultTypeProvider(s -> s instanceof Player && ResidentManager.getInstance().doesResidentHaveVillage((Player) s) ? "resident" : "no");
         registerCommand(new ChatCommand());
+        registerCommand(new VillageActiveCommand(this));
         registerCommand(new VillageAlliesCommand(this));
         registerCommand(new VillageAllyCommand(this));
         registerCommand(new VillageAllyclaimCommand(this));

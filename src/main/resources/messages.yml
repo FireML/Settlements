@@ -886,6 +886,15 @@ command:
       description: "Add custom lines to the scoreboard"
       added: "&7Added '&f{line}&7' to the scoreboard."
   village:
+    active:
+      head: "&a⊱&m━━━━&r&6Active Players [{page}/{maxpage}]&a&m━━━━&a⊰"
+      entry: "&e• [&e&l{title} &r&e{name} - &r{activity}](&eLast login at {timestamp})"
+      offline: "&cLogged in {ago} ago"
+      online: "&aActive now"
+      footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
+      previous: "&b<< Prev "
+      next: "&b Next >>"
+      description: Show the vault's history
     allies:
       head: "&a⊱&m━━━━&r&6Allies&a&m━━━━&a⊰"
       entry: "&a{state} {name}"

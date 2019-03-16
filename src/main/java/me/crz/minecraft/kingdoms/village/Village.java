@@ -564,15 +564,15 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
             String line = rankMessage.getReplacedText(
                     "rank", rank.getTag(this),
                     "residents", rankMap.get(rank).stream()
-                            .sorted((o1, o2) -> {
-                                Player p1 = o1.getPlayer();
-                                Player p2 = o2.getPlayer();
+                            .sorted((r1, r2) -> {
+                                Player p1 = r1.getPlayer();
+                                Player p2 = r2.getPlayer();
                                 if (p1 != null && p2 == null) {
                                     return -1;
                                 } else if (p1 == null && p2 != null) {
                                     return 1;
                                 }
-                                return Long.compare(o1.getVillageJoin(), o2.getVillageJoin());
+                                return Long.compare(r1.getVillageJoin(), r2.getVillageJoin());
                             })
                             .limit(Utils.getPlayersInShow())
                             .map(res -> entry.getReplacedText(

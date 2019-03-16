@@ -24,6 +24,7 @@ perm-groups:
     permissions:
     - empire.join
     - empire.leave
+    - village.active
     - village.ally
     - village.allyclaim
     - village.banish
@@ -62,6 +63,7 @@ ranks:
     - empire.create
     - empire.join
     - empire.help.chief
+    - village.active
     - village.allyclaim
     - village.banish
     - village.bank.withdraw
@@ -117,6 +119,7 @@ ranks:
     - village.lock.admin
     - village.help.assistant
     - empire.leave
+    - village.active
     - village.ally
     - village.banished
     - village.claim

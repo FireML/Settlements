@@ -22,21 +22,25 @@ public class UtilTime {
         final double years = days / 365.0;
         DecimalFormat format = new DecimalFormat("#.#");
         if (minutes < 1.0) {
-            return format.format(UtilMath.trim(seconds, 1)) + " Seconds";
+            return format.format(UtilMath.trim(seconds, 1)) + " Second" + plural(seconds);
         }
         if (hours < 1.0) {
-            return format.format(UtilMath.trim(minutes, 1)) + " Minutes";
+            return format.format(UtilMath.trim(minutes, 1)) + " Minute" + plural(minutes);
         }
         if (days < 1.0) {
-            return format.format(UtilMath.trim(hours, 1)) + " Hours";
+            return format.format(UtilMath.trim(hours, 1)) + " Hour" + plural(hours);
         }
         if (months < 1.0) {
-            return format.format(UtilMath.trim(days, 1)) + " Days";
+            return format.format(UtilMath.trim(days, 1)) + " Day" + plural(days);
         }
         if (years < 1.0) {
-            return format.format(UtilMath.trim(months, 1)) + " Months";
+            return format.format(UtilMath.trim(months, 1)) + " Month" + plural(months);
         }
-        return format.format(UtilMath.trim(years, 1)) + " Years";
+        return format.format(UtilMath.trim(years, 1)) + " Year" + plural(years);
+    }
+
+    private static String plural(double number) {
+        return UtilMath.trim(number, 1) == 1 ? "" : "s";
     }
 
     public static boolean elapsedNano(final long from, final long required) {

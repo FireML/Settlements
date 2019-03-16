@@ -50,6 +50,7 @@ help-order:
     - disband
     - transfer
     - rename
+    - active
     chief:
     - settings
     - claim
@@ -59,6 +60,7 @@ help-order:
     - sethome
     - s setrank
     - perms
+    - active
     - ally
     - unally
     - invite
