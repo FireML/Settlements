@@ -4,7 +4,6 @@ import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -27,23 +26,24 @@ public class MoneyWithdrawCommand extends VillageSubCommand {
             if (withdrewInit <= resident.getVillage().getBank()) {
                 EconomyResponse r = Base.getEconomy().depositPlayer(resident.getPlayer(), (double) withdrewInit);
                 if (r.transactionSuccess()) {
-                    resident.getVillage().setBank(resident.getVillage().getBank() - withdrewInit);
+                    resident.getVillage().removeFromBank(withdrewInit);
                     Utils.runAsync(() -> {
                         DatabaseManager.getInstance().saveVillage(resident.getVillage());
                         DatabaseManager.getInstance().logWithdraw(resident.getVillage(), resident, withdrewInit);
                     });
-                    MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("withdrawn"),
+                    getMessage("withdrawn").tell(resident.getVillage().getOnlineResidents(),
                             "rank", resident.getVillageRank().getTag(resident.getVillage()),
                             "title", resident.getTitle(),
                             "name", resident.getName(),
-                            "amount", String.valueOf(withdrewInit));
+                            "amount", Utils.CURRENCY_FORMAT.format(withdrewInit));
                 } else {
                     resident.tell("&cAn error occurred, please tell an admin!");
                 }
             } else {
-                resident.tell(getMessage("not-enough-money"), "amount", String.valueOf(withdrewInit));
+                getError("not-enough-money").tell(resident, "amount", Utils.CURRENCY_FORMAT.format(withdrewInit));
             }
         } catch (NumberFormatException e) {
+            getError("not-a-number").tell(resident, "input", args[0]);
             return false;
         }
         return true;

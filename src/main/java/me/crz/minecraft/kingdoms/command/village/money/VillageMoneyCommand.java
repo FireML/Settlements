@@ -7,6 +7,7 @@ import me.crz.minecraft.kingdoms.command.village.VillageHistoryCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.LogType;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.entity.Player;
@@ -14,7 +15,6 @@ import org.bukkit.entity.Player;
 import java.text.DecimalFormat;
 
 public class VillageMoneyCommand extends VillageSubCommand {
-    private final static DecimalFormat DF = new DecimalFormat("#,###");
 
     public VillageMoneyCommand(SubCommand parent) {
         super(parent, "bank <deposit|withdraw|balance|history> <amount>", "money");
@@ -26,7 +26,7 @@ public class VillageMoneyCommand extends VillageSubCommand {
         registerCommand(new VillageSubCommand(this, "balance") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
-                getMessage("balance").tell(resident, "amount", DF.format(resident.getVillage().getBank()));
+                getMessage("balance").tell(resident, "amount", Utils.CURRENCY_FORMAT.format(resident.getVillage().getBank()));
                 return true;
             }
         });

@@ -38,6 +38,7 @@ public class VillageCommand extends SubCommand {
         registerCommand(new VillageDepositCommand(this));
         registerCommand(new VillageDescriptionCommand(this));
         registerCommand(new VillageDisbandCommand(this));
+        registerCommand(new VillageDonateCommand(this));
         registerCommand(new VillageHereCommand(this));
         registerCommand(new VillageHistoryCommand(this, LogType.ALL));
         registerCommand(new VillageHomeCommand(this));

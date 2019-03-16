@@ -975,6 +975,10 @@ command:
       confirm: "&c&lPlease do /{command} to confirm the &r&e&ldisbanding&r&c&l of your settlement."
       success: "&e&lALERT &r&7Your {title} has deleted your {state}."
       description: Disbands the current settlement
+    donate:
+      donated: "&e{name} &r&7donated &6{amount}&r&7 to your settlement bank!"
+      success: "&7Donated &6{amount}&r&7 to the bank of &e{state} {name}&7!"
+      description: Donate money to a certain settlement
     here:
       general: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
@@ -1435,6 +1439,10 @@ command:
       confirm: "&c&lPlease do /{command} to confirm the &r&e&ldisbanding&r&c&l of your empire."
       success: "&e&lALERT &r&7Your {chieftitle} {chief} has deleted your Empire."
       description: Disbands the current empire
+    donate:
+      donated: "&e{name} &r&7donated &6{amount}&r&7 to your empire bank!"
+      success: "&7Donated &6{amount}&r&7 to the bank of &eEmpire {name}&7!"
+      description: Donate money to a certain empire
     here:
       general: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰

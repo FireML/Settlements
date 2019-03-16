@@ -7,17 +7,13 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.db.LogType;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.entity.Player;
 
-import java.text.DecimalFormat;
-
 public class EmpireMoneyCommand extends EmpireSubCommand {
-    private final static DecimalFormat DF = new DecimalFormat("#,###");
 
     public EmpireMoneyCommand(SubCommand parent) {
         super(parent, "bank <deposit|withdraw|balance|history> <amount>", "money");
@@ -29,7 +25,7 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
         registerCommand(new EmpireSubCommand(this, "balance") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
-                getMessage("balance").tell(resident, "amount", DF.format(resident.getVillage().getEmpire().getBank()));
+                getMessage("balance").tell(resident, "amount", Utils.CURRENCY_FORMAT.format(resident.getVillage().getEmpire().getBank()));
                 return true;
             }
         });
@@ -47,23 +43,24 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                     if (Base.getEconomy().getBalance(resident.getPlayer()) >= deposit) {
                         EconomyResponse r2 = Base.getEconomy().withdrawPlayer(resident.getPlayer(), (double) deposit);
                         if (r2.transactionSuccess()) {
-                            resident.getVillage().getEmpire().setBank(resident.getVillage().getEmpire().getBank() + deposit);
+                            resident.getVillage().getEmpire().addToBank(deposit);
                             Utils.runAsync(() -> {
                                 DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
                                 DatabaseManager.getInstance().logDeposit(resident.getVillage().getEmpire(), resident.getVillage(), resident, deposit);
                             });
-                            MessageUtils.tellResidents(resident.getVillage().getEmpire().getOnlineResidents(), getMessage("deposited"),
+                            getMessage("deposited").tell(resident.getVillage().getEmpire().getOnlineResidents(),
                                     "rank", resident.getVillageRank().getTag(resident.getVillage()),
                                     "title", resident.getTitle(),
                                     "name", resident.getName(),
-                                    "amount", String.valueOf(deposit));
+                                    "amount", Utils.CURRENCY_FORMAT.format(deposit));
                         } else {
                             resident.tell("&cAn error occurred, please tell an admin!");
                         }
                     } else {
-                        resident.tell(getError("not-enough-money"), "amount", String.valueOf(deposit));
+                        getError("not-enough-money").tell(resident, "amount", Utils.CURRENCY_FORMAT.format(deposit));
                     }
                 } catch (NumberFormatException e) {
+                    getError("not-a-number").tell(resident, "input", args[0]);
                     return false;
                 }
                 return true;
@@ -83,23 +80,24 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                     if (withdrewInit <= resident.getVillage().getEmpire().getBank()) {
                         EconomyResponse r = Base.getEconomy().depositPlayer(resident.getPlayer(), (double) withdrewInit);
                         if (r.transactionSuccess()) {
-                            resident.getVillage().getEmpire().setBank(resident.getVillage().getEmpire().getBank() - withdrewInit);
+                            resident.getVillage().getEmpire().removeFromBank(withdrewInit);
                             Utils.runAsync(() -> {
                                 DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
                                 DatabaseManager.getInstance().logWithdraw(resident.getVillage().getEmpire(), resident.getVillage(), resident, withdrewInit);
                             });
-                            MessageUtils.tellResidents(resident.getVillage().getEmpire().getOnlineResidents(), getMessage("withdrawn"),
+                            getMessage("withdrawn").tell(resident.getVillage().getEmpire().getOnlineResidents(),
                                     "rank", resident.getVillageRank().getTag(resident.getVillage()),
                                     "title", resident.getTitle(),
                                     "name", resident.getName(),
-                                    "amount", String.valueOf(withdrewInit));
+                                    "amount", Utils.CURRENCY_FORMAT.format(withdrewInit));
                         } else {
                             resident.tell("&cAn error occurred, please tell an admin!");
                         }
                     } else {
-                        resident.tell(getMessage("not-enough-money"), "amount", String.valueOf(withdrewInit));
+                        getError("not-enough-money").tell(resident, "amount", Utils.CURRENCY_FORMAT.format(withdrewInit));
                     }
                 } catch (NumberFormatException e) {
+                    getError("not-a-number").tell(resident, "input", args[0]);
                     return false;
                 }
                 return true;

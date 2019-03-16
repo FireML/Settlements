@@ -4,7 +4,6 @@ import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -27,23 +26,24 @@ public class MoneyDepositCommand extends VillageSubCommand {
             if (Base.getEconomy().getBalance(resident.getPlayer()) >= deposit) {
                 EconomyResponse r2 = Base.getEconomy().withdrawPlayer(resident.getPlayer(), (double) deposit);
                 if (r2.transactionSuccess()) {
-                    resident.getVillage().setBank(resident.getVillage().getBank() + deposit);
+                    resident.getVillage().addToBank(deposit);
                     Utils.runAsync(() -> {
                         DatabaseManager.getInstance().saveVillage(resident.getVillage());
                         DatabaseManager.getInstance().logDeposit(resident.getVillage(), resident, deposit);
                     });
-                    MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("deposited"),
+                    getMessage("deposited").tell(resident.getVillage().getOnlineResidents(),
                             "rank", resident.getVillageRank().getTag(resident.getVillage()),
                             "title", resident.getTitle(),
                             "name", resident.getName(),
-                            "amount", String.valueOf(deposit));
+                            "amount", Utils.CURRENCY_FORMAT.format(deposit));
                 } else {
                     resident.tell("&cAn error occurred, please tell an admin!");
                 }
             } else {
-                resident.tell(getError("not-enough-money"), "amount", String.valueOf(deposit));
+                getError("not-enough-money").tell(resident, "amount", Utils.CURRENCY_FORMAT.format(deposit));
             }
         } catch (NumberFormatException e) {
+            getError("not-a-number").tell(resident, "input", args[0]);
             return false;
         }
         return true;

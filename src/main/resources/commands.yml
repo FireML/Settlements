@@ -6,6 +6,7 @@ help-order:
     - s show <name>
     - list
     - home
+    - donate
     - map
     resident:
     - invite
@@ -22,6 +23,7 @@ help-order:
     - outpost
     - teleporters
     - bank
+    - donate
     - upkeep
     - allies
     - help elder
@@ -68,6 +70,7 @@ help-order:
     - s plot staff
     - shop
     - title
+    - titles
     - setdescription
     outpost:
     - list
@@ -99,6 +102,7 @@ help-order:
     - show
     - list
     - home
+    - donate
     member:
     - show
     - list
@@ -108,6 +112,7 @@ help-order:
     - senators
     - e plot
     - bank
+    - donate
     - upkeep
     - allies
     - help senator
