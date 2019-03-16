@@ -35,7 +35,6 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -500,12 +499,14 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         String online = null;
         String offline = null;
         String separator = null;
+        Message more = null;
         if (configMessages != null) {
             rankMessage = configMessages.getMessage("residents.rank");
             entry = configMessages.getMessage("residents.entry");
             online = configMessages.getMessage("residents.online").getText();
             offline = configMessages.getMessage("residents.offline").getText();
             separator = configMessages.getMessage("residents.separator").getText();
+            more = configMessages.getMessage("residents.more");
         }
         Resident chief = getChief();
         return new String[] {
@@ -542,14 +543,14 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 "chieftitle", chief.getTitle(),
                 "chief", chief.getName(),
                 "chiefonline", configMessages != null ? chief.getPlayer() != null ? online : offline : "",
-                "residents", configMessages != null ? getResidentsToString(rankMessage, entry, online, offline, separator) : String.valueOf(getResidentIds().size()),
+                "residents", configMessages != null ? getResidentsToString(rankMessage, entry, more, online, offline, separator) : String.valueOf(getResidentIds().size()),
                 "rescount", String.valueOf(getResidentIds().size()),
                 "resonlinecount", String.valueOf(getOnlineCount()),
                 "resotheronlinecount", String.valueOf(getOnlineCount() - 1)
         };
     }
 
-    private String getResidentsToString(Message rankMessage, Message entry, String online, String offline, CharSequence separator) {
+    private String getResidentsToString(Message rankMessage, Message entry, Message more, String online, String offline, CharSequence separator) {
         Multimap<VillageRank, Resident> rankMap = MultimapBuilder.hashKeys().arrayListValues().build();
         for (Resident resident : getResidents()) {
             rankMap.put(resident.getVillageRank(), resident);
@@ -560,10 +561,20 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 // should be listed extra
                 continue;
             }
-            lines.add(rankMessage.getReplacedText(
+            String line = rankMessage.getReplacedText(
                     "rank", rank.getTag(this),
                     "residents", rankMap.get(rank).stream()
-                            .sorted(Comparator.comparing(Resident::getVillageJoin))
+                            .sorted((o1, o2) -> {
+                                Player p1 = o1.getPlayer();
+                                Player p2 = o2.getPlayer();
+                                if (p1 != null && p2 == null) {
+                                    return -1;
+                                } else if (p1 == null && p2 != null) {
+                                    return 1;
+                                }
+                                return Long.compare(o1.getVillageJoin(), o2.getVillageJoin());
+                            })
+                            .limit(Utils.getPlayersInShow())
                             .map(res -> entry.getReplacedText(
                                     "online", res.getPlayer() != null ? online : offline,
                                     "name", res.getName(),
@@ -571,7 +582,14 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                                     "title", res.getTitle()
                             ))
                             .collect(Collectors.joining(separator))
-            ));
+            );
+            if (rankMap.get(rank).size() > Utils.getPlayersInShow()) {
+                line += more.getReplacedText(
+                        "amount", String.valueOf(rankMap.get(rank).size()),
+                        "more", String.valueOf(rankMap.get(rank).size() - Utils.getPlayersInShow())
+                );
+            }
+            lines.add(line);
         }
         return String.join("\n", lines);
     }

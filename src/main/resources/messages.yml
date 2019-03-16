@@ -357,6 +357,7 @@ integration:
     residents:
       rank: "&6&l{rank}:&r {residents}"
       separator: "&7, "
+      more: "&7 and {more} more..."
       online: "&a"
       offline: "&c"
       entry: "{online}{name}"
@@ -642,6 +643,7 @@ gui:
     residents:
       rank: "&6&l{rank}:&r {residents}"
       separator: "&7, "
+      more: "&7 and {more} more..."
       online: "&a"
       offline: "&c"
       entry: "{online}{name}"
@@ -993,6 +995,7 @@ command:
       residents:
         rank: "&6&l{rank}:&r {residents}"
         separator: "&7, "
+        more: "&7 and {more} more..."
         online: "&a"
         offline: "&c"
         entry: "{online}{name}"
@@ -1222,6 +1225,7 @@ command:
       residents:
         rank: "&6&l{rank}:&r {residents}"
         separator: "&7, "
+        more: "&7 and {more} more..."
         online: "&a"
         offline: "&c"
         entry: "{online}{name}"

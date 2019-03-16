@@ -180,6 +180,13 @@ public class Utils {
         return 20;
     }
 
+    public static int getPlayersInShow() {
+        if (ConfigManager.getInstance().getConfig().isInt("players-in-show")) {
+            return ConfigManager.getInstance().getConfig().getInt("players-in-show");
+        }
+        return 40;
+    }
+
     public static String getSpawnCommand() {
         if (ConfigManager.getInstance().getConfig().isString("spawn-command")) {
             return ConfigManager.getInstance().getConfig().getString("spawn-command");
