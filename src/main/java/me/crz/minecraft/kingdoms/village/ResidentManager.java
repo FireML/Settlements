@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.village;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.banish.CustomRunnable;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.land.LandManager;
@@ -42,6 +43,9 @@ public class ResidentManager {
 
             private long getDuration(Resident resident) {
                 if (resident != null) {
+                    if (!KingdomsPlugin.getInstance().isRunning()) {
+                        return Long.MAX_VALUE;
+                    }
                     if (resident.hasVillage()) {
                         return Long.MAX_VALUE;
                     }
