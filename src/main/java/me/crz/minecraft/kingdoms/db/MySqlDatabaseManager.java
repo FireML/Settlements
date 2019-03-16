@@ -973,7 +973,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         ResultSet tpRs = tpSta.executeQuery();
         Map<String, Collection<String>> rankTitles = new LinkedHashMap<>();
         while (tpRs.next()) {
-            rankTitles.computeIfAbsent(rpRs.getString("rank"), k -> new LinkedHashSet<>()).add(rpRs.getString("title"));
+            rankTitles.computeIfAbsent(tpRs.getString("rank"), k -> new LinkedHashSet<>()).add(tpRs.getString("title"));
         }
         map.put("titles", rankTitles);
 
