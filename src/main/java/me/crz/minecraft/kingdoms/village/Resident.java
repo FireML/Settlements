@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.village;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import me.crz.minecraft.kingdoms.integration.AfkProvider;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
@@ -129,6 +130,15 @@ public class Resident implements ConfigurationSerializable, Targetable {
     public boolean removeIgnore(UUID ignore) {
         KingdomsPlugin.getInstance().getIgnoreProviders().forEach(i -> i.removeIgnore(this, ignore));
         return this.ignore.remove(ignore);
+    }
+
+    public boolean isAfk() {
+        for (AfkProvider provider : KingdomsPlugin.getInstance().getAfkProviders()) {
+            if (provider.isAfk(this)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean getSwear() {

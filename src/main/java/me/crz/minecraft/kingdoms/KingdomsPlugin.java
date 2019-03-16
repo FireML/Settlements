@@ -7,6 +7,7 @@ import me.crz.minecraft.kingdoms.banish.BanishListener;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireListener;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.integration.AfkProvider;
 import me.crz.minecraft.kingdoms.integration.ChestShopIntegration;
 import me.crz.minecraft.kingdoms.integration.CmiIntegration;
 import me.crz.minecraft.kingdoms.integration.IgnoreProvider;
@@ -64,6 +65,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     private Set<LockProvider> lockProviders = new LinkedHashSet<>();
     private Set<IgnoreProvider> ignoreProviders = new LinkedHashSet<>();
+    private Set<AfkProvider> afkProviders = new LinkedHashSet<>();
 
     public boolean emgcy = false;
     public static Chat chat;
@@ -275,6 +277,10 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     public Set<IgnoreProvider> getIgnoreProviders() {
         return ignoreProviders;
+    }
+
+    public Set<AfkProvider> getAfkProviders() {
+        return afkProviders;
     }
 
     public MultiverseIntegration getMultiverse() {

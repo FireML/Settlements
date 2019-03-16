@@ -237,6 +237,8 @@ chat:
     private:
       sender: "&8\\[&a{sender} &7➦ &3{target}&8] &b{message}"
       target: "{staff}&8\\[&3{sender} &7➦ &a{target}&8] &b{message}"
+      afk: "&ePlayer is AFK and may not respond"
+      afk-staff: "&eStaff member is AFK and may not respond. Try contacting us through discord"
       name:
         sender: "you"
         target: "{displayname}"

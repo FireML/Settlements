@@ -7,12 +7,13 @@ import me.crz.minecraft.kingdoms.village.Resident;
 
 import java.util.UUID;
 
-public class CmiIntegration implements IgnoreProvider {
+public class CmiIntegration implements IgnoreProvider, AfkProvider {
 
     private final CMI cmi;
 
     public CmiIntegration() {
         KingdomsPlugin.getInstance().getIgnoreProviders().add(this);
+        KingdomsPlugin.getInstance().getAfkProviders().add(this);
         cmi = CMI.getInstance();
     }
 
@@ -35,5 +36,11 @@ public class CmiIntegration implements IgnoreProvider {
             user.removeIgnore(ignoredId);
             user.addForDelayedSave();
         }
+    }
+
+    @Override
+    public boolean isAfk(Resident resident) {
+        CMIUser user = cmi.getPlayerManager().getUser(resident.getUUID());
+        return user != null && user.isAfk();
     }
 }

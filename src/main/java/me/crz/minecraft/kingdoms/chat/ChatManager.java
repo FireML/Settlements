@@ -291,8 +291,18 @@ public class ChatManager extends Base implements ConfigMessages {
                 "message", new ComponentBuilder(message).create(),
                 "staff", sender.hasPermission("kingdoms.prefix.staff") ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
         ));
+
         lastMessage.put(sender.getUniqueId(), target.getUniqueId());
         lastMessage.put(target.getUniqueId(), sender.getUniqueId());
+
+        if (tres.isAfk()) {
+            if (target.hasPermission("kingdoms.prefix.staff")) {
+                getMessage("afk-staff").tell(sender, "name", tres.getName());
+            } else {
+                getMessage("afk").tell(sender, "name", tres.getName());
+            }
+        }
+
         BaseComponent[] socialSpy = getMessage("format.private.social-spy").getReplacedComponents(
                 "sender", sender.getName(),
                 "senderdisplay", sender.getDisplayName(),
