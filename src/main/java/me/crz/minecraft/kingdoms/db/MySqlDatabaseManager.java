@@ -190,6 +190,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
             ResultSet rs = sta.executeQuery("SELECT title FROM " + table + " LIMIT 1;");
             if (rs.getMetaData().getColumnType(1) != Types.VARCHAR) {
                 if (rs.next()) {
+                    plugin.getLogger().log(Level.INFO, "Converting resident titles...");
                     sta.execute("ALTER TABLE " + table + " CHANGE COLUMN title titleIndex INTEGER NOT NULL");
                     sta.execute("ALTER TABLE " + table + " ADD COLUMN title VARCHAR(16) after empirerank");
 
@@ -198,6 +199,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                             " LEFT JOIN " + tablePrefix + MySqlTable.SETTLEMENTS.getDbName() + " AS settlement ON res.settlementId <=> settlement.id" +
                             " WHERE res.settlementId IS NOT NULL AND res.titleIndex != 0");
                     PreparedStatement pSta = conn.prepareStatement("UPDATE " + table + " SET title=? WHERE id=?");
+                    int i = 0;
                     while (rsr.next()) {
                         int titleIndex = rsr.getInt("title");
                         List<String> titles = Message.get(rsr.getString("state").toLowerCase() + ".rank." + rsr.getString("rank").toLowerCase())
@@ -206,10 +208,19 @@ public class MySqlDatabaseManager extends DatabaseManager {
                             pSta.setString(1, titles.get(titleIndex));
                             pSta.setInt(2, rsr.getInt("id"));
                             pSta.addBatch();
+                            i++;
+                            if (i % 1000 == 0) {
+                                pSta.executeBatch();
+                                plugin.getLogger().log(Level.INFO, "Converted " + i + "...");
+                            }
                         }
                     }
-                    pSta.executeBatch();
+                    if (i % 1000 != 0) {
+                        pSta.executeBatch();
+                        plugin.getLogger().log(Level.INFO, "Converted " + i);
+                    }
                     sta.execute("ALTER TABLE " + table + " DROP COLUMN titleIndex");
+                    plugin.getLogger().log(Level.INFO, "Resident title conversion done!");
                 } else {
                     sta.execute("ALTER TABLE " + table + " DROP COLUMN title");
                     sta.execute("ALTER TABLE " + table + " ADD COLUMN title VARCHAR(16) after empirerank");
