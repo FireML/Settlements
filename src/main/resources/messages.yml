@@ -930,6 +930,9 @@ command:
       not-banished: "&cPlayer &f{name}&c is not banished?"
       unbanished: "&6{target}&7 is no longer &cbanished &7from your settlement!"
       description: Remove an entry from the banish list
+    balance:
+      balance: "&2&lSettlement Balance: &r&7{amount}"
+      description: Check the balance of the bank
     bank:
       withdraw:
         not-enough-money: "&c&lNot enough money in the bank to withdraw &r&6&l{amount}&r&c&l!"
@@ -1391,6 +1394,9 @@ command:
       accept-info: "[&6&l/e ally {name}](/e ally {name}) &r&7&lto ally them!"
       request-send: "&7&lAlly request sent to &r&6&l{name}"
       description: Ally another settlement or empire
+    balance:
+      balance: "&2&lEmpire Balance: &r&7{amount}"
+      description: Check the balance of the bank
     bank:
       withdraw:
         not-enough-money: "&c&lNot enough money in the bank to withdraw &r&6&l{amount}&r&c&l!"

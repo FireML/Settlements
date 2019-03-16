@@ -22,13 +22,15 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
             getHelpCommand().registerCommand(new RankHelpCommand(getHelpCommand(), rank));
         }
         getHelpCommand().setDefaultTypeProvider(s -> s instanceof Player && ResidentManager.getInstance().doesResidentHaveEmpire((Player) s) ? "member" : "none");
-        registerCommand(new EmpireSubCommand(this, "balance") {
+        EmpireSubCommand balanceCommand = new EmpireSubCommand(this, "balance") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 getMessage("balance").tell(resident, "amount", Utils.CURRENCY_FORMAT.format(resident.getVillage().getEmpire().getBank()));
                 return true;
             }
-        });
+        };
+        parent.registerCommand(balanceCommand);
+        registerCommand(balanceCommand);
         registerCommand(new EmpireSubCommand(this, "deposit <amount>") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {

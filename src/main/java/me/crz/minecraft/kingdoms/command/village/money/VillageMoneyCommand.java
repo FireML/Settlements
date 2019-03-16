@@ -23,13 +23,15 @@ public class VillageMoneyCommand extends VillageSubCommand {
             getHelpCommand().registerCommand(new RankHelpCommand(getHelpCommand(), rank));
         }
         getHelpCommand().setDefaultTypeProvider(s -> s instanceof Player && ResidentManager.getInstance().doesResidentHaveVillage((Player) s) ? "resident" : "none");
-        registerCommand(new VillageSubCommand(this, "balance") {
+        VillageSubCommand balanceCommand = new VillageSubCommand(this, "balance") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 getMessage("balance").tell(resident, "amount", Utils.CURRENCY_FORMAT.format(resident.getVillage().getBank()));
                 return true;
             }
-        });
+        };
+        parent.registerCommand(balanceCommand);
+        registerCommand(balanceCommand);
         registerCommand(new MoneyWithdrawCommand(this));
         registerCommand(new MoneyDepositCommand(this));
         registerCommand(new VillageHistoryCommand(this, LogType.BANK));
