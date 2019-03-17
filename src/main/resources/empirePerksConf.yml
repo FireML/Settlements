@@ -150,8 +150,22 @@ extra-radius:
       cash: 1000
 flying:
   icon: feather
-  world:
+  actions:
     flying: true
+  cost:
+    unlock:
+      cash: 1000
+weather-control:
+  icon: blaze_rod
+  actions:
+    weather: true
+  cost:
+    unlock:
+      cash: 1000
+time-control:
+  icon: clock
+  actions:
+    time: true
   cost:
     unlock:
       cash: 1000

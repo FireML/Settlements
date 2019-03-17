@@ -59,6 +59,12 @@ public class PerksGUI extends KingdomsGUI {
                         item.addLore(getMessage("toggleable").getReplacedTextList("name", perk.getTag()));
                     }
 
+                    if (perk.hasActions()) {
+                        for (String state : perk.getActionStates(resident.getVillage())) {
+                            item.addLore(getMessage("action-state." + state).getReplacedTextList("name", perk.getTag()));
+                        }
+                    }
+
                     ItemStack itemStack = item.build();
                     if (!perk.getEffects().isEmpty()) {
                         ItemMeta itemMeta = itemStack.getItemMeta();
@@ -80,14 +86,9 @@ public class PerksGUI extends KingdomsGUI {
                     if (!resident.hasVillage() || !resident.hasPermission("village.perks.toggle")) {
                         return false;
                     }
-                    if (perk.hasEffects()) {
-                        PerkData perkData = resident.getVillage().getPerkData(perk);
-                        if (perkData != null) {
-                            perkData.toggle();
-                            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
-                            gui.build(p);
-                            return true;
-                        }
+                    if (resident.getVillage().togglePerk(perk)) {
+                        gui.build(p);
+                        return true;
                     }
                     return false;
                 }

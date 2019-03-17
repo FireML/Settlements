@@ -23,7 +23,7 @@ public class EmpirePerksCommand extends EmpireSubCommand {
                         getError("unknown-perk").tell(resident, "perk", String.join(" ", args));
                     } else if (!resident.getVillage().getEmpire().hasUnlocked(perk)) {
                         getError("not-unlocked").tell(resident, "perk", perk.getTag());
-                    } else if (!perk.hasEffects()) {
+                    } else if (!perk.hasEffects() && !perk.hasEffects()) {
                         getError("no-effects").tell(resident, "perk", perk.getTag());
                     } else {
                         PerkData perkData = resident.getVillage().getEmpire().getPerkData(perk);

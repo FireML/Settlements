@@ -9,6 +9,7 @@ import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -499,5 +500,18 @@ public class Utils {
 
     public static boolean isHostile(LivingEntity entity) {
         return entity instanceof Monster || SPECIAL_HOSTILE.contains(entity.getType());
+    }
+
+    public static WeatherState getWeatherState(World world) {
+        if (world.getGameRuleValue(GameRule.DO_WEATHER_CYCLE)) {
+            return WeatherState.NORMAL;
+        }
+        if (world.isThundering()) {
+            return WeatherState.THUNDER;
+        }
+        if (world.hasStorm()) {
+            return WeatherState.RAIN;
+        }
+        return WeatherState.CLEAR;
     }
 }

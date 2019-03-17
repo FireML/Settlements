@@ -1,15 +1,21 @@
 package me.crz.minecraft.kingdoms.perk;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Perk implements NameTag {
+    protected static final Map<String, Action> AVAILABLE_ACTIONS = new HashMap<>();
+
     private String name;
     private Material icon = Material.LINGERING_POTION;
 
@@ -21,6 +27,7 @@ public class Perk implements NameTag {
     private List<String> commands = new ArrayList<>();
     private Map<String, Long> unlockCost = new HashMap<>();
     private Map<String, Long> repeatCost = new HashMap<>();
+    protected Map<String, Action> actions = new LinkedHashMap<>();
 
     public Perk(ConfigurationSection config) throws IllegalArgumentException {
         if (config == null) {
@@ -50,6 +57,26 @@ public class Perk implements NameTag {
                 repeatCost.put(type, config.getLong("cost.repeat." + type));
             }
         }
+
+        if (config.isConfigurationSection("actions")) {
+            for (String action : config.getConfigurationSection("actions").getKeys(false)) {
+                if (config.isConfigurationSection("actions." + action) || config.getBoolean("actions." + action, false)) {
+                    if (AVAILABLE_ACTIONS.containsKey(action.toLowerCase())) {
+                        actions.put(action.toLowerCase(), AVAILABLE_ACTIONS.get(action.toLowerCase()));
+                    } else {
+                        throw new IllegalArgumentException("Action " + action + " is not supported!");
+                    }
+                }
+            }
+        }
+    }
+
+    protected static void registerAction(String name, ActionExecutor actionExecutor, StateQuery stateQuery) {
+        registerAction(new Action(name, actionExecutor, stateQuery));
+    }
+
+    private static void registerAction(Action action) {
+        AVAILABLE_ACTIONS.put(action.getName().toLowerCase(), action);
     }
 
     protected PerkEffect.EffectLocation getDefaultEffectLocation() {
@@ -98,7 +125,84 @@ public class Perk implements NameTag {
     }
 
     public boolean hasEffects() {
-        return !effects.isEmpty();
+        if (!effects.isEmpty()) {
+            return true;
+        }
+
+        for (Action action : actions.values()) {
+            if (action.isBoolean()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
+    public boolean hasActions() {
+        return !actions.isEmpty();
+    }
+
+    public void toggleActions(LandOwner landOwner, boolean enable) {
+        for (Action action : actions.values()) {
+            action.onToggle(landOwner, enable);
+        }
+    }
+
+    public List<String> getActionStates(LandOwner landOwner) {
+        List<String> states = new ArrayList<>();
+        for (Action action : actions.values()) {
+            String state = action.getState(landOwner);
+            if (state != null) {
+                states.add(state);
+            }
+        }
+        return states;
+    }
+
+    public interface ActionExecutor {
+
+        void onToggle(LandOwner landOwner, boolean enable);
+
+    }
+
+    public interface StateQuery {
+
+        String getState(LandOwner landOwner);
+
+    }
+
+    public static class Action implements ActionExecutor, StateQuery {
+        private final String name;
+        private ActionExecutor actionExecutor;
+        private StateQuery stateQuery;
+
+        public Action(String name, ActionExecutor actionExecutor, StateQuery stateQuery) {
+            this.name = name;
+            this.actionExecutor = actionExecutor;
+            this.stateQuery = stateQuery;
+        }
+
+        @Override
+        public void onToggle(LandOwner landOwner, boolean enable) {
+            if (actionExecutor != null) {
+                actionExecutor.onToggle(landOwner, enable);
+            }
+        }
+
+        @Override
+        public String getState(LandOwner landOwner) {
+            if (stateQuery != null) {
+                return stateQuery.getState(landOwner);
+            }
+            return null;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public boolean isBoolean() {
+            return stateQuery == null;
+        }
+    }
 }

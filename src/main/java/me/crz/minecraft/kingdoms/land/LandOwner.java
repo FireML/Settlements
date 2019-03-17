@@ -175,7 +175,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
     public boolean unlockPerk(Perk perk) {
         if (!hasUnlocked(perk)) {
             getPerksMap().put(perk.name().toLowerCase(), new PerkData());
-            apply(perk);
+            apply( perk);
             return true;
         }
         return false;
@@ -217,10 +217,12 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
 
     public void applyEffects(Perk perk) {
         Base.getLandPerks().updateEffects(false);
+        perk.toggleActions(this, false);
     }
 
     public void removeEffects(Perk perk) {
         Base.getLandPerks().updateEffects(false);
+        perk.toggleActions(this, true);
     }
 
     public Map<String, Map<String, Boolean>> getRanksPermissions() {

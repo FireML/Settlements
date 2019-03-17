@@ -47,10 +47,10 @@ public class UtilTime {
         return System.nanoTime() - from > required;
     }
 
-    public enum MinecraftTime {
-        SUNRISE(23000),
+    public enum MinecraftTime implements NameTag, Next<MinecraftTime> {
+        MORNING(0),
         DAY(6000),
-        SUNSET(13100),
+        DUSK(12000),
         NIGHT(18000);
 
         private int ticks;
@@ -63,19 +63,22 @@ public class UtilTime {
             return ticks;
         }
 
-        public static MinecraftTime fromString(final String name) {
-            MinecraftTime[] values;
-            for (int length = (values = values()).length, i = 0; i < length; ++i) {
-                final MinecraftTime minecraftTime = values[i];
-                if (minecraftTime.name().equalsIgnoreCase(name)) {
-                    return minecraftTime;
+        public static MinecraftTime getNext(long ticks) {
+            for (MinecraftTime time : values()) {
+                if (ticks < time.getTicks()) {
+                    return time;
                 }
             }
-            return null;
+            return MORNING;
         }
 
-        public static boolean exists(final String name) {
-            return fromString(name) != null;
+        public static MinecraftTime getClosest(long ticks) {
+            return values()[Math.round(ticks / 6000) % values().length];
+        }
+
+        @Override
+        public MinecraftTime[] getValues() {
+            return MinecraftTime.values();
         }
     }
 }

@@ -484,6 +484,31 @@ gui:
       title: "&2&l/e mode"
     perks:
       title: "&2&l/e perks"
+      action-state:
+        clear: |-
+          &ePermanent Clear Weather.
+          &bClick to set to rain!
+        rain: |-
+          &ePermanent Rain.
+          &bClick to set to thunder storm!
+        thunder: |-
+          &ePermanent Thunder Storm.
+          &bClick to set to normal weather cycle!
+        normal: |-
+          &eNormal Wehather cycle.
+          &bClick to set to permanent clear weather!
+        morning: |-
+          &eMorning
+          &bClick to set to day (12:00)!
+        day: |-
+          &eDay
+          &bClick to set to dusk (18:00)!
+        dusk: |-
+          &eDusk
+          &bClick to set to night (24:00)!
+        night: |-
+          &eNight
+          &bClick to set to morning (6:00)!
     perms:
       title: "&2&l/e perms"
     rank-perm-groups:

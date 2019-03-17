@@ -46,17 +46,22 @@ public class PerksGUI extends KingdomsGUI {
                         return null;
                     }
                     CItem item = new CItem(perk.getIcon());
-                        PerkData perkData = resident.getVillage().getEmpire().getPerkData(perk);
-                        item.setName(getMessage("entry").getReplacedText("name", perk.getTag())).glow(true);
-                        if (perk.hasEffects()) {
-                            if (perkData.isActive()) {
-                                item.addLore(getMessage("active").getReplacedTextList("name", perk.getTag()));
-                            } else {
-                                item.addLore(getMessage("inactive").getReplacedTextList("name", perk.getTag()));
-                            }
-                            item.addLore(getMessage("toggleable").getReplacedTextList("name", perk.getTag()));
+                    PerkData perkData = resident.getVillage().getEmpire().getPerkData(perk);
+                    item.setName(getMessage("entry").getReplacedText("name", perk.getTag())).glow(true);
+                    if (perk.hasEffects()) {
+                        if (perkData.isActive()) {
+                            item.addLore(getMessage("active").getReplacedTextList("name", perk.getTag()));
+                        } else {
+                            item.addLore(getMessage("inactive").getReplacedTextList("name", perk.getTag()));
                         }
+                        item.addLore(getMessage("toggleable").getReplacedTextList("name", perk.getTag()));
+                    }
 
+                    if (perk.hasActions()) {
+                        for (String state : perk.getActionStates(resident.getVillage().getEmpire())) {
+                            item.addLore(getMessage("action-state." + state).getReplacedTextList("name", perk.getTag()));
+                        }
+                    }
 
                     ItemStack itemStack = item.build();
                     if (!perk.getEffects().isEmpty()) {

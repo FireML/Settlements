@@ -9,7 +9,6 @@ import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.perk.Perk;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.RankManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
@@ -264,46 +263,6 @@ public class Empire extends LandOwner implements Comparable<Empire> {
             World world = Bukkit.getWorld(getWorldName());
             if (world != null) {
                 world.getWorldBorder().setSize(getWorldRadius() * 2, 5);
-            }
-        }
-    }
-
-    @Override
-    public void applyEffects(Perk perk) {
-        super.applyEffects(perk);
-        if (perk instanceof EmpirePerk && ((EmpirePerk) perk).isFlying()) {
-            World world = Bukkit.getWorld(getWorldName());
-            if (world != null) {
-                for (Player player : world.getPlayers()) {
-                    player.setAllowFlight(true);
-                    ResidentManager.getInstance().getResident(player).setHasEmpireFlight(true);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void removeEffects(Perk perk) {
-        super.removeEffects(perk);
-        if (perk instanceof EmpirePerk && ((EmpirePerk) perk).isFlying()) {
-            World world = Bukkit.getWorld(getWorldName());
-            if (world != null) {
-                for (Player player : world.getPlayers()) {
-                    if (player.getAllowFlight()
-                            && player.getGameMode() != GameMode.CREATIVE
-                            && player.getGameMode() != GameMode.SPECTATOR
-                            && !player.hasPermission("kingdoms.bypass.flyremoval")) {
-                        player.setAllowFlight(false);
-                        ResidentManager.getInstance().getResident(player).setHasEmpireFlight(false);
-                        if (player.isFlying()) {
-                            player.setFlying(false);
-                            if (player.getLocation().subtract(0, -1, 0).getBlock().getType() == Material.AIR
-                                    && player.getLocation().subtract(0, -2, 0).getBlock().getType() == Material.AIR) {
-                                player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 10));
-                            }
-                        }
-                    }
-                }
             }
         }
     }
