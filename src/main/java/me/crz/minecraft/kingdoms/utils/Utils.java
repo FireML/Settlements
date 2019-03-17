@@ -426,7 +426,7 @@ public class Utils {
         boolean bypassDelay = player.hasPermission("kingdoms.bypass.teleport-delay");
         if (bypassDelay && !player.hasPermission("kingdoms.bypass.teleport-cooldown")) {
             long cooldown = TELEPORT_COOLDOWNS.getOrDefault(player.getUniqueId(), 0L)
-                    + Utils.getTeleportDelay("outpost") * 1000
+                    + Utils.getTeleportCooldown(type) * 1000
                     - System.currentTimeMillis();
             if (cooldown > 0) {
                 messages.getError("teleport-cooldown").tell(player, "cooldown", UtilTime.format(cooldown));
