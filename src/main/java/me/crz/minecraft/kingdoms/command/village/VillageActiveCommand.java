@@ -61,7 +61,7 @@ public class VillageActiveCommand extends VillageSubCommand {
                             "title", r.getTitle(),
                             "rank", r.getVillageRank().getTag(r.getVillage()),
                             "name", r.getName(),
-                            "activity", r.getPlayer() != null ? getText("online") : getText("offline", "ago", UtilTime.format(r.getLastLogin())),
+                            "activity", r.getPlayer() != null ? getText("online") : getText("offline", "ago", UtilTime.format(System.currentTimeMillis() - r.getLastLogin())),
                             "timestamp", Utils.TIME_FORMAT.format(new Date(r.getLastLogin()))
                     ));
 

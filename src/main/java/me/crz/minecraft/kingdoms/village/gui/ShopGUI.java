@@ -80,7 +80,7 @@ public class ShopGUI extends KingdomsGUI {
                                 item.addLore(getMessage("unlimited").getTextList());
                             }
                             if (!resident.getVillage().checkPerkCooldown(perk)) {
-                                item.addLore(getMessage("cooldown").getReplacedTextList("cooldown", UtilTime.format(perkData.getLastUsed())));
+                                item.addLore(getMessage("cooldown").getReplacedTextList("cooldown", UtilTime.format(System.currentTimeMillis() - perkData.getLastUsed())));
                             }
                             if (!perk.getRepeatCost().isEmpty()) {
                                 item.addLore(getMessage("cost.repeat").getTextList());
