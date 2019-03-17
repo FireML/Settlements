@@ -128,6 +128,12 @@ permissions:
   kingdoms.bypass.restriction.lwc:
     description: Permission to bypass shop build restrictions.
     default: op
+  kingdoms.bypass.teleport-delay:
+    description: Permission to bypass the teleport wait delay.
+    default: op
+  kingdoms.bypass.teleport-cooldown:
+    description: Permission to bypass the teleport cooldown when the delay was bypassed.
+    default: op
   kingdoms.prefix.staff:
     description: Show the staff prefix in private chat.
     default: op

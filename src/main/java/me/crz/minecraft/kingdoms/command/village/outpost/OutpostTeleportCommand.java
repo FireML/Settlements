@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village.outpost;
 
 import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
+import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.world.NamedLocation;
@@ -17,7 +18,7 @@ public class OutpostTeleportCommand extends VillageSubCommand {
         }
         NamedLocation location = resident.getVillage().getOutpostHomes().get(args[0].toLowerCase());
         if (location != null) {
-            Utils.teleport(resident.getPlayer(), location.toBukkitLocation(), "outpost", getConfigPath(), "name", location.getName());
+            Utils.teleport(this, resident.getPlayer(), location.toBukkitLocation(), "outpost", getConfigPath(), "name", location.getName());
         } else {
             resident.tell(getError("outpost-not-found"), "name", args[0]);
         }

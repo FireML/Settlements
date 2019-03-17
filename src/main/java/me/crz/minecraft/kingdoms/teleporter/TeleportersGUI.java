@@ -65,9 +65,18 @@ public class TeleportersGUI extends KingdomsGUI {
                     return false;
                 }
 
-                Utils.teleport(p, v.getHome().toBukkitLocation(), v.getState().getKey(), "command.village.home",
-                        "state", v.getState().getTag(), "name", v.getName());
-                return false;
+                if (!Utils.teleport(
+                        TeleportersGUI.this,
+                        p,
+                        v.getHome().toBukkitLocation(),
+                        v.getState().getKey(),
+                        "command.village.home",
+                        "state", v.getState().getTag(),
+                        "name", v.getName()
+                )) {
+                    Utils.runNextTick(p::closeInventory);
+                }
+                return true;
             }
         });
         ci.addItem(5, new ClickableItem() {
@@ -88,8 +97,10 @@ public class TeleportersGUI extends KingdomsGUI {
                 }
                 Empire empire = resident.getVillage().getEmpire();
                 Location loc = empire.getHome().toBukkitLocation();
-                Utils.teleport(resident.getPlayer(), loc, "empire", "command.empire.home", "name", empire.getName(), "state", empire.getStateTag());
-                return false;
+                if (!Utils.teleport(TeleportersGUI.this, resident.getPlayer(), loc, "empire", "command.empire.home", "name", empire.getName(), "state", empire.getStateTag())) {
+                    Utils.runNextTick(p::closeInventory);
+                }
+                return true;
             }
         });
     }

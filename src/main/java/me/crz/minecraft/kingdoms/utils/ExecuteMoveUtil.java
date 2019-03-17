@@ -22,7 +22,10 @@ public class ExecuteMoveUtil extends Base {
         Base.registerListener(this);
     }
 
-    public void execute(Player p, Runnable r, int delay, String action, String messagePath) {
+    /**
+     * @return true if a waiting task was scheduled
+     */
+    public boolean execute(Player p, Runnable r, int delay, String action, String messagePath) {
         if (delay > 0) {
             AtomicInteger waiting = new AtomicInteger(delay);
             ConfigMessages messages = new PathedConfigMessages(messagePath);
@@ -52,8 +55,10 @@ public class ExecuteMoveUtil extends Base {
             scheduled.put(p.getUniqueId(), waitingRunnable);
             waitingRunnable.run();
             waitingRunnable.runTaskTimer(KingdomsPlugin.getInstance(), 20, 20);
+            return true;
         } else {
             r.run();
+            return false;
         }
     }
 

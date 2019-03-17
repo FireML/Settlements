@@ -4,6 +4,7 @@ import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -45,7 +46,7 @@ public class VillageHomeCommand extends ResidentSubCommand {
         }
 
         if (village.getHome() != null) {
-            Utils.teleport(resident.getPlayer(), village.getHome().toBukkitLocation(), village.getStateKey(), getConfigPath(),
+            Utils.teleport(this, resident.getPlayer(), village.getHome().toBukkitLocation(), village.getStateKey(), getConfigPath(),
                     "state", village.getStateKey(), "name", village.getName());
         } else {
             getMessage("no-home").tell(resident, "state", village.getStateTag());

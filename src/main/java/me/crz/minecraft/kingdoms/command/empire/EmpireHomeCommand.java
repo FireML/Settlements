@@ -41,7 +41,7 @@ public class EmpireHomeCommand extends ResidentSubCommand {
         }
 
         if (empire.getHome() != null) {
-            Utils.teleport(resident.getPlayer(), empire.getHome().toBukkitLocation(), empire.getStateKey(), getConfigPath(),
+            Utils.teleport(this, resident.getPlayer(), empire.getHome().toBukkitLocation(), empire.getStateKey(), getConfigPath(),
                     "state", empire.getStateKey(), "name", empire.getName());
         } else {
             getMessage("no-home").tell(resident, "state", empire.getStateTag());

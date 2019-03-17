@@ -51,6 +51,7 @@ public class Utils {
     public final static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat();
     public static final SimpleDateFormat ISO_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
     public static final UUID ZERO_UUID = new UUID(0, 0);
+    private static final Map<UUID, Long> TELEPORT_COOLDOWNS = new HashMap<>();
     private static Map<String, Integer> LEVEL_CHUNKS = new HashMap<>();
     private static Map<String, Integer> LEVEL_OUTPOSTS = new HashMap<>();
     private static Map<String, Integer> LEVEL_UPKEEP = new HashMap<>();
@@ -169,6 +170,13 @@ public class Utils {
     public static int getTeleportDelay(String type) {
         if (ConfigManager.getInstance().getConfig().isInt("teleport-delay." + type)) {
             return ConfigManager.getInstance().getConfig().getInt("teleport-delay." + type);
+        }
+        return 0;
+    }
+
+    public static int getTeleportCooldown(String type) {
+        if (ConfigManager.getInstance().getConfig().isInt("teleport-cooldown." + type)) {
+            return ConfigManager.getInstance().getConfig().getInt("teleport-cooldown." + type);
         }
         return 0;
     }
@@ -316,6 +324,15 @@ public class Utils {
         return null;
     }
 
+    /**
+     * Run something in the next tick on the primary server thread.
+     * @param run What to run
+     * @return The BukkitTask that was started
+     */
+    public static BukkitTask runNextTick(Runnable run) {
+        return Bukkit.getScheduler().runTask(KingdomsPlugin.getInstance(), run);
+    }
+
     public static UUID parseUuid(String uuidStr) {
         try {
             return UUID.fromString(uuidStr);
@@ -400,12 +417,28 @@ public class Utils {
         return icon != null ? icon : "";
     }
 
-    public static void teleport(Player player, Location loc, String type, String messagePath, String... replacements) {
-        int delay = Utils.getTeleportDelay(type);
-        ExecuteMoveUtil.getInstance().execute(player, () -> {
+    /**
+     * Teleports a player. Checks cooldown and delay bypass permissions
+     * @return false if teleport occurred instantly and no wait task was started
+     */
+    public static boolean teleport(ConfigMessages messages, Player player, Location loc, String type, String messagePath, String... replacements) {
+        boolean bypassDelay = player.hasPermission("kingdoms.bypass.teleport-delay");
+        if (bypassDelay && !player.hasPermission("kingdoms.bypass.teleport-cooldown")) {
+            long cooldown = TELEPORT_COOLDOWNS.getOrDefault(player.getUniqueId(), 0L)
+                    + Utils.getTeleportDelay("outpost") * 1000
+                    - System.currentTimeMillis();
+            if (cooldown > 0) {
+                messages.getError("teleport-cooldown").tell(player, "cooldown", UtilTime.format(cooldown));
+                return true;
+            } else {
+                TELEPORT_COOLDOWNS.put(player.getUniqueId(), System.currentTimeMillis());
+            }
+        }
+
+        return ExecuteMoveUtil.getInstance().execute(player, () -> {
             player.teleport(loc);
             Message.get(messagePath + ".success").tell(player, replacements);
-        }, delay, "Teleport", messagePath);
+        }, bypassDelay ? 0 : Utils.getTeleportDelay(type), "Teleport", messagePath);
     }
 
     public static void teleportToSpawn(Player target) {

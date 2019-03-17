@@ -47,6 +47,7 @@ error:
   level-required: "&cYou must be in a {state} level {level}!"
   no-allies: "&c&lYou have no allies!"
   cant-set-embassy: "&cYou can't set an embassy here!"
+  teleport-cooldown: "&cYou have to wait &e{cooldown}&c before you can teleport again!"
 move-cancelled:
   title: ""
   subtitle: "&c{action} cancelled because you moved!"
