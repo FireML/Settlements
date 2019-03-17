@@ -22,7 +22,7 @@ public class VillageUpkeepCommand extends VillageSubCommand {
         long upkeepAmount = total - village.getTaxIncome();
         if (upkeepAmount > 0) {
             long upkeepDays = village.getBank() / upkeepAmount;
-            afford = upkeepDays > 0 ? ChatColor.GREEN + String.valueOf(upkeepDays) : ChatColor.RED + String.valueOf(upkeepDays);
+            afford = upkeepDays > 0 ? String.valueOf(upkeepDays) : ChatColor.RED + String.valueOf(upkeepDays);
         } else {
             afford = getText("afford-infinite");
         }

@@ -21,7 +21,7 @@ public class EmpireUpkeepCommand extends EmpireSubCommand {
         long upkeepAmount = empire.getUpkeep() - empire.getTaxIncome();
         if (upkeepAmount > 0) {
             long upkeepDays = empire.getBank() / upkeepAmount;
-            afford = upkeepDays > 0 ? ChatColor.GREEN + String.valueOf(upkeepDays) : ChatColor.RED + String.valueOf(upkeepDays);
+            afford = upkeepDays > 0 ? String.valueOf(upkeepDays) : ChatColor.RED + String.valueOf(upkeepDays);
         } else {
             afford = getText("afford-infinite");
         }
