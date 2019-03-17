@@ -331,7 +331,7 @@ public class MongoDatabaseManager extends DatabaseManager {
         List<Bson> filters = new ArrayList<>();
         filters.add(Filters.eq(column, id.value()));
         if (!resident.getVillageRank().atLeast(VillageRank.getChief())) {
-            filters.add(Filters.eq("action", "deposit"));
+            filters.add(Filters.or(Filters.eq("action", "deposit"), Filters.eq("action", "donate")));
         }
         switch (type) {
             case BANK:
@@ -369,7 +369,7 @@ public class MongoDatabaseManager extends DatabaseManager {
         List<Bson> filters = new ArrayList<>();
         filters.add(Filters.eq(column, id.value()));
         if (!resident.getVillageRank().atLeast(VillageRank.getChief())) {
-            filters.add(Filters.eq("action", "deposit"));
+            filters.add(Filters.or(Filters.eq("action", "deposit"), Filters.eq("action", "donate")));
         }
         switch (type) {
             case BANK:
