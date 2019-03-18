@@ -72,6 +72,9 @@ commands:
   msgtoggle:
     description: Toggle private messages on or off
     aliases: [messagetoggle, togglemsg, togglemessages]
+  notify:
+    description: Toggle mention notification sounds on or off
+    aliases: [notifytoggle, togglenotify, nottoggle, notif, notiftoggle]
   scoreboard:
     description: Scoreboard command
   scoreboardadmin:
