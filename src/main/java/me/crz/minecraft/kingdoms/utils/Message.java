@@ -168,8 +168,8 @@ public class Message {
 
         public MessageReplacer(Message message) {
             this.message = message;
-            placeholderPrefix('{');
-            placeholderSuffix('}');
+            placeholderPrefix("{");
+            placeholderSuffix("}");
         }
 
         public MessageReplacer replace(String placeholder, BaseComponent[] value) {

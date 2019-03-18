@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.chat;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.ImmutableMap;
 import de.themoep.minedown.MineDown;
 import de.themoep.minedown.Replacer;
@@ -32,14 +34,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class ChatManager extends Base implements ConfigMessages {
     private static ChatManager instance;
 
+    private final Replacer notifyReplacer = new Replacer().placeholderPrefix("@").placeholderSuffix("");
+
     private Map<UUID, UUID> lastMessage = new HashMap<>();
 
     private final static DecimalFormat BALANCE_FORMAT = new DecimalFormat("#,###.##");
+    private Cache<UUID, Boolean> notifyCooldowns = Caffeine.newBuilder().expireAfterAccess(Utils.getChatNotifyCooldown(), TimeUnit.SECONDS).build();
 
     private ChatManager() {
         super();
@@ -114,8 +120,8 @@ public class ChatManager extends Base implements ConfigMessages {
         }
 
         Replacer replacer = new Replacer()
-                .placeholderPrefix('{')
-                .placeholderSuffix('}')
+                .placeholderPrefix("{")
+                .placeholderSuffix("}")
                 .replace("channel", channel.getTag())
                 .replace("prefix", TextComponent.fromLegacyText(senderPrefix))
                 .replace("suffix", TextComponent.fromLegacyText(senderSuffix))
@@ -152,7 +158,7 @@ public class ChatManager extends Base implements ConfigMessages {
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
                         .collect(Collectors.toList());
                 if (!nearbyPlayers.isEmpty()) {
-                    nearbyPlayers.forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                    nearbyPlayers.forEach(r -> tell(r, r.getSwear() ? unfilteredMessage : filteredMessage));
                 } else {
                     getMessage("chat.nobody-nearby").tell(sender);
                 }
@@ -164,7 +170,7 @@ public class ChatManager extends Base implements ConfigMessages {
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                        .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                        .forEach(r -> tell(r, r.getSwear() ? unfilteredMessage : filteredMessage));
                 break;
             case ALLY:
                 Set<Resident> residentSet = village.getAllies().stream()
@@ -180,21 +186,21 @@ public class ChatManager extends Base implements ConfigMessages {
                 residentSet.stream()
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                        .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                        .forEach(r -> tell(r, r.getSwear() ? unfilteredMessage : filteredMessage));
                 break;
             case EMPIRE:
                 if (village.hasEmpire()) {
                     village.getEmpire().getOnlineResidents().stream()
                             .filter(r -> r.isListening(channel)
                                     && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                            .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                            .forEach(r -> tell(r, r.getSwear() ? unfilteredMessage : filteredMessage));
                 }
                 break;
             case SETTLEMENT:
                 village.getOnlineResidents().stream()
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                        .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                        .forEach(r -> tell(r, r.getSwear() ? unfilteredMessage : filteredMessage));
                 break;
             case EVENT:
                 if (Data.muteChat && !sender.hasPermission("kingdoms.bypass.chatlock")) {
@@ -206,7 +212,7 @@ public class ChatManager extends Base implements ConfigMessages {
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                        .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                        .forEach(r -> tell(r, r.getSwear() ? unfilteredMessage : filteredMessage));
                 break;
             default:
                 if (Data.muteChat && !sender.hasPermission("kingdoms.bypass.chatlock")) {
@@ -218,10 +224,21 @@ public class ChatManager extends Base implements ConfigMessages {
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                        .forEach(r -> r.tell(r.getSwear() ? unfilteredMessage : filteredMessage));
+                        .forEach(r -> tell(r, r.getSwear() ? unfilteredMessage : filteredMessage));
                 break;
         }
         System.out.println(TextComponent.toLegacyText(unfilteredMessage));
+    }
+
+    private void tell(Resident resident, BaseComponent[] components) {
+        Player player = resident.getPlayer();
+        if (MessageUtils.isContainedIn("@" + resident.getName(), components)) {
+            notify(resident);
+            components = notifyReplacer.copy()
+                    .replace(resident.getName(), TextComponent.fromLegacyText(getText("nick-hilight") + "@" + resident.getName()))
+                    .replaceIn(components);
+        }
+        player.spigot().sendMessage(components);
     }
 
     public void sendPrivateMessage(Player sender, Player target, String message) {
@@ -292,6 +309,8 @@ public class ChatManager extends Base implements ConfigMessages {
                 "staff", sender.hasPermission("kingdoms.prefix.staff") ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
         ));
 
+        notify(tres);
+
         lastMessage.put(sender.getUniqueId(), target.getUniqueId());
         lastMessage.put(target.getUniqueId(), sender.getUniqueId());
 
@@ -315,6 +334,17 @@ public class ChatManager extends Base implements ConfigMessages {
             if (pl != null && pl != sender && pl != target && pl.isOnline() && pl.hasPermission("kingdoms.admin.ss")) {
                 MessageUtils.tell(pl, socialSpy);
             }
+        }
+    }
+
+    private void notify(Resident resident) {
+        if (resident.isNotifyEnabled()) {
+            if (notifyCooldowns.getIfPresent(resident.getUUID()) != null) {
+                return;
+            }
+            notifyCooldowns.put(resident.getUUID(), true);
+            Player player = resident.getPlayer();
+            player.playSound(player.getLocation(), Utils.getChatNotifySound(), 3, 1);
         }
     }
 

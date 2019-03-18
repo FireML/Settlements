@@ -11,6 +11,7 @@ import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -229,6 +230,22 @@ public class Utils {
             return ConfigManager.getInstance().getConfig().getBoolean("reset-channel-on-login");
         }
         return true;
+    }
+
+    public static Sound getChatNotifySound() {
+        if (ConfigManager.getInstance().getConfig().isString("chat.notify.sound")) {
+            try {
+                return Sound.valueOf(ConfigManager.getInstance().getConfig().getString("chat.notify.sound").toUpperCase());
+            } catch (IllegalArgumentException ignored) {}
+        }
+        return Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
+    }
+
+    public static int getChatNotifyCooldown() {
+        if (ConfigManager.getInstance().getConfig().isInt("chat.notify.cooldown")) {
+            return ConfigManager.getInstance().getConfig().getInt("chat.notify.cooldown");
+        }
+        return 15;
     }
 
     public static boolean playerIsChief(Player player, Village village) {

@@ -101,8 +101,8 @@ public class MessageUtils extends Base {
             return message;
         }
         return new Replacer()
-                .placeholderPrefix('{')
-                .placeholderSuffix('}')
+                .placeholderPrefix("{")
+                .placeholderSuffix("}")
                 .replace(replacements)
                 .replaceIn(message);
     }
@@ -112,16 +112,16 @@ public class MessageUtils extends Base {
             return message;
         }
         Replacer replacer = new Replacer()
-                .placeholderPrefix('{')
-                .placeholderSuffix('}');
+                .placeholderPrefix("{")
+                .placeholderSuffix("}");
         replacer.componentReplacements().putAll(replacements);
         return replacer.replaceIn(message);
     }
 
     public static BaseComponent[] replacePlaceholders(BaseComponent[] message, String placeholder, BaseComponent[] value) {
         return new Replacer()
-                .placeholderPrefix('{')
-                .placeholderSuffix('}')
+                .placeholderPrefix("{")
+                .placeholderSuffix("}")
                 .replace(placeholder, value)
                 .replaceIn(message);
     }
@@ -133,8 +133,8 @@ public class MessageUtils extends Base {
             return message;
         }
         return new Replacer()
-                .placeholderPrefix('{')
-                .placeholderSuffix('}')
+                .placeholderPrefix("{")
+                .placeholderSuffix("}")
                 .replace(replacements)
                 .replaceIn(message);
     }
@@ -146,8 +146,8 @@ public class MessageUtils extends Base {
             return message;
         }
         return new Replacer()
-                .placeholderPrefix('{')
-                .placeholderSuffix('}')
+                .placeholderPrefix("{")
+                .placeholderSuffix("}")
                 .replace(replacements)
                 .replaceIn(message);
     }
@@ -194,5 +194,17 @@ public class MessageUtils extends Base {
                 .withSubtitle(Message.get(key + ".subtitle").getText())
                 .withActionbar(Message.get(key + ".actionbar").getText())
                 .send(player, replacements);
+    }
+
+    public static boolean isContainedIn(String string, BaseComponent... components) {
+        for (BaseComponent component : components) {
+            if (component instanceof TextComponent && ((TextComponent) component).getText().contains(string)) {
+                return true;
+            }
+            if (component.getExtra() != null && isContainedIn(string, component.getExtra().toArray(new BaseComponent[0]))) {
+                return true;
+            }
+        }
+        return false;
     }
 }

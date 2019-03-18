@@ -6,6 +6,7 @@ import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.chat.commands.IgnoreCommand;
 import me.crz.minecraft.kingdoms.chat.commands.MessageCommand;
 import me.crz.minecraft.kingdoms.chat.commands.MsgToggleCommand;
+import me.crz.minecraft.kingdoms.chat.commands.NotifyToggleCommand;
 import me.crz.minecraft.kingdoms.chat.commands.ReplyCommand;
 import me.crz.minecraft.kingdoms.command.admin.VillageAdminCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireCommand;
@@ -16,7 +17,6 @@ import me.crz.minecraft.kingdoms.command.plot.PlotCommand;
 import me.crz.minecraft.kingdoms.command.resident.ResidentCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -79,6 +79,7 @@ public class CommandManager extends Base implements CommandExecutor {
         registerCommand(new ReplyCommand());
         registerCommand(new IgnoreCommand());
         registerCommand(new MsgToggleCommand());
+        registerCommand(new NotifyToggleCommand());
     }
 
     public void registerCommand(SubCommand ex) {

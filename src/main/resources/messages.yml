@@ -252,6 +252,7 @@ chat:
       trade: "&d[TRADE] &r{prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
       ally: "&b[Ally] &6{state} {title} {prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
       empire: "&b[Empire] &6{state} {settlement} {title}  {prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
+  nick-hilight: "&b"
   afk: "&ePlayer is AFK and may not respond"
   afk-staff: "&eStaff member is AFK and may not respond. Try contacting us through discord"
   ignored: "&cYou cannot message &6{name}&c because they are ignoring you!"
@@ -778,6 +779,11 @@ command:
     invalid-option: "&e{input}&c is not a valid toggle option!"
     enabled: "&7Private messaging is now &aenabled&7!"
     enabled: "&7Private messaging is now &cdisabled&7!"
+  notify:
+    description: "Toggle chat notification sound"
+    invalid-option: "&e{input}&c is not a valid toggle option!"
+    enabled: "&7Chat notification sound is now &aenabled&7!"
+    enabled: "&7Chat notification sound is now &cdisabled&7!"
   reply:
     description: "Replies to the last person who messaged you."
     no-one-messaged: "&cNo one messaged you!"

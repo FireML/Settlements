@@ -67,6 +67,12 @@ claim-max-radius: 5
 mob-flag-check-period: 30
 entries-per-page: 10
 players-in-show: 40
+chat:
+  notify:
+    # Notification sound. See https://papermc.io/javadocs/1.13/org/bukkit/Sound.html
+    sound: entity_experience_orb_pickup
+    # Cooldown between notification sounds
+    cooldown: 15
 allow-firespread-outside-claim: false
 remove-locks-on-unclaim: true
 remove-locked-blocks: false

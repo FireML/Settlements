@@ -51,6 +51,7 @@ public class Resident implements ConfigurationSerializable, Targetable {
     private boolean showSidebar = true;
     private boolean hasEmpireFlight = false;
     private boolean hasMessagesEnabled = true;
+    private boolean notifyEnabled = true;
 
     public Resident(UUID uuid, String name) {
         this.uuid = uuid;
@@ -475,6 +476,14 @@ public class Resident implements ConfigurationSerializable, Targetable {
 
     public void setHasMessagesEnabled(boolean hasMessagesEnabled) {
         this.hasMessagesEnabled = hasMessagesEnabled;
+    }
+
+    public boolean isNotifyEnabled() {
+        return notifyEnabled;
+    }
+
+    public void setNotifyEnabled(boolean notifyEnabled) {
+        this.notifyEnabled = notifyEnabled;
     }
 
     @Override
