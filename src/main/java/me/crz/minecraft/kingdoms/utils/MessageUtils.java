@@ -198,7 +198,7 @@ public class MessageUtils extends Base {
 
     public static boolean isContainedIn(String string, BaseComponent... components) {
         for (BaseComponent component : components) {
-            if (component instanceof TextComponent && ((TextComponent) component).getText().contains(string)) {
+            if (component instanceof TextComponent && ((TextComponent) component).getText().toLowerCase().contains(string.toLowerCase())) {
                 return true;
             }
             if (component.getExtra() != null && isContainedIn(string, component.getExtra().toArray(new BaseComponent[0]))) {
