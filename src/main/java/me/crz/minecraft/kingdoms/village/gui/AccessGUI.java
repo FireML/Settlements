@@ -31,19 +31,22 @@ public class AccessGUI extends KingdomsGUI {
                 @Override
                 public ItemStack getItem(Player p) {
                     Village village = VillageManager.getInstance().getVillageFromPlayer(p);
-                    Message description = getMessage("access." + access.getKey());
-                    if (village != null && village.getAccess() == access) {
-                        return new CItem(Material.LIME_WOOL)
-                                .setName(getMessage("selected")
+                    if (village != null) {
+                        Message description = getMessage("access." + access.getKey());
+                        if (village.getAccess() == access) {
+                            return new CItem(Material.LIME_WOOL)
+                                    .setName(getMessage("selected")
+                                            .getReplacedText("access", access.getTag()))
+                                    .setLore(description.getReplacedTextList("state", village.getStateTag()))
+                                    .build();
+                        }
+                        return new CItem(Material.LIGHT_GRAY_WOOL)
+                                .setName(getMessage("available")
                                         .getReplacedText("access", access.getTag()))
-                                .setLore(description.getTextList())
+                                .setLore(description.getReplacedTextList("state", village.getStateTag()))
                                 .build();
                     }
-                    return new CItem(Material.LIGHT_GRAY_WOOL)
-                            .setName(getMessage("available")
-                                    .getReplacedText("access", access.getTag()))
-                            .setLore(description.getTextList())
-                            .build();
+                    return null;
                 }
 
                 @Override

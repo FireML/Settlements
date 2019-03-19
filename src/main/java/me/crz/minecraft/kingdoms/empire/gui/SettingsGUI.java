@@ -29,7 +29,10 @@ public class SettingsGUI extends KingdomsGUI {
         if (resident.hasPermission("empire.setaccess")) {
             gui.addItem(new ClickableItem() {
                 public ItemStack getItem(Player p) {
-                    return new CItem(Material.IRON_DOOR).setName(getText("access")).build();
+                    return new CItem(Material.IRON_DOOR).setName(getText("access",
+                            "access", resident.getVillage().getEmpire().getAccess().getTag(),
+                            "state", resident.getVillage().getEmpire().getStateTag()
+                    )).build();
                 }
 
                 public boolean click(Player p, ClickType clickType) {
@@ -45,7 +48,10 @@ public class SettingsGUI extends KingdomsGUI {
         if (resident.hasPermission("empire.build")) {
             gui.addItem(new ClickableItem() {
                 public ItemStack getItem(Player p) {
-                    return new CItem(Material.DIAMOND_PICKAXE).setName(getText("build")).build();
+                    return new CItem(Material.DIAMOND_PICKAXE).setName(getText("build",
+                            "build", resident.getVillage().getEmpire().getBuildState().getTag(),
+                            "state", resident.getVillage().getEmpire().getStateTag()
+                    )).build();
                 }
 
                 public boolean click(Player p, ClickType clickType) {
@@ -61,7 +67,9 @@ public class SettingsGUI extends KingdomsGUI {
         if (resident.hasPermission("empire.use")) {
             gui.addItem(new ClickableItem() {
                 public ItemStack getItem(Player p) {
-                    return new CItem(Material.LEVER).setName(getText("use")).build();
+                    return new CItem(Material.LEVER).setName(getText("use",
+                            "state", resident.getVillage().getEmpire().getStateTag()
+                    )).build();
                 }
 
                 public boolean click(Player p, ClickType clickType) {
@@ -77,7 +85,9 @@ public class SettingsGUI extends KingdomsGUI {
         if (resident.hasPermission("empire.mode")) {
             gui.addItem(new ClickableItem() {
                 public ItemStack getItem(Player p) {
-                    return new CItem(Material.REDSTONE).setName(getText("mode")).build();
+                    return new CItem(Material.REDSTONE).setName(getText("mode",
+                            "state", resident.getVillage().getEmpire().getStateTag()
+                    )).build();
                 }
 
                 public boolean click(Player p, ClickType clickType) {
@@ -93,7 +103,9 @@ public class SettingsGUI extends KingdomsGUI {
         if (resident.hasPermission("empire.perms")) {
             gui.addItem(new ClickableItem() {
                 public ItemStack getItem(Player p) {
-                    return new CItem(Material.DIAMOND_SWORD).setName(getText("perms")).build();
+                    return new CItem(Material.DIAMOND_SWORD).setName(getText("perms",
+                            "state", resident.getVillage().getEmpire().getStateTag()
+                    )).build();
                 }
 
                 public boolean click(Player p, ClickType clickType) {
@@ -109,7 +121,9 @@ public class SettingsGUI extends KingdomsGUI {
         if (resident.hasPermission("empire.perks")) {
             gui.addItem(new ClickableItem() {
                 public ItemStack getItem(Player p) {
-                    return new CItem(Material.LINGERING_POTION).setName(getText("perks")).build();
+                    return new CItem(Material.LINGERING_POTION).setName(getText("perks",
+                            "state", resident.getVillage().getEmpire().getStateTag()
+                    )).build();
                 }
 
                 public boolean click(Player p, ClickType clickType) {
@@ -125,7 +139,9 @@ public class SettingsGUI extends KingdomsGUI {
         if (resident.hasPermission("empire.shop")) {
             gui.addItem(new ClickableItem() {
                 public ItemStack getItem(Player p) {
-                    return new CItem(Material.POTION).setName(getText("shop")).build();
+                    return new CItem(Material.POTION).setName(getText("shop",
+                            "state", resident.getVillage().getEmpire().getStateTag()
+                    )).build();
                 }
 
                 public boolean click(Player p, ClickType clickType) {

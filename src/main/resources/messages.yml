@@ -438,26 +438,55 @@ gui:
   access:
     title: "&2&l/s access"
     back: "&c&lBack To Settings"
-    selected: "&e&l{access}"
+    selected: "&a&lCurrently set to &b&l{access}"
     available: "&7{access}"
     access:
-      open: Allows everyone to join without an invitation
-      public: Everyone can tp to home but requires invite to join
-      trusted: Allows allies and fellow empire members to teleport to home
-      ally: Allows allies to teleport to home
-      private: Allows only members to teleport to home
+      open: |-
+        &7Everyone can teleport to home
+        &7Allows anyone to join without invitation
+      public: |-
+        &7Everyone can teleport to home
+        &7Requires an invite to join the {state}
+      trusted: |-
+        &7Can teleport to {state} home:
+        &7- Allies
+        &7- Empire Members
+        &7- Residents
+      ally: |-
+        &7Can teleport to {state} home:
+        &7- Allies
+        &7- Residents
+      private: |-
+        &7Only Residents can teleport to home
   build:
     title: "&2&l/s build"
-    set-state: "&7&lClick to allow building of &a&l{state}"
+    set-state: "&7&lAllow &b&l{state}&7&l to Build"
     selected-state: "&e&lBuilding is currently set to &a&l{state}"
     description: "&7{description}"
     back: "&c&lBack To Settings"
     build:
-      public: Allows everyone to build
-      trusted: Allows residents, allies and fellow empire members to build
-      ally: Allows residents and allies to build
-      residents: Allows only residents to build
-      officers: Allows everyone above elder to build
+      public: |-
+        &7Allows everyone to build
+      trusted: |-
+        &7Allows:
+        &7- {state} Residents
+        &7- Empire Members
+        &7- Allies
+        &7to build
+      ally: |-
+        &7Allows
+        &7- {state} Residents
+        &7- Allies
+        &7to build
+      residents: |-
+        &7Allows {state} Residents to build
+      officers: |-
+        &7Allows:
+        &7- Recruiter
+        &7- Builder
+        &7- Elder
+        &7- Assistant
+        &7to build.
   mode:
     title: "&2&l/s mode"
     entry:
@@ -468,48 +497,69 @@ gui:
     access:
       title: "&2&l/e access"
       access:
-        open: Allows everyone to join without an invitation
-        public: Everyone can tp to home but requires invite to join
-        ally: Allows allies to teleport to home
-        trusted: Allows only residents of member settlements to teleport to home
-        private: Allows only capital residents to teleport to home
+        open: |-
+          &7Everyone can teleport to home
+          &7Allows anyone to join without invitation
+        public: |-
+          &7Everyone can teleport to home
+          &7Requires an invite to join the {state}
+        ally: |-
+          &7Can teleport to {state} home:
+          &7- Allies
+          &7- Residents of all members
+        trusted: |-
+          &7Can teleport to {state} home:
+          &7- Residents of all members
+        private: |-
+          &7Can teleport to {state} home:
+          &7- Residents of the capital
     build:
       title: "&2&l/e build"
       build:
-        public: Allows everyone to build
-        ally: Allows members and allies to build
-        officers: Allows the leader and senators to build
-        trusted: Allows only residents of member settlements to build
-        private: Allows only residents of the capital to build
+        public: |-
+          &7Allows everyone to build
+        ally: |-
+          &7Allows
+          &7- Members
+          &7- Allies
+          &7to build
+        officers: |-
+          &7Allows senators to build
+        trusted: |-
+          &7Allows all members to build
+        private: |-
+          &7Allows only capital residents to build
     mode:
       title: "&2&l/e mode"
     perks:
       title: "&2&l/e perks"
-      action-state:
-        clear: |-
-          &ePermanent Clear Weather.
-          &bClick to set to rain!
-        rain: |-
-          &ePermanent Rain.
-          &bClick to set to thunder storm!
-        thunder: |-
-          &ePermanent Thunder Storm.
-          &bClick to set to normal weather cycle!
-        normal: |-
-          &eNormal Wehather cycle.
-          &bClick to set to permanent clear weather!
-        morning: |-
-          &eMorning
-          &bClick to set to day (12:00)!
-        day: |-
-          &eDay
-          &bClick to set to dusk (18:00)!
-        dusk: |-
-          &eDusk
-          &bClick to set to night (24:00)!
-        night: |-
-          &eNight
-          &bClick to set to morning (6:00)!
+      actions:
+        weather:
+          clear: |-
+            &ePermanent Clear Weather.
+            &bClick to set to rain!
+          rain: |-
+            &ePermanent Rain.
+            &bClick to set to thunder storm!
+          thunder: |-
+            &ePermanent Thunder Storm.
+            &bClick to set to normal weather cycle!
+          normal: |-
+            &eNormal Wehather cycle.
+            &bClick to set to permanent clear weather!
+        time:
+          morning: |-
+            &eMorning
+            &bClick to set to day (12:00)!
+          day: |-
+            &eDay
+            &bClick to set to dusk (18:00)!
+          dusk: |-
+            &eDusk
+            &bClick to set to night (24:00)!
+          night: |-
+            &eNight
+            &bClick to set to morning (6:00)!
     perms:
       title: "&2&l/e perms"
     rank-perm-groups:
@@ -520,9 +570,17 @@ gui:
       title: "&2&l/e shop"
     settings:
       title: "&2&lEmpire Settings"
+      use: |-
+        &a&lUse
+        &7Set different usage rights
+        &7in your {state} world
+      mode: |-
+        &a&lMode
+        &7Set different settings modes
+        &7in your {state} world
       entry: |-
         &a&lEmpire Data
-        &8--------&c&l{name}&r&8--------
+        &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
         &a&lDescription &r&7{description}
         &a&lSymbol &r&7{symbol}
         &6&lLevel &r&7{level}
@@ -609,17 +667,46 @@ gui:
       plot-state: "&7&lPlot build is set to &a&l{state}&7&l but overridden!"
       inherited-state: "&e&lBuilding state &a&l{state}&e&l is inherited!"
       build:
-        public: Allows everyone to build
-        trusted: Allows residents, allies and fellow empire members to build
-        ally: Allows residents and allies to build
-        residents: Allows only residents to build
-        officers: Allows everyone above elder to build
-        friends: Allows only the owner and his friends to build
-        private: Allows only the owner to build
+        public: |-
+          &7Allows everyone to build
+        trusted: |-
+          &7Allows:
+          &7- {state} Residents
+          &7- Empire Members
+          &7- Allies
+          &7to build
+        ally: |-
+          &7Allows
+          &7- {state} Residents
+          &7- Allies
+          &7to build
+        residents: |-
+          &7Allows {state} Residents to build
+        officers: |-
+          &7Allows {state}:
+          &7- Recruiter
+          &7- Builder
+          &7- Elder
+          &7- Assistant
+          &7- Plot Owner
+          &7to build.
+        friends: |-
+          &7Allows only your friends to build
+        private: |-
+          &7Allows only you to build
     settings:
       title: "&2&l/plot settings"
+      build: |-
+        &a&lBuild
+        &7Set who can build in the plot
+      use: |-
+        &a&lUse
+        &7Set different usage rights in the plot
+      mode: |-
+        &a&lMode
+        &7Set different settings for the plot
       entry: |-
-        &8&l-------- &r&c&lPlot Info&r &8&l--------
+        &a⊱&m━━━━&r&6Plot Info&a&m━━━━&a⊰
         &c&l{state}: &7{settlement}
         &9&lDescription: &r{description}
         &9&lModes:
@@ -645,16 +732,34 @@ gui:
       &7&lLast login &a&l{lastlogin}
   settings:
     title: "&2&lSettlement Settings"
-    build: "&a&lBuild"
-    access: "&a&lAccess"
-    use: "&a&lUse"
-    mode: "&a&lMode"
-    perms: "&a&lRank Perms"
-    perks: "&a&lPerks"
-    shop: "&a&lShop"
+    build: |-
+      &a&lBuild
+      &7Set who can build in your {state}
+      &7Currently set to &b{build}
+    access: |-
+      &a&lAccess
+      &7Set who can join your {state}
+      &7Currently set to &b{access}
+    use: |-
+      &a&lUse
+      &7Set different usage rights
+      &7in your {state} claims
+    mode: |-
+      &a&lMode
+      &7Set different settings modes
+      &7in your {state} claims
+    perms: |-
+      &a&lRank Perms
+      &7Edit your {state} ranks
+    perks: |-
+      &a&lPerks
+      &7Toggle your {state} perks
+    shop: |-
+      &a&lShop
+      &7Unlock new {state} perks
     entry: |-
       &a&lVillage Data
-      &8--------&c&l{name}&r&8--------
+      &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
       &a&lDescription &r&7{description}
       &a&lState &r&7{state}
       &6&lLevel &r&7{level}
@@ -778,12 +883,12 @@ command:
     description: "Toggle private messaging"
     invalid-option: "&e{input}&c is not a valid toggle option!"
     enabled: "&7Private messaging is now &aenabled&7!"
-    enabled: "&7Private messaging is now &cdisabled&7!"
+    disabled: "&7Private messaging is now &cdisabled&7!"
   notify:
     description: "Toggle chat notification sound"
     invalid-option: "&e{input}&c is not a valid toggle option!"
     enabled: "&7Chat notification sound is now &aenabled&7!"
-    enabled: "&7Chat notification sound is now &cdisabled&7!"
+    disabled: "&7Chat notification sound is now &cdisabled&7!"
   reply:
     description: "Replies to the last person who messaged you."
     no-one-messaged: "&cNo one messaged you!"
@@ -1463,7 +1568,7 @@ command:
       description: List all banished entries
     unbanish:
       not-banished: "&f{name}&c is not banished?"
-      unbanished: "&6{name}&7 is no longer &cbanished &7from your empire world!"
+      unbanished: "&6{target}&7 is no longer &cbanished &7from your empire world!"
       description: Remove an entry from the banish list
     build:
       success: "&aSet build state of this empire to {state}"
@@ -1738,10 +1843,6 @@ command:
       not-allied: "&c&lYou are not allied to {state} &r&6&l{name}"
       success: "&7&lAlly &6{name} &7removed!"
       description: Remove an ally
-    unbanish:
-      not-banished: "&cPlayer &f{name}&c is not banished?"
-      unbanished: "&6{target}&7 is no longer &cbanished &7from your empire!"
-      description: Remove an entry from the banish list
     upkeep:
       info: |-
         &a⊱&m━━━━&r&6Upkeep&a&m━━━━&a⊰

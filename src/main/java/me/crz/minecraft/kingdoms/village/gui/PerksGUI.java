@@ -61,7 +61,7 @@ public class PerksGUI extends KingdomsGUI {
 
                     if (perk.hasActions()) {
                         for (String state : perk.getActionStates(resident.getVillage())) {
-                            item.addLore(getMessage("action-state." + state).getReplacedTextList("name", perk.getTag()));
+                            item.addLore(getMessage("actions." + state).getReplacedTextList("name", perk.getTag()));
                         }
                     }
 

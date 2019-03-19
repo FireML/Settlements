@@ -1,11 +1,10 @@
 package me.crz.minecraft.kingdoms.perk;
 
-import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.land.LandOwner;
+import me.crz.minecraft.kingdoms.utils.ConfigKey;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,7 +75,7 @@ public class Perk implements NameTag {
     }
 
     private static void registerAction(Action action) {
-        AVAILABLE_ACTIONS.put(action.getName().toLowerCase(), action);
+        AVAILABLE_ACTIONS.put(action.name().toLowerCase(), action);
     }
 
     protected PerkEffect.EffectLocation getDefaultEffectLocation() {
@@ -153,7 +152,7 @@ public class Perk implements NameTag {
         for (Action action : actions.values()) {
             String state = action.getState(landOwner);
             if (state != null) {
-                states.add(state);
+                states.add(action.getKey() + "." + state);
             }
         }
         return states;
@@ -171,7 +170,7 @@ public class Perk implements NameTag {
 
     }
 
-    public static class Action implements ActionExecutor, StateQuery {
+    public static class Action implements ActionExecutor, StateQuery, ConfigKey {
         private final String name;
         private ActionExecutor actionExecutor;
         private StateQuery stateQuery;
@@ -197,7 +196,7 @@ public class Perk implements NameTag {
             return null;
         }
 
-        public String getName() {
+        public String name() {
             return name;
         }
 
