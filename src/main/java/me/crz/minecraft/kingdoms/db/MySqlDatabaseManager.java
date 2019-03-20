@@ -1048,7 +1048,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         if (values.isEmpty()) {
             deleteSql = "DELETE FROM " + tablePrefix + tableName +
                     " WHERE " + keyColumn + " = ?;";
-        } else if (values.values().iterator().next() instanceof Collection) {
+        } else if (!mapValue.isEmpty() && values.values().iterator().next() instanceof Collection) {
             Map<String, Collection<Object>> map = new HashMap<>();
             for (Map.Entry<String, ?> entry : values.entrySet()) {
                 Collection<Object> objects = (Collection<Object>) entry.getValue();
@@ -1082,7 +1082,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 deleteSql += " OR ((" + String.join(") OR (", rankQuery) + "))";
             }
             deleteSql += ";";
-        } else if (values.values().iterator().next() instanceof Map) {
+        } else if (!mapValue.isEmpty() && values.values().iterator().next() instanceof Map) {
             List<String> entries = new ArrayList<>();
             for (Map.Entry<String, ?> entry : values.entrySet()) {
                 if (entry.getValue() instanceof Map) {
