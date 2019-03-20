@@ -6,10 +6,10 @@ import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.Material;
@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.stream.Collectors;
+import java.util.Map;
 
 public class BuildGui extends PlotGUI {
     private static BuildGui instance;
@@ -32,27 +32,31 @@ public class BuildGui extends PlotGUI {
                 public ItemStack getItem(Player p) {
                     OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
                     if (land != null) {
+                        Map<String, String> replacements = Utils.toMap(
+                                "state", state.getTag(),
+                                "description", getMessage("build." + state.getKey()).getReplacedText("state", land.getLandOwner().getStateTag())
+                        );
                         if (state == land.getBuildState()) {
                             if (land.isPlot() || state.appliesTo(BuildState.AppliesTo.SETTLEMENT)) {
                                 return new CItem(Material.LIME_WOOL)
-                                        .setName(getMessage("selected-state").getReplacedText("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
-                                        .addLore(getMessage("description").getReplacedTextList("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
+                                        .setName(getMessage("selected-state").getReplacedText(replacements))
+                                        .addLore(getMessage("description").getReplacedTextList(replacements))
                                         .build();
                             } else {
                                 return new CItem(Material.WHITE_WOOL)
-                                        .setName(getMessage("plot-state").getReplacedText("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
-                                        .addLore(getMessage("description").getReplacedTextList("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
+                                        .setName(getMessage("plot-state").getReplacedText(replacements))
+                                        .addLore(getMessage("description").getReplacedTextList(replacements))
                                         .build();
                             }
                         } else if (state == land.getLandOwner().getBuildState() && !land.isPlot() && !land.getBuildState().appliesTo(BuildState.AppliesTo.SETTLEMENT)) {
                             return new CItem(Material.LIGHT_BLUE_WOOL)
-                                    .setName(getMessage("inherited-state").getReplacedText("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
-                                    .addLore(getMessage("description").getReplacedTextList("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
+                                    .setName(getMessage("inherited-state").getReplacedText(replacements))
+                                    .addLore(getMessage("description").getReplacedTextList(replacements))
                                     .build();
                         }
                         return new CItem(Material.LIGHT_GRAY_WOOL)
-                                .setName(getMessage("set-state").getReplacedText("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
-                                .addLore(getMessage("description").getReplacedTextList("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
+                                .setName(getMessage("set-state").getReplacedText(replacements))
+                                .addLore(getMessage("description").getReplacedTextList(replacements))
                                 .build();
                     }
                     return null;

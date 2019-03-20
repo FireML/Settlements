@@ -17,6 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Map;
+
 public class BuildGui extends KingdomsGUI {
     private static BuildGui instance;
     private CInventory gui;
@@ -30,15 +32,19 @@ public class BuildGui extends KingdomsGUI {
                 public ItemStack getItem(Player p) {
                     Resident res = ResidentManager.getInstance().getResident(p);
                     if (res.hasEmpire()) {
+                        Map<String, String> replacements = Utils.toMap(
+                                "state", state.getTag(),
+                                "description", getMessage("build." + state.getKey()).getReplacedText("state", res.getVillage().getEmpire().getStateTag())
+                        );
                         if (state == res.getVillage().getEmpire().getBuildState()) {
                             return new CItem(Material.LIME_WOOL)
-                                    .setName(getMessage("selected-state").getReplacedText("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
-                                    .addLore(getMessage("description").getReplacedTextList("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
+                                    .setName(getMessage("selected-state").getReplacedText(replacements))
+                                    .addLore(getMessage("description").getReplacedTextList(replacements))
                                     .build();
                         }
                         return new CItem(Material.LIGHT_GRAY_WOOL)
-                                .setName(getMessage("set-state").getReplacedText("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
-                                .addLore(getMessage("description").getReplacedTextList("state", state.getTag(), "description", getMessage("build." + state.getKey()).getText()))
+                                .setName(getMessage("set-state").getReplacedText(replacements))
+                                .addLore(getMessage("description").getReplacedTextList(replacements))
                                 .build();
                     }
                     return null;

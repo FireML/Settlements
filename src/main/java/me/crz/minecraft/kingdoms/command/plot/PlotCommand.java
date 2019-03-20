@@ -39,6 +39,11 @@ public class PlotCommand extends ResidentSubCommand {
     }
 
     @Override
+    public String getKey() {
+        return name();
+    }
+
+    @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         return false;
     }

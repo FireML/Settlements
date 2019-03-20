@@ -945,6 +945,8 @@ command:
       online: "&a"
       offline: "&c"
   plot:
+    admin:
+      description: "Allows administrating of plots"
     build:
       success: "&aSet build state of this plot to {state}"
       states:
@@ -1323,6 +1325,7 @@ command:
       cant-set-higher: "&cYou cannot set the rank of &6{rank} or higher&c!"
       success: "&e&lALERT &r&e{title} {setter} &7set &e{target}s &7rank to &e{rank}&7!"
       rank:
+        assistant: Allows active,disband,transfer,rename,lock admin,empire leave
         elder: Allows mode,claiming,invite,bank,plot,setrank
         builder: Allows resident to build on elder and builder only mode
         recruiter: Allows resident to invite players
@@ -1332,7 +1335,7 @@ command:
           &a⊱&m━━━━&r&6{name} Commands&a&m━━━━&a⊰
           [&b{usage}](hover=&9Click to add it to your input suggest_command={{usage})
         entry: "&e• [&e{rank}](hover=&9Click to add it to your input suggest_command={{usage}) &7- {description}"
-        footer: "&aNote: Officers = Elder and Builder"
+        footer: "&aNote: Officers = Assistant, Elder and Builder"
       description: Sets the rank of a resident
     shop:
       description: Purchase perks
