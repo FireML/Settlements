@@ -12,7 +12,7 @@ public class NotifyToggleCommand extends ResidentSubCommand {
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
-        boolean toggle = !res.hasMessagesEnabled();
+        boolean toggle = !res.isNotifyEnabled();
         if (args.length > 0) {
             try {
                 toggle = Utils.parseBoolean(args[0]);
