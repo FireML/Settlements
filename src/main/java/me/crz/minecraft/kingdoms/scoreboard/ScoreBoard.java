@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.scoreboard;
 
 import co.aikar.timings.Timing;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.integration.PlaceholderApiIntegration;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -57,6 +58,9 @@ public class ScoreBoard {
 
         timing = KingdomsPlugin.getInstance().getAndStartTiming("Scoreboard get player sidebar text");
         List<String> text = manager.getMessage("sidebar.entries." + (resident.hasVillage() ? resident.hasEmpire() ? "empire" : "village" : "no-village")).getReplacedTextList(replacements);
+        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null) {
+            text = PlaceholderApiIntegration.setPlaceholders(member, text);
+        }
         timing.stopTiming();
         return text;
     }

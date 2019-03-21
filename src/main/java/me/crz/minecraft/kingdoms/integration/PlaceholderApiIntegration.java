@@ -112,8 +112,12 @@ public class PlaceholderApiIntegration implements ConfigMessages {
         }
     }
 
-    public String setPlaceholders(Player player, String string) {
+    public static String setPlaceholders(Player player, String string) {
         return PlaceholderAPI.setPlaceholders(player, string);
+    }
+
+    public static List<String> setPlaceholders(Player player, List<String> strings) {
+        return PlaceholderAPI.setPlaceholders(player, strings);
     }
 
 

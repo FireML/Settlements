@@ -9,6 +9,7 @@ import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.events.ChannelChatEvent;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.integration.PlaceholderApiIntegration;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.UtilChat;
@@ -113,7 +114,7 @@ public class ChatManager extends Base implements ConfigMessages {
         BaseComponent[] format;
         if (KingdomsPlugin.getInstance().getPlaceholderApi() != null) {
             format = MineDown.parse(
-                    KingdomsPlugin.getInstance().getPlaceholderApi().setPlaceholders(
+                    PlaceholderApiIntegration.setPlaceholders(
                             sender, getMessage("format.channel." + channel.getKey()).getRawText()));
         } else {
             format = getMessage("format.channel." + channel.getKey()).getComponents();
@@ -266,7 +267,7 @@ public class ChatManager extends Base implements ConfigMessages {
         BaseComponent[] senderFormat;
         if (KingdomsPlugin.getInstance().getPlaceholderApi() != null) {
             senderFormat = MineDown.parse(
-                    KingdomsPlugin.getInstance().getPlaceholderApi().setPlaceholders(
+                    PlaceholderApiIntegration.setPlaceholders(
                             sender, getMessage("format.private.sender").getRawText()));
         } else {
             senderFormat = getMessage("format.private.sender").getComponents();
@@ -289,7 +290,7 @@ public class ChatManager extends Base implements ConfigMessages {
         BaseComponent[] targetFormat;
         if (KingdomsPlugin.getInstance().getPlaceholderApi() != null) {
             targetFormat = MineDown.parse(
-                    KingdomsPlugin.getInstance().getPlaceholderApi().setPlaceholders(
+                    PlaceholderApiIntegration.setPlaceholders(
                             target, getMessage("format.private.target").getRawText()));
         } else {
             targetFormat = getMessage("format.private.target").getComponents();
@@ -363,7 +364,7 @@ public class ChatManager extends Base implements ConfigMessages {
         BaseComponent[] hover;
         if (KingdomsPlugin.getInstance().getPlaceholderApi() != null) {
             hover = MineDown.parse(
-                    KingdomsPlugin.getInstance().getPlaceholderApi().setPlaceholders(
+                    PlaceholderApiIntegration.setPlaceholders(
                             player, getMessage("hover.info").getRawText()));
         } else {
             hover = getMessage("hover.info").getComponents();
