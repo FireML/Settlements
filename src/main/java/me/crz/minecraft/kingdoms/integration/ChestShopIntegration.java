@@ -17,6 +17,7 @@ import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.Sign;
@@ -28,12 +29,13 @@ import org.bukkit.event.block.SignChangeEvent;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class ChestShopIntegration implements LockProvider, Listener {
+public class ChestShopIntegration implements LockProvider, ShopProvider, Listener {
     private final ChestShop chestShop;
 
     public ChestShopIntegration() {
         chestShop = (ChestShop) Bukkit.getPluginManager().getPlugin("ChestShop");
         KingdomsPlugin.getInstance().getLockProviders().add(this);
+        KingdomsPlugin.getInstance().getShopProviders().add(this);
         Bukkit.getPluginManager().registerEvents(this, KingdomsPlugin.getInstance());
     }
 
@@ -97,5 +99,10 @@ public class ChestShopIntegration implements LockProvider, Listener {
             }
         }
         return amount;
+    }
+
+    @Override
+    public boolean isShop(Block block) {
+        return ChestShopSign.isValid(block) || ChestShopSign.isShopBlock(block);
     }
 }

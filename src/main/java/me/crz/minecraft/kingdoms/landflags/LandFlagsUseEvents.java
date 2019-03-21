@@ -1,8 +1,10 @@
 package me.crz.minecraft.kingdoms.landflags;
 
+import com.destroystokyo.paper.MaterialTags;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureCombustEvent;
 import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureDamageEvent;
-import me.crz.minecraft.kingdoms.utils.MaterialUtils;
+import me.crz.minecraft.kingdoms.integration.ShopProvider;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventPriority;
@@ -129,8 +131,15 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void on(PlayerInteractEvent e) {
         if (e.getAction() == Action.PHYSICAL || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            Use use;
-            if (e.getAction() == Action.PHYSICAL && MaterialUtils.PRESSURE_PLATES.contains(e.getClickedBlock().getType())) {
+            Use use = null;
+            if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                for (ShopProvider provider : KingdomsPlugin.getInstance().getShopProviders()) {
+                    if (provider.isShop(e.getClickedBlock())) {
+                        use = Use.SHOP;
+                        break;
+                    }
+                }
+            } else if (e.getAction() == Action.PHYSICAL && MaterialTags.PRESSURE_PLATES.isTagged(e.getClickedBlock())) {
                 use = Use.PRESSURE_PLATE;
             } else {
                 use = Use.getByMaterial(e.getClickedBlock().getType());

@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.landflags;
 
+import com.destroystokyo.paper.MaterialTags;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import org.bukkit.Material;
@@ -16,11 +17,11 @@ public enum Use implements NameTag {
     CHEST(Material.CHEST, Material.TRAPPED_CHEST),
     LEVER(Material.LEVER),
     DOOR(Tag.DOORS.getValues()),
-    GATE(MaterialUtils.FENCE_GATES),
+    GATE(MaterialTags.FENCE_GATES.getValues()),
     TRAP_DOOR(Tag.TRAPDOORS.getValues()),
     BUTTON(Tag.BUTTONS.getValues()),
-    PRESSURE_PLATE(MaterialUtils.PRESSURE_PLATES),
-    BUCKET(MaterialUtils.BUCKETS),
+    PRESSURE_PLATE(MaterialTags.PRESSURE_PLATES.getValues()),
+    BUCKET(MaterialTags.BUCKETS.getValues()),
     RIDE(MaterialUtils.MINECARTS),
     FURNACE(Material.FURNACE),
     HOPPER(Material.HOPPER),
@@ -30,8 +31,8 @@ public enum Use implements NameTag {
     ENCHANTMENT_TABLE(Material.ENCHANTING_TABLE),
     PORTAL(Material.END_PORTAL_FRAME),
     JUKEBOX(Material.JUKEBOX),
-    SHULKER_BOX(MaterialUtils.SHULKER_BOXES),
-    BED(MaterialUtils.BEDS),
+    SHULKER_BOX(MaterialTags.SHULKER_BOXES.getValues()),
+    BED(MaterialTags.BEDS.getValues()),
     ARMOR_STAND(Material.ARMOR_STAND),
     ITEM_FRAME(Material.ITEM_FRAME),
     CRAFTING_TABLE(Material.CRAFTING_TABLE),
@@ -45,6 +46,7 @@ public enum Use implements NameTag {
     ITEM(BuildState.PUBLIC, Material.IRON_INGOT, Collections.EMPTY_SET),
     REPEATERS(Material.REPEATER, Material.COMPARATOR),
     CAKE(Material.CAKE),
+    SHOP(BuildState.PUBLIC, Material.SIGN, Collections.EMPTY_SET),
     INTERACT(Material.BARRIER, Collections.EMPTY_SET);
 
     private final Collection<Material> materials;

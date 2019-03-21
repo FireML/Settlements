@@ -15,6 +15,7 @@ import me.crz.minecraft.kingdoms.integration.IgnoreProvider;
 import me.crz.minecraft.kingdoms.integration.LWCIntegration;
 import me.crz.minecraft.kingdoms.integration.MultiverseIntegration;
 import me.crz.minecraft.kingdoms.integration.PlaceholderApiIntegration;
+import me.crz.minecraft.kingdoms.integration.ShopProvider;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.lock.LockListener;
@@ -67,6 +68,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     private Set<LockProvider> lockProviders = new LinkedHashSet<>();
     private Set<IgnoreProvider> ignoreProviders = new LinkedHashSet<>();
     private Set<AfkProvider> afkProviders = new LinkedHashSet<>();
+    private Set<ShopProvider> shopProviders = new LinkedHashSet<>();
 
     public boolean emgcy = false;
     public static Chat chat;
@@ -283,6 +285,10 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     public Set<AfkProvider> getAfkProviders() {
         return afkProviders;
+    }
+
+    public Set<ShopProvider> getShopProviders() {
+        return shopProviders;
     }
 
     public MultiverseIntegration getMultiverse() {

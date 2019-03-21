@@ -295,6 +295,7 @@ names:
     item: "Pickup Items"
     repeaters: "Repeaters"
     cake: "Cake"
+    shop: "Shops"
     interact: "Other"
   levelperk:
     resistance1: Resistance 1 Buff
