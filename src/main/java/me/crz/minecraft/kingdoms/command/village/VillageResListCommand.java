@@ -24,25 +24,23 @@ public class VillageResListCommand extends VillageSubCommand {
             String online = getMessage("online").getText();
             String offline = getMessage("offline").getText();
             String separator = getMessage("separator").getText();
-            Multimap<VillageRank, Resident> rankMap = MultimapBuilder.hashKeys().arrayListValues().build();
+            Multimap<VillageRank, Resident> rankMap = MultimapBuilder.treeKeys().arrayListValues().build();
             for (Resident resident : sender.getVillage().getResidents()) {
                 rankMap.put(resident.getVillageRank(), resident);
             }
-            for (VillageRank rank : VillageRank.values()) {
-                if (rankMap.containsKey(rank)) {
-                    sender.tell(getMessage("rank"),
-                            "rank", rank.getTag(sender.getVillage()),
-                            "residents", rankMap.get(rank).stream()
-                                    .sorted(Comparator.comparing(Resident::getVillageJoin))
-                                    .map(res -> MessageUtils.replacePlaceholders(entry,
-                                            "online", res.getPlayer() != null ? online : offline,
-                                            "name", res.getName(),
-                                            "rank", res.getVillageRank().getTag(res.getVillage()),
-                                            "title", res.getTitle()
-                                    ))
-                                    .collect(Collectors.joining(separator))
-                    );
-                }
+            for (VillageRank rank : rankMap.keySet()) {
+                sender.tell(getMessage("rank"),
+                        "rank", rank.getTag(sender.getVillage()),
+                        "residents", rankMap.get(rank).stream()
+                                .sorted(Comparator.comparing(Resident::getVillageJoin))
+                                .map(res -> MessageUtils.replacePlaceholders(entry,
+                                        "online", res.getPlayer() != null ? online : offline,
+                                        "name", res.getName(),
+                                        "rank", res.getVillageRank().getTag(res.getVillage()),
+                                        "title", res.getTitle()
+                                ))
+                                .collect(Collectors.joining(separator))
+                );
             }
         });
         return true;

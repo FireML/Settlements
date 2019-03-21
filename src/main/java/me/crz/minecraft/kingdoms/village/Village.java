@@ -551,7 +551,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     }
 
     private String getResidentsToString(Message rankMessage, Message entry, Message more, String online, String offline, CharSequence separator) {
-        Multimap<VillageRank, Resident> rankMap = MultimapBuilder.hashKeys().arrayListValues().build();
+        Multimap<VillageRank, Resident> rankMap = MultimapBuilder.treeKeys().arrayListValues().build();
         for (Resident resident : getResidents()) {
             rankMap.put(resident.getVillageRank(), resident);
         }
