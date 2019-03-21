@@ -1198,7 +1198,7 @@ command:
     list:
       description: "List settlements"
       head: "&a⊱&m━━━━&r&6{access}Settlements [{page}/{maxpage}]&a&m━━━━&a⊰"
-      entry: "&e• {place}. [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{residents} players\n&f{description})"
+      entry: "&e• {place}. [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{size} players\n&f{description})"
       footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
       previous: "&b<< Prev "
       next: "&b Next >>"
@@ -1695,7 +1695,7 @@ command:
       description: Shows you a map of the surrounding chunks
     memberlist:
       head: "&a⊱&m━━━━&r&6Members&a&m━━━━&a⊰"
-      entry: "&e• [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{residents} players\n&f{description})"
+      entry: "&e• [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{size} players\n&f{description})"
       description: List all empire members
     officer:
       description: Members that should have officer build access
