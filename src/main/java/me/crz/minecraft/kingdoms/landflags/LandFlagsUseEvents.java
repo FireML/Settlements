@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureCombustEvent;
 import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureDamageEvent;
 import me.crz.minecraft.kingdoms.integration.ShopProvider;
+import org.bukkit.block.Block;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventPriority;
@@ -132,27 +133,41 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
     public void on(PlayerInteractEvent e) {
         if (e.getAction() == Action.PHYSICAL || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Use use = null;
-            if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                for (ShopProvider provider : KingdomsPlugin.getInstance().getShopProviders()) {
-                    if (provider.isShop(e.getClickedBlock())) {
-                        use = Use.SHOP;
-                        break;
-                    }
-                }
-            } else if (e.getAction() == Action.PHYSICAL && MaterialTags.PRESSURE_PLATES.isTagged(e.getClickedBlock())) {
+            if (e.getAction() == Action.PHYSICAL && MaterialTags.PRESSURE_PLATES.isTagged(e.getClickedBlock())) {
                 use = Use.PRESSURE_PLATE;
             } else {
-                use = Use.getByMaterial(e.getClickedBlock().getType());
-            }
-            if (use == null) {
-                use = Use.INTERACT;
-            }
-            Pair<Boolean, String> response = this.canUse(e.getPlayer(), use, e.getClickedBlock().getLocation());
-            if (!response.getLeft()) {
-                if (use != Use.PRESSURE_PLATE) {
-                    MessageUtils.tell(e.getPlayer(), response.getRight());
+                if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                    for (ShopProvider provider : KingdomsPlugin.getInstance().getShopProviders()) {
+                        if (provider.isShop(e.getClickedBlock())) {
+                            use = Use.SHOP;
+                            break;
+                        }
+                    }
                 }
-                e.setCancelled(true);
+                if (use == null) {
+                    use = Use.getByMaterial(e.getClickedBlock().getType());
+                    if (e.getItem() != null && e.getItem().getType().isBlock()) {
+                        if (e.getPlayer().isSneaking()) {
+                            use = null;
+                        } else if (use == null) {
+                            Block relative = e.getClickedBlock().getRelative(e.getBlockFace());
+                            if (relative.getChunk().equals(e.getClickedBlock().getChunk())) {
+                                use = Use.INTERACT;
+                            }
+                        }
+                    } else if (use == null) {
+                        use = Use.INTERACT;
+                    }
+                }
+            }
+            if (use != null) {
+                Pair<Boolean, String> response = this.canUse(e.getPlayer(), use, e.getClickedBlock().getLocation());
+                if (!response.getLeft()) {
+                    if (use != Use.PRESSURE_PLATE) {
+                        MessageUtils.tell(e.getPlayer(), response.getRight());
+                    }
+                    e.setCancelled(true);
+                }
             }
         }
     }
