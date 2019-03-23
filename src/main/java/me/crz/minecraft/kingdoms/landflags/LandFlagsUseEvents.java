@@ -149,11 +149,6 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
                     if (e.getItem() != null && e.getItem().getType().isBlock()) {
                         if (e.getPlayer().isSneaking()) {
                             use = null;
-                        } else if (use == null) {
-                            Block relative = e.getClickedBlock().getRelative(e.getBlockFace());
-                            if (relative.getChunk().equals(e.getClickedBlock().getChunk())) {
-                                use = Use.INTERACT;
-                            }
                         }
                     } else if (use == null) {
                         use = Use.INTERACT;
