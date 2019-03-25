@@ -20,18 +20,20 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Map;
 
 public class BuildGui extends PlotGUI {
-    private static BuildGui instance;
     private CInventory gui;
 
-    public BuildGui() {
+    public BuildGui(OwnedLand land) {
         super("plot.build");
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
         for (BuildState state : BuildState.values(BuildState.AppliesTo.LAND)) {
-            gui.addItem(new ClickableItem() {
-                @Override
-                public ItemStack getItem(Player p) {
-                    OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
-                    if (land != null) {
+            if (land != null) {
+                if (!land.isPlot() && !state.appliesTo(BuildState.AppliesTo.SETTLEMENT)) {
+                    continue;
+                }
+
+                gui.addItem(new ClickableItem() {
+                    @Override
+                    public ItemStack getItem(Player p) {
                         Map<String, String> replacements = Utils.toMap(
                                 "state", state.getTag(),
                                 "description", getMessage("build." + state.getKey()).getReplacedText("state", land.getLandOwner().getStateTag())
@@ -59,27 +61,25 @@ public class BuildGui extends PlotGUI {
                                 .addLore(getMessage("description").getReplacedTextList(replacements))
                                 .build();
                     }
-                    return null;
-                }
 
-                @Override
-                public boolean click(Player p, ClickType clickType) {
-                    OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
-                    if (land != null && state != land.getBuildState()) {
-                        Resident resident = ResidentManager.getInstance().getResident(p);
-                        if (land.isPlotOwner(p) || land.canAdmin(resident)) {
-                            land.setBuildState(state);
-                            MessageUtils.tell(p, Message.get("command.plot.build.success"),
-                                    "state", state.getTag()
-                            );
-                            LandManager.getInstance().syncAndSave(land);
-                            gui.build(p);
-                            return true;
+                    @Override
+                    public boolean click(Player p, ClickType clickType) {
+                        if (state != land.getBuildState()) {
+                            Resident resident = ResidentManager.getInstance().getResident(p);
+                            if (land.isPlotOwner(p) || land.canAdmin(resident)) {
+                                land.setBuildState(state);
+                                MessageUtils.tell(p, Message.get("command.plot.build.success"),
+                                        "state", state.getTag()
+                                );
+                                LandManager.getInstance().syncAndSave(land);
+                                gui.build(p);
+                                return true;
+                            }
                         }
+                        return false;
                     }
-                    return false;
-                }
-            });
+                });
+            }
         }
         gui.addItem((gui.getMaxSlot() / 9) * 9 + 8, new ClickableItem() {
             public ItemStack getItem(final Player p) {
@@ -93,14 +93,7 @@ public class BuildGui extends PlotGUI {
         });
     }
 
-    public void open(final Player p) {
-        gui.build(p);
-    }
-
-    public static BuildGui getInstance() {
-        if (instance == null) {
-            instance = new BuildGui();
-        }
-        return instance;
+    public static void open(final Player p) {
+        new BuildGui(LandManager.getInstance().getLand(p.getLocation())).gui.build(p);
     }
 }

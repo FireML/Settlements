@@ -24,7 +24,7 @@ public class SettingsGUI extends PlotGUI {
             }
 
             public boolean click(Player p, ClickType clickType) {
-                BuildGui.getInstance().open(p);
+                BuildGui.open(p);
                 return true;
             }
         });

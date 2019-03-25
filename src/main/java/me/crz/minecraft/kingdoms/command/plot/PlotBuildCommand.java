@@ -15,7 +15,7 @@ public class PlotBuildCommand extends PlotSubCommand {
     @Override
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
         if (args.length < 1) {
-            new BuildGui().open(res.getPlayer());
+            BuildGui.open(res.getPlayer());
         } else {
             try {
                 BuildState newState = BuildState.valueOf(args[0].toUpperCase(), BuildState.AppliesTo.LAND);
