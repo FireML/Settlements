@@ -1097,8 +1097,12 @@ public class MySqlDatabaseManager extends DatabaseManager {
             }
 
             deleteSql = "DELETE FROM " + tablePrefix + tableName +
-                    " WHERE " + keyColumn + " = ?" +
-                    " AND (" + mapKey + "," + mapValue + ") NOT IN (" + String.join(",", entries) + ");";
+                    " WHERE " + keyColumn + " = ?";
+
+            if (!entries.isEmpty()) {
+                deleteSql += " AND (" + mapKey + "," + mapValue + ") NOT IN (" + String.join(",", entries) + ")";
+            }
+            deleteSql += ";";
 
         } else {
             deleteSql = "DELETE FROM " + tablePrefix + tableName +
