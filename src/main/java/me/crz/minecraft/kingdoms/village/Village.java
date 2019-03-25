@@ -73,17 +73,16 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         if (getTax() > 0) {
             long totalTax = 0;
             long tax = getTax();
-            for (UUID residentId : residents) {
-                if (residentId.equals(getChiefId())) {
+            for (Resident resident : getResidents()) { // residents should already be cached!
+                if (isChief(resident)) {
                     continue;
                 }
-                Resident resident = ResidentManager.getInstance().getResident(residentId); // should already be cached!
                 if (resident.hasRankPermission("village.tax.exempt")) {
                     continue;
                 }
-                OfflinePlayer player = Bukkit.getPlayer(residentId);
+                OfflinePlayer player = resident.getPlayer();
                 if (player == null) {
-                    player = Bukkit.getOfflinePlayer(residentId);
+                    player = Bukkit.getOfflinePlayer(resident.getUUID());
                 }
                 if (KingdomsPlugin.getInstance().econ.withdrawPlayer(player, tax).transactionSuccess()) {
                     addToBank(tax);
@@ -101,9 +100,8 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                             "state", getState().getTag(),
                             "name", getName()
                     );
-                    getBanishedPlayers().add(residentId);
-                    residents.remove(residentId);
-                    VillageManager.getInstance().leaveVillage(resident);
+                    addBanished(resident);
+                    removeMember(resident);
                 }
             }
             long finalTotalTax = totalTax;
