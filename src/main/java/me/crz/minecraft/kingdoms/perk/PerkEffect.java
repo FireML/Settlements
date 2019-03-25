@@ -3,10 +3,12 @@ package me.crz.minecraft.kingdoms.perk;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ConfigKey;
 import me.crz.minecraft.kingdoms.utils.NameTag;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +20,7 @@ public class PerkEffect {
     private boolean particles = false;
     private boolean icon = true;
 
-    private EffectLocation applyIn = EffectLocation.OWN_SETTLEMENT;
+    private EffectLocation applyIn;
     private EffectInfluenced applyTo = EffectInfluenced.MEMBERS;
 
     public PerkEffect(PotionEffectType type) {
@@ -36,8 +38,8 @@ public class PerkEffect {
         this.ambient = (boolean) map.getOrDefault("ambient", ambient);
         this.particles = (boolean) map.getOrDefault("particles", particles);
         this.icon = (boolean) map.getOrDefault("icon", icon);
-        this.applyIn = EffectLocation.valueOf(ConfigKey.toEnumString((String) map.getOrDefault("apply.in", applyIn.name())));
-        this.applyTo = EffectInfluenced.valueOf(ConfigKey.toEnumString((String) map.getOrDefault("apply.to", applyTo.name())));
+        this.applyIn = EffectLocation.valueOf(ConfigKey.toEnumString(Utils.getOrDefault(map, "apply.in", applyIn.name())));
+        this.applyTo = EffectInfluenced.valueOf(ConfigKey.toEnumString(Utils.getOrDefault(map, "apply.to", applyTo.name())));
     }
 
     public PotionEffectType getType() {

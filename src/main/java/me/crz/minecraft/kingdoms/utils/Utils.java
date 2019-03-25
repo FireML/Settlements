@@ -23,6 +23,7 @@ import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -530,5 +531,13 @@ public class Utils {
             return WeatherState.RAIN;
         }
         return WeatherState.CLEAR;
+    }
+
+    public static <T> T getOrDefault(Map<String, Object> map, String key, T def) {
+        String[] parts = key.split("\\.");
+        for (int i = 0; i + 1 < parts.length; i++) {
+            map = (Map<String, Object>) map.getOrDefault(parts[i], Collections.emptyMap());
+        }
+        return (T) map.getOrDefault(parts[parts.length - 1], def);
     }
 }
