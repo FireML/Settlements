@@ -5,7 +5,7 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureCombustEvent;
 import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureDamageEvent;
 import me.crz.minecraft.kingdoms.integration.ShopProvider;
-import org.bukkit.block.Block;
+import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventPriority;
@@ -146,7 +146,7 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
                 }
                 if (use == null) {
                     use = Use.getByMaterial(e.getClickedBlock().getType());
-                    if (e.getItem() != null && e.getItem().getType().isBlock()) {
+                    if (e.getItem() != null && MaterialUtils.placesBlock(e.getItem())) {
                         if (e.getPlayer().isSneaking()) {
                             use = null;
                         }

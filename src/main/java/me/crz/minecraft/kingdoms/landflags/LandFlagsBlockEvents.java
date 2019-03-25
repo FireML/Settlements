@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.landflags;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -52,7 +53,8 @@ public class LandFlagsBlockEvents implements LandFlagBase, Listener {
     public void on(PlayerInteractEvent e) {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getPlayer().getEquipment().getItemInMainHand() != null) {
             Material mat = e.getPlayer().getEquipment().getItemInMainHand().getType();
-            if (Tag.ITEMS_BOATS.isTagged(mat) || mat == Material.ITEM_FRAME || mat == Material.PAINTING || mat == Material.ARMOR_STAND) {
+            if (Tag.ITEMS_BOATS.isTagged(mat) || MaterialUtils.MINECARTS.contains(mat)
+                    || mat == Material.ITEM_FRAME || mat == Material.PAINTING || mat == Material.ARMOR_STAND) {
                 Pair<Boolean, String> response = this.getCanBuildAll(e.getPlayer(), e.getClickedBlock().getRelative(e.getBlockFace()).getLocation());
                 if (!response.getLeft()) {
                     MessageUtils.tell(e.getPlayer(), response.getRight());
