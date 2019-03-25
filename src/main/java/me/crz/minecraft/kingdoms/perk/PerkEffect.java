@@ -98,6 +98,7 @@ public class PerkEffect {
         public static final EffectInfluenced ENEMIES = new EffectInfluenced("enemies");
         public static final EffectInfluenced MEMBERS = new EffectInfluenced("members");
         public static final EffectInfluenced FREE = new EffectInfluenced("free");
+        public static final EffectInfluenced ALL = new EffectInfluenced("all");
 
         public EffectInfluenced(String name) {
             this.name = name;

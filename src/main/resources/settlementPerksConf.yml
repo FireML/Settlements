@@ -44,8 +44,9 @@ resistance1:
         # trusted - applies to all members of the same empire
         # enemies - applies to all enemies
         # free - applies to everyone without a settlement
+        # all - applies to everyone
         # (note that embassy plot owners are treated like they are residents of the village they own a plot in but only on their plot)
-        to: resident
+        to: members
   # Allow purchasing extra claims or outposts
   bonus:
     claims: 0
