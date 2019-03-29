@@ -68,18 +68,10 @@ public class EmpireListCommand extends SubCommand {
             );
             for (int i = (finalPage - 1) * Utils.getEntriesPerPage(); i < empires.size() && i < finalPage * Utils.getEntriesPerPage(); i++) {
                 Empire e = empires.get(i);
-                getMessage("entry" + (e.isAbandoned() ? "-abandoned" : "")).tell(sender,
-                        "name", e.getName(),
-                        "description", e.getDescription(),
-                        "access", e.getAccess() != LandAccess.PRIVATE ? e.getAccess().getTag() : "",
-                        "size", String.valueOf(e.getMemberIds().size()),
-                        "capital", e.getCapital() != null ? e.getCapital().getName() : "-",
-                        "capitalstate", e.getCapital() != null ? e.getCapital().getStateTag() : "-",
-                        "chief", e.getCapital() != null ? e.getCapital().getChief().getName() : "-",
-                        "chieftitle", e.getCapital() != null ? e.getCapital().getChief().getTitle() : "-",
-                        "chiefrank", VillageRank.getChief().getTag(e.getCapital()),
-                        "place", String.valueOf(i + 1)
-                );
+                getMessage("entry" + (e.isAbandoned() ? "-abandoned" : "")).tell(sender, e.getReplacements(this,
+                        "place", String.valueOf(i + 1),
+                        "access", e.getAccess() != LandAccess.PRIVATE ? e.getAccess().getTag() : ""
+                ));
             }
 
             ComponentBuilder next = new ComponentBuilder("")

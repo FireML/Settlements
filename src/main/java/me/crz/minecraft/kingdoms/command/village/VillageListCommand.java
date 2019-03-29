@@ -68,19 +68,10 @@ public class VillageListCommand extends SubCommand {
 
             for (int i = (finalPage - 1) * Utils.getEntriesPerPage(); i < villages.size() && i < finalPage * Utils.getEntriesPerPage(); i++) {
                 Village v = villages.get(i);
-                Resident chief = v.getChief();
-                getMessage("entry").tell(sender,
-                        "name", v.getName(),
-                        "level", String.valueOf(v.getLevel()),
-                        "description", v.getDescription(),
-                        "state", v.getState().getTag(),
-                        "access", v.getAccess() != LandAccess.PRIVATE ? v.getAccess().getTag() : "",
-                        "residents", String.valueOf(v.getResidentIds().size()),
-                        "chief", chief.getName(),
-                        "chieftitle", chief.getTitle(),
-                        "chiefrank", chief.getVillageRank().getTag(v),
-                        "place", String.valueOf(i + 1)
-                );
+                getMessage("entry").tell(sender, v.getReplacements(this,
+                        "place", String.valueOf(i + 1),
+                        "access", v.getAccess() != LandAccess.PRIVATE ? v.getAccess().getTag() : ""
+                ));
             }
 
             ComponentBuilder next = new ComponentBuilder("")
