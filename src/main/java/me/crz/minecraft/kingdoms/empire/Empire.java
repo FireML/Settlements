@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.empire;
 
 import co.aikar.timings.Timing;
+import com.google.common.collect.ObjectArrays;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
@@ -24,14 +25,11 @@ import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -467,7 +465,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
         return false;
     }
 
-    public String[] getReplacements(ConfigMessages configMessages) {
+    public String[] getReplacements(ConfigMessages configMessages, String... initial) {
         Message entry;
         String online;
         String offline;
@@ -485,7 +483,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
         }
         Village capital = getCapital();
         Resident chief = capital != null ? capital.getChief() : null;
-        return new String[] {
+        String[] repl = new String[] {
                 "name", getName(),
                 "description", getDescription(),
                 "symbol", getSymbol(),
@@ -525,7 +523,13 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                 "size", String.valueOf(getMembers().size()),
                 "members", getMembers().stream().map(v -> v.getState().getTag() + " " + v.getName()).collect(Collectors.joining(", ")),
                 "resonlinecount", String.valueOf(getOnlineCount()),
-                "resotheronlinecount", String.valueOf(getOnlineCount() - 1)
+                "resotheronlinecount", String.valueOf(getOnlineCount() - 1),
+                "officerranks", Arrays.stream(VillageRank.values())
+                        .filter(r -> !r.isChief())
+                        .filter(r -> getEffectivePermissionValue(r, "empire.officer").orElse(false))
+                        .map(NameTag::getTag)
+                        .collect(Collectors.joining(", "))
         };
+        return initial.length > 1 ? ObjectArrays.concat(repl, initial, String.class) : repl;
     }
 }

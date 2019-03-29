@@ -24,6 +24,7 @@ perm-groups:
     permissions:
     - empire.join
     - empire.leave
+    - village.officer
     - village.active
     - village.ally
     - village.allyclaim
@@ -173,7 +174,6 @@ ranks:
     - village.invite
     - village.kick
     - village.help.recruiter
-    - village.officer
     - village.help.builder
   builder:
     icon: stone_shovel

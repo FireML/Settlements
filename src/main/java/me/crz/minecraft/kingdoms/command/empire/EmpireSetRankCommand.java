@@ -18,13 +18,14 @@ public class EmpireSetRankCommand extends EmpireSubCommand {
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
+        Empire empire = res.getVillage().getEmpire();
         if (args.length <= 1) {
-            getMessage("rank-usage.head").tell(res,
+            getMessage("rank-usage.head").tell(res, empire.getReplacements(this,
                     "name", name(),
                     "command", "/" + base + " " + alias,
                     "usage", getUsage(base),
                     "description", getDescription()
-            );
+            ));
             for (EmpireRank rank : EmpireRank.values()) {
                 if (rank.below(res.getVillageRank())) {
                     getMessage("rank-usage.entry").tell(res,
@@ -35,17 +36,16 @@ public class EmpireSetRankCommand extends EmpireSubCommand {
                 }
             }
             if (getMessage("rank-usage.footer").exists()) {
-                getMessage("rank-usage.footer").tell(res,
+                getMessage("rank-usage.footer").tell(res, empire.getReplacements(this,
                         "name", name(),
                         "command", "/" + base + " " + alias,
                         "usage", getUsage(base),
                         "description", getDescription()
-                );
+                ));
             }
             return true;
         }
         Player player = res.getPlayer();
-        Empire empire = res.getVillage().getEmpire();
         Utils.runAsync(() -> {
             Resident tres = ResidentManager.getInstance().getResident(args[0]);
             if (tres == null) {

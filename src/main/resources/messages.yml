@@ -1336,7 +1336,7 @@ command:
           &a⊱&m━━━━&r&6{name} Commands&a&m━━━━&a⊰
           [&b{usage}](hover=&9Click to add it to your input suggest_command={{usage})
         entry: "&e• [&e{rank}](hover=&9Click to add it to your input suggest_command={{usage}) &7- {description}"
-        footer: "&aNote: Officers = Assistant, Elder and Builder"
+        footer: "&aNote: Officers = {officerranks}"
       description: Sets the rank of a resident
     shop:
       description: Purchase perks
@@ -1795,7 +1795,7 @@ command:
           &a⊱&m━━━━&r&6{name} Commands&a&m━━━━&a⊰
           [&b{usage}](hover=&9Click to add it to your input suggest_command={{usage})
         entry: "&e• [&e{rank}](hover=&9Click to add it to your input suggest_command={{usage}) &7- {description}"
-        footer: "&aNote: Officers = Senators"
+        footer: "&aNote: Officers = {officerranks}"
       description: Sets the rank of an empire resident
     setsymbol:
       description: "Set your empire's symbol"

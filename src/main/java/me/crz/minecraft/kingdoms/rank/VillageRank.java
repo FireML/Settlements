@@ -64,6 +64,10 @@ public class VillageRank extends Rank implements Next<VillageRank> {
         return RankManager.getInstance().getVillageChiefRank();
     }
 
+    public boolean isChief() {
+        return this == getChief();
+    }
+
     public static boolean isToggleablePermission(String permission) {
         return RankManager.getInstance().isToggleableVillagePerm(permission);
     }

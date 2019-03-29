@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.village;
 import co.aikar.timings.Timing;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.ObjectArrays;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
@@ -34,6 +35,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -491,7 +493,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         return 0;
     }
 
-    public String[] getReplacements(ConfigMessages configMessages) {
+    public String[] getReplacements(ConfigMessages configMessages, String... initial) {
         Message rankMessage = null;
         Message entry = null;
         String online = null;
@@ -507,7 +509,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
             more = configMessages.getMessage("residents.more");
         }
         Resident chief = getChief();
-        return new String[] {
+        String[] repl = new String[] {
                 "name", getName(),
                 "description", getDescription(),
                 "state", getState().getTag(),
@@ -544,8 +546,14 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 "residents", configMessages != null ? getResidentsToString(rankMessage, entry, more, online, offline, separator) : String.valueOf(getResidentIds().size()),
                 "size", String.valueOf(getResidentIds().size()),
                 "resonlinecount", String.valueOf(getOnlineCount()),
-                "resotheronlinecount", String.valueOf(getOnlineCount() - 1)
+                "resotheronlinecount", String.valueOf(getOnlineCount() - 1),
+                "officerranks", Arrays.stream(VillageRank.values())
+                        .filter(r -> !r.isChief())
+                        .filter(r -> getEffectivePermissionValue(r, "village.officer").orElse(false))
+                        .map(r -> r.getTag(this))
+                        .collect(Collectors.joining(", "))
         };
+        return initial.length > 1 ? ObjectArrays.concat(repl, initial, String.class) : repl;
     }
 
     private String getResidentsToString(Message rankMessage, Message entry, Message more, String online, String offline, CharSequence separator) {

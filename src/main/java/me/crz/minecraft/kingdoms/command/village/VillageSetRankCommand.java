@@ -16,13 +16,14 @@ public class VillageSetRankCommand extends VillageSubCommand {
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
+        Village village = res.getVillage();
         if (args.length <= 1) {
-            getMessage("rank-usage.head").tell(res,
+            getMessage("rank-usage.head").tell(res, village.getReplacements(this,
                     "name", name(),
                     "command", "/" + base + " " + alias,
                     "usage", getUsage(base),
                     "description", getDescription()
-            );
+            ));
             for (VillageRank rank : VillageRank.values()) {
                 if (rank.below(res.getVillageRank())) {
                     getMessage("rank-usage.entry").tell(res,
@@ -33,17 +34,16 @@ public class VillageSetRankCommand extends VillageSubCommand {
                 }
             }
             if (getMessage("rank-usage.footer").exists()) {
-                getMessage("rank-usage.footer").tell(res,
+                getMessage("rank-usage.footer").tell(res, village.getReplacements(this,
                         "name", name(),
                         "command", "/" + base + " " + alias,
                         "usage", getUsage(base),
                         "description", getDescription()
-                );
+                ));
             }
             return true;
         }
         Player player = res.getPlayer();
-        Village village = res.getVillage();
         Utils.runAsync(() -> {
             Resident tres = ResidentManager.getInstance().getResident(args[0]);
             if (tres == null) {
