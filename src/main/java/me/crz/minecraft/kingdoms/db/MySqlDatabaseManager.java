@@ -269,7 +269,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
             }
         } else {
             try (Connection conn = ds.getConnection();
-                 PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "empires WHERE name LIKE ? LIMIT 1")) {
+                 PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "empires WHERE name = ? LIMIT 1")) {
                 sta.setString(1, empire.getName());
                 sta.executeUpdate();
             } catch (SQLException e) {
@@ -325,7 +325,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
             }
         } else {
             try (Connection conn = ds.getConnection();
-                 PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "settlements WHERE name LIKE ? LIMIT 1")) {
+                 PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "settlements WHERE name = ? LIMIT 1")) {
                 sta.setString(1, village.getName());
                 sta.executeUpdate();
             } catch (SQLException e) {
@@ -523,7 +523,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
     @Override
     public Resident getResident(String name) {
         Utils.catchSync();
-        String sql = "SELECT * FROM " + tablePrefix + "residents WHERE name LIKE ?";
+        String sql = "SELECT * FROM " + tablePrefix + "residents WHERE name LIKE QUOTE(?)";
         try (Connection conn = ds.getConnection();
              PreparedStatement sta = conn.prepareStatement(sql)) {
             sta.setString(1, name);
