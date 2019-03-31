@@ -522,11 +522,14 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
     @Override
     public Resident getResident(String name) {
+        if (!name.matches("^\\w{3,16}$")) {
+            return null;
+        }
         Utils.catchSync();
-        String sql = "SELECT * FROM " + tablePrefix + "residents WHERE name LIKE QUOTE(?)";
+        String sql = "SELECT * FROM " + tablePrefix + "residents WHERE name LIKE ?";
         try (Connection conn = ds.getConnection();
              PreparedStatement sta = conn.prepareStatement(sql)) {
-            sta.setString(1, name);
+            sta.setString(1, name.replace("_", "\\_"));
             ResultSet rs = sta.executeQuery();
             if (rs.next()) {
                 return createResident(conn, rs);
