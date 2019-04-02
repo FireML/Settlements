@@ -71,11 +71,15 @@ public abstract class PlotGUI extends KingdomsGUI {
                             Message.get("command.plot.unlink.disconnected").tell(p, "amount", String.valueOf(linked));
                         } else {
                             Collection<OwnedLand> connected = LandManager.getInstance().getAllConnectedLand(land, search -> {
-                                if (!search.isPlotOwner(p)) {
+                                if (!search.isPlotOwner(land.getPlotOwner())) {
                                     return LandManager.FilterResponse.SKIP_ENTRY;
                                 }
                                 return LandManager.FilterResponse.ACCEPT;
                             });
+
+                            if (connected.isEmpty()) {
+                                return false;
+                            }
 
                             Optional<OwnedLand> syncWith = connected.stream().filter(OwnedLand::hasLink).findAny();
                             Message.get("command.plot.link.success").tell(p, "amount", String.valueOf(connected.size()));
