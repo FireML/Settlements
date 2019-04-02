@@ -708,7 +708,7 @@ gui:
         &7Set different settings for the plot
       entry: |-
         &a⊱&m━━━━&r&6Plot Info&a&m━━━━&a⊰
-        &c&l{state}: &7{settlement}
+        &c&l{state}: &7{landowner}
         &9&lDescription: &r{description}
         &9&lModes:
         &7MobSpawning: &6{mobspawning}
