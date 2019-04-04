@@ -510,6 +510,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                         .collect(Collectors.joining(", ")),
                 "chiefrank", VillageRank.getChief().getTag(capital),
                 "chieftitle", chief != null ? chief.getTitle() : "-",
+                "chiefdisplaytitle", chief != null ? chief.getDisplayTitle() : "-",
                 "chief", chief != null ? chief.getName() : "-",
                 "chiefonline", configMessages != null ? chief != null && chief.getPlayer() != null ? online : offline : "",
                 "senators", configMessages != null

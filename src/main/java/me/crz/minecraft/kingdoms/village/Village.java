@@ -541,6 +541,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                         .collect(Collectors.joining(", ")),
                 "chiefrank", VillageRank.getChief().getTag(this),
                 "chieftitle", chief.getTitle(),
+                "chiefdisplaytitle", chief.getDisplayTitle(),
                 "chief", chief.getName(),
                 "chiefonline", configMessages != null ? chief.getPlayer() != null ? online : offline : "",
                 "residents", configMessages != null ? getResidentsToString(rankMessage, entry, more, online, offline, separator) : String.valueOf(getResidentIds().size()),

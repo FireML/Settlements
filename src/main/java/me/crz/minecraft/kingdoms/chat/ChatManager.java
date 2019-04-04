@@ -127,7 +127,7 @@ public class ChatManager extends Base implements ConfigMessages {
                 .replace("prefix", TextComponent.fromLegacyText(senderPrefix))
                 .replace("suffix", TextComponent.fromLegacyText(senderSuffix))
                 .replace("rank", TextComponent.fromLegacyText(village != null ? res.getVillageRank().getTag(village) : ""))
-                .replace("title", TextComponent.fromLegacyText(res.getTitle()))
+                .replace("title", TextComponent.fromLegacyText(res.getDisplayTitle()))
                 .replace("state", TextComponent.fromLegacyText(village != null ? village.getState().getTag() : ""))
                 .replace("settlement", TextComponent.fromLegacyText(village != null ? village.getName() : ""))
                 .replace("empire", TextComponent.fromLegacyText(res.hasEmpire() ? village.getEmpire().getName() : ""))
@@ -356,7 +356,7 @@ public class ChatManager extends Base implements ConfigMessages {
                 "prefix", MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(player)),
                 "suffix", MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerSuffix(player)),
                 "rank", res.hasVillage() ? res.getVillageRank().getTag(res.getVillage()) : "",
-                "title", res.getTitle()
+                "title", res.getDisplayTitle()
         };
     }
 
@@ -378,17 +378,22 @@ public class ChatManager extends Base implements ConfigMessages {
                 "bonus", getMessage("hover.bonus").getReplacedText("bonus", BALANCE_FORMAT.format(res.getBonusClaims())),
                 "village", res.hasVillage() ? getMessage("hover.village").getReplacedText(
                         "state", res.getVillage().getState().getTag(),
-                        "name", res.getVillage().getName()
+                        "name", res.getVillage().getName(),
+                        "chiefdisplaytitle", res.getVillage().getChief().getDisplayTitle(),
+                        "chieftitle", res.getVillage().getChief().getTitle(),
+                        "chief", res.getVillage().getChief().getName()
                 ): "",
                 "empire", res.hasEmpire() ? getMessage("hover.empire").getReplacedText(
                         "name", res.getVillage().getEmpire().getName(),
                         "capital", res.getVillage().getEmpire().getCapital().getName(),
+                        "leaderdisplaytitle", res.getVillage().getEmpire().getCapital().getChief().getDisplayTitle(),
+                        "leadertitle", res.getVillage().getEmpire().getCapital().getChief().getTitle(),
                         "leader", res.getVillage().getEmpire().getCapital().getChief().getName()
                 ): "",
                 "rank", res.hasVillage() ? getMessage("hover.rank").getReplacedText(
                         "state", res.getVillage().getState().getTag(),
                         "rank", res.getVillageRank().getTag(res.getVillage()),
-                        "title", res.getTitle()
+                        "title", res.getDisplayTitle()
                 ) : ""
         ));
     }

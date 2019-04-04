@@ -273,13 +273,16 @@ public class Resident implements ConfigurationSerializable, Targetable {
     }
 
     public String getTitle() {
-        return (hasVillage()
+        return hasVillage()
                 ? (title != null
                         ? (getVillage().getTitles(getVillageRank()).contains(title)
                                 ? title : getVillageRank().getTag(getVillage()))
                         : getVillageRank().getTag(getVillage()))
-                : "")
-                + (hasEmpire() ? getVillage().getEmpire().getSymbol() : "");
+                : "";
+    }
+
+    public String getDisplayTitle() {
+        return getTitle() + (hasEmpire() ? getVillage().getEmpire().getSymbol() : "");
     }
 
     public boolean setTitle(String title) {
