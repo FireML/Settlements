@@ -23,6 +23,7 @@ public class VillageLeaveCommand extends VillageSubCommand {
         if (resident.getVillage().isChief(resident)) {
             getMessage("cant-leave-own").tell(resident);
         } else if (confirm.getIfPresent(resident.getUUID()) != null) {
+            confirm.invalidate(resident.getUUID());
             getMessage("success").tell(resident);
             getMessage("alert").tell(resident.getVillage().getOnlineResidents(), "player", resident.getName());
             resident.leaveVillage();

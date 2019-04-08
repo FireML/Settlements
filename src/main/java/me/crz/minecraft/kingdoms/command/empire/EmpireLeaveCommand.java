@@ -23,6 +23,7 @@ public class EmpireLeaveCommand extends EmpireSubCommand {
         if (resident.getVillage().isCapital()) {
             getMessage("cant-leave-own").tell(resident);
         } else if (confirm.getIfPresent(resident.getUUID()) != null) {
+            confirm.invalidate(resident.getUUID());
             getMessage("success").tell(resident.getVillage().getOnlineResidents(),
                     "state", resident.getVillage().getState().getTag(),
                     "empire", resident.getVillage().getEmpire().getName()
