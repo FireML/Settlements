@@ -1193,6 +1193,7 @@ command:
       description: Kick a player from your village
     leave:
       cant-leave-own: "&c&lERROR &r&7You cannot leave your own settlement. You must delete it."
+      confirm: "&eConfirm that you want to leave by running the command again in the next &c{time} seconds&e!"
       success: "&a&lSUCCESS &r&7You have left your settlement."
       alert: "&e&lALERT &r&e{player}&7 has left the settlement."
       description: Leave your current village
@@ -1645,6 +1646,7 @@ command:
       description: Kick a player from your empire
     leave:
       cant-leave-own: "&c&lERROR &r&7You cannot leave your own empire. You must delete it."
+      confirm: "&eConfirm that you want to leave by running the command again in the next &c{time} seconds&e!"
       success: "&a&lSUCCESS &r&7Your {state} has left the empire  {empire}."
       alert: "&e&lALERT &r&e{state} {name}&7 has left the empire."
       description: Leave your current empire
