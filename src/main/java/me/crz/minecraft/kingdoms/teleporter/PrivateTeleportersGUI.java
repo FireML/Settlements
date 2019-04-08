@@ -123,7 +123,7 @@ public class PrivateTeleportersGUI extends KingdomsGUI {
 
             public boolean click(Player p, ClickType clickType) {
                 if (landOwner.getHome() != null) {
-                    p.teleport(landOwner.getHome().toBukkitLocation());
+                    p.teleportAsync(landOwner.getHome().toBukkitLocation());
                     return true;
                 }
                 return false;

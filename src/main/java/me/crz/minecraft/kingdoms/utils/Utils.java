@@ -455,8 +455,9 @@ public class Utils {
         }
 
         return ExecuteMoveUtil.getInstance().execute(player, () -> {
-            player.teleport(loc);
-            Message.get(messagePath + ".success").tell(player, replacements);
+            player.teleportAsync(loc).thenAccept(success -> {
+                Message.get(messagePath + "." + (success ? "success" : "fail")).tell(player, replacements);
+            });
         }, bypassDelay ? 0 : Utils.getTeleportDelay(type), "Teleport", messagePath);
     }
 
@@ -467,7 +468,7 @@ public class Utils {
                 KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not execute spawn teleport command? Is " + command + " a valid command?");
             }
         } else {
-            target.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
+            target.teleportAsync(Bukkit.getWorlds().get(0).getSpawnLocation());
         }
     }
 

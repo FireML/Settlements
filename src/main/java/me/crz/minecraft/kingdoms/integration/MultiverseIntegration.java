@@ -119,7 +119,7 @@ public class MultiverseIntegration {
         for (Map.Entry<Player, Location> e : positions.entrySet()) {
             if (e.getKey().isOnline()) {
                 e.getValue().setWorld(newWorld);
-                e.getKey().teleport(e.getValue());
+                e.getKey().teleportAsync(e.getValue());
             }
         }
         return true;
