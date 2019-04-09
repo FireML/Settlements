@@ -71,7 +71,7 @@ public class VillageTitlesCommand extends VillageSubCommand {
                         getMessage("success").tell(res, "title", args[1], "rank", rank.getTag());
                         return true;
                     } else {
-                        getError("doesnt-exists").tell(res, "input", args[1], "rank", rank.getTag());
+                        getError("doesnt-exist").tell(res, "input", args[1], "rank", rank.getTag());
                         return true;
                     }
                 }

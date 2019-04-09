@@ -1431,7 +1431,7 @@ command:
         description: "Remove titles"
         cant-edit-higher: "&cYou cannot edit titles of ranks above your own!"
         success: "&e{title}&7 was removed from rank &e{rank}"
-        already-exists: "&e{rank}&c has no title with the name &e{input}&c defined!"
+        doesnt-exist: "&e{rank}&c has no title with the name &e{input}&c defined!"
     transfer:
       success: "&e&lALERT &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
       already-chief: "&c&lYou can't transfer leadership to your self!"
