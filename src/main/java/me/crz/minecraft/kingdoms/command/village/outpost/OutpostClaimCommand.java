@@ -6,6 +6,7 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.world.NamedLocation;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 
 public class OutpostClaimCommand extends VillageSubCommand {
@@ -25,6 +26,12 @@ public class OutpostClaimCommand extends VillageSubCommand {
 
         if (LandManager.getInstance().getClaimedLand(resident.getVillage()).isEmpty()) {
             getError("no-home").tell(resident);
+            return true;
+        }
+
+        NamedLocation outpost = resident.getVillage().getOutpostHomes().get(args[0].toLowerCase());
+        if (outpost != null) {
+            getError("already-exists").tell(resident, "name", outpost.getName());
             return true;
         }
 
