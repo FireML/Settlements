@@ -290,8 +290,8 @@ public class Resident implements ConfigurationSerializable, Targetable {
             this.title = null;
         } else if (title == null) {
             this.title = getVillageRank().getTag(getVillage());
-        } else if (getVillage().getTitles(getVillageRank()).contains(title)) {
-            this.title = title;
+        } else if (getVillage().getTitle(getVillageRank(), title) != null) {
+            this.title = getVillage().getTitle(getVillageRank(), title);
         } else {
             return false;
         }

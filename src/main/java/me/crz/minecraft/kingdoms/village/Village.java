@@ -616,7 +616,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
 
     public boolean addTitle(VillageRank rank, String title) {
         if (rankTitles.get(rank.name().toLowerCase()).isEmpty()) {
-            if (rank.getTitles(this).contains(title)) {
+            if (getTitle(rank, title) != null) {
                 return false;
             } else {
                 rankTitles.putAll(rank.name().toLowerCase(), rank.getTitles(this));
@@ -631,17 +631,27 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
 
     public boolean removeTitle(VillageRank rank, String title) {
         if (rankTitles.get(rank.name().toLowerCase()).isEmpty()) {
-            if (rank.getTitles(this).contains(title)) {
+            if (getTitle(rank, title) != null) {
                 rankTitles.putAll(rank.name().toLowerCase(), rank.getTitles(this));
             } else {
                 return false;
             }
         }
-        if (rankTitles.remove(rank.name().toLowerCase(), title)) {
+        String titleCase = getTitle(rank, title);
+        if (rankTitles.remove(rank.name().toLowerCase(), titleCase)) {
             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(this));
             return true;
         }
         return false;
+    }
+
+    public String getTitle(VillageRank rank, String title) {
+        for (String rankTitle : rank.getTitles(this)) {
+            if (rankTitle.equalsIgnoreCase(title)) {
+                return rankTitle;
+            }
+        }
+        return null;
     }
 
     public Map<String, Collection<String>> getRankTitles() {
