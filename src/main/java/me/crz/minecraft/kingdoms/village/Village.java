@@ -646,7 +646,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     }
 
     public String getTitle(VillageRank rank, String title) {
-        for (String rankTitle : rank.getTitles(this)) {
+        for (String rankTitle : getTitles(rank)) {
             if (rankTitle.equalsIgnoreCase(title)) {
                 return rankTitle;
             }
