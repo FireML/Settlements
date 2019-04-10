@@ -1410,7 +1410,7 @@ command:
           chief: "&e{name}&7 crowned themselves &e{title}&7!"
       invalid-title: "&c{title} is not a title available to you!"
       usage:
-        entry: "&e• [&e&b{usage}](suggest_command={{usage})"
+        entry: "&e• [&e{usage}](suggest_command={{usage})"
     titles:
       description: "Manage settlement titles"
       list:
