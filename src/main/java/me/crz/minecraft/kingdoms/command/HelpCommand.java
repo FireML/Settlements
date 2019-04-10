@@ -13,12 +13,10 @@ import org.apache.commons.lang.WordUtils;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class HelpCommand extends SubCommand {
     private Function<CommandSender, String> defaultTypeProvider;
@@ -198,7 +196,7 @@ public class HelpCommand extends SubCommand {
         int helpIndex = base.lastIndexOf(" help");
         base = helpIndex > -1 ? base.substring(0, helpIndex) : base;
         int spaceIndex = base.lastIndexOf(' ');
-        return getParent().sendUsageMessage(sender, spaceIndex > -1 ? base.substring(0, spaceIndex) : "", spaceIndex > -1 ? base.substring(spaceIndex) : base);
+        return getParent().sendUsageMessage(sender, spaceIndex > -1 ? base.substring(0, spaceIndex) : "", spaceIndex > -1 ? base.substring(spaceIndex + 1) : base);
     }
 
     private SubCommand getSubCommand(String commandPath) {
