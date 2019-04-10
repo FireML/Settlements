@@ -73,6 +73,8 @@ chat:
     sound: entity_experience_orb_pickup
     # Cooldown between notification sounds
     cooldown: 15
+# Amount of titles that can be set per rank
+titles-per-rank: 10
 allow-firespread-outside-claim: false
 remove-locks-on-unclaim: true
 remove-locked-blocks: false

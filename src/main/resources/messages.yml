@@ -1423,6 +1423,7 @@ command:
       add:
         description: "Add new titles"
         cant-edit-higher: "&cYou cannot edit titles of ranks above your own!"
+        too-many: "&cThe rank &e{rank}&c already has the maximum amount of titles ({max}) set!"
         too-long: "&e{input}&c is too long! Titles have to be shorter than 16 characters!"
         invalid-characters: "&e{input}&c contains invalid characters. Only letters, numbers, minus and underscores are allowed!"
         prohibited-words: "&e{input}&c contains prohibited words!"

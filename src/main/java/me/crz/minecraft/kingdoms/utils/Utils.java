@@ -256,6 +256,13 @@ public class Utils {
         return 15;
     }
 
+    public static int getTitlesPerRank() {
+        if (ConfigManager.getInstance().getConfig().isInt("titles-per-rank")) {
+            return ConfigManager.getInstance().getConfig().getInt("titles-per-rank");
+        }
+        return 10;
+    }
+
     public static boolean playerIsChief(Player player, Village village) {
         return village != null && village.getChiefId().equals(player.getUniqueId());
     }

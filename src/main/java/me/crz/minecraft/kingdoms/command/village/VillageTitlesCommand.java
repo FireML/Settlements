@@ -3,7 +3,7 @@ package me.crz.minecraft.kingdoms.command.village;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.UtilChat;
-import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 import java.util.regex.Pattern;
@@ -40,6 +40,11 @@ public class VillageTitlesCommand extends VillageSubCommand {
                         getError("invalid-rank").tell(res, "rank", args[0]);
                     } else if (rank.above(res.getVillageRank())) {
                         getError("cant-edit-higher").tell(res, "rank", res.getVillageRank().getTag());
+                    } else if (rank.getTitles(res.getVillage()).size() >= Utils.getTitlesPerRank()) {
+                        getError("too-many").tell(res,
+                                "rank", res.getVillageRank().getTag(),
+                                "max", String.valueOf(Utils.getTitlesPerRank())
+                        );
                     } else if (args[1].length() > 16) {
                         getError("too-long").tell(res, "input", args[1]);
                     } else if (!TITLE_PATTERN.matcher(args[1]).matches()) {
