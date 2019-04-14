@@ -856,8 +856,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
                         "uuid", hasPlayer ? rs.getString("playerId") : "",
                         "rank", hasPlayer ? rank.getTag(village) : "",
                         "title", hasPlayer ? rs.getString("playerTitle") : "",
-                        "action", rs.getString("action"),
-                        "type", rs.getString("type"),
+                        "action", rs.getString("action") != null ? rs.getString("action") : "",
+                        "type", rs.getString("type") != null ? rs.getString("type") : "?",
                         "icon", Utils.getIcon(resident, rs.getString("type")),
                         "amount", String.valueOf(amount),
                         "timestamp", Utils.TIME_FORMAT.format(new Date(rs.getTimestamp("timestamp").getTime()))
