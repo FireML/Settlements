@@ -37,6 +37,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -55,7 +56,8 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     private Empire empire;
     private VillageState villageState;
     private Map<String, NamedLocation> outpostHomes = new LinkedHashMap<>();
-    private Multimap<String, String> rankTitles = MultimapBuilder.hashKeys().hashSetValues().build();
+    private Multimap<String, String> rankTitles = MultimapBuilder.hashKeys().linkedHashSetValues().build();
+    private Map<String, String> defaultRankTitles = new HashMap<>();
     private Set<UUID> residents = new LinkedHashSet<>();
     private boolean allowAllyClaim = false;
 
@@ -407,7 +409,8 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         map.put("settlementState", getState().name());
         map.put("residents", getResidentIds().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("outposts", getOutpostHomes().values().stream().collect(Collectors.toMap(NamedLocation::getName, NamedLocation::serialize)));
-        map.put("titles", rankTitles.asMap());
+        map.put("titles", getRankTitles());
+        map.put("defaulttiles", getDefaultRankTitles());
         return map;
     }
 
@@ -473,6 +476,8 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         for (Map.Entry<String, Collection<String>> entry : ((Map<String, Collection<String>>) map.get("titles")).entrySet()) {
             village.rankTitles.putAll(entry.getKey(), entry.getValue());
         }
+        ((Map<String, Object>) map.get("defaulttitles")).entrySet().stream()
+                .forEach(e -> village.defaultRankTitles.put(e.getKey(), (String) e.getValue()));
         return village;
     }
 
@@ -630,6 +635,20 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         return false;
     }
 
+    public void setDefaultTitle(VillageRank rank, String title) {
+        String t = getTitle(rank, title);
+        defaultRankTitles.put(rank.name().toLowerCase(), title);
+        if (t == null) {
+            addTitle(rank, title);
+        } else {
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(this));
+        }
+    }
+
+    public String getDefaultTitle(VillageRank rank) {
+        return defaultRankTitles.getOrDefault(rank.name(), getTitles(rank).iterator().next());
+    }
+
     public boolean removeTitle(VillageRank rank, String title) {
         if (rankTitles.get(rank.name().toLowerCase()).isEmpty()) {
             if (getTitle(rank, title) != null) {
@@ -640,6 +659,9 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         }
         String titleCase = getTitle(rank, title);
         if (rankTitles.remove(rank.name().toLowerCase(), titleCase)) {
+            if (getDefaultTitle(rank).equals(title)) {
+                defaultRankTitles.remove(rank.name().toLowerCase());
+            }
             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(this));
             return true;
         }
@@ -657,5 +679,9 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
 
     public Map<String, Collection<String>> getRankTitles() {
         return rankTitles.asMap();
+    }
+
+    public Map<String, String> getDefaultRankTitles() {
+        return defaultRankTitles;
     }
 }

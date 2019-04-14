@@ -97,8 +97,8 @@ public class VillageRank extends Rank implements Next<VillageRank> {
     }
 
     public String getTag(Village village) {
-        Collection<String> titles = village.getTitles(this);
-        return titles != null && !titles.isEmpty() ? titles.iterator().next() : getTag();
+        String title = village.getDefaultTitle(this);
+        return title.isEmpty() ? getTag() : title;
     }
 
     public static VillageRank[] values() {

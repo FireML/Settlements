@@ -297,6 +297,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                         village.getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
                 updateDataMap(conn, "settlement_permissions", "settlementId", (Integer) village.getId().value(), "rank", "permission", village.getRanksPermissions(), "value");
                 updateDataMap(conn, "settlement_titles", "settlementId", (Integer) village.getId().value(), "rank", "title", village.getRankTitles());
+                updateDataMap(conn, "settlement_defaulttitles", "settlementId", (Integer) village.getId().value(), "rank", "title", village.getDefaultRankTitles());
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while saving village " + village.getName() + " to database!", e);
@@ -942,6 +943,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
         map.put("uses", selectMap(conn, "settlement_uses", "settlementId", id, "type", "state", String.class));
         map.put("vault", selectMap(conn, "settlement_vaults", "settlementId", id, "content", "amount", Long.class));
+        map.put("defaulttitles", selectMap(conn, "settlement_defaulttitles", "settlementId", id, "rank", "title", String.class));
 
         PreparedStatement oSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_outposts WHERE settlementId = ?;");
         oSta.setInt(1, id);

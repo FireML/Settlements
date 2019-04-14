@@ -20,8 +20,12 @@ public class VillageTitleCommand extends VillageSubCommand {
             Collection<String> titles = res.getVillage().getTitles(res.getVillageRank());
             res.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base), "type", "");
             res.tell(getMessage("usage.entry"), "usage", getUsage(base));
+            String defaultTitle = res.getVillage().getDefaultTitle(res.getVillageRank());
+            res.tell(getMessage("usage.entry"), "usage", "/" + base + " " + alias + " " + defaultTitle);
             for (String title : titles) {
-                res.tell(getMessage("usage.entry"), "usage", "/" + base + " " + alias + " " + title);
+                if (!title.equals(defaultTitle)) {
+                    res.tell(getMessage("usage.entry"), "usage", "/" + base + " " + alias + " " + title);
+                }
             }
             if (getMessage("usage.footer").exists()) {
                 res.tell(getMessage("usage.footer"), "name", name(), "command", "/" + base + " " + alias);

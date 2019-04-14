@@ -275,7 +275,7 @@ public class Resident implements ConfigurationSerializable, Targetable {
     public String getTitle() {
         return hasVillage()
                 ? (title != null
-                        ? (getVillage().getTitles(getVillageRank()).contains(title)
+                        ? (getVillage().getTitle(getVillageRank(), title) != null
                                 ? title : getVillageRank().getTag(getVillage()))
                         : getVillageRank().getTag(getVillage()))
                 : "";

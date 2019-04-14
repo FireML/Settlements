@@ -14,16 +14,17 @@ public class VillageTitlesCommand extends VillageSubCommand {
     private final Pattern TITLE_PATTERN = Pattern.compile("[\\w-]+");
 
     public VillageTitlesCommand(SubCommand parent) {
-        super(parent, "titles [list|add <rank> <title>|remove <rank> <title>");
+        super(parent, "titles [list|add <rank> <title>|set <rank> <title>|remove <rank> <title>");
         registerCommand(new VillageSubCommand(this, "list") {
             @Override
             public boolean run(Resident res, String base, String alias, String... args) {
                 getMessage("head").tell(res, "state", res.getVillage().getStateTag());
                 for (VillageRank rank : VillageRank.values()) {
+                    String defaultTitle = res.getVillage().getDefaultTitle(rank);
                     getMessage("rank").tell(res,
                             "rank", rank.getTag(),
                             "titles", res.getVillage().getTitles(rank).stream()
-                                    .map(t -> getText("entry", "title", t))
+                                    .map(t -> getText(defaultTitle.equals(t) ? "default-entry" : "entry", "title", t))
                                     .collect(Collectors.joining(getText("separator")))
                     );
                 }
@@ -59,6 +60,47 @@ public class VillageTitlesCommand extends VillageSubCommand {
                         getError("already-exists").tell(res, "input", args[1], "rank", rank.getTag());
                         return true;
                     }
+                }
+                return false;
+            }
+        });
+        registerCommand(new VillageSubCommand(this, "set <rank> <title>", "default") {
+            @Override
+            public boolean run(Resident res, String base, String alias, String... args) {
+                if (args.length == 2) {
+                    VillageRank rank = VillageRank.get(args[0]);
+                    if (rank == null) {
+                        getError("invalid-rank").tell(res, "rank", args[0]);
+                        return true;
+                    } else if (rank.above(res.getVillageRank())) {
+                        getError("cant-edit-higher").tell(res, "rank", res.getVillageRank().getTag());
+                        return true;
+                    }
+
+                    String title = res.getVillage().getTitle(rank, args[1]);
+                    if (title != null) {
+                        // title exists, change order
+                        res.getVillage().setDefaultTitle(rank, title);
+                        getMessage("success").tell(res, "title", args[1], "rank", rank.getTag());
+                    } else {
+                        // title doesn't exist, add it
+                        if (rank.getTitles(res.getVillage()).size() >= Utils.getTitlesPerRank()) {
+                            getError("too-many").tell(res,
+                                    "rank", res.getVillageRank().getTag(),
+                                    "max", String.valueOf(Utils.getTitlesPerRank())
+                            );
+                        } else if (args[1].length() > 16) {
+                            getError("too-long").tell(res, "input", args[1]);
+                        } else if (!TITLE_PATTERN.matcher(args[1]).matches()) {
+                            getError("invalid-characters").tell(res, "input", args[1]);
+                        } else if (UtilChat.getInstance().containsCurses(args[1])) {
+                            getError("prohibited-words").tell(res, "input", args[1]);
+                        } else {
+                            res.getVillage().setDefaultTitle(rank, args[1]);
+                            getMessage("success").tell(res, "title", args[1], "rank", rank.getTag());
+                        }
+                    }
+                    return true;
                 }
                 return false;
             }
