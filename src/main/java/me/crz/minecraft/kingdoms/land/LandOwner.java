@@ -349,6 +349,8 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
 
     public abstract String getStateTag();
 
+    public abstract Resident getResident(String name);
+
     @Override
     public int getBonusClaims() {
         return bonusClaims;

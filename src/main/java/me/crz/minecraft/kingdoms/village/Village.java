@@ -285,6 +285,16 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         return getState().getKey();
     }
 
+    @Override
+    public Resident getResident(String name) {
+        for (Resident resident : getResidents()) {
+            if (resident.getName().equalsIgnoreCase(name)) {
+                return resident;
+            }
+        }
+        return null;
+    }
+
     public Set<UUID> getResidentIds() {
         return residents;
     }

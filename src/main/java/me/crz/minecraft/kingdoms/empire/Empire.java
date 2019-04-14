@@ -379,6 +379,18 @@ public class Empire extends LandOwner implements Comparable<Empire> {
         return State.EMPIRE.getTag();
     }
 
+    @Override
+    public Resident getResident(String name) {
+        for (Village member : getMembers()) {
+            for (Resident resident : member.getResidents()) {
+                if (resident.getName().equalsIgnoreCase(name)) {
+                    return resident;
+                }
+            }
+        }
+        return null;
+    }
+
     public int getUpkeep() {
         return KingdomsPlugin.getInstance().getConfig().getInt("upkeep.empire");
     }

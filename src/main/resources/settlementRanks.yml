@@ -51,6 +51,7 @@ perm-groups:
     - village.tax.set
     - village.tax.exempt
     - village.titles
+    - village.settitle
     - village.unally
     - village.unbanish
     - village.unclaim
@@ -85,6 +86,7 @@ ranks:
     - village.disband
     - village.transfer
     - village.titles
+    - village.settitle
     - village.rename
     - village.lock.admin
     - village.help.assistant
@@ -110,6 +112,7 @@ ranks:
     - village.help.recruiter
     - village.officer
     - village.help.builder
+    - village.title
   assistant:
     icon: golden_sword
     inherits: resident
@@ -141,6 +144,8 @@ ranks:
     - village.help.recruiter
     - village.officer
     - village.titles
+    - village.settitle
+    - village.title
     - village.help.builder
   elder:
     icon: iron_sword
@@ -167,6 +172,7 @@ ranks:
     - village.help.recruiter
     - village.officer
     - village.help.builder
+    - village.title
   recruiter:
     icon: stone_sword
     inherits: resident
@@ -175,12 +181,14 @@ ranks:
     - village.kick
     - village.help.recruiter
     - village.help.builder
+    - village.title
   builder:
     icon: stone_shovel
     inherits: resident
     permissions:
     - village.officer
     - village.help.builder
+    - village.title
   resident:
     icon: stone_pickaxe
     permissions:
@@ -207,3 +215,4 @@ ranks:
     - village.title
     - village.upgrade
     - village.upkeep
+    - village.title

@@ -3,13 +3,9 @@ package me.crz.minecraft.kingdoms.command.empire;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
-import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
-import org.bukkit.entity.Player;
 
 public class EmpireSetRankCommand extends EmpireSubCommand {
     public EmpireSetRankCommand(SubCommand parent) {
@@ -45,42 +41,37 @@ public class EmpireSetRankCommand extends EmpireSubCommand {
             }
             return true;
         }
-        Player player = res.getPlayer();
-        Utils.runAsync(() -> {
-            Resident tres = ResidentManager.getInstance().getResident(args[0]);
-            if (tres == null) {
-                getError("player-not-found").tell(player, "name", args[0]);
-                return;
-            } else if (!empire.isMember(tres)) {
-                getError("not-in-empire").tell(player);
-                return;
-            }
 
-            EmpireRank rank = EmpireRank.get(args[1]);
+        Resident tres = empire.getResident(args[0]);
+        if (tres == null) {
+            getError("not-in-empire").tell(res);
+            return true;
+        }
 
-            if (rank == null) {
-                getError("invalid-rank").tell(player, "rank", args[1]);
-            } else if (rank.equals(EmpireRank.getLeader())) {
-                getError("cant-set-leader").tell(player, "base", base);
-            } else if (!res.getEmpireRank().above(tres.getEmpireRank())) {
-                getMessage("cant-set-higher").tell(player, "rank", res.getEmpireRank().getTag());
-            } else  if (!res.getEmpireRank().above(rank)) {
-                getError("rank-required").tell(player, "rank", EmpireRank.values().length > rank.ordinal() + 1 ? EmpireRank.values()[rank.ordinal() + 1].getTag() : "-");
+        EmpireRank rank = EmpireRank.get(args[1]);
+
+        if (rank == null) {
+            getError("invalid-rank").tell(res, "rank", args[1]);
+        } else if (rank.equals(EmpireRank.getLeader())) {
+            getError("cant-set-leader").tell(res, "base", base);
+        } else if (!res.getEmpireRank().above(tres.getEmpireRank())) {
+            getMessage("cant-set-higher").tell(res, "rank", res.getEmpireRank().getTag());
+        } else  if (!res.getEmpireRank().above(rank)) {
+            getError("rank-required").tell(res, "rank", EmpireRank.values().length > rank.ordinal() + 1 ? EmpireRank.values()[rank.ordinal() + 1].getTag() : "-");
+        } else {
+            tres.setEmpireRank(rank);
+            if (rank.name().equalsIgnoreCase("senator")) {
+                empire.addSenator(tres);
             } else {
-                tres.setEmpireRank(rank);
-                if (rank.name().equalsIgnoreCase("senator")) {
-                    empire.addSenator(tres);
-                } else {
-                    empire.removeSenator(tres);
-                }
-                DatabaseManager.getInstance().saveResident(tres);
-                MessageUtils.tellResidents(empire.getOnlineResidents(), getMessage("success"),
-                        "rank", rank.getTag(),
-                        "title", res.getTitle(),
-                        "setter", res.getName(),
-                        "target", tres.getName());
+                empire.removeSenator(tres);
             }
-        });
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(tres));
+            getMessage("success").tell(empire.getOnlineResidents(),
+                    "rank", rank.getTag(),
+                    "title", res.getTitle(),
+                    "setter", res.getName(),
+                    "target", tres.getName());
+        }
         return true;
     }
 }

@@ -1356,6 +1356,13 @@ command:
         entry: "&e• [&e{rank}](hover=&9Click to add it to your input suggest_command={{usage}) &7- {description}"
         footer: "&aNote: Officers = {officerranks}"
       description: Sets the rank of a resident
+    settitle:
+      description: "Set another player's title"
+      success: "&e{sendertitle} {sender}&7 set the title of &e{target}&7 to &e{title}&7!"
+      cant-edit-higher: "&cYou cannot edit titles of ranks above your own!"
+      invalid-title: "&c{title} is not an available title!"
+      usage:
+        entry: "&e• [&e{usage}](suggest_command={{usage})"
     shop:
       description: Purchase perks
       unlock:
