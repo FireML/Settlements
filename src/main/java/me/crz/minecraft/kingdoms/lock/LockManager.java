@@ -133,10 +133,7 @@ public class LockManager implements LockProvider {
     public void loadLockables() {
         lockable.clear();
         for (String string : KingdomsPlugin.getInstance().getConfig().getStringList("lockable")) {
-            Material type = Material.matchMaterial(string);
-            if (type != null) {
-                lockable.add(type);
-            } else if (string.startsWith("*")) {
+            if (string.startsWith("*")) {
                 for (Material material : Material.values()) {
                     if (material.name().endsWith(string.substring(1).toUpperCase())) {
                         lockable.add(material);
@@ -149,7 +146,12 @@ public class LockManager implements LockProvider {
                     }
                 }
             } else {
-                KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, string + " is not a valid Material name!");
+                Material type = Material.matchMaterial(string);
+                if (type != null) {
+                    lockable.add(type);
+                } else {
+                    KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, string + " is not a valid Material name!");
+                }
             }
         }
     }
