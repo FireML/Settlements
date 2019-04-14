@@ -2,7 +2,6 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.entity.Player;
@@ -20,7 +19,7 @@ public class VillageHereCommand extends PlayerSubCommand {
             getError("no-village").tell(player);
             return true;
         }
-        Utils.runAsync(() -> getMessage("general").tell(player, village.getReplacements(VillageHereCommand.this)));
+        getMessage(village.hasEmpire() ? "empire" : "general").tell(player, village.getReplacements(VillageHereCommand.this));
         return true;
     }
 }

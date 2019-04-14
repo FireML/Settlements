@@ -1149,6 +1149,22 @@ command:
         &9&lPerks: &r&7{perks}
         &b&lMembers:
         {residents}
+      empire: |-
+        &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
+        &a&lDescription: &r&7{description}
+        &a&lState: &r&7{state}
+        &b&lEmpire: &r&7{empire}
+        &6&lAccess: &r&7{access}
+        &6&lLevel: &r&7{level}
+        &6&lBank: &r&7{bank}
+        &6&lJoin fee: &r&7{joinfee}
+        &6&lDaily tax: &r&7{tax}
+        &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
+        &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
+        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &9&lPerks: &r&7{perks}
+        &b&lMembers:
+        {residents}
       bonus-claims: " Bonus: {amount}"
       residents:
         rank: "&6&l{rank}:&r {residents}"
@@ -1368,6 +1384,24 @@ command:
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
         &a&lDescription: &r&7{description}
         &a&lState: &r&7{state}
+        &6&lAccess: &r&7{access}
+        &6&lLevel: &r&7{level}
+        &6&lBank: &r&7{bank}
+        &6&lUpkeep: &r&7{upkeep}
+        &6&lJoin fee: &r&7{joinfee}
+        &6&lDaily tax: &r&7{tax}
+        &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
+        &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
+        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &9&lPerks: &r&7{perks}
+        &b&l{chieftitle}: &r&7{chiefonline}{chief}
+        &b&lMembers:
+        {residents}
+      empire: |-
+        &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
+        &a&lDescription: &r&7{description}
+        &a&lState: &r&7{state}
+        &b&lEmpire: &r&7{empire}
         &6&lAccess: &r&7{access}
         &6&lLevel: &r&7{level}
         &6&lBank: &r&7{bank}

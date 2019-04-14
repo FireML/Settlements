@@ -512,6 +512,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         String[] repl = new String[] {
                 "name", getName(),
                 "description", getDescription(),
+                "empire", hasEmpire() ? getEmpire().getName() : "",
                 "state", getState().getTag(),
                 "level", String.valueOf(getLevel()),
                 "land", String.valueOf(LandManager.getInstance().getClaimedLandSize(this)),
