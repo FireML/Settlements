@@ -1479,6 +1479,7 @@ command:
         invalid-characters: "&e{input}&c contains invalid characters. Only letters, numbers, minus and underscores are allowed!"
         prohibited-words: "&e{input}&c contains prohibited words!"
         success: "&e{title}&7 was set as the default title of rank &e{rank}"
+        success-new: "&7Added title &e{title}&7 and set as the default of rank &e{rank}"
       remove:
         description: "Remove titles"
         cant-edit-higher: "&cYou cannot edit titles of ranks above your own!"

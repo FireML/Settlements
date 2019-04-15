@@ -41,7 +41,7 @@ public class VillageTitlesCommand extends VillageSubCommand {
                         getError("invalid-rank").tell(res, "rank", args[0]);
                     } else if (rank.above(res.getVillageRank())) {
                         getError("cant-edit-higher").tell(res, "rank", res.getVillageRank().getTag());
-                    } else if (rank.getTitles(res.getVillage()).size() >= Utils.getTitlesPerRank()) {
+                    } else if (res.getVillage().getTitles(rank).size() >= Utils.getTitlesPerRank()) {
                         getError("too-many").tell(res,
                                 "rank", res.getVillageRank().getTag(),
                                 "max", String.valueOf(Utils.getTitlesPerRank())
@@ -52,14 +52,12 @@ public class VillageTitlesCommand extends VillageSubCommand {
                         getError("invalid-characters").tell(res, "input", args[1]);
                     } else if (UtilChat.getInstance().containsCurses(args[1])) {
                         getError("prohibited-words").tell(res, "input", args[1]);
-                        return true;
                     } else if (res.getVillage().addTitle(rank, args[1])) {
                         getMessage("success").tell(res, "title", args[1], "rank", rank.getTag());
-                        return true;
                     } else {
                         getError("already-exists").tell(res, "input", args[1], "rank", rank.getTag());
-                        return true;
                     }
+                    return true;
                 }
                 return false;
             }
@@ -84,7 +82,7 @@ public class VillageTitlesCommand extends VillageSubCommand {
                         getMessage("success").tell(res, "title", args[1], "rank", rank.getTag());
                     } else {
                         // title doesn't exist, add it
-                        if (rank.getTitles(res.getVillage()).size() >= Utils.getTitlesPerRank()) {
+                        if (res.getVillage().getTitles(rank).size() >= Utils.getTitlesPerRank()) {
                             getError("too-many").tell(res,
                                     "rank", res.getVillageRank().getTag(),
                                     "max", String.valueOf(Utils.getTitlesPerRank())
@@ -97,7 +95,7 @@ public class VillageTitlesCommand extends VillageSubCommand {
                             getError("prohibited-words").tell(res, "input", args[1]);
                         } else {
                             res.getVillage().setDefaultTitle(rank, args[1]);
-                            getMessage("success").tell(res, "title", args[1], "rank", rank.getTag());
+                            getMessage("success-new").tell(res, "title", args[1], "rank", rank.getTag());
                         }
                     }
                     return true;
