@@ -28,7 +28,6 @@ perm-groups:
     - empire.invite
     - empire.joinfee.set
     - empire.kick
-    - empire.officer
     - empire.perms
     - empire.perms.set
     - empire.perms.unset

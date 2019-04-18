@@ -38,7 +38,6 @@ public class RankPermsGUI extends KingdomsGUI {
         super("rank-perms");
         List<String> perms = group.getPermissions().stream()
                 .filter(s -> !s.contains(".help"))
-                .sorted(Comparator.naturalOrder())
                 .collect(Collectors.toList());
         InventorySize size = InventorySize.getMatchingSize(perms.size());
         if (size == null) {
