@@ -39,6 +39,7 @@ perm-groups:
     - empire.setrank
     - empire.setsymbol
     - empire.shop
+    - empire.shop.unlock
     - empire.shop.repeat
     - empire.tax.set
     - empire.unally
@@ -67,6 +68,7 @@ ranks:
     - empire.sethome
     - empire.setrank
     - empire.setsymbol
+    - empire.shop.unlock
     - empire.shop.repeat
     - empire.tax.set
     - empire.transfer

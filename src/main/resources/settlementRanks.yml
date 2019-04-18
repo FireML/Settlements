@@ -47,6 +47,7 @@ perm-groups:
     - village.sethome
     - village.setrank
     - village.shop
+    - village.shop.unlock
     - village.shop.repeat
     - village.tax.set
     - village.tax.exempt
@@ -76,6 +77,7 @@ ranks:
     - village.outpost.unclaim
     - village.setaccess
     - village.sethome
+    - village.shop.unlock
     - village.shop.repeat
     - village.tax.set
     - village.tax.exempt
