@@ -16,9 +16,13 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.minecart.HopperMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -27,6 +31,7 @@ import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -38,6 +43,7 @@ import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.InventoryHolder;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -326,6 +332,10 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onHopperMove(InventoryMoveItemEvent event) {
+        if (LockManager.getInstance().isAlternativeHopperProtection()
+                && !(event.getSource().getHolder() instanceof HopperMinecart || event.getDestination().getHolder() instanceof HopperMinecart)) {
+            return;
+        }
         Lock sourceLock = LockManager.getInstance().getLock(event.getSource().getHolder());
         if (sourceLock != null && !sourceLock.isAllowHoppers()) {
             event.setCancelled(true);
@@ -336,6 +346,41 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
             event.setCancelled(true);
             return;
         }
+    }
+
+    // block placement if alternative hopper protection is enabled
+
+    @EventHandler(ignoreCancelled = true)
+    public void onBlockPlace(BlockPlaceEvent event) {
+        if (!LockManager.getInstance().isAlternativeHopperProtection()) {
+            return;
+        }
+
+        if (event.getBlock().getType() == Material.HOPPER) {
+            if (checkForHopperLock(event.getPlayer(), event.getBlock().getRelative(BlockFace.UP))) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+
+        if (event.getBlock().getType() == Material.HOPPER || event.getBlock().getType() == Material.DROPPER) {
+            if (checkForHopperLock(event.getPlayer(), event.getBlock().getRelative(((Directional) event.getBlock().getBlockData()).getFacing()))) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+    }
+
+    private boolean checkForHopperLock(Player player, Block block) {
+        if (!block.isEmpty() && block.getState(false) instanceof InventoryHolder) {
+            // we use the alternative hopper protection, check if the hopper is placed below a container!
+            Lock lock = LockManager.getInstance().getLock(block);
+            if (lock != null && !lock.isAllowHoppers() && !lock.canAccess(player)) {
+                getMessage("hoppers.disabled").tell(player, "block", NameTag.getTag(block.getType()));
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

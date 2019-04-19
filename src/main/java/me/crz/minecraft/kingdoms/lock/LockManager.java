@@ -28,7 +28,6 @@ import org.bukkit.util.Vector;
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Map;
@@ -45,6 +44,7 @@ public class LockManager implements LockProvider {
     private static final String LOADING_KEY = "LOADING_MARKER";
     private static LockManager instance;
     private final Set<Material> lockable = EnumSet.noneOf(Material.class);
+    private boolean alternativeHopperProtection = true;
     private final Map<String, Cache<SimpleChunkLocation, Map<String, Lock>>> lockTable = new ConcurrentHashMap<>();
     private final Expiry<SimpleChunkLocation, Map<String, Lock>> chunkExpiry = new Expiry<SimpleChunkLocation, Map<String, Lock>>() {
         @Override
@@ -81,7 +81,7 @@ public class LockManager implements LockProvider {
     private final Cache<UUID, String> toggledActions = Caffeine.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES).build();
 
     private LockManager() {
-        loadLockables();
+        loadConfig();
         loadChunks(Bukkit.getWorlds().stream()
                 .map(World::getLoadedChunks)
                 .flatMap((Function<Chunk[], Stream<Chunk>>) Arrays::stream)
@@ -130,7 +130,8 @@ public class LockManager implements LockProvider {
         lockTable.remove(world.getName());
     }
 
-    public void loadLockables() {
+    public void loadConfig() {
+        alternativeHopperProtection = KingdomsPlugin.getInstance().getConfig().getBoolean("alternative-hopper-protection");
         lockable.clear();
         for (String string : KingdomsPlugin.getInstance().getConfig().getStringList("lockable")) {
             if (string.startsWith("*")) {
@@ -346,5 +347,9 @@ public class LockManager implements LockProvider {
                             -> stringLockMap.values().stream()).collect(Collectors.toSet());
         }
         return new HashSet<>();
+    }
+
+    public boolean isAlternativeHopperProtection() {
+        return alternativeHopperProtection;
     }
 }
