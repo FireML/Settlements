@@ -232,6 +232,7 @@ chat:
     village: "\n&9{state}: &7{name}"
     empire: "\n&9Empire: &7{name}"
     rank: "\n&9Rank: &7{title}"
+    click-to-open-url: "&9Click to open url"
   staff: "&c&lStaff "
   format:
     name: "{displayname}"

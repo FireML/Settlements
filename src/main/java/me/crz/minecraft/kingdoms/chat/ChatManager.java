@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.ImmutableMap;
 import de.themoep.minedown.MineDown;
+import de.themoep.minedown.MineDownParser;
 import de.themoep.minedown.Replacer;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
@@ -141,12 +142,31 @@ public class ChatManager extends Base implements ConfigMessages {
                                 "suffix", senderSuffix
                         ))
                         .create());
-        BaseComponent[] filteredMessage = replacer
-                .replace("message", UtilChat.getInstance().filterCurses(message))
-                .replaceIn(format);
-        BaseComponent[] unfilteredMessage = replacer
-                .replace("message", message)
-                .replaceIn(format);
+        BaseComponent[] filteredMessage;
+        BaseComponent[] unfilteredMessage;
+        if (sender.hasPermission("kingdoms.chat.links")) {
+            MineDownParser linkParser = new MineDownParser()
+                    .urlDetection(true)
+                    .urlHoverText(getMessage("hover.click-to-open-url").getText())
+                    .disable(MineDownParser.Option.SIMPLE_FORMATTING)
+                    .disable(MineDownParser.Option.ADVANCED_FORMATTING);
+            if (!sender.hasPermission("kingdoms.chat.colour")) {
+                linkParser.disable(MineDownParser.Option.LEGACY_COLORS);
+            }
+            filteredMessage = replacer
+                    .replace("message", linkParser.parse(UtilChat.getInstance().filterCurses(message)).create())
+                    .replaceIn(format);
+            unfilteredMessage = replacer
+                    .replace("message", linkParser.reset().parse(message).create())
+                    .replaceIn(format);
+        } else {
+            filteredMessage = replacer
+                    .replace("message", UtilChat.getInstance().filterCurses(message))
+                    .replaceIn(format);
+            unfilteredMessage = replacer
+                    .replace("message", message)
+                    .replaceIn(format);
+        }
 
         switch (channel) {
             case LOCAL:

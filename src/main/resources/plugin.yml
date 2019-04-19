@@ -149,6 +149,7 @@ permissions:
       kingdoms.channel.staff: true
       kingdoms.prefix.staff: true
       kingdoms.chat.lock: true
+      kingdoms.chat.links: true
   kingdoms.mod:
     description: Permission for mods. Gives access to bypasses to feature limitations
     default: op
@@ -162,6 +163,7 @@ permissions:
       kingdoms.bypass.use: true
       kingdoms.bypass.build: true
       kingdoms.bypass.ignore: true
+      kingdoms.chat.links: true
   kingdoms.user:
     description: Permission for users. Gives access to all plugin functions that a user should have.
     default: true
@@ -169,6 +171,9 @@ permissions:
     description: Permission for toggling the scoreboard on or off. Does not hide custom scoreboards set with /scoreboardadmin!
   kingdoms.chat.colour:
     description: Gives permission to use colours in chat
+    default: op
+  kingdoms.chat.links:
+    description: Gives permission to use links in chat
     default: op
   kingdoms.chat.lock:
     description: Gives permission to lock the chat
