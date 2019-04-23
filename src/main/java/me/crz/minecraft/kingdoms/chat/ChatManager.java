@@ -292,6 +292,25 @@ public class ChatManager extends Base implements ConfigMessages {
         } else {
             senderFormat = getMessage("format.private.sender").getComponents();
         }
+
+        BaseComponent[] filteredMessage;
+        BaseComponent[] unfilteredMessage;
+        if (sender.hasPermission("kingdoms.chat.links")) {
+            MineDownParser linkParser = new MineDownParser()
+                    .urlDetection(true)
+                    .urlHoverText(getMessage("hover.click-to-open-url").getText())
+                    .disable(MineDownParser.Option.SIMPLE_FORMATTING)
+                    .disable(MineDownParser.Option.ADVANCED_FORMATTING);
+            if (!sender.hasPermission("kingdoms.chat.colour")) {
+                linkParser.disable(MineDownParser.Option.LEGACY_COLORS);
+            }
+            filteredMessage = linkParser.parse(UtilChat.getInstance().filterCurses(message)).create();
+            unfilteredMessage = linkParser.reset().parse(message).create();
+        } else {
+            filteredMessage = new ComponentBuilder(UtilChat.getInstance().filterCurses(message)).create();
+            unfilteredMessage = new ComponentBuilder(message).create();
+        }
+
         MessageUtils.tell(sender, senderFormat, ImmutableMap.of(
                 "sender", new ComponentBuilder(
                         getMessage("format.private.name.sender").getReplacedText(getReplacements(sender, res)))
@@ -303,7 +322,7 @@ public class ChatManager extends Base implements ConfigMessages {
                         .event(targetHover)
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + target.getName() + " "))
                         .create(),
-                "message", new ComponentBuilder(message).create(),
+                "message", unfilteredMessage,
                 "staff", sender.hasPermission("kingdoms.prefix.staff") ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
         ));
 
@@ -326,7 +345,7 @@ public class ChatManager extends Base implements ConfigMessages {
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + target.getName()))
                         .event(targetHover)
                         .create(),
-                "message", new ComponentBuilder(message).create(),
+                "message", tres.getSwear() ? unfilteredMessage : filteredMessage,
                 "staff", sender.hasPermission("kingdoms.prefix.staff") ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
         ));
 
