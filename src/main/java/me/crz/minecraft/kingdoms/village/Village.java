@@ -465,6 +465,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     }
 
     public static Village deserialize(Map<String, Object> map) {
+        KingdomsPlugin.logDebug("Creating village from " + map);
         Village village = LandOwner.deserialize(new Village(), map);
         if (village == null) {
             return null;
@@ -488,6 +489,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         }
         ((Map<String, Object>) map.get("defaulttitles")).entrySet().stream()
                 .forEach(e -> village.defaultRankTitles.put(e.getKey().toLowerCase(), (String) e.getValue()));
+        KingdomsPlugin.logDebug("Created village " + village.serialize());
         return village;
     }
 

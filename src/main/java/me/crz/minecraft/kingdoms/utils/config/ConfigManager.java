@@ -15,6 +15,7 @@ import java.io.File;
 
 public class ConfigManager {
     private static ConfigManager instance;
+    private boolean debug = true;
     private ConfigAccessor messages;
     private ConfigAccessor commands;
     private ConfigAccessor levelConf;
@@ -36,6 +37,7 @@ public class ConfigManager {
     public void reload() {
         KingdomsPlugin.getInstance().saveDefaultConfig();
         KingdomsPlugin.getInstance().reloadConfig();
+        debug = getConfig().getBoolean("debug");
         messages = new ConfigAccessor(KingdomsPlugin.getInstance(), "messages.yml");
         messages.saveDefaultConfig();
         messages.reloadConfig();
@@ -143,5 +145,9 @@ public class ConfigManager {
 
     public long getLastUpkeep() {
         return lastUpkeepConf.getConfig().getLong("last-upkeep");
+    }
+
+    public boolean isDebug() {
+        return debug;
     }
 }

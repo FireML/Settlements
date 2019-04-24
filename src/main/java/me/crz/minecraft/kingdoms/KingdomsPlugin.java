@@ -310,4 +310,10 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     public Timing getAndStartTiming(String name) {
         return Timings.ofStart(KingdomsPlugin.getInstance(), name, pluginTimings);
     }
+
+    public static void logDebug(String message) {
+        if (ConfigManager.getInstance().isDebug()) {
+            KingdomsPlugin.getInstance().getLogger().info("[DEBUG] " + message);
+        }
+    }
 }

@@ -1,3 +1,5 @@
+# Show some debug logging messages
+debug: true
 storage:
   type: mysql
   host: localhost

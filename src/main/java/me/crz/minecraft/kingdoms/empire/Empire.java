@@ -191,6 +191,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
     }
 
     public static Empire deserialize(Map<String, Object> map) {
+        KingdomsPlugin.logDebug("Creating empire from " + map);
         Empire empire = LandOwner.deserialize(new Empire(), map);
         if (empire == null) {
             return null;
@@ -208,6 +209,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                 empire.members.add(IdObject.get(memberId));
             }
         }
+        KingdomsPlugin.logDebug("Created empire " + empire.serialize());
         return empire;
     }
 
