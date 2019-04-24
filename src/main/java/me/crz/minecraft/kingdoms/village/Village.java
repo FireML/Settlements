@@ -484,10 +484,10 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 .filter(Objects::nonNull)
                 .forEach(village::setOutpostHome);
         for (Map.Entry<String, Collection<String>> entry : ((Map<String, Collection<String>>) map.get("titles")).entrySet()) {
-            village.rankTitles.putAll(entry.getKey(), entry.getValue());
+            village.rankTitles.putAll(entry.getKey().toLowerCase(), entry.getValue());
         }
         ((Map<String, Object>) map.get("defaulttitles")).entrySet().stream()
-                .forEach(e -> village.defaultRankTitles.put(e.getKey(), (String) e.getValue()));
+                .forEach(e -> village.defaultRankTitles.put(e.getKey().toLowerCase(), (String) e.getValue()));
         return village;
     }
 

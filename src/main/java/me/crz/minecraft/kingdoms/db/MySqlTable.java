@@ -196,7 +196,7 @@ public enum MySqlTable {
             + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
             + "rank VARCHAR(255) NOT NULL,"
             + "title VARCHAR(16) NOT NULL,"
-            + "UNIQUE (settlementId, rank, title)"
+            + "UNIQUE (settlementId, rank)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     RESIDENTS("CREATE TABLE IF NOT EXISTS {tablePrefix}residents ("

@@ -908,7 +908,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         ResultSet pRs = pSta.executeQuery();
         Map<String, Map<String, Object>> unlockedPerks = new LinkedHashMap<>();
         while (pRs.next()) {
-            unlockedPerks.put(pRs.getString("perk"), toMap(pRs));
+            unlockedPerks.put(pRs.getString("perk").toLowerCase(), toMap(pRs));
         }
         map.put("perks", unlockedPerks);
 
@@ -917,7 +917,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         ResultSet rpRs = rpSta.executeQuery();
         Map<String, Map<String, Boolean>> rankPermissions = new LinkedHashMap<>();
         while (rpRs.next()) {
-            rankPermissions.computeIfAbsent(rpRs.getString("rank"), k -> new LinkedHashMap<>())
+            rankPermissions.computeIfAbsent(rpRs.getString("rank").toLowerCase(), k -> new LinkedHashMap<>())
                     .put(rpRs.getString("permission"), rpRs.getBoolean("value"));
         }
         map.put("permissions", rankPermissions);
@@ -950,7 +950,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         ResultSet oRs = oSta.executeQuery();
         Map<String, Map<String, Object>> outposts = new LinkedHashMap<>();
         while (oRs.next()) {
-            outposts.put(oRs.getString("name"), toMap(oRs));
+            outposts.put(oRs.getString("name").toLowerCase(), toMap(oRs));
         }
         map.put("outposts", outposts);
 
@@ -959,7 +959,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         ResultSet pRs = pSta.executeQuery();
         Map<String, Map<String, Object>> unlockedPerks = new LinkedHashMap<>();
         while (pRs.next()) {
-            unlockedPerks.put(pRs.getString("perk"), toMap(pRs));
+            unlockedPerks.put(pRs.getString("perk").toLowerCase(), toMap(pRs));
         }
         map.put("perks", unlockedPerks);
 
@@ -968,7 +968,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         ResultSet rpRs = rpSta.executeQuery();
         Map<String, Map<String, Boolean>> rankPermissions = new LinkedHashMap<>();
         while (rpRs.next()) {
-            rankPermissions.computeIfAbsent(rpRs.getString("rank"), k -> new LinkedHashMap<>())
+            rankPermissions.computeIfAbsent(rpRs.getString("rank").toLowerCase(), k -> new LinkedHashMap<>())
                     .put(rpRs.getString("permission"), rpRs.getBoolean("value"));
         }
         map.put("permissions", rankPermissions);
@@ -978,7 +978,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         ResultSet tpRs = tpSta.executeQuery();
         Map<String, Collection<String>> rankTitles = new LinkedHashMap<>();
         while (tpRs.next()) {
-            rankTitles.computeIfAbsent(tpRs.getString("rank"), k -> new LinkedHashSet<>()).add(tpRs.getString("title"));
+            rankTitles.computeIfAbsent(tpRs.getString("rank").toLowerCase(), k -> new LinkedHashSet<>()).add(tpRs.getString("title"));
         }
         map.put("titles", rankTitles);
 
