@@ -20,7 +20,7 @@ public class VillageJoinCommand extends ResidentSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        if (resident.hasVillage()) {
+        if (resident.hasVillage()) {
             getError("free-required").tell(resident);
             return true;
         }
