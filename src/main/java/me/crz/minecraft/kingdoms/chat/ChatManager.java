@@ -113,7 +113,7 @@ public class ChatManager extends Base implements ConfigMessages {
         Village village = res.getVillage();
 
         BaseComponent[] format;
-        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null && Utils.usePlaceholderApi("chat-format.channel")) {
+        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null && Utils.usePlaceholderApi("chat.format.channel")) {
             format = MineDown.parse(
                     PlaceholderApiIntegration.setPlaceholders(
                             sender, getMessage("format.channel." + channel.getKey()).getRawText()));
