@@ -99,8 +99,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
         updateClaimModes();
         updateClaimModesUniqueKey();
         updateAllies();
-        updateLandOwnersMissingCollumns();
+        updateLandOwnersMissingColumns();
         updateResidentTitles();
+        updateBanishedAllies();
     }
 
     private void initializeTables() throws SQLException {
@@ -173,11 +174,11 @@ public class MySqlDatabaseManager extends DatabaseManager {
     }
 
     private void updateAllies() {
-        alterColumnOrRecreate(MySqlTable.SETTLEMENT_ALLIES, "ally", "allies", "VARCHAR(320) NOT NULL");
-        alterColumnOrRecreate(MySqlTable.EMPIRE_ALLIES, "ally", "allies", "VARCHAR(320) NOT NULL");
+        alterColumnOrRecreate(MySqlTable.SETTLEMENT_ALLIES, "ally", "allies", "VARCHAR(36) NOT NULL");
+        alterColumnOrRecreate(MySqlTable.EMPIRE_ALLIES, "ally", "allies", "VARCHAR(36) NOT NULL");
     }
 
-    private void updateLandOwnersMissingCollumns() {
+    private void updateLandOwnersMissingColumns() {
         addColumn(MySqlTable.SETTLEMENTS, "created", "BIGINT DEFAULT 0 AFTER description");
         addColumn(MySqlTable.EMPIRES, "created", "BIGINT DEFAULT 0 AFTER description");
         addColumn(MySqlTable.EMPIRES, "lastRename", "BIGINT DEFAULT 0 AFTER created");
@@ -229,6 +230,20 @@ public class MySqlDatabaseManager extends DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void updateBanishedAllies() {
+        alterColumnOrRecreate(MySqlTable.SETTLEMENT_ALLIES, "allies", "VARCHAR(36) NOT NULL");
+        alterOrRecreate(MySqlTable.SETTLEMENT_ALLIES, "ADD CONSTRAINT `list` UNIQUE IF NOT EXISTS (settlementId, allies)");
+
+        alterColumnOrRecreate(MySqlTable.EMPIRE_ALLIES, "allies", "VARCHAR(36) NOT NULL");
+        alterOrRecreate(MySqlTable.EMPIRE_ALLIES, "ADD CONSTRAINT `list` UNIQUE IF NOT EXISTS (empireId, allies)");
+
+        alterColumnOrRecreate(MySqlTable.SETTLEMENT_BANISHED, "banished", "VARCHAR(36) NOT NULL");
+        alterOrRecreate(MySqlTable.SETTLEMENT_BANISHED, "ADD CONSTRAINT `list` UNIQUE IF NOT EXISTS (settlementId, banished)");
+
+        alterColumnOrRecreate(MySqlTable.EMPIRE_BANISHED, "banished", "VARCHAR(36) NOT NULL");
+        alterOrRecreate(MySqlTable.EMPIRE_BANISHED, "ADD CONSTRAINT `list` UNIQUE IF NOT EXISTS (empireId, banished)");
     }
 
     // Implement DatabaseManager methods
@@ -1312,14 +1327,21 @@ public class MySqlDatabaseManager extends DatabaseManager {
              Statement sta = conn.createStatement()) {
             ResultSet rs = sta.executeQuery(sql);
             if (rs.next()) {
-                sta.execute(alterSql);
+                sta.execute("ALTER IGNORE TABLE `" + tablePrefix + table.getDbName() + "` " + alterSql);
             } else {
-                sta.execute("DROP TABLE " + tablePrefix + table.getDbName());
-                sta.execute(table.getSql(tablePrefix));
+                sta.addBatch("SET FOREIGN_KEY_CHECKS = 0");
+                sta.addBatch("DROP TABLE " + tablePrefix + table.getDbName());
+                sta.addBatch(table.getSql(tablePrefix));
+                sta.addBatch("SET FOREIGN_KEY_CHECKS = 1");
+                sta.executeBatch();
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to alter table " + table.getDbName(), e);
         }
+    }
+
+    private void alterColumnOrRecreate(MySqlTable table, String column, String columnDefinition) {
+        alterOrRecreate(table, "CHANGE COLUMN `" + column + "` `" + column + "` " + columnDefinition + ";");
     }
 
     private void alterColumnOrRecreate(MySqlTable table, String oldColumn, String newColumn, String columnDefinition) {
@@ -1335,7 +1357,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 }
             } else {
                 sta.addBatch("SET FOREIGN_KEY_CHECKS = 0");
-                sta.addBatch("DROP TABLE " + tablePrefix + table.getDbName() + ";");
+                sta.addBatch("DROP TABLE " + tablePrefix + table.getDbName());
                 sta.addBatch(table.getSql(tablePrefix));
                 sta.addBatch("SET FOREIGN_KEY_CHECKS = 1");
                 sta.executeBatch();

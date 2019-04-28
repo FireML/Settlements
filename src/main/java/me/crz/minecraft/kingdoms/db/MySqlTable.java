@@ -34,14 +34,16 @@ public enum MySqlTable {
             + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
             + "empireId INTEGER, INDEX (empireId),"
             + "FOREIGN KEY (empireId) REFERENCES {tablePrefix}empires(id) ON DELETE CASCADE,"
-            + "banished VARCHAR(320)"
+            + "banished VARCHAR(36),"
+            + "UNIQUE list (empireId, banished)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     EMPIRE_ALLIES("CREATE TABLE IF NOT EXISTS {tablePrefix}empire_allies ("
             + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
             + "empireId INTEGER, INDEX (empireId),"
             + "FOREIGN KEY (empireId) REFERENCES {tablePrefix}empires(id) ON DELETE CASCADE,"
-            + "allies VARCHAR(320)"
+            + "allies VARCHAR(36),"
+            + "UNIQUE list (empireId, allies)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     EMPIRE_VAULTS("CREATE TABLE IF NOT EXISTS {tablePrefix}empire_vaults ("
@@ -161,14 +163,16 @@ public enum MySqlTable {
             + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
             + "settlementId INTEGER, INDEX (settlementId),"
             + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
-            + "banished VARCHAR(320)"
+            + "banished VARCHAR(36),"
+            + "UNIQUE list (settlementId, banished)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     SETTLEMENT_ALLIES("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_allies ("
             + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
             + "settlementId INTEGER, INDEX (settlementId),"
             + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
-            + "allies VARCHAR(320)"
+            + "allies VARCHAR(36),"
+            + "UNIQUE list (settlementId, allies)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     SETTLEMENT_PERMISSIONS("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_permissions ("
