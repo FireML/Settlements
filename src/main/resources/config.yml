@@ -93,3 +93,11 @@ lockable:
 # This checks if a block is protected on place rather than using the
 # InventoryMoveItemEvent to prevent hoppers from stealing items
 alternative-hopper-protection: true
+# Toggle Placeholder API usage in certain places
+placeholder-api:
+  sidebar: true
+  chat:
+    hover: true
+    format:
+      channel: true
+      private: true

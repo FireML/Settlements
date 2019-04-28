@@ -263,6 +263,13 @@ public class Utils {
         return 10;
     }
 
+    public static boolean usePlaceholderApi(String place) {
+        if (ConfigManager.getInstance().getConfig().isBoolean("placeholder-api." + place)) {
+            return ConfigManager.getInstance().getConfig().getBoolean("placeholder-api." + place);
+        }
+        return false;
+    }
+
     public static boolean playerIsChief(Player player, Village village) {
         return village != null && village.getChiefId().equals(player.getUniqueId());
     }

@@ -7,11 +7,14 @@ import me.crz.minecraft.kingdoms.integration.PlaceholderApiIntegration;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -66,9 +69,10 @@ public class ScoreBoard {
         try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Scoreboard get player sidebar replaced text")) {
             text = sidebar.getReplacedTextList(replacements);
         }
-        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null) {
+        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null && Utils.usePlaceholderApi("sidebar")) {
             try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Scoreboard get player sidebar placeholder api replacements")) {
-                text = PlaceholderApiIntegration.setPlaceholders(member, text);
+                text = new ArrayList<>();
+                Collections.addAll(text, PlaceholderApiIntegration.setPlaceholders(member, String.join("\n", text)).split("\n"));
             }
         }
         return text;

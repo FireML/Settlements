@@ -113,7 +113,7 @@ public class ChatManager extends Base implements ConfigMessages {
         Village village = res.getVillage();
 
         BaseComponent[] format;
-        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null) {
+        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null && Utils.usePlaceholderApi("chat-format.channel")) {
             format = MineDown.parse(
                     PlaceholderApiIntegration.setPlaceholders(
                             sender, getMessage("format.channel." + channel.getKey()).getRawText()));
@@ -285,7 +285,7 @@ public class ChatManager extends Base implements ConfigMessages {
         HoverEvent targetHover = getHover(target, tres);
 
         BaseComponent[] senderFormat;
-        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null) {
+        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null && Utils.usePlaceholderApi("chat.format.private")) {
             senderFormat = MineDown.parse(
                     PlaceholderApiIntegration.setPlaceholders(
                             sender, getMessage("format.private.sender").getRawText()));
@@ -327,7 +327,7 @@ public class ChatManager extends Base implements ConfigMessages {
         ));
 
         BaseComponent[] targetFormat;
-        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null) {
+        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null && Utils.usePlaceholderApi("chat.format.private")) {
             targetFormat = MineDown.parse(
                     PlaceholderApiIntegration.setPlaceholders(
                             target, getMessage("format.private.target").getRawText()));
@@ -401,7 +401,7 @@ public class ChatManager extends Base implements ConfigMessages {
 
     private HoverEvent getHover(Player player, Resident res) {
         BaseComponent[] hover;
-        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null) {
+        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null && Utils.usePlaceholderApi("chat.hover")) {
             hover = MineDown.parse(
                     PlaceholderApiIntegration.setPlaceholders(
                             player, getMessage("hover.info").getRawText()));
