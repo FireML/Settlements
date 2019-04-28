@@ -641,8 +641,12 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
                 if (split.length > 1) {
                     IdObject id = IdObject.get(Integer.parseInt(split[1]));
                     switch (split[0]) {
-                        case "village": landOwner.getAlliedVillageIds().add(id);
-                        case "empire": landOwner.getAlliedEmpireIds().add(id);
+                        case "village":
+                            landOwner.getAlliedVillageIds().add(id);
+                            break;
+                        case "empire":
+                            landOwner.getAlliedEmpireIds().add(id);
+                            break;
                     }
                 }
             } catch (IllegalArgumentException e) {
@@ -657,8 +661,12 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
                 } else {
                     IdObject id = IdObject.get(Integer.parseInt(split[1]));
                     switch (split[0]) {
-                        case "village": landOwner.getBanishedVillageIds().add(id);
-                        case "empire": landOwner.getBanishedEmpireIds().add(id);
+                        case "village":
+                            landOwner.getBanishedVillageIds().add(id);
+                            break;
+                        case "empire":
+                            landOwner.getBanishedEmpireIds().add(id);
+                            break;
                     }
                 }
             } catch (IllegalArgumentException e) {
