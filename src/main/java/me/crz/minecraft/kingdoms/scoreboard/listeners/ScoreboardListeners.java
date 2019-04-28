@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.scoreboard.listeners;
 
 import me.crz.minecraft.kingdoms.scoreboard.CScoreBoard;
 import me.crz.minecraft.kingdoms.scoreboard.ScoreboardManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,8 +23,9 @@ public class ScoreboardListeners implements Listener {
             return;
         }
         Player p = e.getPlayer();
-        manager.getScoreboards().put(p.getUniqueId(), new CScoreBoard(p, manager));
-        manager.update();
+        CScoreBoard scoreboard = new CScoreBoard(p, manager);
+        manager.getScoreboards().put(p.getUniqueId(), scoreboard);
+        Utils.runSync(scoreboard::update);
     }
 
     @EventHandler
