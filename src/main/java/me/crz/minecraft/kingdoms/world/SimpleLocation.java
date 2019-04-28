@@ -61,7 +61,7 @@ public class SimpleLocation implements ConfigurationSerializable {
 
     public boolean inSameChunk(SimpleLocation location) {
         return location != null
-                && world.equals(location.getWorld())
+                && world != null && world.equals(location.getWorld())
                 && getChunkX() == location.getChunkX()
                 && getChunkZ() == location.getChunkZ();
     }
@@ -131,12 +131,15 @@ public class SimpleLocation implements ConfigurationSerializable {
             return true;
         }
         SimpleLocation location = (SimpleLocation) other;
+        if (location.world == null) {
+            return world == null;
+        }
         return location.world.equals(world) && location.x == x && location.y == y && location.z == z && location.yaw == yaw && location.pitch == pitch;
     }
 
     @Override
     public int hashCode() {
-        int hash = world.hashCode();
+        int hash = world != null ? world.hashCode() : 0;
         hash = hash * 31 + Double.hashCode(x);
         hash = hash * 31 + Double.hashCode(y);
         hash = hash * 31 + Double.hashCode(z);
@@ -175,5 +178,10 @@ public class SimpleLocation implements ConfigurationSerializable {
                 (float) map.get("yaw"),
                 (float) map.get("pitch")
         );
+    }
+
+    @Override
+    public String toString() {
+        return "SimpleLocation" + serialize().toString();
     }
 }
