@@ -1332,6 +1332,7 @@ command:
       description: Sets the access level for the settlement
     sethome:
       success: "{title} {name} &r&7&lhas set the {state} home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
+      not-connected-to-home: "&cThe land must be connected to the original home!"
       description: Sets the home for the village
     joinfee:
       description: Get and set the fee a player needs to pay to join

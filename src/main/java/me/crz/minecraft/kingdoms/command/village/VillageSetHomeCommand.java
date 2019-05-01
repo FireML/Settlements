@@ -25,6 +25,16 @@ public class VillageSetHomeCommand extends VillageSubCommand {
             return true;
         }
 
+        if (!land.containsHome() && LandManager.getInstance().getAllConnectedLand(land, l -> {
+            if (l.containsHome()) {
+                return LandManager.FilterResponse.RETURN;
+            }
+            return LandManager.FilterResponse.CONTINUE;
+        }).isEmpty()) {
+            res.tell(getError("not-connected-to-home"), "state", res.getVillage().getState().getTag());
+            return true;
+        }
+
         village.setHome(player.getLocation());
         MessageUtils.tellResidents(village.getOnlineResidents(),
                 getMessage("success"),

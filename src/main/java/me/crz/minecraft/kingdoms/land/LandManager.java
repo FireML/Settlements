@@ -332,9 +332,12 @@ public class LandManager {
                             case SKIP_BRANCH:
                                 skipBranch = true;
                                 break BRANCH;
+                            case ACCEPT:
+                                branchFound.add(foundLand);
+                            case CONTINUE:
+                                break;
                         }
                     }
-                    branchFound.add(foundLand);
 
                     for (int[] direction : directions) {
                         if (direction != branchDir) {
@@ -461,7 +464,11 @@ public class LandManager {
          */
         SKIP_BRANCH,
         /**
-         * Acceot the entry and continue
+         * Continue walking the branch without adding the current entry
+         */
+        CONTINUE,
+        /**
+         * Accept the entry and continue
          */
         ACCEPT;
     }

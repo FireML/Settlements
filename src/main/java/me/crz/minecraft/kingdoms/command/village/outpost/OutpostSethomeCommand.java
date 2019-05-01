@@ -31,7 +31,7 @@ public class OutpostSethomeCommand extends VillageSubCommand {
                 } else if (search.containsHome()) {
                     return LandManager.FilterResponse.SKIP_ENTRY;
                 }
-                return LandManager.FilterResponse.ACCEPT;
+                return LandManager.FilterResponse.CONTINUE;
             });
             for (OwnedLand l : connected) {
                 if (l.isOutpost()) {
