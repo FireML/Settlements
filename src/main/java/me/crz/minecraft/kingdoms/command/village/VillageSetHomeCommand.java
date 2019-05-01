@@ -25,14 +25,14 @@ public class VillageSetHomeCommand extends VillageSubCommand {
             return true;
         }
 
-        if (!land.containsHome() && LandManager.getInstance().getAllConnectedLand(land, l -> {
-            if (l.containsHome()) {
-                return LandManager.FilterResponse.RETURN;
+        if (village.getHome() != null && !land.containsHome()) {
+            OwnedLand home = LandManager.getInstance().getLand(village.getHome().toChunkLocation());
+            if (home != null && LandManager.getInstance().getAllConnectedLand(home,
+                    l -> l.equals(land) || l.isOutpost() ? LandManager.FilterResponse.RETURN : LandManager.FilterResponse.CONTINUE)
+                    .isEmpty()) {
+                res.tell(getError("abandoned-land"), "state", res.getVillage().getState().getTag());
+                return true;
             }
-            return LandManager.FilterResponse.CONTINUE;
-        }).isEmpty()) {
-            res.tell(getError("not-connected-to-home"), "state", res.getVillage().getState().getTag());
-            return true;
         }
 
         village.setHome(player.getLocation());
