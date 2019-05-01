@@ -66,6 +66,13 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
 
     @EventHandler
     public void on(PlayerPickupItemEvent e) {
+        if (MaterialUtils.FARM_ITEMS.contains(e.getItem().getItemStack().getType())
+                || MaterialUtils.FARM_BLOCKS.contains(e.getItem().getItemStack().getType())
+                || MaterialUtils.FARM_BLOCKS_DESTROY.contains(e.getItem().getItemStack().getType())) {
+            if (this.canUse(e.getPlayer(), Use.FARMING, e.getPlayer().getLocation()).getLeft()) {
+                return;
+            }
+        }
         Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.ITEM, e.getPlayer().getLocation());
         if (!response.getLeft()) {
             e.setCancelled(true);
@@ -149,6 +156,13 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
                     if (e.getItem() != null && MaterialUtils.placesBlock(e.getItem())) {
                         if (e.getPlayer().isSneaking()) {
                             use = null;
+                        }
+                    } else if (e.getClickedBlock().getType() == Material.FARMLAND
+                            || (e.getMaterial() == Material.BONE_MEAL && MaterialUtils.FARM_BLOCKS.contains(e.getClickedBlock().getType()))
+                            || (MaterialUtils.HOES.contains(e.getMaterial())
+                                    && (e.getClickedBlock().getType() == Material.DIRT || e.getClickedBlock().getType() == Material.GRASS_BLOCK))) {
+                        if (!this.getCanBuildAll(e.getPlayer(), e.getClickedBlock().getLocation()).getLeft()) {
+                            use = Use.FARMING;
                         }
                     } else if (use == null) {
                         use = Use.INTERACT;

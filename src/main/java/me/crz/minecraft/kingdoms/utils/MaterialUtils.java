@@ -16,6 +16,59 @@ public class MaterialUtils {
             Material.HOPPER_MINECART,
             Material.TNT_MINECART
     );
+    public static final Set<Material> HOES = EnumSet.of(
+            Material.DIAMOND_HOE,
+            Material.GOLDEN_HOE,
+            Material.IRON_HOE,
+            Material.STONE_HOE,
+            Material.WOODEN_HOE
+    );
+    public static final Set<Material> FARM_BLOCKS = EnumSet.of(
+            Material.WHEAT,
+            Material.POTATOES,
+            Material.CARROTS,
+            Material.BEETROOTS,
+            Material.NETHER_WART,
+            Material.MELON_STEM,
+            Material.PUMPKIN_STEM,
+            Material.KELP,
+            Material.CACTUS,
+            Material.CHORUS_FLOWER,
+            Material.COCOA,
+            Material.SUGAR_CANE,
+            Material.BROWN_MUSHROOM,
+            Material.RED_MUSHROOM
+    );
+    public static final Set<Material> FARM_BLOCKS_DESTROY = EnumSet.of(
+            Material.PUMPKIN,
+            Material.MELON,
+            Material.BROWN_MUSHROOM_BLOCK,
+            Material.RED_MUSHROOM_BLOCK,
+            Material.MUSHROOM_STEM
+    );
+    public static final Set<Material> FARM_ITEMS = EnumSet.of(
+            Material.WHEAT,
+            Material.WHEAT_SEEDS,
+            Material.CARROT,
+            Material.POTATO,
+            Material.PUMPKIN,
+            Material.PUMPKIN_SEEDS,
+            Material.MELON,
+            Material.MELON_SEEDS,
+            Material.BEETROOT,
+            Material.BEETROOT_SEEDS,
+            Material.NETHER_WART,
+            Material.CHORUS_FLOWER,
+            Material.CHORUS_PLANT,
+            Material.CHORUS_FRUIT,
+            Material.KELP,
+            Material.KELP_PLANT
+    );
+    static {
+        FARM_BLOCKS.addAll(Tag.SAPLINGS.getValues());
+        FARM_BLOCKS_DESTROY.addAll(Tag.LOGS.getValues());
+        FARM_BLOCKS_DESTROY.addAll(Tag.LEAVES.getValues());
+    }
 
     public static boolean placesBlock(ItemStack item) {
         if (item.getType().isBlock()) {
@@ -30,6 +83,7 @@ public class MaterialUtils {
             case STRING:
             case ARMOR_STAND:
             case ITEM_FRAME:
+            case PAINTING:
                 return true;
         }
 

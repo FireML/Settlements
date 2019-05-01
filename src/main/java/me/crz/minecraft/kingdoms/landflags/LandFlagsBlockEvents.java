@@ -36,12 +36,18 @@ import java.util.Set;
 import java.util.UUID;
 
 public class LandFlagsBlockEvents implements LandFlagBase, Listener {
+
     public LandFlagsBlockEvents() {
         super();
     }
 
     @EventHandler
     public void on(BlockBreakEvent e) {
+        if ((MaterialUtils.FARM_BLOCKS.contains(e.getBlock().getType()) || MaterialUtils.FARM_BLOCKS_DESTROY.contains(e.getBlock().getType()))
+                && this.canUse(e.getPlayer(), Use.FARMING, e.getBlock().getLocation()).getLeft()) {
+            return;
+        }
+
         Pair<Boolean, String> responce = this.getCanBuildAll(e.getPlayer(), e.getBlock().getLocation());
         if (!responce.getLeft()) {
             MessageUtils.tell(e.getPlayer(), responce.getRight());
@@ -66,6 +72,11 @@ public class LandFlagsBlockEvents implements LandFlagBase, Listener {
 
     @EventHandler
     public void on(BlockPlaceEvent e) {
+        if ((MaterialUtils.FARM_BLOCKS.contains(e.getBlockPlaced().getType()) || e.getBlockPlaced().getType() == Material.FARMLAND)
+                && this.canUse(e.getPlayer(), Use.FARMING, e.getBlock().getLocation()).getLeft()) {
+            return;
+        }
+
         Pair<Boolean, String> response = this.getCanBuildAll(e.getPlayer(), e.getBlock().getLocation());
         if (!response.getLeft()) {
             MessageUtils.tell(e.getPlayer(), response.getRight());
