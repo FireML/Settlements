@@ -1081,7 +1081,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     " WHERE " + keyColumn + " = ?";
 
             if (!map.isEmpty()) {
-                deleteSql += " AND " + mapKey + " NOT IN " +
+                deleteSql += " AND (" + mapKey + " NOT IN " +
                         "(" + String.join(",", Collections.nCopies(map.size(), "?")) + ")";
                 for (String key : map.keySet()) {
                     deleteObjects.put(i, key);
@@ -1099,7 +1099,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                         i++;
                     }
                 }
-                deleteSql += " OR ((" + String.join(") OR (", rankQuery) + "))";
+                deleteSql += " OR ((" + String.join(") OR (", rankQuery) + ")))";
             }
             deleteSql += ";";
         } else if (!mapValue.isEmpty() && values.values().iterator().next() instanceof Map) {
