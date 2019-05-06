@@ -27,6 +27,7 @@ help-order:
     - upkeep
     - allies
     - help elder
+    - help assistant
     - help chief
     - rules
     - lock
