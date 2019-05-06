@@ -31,6 +31,7 @@ perm-groups:
     - empire.perms
     - empire.perms.set
     - empire.perms.unset
+    - empire.plot.admin
     - empire.regen
     - empire.rename
     - empire.setdescription
@@ -81,6 +82,7 @@ ranks:
     - empire.officer
     - empire.perms
     - empire.perms.show
+    - empire.plot.admin
     - empire.setdescription
     - empire.settings
     - empire.allies
@@ -118,6 +120,7 @@ ranks:
     - empire.bank.history
     - empire.help.member
     - empire.perks
+    - empire.plot.admin
     - empire.senators
     - empire.shop
     - empire.tax
