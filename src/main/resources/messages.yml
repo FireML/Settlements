@@ -603,6 +603,17 @@ gui:
       title: "&2&l/e vault"
   perms:
     title: "&2&l/s perms"
+    reset:
+      title: "&cReset all permissions?"
+      confirm: |-
+        &a&lConfirm
+        &7Click to reset the permissions
+        &7of all ranks in {state} {name}
+        &7to their default values!
+      cancel: |-
+        &c&lCancel
+        &7Click to cancel the reseting
+        &7of all rank permissions.
     back: "&c&lBack To Settings"
     entry:
       title: "&3{rank}"
@@ -1306,6 +1317,8 @@ command:
         description: Unset the permissions of a rank
         success: "&aUnset permission &e{permission}&a for rank &a{rank}&a! Is now &a{value}!"
         success-all: "&aUnset all permissions for rank &a{rank}&a!"
+      reset:
+        description: Reset all permissions to the default values
     plot:
       admin:
         description: "Allows administrating of settlement plots"
@@ -1776,6 +1789,8 @@ command:
         description: Unset the permissions of a rank
         success: "&aUnset permission &e{permission}&a for rank &a{rank}&a! Is now &a{value}!"
         success-all: "&aUnset all permissions for rank &a{rank}&a!"
+      reset:
+        description: Reset all permissions to the default values
     perks:
       toggle:
         active: "&6&l{perk} &7&lhas been &a&lactivated"

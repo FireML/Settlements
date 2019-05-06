@@ -41,6 +41,9 @@ perm-groups:
     - village.outpost.sethome
     - village.outpost.unclaim
     - village.perms
+    - village.perms.set
+    - village.perms.unset
+    - village.perms.reset
     - village.plot.admin
     - village.rename
     - village.setdescription
@@ -102,6 +105,9 @@ ranks:
     - village.outpost.sethome
     - village.perks.toggle
     - village.perms
+    - village.perms.set
+    - village.perms.unset
+    - village.perms.reset
     - village.plot.admin
     - village.setdescription
     - village.setrank
