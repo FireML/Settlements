@@ -162,8 +162,8 @@ public class LockManager implements LockProvider {
     }
 
     public void saveLock(Lock... locks) {
-        for (Lock land : locks) {
-            cacheLock(land);
+        for (Lock lock : locks) {
+            cacheLock(lock);
         }
         Utils.runAsync(() -> DatabaseManager.getInstance().saveLocks(locks));
     }
@@ -277,6 +277,17 @@ public class LockManager implements LockProvider {
             }
         }
         Utils.runAsync(() -> DatabaseManager.getInstance().deleteLocks(lock));
+    }
+
+    @Override
+    public boolean isLocked(Block block) {
+        return getLock(block) != null;
+    }
+
+    @Override
+    public boolean canAccess(Player player, Block block) {
+        Lock lock = getLock(block);
+        return lock == null || lock.canAccess(player);
     }
 
     @Override

@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.integration;
 
 import com.griefcraft.lwc.LWC;
 import com.griefcraft.model.Permission;
+import com.griefcraft.model.Protection;
 import com.griefcraft.scripting.JavaModule;
 import com.griefcraft.scripting.event.LWCAccessEvent;
 import com.griefcraft.scripting.event.LWCProtectionRegisterEvent;
@@ -24,6 +25,7 @@ import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 
 import java.util.Collection;
 
@@ -157,6 +159,17 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
 
     public LWC getLWC() {
         return lwc;
+    }
+
+    @Override
+    public boolean isLocked(Block block) {
+        return LWC.getInstance().findProtection(block.getLocation()) != null;
+    }
+
+    @Override
+    public boolean canAccess(Player player, Block block) {
+        Protection protection = LWC.getInstance().findProtection(block.getLocation());
+        return protection == null || LWC.getInstance().canAccessProtection(player, protection);
     }
 
     @Override

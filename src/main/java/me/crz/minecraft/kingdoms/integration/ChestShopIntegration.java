@@ -2,16 +2,17 @@ package me.crz.minecraft.kingdoms.integration;
 
 import co.aikar.timings.Timing;
 import com.Acrobot.ChestShop.ChestShop;
-import com.Acrobot.ChestShop.Events.PreShopCreationEvent;
+import com.Acrobot.ChestShop.Events.Protection.ProtectionCheckEvent;
 import com.Acrobot.ChestShop.Events.ShopDestroyedEvent;
+import com.Acrobot.ChestShop.Security;
 import com.Acrobot.ChestShop.Signs.ChestShopSign;
 import com.Acrobot.ChestShop.Utils.uBlock;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.lock.Lock;
+import me.crz.minecraft.kingdoms.lock.LockManager;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
@@ -21,6 +22,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -51,6 +54,14 @@ public class ChestShopIntegration implements LockProvider, ShopProvider, Listene
                 event.setCancelled(true);
                 getError("not-allowed").tell(event.getPlayer());
             }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onShopAccess(ProtectionCheckEvent event) {
+        Lock lock = LockManager.getInstance().getLock(event.getBlock());
+        if (lock != null && lock.canAccess(event.getPlayer())) {
+            event.setResult(Event.Result.ALLOW);
         }
     }
 
@@ -104,5 +115,15 @@ public class ChestShopIntegration implements LockProvider, ShopProvider, Listene
     @Override
     public boolean isShop(Block block) {
         return ChestShopSign.isValid(block) || ChestShopSign.isShopBlock(block);
+    }
+
+    @Override
+    public boolean isLocked(Block block) {
+        return isShop(block);
+    }
+
+    @Override
+    public boolean canAccess(Player player, Block block) {
+        return Security.canAccess(player, block);
     }
 }
