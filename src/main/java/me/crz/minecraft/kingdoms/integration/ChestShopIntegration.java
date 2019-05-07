@@ -57,7 +57,7 @@ public class ChestShopIntegration implements LockProvider, ShopProvider, Listene
         }
     }
 
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onShopAccess(ProtectionCheckEvent event) {
         Lock lock = LockManager.getInstance().getLock(event.getBlock());
         if (lock != null && lock.canAccess(event.getPlayer())) {
