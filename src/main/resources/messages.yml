@@ -633,6 +633,17 @@ gui:
         &3Settings
         Permissions for editing
         {state} settings
+    reset:
+      title: "&cReset {rank} permissions?"
+      confirm: |-
+        &a&lConfirm
+        &7Click to reset the permissions
+        &7of rank {rank} to their default
+        &7values!
+      cancel: |-
+        &c&lCancel
+        &7Click to cancel the reseting
+        &7the perms of rank {rank}.
 
   rank-perms:
     title: "&2&l/s perms &e&l{rank}"

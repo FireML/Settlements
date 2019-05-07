@@ -5,9 +5,12 @@ import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.rank.PermissionGroup;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.utils.ConfirmationGui;
 import me.crz.minecraft.kingdoms.utils.IdObject;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -52,6 +55,32 @@ public class RankPermGroupsGUI extends KingdomsGUI {
                 }
             });
         }
+        gui.addItem((gui.getMaxSlot() / 9) * 9 + 7, new ClickableItem() {
+            @Override
+            public ItemStack getItem(Player p) {
+                Resident res = ResidentManager.getInstance().getResident(p);
+                if (res.hasVillage() && res.hasPermission("village.perms.reset")) {
+                    return new CItem(Material.ORANGE_WOOL).setName(getText("reset.title", "rank", rank.getTag(res.getVillage()))).build();
+                }
+                return null;
+            }
+
+            @Override
+            public boolean click(Player p, ClickType clickType) {
+                Resident res = ResidentManager.getInstance().getResident(p);
+                if (res.hasVillage() && res.hasPermission("village.perms.reset")) {
+                    Village village = res.getVillage();
+                    new ConfirmationGui(RankPermGroupsGUI.this, "reset", () -> {
+                        if (res.hasPermission("village.perms.reset")) {
+                            village.getRanksPermissions().remove(rank.name().toLowerCase());
+                            open(p);
+                            Utils.runAsync(() -> DatabaseManager.getInstance().save(village));
+                        }
+                    }, () -> open(p), "state", village.getStateTag(), "name", village.getName(), "rank", rank.getTag(village)).build(p);
+                }
+                return true;
+            }
+        });
         gui.addItem((gui.getMaxSlot() / 9) * 9 + 8, new ClickableItem() {
             public ItemStack getItem(final Player p) {
                 return new CItem(Material.BARRIER).setName(getText("back")).build();
