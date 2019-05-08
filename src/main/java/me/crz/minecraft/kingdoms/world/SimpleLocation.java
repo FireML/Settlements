@@ -44,6 +44,16 @@ public class SimpleLocation implements ConfigurationSerializable {
         return new SimpleLocation(this);
     }
 
+    public void copy(SimpleLocation other) {
+        this.world = other.getWorld();
+        this.x = other.getX();
+        this.y = other.getY();
+        this.z = other.getZ();
+        this.pitch = other.getPitch();
+        this.yaw = other.getYaw();
+        this.chunk = other.toChunkLocation();
+    }
+
     public Location toBukkitLocation() {
         World world = Bukkit.getWorld(this.world);
         if (world != null) {
@@ -120,6 +130,18 @@ public class SimpleLocation implements ConfigurationSerializable {
 
     public void setPitch(float pitch) {
         this.pitch = pitch;
+    }
+
+    public int getBlockX() {
+        return Location.locToBlock(getX());
+    }
+
+    public int getBlockY() {
+        return Location.locToBlock(getY());
+    }
+
+    public int getBlockZ() {
+        return Location.locToBlock(getZ());
     }
 
     @Override

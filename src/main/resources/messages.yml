@@ -1357,6 +1357,7 @@ command:
       description: Sets the access level for the settlement
     sethome:
       success: "{title} {name} &r&7&lhas set the {state} home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
+      moved-outpost: "{title} {name} &r&7&lmoved the outpost &r&6&l{outpost}&7&l to the old home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
       abandoned-land: "&cCan't move home as the original land would no longer be connected to the home or an outpost!"
       description: Sets the home for the village
     joinfee:

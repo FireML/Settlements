@@ -4,10 +4,10 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.world.NamedLocation;
 import org.bukkit.entity.Player;
 
 public class VillageSetHomeCommand extends VillageSubCommand {
@@ -21,27 +21,47 @@ public class VillageSetHomeCommand extends VillageSubCommand {
         Player player = res.getPlayer();
         OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
         if (land == null || !land.getLandOwner().equals(village)) {
-            res.tell(getError("not-your-village"), "state", res.getVillage().getState().getTag());
+            getError("not-your-village").tell(res, "state", res.getVillage().getState().getTag());
             return true;
         }
 
         if (village.getHome() != null && !land.containsHome()) {
             OwnedLand home = LandManager.getInstance().getLand(village.getHome().toChunkLocation());
-            if (home != null && LandManager.getInstance().getAllConnectedLand(home,
-                    l -> l.equals(land) || l.isOutpost() ? LandManager.FilterResponse.RETURN : LandManager.FilterResponse.CONTINUE)
-                    .isEmpty()) {
-                res.tell(getError("abandoned-land"), "state", res.getVillage().getState().getTag());
-                return true;
+            if (home != null) {
+                if (land.isOutpost()) {
+                    NamedLocation outpost = village.getOutpostHomes().get(land.getOutpostName().toLowerCase());
+                    if (outpost != null) {
+                        land.setOutpost(null);
+                        outpost.copy(village.getHome());
+                        home.setOutpost(outpost.getName());
+                        getMessage("moved-outpost").tell(village.getOnlineResidents(),
+                                "rank", res.getVillageRank().getTag(village),
+                                "title", res.getTitle(),
+                                "name", player.getName(),
+                                "outpost", outpost.getName(),
+                                "state", village.getState().getTag(),
+                                "world", outpost.getWorld(),
+                                "x", String.valueOf(outpost.getBlockX()),
+                                "y", String.valueOf(outpost.getBlockY()),
+                                "z", String.valueOf(outpost.getBlockZ()));
+                    }
+                }
+
+                if (!home.isOutpost() && LandManager.getInstance().getAllConnectedLand(home,
+                        l -> l.equals(land) || l.isOutpost() ? LandManager.FilterResponse.RETURN : LandManager.FilterResponse.CONTINUE)
+                        .isEmpty()) {
+                    getError("abandoned-land").tell(res, "state", res.getVillage().getState().getTag());
+                    return true;
+                }
             }
         }
 
         village.setHome(player.getLocation());
-        MessageUtils.tellResidents(village.getOnlineResidents(),
-                getMessage("success"),
+        getMessage("success").tell(village.getOnlineResidents(),
                 "rank", res.getVillageRank().getTag(village),
                 "title", res.getTitle(),
                 "name", player.getName(),
-                "state", res.getVillage().getState().getTag(),
+                "state", village.getState().getTag(),
                 "world", player.getLocation().getWorld().getName(),
                 "x", String.valueOf(player.getLocation().getBlockX()),
                 "y", String.valueOf(player.getLocation().getBlockY()),
