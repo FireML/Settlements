@@ -6,6 +6,9 @@ import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.land.LandManager;
+import me.crz.minecraft.kingdoms.land.LandOwner;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
+import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
@@ -56,6 +59,15 @@ public class EmpireManager {
         for (Empire empire : DatabaseManager.getInstance().getAllEmpires()) {
             empires.put(empire.getName().replace(' ', '_').toLowerCase(), empire);
             empireIds.put(empire.getId(), empire);
+            if (empire.isAbandoned()) {
+                long timeAbandoned = System.currentTimeMillis() - empire.getCreated();
+                long abandonTime = Utils.getAbandonTime(empire.getStateKey());
+                long delay = timeAbandoned > abandonTime * 60 * 1000 ? 0 : abandonTime * 60 * 20;
+                Utils.runLater(() -> {
+                    KingdomsPlugin.getInstance().getLogger().log(Level.INFO, empire.getStateTag() + " " + empire.getName() + " was removed because it has been abandoned for " + abandonTime + " minutes!");
+                    deleteEmpire(empire);
+                }, delay / 50);
+            }
         }
     }
 
@@ -239,7 +251,7 @@ public class EmpireManager {
         }
     }
 
-    public void abandonEmpire(Empire empire) {
+    void abandonEmpire(Empire empire) {
         MessageUtils.broadcast(Message.get("broadcast.empire-abandoned"), "name", empire.getName());
 
         // Remove members
@@ -260,7 +272,16 @@ public class EmpireManager {
             modifiedResidents.add(senator);
         }
         empire.getSenatorIds().clear();
+        Collection<LandOwner> allies = empire.getAllies();
+        empire.getAlliedEmpireIds().clear();
+        empire.getAlliedVillageIds().clear();
+        for (LandOwner ally : allies) {
+            ally.removeAlly(empire);
+        }
         empire.setAccess(LandAccess.PUBLIC);
+        for (Use u : Use.values()) {
+            empire.setUseState(u, BuildState.PUBLIC);
+        }
         World empireWorld = Bukkit.getWorld(empire.getWorldName());
         if (empireWorld != null) {
             for (LockProvider lockProvider : KingdomsPlugin.getInstance().getLockProviders()) {
@@ -268,10 +289,19 @@ public class EmpireManager {
             }
         }
         LandManager.getInstance().removeWorld(empire.getWorldName());
+        empire.getPerksMap().clear();
+
+        empire.setCreated(System.currentTimeMillis());
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveEmpire(empire);
+            DatabaseManager.getInstance().save(allies);
             DatabaseManager.getInstance().saveVillages(modifiedVillages);
             DatabaseManager.getInstance().saveResident(modifiedResidents);
+
+            Utils.runLater(() -> {
+                KingdomsPlugin.getInstance().getLogger().log(Level.INFO, empire.getStateTag() + " " + empire.getName() + " was removed because it has been abandoned for " + Utils.getAbandonTime(empire.getStateKey()) + " minutes!");
+                deleteEmpire(empire);
+            }, Utils.getAbandonTime(empire.getStateKey()) * 60 * 20);
         });
     }
 

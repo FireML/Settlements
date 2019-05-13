@@ -11,6 +11,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,8 @@ public abstract class DatabaseManager {
     public abstract void connect() throws Exception;
 
     public abstract void saveEmpire(Empire empire);
+
+    public abstract void saveEmpires(Collection<Empire> empires);
 
     public abstract void deleteEmpire(Empire village);
 
@@ -166,6 +169,20 @@ public abstract class DatabaseManager {
         } else if (landOwner instanceof Empire) {
             saveEmpire((Empire) landOwner);
         }
+    }
+
+    public void save(Collection<LandOwner> landOwners) {
+        List<Village> villages = new ArrayList<>();
+        List<Empire> empires = new ArrayList<>();
+        for (LandOwner landOwner : landOwners) {
+            if (landOwner instanceof Village) {
+                villages.add((Village) landOwner);
+            } else if (landOwner instanceof Empire) {
+                empires.add((Empire) landOwner);
+            }
+        }
+        saveVillages(villages);
+        saveEmpires(empires);
     }
 
     public abstract void disable();

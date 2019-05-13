@@ -24,18 +24,21 @@ public class VillageShowCommand extends SubCommand {
                 MessageUtils.tell(sender, getError("not-in-village"));
                 return false;
             }
-            getMessage(village.hasEmpire() ? "empire" : "general").tell(sender, village.getReplacements(VillageShowCommand.this));
+            getMessage(village.hasEmpire() ? "empire" : village.isAbandoned() ? "abandoned" : "general")
+                    .tell(sender, village.getReplacements(this));
         } else if (args.length == 1) {
             String name = String.join(" ", args);
             Village village = VillageManager.getInstance().getVillageFromName(name);
             if (village != null) {
-                getMessage(village.hasEmpire() ? "empire" : "general").tell(sender, village.getReplacements(VillageShowCommand.this));
+                getMessage(village.hasEmpire() ? "empire" : village.isAbandoned() ? "abandoned" : "general")
+                        .tell(sender, village.getReplacements(this));
                 return true;
             }
             Utils.runAsync(() -> {
                 Resident target = ResidentManager.getInstance().getResident(name);
                 if (target != null && target.hasVillage()) {
-                    getMessage(target.hasEmpire() ? "empire" : "general").tell(sender, target.getVillage().getReplacements(VillageShowCommand.this));
+                    getMessage(target.hasEmpire() ? "empire" : target.getVillage().isAbandoned() ? "abandoned" : "general")
+                            .tell(sender, target.getVillage().getReplacements(this));
                 } else {
                     getError("village-doesnt-exist").tell(sender, "name", name);
                 }

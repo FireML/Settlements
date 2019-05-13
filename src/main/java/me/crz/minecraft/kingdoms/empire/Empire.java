@@ -63,8 +63,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
 
     public void doUpkeep() {
         if (isAbandoned()) {
-            KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " was removed because it has been abandoned for a day!");
-            EmpireManager.getInstance().deleteEmpire(this);
+            KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " is abandoned. No upkeep.");
             return;
         }
 

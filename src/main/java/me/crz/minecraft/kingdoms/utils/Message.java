@@ -136,6 +136,10 @@ public class Message {
         MessageUtils.tell(resident, this, replacements);
     }
 
+    public void broadcast(String... replacements) {
+        MessageUtils.broadcast(this, replacements);
+    }
+
     private static Map<String, Message> messages = new HashMap<>();
 
     public static Message get(String key) {

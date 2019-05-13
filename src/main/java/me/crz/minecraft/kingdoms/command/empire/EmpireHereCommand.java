@@ -20,7 +20,7 @@ public class EmpireHereCommand extends PlayerSubCommand {
             getError("not-in-empire").tell(player);
             return true;
         }
-        Utils.runAsync(() -> getMessage("general").tell(player, empire.getReplacements(EmpireHereCommand.this)));
+        getMessage(empire.isAbandoned() ? "abandoned" : "general").tell(player, empire.getReplacements(this));
         return true;
     }
 }

@@ -74,6 +74,10 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     }
 
     public void doUpkeep() {
+        if (isAbandoned()) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " is abandoned. No upkeep.");
+            return;
+        }
         if (getTax() > 0) {
             long totalTax = 0;
             long tax = getTax();
@@ -151,14 +155,18 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
             } else {
                 KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and was deleted!");
                 setBank(0);
-                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.deleted"));
-                VillageManager.getInstance().deleteVillage(this);
+                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.abandoned"));
+                VillageManager.getInstance().abandonVillage(this);
             }
         }
     }
 
     public int getUpkeep() {
         return hasEmpire() && getEmpire().isCapital(this) ? 0 : LandManager.getInstance().getClaimedLandSize(this) * Utils.getUpkeepCost(getState(), getLevel());
+    }
+
+    public boolean isAbandoned() {
+        return residents.isEmpty();
     }
 
     public void setOutpostHome(String name, Location loc) {
@@ -531,6 +539,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 "description", getDescription(),
                 "empire", hasEmpire() ? getEmpire().getName() : "",
                 "state", getState().getTag(),
+                "abandoned", yesOrNo(isAbandoned()),
                 "level", String.valueOf(getLevel()),
                 "land", String.valueOf(LandManager.getInstance().getClaimedLandSize(this)),
                 "maxland", String.valueOf(getMaxClaimableChunks()),
