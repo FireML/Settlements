@@ -111,7 +111,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
             KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " was charged an upkeep of " + total + "!");
             MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.charged"), "charged", String.valueOf(total));
             if (!has(total - lastTax)) {
-                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.cant-pay"), "cost", String.valueOf(total));
+                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.cant-pay"), "amount", String.valueOf(total));
             }
             Utils.runAsync(() -> {
                 DatabaseManager.getInstance().saveEmpire(this);

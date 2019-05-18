@@ -129,7 +129,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
             KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") was charged an upkeep of " + total + "!");
             MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.charged"), "charged", String.valueOf(total));
             if (!has(total - lastTax)) {
-                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.cant-pay"), "cost", String.valueOf(total));
+                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.cant-pay"), "amount", String.valueOf(total));
             }
             Utils.runAsync(() -> {
                 DatabaseManager.getInstance().saveVillage(this);
