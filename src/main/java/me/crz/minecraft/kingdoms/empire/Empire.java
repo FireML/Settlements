@@ -120,8 +120,13 @@ public class Empire extends LandOwner implements Comparable<Empire> {
         } else {
             KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " wasn't able to pay the upkeep of " + total + " and was abandoned!");
             setBank(0);
-            MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.abandoned"));
-            EmpireManager.getInstance().abandonEmpire(this);
+            if (Utils.getAbandonTime(getStateKey()) > 0) {
+                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.abandoned"));
+                EmpireManager.getInstance().abandonEmpire(this);
+            } else {
+                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.deleted"));
+                EmpireManager.getInstance().deleteEmpire(this);
+            }
         }
     }
 

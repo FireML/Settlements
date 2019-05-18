@@ -156,8 +156,13 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
             } else {
                 KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and was deleted!");
                 setBank(0);
-                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.abandoned"));
-                VillageManager.getInstance().abandonVillage(this);
+                if (Utils.getAbandonTime(getStateKey()) > 0) {
+                    MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.abandoned"));
+                    VillageManager.getInstance().abandonVillage(this);
+                } else {
+                    MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.deleted"));
+                    VillageManager.getInstance().deleteVillage(this);
+                }
             }
         }
     }

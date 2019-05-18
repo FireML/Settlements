@@ -128,10 +128,12 @@ upkeep:
   alert:
     level-removed: "&a&lALERT &7Your settlement has had a level removed because you couldn't pay the upkeep!"
     downgraded: "&a&lALERT &7Your settlement was downgraded to a level {level} {state} because you couldn't pay the upkeep!"
+    deleted: "&a&lALERT &7Your settlement has been &cdeleted&7 because it was &cunable&7 to pay its upkeep!"
     abandoned: "&a&lALERT &7Your settlement has been &cabandoned&7 because it was &cunable&7 to pay its upkeep!"
     charged: "&a&lALERT &7Your settlement has been charged &6{charged}&7 for upkeep!"
     cant-pay: "&a&lALERT &cYour settlement is &6unable&c to pay the next upkeep it will cost &6{amount}&c! Deposit money to avoid deletion!"
   empire-alert:
+    deleted: "&a&lALERT &7Your empire has been &cdeleted&7 because it was &cunable&7 to pay its upkeep!"
     abandoned: "&a&lALERT &7Your empire is in the &cabandoned&7 state for the next 24 hours because it was &cunable&7 to pay its upkeep!"
     charged: "&a&lALERT &7Your empire has been charged &6{charged}&7 for upkeep!"
     cant-pay: "&a&lALERT &cYour empire is &6unable&c to pay the next upkeep it will cost &6{amount}&c! Deposit money to avoid deletion!"
