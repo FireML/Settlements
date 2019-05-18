@@ -21,6 +21,7 @@ import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Targetable;
+import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.utils.config.Data;
@@ -540,6 +541,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 "empire", hasEmpire() ? getEmpire().getName() : "",
                 "state", getState().getTag(),
                 "abandoned", yesOrNo(isAbandoned()),
+                "abandonedcountdown", isAbandoned() ? UtilTime.format(getCreated() + (Utils.getAbandonTime(getStateKey()) * 60 * 1000) - System.currentTimeMillis()) : "",
                 "level", String.valueOf(getLevel()),
                 "land", String.valueOf(LandManager.getInstance().getClaimedLandSize(this)),
                 "maxland", String.valueOf(getMaxClaimableChunks()),

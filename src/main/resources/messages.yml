@@ -1192,7 +1192,7 @@ command:
         {residents}
       abandoned: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-        &c&lABANDONED!!!
+        &c&lABANDONED!!!&r&c Falls in {abandonedcountdown}
         &a&lDescription: &r&7{description}
         &a&lState: &r&7{state}
         &6&lAccess: &r&7{access}
@@ -1282,6 +1282,9 @@ command:
         for-sale: "For sale: &7{price}"
         outpost: "Outpost: &7{name}"
         home: Home
+        abandoned: |-
+          &c&lABANDONED!!!
+          &c Falls in {abandonedcountdown}
       description: Shows you a map of the surrounding chunks
     materials:
       max-level-reached: "&c&lYour {state} already has the max level!"
@@ -1462,7 +1465,7 @@ command:
         {residents}
       abandoned: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-        &c&lABANDONED!!!
+        &c&lABANDONED!!!&r&c Falls in {abandonedcountdown}
         &a&lDescription: &r&7{description}
         &a&lState: &r&7{state}
         &6&lAccess: &r&7{access}
@@ -1718,7 +1721,7 @@ command:
         &e&lMembers: &r&7{members}
       abandoned: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-        &c&lABANDONED!!!
+        &c&lABANDONED!!!&r&c Falls in {abandonedcountdown}
         &a&lDescription: &r&7{description}
         &a&lSymbol: &r&7{symbol}
         &6&lAccess: &r&7{access}
@@ -1800,6 +1803,9 @@ command:
         embassy: "Embassy Owner: &7{owner}"
         for-sale: "For sale: &7{price}"
         home: Home
+        abandoned: |-
+          &c&lABANDONED!!!
+          &c Falls in {abandonedcountdown}
       description: Shows you a map of the surrounding chunks
     memberlist:
       head: "&a⊱&m━━━━&r&6Members&a&m━━━━&a⊰"
@@ -1933,7 +1939,7 @@ command:
         entry: "{title} {online}{name}"
       abandoned: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-        &c&lABANDONED!!!
+        &c&lABANDONED!!!&r&c Falls in {abandonedcountdown}
         &a&lDescription: &r&7{description}
         &a&lSymbol: &r&7{symbol}
         &6&lAccess: &r&7{access}

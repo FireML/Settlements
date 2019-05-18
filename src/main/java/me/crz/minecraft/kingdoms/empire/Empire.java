@@ -18,6 +18,7 @@ import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.utils.Targetable;
+import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -508,6 +509,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                 "tax", Utils.CURRENCY_FORMAT.format(getTax()),
                 "upkeep", Utils.CURRENCY_FORMAT.format(getUpkeep()),
                 "abandoned", yesOrNo(isAbandoned()),
+                "abandonedcountdown", isAbandoned() ? UtilTime.format(getCreated() + (Utils.getAbandonTime(getStateKey()) * 60 * 1000) - System.currentTimeMillis()) : "",
                 "mobspawning", String.valueOf(getMode(PlotMode.mobSpawning)),
                 "firespread", String.valueOf(getMode(PlotMode.fireSpread)),
                 "explosions", String.valueOf(getMode(PlotMode.explosions)),

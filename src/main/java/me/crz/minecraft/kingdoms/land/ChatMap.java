@@ -4,6 +4,7 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.utils.ConfigKey;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -231,16 +232,22 @@ public class ChatMap {
             }
 
             ComponentBuilder hover = new ComponentBuilder(land.getLandOwner().getName());
-            if (!land.getDescription().isEmpty()) {
-                hover.append("\n").append(land.getDescription());
-            }
-            if (messages.getMessage("hover." + symbol.getKey()).exists()) {
-                hover.append("\n").append(messages.getMessage("hover." + symbol.getKey()).getReplacedComponents(
-                        "owner", land.isPlot() ? ResidentManager.getInstance().getResidentName(land.getPlotOwner()) : "none",
-                        "price", land.isForSale() ? String.valueOf(land.getPrice()) : messages.getText("not-for-sale"),
-                        "description", land.getDescription(),
-                        "name", land.getOutpostName()
+            if (land.getLandOwner().isAbandoned()) {
+                hover.append("\n").append(messages.getMessage("hover.abandoned").getReplacedComponents(
+                        "countdown", UtilTime.format(land.getLandOwner().getCreated() + (Utils.getAbandonTime(land.getLandOwner().getStateKey()) * 60 * 1000) - System.currentTimeMillis())
                 ));
+            } else {
+                if (!land.getDescription().isEmpty()) {
+                    hover.append("\n").append(land.getDescription());
+                }
+                if (messages.getMessage("hover." + symbol.getKey()).exists()) {
+                    hover.append("\n").append(messages.getMessage("hover." + symbol.getKey()).getReplacedComponents(
+                            "owner", land.isPlot() ? ResidentManager.getInstance().getResidentName(land.getPlotOwner()) : "none",
+                            "price", land.isForSale() ? String.valueOf(land.getPrice()) : messages.getText("not-for-sale"),
+                            "description", land.getDescription(),
+                            "name", land.getOutpostName()
+                    ));
+                }
             }
 
             if (current) {

@@ -20,11 +20,13 @@ public class PlotInfoCommand extends ResidentSubCommand {
             return true;
         }
         res.tell(getMessage("general"), land.getReplacements());
-        if (land.isPlot()) {
-            Utils.runAsync(() -> res.tell(getMessage("owner"), "name", ResidentManager.getInstance().getResident(land.getPlotOwner()).getName()));
-        } else if (land.isForSale() &&
-                (land.isEmbassy() || land.isOwnedBy(res))) {
-            res.tell(getMessage("price"), "price", String.valueOf(land.getPrice()));
+        if (!land.getLandOwner().isAbandoned()) {
+            if (land.isPlot()) {
+                Utils.runAsync(() -> res.tell(getMessage("owner"), "name", ResidentManager.getInstance().getResident(land.getPlotOwner()).getName()));
+            } else if (land.isForSale() &&
+                    (land.isEmbassy() || land.isOwnedBy(res))) {
+                res.tell(getMessage("price"), "price", String.valueOf(land.getPrice()));
+            }
         }
         return true;
     }
