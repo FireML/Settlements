@@ -28,6 +28,7 @@ perm-groups:
     - empire.invite
     - empire.joinfee.set
     - empire.kick
+    - empire.mail
     - empire.perms
     - empire.perms.set
     - empire.perms.unset
@@ -79,6 +80,7 @@ ranks:
     - empire.help.senator
     - empire.invite
     - empire.kick
+    - empire.mail
     - empire.mode
     - empire.officer
     - empire.perms

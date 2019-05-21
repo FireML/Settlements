@@ -13,6 +13,7 @@ import me.crz.minecraft.kingdoms.integration.ChestShopIntegration;
 import me.crz.minecraft.kingdoms.integration.CmiIntegration;
 import me.crz.minecraft.kingdoms.integration.IgnoreProvider;
 import me.crz.minecraft.kingdoms.integration.LWCIntegration;
+import me.crz.minecraft.kingdoms.integration.MailProvider;
 import me.crz.minecraft.kingdoms.integration.MultiverseIntegration;
 import me.crz.minecraft.kingdoms.integration.PlaceholderApiIntegration;
 import me.crz.minecraft.kingdoms.integration.ShopProvider;
@@ -31,7 +32,6 @@ import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.utils.ThreadManager;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -55,7 +55,6 @@ import net.milkbowl.vault.economy.Economy;
 import me.crz.minecraft.kingdoms.land.LandPerks;
 import me.crz.minecraft.kingdoms.utils.config.Data;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
 
 public class KingdomsPlugin extends JavaPlugin implements Listener {
     private static KingdomsPlugin instance;
@@ -69,6 +68,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     private Set<IgnoreProvider> ignoreProviders = new LinkedHashSet<>();
     private Set<AfkProvider> afkProviders = new LinkedHashSet<>();
     private Set<ShopProvider> shopProviders = new LinkedHashSet<>();
+    private Set<MailProvider> mailProviders = new LinkedHashSet<>();
 
     public boolean emgcy = false;
     public static Chat chat;
@@ -289,6 +289,10 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     public Set<ShopProvider> getShopProviders() {
         return shopProviders;
+    }
+
+    public Set<MailProvider> getMailProviders() {
+        return mailProviders;
     }
 
     public MultiverseIntegration getMultiverse() {

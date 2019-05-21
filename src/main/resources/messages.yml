@@ -1247,6 +1247,10 @@ command:
     lock:
       admin:
         description: "Allows administrating of locks inside the settlement's claims"
+    mail:
+      description: "Allows sending a mail to every settlement member"
+      sender: "{title} {name}, {settlementstate} {settlementname}"
+      sent: "&a&lSUCCESS &r&7Sent mail to {amount} settlement members!"
     map:
       head: "&a⊱&m━━━━━━━━━━━━━━━&r&6Settlement Map&a&m━━━━━━━━━━━━━━&a⊰"
       explanation: |-
@@ -1742,6 +1746,10 @@ command:
     lock:
       admin:
         description: "Allows administrating of locks inside the settlement's claims"
+    mail:
+      description: "Allows sending a mail to all chiefs of empire member settlements"
+      sender: "Leader {name}, Empire {empirename}"
+      sent: "&a&lSUCCESS &r&7Sent mail to {amount} chiefs of empire member settlements!"
     mode:
       modes: "&cAvailable modes: {modes}"
       success: "&7Empire mode &6{mode}&7 set to &6{value}"

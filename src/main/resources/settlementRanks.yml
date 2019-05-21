@@ -37,6 +37,7 @@ perm-groups:
     - village.joinfee.set
     - village.kick
     - village.lock.admin
+    - village.mail
     - village.outpost.claim
     - village.outpost.sethome
     - village.outpost.unclaim
@@ -94,6 +95,7 @@ ranks:
     - village.settitle
     - village.rename
     - village.lock.admin
+    - village.mail
     - village.help.assistant
     - empire.leave
     - village.ally

@@ -45,6 +45,7 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpireKickCommand(this));
         registerCommand(new EmpireLeaveCommand(this));
         registerCommand(new EmpireListCommand(this));
+        registerCommand(new EmpireMailCommand(this));
         registerCommand(new EmpireMapCommand(this));
         registerCommand(new EmpireMemberListCommand(this));
         registerCommand(new EmpireModeCommand(this));

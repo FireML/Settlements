@@ -65,6 +65,7 @@ help-order:
     - ally
     - unally
     - invite
+    - mail
     - kick
     - banished
     - s banish <player>|s:<settlement>|e:<empire>
@@ -137,6 +138,7 @@ help-order:
     - sethome
     - e setrank
     - perms
+    - mail
     - invite
     - kick
     - e banish <player>|s:<settlement>|e:<empire>

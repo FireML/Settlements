@@ -48,6 +48,7 @@ public class VillageCommand extends SubCommand {
         registerCommand(new VillageKickCommand(this));
         registerCommand(new VillageLeaveCommand(this));
         registerCommand(new VillageListCommand(this));
+        registerCommand(new VillageMailCommand(this));
         registerCommand(new VillageMapCommand(this));
         registerCommand(new VillageMaterialsCommand(this));
         registerCommand(new VillageModeCommand(this));
