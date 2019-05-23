@@ -51,6 +51,9 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
         }
         Utils.runAsync(() -> {
             Targetable target = getTarget(resident, args);
+            if (target == null) {
+                return;
+            }
 
             if (target.isMember(resident)) {
                 getError("cant-banish-yourself").tell(resident);
@@ -98,6 +101,9 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
         }
         Utils.runAsync(() -> {
             Targetable target = getTarget(resident, args);
+            if (target == null) {
+                return;
+            }
 
             Utils.runSync(() -> {
                 if (!source.removeBanished(target)) {
