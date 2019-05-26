@@ -37,7 +37,8 @@ public class MaterialUtils {
             Material.COCOA,
             Material.SUGAR_CANE,
             Material.BROWN_MUSHROOM,
-            Material.RED_MUSHROOM
+            Material.RED_MUSHROOM,
+            Material.VINE
     );
     public static final Set<Material> FARM_BLOCKS_DESTROY = EnumSet.of(
             Material.PUMPKIN,
