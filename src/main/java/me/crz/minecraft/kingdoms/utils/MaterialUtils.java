@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.utils;
 
+import com.destroystokyo.paper.MaterialTags;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.inventory.ItemStack;
@@ -85,10 +86,13 @@ public class MaterialUtils {
             case ARMOR_STAND:
             case ITEM_FRAME:
             case PAINTING:
+            case WATER_BUCKET:
+            case LAVA_BUCKET:
                 return true;
         }
 
         return Tag.ITEMS_BOATS.isTagged(item.getType())
-                || MINECARTS.contains(item.getType());
+                || MINECARTS.contains(item.getType())
+                || MaterialTags.FISH_BUCKETS.isTagged(item);
     }
 }

@@ -6,6 +6,8 @@ import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureCombustEvent;
 import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureDamageEvent;
 import me.crz.minecraft.kingdoms.integration.ShopProvider;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
+import org.bukkit.FluidCollisionMode;
+import org.bukkit.block.Block;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventPriority;
@@ -155,7 +157,7 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
                         }
                     }
                 }
-                if (use == null) {
+                if (use == null && e.getClickedBlock() != null && !e.getClickedBlock().isEmpty() && !e.getClickedBlock().isLiquid()) {
                     use = Use.getByMaterial(e.getClickedBlock().getType());
                     if (e.getItem() != null && MaterialUtils.placesBlock(e.getItem())) {
                         if (e.getPlayer().isSneaking()) {
@@ -170,6 +172,12 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
                         }
                     } else if (use == null) {
                         use = Use.INTERACT;
+                        if (e.getItem() != null && e.getItem().getType() == Material.BUCKET) {
+                            Block block = e.getPlayer().getTargetBlockExact(6, FluidCollisionMode.SOURCE_ONLY);
+                            if (block != null && block.isLiquid()) {
+                                use = null;
+                            }
+                        }
                     }
                 }
             }
@@ -187,10 +195,14 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void on(PlayerBucketFillEvent e) {
+        if (e.getItemStack() != null && e.getItemStack().getType() == Material.MILK_BUCKET) {
+            return;
+        }
         Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.BUCKET, e.getBlockClicked().getRelative(e.getBlockFace()).getLocation());
         if (!response.getLeft()) {
             MessageUtils.tell(e.getPlayer(), response.getRight());
             e.setCancelled(true);
+            e.getPlayer().updateInventory();
         }
     }
 
@@ -200,6 +212,7 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
         if (!response.getLeft()) {
             MessageUtils.tell(e.getPlayer(), response.getRight());
             e.setCancelled(true);
+            e.getPlayer().updateInventory();
         }
     }
 
