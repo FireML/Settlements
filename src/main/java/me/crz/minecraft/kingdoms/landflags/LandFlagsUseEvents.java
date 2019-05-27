@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureCombustEvent;
 import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureDamageEvent;
 import me.crz.minecraft.kingdoms.integration.ShopProvider;
+import me.crz.minecraft.kingdoms.lock.LockManager;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.block.Block;
@@ -184,7 +185,8 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
             if (use != null) {
                 Pair<Boolean, String> response = this.canUse(e.getPlayer(), use, e.getClickedBlock().getLocation());
                 if (!response.getLeft()) {
-                    if (use != Use.PRESSURE_PLATE && e.getHand() == EquipmentSlot.HAND) {
+                    if (use != Use.PRESSURE_PLATE && e.getHand() == EquipmentSlot.HAND
+                            && (use != Use.CHEST || LockManager.getInstance().getLock(e.getClickedBlock()) == null)) {
                         MessageUtils.tell(e.getPlayer(), response.getRight());
                     }
                     e.setCancelled(true);

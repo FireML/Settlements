@@ -156,12 +156,13 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
 
     // block interacting
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW)
     public void onInteract(PlayerInteractEvent event) {
         if (event.getClickedBlock() == null) {
             return;
         }
 
+        boolean canAccess = !event.isCancelled();
         Lock lock = LockManager.getInstance().getLock(event.getClickedBlock());
         if (lock != null) {
             if (!lock.canAccess(event.getPlayer())) {
@@ -174,6 +175,9 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                             "block", NameTag.getTag(lock.getBlock())
                     );
                 });
+            } else if (event.isCancelled()) {
+                canAccess = true;
+                event.setCancelled(false);
             }
         }
         if (event.getHand() == EquipmentSlot.HAND) {
@@ -189,7 +193,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                         } else if (!LockManager.getInstance().isLockable(event.getClickedBlock().getType())) {
                             getError("not-lockable").tell(event.getPlayer(), "block", NameTag.getTag(event.getClickedBlock().getType()));
                         } else {
-                            if (!LockProvider.canAccessCheck(event.getPlayer(), event.getClickedBlock())) {
+                            if (!canAccess || !LockProvider.canAccessCheck(event.getPlayer(), event.getClickedBlock())) {
                                 getError("locked").tell(event.getPlayer(),
                                         "name", "someone",
                                         "title", "",
@@ -215,7 +219,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                             );
                         });
                     }
-                } else if (action.toLowerCase().startsWith("add")) {
+                } else if (canAccess && action.toLowerCase().startsWith("add")) {
                     Lock l;
                     if (lock == null) {
                         if (ShopProvider.isShopCheck(event.getClickedBlock()) && LockProvider.canAccessCheck(event.getPlayer(), event.getClickedBlock())) {
@@ -250,7 +254,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                     }
                 } else if (lock == null) {
                     getError("not-locked").tell(event.getPlayer(), "block", NameTag.getTag(event.getClickedBlock().getType()));
-                } else if  ("unlock".equalsIgnoreCase(action)) {
+                } else if ("unlock".equalsIgnoreCase(action)) {
                     if (lock.canAdministrate(event.getPlayer())) {
                         LockManager.getInstance().deleteLock(lock);
                         getMessage("unlocked").tell(event.getPlayer(), "block", NameTag.getTag(lock.getBlock()));
