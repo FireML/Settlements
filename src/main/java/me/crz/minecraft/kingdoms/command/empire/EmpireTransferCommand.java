@@ -12,7 +12,7 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 
 public class EmpireTransferCommand extends EmpireSubCommand {
     public EmpireTransferCommand(SubCommand parent) {
-        super(parent, "transfer <player>");
+        super(parent, "transfer <settlement>");
     }
 
     @Override
