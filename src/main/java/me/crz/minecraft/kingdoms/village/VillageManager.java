@@ -135,8 +135,8 @@ public class VillageManager {
                 village.getEmpire().removeSenator(resident);
             }
         }
+        LandManager.getInstance().unclaimLand(village);
         Utils.runAsync(() -> {
-            LandManager.getInstance().unclaimLand(village);
             DatabaseManager.getInstance().deleteVillage(village);
             DatabaseManager.getInstance().saveResident(village.getResidents());
             for (LandOwner ally : village.getAllies()) {
