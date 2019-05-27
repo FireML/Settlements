@@ -34,7 +34,8 @@ public class LockRemoveCommand extends PlayerSubCommand implements TargetParser 
                     }
                 }
             });
+            return true;
         }
-        return true;
+        return false;
     }
 }
