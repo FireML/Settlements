@@ -20,10 +20,6 @@ public class EmpireCreateCommand extends VillageSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        if (resident.hasEmpire()) {
-            getError("no-empire-required").tell(resident);
-            return true;
-        }
         if (!resident.getVillage().isMaxLevel()) {
             getError("max-level-kingdom-required").tell(resident,
                     "state", resident.getVillage().getState().getTag(),
@@ -62,6 +58,20 @@ public class EmpireCreateCommand extends VillageSubCommand {
             getMessage("success").tell(resident, "name", empire.getName());
         }
         return true;
+    }
+
+    @Override
+    public boolean testAccess(Resident resident) {
+        if (resident.hasEmpire()) {
+            getError("no-empire-required").tell(resident);
+            return false;
+        }
+        return super.testAccess(resident);
+    }
+
+    @Override
+    public boolean hasAccess(Resident resident) {
+        return !resident.hasEmpire() && super.hasAccess(resident);
     }
 
     private boolean empireExists(String name) {

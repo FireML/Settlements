@@ -19,10 +19,6 @@ public class EmpireJoinCommand extends VillageSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        if (resident.hasEmpire()) {
-            getError("no-empire-required").tell(resident);
-            return true;
-        }
         if (args.length < 1) {
             return false;
         }
@@ -73,5 +69,19 @@ public class EmpireJoinCommand extends VillageSubCommand {
             );
         }
         return true;
+    }
+
+    @Override
+    public boolean testAccess(Resident resident) {
+        if (resident.hasEmpire()) {
+            getError("no-empire-required").tell(resident);
+            return false;
+        }
+        return super.testAccess(resident);
+    }
+
+    @Override
+    public boolean hasAccess(Resident resident) {
+        return !resident.hasEmpire() && super.hasAccess(resident);
     }
 }

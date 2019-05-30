@@ -23,10 +23,6 @@ public class VillageCreateCommand extends ResidentSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        if (resident.hasVillage()) {
-            getError("free-required").tell(resident);
-            return true;
-        }
         if (args.length < 1) {
             return false;
         }
@@ -62,6 +58,21 @@ public class VillageCreateCommand extends ResidentSubCommand {
         }
         return true;
     }
+
+    @Override
+    public boolean testAccess(Resident resident) {
+        if (resident.hasVillage()) {
+            getError("free-required").tell(resident);
+            return false;
+        }
+        return super.testAccess(resident);
+    }
+
+    @Override
+    public boolean hasAccess(Resident resident) {
+        return !resident.hasVillage() && super.hasAccess(resident);
+    }
+
 
     private boolean villageExists(String name) {
         return VillageManager.getInstance().getVillageFromName(name) != null;

@@ -1,5 +1,49 @@
 help-order:
   village:
+    general:
+    - active
+    - allies
+    - ally
+    - allyclaim
+    - s banish <player>|s:<settlement>|e:<empire>
+    - banished
+    - bank
+    - s chat
+    - claim
+    - create
+    - deposit
+    - donate
+    - history
+    - history
+    - home
+    - invite
+    - join
+    - kick
+    - leave
+    - list
+    - mail
+    - map
+    - materials
+    - outpost
+    - perms
+    - s plot
+    - rename
+    - reslist
+    - rules
+    - outpost
+    - setdescription
+    - sethome
+    - s setrank
+    - settings
+    - shop
+    - show <name>
+    - teleporters
+    - title
+    - titles
+    - unally
+    - s unbanish <player>|s:<settlement>|e:<empire>
+    - unclaim
+    - upkeep
     'no':
     - create
     - join
@@ -25,14 +69,6 @@ help-order:
     - bank
     - donate
     - upkeep
-    - allies
-    - help elder
-    - help assistant
-    - help chief
-    - rules
-    - lock
-    - leave
-    - help all
     elder:
     - claim
     - s claim <#>
@@ -100,6 +136,39 @@ help-order:
     - s allies
     - s allyclaim
   empire:
+    general:
+    - allies
+    - ally
+    - bank
+    - e banish <player>|s:<settlement>|e:<empire>
+    - banished
+    - create
+    - disband
+    - donate
+    - e chat
+    - e plot
+    - home
+    - invite
+    - join
+    - kick
+    - list
+    - mail
+    - memberlist
+    - mode
+    - perms
+    - regen
+    - rename
+    - senators
+    - setdescription
+    - sethome
+    - e setrank
+    - settings
+    - shop
+    - show
+    - transfer
+    - unally
+    - e unbanish <player>|s:<settlement>|e:<empire>
+    - upkeep
     'no':
     - create
     - join
@@ -118,10 +187,6 @@ help-order:
     - bank
     - donate
     - upkeep
-    - allies
-    - help senator
-    - help leader
-    - help chief
     senator:
     - mode
     - kick
@@ -147,7 +212,6 @@ help-order:
     - unally
     - e plot staff
     - shop
-    - title
     - rename
     - regen
     - setdescription
@@ -171,14 +235,17 @@ help-order:
     - e allyclaim
   plot:
     general:
+    - friend
     - buy
     - settings
     - name
     - info
     - link
     - unlink
-    - friend
-    - plot staff
+    - sale
+    - unsale
+    - revoke
+    - plot set embassy <amount>
     staff:
     - sale
     - unsale

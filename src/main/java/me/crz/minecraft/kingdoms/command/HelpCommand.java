@@ -208,7 +208,12 @@ public class HelpCommand extends SubCommand {
                     subCommand = CommandManager.getInstance().getCommand(part);
                 }
             } else {
-                subCommand = subCommand.matchSubCommand(part);
+                SubCommand subSubCommand = subCommand.matchSubCommand(part);
+                if (subSubCommand != null) {
+                    subCommand = subSubCommand;
+                } else {
+                    break;
+                }
             }
         }
         return subCommand;

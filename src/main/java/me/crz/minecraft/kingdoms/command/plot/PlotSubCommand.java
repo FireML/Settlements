@@ -35,6 +35,35 @@ public abstract class PlotSubCommand extends ResidentSubCommand {
 
     public abstract boolean run(Resident res, OwnedLand land, String base, String alias, String... args);
 
+    @Override
+    public boolean testAccess(Resident resident) {
+        if (!super.testAccess(resident)) {
+            return false;
+        }
+        if (adminCommand) {
+            if (resident.hasVillage() && resident.getVillage().canAdminPlots(resident)) {
+                return true;
+            } else if (resident.hasEmpire() && resident.getVillage().getEmpire().canAdminPlots(resident)) {
+                return true;
+            }
+            getError("cant-admin-plots").tell(resident);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean hasAccess(Resident resident) {
+        if (!super.hasAccess(resident)) {
+            return false;
+        }
+        if (adminCommand) {
+            return (resident.hasVillage() && resident.getVillage().canAdminPlots(resident))
+                    || (resident.hasEmpire() && resident.getVillage().getEmpire().canAdminPlots(resident));
+        }
+        return true;
+    }
+
     private boolean testPlotAdmin(Resident resident, OwnedLand land) {
         if (!testParentPlotAdmin(resident, land)) {
             return false;

@@ -1005,6 +1005,9 @@ command:
       success: "&7Plot mode &6{mode}&7: &6{value}"
       unset: "&7Unset plot mode &6{mode}&7! Now inherits from parent {parent}: &6{value}"
       description: Sets the modes of a plot
+      embassy:
+        description: Sets plot as embassy for everyone to purchase
+        success: "&7Plot set as &6{mode}&7 with price &6{value}!"
     set:
       embassy: The plot can be purchased by players outside of the settlement
     name:
@@ -1084,7 +1087,7 @@ command:
       cant-banish: "&cYou can't banish &f{title} &f{name}!"
       already-banished: "&cPlayer &f{name}&c is already banished!"
       banished: "&7Player &6{name}&7 has been &cbanished &7from your settlement!"
-      description: Add a player to the banish list
+      description: Add an entry to the banish list
     banished:
       head: "&a⊱&m━━━━&r&6Banished&a&m━━━━&a⊰"
       entry: "&c{name}"

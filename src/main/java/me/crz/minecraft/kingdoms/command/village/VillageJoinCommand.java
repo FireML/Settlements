@@ -20,10 +20,6 @@ public class VillageJoinCommand extends ResidentSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        if (resident.hasVillage()) {
-            getError("free-required").tell(resident);
-            return true;
-        }
         if (args.length < 1) {
             return false;
         }
@@ -63,5 +59,19 @@ public class VillageJoinCommand extends ResidentSubCommand {
             getMessage("new-resident").tell(joinVillage.getOnlineResidents(), "player", resident.getName());
         }
         return true;
+    }
+
+    @Override
+    public boolean testAccess(Resident resident) {
+        if (resident.hasVillage()) {
+            getError("free-required").tell(resident);
+            return false;
+        }
+        return super.testAccess(resident);
+    }
+
+    @Override
+    public boolean hasAccess(Resident resident) {
+        return !resident.hasVillage() && super.hasAccess(resident);
     }
 }
