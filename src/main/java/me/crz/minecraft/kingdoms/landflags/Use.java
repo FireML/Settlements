@@ -47,7 +47,7 @@ public enum Use implements NameTag {
     ITEM(BuildState.PUBLIC, Material.IRON_INGOT, Collections.EMPTY_SET),
     REPEATERS(Material.REPEATER, Material.COMPARATOR),
     CAKE(Material.CAKE),
-    SHOP(BuildState.PUBLIC, Material.SIGN, Collections.EMPTY_SET),
+    SHOP(BuildState.PUBLIC, Material.OAK_SIGN, Collections.EMPTY_SET),
     INTERACT(Material.BARRIER, Collections.EMPTY_SET);
 
     private final Collection<Material> materials;

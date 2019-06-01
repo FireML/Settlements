@@ -176,7 +176,7 @@ public class RankPermsGUI extends KingdomsGUI {
             gui.addItem(permsPerPage, new ClickableItem() {
                 public ItemStack getItem(final Player p) {
                     if (getPage(p) > 0) {
-                        return new CItem(Material.SIGN).setName(getText("previous")).build();
+                        return new CItem(Material.OAK_SIGN).setName(getText("previous")).build();
                     }
                     return null;
                 }
@@ -206,7 +206,7 @@ public class RankPermsGUI extends KingdomsGUI {
             gui.addItem(permsPerPage + 8, new ClickableItem() {
                 public ItemStack getItem(final Player p) {
                     if (perms.size() > (getPage(p) + 1) * InventorySize.THREE.getSize()) {
-                        return new CItem(Material.SIGN).setName(getText("next")).build();
+                        return new CItem(Material.OAK_SIGN).setName(getText("next")).build();
                     }
                     return null;
                 }

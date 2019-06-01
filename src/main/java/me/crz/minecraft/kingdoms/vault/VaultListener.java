@@ -19,6 +19,7 @@ import java.util.HashMap;
 
 import org.bukkit.event.EventHandler;
 import me.crz.minecraft.kingdoms.village.Village;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Inventory;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -34,7 +35,7 @@ public class VaultListener extends KingdomsGUI implements Listener {
     @EventHandler
     public void on(InventoryCloseEvent event) {
         Inventory inv = event.getInventory();
-        if (!this.isVault(inv)) {
+        if (!this.isVault(event.getView())) {
             return;
         }
         ItemStack[] contents = inv.getContents();
@@ -117,8 +118,8 @@ public class VaultListener extends KingdomsGUI implements Listener {
         m.put(mat, m.getOrDefault(mat, (long) 0) + add);
     }
 
-    private boolean isVault(Inventory inv) {
-        return inv.getName().equals(getText("title"));
+    private boolean isVault(InventoryView view) {
+        return view.getTitle().equals(getText("title"));
     }
 
     private List<String> buildfailDepositMessage(Resident resident, Map<Material, Long> fail, String reason) {
