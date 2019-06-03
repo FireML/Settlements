@@ -244,7 +244,7 @@ public class LandFlags extends Base implements LandFlagBase {
         boolean sameVillage = originalLand != null && destinationLand != null && originalLand.getLandOwner().equals(destinationLand.getLandOwner());
 
         if (!sameVillage && originalLand != null) {
-            MessageUtils.tellAdvanced(player, originalLand.getLandOwner().getStateKey() + ".leave",
+            MessageUtils.tellAdvanced(player, originalLand.getLandOwner().getStateKey() + ".leave" + (originalLand.getLandOwner().isAbandoned() ? "-abandoned" : ""),
                     "name", originalLand.getLandOwner().getName(),
                     "state", originalLand.getLandOwner().getStateTag()
             );
@@ -255,7 +255,7 @@ public class LandFlags extends Base implements LandFlagBase {
 
         if (destinationLand != null) {
             if (!sameVillage) {
-                MessageUtils.tellAdvanced(player, destinationLand.getLandOwner().getStateKey() + ".enter",
+                MessageUtils.tellAdvanced(player, destinationLand.getLandOwner().getStateKey() + ".enter" + (originalLand.getLandOwner().isAbandoned() ? "-abandoned" : ""),
                         "pvp", destinationLand.getMode(PlotMode.pvp) ? Message.get("pvp-is-enabled").getText() : "",
                         "name", destinationLand.getLandOwner().getName(),
                         "state", destinationLand.getLandOwner().getStateTag()

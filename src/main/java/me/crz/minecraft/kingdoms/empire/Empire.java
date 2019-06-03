@@ -18,6 +18,7 @@ import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.utils.Targetable;
+import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -63,8 +64,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
 
     public void doUpkeep() {
         if (isAbandoned()) {
-            KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " was removed because it has been abandoned for a day!");
-            EmpireManager.getInstance().deleteEmpire(this);
+            KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " is abandoned. No upkeep.");
             return;
         }
 
@@ -120,8 +120,13 @@ public class Empire extends LandOwner implements Comparable<Empire> {
         } else {
             KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " wasn't able to pay the upkeep of " + total + " and was abandoned!");
             setBank(0);
-            MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.abandoned"));
-            EmpireManager.getInstance().abandonEmpire(this);
+            if (Utils.getAbandonTime(getStateKey()) > 0) {
+                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.abandoned"));
+                EmpireManager.getInstance().abandonEmpire(this);
+            } else {
+                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.deleted"));
+                EmpireManager.getInstance().deleteEmpire(this);
+            }
         }
     }
 
@@ -509,6 +514,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                 "tax", Utils.CURRENCY_FORMAT.format(getTax()),
                 "upkeep", Utils.CURRENCY_FORMAT.format(getUpkeep()),
                 "abandoned", yesOrNo(isAbandoned()),
+                "abandonedcountdown", isAbandoned() ? UtilTime.format(getCreated() + (Utils.getAbandonTime(getStateKey()) * 60 * 1000) - System.currentTimeMillis()) : "",
                 "mobspawning", String.valueOf(getMode(PlotMode.mobSpawning)),
                 "firespread", String.valueOf(getMode(PlotMode.fireSpread)),
                 "explosions", String.valueOf(getMode(PlotMode.explosions)),

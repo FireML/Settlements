@@ -33,11 +33,7 @@ public class EmpireShowCommand extends SubCommand {
                 Village village = VillageManager.getInstance().getVillageFromName(name);
                 Resident target = ResidentManager.getInstance().getResident(name);
                 if (empire != null) {
-                    if (empire.isAbandoned()) {
-                        getMessage("abandoned").tell(sender, empire.getReplacements(this));
-                    } else {
-                        getMessage("general").tell(sender, empire.getReplacements(this));
-                    }
+                    getMessage(empire.isAbandoned() ? "abandoned" : "general").tell(sender, empire.getReplacements(this));
                 } else if (village != null && village.hasEmpire()) {
                     getMessage("general").tell(sender, village.getEmpire().getReplacements(this));
                 }  else if (target != null && target.hasVillage() && target.getVillage().hasEmpire()) {

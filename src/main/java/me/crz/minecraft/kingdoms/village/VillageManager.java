@@ -5,10 +5,17 @@ import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.land.PlotMode;
+import me.crz.minecraft.kingdoms.landflags.BuildState;
+import me.crz.minecraft.kingdoms.landflags.Use;
+import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
+import me.crz.minecraft.kingdoms.perk.Perk;
+import me.crz.minecraft.kingdoms.perk.PerkData;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
@@ -24,6 +31,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -41,6 +49,15 @@ public class VillageManager {
         for (Village village : DatabaseManager.getInstance().getAllVillages()) {
             villages.put(village.getName().replace(' ', '_').toLowerCase(), village);
             villageIDs.put(village.getId(), village);
+            if (village.isAbandoned()) {
+                long timeAbandoned = System.currentTimeMillis() - village.getCreated();
+                long abandonTime = Utils.getAbandonTime(village.getStateKey());
+                long delay = timeAbandoned > abandonTime * 60 * 1000 ? 0 : abandonTime * 60 * 1000 - timeAbandoned;
+                Utils.runLater(() -> {
+                    KingdomsPlugin.getInstance().getLogger().log(Level.INFO, village.getStateTag() + " " + village.getName() + " was removed because it has been abandoned for " + abandonTime + " minutes!");
+                    deleteVillage(village);
+                }, delay / 50);
+            }
         }
     }
 
@@ -127,21 +144,71 @@ public class VillageManager {
         MessageUtils.broadcast(Message.get("broadcast.village-deletion"),
                 "name", village.getName(),
                 "state", village.getState().getTag());
-        for (Resident resident : village.getResidents()) {
-            resident.setVillage(null);
-            resident.setVillageRank(VillageRank.getDefault());
-            resident.setEmpireRank(EmpireRank.getDefault());
-            if (village.hasEmpire()) {
-                village.getEmpire().removeSenator(resident);
-            }
+
+        List<Resident> residents = village.getResidents();
+        for (Resident resident : residents) {
+            removeResidentFromVillage(resident);
         }
         LandManager.getInstance().unclaimLand(village);
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().deleteVillage(village);
-            DatabaseManager.getInstance().saveResident(village.getResidents());
+            DatabaseManager.getInstance().saveResident(residents);
             for (LandOwner ally : village.getAllies()) {
                 ally.removeAlly(village);
             }
+        });
+    }
+
+    void abandonVillage(Village village) {
+        Message.get("broadcast.village-abandoned").broadcast("state", village.getStateTag(), "name", village.getName());
+
+        if (village.hasEmpire()) {
+            village.getEmpire().getMemberIds().remove(village.getId());
+        }
+
+        List<Resident> residents = village.getResidents();
+        for (Resident resident : residents) {
+            removeResidentFromVillage(resident);
+        }
+        village.getResidentIds().clear();
+        Collection<LandOwner> allies = village.getAllies();
+        village.getAlliedEmpireIds().clear();
+        village.getAlliedVillageIds().clear();
+        for (LandOwner ally : allies) {
+            ally.removeAlly(village);
+        }
+        village.setAccess(LandAccess.PUBLIC);
+        for (Use u : Use.values()) {
+            village.setUseState(u, BuildState.PUBLIC);
+        }
+        village.setMode(PlotMode.pvp, true);
+        village.setMode(PlotMode.fireSpread, true);
+        village.setMode(PlotMode.explosions, true);
+        village.setMode(PlotMode.buff, false);
+        village.setMode(PlotMode.mobSpawning, true);
+        for (LockProvider lockProvider : KingdomsPlugin.getInstance().getLockProviders()) {
+            lockProvider.removeInChunks(LandManager.getInstance().getClaimedLand(village));
+        }
+        for (Perk perk : village.getPerks()) {
+            if (perk.hasEffects()) {
+                PerkData perkData = village.getPerkData(perk);
+                if (perkData != null && perkData.isActive()) {
+                    perkData.toggle();
+                    village.removeEffects(perk);
+                }
+            }
+        }
+        village.getPerksMap().clear();
+
+        village.setCreated(System.currentTimeMillis());
+        Utils.runAsync(() -> {
+            DatabaseManager.getInstance().saveVillage(village);
+            DatabaseManager.getInstance().save(allies);
+            DatabaseManager.getInstance().saveResident(residents);
+            Utils.runLater(() -> {
+                KingdomsPlugin.getInstance().getLogger().log(Level.INFO, village.getStateTag() + " " + village.getName() + " was removed because it has been abandoned for " + Utils.getAbandonTime(village.getStateKey()) + " minutes!");
+                deleteVillage(village);
+            }, Utils.getAbandonTime(village.getStateKey()) * 60 * 20);
         });
     }
 
@@ -156,12 +223,7 @@ public class VillageManager {
                 LandManager.getInstance().setPlotOwner(land, null);
             }
         }
-        resident.setVillage(null);
-        resident.setVillageRank(VillageRank.getDefault());
-        resident.setEmpireRank(EmpireRank.getDefault());
-        if (village.hasEmpire()) {
-            village.getEmpire().removeSenator(resident);
-        }
+        removeResidentFromVillage(resident);
         resident.removeChannel(ChatChannel.SETTLEMENT);
         resident.removeChannel(ChatChannel.EMPIRE);
         Player player = resident.getPlayer();
@@ -174,6 +236,15 @@ public class VillageManager {
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveResident(resident);
         });
+    }
+
+    private void removeResidentFromVillage(Resident resident) {
+        if (resident.getVillage().hasEmpire()) {
+            resident.getVillage().getEmpire().removeSenator(resident);
+        }
+        resident.setVillage(null);
+        resident.setVillageRank(VillageRank.getDefault());
+        resident.setEmpireRank(EmpireRank.getDefault());
     }
 
     /**
