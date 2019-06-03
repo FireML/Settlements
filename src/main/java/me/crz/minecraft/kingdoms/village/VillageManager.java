@@ -52,11 +52,11 @@ public class VillageManager {
             if (village.isAbandoned()) {
                 long timeAbandoned = System.currentTimeMillis() - village.getCreated();
                 long abandonTime = Utils.getAbandonTime(village.getStateKey());
-                long delay = timeAbandoned > abandonTime * 60 * 1000 ? 0 : abandonTime * 60 * 20;
+                long delay = timeAbandoned > abandonTime * 60 * 1000 ? 0 : abandonTime * 60 * 1000 - timeAbandoned;
                 Utils.runLater(() -> {
                     KingdomsPlugin.getInstance().getLogger().log(Level.INFO, village.getStateTag() + " " + village.getName() + " was removed because it has been abandoned for " + abandonTime + " minutes!");
                     deleteVillage(village);
-                }, delay);
+                }, delay / 50);
             }
         }
     }

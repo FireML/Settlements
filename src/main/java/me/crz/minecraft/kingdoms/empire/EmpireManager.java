@@ -65,7 +65,7 @@ public class EmpireManager {
             if (empire.isAbandoned()) {
                 long timeAbandoned = System.currentTimeMillis() - empire.getCreated();
                 long abandonTime = Utils.getAbandonTime(empire.getStateKey());
-                long delay = timeAbandoned > abandonTime * 60 * 1000 ? 0 : abandonTime * 60 * 20;
+                long delay = timeAbandoned > abandonTime * 60 * 1000 ? 0 : abandonTime * 60 * 1000 - timeAbandoned;
                 Utils.runLater(() -> {
                     KingdomsPlugin.getInstance().getLogger().log(Level.INFO, empire.getStateTag() + " " + empire.getName() + " was removed because it has been abandoned for " + abandonTime + " minutes!");
                     deleteEmpire(empire);
