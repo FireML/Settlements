@@ -153,8 +153,18 @@ village:
     actionbar: ""
     title: ""
     subtitle: ""
+  enter-abandoned:
+    message: "&f[&eKingdoms&f] &7Entering &cabandoned {name}{pvp}"
+    actionbar: ""
+    title: ""
+    subtitle: ""
   leave:
     message: "&f[&eKingdoms&f] &7Leaving &a{name}"
+    actionbar: ""
+    title: ""
+    subtitle: ""
+  leave-abandoned:
+    message: "&f[&eKingdoms&f] &7Leaving &cabandoned a{name}"
     actionbar: ""
     title: ""
     subtitle: ""
@@ -171,8 +181,18 @@ kingdom:
     actionbar: ""
     title: ""
     subtitle: ""
+  enter-abandoned:
+    message: "&f[&eKingdoms&f] &7Entering &cabandoned {name}{pvp}"
+    actionbar: ""
+    title: ""
+    subtitle: ""
   leave:
     message: "&f[&eKingdoms&f] &7Leaving &a{name}"
+    actionbar: ""
+    title: ""
+    subtitle: ""
+  leave-abandoned:
+    message: "&f[&eKingdoms&f] &7Leaving &cabandoned a{name}"
     actionbar: ""
     title: ""
     subtitle: ""
@@ -193,8 +213,18 @@ empire:
     actionbar: ""
     title: ""
     subtitle: ""
+  enter-abandoned:
+    message: "&f[&eKingdoms&f] &7Entering &cabandoned {name}{pvp}"
+    actionbar: ""
+    title: ""
+    subtitle: ""
   leave:
     message: "&f[&eKingdoms&f] &7Leaving &a{name}"
+    actionbar: ""
+    title: ""
+    subtitle: ""
+  leave-abandoned:
+    message: "&f[&eKingdoms&f] &7Leaving &cabandoned {name}{pvp}"
     actionbar: ""
     title: ""
     subtitle: ""
