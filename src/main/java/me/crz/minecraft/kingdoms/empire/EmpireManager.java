@@ -7,10 +7,13 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
+import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
+import me.crz.minecraft.kingdoms.perk.Perk;
+import me.crz.minecraft.kingdoms.perk.PerkData;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -282,6 +285,11 @@ public class EmpireManager {
         for (Use u : Use.values()) {
             empire.setUseState(u, BuildState.PUBLIC);
         }
+        empire.setMode(PlotMode.pvp, true);
+        empire.setMode(PlotMode.fireSpread, true);
+        empire.setMode(PlotMode.explosions, true);
+        empire.setMode(PlotMode.buff, false);
+        empire.setMode(PlotMode.mobSpawning, true);
         World empireWorld = Bukkit.getWorld(empire.getWorldName());
         if (empireWorld != null) {
             for (LockProvider lockProvider : KingdomsPlugin.getInstance().getLockProviders()) {
@@ -289,6 +297,15 @@ public class EmpireManager {
             }
         }
         LandManager.getInstance().removeWorld(empire.getWorldName());
+        for (Perk perk : empire.getPerks()) {
+            if (perk.hasEffects()) {
+                PerkData perkData = empire.getPerkData(perk);
+                if (perkData != null && perkData.isActive()) {
+                    perkData.toggle();
+                    empire.removeEffects(perk);
+                }
+            }
+        }
         empire.getPerksMap().clear();
 
         empire.setCreated(System.currentTimeMillis());

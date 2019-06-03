@@ -9,10 +9,13 @@ import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
+import me.crz.minecraft.kingdoms.perk.Perk;
+import me.crz.minecraft.kingdoms.perk.PerkData;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
@@ -179,8 +182,22 @@ public class VillageManager {
         for (Use u : Use.values()) {
             village.setUseState(u, BuildState.PUBLIC);
         }
+        village.setMode(PlotMode.pvp, true);
+        village.setMode(PlotMode.fireSpread, true);
+        village.setMode(PlotMode.explosions, true);
+        village.setMode(PlotMode.buff, false);
+        village.setMode(PlotMode.mobSpawning, true);
         for (LockProvider lockProvider : KingdomsPlugin.getInstance().getLockProviders()) {
             lockProvider.removeInChunks(LandManager.getInstance().getClaimedLand(village));
+        }
+        for (Perk perk : village.getPerks()) {
+            if (perk.hasEffects()) {
+                PerkData perkData = village.getPerkData(perk);
+                if (perkData != null && perkData.isActive()) {
+                    perkData.toggle();
+                    village.removeEffects(perk);
+                }
+            }
         }
         village.getPerksMap().clear();
 
