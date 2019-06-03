@@ -1252,7 +1252,7 @@ command:
       description: "List settlements"
       head: "&a⊱&m━━━━&r&6{access}Settlements [{page}/{maxpage}]&a&m━━━━&a⊰"
       entry: "&e• {place}. [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{size} players\n&f{description})"
-      entry-abandoned: "&e{place}. [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&f{description})"
+      entry-abandoned: "&e• {place}. [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&cFalls in {abandonedcountdown})"
       footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
       previous: "&b<< Prev "
       next: "&b Next >>"
@@ -1286,7 +1286,7 @@ command:
         home: Home
         abandoned: |-
           &c&lABANDONED!!!
-          &c Falls in {abandonedcountdown}
+          &c Falls in {countdown}
       description: Shows you a map of the surrounding chunks
     materials:
       max-level-reached: "&c&lYour {state} already has the max level!"
@@ -1764,7 +1764,7 @@ command:
       description: "List empire"
       head: "&a⊱&m━━━━&r&6{access}Empires [{page}/{maxpage}]&a&m━━━━&a⊰"
       entry: "&e• {place}. [&r&e{name}](&8Capital: &f{capitalstate}{capital}\n&8Leader: &f{chieftitle} {chief}\n&8Size: &f{size} members\n&f{description})"
-      entry-abandoned: "&e{place}. [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&f{description})"
+      entry-abandoned: "&e• {place}. [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&cFalls in {abandonedcountdown})"
       footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
       previous: "&b<< Prev "
       next: "&b Next >>"
