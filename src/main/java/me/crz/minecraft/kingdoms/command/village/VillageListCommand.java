@@ -68,7 +68,7 @@ public class VillageListCommand extends SubCommand {
 
             for (int i = (finalPage - 1) * Utils.getEntriesPerPage(); i < villages.size() && i < finalPage * Utils.getEntriesPerPage(); i++) {
                 Village v = villages.get(i);
-                getMessage("entry").tell(sender, v.getReplacements(this,
+                getMessage("entry" + (v.isAbandoned() ? "-abandoned" : "")).tell(sender, v.getReplacements(this,
                         "place", String.valueOf(i + 1),
                         "access", v.getAccess() != LandAccess.PRIVATE ? v.getAccess().getTag() : ""
                 ));

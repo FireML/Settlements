@@ -39,6 +39,11 @@ upkeep:
   empire: 1000
   hour: 0
   timezone: EST
+# How long in minutes they stay abandoned before getting deleted
+abandon-time:
+  village: 30
+  kingdom: 30
+  empire: 1440
 max-village-size: 30
 max-empire-size: 20
 # Used for teleporting players back when they

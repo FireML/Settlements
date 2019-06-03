@@ -82,6 +82,13 @@ public class MongoDatabaseManager extends DatabaseManager {
     }
 
     @Override
+    public void saveEmpires(Collection<Empire> empires) {
+        for (Empire e : empires) {
+            saveEmpire(e);
+        }
+    }
+
+    @Override
     public void deleteEmpire(Empire village) {
         Utils.catchSync();
         empiresCollection.deleteOne(Filters.eq("name", Pattern.compile(village.getName(), Pattern.CASE_INSENSITIVE)));

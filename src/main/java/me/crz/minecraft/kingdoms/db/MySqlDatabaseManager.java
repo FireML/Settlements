@@ -255,6 +255,15 @@ public class MySqlDatabaseManager extends DatabaseManager {
         empireQueue.finishAdding();
     }
 
+    @Override
+    public void saveEmpires(Collection<Empire> empires) {
+        Utils.catchSync();
+        for (Empire empire : empires) {
+            empireQueue.add(empire.getId(), empire);
+        }
+        empireQueue.finishAdding();
+    }
+
     private void saveEmpire(Connection conn, Empire empire) {
         try {
             save(conn, empire, "members", "senators", "permissions");

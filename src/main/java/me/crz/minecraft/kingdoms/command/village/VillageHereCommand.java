@@ -19,7 +19,8 @@ public class VillageHereCommand extends PlayerSubCommand {
             getError("no-village").tell(player);
             return true;
         }
-        getMessage(village.hasEmpire() ? "empire" : "general").tell(player, village.getReplacements(VillageHereCommand.this));
+        getMessage(village.hasEmpire() ? "empire" : village.isAbandoned() ? "abandoned" : "general")
+                .tell(player, village.getReplacements(this));
         return true;
     }
 }

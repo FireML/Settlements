@@ -21,6 +21,7 @@ import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Targetable;
+import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.utils.config.Data;
@@ -74,6 +75,10 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     }
 
     public void doUpkeep() {
+        if (isAbandoned()) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " is abandoned. No upkeep.");
+            return;
+        }
         if (getTax() > 0) {
             long totalTax = 0;
             long tax = getTax();
@@ -149,16 +154,26 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 }
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(this));
             } else {
-                KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and was deleted!");
                 setBank(0);
-                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.deleted"));
-                VillageManager.getInstance().deleteVillage(this);
+                if (Utils.getAbandonTime(getStateKey()) > 0) {
+                    KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and was abandoned!");
+                    MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.abandoned"));
+                    VillageManager.getInstance().abandonVillage(this);
+                } else {
+                    KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and was deleted!");
+                    MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.deleted"));
+                    VillageManager.getInstance().deleteVillage(this);
+                }
             }
         }
     }
 
     public int getUpkeep() {
         return hasEmpire() && getEmpire().isCapital(this) ? 0 : LandManager.getInstance().getClaimedLandSize(this) * Utils.getUpkeepCost(getState(), getLevel());
+    }
+
+    public boolean isAbandoned() {
+        return residents.isEmpty();
     }
 
     public void setOutpostHome(String name, Location loc) {
@@ -531,6 +546,8 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 "description", getDescription(),
                 "empire", hasEmpire() ? getEmpire().getName() : "",
                 "state", getState().getTag(),
+                "abandoned", yesOrNo(isAbandoned()),
+                "abandonedcountdown", isAbandoned() ? UtilTime.format(getCreated() + (Utils.getAbandonTime(getStateKey()) * 60 * 1000) - System.currentTimeMillis()) : "",
                 "level", String.valueOf(getLevel()),
                 "land", String.valueOf(LandManager.getInstance().getClaimedLandSize(this)),
                 "maxland", String.valueOf(getMaxClaimableChunks()),

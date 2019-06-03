@@ -76,6 +76,7 @@ banished:
     subtitle: "&cYou're banished from the {state} {name}!"
 broadcast:
   village-deletion: "&c{state} {name} has fallen!"
+  village-abandoned: "&cVillage {name} has been abandoned! You have 30 minutes to raid it!"
   empire-deletion: "&cEmpire {name} has fallen!"
   empire-abandoned: "&cEmpire {name} has been abandoned! You have 24 hours to raid it!"
 scoreboard:
@@ -128,9 +129,11 @@ upkeep:
     level-removed: "&a&lALERT &7Your settlement has had a level removed because you couldn't pay the upkeep!"
     downgraded: "&a&lALERT &7Your settlement was downgraded to a level {level} {state} because you couldn't pay the upkeep!"
     deleted: "&a&lALERT &7Your settlement has been &cdeleted&7 because it was &cunable&7 to pay its upkeep!"
+    abandoned: "&a&lALERT &7Your settlement has been &cabandoned&7 because it was &cunable&7 to pay its upkeep!"
     charged: "&a&lALERT &7Your settlement has been charged &6{charged}&7 for upkeep!"
     cant-pay: "&a&lALERT &cYour settlement is &6unable&c to pay the next upkeep it will cost &6{amount}&c! Deposit money to avoid deletion!"
   empire-alert:
+    deleted: "&a&lALERT &7Your empire has been &cdeleted&7 because it was &cunable&7 to pay its upkeep!"
     abandoned: "&a&lALERT &7Your empire is in the &cabandoned&7 state for the next 24 hours because it was &cunable&7 to pay its upkeep!"
     charged: "&a&lALERT &7Your empire has been charged &6{charged}&7 for upkeep!"
     cant-pay: "&a&lALERT &cYour empire is &6unable&c to pay the next upkeep it will cost &6{amount}&c! Deposit money to avoid deletion!"
@@ -150,8 +153,18 @@ village:
     actionbar: ""
     title: ""
     subtitle: ""
+  enter-abandoned:
+    message: "&f[&eKingdoms&f] &7Entering &cabandoned {name}{pvp}"
+    actionbar: ""
+    title: ""
+    subtitle: ""
   leave:
     message: "&f[&eKingdoms&f] &7Leaving &a{name}"
+    actionbar: ""
+    title: ""
+    subtitle: ""
+  leave-abandoned:
+    message: "&f[&eKingdoms&f] &7Leaving &cabandoned a{name}"
     actionbar: ""
     title: ""
     subtitle: ""
@@ -168,8 +181,18 @@ kingdom:
     actionbar: ""
     title: ""
     subtitle: ""
+  enter-abandoned:
+    message: "&f[&eKingdoms&f] &7Entering &cabandoned {name}{pvp}"
+    actionbar: ""
+    title: ""
+    subtitle: ""
   leave:
     message: "&f[&eKingdoms&f] &7Leaving &a{name}"
+    actionbar: ""
+    title: ""
+    subtitle: ""
+  leave-abandoned:
+    message: "&f[&eKingdoms&f] &7Leaving &cabandoned a{name}"
     actionbar: ""
     title: ""
     subtitle: ""
@@ -190,8 +213,18 @@ empire:
     actionbar: ""
     title: ""
     subtitle: ""
+  enter-abandoned:
+    message: "&f[&eKingdoms&f] &7Entering &cabandoned {name}{pvp}"
+    actionbar: ""
+    title: ""
+    subtitle: ""
   leave:
     message: "&f[&eKingdoms&f] &7Leaving &a{name}"
+    actionbar: ""
+    title: ""
+    subtitle: ""
+  leave-abandoned:
+    message: "&f[&eKingdoms&f] &7Leaving &cabandoned {name}{pvp}"
     actionbar: ""
     title: ""
     subtitle: ""
@@ -1192,6 +1225,14 @@ command:
         &9&lPerks: &r&7{perks}
         &b&lMembers:
         {residents}
+      abandoned: |-
+        &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
+        &c&lABANDONED!!!&r&c Falls in {abandonedcountdown}
+        &a&lDescription: &r&7{description}
+        &a&lState: &r&7{state}
+        &6&lAccess: &r&7{access}
+        &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
+        &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
       bonus-claims: " Bonus: {amount}"
       residents:
         rank: "&6&l{rank}:&r {residents}"
@@ -1244,6 +1285,7 @@ command:
       description: "List settlements"
       head: "&a⊱&m━━━━&r&6{access}Settlements [{page}/{maxpage}]&a&m━━━━&a⊰"
       entry: "&e• {place}. [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{size} players\n&f{description})"
+      entry-abandoned: "&e• {place}. [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&cFalls in {abandonedcountdown})"
       footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
       previous: "&b<< Prev "
       next: "&b Next >>"
@@ -1279,6 +1321,9 @@ command:
         for-sale: "For sale: &7{price}"
         outpost: "Outpost: &7{name}"
         home: Home
+        abandoned: |-
+          &c&lABANDONED!!!
+          &c Falls in {countdown}
       description: Shows you a map of the surrounding chunks
     materials:
       max-level-reached: "&c&lYour {state} already has the max level!"
@@ -1457,6 +1502,14 @@ command:
         &b&l{chieftitle}: &r&7{chiefonline}{chief}
         &b&lMembers:
         {residents}
+      abandoned: |-
+        &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
+        &c&lABANDONED!!!&r&c Falls in {abandonedcountdown}
+        &a&lDescription: &r&7{description}
+        &a&lState: &r&7{state}
+        &6&lAccess: &r&7{access}
+        &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
+        &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
       bonus-outposts: " Bonus: {amount}"
       bonus-claims: " Bonus: {amount}"
       residents:
@@ -1705,6 +1758,12 @@ command:
         &6&lCapital &r&7{capitalstate}{capital}
         &e&lLeader &r&7{chieftitle} {chief}
         &e&lMembers: &r&7{members}
+      abandoned: |-
+        &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
+        &c&lABANDONED!!!&r&c Falls in {abandonedcountdown}
+        &a&lDescription: &r&7{description}
+        &a&lSymbol: &r&7{symbol}
+        &6&lAccess: &r&7{access}
       not-in-empire: "&cYou are not currently in an empire world!"
       description: Show in which empire world you are
     home:
@@ -1742,7 +1801,7 @@ command:
       description: "List empire"
       head: "&a⊱&m━━━━&r&6{access}Empires [{page}/{maxpage}]&a&m━━━━&a⊰"
       entry: "&e• {place}. [&r&e{name}](&8Capital: &f{capitalstate}{capital}\n&8Leader: &f{chieftitle} {chief}\n&8Size: &f{size} members\n&f{description})"
-      entry-abandoned: "&e{place}. [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&f{description})"
+      entry-abandoned: "&e• {place}. [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&cFalls in {abandonedcountdown})"
       footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
       previous: "&b<< Prev "
       next: "&b Next >>"
@@ -1787,6 +1846,9 @@ command:
         embassy: "Embassy Owner: &7{owner}"
         for-sale: "For sale: &7{price}"
         home: Home
+        abandoned: |-
+          &c&lABANDONED!!!
+          &c Falls in {abandonedcountdown}
       description: Shows you a map of the surrounding chunks
     memberlist:
       head: "&a⊱&m━━━━&r&6Members&a&m━━━━&a⊰"
@@ -1920,10 +1982,10 @@ command:
         entry: "{title} {online}{name}"
       abandoned: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-        &c&lABANDONED!!!
-        &a&lDescription &r&7{description}
-        &a&lSymbol &r&7{symbol}
-        &6&lAccess &r&7{access}
+        &c&lABANDONED!!!&r&c Falls in {abandonedcountdown}
+        &a&lDescription: &r&7{description}
+        &a&lSymbol: &r&7{symbol}
+        &6&lAccess: &r&7{access}
       bonus-claims: " Bonus: {amount}"
       description: Shows information on an empire
     tax:

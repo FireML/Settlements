@@ -684,4 +684,6 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
                 .forEach(e -> landOwner.getRanksPermissions().put(e.getKey().toLowerCase(), (Map<String, Boolean>) e.getValue()));
         return landOwner;
     }
+
+    public abstract boolean isAbandoned();
 }

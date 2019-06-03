@@ -270,6 +270,13 @@ public class Utils {
         return false;
     }
 
+    public static long getAbandonTime(String type) {
+        if (ConfigManager.getInstance().getConfig().isInt("abandon-time." + type)) {
+            return ConfigManager.getInstance().getConfig().getInt("abandon-time." + type);
+        }
+        return type.equals("empire") ? 1440 : 30;
+    }
+
     public static boolean playerIsChief(Player player, Village village) {
         return village != null && village.getChiefId().equals(player.getUniqueId());
     }
@@ -371,6 +378,16 @@ public class Utils {
      */
     public static BukkitTask runNextTick(Runnable run) {
         return Bukkit.getScheduler().runTask(KingdomsPlugin.getInstance(), run);
+    }
+
+    /**
+     * Run something later on the primary server thread.
+     * @param run   What to run
+     * @param ticks The ticks to wait
+     * @return The BukkitTask that was started
+     */
+    public static BukkitTask runLater(Runnable run, long ticks) {
+        return Bukkit.getScheduler().runTaskLater(KingdomsPlugin.getInstance(), run, ticks);
     }
 
     public static UUID parseUuid(String uuidStr) {

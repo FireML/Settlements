@@ -24,7 +24,7 @@ public class VillageJoinCommand extends ResidentSubCommand {
             return false;
         }
         Village joinVillage = VillageManager.getInstance().getVillageFromName(args[0]);
-        if (joinVillage == null) {
+        if (joinVillage == null || joinVillage.isAbandoned()) {
             getError("village-doesnt-exist").tell(resident, "name", args[0]);
         } else if (joinVillage.getId().isNull()) {
             getError("missing-village-id").tell(resident, "name", joinVillage.getName());
