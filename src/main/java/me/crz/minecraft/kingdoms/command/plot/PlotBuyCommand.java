@@ -20,7 +20,7 @@ public class PlotBuyCommand extends ResidentSubCommand {
             getError("not-a-plot").tell(res);
         } else if (!(land.isEmbassy() || land.isOwnedBy(res))) {
             getError("not-your-village").tell(res, "state", land.getLandOwner().getStateTag());
-        } else if (!land.isForSale() || !land.getLandOwner().isAbandoned()) {
+        } else if (!land.isForSale() || land.getLandOwner().isAbandoned()) {
             getError("not-for-sale").tell(res);
         } else {
             if (land.isEmbassy() && land.isOwnedBy(res)) {
