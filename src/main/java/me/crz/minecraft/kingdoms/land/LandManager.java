@@ -256,12 +256,17 @@ public class LandManager {
         }
         land.removeLink();
         land.setPlotOwner(owner);
-        land.setBuildState(BuildState.PRIVATE);
-        for (Use use : Use.values()) {
-            land.setUseState(use, use.getDefault(BuildState.PRIVATE));
-        }
-        if (owner == null) {
+        if (owner != null) {
+            land.setBuildState(BuildState.PRIVATE);
+            for (Use use : Use.values()) {
+                land.setUseState(use, use.getDefault(BuildState.PRIVATE));
+            }
+        } else {
             land.setEmbassy(false);
+            land.setBuildState(land.getLandOwner().getBuildState());
+            for (Use use : Use.values()) {
+                land.unsetUseState(use);
+            }
         }
         saveLand(land);
     }

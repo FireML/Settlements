@@ -29,6 +29,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -186,6 +187,34 @@ public class VillageManager {
         village.setMode(PlotMode.explosions, true);
         village.setMode(PlotMode.buff, false);
         village.setMode(PlotMode.mobSpawning, true);
+
+        List<OwnedLand> changedLand = new ArrayList<>();
+        for (OwnedLand land : LandManager.getInstance().getClaimedLand(village)) {
+            boolean changed = false;
+            land.setForSale(false);
+            if (land.isPlot()) {
+                changed = true;
+                LandManager.getInstance().setPlotOwner(land, null);
+            } else {
+                if (land.getBuildState() != BuildState.PUBLIC) {
+                    changed = true;
+                    land.setBuildState(BuildState.PUBLIC);
+                }
+                for (Use u : Use.values()) {
+                    changed |= land.unsetUseState(u);
+                }
+            }
+            changed |= land.setMode(PlotMode.pvp, true);
+            changed |= land.setMode(PlotMode.fireSpread, true);
+            changed |= land.setMode(PlotMode.explosions, true);
+            changed |= land.setMode(PlotMode.buff, false);
+            changed |= land.setMode(PlotMode.mobSpawning, true);
+            changed |= land.setMode(PlotMode.embassy, false);
+            if (changed) {
+                changedLand.add(land);
+            }
+        }
+
         for (LockProvider lockProvider : KingdomsPlugin.getInstance().getLockProviders()) {
             lockProvider.removeInChunks(LandManager.getInstance().getClaimedLand(village));
         }
@@ -205,6 +234,7 @@ public class VillageManager {
             DatabaseManager.getInstance().saveVillage(village);
             DatabaseManager.getInstance().save(allies);
             DatabaseManager.getInstance().saveResident(residents);
+            DatabaseManager.getInstance().saveLand(changedLand);
             Utils.runLater(() -> {
                 KingdomsPlugin.getInstance().getLogger().log(Level.INFO, village.getStateTag() + " " + village.getName() + " was removed because it has been abandoned for " + Utils.getAbandonTime(village.getStateKey()) + " minutes!");
                 deleteVillage(village);
