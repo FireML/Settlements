@@ -178,7 +178,8 @@ public class VillageManager {
         for (LandOwner ally : allies) {
             ally.removeAlly(village);
         }
-        village.setAccess(LandAccess.PUBLIC);
+        village.setAccess(LandAccess.PRIVATE);
+        village.setBuildState(BuildState.PUBLIC);
         for (Use u : Use.values()) {
             village.setUseState(u, BuildState.PUBLIC);
         }
