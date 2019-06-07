@@ -255,7 +255,7 @@ public class LandFlags extends Base implements LandFlagBase {
 
         if (destinationLand != null) {
             if (!sameVillage) {
-                MessageUtils.tellAdvanced(player, destinationLand.getLandOwner().getStateKey() + ".enter" + (originalLand.getLandOwner().isAbandoned() ? "-abandoned" : ""),
+                MessageUtils.tellAdvanced(player, destinationLand.getLandOwner().getStateKey() + ".enter" + (destinationLand.getLandOwner().isAbandoned() ? "-abandoned" : ""),
                         "pvp", destinationLand.getMode(PlotMode.pvp) ? Message.get("pvp-is-enabled").getText() : "",
                         "name", destinationLand.getLandOwner().getName(),
                         "state", destinationLand.getLandOwner().getStateTag()
