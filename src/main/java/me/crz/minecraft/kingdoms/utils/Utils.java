@@ -279,6 +279,13 @@ public class Utils {
         return type.equals("empire") ? 1440 : 30;
     }
 
+    public static int getVillageInactiveTime() {
+        if (ConfigManager.getInstance().getConfig().isInt("village-inactive-time")) {
+            return ConfigManager.getInstance().getConfig().getInt("village-inactive-time");
+        }
+        return 30;
+    }
+
     public static boolean playerIsChief(Player player, Village village) {
         return village != null && village.getChiefId().equals(player.getUniqueId());
     }
