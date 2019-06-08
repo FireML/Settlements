@@ -75,13 +75,13 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     private boolean running = false;
     private String empiresWorldPrefix = "";
     private String empiresWorldSuffix = "";
-    private Timer upkeepTimer = new Timer();
+    private static final Timer timer = new Timer();
     private LandFlags landFlags;
     private Timing pluginTimings;
 
     @Override
     public void onDisable() {
-        upkeepTimer.cancel();
+        timer.cancel();
         if (running) {
             running = false;
         }
@@ -190,7 +190,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     private void scheduleUpkeep(Runnable runnable) {
         Date nextUpkeepDate = Utils.getNextUpkeep();
         getLogger().log(Level.INFO, "Next upkeep: " + Utils.ISO_TIME_FORMAT.format(nextUpkeepDate) + " (" + nextUpkeepDate.getTime() + ")!");
-        upkeepTimer.schedule(new TimerTask() {
+        timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 Utils.runSync(() -> {
@@ -313,6 +313,10 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     public Timing getAndStartTiming(String name) {
         return Timings.ofStart(KingdomsPlugin.getInstance(), name, pluginTimings);
+    }
+
+    public static Timer getTimer() {
+        return timer;
     }
 
     public static void logDebug(String message) {
