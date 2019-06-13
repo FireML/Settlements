@@ -29,11 +29,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class VillageManager {
@@ -53,10 +55,11 @@ public class VillageManager {
                 long timeAbandoned = System.currentTimeMillis() - village.getCreated();
                 long abandonTime = Utils.getAbandonTime(village.getStateKey());
                 long delay = timeAbandoned > abandonTime * 60 * 1000 ? 0 : abandonTime * 60 * 1000 - timeAbandoned;
+                KingdomsPlugin.logDebug(village.getStateTag() + " " + village.getName() + " will be removed after " + abandonTime + " minutes in " + delay + "!");
                 Utils.runLater(() -> {
                     KingdomsPlugin.getInstance().getLogger().log(Level.INFO, village.getStateTag() + " " + village.getName() + " was removed because it has been abandoned for " + abandonTime + " minutes!");
                     deleteVillage(village);
-                }, delay / 50);
+                }, delay, TimeUnit.MILLISECONDS);
             }
         }
     }
@@ -177,7 +180,8 @@ public class VillageManager {
         for (LandOwner ally : allies) {
             ally.removeAlly(village);
         }
-        village.setAccess(LandAccess.PUBLIC);
+        village.setAccess(LandAccess.PRIVATE);
+        village.setBuildState(BuildState.PUBLIC);
         for (Use u : Use.values()) {
             village.setUseState(u, BuildState.PUBLIC);
         }
@@ -186,6 +190,34 @@ public class VillageManager {
         village.setMode(PlotMode.explosions, true);
         village.setMode(PlotMode.buff, false);
         village.setMode(PlotMode.mobSpawning, true);
+
+        List<OwnedLand> changedLand = new ArrayList<>();
+        for (OwnedLand land : LandManager.getInstance().getClaimedLand(village)) {
+            boolean changed = false;
+            land.setForSale(false);
+            if (land.isPlot()) {
+                changed = true;
+                LandManager.getInstance().setPlotOwner(land, null);
+            } else {
+                if (land.getBuildState() != BuildState.PUBLIC) {
+                    changed = true;
+                    land.setBuildState(BuildState.PUBLIC);
+                }
+                for (Use u : Use.values()) {
+                    changed |= land.unsetUseState(u);
+                }
+            }
+            changed |= land.setMode(PlotMode.pvp, true);
+            changed |= land.setMode(PlotMode.fireSpread, true);
+            changed |= land.setMode(PlotMode.explosions, true);
+            changed |= land.setMode(PlotMode.buff, false);
+            changed |= land.setMode(PlotMode.mobSpawning, true);
+            changed |= land.setMode(PlotMode.embassy, false);
+            if (changed) {
+                changedLand.add(land);
+            }
+        }
+
         for (LockProvider lockProvider : KingdomsPlugin.getInstance().getLockProviders()) {
             lockProvider.removeInChunks(LandManager.getInstance().getClaimedLand(village));
         }
@@ -205,10 +237,11 @@ public class VillageManager {
             DatabaseManager.getInstance().saveVillage(village);
             DatabaseManager.getInstance().save(allies);
             DatabaseManager.getInstance().saveResident(residents);
+            DatabaseManager.getInstance().saveLand(changedLand);
             Utils.runLater(() -> {
                 KingdomsPlugin.getInstance().getLogger().log(Level.INFO, village.getStateTag() + " " + village.getName() + " was removed because it has been abandoned for " + Utils.getAbandonTime(village.getStateKey()) + " minutes!");
                 deleteVillage(village);
-            }, Utils.getAbandonTime(village.getStateKey()) * 60 * 20);
+            }, Utils.getAbandonTime(village.getStateKey()), TimeUnit.MINUTES);
         });
     }
 

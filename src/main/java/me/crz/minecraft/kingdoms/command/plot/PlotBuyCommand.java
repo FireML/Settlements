@@ -17,10 +17,10 @@ public class PlotBuyCommand extends ResidentSubCommand {
     public boolean run(Resident res, String base, String alias, String... args) {
         OwnedLand land = LandManager.getInstance().getLand(res.getPlayer().getLocation());
         if (land == null) {
-            getError("not-a-plot").tell(res);
+            getError("not-a-claim").tell(res);
         } else if (!(land.isEmbassy() || land.isOwnedBy(res))) {
             getError("not-your-village").tell(res, "state", land.getLandOwner().getStateTag());
-        } else if (!land.isForSale() || !land.getLandOwner().isAbandoned()) {
+        } else if (!land.isForSale() || land.getLandOwner().isAbandoned()) {
             getError("not-for-sale").tell(res);
         } else {
             if (land.isEmbassy() && land.isOwnedBy(res)) {

@@ -33,7 +33,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.TimerTask;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.bukkit.World;
@@ -277,6 +279,13 @@ public class Utils {
         return type.equals("empire") ? 1440 : 30;
     }
 
+    public static int getVillageInactiveTime() {
+        if (ConfigManager.getInstance().getConfig().isInt("village-inactive-time")) {
+            return ConfigManager.getInstance().getConfig().getInt("village-inactive-time");
+        }
+        return 30;
+    }
+
     public static boolean playerIsChief(Player player, Village village) {
         return village != null && village.getChiefId().equals(player.getUniqueId());
     }
@@ -388,6 +397,24 @@ public class Utils {
      */
     public static BukkitTask runLater(Runnable run, long ticks) {
         return Bukkit.getScheduler().runTaskLater(KingdomsPlugin.getInstance(), run, ticks);
+    }
+
+    /**
+     * Run something later on the primary server thread.
+     * @param run       What to run
+     * @param amount    The amount of time to wait
+     * @param unit      The time unit the amount is in
+     * @return The TimerTask that was started
+     */
+    public static TimerTask runLater(Runnable run, long amount, TimeUnit unit) {
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                runSync(run);
+            }
+        };
+        KingdomsPlugin.getTimer().schedule(task, unit.toMillis(amount));
+        return task;
     }
 
     public static UUID parseUuid(String uuidStr) {

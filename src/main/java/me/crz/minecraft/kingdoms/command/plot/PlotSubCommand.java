@@ -29,7 +29,7 @@ public abstract class PlotSubCommand extends ResidentSubCommand {
             }
             return run(resident, land, base, alias, args);
         }
-        getError("not-a-plot").tell(resident);
+        getError("not-a-claim").tell(resident);
         return true;
     }
 

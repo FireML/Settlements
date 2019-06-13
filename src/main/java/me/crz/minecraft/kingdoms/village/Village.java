@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -78,6 +79,18 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         if (isAbandoned()) {
             KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " is abandoned. No upkeep.");
             return;
+        }
+        int inactiveDays = Utils.getVillageInactiveTime();
+        if (inactiveDays > 0 && getLevel() == 1 && getState() == VillageState.VILLAGE && !hasEmpire() && getPerksMap().isEmpty()
+                && LandManager.getInstance().getClaimedLandSize(this) == 0
+                && getChief().getLastLogin() + TimeUnit.DAYS.toMillis(inactiveDays) < System.currentTimeMillis()) {
+            OfflinePlayer chiefPlayer = KingdomsPlugin.getInstance().getServer().getOfflinePlayer(getChiefId());
+            if (!chiefPlayer.hasPlayedBefore() || chiefPlayer.getLastSeen() + TimeUnit.DAYS.toMillis(inactiveDays) < System.currentTimeMillis()) {
+                KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " is inactive " +
+                        "(chief offline for more than " + inactiveDays + ", Village level 1, no claims, no perks unlocked), removing it!");
+                VillageManager.getInstance().deleteVillage(this);
+                return;
+            }
         }
         if (getTax() > 0) {
             long totalTax = 0;

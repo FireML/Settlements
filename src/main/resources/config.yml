@@ -39,6 +39,8 @@ upkeep:
   empire: 1000
   hour: 0
   timezone: EST
+# Days after which empty and inactive villages get deleted: (0 disables this)
+village-inactive-time: 30
 # How long in minutes they stay abandoned before getting deleted
 abandon-time:
   village: 30

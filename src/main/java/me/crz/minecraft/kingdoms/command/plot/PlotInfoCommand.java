@@ -16,7 +16,7 @@ public class PlotInfoCommand extends ResidentSubCommand {
     public boolean run(Resident res, String base, String alias, String... args) {
         OwnedLand land = LandManager.getInstance().getLand(res.getPlayer().getLocation());
         if (land == null) {
-            res.tell(getError("not-a-plot"));
+            res.tell(getError("not-a-claim"));
             return true;
         }
         res.tell(getMessage("general"), land.getReplacements());

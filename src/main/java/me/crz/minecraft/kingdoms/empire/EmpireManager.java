@@ -45,6 +45,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class EmpireManager {
@@ -66,10 +67,11 @@ public class EmpireManager {
                 long timeAbandoned = System.currentTimeMillis() - empire.getCreated();
                 long abandonTime = Utils.getAbandonTime(empire.getStateKey());
                 long delay = timeAbandoned > abandonTime * 60 * 1000 ? 0 : abandonTime * 60 * 1000 - timeAbandoned;
+                KingdomsPlugin.logDebug(empire.getStateTag() + " " + empire.getName() + " will be removed after " + abandonTime + " minutes in " + delay + "!");
                 Utils.runLater(() -> {
                     KingdomsPlugin.getInstance().getLogger().log(Level.INFO, empire.getStateTag() + " " + empire.getName() + " was removed because it has been abandoned for " + abandonTime + " minutes!");
                     deleteEmpire(empire);
-                }, delay / 50);
+                }, delay, TimeUnit.MILLISECONDS);
             }
         }
     }
@@ -318,7 +320,7 @@ public class EmpireManager {
             Utils.runLater(() -> {
                 KingdomsPlugin.getInstance().getLogger().log(Level.INFO, empire.getStateTag() + " " + empire.getName() + " was removed because it has been abandoned for " + Utils.getAbandonTime(empire.getStateKey()) + " minutes!");
                 deleteEmpire(empire);
-            }, Utils.getAbandonTime(empire.getStateKey()) * 60 * 20);
+            }, Utils.getAbandonTime(empire.getStateKey()), TimeUnit.MINUTES);
         });
     }
 

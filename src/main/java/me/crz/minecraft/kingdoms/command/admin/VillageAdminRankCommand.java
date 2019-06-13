@@ -37,13 +37,13 @@ public class VillageAdminRankCommand extends SubCommand {
                 MessageUtils.tell(sender, getError("player-not-found"), "player", args[0]);
                 return;
             }
-            Village village = VillageManager.getInstance().getVillageFromName(tRes.getVillageName());
-            if (village == null) {
+            if (!tRes.hasVillage()) {
                 MessageUtils.tell(sender, getError("not-in-village"), "player", tRes.getName());
                 return;
             }
-            Resident res = village.getChief();
-            if (r == VillageRank.getChief()) {
+            Village village = tRes.getVillage();
+            if (r.isChief()) {
+                Resident res = tRes.getVillage().getChief();
                 res.setVillageRank(tRes.getVillageRank());
                 tRes.setVillageRank(r);
                 village.setChief(tRes.getUUID());
@@ -56,9 +56,9 @@ public class VillageAdminRankCommand extends SubCommand {
                 DatabaseManager.getInstance().saveResident(tRes);
             }
             if (sender instanceof Player && !village.getResidentIds().contains(((Player) sender).getUniqueId())) {
-                MessageUtils.tell(sender, Message.get("command.village.setrank.success"), "title", "", "setter", sender.getName(), "target", tRes.getName(), "rank", r.getTag(village));
+                Message.get("command.village.setrank.success").tell(sender, "title", "", "setter", sender.getName(), "target", tRes.getName(), "rank", r.getTag(village));
             }
-            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("command.village.setrank.success"), "title", "", "setter", sender.getName(), "target", tRes.getName(), "rank", r.getTag(village));
+            Message.get("command.village.setrank.success").tell(village.getOnlineResidents(), "title", "", "setter", sender.getName(), "target", tRes.getName(), "rank", r.getTag(village));
         });
         return true;
     }
