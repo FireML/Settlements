@@ -6,6 +6,7 @@ import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.entity.Player;
 
@@ -109,6 +110,12 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                     "x", String.valueOf(l.getX()),
                     "z", String.valueOf(l.getZ()))
             );
+            if (res.getVillage().getState() == VillageState.VILLAGE && res.getVillage().getLevel() == 1) {
+                getMessage("new-upkeep").tell(res,
+                        "villageupkeep", String.valueOf(res.getVillage().getUpkeep()),
+                        "upkeepperclaim", String.valueOf(Utils.getUpkeepCost(res.getVillage().getState(), res.getVillage().getLevel()))
+                );
+            }
             LandManager.getInstance().unclaimLand(unclaimedLand);
         } else if (toUnclaim.size() == 1) {
             getError("no-village").tell(res);

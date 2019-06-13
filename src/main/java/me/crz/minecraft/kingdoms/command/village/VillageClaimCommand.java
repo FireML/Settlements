@@ -9,6 +9,7 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.world.SimpleBlockLocation;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.entity.Player;
@@ -156,6 +157,12 @@ public class VillageClaimCommand extends VillageSubCommand {
             amountClaimed++;
         }
         if (!toSave.isEmpty()) {
+            if (village.getState() == VillageState.VILLAGE && village.getLevel() == 1) {
+                getMessage("new-upkeep").tell(res,
+                        "villageupkeep", String.valueOf(village.getUpkeep()),
+                        "upkeepperclaim", String.valueOf(Utils.getUpkeepCost(village.getState(), village.getLevel()))
+                );
+            }
             Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(toSave));
         }
         return true;

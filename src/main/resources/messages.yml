@@ -1167,6 +1167,7 @@ command:
       cant-claim-more: "&c&lERROR &r&7Your settlement can only claim &e{max} chunks of land!"
       no-land-around: "&c&lERROR &r&7Your claim must be connected to an existing settlement claim!"
       success: "&a&lSUCCESS &r&e{player} &7has claimed land for your settlement at {x},{z}!"
+      new-upkeep: "&aYour new upkeep is now &e${villageupkeep}&a (${upkeepperclaim} per claim) [&e/s upkeep](/s upkeep)"
       home-set: "&7&l{state} home was set at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
       radius-too-large: "&c&lERROR &r&7Can't use an radius of {radius} for claiming as the maximum is {max}!"
       description: Claim a chunk of land
@@ -1587,6 +1588,7 @@ command:
       outpost: "&cThis land is an outpost, please use &7/{base} outpost unclaim&c to unclaim this outpost."
       home: "&cThis land is your home, you have to move it with &7/{base} sethome&c before unclaiming this land."
       success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at &f{x}-{z}!"
+      new-upkeep: "&aYour new upkeep is now &e${villageupkeep}&a (${upkeepperclaim} per claim) [&e/s upkeep](/s upkeep)"
       description: Unclaim land which is claimed by your village
       "<radius>":
         description: "Unclaims all the chunks in the stated radius (max is 5)"
