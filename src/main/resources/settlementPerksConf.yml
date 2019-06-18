@@ -142,7 +142,6 @@ nightvision:
   effects:
     - type: night_vision
       strength: 1
-      length: 60
   cost:
     unlock:
       cash: 1000

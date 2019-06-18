@@ -26,10 +26,9 @@ public class VillagePerksCommand extends VillageSubCommand {
                     } else if (!perk.hasEffects() && !perk.hasEffects()) {
                         getError("no-effects").tell(resident, "perk", perk.getTag());
                     } else {
+                        resident.getVillage().togglePerk(perk);
                         PerkData perkData = resident.getVillage().getPerkData(perk);
-                        perkData.toggle();
-                        MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage(perkData.isActive() ? "activated" : "deactivated"), "perk", perk.getTag());
-                        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
+                        getMessage(perkData.isActive() ? "activated" : "deactivated").tell(resident.getVillage().getOnlineResidents(), "perk", perk.getTag());
                     }
                     return true;
                 }

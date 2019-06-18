@@ -28,11 +28,11 @@ resistance1:
         # can be:
         # plot - Only for the owner of a plot on the plot
         # plot-friends - Like plot just for friends of the resident too
-        # own-settlement - Effect only in own settlement (default if not set)
+        # own-settlement - Effect only in own settlement
         # allied-settlement - Effect in own and all allied settlements
         # enemy-settlement - Effect only while in enemy settlement
         # unclaimed - only in unclaimed chunks
-        # empire-world - in the world of your empire
+        # empire-world - in the world of your empire (default if not set)
         # everywhere - everywhere
         in: empire-world
         # Who should get the effect
@@ -127,7 +127,6 @@ nightvision:
   effects:
     - type: night_vision
       strength: 1
-      length: 60
   cost:
     unlock:
       cash: 1000

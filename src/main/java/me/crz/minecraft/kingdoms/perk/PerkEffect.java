@@ -8,7 +8,6 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,15 +53,19 @@ public class PerkEffect {
         return length;
     }
 
+    public boolean isPermanent() {
+        return length <= 0;
+    }
+
     public boolean isAmbient() {
         return ambient;
     }
 
-    public boolean isParticles() {
+    public boolean hasParticles() {
         return particles;
     }
 
-    public boolean isIcon() {
+    public boolean hasIcon() {
         return icon;
     }
 
@@ -75,7 +78,11 @@ public class PerkEffect {
     }
 
     public PotionEffect getPotionEffect() {
-        return new PotionEffect(type, length > 0 ? length * 20: 300, strength - 1, ambient, particles, icon);
+        return new PotionEffect(getType(), isPermanent() ? 1200 : getLength() * 20, getStrength() - 1, isAmbient(), hasParticles(), hasIcon());
+    }
+
+    public String getIdentifier() {
+        return getType().getName() + "|" + (getStrength() - 1) + "|" + isAmbient() + "|" + hasParticles();
     }
 
     public enum EffectLocation implements NameTag {
