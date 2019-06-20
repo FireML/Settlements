@@ -81,7 +81,7 @@ public class PerksGUI extends KingdomsGUI {
 
                 @Override
                 public boolean click(Player p, ClickType type) {
-                    if (!resident.hasEmpire() || !resident.hasPermission("empire.perk.toggle")) {
+                    if (!resident.hasEmpire() || !resident.hasPermission("empire.perks.toggle")) {
                         return false;
                     }
                     if (resident.getVillage().getEmpire().togglePerk(perk)) {

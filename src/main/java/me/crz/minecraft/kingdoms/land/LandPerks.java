@@ -198,9 +198,9 @@ public class LandPerks {
     private <T extends Perk> Collection<? extends PerkEffect> getEffects(Player p, Resident resident, OwnedLand land, LandOwner perkable, boolean refresh) {
         List<PerkEffect> effects = new ArrayList<>();
 
-        Village village = null;
-        if (land != null && land.getLandOwner() instanceof Village) {
-            village = (Village) land.getLandOwner();
+        LandOwner landOwner = null;
+        if (land != null) {
+            landOwner = land.getLandOwner();
         }
 
         for (Perk perk : perkable.getPerks()) {
@@ -219,7 +219,7 @@ public class LandPerks {
 
                 if (land == null) {
                     if (effect.getApplyIn() == PerkEffect.EffectLocation.EMPIRE_WORLD
-                            && (!resident.hasEmpire() || !resident.getVillage().getEmpire().equals(EmpireManager.getInstance().getEmpireFromWorld(p.getWorld())))) {
+                            && !perkable.equals(EmpireManager.getInstance().getEmpireFromWorld(p.getWorld()))) {
                         continue;
                     }
                     if (effect.getApplyIn() != PerkEffect.EffectLocation.UNCLAIMED) {
@@ -237,23 +237,24 @@ public class LandPerks {
                                 continue;
                             }
                             break;
+                        case EMPIRE_WORLD:
                         case OWN_SETTLEMENT:
                             if (!land.isOwnedBy(perkable)) {
                                 continue;
                             }
                             break;
                         case ENEMY_SETTLEMENT:
-                            if (land.isOwnedBy(perkable) || (village != null && village.isTrusted(perkable))) {
+                            if (land.isOwnedBy(perkable) || landOwner.isTrusted(perkable)) {
                                 continue;
                             }
                             break;
                         case ALLIED_SETTLEMENT:
-                            if (!land.isOwnedBy(perkable) && (village == null || !village.isAlly(perkable))) {
+                            if (!land.isOwnedBy(perkable) && !landOwner.isAlly(perkable)) {
                                 continue;
                             }
                             break;
                         case TRUSTED_SETTLEMENT:
-                            if (!land.isOwnedBy(perkable) && (village == null || !village.isTrusted(perkable))) {
+                            if (!land.isOwnedBy(perkable) && !landOwner.isTrusted(perkable)) {
                                 continue;
                             }
                             break;
