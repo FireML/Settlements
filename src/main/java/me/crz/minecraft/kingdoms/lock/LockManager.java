@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.lock;
 
+import co.aikar.timings.Timing;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
@@ -100,12 +101,25 @@ public class LockManager implements LockProvider {
         Set<SimpleChunkLocation> notLoaded = new HashSet<>();
         for (SimpleChunkLocation chunk : chunks) {
             // Mark all chunks that did not have locks as cached
-            Cache<SimpleChunkLocation, Map<String, Lock>> worldCache = lockTable
-                    .computeIfAbsent(chunk.getWorld(), s -> Caffeine.newBuilder().expireAfter(chunkExpiry).build());
-            Map<String, Lock> chunkMap = worldCache.getIfPresent(chunk);
-            if (chunkMap == null) {
-                notLoaded.add(chunk);
-                worldCache.put(chunk, new ConcurrentHashMap<>(ImmutableMap.of(LOADING_KEY, new Lock(null, null, null))));
+            boolean isPresent = false;
+            Cache<SimpleChunkLocation, Map<String, Lock>> worldCache;
+            try (Timing t = KingdomsPlugin.getInstance().getAndStartTiming("LockManager create world chunk cache")) {
+                worldCache = lockTable.get(chunk.getWorld());
+                if (worldCache == null) {
+                    worldCache = Caffeine.newBuilder().expireAfter(chunkExpiry).build();
+                    lockTable.put(chunk.getWorld(), worldCache);
+                } else {
+                    isPresent = true;
+                }
+            }
+            try (Timing t = KingdomsPlugin.getInstance().getAndStartTiming("LockManager check chunk lock cache")) {
+                isPresent = isPresent || worldCache.getIfPresent(chunk) != null;
+            }
+            try (Timing t = KingdomsPlugin.getInstance().getAndStartTiming("LockManager create chunk lock cache")) {
+                if (!isPresent) {
+                    notLoaded.add(chunk);
+                    worldCache.put(chunk, new ConcurrentHashMap<>(ImmutableMap.of(LOADING_KEY, new Lock(null, null, null))));
+                }
             }
         }
         return Utils.runAsync(() -> {
