@@ -113,7 +113,7 @@ public class LockManager implements LockProvider {
                 }
             }
             try (Timing t = KingdomsPlugin.getInstance().getAndStartTiming("LockManager check chunk lock cache")) {
-                isPresent = isPresent || worldCache.getIfPresent(chunk) != null;
+                isPresent = isPresent && worldCache.getIfPresent(chunk) != null;
             }
             try (Timing t = KingdomsPlugin.getInstance().getAndStartTiming("LockManager create chunk lock cache")) {
                 if (!isPresent) {
