@@ -93,7 +93,7 @@ public class RankManager {
         }
     }
 
-    public static RankManager getInstance() {
+    synchronized public static RankManager getInstance() {
         if (instance == null) {
             instance = new RankManager();
         }

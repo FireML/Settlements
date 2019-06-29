@@ -131,7 +131,7 @@ public class ConfigManager {
         return iconRpMapping;
     }
 
-    public static ConfigManager getInstance() {
+    synchronized public static ConfigManager getInstance() {
         if (instance == null) {
             instance = new ConfigManager();
         }

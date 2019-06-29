@@ -441,7 +441,7 @@ public class ChatManager extends Base implements ConfigMessages {
         return lastMessage.get(p.getUniqueId());
     }
 
-    public static ChatManager getInstance() {
+    synchronized public static ChatManager getInstance() {
         if (instance == null) {
             Base.registerListener(instance = new ChatManager());
         }

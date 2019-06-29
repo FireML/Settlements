@@ -131,7 +131,7 @@ public class CommandManager extends Base implements CommandExecutor {
         return commandMap.get(name.toLowerCase());
     }
 
-    public static CommandManager getInstance() {
+    synchronized public static CommandManager getInstance() {
         if (instance == null) {
             instance = new CommandManager();
             instance.registerCommands();

@@ -100,7 +100,7 @@ public class PermsGUI extends KingdomsGUI {
         gui.build(p);
     }
 
-    public static PermsGUI getInstance() {
+    synchronized public static PermsGUI getInstance() {
         if (instance == null) {
             instance = new PermsGUI();
         }

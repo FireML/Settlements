@@ -71,7 +71,7 @@ public class SettingsGUI extends PlotGUI {
         gui.build(p);
     }
 
-    public static SettingsGUI getInstance() {
+    synchronized public static SettingsGUI getInstance() {
         if (instance == null) {
             instance = new SettingsGUI();
         }

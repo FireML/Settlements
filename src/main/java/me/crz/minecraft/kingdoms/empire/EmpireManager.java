@@ -98,7 +98,7 @@ public class EmpireManager {
         }
     }
 
-    public static EmpireManager getInstance() {
+    synchronized public static EmpireManager getInstance() {
         if (instance == null) {
             instance = new EmpireManager();
         }

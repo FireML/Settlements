@@ -143,7 +143,7 @@ public class ResidentManager {
         return resident != null ? resident.getName() : uuid.toString();
     }
 
-    public static ResidentManager getInstance() {
+    synchronized public static ResidentManager getInstance() {
         if (instance == null) {
             instance = new ResidentManager();
             for (Village village : VillageManager.getInstance().getVillages()) {

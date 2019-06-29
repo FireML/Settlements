@@ -90,7 +90,7 @@ public class ScoreboardManager implements ConfigMessages {
         }
     }
 
-    public static ScoreboardManager getInstance() {
+    synchronized public static ScoreboardManager getInstance() {
         if (instance == null) {
             instance = new ScoreboardManager();
         }

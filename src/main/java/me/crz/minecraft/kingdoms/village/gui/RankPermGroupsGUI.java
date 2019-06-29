@@ -101,7 +101,7 @@ public class RankPermGroupsGUI extends KingdomsGUI {
         getInstance(resident.getVillage(), rank).open(resident.getPlayer());
     }
 
-    public static RankPermGroupsGUI getInstance(Village village, VillageRank rank) {
+    synchronized public static RankPermGroupsGUI getInstance(Village village, VillageRank rank) {
         return instances
                 .computeIfAbsent(rank.name(), n -> new ConcurrentHashMap<>())
                 .computeIfAbsent(village.getId(), id -> new RankPermGroupsGUI(village, rank));

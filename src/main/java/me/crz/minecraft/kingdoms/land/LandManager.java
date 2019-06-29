@@ -235,7 +235,7 @@ public class LandManager {
         KingdomsPlugin.getInstance().getLockProviders().forEach(i -> i.removeInChunks(claims));
     }
 
-    public static LandManager getInstance() {
+    synchronized public static LandManager getInstance() {
         if (instance == null) {
             instance = new LandManager();
         }

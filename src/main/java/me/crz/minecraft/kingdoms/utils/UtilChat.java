@@ -21,7 +21,7 @@ public class UtilChat {
         load();
     }
 
-    public static UtilChat getInstance() {
+    synchronized public static UtilChat getInstance() {
         if (instance == null) {
             instance = new UtilChat();
         }

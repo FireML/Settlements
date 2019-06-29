@@ -320,7 +320,7 @@ public class LockManager implements LockProvider {
         Utils.runAsync(() -> DatabaseManager.getInstance().deleteLocks(world.getName()));
     }
 
-    public static LockManager getInstance() {
+    synchronized public static LockManager getInstance() {
         if (instance == null) {
             instance = new LockManager();
         }

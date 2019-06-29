@@ -30,7 +30,7 @@ public class ThreadManager {
         pool.execute(kr::run);
     }
 
-    public static ThreadManager getInstance() {
+    synchronized public static ThreadManager getInstance() {
         if (instance == null) {
             instance = new ThreadManager();
         }

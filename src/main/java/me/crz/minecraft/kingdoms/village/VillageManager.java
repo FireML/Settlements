@@ -78,7 +78,7 @@ public class VillageManager {
         }
     }
 
-    public static VillageManager getInstance() {
+    synchronized public static VillageManager getInstance() {
         if (instance == null) {
             instance = new VillageManager();
         }

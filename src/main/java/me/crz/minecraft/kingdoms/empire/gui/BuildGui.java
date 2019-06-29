@@ -82,7 +82,7 @@ public class BuildGui extends KingdomsGUI {
         gui.build(p);
     }
 
-    public static BuildGui getInstance() {
+    synchronized public static BuildGui getInstance() {
         if (instance == null) {
             instance = new BuildGui();
         }

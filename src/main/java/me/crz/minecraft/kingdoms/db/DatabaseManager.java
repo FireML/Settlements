@@ -20,7 +20,7 @@ import java.util.UUID;
 public abstract class DatabaseManager {
     private static DatabaseManager instance;
 
-    public static DatabaseManager getInstance() {
+    synchronized public static DatabaseManager getInstance() {
         if (instance == null) {
             String type = KingdomsPlugin.getInstance().getConfig().getString("storage.type");
             if ("mongo".equalsIgnoreCase(type)) {
