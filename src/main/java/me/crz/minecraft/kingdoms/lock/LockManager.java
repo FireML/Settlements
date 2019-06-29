@@ -122,7 +122,7 @@ public class LockManager implements LockProvider {
                 }
             }
         }
-        return Utils.runAsync(() -> {
+        return Bukkit.getScheduler().runTaskAsynchronously(KingdomsPlugin.getInstance(), () -> {
             // Load locks in chunks
             for (Lock l : DatabaseManager.getInstance().getLocks(notLoaded)) {
                 cacheLock(l);
