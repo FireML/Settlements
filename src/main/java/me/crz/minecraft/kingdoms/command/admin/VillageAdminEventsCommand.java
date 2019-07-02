@@ -1,0 +1,78 @@
+package me.crz.minecraft.kingdoms.command.admin;
+
+import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.event.Event;
+import me.crz.minecraft.kingdoms.event.EventManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageManager;
+import me.crz.minecraft.kingdoms.village.VillageState;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.Collection;
+import java.util.Map;
+
+public class VillageAdminEventsCommand extends SubCommand {
+    public VillageAdminEventsCommand(SubCommand parent) {
+        super(parent, "events [list|info <id>|start <id>]", "event");
+        registerCommand(new SubCommand(this, "list") {
+            @Override
+            public boolean run(CommandSender sender, String base, String alias, String... args) {
+                sender.sendMessage("Available Events:");
+                for (Event event : EventManager.getInstance().getEvents()) {
+                    sender.sendMessage(event.getId() + " - " + event.getTitle() + " - " + event.getTime() + "s");
+                }
+                return true;
+            }
+        });
+        registerCommand(new SubCommand(this, "info <id>") {
+            @Override
+            public boolean run(CommandSender sender, String base, String alias, String... args) {
+                if (args.length < 1) {
+                    return false;
+                }
+                Event event = EventManager.getInstance().getEvent(args[0]);
+                if (event != null) {
+                    sender.sendMessage("Event " + event.getId() + ":");
+                    sender.sendMessage("Title: " + event.getTitle());
+                    sender.sendMessage("Time: " + event.getTime() + "s");
+                    sender.sendMessage("Worlds: " + String.join(", ", event.getWorlds()));
+                    sender.sendMessage("Actions:");
+                    for (Map.Entry<Event.Action, Collection<String>> entry : event.getActions().asMap().entrySet()) {
+                        sender.sendMessage("  " + entry.getKey().getTag() + ":");
+                        sender.sendMessage("    " + String.join(", ", entry.getValue()));
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.RED + "No event with the id " + args[0] + " found.");
+                }
+                return true;
+            }
+        });
+        registerCommand(new SubCommand(this, "start <id>") {
+            @Override
+            public boolean run(CommandSender sender, String base, String alias, String... args) {
+                if (args.length < 1) {
+                    return false;
+                }
+                Event event = EventManager.getInstance().getEvent(args[0]);
+                if (event != null) {
+                    EventManager.getInstance().startEvent(event);
+                    if (!(sender instanceof Player)) {
+                        sender.sendMessage("Started event " + event.getId());
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.RED + "No event with the id " + args[0] + " found.");
+                }
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public boolean run(CommandSender sender, String base, String alias, String... args) {
+        return false;
+    }
+}

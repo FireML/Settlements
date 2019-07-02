@@ -22,6 +22,7 @@ public class ConfigManager {
     private ConfigAccessor mapConf;
     private ConfigAccessor settlementPerksConf;
     private ConfigAccessor empirePerksConf;
+    private ConfigAccessor eventsConf;
     private IconRpMapping iconRpMapping;
     private ConfigAccessor cursesConf;
     private ConfigAccessor lastUpkeepConf;
@@ -62,6 +63,9 @@ public class ConfigManager {
         empireRanksConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "empireRanks.yml");
         empireRanksConf.saveDefaultConfig();
         empireRanksConf.reloadConfig();
+        eventsConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "events.yml");
+        eventsConf.saveDefaultConfig();
+        eventsConf.reloadConfig();
         cursesConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "curses.yml");
         cursesConf.saveDefaultConfig();
         cursesConf.reloadConfig();
@@ -117,6 +121,10 @@ public class ConfigManager {
 
     public ConfigAccessor getEmpireRanksConf() {
         return empireRanksConf;
+    }
+
+    public ConfigAccessor getEventsConf() {
+        return eventsConf;
     }
 
     public FileConfiguration getCursesConfig() {

@@ -1,0 +1,51 @@
+bossbar:
+  format: "&b&l{title} &f{timeleft}"
+  color: yellow
+  style: segmented_10
+# Run random event at these times:
+automatic-events:
+  # Specify hours and minutes in the format of hours:minutes e.g. 16:20
+  times:
+  - 0:00
+  - 2:00
+  - 4:00
+  - 6:00
+  - 8:00
+  - 10:00
+  - 12:00
+  - 14:00
+  - 16:00
+  - 18:00
+  - 20:00
+  - 22:00
+  timezone: EST
+events:
+  mining:
+    # Whatever worlds that it should only work in
+    worlds:
+    - Resource
+    - Kingdoms
+    # Title: This will show on our boss bar
+    title: "Mining Competition"
+    # How long should the competition be, in seconds
+    time: 600
+    actions:
+      # What blocks need to be broken
+      break:
+      - stone
+      - cobblestone
+      - coal_ore
+      # What blocks need to be placed (works for crops too)
+      # place:
+      # - blocktype
+      # What items need to be crafted (make sure to not include circular crafting patterns to prevent exploits)
+      # craft:
+      # - itemtype
+      # What entities need to be killed
+      # kill:
+      # - entitytype
+      # How a traveled distance is tracked (possible values: walk, sneak, run, swim, enderpearl, boat, minecart, elytra, horse, llama, pig (or any other entity)
+      # distance:
+      # - sneak
+      # - run
+      # - walk

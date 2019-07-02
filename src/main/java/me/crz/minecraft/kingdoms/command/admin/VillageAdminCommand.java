@@ -14,6 +14,7 @@ public class VillageAdminCommand extends SubCommand {
         this.registerCommand(new VillageAdminWorldCommand(this));
         this.registerCommand(new VillageAdminRankCommand(this));
         this.registerCommand(new VillageAdminEmpireRankCommand(this));
+        this.registerCommand(new VillageAdminEventsCommand(this));
         this.registerCommand(new VillageAdminJoinCommand(this));
         this.registerCommand(new VillageAdminLevelCommand(this));
         this.registerCommand(new VillageAdminReloadCommand(this));

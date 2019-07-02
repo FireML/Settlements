@@ -8,6 +8,8 @@ import me.crz.minecraft.kingdoms.chat.ChatListener;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireListener;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.event.EventListener;
+import me.crz.minecraft.kingdoms.event.EventManager;
 import me.crz.minecraft.kingdoms.integration.AfkProvider;
 import me.crz.minecraft.kingdoms.integration.ChestShopIntegration;
 import me.crz.minecraft.kingdoms.integration.CmiIntegration;
@@ -147,6 +149,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             this.getServer().getPluginManager().registerEvents(new Advancements(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlagsBlockEvents(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlagsUseEvents(), this);
+            this.getServer().getPluginManager().registerEvents(new EventListener(), this);
 
             EmpireManager.getInstance().loadEmpireWorlds();
 
@@ -217,6 +220,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         LandManager.getInstance();
         ResidentManager.getInstance();
         LockManager.getInstance();
+        EventManager.getInstance();
         ScoreboardManager.getInstance();
         CommandManager.getInstance();
         UtilChat.getInstance();
