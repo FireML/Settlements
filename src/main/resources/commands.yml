@@ -268,3 +268,7 @@ help-order:
   - leave
   - lock
   - swear
+  resident:
+  - res <player>
+  - res ignore list | <player>
+  - res claimtransfer <settlement> <amount>
