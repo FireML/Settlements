@@ -242,6 +242,13 @@ public class Utils {
         return true;
     }
 
+    public static boolean allowClaimTransferToEmpire() {
+        if (ConfigManager.getInstance().getConfig().isBoolean("claimtransfer-to-empire")) {
+            return ConfigManager.getInstance().getConfig().getBoolean("claimtransfer-to-empire");
+        }
+        return false;
+    }
+
     public static Sound getChatNotifySound() {
         if (ConfigManager.getInstance().getConfig().isString("chat.notify.sound")) {
             try {

@@ -100,6 +100,8 @@ lockable:
 # This checks if a block is protected on place rather than using the
 # InventoryMoveItemEvent to prevent hoppers from stealing items
 alternative-hopper-protection: true
+# Whether or not a player can transfer their bought claims to an empire
+claimtransfer-to-empire: false
 # Toggle Placeholder API usage in certain places
 placeholder-api:
   sidebar: true
