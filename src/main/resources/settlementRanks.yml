@@ -9,6 +9,7 @@ perm-groups:
     - village.deposit.history
     - village.outpost.teleport
     - village.title
+    - village.rewards
   settings:
     icon: REDSTONE_BLOCK
     permissions:
@@ -111,6 +112,7 @@ ranks:
     - village.perms.unset
     - village.perms.reset
     - village.plot.admin
+    - village.rewards
     - village.setdescription
     - village.setrank
     - village.settings
@@ -153,6 +155,7 @@ ranks:
     - village.kick
     - village.help.recruiter
     - village.officer
+    - village.rewards
     - village.titles
     - village.settitle
     - village.title

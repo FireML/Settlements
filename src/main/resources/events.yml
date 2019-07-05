@@ -19,6 +19,36 @@ automatic-events:
   - 20:00
   - 22:00
   timezone: EST
+  
+rewards:
+  reward-id:
+    name: Reward Display Name
+    # The item to use as the icon of this reward in the GUI
+    # If icon is not specified but at least one item is set then that item is used in the GUI
+    icon: EMERALD
+    # Amount of money to add to the settlement bank (to add to claimer/all resident accounts use the commands)
+    money: 100
+    # The items to give to the player that claims the reward
+    # Supports multiple different items in one reward and the full Bukkit item serialization syntax
+    items:
+    - type: diamond
+      amount: 10
+    # Console commands to run when claimed.
+    # Can contain the following placeholders:
+    # {claimer} - name of the player who claimed it
+    # {claimerid} - UUID of player who claimed it
+    # {village} - name of the village
+    # {villageid} - internal id of the village
+    # Following placeholders cause the commands to be run once for each online village resident:
+    # {onlineresident} - name of the resident
+    # {onlineresidentid} - UUID of the resident
+    # Following placeholders cause the commands to be run once for each village resident:
+    # {resident} - name of the resident
+    # {residentid} - UUID of the resident
+    # (These two placeholders can not be mixed)
+    commands:
+    - command to run when claimed
+
 events:
   mining:
     # Whatever worlds that it should only work in
@@ -29,6 +59,9 @@ events:
     title: "Mining Competition"
     # How long should the competition be, in seconds
     time: 600
+    # The list of rewards that can be achieved by winning this event
+    rewards:
+    - rewardid
     actions:
       # What blocks need to be broken
       break:

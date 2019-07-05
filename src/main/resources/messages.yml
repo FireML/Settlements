@@ -703,6 +703,11 @@ gui:
         &7Click to grant to &f{rank}
       revoke: |-
         &7Click to revoke from &f{rank}
+  rewards:
+    title: "&2&l/s rewards"
+    entry: |-
+      &e{reward}
+      &7Click to claim!
   plot:
     link: |-
       &7Click to link the permissions of all
@@ -1406,6 +1411,11 @@ command:
       offline: "&c"
       entry: "{online}{name}"
       description: lists all residents
+    rewards:
+      no-rewards: |-
+        &cYour {villagestate} does not have any rewards that can be claimed!
+        &7Event rewards can only be claimed until the next event starts (or the server restarts)
+      description: Claim event rewards
     setaccess:
       success: "&7Access changed to &6{access}"
       access:

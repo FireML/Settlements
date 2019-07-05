@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.event;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -18,7 +19,9 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Calendar;
@@ -26,6 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
@@ -41,6 +45,7 @@ public class EventManager implements ConfigMessages {
     private static EventManager instance;
 
     private Map<String, Event> events = new LinkedHashMap<>();
+    private Map<String, Reward> rewards = new LinkedHashMap<>();
 
     private Map<String, TimerTask> nextEventTasks = new LinkedHashMap<>();
 
@@ -55,11 +60,11 @@ public class EventManager implements ConfigMessages {
 
     private Map<IdObject, EventData> eventData = new HashMap<>();
     private Village first = null;
+    private Map<IdObject, Set<String>> villageRewards = new HashMap<>();
 
 
     private EventManager() {
         loadConfig();
-        // TODO: Timer & Event starting/stopping
     }
 
     @Override
@@ -89,17 +94,26 @@ public class EventManager implements ConfigMessages {
                     try {
                         return BarFlag.valueOf(s.toUpperCase());
                     } catch (IllegalArgumentException e) {
-                        KingdomsPlugin.getInstance().getLogger().log(Level.WARNING,s + " is not a valid boss bar flag!");
+                        KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, s + " is not a valid boss bar flag!");
                     }
                     return null;
                 }).filter(Objects::nonNull)
                 .collect(Collectors.toSet());
-        ConfigurationSection eventsSection = config.getConfigurationSection("events");
-        for (String eventName : eventsSection.getKeys(false)) {
-            events.put(eventName.toLowerCase(), new Event(eventName, eventsSection.getConfigurationSection(eventName)));
+        ConfigurationSection rewardsSection = config.getConfigurationSection("rewards");
+        for (String rewardId : rewardsSection.getKeys(false)) {
+            rewards.put(rewardId.toLowerCase(), new Reward(rewardId, rewardsSection.getConfigurationSection(rewardId)));
         }
 
-        // TODO: Rewards?
+        ConfigurationSection eventsSection = config.getConfigurationSection("events");
+        for (String eventName : eventsSection.getKeys(false)) {
+            Event event = new Event(eventName, eventsSection.getConfigurationSection(eventName));
+            events.put(eventName.toLowerCase(), event);
+            for (String reward : event.getRewards()) {
+                if (getReward(reward) == null) {
+                    KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Event " + eventName + " defines a reward " + reward + " that doesn't exist.");
+                }
+            }
+        }
 
         nextEventTasks.values().forEach(TimerTask::cancel);
         nextEventTasks.clear();
@@ -172,6 +186,7 @@ public class EventManager implements ConfigMessages {
         if (activeBarTask != null) {
             activeBarTask.cancel();
         }
+        villageRewards.clear();
         activeEvent = event;
         activeEventStart = System.currentTimeMillis();
         long length = TimeUnit.SECONDS.toMillis(event.getTime());
@@ -235,6 +250,7 @@ public class EventManager implements ConfigMessages {
                         "amount", String.valueOf(entry.getValue().getTotalAmount())
                 );
             }
+            villageRewards.put(first.getId(), new LinkedHashSet<>(activeEvent.getRewards()));
             getMessage("winner-info").tell(first.getOnlineResidents(),
                     "title", activeEvent.getTitle(),
                     "id", activeEvent.getId(),
@@ -248,6 +264,14 @@ public class EventManager implements ConfigMessages {
         activeEvent = null;
         first = null;
         return true;
+    }
+
+    public Set<String> getRewards(Village village) {
+        return villageRewards.get(village.getId());
+    }
+
+    public Reward getReward(String id) {
+        return rewards.get(id.toLowerCase());
     }
 
     synchronized public static EventManager getInstance() {
@@ -296,6 +320,44 @@ public class EventManager implements ConfigMessages {
                     "name", first.getName(),
                     "amount", String.valueOf(ed.getTotalAmount())
             );
+        }
+    }
+
+    public void giveReward(Reward reward, Player player, Village village) {
+        player.getInventory().addItem(reward.getItems().toArray(new ItemStack[0])).values()
+                .forEach(i -> {
+                    Item item = player.getLocation().getWorld().dropItem(player.getLocation(), i);
+                    item.setOwner(player.getUniqueId());
+                    item.setCanMobPickup(false);
+                });
+        for (String command : reward.getCommands()) {
+            Map<String, String> replacements = Utils.toMap(
+                "claimer", player.getName(),
+                "claimerid", player.getUniqueId().toString(),
+                "village", village.getName(),
+                "villageid", String.valueOf(village.getId().value())
+            );
+            if (command.contains("onlineresident") || command.contains("onlineresidentid")) {
+                for (Resident resident : village.getOnlineResidents()) {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(command, Utils.addAll(replacements,
+                            "onlineresident", resident.getName(),
+                            "onlineresidentid", resident.getUUID().toString()
+                    )));
+                }
+            } else if (command.contains("resident") || command.contains("residentid")) {
+                for (Resident resident : village.getResidents()) {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(command, Utils.addAll(replacements,
+                            "resident", resident.getName(),
+                            "residentid", resident.getUUID().toString()
+                    )));
+                }
+            } else {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(command, replacements));
+            }
+        }
+        if (reward.getMoney() > 0) {
+            village.addToBank(reward.getMoney());
+            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
         }
     }
 

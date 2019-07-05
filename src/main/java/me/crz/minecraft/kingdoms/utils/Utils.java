@@ -567,7 +567,10 @@ public class Utils {
     }
 
     public static Map<String, String> toMap(String... args) {
-        Map<String, String> map = new LinkedHashMap<>();
+        return addAll(new LinkedHashMap<>(), args);
+    }
+
+    public static Map<String, String> addAll(Map<String, String> map, String... args) {
         for (int i = 0; i+1 < args.length; i+=2) {
             map.put(args[i], args[i+1]);
         }
