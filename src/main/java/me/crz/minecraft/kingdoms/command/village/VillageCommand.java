@@ -60,6 +60,7 @@ public class VillageCommand extends SubCommand {
         registerCommand(new VillagePermsCommand(this));
         registerCommand(new VillageRenameCommand(this));
         registerCommand(new VillageResListCommand(this));
+        registerCommand(new VillageRewardsCommand(this));
         registerCommand(new VillageRulesCommand(this));
         registerCommand(new VillageSetAccessCommand(this));
         registerCommand(new VillageSetHomeCommand(this));

@@ -13,12 +13,13 @@ public class Reward {
     private final String rewardId;
 
     private final String name;
+
     private ItemStack icon = null;
     private final long money;
     private final List<ItemStack> items = new ArrayList<>();
     private final List<String> commands;
 
-    public Reward(String rewardId, ConfigurationSection config) {
+    public Reward(String rewardId, ConfigurationSection config) throws IllegalArgumentException {
         this.rewardId = rewardId;
         this.name = config.getString("name", rewardId);
         this.money = config.getLong("money", config.getInt("money"));
@@ -32,6 +33,11 @@ public class Reward {
             Map<String, Object> map = (Map<String, Object>) rawMap;
             if (!map.containsKey("v")) {
                 map.put("v", Bukkit.getUnsafe().getDataVersion());
+            }
+            if (map.get("type") instanceof String) {
+                map.put("type", ((String) map.get("type")).toUpperCase());
+            } else {
+                throw new IllegalArgumentException("Item config does not contain type?");
             }
             ItemStack item = ItemStack.deserialize(map);
             items.add(item);
@@ -47,6 +53,10 @@ public class Reward {
 
     public String getName() {
         return name;
+    }
+
+    public ItemStack getIcon() {
+        return icon;
     }
 
     public long getMoney() {

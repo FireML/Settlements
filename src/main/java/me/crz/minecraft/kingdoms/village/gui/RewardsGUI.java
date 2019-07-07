@@ -37,7 +37,7 @@ public class RewardsGUI extends KingdomsGUI {
                 @Override
                 public ItemStack getItem(Player p) {
                     if (rewards.contains(rewardId)) {
-                        return new CItem(Material.LIGHT_GRAY_WOOL)
+                        return new CItem(reward.getIcon())
                                 .setName(getMessage("entry").getReplacedText("reward", reward.getName()))
                                 .build();
                     } else {
@@ -58,16 +58,6 @@ public class RewardsGUI extends KingdomsGUI {
                 }
             });
         }
-        gui.addItem((gui.getMaxSlot() / 9) * 9 + 8, new ClickableItem() {
-            public ItemStack getItem(final Player p) {
-                return new CItem(Material.BARRIER).setName(getText("back")).build();
-            }
-
-            public boolean click(final Player p, final ClickType clickType) {
-                new SettingsGUI(p).open();
-                return true;
-            }
-        });
     }
 
     public void open(final Player p) {

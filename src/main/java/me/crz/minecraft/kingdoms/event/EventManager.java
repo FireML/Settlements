@@ -22,7 +22,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Calendar;
 import java.util.Collection;
@@ -55,7 +54,7 @@ public class EventManager implements ConfigMessages {
     private Set<BarFlag> bossBarFlags = Collections.EMPTY_SET;
 
     private Event activeEvent = null;
-    private BukkitTask activeBarTask = null;
+    private TimerTask activeBarTask = null;
     private long activeEventStart = -1;
 
     private Map<IdObject, EventData> eventData = new HashMap<>();
@@ -101,7 +100,11 @@ public class EventManager implements ConfigMessages {
                 .collect(Collectors.toSet());
         ConfigurationSection rewardsSection = config.getConfigurationSection("rewards");
         for (String rewardId : rewardsSection.getKeys(false)) {
-            rewards.put(rewardId.toLowerCase(), new Reward(rewardId, rewardsSection.getConfigurationSection(rewardId)));
+            try {
+                rewards.put(rewardId.toLowerCase(), new Reward(rewardId, rewardsSection.getConfigurationSection(rewardId)));
+            } catch (IllegalArgumentException e) {
+                KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not load reward " + rewardId + ": " + e.getMessage());
+            }
         }
 
         ConfigurationSection eventsSection = config.getConfigurationSection("events");
@@ -158,7 +161,7 @@ public class EventManager implements ConfigMessages {
                 };
                 nextEventTasks.put(timeString, task);
                 KingdomsPlugin.getTimer().schedule(task, dateTime.getTime());
-                KingdomsPlugin.logDebug("Scheduled event " + event.getId() + "/" + event.getTitle() + " as " + timeString + " event at " + dateTime.toString());
+                KingdomsPlugin.logDebug("Scheduled event " + event.getId() + "/" + event.getTitle() + " as " + timeString + " event at " + dateTime.getTime().toString());
             } catch (NumberFormatException e) {
                 KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Automatic event time " + timeString + " is not in a valid format! " + e.getMessage());
             }
@@ -187,6 +190,7 @@ public class EventManager implements ConfigMessages {
             activeBarTask.cancel();
         }
         villageRewards.clear();
+        eventData.clear();
         activeEvent = event;
         activeEventStart = System.currentTimeMillis();
         long length = TimeUnit.SECONDS.toMillis(event.getTime());
@@ -205,7 +209,7 @@ public class EventManager implements ConfigMessages {
         bossBar.setProgress(0);
         Bukkit.getOnlinePlayers().forEach(bossBar::addPlayer);
         bossBar.setVisible(true);
-        activeBarTask = Bukkit.getScheduler().runTaskTimer(KingdomsPlugin.getInstance(), () -> {
+        activeBarTask = Utils.runRepeating(() -> {
             if (activeEvent != event || activeEventStart < 0 || System.currentTimeMillis() > eventEnd) {
                 bossBar.setVisible(false);
                 bossBar.removeAll();
@@ -216,11 +220,11 @@ public class EventManager implements ConfigMessages {
                 bossBar.setTitle(MessageUtils.replaceColorCodes(MessageUtils.replacePlaceholders(bossBarFormat,
                         "title", activeEvent.getTitle(),
                         "id", activeEvent.getId(),
-                        "timeleft", UtilTime.format(left)
+                        "timeleft", UtilTime.format((double) Math.round(left / 1000.0))
                 )));
-                bossBar.setProgress(left / (double) length);
+                bossBar.setProgress(1 - left / (double) length);
             }
-        }, 20, 20);
+        }, 1, 1, TimeUnit.SECONDS);
 
         Utils.runLater(this::finishActiveEvent, activeEvent.getTime(), TimeUnit.SECONDS);
     }
@@ -228,9 +232,6 @@ public class EventManager implements ConfigMessages {
     public boolean finishActiveEvent() {
         if (activeEvent == null) {
             return false;
-        }
-        if (activeBarTask != null) {
-            activeBarTask.cancel();
         }
         if (first != null) {
             getMessage("ended").broadcast(
@@ -260,6 +261,7 @@ public class EventManager implements ConfigMessages {
             );
         }
 
+        eventData.clear();
         activeEventStart = -1;
         activeEvent = null;
         first = null;

@@ -13,7 +13,7 @@ public class VillageRewardsCommand extends VillageSubCommand {
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
-        if (EventManager.getInstance().getRewards(res.getVillage()) == null) {
+        if (EventManager.getInstance().getRewards(res.getVillage()) == null || EventManager.getInstance().getRewards(res.getVillage()).isEmpty()) {
             getError("no-rewards").tell(res, "village", res.getVillage().getName(), "villagestate", res.getVillage().getStateTag());
         } else {
             new RewardsGUI(res.getVillage()).open(res.getPlayer());

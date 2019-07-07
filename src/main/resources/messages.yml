@@ -150,10 +150,10 @@ first-to-reach-level: "&6&l{name} &7&l is the first to reach &6&l{state} &7&llev
 land-unclaim: "&e{amount}&7 chunks were automatically unclaimed!"
 events:
   started: "&6&l{title} &7&lstarted! Duration: {duration}"
-  ended: "&6&l%{title} &7&lended! &6&l{state} {name}&7&l won it with {amount}!"
-  stats: "&7&lYour {state} managed to score %amount%"
+  ended: "&6&l{title} &7&lended! &6&l{state} {name}&7&l won it with {amount}!"
+  stats: "&7&lYour {state} managed to score {amount}"
   winner-info: "&7&lYour {state} can now claim event rewards by running [/s rewards](/s rewards)"
-  first: "&6&l%{state} {name}&7&l took &6&lfirst&7&l place in &6&l{title}&7&l with {amount}!"
+  first: "&6&l{state} {name}&7&l took &6&lfirst&7&l place in &6&l{title}&7&l with {amount}!"
 village:
   enter:
     message: "&f[&eKingdoms&f] &7Entering &a{name}{pvp}"
