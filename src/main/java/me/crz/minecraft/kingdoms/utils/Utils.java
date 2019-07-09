@@ -111,9 +111,23 @@ public class Utils {
         return 0;
     }
 
+    public static int getEmpireStartBalance() {
+        if (ConfigManager.getInstance().getConfig().isInt("empire-start-balance")) {
+            return ConfigManager.getInstance().getConfig().getInt("empire-start-balance");
+        }
+        return 0;
+    }
+
     public static int getVillageCreationCost() {
         if (ConfigManager.getInstance().getConfig().isInt("village-creation-cost")) {
             return ConfigManager.getInstance().getConfig().getInt("village-creation-cost");
+        }
+        return 0;
+    }
+
+    public static int getVillageStartBalance() {
+        if (ConfigManager.getInstance().getConfig().isInt("village-start-balance")) {
+            return ConfigManager.getInstance().getConfig().getInt("village-start-balance");
         }
         return 0;
     }

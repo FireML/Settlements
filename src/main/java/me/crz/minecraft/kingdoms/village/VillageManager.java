@@ -95,6 +95,7 @@ public class VillageManager {
             chief.tell(ChatColor.RED + "Error while saving " + village.getName() + " to the database! It already had an ID defined?");
             return;
         }
+        village.setBank(Math.min(Utils.getVillageStartBalance(), Utils.getVillageCreationCost()));
         villages.put(village.getName().replace(' ', '_').toLowerCase(), village);
         chief.setVillage(village);
         chief.setVillageRank(VillageRank.getChief());

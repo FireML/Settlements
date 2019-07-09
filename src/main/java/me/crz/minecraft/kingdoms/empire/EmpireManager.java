@@ -142,6 +142,7 @@ public class EmpireManager {
             KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving empire " + empire.getName() + " to the database! It already had an ID defined?");
             return;
         }
+        empire.setBank(Math.min(Utils.getEmpireStartBalance(), Utils.getEmpireCreationCost()));
         empire.getCapital().setEmpire(empire);
         empire.getCapital().getChief().setEmpireRank(EmpireRank.getLeader());
         empires.put(empire.getName().replace(' ', '_').toLowerCase(), empire);

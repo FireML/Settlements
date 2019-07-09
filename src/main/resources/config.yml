@@ -19,7 +19,9 @@ scoreboard:
 disabled-claiming-worlds: []
 reset-channel-on-login: true
 empire-creation-cost: 0
+empire-start-balance: 0
 village-creation-cost: 0
+village-start-balance: 0
 outpost-creation-cost: 0
 empire-max-tax: 1000000
 village-max-tax: -1
