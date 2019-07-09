@@ -1206,6 +1206,15 @@ command:
       donated: "&e{name} &r&7donated &6{amount}&r&7 to your settlement bank!"
       success: "&7Donated &6{amount}&r&7 to the bank of &e{state} {name}&7!"
       description: Donate money to a certain settlement
+    events:
+      top:
+        no-event: "&cThere is currently no event running!"
+        no-one-participating: "&cThere is currently no one participating in the event {event}!"
+        head: "&a⊱&m━━━━&r&6Top {amount} Settlements&a&m━━━━&a⊰"
+        entry: "&e• {place}. [&e&l{state} {name} &r&7- &e{amount}](&8{chieftitle}: &f{chief}\n&8Size: &f{size} players\n&f{description})"
+        footer: "&a⊱&m━━━━&r&6Event: {event}&a&m━━━━&a⊰"
+        description: Show top 3 villages in the current event
+      description: Village events commands
     here:
       general: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰

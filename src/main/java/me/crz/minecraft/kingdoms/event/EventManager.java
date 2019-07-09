@@ -27,9 +27,11 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
@@ -312,7 +314,7 @@ public class EventManager implements ConfigMessages {
             return;
         }
 
-        EventData ed = eventData.computeIfAbsent(resident.getVillage().getId(), id -> new EventData());
+        EventData ed = eventData.computeIfAbsent(resident.getVillage().getId(), id -> new EventData(id));
         ed.increment(matches);
 
         if (first == null || ed.getTotalAmount() > eventData.get(first.getId()).getTotalAmount()) {
@@ -371,13 +373,26 @@ public class EventManager implements ConfigMessages {
         }
     }
 
-    private class EventData {
+    public List<EventData> getTop(int amount) {
+        return eventData.values().stream().sorted(Comparator.reverseOrder()).limit(amount).collect(Collectors.toList());
+    }
+
+    public class EventData implements Comparable<EventData>{
+        private final IdObject id;
         private int totalAmount = 0;
         private Map<String, Integer> counts = new HashMap<>();
+
+        public EventData(IdObject id) {
+            this.id = id;
+        }
 
         public void increment(String data) {
             counts.put(data.toLowerCase(), getCount(data) + 1);
             totalAmount++;
+        }
+
+        public Village getVillage() {
+            return VillageManager.getInstance().getVillageFromId(id);
         }
 
         public int getTotalAmount() {
@@ -390,6 +405,11 @@ public class EventManager implements ConfigMessages {
 
         public int getCount(String data) {
             return counts.getOrDefault(data.toLowerCase(), 0);
+        }
+
+        @Override
+        public int compareTo(EventData o) {
+            return Integer.compare(totalAmount, o.getTotalAmount());
         }
     }
 }
