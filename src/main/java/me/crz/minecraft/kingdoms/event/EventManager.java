@@ -22,6 +22,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Calendar;
 import java.util.Collection;
@@ -59,6 +60,7 @@ public class EventManager implements ConfigMessages {
 
     private Map<IdObject, EventData> eventData = new HashMap<>();
     private Village first = null;
+    private BukkitTask firstAnnounceTask = null;
     private Map<IdObject, Set<String>> villageRewards = new HashMap<>();
 
 
@@ -315,13 +317,19 @@ public class EventManager implements ConfigMessages {
 
         if (first == null || ed.getTotalAmount() > eventData.get(first.getId()).getTotalAmount()) {
             first = resident.getVillage();
-            getMessage("first").broadcast(
-                    "title", activeEvent.getTitle(),
-                    "id", activeEvent.getId(),
-                    "state", first.getStateTag(),
-                    "name", first.getName(),
-                    "amount", String.valueOf(ed.getTotalAmount())
-            );
+            if (firstAnnounceTask != null) {
+                firstAnnounceTask.cancel();
+            }
+            firstAnnounceTask = Utils.runLater(() -> {
+                getMessage("first").broadcast(
+                        "title", activeEvent.getTitle(),
+                        "id", activeEvent.getId(),
+                        "state", first.getStateTag(),
+                        "name", first.getName(),
+                        "amount", String.valueOf(ed.getTotalAmount())
+                );
+                firstAnnounceTask = null;
+            }, 100);
         }
     }
 
