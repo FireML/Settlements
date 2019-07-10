@@ -48,6 +48,7 @@ public class VillageUnclaimCommand extends VillageSubCommand {
         if (args.length == 1) {
             if ("confirm".equalsIgnoreCase(args[0])) {
                 Runnable run = confirm.getIfPresent(res.getUUID());
+                confirm.invalidate(res.getUUID());
                 if (run != null) {
                     run.run();
                 } else {

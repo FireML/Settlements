@@ -27,6 +27,7 @@ public class OutpostUnclaimCommand extends VillageSubCommand {
         if (args.length == 1 && "confirm".equalsIgnoreCase(args[0])) {
             Runnable run = confirm.getIfPresent(resident.getUUID());
             if (run != null) {
+                confirm.invalidate(resident.getUUID());
                 run.run();
             } else {
                 getError("nothing-to-confirm").tell(resident);
