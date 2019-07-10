@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village.outpost;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
@@ -8,14 +10,30 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.Chunk;
 
 import java.util.Collection;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class OutpostUnclaimCommand extends VillageSubCommand {
+
+    private Cache<UUID, Runnable> confirm = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
+
     public OutpostUnclaimCommand(VillageSubCommand parent) {
         super(parent, "unclaim");
     }
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
+        if (args.length == 1 && "confirm".equalsIgnoreCase(args[0])) {
+            Runnable run = confirm.getIfPresent(resident.getUUID());
+            if (run != null) {
+                run.run();
+            } else {
+                getError("nothing-to-confirm").tell(resident);
+            }
+            return true;
+        }
+
         Chunk currentChunk = resident.getPlayer().getLocation().getChunk();
         OwnedLand land = LandManager.getInstance().getLand(currentChunk);
         if (land == null || !land.isOwnedBy(resident.getVillage())) {
@@ -41,11 +59,23 @@ public class OutpostUnclaimCommand extends VillageSubCommand {
         });
 
         toUnclaim.add(land);
-        LandManager.getInstance().unclaimLand(toUnclaim);
-        MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("success"),
-                "amount", String.valueOf(toUnclaim.size() - 1),
-                "x", String.valueOf(resident.getPlayer().getLocation().getBlockX()),
-                "z", String.valueOf(resident.getPlayer().getLocation().getBlockZ()));
+        Runnable unclaim = () -> {
+            LandManager.getInstance().unclaimLand(toUnclaim);
+            MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("success"),
+                    "amount", String.valueOf(toUnclaim.size() - 1),
+                    "x", String.valueOf(resident.getPlayer().getLocation().getBlockX()),
+                    "z", String.valueOf(resident.getPlayer().getLocation().getBlockZ()));
+        };
+        if (toUnclaim.size() == 1) {
+            unclaim.run();
+        } else {
+            confirm.put(resident.getUUID(), unclaim);
+            getMessage("confirm").tell(resident,
+                    "command", base + " " + alias + " confirm",
+                    "amount", String.valueOf(toUnclaim.size()),
+                    "claims", toUnclaim.stream().map(l -> l.getX() + "-" + l.getZ()).collect(Collectors.joining(", "))
+            );
+        }
         return true;
     }
 }
