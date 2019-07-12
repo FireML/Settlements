@@ -115,9 +115,11 @@ public class EventManager implements ConfigMessages {
         for (String eventName : eventsSection.getKeys(false)) {
             Event event = new Event(eventName, eventsSection.getConfigurationSection(eventName));
             events.put(eventName.toLowerCase(), event);
-            for (String reward : event.getRewards()) {
-                if (getReward(reward) == null) {
-                    KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Event " + eventName + " defines a reward " + reward + " that doesn't exist.");
+            for (List<String> rewardList : event.getRewards().values()) {
+                for (String reward : rewardList) {
+                    if (getReward(reward) == null) {
+                        KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Event " + eventName + " defines a reward " + reward + " that doesn't exist.");
+                    }
                 }
             }
         }
@@ -245,24 +247,32 @@ public class EventManager implements ConfigMessages {
                     "name", first.getName(),
                     "amount", String.valueOf(eventData.get(first.getId()).getTotalAmount())
             );
-            for (Map.Entry<IdObject, EventData> entry : eventData.entrySet()) {
-                Village village = VillageManager.getInstance().getVillageFromId(entry.getKey());
+            List<EventManager.EventData> top = EventManager.getInstance().getTop(eventData.size());
+            for (int i = 0; i < top.size(); i++) {
+                EventManager.EventData eventData = top.get(i);
+                Village village = eventData.getVillage();
+                int place = i + 1;
                 getMessage("stats").tell(village.getOnlineResidents(),
                         "title", activeEvent.getTitle(),
                         "id", activeEvent.getId(),
                         "state", village.getStateTag(),
                         "name", village.getName(),
-                        "amount", String.valueOf(entry.getValue().getTotalAmount())
+                        "place", String.valueOf(place),
+                        "amount", String.valueOf(eventData.getTotalAmount())
                 );
+                List<String> rewards = activeEvent.getRewards().getOrDefault(String.valueOf(place), activeEvent.getRewards().get("rest"));
+                if (rewards != null) {
+                    villageRewards.put(first.getId(), new LinkedHashSet<>(rewards));
+                    getMessage("reward-info").tell(first.getOnlineResidents(),
+                            "title", activeEvent.getTitle(),
+                            "id", activeEvent.getId(),
+                            "state", first.getStateTag(),
+                            "name", first.getName(),
+                            "place", String.valueOf(place),
+                            "amount", String.valueOf(eventData.getTotalAmount())
+                    );
+                }
             }
-            villageRewards.put(first.getId(), new LinkedHashSet<>(activeEvent.getRewards()));
-            getMessage("winner-info").tell(first.getOnlineResidents(),
-                    "title", activeEvent.getTitle(),
-                    "id", activeEvent.getId(),
-                    "state", first.getStateTag(),
-                    "name", first.getName(),
-                    "amount", String.valueOf(eventData.get(first.getId()).getTotalAmount())
-            );
         }
 
         eventData.clear();

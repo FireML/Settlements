@@ -3,11 +3,12 @@ package me.crz.minecraft.kingdoms.event;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.utils.ConfigKey;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -16,7 +17,7 @@ public class Event {
 
     private final String id;
     private final int time;
-    private final List<String> rewards;
+    private final Map<String, List<String>> rewards = new HashMap<>();
 
     private final String title;
 
@@ -28,12 +29,19 @@ public class Event {
         this.id = id;
         time = config.getInt("time");
         title = config.getString("title");
-        rewards = config.getStringList("rewards");
-        if (rewards.size() > 9 * 6) {
-            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING,
-                    "Detected an issue while loading event " + id + "! It had " + rewards.size() + " rewards defined but" +
-                            " currently only " + (9 * 6) + " different ones are supported per event!" +
-                            "You should group them together.");
+        if (config.isConfigurationSection("rewards")) {
+            for (String place : config.getConfigurationSection("rewards").getKeys(false)) {
+                List<String> rewardsList = config.getStringList("rewards." + place);
+                rewards.put(place, rewardsList);
+                if (rewardsList.size() > 9 * 6) {
+                    KingdomsPlugin.getInstance().getLogger().log(Level.WARNING,
+                            "Detected an issue while loading event " + id + "! It had " + rewardsList.size() + " rewards defined but" +
+                                    " currently only " + (9 * 6) + " different ones are supported per event!" +
+                                    "You should group them together.");
+                }
+            }
+        } else {
+            rewards.put("1", config.getStringList("rewards"));
         }
         worlds = config.getStringList("worlds").stream().map(String::toLowerCase).collect(Collectors.toSet());
         for (Action action : Action.values()) {
@@ -63,7 +71,7 @@ public class Event {
         return actions;
     }
 
-    public List<String> getRewards() {
+    public Map<String, List<String>> getRewards() {
         return rewards;
     }
 
