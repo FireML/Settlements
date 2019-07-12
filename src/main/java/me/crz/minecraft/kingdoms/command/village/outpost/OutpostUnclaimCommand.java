@@ -74,7 +74,7 @@ public class OutpostUnclaimCommand extends VillageSubCommand {
             getMessage("confirm").tell(resident,
                     "command", base + " " + alias + " confirm",
                     "amount", String.valueOf(toUnclaim.size()),
-                    "claims", toUnclaim.stream().map(l -> l.getX() + "-" + l.getZ()).collect(Collectors.joining(", "))
+                    "claims", toUnclaim.stream().map(l -> l.getX() + "/" + l.getZ()).collect(Collectors.joining(", "))
             );
         }
         return true;

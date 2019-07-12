@@ -1360,9 +1360,7 @@ command:
         description: Teleports to a outpost shown in the list
       unclaim:
         not-an-outpost: "&cThis land is not an outpost, please use &7/s unclaim&c to unclaim this land."
-        confirm: |-
-          &c&lPlease do [&e&l/{command}](/{command})&c&l in the next minute to confirm the &e&lunclaiming&c&l of &e&l{amount}&c&l chunks.
-          &fChunks that will be unclaimed: &7{claims}
+        confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l in the next minute to confirm the &e&lunclaiming&c&l of [&e&l{amount}&c&l chunks](&fChunks that will be unclaimed: &7{claims})."
         success: "&aSuccessfully unclaimed the outpost at {x},{z} and {amount} chunks connected to it."
         connected-to-home: "&cOnly unclaiming chunks not connected to the home!"
         connected-to-outpost: "&cOnly unclaiming chunks not connected to another outpost!"
@@ -1591,9 +1589,7 @@ command:
     unclaim:
       outpost: "&cThis land is an outpost, please use &7/{base} outpost unclaim&c to unclaim this outpost."
       home: "&cThis land is your home, you have to move it with &7/{base} sethome&c before unclaiming this land."
-      confirm: |-
-        &c&lPlease do [&e&l/{command}](/{command})&c&l in the next minute to confirm the &e&lunclaiming&c&l of &e&l{amount}&c&l chunks.
-        &fChunks that will be unclaimed: &7{claims}
+      confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l in the next minute to confirm the &e&lunclaiming&c&l of [&e&l{amount}&c&l chunks](&fChunks that will be unclaimed: &7{claims})."
       success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at &f{x}-{z}!"
       new-upkeep: "&aYour new upkeep is now &e${villageupkeep}&a (${upkeepperclaim} per claim) [&e/s upkeep](/s upkeep)"
       description: Unclaim land which is claimed by your village

@@ -147,7 +147,7 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                 getMessage("confirm").tell(res,
                         "command", base + " " + alias + " confirm",
                         "amount", String.valueOf(unclaimedLand.size()),
-                        "claims", unclaimedLand.stream().map(l -> l.getX() + "-" + l.getZ()).collect(Collectors.joining(", "))
+                        "claims", unclaimedLand.stream().map(l -> l.getX() + "/" + l.getZ()).collect(Collectors.joining(", "))
                 );
             }
         } else if (toUnclaim.size() == 1) {
