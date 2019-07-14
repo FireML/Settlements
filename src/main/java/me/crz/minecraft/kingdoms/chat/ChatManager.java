@@ -253,6 +253,9 @@ public class ChatManager extends Base implements ConfigMessages {
 
     private void tell(Resident resident, BaseComponent[] components) {
         Player player = resident.getPlayer();
+        if (player == null) {
+            return;
+        }
         if (MessageUtils.isContainedIn("@" + resident.getName(), components)) {
             notify(resident);
             components = notifyReplacer.copy()
@@ -384,7 +387,9 @@ public class ChatManager extends Base implements ConfigMessages {
             }
             notifyCooldowns.put(resident.getUUID(), true);
             Player player = resident.getPlayer();
-            player.playSound(player.getLocation(), Utils.getChatNotifySound(), 3, 1);
+            if (player != null) {
+                player.playSound(player.getLocation(), Utils.getChatNotifySound(), 3, 1);
+            }
         }
     }
 
