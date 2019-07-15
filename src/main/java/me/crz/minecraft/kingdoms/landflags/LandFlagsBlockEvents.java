@@ -13,8 +13,9 @@ import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Boat;
+import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Hanging;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
@@ -69,7 +70,8 @@ public class LandFlagsBlockEvents implements LandFlagBase, Listener {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.hasItem()) {
             Material mat = e.getMaterial();
             if (Tag.ITEMS_BOATS.isTagged(mat) || MaterialUtils.MINECARTS.contains(mat)
-                    || mat == Material.ITEM_FRAME || mat == Material.PAINTING || mat == Material.ARMOR_STAND) {
+                    || mat == Material.ITEM_FRAME || mat == Material.PAINTING
+                    || mat == Material.ARMOR_STAND || mat == Material.END_CRYSTAL) {
                 Pair<Boolean, String> response = this.getCanBuildAll(e.getPlayer(), e.getClickedBlock().getRelative(e.getBlockFace()).getLocation());
                 if (!response.getLeft()) {
                     if (e.getHand() == EquipmentSlot.HAND) {
@@ -124,8 +126,9 @@ public class LandFlagsBlockEvents implements LandFlagBase, Listener {
     }
 
     private boolean shouldCancel(Entity damaged, Entity damager) {
-        if (damaged instanceof ItemFrame || damaged instanceof ArmorStand
-                || damaged instanceof Boat || damaged instanceof Minecart) {
+        if (damaged instanceof Hanging || damaged instanceof ArmorStand
+                || damaged instanceof Boat || damaged instanceof Minecart
+                || damaged instanceof EnderCrystal) {
             Player p = null;
             if (damager instanceof Player) {
                 p = (Player) damager;
