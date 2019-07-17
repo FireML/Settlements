@@ -30,6 +30,7 @@ public class PlotModeCommand extends PlotSubCommand {
                     }
                     land.setEmbassy(true);
                     getMessage("success").tell(res, "mode", PlotMode.embassy.getTag(), "value", String.valueOf(land.getPrice()));
+                    LandManager.getInstance().saveLand(land);
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(res, "input", args[1]);
                 }
