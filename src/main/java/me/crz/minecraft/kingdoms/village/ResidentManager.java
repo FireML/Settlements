@@ -46,6 +46,9 @@ public class ResidentManager {
                     if (!KingdomsPlugin.getInstance().isRunning()) {
                         return Long.MAX_VALUE;
                     }
+                    if (resident.getLastLogin() + TimeUnit.SECONDS.toMillis(Data.residentCacheDuration) > System.currentTimeMillis()) {
+                        return Long.MAX_VALUE;
+                    }
                     if (resident.hasVillage()) {
                         return Long.MAX_VALUE;
                     }
@@ -53,7 +56,7 @@ public class ResidentManager {
                         return Long.MAX_VALUE;
                     }
                     Player player = Bukkit.getPlayer(resident.getUUID());
-                    if (player != null && player.isOnline()) {
+                    if (player != null) {
                         return Long.MAX_VALUE;
                     }
                 }
