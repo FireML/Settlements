@@ -10,6 +10,7 @@ import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.events.ChannelChatEvent;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.integration.PlaceholderApiIntegration;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -195,16 +196,28 @@ public class ChatManager extends Base implements ConfigMessages {
                 break;
             case ALLY:
                 Set<Resident> residentSet = village.getAllies().stream()
+                        .filter(a -> a instanceof Village)
                         .flatMap(a -> a.getOnlineResidents().stream())
                         .collect(Collectors.toSet());
                 residentSet.addAll(village.getOnlineResidents());
+                residentSet.stream()
+                        .filter(r -> r.isListening(channel)
+                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
+                        .forEach(r -> tell(r, r.getSwear() ? unfilteredMessage : filteredMessage));
+                break;
+            case EMPIREALLY:
+                Set<Resident> eAllySet = village.getAllies().stream()
+                        .filter(a -> a instanceof Empire)
+                        .flatMap(a -> a.getOnlineResidents().stream())
+                        .collect(Collectors.toSet());
+                eAllySet.addAll(village.getOnlineResidents());
                 if (village.hasEmpire()) {
-                    residentSet.addAll(village.getEmpire().getOnlineResidents());
+                    eAllySet.addAll(village.getEmpire().getOnlineResidents());
                     village.getEmpire().getAllies().stream()
                             .flatMap(a -> a.getOnlineResidents().stream())
-                            .forEach(residentSet::add);
+                            .forEach(eAllySet::add);
                 }
-                residentSet.stream()
+                eAllySet.stream()
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
                         .forEach(r -> tell(r, r.getSwear() ? unfilteredMessage : filteredMessage));

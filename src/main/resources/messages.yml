@@ -287,6 +287,7 @@ chat:
       settlement: "&e[{state}] {title} {prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
       trade: "&d[TRADE] &r{prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
       ally: "&b[Ally] &6{state} {title} {prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
+      empireally: "&b[EAlly] &6{state} {title} {prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
       empire: "&b[Empire] &6{state} {settlement} {title}  {prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
   nick-hilight: "&b"
   afk: "&ePlayer is AFK and may not respond"

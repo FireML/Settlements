@@ -36,7 +36,24 @@ public enum ChatChannel implements NameTag {
         @Override
         public boolean canChat(Player player) {
             Resident resident = ResidentManager.getInstance().getResident(player);
-            return resident.hasAllies();
+            return resident.hasVillage() && !resident.getVillage().getAlliedVillageIds().isEmpty();
+        }
+
+        @Override
+        public boolean canChatM(Player player) {
+            if (this.canChat(player)) {
+                return true;
+            }
+            MessageUtils.tell(player, Message.get("error.no-allies"));
+            return false;
+        }
+    },
+    EMPIREALLY("eally", "ea", "alliance") {
+        @Override
+        public boolean canChat(Player player) {
+            Resident resident = ResidentManager.getInstance().getResident(player);
+            return resident.hasVillage() && (!resident.getVillage().getAlliedEmpireIds().isEmpty() ||
+                    resident.hasEmpire() && resident.getVillage().getEmpire().hasAllies());
         }
 
         @Override
