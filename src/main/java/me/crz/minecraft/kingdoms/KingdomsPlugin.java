@@ -30,7 +30,6 @@ import me.crz.minecraft.kingdoms.command.CommandManager;
 import me.crz.minecraft.kingdoms.scoreboard.ScoreboardManager;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.utils.ThreadManager;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -209,7 +208,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     }
 
     public void loadManagers() {
-        ThreadManager.getInstance();
+        // Order is important!
         DatabaseManager.getInstance();
         RankManager.getInstance();
         EmpireManager.getInstance();
