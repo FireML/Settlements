@@ -36,7 +36,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -44,8 +43,6 @@ import java.util.stream.Stream;
 
 public class LockManager implements LockProvider {
     private static final String LOADING_KEY = "LOADING_MARKER";
-    private static final ReentrantReadWriteLock STORAGE_LOCK = new ReentrantReadWriteLock();
-
     private static LockManager instance;
     private final Set<Material> lockable = EnumSet.noneOf(Material.class);
     private boolean alternativeHopperProtection = true;
@@ -126,20 +123,15 @@ public class LockManager implements LockProvider {
             }
         }
         return Bukkit.getScheduler().runTaskAsynchronously(KingdomsPlugin.getInstance(), () -> {
-            STORAGE_LOCK.readLock().lock();
-            try {
-                // Load locks in chunks
-                for (Lock l : DatabaseManager.getInstance().getLocks(notLoaded)) {
-                    cacheLock(l);
+            // Load locks in chunks
+            for (Lock l : DatabaseManager.getInstance().getLocks(notLoaded)) {
+                cacheLock(l);
+            }
+            for (SimpleChunkLocation chunk : notLoaded) {
+                Map<String, Lock> chunkMap = lockTable.get(chunk.getWorld()).getIfPresent(chunk);
+                if (chunkMap != null) {
+                    chunkMap.remove(LOADING_KEY);
                 }
-                for (SimpleChunkLocation chunk : notLoaded) {
-                    Map<String, Lock> chunkMap = lockTable.get(chunk.getWorld()).getIfPresent(chunk);
-                    if (chunkMap != null) {
-                        chunkMap.remove(LOADING_KEY);
-                    }
-                }
-            } finally {
-                STORAGE_LOCK.readLock().unlock();
             }
         });
     }
@@ -184,20 +176,10 @@ public class LockManager implements LockProvider {
     }
 
     public void saveLock(Lock... locks) {
-        boolean locked = STORAGE_LOCK.writeLock().tryLock();
         for (Lock lock : locks) {
             cacheLock(lock);
         }
-        Utils.runAsync(() -> {
-            if (!locked) {
-                STORAGE_LOCK.writeLock().lock();
-            }
-            try {
-                DatabaseManager.getInstance().saveLocks(locks);
-            } finally {
-                STORAGE_LOCK.writeLock().unlock();
-            }
-        });
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveLocks(locks));
     }
 
     private void cacheLock(Lock lock) {
@@ -302,23 +284,13 @@ public class LockManager implements LockProvider {
     }
 
     public void deleteLock(Lock lock) {
-        boolean locked = STORAGE_LOCK.writeLock().tryLock();
         if (lockTable.containsKey(lock.getLocation().getWorld())) {
             Map<String, Lock> chunkMap = lockTable.get(lock.getLocation().getWorld()).getIfPresent(lock.getLocation().toChunkLocation());
             if (chunkMap != null) {
                 chunkMap.remove(lock.getLocation().getSimpleKey(), lock);
             }
         }
-        Utils.runAsync(() -> {
-            if (!locked) {
-                STORAGE_LOCK.writeLock().lock();
-            }
-            try {
-                DatabaseManager.getInstance().deleteLocks(lock);
-            } finally {
-                STORAGE_LOCK.writeLock().unlock();
-            }
-        });
+        Utils.runAsync(() -> DatabaseManager.getInstance().deleteLocks(lock));
     }
 
     @Override
@@ -334,38 +306,18 @@ public class LockManager implements LockProvider {
 
     @Override
     public void removeInChunks(Collection<? extends SimpleChunkLocation> chunks) {
-        boolean locked = STORAGE_LOCK.writeLock().tryLock();
         for (SimpleChunkLocation chunk : chunks) {
             if (lockTable.containsKey(chunk.getWorld())) {
                 lockTable.get(chunk.getWorld()).invalidate(chunk);
             }
         }
-        Utils.runAsync(() -> {
-            if (!locked) {
-                STORAGE_LOCK.writeLock().lock();
-            }
-            try {
-                DatabaseManager.getInstance().deleteLocksInChunks(chunks);
-            } finally {
-                STORAGE_LOCK.writeLock().unlock();
-            }
-        });
+        Utils.runAsync(() -> DatabaseManager.getInstance().deleteLocksInChunks(chunks));
     }
 
     @Override
     public void removeInWorld(World world) {
-        boolean locked = STORAGE_LOCK.writeLock().tryLock();
         lockTable.remove(world.getName());
-        Utils.runAsync(() -> {
-            if (!locked) {
-                STORAGE_LOCK.writeLock().lock();
-            }
-            try {
-                DatabaseManager.getInstance().deleteLocks(world.getName());
-            } finally {
-                STORAGE_LOCK.writeLock().unlock();
-            }
-        });
+        Utils.runAsync(() -> DatabaseManager.getInstance().deleteLocks(world.getName()));
     }
 
     synchronized public static LockManager getInstance() {
