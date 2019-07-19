@@ -378,7 +378,7 @@ public class Utils {
      * @return The BukkitTask that was started or null if we are already on an async thread
      */
     public static BukkitTask runAsync(Runnable run) {
-        if (Bukkit.isPrimaryThread()) {
+        if (Bukkit.isPrimaryThread() && KingdomsPlugin.getInstance().isRunning()) {
             return Bukkit.getScheduler().runTaskAsynchronously(KingdomsPlugin.getInstance(), run);
         } else {
             run.run();

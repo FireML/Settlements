@@ -179,7 +179,7 @@ public class LockManager implements LockProvider {
         for (Lock lock : locks) {
             cacheLock(lock);
         }
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveLocks(locks));
+        DatabaseManager.getInstance().saveLocks(locks);
     }
 
     private void cacheLock(Lock lock) {
@@ -290,7 +290,7 @@ public class LockManager implements LockProvider {
                 chunkMap.remove(lock.getLocation().getSimpleKey(), lock);
             }
         }
-        Utils.runAsync(() -> DatabaseManager.getInstance().deleteLocks(lock));
+        DatabaseManager.getInstance().deleteLocks(lock);
     }
 
     @Override
@@ -311,13 +311,13 @@ public class LockManager implements LockProvider {
                 lockTable.get(chunk.getWorld()).invalidate(chunk);
             }
         }
-        Utils.runAsync(() -> DatabaseManager.getInstance().deleteLocksInChunks(chunks));
+        DatabaseManager.getInstance().deleteLocksInChunks(chunks);
     }
 
     @Override
     public void removeInWorld(World world) {
         lockTable.remove(world.getName());
-        Utils.runAsync(() -> DatabaseManager.getInstance().deleteLocks(world.getName()));
+        DatabaseManager.getInstance().deleteLocks(world.getName());
     }
 
     synchronized public static LockManager getInstance() {
