@@ -184,6 +184,9 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
             String action = LockManager.getInstance().pullAction(event.getPlayer().getUniqueId());
             if (action != null) {
                 event.setCancelled(true);
+                if (LockManager.getInstance().hasToggledAction(event.getPlayer().getUniqueId())) {
+                    getMessage("toggled").tell(event.getPlayer(), "toggle", action);
+                }
                 if ("lock".equalsIgnoreCase(action)) {
                     if (lock == null) {
                         boolean limitedToVillage = KingdomsPlugin.getInstance().getConfig().getBoolean("only-lock-in-settlement");

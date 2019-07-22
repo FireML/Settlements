@@ -450,6 +450,7 @@ lock:
   cant-unlock: "&cYou cannot unlock this &e{block}&c!"
   unlocked: "&cYou unlocked this &e{block}&c!"
   not-lockable: "&cYou cannot lock &e{block}"
+  toggled: "&7You have toggled &a{toggle}&7! Toggle it off with [&e/lock toggle](/lock toggle)&7!"
   hoppers:
     enabled: "&7Hoppers &acan&7 pull items from this {block}!"
     disabled: "&7Hoppers &ccan not&7 pull items from this {block}!"

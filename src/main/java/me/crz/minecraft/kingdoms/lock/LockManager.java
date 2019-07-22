@@ -363,6 +363,10 @@ public class LockManager implements LockProvider {
         }
     }
 
+    public boolean hasToggledAction(UUID playerId) {
+        return toggledActions.getIfPresent(playerId) != null;
+    }
+
     private String getAction(UUID playerId) {
         String action = interactActions.getIfPresent(playerId);
         if (action == null) {
