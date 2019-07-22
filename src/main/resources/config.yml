@@ -87,6 +87,8 @@ chat:
 # Amount of titles that can be set per rank
 titles-per-rank: 10
 allow-firespread-outside-claim: false
+# Amount in ticks after which the chunk queue will be processed to load the locks in it
+lock-load-queue-ticks: 20
 remove-locks-on-unclaim: true
 remove-locked-blocks: false
 lockable:

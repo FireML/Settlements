@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -46,6 +47,9 @@ public class LockManager implements LockProvider {
     private static LockManager instance;
     private final Set<Material> lockable = EnumSet.noneOf(Material.class);
     private boolean alternativeHopperProtection = true;
+    private int loadQueueDelay = 20;
+    private BukkitTask loadQueueTask = null;
+    private final Set<SimpleChunkLocation> loadQueue = new LinkedHashSet<>();
     private final Map<String, Cache<SimpleChunkLocation, Map<String, Lock>>> lockTable = new ConcurrentHashMap<>();
     private final Expiry<SimpleChunkLocation, Map<String, Lock>> chunkExpiry = new Expiry<SimpleChunkLocation, Map<String, Lock>>() {
         @Override
@@ -95,9 +99,8 @@ public class LockManager implements LockProvider {
      * Load chunks if they aren't loaded yet
      * Runs database operation in a new async thread if called on the main thread; otherwise it blocks the current thread
      * @param chunks The chunks to load locks in
-     * @return The new async task or null if it was already run
      */
-    public BukkitTask loadChunks(SimpleChunkLocation... chunks) {
+    public void loadChunks(SimpleChunkLocation... chunks) {
         Set<SimpleChunkLocation> notLoaded = new HashSet<>();
         for (SimpleChunkLocation chunk : chunks) {
             // Mark all chunks that did not have locks as cached
@@ -122,18 +125,35 @@ public class LockManager implements LockProvider {
                 }
             }
         }
-        return Bukkit.getScheduler().runTaskAsynchronously(KingdomsPlugin.getInstance(), () -> {
-            // Load locks in chunks
-            for (Lock l : DatabaseManager.getInstance().getLocks(notLoaded)) {
-                cacheLock(l);
-            }
-            for (SimpleChunkLocation chunk : notLoaded) {
-                Map<String, Lock> chunkMap = lockTable.get(chunk.getWorld()).getIfPresent(chunk);
-                if (chunkMap != null) {
-                    chunkMap.remove(LOADING_KEY);
+        queueChunkLoad(notLoaded);
+    }
+
+    private void queueChunkLoad(Collection<SimpleChunkLocation> chunks) {
+        synchronized (loadQueue) {
+            loadQueue.addAll(chunks);
+        }
+        if (loadQueueTask == null || loadQueueTask.isCancelled()) {
+            loadQueueTask = Bukkit.getScheduler().runTaskLaterAsynchronously(KingdomsPlugin.getInstance(), () -> {
+                loadQueueTask = null;
+                if (!loadQueue.isEmpty()) {
+                    // Load locks in chunks
+                    SimpleChunkLocation[] toLoad;
+                    synchronized (loadQueue) {
+                        toLoad = loadQueue.toArray(new SimpleChunkLocation[0]);
+                        loadQueue.clear();
+                    }
+                    for (Lock l : DatabaseManager.getInstance().getLocks(toLoad)) {
+                        cacheLock(l);
+                    }
+                    for (SimpleChunkLocation chunk : toLoad) {
+                        Map<String, Lock> chunkMap = lockTable.get(chunk.getWorld()).getIfPresent(chunk);
+                        if (chunkMap != null) {
+                            chunkMap.remove(LOADING_KEY);
+                        }
+                    }
                 }
-            }
-        });
+            }, loadQueueDelay);
+        }
     }
 
     public boolean isLoaded(SimpleChunkLocation chunk) {
@@ -146,6 +166,7 @@ public class LockManager implements LockProvider {
 
     public void loadConfig() {
         alternativeHopperProtection = KingdomsPlugin.getInstance().getConfig().getBoolean("alternative-hopper-protection");
+        loadQueueDelay = KingdomsPlugin.getInstance().getConfig().getInt("lock-load-queue-ticks");
         lockable.clear();
         for (String string : KingdomsPlugin.getInstance().getConfig().getStringList("lockable")) {
             if (string.startsWith("*")) {
