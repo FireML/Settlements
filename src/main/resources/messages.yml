@@ -2037,18 +2037,22 @@ command:
       toggled: "&aToggled container locking!&7 Run [&e/lock toggle](/lock toggle)&7 again to toggle it off!"
       untoggled: "&7Disabled container locking toggle!"
     add:
+      description: Give access to a lock
       click-to-add: "&aClick a container in the next &e10 seconds&a to add {name} to it!"
       toggled: "&aToggled adding of {name} to containers!&7 Run [&e/lock add {target} toggle](/lock add {target} toggle)&7 again to toggle it off!"
       untoggled: "&7Disabled adding of {name} to containers!"
     remove:
+      description: Remove access from a lock
       click-to-remove: "&aClick a container in the next &e10 seconds&a to remove {name} from it!"
       toggled: "&aToggled removing of {name} from containers!&7 Run [&e/lock remove {target} toggle](/lock remove {target} toggle)&7 again to toggle it off!"
       untoggled: "&7Disabled removing of {name} from containers!"
     hoppers:
+      description: Toggle whether or not hoppers are allowed
       click-to-toggle: "&aClick a container in the next &e10 seconds&a to toggle hoppers!"
       toggled: "&aToggled lock hopper allowance!&7 Run [&e/lock hoppers toggle](/lock hoppers toggle)&7 again to toggle it off!"
       untoggled: "&7Disabled hopper toggle!"
     info:
+      description: Show information about a lock
       click-for-info: "&aClick a container in the next &e10 seconds&a to get information about it!"
       toggled: "&aToggled container info!&7 Run [&e/lock info toggle](/lock info toggle)&7 again to toggle it off!"
       untoggled: "&7Disabled container info toggle!"

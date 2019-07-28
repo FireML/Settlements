@@ -257,8 +257,12 @@ help-order:
   - unlock
   - info
   - hoppers
-  - add
-  - remove
+  - add <player> [toggle]
+  - add s:<settlement> [toggle]
+  - add e:<empire> [toggle]
+  - remove <player> [toggle]
+  - remove s:<settlement> [toggle]
+  - remove e:<empire> [toggle]
   friend:
   - add
   - list
