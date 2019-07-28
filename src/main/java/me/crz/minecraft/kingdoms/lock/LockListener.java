@@ -184,9 +184,6 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
             String action = LockManager.getInstance().pullAction(event.getPlayer().getUniqueId());
             if (action != null) {
                 event.setCancelled(true);
-                if (LockManager.getInstance().hasToggledAction(event.getPlayer().getUniqueId())) {
-                    getMessage("toggled").tell(event.getPlayer(), "toggle", action);
-                }
                 if ("lock".equalsIgnoreCase(action)) {
                     if (lock == null) {
                         boolean limitedToVillage = KingdomsPlugin.getInstance().getConfig().getBoolean("only-lock-in-settlement");
@@ -196,21 +193,21 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                         } else if (!LockManager.getInstance().isLockable(event.getClickedBlock().getType())) {
                             getError("not-lockable").tell(event.getPlayer(), "block", NameTag.getTag(event.getClickedBlock().getType()));
                         } else {
-                            if (!canAccess || !LockProvider.canAccessCheck(event.getPlayer(), event.getClickedBlock())) {
-                                getError("locked").tell(event.getPlayer(),
-                                        "name", "someone",
-                                        "title", "",
-                                        "block", NameTag.getTag(event.getClickedBlock().getType())
-                                );
-                                return;
+                            if (canAccess && LockProvider.canAccessCheck(event.getPlayer(), event.getClickedBlock())) {
+                                Pair<Boolean, String> response = getCanBuildAll(event.getPlayer(), event.getClickedBlock().getLocation());
+                                if (response.getLeft()) {
+                                    Lock l = LockManager.getInstance().registerNewLock(event.getPlayer(), event.getClickedBlock());
+                                    getMessage("new-lock").tell(event.getPlayer(), "block", NameTag.getTag(l.getBlock()));
+                                    return;
+                                } else {
+                                    MessageUtils.tell(event.getPlayer(), response.getRight());
+                                }
                             }
-                            Pair<Boolean, String> response = getCanBuildAll(event.getPlayer(), event.getClickedBlock().getLocation());
-                            if (response.getLeft()) {
-                                Lock l = LockManager.getInstance().registerNewLock(event.getPlayer(), event.getClickedBlock());
-                                getMessage("new-lock").tell(event.getPlayer(), "block", NameTag.getTag(l.getBlock()));
-                            } else {
-                                MessageUtils.tell(event.getPlayer(), response.getRight());
-                            }
+                            getError("locked").tell(event.getPlayer(),
+                                    "name", "someone",
+                                    "title", "",
+                                    "block", NameTag.getTag(event.getClickedBlock().getType())
+                            );
                         }
                     } else if (lock.canAccess(event.getPlayer())) {
                         Utils.runAsync(() -> {
@@ -223,37 +220,40 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                         });
                     }
                 } else if (canAccess && action.toLowerCase().startsWith("add")) {
-                    Lock l;
+                    Lock l = null;
                     if (lock == null) {
                         if (ShopProvider.isShopCheck(event.getClickedBlock()) && LockProvider.canAccessCheck(event.getPlayer(), event.getClickedBlock())) {
                             l = LockManager.getInstance().registerNewLock(event.getPlayer(), event.getClickedBlock());
                         } else {
                             getError("not-locked").tell(event.getPlayer(), "block", NameTag.getTag(event.getClickedBlock().getType()));
-                            return;
                         }
                     } else {
                         l = lock;
                     }
 
-                    if (l.isOwner(event.getPlayer())) {
-                        Targetable target = getTarget(event.getPlayer(), action.substring("add ".length()));
-                        if (target != null) {
-                            if (l.grantAccess(target)) {
-                                getMessage("access.granted").tell(event.getPlayer(), "block", NameTag.getTag(l.getBlock()), "name", target.getName());
-                                DatabaseManager.getInstance().saveLocks(l);
-                            } else {
-                                getMessage("access.already-granted").tell(event.getPlayer(), "block", NameTag.getTag(l.getBlock()), "name", target.getName());
+                    if (l != null) {
+                        if (l.isOwner(event.getPlayer())) {
+                            Targetable target = getTarget(event.getPlayer(), action.substring("add ".length()));
+                            if (target != null) {
+                                if (l.grantAccess(target)) {
+                                    getMessage("access.granted").tell(event.getPlayer(), "block", NameTag.getTag(l.getBlock()), "name", target.getName());
+                                    DatabaseManager.getInstance().saveLocks(l);
+                                    return;
+                                } else {
+                                    getMessage("access.already-granted").tell(event.getPlayer(), "block", NameTag.getTag(l.getBlock()), "name", target.getName());
+                                }
                             }
+                        } else if (l.canAccess(event.getPlayer())) {
+                            Lock finalL = l;
+                            Utils.runAsync(() -> {
+                                Resident owner = finalL.getOwner();
+                                getError("locked").tell(event.getPlayer(),
+                                        "name", owner != null ? owner.getName() : "-",
+                                        "title", owner != null ? owner.getTitle() : "",
+                                        "block", NameTag.getTag(finalL.getBlock())
+                                );
+                            });
                         }
-                    } else if (l.canAccess(event.getPlayer())) {
-                        Utils.runAsync(() -> {
-                            Resident owner = l.getOwner();
-                            getError("locked").tell(event.getPlayer(),
-                                    "name", owner != null ? owner.getName() : "-",
-                                    "title", owner != null? owner.getTitle() : "",
-                                    "block", NameTag.getTag(l.getBlock())
-                            );
-                        });
                     }
                 } else if (lock == null) {
                     getError("not-locked").tell(event.getPlayer(), "block", NameTag.getTag(event.getClickedBlock().getType()));
@@ -261,6 +261,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                     if (lock.canAdministrate(event.getPlayer())) {
                         LockManager.getInstance().deleteLock(lock);
                         getMessage("unlocked").tell(event.getPlayer(), "block", NameTag.getTag(lock.getBlock()));
+                        return;
                     } else {
                         getError("cant-unlock").tell(event.getPlayer(), "block", NameTag.getTag(lock.getBlock()));
                     }
@@ -269,6 +270,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                         lock.setAllowHoppers(!lock.isAllowHoppers());
                         getMessage("hoppers." + (lock.isAllowHoppers() ? "enabled" : ".disabled")).tell(event.getPlayer(), "block", NameTag.getTag(lock.getBlock()));
                         DatabaseManager.getInstance().saveLocks(lock);
+                        return;
                     } else if (lock.canAccess(event.getPlayer())) {
                         Utils.runAsync(() -> {
                             Resident owner = lock.getOwner();
@@ -286,6 +288,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                             if (lock.revokeAccess(target)) {
                                 getMessage("access.revoked").tell(event.getPlayer(), "block", NameTag.getTag(lock.getBlock()), "name", target.getName());
                                 DatabaseManager.getInstance().saveLocks(lock);
+                                return;
                             } else {
                                 getMessage("access.already-revoked").tell(event.getPlayer(), "block", NameTag.getTag(lock.getBlock()), "name", target.getName());
                             }
@@ -332,6 +335,9 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                             }
                         });
                     }
+                }
+                if (LockManager.getInstance().hasToggledAction(event.getPlayer().getUniqueId())) {
+                    getMessage("toggled").tell(event.getPlayer(), "toggle", action);
                 }
             }
         }
