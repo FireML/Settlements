@@ -3,10 +3,11 @@ package me.crz.minecraft.kingdoms.utils.config;
 import java.io.IOException;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.lock.LockManager;
 import me.crz.minecraft.kingdoms.utils.IconRpMapping;
 import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.utils.UtilChat;
+import me.crz.minecraft.kingdoms.utils.CursesFilter;
 import me.crz.minecraft.kingdoms.vault.Levels;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -24,6 +25,7 @@ public class ConfigManager {
     private ConfigAccessor empirePerksConf;
     private IconRpMapping iconRpMapping;
     private ConfigAccessor cursesConf;
+    private ConfigAccessor forcedCursesConf;
     private ConfigAccessor lastUpkeepConf;
 
     private ConfigAccessor settlementRanksConf;
@@ -65,12 +67,15 @@ public class ConfigManager {
         cursesConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "curses.yml");
         cursesConf.saveDefaultConfig();
         cursesConf.reloadConfig();
+        forcedCursesConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "cursesForced.yml");
+        forcedCursesConf.saveDefaultConfig();
+        forcedCursesConf.reloadConfig();
         lastUpkeepConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "lastUpkeep.yml");
         lastUpkeepConf.saveDefaultConfig();
         lastUpkeepConf.reloadConfig();
         iconRpMapping = new IconRpMapping(KingdomsPlugin.getInstance());
         if (KingdomsPlugin.getInstance().isRunning()) {
-            UtilChat.getInstance().load();
+            ChatManager.getInstance().loadConfig();
             VillageManager.getInstance().loadPerks();
             Message.clearCache();
             LockManager.getInstance().loadConfig();
@@ -121,6 +126,10 @@ public class ConfigManager {
 
     public FileConfiguration getCursesConfig() {
         return cursesConf.getConfig();
+    }
+
+    public FileConfiguration getForcedCursesConfig() {
+        return forcedCursesConf.getConfig();
     }
 
     public FileConfiguration getConfig() {

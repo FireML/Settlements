@@ -1,0 +1,19 @@
+# These will always get replaced in chat messages, no matter whether or not the player turned curse filtering off
+replace-with: "i love you all"
+regexes:
+- "h[i|1]tl[e|3]r"
+literal:
+- "nazi"
+- "hitler"
+- "n1gga"
+- "n1gger"
+- "nazi"
+- "nigg3r"
+- "nigg4h"
+- "nigga"
+- "niggah"
+- "niggas"
+- "niggaz"
+- "nigger"
+- "niggre"
+- "niggers"

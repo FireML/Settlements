@@ -48,7 +48,7 @@ import me.crz.minecraft.kingdoms.village.VillageListener;
 import me.crz.minecraft.kingdoms.vault.VaultListener;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.village.VillageManager;
-import me.crz.minecraft.kingdoms.utils.UtilChat;
+import me.crz.minecraft.kingdoms.utils.CursesFilter;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import me.crz.minecraft.kingdoms.land.LandPerks;
@@ -218,7 +218,6 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         LockManager.getInstance();
         ScoreboardManager.getInstance();
         CommandManager.getInstance();
-        UtilChat.getInstance();
         ChatManager.getInstance();
     }
 

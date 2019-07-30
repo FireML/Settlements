@@ -14,8 +14,9 @@ import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.integration.PlaceholderApiIntegration;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.utils.UtilChat;
+import me.crz.minecraft.kingdoms.utils.CursesFilter;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.utils.config.Data;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -50,8 +51,17 @@ public class ChatManager extends Base implements ConfigMessages {
     private final static DecimalFormat BALANCE_FORMAT = new DecimalFormat("#,###.##");
     private Cache<UUID, Boolean> notifyCooldowns = Caffeine.newBuilder().expireAfterAccess(Utils.getChatNotifyCooldown(), TimeUnit.SECONDS).build();
 
+    private CursesFilter toggleableCurses;
+    private CursesFilter forcedCurses;
+
     private ChatManager() {
         super();
+        loadConfig();
+    }
+
+    public void loadConfig() {
+        toggleableCurses = new CursesFilter(ConfigManager.getInstance().getCursesConfig());
+        forcedCurses = new CursesFilter(ConfigManager.getInstance().getForcedCursesConfig());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -111,6 +121,8 @@ public class ChatManager extends Base implements ConfigMessages {
             message = MessageUtils.replaceColorCodes(message);
         }
 
+        message = forcedCurses.filterCurses(message);
+
         Village village = res.getVillage();
 
         BaseComponent[] format;
@@ -155,14 +167,14 @@ public class ChatManager extends Base implements ConfigMessages {
                 linkParser.disable(MineDownParser.Option.LEGACY_COLORS);
             }
             filteredMessage = replacer
-                    .replace("message", linkParser.parse(UtilChat.getInstance().filterCurses(message)).create())
+                    .replace("message", linkParser.parse(toggleableCurses.filterCurses(message)).create())
                     .replaceIn(format);
             unfilteredMessage = replacer
                     .replace("message", linkParser.reset().parse(message).create())
                     .replaceIn(format);
         } else {
             filteredMessage = replacer
-                    .replace("message", UtilChat.getInstance().filterCurses(message))
+                    .replace("message", toggleableCurses.filterCurses(message))
                     .replaceIn(format);
             unfilteredMessage = replacer
                     .replace("message", message)
@@ -279,6 +291,7 @@ public class ChatManager extends Base implements ConfigMessages {
     }
 
     public void sendPrivateMessage(Player sender, Player target, String message) {
+        message = forcedCurses.filterCurses(message);
         Resident res = ResidentManager.getInstance().getResident(sender);
         Resident tres = ResidentManager.getInstance().getResident(target);
         if (!res.hasMessagesEnabled()) {
@@ -320,10 +333,10 @@ public class ChatManager extends Base implements ConfigMessages {
             if (!sender.hasPermission("kingdoms.chat.colour")) {
                 linkParser.disable(MineDownParser.Option.LEGACY_COLORS);
             }
-            filteredMessage = linkParser.parse(UtilChat.getInstance().filterCurses(message)).create();
+            filteredMessage = linkParser.parse(toggleableCurses.filterCurses(message)).create();
             unfilteredMessage = linkParser.reset().parse(message).create();
         } else {
-            filteredMessage = new ComponentBuilder(UtilChat.getInstance().filterCurses(message)).create();
+            filteredMessage = new ComponentBuilder(toggleableCurses.filterCurses(message)).create();
             unfilteredMessage = new ComponentBuilder(message).create();
         }
 
@@ -474,5 +487,13 @@ public class ChatManager extends Base implements ConfigMessages {
     @Override
     public String name() {
         return "chat";
+    }
+
+    public String filterAllCurses(String message) {
+        return toggleableCurses.filterCurses(forcedCurses.filterCurses(message));
+    }
+
+    public boolean containsAnyCurses(String message) {
+        return toggleableCurses.containsCurses(message) || forcedCurses.containsCurses(message);
     }
 }
