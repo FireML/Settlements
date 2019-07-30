@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.landflags;
 
+import com.destroystokyo.paper.event.block.TNTPrimeEvent;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
@@ -36,6 +37,8 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.projectiles.BlockProjectileSource;
+import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,6 +65,41 @@ public class LandFlagsBlockEvents implements LandFlagBase, Listener {
         if (!responce.getLeft()) {
             MessageUtils.tell(e.getPlayer(), responce.getRight());
             e.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void on(TNTPrimeEvent e) {
+        Player player = null;
+        if (e.getReason() == TNTPrimeEvent.PrimeReason.PROJECTILE && e.getPrimerEntity() instanceof Projectile) {
+            Projectile projectile = (Projectile) e.getPrimerEntity();
+            ProjectileSource source = projectile.getShooter();
+            if (projectile.getShooter() instanceof Player) {
+                player = (Player) projectile.getShooter();
+            } else if (projectile.getShooter() instanceof Entity || projectile.getShooter() == null) {
+                // directly cancel any shooter that isn't a player
+                OwnedLand land = LandManager.getInstance().getLand(e.getBlock().getLocation());
+                if (land != null) {
+                    e.setCancelled(true);
+                }
+            } else if (projectile.getShooter() instanceof BlockProjectileSource) {
+                OwnedLand land = LandManager.getInstance().getLand(e.getBlock().getLocation());
+                if (land != null) {
+                    OwnedLand originLand = LandManager.getInstance().getLand(((BlockProjectileSource) projectile.getShooter()).getBlock().getLocation());
+                    if (originLand == null || !land.isOwnedBy(originLand.getLandOwner())) {
+                        e.setCancelled(true);
+                    }
+                }
+            }
+        } else if (e.getReason() == TNTPrimeEvent.PrimeReason.ITEM && e.getPrimerEntity() instanceof Player) {
+            player = (Player) e.getPrimerEntity();
+        }
+        if (player != null) {
+            Pair<Boolean, String> response = this.getCanBuildAll(player, e.getBlock().getLocation());
+            if (!response.getLeft()) {
+                MessageUtils.tell(player, response.getRight());
+                e.setCancelled(true);
+            }
         }
     }
 

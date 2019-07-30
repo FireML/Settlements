@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.land;
 
 import co.aikar.timings.Timing;
+import com.destroystokyo.paper.event.block.TNTPrimeEvent;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.essentials.events.HostileCreaturePreSpawnEvent;
@@ -170,6 +171,13 @@ public class LandFlags extends Base implements LandFlagBase {
     }
 
     @EventHandler(ignoreCancelled = true)
+    public void onTntPrime(TNTPrimeEvent e) {
+        if (e.getReason() == TNTPrimeEvent.PrimeReason.EXPLOSION && !isAllowed(e.getBlock().getLocation(), PlotMode.explosions)) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent e) {
         if (!isAllowed(e.getLocation(), PlotMode.explosions)) {
             e.setCancelled(true);
@@ -180,7 +188,7 @@ public class LandFlags extends Base implements LandFlagBase {
 
 
     @EventHandler(ignoreCancelled = true)
-    public void onEntityExplode(BlockExplodeEvent e) {
+    public void onBlockExplode(BlockExplodeEvent e) {
         if (!isAllowed(e.getBlock().getLocation(), PlotMode.explosions)) {
             e.setCancelled(true);
             return;
