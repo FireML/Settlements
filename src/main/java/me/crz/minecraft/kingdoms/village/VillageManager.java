@@ -186,11 +186,11 @@ public class VillageManager {
         for (Use u : Use.values()) {
             village.setUseState(u, BuildState.PUBLIC);
         }
-        village.setMode(PlotMode.pvp, true);
-        village.setMode(PlotMode.fireSpread, true);
-        village.setMode(PlotMode.explosions, true);
-        village.setMode(PlotMode.buff, false);
-        village.setMode(PlotMode.mobSpawning, true);
+        for (PlotMode mode : PlotMode.values()) {
+            if (mode.appliesTo(PlotMode.AppliesTo.LAND_OWNER)) {
+                village.setMode(mode, Utils.getPlotMode(mode, "abandoned." + village.getStateKey()));
+            }
+        }
 
         List<OwnedLand> changedLand = new ArrayList<>();
         for (OwnedLand land : LandManager.getInstance().getClaimedLand(village)) {

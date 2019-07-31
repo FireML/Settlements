@@ -288,11 +288,11 @@ public class EmpireManager {
         for (Use u : Use.values()) {
             empire.setUseState(u, BuildState.PUBLIC);
         }
-        empire.setMode(PlotMode.pvp, true);
-        empire.setMode(PlotMode.fireSpread, true);
-        empire.setMode(PlotMode.explosions, true);
-        empire.setMode(PlotMode.buff, false);
-        empire.setMode(PlotMode.mobSpawning, true);
+        for (PlotMode mode : PlotMode.values()) {
+            if (mode.appliesTo(PlotMode.AppliesTo.LAND_OWNER)) {
+                empire.setMode(mode, Utils.getPlotMode(mode, "abandoned." + empire.getStateKey()));
+            }
+        }
         World empireWorld = Bukkit.getWorld(empire.getWorldName());
         if (empireWorld != null) {
             for (LockProvider lockProvider : KingdomsPlugin.getInstance().getLockProviders()) {

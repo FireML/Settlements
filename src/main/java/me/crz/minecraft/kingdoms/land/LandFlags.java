@@ -87,7 +87,10 @@ public class LandFlags extends Base implements LandFlagBase {
 
     private boolean isAllowed(Location location, PlotMode mode) {
         OwnedLand land = LandManager.getInstance().getLand(location);
-        return land == null || mode.get(land);
+        if (land != null) {
+            return mode.get(land);
+        }
+        return Utils.getPlotMode(mode, "unclaimed");
     }
 
     @EventHandler
@@ -105,7 +108,7 @@ public class LandFlags extends Base implements LandFlagBase {
     @EventHandler(ignoreCancelled = true)
     public void onBlockIgnite(BlockIgniteEvent e) {
         if (e.getCause().equals(BlockIgniteEvent.IgniteCause.SPREAD) && e.getIgnitingBlock() != null) {
-            if (isFireSpreadAllowed(e.getBlock().getLocation())) {
+            if (isAllowed(e.getBlock().getLocation(), PlotMode.fireSpread)) {
                 return;
             }
             e.setCancelled(true);
@@ -114,15 +117,10 @@ public class LandFlags extends Base implements LandFlagBase {
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockBurn(BlockBurnEvent e) {
-        if (isFireSpreadAllowed(e.getBlock().getLocation())) {
+        if (isAllowed(e.getBlock().getLocation(), PlotMode.fireSpread)) {
             return;
         }
         e.setCancelled(true);
-    }
-
-    private boolean isFireSpreadAllowed(Location location) {
-        OwnedLand land = LandManager.getInstance().getLand(location);
-        return land == null ? Utils.isWorldClaimable(location.getWorld()) && Utils.isFireSpreadAllowed() : land.getMode(PlotMode.fireSpread);
     }
 
     @EventHandler

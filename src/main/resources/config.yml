@@ -86,7 +86,29 @@ chat:
     cooldown: 15
 # Amount of titles that can be set per rank
 titles-per-rank: 10
-allow-firespread-outside-claim: false
+# Unclaimed/abandoned modes
+modes:
+  unclaimed:
+    firespread: false
+    explosion: false
+    pvp: true
+    mobspawning: true
+  abandoned:
+    village:
+      firespread: false
+      explosion: false
+      pvp: true
+      mobspawning: true
+    kingdom:
+      firespread: false
+      explosion: false
+      pvp: true
+      mobspawning: true
+    empire:
+      firespread: false
+      explosion: false
+      pvp: true
+      mobspawning: true
 # Amount in ticks after which the chunk queue will be processed to load the locks in it
 lock-load-queue-ticks: 20
 remove-locks-on-unclaim: true

@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.utils;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.db.InviteCache;
@@ -179,13 +180,6 @@ public class Utils {
         return false;
     }
 
-    public static boolean isFireSpreadAllowed() {
-        if (ConfigManager.getInstance().getConfig().isBoolean("allow-firespread-outside-claim")) {
-            return ConfigManager.getInstance().getConfig().getBoolean("allow-firespread-outside-claim");
-        }
-        return false;
-    }
-
     public static int getTeleportDelay(String type) {
         if (ConfigManager.getInstance().getConfig().isInt("teleport-delay." + type)) {
             return ConfigManager.getInstance().getConfig().getInt("teleport-delay." + type);
@@ -305,6 +299,10 @@ public class Utils {
             return ConfigManager.getInstance().getConfig().getInt("village-inactive-time");
         }
         return 30;
+    }
+
+    public static boolean getPlotMode(PlotMode mode, String type) {
+        return ConfigManager.getInstance().getConfig().getBoolean("modes." + type + "." + mode.getKey(), false);
     }
 
     public static boolean playerIsChief(Player player, Village village) {
