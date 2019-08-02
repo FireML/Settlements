@@ -43,21 +43,11 @@ public class ResidentManager {
 
             private long getDuration(Resident resident) {
                 if (resident != null) {
-                    if (!KingdomsPlugin.getInstance().isRunning()) {
+                    if (keepCached(resident) || Bukkit.getPlayer(resident.getUUID()) != null) {
                         return Long.MAX_VALUE;
                     }
-                    if (resident.getLastLogin() + TimeUnit.SECONDS.toMillis(Data.residentCacheDuration) > System.currentTimeMillis()) {
-                        return Long.MAX_VALUE;
-                    }
-                    if (resident.hasVillage()) {
-                        return Long.MAX_VALUE;
-                    }
-                    if (LandManager.getInstance().ownsPlot(resident.getUUID())) {
-                        return Long.MAX_VALUE;
-                    }
-                    Player player = Bukkit.getPlayer(resident.getUUID());
-                    if (player != null) {
-                        return Long.MAX_VALUE;
+                    if (resident.getLastLogin() + TimeUnit.SECONDS.toMillis(Data.residentCacheDuration) < System.currentTimeMillis()) {
+                        return 0;
                     }
                 }
                 return TimeUnit.SECONDS.toNanos(Data.residentCacheDuration);
@@ -67,9 +57,27 @@ public class ResidentManager {
         residentsByName = Caffeine.newBuilder().expireAfter(residentExpiry).build();
     }
 
+    private boolean keepCached(Resident resident) {
+        return !KingdomsPlugin.getInstance().isRunning()
+                || resident.hasVillage()
+                || LandManager.getInstance().ownsPlot(resident.getUUID());
+    }
+
     public void addResident(Resident res) {
         residentsByUuid.put(res.getUUID(), res);
         residentsByName.put(res.getName().toLowerCase(), res);
+    }
+
+    public void uncachePlayer(Player player) {
+        Resident resident = getResidentIfPreset(player.getUniqueId());
+        if (resident != null) {
+            if (!keepCached(resident)) {
+                residentsByUuid.invalidate(resident.getUUID());
+                invalidateName(resident.getName());
+            }
+        } else {
+            invalidateName(player.getName());
+        }
     }
 
     public void invalidateName(String name) {

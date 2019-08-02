@@ -13,6 +13,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 
 public class VillageListener implements Listener {
@@ -53,6 +54,11 @@ public class VillageListener implements Listener {
             Bukkit.getScheduler().runTaskAsynchronously(KingdomsPlugin.getInstance(),
                     () -> DatabaseManager.getInstance().saveResident(finalRes));
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        ResidentManager.getInstance().uncachePlayer(event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

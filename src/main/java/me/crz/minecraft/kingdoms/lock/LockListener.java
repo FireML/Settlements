@@ -40,6 +40,7 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
@@ -58,6 +59,11 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent event) {
         LockManager.getInstance().loadChunks(new SimpleChunkLocation(event.getChunk()));
+    }
+
+    @EventHandler
+    public void onChunkUnload(ChunkUnloadEvent event) {
+        LockManager.getInstance().unloadChunks(new SimpleChunkLocation(event.getChunk()));
     }
 
     @EventHandler
