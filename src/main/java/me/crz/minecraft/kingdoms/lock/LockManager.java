@@ -35,7 +35,9 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -49,7 +51,7 @@ public class LockManager implements LockProvider {
     private boolean alternativeHopperProtection = true;
     private int loadQueueDelay = 20;
     private BukkitTask loadQueueTask = null;
-    private final Set<SimpleChunkLocation> loadQueue = new LinkedHashSet<>();
+    private final BlockingQueue<SimpleChunkLocation> loadQueue = new LinkedBlockingQueue<>();
     private final Map<String, Cache<SimpleChunkLocation, Map<String, Lock>>> lockTable = new ConcurrentHashMap<>();
     private final Expiry<SimpleChunkLocation, Map<String, Lock>> chunkExpiry = new Expiry<SimpleChunkLocation, Map<String, Lock>>() {
         @Override
@@ -129,19 +131,14 @@ public class LockManager implements LockProvider {
     }
 
     private void queueChunkLoad(Collection<SimpleChunkLocation> chunks) {
-        synchronized (loadQueue) {
-            loadQueue.addAll(chunks);
-        }
+        loadQueue.addAll(chunks);
         if (loadQueueTask == null || loadQueueTask.isCancelled()) {
             loadQueueTask = Bukkit.getScheduler().runTaskLaterAsynchronously(KingdomsPlugin.getInstance(), () -> {
                 loadQueueTask = null;
                 if (!loadQueue.isEmpty()) {
                     // Load locks in chunks
-                    SimpleChunkLocation[] toLoad;
-                    synchronized (loadQueue) {
-                        toLoad = loadQueue.toArray(new SimpleChunkLocation[0]);
-                        loadQueue.clear();
-                    }
+                    Set<SimpleChunkLocation> toLoad = new LinkedHashSet<>();
+                    loadQueue.drainTo(toLoad);
                     for (Lock l : DatabaseManager.getInstance().getLocks(toLoad)) {
                         cacheLock(l);
                     }
