@@ -3,12 +3,7 @@ package me.crz.minecraft.kingdoms.lock;
 import co.aikar.timings.Timing;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.Expiry;
-import com.github.benmanes.caffeine.cache.RemovalCause;
-import com.github.benmanes.caffeine.cache.RemovalListener;
-import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Table;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -117,7 +112,10 @@ public class LockManager implements LockProvider {
                         cacheLock(l);
                     }
                     for (SimpleChunkLocation chunk : toLoad) {
-                        lockTable.get(chunk.getWorld()).remove(chunk, LOADING_KEY);
+                        Map<String, Lock> chunkMap = lockTable.get(chunk.getWorld()).get(chunk);
+                        if (chunkMap != null) {
+                            chunkMap.remove(LOADING_KEY);
+                        }
                     }
                 }
             }, loadQueueDelay);
