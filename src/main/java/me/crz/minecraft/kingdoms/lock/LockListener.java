@@ -86,12 +86,14 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
         Lock lock = LockManager.getInstance().getLock(event.getBlock());
         if (lock != null && !lock.isOwner(event.getPlayer()) && !event.getPlayer().hasPermission("kingdoms.bypass.lock")) {
             event.setCancelled(true);
-            Resident owner = lock.getOwner();
-            getError("locked").tell(event.getPlayer(),
-                    "name", owner != null ? owner.getName() : "-",
-                    "title", owner != null? owner.getTitle() : "",
-                    "block", NameTag.getTag(lock.getBlock())
-            );
+            Utils.runAsync(() -> {
+                Resident owner = lock.getOwner();
+                getError("locked").tell(event.getPlayer(),
+                        "name", owner != null ? owner.getName() : "-",
+                        "title", owner != null ? owner.getTitle() : "",
+                        "block", NameTag.getTag(lock.getBlock())
+                );
+            });
         }
     }
 

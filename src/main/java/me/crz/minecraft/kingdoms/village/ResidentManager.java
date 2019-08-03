@@ -42,13 +42,8 @@ public class ResidentManager {
             }
 
             private long getDuration(Resident resident) {
-                if (resident != null) {
-                    if (keepCached(resident) || Bukkit.getPlayer(resident.getUUID()) != null) {
-                        return Long.MAX_VALUE;
-                    }
-                    if (resident.getLastLogin() + TimeUnit.SECONDS.toMillis(Data.residentCacheDuration) < System.currentTimeMillis()) {
-                        return 0;
-                    }
+                if (resident != null && (keepCached(resident) || Bukkit.getPlayer(resident.getUUID()) != null)) {
+                    return Long.MAX_VALUE;
                 }
                 return TimeUnit.SECONDS.toNanos(Data.residentCacheDuration);
             }
