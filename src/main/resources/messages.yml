@@ -1050,9 +1050,10 @@ command:
     name:
       success: "&aSet name of plot to &r{description}"
       description: Set the name of a plot
-    revoke:
-      success: "&aPlot has been revoked ownership!"
-      description: Revokes ownership of the plot you are standing in
+    unown:
+      success: "&aPlot is no longer owned by you!"
+      success-other: "&aPlot is no longer owned by &e{owner}&a!"
+      description: Removes ownership of the plot you are standing in
     settings:
       description: Manage plot settings
     sale:
