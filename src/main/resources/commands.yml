@@ -244,7 +244,7 @@ help-order:
     - unlink
     - sale
     - unsale
-    - revoke
+    - unown
     - plot set embassy <amount>
     staff:
     - sale
@@ -257,8 +257,12 @@ help-order:
   - unlock
   - info
   - hoppers
-  - add
-  - remove
+  - add <player> [toggle]
+  - add s:<settlement> [toggle]
+  - add e:<empire> [toggle]
+  - remove <player> [toggle]
+  - remove s:<settlement> [toggle]
+  - remove e:<empire> [toggle]
   friend:
   - add
   - list
@@ -268,3 +272,7 @@ help-order:
   - leave
   - lock
   - swear
+  resident:
+  - res <player>
+  - res ignore list | <player>
+  - res claimtransfer <settlement> <amount>

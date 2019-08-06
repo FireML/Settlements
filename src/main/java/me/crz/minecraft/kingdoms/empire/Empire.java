@@ -1,6 +1,8 @@
 package me.crz.minecraft.kingdoms.empire;
 
 import co.aikar.timings.Timing;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.ObjectArrays;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
@@ -10,6 +12,7 @@ import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.perk.Perk;
+import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.RankManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
@@ -30,6 +33,7 @@ import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -48,7 +52,6 @@ public class Empire extends LandOwner implements Comparable<Empire> {
     private IdObject capital;
     private String symbol = "";
     private Set<IdObject> members = new LinkedHashSet<>();
-    private Set<UUID> senators = new HashSet<>();
     private boolean inRegen = false;
     private long lastRename = 0;
 
@@ -137,7 +140,6 @@ public class Empire extends LandOwner implements Comparable<Empire> {
         map.put("lastRename", getLastRename());
         map.put("symbol", getSymbol());
         map.put("members", getMemberIds().stream().map(IdObject::value).filter(Objects::nonNull).collect(Collectors.toList()));
-        map.put("senators", getSenatorIds().stream().map(UUID::toString).collect(Collectors.toList()));
         return map;
     }
 
@@ -208,7 +210,6 @@ public class Empire extends LandOwner implements Comparable<Empire> {
         empire.capital = IdObject.get(map.get("capitalId"));
         empire.lastRename = (Long) map.get("lastRename");
         empire.setSymbol((String) map.get("symbol"));
-        ((Collection<String>) map.get("senators")).stream().map(UUID::fromString).forEach(u -> empire.getSenatorIds().add(u));
         if (map.get("members") != null && map.get("members") instanceof Collection) {
             for (Object memberId : (Collection) map.get("members")) {
                 empire.members.add(IdObject.get(memberId));
@@ -297,14 +298,6 @@ public class Empire extends LandOwner implements Comparable<Empire> {
 
     public boolean isFull() {
         return getMemberIds().size() >= ConfigManager.getInstance().getConfig().getInt("max-empire-size");
-    }
-
-    public Collection<UUID> getSenatorIds() {
-        return senators;
-    }
-
-    public Collection<Resident> getSenators() {
-        return getSenatorIds().stream().map(u -> ResidentManager.getInstance().getResident(u)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     @Override
@@ -419,14 +412,6 @@ public class Empire extends LandOwner implements Comparable<Empire> {
         return lastRename;
     }
 
-    public boolean removeSenator(Resident resident) {
-        return senators.remove(resident.getUUID());
-    }
-
-    public boolean addSenator(Resident resident) {
-        return senators.add(resident.getUUID());
-    }
-
     private enum State implements NameTag {
         EMPIRE;
     }
@@ -485,23 +470,20 @@ public class Empire extends LandOwner implements Comparable<Empire> {
     }
 
     public String[] getReplacements(ConfigMessages configMessages, String... initial) {
-        Message entry;
-        String online;
-        String offline;
-        String separator;
-        if (configMessages != null) {
-            entry = configMessages.getMessage("senators.entry");
-            online = configMessages.getMessage("senators.online").getText();
-            offline = configMessages.getMessage("senators.offline").getText();
-            separator = configMessages.getMessage("senators.separator").getText();
-        } else {
-            entry = null;
-            online = null;
-            offline = null;
-            separator = null;
-        }
         Village capital = getCapital();
         Resident chief = capital != null ? capital.getChief() : null;
+        Message rankMessage = null;
+        Message entry = null;
+        String online = null;
+        String offline = null;
+        String separator = null;
+        if (configMessages != null) {
+            rankMessage = configMessages.getMessage("special-residents.rank");
+            entry = configMessages.getMessage("special-residents.entry");
+            online = configMessages.getMessage("special-residents.online").getText();
+            offline = configMessages.getMessage("special-residents.offline").getText();
+            separator = configMessages.getMessage("special-residents.separator").getText();
+        }
         String[] repl = new String[] {
                 "name", getName(),
                 "description", getDescription(),
@@ -533,24 +515,57 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                 "chiefdisplaytitle", chief != null ? chief.getDisplayTitle() : "-",
                 "chief", chief != null ? chief.getName() : "-",
                 "chiefonline", configMessages != null ? chief != null && chief.getPlayer() != null ? online : offline : "",
-                "senators", configMessages != null
-                        ? getSenators().stream().map(r -> entry.getReplacedText(
-                                "name", r.getName(),
-                                "title", r.getTitle(),
-                                "rank", r.getVillageRank().getTag(r.getVillage()),
-                                "online", r.getPlayer() != null ? online : offline
-                        )).collect(Collectors.joining(separator))
-                        : String.valueOf(getSenatorIds().size()),
+                "specialresidents", configMessages != null ? getResidentsToString(rankMessage, entry, online, offline, separator) : "",
                 "size", String.valueOf(getMembers().size()),
                 "members", getMembers().stream().map(v -> v.getState().getTag() + " " + v.getName()).collect(Collectors.joining(", ")),
                 "resonlinecount", String.valueOf(getOnlineCount()),
                 "resotheronlinecount", String.valueOf(getOnlineCount() - 1),
-                "officerranks", Arrays.stream(VillageRank.values())
-                        .filter(r -> !r.isChief())
+                "officerranks", Arrays.stream(EmpireRank.values())
+                        .filter(r -> r != EmpireRank.getLeader())
                         .filter(r -> getEffectivePermissionValue(r, "empire.officer").orElse(false))
                         .map(NameTag::getTag)
                         .collect(Collectors.joining(", "))
         };
         return initial.length > 1 ? ObjectArrays.concat(repl, initial, String.class) : repl;
+    }
+
+    private String getResidentsToString(Message rankMessage, Message entry, String online, String offline, CharSequence separator) {
+        Multimap<EmpireRank, Resident> rankMap = MultimapBuilder.treeKeys().arrayListValues().build();
+        for (Resident resident : getResidents()) {
+            rankMap.put(resident.getEmpireRank(), resident);
+        }
+        List<String> lines = new ArrayList<>();
+        for (EmpireRank rank : rankMap.keySet()) {
+            if (rank == EmpireRank.getLeader() || rank == EmpireRank.getDefault()) {
+                // leader is listed extra, default rank is not displayed
+                continue;
+            }
+            String line = rankMessage.getReplacedText(
+                    "rank", rank.getTag(),
+                    "residents", rankMap.get(rank).stream()
+                            .sorted((r1, r2) -> {
+                                Player p1 = r1.getPlayer();
+                                Player p2 = r2.getPlayer();
+                                if (p1 != null && p2 == null) {
+                                    return -1;
+                                } else if (p1 == null && p2 != null) {
+                                    return 1;
+                                }
+                                return Long.compare(r1.getLastLogin(), r2.getLastLogin());
+                            })
+                            .limit(Utils.getPlayersInShow())
+                            .map(res -> entry.getReplacedText(
+                                    "online", res.getPlayer() != null ? online : offline,
+                                    "name", res.getName(),
+                                    "rank", rank.getTag(),
+                                    "title", res.getTitle(),
+                                    "state", res.getVillage().getStateTag(),
+                                    "settlement", res.getVillage().getName()
+                            ))
+                            .collect(Collectors.joining(separator))
+            );
+            lines.add(line);
+        }
+        return String.join("\n", lines);
     }
 }

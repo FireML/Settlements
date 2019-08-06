@@ -40,9 +40,9 @@ public class VillageAdminEmpireRankCommand extends SubCommand {
                 return;
             }
             Empire empire = tRes.getVillage().getEmpire();
-            Resident leader = empire.getCapital().getChief();
-            if (r == leader.getEmpireRank()) {
-                leader.setEmpireRank(tRes.getEmpireRank());
+            if (r == EmpireRank.getLeader()) {
+                Resident leader = empire.getCapital().getChief();
+                leader.setEmpireRank(EmpireRank.getLeader().next());
                 tRes.setEmpireRank(r);
                 empire.setCapital(tRes.getVillage());
 

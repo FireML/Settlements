@@ -32,11 +32,13 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -45,10 +47,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -61,7 +65,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
     private SaveQueue<Empire> empireQueue;
     private SaveQueue<Resident> residentQueue;
     private SaveQueue<OwnedLand> landQueue;
-    private SaveQueue<Lock> lockQueue;
+    private SaveQueue<Consumer<Connection>> lockQueue;
 
     @Override
     public void connect() throws Exception {
@@ -87,13 +91,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         empireQueue = new SaveQueue<>(ds, queueSize, queueWait, this::saveEmpire);
         residentQueue = new SaveQueue<>(ds, queueSize, queueWait, this::saveResident);
         landQueue = new SaveQueue<>(ds, queueSize, queueWait, this::saveLand);
-        lockQueue = new SaveQueue<>(ds, queueSize, queueWait, (conn, lock) -> {
-            try {
-                save(conn, lock);
-            } catch (SQLException e) {
-                plugin.getLogger().log(Level.SEVERE, "Error while saving lock at " + lock.getLocation().getKey() + " to database!", e);
-            }
-        });
+        lockQueue = new SaveQueue<>(ds, queueSize, queueWait, (conn, consumer) -> consumer.accept(conn));
 
         initializeTables();
         updateClaimModes();
@@ -266,7 +264,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
     private void saveEmpire(Connection conn, Empire empire) {
         try {
-            save(conn, empire, "members", "senators", "permissions");
+            save(conn, empire, "members", "permissions");
             if (!empire.getId().isNull()) {
                 updateDataMap(conn, "empire_vaults", "empireId", (Integer) empire.getId().value(), "content", "amount", empire.getVault());
                 updateDataMap(conn, "empire_uses", "empireId", (Integer) empire.getId().value(), "type", "state",
@@ -606,10 +604,15 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
     @Override
     public void saveLocks(Lock... locks) {
-        Utils.catchSync();
         for (Lock lock : locks) {
             if (lock.isValid()) {
-                lockQueue.add(lock.getId(), lock);
+                lockQueue.add(lock.getId(), conn -> {
+                    try {
+                        save(conn, lock);
+                    } catch (SQLException e) {
+                        plugin.getLogger().log(Level.SEVERE, "Error while saving lock at " + lock.getLocation().getKey() + " to database!", e);
+                    }
+                });
             }
         }
         lockQueue.finishAdding();
@@ -617,71 +620,76 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
     @Override
     public void deleteLocks(Lock... locks) {
-        Utils.catchSync();
         if (locks.length == 0) {
             return;
         }
-        try (Connection conn = ds.getConnection();
-             PreparedStatement idSta = conn.prepareStatement("DELETE FROM " + tablePrefix + "locks WHERE id = ?;");
-             PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "locks WHERE world = ? AND x = ? AND y = ? AND z = ?;")) {
-            for (Lock lock : locks) {
-                if (lock.getId().isNull()) {
-                    sta.setString(1, lock.getLocation().getWorld());
-                    sta.setInt(2, lock.getLocation().getX());
-                    sta.setInt(3, lock.getLocation().getY());
-                    sta.setInt(4, lock.getLocation().getZ());
-                    sta.addBatch();
-                } else {
-                    idSta.setObject(1, lock.getId().value());
-                    idSta.addBatch();
+        for (Lock lock : locks) {
+            lockQueue.add(lock.getId(), conn -> {
+                try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "locks WHERE " +
+                         (lock.getId().isNull() ? "world = ? AND x = ? AND y = ? AND z = ?;" : "id = ?;"))) {
+                    if (lock.getId().isNull()) {
+                        sta.setString(1, lock.getLocation().getWorld());
+                        sta.setInt(2, lock.getLocation().getX());
+                        sta.setInt(3, lock.getLocation().getY());
+                        sta.setInt(4, lock.getLocation().getZ());
+                    } else {
+                        sta.setObject(1, lock.getId().value());
+                    }
+                    sta.execute();
+                } catch (SQLException e) {
+                    plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + locks.length + " locks from database!", e);
                 }
-            }
-            idSta.executeBatch();
-            sta.executeBatch();
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + locks.length + " locks from database!", e);
+            });
         }
+        lockQueue.finishAdding();
     }
 
     @Override
     public void deleteLocksInChunks(Collection<? extends SimpleChunkLocation> chunks) {
-        Utils.catchSync();
         if (chunks.isEmpty()) {
             return;
         }
 
-        String sql = "DELETE FROM " + tablePrefix + "locks" +
-                " WHERE world = ? AND x BETWEEN ? AND ? AND z BETWEEN ? AND ?;";
-        try (Connection conn = ds.getConnection(); PreparedStatement sta = conn.prepareStatement(sql)) {
-            for (SimpleChunkLocation chunk : chunks) {
-                sta.setString(1, chunk.getWorld());
-                sta.setInt(2, chunk.getX() << 4);
-                sta.setInt(3, (chunk.getX() << 4) + 16);
-                sta.setInt(4, chunk.getZ() << 4);
-                sta.setInt(5, (chunk.getZ() << 4) + 16);
-                sta.addBatch();
+        lockQueue.add(conn -> {
+            String sql = "DELETE FROM " + tablePrefix + "locks" +
+                    " WHERE world = ? AND x BETWEEN ? AND ? AND z BETWEEN ? AND ?;";
+            try (PreparedStatement sta = conn.prepareStatement(sql)) {
+                for (SimpleChunkLocation chunk : chunks) {
+                    sta.setString(1, chunk.getWorld());
+                    sta.setInt(2, chunk.getX() << 4);
+                    sta.setInt(3, (chunk.getX() << 4) + 16);
+                    sta.setInt(4, chunk.getZ() << 4);
+                    sta.setInt(5, (chunk.getZ() << 4) + 16);
+                    sta.addBatch();
+                }
+                sta.executeBatch();
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "Error while trying to delete locks in " + chunks.size() + " chunks from database!", e);
             }
-            sta.executeBatch();
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while trying to delete locks in " + chunks.size() + " chunks from database!", e);
-        }
+        });
+        lockQueue.forceSave = true;
+        lockQueue.finishAdding();
     }
 
     @Override
     public void deleteLocks(String worldName) {
-        Utils.catchSync();
-        try (Connection conn = ds.getConnection();
-             PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "locks WHERE world = ?;")) {
-            sta.setString(1, worldName);
-            sta.executeUpdate();
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while trying to delete locks in world " + worldName + " from database!", e);
-        }
+        lockQueue.add(conn -> {
+            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "locks WHERE world = ?;")) {
+                sta.setString(1, worldName);
+                sta.executeUpdate();
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "Error while trying to delete locks in world " + worldName + " from database!", e);
+            }
+        });
+        lockQueue.forceSave = true;
+        lockQueue.finishAdding();
     }
 
     @Override
     public Collection<Lock> getAllLocks() {
         Utils.catchSync();
+        // make sure to save before getting new locks
+        lockQueue.forceSave();
         String sql = "SELECT l.*, r.uuid AS `owner` FROM " + tablePrefix + "locks AS l LEFT JOIN " + tablePrefix + "residents AS r ON l.ownerId = r.id;";
         try (Connection conn = ds.getConnection();
              ResultSet rs = conn.createStatement().executeQuery(sql)) {
@@ -705,6 +713,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return  Collections.EMPTY_LIST;
         }
         Utils.catchSync();
+        // make sure to save before getting new locks
+        lockQueue.forceSave();
         String sql = "SELECT l.*, r.uuid AS `owner` FROM " + tablePrefix + "locks AS l" +
                 " LEFT JOIN " + tablePrefix + "residents AS r ON l.ownerId = r.id" +
                 " WHERE world = ? AND x BETWEEN ? AND ? AND z BETWEEN ? AND ?;";
@@ -815,11 +825,11 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
     @Override
     public void disable() {
-        villageQueue.saving.run();
-        empireQueue.saving.run();
-        residentQueue.saving.run();
-        landQueue.saving.run();
-        lockQueue.saving.run();
+        villageQueue.forceSave();
+        empireQueue.forceSave();
+        residentQueue.forceSave();
+        landQueue.forceSave();
+        lockQueue.forceSave();
         ds.close();
     }
 
@@ -908,18 +918,6 @@ public class MySqlDatabaseManager extends DatabaseManager {
             members.add(rRs.getInt("id"));
         }
         map.put("members", members);
-
-        Collection<String> senators = new ArrayList<>();
-        for (int memberId : members) {
-            PreparedStatement sSta = conn.prepareStatement("SELECT uuid FROM " + tablePrefix + "residents WHERE empirerank = ? AND settlementId = ?;");
-            sSta.setString(1, EmpireRank.getLeader().next().name());
-            sSta.setInt(2, memberId);
-            ResultSet sRs = sSta.executeQuery();
-            while (sRs.next()) {
-                senators.add(sRs.getString("uuid"));
-            }
-        }
-        map.put("senators", senators);
 
         map.put("banished", selectList(conn, "empire", id, "banished"));
         map.put("allies", selectList(conn, "empire", id, "allies"));
@@ -1509,16 +1507,30 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 }
                 if (!queue.isEmpty()) {
                     String name = null;
-                    try (Connection conn = ds.getConnection()) {
-                        for (T t : queue.values()) {
-                            handleSave.accept(conn, t);
-                            if (name == null) {
-                                name = t.getClass().getSimpleName();
+                    Deque<Map.Entry<IdObject, T>> tQueue = new ArrayDeque<>(queue.entrySet());
+                    Connection conn = null;
+                    try {
+                        while (!tQueue.isEmpty()) {
+                            if (conn == null || !conn.isValid(1)) {
+                                conn = ds.getConnection();
                             }
+                            Map.Entry<IdObject, T> e = tQueue.pollFirst();
+                            handleSave.accept(conn, e.getValue());
+                            if (name == null) {
+                                name = e.getValue().getClass().getSimpleName();
+                            }
+                            queue.remove(e.getKey());
                         }
-                        queue.clear();
                     } catch (SQLException e) {
                         KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Error while saving " + queue.size() + " " + (name != null ? name : "object") + "s to database!", e);
+                    } finally {
+                        if (conn != null) {
+                            try {
+                                conn.close();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
             }
@@ -1534,8 +1546,12 @@ public class MySqlDatabaseManager extends DatabaseManager {
             this.handleSave = handleSave;
         }
 
+        public void add(T object) {
+            add(null, object);
+        }
+
         public void add(IdObject id, T object) {
-            if (id.isNull()) {
+            if (id == null || id.isNull()) {
                 id = IdObject.get(object.hashCode());
                 forceSave = true;
             }
@@ -1543,7 +1559,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 queue.put(id, object);
             }
             if (queue.size() >= maxSize) {
-                saving.run();
+                Utils.runAsync(saving);
             } else if (!forceSave && task == null) {
                 task = Bukkit.getScheduler().runTaskLaterAsynchronously(KingdomsPlugin.getInstance(), saving, saveWait * 20);
             }
@@ -1555,10 +1571,18 @@ public class MySqlDatabaseManager extends DatabaseManager {
          */
         public boolean finishAdding() {
              if (forceSave || queue.size()  > maxSize / 2) {
-                 saving.run();
+                 Utils.runAsync(saving);
                  return true;
              }
              return false;
+        }
+
+        /**
+         * Force a save of this queue
+         */
+        public void forceSave() {
+            forceSave = true;
+            finishAdding();
         }
     }
 }

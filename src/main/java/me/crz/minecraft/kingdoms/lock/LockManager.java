@@ -3,7 +3,6 @@ package me.crz.minecraft.kingdoms.lock;
 import co.aikar.timings.Timing;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.Expiry;
 import com.google.common.collect.ImmutableMap;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
@@ -26,15 +25,17 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -46,37 +47,11 @@ public class LockManager implements LockProvider {
     private static LockManager instance;
     private final Set<Material> lockable = EnumSet.noneOf(Material.class);
     private boolean alternativeHopperProtection = true;
-    private final Map<String, Cache<SimpleChunkLocation, Map<String, Lock>>> lockTable = new ConcurrentHashMap<>();
-    private final Expiry<SimpleChunkLocation, Map<String, Lock>> chunkExpiry = new Expiry<SimpleChunkLocation, Map<String, Lock>>() {
-        @Override
-        public long expireAfterCreate(@Nonnull SimpleChunkLocation key, @Nonnull Map<String, Lock> value, long currentTime) {
-            return getDuration(key, value);
-        }
-
-        @Override
-        public long expireAfterUpdate(@Nonnull SimpleChunkLocation key, @Nonnull Map<String, Lock> value, long currentTime, long currentDuration) {
-            return getDuration(key, value);
-        }
-
-        @Override
-        public long expireAfterRead(@Nonnull SimpleChunkLocation key, @Nonnull Map<String, Lock> value, long currentTime, long currentDuration) {
-            return getDuration(key, value);
-        }
-
-        private long getDuration(SimpleChunkLocation chunk, Map<String, Lock> value) {
-            if (chunk != null) {
-                World world = Bukkit.getWorld(chunk.getWorld());
-                if (world == null) {
-                    return 0;
-                }
-
-                if (!KingdomsPlugin.getInstance().isRunning() || value.containsKey(LOADING_KEY) || world.isChunkLoaded(chunk.getX(), chunk.getZ())) {
-                    return Long.MAX_VALUE;
-                }
-            }
-            return TimeUnit.SECONDS.toNanos(60);
-        }
-    };
+    private int loadQueueDelay = 20;
+    private BukkitTask loadQueueTask = null;
+    private final BlockingQueue<SimpleChunkLocation> loadQueue = new LinkedBlockingQueue<>();
+    // Ideally this would use a Guava table but synchronized ones were only added in Guava 28 and Minecraft/Spigot uses 21
+    private final Map<String, Map<SimpleChunkLocation, Map<String, Lock>>> lockTable = new ConcurrentHashMap<>();
 
     private final Cache<UUID, String> interactActions = Caffeine.newBuilder().expireAfterWrite(10, TimeUnit.SECONDS).build();
     private final Cache<UUID, String> toggledActions = Caffeine.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES).build();
@@ -95,25 +70,24 @@ public class LockManager implements LockProvider {
      * Load chunks if they aren't loaded yet
      * Runs database operation in a new async thread if called on the main thread; otherwise it blocks the current thread
      * @param chunks The chunks to load locks in
-     * @return The new async task or null if it was already run
      */
-    public BukkitTask loadChunks(SimpleChunkLocation... chunks) {
+    public void loadChunks(SimpleChunkLocation... chunks) {
         Set<SimpleChunkLocation> notLoaded = new HashSet<>();
         for (SimpleChunkLocation chunk : chunks) {
             // Mark all chunks that did not have locks as cached
             boolean isPresent = false;
-            Cache<SimpleChunkLocation, Map<String, Lock>> worldCache;
+            Map<SimpleChunkLocation, Map<String, Lock>> worldCache;
             try (Timing t = KingdomsPlugin.getInstance().getAndStartTiming("LockManager create world chunk cache")) {
                 worldCache = lockTable.get(chunk.getWorld());
                 if (worldCache == null) {
-                    worldCache = Caffeine.newBuilder().expireAfter(chunkExpiry).build();
+                    worldCache = new ConcurrentHashMap<>();
                     lockTable.put(chunk.getWorld(), worldCache);
                 } else {
                     isPresent = true;
                 }
             }
             try (Timing t = KingdomsPlugin.getInstance().getAndStartTiming("LockManager check chunk lock cache")) {
-                isPresent = isPresent && worldCache.getIfPresent(chunk) != null;
+                isPresent = isPresent && worldCache.containsKey(chunk);
             }
             try (Timing t = KingdomsPlugin.getInstance().getAndStartTiming("LockManager create chunk lock cache")) {
                 if (!isPresent) {
@@ -122,22 +96,42 @@ public class LockManager implements LockProvider {
                 }
             }
         }
-        return Bukkit.getScheduler().runTaskAsynchronously(KingdomsPlugin.getInstance(), () -> {
-            // Load locks in chunks
-            for (Lock l : DatabaseManager.getInstance().getLocks(notLoaded)) {
-                cacheLock(l);
-            }
-            for (SimpleChunkLocation chunk : notLoaded) {
-                Map<String, Lock> chunkMap = lockTable.get(chunk.getWorld()).getIfPresent(chunk);
-                if (chunkMap != null) {
-                    chunkMap.remove(LOADING_KEY);
+        queueChunkLoad(notLoaded);
+    }
+
+    private void queueChunkLoad(Collection<SimpleChunkLocation> chunks) {
+        loadQueue.addAll(chunks);
+        if (loadQueueTask == null || loadQueueTask.isCancelled()) {
+            loadQueueTask = Bukkit.getScheduler().runTaskLaterAsynchronously(KingdomsPlugin.getInstance(), () -> {
+                loadQueueTask = null;
+                if (!loadQueue.isEmpty()) {
+                    // Load locks in chunks
+                    Set<SimpleChunkLocation> toLoad = new LinkedHashSet<>();
+                    loadQueue.drainTo(toLoad);
+                    for (Lock l : DatabaseManager.getInstance().getLocks(toLoad)) {
+                        cacheLock(l);
+                    }
+                    for (SimpleChunkLocation chunk : toLoad) {
+                        Map<String, Lock> chunkMap = lockTable.get(chunk.getWorld()).get(chunk);
+                        if (chunkMap != null) {
+                            chunkMap.remove(LOADING_KEY);
+                        }
+                    }
                 }
+            }, loadQueueDelay);
+        }
+    }
+
+    public void unloadChunks(SimpleChunkLocation... chunks) {
+        for (SimpleChunkLocation chunk : chunks) {
+            if (lockTable.containsKey(chunk.getWorld())) {
+                lockTable.get(chunk.getWorld()).remove(chunk);
             }
-        });
+        }
     }
 
     public boolean isLoaded(SimpleChunkLocation chunk) {
-        return lockTable.containsKey(chunk.getWorld()) && lockTable.get(chunk.getWorld()).getIfPresent(chunk) != null;
+        return lockTable.containsKey(chunk.getWorld()) && lockTable.get(chunk.getWorld()).containsKey(chunk);
     }
 
     public void unloadWorld(World world) {
@@ -146,6 +140,7 @@ public class LockManager implements LockProvider {
 
     public void loadConfig() {
         alternativeHopperProtection = KingdomsPlugin.getInstance().getConfig().getBoolean("alternative-hopper-protection");
+        loadQueueDelay = KingdomsPlugin.getInstance().getConfig().getInt("lock-load-queue-ticks");
         lockable.clear();
         for (String string : KingdomsPlugin.getInstance().getConfig().getStringList("lockable")) {
             if (string.startsWith("*")) {
@@ -179,13 +174,13 @@ public class LockManager implements LockProvider {
         for (Lock lock : locks) {
             cacheLock(lock);
         }
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveLocks(locks));
+        DatabaseManager.getInstance().saveLocks(locks);
     }
 
     private void cacheLock(Lock lock) {
         if (lock.isValid()) {
-            Map<String, Lock> lockMap = lockTable.computeIfAbsent(lock.getLocation().getWorld(), s -> Caffeine.newBuilder().expireAfter(chunkExpiry).build())
-                    .get(lock.getLocation().toChunkLocation(), location -> new ConcurrentHashMap<>());
+            Map<String, Lock> lockMap = lockTable.computeIfAbsent(lock.getLocation().getWorld(), s -> new ConcurrentHashMap<>())
+                    .computeIfAbsent(lock.getLocation().toChunkLocation(), location -> new ConcurrentHashMap<>());
             lockMap.put(lock.getLocation().getSimpleKey(), lock);
             lockMap.remove(LOADING_KEY);
         }
@@ -259,7 +254,7 @@ public class LockManager implements LockProvider {
         Lock lock = null;
         if (lockTable.containsKey(bukkitLocation.getWorld().getName())) {
             SimpleBlockLocation location = new SimpleBlockLocation(bukkitLocation);
-            Map<String, Lock> chunkMap = lockTable.get(location.getWorld()).getIfPresent(location.toChunkLocation());
+            Map<String, Lock> chunkMap = lockTable.get(location.getWorld()).get(location.toChunkLocation());
             if (chunkMap != null && !chunkMap.containsKey(LOADING_KEY)) {
                 // Chunk was cached
                 lock = chunkMap.get(location.getSimpleKey());
@@ -285,12 +280,12 @@ public class LockManager implements LockProvider {
 
     public void deleteLock(Lock lock) {
         if (lockTable.containsKey(lock.getLocation().getWorld())) {
-            Map<String, Lock> chunkMap = lockTable.get(lock.getLocation().getWorld()).getIfPresent(lock.getLocation().toChunkLocation());
+            Map<String, Lock> chunkMap = lockTable.get(lock.getLocation().getWorld()).get(lock.getLocation().toChunkLocation());
             if (chunkMap != null) {
                 chunkMap.remove(lock.getLocation().getSimpleKey(), lock);
             }
         }
-        Utils.runAsync(() -> DatabaseManager.getInstance().deleteLocks(lock));
+        DatabaseManager.getInstance().deleteLocks(lock);
     }
 
     @Override
@@ -308,16 +303,16 @@ public class LockManager implements LockProvider {
     public void removeInChunks(Collection<? extends SimpleChunkLocation> chunks) {
         for (SimpleChunkLocation chunk : chunks) {
             if (lockTable.containsKey(chunk.getWorld())) {
-                lockTable.get(chunk.getWorld()).invalidate(chunk);
+                lockTable.get(chunk.getWorld()).remove(chunk);
             }
         }
-        Utils.runAsync(() -> DatabaseManager.getInstance().deleteLocksInChunks(chunks));
+        DatabaseManager.getInstance().deleteLocksInChunks(chunks);
     }
 
     @Override
     public void removeInWorld(World world) {
         lockTable.remove(world.getName());
-        Utils.runAsync(() -> DatabaseManager.getInstance().deleteLocks(world.getName()));
+        DatabaseManager.getInstance().deleteLocks(world.getName());
     }
 
     synchronized public static LockManager getInstance() {
@@ -342,6 +337,10 @@ public class LockManager implements LockProvider {
         }
     }
 
+    public boolean hasToggledAction(UUID playerId) {
+        return toggledActions.getIfPresent(playerId) != null;
+    }
+
     private String getAction(UUID playerId) {
         String action = interactActions.getIfPresent(playerId);
         if (action == null) {
@@ -360,14 +359,14 @@ public class LockManager implements LockProvider {
 
     public Collection<Lock> getLocks() {
         return lockTable.values().stream()
-                .map(c -> c.asMap().values())
+                .map(Map::values)
                 .flatMap((Function<Collection<Map<String, Lock>>, Stream<Lock>>) maps
                         -> maps.stream().map(Map::values).flatMap(Collection::stream)).collect(Collectors.toSet());
     }
 
     public Collection<Lock> getLocks(String world) {
         if (lockTable.get(world) != null) {
-            return lockTable.get(world).asMap().values().stream()
+            return lockTable.get(world).values().stream()
                     .flatMap((Function<Map<String, Lock>, Stream<Lock>>) stringLockMap
                             -> stringLockMap.values().stream()).collect(Collectors.toSet());
         }

@@ -211,9 +211,6 @@ public class Resident implements ConfigurationSerializable, Targetable {
     public void setVillage(Village village) {
         if (getVillage() != null) {
             getVillage().getResidentIds().remove(getUUID());
-            if (hasEmpire()) {
-                getVillage().getEmpire().removeSenator(this);
-            }
         }
         this.village = village;
         if (village != null) {
@@ -248,10 +245,8 @@ public class Resident implements ConfigurationSerializable, Targetable {
         if (hasEmpire() && getVillage().getEmpire().isCapital(getVillage())) {
             if (rank == VillageRank.getChief()) {
                 setEmpireRank(EmpireRank.getLeader());
-                getVillage().getEmpire().removeSenator(this);
             } else if (prev == VillageRank.getChief()) {
-                setEmpireRank(EmpireRank.getLeader().getInheritedRank());
-                getVillage().getEmpire().addSenator(this);
+                setEmpireRank(EmpireRank.getLeader().next());
             }
         }
     }

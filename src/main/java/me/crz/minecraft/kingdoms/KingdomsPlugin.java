@@ -32,7 +32,6 @@ import me.crz.minecraft.kingdoms.command.CommandManager;
 import me.crz.minecraft.kingdoms.scoreboard.ScoreboardManager;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.utils.ThreadManager;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,7 +50,7 @@ import me.crz.minecraft.kingdoms.village.VillageListener;
 import me.crz.minecraft.kingdoms.vault.VaultListener;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.village.VillageManager;
-import me.crz.minecraft.kingdoms.utils.UtilChat;
+import me.crz.minecraft.kingdoms.utils.CursesFilter;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import me.crz.minecraft.kingdoms.land.LandPerks;
@@ -212,7 +211,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     }
 
     public void loadManagers() {
-        ThreadManager.getInstance();
+        // Order is important!
         DatabaseManager.getInstance();
         RankManager.getInstance();
         EmpireManager.getInstance();
@@ -223,7 +222,6 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         EventManager.getInstance();
         ScoreboardManager.getInstance();
         CommandManager.getInstance();
-        UtilChat.getInstance();
         ChatManager.getInstance();
     }
 

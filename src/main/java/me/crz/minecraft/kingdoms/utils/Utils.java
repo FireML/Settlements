@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.utils;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.db.InviteCache;
@@ -111,9 +112,23 @@ public class Utils {
         return 0;
     }
 
+    public static int getEmpireStartBalance() {
+        if (ConfigManager.getInstance().getConfig().isInt("empire-start-balance")) {
+            return ConfigManager.getInstance().getConfig().getInt("empire-start-balance");
+        }
+        return 0;
+    }
+
     public static int getVillageCreationCost() {
         if (ConfigManager.getInstance().getConfig().isInt("village-creation-cost")) {
             return ConfigManager.getInstance().getConfig().getInt("village-creation-cost");
+        }
+        return 0;
+    }
+
+    public static int getVillageStartBalance() {
+        if (ConfigManager.getInstance().getConfig().isInt("village-start-balance")) {
+            return ConfigManager.getInstance().getConfig().getInt("village-start-balance");
         }
         return 0;
     }
@@ -161,13 +176,6 @@ public class Utils {
     public static boolean getCloseClaimsUnclaimsOutposts() {
         if (ConfigManager.getInstance().getConfig().isBoolean("close-claims-unclaims-outposts")) {
             return ConfigManager.getInstance().getConfig().getBoolean("close-claims-unclaims-outposts");
-        }
-        return false;
-    }
-
-    public static boolean isFireSpreadAllowed() {
-        if (ConfigManager.getInstance().getConfig().isBoolean("allow-firespread-outside-claim")) {
-            return ConfigManager.getInstance().getConfig().getBoolean("allow-firespread-outside-claim");
         }
         return false;
     }
@@ -242,6 +250,13 @@ public class Utils {
         return true;
     }
 
+    public static boolean allowClaimTransferToEmpire() {
+        if (ConfigManager.getInstance().getConfig().isBoolean("claimtransfer-to-empire")) {
+            return ConfigManager.getInstance().getConfig().getBoolean("claimtransfer-to-empire");
+        }
+        return false;
+    }
+
     public static Sound getChatNotifySound() {
         if (ConfigManager.getInstance().getConfig().isString("chat.notify.sound")) {
             try {
@@ -284,6 +299,10 @@ public class Utils {
             return ConfigManager.getInstance().getConfig().getInt("village-inactive-time");
         }
         return 30;
+    }
+
+    public static boolean getPlotMode(PlotMode mode, String type) {
+        return ConfigManager.getInstance().getConfig().getBoolean("modes." + type + "." + mode.getKey(), false);
     }
 
     public static boolean playerIsChief(Player player, Village village) {
@@ -357,7 +376,7 @@ public class Utils {
      * @return The BukkitTask that was started or null if we are already on an async thread
      */
     public static BukkitTask runAsync(Runnable run) {
-        if (Bukkit.isPrimaryThread()) {
+        if (Bukkit.isPrimaryThread() && KingdomsPlugin.getInstance().isRunning()) {
             return Bukkit.getScheduler().runTaskAsynchronously(KingdomsPlugin.getInstance(), run);
         } else {
             run.run();

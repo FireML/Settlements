@@ -1,10 +1,10 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.Base;
+import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.utils.UtilChat;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -26,7 +26,7 @@ public class VillageCreateCommand extends ResidentSubCommand {
         if (args.length < 1) {
             return false;
         }
-        String name = UtilChat.getInstance().filterCurses(String.join(" ", args).trim());
+        String name = ChatManager.getInstance().filterAllCurses(String.join(" ", args).trim());
         if (name.toLowerCase().contains("claims")) {
             getError("invalid-characters").tell(resident, "input", name);
         } else if (villageExists(name)) {

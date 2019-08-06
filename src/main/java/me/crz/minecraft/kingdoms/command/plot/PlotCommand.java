@@ -29,7 +29,7 @@ public class PlotCommand extends ResidentSubCommand {
         registerCommand(new PlotInfoCommand(this));
         registerCommand(new PlotNameCommand(this));
         registerCommand(new PlotBuyCommand(this));
-        registerCommand(new PlotRevokeCommand(this));
+        registerCommand(new PlotUnownCommand(this));
         registerCommand(new PlotSettingsCommand(this));
         registerCommand(new PlotUseCommand(this));
         registerCommand(new PlotModeCommand(this));

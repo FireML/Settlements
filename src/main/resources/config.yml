@@ -19,7 +19,9 @@ scoreboard:
 disabled-claiming-worlds: []
 reset-channel-on-login: true
 empire-creation-cost: 0
+empire-start-balance: 0
 village-creation-cost: 0
+village-start-balance: 0
 outpost-creation-cost: 0
 empire-max-tax: 1000000
 village-max-tax: -1
@@ -84,7 +86,31 @@ chat:
     cooldown: 15
 # Amount of titles that can be set per rank
 titles-per-rank: 10
-allow-firespread-outside-claim: false
+# Unclaimed/abandoned modes
+modes:
+  unclaimed:
+    firespread: false
+    explosion: false
+    pvp: true
+    mobspawning: true
+  abandoned:
+    village:
+      firespread: false
+      explosion: false
+      pvp: true
+      mobspawning: true
+    kingdom:
+      firespread: false
+      explosion: false
+      pvp: true
+      mobspawning: true
+    empire:
+      firespread: false
+      explosion: false
+      pvp: true
+      mobspawning: true
+# Amount in ticks after which the chunk queue will be processed to load the locks in it
+lock-load-queue-ticks: 20
 remove-locks-on-unclaim: true
 remove-locked-blocks: false
 lockable:
@@ -100,6 +126,8 @@ lockable:
 # This checks if a block is protected on place rather than using the
 # InventoryMoveItemEvent to prevent hoppers from stealing items
 alternative-hopper-protection: true
+# Whether or not a player can transfer their bought claims to an empire
+claimtransfer-to-empire: false
 # Toggle Placeholder API usage in certain places
 placeholder-api:
   sidebar: true

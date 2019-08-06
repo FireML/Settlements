@@ -95,6 +95,7 @@ public class VillageManager {
             chief.tell(ChatColor.RED + "Error while saving " + village.getName() + " to the database! It already had an ID defined?");
             return;
         }
+        village.setBank(Math.min(Utils.getVillageStartBalance(), Utils.getVillageCreationCost()));
         villages.put(village.getName().replace(' ', '_').toLowerCase(), village);
         chief.setVillage(village);
         chief.setVillageRank(VillageRank.getChief());
@@ -185,11 +186,11 @@ public class VillageManager {
         for (Use u : Use.values()) {
             village.setUseState(u, BuildState.PUBLIC);
         }
-        village.setMode(PlotMode.pvp, true);
-        village.setMode(PlotMode.fireSpread, true);
-        village.setMode(PlotMode.explosions, true);
-        village.setMode(PlotMode.buff, false);
-        village.setMode(PlotMode.mobSpawning, true);
+        for (PlotMode mode : PlotMode.values()) {
+            if (mode.appliesTo(PlotMode.AppliesTo.LAND_OWNER)) {
+                village.setMode(mode, Utils.getPlotMode(mode, "abandoned." + village.getStateKey()));
+            }
+        }
 
         List<OwnedLand> changedLand = new ArrayList<>();
         for (OwnedLand land : LandManager.getInstance().getClaimedLand(village)) {
@@ -272,9 +273,6 @@ public class VillageManager {
     }
 
     private void removeResidentFromVillage(Resident resident) {
-        if (resident.getVillage().hasEmpire()) {
-            resident.getVillage().getEmpire().removeSenator(resident);
-        }
         resident.setVillage(null);
         resident.setVillageRank(VillageRank.getDefault());
         resident.setEmpireRank(EmpireRank.getDefault());

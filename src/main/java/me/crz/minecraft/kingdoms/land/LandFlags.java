@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.land;
 
 import co.aikar.timings.Timing;
+import com.destroystokyo.paper.event.block.TNTPrimeEvent;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.essentials.events.HostileCreaturePreSpawnEvent;
@@ -86,7 +87,10 @@ public class LandFlags extends Base implements LandFlagBase {
 
     private boolean isAllowed(Location location, PlotMode mode) {
         OwnedLand land = LandManager.getInstance().getLand(location);
-        return land == null || mode.get(land);
+        if (land != null) {
+            return mode.get(land);
+        }
+        return Utils.getPlotMode(mode, "unclaimed");
     }
 
     @EventHandler
@@ -104,7 +108,7 @@ public class LandFlags extends Base implements LandFlagBase {
     @EventHandler(ignoreCancelled = true)
     public void onBlockIgnite(BlockIgniteEvent e) {
         if (e.getCause().equals(BlockIgniteEvent.IgniteCause.SPREAD) && e.getIgnitingBlock() != null) {
-            if (isFireSpreadAllowed(e.getBlock().getLocation())) {
+            if (isAllowed(e.getBlock().getLocation(), PlotMode.fireSpread)) {
                 return;
             }
             e.setCancelled(true);
@@ -113,15 +117,10 @@ public class LandFlags extends Base implements LandFlagBase {
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockBurn(BlockBurnEvent e) {
-        if (isFireSpreadAllowed(e.getBlock().getLocation())) {
+        if (isAllowed(e.getBlock().getLocation(), PlotMode.fireSpread)) {
             return;
         }
         e.setCancelled(true);
-    }
-
-    private boolean isFireSpreadAllowed(Location location) {
-        OwnedLand land = LandManager.getInstance().getLand(location);
-        return land == null ? Utils.isWorldClaimable(location.getWorld()) && Utils.isFireSpreadAllowed() : land.getMode(PlotMode.fireSpread);
     }
 
     @EventHandler
@@ -170,6 +169,13 @@ public class LandFlags extends Base implements LandFlagBase {
     }
 
     @EventHandler(ignoreCancelled = true)
+    public void onTntPrime(TNTPrimeEvent e) {
+        if (e.getReason() == TNTPrimeEvent.PrimeReason.EXPLOSION && !isAllowed(e.getBlock().getLocation(), PlotMode.explosions)) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent e) {
         if (!isAllowed(e.getLocation(), PlotMode.explosions)) {
             e.setCancelled(true);
@@ -180,7 +186,7 @@ public class LandFlags extends Base implements LandFlagBase {
 
 
     @EventHandler(ignoreCancelled = true)
-    public void onEntityExplode(BlockExplodeEvent e) {
+    public void onBlockExplode(BlockExplodeEvent e) {
         if (!isAllowed(e.getBlock().getLocation(), PlotMode.explosions)) {
             e.setCancelled(true);
             return;

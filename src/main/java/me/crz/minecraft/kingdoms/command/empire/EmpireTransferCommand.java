@@ -44,10 +44,8 @@ public class EmpireTransferCommand extends EmpireSubCommand {
             }
             Resident oldLeader = empire.getCapital().getChief();
             oldLeader.setEmpireRank(EmpireRank.getLeader().next());
-            empire.addSenator(oldLeader);
             Resident newLeader = targetVillage.getChief();
             newLeader.setEmpireRank(EmpireRank.getLeader());
-            empire.removeSenator(newLeader);
             empire.setCapital(targetVillage);
             DatabaseManager.getInstance().saveEmpire(empire);
             DatabaseManager.getInstance().saveResident(oldLeader, newLeader);

@@ -28,6 +28,7 @@ public class CmiIntegration implements IgnoreProvider, AfkProvider, MailProvider
         CMIUser user = cmi.getPlayerManager().getUser(resident.getUUID());
         if (user != null) {
             user.addIgnore(ignoredId, true);
+            user.addForDelayedSave();
         }
     }
 
@@ -51,6 +52,7 @@ public class CmiIntegration implements IgnoreProvider, AfkProvider, MailProvider
         CMIUser user = cmi.getPlayerManager().getUser(receiver.getUUID());
         if (user != null) {
             user.addMail(new PlayerMail(sender, System.currentTimeMillis(), message), true);
+            user.addForDelayedSave();
         }
     }
 }

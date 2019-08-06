@@ -3,7 +3,6 @@ package me.crz.minecraft.kingdoms.command.resident;
 import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -31,7 +30,7 @@ public class ResidentClaimTransferCommand extends ResidentSubCommand {
                 return false;
             }
         } else {
-            if (args[0].startsWith("empire:") || args[0].startsWith("e:")) {
+            if ((args[0].startsWith("empire:") || args[0].startsWith("e:")) && Utils.allowClaimTransferToEmpire()) {
                 target = EmpireManager.getInstance().getEmpireFromName(args[0].split(":")[1]);
                 if (target == null) {
                     getError("empire-doesnt-exist").tell(resident, "name", args[0].split(":")[1]);
@@ -58,11 +57,7 @@ public class ResidentClaimTransferCommand extends ResidentSubCommand {
                 target.addBonusClaims(transfer);
                 Utils.runAsync(() -> {
                     DatabaseManager.getInstance().saveResident(resident);
-                    if (target instanceof Village) {
-                        DatabaseManager.getInstance().saveVillage((Village) target);
-                    } else if (target instanceof Empire) {
-                        DatabaseManager.getInstance().saveEmpire((Empire) target);
-                    }
+                    DatabaseManager.getInstance().save(target);
                     DatabaseManager.getInstance().log(target, resident, "deposit", "claim", transfer);
                 });
                 getMessage("success").tell(target.getOnlineResidents(),

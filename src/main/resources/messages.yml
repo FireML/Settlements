@@ -49,6 +49,7 @@ error:
   no-allies: "&c&lYou have no allies!"
   cant-set-embassy: "&cYou can't set an embassy here!"
   teleport-cooldown: "&cYou have to wait &e{cooldown}&c before you can teleport again!"
+  nothing-to-confirm: "&cThere is nothing to confirm. It might have timed out."
 move-cancelled:
   title: ""
   subtitle: "&c{action} cancelled because you moved!"
@@ -292,6 +293,7 @@ chat:
       settlement: "&e[{state}] {title} {prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
       trade: "&d[TRADE] &r{prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
       ally: "&b[Ally] &6{state} {title} {prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
+      empireally: "&b[EAlly] &6{state} {title} {prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
       empire: "&b[Empire] &6{state} {settlement} {title}  {prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
   nick-hilight: "&b"
   afk: "&ePlayer is AFK and may not respond"
@@ -454,6 +456,7 @@ lock:
   cant-unlock: "&cYou cannot unlock this &e{block}&c!"
   unlocked: "&cYou unlocked this &e{block}&c!"
   not-lockable: "&cYou cannot lock &e{block}"
+  toggled: "&7You have toggled &a{toggle}&7! Toggle it off with [&e/lock toggle](/lock toggle)&7!"
   hoppers:
     enabled: "&7Hoppers &acan&7 pull items from this {block}!"
     disabled: "&7Hoppers &ccan not&7 pull items from this {block}!"
@@ -1058,9 +1061,10 @@ command:
     name:
       success: "&aSet name of plot to &r{description}"
       description: Set the name of a plot
-    revoke:
-      success: "&aPlot has been revoked ownership!"
-      description: Revokes ownership of the plot you are standing in
+    unown:
+      success: "&aPlot is no longer owned by you!"
+      success-other: "&aPlot is no longer owned by &e{owner}&a!"
+      description: Removes ownership of the plot you are standing in
     settings:
       description: Manage plot settings
     sale:
@@ -1199,7 +1203,7 @@ command:
       description: Set the description of a settlement
     disband:
       capital-cant-disband: "&c&lERROR &r&7You cannot disband your {state} as long as it is the capital of an empire!"
-      confirm: "&c&lPlease do /{command} to confirm the &r&e&ldisbanding&r&c&l of your settlement."
+      confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l to confirm the &r&e&ldisbanding&r&c&l of your settlement."
       success: "&e&lALERT &r&7Your {title} has deleted your {state}."
       description: Disbands the current settlement
     donate:
@@ -1379,6 +1383,7 @@ command:
         description: Teleports to a outpost shown in the list
       unclaim:
         not-an-outpost: "&cThis land is not an outpost, please use &7/s unclaim&c to unclaim this land."
+        confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l in the next minute to confirm the &e&lunclaiming&c&l of [&e&l{amount}&c&l chunks](&fChunks that will be unclaimed: &7{claims})."
         success: "&aSuccessfully unclaimed the outpost at {x},{z} and {amount} chunks connected to it."
         connected-to-home: "&cOnly unclaiming chunks not connected to the home!"
         connected-to-outpost: "&cOnly unclaiming chunks not connected to another outpost!"
@@ -1451,7 +1456,7 @@ command:
       cant-set-higher: "&cYou cannot set the rank of &6{rank} or higher&c!"
       success: "&e&lALERT &r&e{title} {setter} &7set &e{target}s &7rank to &e{rank}&7!"
       rank:
-        assistant: Allows active,disband,transfer,rename,lock admin,empire leave
+        assistant: Allows active,disband,transfer,rename,lock and plot admin,empire leave
         elder: Allows mode,claiming,invite,bank,plot,setrank
         builder: Allows resident to build on elder and builder only mode
         recruiter: Allows resident to invite players
@@ -1612,6 +1617,7 @@ command:
     unclaim:
       outpost: "&cThis land is an outpost, please use &7/{base} outpost unclaim&c to unclaim this outpost."
       home: "&cThis land is your home, you have to move it with &7/{base} sethome&c before unclaiming this land."
+      confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l in the next minute to confirm the &e&lunclaiming&c&l of [&e&l{amount}&c&l chunks](&fChunks that will be unclaimed: &7{claims})."
       success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at &f{x}-{z}!"
       new-upkeep: "&aYour new upkeep is now &e${villageupkeep}&a (${upkeepperclaim} per claim) [&e/s upkeep](/s upkeep)"
       description: Unclaim land which is claimed by your village
@@ -1764,7 +1770,7 @@ command:
       success: "&aSet description of your empire to &r{description}"
       description: Set the description of an empire
     disband:
-      confirm: "&c&lPlease do /{command} to confirm the &r&e&ldisbanding&r&c&l of your empire."
+      confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l to confirm the &r&e&ldisbanding&r&c&l of your empire."
       success: "&e&lALERT &r&7Your {chieftitle} {chief} has deleted your Empire."
       description: Disbands the current empire
     donate:
@@ -1974,7 +1980,9 @@ command:
       cant-set-higher: "&cYou cannot set the rank of &6{rank} or higher&c!"
       success: "&e&lALERT &r&e{title} {setter} &7set &e{target}s &7rank to &e{rank}&7!"
       rank:
-        senator: Allows inviting and kicking
+        assistant: Allows disband, transfer, rename, perks, lock admin
+        senator: Allows changing description, allies, plots, modes and settings
+        recruiter: Allows inviting and kicking
         member: Default rank for members of this empire
       rank-usage:
         head: |-
@@ -2001,9 +2009,11 @@ command:
         &9&lPerks: &r&7{perks}
         &6&lCapital &r&7{capitalstate} {capital}
         &e&lLeader &r&7{chieftitle} {chiefonline}{chief}
-        &e&lSenators: &r&7{senators}
+        {specialresidents}
         &e&lMembers: &r&7{members}
-      senators:
+  
+      special-residents:
+        rank: "&e&l{rank}:&r {residents}"
         separator: "&7, "
         online: "&a"
         offline: "&c"
@@ -2057,18 +2067,22 @@ command:
       toggled: "&aToggled container locking!&7 Run [&e/lock toggle](/lock toggle)&7 again to toggle it off!"
       untoggled: "&7Disabled container locking toggle!"
     add:
+      description: Give access to a lock
       click-to-add: "&aClick a container in the next &e10 seconds&a to add {name} to it!"
       toggled: "&aToggled adding of {name} to containers!&7 Run [&e/lock add {target} toggle](/lock add {target} toggle)&7 again to toggle it off!"
       untoggled: "&7Disabled adding of {name} to containers!"
     remove:
+      description: Remove access from a lock
       click-to-remove: "&aClick a container in the next &e10 seconds&a to remove {name} from it!"
       toggled: "&aToggled removing of {name} from containers!&7 Run [&e/lock remove {target} toggle](/lock remove {target} toggle)&7 again to toggle it off!"
       untoggled: "&7Disabled removing of {name} from containers!"
     hoppers:
+      description: Toggle whether or not hoppers are allowed
       click-to-toggle: "&aClick a container in the next &e10 seconds&a to toggle hoppers!"
       toggled: "&aToggled lock hopper allowance!&7 Run [&e/lock hoppers toggle](/lock hoppers toggle)&7 again to toggle it off!"
       untoggled: "&7Disabled hopper toggle!"
     info:
+      description: Show information about a lock
       click-for-info: "&aClick a container in the next &e10 seconds&a to get information about it!"
       toggled: "&aToggled container info!&7 Run [&e/lock info toggle](/lock info toggle)&7 again to toggle it off!"
       untoggled: "&7Disabled container info toggle!"

@@ -23,6 +23,7 @@ public class EmpireDisbandCommand extends EmpireSubCommand {
             confirm.put(res.getUUID(), true);
             getMessage("confirm").tell(res, "command", base + " " + alias + " confirm");
         } else {
+            confirm.invalidate(res.getUUID());
             getMessage("success").tell(res.getVillage().getEmpire().getOnlineResidents(),
                     "chief", res.getName(),
                     "chiefrank", VillageRank.getChief().getTag(res.getVillage()),

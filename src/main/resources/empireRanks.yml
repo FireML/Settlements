@@ -99,12 +99,40 @@ ranks:
     - empire.bank.history
     - empire.help.member
     - empire.perks
-    - empire.senators
     - empire.shop
     - empire.tax
     - empire.upkeep
+  assistant:
+    icon: golden_sword
+    inherits: member
+    permissions:
+    - empire.disband
+    - empire.transfer
+    - empire.rename
+    - empire.lock.admin
+    - empire.help.assistant
+    - empire.ally
+    - empire.allies
+    - empire.banished
+    - empire.claim
+    - empire.mode
+    - empire.perks
+    - empire.perks.toggle
+    - empire.perms
+    - empire.perms.show
+    - empire.plot.admin
+    - empire.setdescription
+    - empire.setrank
+    - empire.settings
+    - empire.unally
+    - empire.invite
+    - empire.kick
+    - empire.help.member
+    - empire.help.senator
+    - empire.officer
+    - empire.help.recruiter
   senator:
-    icon: gold_sword
+    icon: iron_sword
     inherits: member
     permissions:
     - empire.help.senator
@@ -116,22 +144,19 @@ ranks:
     - empire.perms.show
     - empire.setdescription
     - empire.settings
-    - empire.allies
-    - empire.joinfee
-    - empire.memberlist
-    - empire.bank
-    - empire.bank.balance
-    - empire.bank.deposit
-    - empire.bank.history
+    - empire.ally
+    - empire.help.recruiter
     - empire.help.member
-    - empire.perks
     - empire.plot.admin
-    - empire.senators
-    - empire.shop
-    - empire.tax
-    - empire.upkeep
+  recruiter:
+    icon: stone_sword
+    inherits: member
+    permissions:
+    - empire.invite
+    - empire.kick
+    - empire.help.recruiter
   member:
-    icon: iron_sword
+    icon: stone_pickaxe
     permissions:
     - empire.allies
     - empire.joinfee
@@ -142,7 +167,6 @@ ranks:
     - empire.bank.history
     - empire.help.member
     - empire.perks
-    - empire.senators
     - empire.shop
     - empire.tax
     - empire.upkeep

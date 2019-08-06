@@ -52,6 +52,9 @@ commands:
   empirechat:
     description: Empire chat
     aliases: [ec]
+  empireallychat:
+    description: Empire ally chat
+    aliases: [eally,eac,alliance]
   adminchat:
     description: Admin chat
     aliases: [admin,adc]

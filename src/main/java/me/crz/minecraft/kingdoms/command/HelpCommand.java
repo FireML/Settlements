@@ -13,6 +13,7 @@ import org.apache.commons.lang.WordUtils;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -137,13 +138,19 @@ public class HelpCommand extends SubCommand {
                                 displayPath = stripParameters(e.getKey());
                             }
                         }
-                        usage = "/" + displayPath;
-                        int arrowIndex = e.getKey().indexOf('<');
-                        int bracketIndex = e.getKey().indexOf('[');
-                        if (arrowIndex > 0 && (bracketIndex < 0 || arrowIndex < bracketIndex)) {
-                            usage += " " + e.getKey().substring(arrowIndex);
-                        } else if (bracketIndex > 0 && (arrowIndex < 0 || bracketIndex < arrowIndex)) {
-                            usage += " " + e.getKey().substring(bracketIndex);
+                        String[] splitPath = displayPath.split(" ");
+                        String[] splitKey = e.getKey().split(" ");
+                        if (splitPath[splitPath.length - 1].equals(splitKey[0])) {
+                            usage = "/" + String.join(" ", Arrays.copyOfRange(splitPath, 0, splitPath.length - 1)) + " " + String.join(" ", splitKey);
+                        } else {
+                            usage = "/" + displayPath;
+                            int arrowIndex = e.getKey().indexOf('<');
+                            int bracketIndex = e.getKey().indexOf('[');
+                            if (arrowIndex > 0 && (bracketIndex < 0 || arrowIndex < bracketIndex)) {
+                                usage += " " + e.getKey().substring(arrowIndex);
+                            } else if (bracketIndex > 0 && (arrowIndex < 0 || bracketIndex < arrowIndex)) {
+                                usage += " " + e.getKey().substring(bracketIndex);
+                            }
                         }
                         description = s.getDescription();
                         aliases.addAll(s.getAliases());
