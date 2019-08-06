@@ -264,7 +264,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
     private void saveEmpire(Connection conn, Empire empire) {
         try {
-            save(conn, empire, "members", "senators", "permissions");
+            save(conn, empire, "members", "permissions");
             if (!empire.getId().isNull()) {
                 updateDataMap(conn, "empire_vaults", "empireId", (Integer) empire.getId().value(), "content", "amount", empire.getVault());
                 updateDataMap(conn, "empire_uses", "empireId", (Integer) empire.getId().value(), "type", "state",
@@ -918,18 +918,6 @@ public class MySqlDatabaseManager extends DatabaseManager {
             members.add(rRs.getInt("id"));
         }
         map.put("members", members);
-
-        Collection<String> senators = new ArrayList<>();
-        for (int memberId : members) {
-            PreparedStatement sSta = conn.prepareStatement("SELECT uuid FROM " + tablePrefix + "residents WHERE empirerank = ? AND settlementId = ?;");
-            sSta.setString(1, EmpireRank.getLeader().next().name());
-            sSta.setInt(2, memberId);
-            ResultSet sRs = sSta.executeQuery();
-            while (sRs.next()) {
-                senators.add(sRs.getString("uuid"));
-            }
-        }
-        map.put("senators", senators);
 
         map.put("banished", selectList(conn, "empire", id, "banished"));
         map.put("allies", selectList(conn, "empire", id, "allies"));

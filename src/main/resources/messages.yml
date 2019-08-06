@@ -1431,7 +1431,7 @@ command:
       cant-set-higher: "&cYou cannot set the rank of &6{rank} or higher&c!"
       success: "&e&lALERT &r&e{title} {setter} &7set &e{target}s &7rank to &e{rank}&7!"
       rank:
-        assistant: Allows active,disband,transfer,rename,lock admin,empire leave
+        assistant: Allows active,disband,transfer,rename,lock and plot admin,empire leave
         elder: Allows mode,claiming,invite,bank,plot,setrank
         builder: Allows resident to build on elder and builder only mode
         recruiter: Allows resident to invite players
@@ -1955,7 +1955,9 @@ command:
       cant-set-higher: "&cYou cannot set the rank of &6{rank} or higher&c!"
       success: "&e&lALERT &r&e{title} {setter} &7set &e{target}s &7rank to &e{rank}&7!"
       rank:
-        senator: Allows inviting and kicking
+        assistant: Allows disband, transfer, rename, perks, lock admin
+        senator: Allows changing description, allies, plots, modes and settings
+        recruiter: Allows inviting and kicking
         member: Default rank for members of this empire
       rank-usage:
         head: |-
@@ -1982,9 +1984,11 @@ command:
         &9&lPerks: &r&7{perks}
         &6&lCapital &r&7{capitalstate} {capital}
         &e&lLeader &r&7{chieftitle} {chiefonline}{chief}
-        &e&lSenators: &r&7{senators}
+        {specialresidents}
         &e&lMembers: &r&7{members}
-      senators:
+  
+      special-residents:
+        rank: "&e&l{rank}:&r {residents}"
         separator: "&7, "
         online: "&a"
         offline: "&c"

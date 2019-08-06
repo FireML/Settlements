@@ -31,7 +31,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -270,14 +269,12 @@ public class EmpireManager {
 
         // Update ranks
         Set<Resident> modifiedResidents = new HashSet<>();
-        empire.getCapital().getChief().setEmpireRank(EmpireRank.getDefault());
-        modifiedResidents.add(empire.getCapital().getChief());
-        for (Resident senator : empire.getSenators()) {
-            senator.setEmpireRank(EmpireRank.getDefault());
-            empire.removeSenator(senator);
-            modifiedResidents.add(senator);
+        for (Resident resident : empire.getResidents()) {
+            if (resident.getEmpireRank() != EmpireRank.getDefault()) {
+                resident.setEmpireRank(EmpireRank.getDefault());
+                modifiedResidents.add(resident);
+            }
         }
-        empire.getSenatorIds().clear();
         Collection<LandOwner> allies = empire.getAllies();
         empire.getAlliedEmpireIds().clear();
         empire.getAlliedVillageIds().clear();
@@ -336,10 +333,9 @@ public class EmpireManager {
         village.setEmpire(null);
         List<Resident> toSave = new ArrayList<>();
         for (Resident member : village.getResidents()) {
-            if (member.getEmpireRank().above(EmpireRank.getDefault())) {
+            if (member.getEmpireRank() != EmpireRank.getDefault()) {
                 toSave.add(member);
                 member.setEmpireRank(EmpireRank.getDefault());
-                empire.removeSenator(member);
             }
             member.removeChannel(ChatChannel.EMPIRE);
             Player player = member.getPlayer();

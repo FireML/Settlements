@@ -273,9 +273,6 @@ public class VillageManager {
     }
 
     private void removeResidentFromVillage(Resident resident) {
-        if (resident.getVillage().hasEmpire()) {
-            resident.getVillage().getEmpire().removeSenator(resident);
-        }
         resident.setVillage(null);
         resident.setVillageRank(VillageRank.getDefault());
         resident.setEmpireRank(EmpireRank.getDefault());
