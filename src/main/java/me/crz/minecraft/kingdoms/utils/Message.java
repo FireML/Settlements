@@ -92,6 +92,18 @@ public class Message {
         return components;
     }
 
+    public TitleBuilder getTitle() {
+        List<String> lines = getTextList();
+        TitleBuilder builder = new TitleBuilder().withTitle(lines.get(0));
+        if (lines.size() > 1) {
+            builder.withSubtitle(lines.get(1));
+            if (lines.size() > 2) {
+                builder.withActionbar(lines.get(2));
+            }
+        }
+        return builder;
+    }
+
     public String getReplacedText(String... replacements) {
         return MessageUtils.replacePlaceholders(text, replacements);
     }

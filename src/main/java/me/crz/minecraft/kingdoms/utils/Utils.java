@@ -541,6 +541,7 @@ public class Utils {
         return ExecuteMoveUtil.getInstance().execute(player, () -> {
             player.teleportAsync(loc).thenAccept(success -> {
                 Message.get(messagePath + "." + (success ? "success" : "fail")).tell(player, replacements);
+                Message.get(messagePath + "." + (success ? "success" : "fail") + "-title").getTitle().withIn(0).send(player, replacements);
             });
         }, bypassDelay ? 0 : Utils.getTeleportDelay(type), "Teleport", messagePath);
     }

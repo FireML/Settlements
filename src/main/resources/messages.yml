@@ -51,13 +51,13 @@ error:
   teleport-cooldown: "&cYou have to wait &e{cooldown}&c before you can teleport again!"
   nothing-to-confirm: "&cThere is nothing to confirm. It might have timed out."
 move-cancelled:
-  title: ""
-  subtitle: "&c{action} cancelled because you moved!"
+  title: "&c&lFailed"
+  subtitle: "&fDon't move while {action}ing!"
   actionbar: ""
   message: ""
 waiting:
-  title: ""
-  subtitle: "&e&l{action}ing in {seconds}s..."
+  title: "&e&lPlease Wait"
+  subtitle: "&f{action}ing in &c{seconds}&f seconds"
   actionbar: ""
   message: ""
 banished:
@@ -1260,6 +1260,12 @@ command:
       no-home: "&c&lThat {state} doesn't have a home!"
       no-access: "&c&lYou don't have access to teleport to the home of that {state}!"
       success: "&a&lTeleported to home of {state} {name}"
+      success-title: |-
+        &2&lSuccess
+        &fYou have been teleported!
+      fail-title: |-
+        &c&lFailed
+        &fUnabled to teleport!
       description: Teleport to a settlement's home
     invite:
       already-in-village: "&c&l{name} is already in a {state}"
@@ -1360,6 +1366,12 @@ command:
         description: Sets a outpost home on that specific chunk
       teleport:
         success: "&a&lTeleported to outpost {name}"
+        success-title: |-
+          &2&lSuccess
+          &fYou have been teleported!
+        fail-title: |-
+          &c&lFailed
+          &fUnabled to teleport!
         description: Teleports to a outpost shown in the list
       unclaim:
         not-an-outpost: "&cThis land is not an outpost, please use &7/s unclaim&c to unclaim this land."
@@ -1778,6 +1790,12 @@ command:
     home:
       no-home: "&c&lYour empire doesn't have a home !"
       success: "&a&lTeleported to home of {state} {name}"
+      success-title: |-
+        &2&lSuccess
+        &fYou have been teleported!
+      fail-title: |-
+        &c&lFailed
+        &fUnabled to teleport!
       no-access: "&c&lYou don't have access to teleport to the home of that empire!"
       description: Teleport to a empires's home
     invite:
