@@ -59,9 +59,15 @@ public class VillageAdminEventsCommand extends SubCommand {
                 }
                 Event event = EventManager.getInstance().getEvent(args[0]);
                 if (event != null) {
-                    EventManager.getInstance().startEvent(event);
-                    if (!(sender instanceof Player)) {
-                        sender.sendMessage("Started event " + event.getId());
+                    Event activeEvent = EventManager.getInstance().getActiveEvent();
+                    if (activeEvent != null && (args.length == 1 || !"confirm".equalsIgnoreCase(args[1]))) {
+                        sender.sendMessage(ChatColor.RED + "The event " + ChatColor.YELLOW + activeEvent.getId() + ChatColor.RED + " is already running. " +
+                                "Use " + ChatColor.YELLOW + "/" + base + " " + alias + " " + args[0] + " confirm" + ChatColor.RED + " to replace the running event with the new one (without granting rewards for the current event)");
+                    } else {
+                        EventManager.getInstance().startEvent(event);
+                        if (!(sender instanceof Player)) {
+                            sender.sendMessage("Started event " + event.getId());
+                        }
                     }
                 } else {
                     sender.sendMessage(ChatColor.RED + "No event with the id " + args[0] + " found.");
