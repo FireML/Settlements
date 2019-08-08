@@ -61,6 +61,7 @@ public class EventManager implements ConfigMessages {
 
     private Event activeEvent = null;
     private TimerTask activeBarTask = null;
+    private BossBar activeBar = null;
     private long activeEventStart = -1;
 
     private Map<IdObject, EventData> eventData = new HashMap<>();
@@ -226,6 +227,11 @@ public class EventManager implements ConfigMessages {
         if (activeBarTask != null) {
             activeBarTask.cancel();
         }
+        if (activeBar != null) {
+            activeBar.setVisible(false);
+            activeBar.removeAll();
+            activeBar = null;
+        }
         villageRewards.clear();
         eventData.clear();
         activeEvent = event;
@@ -238,28 +244,31 @@ public class EventManager implements ConfigMessages {
                 "duration", UtilTime.format((double) activeEvent.getTime())
         );
 
-        BossBar bossBar = Bukkit.createBossBar(MessageUtils.replaceColorCodes(MessageUtils.replacePlaceholders(bossBarFormat,
+        activeBar = Bukkit.createBossBar(MessageUtils.replaceColorCodes(MessageUtils.replacePlaceholders(bossBarFormat,
                 "title", activeEvent.getTitle(),
                 "id", activeEvent.getId(),
                 "timeleft", UtilTime.format((double) activeEvent.getTime())
         )), bossBarColor, bossBarStyle, bossBarFlags.toArray(new BarFlag[0]));
-        bossBar.setProgress(0);
-        Bukkit.getOnlinePlayers().forEach(bossBar::addPlayer);
-        bossBar.setVisible(true);
+        activeBar.setProgress(0);
+        Bukkit.getOnlinePlayers().forEach(activeBar::addPlayer);
+        activeBar.setVisible(true);
         activeBarTask = Utils.runRepeating(() -> {
             if (activeEvent != event || activeEventStart < 0 || System.currentTimeMillis() > eventEnd) {
-                bossBar.setVisible(false);
-                bossBar.removeAll();
+                if (activeEvent == null) {
+                    activeBar.setVisible(false);
+                    activeBar.removeAll();
+                    activeBar = null;
+                }
                 activeBarTask.cancel();
                 activeBarTask = null;
             } else {
                 long left = eventEnd - System.currentTimeMillis();
-                bossBar.setTitle(MessageUtils.replaceColorCodes(MessageUtils.replacePlaceholders(bossBarFormat,
+                activeBar.setTitle(MessageUtils.replaceColorCodes(MessageUtils.replacePlaceholders(bossBarFormat,
                         "title", activeEvent.getTitle(),
                         "id", activeEvent.getId(),
                         "timeleft", UtilTime.format((double) Math.round(left / 1000.0))
                 )));
-                bossBar.setProgress(1 - left / (double) length);
+                activeBar.setProgress(1 - left / (double) length);
             }
         }, 1, 1, TimeUnit.SECONDS);
 
