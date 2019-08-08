@@ -181,7 +181,11 @@ public class EventManager implements ConfigMessages {
                     @Override
                     public void run() {
                         Utils.runSync(() -> {
-                            startEvent(event);
+                            if (activeEvent == null) {
+                                startEvent(event);
+                            } else {
+                                KingdomsPlugin.getInstance().getLogger().log(Level.INFO, "Automatic event " + event.getId() + " was not run at " + dateTime.getTime().toString() + " as the event " + activeEvent.getId() + " was already running.");
+                            }
                             nextEventTasks.remove(timeString);
                             if (nextEventTasks.isEmpty()) {
                                 scheduleAutomaticEvents();
