@@ -24,11 +24,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -48,6 +50,7 @@ public class EventManager implements ConfigMessages {
 
     private Map<String, Event> events = new LinkedHashMap<>();
     private Map<String, Reward> rewards = new LinkedHashMap<>();
+    private List<String> automaticEvents = new ArrayList<>();
 
     private Map<String, TimerTask> nextEventTasks = new LinkedHashMap<>();
 
@@ -102,6 +105,8 @@ public class EventManager implements ConfigMessages {
                     return null;
                 }).filter(Objects::nonNull)
                 .collect(Collectors.toSet());
+
+        rewards.clear();
         ConfigurationSection rewardsSection = config.getConfigurationSection("rewards");
         for (String rewardId : rewardsSection.getKeys(false)) {
             try {
@@ -111,6 +116,7 @@ public class EventManager implements ConfigMessages {
             }
         }
 
+        events.clear();
         ConfigurationSection eventsSection = config.getConfigurationSection("events");
         for (String eventName : eventsSection.getKeys(false)) {
             Event event = new Event(eventName, eventsSection.getConfigurationSection(eventName));
@@ -124,12 +130,26 @@ public class EventManager implements ConfigMessages {
             }
         }
 
+        automaticEvents = config.getStringList("automatic-events.events");
+        for (Iterator<String> it = automaticEvents.iterator(); it.hasNext();) {
+            String eventName = it.next();
+            if (getEvent(eventName) == null) {
+                KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Event " + eventName + " defined in the automatic events list does not exist?");
+                it.remove();
+            }
+        }
+
         nextEventTasks.values().forEach(TimerTask::cancel);
         nextEventTasks.clear();
         scheduleAutomaticEvents();
     }
 
     private void scheduleAutomaticEvents() {
+        if (automaticEvents.isEmpty()) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.INFO, "No automatic events configured.");
+            return;
+        }
+
         Configuration config = ConfigManager.getInstance().getEventsConf().getConfig();
         TimeZone timeZone = TimeZone.getTimeZone(config.getString("automatic-events.timezone"));
 
@@ -153,6 +173,10 @@ public class EventManager implements ConfigMessages {
                 dateTime.set(Calendar.MILLISECOND, 1);
 
                 Event event = getRandomEventAt(dateTime.get(Calendar.YEAR), dateTime.get(Calendar.DAY_OF_YEAR), hours, minutes);
+                if (event == null) {
+                    KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not schedule event as " + timeString + " at " + dateTime.getTime().toString() + " as the one selected doesn't exist?");
+                    continue;
+                }
                 TimerTask task = new TimerTask() {
                     @Override
                     public void run() {
@@ -175,8 +199,11 @@ public class EventManager implements ConfigMessages {
     }
 
     private Event getRandomEventAt(int year, int dayOfYear, int hours, int minutes) {
+        if (automaticEvents.isEmpty()) {
+            return null;
+        }
         long seed = minutes + TimeUnit.HOURS.toMinutes(hours) + TimeUnit.DAYS.toMinutes(dayOfYear) + TimeUnit.DAYS.toMinutes((year - 2000) * 365);
-        return getEvents().stream().skip(new Random(seed).nextInt(getEvents().size())).findFirst().get();
+        return getEvent(automaticEvents.get(new Random(seed).nextInt(automaticEvents.size())));
     }
 
     public Event getActiveEvent() {

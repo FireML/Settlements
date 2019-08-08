@@ -4,6 +4,9 @@ bossbar:
   style: segmented_10
 # Run random event at these times:
 automatic-events:
+  # The events that should be automatic
+  events:
+  - event-id
   # Specify hours and minutes in the format of hours:minutes e.g. 16:20
   times:
   - "0:00"
@@ -50,6 +53,7 @@ rewards:
     - command to run when claimed
 
 events:
+  # Event-id:
   mining:
     # Whatever worlds that it should only work in
     worlds:
@@ -77,9 +81,7 @@ events:
     actions:
       # What blocks need to be broken
       break:
-      - stone
-      - cobblestone
-      - coal_ore
+      - diamond_ore
       # What blocks need to be placed (works for crops too)
       # place:
       # - blocktype
