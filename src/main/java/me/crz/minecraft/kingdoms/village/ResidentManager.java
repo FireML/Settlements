@@ -85,7 +85,11 @@ public class ResidentManager {
 
     public Resident getResident(Player p) {
         Resident resident = getResident(p.getUniqueId());
-        return resident != null ? resident : new Resident(p.getUniqueId(), p.getName());
+        if (resident == null) {
+            resident = new Resident(p.getUniqueId(), p.getName());
+            addResident(resident);
+        }
+        return resident;
     }
 
     public Resident getResident(OfflinePlayer p) {

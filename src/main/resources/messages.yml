@@ -149,6 +149,12 @@ empire-tax:
   couldnt-pay: "&e{state} {settlement}&c was not able to pay the tax of &e{amount}&c and has been banished from the empire!"
 first-to-reach-level: "&6&l{name} &7&l is the first to reach &6&l{state} &7&llevel &6&l{level}"
 land-unclaim: "&e{amount}&7 chunks were automatically unclaimed!"
+events:
+  started: "&6&l{title} &7&lstarted! Duration: {duration}"
+  ended: "&6&l{title} &7&lended! &6&l{state} {name}&7&l won it with {amount}!"
+  stats: "&7&lYour {state} managed to reach {place}. place with {amount}"
+  reward-info: "&7&lYour {state} can now claim event rewards by running [/s rewards](/s rewards)"
+  first: "&6&l{state} {name}&7&l took &6&lfirst&7&l place in &6&l{title}&7&l with {amount}!"
 village:
   enter:
     message: "&f[&eKingdoms&f] &7Entering &a{name}{pvp}"
@@ -700,6 +706,11 @@ gui:
         &7Click to grant to &f{rank}
       revoke: |-
         &7Click to revoke from &f{rank}
+  rewards:
+    title: "&2&l/s rewards"
+    entry: |-
+      &e{reward}
+      &7Click to claim!
   plot:
     link: |-
       &7Click to link the permissions of all
@@ -1199,6 +1210,15 @@ command:
       donated: "&e{name} &r&7donated &6{amount}&r&7 to your settlement bank!"
       success: "&7Donated &6{amount}&r&7 to the bank of &e{state} {name}&7!"
       description: Donate money to a certain settlement
+    events:
+      top:
+        no-event: "&cThere is currently no event running!"
+        no-one-participating: "&cThere is currently no one participating in the event {event}!"
+        head: "&a⊱&m━━━━&r&6Top {amount} Settlements&a&m━━━━&a⊰"
+        entry: "&e• {place}. [&e&l{state} {name} &r&7- &e{amount}](&8{chieftitle}: &f{chief}\n&8Size: &f{size} players\n&f{description})"
+        footer: "&a⊱&m━━━━&r&6Event: {event}&a&m━━━━&a⊰"
+        description: Show top 3 villages in the current event
+      description: Village events commands
     here:
       general: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
@@ -1417,6 +1437,11 @@ command:
       offline: "&c"
       entry: "{online}{name}"
       description: lists all residents
+    rewards:
+      no-rewards: |-
+        &cYour {villagestate} does not have any rewards that can be claimed!
+        &7Event rewards can only be claimed until the next event starts (or the server restarts)
+      description: Claim event rewards
     setaccess:
       success: "&7Access changed to &6{access}"
       access:

@@ -436,6 +436,25 @@ public class Utils {
         return task;
     }
 
+    /**
+     * Run something later on the primary server thread.
+     * @param run       What to run
+     * @param delay     The amount of time to wait before first run
+     * @param period    The amount of time between each run
+     * @param unit      The time unit the amount is in
+     * @return The TimerTask that was started
+     */
+    public static TimerTask runRepeating(Runnable run, long delay, long period, TimeUnit unit) {
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                runSync(run);
+            }
+        };
+        KingdomsPlugin.getTimer().scheduleAtFixedRate(task, unit.toMillis(delay), unit.toMillis(period));
+        return task;
+    }
+
     public static UUID parseUuid(String uuidStr) {
         try {
             return UUID.fromString(uuidStr);
@@ -587,7 +606,10 @@ public class Utils {
     }
 
     public static Map<String, String> toMap(String... args) {
-        Map<String, String> map = new LinkedHashMap<>();
+        return addAll(new LinkedHashMap<>(), args);
+    }
+
+    public static Map<String, String> addAll(Map<String, String> map, String... args) {
         for (int i = 0; i+1 < args.length; i+=2) {
             map.put(args[i], args[i+1]);
         }

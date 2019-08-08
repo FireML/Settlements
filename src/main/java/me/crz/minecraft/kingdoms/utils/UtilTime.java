@@ -3,6 +3,8 @@ package me.crz.minecraft.kingdoms.utils;
 import java.text.DecimalFormat;
 
 public class UtilTime {
+    private static final DecimalFormat SECONDS_FORMAT = new DecimalFormat("#.#");
+
     public UtilTime() {
         super();
     }
@@ -15,32 +17,43 @@ public class UtilTime {
         if (seconds < 0.0) {
             seconds = 0.0;
         }
-        final double minutes = seconds / 60.0;
-        final double hours = minutes / 60.0;
-        final double days = hours / 24.0;
-        final double months = days / 30.0;
-        final double years = days / 365.0;
-        DecimalFormat format = new DecimalFormat("#.#");
+
+        int minutes = (int) (seconds / 60.0);
         if (minutes < 1.0) {
-            return format.format(UtilMath.trim(seconds, 1)) + " Second" + plural(seconds);
+            double trimedSeconds = UtilMath.trim(seconds, 1);
+            return SECONDS_FORMAT.format(trimedSeconds) + " Second" + plural(trimedSeconds);
         }
+
+        int restSeconds = (int) (seconds % 60);
+        int hours = (int) (minutes / 60.0);
         if (hours < 1.0) {
-            return format.format(UtilMath.trim(minutes, 1)) + " Minute" + plural(minutes);
+            return minutes + " Minute" + plural(minutes) + " " + (restSeconds > 0 ? restSeconds + " Second" + plural(restSeconds) : "");
         }
+
+        int restMinutes = minutes % 60;
+        int days = (int) (hours / 24.0);
         if (days < 1.0) {
-            return format.format(UtilMath.trim(hours, 1)) + " Hour" + plural(hours);
+            return hours + " Hour" + plural(hours) + " " + (restMinutes > 0 ? restMinutes + " Minute" + plural(restMinutes) : "");
         }
+
+        int restHours = hours % 24;
+        int months = (int) (days / 30.0);
         if (months < 1.0) {
-            return format.format(UtilMath.trim(days, 1)) + " Day" + plural(days);
+            return days + " Day" + plural(days) + " " + (restHours > 0 ? restHours + " Hour" + plural(restHours) : "");
         }
+
+        int restDays = days % 30;
+        int years = (int) (days / 365.0);
         if (years < 1.0) {
-            return format.format(UtilMath.trim(months, 1)) + " Month" + plural(months);
+            return months + " Month" + plural(months) + " " + (restDays > 0 ? restDays + " Day" + plural(restDays) : "");
         }
-        return format.format(UtilMath.trim(years, 1)) + " Year" + plural(years);
+
+        int restMonths = months % 12;
+        return years + " Year" + plural(years) + " " + (restMonths > 0 ? restMonths + " Month" + plural(restMonths) : "");
     }
 
     private static String plural(double number) {
-        return UtilMath.trim(number, 1) == 1 ? "" : "s";
+        return number == 1 ? "" : "s";
     }
 
     public static boolean elapsedNano(final long from, final long required) {

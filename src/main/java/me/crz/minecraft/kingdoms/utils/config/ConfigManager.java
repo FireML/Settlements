@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.utils.config;
 import java.io.IOException;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.event.EventManager;
 import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.lock.LockManager;
 import me.crz.minecraft.kingdoms.utils.IconRpMapping;
@@ -23,6 +24,7 @@ public class ConfigManager {
     private ConfigAccessor mapConf;
     private ConfigAccessor settlementPerksConf;
     private ConfigAccessor empirePerksConf;
+    private ConfigAccessor eventsConf;
     private IconRpMapping iconRpMapping;
     private ConfigAccessor cursesConf;
     private ConfigAccessor forcedCursesConf;
@@ -64,6 +66,9 @@ public class ConfigManager {
         empireRanksConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "empireRanks.yml");
         empireRanksConf.saveDefaultConfig();
         empireRanksConf.reloadConfig();
+        eventsConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "events.yml");
+        eventsConf.saveDefaultConfig();
+        eventsConf.reloadConfig();
         cursesConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "curses.yml");
         cursesConf.saveDefaultConfig();
         cursesConf.reloadConfig();
@@ -81,6 +86,7 @@ public class ConfigManager {
             LockManager.getInstance().loadConfig();
             KingdomsPlugin.getInstance().getLandFlags().reload();
             Levels.clearRequirements();
+            EventManager.getInstance().loadConfig();
         }
     }
 
@@ -122,6 +128,10 @@ public class ConfigManager {
 
     public ConfigAccessor getEmpireRanksConf() {
         return empireRanksConf;
+    }
+
+    public ConfigAccessor getEventsConf() {
+        return eventsConf;
     }
 
     public FileConfiguration getCursesConfig() {
