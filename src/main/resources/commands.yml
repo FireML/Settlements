@@ -44,6 +44,9 @@ help-order:
     - s unbanish <player>|s:<settlement>|e:<empire>
     - unclaim
     - upkeep
+    - s help elder
+    - s help assistant
+    - s help chief
     'no':
     - create
     - join
@@ -169,6 +172,8 @@ help-order:
     - unally
     - e unbanish <player>|s:<settlement>|e:<empire>
     - upkeep
+    - e help senator
+    - e help leader
     'no':
     - create
     - join
