@@ -96,9 +96,13 @@ modes:
   # Settings for worlds that have claiming disabled
   unclaimable:
     firespread: false
-    explosion: true
+    explosion: false
     pvp: true
     mobspawning: true
+  # Override for specific worlds
+  worlds:
+    Resource:
+      explosion: true
   abandoned:
     village:
       firespread: false

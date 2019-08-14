@@ -301,6 +301,10 @@ public class Utils {
         return 30;
     }
 
+    public static boolean hasPlotMode(PlotMode mode, String type) {
+        return ConfigManager.getInstance().getConfig().isSet("modes." + type + "." + mode.getKey());
+    }
+
     public static boolean getPlotMode(PlotMode mode, String type) {
         return ConfigManager.getInstance().getConfig().getBoolean("modes." + type + "." + mode.getKey(), false);
     }

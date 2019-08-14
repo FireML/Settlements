@@ -87,11 +87,17 @@ public class LandFlags extends Base implements LandFlagBase {
 
     private boolean isAllowed(Location location, PlotMode mode) {
         if (!Utils.isWorldClaimable(location.getWorld())) {
+            if (Utils.hasPlotMode(mode, "worlds." + location.getWorld().getName())) {
+                return Utils.getPlotMode(mode, "worlds." + location.getWorld().getName());
+            }
             return Utils.getPlotMode(mode, "unclaimable");
         }
         OwnedLand land = LandManager.getInstance().getLand(location);
         if (land != null) {
             return mode.get(land);
+        }
+        if (Utils.hasPlotMode(mode, "worlds." + location.getWorld().getName())) {
+            return Utils.getPlotMode(mode, "worlds." + location.getWorld().getName());
         }
         return Utils.getPlotMode(mode, "unclaimed");
     }
