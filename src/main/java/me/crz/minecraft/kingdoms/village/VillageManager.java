@@ -208,12 +208,11 @@ public class VillageManager {
                     changed |= land.unsetUseState(u);
                 }
             }
-            changed |= land.setMode(PlotMode.pvp, true);
-            changed |= land.setMode(PlotMode.fireSpread, true);
-            changed |= land.setMode(PlotMode.explosions, true);
-            changed |= land.setMode(PlotMode.buff, false);
-            changed |= land.setMode(PlotMode.mobSpawning, true);
-            changed |= land.setMode(PlotMode.embassy, false);
+            for (PlotMode mode : PlotMode.values()) {
+                if (mode.appliesTo(PlotMode.AppliesTo.LAND)) {
+                    changed |= land.unsetMode(mode);
+                }
+            }
             if (changed) {
                 changedLand.add(land);
             }
