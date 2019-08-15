@@ -3,16 +3,13 @@ package me.crz.minecraft.kingdoms.command.village;
 import me.crz.minecraft.kingdoms.command.ChatCommand;
 import me.crz.minecraft.kingdoms.command.HelpCommand;
 import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
-import me.crz.minecraft.kingdoms.command.RankHelpCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.lock.LockCommand;
 import me.crz.minecraft.kingdoms.command.lock.UnlockCommand;
 import me.crz.minecraft.kingdoms.command.plot.PlotCommand;
 import me.crz.minecraft.kingdoms.command.village.money.VillageMoneyCommand;
 import me.crz.minecraft.kingdoms.db.LogType;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.teleporter.TeleportersGUI;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -20,10 +17,6 @@ public class VillageCommand extends SubCommand {
     public VillageCommand() {
         super(null, "village", "settlement", "kingdom", "s", "v", "k");
         setHelpCommand(new HelpCommand(this));
-        for (VillageRank rank : VillageRank.values()) {
-            getHelpCommand().registerCommand(new RankHelpCommand(getHelpCommand(), rank));
-        }
-        getHelpCommand().registerCommand(new RankHelpCommand(getHelpCommand(), null));
         registerCommand(new ChatCommand());
         registerCommand(new VillageActiveCommand(this));
         registerCommand(new VillageAlliesCommand(this));

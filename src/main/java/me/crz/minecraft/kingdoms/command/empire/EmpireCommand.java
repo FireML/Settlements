@@ -2,31 +2,16 @@ package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.command.ChatCommand;
 import me.crz.minecraft.kingdoms.command.HelpCommand;
-import me.crz.minecraft.kingdoms.command.RankHelpCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.lock.LockCommand;
 import me.crz.minecraft.kingdoms.command.lock.UnlockCommand;
 import me.crz.minecraft.kingdoms.command.plot.PlotCommand;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class EmpireCommand extends SubCommand {
     public EmpireCommand() {
         super(null, "empire", "e");
         setHelpCommand(new HelpCommand(this));
-        for (VillageRank rank : VillageRank.values()) {
-            if (rank != VillageRank.getDefault()) {
-                getHelpCommand().registerCommand(new RankHelpCommand(getHelpCommand(), rank));
-            }
-        }
-        for (EmpireRank rank : EmpireRank.values()) {
-            if (rank != EmpireRank.getDefault()) {
-                getHelpCommand().registerCommand(new RankHelpCommand(getHelpCommand(), rank));
-            }
-        }
         registerCommand(new ChatCommand());
         registerCommand(new EmpireAlliesCommand(this));
         registerCommand(new EmpireAllyCommand(this));

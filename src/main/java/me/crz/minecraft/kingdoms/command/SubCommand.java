@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class SubCommand implements ConfigMessages, Rankable {
+    protected static final String PERMISSION_PREFIX = "kingdoms.command.";
     private SubCommand parent;
     private List<String> aliases;
     private String usage;
@@ -208,7 +209,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
             if (getParent() != null) {
                 permission = getParent().getPermission() + "." + name();
             } else {
-                permission = "kingdoms.command." + name();
+                permission = PERMISSION_PREFIX + name();
             }
         }
         return permission;

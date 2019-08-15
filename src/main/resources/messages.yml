@@ -911,7 +911,11 @@ gui:
 
 usage:
   head: "&a⊱&m━━━━&r&6{type}{name} Commands&a&m━━━━&a⊰"
-  entry: "&e• [&e{usage}](hover=&f{usage}\n&9Click to add it to your input{aliases} suggest_command={/{path}) &7- {description}"
+  entry:
+    general: "&e• [&e{usage}](hover=&f{usage}\n&9Click to add it to your input{aliases} suggest_command={/{path}) &7- {description}"
+    # Name of the permission group or command type
+    plot: "&e• [&a{usage}](hover=&f{usage}\n&9Click to add it to your input{aliases} suggest_command={/{path}) &7- {description}"
+    officer: "&e• [&c{usage}](hover=&f{usage}\n&9Click to add it to your input{aliases} suggest_command={/{path}) &7- {description}"
   aliases: "\n&fAliases: &7{aliases}"
   footer: ""
   pagination:

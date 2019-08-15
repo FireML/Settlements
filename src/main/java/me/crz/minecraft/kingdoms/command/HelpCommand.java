@@ -1,6 +1,9 @@
 package me.crz.minecraft.kingdoms.command;
 
 import com.google.common.collect.ImmutableMap;
+import me.crz.minecraft.kingdoms.rank.EmpireRank;
+import me.crz.minecraft.kingdoms.rank.PermissionGroup;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -23,7 +26,7 @@ public class HelpCommand extends SubCommand {
     private Function<CommandSender, String> defaultTypeProvider;
 
     public HelpCommand(SubCommand parent) {
-        super(parent, "help [<rank>] [<page>]", "usage");
+        super(parent, "help [<page>]", "usage");
         setVisible(false);
         if (parent == null) {
             throw new IllegalArgumentException("Parent sub command cannot be null!");
@@ -155,7 +158,11 @@ public class HelpCommand extends SubCommand {
                         description = s.getDescription();
                         aliases.addAll(s.getAliases());
                     }
-                    getParent().getMessage("usage.entry").tell(sender,
+                    Message usageMessage = getUsageMessage(s);
+                    if (!usageMessage.exists()) {
+                        usageMessage = getParent().getMessage("usage.entry.general");
+                    }
+                    usageMessage.tell(sender,
                             "usage", usage,
                             "path", displayPath,
                             "aliases", aliases.isEmpty() ? "" : getParent().getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", aliases)),
@@ -204,6 +211,35 @@ public class HelpCommand extends SubCommand {
         base = helpIndex > -1 ? base.substring(0, helpIndex) : base;
         int spaceIndex = base.lastIndexOf(' ');
         return getParent().sendUsageMessage(sender, spaceIndex > -1 ? base.substring(0, spaceIndex) : "", spaceIndex > -1 ? base.substring(spaceIndex + 1) : base);
+    }
+
+    private Message getUsageMessage(SubCommand subCommand) {
+        if (subCommand != null) {
+            Message usageMessage = getParent().getMessage("usage.entry." + subCommand.name());
+            if (!usageMessage.exists() && subCommand.getParent() != null) {
+                usageMessage = getUsageMessage(subCommand.getParent());
+            }
+            if (!usageMessage.exists()) {
+                usageMessage = getParent().getMessage("usage.entry." + getPermGroup(subCommand));
+            }
+            return usageMessage;
+        }
+        return getParent().getMessage("usage.entry.general");
+    }
+
+    private String getPermGroup(SubCommand subCommand) {
+        String shortPermission = subCommand.getPermission().substring(PERMISSION_PREFIX.length());
+        for (PermissionGroup permGroup : VillageRank.getPermGroups()) {
+            if (permGroup.getPermissions().contains(shortPermission)) {
+                return permGroup.getName();
+            }
+        }
+        for (PermissionGroup permGroup : EmpireRank.getPermGroups()) {
+            if (permGroup.getPermissions().contains(shortPermission)) {
+                return permGroup.getName();
+            }
+        }
+        return null;
     }
 
     private SubCommand getSubCommand(String commandPath) {

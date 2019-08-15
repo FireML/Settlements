@@ -14,10 +14,11 @@ help-order:
     - deposit
     - donate
     - history
-    - history
     - home
     - invite
     - join
+    - joinfee
+    - s joinfee set
     - kick
     - leave
     - list
@@ -26,17 +27,32 @@ help-order:
     - materials
     - outpost
     - perms
-    - s plot
+    - s plot buy
+    - s plot settings
+    - s plot name
+    - s plot info
+    - s plot link
+    - s plot unlink
+    - s plot sale
+    - s plot unsale
+    - s plot unown
+    - s plot plot set embassy <amount>
     - rename
     - reslist
     - rules
-    - outpost
+    - s outpost list
+    - s outpost tp
+    - s outpost sethome
+    - s outpost claim
+    - s outpost unclaim
     - setdescription
     - sethome
     - s setrank
     - settings
     - shop
     - show <name>
+    - tax
+    - s tax set
     - teleporters
     - title
     - titles
@@ -44,77 +60,6 @@ help-order:
     - s unbanish <player>|s:<settlement>|e:<empire>
     - unclaim
     - upkeep
-    - s help elder
-    - s help assistant
-    - s help chief
-    'no':
-    - create
-    - join
-    - s show <name>
-    - list
-    - home
-    - donate
-    - map
-    resident:
-    - invite
-    - show <name>
-    - list
-    - map
-    - materials
-    - deposit
-    - home
-    - s chat
-    - reslist
-    - history
-    - s plot
-    - outpost
-    - teleporters
-    - bank
-    - donate
-    - upkeep
-    elder:
-    - claim
-    - s claim <#>
-    - unclaim
-    - s unclaim <#>
-    - s plot staff
-    - outpost
-    - ally
-    - unally
-    - invite
-    - kick
-    - banished
-    - settings
-    - perms show
-    assistant:
-    - disband
-    - transfer
-    - rename
-    - active
-    chief:
-    - settings
-    - claim
-    - s claim <#>
-    - unclaim
-    - s unclaim <#>
-    - sethome
-    - s setrank
-    - perms
-    - active
-    - ally
-    - unally
-    - invite
-    - mail
-    - kick
-    - banished
-    - s banish <player>|s:<settlement>|e:<empire>
-    - s unbanish <player>|s:<settlement>|e:<empire>
-    - history
-    - s plot staff
-    - shop
-    - title
-    - titles
-    - setdescription
     outpost:
     - list
     - s outpost tp <name>
@@ -142,17 +87,31 @@ help-order:
     general:
     - allies
     - ally
-    - bank
+    - allyclaim
+    - e bank balance
+    - e deposit
+    - e withdraw
     - e banish <player>|s:<settlement>|e:<empire>
     - banished
     - create
     - disband
     - donate
     - e chat
-    - e plot
+    - e plot buy
+    - e plot settings
+    - e plot name
+    - e plot info
+    - e plot link
+    - e plot unlink
+    - e plot sale
+    - e plot unsale
+    - e plot unown
+    - e plot plot set embassy <amount>
     - home
     - invite
     - join
+    - joinfee
+    - e joinfee set
     - kick
     - list
     - mail
@@ -161,67 +120,20 @@ help-order:
     - perms
     - regen
     - rename
-    - senators
     - setdescription
     - sethome
     - e setrank
     - settings
     - shop
     - show
+    - tax
+    - e tax set
     - transfer
     - unally
     - e unbanish <player>|s:<settlement>|e:<empire>
     - upkeep
     - e help senator
     - e help leader
-    'no':
-    - create
-    - join
-    - show
-    - list
-    - home
-    - donate
-    member:
-    - show
-    - list
-    - home
-    - e chat
-    - memberlist
-    - senators
-    - e plot
-    - bank
-    - donate
-    - upkeep
-    senator:
-    - mode
-    - kick
-    - e plot staff
-    - settings
-    - perms show
-    - ally
-    - unally
-    - invite
-    - kick
-    - setdescription
-    leader:
-    - settings
-    - sethome
-    - e setrank
-    - perms
-    - mail
-    - invite
-    - kick
-    - e banish <player>|s:<settlement>|e:<empire>
-    - e unbanish <player>|s:<settlement>|e:<empire>
-    - ally
-    - unally
-    - e plot staff
-    - shop
-    - rename
-    - regen
-    - setdescription
-    - transfer
-    - disband
     bank:
     - balance
     - deposit
@@ -239,23 +151,17 @@ help-order:
     - e allies
     - e allyclaim
   plot:
-    general:
-    - friend
-    - buy
-    - settings
-    - name
-    - info
-    - link
-    - unlink
-    - sale
-    - unsale
-    - unown
-    - plot set embassy <amount>
-    staff:
-    - sale
-    - unsale
-    - revoke
-    - plot set embassy <amount>
+  - friend
+  - buy
+  - settings
+  - name
+  - info
+  - link
+  - unlink
+  - sale
+  - unsale
+  - unown
+  - plot set embassy <amount>
   lock:
   - lock
   - toggle
