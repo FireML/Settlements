@@ -56,6 +56,7 @@ perm-groups:
     - village.shop.repeat
     - village.tax.set
     - village.tax.exempt
+    - village.transfer
     - village.titles
     - village.settitle
     - village.unally

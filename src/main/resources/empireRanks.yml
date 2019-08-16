@@ -44,6 +44,7 @@ perm-groups:
     - empire.shop.unlock
     - empire.shop.repeat
     - empire.tax.set
+    - empire.transfer
     - empire.unally
     - empire.unbanish
 
