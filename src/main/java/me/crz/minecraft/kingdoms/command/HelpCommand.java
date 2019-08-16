@@ -100,11 +100,11 @@ public class HelpCommand extends SubCommand {
                         && (subCommand.getParent() == null || subCommand.getParent().getHelpCommand() != subCommand)
                         && subCommand.hasAccess(sender)) {
                     int add = 0;
-                    for (int i = commands.size(); i > 0; i--) {
-                        Map.Entry<String, SubCommand> entry = commands.get(i - 1);
+                    for (int i = 0; i < commands.size(); i++) {
+                        Map.Entry<String, SubCommand> entry = commands.get(i);
                         if (entry.getValue() != null
                                 && entry.getValue().getParent() == subCommand.getParent()
-                                && entry.getValue().name().compareTo(subCommand.name()) < 0) {
+                                && entry.getValue().name().compareTo(subCommand.name()) > 0) {
                             add = i;
                             break;
                         }
@@ -166,7 +166,7 @@ public class HelpCommand extends SubCommand {
                         }
                         String[] splitPath = displayPath.split(" ");
                         String[] splitKey = e.getKey().split(" ");
-                        if (splitPath[splitPath.length - 1].equals(splitKey[0])) {
+                        if (splitPath.length > 1 && splitPath[splitPath.length - 1].equals(splitKey[0])) {
                             usage = "/" + String.join(" ", Arrays.copyOfRange(splitPath, 0, splitPath.length - 1)) + " " + String.join(" ", splitKey);
                         } else {
                             usage = "/" + displayPath;
@@ -183,7 +183,7 @@ public class HelpCommand extends SubCommand {
                     }
                     Message usageMessage = getUsageMessage(s);
                     if (!usageMessage.exists()) {
-                        usageMessage = getParent().getMessage("usage.entry.general");
+                        usageMessage = getParent().getMessage("usage.entry");
                     }
                     usageMessage.tell(sender,
                             "usage", usage,
@@ -238,16 +238,16 @@ public class HelpCommand extends SubCommand {
 
     private Message getUsageMessage(SubCommand subCommand) {
         if (subCommand != null) {
-            Message usageMessage = getParent().getMessage("usage.entry." + subCommand.name());
+            Message usageMessage = getParent().getMessage("usage.entry-" + subCommand.name());
             if (!usageMessage.exists() && subCommand.getParent() != null) {
                 usageMessage = getUsageMessage(subCommand.getParent());
             }
             if (!usageMessage.exists()) {
-                usageMessage = getParent().getMessage("usage.entry." + getPermGroup(subCommand));
+                usageMessage = getParent().getMessage("usage.entry-" + getPermGroup(subCommand));
             }
             return usageMessage;
         }
-        return getParent().getMessage("usage.entry.general");
+        return getParent().getMessage("usage.entry");
     }
 
     private String getPermGroup(SubCommand subCommand) {

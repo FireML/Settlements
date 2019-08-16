@@ -12,6 +12,7 @@ import java.util.Collection;
 public class VillageSetTitleCommand extends VillageSubCommand {
     public VillageSetTitleCommand(SubCommand parent) {
         super(parent, "settitle <player> <title>");
+        setVisible(false);
     }
 
     @Override

@@ -1,52 +1,65 @@
 help-order:
   village:
     general:
-    - active
     - allies
-    - ally
-    - allyclaim
-    - s banish <player>|s:<settlement>|e:<empire>
     - banished
+    - s balance
     - bank
-    - s chat
-    - claim
     - create
     - deposit
-    - disband
     - donate
-    - history
+    - s event
+    - here
     - home
-    - invite
     - join
     - joinfee
-    - s joinfee set
-    - kick
     - leave
     - list
-    - mail
     - map
     - materials
     - outpost
-    - perms
-    - s plot
-    - rename
     - reslist
     - rules
+    - show <name>
+    - tax
+    - teleporters
+    - title
+    - upkeep
+    - chat
+    - lock
+    - unlock
+    # Plot
+    - s plot
+    # Officer/Settings
+    - e leave
+    - s access
+    - active
+    - ally
+    - allyclaim
+    - s banish <player>|s:<settlement>|e:<empire>
+    - build
+    - claim
+    - disband
+    - history
+    - invite
+    - s joinfee set
+    - kick
+    - mail
+    - mode
+    - perks
+    - perms
+    - rename
     - setdescription
     - sethome
     - s setrank
     - settings
     - shop
-    - show <name>
-    - tax
     - s tax set
-    - teleporters
-    - title
     - titles
     - unally
     - s unbanish <player>|s:<settlement>|e:<empire>
     - unclaim
-    - upkeep
+    - use
     outpost:
     - list
     - s outpost tp <name>
@@ -73,28 +86,38 @@ help-order:
   empire:
     general:
     - allies
-    - ally
-    - allyclaim
-    - e bank balance
-    - e deposit
-    - e withdraw
-    - e banish <player>|s:<settlement>|e:<empire>
+    - e balance
+    - bank
     - banished
     - create
-    - disband
     - donate
-    - e chat
-    - e plot
+    - here
     - home
-    - invite
     - join
     - joinfee
+    - list
+    - memberlist
+    - show
+    - tax
+    - upkeep
+    - chat
+    - lock
+    - unlock
+    - # Plot
+    - e plot
+    # Officer/Settings
+    - e access
+    - ally
+    - e banish <player>|s:<settlement>|e:<empire>
+    - build
+    - disband
+    - invite
     - e joinfee set
     - kick
-    - list
+    - leave
     - mail
-    - memberlist
     - mode
+    - perks
     - perms
     - regen
     - rename
@@ -102,14 +125,13 @@ help-order:
     - sethome
     - e setrank
     - settings
+    - setsymbol
     - shop
-    - show
-    - tax
     - e tax set
     - transfer
     - unally
     - e unbanish <player>|s:<settlement>|e:<empire>
-    - upkeep
+    - use
     bank:
     - balance
     - deposit
