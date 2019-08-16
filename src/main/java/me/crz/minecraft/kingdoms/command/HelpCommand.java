@@ -96,7 +96,8 @@ public class HelpCommand extends SubCommand {
             }
 
             for (SubCommand subCommand : missingSubCommands) {
-                if ((subCommand.getParent() == null || subCommand.getParent().getHelpCommand() != subCommand)
+                if (subCommand.isVisible()
+                        && (subCommand.getParent() == null || subCommand.getParent().getHelpCommand() != subCommand)
                         && subCommand.hasAccess(sender)) {
                     int add = 0;
                     for (int i = commands.size(); i > 0; i--) {
