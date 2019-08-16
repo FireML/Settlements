@@ -106,8 +106,6 @@ ranks:
     icon: golden_sword
     inherits: member
     permissions:
-    - empire.disband
-    - empire.transfer
     - empire.rename
     - empire.lock.admin
     - empire.help.assistant

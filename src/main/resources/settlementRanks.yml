@@ -129,8 +129,6 @@ ranks:
     icon: golden_sword
     inherits: resident
     permissions:
-    - village.disband
-    - village.transfer
     - village.rename
     - village.lock.admin
     - village.help.assistant
