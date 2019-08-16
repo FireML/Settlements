@@ -429,7 +429,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     public boolean containsHome() {
-        return contains(getLandOwner().getHome());
+        return getLandOwner() != null && contains(getLandOwner().getHome());
     }
 
     public String[] getReplacements() {

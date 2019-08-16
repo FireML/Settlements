@@ -164,14 +164,19 @@ public class LandManager {
     public void unclaimLand(OwnedLand... lands) {
         Set<Village> saveVillages = new HashSet<>();
         for (OwnedLand land : lands) {
+            if (land.getLandOwner() == null) {
+                continue;
+            }
             if (land.containsHome()) {
                 land.getLandOwner().setHome((SimpleLocation) null);
             }
             landTable.remove(land.getWorldName(), land.getSimpleKey());
-            villageLands.remove(land.getLandOwner().getId(), land);
-            if (land.getLandOwner() instanceof Village && land.isOutpost()) {
-                if (((Village) land.getLandOwner()).getOutpostHomes().remove(land.getOutpostName().toLowerCase()) != null) {
-                    saveVillages.add((Village) land.getLandOwner());
+            if (land.getLandOwner() instanceof Village) {
+                villageLands.remove(land.getLandOwner().getId(), land);
+                if (land.isOutpost()) {
+                    if (((Village) land.getLandOwner()).getOutpostHomes().remove(land.getOutpostName().toLowerCase()) != null) {
+                        saveVillages.add((Village) land.getLandOwner());
+                    }
                 }
             }
             KingdomsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + land.getKey() + " owned by " + land.getLandOwner().getName() + " was unclaimed");
