@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public abstract class SubCommand implements ConfigMessages, Rankable {
@@ -315,5 +316,17 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
             }
         }
         return shortestAlias;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        return getPath().equals(((SubCommand) o).getPath());
+    }
+
+    @Override
+    public int hashCode() {
+        return getPath().hashCode();
     }
 }

@@ -15,11 +15,13 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.command.CommandSender;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 public class HelpCommand extends SubCommand {
@@ -78,7 +80,9 @@ public class HelpCommand extends SubCommand {
         }
 
         if (ConfigManager.getInstance().getCommandsConfig().isList(path)) {
-            Map<String, SubCommand> commands = new LinkedHashMap<>();
+            List<Map.Entry<String, SubCommand>> commands = new ArrayList<>();
+
+            Set<SubCommand> missingSubCommands = new HashSet<>(getParent().getSubCommands().values());
 
             for (String commandPath : ConfigManager.getInstance().getCommandsConfig().getStringList(path)) {
                 SubCommand subCommand = getSubCommand(commandPath);
@@ -86,7 +90,25 @@ public class HelpCommand extends SubCommand {
                     subCommand = getSubCommand(stripParameters(commandPath));
                 }
                 if (subCommand == null || subCommand.hasAccess(sender)) {
-                    commands.put(commandPath, subCommand);
+                    commands.add(new AbstractMap.SimpleImmutableEntry<>(commandPath, subCommand));
+                }
+                missingSubCommands.remove(subCommand);
+            }
+
+            for (SubCommand subCommand : missingSubCommands) {
+                if ((subCommand.getParent() == null || subCommand.getParent().getHelpCommand() != subCommand)
+                        && subCommand.hasAccess(sender)) {
+                    int add = 0;
+                    for (int i = commands.size(); i > 0; i--) {
+                        Map.Entry<String, SubCommand> entry = commands.get(i - 1);
+                        if (entry.getValue() != null
+                                && entry.getValue().getParent() == subCommand.getParent()
+                                && entry.getValue().name().compareTo(subCommand.name()) < 0) {
+                            add = i;
+                            break;
+                        }
+                    }
+                    commands.add(add, new AbstractMap.SimpleImmutableEntry<>(subCommand.getPath(), subCommand));
                 }
             }
 
@@ -112,7 +134,7 @@ public class HelpCommand extends SubCommand {
                 if (page == maxPage) {
                     limit *= 2;
                 }
-                commands.entrySet().stream().skip((page - 1) * entriesPerPage).limit(limit).forEachOrdered(e -> {
+                commands.stream().skip((page - 1) * entriesPerPage).limit(limit).forEachOrdered(e -> {
                     SubCommand s = e.getValue();
                     String usage;
                     String displayPath;

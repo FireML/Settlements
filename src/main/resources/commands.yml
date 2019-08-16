@@ -12,6 +12,7 @@ help-order:
     - claim
     - create
     - deposit
+    - disband
     - donate
     - history
     - home
@@ -27,24 +28,10 @@ help-order:
     - materials
     - outpost
     - perms
-    - s plot buy
-    - s plot settings
-    - s plot name
-    - s plot info
-    - s plot link
-    - s plot unlink
-    - s plot sale
-    - s plot unsale
-    - s plot unown
-    - s plot plot set embassy <amount>
+    - s plot
     - rename
     - reslist
     - rules
-    - s outpost list
-    - s outpost tp
-    - s outpost sethome
-    - s outpost claim
-    - s outpost unclaim
     - setdescription
     - sethome
     - s setrank
@@ -97,16 +84,7 @@ help-order:
     - disband
     - donate
     - e chat
-    - e plot buy
-    - e plot settings
-    - e plot name
-    - e plot info
-    - e plot link
-    - e plot unlink
-    - e plot sale
-    - e plot unsale
-    - e plot unown
-    - e plot plot set embassy <amount>
+    - e plot
     - home
     - invite
     - join
@@ -132,8 +110,6 @@ help-order:
     - unally
     - e unbanish <player>|s:<settlement>|e:<empire>
     - upkeep
-    - e help senator
-    - e help leader
     bank:
     - balance
     - deposit
@@ -151,7 +127,7 @@ help-order:
     - e allies
     - e allyclaim
   plot:
-  - friend
+  - build
   - buy
   - settings
   - name
