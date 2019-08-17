@@ -90,33 +90,33 @@ titles-per-rank: 10
 modes:
   unclaimed:
     firespread: false
-    explosion: false
+    explosions: false
     pvp: true
     mobspawning: true
   # Settings for worlds that have claiming disabled
   unclaimable:
     firespread: false
-    explosion: false
+    explosions: false
     pvp: true
     mobspawning: true
   # Override for specific worlds
   worlds:
     Resource:
-      explosion: true
+      explosions: true
   abandoned:
     village:
       firespread: false
-      explosion: false
+      explosions: false
       pvp: true
       mobspawning: true
     kingdom:
       firespread: false
-      explosion: false
+      explosions: false
       pvp: true
       mobspawning: true
     empire:
       firespread: false
-      explosion: false
+      explosions: false
       pvp: true
       mobspawning: true
 # Amount in ticks after which the chunk queue will be processed to load the locks in it

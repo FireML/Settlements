@@ -1699,7 +1699,11 @@ command:
       description: Add/set/remove bonus claims from Residents/Villages
       success: "&aSUCCESS: {operation} {amount} to {name}"
     world:
-      description: Sets if a world is claimable in or not
+      description: World admin commands
+      info:
+        description: Get information about the current world
+      setclaimable:
+        description: Sets if a world is claimable in or not
     join:
       description: Forces a player to join a settlement
     level:
