@@ -1803,15 +1803,18 @@ command:
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
         &a&lDescription &r&7{description}
         &a&lSymbol &r&7{symbol}
-        &6&lLevel &r&7{level}
         &6&lAccess &r&7{access}
         &6&lBank &r&7{bank}
+        &6&lUpkeep: &r&7{upkeep}
+        &6&lJoin fee: &r&7{joinfee}
+        &6&lDaily tax: &r&7{tax}
         &6&lBonusoutposts &r&7{bonusoutposts}
-        &6&lBonusclaims &r&7{bonusclaims}
+        &6&lBonusclaims &r&7{bonus}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
-        &6&lCapital &r&7{capitalstate}{capital}
-        &e&lLeader &r&7{chieftitle} {chief}
+        &6&lCapital &r&7{capitalstate} {capital}
+        &e&lLeader &r&7{chieftitle} {chiefonline}{chief}
+        {specialresidents}
         &e&lMembers: &r&7{members}
       abandoned: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
@@ -2031,6 +2034,7 @@ command:
         &6&lUpkeep: &r&7{upkeep}
         &6&lJoin fee: &r&7{joinfee}
         &6&lDaily tax: &r&7{tax}
+        &6&lBonusoutposts &r&7{bonusoutposts}
         &6&lBonusclaims &r&7{bonus}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
