@@ -50,7 +50,6 @@ import me.crz.minecraft.kingdoms.village.VillageListener;
 import me.crz.minecraft.kingdoms.vault.VaultListener;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.village.VillageManager;
-import me.crz.minecraft.kingdoms.utils.CursesFilter;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import me.crz.minecraft.kingdoms.land.LandPerks;
@@ -145,7 +144,6 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             this.getServer().getPluginManager().registerEvents(new EmpireListener(), this);
             this.getServer().getPluginManager().registerEvents((landFlags = new LandFlags()), this);
             this.getServer().getPluginManager().registerEvents(new LockListener(), this);
-            this.getServer().getPluginManager().registerEvents(new Advancements(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlagsBlockEvents(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlagsUseEvents(), this);
             this.getServer().getPluginManager().registerEvents(new EventListener(), this);
