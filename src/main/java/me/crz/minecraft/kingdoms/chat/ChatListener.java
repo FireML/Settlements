@@ -6,6 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.TabCompleteEvent;
 
+import java.util.ArrayList;
+
 public class ChatListener implements Listener {
 
     @EventHandler
@@ -13,6 +15,7 @@ public class ChatListener implements Listener {
         String[] parts = event.getBuffer().split(" ");
         String last = parts[parts.length - 1];
         if (last.startsWith("@")) {
+            event.setCompletions(new ArrayList<>(event.getCompletions()));
             String namePart = last.substring(1);
             Bukkit.getOnlinePlayers().stream()
                     .filter(p -> p != event.getSender())
