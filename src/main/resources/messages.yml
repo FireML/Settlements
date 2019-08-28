@@ -1871,7 +1871,7 @@ command:
       next: "&b Next >>"
     lock:
       admin:
-        description: "Allows administrating of locks inside the settlement's claims"
+        description: "Allows administrating of locks inside the empire's claims"
     mail:
       description: "Allows sending a mail to all chiefs of empire member settlements"
       sender: "Leader {name}, Empire {empirename}"
