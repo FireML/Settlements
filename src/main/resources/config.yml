@@ -133,6 +133,10 @@ lockable:
 - "*_door"
 - "*_trapdoor"
 - "*_fence_gate"
+- "*_button"
+- lever
+- note_block
+- jukebox
 # This checks if a block is protected on place rather than using the
 # InventoryMoveItemEvent to prevent hoppers from stealing items
 alternative-hopper-protection: true
