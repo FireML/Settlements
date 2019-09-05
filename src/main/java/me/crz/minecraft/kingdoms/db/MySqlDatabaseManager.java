@@ -1515,9 +1515,11 @@ public class MySqlDatabaseManager extends DatabaseManager {
                                 conn = ds.getConnection();
                             }
                             Map.Entry<IdObject, T> e = tQueue.pollFirst();
-                            handleSave.accept(conn, e.getValue());
-                            if (name == null) {
-                                name = e.getValue().getClass().getSimpleName();
+                            if (e.getValue() != null) {
+                                handleSave.accept(conn, e.getValue());
+                                if (name == null) {
+                                    name = e.getValue().getClass().getSimpleName();
+                                }
                             }
                             queue.remove(e.getKey());
                         }
