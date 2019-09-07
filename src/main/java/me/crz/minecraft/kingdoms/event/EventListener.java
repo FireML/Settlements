@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.event;
 
+import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveBlockEvent;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -8,7 +9,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class EventListener implements Listener {
@@ -46,6 +49,52 @@ public class EventListener implements Listener {
     public void onCraft(CraftItemEvent event) {
         if (event.getWhoClicked() instanceof Player && event.getCurrentItem() != null) {
             EventManager.getInstance().handle((Player) event.getWhoClicked(), Event.Action.CRAFT, event.getCurrentItem().getType().toString());
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onKill(EntityDeathEvent event) {
+        if (event.getEntity().getKiller() != null) {
+            EventManager.getInstance().handle(event.getEntity().getKiller(), Event.Action.KILL, event.getEntityType().toString());
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onMove(PlayerMoveBlockEvent event) {
+        Player player = event.getPlayer();
+        String type = "walk";
+        if (event.getFrom().getBlockX() == event.getTo().getBlockX() && event.getFrom().getBlockZ() == event.getFrom().getBlockZ()) {
+            if (event.getFrom().getBlockY() > event.getFrom().getBlockY()) {
+                type = "fall";
+            } else if (event.getFrom().getBlockY() > event.getFrom().getBlockY()) {
+                type = "rise";
+            } else {
+                return;
+            }
+        } else if (player.isSneaking()) {
+            type = "sneak";
+        } else if (player.isSprinting()) {
+            type = "run";
+        }
+
+        if (player.isInsideVehicle() && player.getVehicle() != null) {
+            type = player.getVehicle().getType().toString();
+        } else {
+            if (player.isRiptiding()) {
+                type = "riptide";
+            } else if (player.isGliding()) {
+                type = "elytra";
+            } else if (player.isSwimming()) {
+                type = "swim";
+            }
+        }
+        EventManager.getInstance().handle(event.getPlayer(), Event.Action.DISTANCE, type);
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onTeleport(PlayerTeleportEvent event) {
+        if (event.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
+            EventManager.getInstance().handle(event.getPlayer(), Event.Action.DISTANCE, (int) event.getFrom().distance(event.getTo()), "enderpearl");
         }
     }
 }

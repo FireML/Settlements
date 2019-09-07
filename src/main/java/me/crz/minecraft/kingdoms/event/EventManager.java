@@ -338,6 +338,10 @@ public class EventManager implements ConfigMessages {
     }
 
     public void handle(Player player, Event.Action action, String... data) {
+        handle(player, action, 1, data);
+    }
+
+    public void handle(Player player, Event.Action action, int amount, String... data) {
         if (data.length < 1) {
             throw new IllegalArgumentException("At least one data entry is required!");
         }
@@ -365,7 +369,7 @@ public class EventManager implements ConfigMessages {
         }
 
         EventData ed = eventData.computeIfAbsent(resident.getVillage().getId(), id -> new EventData(id));
-        ed.increment(matches);
+        ed.increment(matches, amount);
 
         if (first == null || ed.getTotalAmount() > eventData.get(first.getId()).getTotalAmount()) {
             first = resident.getVillage();
@@ -436,8 +440,8 @@ public class EventManager implements ConfigMessages {
             this.id = id;
         }
 
-        public void increment(String data) {
-            counts.put(data.toLowerCase(), getCount(data) + 1);
+        public void increment(String data, int amount) {
+            counts.put(data.toLowerCase(), getCount(data) + amount);
             totalAmount++;
         }
 
