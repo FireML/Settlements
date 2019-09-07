@@ -302,12 +302,12 @@ public class EventManager implements ConfigMessages {
                 );
                 List<String> rewards = activeEvent.getRewards().getOrDefault(String.valueOf(place), activeEvent.getRewards().get("rest"));
                 if (rewards != null) {
-                    villageRewards.put(first.getId(), new LinkedHashSet<>(rewards));
-                    getMessage("reward-info").tell(first.getOnlineResidents(),
+                    villageRewards.put(village.getId(), new LinkedHashSet<>(rewards));
+                    getMessage("reward-info").tell(village.getOnlineResidents(),
                             "title", activeEvent.getTitle(),
                             "id", activeEvent.getId(),
-                            "state", first.getStateTag(),
-                            "name", first.getName(),
+                            "state", village.getStateTag(),
+                            "name", village.getName(),
                             "place", String.valueOf(place),
                             "amount", String.valueOf(eventData.getTotalAmount())
                     );
