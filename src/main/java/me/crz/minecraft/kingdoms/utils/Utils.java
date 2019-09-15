@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -651,5 +652,15 @@ public class Utils {
             map = (Map<String, Object>) map.getOrDefault(parts[i], Collections.emptyMap());
         }
         return (T) map.getOrDefault(parts[parts.length - 1], def);
+    }
+
+    public static <T> T poll(Collection<T> coll) {
+        if (coll.isEmpty()) {
+            return null;
+        }
+        Iterator<T> it = coll.iterator();
+        T r = it.next();
+        it.remove();
+        return r;
     }
 }
