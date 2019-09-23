@@ -4,6 +4,7 @@ import me.crz.minecraft.kingdoms.command.HelpCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.village.outpost.OutpostClaimCommand;
 import me.crz.minecraft.kingdoms.command.village.outpost.OutpostListCommand;
+import me.crz.minecraft.kingdoms.command.village.outpost.OutpostRenameCommand;
 import me.crz.minecraft.kingdoms.command.village.outpost.OutpostSethomeCommand;
 import me.crz.minecraft.kingdoms.command.village.outpost.OutpostTeleportCommand;
 import me.crz.minecraft.kingdoms.command.village.outpost.OutpostUnclaimCommand;
@@ -16,6 +17,7 @@ public class VillageOutPostCommand extends VillageSubCommand {
         setHelpCommand(new HelpCommand(this));
         registerCommand(new OutpostClaimCommand(this));
         registerCommand(new OutpostUnclaimCommand(this));
+        registerCommand(new OutpostRenameCommand(this));
         registerCommand(new OutpostSethomeCommand(this));
         registerCommand(new OutpostTeleportCommand(this));
         registerCommand(new OutpostListCommand(this));

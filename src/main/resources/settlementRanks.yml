@@ -41,6 +41,7 @@ perm-groups:
     - village.mail
     - village.outpost.claim
     - village.outpost.sethome
+    - village.outpost.rename
     - village.outpost.unclaim
     - village.perms
     - village.perms.set
@@ -107,6 +108,7 @@ ranks:
     - village.outpost.help.elder
     - village.outpost.claim
     - village.outpost.sethome
+    - village.outpost.rename
     - village.perks.toggle
     - village.perms
     - village.perms.set
@@ -142,6 +144,7 @@ ranks:
     - village.outpost.help.elder
     - village.outpost.claim
     - village.outpost.sethome
+    - village.outpost.rename
     - village.perks.toggle
     - village.plot.admin
     - village.setdescription
@@ -171,6 +174,7 @@ ranks:
     - village.outpost.help.elder
     - village.outpost.claim
     - village.outpost.sethome
+    - village.outpost.rename
     - village.perks.toggle
     - village.plot.admin
     - village.setdescription

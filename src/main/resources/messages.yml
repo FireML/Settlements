@@ -1385,6 +1385,10 @@ command:
         head: "&a⊱&m━━━━&r&6OutPosts&a&m━━━━&a⊰"
         entry: "&a{name} (World: {world}, X: {x}, Z: {z}"
         description: List all your outposts
+      rename:
+        already-exists: "&c&lERROR &r&7An outpost with the name &c{name}&7 already exists!!"
+        success: "&a&lSUCCESS &r&e{player} &7has renamed &coutpost&7 &e{oldname}&7 to &e{newname}&7!"
+        description: Rename an outpost
       sethome:
         not-an-outpost: "&cThe land must be an outpost to set the home!"
         success: "&a&lOutpost home &6{name} &aset here"
