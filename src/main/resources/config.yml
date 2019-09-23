@@ -150,3 +150,16 @@ placeholder-api:
     format:
       channel: true
       private: true
+brewery:
+  # Players with a drunkeness above that value can no longer write in the channel
+  block-channels:
+    local: 9001
+    trade: 1
+    event: 1
+    general: 1
+    settlement: 9001
+    empire: 1
+    ally: 1
+    empireally: 1
+    admin: 9001
+    staff: 9001

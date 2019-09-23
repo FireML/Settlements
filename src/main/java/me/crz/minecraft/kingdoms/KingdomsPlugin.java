@@ -11,6 +11,7 @@ import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.event.EventListener;
 import me.crz.minecraft.kingdoms.event.EventManager;
 import me.crz.minecraft.kingdoms.integration.AfkProvider;
+import me.crz.minecraft.kingdoms.integration.BreweryIntegration;
 import me.crz.minecraft.kingdoms.integration.ChestShopIntegration;
 import me.crz.minecraft.kingdoms.integration.CmiIntegration;
 import me.crz.minecraft.kingdoms.integration.IgnoreProvider;
@@ -123,6 +124,10 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             placeholderApi = new PlaceholderApiIntegration();
             getLogger().log(Level.INFO, "Hooked into PlaceholderAPI " + placeholderApi.getPlaceholderAPI().getDescription().getVersion() + "!");
+        }
+        if (getServer().getPluginManager().isPluginEnabled("Brewery")) {
+            BreweryIntegration breweryIntegration = new BreweryIntegration();
+            getLogger().log(Level.INFO, "Hooked into Brewery " + breweryIntegration.getBrewery().getDescription().getVersion() + "!");
         }
         if (data.load(this.getDataFolder())) {
             ConfigManager.getInstance();

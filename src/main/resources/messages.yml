@@ -418,6 +418,8 @@ integration:
       entry: "&9{place}. &r&e{name}"
     top-ten-empires:
       entry: "&9{place}. &r&e{name}"
+  brewery:
+    too-drunk-for-channel: "&cYou are too drunk to speak in &f{channel}&c! Use the [Local](/localchat) or [Settlement](/settlementchat) chat!"
 protection:
   state:
     use:

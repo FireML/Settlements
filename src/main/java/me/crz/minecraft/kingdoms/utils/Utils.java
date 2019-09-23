@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.utils;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.PlotMode;
@@ -330,6 +331,10 @@ public class Utils {
     public static int getLevelOutposts(VillageState state, int level) {
         return LEVEL_OUTPOSTS.computeIfAbsent(state.name() + "_" + level,
                 key -> ConfigManager.getInstance().getLevelConfig().getInt(state.name().toLowerCase() + ".level-" + level + ".outposts"));
+    }
+
+    public static int getMaxDrunkeness(ChatChannel channel) {
+        return ConfigManager.getInstance().getConfig().getInt("brewery.block-channels." + channel.getKey(), 9001);
     }
 
     public static void addDisabledWorld(World world) {
