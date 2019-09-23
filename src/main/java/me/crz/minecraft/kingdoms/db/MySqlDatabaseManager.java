@@ -1553,17 +1553,17 @@ public class MySqlDatabaseManager extends DatabaseManager {
         }
 
         public void add(IdObject id, T object) {
-            if (id == null || id.isNull()) {
-                id = IdObject.get(object.hashCode());
-                forceSave = true;
-            }
             synchronized (queue) {
+                if (id == null || id.isNull()) {
+                    id = IdObject.get(object.hashCode());
+                    forceSave = true;
+                }
                 queue.put(id, object);
-            }
-            if (queue.size() >= maxSize) {
-                Utils.runAsync(saving);
-            } else if (!forceSave && task == null) {
-                task = Bukkit.getScheduler().runTaskLaterAsynchronously(KingdomsPlugin.getInstance(), saving, saveWait * 20);
+                if (queue.size() >= maxSize) {
+                    Utils.runAsync(saving);
+                } else if (!forceSave && task == null) {
+                    task = Bukkit.getScheduler().runTaskLaterAsynchronously(KingdomsPlugin.getInstance(), saving, saveWait * 20);
+                }
             }
         }
 
