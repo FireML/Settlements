@@ -37,7 +37,7 @@ public class PerksGUI extends KingdomsGUI {
         Village village = resident.getVillage();
 
         for (LevelPerk perk : VillageManager.getInstance().getPerks()) {
-            if (!village.hasUnlocked(perk) || !perk.hasEffects()) {
+            if (!village.hasUnlocked(perk) || (!perk.hasEffects() && !perk.hasActions())) {
                 continue;
             }
 

@@ -591,7 +591,7 @@ gui:
             &ePermanent Thunder Storm.
             &bClick to set to normal weather cycle!
           normal: |-
-            &eNormal Wehather cycle.
+            &eNormal Weather cycle.
             &bClick to set to permanent clear weather!
         time:
           morning: |-

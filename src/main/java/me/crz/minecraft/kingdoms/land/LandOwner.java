@@ -199,7 +199,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
     }
 
     public boolean togglePerk(Perk perk) {
-        if (perk.hasEffects()) {
+        if (perk.hasEffects() || perk.hasActions()) {
             PerkData perkData = getPerkData(perk);
             if (perkData != null) {
                 perkData.toggle();
