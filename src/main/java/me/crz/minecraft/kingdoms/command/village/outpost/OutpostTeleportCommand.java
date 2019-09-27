@@ -10,7 +10,7 @@ import me.crz.minecraft.kingdoms.world.NamedLocation;
 
 public class OutpostTeleportCommand extends VillageSubCommand {
     public OutpostTeleportCommand(VillageSubCommand parent) {
-        super(parent, "teleport <name>", "tp");
+        super(parent, "teleport <name>", "tp", "otp");
     }
 
     @Override

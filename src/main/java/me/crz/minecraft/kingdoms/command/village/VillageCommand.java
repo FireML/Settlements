@@ -8,6 +8,7 @@ import me.crz.minecraft.kingdoms.command.lock.LockCommand;
 import me.crz.minecraft.kingdoms.command.lock.UnlockCommand;
 import me.crz.minecraft.kingdoms.command.plot.PlotCommand;
 import me.crz.minecraft.kingdoms.command.village.money.VillageMoneyCommand;
+import me.crz.minecraft.kingdoms.command.village.outpost.OutpostTeleportCommand;
 import me.crz.minecraft.kingdoms.db.LogType;
 import me.crz.minecraft.kingdoms.teleporter.TeleportersGUI;
 import org.bukkit.command.CommandSender;
@@ -46,7 +47,9 @@ public class VillageCommand extends SubCommand {
         registerCommand(new VillageMaterialsCommand(this));
         registerCommand(new VillageModeCommand(this));
         registerCommand(new VillageMoneyCommand(this));
-        registerCommand(new VillageOutPostCommand(this));
+        VillageSubCommand outpostCommand = new VillageOutPostCommand(this);
+        registerCommand(outpostCommand);
+        registerCommand(new OutpostTeleportCommand(outpostCommand));
         registerCommand(new VillagePerksCommand(this));
         registerCommand(new PlotCommand(this));
         registerCommand(new LockCommand());

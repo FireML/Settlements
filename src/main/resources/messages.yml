@@ -1412,6 +1412,8 @@ command:
         connected-to-outpost: "&cOnly unclaiming chunks not connected to another outpost!"
         description: Unclaims the outpost you are standing in
       description: Claim a seperate chunk of land
+    teleport:
+      description: Teleports to a outpost
     perms:
       description: Manage rank permissions
       permission:
