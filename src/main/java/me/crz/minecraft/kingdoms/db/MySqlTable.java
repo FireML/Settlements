@@ -227,6 +227,15 @@ public enum MySqlTable {
             + "UNIQUE (userId, channel)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
+    RESIDENT_CHANNEL_COLORS("CREATE TABLE IF NOT EXISTS {tablePrefix}resident_channel_colors ("
+            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+            + "userId INTEGER, INDEX (userId),"
+            + "FOREIGN KEY (userId) REFERENCES {tablePrefix}residents(id) ON DELETE CASCADE,"
+            + "channel VARCHAR(255),"
+            + "color VARCHAR(255),"
+            + "UNIQUE (userId, channel)"
+            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
+
     RESIDENT_FRIENDS("CREATE TABLE IF NOT EXISTS {tablePrefix}resident_friends ("
             + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
             + "userId INTEGER, INDEX (userId),"

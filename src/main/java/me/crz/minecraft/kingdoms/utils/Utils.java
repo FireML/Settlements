@@ -11,6 +11,7 @@ import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -273,6 +274,33 @@ public class Utils {
             return ConfigManager.getInstance().getConfig().getInt("chat.notify.cooldown");
         }
         return 15;
+    }
+
+    public static List<String> getChatColors() {
+        return ConfigManager.getInstance().getConfig().getStringList("chat.selectable-colors");
+    }
+
+    public static ChatColor getChannelColor(ChatChannel channel) {
+        return getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-colors." + channel.getKey()), ChatColor.WHITE);
+    }
+
+    public static ChatColor getColor(String colorString, ChatColor def) {
+        if (colorString != null) {
+            try {
+                return ChatColor.valueOf(colorString.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                ChatColor color = null;
+                if (colorString.length() == 1) {
+                    color = ChatColor.getByChar(colorString);
+                } else if (colorString.length() == 2) {
+                    color = ChatColor.getByChar(colorString.charAt(1));
+                }
+                if (color != null) {
+                    return color;
+                }
+            }
+        }
+        return ChatColor.WHITE;
     }
 
     public static int getTitlesPerRank() {

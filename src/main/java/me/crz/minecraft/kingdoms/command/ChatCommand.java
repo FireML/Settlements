@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.command;
 
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.chat.ChatManager;
+import me.crz.minecraft.kingdoms.chat.gui.ColorChannelSelectGui;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -17,6 +18,9 @@ public class ChatCommand extends PlayerSubCommand {
         super(null, "chat <channel>", "c");
         setHelpCommand(new HelpCommand(this));
         for (ChatChannel channel : ChatChannel.values()) {
+            if (channel.isPrivate()) {
+                continue;
+            }
             registerCommand(new PlayerSubCommand(this, channel.name().toLowerCase(), channel.getAliases().toArray(new String[0])) {
                 @Override
                 public boolean run(Player p, String base, String alias, String... args) {
@@ -83,6 +87,13 @@ public class ChatCommand extends PlayerSubCommand {
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
                 MessageUtils.tell(p, getMessage(res.getSwear() ? "enabled" : "disabled"));
                 return false;
+            }
+        });
+        registerCommand(new PlayerSubCommand(this, "colour", "color", "colours", "colors") {
+            @Override
+            public boolean run(Player player, String base, String alias, String... args) {
+                ColorChannelSelectGui.getInstance().open(player);
+                return true;
             }
         });
     }

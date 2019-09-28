@@ -84,6 +84,36 @@ chat:
     sound: entity_experience_orb_pickup
     # Cooldown between notification sounds
     cooldown: 15
+  channel-colors:
+    general: white
+    event: green
+    local: yellow
+    admin: dark_purple
+    staff: gold
+    settlement: yellow
+    trade: light_purple
+    ally: aqua
+    empireally: aqua
+    empire: aqua
+    private-sent: aqua
+    private-received: aqua
+  selectable-colors:
+  - blue
+  - dark_blue
+  - dark_green
+  - dark_aqua
+  - dark_red
+  - dark_purple
+  - gold
+  - gray
+  - dark_gray
+  - green
+  - aqua
+  - red
+  - light_purple
+  - yellow
+  - white
+
 # Amount of titles that can be set per rank
 titles-per-rank: 10
 # Unclaimed/abandoned modes

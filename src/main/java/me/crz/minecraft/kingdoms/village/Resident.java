@@ -12,11 +12,15 @@ import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -39,6 +43,7 @@ public class Resident implements ConfigurationSerializable, Targetable {
     private Village village = null;
     private ChatChannel activeChannel = ChatChannel.GENERAL;
     private Set<ChatChannel> channels = EnumSet.of(ChatChannel.GENERAL);
+    private Map<ChatChannel, ChatColor> channelColors = new EnumMap<>(ChatChannel.class);
     private Set<UUID> ignore = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private Set<UUID> friends = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private boolean swear = true;
@@ -178,6 +183,24 @@ public class Resident implements ConfigurationSerializable, Targetable {
     public boolean removeChannel(ChatChannel channel) {
         Message.get("command.chat.leave.success").tell(this, "name", channel.getTag());
         return channels.remove(channel);
+    }
+
+    @Nullable
+    public ChatColor getChannelColor(ChatChannel channel) {
+        return channelColors.get(channel);
+    }
+
+    @Nonnull
+    public ChatColor getChannelColor(ChatChannel channel, @Nonnull ChatColor def) {
+        return channelColors.getOrDefault(channel, def);
+    }
+
+    public ChatColor setChannelColor(ChatChannel channel, ChatColor chatColor) {
+        return chatColor != null ? channelColors.put(channel, chatColor) : removeChannelColor(channel);
+    }
+
+    public ChatColor removeChannelColor(ChatChannel channel) {
+        return channelColors.remove(channel);
     }
 
     public Player getPlayer() {
@@ -376,6 +399,10 @@ public class Resident implements ConfigurationSerializable, Targetable {
         map.put("lastLogin", getLastLogin());
         map.put("channels", getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
         map.put("activeChannel", getActiveChannel().name());
+        map.put("channelColors", channelColors.entrySet().stream()
+                .collect(Collectors.toMap(
+                        entry -> entry.getKey().name(),
+                        entry -> entry.getValue().name())));
         map.put("swear", getSwear());
         map.put("bonusClaims", getBonusClaims());
         map.put("ignores", getIgnore().stream().map(UUID::toString).collect(Collectors.toList()));
@@ -420,6 +447,15 @@ public class Resident implements ConfigurationSerializable, Targetable {
             resident.setActiveChannel(ChatChannel.valueOf(((String) map.get("activeChannel")).toUpperCase()));
         } catch (Exception e) {
             KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid active channel for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("activeChannel"));
+        }
+        if (map.containsKey("channelColors")) {
+            for (Map.Entry<String, String> entry : ((Map<String, String>) map.get("channelColors")).entrySet()) {
+                ChatChannel channel = Utils.parseEnum(ChatChannel.class, entry.getKey().toUpperCase());
+                ChatColor color = Utils.parseEnum(ChatColor.class, entry.getValue().toUpperCase());
+                if (channel != null && color != null) {
+                    resident.setChannelColor(channel, color);
+                }
+            }
         }
         if (map.containsKey("swear")) {
             resident.setSwear((Boolean) map.get("swear"));

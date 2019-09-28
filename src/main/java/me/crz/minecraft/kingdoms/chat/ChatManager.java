@@ -27,6 +27,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -125,15 +126,6 @@ public class ChatManager extends Base implements ConfigMessages {
 
         Village village = res.getVillage();
 
-        BaseComponent[] format;
-        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null && Utils.usePlaceholderApi("chat.format.channel")) {
-            format = MineDown.parse(
-                    PlaceholderApiIntegration.setPlaceholders(
-                            sender, getMessage("format.channel." + channel.getKey()).getRawText()));
-        } else {
-            format = getMessage("format.channel." + channel.getKey()).getComponents();
-        }
-
         Replacer replacer = new Replacer()
                 .placeholderPrefix("{")
                 .placeholderSuffix("}")
@@ -166,24 +158,21 @@ public class ChatManager extends Base implements ConfigMessages {
             if (!sender.hasPermission("kingdoms.chat.colour")) {
                 linkParser.disable(MineDownParser.Option.LEGACY_COLORS);
             }
-            filteredMessage = replacer
-                    .replace("message", linkParser.parse(toggleableCurses.filterCurses(message)).create())
-                    .replaceIn(format);
-            unfilteredMessage = replacer
-                    .replace("message", linkParser.reset().parse(message).create())
-                    .replaceIn(format);
+            filteredMessage = linkParser.parse(toggleableCurses.filterCurses(message)).create();
+            unfilteredMessage = linkParser.reset().parse(message).create();
         } else {
-            filteredMessage = replacer
-                    .replace("message", toggleableCurses.filterCurses(message))
-                    .replaceIn(format);
-            unfilteredMessage = replacer
-                    .replace("message", message)
-                    .replaceIn(format);
+            if (!sender.hasPermission("kingdoms.chat.colour")) {
+                message = message.replaceAll("§([0-9a-fA-F])", "&$1");
+            }
+            filteredMessage = TextComponent.fromLegacyText(toggleableCurses.filterCurses(message));
+            unfilteredMessage = TextComponent.fromLegacyText(message);
         }
+
+        ChatColor channelDefault = Utils.getChannelColor(channel);
 
         switch (channel) {
             case LOCAL:
-                MessageUtils.tell(sender, unfilteredMessage);
+                tell(res, replacer, channel, channelDefault, unfilteredMessage, unfilteredMessage);
                 List<Resident> nearbyPlayers = sender.getWorld().getPlayers().stream()
                         .filter(p -> !p.equals(sender)
                                 && sender.getLocation().distanceSquared(p.getLocation()) < 200 * 200)
@@ -192,7 +181,7 @@ public class ChatManager extends Base implements ConfigMessages {
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
                         .collect(Collectors.toList());
                 if (!nearbyPlayers.isEmpty()) {
-                    nearbyPlayers.forEach(r -> tell(r, r.getSwear() ? unfilteredMessage : filteredMessage));
+                    nearbyPlayers.forEach(r -> tell(r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
                 } else {
                     getMessage("chat.nobody-nearby").tell(sender);
                 }
@@ -204,7 +193,7 @@ public class ChatManager extends Base implements ConfigMessages {
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                        .forEach(r -> tell(r, r.getSwear() ? unfilteredMessage : filteredMessage));
+                        .forEach(r -> tell(r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
                 break;
             case ALLY:
                 Set<Resident> residentSet = village.getAllies().stream()
@@ -215,7 +204,7 @@ public class ChatManager extends Base implements ConfigMessages {
                 residentSet.stream()
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                        .forEach(r -> tell(r, r.getSwear() ? unfilteredMessage : filteredMessage));
+                        .forEach(r -> tell(r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
                 break;
             case EMPIREALLY:
                 Set<Resident> eAllySet = village.getAllies().stream()
@@ -232,21 +221,21 @@ public class ChatManager extends Base implements ConfigMessages {
                 eAllySet.stream()
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                        .forEach(r -> tell(r, r.getSwear() ? unfilteredMessage : filteredMessage));
+                        .forEach(r -> tell(r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
                 break;
             case EMPIRE:
                 if (village.hasEmpire()) {
                     village.getEmpire().getOnlineResidents().stream()
                             .filter(r -> r.isListening(channel)
                                     && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                            .forEach(r -> tell(r, r.getSwear() ? unfilteredMessage : filteredMessage));
+                            .forEach(r -> tell(r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
                 }
                 break;
             case SETTLEMENT:
                 village.getOnlineResidents().stream()
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                        .forEach(r -> tell(r, r.getSwear() ? unfilteredMessage : filteredMessage));
+                        .forEach(r -> tell(r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
                 break;
             case EVENT:
                 if (Data.muteChat && !sender.hasPermission("kingdoms.bypass.chatlock")) {
@@ -258,7 +247,7 @@ public class ChatManager extends Base implements ConfigMessages {
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                        .forEach(r -> tell(r, r.getSwear() ? unfilteredMessage : filteredMessage));
+                        .forEach(r -> tell(r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
                 break;
             default:
                 if (Data.muteChat && !sender.hasPermission("kingdoms.bypass.chatlock")) {
@@ -270,10 +259,26 @@ public class ChatManager extends Base implements ConfigMessages {
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                        .forEach(r -> tell(r, r.getSwear() ? unfilteredMessage : filteredMessage));
+                        .forEach(r -> tell(r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
                 break;
         }
         System.out.println(TextComponent.toLegacyText(unfilteredMessage));
+    }
+
+    private void tell(Resident resident, Replacer replacer, ChatChannel channel, ChatColor defaultColor, BaseComponent[] unfilteredMessage, BaseComponent[] filteredMessage) {
+        BaseComponent[] format;
+        if (KingdomsPlugin.getInstance().getPlaceholderApi() != null && Utils.usePlaceholderApi("chat.format.channel")) {
+            format = MineDown.parse(
+                    PlaceholderApiIntegration.setPlaceholders(
+                            resident.getPlayer(), getMessage("format.channel." + channel.getKey())
+                                    .getReplacedText("color", resident.getChannelColor(channel, defaultColor).toString())));
+        } else {
+            format = MineDown.parse(getMessage("format.channel." + channel.getKey())
+                    .getReplacedText("color", resident.getChannelColor(channel, defaultColor).toString()));
+        }
+        tell(resident, replacer
+                .replace("message", resident.getSwear() ? unfilteredMessage : filteredMessage)
+                .replaceIn(format));
     }
 
     private void tell(Resident resident, BaseComponent[] components) {
@@ -310,16 +315,20 @@ public class ChatManager extends Base implements ConfigMessages {
             getMessage("ignored").tell(sender, "name", target.getName());
             return;
         }
+        if (sender.hasPermission("kingdoms.chat.colour")) {
+            message = MessageUtils.replaceColorCodes(message);
+        }
         HoverEvent senderHover = getHover(sender, res);
         HoverEvent targetHover = getHover(target, tres);
 
+        ChatColor senderColor = res.getChannelColor(ChatChannel.PRIVATE_SENT, Utils.getChannelColor(ChatChannel.PRIVATE_SENT));
         BaseComponent[] senderFormat;
         if (KingdomsPlugin.getInstance().getPlaceholderApi() != null && Utils.usePlaceholderApi("chat.format.private")) {
             senderFormat = MineDown.parse(
                     PlaceholderApiIntegration.setPlaceholders(
-                            sender, getMessage("format.private.sender").getRawText()));
+                            sender, getMessage("format.private.sender").getReplacedText("color", senderColor.toString())));
         } else {
-            senderFormat = getMessage("format.private.sender").getComponents();
+            senderFormat = MineDown.parse(getMessage("format.private.sender").getReplacedText("color", senderColor.toString()));
         }
 
         BaseComponent[] filteredMessage;
@@ -336,8 +345,11 @@ public class ChatManager extends Base implements ConfigMessages {
             filteredMessage = linkParser.parse(toggleableCurses.filterCurses(message)).create();
             unfilteredMessage = linkParser.reset().parse(message).create();
         } else {
-            filteredMessage = new ComponentBuilder(toggleableCurses.filterCurses(message)).create();
-            unfilteredMessage = new ComponentBuilder(message).create();
+            if (!sender.hasPermission("kingdoms.chat.colour")) {
+                message = message.replaceAll("§([0-9a-fA-F])", "&$1");
+            }
+            filteredMessage = TextComponent.fromLegacyText(toggleableCurses.filterCurses(message));
+            unfilteredMessage = TextComponent.fromLegacyText(message);
         }
 
         MessageUtils.tell(sender, senderFormat, ImmutableMap.of(
@@ -355,13 +367,15 @@ public class ChatManager extends Base implements ConfigMessages {
                 "staff", sender.hasPermission("kingdoms.prefix.staff") ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
         ));
 
+        ChatColor targetColor = tres.getChannelColor(ChatChannel.PRIVATE_RECEIVED, Utils.getChannelColor(ChatChannel.PRIVATE_RECEIVED));
+
         BaseComponent[] targetFormat;
         if (KingdomsPlugin.getInstance().getPlaceholderApi() != null && Utils.usePlaceholderApi("chat.format.private")) {
             targetFormat = MineDown.parse(
                     PlaceholderApiIntegration.setPlaceholders(
-                            target, getMessage("format.private.target").getRawText()));
+                            target, getMessage("format.private.target").getReplacedText("color", targetColor.toString())));
         } else {
-            targetFormat = getMessage("format.private.target").getComponents();
+            targetFormat = MineDown.parse(getMessage("format.private.target").getReplacedText("color", targetColor.toString()));
         }
         MessageUtils.tell(target, targetFormat, ImmutableMap.of(
                 "sender", new ComponentBuilder(

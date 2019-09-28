@@ -278,23 +278,23 @@ chat:
   format:
     name: "{displayname}"
     private:
-      sender: "&8\\[&a{sender} &7➦ &3{target}&8] &b{message}"
-      target: "{staff}&8\\[&3{sender} &7➦ &a{target}&8] &b{message}"
+      sender: "&8\\[&a{sender} &7➦ &3{target}&8] {color}{message}"
+      target: "{staff}&8\\[&3{sender} &7➦ &a{target}&8] {color}{message}"
       name:
         sender: "you"
         target: "{displayname}"
       social-spy: "&7[&6SS&7]&r {sender} &7➦ &3{target}&7: {message}"
     channel:
-      general: "&r{prefix}&7{sender}&r{suffix}&r ➦ {message}"
-      event: "&a[Event] &r{prefix}&7{sender}&r{suffix}&r ➦ &a{message}"
-      local: "&e[Local] &r{prefix}&7{sender}&r{suffix}&r ➦ &e{message}"
-      admin: "&b[Admin] &r{prefix}&7{sender}&r{suffix}&r ➦ &5{message}"
-      staff: "&9[Staff] &r{prefix}&7{sender}&r{suffix}&r ➦ &6{message}"
-      settlement: "&e[{state}] {title} {prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
-      trade: "&d[TRADE] &r{prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
-      ally: "&b[Ally] &6{state} {title} {prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
-      empireally: "&b[EAlly] &6{state} {title} {prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
-      empire: "&b[Empire] &6{state} {settlement} {title}  {prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
+      general: "&r{prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
+      event: "&a[Event] &r{prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
+      local: "&e[Local] &r{prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
+      admin: "&b[Admin] &r{prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
+      staff: "&9[Staff] &r{prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
+      settlement: "&e[{state}] {title} {prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
+      trade: "&d[TRADE] &r{prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
+      ally: "&b[Ally] &6{state} {title} {prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
+      empireally: "&b[EAlly] &6{state} {title} {prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
+      empire: "&b[Empire] &6{state} {settlement} {title} {prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
   nick-hilight: "&b"
   afk: "&ePlayer is AFK and may not respond"
   afk-staff: "&eStaff member is AFK and may not respond. Try contacting us through discord"
@@ -483,6 +483,20 @@ lock:
       private: "&e&lALERT &r&7Only the &ePlot owner&7 can build here."
       friends: "&e&lALERT &r&7Only the &ePlot owner's friends&7 can build here."
 gui:
+  chat:
+    channel-select:
+      title: "&2&l/chat colour"
+      channel-entry: "{color}{channel}"
+    color-select:
+      title: "&2&lSelect colour"
+      color-entry: |-
+        {color}{name}
+        &7Click to select
+      selected-color-entry: |-
+        {color}{name}
+        &7&lSelected!
+      color-changed: "&7Changed color of channel {channel} to &r{color}{color-name}"
+      back: "&c&lBack To Channel Selection"
   access:
     title: "&2&l/s access"
     back: "&c&lBack To Settings"

@@ -596,6 +596,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 updateList(conn, "resident_channels", "userId", (Integer) resident.getId(), "channel", resident.getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
                 updateUserList(conn, "resident_friends", "userId", (Integer) resident.getId(), "friendId", resident.getFriends());
                 updateUserList(conn, "resident_ignores", "userId", (Integer) resident.getId(), "ignoredId", resident.getIgnore());
+                updateDataMap(conn, "resident_channel_colors", "userId", (Integer) resident.getId(), "channel", "color", Arrays.stream(ChatChannel.values())
+                        .filter(c -> resident.getChannelColor(c) != null)
+                        .collect(Collectors.toMap(Enum::name, c -> resident.getChannelColor(c).name())));
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while saving player " + resident.getName() + "/" + resident.getUUID() + " to database!", e);
@@ -1014,6 +1017,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         map.put("channels", selectList(conn, "resident_channels", "userId", id, "channel"));
         map.put("friends", selectResidentList(conn, "resident_friends", "userId", id, "friendId"));
         map.put("ignores", selectResidentList(conn, "resident_ignores", "userId", id, "ignoredId"));
+        map.put("channelColors", selectMap(conn, "resident_channel_colors", "userId", id, "channel", "color", String.class));
         return Resident.deserialize(map);
     }
 
@@ -1210,6 +1214,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
                             insertSta.setObject(j, serMap.get(column));
                             j++;
                         }
+                    } else if (entry.getValue() instanceof Enum) {
+                        insertSta.setObject(j, ((Enum) entry.getValue()).name());
                     } else {
                         insertSta.setObject(j, entry.getValue());
                     }
