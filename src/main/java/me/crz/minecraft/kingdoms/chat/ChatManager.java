@@ -172,7 +172,7 @@ public class ChatManager extends Base implements ConfigMessages {
 
         switch (channel) {
             case LOCAL:
-                tell(res, replacer, channel, channelDefault, unfilteredMessage, unfilteredMessage);
+                tell(sender, res, replacer, channel, channelDefault, unfilteredMessage, unfilteredMessage);
                 List<Resident> nearbyPlayers = sender.getWorld().getPlayers().stream()
                         .filter(p -> !p.equals(sender)
                                 && sender.getLocation().distanceSquared(p.getLocation()) < 200 * 200)
@@ -181,7 +181,7 @@ public class ChatManager extends Base implements ConfigMessages {
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
                         .collect(Collectors.toList());
                 if (!nearbyPlayers.isEmpty()) {
-                    nearbyPlayers.forEach(r -> tell(r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
+                    nearbyPlayers.forEach(r -> tell(sender, r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
                 } else {
                     getMessage("chat.nobody-nearby").tell(sender);
                 }
@@ -193,7 +193,7 @@ public class ChatManager extends Base implements ConfigMessages {
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                        .forEach(r -> tell(r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
+                        .forEach(r -> tell(sender, r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
                 break;
             case ALLY:
                 Set<Resident> residentSet = village.getAllies().stream()
@@ -204,7 +204,7 @@ public class ChatManager extends Base implements ConfigMessages {
                 residentSet.stream()
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                        .forEach(r -> tell(r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
+                        .forEach(r -> tell(sender, r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
                 break;
             case EMPIREALLY:
                 Set<Resident> eAllySet = village.getAllies().stream()
@@ -221,21 +221,21 @@ public class ChatManager extends Base implements ConfigMessages {
                 eAllySet.stream()
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                        .forEach(r -> tell(r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
+                        .forEach(r -> tell(sender, r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
                 break;
             case EMPIRE:
                 if (village.hasEmpire()) {
                     village.getEmpire().getOnlineResidents().stream()
                             .filter(r -> r.isListening(channel)
                                     && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                            .forEach(r -> tell(r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
+                            .forEach(r -> tell(sender, r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
                 }
                 break;
             case SETTLEMENT:
                 village.getOnlineResidents().stream()
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                        .forEach(r -> tell(r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
+                        .forEach(r -> tell(sender, r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
                 break;
             case EVENT:
                 if (Data.muteChat && !sender.hasPermission("kingdoms.bypass.chatlock")) {
@@ -247,7 +247,7 @@ public class ChatManager extends Base implements ConfigMessages {
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                        .forEach(r -> tell(r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
+                        .forEach(r -> tell(sender, r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
                 break;
             default:
                 if (Data.muteChat && !sender.hasPermission("kingdoms.bypass.chatlock")) {
@@ -259,24 +259,24 @@ public class ChatManager extends Base implements ConfigMessages {
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
-                        .forEach(r -> tell(r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
+                        .forEach(r -> tell(sender, r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
                 break;
         }
-        System.out.println(TextComponent.toLegacyText(replacer.replace("message", unfilteredMessage).replaceIn(getFormat(res, channel, channelDefault))));
+        System.out.println(TextComponent.toLegacyText(replacer.replace("message", unfilteredMessage).replaceIn(getFormat(sender, channel, channelDefault))));
     }
 
-    private void tell(Resident resident, Replacer replacer, ChatChannel channel, ChatColor defaultColor, BaseComponent[] unfilteredMessage, BaseComponent[] filteredMessage) {
-        tell(resident, replacer
-                .replace("message", resident.getSwear() ? unfilteredMessage : filteredMessage)
-                .replaceIn(getFormat(resident, channel, resident.getChannelColor(channel, defaultColor))));
+    private void tell(Player sender, Resident receiver, Replacer replacer, ChatChannel channel, ChatColor defaultColor, BaseComponent[] unfilteredMessage, BaseComponent[] filteredMessage) {
+        tell(receiver, replacer
+                .replace("message", receiver.getSwear() ? unfilteredMessage : filteredMessage)
+                .replaceIn(getFormat(sender, channel, receiver.getChannelColor(channel, defaultColor))));
     }
 
-    private BaseComponent[] getFormat(Resident resident, ChatChannel channel, ChatColor channelColor) {
+    private BaseComponent[] getFormat(Player sender, ChatChannel channel, ChatColor channelColor) {
         BaseComponent[] format;
         if (KingdomsPlugin.getInstance().getPlaceholderApi() != null && Utils.usePlaceholderApi("chat.format.channel")) {
             format = MineDown.parse(
                     PlaceholderApiIntegration.setPlaceholders(
-                            resident.getPlayer(), getMessage("format.channel." + channel.getKey())
+                            sender, getMessage("format.channel." + channel.getKey())
                                     .getReplacedText("color", channelColor.toString())));
         } else {
             format = MineDown.parse(getMessage("format.channel." + channel.getKey())
