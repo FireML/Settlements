@@ -50,6 +50,9 @@ public class CommandManager extends Base implements CommandExecutor {
         ChatCommand chatCommand = new ChatCommand();
         registerCommand(chatCommand);
         for (ChatChannel channel : ChatChannel.values()) {
+            if (channel.isPrivate()) {
+                continue;
+            }
             registerCommand(new PlayerSubCommand(null, channel.name().toLowerCase() + "chat") {
                 @Override
                 public boolean run(Player p, String base, String alias, String... args) {
