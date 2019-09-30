@@ -262,24 +262,29 @@ public class ChatManager extends Base implements ConfigMessages {
                         .forEach(r -> tell(r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
                 break;
         }
-        System.out.println(TextComponent.toLegacyText(unfilteredMessage));
+        System.out.println(TextComponent.toLegacyText(replacer.replace("message", unfilteredMessage).replaceIn(getFormat(res, channel, channelDefault))));
     }
 
     private void tell(Resident resident, Replacer replacer, ChatChannel channel, ChatColor defaultColor, BaseComponent[] unfilteredMessage, BaseComponent[] filteredMessage) {
+        tell(resident, replacer
+                .replace("message", resident.getSwear() ? unfilteredMessage : filteredMessage)
+                .replaceIn(getFormat(resident, channel, resident.getChannelColor(channel, defaultColor))));
+    }
+
+    private BaseComponent[] getFormat(Resident resident, ChatChannel channel, ChatColor channelColor) {
         BaseComponent[] format;
         if (KingdomsPlugin.getInstance().getPlaceholderApi() != null && Utils.usePlaceholderApi("chat.format.channel")) {
             format = MineDown.parse(
                     PlaceholderApiIntegration.setPlaceholders(
                             resident.getPlayer(), getMessage("format.channel." + channel.getKey())
-                                    .getReplacedText("color", resident.getChannelColor(channel, defaultColor).toString())));
+                                    .getReplacedText("color", channelColor.toString())));
         } else {
             format = MineDown.parse(getMessage("format.channel." + channel.getKey())
-                    .getReplacedText("color", resident.getChannelColor(channel, defaultColor).toString()));
+                    .getReplacedText("color", channelColor.toString()));
         }
-        tell(resident, replacer
-                .replace("message", resident.getSwear() ? unfilteredMessage : filteredMessage)
-                .replaceIn(format));
+        return format;
     }
+
 
     private void tell(Resident resident, BaseComponent[] components) {
         Player player = resident.getPlayer();
