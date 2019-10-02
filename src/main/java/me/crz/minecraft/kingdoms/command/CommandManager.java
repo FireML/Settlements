@@ -23,17 +23,18 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class CommandManager extends Base implements CommandExecutor {
+public class CommandManager extends Base implements TabExecutor {
     private static CommandManager instance;
     private Map<String, SubCommand> commandMap = new LinkedHashMap<>();
 
@@ -140,5 +141,14 @@ public class CommandManager extends Base implements CommandExecutor {
             instance.registerCommands();
         }
         return instance;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        SubCommand cmd = getCommand(command.getName());
+        if (cmd != null) {
+            return cmd.onTabComplete(sender, alias, args);
+        }
+        return null;
     }
 }

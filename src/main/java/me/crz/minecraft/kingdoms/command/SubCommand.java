@@ -260,7 +260,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
         return aliases;
     }
 
-    public List<String> onTabComplete(Player p, String aliasUsed, String... args) {
+    public List<String> onTabComplete(CommandSender sender, String aliasUsed, String... args) {
         List<String> l = new ArrayList<>();
         if (args.length == 0) {
             return l;
@@ -268,14 +268,16 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
         String arg = args[args.length - 1];
         if (args.length == 1) {
             for (String subCommand : subCommands.keySet()) {
-                if (subCommand.startsWith(arg.toLowerCase())) {
+                if (subCommand.startsWith(arg.toLowerCase()) && !subCommand.startsWith("<")) {
                     l.add(subCommand);
                 }
             }
         }
-        for (Player pl : Bukkit.getOnlinePlayers()) {
-            if (pl.getName().toLowerCase().startsWith(arg.toLowerCase())) {
-                l.add(pl.getName());
+        if (l.isEmpty()) {
+            for (Player pl : Bukkit.getOnlinePlayers()) {
+                if (pl.getName().toLowerCase().startsWith(arg.toLowerCase())) {
+                    l.add(pl.getName());
+                }
             }
         }
         return l;
