@@ -92,7 +92,7 @@ public class ChatCommand extends PlayerSubCommand {
         registerCommand(new PlayerSubCommand(this, "colour", "color", "colours", "colors") {
             @Override
             public boolean run(Player player, String base, String alias, String... args) {
-                ColorChannelSelectGui.getInstance().open(player);
+                new ColorChannelSelectGui(player);
                 return true;
             }
         });

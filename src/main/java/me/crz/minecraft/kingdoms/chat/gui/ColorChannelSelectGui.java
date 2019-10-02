@@ -19,14 +19,16 @@ import org.bukkit.inventory.ItemStack;
 
 public class ColorChannelSelectGui extends KingdomsGUI {
 
-    private static ColorChannelSelectGui instance;
     private CInventory gui;
 
-    private ColorChannelSelectGui() {
+    public ColorChannelSelectGui(Player p) {
         super("chat.channel-select");
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
 
         for (ChatChannel channel : ChatChannel.values()) {
+            if (!channel.canChat(p) && !channel.isPrivate()) {
+                continue;
+            }
             gui.addItem(new ClickableItem() {
                 @Override
                 public ItemStack getItem(Player p) {
@@ -48,16 +50,7 @@ public class ColorChannelSelectGui extends KingdomsGUI {
                 }
             });
         }
-    }
-
-    public void open(final Player p) {
         gui.build(p);
     }
 
-    synchronized public static ColorChannelSelectGui getInstance() {
-        if (instance == null) {
-            instance = new ColorChannelSelectGui();
-        }
-        return instance;
-    }
 }

@@ -82,7 +82,7 @@ public class ColorSelectGui extends KingdomsGUI {
             }
 
             public boolean click(final Player p, final ClickType clickType) {
-                ColorChannelSelectGui.getInstance().open(p);
+                new ColorChannelSelectGui(p);
                 return true;
             }
         });
