@@ -1597,6 +1597,7 @@ command:
       set:
         success: "&e&lALERT &r&7Daily {state} tax was set &e{amount}&7!"
         above-max: "&c&lERROR: &cMax tax amount is &e{max}&c!"
+        below-zero: "&c&lERROR: &cTax amount cannot be negative!"
         description: Sets the tax a player needs to pay each day he is in the settlement
       exempt:
         description: Exempts a resident from having to pay the tax
@@ -2085,6 +2086,7 @@ command:
       set:
         success: "&e&lALERT &r&7Daily empire tax was set &e{amount}&7!"
         above-max: "&c&lERROR: &cMax tax amount is &e{max}&c!"
+        below-zero: "&c&lERROR: &cTax amount cannot be negative!"
         description: Sets the tax a settlement needs to pay each day he is in the empire
     transfer:
       success: "&e&lALERT &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
