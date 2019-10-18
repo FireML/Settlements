@@ -145,12 +145,12 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void on(PlayerInteractEvent e) {
-        if (e.getAction() == Action.PHYSICAL || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+        if (e.getAction() == Action.PHYSICAL || e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
             Use use = null;
             if (e.getAction() == Action.PHYSICAL && MaterialTags.PRESSURE_PLATES.isTagged(e.getClickedBlock())) {
                 use = Use.PRESSURE_PLATE;
             } else {
-                if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
                     for (ShopProvider provider : KingdomsPlugin.getInstance().getShopProviders()) {
                         if (provider.isShop(e.getClickedBlock())) {
                             use = Use.SHOP;
@@ -158,7 +158,7 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
                         }
                     }
                 }
-                if (use == null && e.getClickedBlock() != null && !e.getClickedBlock().isEmpty() && !e.getClickedBlock().isLiquid()) {
+                if (e.getAction() != Action.LEFT_CLICK_BLOCK && use == null && e.getClickedBlock() != null && !e.getClickedBlock().isEmpty() && !e.getClickedBlock().isLiquid()) {
                     use = Use.getByMaterial(e.getClickedBlock().getType());
                     if (e.getItem() != null && MaterialUtils.placesBlock(e.getItem())) {
                         if (e.getPlayer().isSneaking()) {
