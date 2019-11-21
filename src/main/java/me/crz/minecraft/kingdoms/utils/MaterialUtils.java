@@ -40,7 +40,10 @@ public class MaterialUtils {
             Material.BROWN_MUSHROOM,
             Material.RED_MUSHROOM,
             Material.VINE,
-            Material.CHORUS_FLOWER
+            Material.CHORUS_FLOWER,
+            Material.BAMBOO,
+            Material.BAMBOO_SAPLING,
+            Material.SWEET_BERRY_BUSH
     );
     public static final Set<Material> FARM_BLOCKS_DESTROY = EnumSet.of(
             Material.PUMPKIN,
@@ -67,7 +70,10 @@ public class MaterialUtils {
             Material.CHORUS_FRUIT,
             Material.KELP,
             Material.KELP_PLANT,
-            Material.CHORUS_FRUIT
+            Material.CHORUS_FRUIT,
+            Material.BAMBOO,
+            Material.BAMBOO_SAPLING,
+            Material.SWEET_BERRIES
     );
     static {
         FARM_BLOCKS.addAll(Tag.SAPLINGS.getValues());

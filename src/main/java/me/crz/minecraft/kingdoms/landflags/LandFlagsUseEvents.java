@@ -33,6 +33,7 @@ import org.bukkit.event.EventHandler;
 import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTakeLecternBookEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.spigotmc.event.entity.EntityMountEvent;
 
@@ -262,6 +263,15 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
         }
         if (!this.canUse(e.getCombuster(), Use.ANIMAL, e.getEntity().getLocation()).getLeft()) {
             e.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onLecternBookTake(PlayerTakeLecternBookEvent e) {
+        Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.LECTERN, e.getLectern().getLocation());
+        if (!response.getLeft()) {
+            e.setCancelled(true);
+            MessageUtils.tell(e.getPlayer(), response.getRight());
         }
     }
 }
