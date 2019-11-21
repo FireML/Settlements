@@ -120,8 +120,8 @@ public class VillageClaimCommand extends VillageSubCommand {
                 if (checkLand == null) {
                     continue;
                 }
-                if (!checkLand.getLandOwner().equals(village) && (
-                        !checkLand.getLandOwner().isTrusted(village) || (
+                if (!checkLand.isOwnedBy(village) && (
+                        !checkLand.getLandOwner().isAlly(village) || (
                                 !(checkLand.getLandOwner() instanceof Village)
                                         || !((Village) checkLand.getLandOwner()).isAllowAllyClaim()))) {
                     if (toClaim.size() == 1) {

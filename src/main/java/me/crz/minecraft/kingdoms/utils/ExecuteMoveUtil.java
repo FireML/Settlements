@@ -78,7 +78,7 @@ public class ExecuteMoveUtil extends Base {
         }
     }
 
-    public static ExecuteMoveUtil getInstance() {
+    synchronized public static ExecuteMoveUtil getInstance() {
         if (instance == null) {
             instance = new ExecuteMoveUtil();
         }

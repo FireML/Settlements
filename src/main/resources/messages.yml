@@ -49,14 +49,15 @@ error:
   no-allies: "&c&lYou have no allies!"
   cant-set-embassy: "&cYou can't set an embassy here!"
   teleport-cooldown: "&cYou have to wait &e{cooldown}&c before you can teleport again!"
+  nothing-to-confirm: "&cThere is nothing to confirm. It might have timed out."
 move-cancelled:
-  title: ""
-  subtitle: "&c{action} cancelled because you moved!"
+  title: "&c&lFailed"
+  subtitle: "&fDon't move while {action}ing!"
   actionbar: ""
   message: ""
 waiting:
-  title: ""
-  subtitle: "&e&l{action}ing in {seconds}s..."
+  title: "&e&lPlease Wait"
+  subtitle: "&f{action}ing in &c{seconds}&f seconds"
   actionbar: ""
   message: ""
 banished:
@@ -148,6 +149,12 @@ empire-tax:
   couldnt-pay: "&e{state} {settlement}&c was not able to pay the tax of &e{amount}&c and has been banished from the empire!"
 first-to-reach-level: "&6&l{name} &7&l is the first to reach &6&l{state} &7&llevel &6&l{level}"
 land-unclaim: "&e{amount}&7 chunks were automatically unclaimed!"
+events:
+  started: "&6&l{title} &7&lstarted! Duration: {duration}"
+  ended: "&6&l{title} &7&lended! &6&l{state} {name}&7&l won it with {amount}!"
+  stats: "&7&lYour {state} managed to reach {place}. place with {amount}"
+  reward-info: "&7&lYour {state} can now claim event rewards by running [/s rewards](/s rewards)"
+  first: "&6&l{state} {name}&7&l took &6&lfirst&7&l place in &6&l{title}&7&l with {amount}!"
 village:
   enter:
     message: "&f[&eKingdoms&f] &7Entering &a{name}{pvp}"
@@ -271,22 +278,23 @@ chat:
   format:
     name: "{displayname}"
     private:
-      sender: "&8\\[&a{sender} &7➦ &3{target}&8] &b{message}"
-      target: "{staff}&8\\[&3{sender} &7➦ &a{target}&8] &b{message}"
+      sender: "&8\\[&a{sender} &7➦ &3{target}&8] {color}{message}"
+      target: "{staff}&8\\[&3{sender} &7➦ &a{target}&8] {color}{message}"
       name:
         sender: "you"
         target: "{displayname}"
       social-spy: "&7[&6SS&7]&r {sender} &7➦ &3{target}&7: {message}"
     channel:
-      general: "&r{prefix}&7{sender}&r{suffix}&r ➦ {message}"
-      event: "&a[Event] &r{prefix}&7{sender}&r{suffix}&r ➦ &a{message}"
-      local: "&e[Local] &r{prefix}&7{sender}&r{suffix}&r ➦ &e{message}"
-      admin: "&b[Admin] &r{prefix}&7{sender}&r{suffix}&r ➦ &5{message}"
-      staff: "&9[Staff] &r{prefix}&7{sender}&r{suffix}&r ➦ &6{message}"
-      settlement: "&e[{state}] {title} {prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
-      trade: "&d[TRADE] &r{prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
-      ally: "&b[Ally] &6{state} {title} {prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
-      empire: "&b[Empire] &6{state} {settlement} {title}  {prefix}&7{sender}&r{suffix}&r ➦ &f{message}"
+      general: "&r{prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
+      event: "&a[Event] &r{prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
+      local: "&e[Local] &r{prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
+      admin: "&b[Admin] &r{prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
+      staff: "&9[Staff] &r{prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
+      settlement: "&e[{state}] {title} {prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
+      trade: "&d[TRADE] &r{prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
+      ally: "&b[Ally] &6{state} {title} {prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
+      empireally: "&b[EAlly] &6{state} {title} {prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
+      empire: "&b[Empire] &6{state} {settlement} {title} {prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
   nick-hilight: "&b"
   afk: "&ePlayer is AFK and may not respond"
   afk-staff: "&eStaff member is AFK and may not respond. Try contacting us through discord"
@@ -410,6 +418,8 @@ integration:
       entry: "&9{place}. &r&e{name}"
     top-ten-empires:
       entry: "&9{place}. &r&e{name}"
+  brewery:
+    too-drunk-for-channel: "&cYou are too drunk to speak in &f{channel}&c! Use the [Local](/localchat) or [Settlement](/settlementchat) chat!"
 protection:
   state:
     use:
@@ -448,6 +458,7 @@ lock:
   cant-unlock: "&cYou cannot unlock this &e{block}&c!"
   unlocked: "&cYou unlocked this &e{block}&c!"
   not-lockable: "&cYou cannot lock &e{block}"
+  toggled: "&7You have toggled &a{toggle}&7! Toggle it off with [&e/lock toggle](/lock toggle)&7!"
   hoppers:
     enabled: "&7Hoppers &acan&7 pull items from this {block}!"
     disabled: "&7Hoppers &ccan not&7 pull items from this {block}!"
@@ -472,6 +483,20 @@ lock:
       private: "&e&lALERT &r&7Only the &ePlot owner&7 can build here."
       friends: "&e&lALERT &r&7Only the &ePlot owner's friends&7 can build here."
 gui:
+  chat:
+    channel-select:
+      title: "&2&l/chat colour"
+      channel-entry: "{color}{channel}"
+    color-select:
+      title: "&2&lSelect colour"
+      color-entry: |-
+        {color}{name}
+        &7Click to select
+      selected-color-entry: |-
+        {color}{name}
+        &7&lSelected!
+      color-changed: "&7Changed color of channel {channel} to &r{color}{color-name}"
+      back: "&c&lBack To Channel Selection"
   access:
     title: "&2&l/s access"
     back: "&c&lBack To Settings"
@@ -582,7 +607,7 @@ gui:
             &ePermanent Thunder Storm.
             &bClick to set to normal weather cycle!
           normal: |-
-            &eNormal Wehather cycle.
+            &eNormal Weather cycle.
             &bClick to set to permanent clear weather!
         time:
           morning: |-
@@ -697,6 +722,11 @@ gui:
         &7Click to grant to &f{rank}
       revoke: |-
         &7Click to revoke from &f{rank}
+  rewards:
+    title: "&2&l/s rewards"
+    entry: |-
+      &e{reward}
+      &7Click to claim!
   plot:
     link: |-
       &7Click to link the permissions of all
@@ -898,6 +928,11 @@ gui:
 usage:
   head: "&a⊱&m━━━━&r&6{type}{name} Commands&a&m━━━━&a⊰"
   entry: "&e• [&e{usage}](hover=&f{usage}\n&9Click to add it to your input{aliases} suggest_command={/{path}) &7- {description}"
+  entry-general: "&e• [&e{usage}](hover=&f{usage}\n&9Click to add it to your input{aliases} suggest_command={/{path}) &7- {description}"
+    # Name of the permission group or command type
+  entry-plot: "&e• [&a{usage}](hover=&f{usage}\n&9Click to add it to your input{aliases} suggest_command={/{path}) &7- {description}"
+  entry-officer: "&e• [&b{usage}](hover=&f{usage}\n&9Click to add it to your input{aliases} suggest_command={/{path}) &7- {description}"
+  entry-settings: "&e• [&b{usage}](hover=&f{usage}\n&9Click to add it to your input{aliases} suggest_command={/{path}) &7- {description}"
   aliases: "\n&fAliases: &7{aliases}"
   footer: ""
   pagination:
@@ -1047,9 +1082,10 @@ command:
     name:
       success: "&aSet name of plot to &r{description}"
       description: Set the name of a plot
-    revoke:
-      success: "&aPlot has been revoked ownership!"
-      description: Revokes ownership of the plot you are standing in
+    unown:
+      success: "&aPlot is no longer owned by you!"
+      success-other: "&aPlot is no longer owned by &e{owner}&a!"
+      description: Removes ownership of the plot you are standing in
     settings:
       description: Manage plot settings
     sale:
@@ -1188,13 +1224,22 @@ command:
       description: Set the description of a settlement
     disband:
       capital-cant-disband: "&c&lERROR &r&7You cannot disband your {state} as long as it is the capital of an empire!"
-      confirm: "&c&lPlease do /{command} to confirm the &r&e&ldisbanding&r&c&l of your settlement."
+      confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l to confirm the &r&e&ldisbanding&r&c&l of your settlement."
       success: "&e&lALERT &r&7Your {title} has deleted your {state}."
       description: Disbands the current settlement
     donate:
       donated: "&e{name} &r&7donated &6{amount}&r&7 to your settlement bank!"
       success: "&7Donated &6{amount}&r&7 to the bank of &e{state} {name}&7!"
       description: Donate money to a certain settlement
+    events:
+      top:
+        no-event: "&cThere is currently no event running!"
+        no-one-participating: "&cThere is currently no one participating in the event {event}!"
+        head: "&a⊱&m━━━━&r&6Top {amount} Settlements&a&m━━━━&a⊰"
+        entry: "&e• {place}. [&e&l{state} {name} &r&7- &e{amount}](&8{chieftitle}: &f{chief}\n&8Size: &f{size} players\n&f{description})"
+        footer: "&a⊱&m━━━━&r&6Event: {event}&a&m━━━━&a⊰"
+        description: Show top 3 villages in the current event
+      description: Village events commands
     here:
       general: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
@@ -1256,6 +1301,12 @@ command:
       no-home: "&c&lThat {state} doesn't have a home!"
       no-access: "&c&lYou don't have access to teleport to the home of that {state}!"
       success: "&a&lTeleported to home of {state} {name}"
+      success-title: |-
+        &2&lSuccess
+        &fYou have been teleported!
+      fail-title: |-
+        &c&lFailed
+        &fUnabled to teleport!
       description: Teleport to a settlement's home
     invite:
       already-in-village: "&c&l{name} is already in a {state}"
@@ -1350,20 +1401,33 @@ command:
         head: "&a⊱&m━━━━&r&6OutPosts&a&m━━━━&a⊰"
         entry: "&a{name} (World: {world}, X: {x}, Z: {z}"
         description: List all your outposts
+      rename:
+        already-exists: "&c&lERROR &r&7An outpost with the name &c{name}&7 already exists!!"
+        success: "&a&lSUCCESS &r&e{player} &7has renamed &coutpost&7 &e{oldname}&7 to &e{newname}&7!"
+        description: Rename an outpost
       sethome:
         not-an-outpost: "&cThe land must be an outpost to set the home!"
         success: "&a&lOutpost home &6{name} &aset here"
         description: Sets a outpost home on that specific chunk
       teleport:
         success: "&a&lTeleported to outpost {name}"
+        success-title: |-
+          &2&lSuccess
+          &fYou have been teleported!
+        fail-title: |-
+          &c&lFailed
+          &fUnabled to teleport!
         description: Teleports to a outpost shown in the list
       unclaim:
         not-an-outpost: "&cThis land is not an outpost, please use &7/s unclaim&c to unclaim this land."
+        confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l in the next minute to confirm the &e&lunclaiming&c&l of [&e&l{amount}&c&l chunks](&fChunks that will be unclaimed: &7{claims})."
         success: "&aSuccessfully unclaimed the outpost at {x},{z} and {amount} chunks connected to it."
         connected-to-home: "&cOnly unclaiming chunks not connected to the home!"
         connected-to-outpost: "&cOnly unclaiming chunks not connected to another outpost!"
         description: Unclaims the outpost you are standing in
       description: Claim a seperate chunk of land
+    teleport:
+      description: Teleports to a outpost
     perms:
       description: Manage rank permissions
       permission:
@@ -1400,6 +1464,11 @@ command:
       offline: "&c"
       entry: "{online}{name}"
       description: lists all residents
+    rewards:
+      no-rewards: |-
+        &cYour {villagestate} does not have any rewards that can be claimed!
+        &7Event rewards can only be claimed until the next event starts (or the server restarts)
+      description: Claim event rewards
     setaccess:
       success: "&7Access changed to &6{access}"
       access:
@@ -1426,7 +1495,7 @@ command:
       cant-set-higher: "&cYou cannot set the rank of &6{rank} or higher&c!"
       success: "&e&lALERT &r&e{title} {setter} &7set &e{target}s &7rank to &e{rank}&7!"
       rank:
-        assistant: Allows active,disband,transfer,rename,lock admin,empire leave
+        assistant: Allows active,disband,transfer,rename,lock and plot admin,empire leave
         elder: Allows mode,claiming,invite,bank,plot,setrank
         builder: Allows resident to build on elder and builder only mode
         recruiter: Allows resident to invite players
@@ -1528,6 +1597,7 @@ command:
       set:
         success: "&e&lALERT &r&7Daily {state} tax was set &e{amount}&7!"
         above-max: "&c&lERROR: &cMax tax amount is &e{max}&c!"
+        below-zero: "&c&lERROR: &cTax amount cannot be negative!"
         description: Sets the tax a player needs to pay each day he is in the settlement
       exempt:
         description: Exempts a resident from having to pay the tax
@@ -1587,6 +1657,7 @@ command:
     unclaim:
       outpost: "&cThis land is an outpost, please use &7/{base} outpost unclaim&c to unclaim this outpost."
       home: "&cThis land is your home, you have to move it with &7/{base} sethome&c before unclaiming this land."
+      confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l in the next minute to confirm the &e&lunclaiming&c&l of [&e&l{amount}&c&l chunks](&fChunks that will be unclaimed: &7{claims})."
       success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at &f{x}-{z}!"
       new-upkeep: "&aYour new upkeep is now &e${villageupkeep}&a (${upkeepperclaim} per claim) [&e/s upkeep](/s upkeep)"
       description: Unclaim land which is claimed by your village
@@ -1651,7 +1722,11 @@ command:
       description: Add/set/remove bonus claims from Residents/Villages
       success: "&aSUCCESS: {operation} {amount} to {name}"
     world:
-      description: Sets if a world is claimable in or not
+      description: World admin commands
+      info:
+        description: Get information about the current world
+      setclaimable:
+        description: Sets if a world is claimable in or not
     join:
       description: Forces a player to join a settlement
     level:
@@ -1739,7 +1814,7 @@ command:
       success: "&aSet description of your empire to &r{description}"
       description: Set the description of an empire
     disband:
-      confirm: "&c&lPlease do /{command} to confirm the &r&e&ldisbanding&r&c&l of your empire."
+      confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l to confirm the &r&e&ldisbanding&r&c&l of your empire."
       success: "&e&lALERT &r&7Your {chieftitle} {chief} has deleted your Empire."
       description: Disbands the current empire
     donate:
@@ -1751,15 +1826,18 @@ command:
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
         &a&lDescription &r&7{description}
         &a&lSymbol &r&7{symbol}
-        &6&lLevel &r&7{level}
         &6&lAccess &r&7{access}
         &6&lBank &r&7{bank}
+        &6&lUpkeep: &r&7{upkeep}
+        &6&lJoin fee: &r&7{joinfee}
+        &6&lDaily tax: &r&7{tax}
         &6&lBonusoutposts &r&7{bonusoutposts}
-        &6&lBonusclaims &r&7{bonusclaims}
+        &6&lBonusclaims &r&7{bonus}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
-        &6&lCapital &r&7{capitalstate}{capital}
-        &e&lLeader &r&7{chieftitle} {chief}
+        &6&lCapital &r&7{capitalstate} {capital}
+        &e&lLeader &r&7{chieftitle} {chiefonline}{chief}
+        {specialresidents}
         &e&lMembers: &r&7{members}
       abandoned: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
@@ -1772,6 +1850,12 @@ command:
     home:
       no-home: "&c&lYour empire doesn't have a home !"
       success: "&a&lTeleported to home of {state} {name}"
+      success-title: |-
+        &2&lSuccess
+        &fYou have been teleported!
+      fail-title: |-
+        &c&lFailed
+        &fUnabled to teleport!
       no-access: "&c&lYou don't have access to teleport to the home of that empire!"
       description: Teleport to a empires's home
     invite:
@@ -1810,7 +1894,7 @@ command:
       next: "&b Next >>"
     lock:
       admin:
-        description: "Allows administrating of locks inside the settlement's claims"
+        description: "Allows administrating of locks inside the empire's claims"
     mail:
       description: "Allows sending a mail to all chiefs of empire member settlements"
       sender: "Leader {name}, Empire {empirename}"
@@ -1949,7 +2033,9 @@ command:
       cant-set-higher: "&cYou cannot set the rank of &6{rank} or higher&c!"
       success: "&e&lALERT &r&e{title} {setter} &7set &e{target}s &7rank to &e{rank}&7!"
       rank:
-        senator: Allows inviting and kicking
+        assistant: Allows disband, transfer, rename, perks, lock admin
+        senator: Allows changing description, allies, plots, modes and settings
+        recruiter: Allows inviting and kicking
         member: Default rank for members of this empire
       rank-usage:
         head: |-
@@ -1971,14 +2057,17 @@ command:
         &6&lUpkeep: &r&7{upkeep}
         &6&lJoin fee: &r&7{joinfee}
         &6&lDaily tax: &r&7{tax}
+        &6&lBonusoutposts &r&7{bonusoutposts}
         &6&lBonusclaims &r&7{bonus}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
         &6&lCapital &r&7{capitalstate} {capital}
         &e&lLeader &r&7{chieftitle} {chiefonline}{chief}
-        &e&lSenators: &r&7{senators}
+        {specialresidents}
         &e&lMembers: &r&7{members}
-      senators:
+  
+      special-residents:
+        rank: "&e&l{rank}:&r {residents}"
         separator: "&7, "
         online: "&a"
         offline: "&c"
@@ -1997,6 +2086,7 @@ command:
       set:
         success: "&e&lALERT &r&7Daily empire tax was set &e{amount}&7!"
         above-max: "&c&lERROR: &cMax tax amount is &e{max}&c!"
+        below-zero: "&c&lERROR: &cTax amount cannot be negative!"
         description: Sets the tax a settlement needs to pay each day he is in the empire
     transfer:
       success: "&e&lALERT &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
@@ -2032,18 +2122,22 @@ command:
       toggled: "&aToggled container locking!&7 Run [&e/lock toggle](/lock toggle)&7 again to toggle it off!"
       untoggled: "&7Disabled container locking toggle!"
     add:
+      description: Give access to a lock
       click-to-add: "&aClick a container in the next &e10 seconds&a to add {name} to it!"
       toggled: "&aToggled adding of {name} to containers!&7 Run [&e/lock add {target} toggle](/lock add {target} toggle)&7 again to toggle it off!"
       untoggled: "&7Disabled adding of {name} to containers!"
     remove:
+      description: Remove access from a lock
       click-to-remove: "&aClick a container in the next &e10 seconds&a to remove {name} from it!"
       toggled: "&aToggled removing of {name} from containers!&7 Run [&e/lock remove {target} toggle](/lock remove {target} toggle)&7 again to toggle it off!"
       untoggled: "&7Disabled removing of {name} from containers!"
     hoppers:
+      description: Toggle whether or not hoppers are allowed
       click-to-toggle: "&aClick a container in the next &e10 seconds&a to toggle hoppers!"
       toggled: "&aToggled lock hopper allowance!&7 Run [&e/lock hoppers toggle](/lock hoppers toggle)&7 again to toggle it off!"
       untoggled: "&7Disabled hopper toggle!"
     info:
+      description: Show information about a lock
       click-for-info: "&aClick a container in the next &e10 seconds&a to get information about it!"
       toggled: "&aToggled container info!&7 Run [&e/lock info toggle](/lock info toggle)&7 again to toggle it off!"
       untoggled: "&7Disabled container info toggle!"

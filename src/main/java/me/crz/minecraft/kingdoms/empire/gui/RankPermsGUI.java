@@ -252,7 +252,7 @@ public class RankPermsGUI extends KingdomsGUI {
         gui.build(p);
     }
 
-    public static RankPermsGUI getInstance(EmpireRank rank, PermissionGroup group) {
+    synchronized public static RankPermsGUI getInstance(EmpireRank rank, PermissionGroup group) {
         return instances
                 .computeIfAbsent(rank.name(), n -> new ConcurrentHashMap<>())
                 .computeIfAbsent(group.getName().toLowerCase(), g -> new RankPermsGUI(rank, group));

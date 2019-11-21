@@ -25,6 +25,7 @@ public class VillageDisbandCommand extends VillageSubCommand {
             confirm.put(res.getUUID(), true);
             getMessage("confirm").tell(res, "command", base + " " + alias + " confirm");
         } else {
+            confirm.invalidate(res.getUUID());
             getMessage("success").tell(res.getVillage().getOnlineResidents(),
                     "rank", VillageRank.getChief().getTag(res.getVillage()),
                     "title", res.getTitle(),

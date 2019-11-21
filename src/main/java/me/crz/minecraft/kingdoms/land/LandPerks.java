@@ -11,23 +11,31 @@ import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class LandPerks {
+    private static final String PERK_EFFECT_KEY = "perk_effects";
+
     public LandPerks() {
         super();
     }
 
     public void runTimer() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(KingdomsPlugin.getInstance(), () -> updateEffects(false), 0L, 160L);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(KingdomsPlugin.getInstance(), () -> updateEffects(true), 0L, 160L);
     }
 
     /**
@@ -38,16 +46,31 @@ public class LandPerks {
     public void updateEffects(boolean refresh) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
-            Resident resident = ResidentManager.getInstance().getResident(player);
-            if ((resident.hasVillage() && resident.getVillage().getPerksMap().isEmpty())
-                    && (land != null && land.getLandOwner().getPerksMap().isEmpty())) {
-                continue;
+
+            Collection<PerkEffect> applicableEffects = getApplicablePotionEffects(player, land, refresh);
+            Set<String> activeEffects = getActiveEffects(player);
+            Set<String> toRemove = new HashSet<>(activeEffects);
+            applicableEffects.forEach(e -> toRemove.remove(e.getIdentifier()));
+
+            for (PotionEffect effect : player.getActivePotionEffects()) {
+                String identifier = getEffectIdentifier(effect);
+                if (toRemove.contains(identifier)) {
+                    player.removePotionEffect(effect.getType());
+                    activeEffects.remove(identifier);
+                }
             }
-            giveEffects(player, land, refresh);
+
+            for (PerkEffect effect : applicableEffects) {
+                player.addPotionEffect(effect.getPotionEffect(), true);
+                if (effect.isPermanent()) {
+                    activeEffects.add(effect.getIdentifier());
+                }
+            }
+            player.setMetadata(PERK_EFFECT_KEY, new FixedMetadataValue(KingdomsPlugin.getInstance(), String.join(",", activeEffects)));
         }
     }
 
-    private List<PotionEffect> getApplicablePotionEffects(Player p, OwnedLand land, boolean refresh) {
+    private Collection<PerkEffect> getApplicablePotionEffects(Player p, OwnedLand land, boolean refresh) {
         List<PerkEffect> effects = new ArrayList<>();
         Resident resident = ResidentManager.getInstance().getResident(p);
 
@@ -68,7 +91,7 @@ public class LandPerks {
                 }
 
                 for (PerkEffect effect : perk.getEffects()) {
-                    if (effect.getLength() > 0 && refresh) {
+                    if (!effect.isPermanent() && refresh) {
                         continue;
                     }
 
@@ -114,7 +137,7 @@ public class LandPerks {
                 }
 
                 for (PerkEffect effect : perk.getEffects()) {
-                    if (effect.getLength() > 0 && refresh) {
+                    if (!effect.isPermanent() && refresh) {
                         continue;
                     }
 
@@ -163,22 +186,21 @@ public class LandPerks {
 
         for (PerkEffect effect : effects) {
             PerkEffect perkEffect = potionEffects.get(effect.getType());
-            if (perkEffect == null || perkEffect.getStrength() < effect.getStrength() || (perkEffect.getStrength() == effect.getStrength() && perkEffect.getLength() < effect.getLength())) {
+            if (perkEffect == null || perkEffect.getStrength() < effect.getStrength()
+                    || (perkEffect.getStrength() == effect.getStrength() && !perkEffect.isPermanent() && (perkEffect.getLength() < effect.getLength() || effect.isPermanent()))) {
                 potionEffects.put(effect.getType(), effect);
             }
         }
 
-        return potionEffects.values().stream()
-                .map(PerkEffect::getPotionEffect)
-                .collect(Collectors.toList());
+        return potionEffects.values();
     }
 
     private <T extends Perk> Collection<? extends PerkEffect> getEffects(Player p, Resident resident, OwnedLand land, LandOwner perkable, boolean refresh) {
         List<PerkEffect> effects = new ArrayList<>();
 
-        Village village = null;
-        if (land != null && land.getLandOwner() instanceof Village) {
-            village = (Village) land.getLandOwner();
+        LandOwner landOwner = null;
+        if (land != null) {
+            landOwner = land.getLandOwner();
         }
 
         for (Perk perk : perkable.getPerks()) {
@@ -187,7 +209,7 @@ public class LandPerks {
             }
 
             for (PerkEffect effect : perk.getEffects()) {
-                if (effect.getLength() > 0 && refresh) {
+                if (!effect.isPermanent() && refresh) {
                     continue;
                 }
 
@@ -197,7 +219,7 @@ public class LandPerks {
 
                 if (land == null) {
                     if (effect.getApplyIn() == PerkEffect.EffectLocation.EMPIRE_WORLD
-                            && (!resident.hasEmpire() || !resident.getVillage().getEmpire().equals(EmpireManager.getInstance().getEmpireFromWorld(p.getWorld())))) {
+                            && !perkable.equals(EmpireManager.getInstance().getEmpireFromWorld(p.getWorld()))) {
                         continue;
                     }
                     if (effect.getApplyIn() != PerkEffect.EffectLocation.UNCLAIMED) {
@@ -215,23 +237,24 @@ public class LandPerks {
                                 continue;
                             }
                             break;
+                        case EMPIRE_WORLD:
                         case OWN_SETTLEMENT:
                             if (!land.isOwnedBy(perkable)) {
                                 continue;
                             }
                             break;
                         case ENEMY_SETTLEMENT:
-                            if (land.isOwnedBy(perkable) || (village != null && village.isTrusted(perkable))) {
+                            if (land.isOwnedBy(perkable) || landOwner.isTrusted(perkable)) {
                                 continue;
                             }
                             break;
                         case ALLIED_SETTLEMENT:
-                            if (!land.isOwnedBy(perkable) && (village == null || !village.isAlly(perkable))) {
+                            if (!land.isOwnedBy(perkable) && !landOwner.isAlly(perkable)) {
                                 continue;
                             }
                             break;
                         case TRUSTED_SETTLEMENT:
-                            if (!land.isOwnedBy(perkable) && (village == null || !village.isTrusted(perkable))) {
+                            if (!land.isOwnedBy(perkable) && !landOwner.isTrusted(perkable)) {
                                 continue;
                             }
                             break;
@@ -272,24 +295,44 @@ public class LandPerks {
     }
 
     public void giveEffects(Player player, OwnedLand land, boolean refresh) {
-        List<PotionEffect> effects = getApplicablePotionEffects(player, land, refresh);
-        if (effects == null || effects.isEmpty()) {
+        Collection<PerkEffect> effects = getApplicablePotionEffects(player, land, refresh);
+        if (effects.isEmpty()) {
             return;
         }
-        for (PotionEffect effect : effects) {
-            player.addPotionEffect(effect, true);
+        Set<String> activeEffects = getActiveEffects(player);
+        for (PerkEffect effect : effects) {
+            player.addPotionEffect(effect.getPotionEffect(), true);
+            if (effect.isPermanent()) {
+                activeEffects.add(effect.getIdentifier());
+            }
         }
+        player.setMetadata(PERK_EFFECT_KEY, new FixedMetadataValue(KingdomsPlugin.getInstance(), String.join(",", activeEffects)));
     }
 
     public void removeEffects(Player player, OwnedLand land, boolean refresh) {
-        List<PotionEffect> effects = getApplicablePotionEffects(player, land, refresh);
-        if (effects == null) {
-            return;
-        }
-        for (PotionEffect effect : getApplicablePotionEffects(player, land, refresh)) {
-            if (player.hasPotionEffect(effect.getType())) {
+        Set<String> activeEffects = getActiveEffects(player);
+        Set<String> toRemove = new HashSet<>(activeEffects);
+        getApplicablePotionEffects(player, land, refresh).forEach(e -> toRemove.remove(e.getIdentifier()));
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            String identifier = getEffectIdentifier(effect);
+            if (toRemove.contains(identifier)) {
                 player.removePotionEffect(effect.getType());
+                activeEffects.remove(identifier);
             }
         }
+        player.setMetadata(PERK_EFFECT_KEY, new FixedMetadataValue(KingdomsPlugin.getInstance(), String.join(",", activeEffects)));
+    }
+
+    private static Set<String> getActiveEffects(Player player) {
+        return player.getMetadata(PERK_EFFECT_KEY).stream()
+                .filter(mv -> Objects.equals(mv.getOwningPlugin(), KingdomsPlugin.getInstance()))
+                .map(MetadataValue::asString)
+                .map(s -> Arrays.asList(s.split(",")))
+                .flatMap(List::stream)
+                .collect(Collectors.toSet());
+    }
+
+    private static String getEffectIdentifier(PotionEffect effect) {
+        return effect.getType().getName() + "|" + effect.getAmplifier() + "|" + effect.isAmbient() + "|" + effect.hasParticles();
     }
 }

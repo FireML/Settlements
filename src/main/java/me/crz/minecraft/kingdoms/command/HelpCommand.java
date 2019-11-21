@@ -1,6 +1,9 @@
 package me.crz.minecraft.kingdoms.command;
 
 import com.google.common.collect.ImmutableMap;
+import me.crz.minecraft.kingdoms.rank.EmpireRank;
+import me.crz.minecraft.kingdoms.rank.PermissionGroup;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -12,17 +15,20 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.command.CommandSender;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 public class HelpCommand extends SubCommand {
     private Function<CommandSender, String> defaultTypeProvider;
 
     public HelpCommand(SubCommand parent) {
-        super(parent, "help [<rank>] [<page>]", "usage");
+        super(parent, "help [<page>]", "usage");
         setVisible(false);
         if (parent == null) {
             throw new IllegalArgumentException("Parent sub command cannot be null!");
@@ -74,7 +80,9 @@ public class HelpCommand extends SubCommand {
         }
 
         if (ConfigManager.getInstance().getCommandsConfig().isList(path)) {
-            Map<String, SubCommand> commands = new LinkedHashMap<>();
+            List<Map.Entry<String, SubCommand>> commands = new ArrayList<>();
+
+            Set<SubCommand> missingSubCommands = new HashSet<>(getParent().getSubCommands().values());
 
             for (String commandPath : ConfigManager.getInstance().getCommandsConfig().getStringList(path)) {
                 SubCommand subCommand = getSubCommand(commandPath);
@@ -82,7 +90,26 @@ public class HelpCommand extends SubCommand {
                     subCommand = getSubCommand(stripParameters(commandPath));
                 }
                 if (subCommand == null || subCommand.hasAccess(sender)) {
-                    commands.put(commandPath, subCommand);
+                    commands.add(new AbstractMap.SimpleImmutableEntry<>(commandPath, subCommand));
+                }
+                missingSubCommands.remove(subCommand);
+            }
+
+            for (SubCommand subCommand : missingSubCommands) {
+                if (subCommand.isVisible()
+                        && (subCommand.getParent() == null || subCommand.getParent().getHelpCommand() != subCommand)
+                        && subCommand.hasAccess(sender)) {
+                    int add = 0;
+                    for (int i = 0; i < commands.size(); i++) {
+                        Map.Entry<String, SubCommand> entry = commands.get(i);
+                        if (entry.getValue() != null
+                                && entry.getValue().getParent() == subCommand.getParent()
+                                && entry.getValue().name().compareTo(subCommand.name()) > 0) {
+                            add = i;
+                            break;
+                        }
+                    }
+                    commands.add(add, new AbstractMap.SimpleImmutableEntry<>(subCommand.getPath(), subCommand));
                 }
             }
 
@@ -108,7 +135,7 @@ public class HelpCommand extends SubCommand {
                 if (page == maxPage) {
                     limit *= 2;
                 }
-                commands.entrySet().stream().skip((page - 1) * entriesPerPage).limit(limit).forEachOrdered(e -> {
+                commands.stream().skip((page - 1) * entriesPerPage).limit(limit).forEachOrdered(e -> {
                     SubCommand s = e.getValue();
                     String usage;
                     String displayPath;
@@ -137,18 +164,28 @@ public class HelpCommand extends SubCommand {
                                 displayPath = stripParameters(e.getKey());
                             }
                         }
-                        usage = "/" + displayPath;
-                        int arrowIndex = e.getKey().indexOf('<');
-                        int bracketIndex = e.getKey().indexOf('[');
-                        if (arrowIndex > 0 && (bracketIndex < 0 || arrowIndex < bracketIndex)) {
-                            usage += " " + e.getKey().substring(arrowIndex);
-                        } else if (bracketIndex > 0 && (arrowIndex < 0 || bracketIndex < arrowIndex)) {
-                            usage += " " + e.getKey().substring(bracketIndex);
+                        String[] splitPath = displayPath.split(" ");
+                        String[] splitKey = e.getKey().split(" ");
+                        if (splitPath.length > 1 && splitPath[splitPath.length - 1].equals(splitKey[0])) {
+                            usage = "/" + String.join(" ", Arrays.copyOfRange(splitPath, 0, splitPath.length - 1)) + " " + String.join(" ", splitKey);
+                        } else {
+                            usage = "/" + displayPath;
+                            int arrowIndex = e.getKey().indexOf('<');
+                            int bracketIndex = e.getKey().indexOf('[');
+                            if (arrowIndex > 0 && (bracketIndex < 0 || arrowIndex < bracketIndex)) {
+                                usage += " " + e.getKey().substring(arrowIndex);
+                            } else if (bracketIndex > 0 && (arrowIndex < 0 || bracketIndex < arrowIndex)) {
+                                usage += " " + e.getKey().substring(bracketIndex);
+                            }
                         }
                         description = s.getDescription();
                         aliases.addAll(s.getAliases());
                     }
-                    getParent().getMessage("usage.entry").tell(sender,
+                    Message usageMessage = getUsageMessage(s);
+                    if (!usageMessage.exists()) {
+                        usageMessage = getParent().getMessage("usage.entry");
+                    }
+                    usageMessage.tell(sender,
                             "usage", usage,
                             "path", displayPath,
                             "aliases", aliases.isEmpty() ? "" : getParent().getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", aliases)),
@@ -197,6 +234,35 @@ public class HelpCommand extends SubCommand {
         base = helpIndex > -1 ? base.substring(0, helpIndex) : base;
         int spaceIndex = base.lastIndexOf(' ');
         return getParent().sendUsageMessage(sender, spaceIndex > -1 ? base.substring(0, spaceIndex) : "", spaceIndex > -1 ? base.substring(spaceIndex + 1) : base);
+    }
+
+    private Message getUsageMessage(SubCommand subCommand) {
+        if (subCommand != null) {
+            Message usageMessage = getParent().getMessage("usage.entry-" + subCommand.name());
+            if (!usageMessage.exists() && subCommand.getParent() != null) {
+                usageMessage = getUsageMessage(subCommand.getParent());
+            }
+            if (!usageMessage.exists()) {
+                usageMessage = getParent().getMessage("usage.entry-" + getPermGroup(subCommand));
+            }
+            return usageMessage;
+        }
+        return getParent().getMessage("usage.entry");
+    }
+
+    private String getPermGroup(SubCommand subCommand) {
+        String shortPermission = subCommand.getPermission().substring(PERMISSION_PREFIX.length());
+        for (PermissionGroup permGroup : VillageRank.getPermGroups()) {
+            if (permGroup.getPermissions().contains(shortPermission)) {
+                return permGroup.getName();
+            }
+        }
+        for (PermissionGroup permGroup : EmpireRank.getPermGroups()) {
+            if (permGroup.getPermissions().contains(shortPermission)) {
+                return permGroup.getName();
+            }
+        }
+        return null;
     }
 
     private SubCommand getSubCommand(String commandPath) {

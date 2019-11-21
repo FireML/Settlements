@@ -1,117 +1,65 @@
 help-order:
   village:
     general:
-    - active
     - allies
+    - banished
+    - s balance
+    - bank
+    - create
+    - deposit
+    - donate
+    - s event
+    - here
+    - home
+    - join
+    - joinfee
+    - leave
+    - list
+    - map
+    - materials
+    - outpost
+    - reslist
+    - rules
+    - show <name>
+    - tax
+    - teleporters
+    - title
+    - upkeep
+    - chat
+    - lock
+    - unlock
+    # Plot
+    - s plot
+    # Officer/Settings
+    - e leave
+    - s access
+    - active
     - ally
     - allyclaim
     - s banish <player>|s:<settlement>|e:<empire>
-    - banished
-    - bank
-    - s chat
+    - build
     - claim
-    - create
-    - deposit
-    - donate
-    - history
-    - history
-    - home
-    - invite
-    - join
-    - kick
-    - leave
-    - list
-    - mail
-    - map
-    - materials
-    - outpost
-    - perms
-    - s plot
-    - rename
-    - reslist
-    - rules
-    - outpost
-    - setdescription
-    - sethome
-    - s setrank
-    - settings
-    - shop
-    - show <name>
-    - teleporters
-    - title
-    - titles
-    - unally
-    - s unbanish <player>|s:<settlement>|e:<empire>
-    - unclaim
-    - upkeep
-    'no':
-    - create
-    - join
-    - s show <name>
-    - list
-    - home
-    - donate
-    - map
-    resident:
-    - invite
-    - show <name>
-    - list
-    - map
-    - materials
-    - deposit
-    - home
-    - s chat
-    - reslist
-    - history
-    - s plot
-    - outpost
-    - teleporters
-    - bank
-    - donate
-    - upkeep
-    elder:
-    - claim
-    - s claim <#>
-    - unclaim
-    - s unclaim <#>
-    - s plot staff
-    - outpost
-    - ally
-    - unally
-    - invite
-    - kick
-    - banished
-    - settings
-    - perms show
-    assistant:
     - disband
-    - transfer
+    - history
+    - invite
+    - s joinfee set
+    - kick
+    - mail
+    - mode
+    - perks
+    - perms
     - rename
-    - active
-    chief:
-    - settings
-    - claim
-    - s claim <#>
-    - unclaim
-    - s unclaim <#>
+    - setdescription
     - sethome
     - s setrank
-    - perms
-    - active
-    - ally
-    - unally
-    - invite
-    - mail
-    - kick
-    - banished
-    - s banish <player>|s:<settlement>|e:<empire>
-    - s unbanish <player>|s:<settlement>|e:<empire>
-    - history
-    - s plot staff
+    - settings
     - shop
-    - title
+    - s tax set
     - titles
-    - setdescription
+    - unally
+    - s unbanish <player>|s:<settlement>|e:<empire>
+    - unclaim
+    - use
     outpost:
     - list
     - s outpost tp <name>
@@ -138,85 +86,52 @@ help-order:
   empire:
     general:
     - allies
-    - ally
+    - e balance
     - bank
-    - e banish <player>|s:<settlement>|e:<empire>
     - banished
     - create
-    - disband
     - donate
-    - e chat
-    - e plot
+    - here
     - home
-    - invite
     - join
-    - kick
+    - joinfee
     - list
-    - mail
     - memberlist
-    - mode
-    - perms
-    - regen
-    - rename
-    - senators
-    - setdescription
-    - sethome
-    - e setrank
-    - settings
-    - shop
     - show
-    - transfer
-    - unally
-    - e unbanish <player>|s:<settlement>|e:<empire>
+    - tax
     - upkeep
-    'no':
-    - create
-    - join
-    - show
-    - list
-    - home
-    - donate
-    member:
-    - show
-    - list
-    - home
-    - e chat
-    - memberlist
-    - senators
+    - chat
+    - lock
+    - unlock
+    - # Plot
     - e plot
-    - bank
-    - donate
-    - upkeep
-    senator:
-    - mode
-    - kick
-    - e plot staff
-    - settings
-    - perms show
+    # Officer/Settings
+    - e access
     - ally
-    - unally
-    - invite
-    - kick
-    - setdescription
-    leader:
-    - settings
-    - sethome
-    - e setrank
-    - perms
-    - mail
-    - invite
-    - kick
     - e banish <player>|s:<settlement>|e:<empire>
-    - e unbanish <player>|s:<settlement>|e:<empire>
-    - ally
-    - unally
-    - e plot staff
-    - shop
-    - rename
-    - regen
-    - setdescription
-    - transfer
+    - build
     - disband
+    - invite
+    - e joinfee set
+    - kick
+    - leave
+    - mail
+    - mode
+    - perks
+    - perms
+    - regen
+    - rename
+    - setdescription
+    - sethome
+    - e setrank
+    - settings
+    - setsymbol
+    - shop
+    - e tax set
+    - transfer
+    - unally
+    - e unbanish <player>|s:<settlement>|e:<empire>
+    - use
     bank:
     - balance
     - deposit
@@ -234,31 +149,29 @@ help-order:
     - e allies
     - e allyclaim
   plot:
-    general:
-    - friend
-    - buy
-    - settings
-    - name
-    - info
-    - link
-    - unlink
-    - sale
-    - unsale
-    - revoke
-    - plot set embassy <amount>
-    staff:
-    - sale
-    - unsale
-    - revoke
-    - plot set embassy <amount>
+  - build
+  - buy
+  - settings
+  - name
+  - info
+  - link
+  - unlink
+  - sale
+  - unsale
+  - unown
+  - plot set embassy <amount>
   lock:
   - lock
   - toggle
   - unlock
   - info
   - hoppers
-  - add
-  - remove
+  - add <player> [toggle]
+  - add s:<settlement> [toggle]
+  - add e:<empire> [toggle]
+  - remove <player> [toggle]
+  - remove s:<settlement> [toggle]
+  - remove e:<empire> [toggle]
   friend:
   - add
   - list
@@ -268,3 +181,7 @@ help-order:
   - leave
   - lock
   - swear
+  resident:
+  - res <player>
+  - res ignore list | <player>
+  - res claimtransfer <settlement> <amount>

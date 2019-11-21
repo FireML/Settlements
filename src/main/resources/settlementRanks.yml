@@ -9,6 +9,7 @@ perm-groups:
     - village.deposit.history
     - village.outpost.teleport
     - village.title
+    - village.rewards
   settings:
     icon: REDSTONE_BLOCK
     permissions:
@@ -40,6 +41,7 @@ perm-groups:
     - village.mail
     - village.outpost.claim
     - village.outpost.sethome
+    - village.outpost.rename
     - village.outpost.unclaim
     - village.perms
     - village.perms.set
@@ -55,6 +57,7 @@ perm-groups:
     - village.shop.repeat
     - village.tax.set
     - village.tax.exempt
+    - village.transfer
     - village.titles
     - village.settitle
     - village.unally
@@ -105,12 +108,14 @@ ranks:
     - village.outpost.help.elder
     - village.outpost.claim
     - village.outpost.sethome
+    - village.outpost.rename
     - village.perks.toggle
     - village.perms
     - village.perms.set
     - village.perms.unset
     - village.perms.reset
     - village.plot.admin
+    - village.rewards
     - village.setdescription
     - village.setrank
     - village.settings
@@ -127,8 +132,6 @@ ranks:
     icon: golden_sword
     inherits: resident
     permissions:
-    - village.disband
-    - village.transfer
     - village.rename
     - village.lock.admin
     - village.help.assistant
@@ -141,6 +144,7 @@ ranks:
     - village.outpost.help.elder
     - village.outpost.claim
     - village.outpost.sethome
+    - village.outpost.rename
     - village.perks.toggle
     - village.plot.admin
     - village.setdescription
@@ -153,6 +157,7 @@ ranks:
     - village.kick
     - village.help.recruiter
     - village.officer
+    - village.rewards
     - village.titles
     - village.settitle
     - village.title
@@ -169,6 +174,7 @@ ranks:
     - village.outpost.help.elder
     - village.outpost.claim
     - village.outpost.sethome
+    - village.outpost.rename
     - village.perks.toggle
     - village.plot.admin
     - village.setdescription

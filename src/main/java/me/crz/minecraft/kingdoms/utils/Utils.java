@@ -1,14 +1,17 @@
 package me.crz.minecraft.kingdoms.utils;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -28,6 +31,7 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,9 +115,23 @@ public class Utils {
         return 0;
     }
 
+    public static int getEmpireStartBalance() {
+        if (ConfigManager.getInstance().getConfig().isInt("empire-start-balance")) {
+            return ConfigManager.getInstance().getConfig().getInt("empire-start-balance");
+        }
+        return 0;
+    }
+
     public static int getVillageCreationCost() {
         if (ConfigManager.getInstance().getConfig().isInt("village-creation-cost")) {
             return ConfigManager.getInstance().getConfig().getInt("village-creation-cost");
+        }
+        return 0;
+    }
+
+    public static int getVillageStartBalance() {
+        if (ConfigManager.getInstance().getConfig().isInt("village-start-balance")) {
+            return ConfigManager.getInstance().getConfig().getInt("village-start-balance");
         }
         return 0;
     }
@@ -161,13 +179,6 @@ public class Utils {
     public static boolean getCloseClaimsUnclaimsOutposts() {
         if (ConfigManager.getInstance().getConfig().isBoolean("close-claims-unclaims-outposts")) {
             return ConfigManager.getInstance().getConfig().getBoolean("close-claims-unclaims-outposts");
-        }
-        return false;
-    }
-
-    public static boolean isFireSpreadAllowed() {
-        if (ConfigManager.getInstance().getConfig().isBoolean("allow-firespread-outside-claim")) {
-            return ConfigManager.getInstance().getConfig().getBoolean("allow-firespread-outside-claim");
         }
         return false;
     }
@@ -242,6 +253,13 @@ public class Utils {
         return true;
     }
 
+    public static boolean allowClaimTransferToEmpire() {
+        if (ConfigManager.getInstance().getConfig().isBoolean("claimtransfer-to-empire")) {
+            return ConfigManager.getInstance().getConfig().getBoolean("claimtransfer-to-empire");
+        }
+        return false;
+    }
+
     public static Sound getChatNotifySound() {
         if (ConfigManager.getInstance().getConfig().isString("chat.notify.sound")) {
             try {
@@ -256,6 +274,33 @@ public class Utils {
             return ConfigManager.getInstance().getConfig().getInt("chat.notify.cooldown");
         }
         return 15;
+    }
+
+    public static List<String> getChatColors() {
+        return ConfigManager.getInstance().getConfig().getStringList("chat.selectable-colors");
+    }
+
+    public static ChatColor getChannelColor(ChatChannel channel) {
+        return getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-colors." + channel.getKey()), ChatColor.WHITE);
+    }
+
+    public static ChatColor getColor(String colorString, ChatColor def) {
+        if (colorString != null) {
+            try {
+                return ChatColor.valueOf(colorString.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                ChatColor color = null;
+                if (colorString.length() == 1) {
+                    color = ChatColor.getByChar(colorString);
+                } else if (colorString.length() == 2) {
+                    color = ChatColor.getByChar(colorString.charAt(1));
+                }
+                if (color != null) {
+                    return color;
+                }
+            }
+        }
+        return ChatColor.WHITE;
     }
 
     public static int getTitlesPerRank() {
@@ -286,6 +331,14 @@ public class Utils {
         return 30;
     }
 
+    public static boolean hasPlotMode(PlotMode mode, String type) {
+        return ConfigManager.getInstance().getConfig().isSet("modes." + type + "." + mode.getKey());
+    }
+
+    public static boolean getPlotMode(PlotMode mode, String type) {
+        return ConfigManager.getInstance().getConfig().getBoolean("modes." + type + "." + mode.getKey(), false);
+    }
+
     public static boolean playerIsChief(Player player, Village village) {
         return village != null && village.getChiefId().equals(player.getUniqueId());
     }
@@ -306,6 +359,10 @@ public class Utils {
     public static int getLevelOutposts(VillageState state, int level) {
         return LEVEL_OUTPOSTS.computeIfAbsent(state.name() + "_" + level,
                 key -> ConfigManager.getInstance().getLevelConfig().getInt(state.name().toLowerCase() + ".level-" + level + ".outposts"));
+    }
+
+    public static int getMaxDrunkeness(ChatChannel channel) {
+        return ConfigManager.getInstance().getConfig().getInt("brewery.block-channels." + channel.getKey(), 9001);
     }
 
     public static void addDisabledWorld(World world) {
@@ -357,7 +414,7 @@ public class Utils {
      * @return The BukkitTask that was started or null if we are already on an async thread
      */
     public static BukkitTask runAsync(Runnable run) {
-        if (Bukkit.isPrimaryThread()) {
+        if (Bukkit.isPrimaryThread() && KingdomsPlugin.getInstance().isRunning()) {
             return Bukkit.getScheduler().runTaskAsynchronously(KingdomsPlugin.getInstance(), run);
         } else {
             run.run();
@@ -414,6 +471,25 @@ public class Utils {
             }
         };
         KingdomsPlugin.getTimer().schedule(task, unit.toMillis(amount));
+        return task;
+    }
+
+    /**
+     * Run something later on the primary server thread.
+     * @param run       What to run
+     * @param delay     The amount of time to wait before first run
+     * @param period    The amount of time between each run
+     * @param unit      The time unit the amount is in
+     * @return The TimerTask that was started
+     */
+    public static TimerTask runRepeating(Runnable run, long delay, long period, TimeUnit unit) {
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                runSync(run);
+            }
+        };
+        KingdomsPlugin.getTimer().scheduleAtFixedRate(task, unit.toMillis(delay), unit.toMillis(period));
         return task;
     }
 
@@ -522,6 +598,7 @@ public class Utils {
         return ExecuteMoveUtil.getInstance().execute(player, () -> {
             player.teleportAsync(loc).thenAccept(success -> {
                 Message.get(messagePath + "." + (success ? "success" : "fail")).tell(player, replacements);
+                Message.get(messagePath + "." + (success ? "success" : "fail") + "-title").getTitle().withIn(0).send(player, replacements);
             });
         }, bypassDelay ? 0 : Utils.getTeleportDelay(type), "Teleport", messagePath);
     }
@@ -567,7 +644,10 @@ public class Utils {
     }
 
     public static Map<String, String> toMap(String... args) {
-        Map<String, String> map = new LinkedHashMap<>();
+        return addAll(new LinkedHashMap<>(), args);
+    }
+
+    public static Map<String, String> addAll(Map<String, String> map, String... args) {
         for (int i = 0; i+1 < args.length; i+=2) {
             map.put(args[i], args[i+1]);
         }
@@ -605,5 +685,15 @@ public class Utils {
             map = (Map<String, Object>) map.getOrDefault(parts[i], Collections.emptyMap());
         }
         return (T) map.getOrDefault(parts[parts.length - 1], def);
+    }
+
+    public static <T> T poll(Collection<T> coll) {
+        if (coll.isEmpty()) {
+            return null;
+        }
+        Iterator<T> it = coll.iterator();
+        T r = it.next();
+        it.remove();
+        return r;
     }
 }

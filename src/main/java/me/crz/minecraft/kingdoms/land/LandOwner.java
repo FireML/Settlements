@@ -199,7 +199,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
     }
 
     public boolean togglePerk(Perk perk) {
-        if (perk.hasEffects()) {
+        if (perk.hasEffects() || perk.hasActions()) {
             PerkData perkData = getPerkData(perk);
             if (perkData != null) {
                 perkData.toggle();
@@ -217,12 +217,12 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
 
     public void applyEffects(Perk perk) {
         Base.getLandPerks().updateEffects(false);
-        perk.toggleActions(this, false);
+        perk.toggleActions(this, true);
     }
 
     public void removeEffects(Perk perk) {
         Base.getLandPerks().updateEffects(false);
-        perk.toggleActions(this, true);
+        perk.toggleActions(this, false);
     }
 
     public Map<String, Map<String, Boolean>> getRanksPermissions() {

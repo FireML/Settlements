@@ -1,7 +1,9 @@
 package me.crz.minecraft.kingdoms.utils;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.utils.config.ConfigAccessor;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -11,28 +13,18 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
-public class UtilChat {
-    private static UtilChat instance;
+public class CursesFilter {
+    private static CursesFilter instance;
     private final Set<String> literalCurses = new HashSet<>();
     private final Set<Pattern> regexCurses = new HashSet<>();
     private String replaceWith = "cookie";
 
-    public UtilChat() {
-        load();
-    }
+    public CursesFilter(FileConfiguration config) {
 
-    public static UtilChat getInstance() {
-        if (instance == null) {
-            instance = new UtilChat();
-        }
-        return instance;
-    }
+        replaceWith = config.getString("replace-with");
 
-    public void load() {
-        replaceWith = ConfigManager.getInstance().getCursesConfig().getString("replace-with");
-
-        literalCurses.addAll(ConfigManager.getInstance().getCursesConfig().getStringList("literal"));
-        for (String regex : ConfigManager.getInstance().getCursesConfig().getStringList("regexes")) {
+        literalCurses.addAll(config.getStringList("literal"));
+        for (String regex : config.getStringList("regexes")) {
             try {
                 regexCurses.add(Pattern.compile(regex, Pattern.CASE_INSENSITIVE));
             } catch (PatternSyntaxException e) {

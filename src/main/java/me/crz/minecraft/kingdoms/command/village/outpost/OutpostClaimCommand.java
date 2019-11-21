@@ -6,6 +6,7 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.world.NamedLocation;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 
@@ -60,7 +61,10 @@ public class OutpostClaimCommand extends VillageSubCommand {
                 if (checkLand == null) {
                     continue;
                 }
-                if (!checkLand.isOwnedBy(resident.getVillage()) && !checkLand.getLandOwner().isTrusted(resident.getVillage())) {
+                if (!checkLand.isOwnedBy(resident.getVillage()) && (
+                        !checkLand.getLandOwner().isAlly(resident.getVillage()) || (
+                                !(checkLand.getLandOwner() instanceof Village)
+                                        || !((Village) checkLand.getLandOwner()).isAllowAllyClaim()))) {
                     resident.tell(getError("claim-too-close"), "owner", checkLand.getLandOwner().getName());
                     return true;
                 }

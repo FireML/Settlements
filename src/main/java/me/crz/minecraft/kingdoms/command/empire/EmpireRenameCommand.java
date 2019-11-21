@@ -1,9 +1,9 @@
 package me.crz.minecraft.kingdoms.command.empire;
 
+import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
-import me.crz.minecraft.kingdoms.utils.UtilChat;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
@@ -22,7 +22,7 @@ public class EmpireRenameCommand extends EmpireSubCommand {
         if (args.length == 0) {
             return false;
         }
-        String name = UtilChat.getInstance().filterCurses(String.join(" ", args).trim());
+        String name = ChatManager.getInstance().filterAllCurses(String.join(" ", args).trim());
         if (name.toLowerCase().contains("claims")) {
             getError("invalid-characters").tell(res, "input", name);
         } else if (empireExists(name)) {

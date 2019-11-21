@@ -87,7 +87,7 @@ public class ModeGUI extends KingdomsGUI {
         gui.build(p);
     }
 
-    public static ModeGUI getInstance() {
+    synchronized public static ModeGUI getInstance() {
         if (instance == null) {
             instance = new ModeGUI();
         }

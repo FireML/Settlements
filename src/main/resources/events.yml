@@ -1,0 +1,98 @@
+bossbar:
+  format: "&b&l{title} &f{timeleft}"
+  color: yellow
+  style: segmented_10
+# Run random event at these times:
+automatic-events:
+  # The events that should be automatic
+  events:
+  - event-id
+  # Specify hours and minutes in the format of hours:minutes e.g. 16:20
+  times:
+  - "0:00"
+  - "2:00"
+  - "4:00"
+  - "6:00"
+  - "8:00"
+  - "10:00"
+  - "12:00"
+  - "14:00"
+  - "16:00"
+  - "18:00"
+  - "20:00"
+  - "22:00"
+  timezone: EST
+  
+rewards:
+  reward-id:
+    name: Reward Display Name
+    # The item to use as the icon of this reward in the GUI
+    # If icon is not specified but at least one item is set then that item is used in the GUI
+    icon: EMERALD
+    # Amount of money to add to the settlement bank (to add to claimer/all resident accounts use the commands)
+    money: 100
+    # The items to give to the player that claims the reward
+    # Supports multiple different items in one reward and the full Bukkit item serialization syntax
+    items:
+    - type: diamond
+      amount: 10
+    # Console commands to run when claimed.
+    # Can contain the following placeholders:
+    # {claimer} - name of the player who claimed it
+    # {claimerid} - UUID of player who claimed it
+    # {village} - name of the village
+    # {villageid} - internal id of the village
+    # Following placeholders cause the commands to be run once for each online village resident:
+    # {onlineresident} - name of the resident
+    # {onlineresidentid} - UUID of the resident
+    # Following placeholders cause the commands to be run once for each village resident:
+    # {resident} - name of the resident
+    # {residentid} - UUID of the resident
+    # (These two placeholders can not be mixed)
+    commands:
+    - command to run when claimed
+
+events:
+  # Event-id:
+  mining:
+    # Whatever worlds that it should only work in
+    worlds:
+    - Resource
+    - Kingdoms
+    # Title: This will show on our boss bar
+    title: "Mining Competition"
+    # How long should the competition be, in seconds
+    time: 600
+    # The list of rewards that can be achieved in this event
+    rewards:
+      # Rewards that the first gets
+      '1':
+      - reward-id
+      # Rewards that the second gets
+      '2':
+      - reward-id
+      # Rewards that the third gets etc.
+      # Each place number can be defined
+      '3':
+      - reward-id
+      # Rewards that the rest gets who's places aren't defined (e.g. as a participation price)
+      rest:
+      - reward-id
+    actions:
+      # What blocks need to be broken
+      break:
+      - diamond_ore
+      # What blocks need to be placed (works for crops too)
+      # place:
+      # - blocktype
+      # What items need to be crafted (make sure to not include circular crafting patterns to prevent exploits)
+      # craft:
+      # - itemtype
+      # What entities need to be killed
+      # kill:
+      # - entitytype
+      # How a traveled distance is tracked (possible values: walk, sneak, run, swim, enderpearl, boat, minecart, elytra, horse, llama, pig (or any other entity)
+      # distance:
+      # - sneak
+      # - run
+      # - walk

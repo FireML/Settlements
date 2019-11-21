@@ -4,32 +4,29 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
-import me.crz.minecraft.kingdoms.land.LandManager;
-import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.teleporter.TeleportersGUI;
 import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class VillageListener implements Listener {
 
     public VillageListener() {
         super();
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPreLoginCheck(AsyncPlayerPreLoginEvent event) {
+        if (!KingdomsPlugin.getInstance().isRunning() && event.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED) {
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "Server not fully started yet!");
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -57,6 +54,11 @@ public class VillageListener implements Listener {
             Bukkit.getScheduler().runTaskAsynchronously(KingdomsPlugin.getInstance(),
                     () -> DatabaseManager.getInstance().saveResident(finalRes));
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        ResidentManager.getInstance().uncachePlayer(event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

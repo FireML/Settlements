@@ -41,9 +41,7 @@ public class VillageTransferCommand extends VillageSubCommand {
                 village.setChief(tres.getUUID());
                 if (village.hasEmpire() && village.getEmpire().isChief(res)) {
                     res.setEmpireRank(EmpireRank.getLeader().next());
-                    village.getEmpire().addSenator(res);
                     tres.setEmpireRank(EmpireRank.getLeader());
-                    village.getEmpire().removeSenator(tres);
                 }
                 Utils.runAsync(() -> {
                     DatabaseManager.getInstance().saveResident(res);

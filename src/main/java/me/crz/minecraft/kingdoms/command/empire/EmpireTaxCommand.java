@@ -16,6 +16,12 @@ public class EmpireTaxCommand extends EmpireSubCommand {
                 }
                 try {
                     long amount = Long.parseLong(args[0]);
+                    if (amount < 0) {
+                        getMessage("below-zero").tell(resident,
+                                "amount", String.valueOf(amount)
+                        );
+                        return true;
+                    }
                     int maxTax = Utils.getEmpireMaxTax();
                     if (maxTax > -1 && amount > maxTax) {
                         getMessage("above-max").tell(resident,

@@ -2,7 +2,7 @@ main: me.crz.minecraft.kingdoms.KingdomsPlugin
 version: "${minecraft.plugin.version}"
 name: ApeironKingdoms
 depend: [Vault, ApeironKingdomsEssentials]
-softdepend: [LWC, ChestShop, Multiverse-Core, CMI, PlaceholderAPI]
+softdepend: [LWC, ChestShop, Multiverse-Core, CMI, PlaceholderAPI, Brewery]
 author: crz
 authors: [Phoenix616]
 api-version: 1.13
@@ -52,6 +52,9 @@ commands:
   empirechat:
     description: Empire chat
     aliases: [ec]
+  empireallychat:
+    description: Empire ally chat
+    aliases: [eally,eac,alliance]
   adminchat:
     description: Admin chat
     aliases: [admin,adc]

@@ -27,7 +27,7 @@ public class Teleporters {
         return teleporter;
     }
 
-    public static Teleporters getInstance() {
+    synchronized public static Teleporters getInstance() {
         if (instance == null) {
             instance = new Teleporters();
         }

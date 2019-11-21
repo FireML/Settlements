@@ -31,7 +31,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -98,7 +97,7 @@ public class EmpireManager {
         }
     }
 
-    public static EmpireManager getInstance() {
+    synchronized public static EmpireManager getInstance() {
         if (instance == null) {
             instance = new EmpireManager();
         }
@@ -142,6 +141,7 @@ public class EmpireManager {
             KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving empire " + empire.getName() + " to the database! It already had an ID defined?");
             return;
         }
+        empire.setBank(Math.min(Utils.getEmpireStartBalance(), Utils.getEmpireCreationCost()));
         empire.getCapital().setEmpire(empire);
         empire.getCapital().getChief().setEmpireRank(EmpireRank.getLeader());
         empires.put(empire.getName().replace(' ', '_').toLowerCase(), empire);
@@ -269,14 +269,12 @@ public class EmpireManager {
 
         // Update ranks
         Set<Resident> modifiedResidents = new HashSet<>();
-        empire.getCapital().getChief().setEmpireRank(EmpireRank.getDefault());
-        modifiedResidents.add(empire.getCapital().getChief());
-        for (Resident senator : empire.getSenators()) {
-            senator.setEmpireRank(EmpireRank.getDefault());
-            empire.removeSenator(senator);
-            modifiedResidents.add(senator);
+        for (Resident resident : empire.getResidents()) {
+            if (resident.getEmpireRank() != EmpireRank.getDefault()) {
+                resident.setEmpireRank(EmpireRank.getDefault());
+                modifiedResidents.add(resident);
+            }
         }
-        empire.getSenatorIds().clear();
         Collection<LandOwner> allies = empire.getAllies();
         empire.getAlliedEmpireIds().clear();
         empire.getAlliedVillageIds().clear();
@@ -287,11 +285,11 @@ public class EmpireManager {
         for (Use u : Use.values()) {
             empire.setUseState(u, BuildState.PUBLIC);
         }
-        empire.setMode(PlotMode.pvp, true);
-        empire.setMode(PlotMode.fireSpread, true);
-        empire.setMode(PlotMode.explosions, true);
-        empire.setMode(PlotMode.buff, false);
-        empire.setMode(PlotMode.mobSpawning, true);
+        for (PlotMode mode : PlotMode.values()) {
+            if (mode.appliesTo(PlotMode.AppliesTo.LAND_OWNER)) {
+                empire.setMode(mode, Utils.getPlotMode(mode, "abandoned." + empire.getStateKey()));
+            }
+        }
         World empireWorld = Bukkit.getWorld(empire.getWorldName());
         if (empireWorld != null) {
             for (LockProvider lockProvider : KingdomsPlugin.getInstance().getLockProviders()) {
@@ -335,10 +333,9 @@ public class EmpireManager {
         village.setEmpire(null);
         List<Resident> toSave = new ArrayList<>();
         for (Resident member : village.getResidents()) {
-            if (member.getEmpireRank().above(EmpireRank.getDefault())) {
+            if (member.getEmpireRank() != EmpireRank.getDefault()) {
                 toSave.add(member);
                 member.setEmpireRank(EmpireRank.getDefault());
-                empire.removeSenator(member);
             }
             member.removeChannel(ChatChannel.EMPIRE);
             Player player = member.getPlayer();

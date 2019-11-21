@@ -23,8 +23,20 @@ public class TitleBuilder {
     }
 
     public TitleBuilder withTimings(int in, int stay, int out) {
+        return withIn(in).withStay(stay).withOut(out);
+    }
+
+    public TitleBuilder withIn(int in) {
         this.in = in;
+        return this;
+    }
+
+    public TitleBuilder withStay(int stay) {
         this.stay = stay;
+        return this;
+    }
+
+    public TitleBuilder withOut(int out) {
         this.out = out;
         return this;
     }

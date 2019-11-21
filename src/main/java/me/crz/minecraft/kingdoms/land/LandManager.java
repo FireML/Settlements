@@ -6,11 +6,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
@@ -164,14 +162,19 @@ public class LandManager {
     public void unclaimLand(OwnedLand... lands) {
         Set<Village> saveVillages = new HashSet<>();
         for (OwnedLand land : lands) {
+            if (land.getLandOwner() == null) {
+                continue;
+            }
             if (land.containsHome()) {
                 land.getLandOwner().setHome((SimpleLocation) null);
             }
             landTable.remove(land.getWorldName(), land.getSimpleKey());
-            villageLands.remove(land.getLandOwner().getId(), land);
-            if (land.getLandOwner() instanceof Village && land.isOutpost()) {
-                if (((Village) land.getLandOwner()).getOutpostHomes().remove(land.getOutpostName().toLowerCase()) != null) {
-                    saveVillages.add((Village) land.getLandOwner());
+            if (land.getLandOwner() instanceof Village) {
+                villageLands.remove(land.getLandOwner().getId(), land);
+                if (land.isOutpost()) {
+                    if (((Village) land.getLandOwner()).getOutpostHomes().remove(land.getOutpostName().toLowerCase()) != null) {
+                        saveVillages.add((Village) land.getLandOwner());
+                    }
                 }
             }
             KingdomsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + land.getKey() + " owned by " + land.getLandOwner().getName() + " was unclaimed");
@@ -235,7 +238,7 @@ public class LandManager {
         KingdomsPlugin.getInstance().getLockProviders().forEach(i -> i.removeInChunks(claims));
     }
 
-    public static LandManager getInstance() {
+    synchronized public static LandManager getInstance() {
         if (instance == null) {
             instance = new LandManager();
         }
@@ -308,7 +311,7 @@ public class LandManager {
         checked.add(land);
 
         for (int[] branchDir : directions) {
-            Queue<SimpleChunkLocation> toSearch = new LinkedList<>();
+            Set<SimpleChunkLocation> toSearch = new LinkedHashSet<>();
             SimpleChunkLocation branch = land.getLocation().copy().add(branchDir[0], branchDir[1]);
             if (checked.contains(branch)) {
                 continue;
@@ -320,7 +323,7 @@ public class LandManager {
             boolean skipBranch = false;
             BRANCH:
             while (!toSearch.isEmpty()) {
-                SimpleChunkLocation search = toSearch.poll();
+                SimpleChunkLocation search = Utils.poll(toSearch);
                 OwnedLand foundLand = getLand(search);
                 if (foundLand != null && foundLand.isOwnedBy(land.getLandOwner())) {
                     if (filter != null) {
@@ -347,7 +350,7 @@ public class LandManager {
                     for (int[] direction : directions) {
                         if (direction != branchDir) {
                             SimpleChunkLocation next = search.copy().add(direction[0], direction[1]);
-                            if (!checked.contains(next) && !toSearch.contains(next)) {
+                            if (!checked.contains(next)) {
                                 toSearch.add(next);
                             }
                         }

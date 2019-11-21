@@ -42,20 +42,8 @@ public class ResidentManager {
             }
 
             private long getDuration(Resident resident) {
-                if (resident != null) {
-                    if (!KingdomsPlugin.getInstance().isRunning()) {
-                        return Long.MAX_VALUE;
-                    }
-                    if (resident.hasVillage()) {
-                        return Long.MAX_VALUE;
-                    }
-                    if (LandManager.getInstance().ownsPlot(resident.getUUID())) {
-                        return Long.MAX_VALUE;
-                    }
-                    Player player = Bukkit.getPlayer(resident.getUUID());
-                    if (player != null && player.isOnline()) {
-                        return Long.MAX_VALUE;
-                    }
+                if (resident != null && (keepCached(resident) || Bukkit.getPlayer(resident.getUUID()) != null)) {
+                    return Long.MAX_VALUE;
                 }
                 return TimeUnit.SECONDS.toNanos(Data.residentCacheDuration);
             }
@@ -64,9 +52,27 @@ public class ResidentManager {
         residentsByName = Caffeine.newBuilder().expireAfter(residentExpiry).build();
     }
 
+    private boolean keepCached(Resident resident) {
+        return !KingdomsPlugin.getInstance().isRunning()
+                || resident.hasVillage()
+                || LandManager.getInstance().ownsPlot(resident.getUUID());
+    }
+
     public void addResident(Resident res) {
         residentsByUuid.put(res.getUUID(), res);
         residentsByName.put(res.getName().toLowerCase(), res);
+    }
+
+    public void uncachePlayer(Player player) {
+        Resident resident = getResidentIfPreset(player.getUniqueId());
+        if (resident != null) {
+            if (!keepCached(resident)) {
+                residentsByUuid.invalidate(resident.getUUID());
+                invalidateName(resident.getName());
+            }
+        } else {
+            invalidateName(player.getName());
+        }
     }
 
     public void invalidateName(String name) {
@@ -79,7 +85,11 @@ public class ResidentManager {
 
     public Resident getResident(Player p) {
         Resident resident = getResident(p.getUniqueId());
-        return resident != null ? resident : new Resident(p.getUniqueId(), p.getName());
+        if (resident == null) {
+            resident = new Resident(p.getUniqueId(), p.getName());
+            addResident(resident);
+        }
+        return resident;
     }
 
     public Resident getResident(OfflinePlayer p) {
@@ -143,7 +153,7 @@ public class ResidentManager {
         return resident != null ? resident.getName() : uuid.toString();
     }
 
-    public static ResidentManager getInstance() {
+    synchronized public static ResidentManager getInstance() {
         if (instance == null) {
             instance = new ResidentManager();
             for (Village village : VillageManager.getInstance().getVillages()) {

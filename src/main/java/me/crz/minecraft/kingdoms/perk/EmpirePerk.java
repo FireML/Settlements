@@ -10,10 +10,10 @@ import org.bukkit.GameMode;
 import org.bukkit.GameRule;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 public class EmpirePerk extends Perk {
     private int bonusRadius = 0;
@@ -34,15 +34,19 @@ public class EmpirePerk extends Perk {
                                     && player.getGameMode() != GameMode.CREATIVE
                                     && player.getGameMode() != GameMode.SPECTATOR
                                     && !player.hasPermission("kingdoms.bypass.flyremoval")) {
-                                player.setAllowFlight(false);
-                                ResidentManager.getInstance().getResident(player).setHasEmpireFlight(false);
                                 if (player.isFlying()) {
                                     player.setFlying(false);
-                                    if (player.getLocation().subtract(0, -1, 0).getBlock().getType() == Material.AIR
-                                            && player.getLocation().subtract(0, -2, 0).getBlock().getType() == Material.AIR) {
-                                        player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 10));
+                                    Block block = player.getLocation().getBlock();
+                                    int i = 0;
+                                    while (block.getY() > 0 && (block = block.getRelative(BlockFace.DOWN)).getType() == Material.AIR) {
+                                        i++;
+                                    }
+                                    if (i > 2 && block.getType() != Material.AIR) {
+                                        player.teleport(block.getRelative(BlockFace.UP).getLocation().setDirection(player.getEyeLocation().getDirection()));
                                     }
                                 }
+                                player.setAllowFlight(false);
+                                ResidentManager.getInstance().getResident(player).setHasEmpireFlight(false);
                             }
                         }
                     }

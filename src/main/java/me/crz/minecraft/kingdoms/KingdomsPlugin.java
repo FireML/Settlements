@@ -8,7 +8,10 @@ import me.crz.minecraft.kingdoms.chat.ChatListener;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireListener;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.event.EventListener;
+import me.crz.minecraft.kingdoms.event.EventManager;
 import me.crz.minecraft.kingdoms.integration.AfkProvider;
+import me.crz.minecraft.kingdoms.integration.BreweryIntegration;
 import me.crz.minecraft.kingdoms.integration.ChestShopIntegration;
 import me.crz.minecraft.kingdoms.integration.CmiIntegration;
 import me.crz.minecraft.kingdoms.integration.IgnoreProvider;
@@ -30,7 +33,6 @@ import me.crz.minecraft.kingdoms.command.CommandManager;
 import me.crz.minecraft.kingdoms.scoreboard.ScoreboardManager;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.utils.ThreadManager;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,7 +51,6 @@ import me.crz.minecraft.kingdoms.village.VillageListener;
 import me.crz.minecraft.kingdoms.vault.VaultListener;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.village.VillageManager;
-import me.crz.minecraft.kingdoms.utils.UtilChat;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import me.crz.minecraft.kingdoms.land.LandPerks;
@@ -124,6 +125,10 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             placeholderApi = new PlaceholderApiIntegration();
             getLogger().log(Level.INFO, "Hooked into PlaceholderAPI " + placeholderApi.getPlaceholderAPI().getDescription().getVersion() + "!");
         }
+        if (getServer().getPluginManager().isPluginEnabled("Brewery")) {
+            BreweryIntegration breweryIntegration = new BreweryIntegration();
+            getLogger().log(Level.INFO, "Hooked into Brewery " + breweryIntegration.getBrewery().getDescription().getVersion() + "!");
+        }
         if (data.load(this.getDataFolder())) {
             ConfigManager.getInstance();
             empiresWorldPrefix = getConfig().getString("empires-world.prefix");
@@ -144,9 +149,9 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             this.getServer().getPluginManager().registerEvents(new EmpireListener(), this);
             this.getServer().getPluginManager().registerEvents((landFlags = new LandFlags()), this);
             this.getServer().getPluginManager().registerEvents(new LockListener(), this);
-            this.getServer().getPluginManager().registerEvents(new Advancements(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlagsBlockEvents(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlagsUseEvents(), this);
+            this.getServer().getPluginManager().registerEvents(new EventListener(), this);
 
             EmpireManager.getInstance().loadEmpireWorlds();
 
@@ -209,7 +214,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     }
 
     public void loadManagers() {
-        ThreadManager.getInstance();
+        // Order is important!
         DatabaseManager.getInstance();
         RankManager.getInstance();
         EmpireManager.getInstance();
@@ -217,9 +222,9 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         LandManager.getInstance();
         ResidentManager.getInstance();
         LockManager.getInstance();
+        EventManager.getInstance();
         ScoreboardManager.getInstance();
         CommandManager.getInstance();
-        UtilChat.getInstance();
         ChatManager.getInstance();
     }
 

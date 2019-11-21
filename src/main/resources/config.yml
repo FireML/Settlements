@@ -19,7 +19,9 @@ scoreboard:
 disabled-claiming-worlds: []
 reset-channel-on-login: true
 empire-creation-cost: 0
+empire-start-balance: 0
 village-creation-cost: 0
+village-start-balance: 0
 outpost-creation-cost: 0
 empire-max-tax: 1000000
 village-max-tax: -1
@@ -82,9 +84,73 @@ chat:
     sound: entity_experience_orb_pickup
     # Cooldown between notification sounds
     cooldown: 15
+  channel-colors:
+    general: white
+    event: green
+    local: yellow
+    admin: dark_purple
+    staff: gold
+    settlement: yellow
+    trade: light_purple
+    ally: aqua
+    empireally: aqua
+    empire: aqua
+    private-sent: aqua
+    private-received: aqua
+  selectable-colors:
+  - blue
+  - dark_blue
+  - dark_green
+  - dark_aqua
+  - dark_red
+  - dark_purple
+  - gold
+  - gray
+  - dark_gray
+  - green
+  - aqua
+  - red
+  - light_purple
+  - yellow
+  - white
+
 # Amount of titles that can be set per rank
 titles-per-rank: 10
-allow-firespread-outside-claim: false
+# Unclaimed/abandoned modes
+modes:
+  unclaimed:
+    firespread: false
+    explosions: false
+    pvp: true
+    mobspawning: true
+  # Settings for worlds that have claiming disabled
+  unclaimable:
+    firespread: false
+    explosions: false
+    pvp: true
+    mobspawning: true
+  # Override for specific worlds
+  worlds:
+    Resource:
+      explosions: true
+  abandoned:
+    village:
+      firespread: false
+      explosions: false
+      pvp: true
+      mobspawning: true
+    kingdom:
+      firespread: false
+      explosions: false
+      pvp: true
+      mobspawning: true
+    empire:
+      firespread: false
+      explosions: false
+      pvp: true
+      mobspawning: true
+# Amount in ticks after which the chunk queue will be processed to load the locks in it
+lock-load-queue-ticks: 20
 remove-locks-on-unclaim: true
 remove-locked-blocks: false
 lockable:
@@ -97,9 +163,15 @@ lockable:
 - "*_door"
 - "*_trapdoor"
 - "*_fence_gate"
+- "*_button"
+- lever
+- note_block
+- jukebox
 # This checks if a block is protected on place rather than using the
 # InventoryMoveItemEvent to prevent hoppers from stealing items
 alternative-hopper-protection: true
+# Whether or not a player can transfer their bought claims to an empire
+claimtransfer-to-empire: false
 # Toggle Placeholder API usage in certain places
 placeholder-api:
   sidebar: true
@@ -108,3 +180,16 @@ placeholder-api:
     format:
       channel: true
       private: true
+brewery:
+  # Players with a drunkeness above that value can no longer write in the channel
+  block-channels:
+    local: 9001
+    trade: 1
+    event: 1
+    general: 1
+    settlement: 9001
+    empire: 1
+    ally: 1
+    empireally: 1
+    admin: 9001
+    staff: 9001

@@ -1,8 +1,9 @@
 package me.crz.minecraft.kingdoms.command.village;
 
+import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.utils.UtilChat;
+import me.crz.minecraft.kingdoms.utils.CursesFilter;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
@@ -50,7 +51,7 @@ public class VillageTitlesCommand extends VillageSubCommand {
                         getError("too-long").tell(res, "input", args[1]);
                     } else if (!TITLE_PATTERN.matcher(args[1]).matches()) {
                         getError("invalid-characters").tell(res, "input", args[1]);
-                    } else if (UtilChat.getInstance().containsCurses(args[1])) {
+                    } else if (ChatManager.getInstance().containsAnyCurses(args[1])) {
                         getError("prohibited-words").tell(res, "input", args[1]);
                     } else if (res.getVillage().addTitle(rank, args[1])) {
                         getMessage("success").tell(res, "title", args[1], "rank", rank.getTag());
@@ -91,7 +92,7 @@ public class VillageTitlesCommand extends VillageSubCommand {
                             getError("too-long").tell(res, "input", args[1]);
                         } else if (!TITLE_PATTERN.matcher(args[1]).matches()) {
                             getError("invalid-characters").tell(res, "input", args[1]);
-                        } else if (UtilChat.getInstance().containsCurses(args[1])) {
+                        } else if (ChatManager.getInstance().containsAnyCurses(args[1])) {
                             getError("prohibited-words").tell(res, "input", args[1]);
                         } else {
                             res.getVillage().setDefaultTitle(rank, args[1]);

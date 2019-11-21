@@ -174,7 +174,7 @@ public class UseGui extends PlotGUI {
         gui.build(p);
     }
 
-    public static UseGui getInstance() {
+    synchronized public static UseGui getInstance() {
         if (instance == null) {
             instance = new UseGui();
         }

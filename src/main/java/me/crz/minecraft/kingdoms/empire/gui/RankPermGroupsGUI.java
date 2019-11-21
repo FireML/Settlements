@@ -96,7 +96,7 @@ public class RankPermGroupsGUI extends KingdomsGUI {
         gui.build(p);
     }
 
-    public static RankPermGroupsGUI getInstance(EmpireRank rank) {
+    synchronized public static RankPermGroupsGUI getInstance(EmpireRank rank) {
         return instances.computeIfAbsent(rank.name(), n -> new RankPermGroupsGUI(rank));
     }
 }

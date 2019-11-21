@@ -7,6 +7,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +37,24 @@ public enum ChatChannel implements NameTag {
         @Override
         public boolean canChat(Player player) {
             Resident resident = ResidentManager.getInstance().getResident(player);
-            return resident.hasAllies();
+            return resident.hasVillage() && !resident.getVillage().getAlliedVillageIds().isEmpty();
+        }
+
+        @Override
+        public boolean canChatM(Player player) {
+            if (this.canChat(player)) {
+                return true;
+            }
+            MessageUtils.tell(player, Message.get("error.no-allies"));
+            return false;
+        }
+    },
+    EMPIREALLY("eally", "ea", "alliance") {
+        @Override
+        public boolean canChat(Player player) {
+            Resident resident = ResidentManager.getInstance().getResident(player);
+            return resident.hasVillage() && (!resident.getVillage().getAlliedEmpireIds().isEmpty() ||
+                    resident.hasEmpire() && resident.getVillage().getEmpire().hasAllies());
         }
 
         @Override
@@ -92,11 +110,15 @@ public enum ChatChannel implements NameTag {
             MessageUtils.tell(player, Message.get("error.no-channel-permission"), "channel", name());
             return false;
         }
-    };
+    },
+    PRIVATE_SENT(true),
+    PRIVATE_RECEIVED(true);
 
     private static Map<String, ChatChannel> BY_ALIAS = new HashMap<>();
 
-    private List<String> aliases;
+    private List<String> aliases = new ArrayList<>();
+
+    private boolean priv = false;
 
     static {
         for (ChatChannel channel : values()) {
@@ -110,12 +132,16 @@ public enum ChatChannel implements NameTag {
         this.aliases = Arrays.asList(aliases);
     }
 
+    ChatChannel(boolean priv) {
+        this.priv = priv;
+    }
+
     public boolean canChat(Player player) {
-        return true;
+        return !isPrivate();
     }
 
     public boolean canChatM(Player player) {
-        return true;
+        return !isPrivate();
     }
 
     public List<String> getAliases() {
@@ -129,5 +155,9 @@ public enum ChatChannel implements NameTag {
 
     public static boolean isChannel(String name) {
         return BY_ALIAS.containsKey(name.toLowerCase());
+    }
+
+    public boolean isPrivate() {
+        return priv;
     }
 }

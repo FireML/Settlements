@@ -35,7 +35,7 @@ public class PerksGUI extends KingdomsGUI {
         Empire empire = resident.getVillage().getEmpire();
 
         for (EmpirePerk perk : EmpireManager.getInstance().getPerks()) {
-            if (!empire.hasUnlocked(perk) || !perk.hasEffects()) {
+            if (!empire.hasUnlocked(perk) || (!perk.hasEffects() && !perk.hasActions())) {
                 continue;
             }
 
@@ -81,7 +81,7 @@ public class PerksGUI extends KingdomsGUI {
 
                 @Override
                 public boolean click(Player p, ClickType type) {
-                    if (!resident.hasEmpire() || !resident.hasPermission("empire.perk.toggle")) {
+                    if (!resident.hasEmpire() || !resident.hasPermission("empire.perks.toggle")) {
                         return false;
                     }
                     if (resident.getVillage().getEmpire().togglePerk(perk)) {

@@ -17,7 +17,7 @@ public class OutpostSethomeCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         OwnedLand currentLand = LandManager.getInstance().getLand(resident.getPlayer().getLocation());
-        if (currentLand == null) {
+        if (currentLand == null || !currentLand.isOwnedBy(resident.getVillage())) {
             resident.tell(getError("not-an-outpost"));
             return true;
         }

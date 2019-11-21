@@ -20,7 +20,7 @@ import java.util.UUID;
 public abstract class DatabaseManager {
     private static DatabaseManager instance;
 
-    public static DatabaseManager getInstance() {
+    synchronized public static DatabaseManager getInstance() {
         if (instance == null) {
             String type = KingdomsPlugin.getInstance().getConfig().getString("storage.type");
             if ("mongo".equalsIgnoreCase(type)) {
@@ -81,16 +81,36 @@ public abstract class DatabaseManager {
 
     public abstract void saveResident(Resident... residents);
 
+    /**
+     * Queue locks for saving, does not have to be run async
+     * @param locks The locks to save
+     */
     public abstract void saveLocks(Lock... locks);
 
+    /**
+     * Queue lock deletion, does not have to be run async
+     * @param locks The locks to delete
+     */
     public abstract void deleteLocks(Lock... locks);
 
+    /**
+     * Queue lock deletion, does not have to be run async
+     * @param locks The locks to delete
+     */
     public void deleteLocks(Collection<Lock> locks) {
         deleteLocks(locks.toArray(new Lock[0]));
     }
 
+    /**
+     * Queue lock deletion, does not have to be run async
+     * @param chunks The chunks to delete the locks in
+     */
     public abstract void deleteLocksInChunks(Collection<? extends SimpleChunkLocation> chunks);
 
+    /**
+     * Queue lock deletion, does not have to be run async
+     * @param worldName The name of the world to delete the locks in
+     */
     public abstract void deleteLocks(String worldName);
 
     public abstract Collection<Lock> getAllLocks();

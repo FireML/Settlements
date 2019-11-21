@@ -1,11 +1,11 @@
 package me.crz.minecraft.kingdoms.command.empire;
 
+import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.utils.UtilChat;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
@@ -30,7 +30,7 @@ public class EmpireCreateCommand extends VillageSubCommand {
         if (args.length < 1) {
             return false;
         }
-        String name = UtilChat.getInstance().filterCurses(String.join(" ", args).trim());
+        String name = ChatManager.getInstance().filterAllCurses(String.join(" ", args).trim());
         if (name.toLowerCase().contains("claims")) {
             getError("invalid-characters").tell(resident, "input", name);
         } else if (empireExists(name)) {

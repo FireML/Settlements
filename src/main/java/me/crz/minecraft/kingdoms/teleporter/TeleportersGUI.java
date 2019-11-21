@@ -109,7 +109,7 @@ public class TeleportersGUI extends KingdomsGUI {
         ci.build(p);
     }
 
-    public static TeleportersGUI getInstance() {
+    synchronized public static TeleportersGUI getInstance() {
         if (instance == null) {
             instance = new TeleportersGUI();
         }

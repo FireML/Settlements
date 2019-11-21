@@ -264,7 +264,7 @@ public class RankPermsGUI extends KingdomsGUI {
         getInstance(resident.getVillage(), rank, group).open(resident.getPlayer());
     }
 
-    public static RankPermsGUI getInstance(Village village, VillageRank rank, PermissionGroup group) {
+    synchronized public static RankPermsGUI getInstance(Village village, VillageRank rank, PermissionGroup group) {
         return instances
                 .computeIfAbsent(rank.name(), n -> new ConcurrentHashMap<>())
                 .computeIfAbsent(village.getId(), id -> new ConcurrentHashMap<>())

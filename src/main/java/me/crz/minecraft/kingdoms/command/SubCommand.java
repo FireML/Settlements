@@ -17,9 +17,11 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public abstract class SubCommand implements ConfigMessages, Rankable {
+    protected static final String PERMISSION_PREFIX = "kingdoms.command.";
     private SubCommand parent;
     private List<String> aliases;
     private String usage;
@@ -208,7 +210,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
             if (getParent() != null) {
                 permission = getParent().getPermission() + "." + name();
             } else {
-                permission = "kingdoms.command." + name();
+                permission = PERMISSION_PREFIX + name();
             }
         }
         return permission;
@@ -258,7 +260,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
         return aliases;
     }
 
-    public List<String> onTabComplete(Player p, String aliasUsed, String... args) {
+    public List<String> onTabComplete(CommandSender sender, String aliasUsed, String... args) {
         List<String> l = new ArrayList<>();
         if (args.length == 0) {
             return l;
@@ -266,14 +268,16 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
         String arg = args[args.length - 1];
         if (args.length == 1) {
             for (String subCommand : subCommands.keySet()) {
-                if (subCommand.startsWith(arg.toLowerCase())) {
+                if (subCommand.startsWith(arg.toLowerCase()) && !subCommand.startsWith("<")) {
                     l.add(subCommand);
                 }
             }
         }
-        for (Player pl : Bukkit.getOnlinePlayers()) {
-            if (pl.getName().toLowerCase().startsWith(arg.toLowerCase())) {
-                l.add(pl.getName());
+        if (l.isEmpty()) {
+            for (Player pl : Bukkit.getOnlinePlayers()) {
+                if (pl.getName().toLowerCase().startsWith(arg.toLowerCase())) {
+                    l.add(pl.getName());
+                }
             }
         }
         return l;
@@ -314,5 +318,17 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
             }
         }
         return shortestAlias;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        return getPath().equals(((SubCommand) o).getPath());
+    }
+
+    @Override
+    public int hashCode() {
+        return getPath().hashCode();
     }
 }

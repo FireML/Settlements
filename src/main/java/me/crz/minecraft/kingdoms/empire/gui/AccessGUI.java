@@ -81,7 +81,7 @@ public class AccessGUI extends KingdomsGUI {
         gui.build(p);
     }
 
-    public static AccessGUI getInstance() {
+    synchronized public static AccessGUI getInstance() {
         if (instance == null) {
             instance = new AccessGUI();
         }
