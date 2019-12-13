@@ -6,6 +6,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.ImmutableMap;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.world.SimpleBlockLocation;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
@@ -156,7 +157,7 @@ public class LockManager implements LockProvider {
                     }
                 }
             } else {
-                Material type = Material.matchMaterial(string);
+                Material type = MaterialUtils.getMaterial(string);
                 if (type != null) {
                     lockable.add(type);
                 } else {

@@ -1,9 +1,11 @@
 package me.crz.minecraft.kingdoms.utils;
 
 import com.destroystokyo.paper.MaterialTags;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -103,5 +105,23 @@ public class MaterialUtils {
         return Tag.ITEMS_BOATS.isTagged(item.getType())
                 || MINECARTS.contains(item.getType())
                 || MaterialTags.FISH_BUCKETS.isTagged(item);
+    }
+
+    public static Material getMaterial(@NotNull String matStr) {
+        Validate.notNull(matStr, "Material string cannot be null!");
+        try {
+            return Material.valueOf(matStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            Material mat = Material.matchMaterial(matStr);
+            if (mat == null) {
+                switch (matStr.toUpperCase()) {
+                    case "WALL_SIGN":
+                        return Material.OAK_WALL_SIGN;
+                    case "SIGN":
+                        return Material.OAK_SIGN;
+                }
+            }
+            return mat;
+        }
     }
 }

@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.rank;
 
 import me.crz.minecraft.kingdoms.cinventory.CItem;
+import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -15,7 +16,7 @@ public class PermissionGroup {
 
     public PermissionGroup(ConfigurationSection config) {
         this.name = config.getName();
-        this.icon = Material.matchMaterial(config.getString("icon"));
+        this.icon = MaterialUtils.getMaterial(config.getString("icon"));
         for (String perm : config.getStringList("permissions")) {
             permissions.add(perm.toLowerCase());
         }

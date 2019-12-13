@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.rank;
 
 import me.crz.minecraft.kingdoms.cinventory.CItem;
+import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import org.bukkit.Bukkit;
@@ -43,7 +44,7 @@ public abstract class Rank implements Rankable, NameTag, Comparable<Rank> {
                 }
             }
             if (config.isString("icon")) {
-                icon = Material.matchMaterial(config.getString("icon"));
+                icon = MaterialUtils.getMaterial(config.getString("icon"));
                 if (icon == null) {
                     icon = Material.WOODEN_SHOVEL;
                 }

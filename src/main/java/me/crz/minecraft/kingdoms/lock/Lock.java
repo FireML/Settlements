@@ -7,6 +7,7 @@ import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.IdObject;
+import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -198,7 +199,7 @@ public class Lock implements DatabaseSerializable {
         Lock lock = new Lock(
                 UUID.fromString((String) map.get("owner")),
                 SimpleBlockLocation.deserialize(map),
-                Material.valueOf(((String) map.get("block")).toUpperCase())
+                MaterialUtils.getMaterial(((String) map.get("block")).toUpperCase())
         );
         if (lock.getLocation() == null) {
             return null;

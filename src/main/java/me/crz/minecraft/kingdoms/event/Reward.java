@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.event;
 
+import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -24,7 +25,7 @@ public class Reward {
         this.name = config.getString("name", rewardId);
         this.money = config.getLong("money", config.getInt("money"));
         if (config.isString("icon")) {
-            Material iconMat = Material.matchMaterial(config.getString("icon"));
+            Material iconMat = MaterialUtils.getMaterial(config.getString("icon"));
             if (iconMat != null) {
                 icon = new ItemStack(iconMat);
             }
