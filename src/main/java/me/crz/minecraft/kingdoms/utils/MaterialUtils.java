@@ -93,6 +93,7 @@ public class MaterialUtils {
             case MELON_SEEDS:
             case WHEAT_SEEDS:
             case PUMPKIN_SEEDS:
+            case SWEET_BERRIES:
             case STRING:
             case ARMOR_STAND:
             case ITEM_FRAME:
