@@ -170,9 +170,13 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
                         }
                     } else if (use == null) {
                         use = Use.INTERACT;
-                        if (e.getItem() != null && e.getItem().getType() == Material.BUCKET) {
-                            Block block = e.getPlayer().getTargetBlockExact(6, FluidCollisionMode.SOURCE_ONLY);
-                            if (block != null && block.isLiquid()) {
+                        if (e.getItem() != null) {
+                            if (e.getItem().getType() == Material.BUCKET) {
+                                Block block = e.getPlayer().getTargetBlockExact(6, FluidCollisionMode.SOURCE_ONLY);
+                                if (block != null && block.isLiquid()) {
+                                    use = null;
+                                }
+                            } else if (e.getAction() == Action.RIGHT_CLICK_BLOCK && MaterialUtils.placesBlock(e.getItem())) { // handle as build
                                 use = null;
                             }
                         }
