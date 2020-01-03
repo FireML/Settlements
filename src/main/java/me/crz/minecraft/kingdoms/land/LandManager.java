@@ -400,10 +400,31 @@ public class LandManager {
             }
         }
         unclaimLand(toUnclaim);
+        toUnclaim.clear();
+        for (LandOwner landOwner : villageUnclaims.keySet()) {
+            if (landOwner instanceof Village) {
+                for (OwnedLand land : getClaimedLand((Village) landOwner)) {
+                    if (!isConnected(land)) {
+                        toUnclaim.add(land);
+                        villageUnclaims.put(land.getLandOwner(), villageUnclaims.getOrDefault(land.getLandOwner(), 0) + 1);
+                    }
+                }
+            }
+        }
+        unclaimLand(toUnclaim);
         for (Map.Entry<LandOwner, Integer> e : villageUnclaims.entrySet()) {
             Message.get("land-unclaim").tell(e.getKey().getOnlineResidents(), "amount", String.valueOf(e.getValue()));
         }
         Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(toSave));
+    }
+
+    public boolean isConnected(OwnedLand land) {
+        return getAllConnectedLand(land, search -> {
+            if (search.isOutpost() || search.containsHome()) {
+                return FilterResponse.RETURN;
+            }
+            return FilterResponse.CONTINUE;
+        }).size() > 0;
     }
 
     public void checkClaimDistance(LandOwner source, LandOwner oldAlly) {
