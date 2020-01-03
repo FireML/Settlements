@@ -385,6 +385,9 @@ public class LandManager {
     }
 
     public void checkUnclaim() {
+        if (Utils.getCloseClaimsGraceDays() < 0) {
+            return;
+        }
         Map<LandOwner, Integer> villageUnclaims = new HashMap<>();
         List<OwnedLand> toUnclaim = new ArrayList<>();
         List<OwnedLand> toSave = new ArrayList<>();
@@ -441,6 +444,9 @@ public class LandManager {
 
     private void checkClaimDistance(LandOwner source, Village oldAlly) {
         int graceDays = Utils.getCloseClaimsGraceDays();
+        if (graceDays < 0) {
+            return;
+        }
         boolean unclaimOutposts = Utils.getCloseClaimsUnclaimsOutposts();
         List<OwnedLand> toSave = new ArrayList<>();
         List<OwnedLand> toUnclaim = new ArrayList<>();
