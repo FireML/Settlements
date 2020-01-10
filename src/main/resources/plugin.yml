@@ -134,6 +134,9 @@ permissions:
   kingdoms.bypass.restriction.lwc:
     description: Permission to bypass shop build restrictions.
     default: op
+  kingdoms.bypass.teleport:
+    description: Permission to bypass any teleport restrictions (E.g. to empire worlds).
+    default: op
   kingdoms.bypass.teleport-delay:
     description: Permission to bypass the teleport wait delay.
     default: op

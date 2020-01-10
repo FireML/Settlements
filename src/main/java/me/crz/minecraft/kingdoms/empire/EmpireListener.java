@@ -21,7 +21,7 @@ public class EmpireListener implements Listener {
 
     private boolean canAccess(Player player, World world) {
         Empire empire = EmpireManager.getInstance().getEmpireFromWorld(world);
-        return empire == null || empire.canAccess(player);
+        return empire == null || empire.canAccess(player) || player.hasPermission("kingdoms.bypass.teleport");
     }
 
     @EventHandler
