@@ -31,6 +31,7 @@ public class VillageMaterialsCommand extends VillageSubCommand {
                     "amount", String.valueOf(entry.getValue() - village.getVault().getOrDefault(entry.getKey(), (long) 0))
             );
         }
+        resident.tell(getMessage("footer"));
         return true;
     }
 }

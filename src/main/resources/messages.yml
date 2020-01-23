@@ -929,7 +929,7 @@ gui:
       &7Left click: Next state
       &7Right click: Previous state
   vault:
-    title: "&2&l/s vault"
+    title: "&2&l/s deposit"
     success-deposit: "&6&l{player} &7&lhas deposited:"
     fail-deposit: "&c&lFailed Deposited Items: {reason}"
     max-level-reached: "&r&c&lMax Level Reached"
@@ -1392,6 +1392,7 @@ command:
       max-level-reached: "&c&lYour {state} already has the max level!"
       head: "&a⊱&m━━━━&r&6Required Materials&a&m━━━━&a⊰"
       entry: "&e{amount} &7{material}"
+      footer: "&7Deposit items with [&e/s deposit](/s deposit)"
       description: Shows you the materials required to upgrade
     mode:
       modes: "&cAvailable modes: {modes}"
