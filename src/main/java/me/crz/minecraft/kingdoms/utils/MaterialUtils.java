@@ -7,7 +7,10 @@ import org.bukkit.Tag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.Map;
 import java.util.Set;
 
 public class MaterialUtils {
@@ -77,7 +80,31 @@ public class MaterialUtils {
             Material.BAMBOO_SAPLING,
             Material.SWEET_BERRIES
     );
+    public static final Map<Material, FarmingRule> FARMING_RULES = new EnumMap<>(Material.class);
     static {
+        FarmingRule farmlandRule = new FarmingRule(Material.FARMLAND);
+        FARMING_RULES.put(Material.WHEAT_SEEDS, farmlandRule);
+        FARMING_RULES.put(Material.CARROT, farmlandRule);
+        FARMING_RULES.put(Material.POTATO, farmlandRule);
+        FARMING_RULES.put(Material.PUMPKIN_SEEDS, farmlandRule);
+        FARMING_RULES.put(Material.MELON_SEEDS, farmlandRule);
+        FARMING_RULES.put(Material.BEETROOT_SEEDS, farmlandRule);
+        FARMING_RULES.put(Material.NETHER_WART, new FarmingRule(Material.SOUL_SAND));
+        FARMING_RULES.put(Material.CHORUS_PLANT, new FarmingRule(Material.END_STONE, Material.CHORUS_PLANT));
+        FARMING_RULES.put(Material.CHORUS_FLOWER, new FarmingRule(Material.END_STONE, Material.CHORUS_PLANT));
+        FARMING_RULES.put(Material.KELP_PLANT, new FarmingRule(new Material[] {
+                Material.DIRT,
+                Material.COARSE_DIRT,
+                Material.SAND,
+                Material.GRAVEL,
+                Material.STONE,
+                Material.GRANITE,
+                Material.DIORITE,
+                Material.ANDESITE
+        }, Material.WATER));
+        FARMING_RULES.put(Material.SUGAR_CANE, new FarmingRule(Material.SAND, Material.DIRT, Material.GRASS_BLOCK, Material.COARSE_DIRT, Material.PODZOL));
+        FARMING_RULES.put(Material.COCOA_BEANS, new FarmingRule(Material.JUNGLE_LOG, Material.STRIPPED_JUNGLE_LOG, Material.JUNGLE_WOOD, Material.STRIPPED_JUNGLE_WOOD));
+        FARMING_RULES.put(Material.SWEET_BERRIES, new FarmingRule(Material.DIRT, Material.GRASS_BLOCK, Material.COARSE_DIRT, Material.PODZOL, Material.FARMLAND));
         FARM_BLOCKS.addAll(Tag.SAPLINGS.getValues());
         FARM_BLOCKS_DESTROY.addAll(Tag.LOGS.getValues());
         FARM_BLOCKS_DESTROY.addAll(Tag.LEAVES.getValues());
@@ -123,6 +150,29 @@ public class MaterialUtils {
                 }
             }
             return mat;
+        }
+    }
+
+    public static boolean isPlanting(Material toPlant, Material onTop, Material inside) {
+        return FARMING_RULES.containsKey(toPlant) && FARMING_RULES.get(toPlant).matches(onTop, inside);
+    }
+
+    private static class FarmingRule {
+        private Set<Material> onTop = EnumSet.noneOf(Material.class);
+        private Set<Material> inside = EnumSet.noneOf(Material.class);
+
+        public FarmingRule(Material... onTop) {
+            Collections.addAll(this.onTop, onTop);
+        }
+
+        public FarmingRule(Material[] onTop, Material... inside) {
+            Collections.addAll(this.onTop, onTop);
+            Collections.addAll(this.inside, inside);
+        }
+
+        public boolean matches(Material onTop, Material inside) {
+            return (this.onTop.isEmpty() || this.onTop.contains(onTop))
+                    && (this.inside.contains(inside) || (this.inside.isEmpty() && inside == Material.AIR));
         }
     }
 }

@@ -161,7 +161,7 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
                 }
                 if (e.getAction() != Action.LEFT_CLICK_BLOCK && use == null && e.getClickedBlock() != null && !e.getClickedBlock().isEmpty() && !e.getClickedBlock().isLiquid()) {
                     use = Use.getByMaterial(e.getClickedBlock().getType());
-                    if (e.getClickedBlock().getType() == Material.FARMLAND
+                    if ((e.getItem() != null && MaterialUtils.isPlanting(e.getItem().getType(), e.getClickedBlock().getType(), e.getClickedBlock().getRelative(e.getBlockFace()).getType()))
                             || (e.getMaterial() == Material.BONE_MEAL && MaterialUtils.FARM_BLOCKS.contains(e.getClickedBlock().getType()))
                             || (MaterialUtils.HOES.contains(e.getMaterial())
                                     && (e.getClickedBlock().getType() == Material.DIRT || e.getClickedBlock().getType() == Material.GRASS_BLOCK))) {
