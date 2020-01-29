@@ -13,11 +13,11 @@ import org.bukkit.permissions.Permission;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public abstract class SubCommand implements ConfigMessages, Rankable {
@@ -271,6 +271,26 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
                 if (subCommand.startsWith(arg.toLowerCase()) && !subCommand.startsWith("<")) {
                     l.add(subCommand);
                 }
+            }
+        } else {
+            SubCommand subCommand = subCommands.get(args[0].toLowerCase());
+            if (subCommand != null) {
+                l.addAll(subCommand.onTabComplete(sender, args[0], Arrays.copyOfRange(args, 1, args.length)));
+            }
+        }
+        if (l.isEmpty() && usage.contains(" ")) {
+            String param = usage.split(" ")[1];
+            if (param.startsWith("[") && param.endsWith("]")) {
+                param = param.substring(1, param.length() - 1);
+            }
+            if (param.contains("|")) {
+                for (String p : param.split("\\|")) {
+                    if (!p.startsWith("<") && !p.endsWith(">")) {
+                        l.add(p);
+                    }
+                }
+            } else if (!param.startsWith("<") && !param.endsWith(">")) {
+                l.add(param);
             }
         }
         if (l.isEmpty()) {
