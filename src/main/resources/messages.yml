@@ -141,12 +141,22 @@ upkeep:
     cant-pay: "&a&lALERT &cYour empire is &6unable&c to pay the next upkeep it will cost &6{amount}&c! Deposit money to avoid deletion!"
 tax:
   removed: "&eRemoved &c{amount}&e of tax from your {state}'s bank!"
-  cant-pay: "&cYou can't pay the tax of &e{amount}&c and will be banished tomorrow if you still can't pay tomorrows amount of &e{nextamount}&c!"
-  couldnt-pay: "&e{player}&c was not able to pay the tax of &e{amount}&c and has been banished from the {state} {name}!"
+  debt-action:
+    none:
+      cant-pay: "&cYou can't pay the tax of &e{amount}&c please make sure to earn some money!"
+      couldnt-pay: "&e{player}&c was not able to pay the tax of &e{amount}&c"
+    kick:
+      cant-pay: "&cYou can't pay the tax of &e{amount}&c and will be banished tomorrow if you still can't pay itc!"
+      couldnt-pay: "&e{player}&c was not able to pay the tax of &e{amount}&c and has been banished from the {state} {name}!"
 empire-tax:
-  cant-pay: "&a&lALERT &7Your settlement is &cunable&7 to pay tomorrows empire tax of &6{amount}&7!"
   removed: "&eRemoved &c{amount}&e of tax from your account!"
-  couldnt-pay: "&e{state} {settlement}&c was not able to pay the tax of &e{amount}&c and has been banished from the empire!"
+  debt-action:
+    none:
+      cant-pay: "&a&lALERT &7Your settlement is &cunable&7 to pay tomorrows empire tax of &6{amount}&7! You should earn some money!"
+      couldnt-pay: "&e{state} {settlement}&c was not able to pay the tax of &e{amount}&c!"
+    kick:
+      cant-pay: "&a&lALERT &7Your settlement is &cunable&7 to pay tomorrows empire tax of &6{amount}&7 and will be kicked tomorrow if it still can't pay it!"
+      couldnt-pay: "&e{state} {settlement}&c was not able to pay the tax of &e{amount}&c and has been banished from the empire!"
 first-to-reach-level: "&6&l{name} &7&l is the first to reach &6&l{state} &7&llevel &6&l{level}"
 land-unclaim: "&e{amount}&7 chunks were automatically unclaimed!"
 events:
@@ -661,6 +671,7 @@ gui:
         &6&lUpkeep: &r&7{upkeep}
         &6&lJoin fee: &r&7{joinfee}
         &6&lDaily tax: &r&7{tax}
+        &6&lTax debt action: &r&7{taxdebtaction}
         &6&lBonusclaims &r&7{bonusclaims}
         &6&lCapital &r&7{capitalstate}{capital}
         &e&lLeader &r&7{chieftitle} {chief}
@@ -867,6 +878,7 @@ gui:
       &6&lUpkeep: &r&7{upkeep}
       &6&lJoin fee: &r&7{joinfee}
       &6&lDaily tax: &r&7{tax}
+      &6&lTax debt action: &r&7{taxdebtaction}
       &6&lLand &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
       &6&lOutposts &r&7{outposts}&r&e/&r&7{maxoutposts}
       &e&l{chieftitle}: &r&7{chief}
@@ -1260,6 +1272,7 @@ command:
         &6&lBank: &r&7{bank}
         &6&lJoin fee: &r&7{joinfee}
         &6&lDaily tax: &r&7{tax}
+        &6&lTax debt action: &r&7{taxdebtaction}
         &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
@@ -1276,6 +1289,7 @@ command:
         &6&lBank: &r&7{bank}
         &6&lJoin fee: &r&7{joinfee}
         &6&lDaily tax: &r&7{tax}
+        &6&lTax debt action: &r&7{taxdebtaction}
         &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
@@ -1559,6 +1573,7 @@ command:
         &6&lUpkeep: &r&7{upkeep}
         &6&lJoin fee: &r&7{joinfee}
         &6&lDaily tax: &r&7{tax}
+        &6&lTax debt action: &r&7{taxdebtaction}
         &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
@@ -1577,6 +1592,7 @@ command:
         &6&lUpkeep: &r&7{upkeep}
         &6&lJoin fee: &r&7{joinfee}
         &6&lDaily tax: &r&7{tax}
+        &6&lTax debt action: &r&7{taxdebtaction}
         &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
@@ -1610,6 +1626,10 @@ command:
         above-max: "&c&lERROR: &cMax tax amount is &e{max}&c!"
         below-zero: "&c&lERROR: &cTax amount cannot be negative!"
         description: Sets the tax a player needs to pay each day he is in the settlement
+      action:
+        success: "&e&lALERT &r&7Tax debt action was set to &e{action}&7!"
+        already-set: "&cThe action is already set to &e{action}&c!"
+        description: Sets the action for when a player can't pay the tax
       exempt:
         description: Exempts a resident from having to pay the tax
     teleporters:
@@ -1842,6 +1862,7 @@ command:
         &6&lUpkeep: &r&7{upkeep}
         &6&lJoin fee: &r&7{joinfee}
         &6&lDaily tax: &r&7{tax}
+        &6&lTax debt action: &r&7{taxdebtaction}
         &6&lBonusoutposts &r&7{bonusoutposts}
         &6&lBonusclaims &r&7{bonus}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
@@ -2068,6 +2089,7 @@ command:
         &6&lUpkeep: &r&7{upkeep}
         &6&lJoin fee: &r&7{joinfee}
         &6&lDaily tax: &r&7{tax}
+        &6&lTax debt action: &r&7{taxdebtaction}
         &6&lBonusoutposts &r&7{bonusoutposts}
         &6&lBonusclaims &r&7{bonus}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
@@ -2099,6 +2121,10 @@ command:
         above-max: "&c&lERROR: &cMax tax amount is &e{max}&c!"
         below-zero: "&c&lERROR: &cTax amount cannot be negative!"
         description: Sets the tax a settlement needs to pay each day he is in the empire
+      action:
+        success: "&e&lALERT &r&7Tax debt action was set to &e{action}&7!"
+        already-set: "&cThe action is already set to &e{action}&c!"
+        description: Sets the action for when a settlement can't pay the tax
     transfer:
       success: "&e&lALERT &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
       already-capital: "&c&lYour village is already the capital."

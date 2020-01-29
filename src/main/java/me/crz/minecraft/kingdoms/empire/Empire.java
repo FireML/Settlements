@@ -9,6 +9,7 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.PlotMode;
+import me.crz.minecraft.kingdoms.land.TaxDebtAction;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.perk.Perk;
@@ -36,7 +37,6 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -87,13 +87,15 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                             "settlement", member.getName(),
                             "name", getName());
                 } else {
-                    Message.get("empire-tax.couldnt-pay").tell(getOnlineResidents(),
+                    Message.get("empire-tax.debt-action." + getTaxDebtAction().getKey() + ".couldnt-pay").tell(getOnlineResidents(),
                             "amount", String.valueOf(tax),
                             "state", member.getState().getTag(),
                             "settlement", member.getName(),
                             "name", getName()
                     );
-                    removeMember(member);
+                    if (getTaxDebtAction() == TaxDebtAction.KICK) {
+                        removeMember(member);
+                    }
                 }
             }
             payUpkeep(paidTaxes);
@@ -494,6 +496,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                 "bank", Utils.CURRENCY_FORMAT.format(getBank()),
                 "joinfee", Utils.CURRENCY_FORMAT.format(getJoinFee()),
                 "tax", Utils.CURRENCY_FORMAT.format(getTax()),
+                "taxdebtaction", getTaxDebtAction().getTag(),
                 "upkeep", Utils.CURRENCY_FORMAT.format(getUpkeep()),
                 "abandoned", yesOrNo(isAbandoned()),
                 "abandonedcountdown", isAbandoned() ? UtilTime.format(getCreated() + (Utils.getAbandonTime(getStateKey()) * 60 * 1000) - System.currentTimeMillis()) : "",

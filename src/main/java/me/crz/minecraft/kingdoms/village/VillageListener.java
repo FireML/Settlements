@@ -82,7 +82,7 @@ public class VillageListener implements Listener {
         }
         if (res.hasVillage()) {
             if (res.getVillageRank().below(VillageRank.getChief()) && !KingdomsPlugin.getInstance().econ.has(event.getPlayer(), res.getVillage().getTax())) {
-                Message.get("tax.cant-pay").tell(event.getPlayer(), "amount", String.valueOf(res.getVillage().getTax()));
+                Message.get("tax.debt-action." + res.getVillage().getTaxDebtAction().getKey() + ".cant-pay").tell(event.getPlayer(), "amount", String.valueOf(res.getVillage().getTax()));
             }
             long upkeep = res.getVillage().getUpkeep() - res.getVillage().getTaxIncome();
             if (!res.getVillage().has(upkeep)) {
@@ -92,7 +92,7 @@ public class VillageListener implements Listener {
                 Empire empire = res.getVillage().getEmpire();
                 long empireTax = empire.getTax();
                 if (!empire.isCapital(res.getVillage()) && !res.getVillage().has(empireTax + upkeep)) {
-                    Message.get("empire-tax.cant-pay").tell(event.getPlayer(), "amount", String.valueOf(empireTax));
+                    Message.get("empire-tax.debt-action." + empire.getTaxDebtAction().getKey() + ".cant-pay").tell(event.getPlayer(), "amount", String.valueOf(empireTax));
                 }
                 if (res.getVillageRank().atLeast(VillageRank.getChief())) {
                     long empireUpkeep = empire.getUpkeep() - empire.getTaxIncome();

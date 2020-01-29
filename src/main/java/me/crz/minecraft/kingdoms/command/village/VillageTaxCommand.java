@@ -2,12 +2,13 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.land.TaxDebtAction;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 public class VillageTaxCommand extends VillageSubCommand {
     public VillageTaxCommand(SubCommand parent) {
-        super(parent, "tax [set <amount>]");
+        super(parent, "tax [set <amount>|action kick|none]");
         registerCommand(new VillageSubCommand(this, "set <amount>") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
@@ -41,6 +42,30 @@ public class VillageTaxCommand extends VillageSubCommand {
                     return false;
                 }
                 return true;
+            }
+        });
+        registerCommand(new VillageSubCommand(this, "action kick|none") {
+            @Override
+            public boolean run(Resident resident, String base, String alias, String... args) {
+                if (args.length == 0) {
+                    return false;
+                }
+                try {
+                    TaxDebtAction taxDebtAction = TaxDebtAction.valueOf(args[0].toUpperCase());
+                    if (taxDebtAction != resident.getVillage().getTaxDebtAction()) {
+                        resident.getVillage().setTaxDebtAction(taxDebtAction);
+                        getMessage("success").tell(resident.getVillage().getOnlineResidents(),
+                                "state", resident.getVillage().getStateTag(),
+                                "action", taxDebtAction.getTag()
+                        );
+                        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
+                    } else {
+                        getMessage("already-set").tell(resident, "action", taxDebtAction.getTag());
+                    }
+                    return true;
+                } catch (IllegalArgumentException e) {
+                    return false;
+                }
             }
         });
     }

@@ -12,6 +12,7 @@ import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.PlotMode;
+import me.crz.minecraft.kingdoms.land.TaxDebtAction;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
 import me.crz.minecraft.kingdoms.rank.RankManager;
@@ -116,14 +117,16 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                                 "name", getName());
                     }
                 } else {
-                    Message.get("tax.couldnt-pay").tell(getOnlineResidents(),
+                    Message.get("tax.debt-action." + getTaxDebtAction().getKey() + ".couldnt-pay").tell(getOnlineResidents(),
                             "player", resident.getName(),
                             "amount", String.valueOf(tax),
                             "state", getState().getTag(),
                             "name", getName()
                     );
-                    addBanished(resident);
-                    removeMember(resident);
+                    if (getTaxDebtAction() == TaxDebtAction.KICK) {
+                        addBanished(resident);
+                        removeMember(resident);
+                    }
                 }
             }
             long finalTotalTax = totalTax;
@@ -569,6 +572,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 "balance", Utils.withSuffix(getBank()),
                 "bank", Utils.CURRENCY_FORMAT.format(getBank()),
                 "tax", Utils.CURRENCY_FORMAT.format(getTax()),
+                "taxdebtaction", getTaxDebtAction().getTag(),
                 "joinfee", Utils.CURRENCY_FORMAT.format(getJoinFee()),
                 "upkeep", Utils.CURRENCY_FORMAT.format(getUpkeep()),
                 "allowallyclaim", yesOrNo(isAllowAllyClaim()),

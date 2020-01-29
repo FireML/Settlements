@@ -49,6 +49,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
     private long bank = 0;
     private long joinFee = 0;
     private long tax = 0;
+    private TaxDebtAction taxDebtAction = TaxDebtAction.KICK;
     private Map<PlotMode, Boolean> modes = new EnumMap<>(PlotMode.class);
     private int bonusClaims = 0;
     private Map<String, Long> vault = new HashMap<>();
@@ -530,6 +531,14 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         this.tax = tax;
     }
 
+    public TaxDebtAction getTaxDebtAction() {
+        return taxDebtAction;
+    }
+
+    public void setTaxDebtAction(TaxDebtAction taxDebtAction) {
+        this.taxDebtAction = taxDebtAction;
+    }
+
     public void setBuildState(BuildState buildState) {
         this.buildState = buildState;
     }
@@ -581,6 +590,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         map.put("bank", getBank());
         map.put("joinFee", getJoinFee());
         map.put("tax", getTax());
+        map.put("taxDebtAction", getTaxDebtAction().name());
         map.put("bonusClaims", getBonusClaims());
         map.put("buildState", getBuildState().name());
         map.put("access", getAccess().name());
@@ -616,6 +626,9 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         landOwner.setBank((Long) map.get("bank"));
         landOwner.setJoinFee((Long) map.get("joinFee"));
         landOwner.setTax((Long) map.get("tax"));
+        try {
+            landOwner.setTaxDebtAction(TaxDebtAction.valueOf((String) map.get("taxDebtAction")));
+        } catch (IllegalArgumentException ignored) {}
         for (PlotMode mode : PlotMode.values(PlotMode.AppliesTo.LAND_OWNER)) {
             landOwner.setMode(mode, (Boolean) map.getOrDefault(mode.name(), mode.getDefault()));
         }

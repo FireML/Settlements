@@ -2,12 +2,13 @@ package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.land.TaxDebtAction;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 public class EmpireTaxCommand extends EmpireSubCommand {
     public EmpireTaxCommand(SubCommand parent) {
-        super(parent, "tax [set <amount>]");
+        super(parent, "tax [set <amount>|action kick|none]");
         registerCommand(new EmpireSubCommand(this, "set <amount>") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
@@ -38,6 +39,27 @@ public class EmpireTaxCommand extends EmpireSubCommand {
                     return false;
                 }
                 return true;
+            }
+        });
+        registerCommand(new EmpireSubCommand(this, "action kick|none") {
+            @Override
+            public boolean run(Resident resident, String base, String alias, String... args) {
+                if (args.length == 0) {
+                    return false;
+                }
+                try {
+                    TaxDebtAction taxDebtAction = TaxDebtAction.valueOf(args[0].toUpperCase());
+                    if (taxDebtAction != resident.getVillage().getEmpire().getTaxDebtAction()) {
+                        resident.getVillage().setTaxDebtAction(taxDebtAction);
+                        getMessage("success").tell(resident.getVillage().getEmpire().getOnlineResidents(), "action", taxDebtAction.getTag());
+                        Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire()));
+                    } else {
+                        getMessage("already-set").tell(resident, "action", taxDebtAction.getTag());
+                    }
+                    return true;
+                } catch (IllegalArgumentException e) {
+                    return false;
+                }
             }
         });
     }

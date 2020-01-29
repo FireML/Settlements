@@ -180,6 +180,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
         addColumn(MySqlTable.SETTLEMENTS, "created", "BIGINT DEFAULT 0 AFTER description");
         addColumn(MySqlTable.EMPIRES, "created", "BIGINT DEFAULT 0 AFTER description");
         addColumn(MySqlTable.EMPIRES, "lastRename", "BIGINT DEFAULT 0 AFTER created");
+        addColumn(MySqlTable.SETTLEMENTS, "taxDebtAction", "VARCHAR(255) DEFAULT 'KICK' AFTER tax");
+        addColumn(MySqlTable.EMPIRES, "taxDebtAction", "VARCHAR(255) DEFAULT 'KICK' AFTER tax");
     }
 
     private void updateResidentTitles() {
