@@ -157,6 +157,25 @@ public class SettingsGUI extends KingdomsGUI {
             });
         }
 
+        if (resident.hasPermission("village.title")) {
+            gui.addItem(new ClickableItem() {
+                public ItemStack getItem(Player p) {
+                    return new CItem(Material.PAPER).setName(getText(resident.hasPermission("vilalge.titles") ? "titles-edit" : "titles",
+                            "state", resident.getVillage().getStateTag(),
+                            "title", resident.getTitle()
+                    )).build();
+                }
+
+                public boolean click(Player p, ClickType clickType) {
+                    if (resident.hasPermission("village.title")) {
+                        new TitleGUI(resident).open();
+                        return true;
+                    }
+                    return false;
+                }
+            });
+        }
+
         gui.addItem(8, new ClickableItem() {
             public ItemStack getItem(Player p) {
                 Village village = VillageManager.getInstance().getVillageFromPlayer(p);

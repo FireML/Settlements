@@ -3,19 +3,27 @@ package me.crz.minecraft.kingdoms.command.village;
 import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
-import me.crz.minecraft.kingdoms.utils.CursesFilter;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.gui.RankSelectGui;
+import me.crz.minecraft.kingdoms.village.gui.TitlesGUI;
 
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class VillageTitlesCommand extends VillageSubCommand {
 
-    private final Pattern TITLE_PATTERN = Pattern.compile("[\\w-]+");
+    public static final Pattern TITLE_PATTERN = Pattern.compile("[\\w-]+");
 
     public VillageTitlesCommand(SubCommand parent) {
-        super(parent, "titles [list|add <rank> <title>|set <rank> <title>|remove <rank> <title>");
+        super(parent, "titles [gui|list|add <rank> <title>|set <rank> <title>|remove <rank> <title>");
+        registerCommand(new VillageSubCommand(this, "gui") {
+            @Override
+            public boolean run(Resident resident, String base, String alias, String... args) {
+                new RankSelectGui(resident, rank -> new TitlesGUI(resident, rank).open()).open();
+                return true;
+            }
+        });
         registerCommand(new VillageSubCommand(this, "list") {
             @Override
             public boolean run(Resident res, String base, String alias, String... args) {

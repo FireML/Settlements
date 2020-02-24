@@ -97,6 +97,10 @@
                             <pattern>de.themoep.minedown</pattern>
                             <shadedPattern>me.crz.minecraft.kingdoms.libs.minedown</shadedPattern>
                         </relocation>
+                        <relocation>
+                            <pattern>net.wesjd.anvilgui</pattern>
+                            <shadedPattern>me.crz.minecraft.kingdoms.libs.anvilgui</shadedPattern>
+                        </relocation>
                     </relocations>
                 </configuration>
                 <executions>
@@ -154,6 +158,10 @@
             <id>brewery-repo</id>
             <url>https://zebradrive.de/maven/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -197,6 +205,12 @@
             <groupId>de.themoep</groupId>
             <artifactId>minedown</artifactId>
             <version>1.6-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.WesJD</groupId>
+            <artifactId>AnvilGUI</artifactId>
+            <version>99a504a3b</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

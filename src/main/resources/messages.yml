@@ -832,6 +832,11 @@ gui:
       next: "&7Go to next page {page}"
       previous: "&7Go to previous page {page}"
     back: "&c&lBack To Teleporters"
+  rank-select:
+    title: "&2&lSelect the {state} rank"
+    entry: |-
+      &e{rank}
+      &bClick to select
   residents:
     title: "&2&lVillage Residents"
     back: "&c&lBack To Settings"
@@ -867,6 +872,14 @@ gui:
     shop: |-
       &a&lShop
       &7Unlock new {state} perks
+    titles: |-
+      &a&lTitle
+      &e{title}
+      &7Set your {state} title
+    titles-edit: |-
+      &a&lTitle
+      &e{title}
+      &7Set and edit {state} titles
     entry: |-
       &a&lVillage Data
       &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
@@ -898,6 +911,31 @@ gui:
     private: "&e&lPrivate Warps"
     village-home: "&e&l{state} Home"
     empire-home: "&e&lEmpire Home"
+  title:
+    title: "&2&lSelect your title"
+    entry:
+      title: |-
+        &e{title}
+        &7Title of rank {rank}
+      select: "&bClick to select"
+      current: "&7Your current title!"
+    edit: "&aEdit titles"
+    back: "&c&lBack To Settings"
+  titles:
+    title: "&2&l/s titles gui"
+    entry:
+      title: |-
+        &e{title}
+        &7Title of rank {rank}
+      default: "&eDefault title!"
+      set: "&bLeft click to set as default title"
+      remove: "&cRight click to remove"
+    add:
+      title: "&bAdd a new title to {rank}"
+      anvil:
+        title: "New title for {rank}:"
+        placeholder: "Input Title"
+    back: "&c&lBack To Title"
   perks:
     title: "&2&l/s perks"
     entry: |-
