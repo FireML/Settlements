@@ -18,6 +18,12 @@ public enum ChatChannel implements NameTag {
     TRADE("trade", "t"),
     EVENT("event", "ev"),
     GENERAL("general", "g"),
+    HELP("help", "h") {
+        @Override
+        public boolean autoJoin(Player player) {
+            return player.hasPermission("kingdoms.autojoinchannel.help");
+        }
+    },
     SETTLEMENT("settlement", "s", "village") {
         @Override
         public boolean canChat(Player player) {
@@ -138,6 +144,10 @@ public enum ChatChannel implements NameTag {
 
     public boolean canChat(Player player) {
         return !isPrivate();
+    }
+
+    public boolean autoJoin(Player player) {
+        return canChat(player);
     }
 
     public boolean canChatM(Player player) {

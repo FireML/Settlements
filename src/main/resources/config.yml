@@ -93,6 +93,7 @@ chat:
     local: yellow
     admin: dark_purple
     staff: gold
+    help: white
     settlement: yellow
     trade: light_purple
     ally: aqua

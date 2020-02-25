@@ -13,6 +13,7 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.integration.PlaceholderApiIntegration;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.CursesFilter;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -94,7 +95,7 @@ public class ChatManager extends Base implements ConfigMessages {
                 channel = res.getChannels().iterator().next();
             }
             if (res.setActiveChannel(channel) && !Utils.shouldResetChannelOnLogin()) {
-                Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
+                Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res), true);
             }
         }
         event.setCancelled(true);
@@ -185,6 +186,21 @@ public class ChatManager extends Base implements ConfigMessages {
                 } else {
                     getMessage("chat.nobody-nearby").tell(sender);
                 }
+                break;
+            case HELP:
+                if (!channel.autoJoin(sender)) {
+                    Resident sRes = ResidentManager.getInstance().getResident(sender);
+                    if (sRes.getActiveChannel() != channel) {
+                        if (res.setActiveChannel(channel)) {
+                            Message.get("command.chat.joined").tell(res, "name", channel.getTag());
+                            Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res), true);
+                        }
+                    }
+                }
+                Bukkit.getOnlinePlayers().stream()
+                        .map(p -> ResidentManager.getInstance().getResident(p))
+                        .filter(r -> r.getActiveChannel() == channel || r.isListening(channel))
+                        .forEach(r -> tell(sender, r, replacer, channel, channelDefault, unfilteredMessage, filteredMessage));
                 break;
             case ADMIN:
             case STAFF:

@@ -153,6 +153,7 @@ permissions:
       kingdoms.user: true
       kingdoms.bypass.chatlock: true
       kingdoms.channel.staff: true
+      kingdoms.autojoinchannel.help: true
       kingdoms.prefix.staff: true
       kingdoms.chat.lock: true
       kingdoms.chat.links: true

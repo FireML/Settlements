@@ -4,6 +4,7 @@ import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.chat.gui.ColorChannelSelectGui;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Data;
@@ -27,7 +28,22 @@ public class ChatCommand extends PlayerSubCommand {
                     if (args.length == 0) {
                         if (channel.canChatM(p)) {
                             Resident res = ResidentManager.getInstance().getResident(p);
-                            if ((res.setActiveChannel(channel) && !Utils.shouldResetChannelOnLogin()) | res.addChannel(channel)) {
+                            boolean activeChanged = res.setActiveChannel(channel);
+                            boolean save = activeChanged && !Utils.shouldResetChannelOnLogin();
+                            if (channel.autoJoin(p)) {
+                                boolean joined = res.addChannel(channel);
+                                if (joined) {
+                                    save = joined;
+                                } else {
+                                    Message.get("command.chat.already-joined").tell(p, "name", channel.getTag());
+                                }
+                            } else if (activeChanged) {
+                                Message.get("command.chat.joined").tell(p, "name", channel.getTag());
+                            } else {
+                                Message.get("command.chat.already-joined").tell(p, "name", channel.getTag());
+                            }
+
+                            if (save) {
                                 Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
                             }
                         }

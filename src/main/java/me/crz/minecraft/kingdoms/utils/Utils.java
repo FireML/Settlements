@@ -421,7 +421,17 @@ public class Utils {
      * @return The BukkitTask that was started or null if we are already on an async thread
      */
     public static BukkitTask runAsync(Runnable run) {
-        if (Bukkit.isPrimaryThread() && KingdomsPlugin.getInstance().isRunning()) {
+        return runAsync(run, false);
+    }
+
+    /**
+     * Make sure to run something not on the primary server thread.
+     * @param run What to run
+     * @param force Whether or not we should force run this async (only works if the plugin is still running)
+     * @return The BukkitTask that was started or null if we are already on an async thread
+     */
+    public static BukkitTask runAsync(Runnable run, boolean force) {
+        if ((force || Bukkit.isPrimaryThread()) && KingdomsPlugin.getInstance().isRunning()) {
             return Bukkit.getScheduler().runTaskAsynchronously(KingdomsPlugin.getInstance(), run);
         } else {
             run.run();

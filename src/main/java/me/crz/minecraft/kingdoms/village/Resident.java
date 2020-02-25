@@ -176,13 +176,20 @@ public class Resident implements ConfigurationSerializable, Targetable {
     }
 
     public boolean addChannel(ChatChannel channel) {
-        Message.get("command.chat.joined").tell(this, "name", channel.getTag());
-        return channels.add(channel);
+        if (channels.add(channel)) {
+            Message.get("command.chat.joined").tell(this, "name", channel.getTag());
+            return true;
+        }
+        return false;
     }
 
     public boolean removeChannel(ChatChannel channel) {
-        Message.get("command.chat.leave.success").tell(this, "name", channel.getTag());
-        return channels.remove(channel);
+        if (channels.remove(channel)) {
+            Message.get("command.chat.leave.success").tell(this, "name", channel.getTag());
+            return true;
+        }
+        Message.get("command.chat.leave.not-joined").tell(this, "name", channel.getTag());
+        return false;
     }
 
     @Nullable

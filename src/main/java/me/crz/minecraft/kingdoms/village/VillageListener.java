@@ -77,7 +77,7 @@ public class VillageListener implements Listener {
         boolean activeChanged = false;
         for (ChatChannel channel : ChatChannel.values()) {
             if (channel != ChatChannel.GENERAL) {
-                if (channel.canChat(event.getPlayer())) {
+                if (channel.autoJoin(event.getPlayer())) {
                     res.getChannels().add(channel);
                 } else {
                     res.getChannels().remove(channel);

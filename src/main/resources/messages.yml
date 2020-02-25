@@ -304,6 +304,7 @@ chat:
       local: "&e[Local] &r{prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
       admin: "&b[Admin] &r{prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
       staff: "&9[Staff] &r{prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
+      help: "&c[Help] &r{prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
       settlement: "&e[{state}] {title} {prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
       trade: "&d[TRADE] &r{prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
       ally: "&b[Ally] &6{state} {title} {prefix}&7{sender}&r{suffix}&r ➦ {color}{message}"
@@ -1007,6 +1008,7 @@ command:
   chat:
     description: "Chat command"
     joined: "&7You have joined Chat Channel &6{name}"
+    already-joined: "&7Already in Chat Channel &6{name}"
     channel-entry:
       active: "&e• &e{name} &7&l[&a&lActive&7&l] &3&l<"
       enabled: "&e• [&e{name}](suggest_command=/chat {name}) &7&l[&a&lEnabled&7&l]"
@@ -1018,7 +1020,8 @@ command:
     footer: ""
     leave:
       description: "Disable the chat of the channel"
-      success: "&7You have left Chat Channel {name}&6"
+      success: "&7You have left Chat Channel {name}"
+      not-joined: "&cYou were not in the Chat Channel {name}"
     lock:
       description: "Lock a channel"
       muted: "&c&lGeneral Chat has been muted by &6&l{name}"
