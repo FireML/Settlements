@@ -70,6 +70,9 @@ empires-world:
 claim-enemy-distance: 4
 close-claims-grace-days: 4
 close-claims-unclaims-outposts: false
+# The distance in chunks in which a settlement should get a notification when someone builds/griefs
+# Set to 0 to disable
+close-building-notification-distance: 4
 only-lock-in-settlement: true
 claim-max-radius: 5
 # How often (in seconds) should the plugin check for mobs

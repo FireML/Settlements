@@ -60,6 +60,10 @@ waiting:
   subtitle: "&f{action}ing in &c{seconds}&f seconds"
   actionbar: ""
   message: ""
+close-claims:
+  player:
+    break: "&cYou are breaking a block near a settlement claim! This is not allowed!"
+    place: "&cYou are placing a block near a settlement claim! This is not allowed!"
 banished:
   move:
     message: "&cYou're banished from the {state} {name}!"

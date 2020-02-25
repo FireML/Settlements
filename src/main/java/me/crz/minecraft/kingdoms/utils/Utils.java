@@ -183,6 +183,13 @@ public class Utils {
         return false;
     }
 
+    public static int getCloseBuildingNotificationDistance() {
+        if (ConfigManager.getInstance().getConfig().isInt("close-building-notification-distance")) {
+            return ConfigManager.getInstance().getConfig().getInt("close-building-notification-distance");
+        }
+        return 4;
+    }
+
     public static int getTeleportDelay(String type) {
         if (ConfigManager.getInstance().getConfig().isInt("teleport-delay." + type)) {
             return ConfigManager.getInstance().getConfig().getInt("teleport-delay." + type);

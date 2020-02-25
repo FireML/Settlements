@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Table;
@@ -40,13 +42,16 @@ import org.bukkit.World;
 
 public class LandManager {
     private static LandManager instance;
+    private final int nearbyRadius;
     private Table<String, String, OwnedLand> landTable = HashBasedTable.create();
+    private Multimap<String, SimpleChunkLocation> nearbyTable = MultimapBuilder.hashKeys().hashSetValues().build();
     private Multimap<IdObject, OwnedLand> villageLands = MultimapBuilder.hashKeys().hashSetValues().build();
     private Multimap<UUID, OwnedLand> playerPlots = MultimapBuilder.hashKeys().hashSetValues().build();
     private Multimap<UUID, OwnedLand> linkedPlots = MultimapBuilder.hashKeys().hashSetValues().build();
 
     private LandManager() {
         super();
+        nearbyRadius = Utils.getCloseBuildingNotificationDistance();
         for (OwnedLand land : DatabaseManager.getInstance().getAllLand()) {
             cacheLand(land);
         }
@@ -63,6 +68,15 @@ public class LandManager {
         landTable.put(land.getWorldName(), land.getSimpleKey(), land);
         if (land.getLandOwner() instanceof Village) {
             villageLands.put(land.getLandOwner().getId(), land);
+            if (nearbyRadius > 0) {
+                nearbyTable.removeAll(land.getKey());
+                SimpleChunkLocation landLocation = land.getLocation().copy();
+                for (SimpleChunkLocation chunkLocation : Utils.getChunksAround(land, nearbyRadius)) {
+                    if (!landTable.contains(chunkLocation.getWorld(), chunkLocation.getSimpleKey())) {
+                        nearbyTable.put(chunkLocation.getKey(), landLocation);
+                    }
+                }
+            }
         }
         if (land.isPlot()) {
             playerPlots.put(land.getPlotOwner(), land);
@@ -179,6 +193,16 @@ public class LandManager {
             }
             KingdomsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + land.getKey() + " owned by " + land.getLandOwner().getName() + " was unclaimed");
             land.setLandOwner(null);
+        }
+        if (nearbyRadius > 0) {
+            for (OwnedLand land : lands) {
+                for (SimpleChunkLocation chunkLocation : Utils.getChunksAround(land, nearbyRadius)) {
+                    OwnedLand l = getLand(chunkLocation);
+                    if (l != null) {
+                        nearbyTable.put(land.getKey(), l.getLocation().copy());
+                    }
+                }
+            }
         }
         Utils.runAsync(() -> {
             if (KingdomsPlugin.getInstance().getConfig().getBoolean("remove-locks-on-unclaim")) {
@@ -450,9 +474,10 @@ public class LandManager {
         boolean unclaimOutposts = Utils.getCloseClaimsUnclaimsOutposts();
         List<OwnedLand> toSave = new ArrayList<>();
         List<OwnedLand> toUnclaim = new ArrayList<>();
+        int enemyClaimDistance = Utils.getClaimEnemyDistance();
         for (OwnedLand land : getClaimedLand(oldAlly)) {
-            if (unclaimOutposts || !land.isOutpost()) {
-                for (SimpleChunkLocation c : Utils.getChunksAround(land, Utils.getClaimEnemyDistance())) {
+            if (enemyClaimDistance > 0 && (unclaimOutposts || !land.isOutpost())) {
+                for (SimpleChunkLocation c : Utils.getChunksAround(land, enemyClaimDistance)) {
                     OwnedLand around = getLand(c);
                     if (around != null && around.isOwnedBy(source)) {
                         if (graceDays > 0) {
@@ -475,6 +500,30 @@ public class LandManager {
         if (!toSave.isEmpty()) {
             Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(toSave));
         }
+    }
+
+    public Set<LandOwner> getNearbyLandOwners(Location location) {
+        if (nearbyRadius == 0) {
+            return ImmutableSet.of();
+        }
+        return getNearbyLandOwners(new SimpleChunkLocation(location));
+    }
+
+    public Set<LandOwner> getNearbyLandOwners(SimpleChunkLocation chunkLocation) {
+        if (nearbyRadius == 0) {
+            return ImmutableSet.of();
+        }
+        Set<LandOwner> owners = new HashSet<>();
+        for (Iterator<SimpleChunkLocation> it = nearbyTable.get(chunkLocation.getKey()).iterator(); it.hasNext(); ) {
+            SimpleChunkLocation nearbyLocation = it.next();
+            OwnedLand land = getLand(nearbyLocation);
+            if (land != null) {
+                owners.add(land.getLandOwner());
+            } else {
+                it.remove();
+            }
+        }
+        return owners;
     }
 
     public enum FilterResponse {
