@@ -1,12 +1,15 @@
 package me.crz.minecraft.kingdoms.landflags;
 
 import com.destroystokyo.paper.event.block.TNTPrimeEvent;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Pair;
+import me.crz.minecraft.kingdoms.utils.TreeUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Material;
@@ -22,14 +25,18 @@ import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPistonEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.EntityBlockFormEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -47,8 +54,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class LandFlagsBlockEvents implements LandFlagBase, Listener {
+
+    private static final Cache<Long, Boolean> TREES = CacheBuilder.newBuilder().expireAfterAccess(60, TimeUnit.MINUTES).build();
 
     public LandFlagsBlockEvents() {
         super();
@@ -56,16 +66,85 @@ public class LandFlagsBlockEvents implements LandFlagBase, Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void on(BlockBreakEvent e) {
-        if ((MaterialUtils.FARM_BLOCKS.contains(e.getBlock().getType()) || MaterialUtils.FARM_BLOCKS_DESTROY.contains(e.getBlock().getType()))
-                && this.canUse(e.getPlayer(), Use.FARMING, e.getBlock().getLocation()).getLeft()) {
+        Pair<Boolean, String> response = this.getCanBuildAll(e.getPlayer(), e.getBlock().getLocation());
+        if (response.getLeft()) {
             return;
         }
 
-        Pair<Boolean, String> responce = this.getCanBuildAll(e.getPlayer(), e.getBlock().getLocation());
-        if (!responce.getLeft()) {
-            MessageUtils.tell(e.getPlayer(), responce.getRight());
-            e.setCancelled(true);
+        Use useFlag = null;
+
+        if ((MaterialUtils.FARM_BLOCKS.contains(e.getBlock().getType()) || MaterialUtils.FARM_BLOCKS_DESTROY.contains(e.getBlock().getType()))) {
+            useFlag = Use.FARMING;
         }
+
+        if (Tag.SAPLINGS.isTagged(e.getBlock().getType())) {
+            useFlag = Use.TREES;
+        } else if (Tag.LOGS.isTagged(e.getBlock().getType()) || Tag.LEAVES.isTagged(e.getBlock().getType())) {
+            Boolean isTree = TREES.getIfPresent(e.getBlock().getBlockKey());
+            if (isTree != null) {
+                if (isTree) {
+                    useFlag = Use.TREES;
+                }
+            } else {
+                List<Block> tree = TreeUtils.getTree(e.getBlock());
+                if (tree != null) {
+                    useFlag = Use.TREES;
+                    for (Block block : tree) {
+                        TREES.put(block.getBlockKey(), true);
+                    }
+                } else {
+                    TREES.put(e.getBlock().getBlockKey(), false);
+                }
+            }
+        }
+
+        if (useFlag != null && this.canUse(e.getPlayer(), useFlag, e.getBlock().getLocation()).getLeft()) {
+            return;
+        }
+
+        MessageUtils.tell(e.getPlayer(), response.getRight());
+        e.setCancelled(true);
+    }
+
+    private void invalidateTree(Block block) {
+        if (Tag.LOGS.isTagged(block.getType()) || Tag.LEAVES.isTagged(block.getType())) {
+            TREES.invalidate(block.getBlockKey());
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void monitor(BlockBreakEvent e) {
+        invalidateTree(e.getBlock());
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void monitor(LeavesDecayEvent e) {
+        TREES.invalidate(e.getBlock().getBlockKey());
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void monitor(EntityChangeBlockEvent e) {
+        invalidateTree(e.getBlock());
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void monitor(BlockPistonExtendEvent e) {
+        e.getBlocks().forEach(this::invalidateTree);
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void monitor(BlockPistonRetractEvent e) {
+        e.getBlocks().forEach(this::invalidateTree);
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void monitor(BlockExplodeEvent e) {
+        invalidateTree(e.getBlock());
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void monitor(BlockBurnEvent e) {
+        invalidateTree(e.getBlock());
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -123,8 +202,17 @@ public class LandFlagsBlockEvents implements LandFlagBase, Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void on(BlockPlaceEvent e) {
-        if ((MaterialUtils.FARM_BLOCKS.contains(e.getBlockPlaced().getType()) || e.getBlockPlaced().getType() == Material.FARMLAND)
-                && this.canUse(e.getPlayer(), Use.FARMING, e.getBlock().getLocation()).getLeft()) {
+        Use useFlag = null;
+
+        if (MaterialUtils.FARM_BLOCKS.contains(e.getBlock().getType()) || e.getBlockPlaced().getType() == Material.FARMLAND) {
+            useFlag = Use.FARMING;
+        }
+
+        if (Tag.SAPLINGS.isTagged(e.getBlock().getType())) {
+            useFlag = Use.TREES;
+        }
+
+        if (useFlag != null && this.canUse(e.getPlayer(), useFlag, e.getBlock().getLocation()).getLeft()) {
             return;
         }
 

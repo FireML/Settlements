@@ -106,8 +106,9 @@ public class MaterialUtils {
         FARMING_RULES.put(Material.COCOA_BEANS, new FarmingRule(Material.JUNGLE_LOG, Material.STRIPPED_JUNGLE_LOG, Material.JUNGLE_WOOD, Material.STRIPPED_JUNGLE_WOOD));
         FARMING_RULES.put(Material.SWEET_BERRIES, new FarmingRule(Material.DIRT, Material.GRASS_BLOCK, Material.COARSE_DIRT, Material.PODZOL, Material.FARMLAND));
         FARM_BLOCKS.addAll(Tag.SAPLINGS.getValues());
-        FARM_BLOCKS_DESTROY.addAll(Tag.LOGS.getValues());
-        FARM_BLOCKS_DESTROY.addAll(Tag.LEAVES.getValues());
+
+        FarmingRule saplingRule = new FarmingRule(Material.DIRT, Material.GRASS_BLOCK, Material.COARSE_DIRT, Material.PODZOL);
+        Tag.SAPLINGS.getValues().forEach(s -> FARMING_RULES.put(s, saplingRule));
     }
 
     public static boolean placesBlock(ItemStack item) {

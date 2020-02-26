@@ -8,6 +8,7 @@ import me.crz.minecraft.kingdoms.integration.ShopProvider;
 import me.crz.minecraft.kingdoms.lock.LockManager;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import org.bukkit.FluidCollisionMode;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Projectile;
@@ -74,7 +75,7 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
         if (MaterialUtils.FARM_ITEMS.contains(e.getItem().getItemStack().getType())
                 || MaterialUtils.FARM_BLOCKS.contains(e.getItem().getItemStack().getType())
                 || MaterialUtils.FARM_BLOCKS_DESTROY.contains(e.getItem().getItemStack().getType())) {
-            if (this.canUse(e.getPlayer(), Use.FARMING, e.getPlayer().getLocation()).getLeft()) {
+            if (this.canUse(e.getPlayer(), Tag.SAPLINGS.isTagged(e.getItem().getItemStack().getType()) ? Use.TREES : Use.FARMING, e.getPlayer().getLocation()).getLeft()) {
                 return;
             }
         }
@@ -166,7 +167,7 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
                             || (MaterialUtils.HOES.contains(e.getMaterial())
                                     && (e.getClickedBlock().getType() == Material.DIRT || e.getClickedBlock().getType() == Material.GRASS_BLOCK))) {
                         if (!this.getCanBuildAll(e.getPlayer(), e.getClickedBlock().getLocation()).getLeft()) {
-                            use = Use.FARMING;
+                            use = Tag.SAPLINGS.isTagged(e.getItem().getType()) || Tag.SAPLINGS.isTagged(e.getClickedBlock().getType()) ? Use.TREES : Use.FARMING;
                         }
                     } else if (use == null) {
                         use = Use.INTERACT;

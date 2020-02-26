@@ -46,6 +46,7 @@ public enum Use implements NameTag {
     LOOM(Material.LOOM),
     BELL(Material.BELL),
     FARMING(Material.STONE_HOE),
+    TREES(Material.OAK_SAPLING),
     COMPOSTER(Material.COMPOSTER),
     ANIMAL(Material.LEATHER),
     SHEER(Material.SHEARS),
