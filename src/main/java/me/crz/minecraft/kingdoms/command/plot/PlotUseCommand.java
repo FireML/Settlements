@@ -56,6 +56,7 @@ public class PlotUseCommand extends PlotSubCommand {
                     res.tell(getMessage("success"), "flag", use.name(), "state", state.getTag());
                 } catch (IllegalArgumentException e) {
                     if ("reset".equalsIgnoreCase(args[1]) || "unset".equalsIgnoreCase(args[1]) || "parent".equalsIgnoreCase(args[1])) {
+                        land.unsetUseState(use);
                         LandManager.getInstance().syncAndSave(land);
                         getMessage("unset-all").tell(res, "parent", land.getLandOwner().getStateTag());
                     } else {

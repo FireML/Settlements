@@ -56,10 +56,11 @@ public class UseGui extends PlotGUI {
                         Resident resident = ResidentManager.getInstance().getResident(p);
                         if (land.isPlotOwner(p) || land.canAdmin(resident)) {
                             if (clickType == ClickType.MIDDLE) {
-                                if (land.unsetUseState(u) || land.hasLink()) {
+                                if (land.unsetUseState(u)) {
                                     MessageUtils.tell(p, Message.get("command.plot.use.unset"),
                                             "flag", u.getTag(),
-                                            "parent", land.getLandOwner().getStateTag()
+                                            "parent", land.getLandOwner().getStateTag(),
+                                            "state", land.getLandOwner().getUseState(u).getTag()
                                     );
                                 } else {
                                     return false;
