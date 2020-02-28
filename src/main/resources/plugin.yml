@@ -40,6 +40,8 @@ commands:
   generalchat:
     description: General chat
     aliases: [general,gc]
+  helpchat:
+    description: Help chat
   eventchat:
     description: Event chat
     aliases: [event,evc]

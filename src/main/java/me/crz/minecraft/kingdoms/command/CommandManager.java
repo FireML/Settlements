@@ -54,27 +54,20 @@ public class CommandManager extends Base implements TabExecutor {
             if (channel.isPrivate()) {
                 continue;
             }
-            registerCommand(new PlayerSubCommand(null, channel.name().toLowerCase() + "chat") {
-                @Override
-                public boolean run(Player p, String base, String alias, String... args) {
-                    if (args.length == 0) {
-                        if (channel.canChatM(p)) {
-                            Resident res = ResidentManager.getInstance().getResident(p);
-                            if ((res.setActiveChannel(channel) && !Utils.shouldResetChannelOnLogin()) | res.addChannel(channel)) {
-                                Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
-                            }
-                        }
-                    } else {
-                        ChatManager.getInstance().sendChannelMessage(p, channel, String.join(" ", args));
+            SubCommand channelCommand = chatCommand.getSubCommands().get(channel.name().toLowerCase());
+            if (channelCommand != null) {
+                registerCommand(new PlayerSubCommand(null, channel.name().toLowerCase() + "chat") {
+                    @Override
+                    public boolean run(Player p, String base, String alias, String... args) {
+                        return channelCommand.execute(p, base, alias, args);
                     }
-                    return true;
-                }
 
-                @Override
-                public boolean isVisible() {
-                    return false;
-                }
-            });
+                    @Override
+                    public boolean isVisible() {
+                        return false;
+                    }
+                });
+            }
         }
         registerCommand(new VillageAdminCommand(), false);
         registerCommand(new ResidentCommand());
