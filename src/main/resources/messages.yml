@@ -416,7 +416,7 @@ integration:
         officers: "&e&lALERT &r&e{use}&7 is limited to &eofficer only &7."
         trusted: "&e&lALERT &r&e{use}&7 is limited to &eallies or members of the same empire&7 of &e{state} {name}&7."
         ally: "&e&lALERT &r&e{use}&7 is limited to &eallies&7 of &e{state} {name}&7."
-        private: "&e&lALERT &r&e[use}&7 is limited to the &ePlot owner&7."
+        private: "&e&lALERT &r&e{use}&7 is limited to the &ePlot owner&7."
         friends: "&e&lALERT &r&{use}&7 is limited to the &ePlot owner's friends&7."
       build:
         residents: "&e&lALERT &r&7Only &eresidents&7 of &e{state} {name}&7 can build here."
@@ -453,7 +453,7 @@ protection:
       officers: "&e&lALERT &r&e{use}&7 is limited to &eofficer only &7."
       trusted: "&e&lALERT &r&e{use}&7 is limited to &eallies or members of the same empire&7 of &e{state} {name}&7."
       ally: "&e&lALERT &r&e{use}&7 is limited to &eallies&7 of &e{state} {name}&7."
-      private: "&e&lALERT &r&e[use}&7 is limited to the &ePlot owner&7."
+      private: "&e&lALERT &r&e{use}&7 is limited to the &ePlot owner&7."
       friends: "&e&lALERT &r&{use}&7 is limited to the &ePlot owner's friends&7."
       empire:
         trusted: "&e&lALERT &r&e{use}&7 is limited to &emembers&7 of &e{state} {name}&7."
