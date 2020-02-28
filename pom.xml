@@ -158,10 +158,6 @@
             <id>brewery-repo</id>
             <url>https://zebradrive.de/maven/</url>
         </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -208,9 +204,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.WesJD</groupId>
+            <groupId>net.wesjd</groupId>
             <artifactId>AnvilGUI</artifactId>
-            <version>99a504a3b</version>
+            <version>1.3.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

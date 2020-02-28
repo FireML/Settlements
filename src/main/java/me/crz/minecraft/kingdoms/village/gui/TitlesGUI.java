@@ -115,7 +115,7 @@ public class TitlesGUI extends KingdomsGUI {
                                         "rank", rank.getTag(resident.getVillage()),
                                         "state", resident.getVillage().getStateTag()
                                 ))
-                                .onClose(player -> open())
+                                .onClose(player -> Utils.runLater(() -> open(), 1))
                                 .onComplete((player, text) -> {
                                     text = ChatColor.stripColor(text);
                                     if (rank.above(resident.getVillageRank())) {
@@ -126,14 +126,14 @@ public class TitlesGUI extends KingdomsGUI {
                                                 "max", String.valueOf(Utils.getTitlesPerRank())
                                         ));
                                     } else if (text.length() > 16) {
-                                        return AnvilGUI.Response.text(getError("too-long").getReplacedText("input", text));
+                                        return AnvilGUI.Response.text(getError("too-long").getReplacedText("input", text, "amount", "16"));
                                     } else if (!VillageTitlesCommand.TITLE_PATTERN.matcher(text).matches()) {
                                         return AnvilGUI.Response.text(getError("invalid-characters").getReplacedText("input", text));
                                     } else if (ChatManager.getInstance().containsAnyCurses(text)) {
                                         return AnvilGUI.Response.text(getError("prohibited-words").getReplacedText("input", text));
                                     } else if (resident.getVillage().addTitle(rank, text)) {
                                         Message.get("command.village.titles.add.success").tell(resident, "title", text, "rank", rank.getTag(resident.getVillage()));
-                                        Bukkit.getScheduler().runTask(KingdomsPlugin.getInstance(), () -> new TitlesGUI(resident, rank).open());
+                                        Utils.runLater(() -> new TitlesGUI(resident, rank).open(), 1);
                                         return AnvilGUI.Response.close();
                                     } else {
                                         return AnvilGUI.Response.text(getError("already-exists").getReplacedText("input", text, "rank", rank.getTag(resident.getVillage())));
