@@ -45,12 +45,12 @@ public class PlotUseCommand extends PlotSubCommand {
     @Override
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
         if (args.length < 2) {
-            UseGui.getInstance().open(res.getPlayer());
+            new UseGui(res.getPlayer(), land);
         } else {
             try {
                 Use use = Use.valueOf(args[0].toUpperCase());
                 try {
-                    BuildState state = BuildState.valueOf(Arrays.stream(args).skip(1).collect(Collectors.joining("_")).toUpperCase(), BuildState.AppliesTo.LAND);
+                    BuildState state = BuildState.valueOf(Arrays.stream(args).skip(1).collect(Collectors.joining("_")).toUpperCase(), land.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(land.getLandOwner()));
                     land.setUseState(use, state);
                     LandManager.getInstance().syncAndSave(land);
                     res.tell(getMessage("success"), "flag", use.name(), "state", state.getTag());
@@ -65,7 +65,7 @@ public class PlotUseCommand extends PlotSubCommand {
                     }
                 }
             } catch (IllegalArgumentException e) {
-                res.tell(getMessage("states"), "states", BuildState.values(BuildState.AppliesTo.LAND).stream().map(NameTag::humanizedName).collect(Collectors.joining(", ")));
+                res.tell(getMessage("states"), "states", BuildState.values(land.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(land.getLandOwner())).stream().map(NameTag::humanizedName).collect(Collectors.joining(", ")));
                 return false;
             }
         }

@@ -1,8 +1,11 @@
 package me.crz.minecraft.kingdoms.landflags;
 
 import me.crz.minecraft.kingdoms.cinventory.CItem;
+import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.rank.Rankable;
 import me.crz.minecraft.kingdoms.utils.NameTag;
+import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.Material;
 
 import java.util.Arrays;
@@ -79,5 +82,16 @@ public enum BuildState implements NameTag, Rankable<BuildState> {
         LAND,
         SETTLEMENT,
         EMPIRE;
+
+        public static AppliesTo get(Object o) {
+            if (o instanceof Village) {
+                return SETTLEMENT;
+            } else if (o instanceof Empire) {
+                return EMPIRE;
+            } else if (o instanceof OwnedLand) {
+                return LAND;
+            }
+            return null;
+        }
     }
 }

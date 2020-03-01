@@ -12,24 +12,29 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
 public class UseGui extends PlotGUI {
-    private static UseGui instance;
+    private final SimpleChunkLocation landLocation;
     private CInventory gui;
 
-    public UseGui() {
+    public UseGui(Player player, OwnedLand land) {
         super("plot.use");
+        this.landLocation = land.getLocation().copy();
         gui = new CInventory(getText("title"), InventorySize.FOUR) {};
         for (Use u : Use.values()) {
             gui.addItem(new ClickableItem() {
                 public ItemStack getItem(Player p) {
-                    OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                    OwnedLand land = LandManager.getInstance().getLand(landLocation);
                     if (land != null) {
                         BuildState state = land.getUseState(u);
+                        if (!land.isPlot() && !state.appliesTo(BuildState.AppliesTo.get(land.getLandOwner()))) {
+                            state = land.getLandOwner().getDefaultBuildState();
+                        }
                         CItem item = u.getItem().setName(getMessage("entry").getReplacedText(
                                 "flag", u.getTag(),
                                 "state", state.getTag()
@@ -51,7 +56,7 @@ public class UseGui extends PlotGUI {
                 }
 
                 public boolean click(Player p, ClickType clickType) {
-                    OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                    OwnedLand land = LandManager.getInstance().getLand(landLocation);
                     if (land != null) {
                         Resident resident = ResidentManager.getInstance().getResident(p);
                         if (land.isPlotOwner(p) || land.canAdmin(resident)) {
@@ -66,9 +71,13 @@ public class UseGui extends PlotGUI {
                                     return false;
                                 }
                             } else {
+                                BuildState state = land.getUseState(u);
+                                if (!land.isPlot() && !state.appliesTo(BuildState.AppliesTo.get(land.getLandOwner()))) {
+                                    state = land.getLandOwner().getDefaultBuildState();
+                                }
                                 BuildState changeTo = clickType.isLeftClick()
-                                        ? land.getUseState(u).next(BuildState.AppliesTo.LAND)
-                                        : land.getUseState(u).previous(BuildState.AppliesTo.LAND);
+                                        ? state.next(land.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(land.getLandOwner()))
+                                        : state.previous(land.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(land.getLandOwner()));
                                 land.setUseState(u, changeTo);
                                 MessageUtils.tell(p, Message.get("command.plot.use.success"),
                                         "flag", u.getTag(),
@@ -87,11 +96,11 @@ public class UseGui extends PlotGUI {
 
         int rest = gui.getSize() % 9;
         int slot = rest == 0 ? gui.getSize() : gui.getSize() + (9 - rest);
-        for (BuildState state : BuildState.values(BuildState.AppliesTo.LAND)) {
+        for (BuildState state : BuildState.values(land.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(land.getLandOwner()))) {
             gui.addItem(slot++, new ClickableItem() {
                 @Override
                 public ItemStack getItem(Player p) {
-                    OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                    OwnedLand land = LandManager.getInstance().getLand(landLocation);
                     if (land != null) {
                         Resident resident = ResidentManager.getInstance().getResident(p);
                         if (land.isPlotOwner(p) || land.canAdmin(resident)) {
@@ -105,7 +114,7 @@ public class UseGui extends PlotGUI {
 
                 @Override
                 public boolean click(Player p, ClickType clickType) {
-                    OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                    OwnedLand land = LandManager.getInstance().getLand(landLocation);
                     if (land != null) {
                         Resident resident = ResidentManager.getInstance().getResident(p);
                         if (land.isPlotOwner(p) || land.canAdmin(resident)) {
@@ -127,7 +136,7 @@ public class UseGui extends PlotGUI {
         gui.addItem(slot, new ClickableItem() {
             @Override
             public ItemStack getItem(Player p) {
-                OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                OwnedLand land = LandManager.getInstance().getLand(landLocation);
                 if (land != null) {
                     Resident resident = ResidentManager.getInstance().getResident(p);
                     if (land.isPlotOwner(p) || land.canAdmin(resident)) {
@@ -141,7 +150,7 @@ public class UseGui extends PlotGUI {
 
             @Override
             public boolean click(Player p, ClickType type) {
-                OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                OwnedLand land = LandManager.getInstance().getLand(landLocation);
                 if (land != null) {
                     Resident resident = ResidentManager.getInstance().getResident(p);
                     if (land.isPlotOwner(p) || land.canAdmin(resident)) {
@@ -169,16 +178,6 @@ public class UseGui extends PlotGUI {
                 return true;
             }
         });
-    }
-
-    public void open(final Player p) {
-        gui.build(p);
-    }
-
-    synchronized public static UseGui getInstance() {
-        if (instance == null) {
-            instance = new UseGui();
-        }
-        return instance;
+        gui.build(player);
     }
 }

@@ -15,16 +15,16 @@ public class PlotBuildCommand extends PlotSubCommand {
     @Override
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
         if (args.length < 1) {
-            BuildGui.open(res.getPlayer());
+            new BuildGui(res.getPlayer(), land);
         } else {
             try {
-                BuildState newState = BuildState.valueOf(args[0].toUpperCase(), BuildState.AppliesTo.LAND);
+                BuildState newState = BuildState.valueOf(args[0].toUpperCase(), land.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(land.getLandOwner()));
                 land.setBuildState(newState);
                 LandManager.getInstance().saveLand(land);
                 res.tell(getMessage("success"), "state", newState.getTag());
             } catch (IllegalArgumentException e) {
                 res.tell(Message.get("usage.head"), "name", "Plot Build");
-                for (BuildState state : BuildState.values(BuildState.AppliesTo.LAND)) {
+                for (BuildState state : BuildState.values(land.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(land.getLandOwner()))) {
                     res.tell(Message.get("usage.entry"),
                             "usage", getUsage(base).replace("<state>", state.name().toLowerCase()),
                             "description", getMessage("states." + state.getKey()).getText()

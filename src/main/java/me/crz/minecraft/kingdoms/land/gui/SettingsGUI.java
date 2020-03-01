@@ -24,8 +24,12 @@ public class SettingsGUI extends PlotGUI {
             }
 
             public boolean click(Player p, ClickType clickType) {
-                BuildGui.open(p);
-                return true;
+                OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                if (land != null) {
+                    new BuildGui(p, land);
+                    return true;
+                }
+                return false;
             }
         });
         gui.addItem(new ClickableItem() {
@@ -34,8 +38,12 @@ public class SettingsGUI extends PlotGUI {
             }
 
             public boolean click(Player p, ClickType clickType) {
-                UseGui.getInstance().open(p);
-                return true;
+                OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                if (land != null) {
+                    new UseGui(p, land);
+                    return true;
+                }
+                return false;
             }
         });
         gui.addItem(new ClickableItem() {
