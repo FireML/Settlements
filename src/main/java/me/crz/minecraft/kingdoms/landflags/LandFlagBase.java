@@ -71,7 +71,7 @@ public interface LandFlagBase extends ConfigMessages {
             if (land.isPlot()) {
                 allowed = land.isPlotOwner(building);
             } else {
-                allowed = land.canAdmin(ResidentManager.getInstance().getResident(building));
+                return null;
             }
 
         } else if (state.atLeast(BuildState.FRIENDS)) {
@@ -79,7 +79,7 @@ public interface LandFlagBase extends ConfigMessages {
                 owner = ResidentManager.getInstance().getResident(land.getPlotOwner());
                 allowed = owner.getFriends().contains(building.getUniqueId());
             } else {
-                allowed = land.canAdmin(ResidentManager.getInstance().getResident(building));
+                return null;
             }
 
         } else if (state.atLeast(BuildState.OFFICERS)) {
