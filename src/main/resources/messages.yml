@@ -26,6 +26,8 @@ error:
   player-not-found: "&c&lNo &r&6&lplayer&r&c&l with the name &r&6&l{name}&r&c&l found!"
   not-a-claim: "&c&lYou are not currently standing in a claimed land"
   not-a-plot: "&c&lYou are not currently standing in an owned plot"
+  none-connected: "&c&lERROR: &cNo plots are connected to this one!"
+  none-linked: "&c&lERROR: &cNo plots are linked to this one!"
   not-for-sale: "&cLand is not for sale!"
   not-your-plot: "&cThis is not your plot!"
   world-not-claimable: "&c&lClaiming is disabled in this world!"
@@ -1163,7 +1165,6 @@ command:
       no-longer-for-sale: "&a&lSUCCESS &7This land is no longer for sale!"
       description: Gets or sets the price of a claimed chunk
     unlink:
-      none-connected: "&c&lERROR: &cNo plots are linked to this one!"
       disconnected: "&r&7Unlinked from {amount} other plots!"
       description: Unlink this plot's flags
     unsale:

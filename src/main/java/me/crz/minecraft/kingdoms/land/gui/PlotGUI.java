@@ -78,6 +78,7 @@ public abstract class PlotGUI extends KingdomsGUI {
                             });
 
                             if (connected.isEmpty()) {
+                                getError("none-connected").tell(p);
                                 return false;
                             }
 
@@ -86,7 +87,7 @@ public abstract class PlotGUI extends KingdomsGUI {
                             if (syncWith.isPresent()) {
                                 connected.add(land);
                             } else {
-                                land.setLink(UUID.randomUUID());
+                                LandManager.getInstance().addLink(land, UUID.randomUUID());
                                 toSave.add(land);
                             }
                             for (OwnedLand c : connected) {

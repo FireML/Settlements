@@ -26,13 +26,18 @@ public class PlotLinkCommand extends PlotSubCommand {
             return LandManager.FilterResponse.ACCEPT;
         });
 
+        if (connected.isEmpty()) {
+            getError("none-connected").tell(res);
+            return false;
+        }
+
         Optional<OwnedLand> syncWith = connected.stream().filter(OwnedLand::hasLink).findAny();
         getMessage("success").tell(res, "amount", String.valueOf(connected.size()));
         Set<OwnedLand> toSave = new LinkedHashSet<>();
         if (syncWith.isPresent()) {
             connected.add(land);
         } else {
-            land.setLink(UUID.randomUUID());
+            LandManager.getInstance().addLink(land, UUID.randomUUID());
             toSave.add(land);
         }
         for (OwnedLand c : connected) {
