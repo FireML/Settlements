@@ -1134,6 +1134,7 @@ command:
         &9&lModes: &7MobSpawning: &6{mobspawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explosions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}&r&7 | Embassy: &6{embassy}
       owner: "&a&lPlot Owner: &7{name}"
       price: "&a&lPlot Price: &7{price}"
+      link: "[&aLinked to &7{amount}&a other plots!](&a{x}/{z} is linked to:\n&f{linked})"
       description: Get information about the current plot
     link:
       already-linked: "&c&lERROR: &cAlready linked to plot {location}!"

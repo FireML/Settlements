@@ -7,6 +7,9 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 public class PlotInfoCommand extends ResidentSubCommand {
     public PlotInfoCommand(PlotCommand parent) {
         super(parent, "info", "here", "show");
@@ -27,6 +30,16 @@ public class PlotInfoCommand extends ResidentSubCommand {
                     (land.isEmbassy() || land.isOwnedBy(res))) {
                 res.tell(getMessage("price"), "price", String.valueOf(land.getPrice()));
             }
+        }
+        if (land.hasLink()) {
+            Collection<OwnedLand> linked = land.getLinked();
+            getMessage("link").tell(res,
+                    "id", land.getLink().toString(),
+                    "amount", String.valueOf(linked.size() - 1),
+                    "linked", linked.stream().filter(o -> !o.equals(land)).map(o -> o.getX() + "/" + o.getZ()).collect(Collectors.joining("\n")),
+                    "x", String.valueOf(land.getX()),
+                    "z", String.valueOf(land.getZ())
+            );
         }
         return true;
     }
