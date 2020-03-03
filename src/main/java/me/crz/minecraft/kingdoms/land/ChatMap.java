@@ -178,7 +178,7 @@ public class ChatMap {
             if (land == null) {
                 ComponentBuilder cb = new ComponentBuilder((current ? Symbol.CURRENT : Symbol.NORMAL).getText());
                 if (claimable && resident.hasVillage() && canClaimCoords) {
-                    cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/village claim " + x + " " + z));
+                    cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/village claim " + x + " " + z + " map"));
                     cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, messages.getMessage("hover.click-to-claim")
                             .getReplacedComponents(
                                     "location", x + "-" + z,
@@ -255,14 +255,34 @@ public class ChatMap {
             }
 
             ComponentBuilder cb = new ComponentBuilder(MessageUtils.replaceColorCodes(symbol.getText())).color(relation.getColor());
-            if (claimable && land.isOwnedBy(resident.getVillage()) && canUnclaimCoords) {
+            if (playerLand != null && land.isPlotOwner(playerLand.getPlotOwner())) {
+                if (!current) {
+                    if (land.isLinked(playerLand)) {
+                        hover.append("\n").append(messages.getMessage("hover.click-to-unlink")
+                                .getReplacedComponents(
+                                        "location", x + "-" + z,
+                                        "x", String.valueOf(x),
+                                        "z", String.valueOf(z)
+                                ));
+                        cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plot unlink " + x + " " + z + " map"));
+                    } else {
+                        hover.append("\n").append(messages.getMessage("hover.click-to-link")
+                                .getReplacedComponents(
+                                        "location", x + "-" + z,
+                                        "x", String.valueOf(x),
+                                        "z", String.valueOf(z)
+                                ));
+                        cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plot link " + x + " " + z + " map"));
+                    }
+                }
+            } else if (claimable && land.isOwnedBy(resident.getVillage()) && canUnclaimCoords) {
                 hover.append("\n").append(messages.getMessage("hover.click-to-unclaim")
                         .getReplacedComponents(
                                 "location", x + "-" + z,
                                 "x", String.valueOf(x),
                                 "z", String.valueOf(z)
                         ));
-                cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/village unclaim " + x + " " + z));
+                cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/village unclaim " + x + " " + z + " map"));
             }
 
             return cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover.create())).create();

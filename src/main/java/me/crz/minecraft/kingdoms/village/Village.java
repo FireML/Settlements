@@ -730,4 +730,9 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     public Map<String, String> getDefaultRankTitles() {
         return defaultRankTitles;
     }
+
+    @Override
+    public String name() {
+        return "Village";
+    }
 }

@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.command.village;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.land.ChatMap;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -57,7 +58,7 @@ public class VillageClaimCommand extends VillageSubCommand {
                     return false;
                 }
             }
-        } else if (args.length  == 2) {
+        } else if (args.length >= 2) {
             if (res.hasPermission("kingdoms.command.village.claim.coords")) {
                 try {
                     toClaim.add(new SimpleChunkLocation(player.getWorld().getName(), Integer.parseInt(args[0]), Integer.parseInt(args[1])));
@@ -163,7 +164,12 @@ public class VillageClaimCommand extends VillageSubCommand {
                         "upkeepperclaim", String.valueOf(Utils.getUpkeepCost(village.getState(), village.getLevel()))
                 );
             }
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(toSave));
+            Utils.runAsync(() -> {
+                DatabaseManager.getInstance().saveLand(toSave);
+                if (args.length >= 3 && "map".equalsIgnoreCase(args[2])) {
+                    new ChatMap(res.getPlayer(), toSave.get(0).getMapKey());
+                }
+            });
         }
         return true;
     }

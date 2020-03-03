@@ -4,6 +4,7 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.db.DatabaseSerializable;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
@@ -443,7 +444,10 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
                 "pvp", String.valueOf(getMode(PlotMode.pvp)),
                 "buff", String.valueOf(getMode(PlotMode.buff)),
                 "build", getBuildState().getTag(),
-                "embassy", String.valueOf(isEmbassy())
+                "embassy", String.valueOf(isEmbassy()),
+                "x", String.valueOf(getX()),
+                "z", String.valueOf(getZ()),
+                "world", getWorldName()
         };
     }
 
@@ -455,5 +459,19 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
 
     public boolean canAdmin(Resident resident) {
         return getLandOwner().canAdminPlots(resident);
+    }
+
+    public ConfigMessages getMapKey() {
+        return new ConfigMessages() {
+            @Override
+            public String type() {
+                return "command";
+            }
+
+            @Override
+            public String name() {
+                return getLandOwner().getKey() + ".map";
+            }
+        };
     }
 }

@@ -4,19 +4,18 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.db.MySqlDatabaseManager;
+import me.crz.minecraft.kingdoms.land.ChatMap;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -138,7 +137,12 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                             "upkeepperclaim", String.valueOf(Utils.getUpkeepCost(res.getVillage().getState(), res.getVillage().getLevel()))
                     );
                 }
+                if (args.length >= 3 && "map".equalsIgnoreCase(args[2])) {
+                    ConfigMessages configMessages = unclaimedLand.iterator().next().getMapKey();
+                    Utils.runAsync(() -> new ChatMap(res.getPlayer(), configMessages));
+                }
                 LandManager.getInstance().unclaimLand(unclaimedLand);
+
             };
             if (unclaimedLand.size() == 1) {
                 unclaim.run();

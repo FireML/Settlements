@@ -414,6 +414,11 @@ public class Empire extends LandOwner implements Comparable<Empire> {
         return lastRename;
     }
 
+    @Override
+    public String name() {
+        return "Empire";
+    }
+
     private enum State implements NameTag {
         EMPIRE;
     }

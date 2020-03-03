@@ -28,6 +28,7 @@ error:
   not-a-plot: "&c&lYou are not currently standing in an owned plot"
   none-connected: "&c&lERROR: &cNo plots are connected to this one!"
   none-linked: "&c&lERROR: &cNo plots are linked to this one!"
+  not-linked: "&c&lERROR: &cThat plot isn't linked to this one!"
   not-for-sale: "&cLand is not for sale!"
   not-your-plot: "&cThis is not your plot!"
   world-not-claimable: "&c&lClaiming is disabled in this world!"
@@ -758,8 +759,8 @@ gui:
       &7Click to claim!
   plot:
     link: |-
-      &7Click to link the permissions of all
-      &7plots connected to this one
+      &7Click to link the settings
+      &7of other plots to this one
     linked-to: "&bThis plot is linked to {location}"
     linked: "&e{amount}&b other plots are linked to this one"
     unlink: "&7Click to unlink!"
@@ -1139,6 +1140,8 @@ command:
     link:
       already-linked: "&c&lERROR: &cAlready linked to plot {location}!"
       success: "&a&lSUCCESS: &r&7Linked {amount} plots to your current one!"
+      success-coords: "&a&lSUCCESS: &r&7Linked {x} {z} to your current one!"
+      success-existing: "[&7Linked to other {amount} plots now!](&a{x}/{z} is linked to:\n&f{linked})"
       description: Link surrounding land flags with the current one
     mode:
       modes: "&cAvailable modes: {modes}"
@@ -1438,8 +1441,14 @@ command:
         &r &7+ &6= current
       not-for-sale: "Nor for sale"
       hover:
-        click-to-claim: "&9Click to claim &f{x}-{z}"
-        click-to-unclaim: "&9Click to unclaim &f{x}-{z}"
+        click-to-claim: "&9Click to claim &f{x}&9/&f{z}"
+        click-to-unclaim: "&9Click to unclaim &f{x}&9/&f{z}"
+        click-to-link: |-
+          &9Click to link &f{x}&9/&f{z}
+          &9to your current plot
+        click-to-unlink: |-
+          &9Click to unlink &f{x}&9/&f{z}
+          &9from your current plot
         own-plot: Your plot
         plot: "Plot Owner: &7{owner}"
         embassy: "Embassy Owner: &7{owner}"

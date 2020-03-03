@@ -12,6 +12,7 @@ import me.crz.minecraft.kingdoms.perk.Perk;
 import me.crz.minecraft.kingdoms.perk.PerkData;
 import me.crz.minecraft.kingdoms.perk.Vaultable;
 import me.crz.minecraft.kingdoms.rank.Rank;
+import me.crz.minecraft.kingdoms.utils.ConfigKey;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Targetable;
@@ -41,7 +42,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targetable, ModeAble {
+public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targetable, ModeAble, ConfigKey {
     private IdObject id = IdObject.get(null);
     private String name;
     private String description = "";
@@ -288,7 +289,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
     }
 
     public String getIdKey() {
-        return getClass().getSimpleName().toLowerCase() + ":" + getId();
+        return getKey() + ":" + getId();
     }
 
     public BuildState getUseState(Use u) {
