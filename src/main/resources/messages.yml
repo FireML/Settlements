@@ -1443,6 +1443,7 @@ command:
       hover:
         click-to-claim: "&9Click to claim &f{x}&9/&f{z}"
         click-to-unclaim: "&9Click to unclaim &f{x}&9/&f{z}"
+        linked: "&7Linked to &f{linked}&7 other plots. (ID: {linkgroup})"
         click-to-link: |-
           &9Click to link &f{x}&9/&f{z}
           &9to your current plot

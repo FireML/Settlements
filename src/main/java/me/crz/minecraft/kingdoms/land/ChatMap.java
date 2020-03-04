@@ -21,6 +21,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -221,6 +222,8 @@ public class ChatMap {
             if (land.isPlot()) {
                 if (land.isPlotOwner(resident)) {
                     if (land.isLinked(playerLand)) {
+                        relation = Relation.OWN_PLOT_LINKED_CURRENT;
+                    } else if (land.hasLink()) {
                         relation = Relation.OWN_PLOT_LINKED;
                     } else {
                         relation = Relation.OWN_PLOT;
@@ -258,6 +261,16 @@ public class ChatMap {
 
             ComponentBuilder cb = new ComponentBuilder(MessageUtils.replaceColorCodes(symbol.getText())).color(relation.getColor());
             if (canLinkPlot && land.isPlotOwner(playerLand.getPlotOwner())) {
+                if (land.hasLink()) {
+                    hover.append("\n").append(messages.getMessage("hover.linked")
+                            .getReplacedComponents(
+                                    "location", x + "-" + z,
+                                    "x", String.valueOf(x),
+                                    "z", String.valueOf(z),
+                                    "linked", String.valueOf(land.getLinked().size() - 1),
+                                    "linkgroup", Base64.getEncoder().encodeToString(land.getLink().toString().getBytes()).substring(0, 4)
+                            ));
+                }
                 if (!current) {
                     if (land.isLinked(playerLand)) {
                         hover.append("\n").append(messages.getMessage("hover.click-to-unlink")
@@ -296,6 +309,7 @@ public class ChatMap {
         OWN_OUTPOST,
         OWN_PLOT,
         OWN_PLOT_LINKED,
+        OWN_PLOT_LINKED_CURRENT,
         EMPIRE,
         ALLY,
         ENEMY,
