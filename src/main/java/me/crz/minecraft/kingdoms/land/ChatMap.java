@@ -136,12 +136,14 @@ public class ChatMap {
         private Set<SimpleChunkLocation> ownOutposts = new HashSet<>();
         private boolean canClaimCoords = false;
         private boolean canUnclaimCoords = false;
+        private boolean canLinkPlot;
 
         public MapGenerator(Player p) {
             this.playerLand = LandManager.getInstance().getLand(p.getLocation());
             this.claimable = Utils.isWorldClaimable(p.getWorld());
             this.player = p;
             this.resident = ResidentManager.getInstance().getResident(p);
+            this.canLinkPlot = playerLand != null && (playerLand.isPlotOwner(resident) || playerLand.canAdmin(resident));
             if (resident.hasVillage()) {
                 this.canClaimCoords = resident.hasPermission("kingdoms.command.village.claim.coords");
                 this.canUnclaimCoords = resident.hasPermission("kingdoms.command.village.unclaim.coords");
@@ -255,7 +257,7 @@ public class ChatMap {
             }
 
             ComponentBuilder cb = new ComponentBuilder(MessageUtils.replaceColorCodes(symbol.getText())).color(relation.getColor());
-            if (playerLand != null && land.isPlotOwner(playerLand.getPlotOwner())) {
+            if (canLinkPlot && land.isPlotOwner(playerLand.getPlotOwner())) {
                 if (!current) {
                     if (land.isLinked(playerLand)) {
                         hover.append("\n").append(messages.getMessage("hover.click-to-unlink")
@@ -275,7 +277,7 @@ public class ChatMap {
                         cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plot link " + x + " " + z + " map"));
                     }
                 }
-            } else if (claimable && land.isOwnedBy(resident.getVillage()) && canUnclaimCoords) {
+            } else if (claimable && canUnclaimCoords && land.isOwnedBy(resident.getVillage())) {
                 hover.append("\n").append(messages.getMessage("hover.click-to-unclaim")
                         .getReplacedComponents(
                                 "location", x + "-" + z,
