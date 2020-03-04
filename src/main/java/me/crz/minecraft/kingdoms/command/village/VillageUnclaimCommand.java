@@ -70,7 +70,7 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                     return false;
                 }
             }
-        } else if (args.length == 2) {
+        } else if (args.length >= 2) {
             if (res.hasPermission("kingdoms.command.village.unclaim.coords")) {
                 try {
                     toUnclaim.add(new SimpleChunkLocation(player.getWorld().getName(), Integer.parseInt(args[0]), Integer.parseInt(args[1])));
