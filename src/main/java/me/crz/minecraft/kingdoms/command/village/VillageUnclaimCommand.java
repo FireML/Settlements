@@ -144,16 +144,12 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                 LandManager.getInstance().unclaimLand(unclaimedLand);
 
             };
-            if (unclaimedLand.size() == 1) {
-                unclaim.run();
-            } else {
-                confirm.put(res.getUUID(), unclaim);
-                getMessage("confirm").tell(res,
-                        "command", base + " " + alias + " confirm",
-                        "amount", String.valueOf(unclaimedLand.size()),
-                        "claims", unclaimedLand.stream().map(l -> l.getX() + "/" + l.getZ()).collect(Collectors.joining(", "))
-                );
-            }
+            confirm.put(res.getUUID(), unclaim);
+            getMessage("confirm").tell(res,
+                    "command", base + " " + alias + " confirm",
+                    "amount", String.valueOf(unclaimedLand.size()),
+                    "claims", unclaimedLand.stream().map(l -> l.getX() + "/" + l.getZ()).collect(Collectors.joining(", "))
+            );
         } else if (toUnclaim.size() == 1) {
             getError("no-village").tell(res);
         }
