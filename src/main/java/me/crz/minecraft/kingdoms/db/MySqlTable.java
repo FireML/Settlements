@@ -269,6 +269,7 @@ public enum MySqlTable {
             + "price INTEGER DEFAULT 0,"
             + "forSale BOOLEAN NOT NULL,"
             + "embassy BOOLEAN NOT NULL,"
+            + "name VARCHAR(255),"
             + "description TEXT,"
             + "buildState VARCHAR(255) NOT NULL,"
             + "link VARCHAR(36)"

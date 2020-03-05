@@ -258,27 +258,37 @@ empire:
     senator: Senator
     none: No Rank
 plot:
+  linked:
+    message: ""
+    actionbar: "&7{description}"
+    title: ""
+    subtitle: "{name}"
   owned:
     message: ""
-    actionbar: "&7&lWelcome to&6&l {owner}&7&l’s plot{pvp}"
+    actionbar: "&7&lWelcome to&6&l {owner}&7&l’s plot{pvp} &7{description}"
     title: ""
-    subtitle: ""
+    subtitle: "{name}"
   for-sale:
     message: "&9&lLand is for sale for ${amount}, type [&e/s plot buy](suggest_command=/s plot buy)&9 to buy it"
-    actionbar: "&9&lLand is for sale for ${amount}"
+    actionbar: "&9&lLand is for sale for ${amount} &7{description}"
     title: ""
-    subtitle: ""
+    subtitle: "{name}"
 embassy:
+  linked:
+    message: ""
+    actionbar: "{description}"
+    title: ""
+    subtitle: "{name}"
   owned:
     message: ""
     actionbar: "&7&lWelcome to&6&l {owner}&7&l’s embassy{pvp}"
     title: ""
-    subtitle: ""
+    subtitle: "{name}"
   for-sale:
     message: "&9&lEmbassy is for sale for ${amount}, type [&e/s plot buy](suggest_command=/s plot buy)&9 to buy it"
-    actionbar: "&9&lEmbassy is for sale for ${amount}"
+    actionbar: "&9&lEmbassy is for sale for ${amount} &7{description}"
     title: ""
-    subtitle: ""
+    subtitle: "{name}"
 pvp-is-enabled: " - &c&lPvp is enabled!&7&l"
 chat:
   locked: "&c&lChat is currently locked!"
@@ -1154,8 +1164,11 @@ command:
     set:
       embassy: The plot can be purchased by players outside of the settlement
     name:
-      success: "&aSet name of plot to &r{description}"
+      success: "&aSet name of plot to &r{name}"
       description: Set the name of a plot
+    desc:
+      success: "&aSet descroption of plot to &r{description}"
+      description: Set the description of a plot
     unown:
       success: "&aPlot is no longer owned by you!"
       success-other: "&aPlot is no longer owned by &e{owner}&a!"

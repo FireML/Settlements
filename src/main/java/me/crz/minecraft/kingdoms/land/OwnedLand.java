@@ -46,6 +46,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     private boolean forSale = false;
     private Map<PlotMode, Boolean> modes = new EnumMap<>(PlotMode.class);
     private String outpost = null;
+    private String name = "";
     private String description = "";
     private BuildState buildState = BuildState.PRIVATE;
     private EnumMap<Use, BuildState> use = new EnumMap<>(Use.class);
@@ -222,6 +223,14 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         return false;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name.length() > 16 ? name.substring(0, 16) : name;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -335,6 +344,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         map.put("owner", getPlotOwner() != null ? getPlotOwner() : Utils.ZERO_UUID);
         map.put("price", getPrice());
         map.put("forSale", isForSale());
+        map.put("name", getName());
         map.put("description", getDescription());
         map.put("embassy", isEmbassy());
         map.put("modes", getModes().entrySet().stream().filter(e -> e.getKey().appliesTo(PlotMode.AppliesTo.LAND_OWNER)).collect(Collectors.toMap(e -> e.getKey().name(), Map.Entry::getValue)));
@@ -371,6 +381,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
                 land.setPlotOwner(null);
             }
         }
+        land.setName((String) map.get("name"));
         land.setDescription((String) map.get("description"));
         land.setPrice((Integer) map.get("price"));
         land.setForSale((Boolean) map.get("forSale"));
@@ -408,6 +419,14 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
             return false;
         }
         boolean r = false;
+        if (!getName().equals(land.getName())) {
+            setName(land.getName());
+            r = true;
+        }
+        if (!getDescription().equals(land.getDescription())) {
+            setDescription(land.getDescription());
+            r = true;
+        }
         if (getBuildState() != land.getBuildState()) {
             setBuildState(land.getBuildState());
             r = true;
@@ -436,6 +455,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     public String[] getReplacements() {
         return new String[] {
                 "state", getLandOwner().getStateTag(),
+                "name", getName(),
                 "description", getDescription(),
                 "landowner", getLandOwner().getName(),
                 "mobspawning", String.valueOf(getMode(PlotMode.mobSpawning)),

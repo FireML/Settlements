@@ -100,6 +100,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         updateLandOwnersMissingColumns();
         updateResidentTitles();
         updateBanishedAllies();
+        addColumn(MySqlTable.CLAIMS, "name", "VARCHAR(255) DEFAULT '' AFTER embassy");
     }
 
     private void initializeTables() throws SQLException {

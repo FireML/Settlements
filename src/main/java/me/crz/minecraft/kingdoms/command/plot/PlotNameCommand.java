@@ -7,14 +7,14 @@ import me.crz.minecraft.kingdoms.village.Resident;
 
 public class PlotNameCommand extends PlotSubCommand {
     public PlotNameCommand(PlotCommand parent) {
-        super(parent, "name <text>", "board", "description", "setdescription");
+        super(parent, "name <text>", "setname");
     }
 
     @Override
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
-        land.setDescription(ChatManager.getInstance().filterAllCurses(String.join(" ", args)));
-        LandManager.getInstance().saveLand(land);
-        getMessage("success").tell(res, "description", land.getDescription());
+        land.setName(ChatManager.getInstance().filterAllCurses(String.join(" ", args)));
+        LandManager.getInstance().syncAndSave(land);
+        getMessage("success").tell(res, "description", land.getName(), "name", land.getName());
         return true;
     }
 }

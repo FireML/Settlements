@@ -279,12 +279,22 @@ public class LandFlags extends Base implements LandFlagBase {
                     Base.getLandPerks().giveEffects(player, destinationLand, true);
                 }
             }
-            if (originalLand == null || !originalLand.isPlotOwner(destinationLand.getPlotOwner())) {
+            if (originalLand != null && originalLand.isPlotOwner(destinationLand.getPlotOwner()) && destinationLand.hasLink() && !originalLand.isLinked(destinationLand)) {
+                Utils.runAsync(() -> MessageUtils.tellAdvanced(player,  (destinationLand.isEmbassy() ? "embassy" : "plot") + ".linked",
+                        "name", destinationLand.getLandOwner().getName(),
+                        "state", destinationLand.getLandOwner().getStateTag(),
+                        "owner", ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName(),
+                        "name", destinationLand.getName(),
+                        "description", destinationLand.getDescription(),
+                        "pvp", destinationLand.getMode(PlotMode.pvp) ? Message.get("pvp-is-enabled").getText() : ""
+                ));
+            } else if (originalLand == null || !originalLand.isPlotOwner(destinationLand.getPlotOwner())) {
                 if (destinationLand.isPlot()) {
                     Utils.runAsync(() -> MessageUtils.tellAdvanced(player,  (destinationLand.isEmbassy() ? "embassy" : "plot") + ".owned",
                             "name", destinationLand.getLandOwner().getName(),
                             "state", destinationLand.getLandOwner().getStateTag(),
                             "owner", ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName(),
+                            "name", destinationLand.getName(),
                             "description", destinationLand.getDescription(),
                             "pvp", destinationLand.getMode(PlotMode.pvp) ? Message.get("pvp-is-enabled").getText() : ""
                     ));
@@ -292,6 +302,7 @@ public class LandFlags extends Base implements LandFlagBase {
                     MessageUtils.tellAdvanced(player, (destinationLand.isEmbassy() ? "embassy" : "plot") + ".for-sale",
                             "name", destinationLand.getLandOwner().getName(),
                             "state", destinationLand.getLandOwner().getStateTag(),
+                            "name", destinationLand.getName(),
                             "description", destinationLand.getDescription(),
                             "pvp", destinationLand.getMode(PlotMode.pvp) ? Message.get("pvp-is-enabled").getText() : "",
                             "amount", Utils.CURRENCY_FORMAT.format(destinationLand.getPrice())
