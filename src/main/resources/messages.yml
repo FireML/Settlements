@@ -834,6 +834,20 @@ gui:
       mode: |-
         &a&lMode
         &7Set different settings for the plot
+      name:
+        button: |-
+          &a&lName &f{name}
+          &7Set the name of the plot
+        anvil:
+          title: "Set the name"
+          placeholder: "{name}"
+      desc:
+        button: |-
+          &a&lDescription &f{description}
+          &7Set the description of the plot
+        anvil:
+          title: "Set the description"
+          placeholder: "{description}"
       entry: |-
         &a⊱&m━━━━&r&6Plot Info&a&m━━━━&a⊰
         &c&l{state}: &7{landowner}

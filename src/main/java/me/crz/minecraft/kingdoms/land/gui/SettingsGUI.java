@@ -1,11 +1,18 @@
 package me.crz.minecraft.kingdoms.land.gui;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.utils.Message;
+import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
+import net.wesjd.anvilgui.AnvilGUI;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -20,7 +27,7 @@ public class SettingsGUI extends PlotGUI {
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
         gui.addItem(new ClickableItem() {
             public ItemStack getItem(Player p) {
-                return new CItem(Material.DIAMOND_PICKAXE).setName(getText("build")).hideAllFlags(true).build();
+                return new CItem(Material.DIAMOND_PICKAXE).setName(getText("build")).build();
             }
 
             public boolean click(Player p, ClickType clickType) {
@@ -34,7 +41,7 @@ public class SettingsGUI extends PlotGUI {
         });
         gui.addItem(new ClickableItem() {
             public ItemStack getItem(Player p) {
-                return new CItem(Material.LEVER).setName(getText("use")).hideAllFlags(true).build();
+                return new CItem(Material.LEVER).setName(getText("use")).build();
             }
 
             public boolean click(Player p, ClickType clickType) {
@@ -48,12 +55,92 @@ public class SettingsGUI extends PlotGUI {
         });
         gui.addItem(new ClickableItem() {
             public ItemStack getItem(Player p) {
-                return new CItem(Material.REDSTONE).setName(getText("mode")).hideAllFlags(true).build();
+                return new CItem(Material.REDSTONE).setName(getText("mode")).build();
             }
 
             public boolean click(Player p, ClickType clickType) {
                 ModeGUI.getInstance().open(p);
                 return true;
+            }
+        });
+        gui.addItem(new ClickableItem() {
+            @Override
+            public ItemStack getItem(Player p) {
+                OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                if (land != null) {
+                    return new CItem(Material.NAME_TAG).setName(getText("name.button", "name", land.getName())).build();
+                }
+                return null;
+            }
+
+            @Override
+            public boolean click(Player p, ClickType ct) {
+                OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                if (land != null) {
+                    new AnvilGUI.Builder()
+                            .item(new ItemStack(Material.WRITABLE_BOOK))
+                            .title(getText("name.anvil.title", "name", land.getName()))
+                            .text(getText("name.anvil.placeholder", "name", land.getName()))
+                            .onClose(player -> Utils.runLater(() -> open(player), 1))
+                            .onComplete((player, text) -> {
+                                OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
+                                if (currentLand != null && (currentLand.isPlotOwner(player) || currentLand.canAdmin(ResidentManager.getInstance().getResident(player)))) {
+                                    text = ChatManager.getInstance().filterAllCurses(ChatColor.stripColor(text));
+                                    if (text.length() > 16) {
+                                        getError("too-long").tell(player, "input", text, "amount", "16");
+                                        return AnvilGUI.Response.text(text);
+                                    }
+                                    currentLand.setName(text);
+                                    LandManager.getInstance().syncAndSave(currentLand);
+                                    Message.get("command.plot.name.success").tell(p, "description", currentLand.getName(), "name", currentLand.getName());
+                                }
+                                return AnvilGUI.Response.close();
+                            })
+                            .plugin(KingdomsPlugin.getInstance())
+                            .open(p);
+                    return true;
+                }
+                return false;
+            }
+        });
+        gui.addItem(new ClickableItem() {
+            @Override
+            public ItemStack getItem(Player p) {
+                OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                if (land != null) {
+                    return new CItem(Material.WRITABLE_BOOK).setName(getText("desc.button", "description", land.getDescription())).build();
+                }
+                return null;
+            }
+
+            @Override
+            public boolean click(Player p, ClickType ct) {
+                OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                if (land != null) {
+                    new AnvilGUI.Builder()
+                            .item(new ItemStack(Material.WRITABLE_BOOK))
+                            .title(getText("desc.anvil.title", "description", land.getDescription()))
+                            .text(getText("desc.anvil.placeholder", "description", land.getDescription()))
+                            .onClose(player -> Utils.runLater(() -> open(player), 1))
+                            .onComplete((player, text) -> {
+                                OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
+                                if (currentLand != null && (currentLand.isPlotOwner(player) || currentLand.canAdmin(ResidentManager.getInstance().getResident(player)))) {
+                                    text = ChatManager.getInstance().filterAllCurses(ChatColor.stripColor(text));
+                                    if (text.length() > 255) {
+                                        getError("too-long").tell(player, "input", text, "amount", "255");
+                                        return AnvilGUI.Response.text(text);
+                                    }
+                                    currentLand.setDescription(text);
+                                    LandManager.getInstance().syncAndSave(currentLand);
+                                    Message.get("command.plot.desc.success").tell(p, "description", currentLand.getDescription());
+                                }
+                                return AnvilGUI.Response.close();
+                            })
+                            .plugin(KingdomsPlugin.getInstance())
+                            .open(p);
+                    return true;
+                }
+                return false;
             }
         });
         gui.addItem(getPlotLinkItem(gui));
