@@ -12,7 +12,12 @@ public class PlotDescriptionCommand extends PlotSubCommand {
 
     @Override
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
-        land.setDescription(ChatManager.getInstance().filterAllCurses(String.join(" ", args)));
+        String description = ChatManager.getInstance().filterAllCurses(String.join(" ", args));
+        if (description.length() > 255) {
+            getError("too-long").tell(res, "input", description, "amount", "255");
+            return true;
+        }
+        land.setDescription(description);
         LandManager.getInstance().syncAndSave(land);
         getMessage("success").tell(res, "description", land.getDescription());
         return true;

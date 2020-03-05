@@ -12,7 +12,12 @@ public class PlotNameCommand extends PlotSubCommand {
 
     @Override
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
-        land.setName(ChatManager.getInstance().filterAllCurses(String.join(" ", args)));
+        String name = ChatManager.getInstance().filterAllCurses(String.join(" ", args));
+        if (name.length() > 16) {
+            getError("too-long").tell(res, "input", name, "amount", "16");
+            return true;
+        }
+        land.setName(name);
         LandManager.getInstance().syncAndSave(land);
         getMessage("success").tell(res, "description", land.getName(), "name", land.getName());
         return true;

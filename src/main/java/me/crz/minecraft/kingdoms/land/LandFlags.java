@@ -280,7 +280,7 @@ public class LandFlags extends Base implements LandFlagBase {
                 }
             }
             if (originalLand != null && originalLand.isPlotOwner(destinationLand.getPlotOwner()) && destinationLand.hasLink() && !originalLand.isLinked(destinationLand)) {
-                Utils.runAsync(() -> MessageUtils.tellAdvanced(player,  (destinationLand.isEmbassy() ? "embassy" : "plot") + ".linked",
+                Utils.runAsync(() -> MessageUtils.tellAdvanced(player, (destinationLand.isEmbassy() ? "embassy" : "plot") + ".linked",
                         "name", destinationLand.getLandOwner().getName(),
                         "state", destinationLand.getLandOwner().getStateTag(),
                         "owner", ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName(),
@@ -288,7 +288,7 @@ public class LandFlags extends Base implements LandFlagBase {
                         "description", destinationLand.getDescription(),
                         "pvp", destinationLand.getMode(PlotMode.pvp) ? Message.get("pvp-is-enabled").getText() : ""
                 ));
-            } else if (originalLand == null || !originalLand.isPlotOwner(destinationLand.getPlotOwner())) {
+            } else if (originalLand == null || !originalLand.isPlotOwner(destinationLand.getPlotOwner()) || !originalLand.getName().equals(destinationLand.getName()) || !originalLand.getDescription().equals(destinationLand.getDescription())) {
                 if (destinationLand.isPlot()) {
                     Utils.runAsync(() -> MessageUtils.tellAdvanced(player,  (destinationLand.isEmbassy() ? "embassy" : "plot") + ".owned",
                             "name", destinationLand.getLandOwner().getName(),
