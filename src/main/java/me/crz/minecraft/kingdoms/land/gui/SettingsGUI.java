@@ -22,8 +22,9 @@ public class SettingsGUI extends PlotGUI {
     private static SettingsGUI instance;
     public CInventory gui;
 
-    private SettingsGUI() {
+    public SettingsGUI(Player p) {
         super("plot.settings");
+        OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
         gui = new CInventory(getText("title"), InventorySize.ONE) {};
         gui.addItem(new ClickableItem() {
             public ItemStack getItem(Player p) {
@@ -81,7 +82,7 @@ public class SettingsGUI extends PlotGUI {
                             .item(new ItemStack(Material.WRITABLE_BOOK))
                             .title(getText("name.anvil.title", "name", land.getName()))
                             .text(getText("name.anvil.placeholder", "name", land.getName()))
-                            .onClose(player -> Utils.runLater(() -> open(player), 1))
+                            .onClose(player -> Utils.runLater(() -> new SettingsGUI(player), 1))
                             .onComplete((player, text) -> {
                                 OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
                                 if (currentLand != null && (currentLand.isPlotOwner(player) || currentLand.canAdmin(ResidentManager.getInstance().getResident(player)))) {
@@ -121,7 +122,7 @@ public class SettingsGUI extends PlotGUI {
                             .item(new ItemStack(Material.WRITABLE_BOOK))
                             .title(getText("desc.anvil.title", "description", land.getDescription()))
                             .text(getText("desc.anvil.placeholder", "description", land.getDescription()))
-                            .onClose(player -> Utils.runLater(() -> open(player), 1))
+                            .onClose(player -> Utils.runLater(() -> new SettingsGUI(player), 1))
                             .onComplete((player, text) -> {
                                 OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
                                 if (currentLand != null && (currentLand.isPlotOwner(player) || currentLand.canAdmin(ResidentManager.getInstance().getResident(player)))) {
@@ -143,6 +144,63 @@ public class SettingsGUI extends PlotGUI {
                 return false;
             }
         });
+        if (land != null && !land.isPlot() && land.canAdmin(ResidentManager.getInstance().getResident(p))) {
+            gui.addItem(new ClickableItem() {
+                @Override
+                public ItemStack getItem(Player p) {
+                    OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                    if (land != null) {
+                        return new CItem(Material.EMERALD).setName(getText("sale.button" + (land.isForSale() ? "" : "-not-for-sale"), "price", String.valueOf(land.getPrice()))).build();
+                    }
+                    return null;
+                }
+
+                @Override
+                public boolean click(Player p, ClickType ct) {
+                    OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                    if (land != null) {
+                        if (land.isForSale() && ct.isShiftClick()) {
+                            land.setForSale(false);
+                            land.setPrice(0);
+                            land.setEmbassy(false);
+                            gui.build(p);
+                            LandManager.getInstance().saveLand(land);
+                            Message.get("command.plot.unsale.success").tell(p);
+                        } else {
+                            new AnvilGUI.Builder()
+                                    .item(new ItemStack(Material.EMERALD))
+                                    .title(getText("sale.anvil.title", "price", String.valueOf(land.getPrice())))
+                                    .text(getText("sale.anvil.placeholder", "price", land.getPrice() > 0 ? String.valueOf(land.getPrice()) : "-"))
+                                    .onClose(player -> Utils.runLater(() -> new SettingsGUI(player), 1))
+                                    .onComplete((player, text) -> {
+                                        OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
+                                        if (currentLand != null && currentLand.canAdmin(ResidentManager.getInstance().getResident(player))) {
+                                            if (currentLand.isPlot()) {
+                                                Message.get("command.plot.sale.already-owned").tell(player);
+                                                return AnvilGUI.Response.close();
+                                            }
+                                            try {
+                                                int price = Integer.parseInt(text);
+                                                currentLand.setPrice(price);
+                                                currentLand.setForSale(true);
+                                                LandManager.getInstance().saveLand(currentLand);
+                                                Message.get("command.plot.sale.success").tell(player, "price", String.valueOf(price));
+                                            } catch (NumberFormatException e) {
+                                                getError("not-a-number").tell(player, "input", text);
+                                                return AnvilGUI.Response.text(text);
+                                            }
+                                        }
+                                        return AnvilGUI.Response.close();
+                                    })
+                                    .plugin(KingdomsPlugin.getInstance())
+                                    .open(p);
+                        }
+                        return true;
+                    }
+                    return false;
+                }
+            });
+        }
         gui.addItem(getPlotLinkItem(gui));
         gui.addItem(8, new ClickableItem() {
             public ItemStack getItem(Player p) {
@@ -160,16 +218,6 @@ public class SettingsGUI extends PlotGUI {
                 return false;
             }
         });
-    }
-
-    public void open(Player p) {
         gui.build(p);
-    }
-
-    synchronized public static SettingsGUI getInstance() {
-        if (instance == null) {
-            instance = new SettingsGUI();
-        }
-        return instance;
     }
 }

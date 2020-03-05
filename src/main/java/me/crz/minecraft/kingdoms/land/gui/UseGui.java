@@ -174,7 +174,7 @@ public class UseGui extends PlotGUI {
             }
 
             public boolean click(final Player p, final ClickType clickType) {
-                SettingsGUI.getInstance().open(p);
+                new SettingsGUI(p);
                 return true;
             }
         });

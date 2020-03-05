@@ -79,7 +79,7 @@ public abstract class PlotGUI extends KingdomsGUI {
                                 gui.build(p);
                             }
                             Message.get("command.plot.unlink.disconnected").tell(p, "amount", String.valueOf(linked));
-                        } else {
+                        } else if (land.isPlot()) {
                             Utils.runLater(p::closeInventory, 1);
                             Utils.runAsync(() -> new ChatMap(p, land.getMapKey()));
                         }

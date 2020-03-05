@@ -848,6 +848,17 @@ gui:
         anvil:
           title: "Set the description"
           placeholder: "{description}"
+      sale:
+        button-not-for-sale: |-
+          &a&lSell plot
+          &7Click to set the price for the plot
+        button: |-
+          &a&lPlot Price &f({price})
+          &7Click to set the price for the plot
+          &7Shift click to make the plot not buyable
+        anvil:
+          title: "Set price"
+          placeholder: "{price}"
       entry: |-
         &a⊱&m━━━━&r&6Plot Info&a&m━━━━&a⊰
         &c&l{state}: &7{landowner}
