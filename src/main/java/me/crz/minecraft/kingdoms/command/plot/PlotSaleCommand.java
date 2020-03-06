@@ -31,11 +31,16 @@ public class PlotSaleCommand extends PlotSubCommand {
         } else {
             try {
                 int price = Integer.valueOf(args[0]);
+                if (price < 0) {
+                    getError("not-a-number").tell(res, "input", args[0]);
+                    return true;
+                }
                 land.setPrice(price);
                 land.setForSale(true);
                 LandManager.getInstance().saveLand(land);
                 res.tell(getMessage("success"), "price", String.valueOf(price));
             } catch (NumberFormatException e) {
+                getError("not-a-number").tell(res, "input", args[0]);
                 return false;
             }
         }

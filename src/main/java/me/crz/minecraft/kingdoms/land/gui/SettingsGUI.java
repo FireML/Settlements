@@ -181,6 +181,10 @@ public class SettingsGUI extends PlotGUI {
                                             }
                                             try {
                                                 int price = Integer.parseInt(text);
+                                                if (price < 0) {
+                                                    getError("not-a-number").tell(player, "input", text);
+                                                    return AnvilGUI.Response.text(text);
+                                                }
                                                 currentLand.setPrice(price);
                                                 currentLand.setForSale(true);
                                                 LandManager.getInstance().saveLand(currentLand);
