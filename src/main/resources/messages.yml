@@ -299,9 +299,24 @@ embassy:
     actionbar: "&7&lWelcome to&6&l {owner}&7&l’s embassy{pvp} &f{description}"
     title: ""
     subtitle: "{name}"
+  owned-description:
+    message: ""
+    actionbar: "&f{description}{pvp}"
+    title: ""
+    subtitle: "{name}"
   for-sale:
     message: "&9&lEmbassy is for sale for ${amount}, type [&e/s plot buy](suggest_command=/s plot buy)&9 to buy it"
     actionbar: "&9&lEmbassy is for sale for ${amount} &f{description}"
+    title: ""
+    subtitle: "{name}"
+  for-sale-description:
+    message: ""
+    actionbar: "&f{description}{pvp}"
+    title: ""
+    subtitle: "{name}"
+  description:
+    message: ""
+    actionbar: "&f{description}{pvp}"
     title: ""
     subtitle: "{name}"
 pvp-is-enabled: " - &c&lPvp is enabled!&7&l"
