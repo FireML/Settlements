@@ -70,8 +70,6 @@ public interface LandFlagBase extends ConfigMessages {
         if (state.atLeast(BuildState.PRIVATE)) {
             if (land.isPlot()) {
                 allowed = land.isPlotOwner(building);
-            } else if (land.getLandOwner() instanceof Empire) {
-                allowed = ((Empire) land.getLandOwner()).getCapital().isMember(ResidentManager.getInstance().getResident(building));
             } else {
                 return null;
             }
