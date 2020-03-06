@@ -229,7 +229,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     public void setName(String name) {
-        this.name = ChatColor.stripColor(name).length() > 16 ? name.substring(0, 16) : name;
+        this.name = ChatColor.stripColor(name).length() > Utils.getPlotNameLength() ? name.substring(0, Utils.getPlotNameLength()) : name;
     }
 
     public String getDescription() {
@@ -237,7 +237,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     public void setDescription(String description) {
-        this.description = ChatColor.stripColor(description).length() > 255 ? description.substring(0, 255) : description;
+        this.description = ChatColor.stripColor(description).length() > Utils.getPlotDescriptionLength() ? description.substring(0, Utils.getPlotDescriptionLength()) : description;
     }
 
     public Collection<OwnedLand> getLinked() {

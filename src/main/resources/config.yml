@@ -75,6 +75,9 @@ close-claims-unclaims-outposts: false
 close-building-notification-distance: 4
 only-lock-in-settlement: true
 claim-max-radius: 5
+plot:
+  name-length: 25
+  description-length: 255
 # How often (in seconds) should the plugin check for mobs
 # that wandered into claims that had mob spawning disabled?
 # Setting this to 0 or anything below will disable this check!

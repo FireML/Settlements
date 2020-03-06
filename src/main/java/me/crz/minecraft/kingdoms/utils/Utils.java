@@ -346,6 +346,20 @@ public class Utils {
         return ConfigManager.getInstance().getConfig().getBoolean("modes." + type + "." + mode.getKey(), false);
     }
 
+    public static int getPlotNameLength() {
+        if (ConfigManager.getInstance().getConfig().isInt("plot.name-length")) {
+            return Math.min(ConfigManager.getInstance().getConfig().getInt("plot.name-length"), 255);
+        }
+        return 25;
+    }
+
+    public static int getPlotDescriptionLength() {
+        if (ConfigManager.getInstance().getConfig().isInt("plot.description-length")) {
+            return ConfigManager.getInstance().getConfig().getInt("plot.description-length");
+        }
+        return 25;
+    }
+
     public static boolean playerIsChief(Player player, Village village) {
         return village != null && village.getChiefId().equals(player.getUniqueId());
     }

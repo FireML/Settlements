@@ -88,8 +88,8 @@ public class SettingsGUI extends PlotGUI {
                                 OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
                                 if (currentLand != null && (currentLand.isPlotOwner(player) || currentLand.canAdmin(ResidentManager.getInstance().getResident(player)))) {
                                     text = MessageUtils.replaceColorCodes(ChatManager.getInstance().filterAllCurses(ChatColor.stripColor(text.trim())));
-                                    if (ChatColor.stripColor(text).length() > 16) {
-                                        getError("too-long").tell(player, "input", text, "amount", "16");
+                                    if (ChatColor.stripColor(text).length() > Utils.getPlotNameLength()) {
+                                        getError("too-long").tell(player, "input", text, "amount", String.valueOf(Utils.getPlotNameLength()));
                                         return AnvilGUI.Response.text(text);
                                     }
                                     currentLand.setName(text);
@@ -128,8 +128,8 @@ public class SettingsGUI extends PlotGUI {
                                 OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
                                 if (currentLand != null && (currentLand.isPlotOwner(player) || currentLand.canAdmin(ResidentManager.getInstance().getResident(player)))) {
                                     text = MessageUtils.replaceColorCodes(ChatManager.getInstance().filterAllCurses(ChatColor.stripColor(text.trim())));
-                                    if (ChatColor.stripColor(text).length() > 255) {
-                                        getError("too-long").tell(player, "input", text, "amount", "255");
+                                    if (ChatColor.stripColor(text).length() > Utils.getPlotDescriptionLength()) {
+                                        getError("too-long").tell(player, "input", text, "amount", String.valueOf(Utils.getPlotDescriptionLength()));
                                         return AnvilGUI.Response.text(text);
                                     }
                                     currentLand.setDescription(text);
