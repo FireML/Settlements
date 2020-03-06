@@ -290,7 +290,7 @@ public class LandFlags extends Base implements LandFlagBase {
                 ));
             } else if (originalLand == null || !originalLand.isPlotOwner(destinationLand.getPlotOwner()) || !originalLand.getName().equals(destinationLand.getName()) || !originalLand.getDescription().equals(destinationLand.getDescription())) {
                 if (destinationLand.isPlot()) {
-                    Utils.runAsync(() -> MessageUtils.tellAdvanced(player,  (destinationLand.isEmbassy() ? "embassy" : "plot") + ".owned",
+                    Utils.runAsync(() -> MessageUtils.tellAdvanced(player,  (destinationLand.isEmbassy() ? "embassy" : "plot") + ".owned" + (destinationLand.getDescription().isEmpty() ? "" : "-description"),
                             "name", destinationLand.getLandOwner().getName(),
                             "state", destinationLand.getLandOwner().getStateTag(),
                             "owner", ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName(),
@@ -299,7 +299,16 @@ public class LandFlags extends Base implements LandFlagBase {
                             "pvp", destinationLand.getMode(PlotMode.pvp) ? Message.get("pvp-is-enabled").getText() : ""
                     ));
                 } else if (destinationLand.isForSale() && (destinationLand.getLandOwner().isMember(resident) || destinationLand.isEmbassy())) {
-                    MessageUtils.tellAdvanced(player, (destinationLand.isEmbassy() ? "embassy" : "plot") + ".for-sale",
+                    MessageUtils.tellAdvanced(player, (destinationLand.isEmbassy() ? "embassy" : "plot") + ".for-sale" + (destinationLand.getDescription().isEmpty() ? "" : "-description"),
+                            "name", destinationLand.getLandOwner().getName(),
+                            "state", destinationLand.getLandOwner().getStateTag(),
+                            "name", destinationLand.getName(),
+                            "description", destinationLand.getDescription(),
+                            "pvp", destinationLand.getMode(PlotMode.pvp) ? Message.get("pvp-is-enabled").getText() : "",
+                            "amount", Utils.CURRENCY_FORMAT.format(destinationLand.getPrice())
+                    );
+                } else if (!destinationLand.getDescription().isEmpty()) {
+                    MessageUtils.tellAdvanced(player, (destinationLand.isEmbassy() ? "embassy" : "plot") + ".description",
                             "name", destinationLand.getLandOwner().getName(),
                             "state", destinationLand.getLandOwner().getStateTag(),
                             "name", destinationLand.getName(),
