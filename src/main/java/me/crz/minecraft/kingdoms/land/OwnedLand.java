@@ -13,6 +13,7 @@ import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.NamedLocation;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -228,7 +229,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     public void setName(String name) {
-        this.name = name.length() > 16 ? name.substring(0, 16) : name;
+        this.name = ChatColor.stripColor(name).length() > 16 ? name.substring(0, 16) : name;
     }
 
     public String getDescription() {
@@ -236,7 +237,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     public void setDescription(String description) {
-        this.description = description.length() > 255 ? description.substring(0, 255) : description;
+        this.description = ChatColor.stripColor(description).length() > 255 ? description.substring(0, 255) : description;
     }
 
     public Collection<OwnedLand> getLinked() {

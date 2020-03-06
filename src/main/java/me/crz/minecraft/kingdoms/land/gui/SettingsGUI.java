@@ -9,6 +9,7 @@ import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.Message;
+import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import net.wesjd.anvilgui.AnvilGUI;
@@ -81,13 +82,13 @@ public class SettingsGUI extends PlotGUI {
                     new AnvilGUI.Builder()
                             .item(new ItemStack(Material.WRITABLE_BOOK))
                             .title(getText("name.anvil.title", "name", land.getName()))
-                            .text(getText("name.anvil.placeholder", "name", land.getName().isEmpty() ? " " : land.getName()))
+                            .text(getText("name.anvil.placeholder", "name", land.getName().isEmpty() ? " " : land.getName().replace(ChatColor.COLOR_CHAR, '&')))
                             .onClose(player -> Utils.runLater(() -> new SettingsGUI(player), 1))
                             .onComplete((player, text) -> {
                                 OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
                                 if (currentLand != null && (currentLand.isPlotOwner(player) || currentLand.canAdmin(ResidentManager.getInstance().getResident(player)))) {
-                                    text = ChatManager.getInstance().filterAllCurses(ChatColor.stripColor(text.trim()));
-                                    if (text.length() > 16) {
+                                    text = MessageUtils.replaceColorCodes(ChatManager.getInstance().filterAllCurses(ChatColor.stripColor(text.trim())));
+                                    if (ChatColor.stripColor(text).length() > 16) {
                                         getError("too-long").tell(player, "input", text, "amount", "16");
                                         return AnvilGUI.Response.text(text);
                                     }
@@ -121,13 +122,13 @@ public class SettingsGUI extends PlotGUI {
                     new AnvilGUI.Builder()
                             .item(new ItemStack(Material.WRITABLE_BOOK))
                             .title(getText("desc.anvil.title", "description", land.getDescription()))
-                            .text(getText("desc.anvil.placeholder", "description", land.getDescription().isEmpty() ? " " : land.getDescription()))
+                            .text(getText("desc.anvil.placeholder", "description", land.getDescription().isEmpty() ? " " : land.getDescription().replace(ChatColor.COLOR_CHAR, '&')))
                             .onClose(player -> Utils.runLater(() -> new SettingsGUI(player), 1))
                             .onComplete((player, text) -> {
                                 OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
                                 if (currentLand != null && (currentLand.isPlotOwner(player) || currentLand.canAdmin(ResidentManager.getInstance().getResident(player)))) {
-                                    text = ChatManager.getInstance().filterAllCurses(ChatColor.stripColor(text.trim()));
-                                    if (text.length() > 255) {
+                                    text = MessageUtils.replaceColorCodes(ChatManager.getInstance().filterAllCurses(ChatColor.stripColor(text.trim())));
+                                    if (ChatColor.stripColor(text).length() > 255) {
                                         getError("too-long").tell(player, "input", text, "amount", "255");
                                         return AnvilGUI.Response.text(text);
                                     }
