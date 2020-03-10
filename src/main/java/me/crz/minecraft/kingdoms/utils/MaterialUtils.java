@@ -80,6 +80,20 @@ public class MaterialUtils {
             Material.BAMBOO_SAPLING,
             Material.SWEET_BERRIES
     );
+    public static final Set<Material> LOGS = EnumSet.of(
+            Material.ACACIA_LOG,
+            Material.BIRCH_LOG,
+            Material.DARK_OAK_LOG,
+            Material.JUNGLE_LOG,
+            Material.OAK_LOG,
+            Material.SPRUCE_LOG,
+            Material.ACACIA_WOOD,
+            Material.BIRCH_WOOD,
+            Material.DARK_OAK_WOOD,
+            Material.JUNGLE_WOOD,
+            Material.OAK_WOOD,
+            Material.SPRUCE_WOOD
+    );
     public static final Map<Material, FarmingRule> FARMING_RULES = new EnumMap<>(Material.class);
     static {
         FarmingRule farmlandRule = new FarmingRule(Material.FARMLAND);
