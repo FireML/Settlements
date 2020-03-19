@@ -430,6 +430,9 @@ names:
     extra-claims: 20 Extra Claims to all Members
     extra-radius: 50 Block World Radius
     flying: Flying in Empire World
+    time-control: Set time in Empire World
+    keep-inv: Keep Inventory on Death in Empire World
+    keep-exp: Keep Experience on Death in Empire World
   perkeffect:
     effectlocation:
       plot: For owner in plot
@@ -714,9 +717,15 @@ gui:
         &6&lTax debt action: &r&7{taxdebtaction}
         &6&lBonusclaims &r&7{bonusclaims}
         &6&lCapital &r&7{capitalstate}{capital}
-        &e&lLeader &r&7{chieftitle} {chief}
-        &e&lSenators: &r&7{senators}
+        &e&l{chieftitle}: &r&7{chiefonline}{chief}
+        &r&7{specialresidents}
         &e&lMembers: &r&7{members}
+      special-residents:
+        rank: "&e&l{rank}:&r {residents}"
+        separator: "&7, "
+        online: "&a"
+        offline: "&c"
+        entry: "{title} {online}{name}"
     use:
       title: "&2&l/e use"
     vault:
@@ -2000,7 +2009,8 @@ command:
         offline: "&c"
         entry: "{title} {online}{name}"
     home:
-      no-home: "&c&lYour empire doesn't have a home !"
+      own-no-home: "&c&lYour empire doesn't have a home ask your {chief} to set one!"
+      no-home: "&c&lThe empire doesn't have a home !"
       success: "&a&lTeleported to home of {state} {name}"
       success-title: |-
         &2&lSuccess

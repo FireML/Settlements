@@ -169,3 +169,17 @@ time-control:
   cost:
     unlock:
       cash: 1000
+keep-inv:
+  icon: skeleton_skull
+  actions:
+    toggle: true
+  cost:
+    unlock:
+      cash: 1000
+keep-exp:
+  icon: experience_bottle
+  actions:
+    toggle: true
+  cost:
+    unlock:
+      cash: 1000

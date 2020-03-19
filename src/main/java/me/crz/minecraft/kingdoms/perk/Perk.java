@@ -14,6 +14,9 @@ import java.util.Map;
 
 public class Perk implements NameTag {
     protected static final Map<String, Action> AVAILABLE_ACTIONS = new HashMap<>();
+    static {
+        registerAction("toggle", null, null);
+    }
 
     private String name;
     private Material icon = Material.LINGERING_POTION;

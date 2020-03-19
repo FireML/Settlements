@@ -1,23 +1,38 @@
 package me.crz.minecraft.kingdoms.empire;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.perk.Perk;
+import me.crz.minecraft.kingdoms.perk.PerkData;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+
+import java.util.logging.Level;
 
 public class EmpireListener implements Listener {
+    private final EmpirePerk keepInvPerk;
+    private final EmpirePerk keepExpPerk;
+
+    public EmpireListener() {
+        keepInvPerk = EmpireManager.getInstance().getPerk("keep-inv");
+        if (keepInvPerk == null) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "keep-inv perk is not defined in empirePerksConfig.yml?");
+        }
+        keepExpPerk = EmpireManager.getInstance().getPerk("keep-exp");
+        if (keepExpPerk == null) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "keep-exp perk is not defined in empirePerksConfig.yml?");
+        }
+    }
 
     private boolean canAccess(Player player, World world) {
         Empire empire = EmpireManager.getInstance().getEmpireFromWorld(world);
@@ -59,6 +74,27 @@ public class EmpireListener implements Listener {
             ResidentManager.getInstance().getResident(player).setHasEmpireFlight(false);
             if (player.isFlying()) {
                 player.setFlying(false);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onDeath(PlayerDeathEvent event) {
+        Empire e = EmpireManager.getInstance().getEmpireFromWorld(event.getEntity().getWorld());
+        if (e != null) {
+            if (keepInvPerk != null) {
+                PerkData keepInvData = e.getPerkData(keepInvPerk);
+                if (keepInvData != null && keepInvData.isActive()) {
+                    event.setKeepInventory(true);
+                    event.getDrops().clear();
+                }
+            }
+            if (keepExpPerk != null) {
+                PerkData keepExpData = e.getPerkData(keepExpPerk);
+                if (keepExpData != null && keepExpData.isActive()) {
+                    event.setKeepLevel(true);
+                    event.setDroppedExp(0);
+                }
             }
         }
     }
