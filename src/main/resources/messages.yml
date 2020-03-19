@@ -1991,6 +1991,12 @@ command:
         &6&lAccess: &r&7{access}
       not-in-empire: "&cYou are not currently in an empire world!"
       description: Show in which empire world you are
+      special-residents:
+        rank: "&e&l{rank}:&r {residents}"
+        separator: "&7, "
+        online: "&a"
+        offline: "&c"
+        entry: "{title} {online}{name}"
     home:
       no-home: "&c&lYour empire doesn't have a home !"
       success: "&a&lTeleported to home of {state} {name}"
