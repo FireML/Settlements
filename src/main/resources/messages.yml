@@ -1069,6 +1069,8 @@ command:
   chat:
     description: "Chat command"
     joined: "&7You have joined Chat Channel &6{name}"
+    selected: "&7You have selected Chat Channel &6{name}"
+    active: "&7Active Chat Channel: &6{name}"
     already-joined: "&7Already in Chat Channel &6{name}"
     channel-entry:
       active: "&e• &e{name} &7&l[&a&lActive&7&l] &3&l<"

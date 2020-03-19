@@ -29,21 +29,16 @@ public class ChatCommand extends PlayerSubCommand {
                         if (channel.canChatM(p)) {
                             Resident res = ResidentManager.getInstance().getResident(p);
                             boolean activeChanged = res.setActiveChannel(channel);
-                            boolean save = activeChanged && !Utils.shouldResetChannelOnLogin();
-                            if (channel.autoJoin(p)) {
-                                boolean joined = res.addChannel(channel);
-                                if (joined) {
-                                    save = joined;
-                                } else {
-                                    Message.get("command.chat.already-joined").tell(p, "name", channel.getTag());
-                                }
+                            boolean save = activeChanged;
+                            if (res.addChannel(channel)) {
+                                save = true;
                             } else if (activeChanged) {
-                                Message.get("command.chat.joined").tell(p, "name", channel.getTag());
+                                Message.get("command.chat.selected").tell(p, "name", channel.getTag());
                             } else {
                                 Message.get("command.chat.already-joined").tell(p, "name", channel.getTag());
                             }
 
-                            if (save) {
+                            if (save && !Utils.shouldResetChannelOnLogin()) {
                                 Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
                             }
                         }
