@@ -307,7 +307,7 @@ public class LandFlags extends Base implements LandFlagBase {
                             "pvp", destinationLand.getMode(PlotMode.pvp) ? Message.get("pvp-is-enabled").getText() : "",
                             "amount", Utils.CURRENCY_FORMAT.format(destinationLand.getPrice())
                     );
-                } else if (!destinationLand.getDescription().isEmpty()) {
+                } else if (!destinationLand.getDescription().isEmpty() || !destinationLand.getName().isEmpty()) {
                     MessageUtils.tellAdvanced(player, (destinationLand.isEmbassy() ? "embassy" : "plot") + ".description",
                             "name", destinationLand.getLandOwner().getName(),
                             "state", destinationLand.getLandOwner().getStateTag(),
