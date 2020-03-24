@@ -17,6 +17,7 @@ import org.bukkit.Material;
 
 import java.util.HashMap;
 
+import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.inventory.InventoryView;
@@ -68,7 +69,7 @@ public class VaultListener extends KingdomsGUI implements Listener {
                     if (nextLevelReqs.containsKey(material)) {
                         int required = Math.toIntExact(nextLevelReqs.get(material));
                         if (required <= total.get(material)) {
-                            player.getInventory().addItem(item);
+                            addToInventory(player, item);
                             this.add(fail, item.getType(), (long) item.getAmount());
                         } else {
                             long totalAdd = item.getAmount() + total.get(material);
@@ -82,12 +83,12 @@ public class VaultListener extends KingdomsGUI implements Listener {
                                 this.add(deposited, material, item.getAmount() - drv);
                                 ItemStack temp = item.clone();
                                 temp.setAmount(Math.toIntExact(drv));
-                                player.getInventory().addItem(temp);
+                                addToInventory(player, temp);
                                 this.add(fail, temp.getType(), (long) temp.getAmount());
                             }
                         }
                     } else {
-                        player.getInventory().addItem(item);
+                        addToInventory(player, item);
                         this.add(fail, item.getType(), (long) item.getAmount());
                     }
                 }
@@ -107,10 +108,18 @@ public class VaultListener extends KingdomsGUI implements Listener {
             for (ItemStack item2 : contents) {
                 if (item2 != null) {
                     add(fail, item2.getType(), (long) item2.getAmount());
-                    player.getInventory().addItem(item2);
+                    addToInventory(player, item2);
                 }
             }
             MessageUtils.tellList(player, this.buildfailDepositMessage(resident, fail, getText("max-level-reached")));
+        }
+    }
+
+    private void addToInventory(Player player, ItemStack itemStack) {
+        for (ItemStack rest : player.getInventory().addItem(itemStack).values()) {
+            Item item = player.getWorld().dropItem(player.getLocation(), rest);
+            item.setOwner(player.getUniqueId());
+            item.setCanMobPickup(false);
         }
     }
 
