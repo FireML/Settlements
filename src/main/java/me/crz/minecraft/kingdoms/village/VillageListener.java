@@ -87,9 +87,6 @@ public class VillageListener implements Listener {
                 }
             }
         }
-        if (Utils.shouldResetChannelOnLogin()) {
-            activeChanged = res.setActiveChannel(res.getChannels().iterator().next());
-        }
         if (activeChanged) {
             Message.get("command.chat.active").tell(res, "name", res.getActiveChannel().getTag());
         }
