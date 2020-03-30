@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.db;
 import com.zaxxer.hikari.HikariDataSource;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import me.crz.minecraft.kingdoms.chat.ChatColorType;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
@@ -600,8 +601,11 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 updateUserList(conn, "resident_friends", "userId", (Integer) resident.getId(), "friendId", resident.getFriends());
                 updateUserList(conn, "resident_ignores", "userId", (Integer) resident.getId(), "ignoredId", resident.getIgnore());
                 updateDataMap(conn, "resident_channel_colors", "userId", (Integer) resident.getId(), "channel", "color", Arrays.stream(ChatChannel.values())
-                        .filter(c -> resident.getChannelColor(c) != null)
-                        .collect(Collectors.toMap(Enum::name, c -> resident.getChannelColor(c).name())));
+                        .filter(c -> resident.getChannelColor(c, ChatColorType.MESSAGE) != null)
+                        .collect(Collectors.toMap(Enum::name, c -> resident.getChannelColor(c, ChatColorType.MESSAGE).name())));
+                updateDataMap(conn, "resident_channel_prefix_colors", "userId", (Integer) resident.getId(), "channel", "color", Arrays.stream(ChatChannel.values())
+                        .filter(c -> resident.getChannelColor(c, ChatColorType.PREFIX) != null)
+                        .collect(Collectors.toMap(Enum::name, c -> resident.getChannelColor(c, ChatColorType.PREFIX).name())));
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while saving player " + resident.getName() + "/" + resident.getUUID() + " to database!", e);
@@ -1021,6 +1025,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         map.put("friends", selectResidentList(conn, "resident_friends", "userId", id, "friendId"));
         map.put("ignores", selectResidentList(conn, "resident_ignores", "userId", id, "ignoredId"));
         map.put("channelColors", selectMap(conn, "resident_channel_colors", "userId", id, "channel", "color", String.class));
+        map.put("channelPrefixColors", selectMap(conn, "resident_channel_prefix_colors", "userId", id, "channel", "color", String.class));
         return Resident.deserialize(map);
     }
 

@@ -326,24 +326,24 @@ chat:
   format:
     name: "{displayname}"
     private:
-      sender: "&8\\[&a{sender} &7➦ &3{target}&8] {color}{message}"
-      target: "{staff}&8\\[&3{sender} &7➦ &a{target}&8] {color}{message}"
+      sender: "{prefixColor}\\[&a{sender} &7➦ &3{target}{prefixColor}] {color}{message}"
+      target: "{staff}{prefixColor}\\[&3{sender} &7➦ &a{target}{prefixColor}] {color}{message}"
       name:
         sender: "you"
         target: "{displayname}"
       social-spy: "&7[&6SS&7]&r {sender} &7➦ &3{target}&7: {message}"
     channel:
-      general: "&0[%sl_<collectibles:prefix>%{prefix}&f%sl_<collectibles:suffix>%&0] &7{sender}&r{suffix}&r &b➦ {color}{message}"
-      event: "&a[Event] &7{sender}&r{suffix}&r &b➦ {color}{message}"
-      local: "&e[Local] &7{sender}&r{suffix}&r &b➦ {color}{message}"
-      admin: "&c[Admin] &7{sender}&r{suffix}&r &b➦ {color}{message}"
-      staff: "&9[Staff] &7{sender}&r{suffix}&r &b➦ {color}{message}"
-      help: "&c[Help] &7{sender}&r{suffix} &b➦ {color}{message}"
-      settlement: "&b[S] &7{sender}&r{suffix}&r &b➦ {color}{message}"
-      trade: "&d[Trade] &7{sender}&r{suffix}&r &b➦ {color}{message}"
-      ally: "&6[Ally] &7{sender}&r{suffix}&r &b➦ {color}{message}"
-      empireally: "&6[Alliance] {title} &r{sender}&b ➦ {color}{message}"
-      empire: "&b[E] &6{settlement} &7{sender}&r{suffix}&r &b➦ {color}{message}"
+      general: "{prefixColor}[%sl_<collectibles:prefix>%{prefix}&f%sl_<collectibles:suffix>%{prefixColor}] &7{sender}&r{suffix}&r &b➦ {color}{message}"
+      event: "{prefixColor}[Event] &7{sender}&r{suffix}&r &b➦ {color}{message}"
+      local: "{prefixColor}[Local] &7{sender}&r{suffix}&r &b➦ {color}{message}"
+      admin: "{prefixColor}[Admin] &7{sender}&r{suffix}&r &b➦ {color}{message}"
+      staff: "{prefixColor}[Staff] &7{sender}&r{suffix}&r &b➦ {color}{message}"
+      help: "{prefixColor}[Help] &7{sender}&r{suffix} &b➦ {color}{message}"
+      settlement: "{prefixColor}[S] &7{sender}&r{suffix}&r &b➦ {color}{message}"
+      trade: "{prefixColor}[Trade] &7{sender}&r{suffix}&r &b➦ {color}{message}"
+      ally: "{prefixColor}[Ally] &7{sender}&r{suffix}&r &b➦ {color}{message}"
+      empireally: "{prefixColor}[Alliance] {title} &r{sender}&b ➦ {color}{message}"
+      empire: "{prefixColor}[E] &6{settlement} &7{sender}&r{suffix}&r &b➦ {color}{message}"
   nick-hilight: "&b"
   afk: "&ePlayer is AFK and may not respond"
   afk-staff: "&eStaff member is AFK and may not respond. Try contacting us through discord"
@@ -550,6 +550,14 @@ gui:
     channel-select:
       title: "&2&l/chat colour"
       channel-entry: "{color}{channel}"
+    color-type-select:
+      title: "&2&lSelect the type"
+      entry: |-
+        &e{type} colour
+        &7Click to change
+        &7Middle click to reset
+      color-reset: "&7Reset {type} color of channel {channel} to &r{color}{color-name}"
+      back: "&c&lBack To Channel Selection"
     color-select:
       title: "&2&lSelect colour"
       color-entry: |-
@@ -558,8 +566,8 @@ gui:
       selected-color-entry: |-
         {color}{name}
         &7&lSelected!
-      color-changed: "&7Changed color of channel {channel} to &r{color}{color-name}"
-      back: "&c&lBack To Channel Selection"
+      color-changed: "&7Changed {type} color of channel {channel} to &r{color}{color-name}"
+      back: "&c&lBack To Type Selection"
   access:
     title: "&2&l/s access"
     back: "&c&lBack To Settings"

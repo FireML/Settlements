@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.chat.gui;
 
 import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import me.crz.minecraft.kingdoms.chat.ChatColorType;
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
@@ -33,7 +34,7 @@ public class ColorChannelSelectGui extends KingdomsGUI {
                 @Override
                 public ItemStack getItem(Player p) {
                     Resident resident = ResidentManager.getInstance().getResident(p);
-                    ChatColor resColor = resident.getChannelColor(channel, Utils.getChannelColor(channel));
+                    ChatColor resColor = resident.getChannelColor(channel, ChatColorType.MESSAGE, Utils.getChannelColor(channel, ChatColorType.MESSAGE));
                     return new CItem(ColorUtils.getColorHead(resColor))
                             .setName(getMessage("channel-entry")
                                     .getReplacedText(
@@ -45,7 +46,7 @@ public class ColorChannelSelectGui extends KingdomsGUI {
 
                 @Override
                 public boolean click(Player p, ClickType c) {
-                    ColorSelectGui.getInstance(channel).open(p);
+                    ColorTypeSelectGui.getInstance(channel).open(p);
                     return true;
                 }
             });

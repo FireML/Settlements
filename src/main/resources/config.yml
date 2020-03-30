@@ -104,6 +104,20 @@ chat:
     empire: aqua
     private-sent: aqua
     private-received: aqua
+  channel-prefix-colors:
+    general: black
+    event: green
+    local: yellow
+    admin: red
+    staff: blue
+    help: red
+    settlement: aqua
+    trade: light_purple
+    ally: gold
+    empireally: gold
+    empire: aqua
+    private-sent: dark_gray
+    private-received: dark_gray
   selectable-colors:
   - blue
   - dark_blue

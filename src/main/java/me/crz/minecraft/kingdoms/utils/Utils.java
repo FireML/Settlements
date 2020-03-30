@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.utils;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import me.crz.minecraft.kingdoms.chat.ChatColorType;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.PlotMode;
@@ -287,8 +288,14 @@ public class Utils {
         return ConfigManager.getInstance().getConfig().getStringList("chat.selectable-colors");
     }
 
-    public static ChatColor getChannelColor(ChatChannel channel) {
-        return getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-colors." + channel.getKey()), ChatColor.WHITE);
+    public static ChatColor getChannelColor(ChatChannel channel, ChatColorType type) {
+        switch (type) {
+            case PREFIX:
+                return getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-prefix-colors." + channel.getKey()), ChatColor.WHITE);
+            case MESSAGE:
+                return getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-colors." + channel.getKey()), ChatColor.WHITE);
+        }
+        return ChatColor.WHITE;
     }
 
     public static ChatColor getColor(String colorString, ChatColor def) {

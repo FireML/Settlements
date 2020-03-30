@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.chat.gui;
 
 import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import me.crz.minecraft.kingdoms.chat.ChatColorType;
 import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
@@ -18,19 +19,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
 public class ColorSelectGui extends KingdomsGUI {
 
-    private static final Map<ChatChannel, ColorSelectGui> instances = new HashMap<>();
-
-    private CInventory gui;
-
-    private ColorSelectGui(ChatChannel channel) {
+    public ColorSelectGui(ChatChannel channel, Player p, ChatColorType type) {
         super("chat.color-select");
 
-        gui = new CInventory(getText("title", "channel", channel.getTag()), InventorySize.ONE) {};
+        CInventory gui = new CInventory(getText("title", "channel", channel.getTag()), InventorySize.ONE) {};
 
         for (String color : Utils.getChatColors()) {
             ChatColor chatColor;
@@ -44,7 +40,8 @@ public class ColorSelectGui extends KingdomsGUI {
                 public ItemStack getItem(Player p) {
                     Resident resident = ResidentManager.getInstance().getResident(p);
                     CItem item = new CItem(ColorUtils.getColorHead(chatColor));
-                    if (resident.getChannelColor(channel, Utils.getChannelColor(channel)) == chatColor) {
+                    ChatColor residentColor = resident.getChannelColor(channel, type, Utils.getChannelColor(channel, type));
+                    if (residentColor == chatColor) {
                         item.glow(true);
                         item.setName(getMessage("selected-color-entry")
                                 .getReplacedText(
@@ -62,12 +59,13 @@ public class ColorSelectGui extends KingdomsGUI {
                 @Override
                 public boolean click(Player p, ClickType c) {
                     Resident resident = ResidentManager.getInstance().getResident(p);
-                    resident.setChannelColor(channel, chatColor);
+                    resident.setChannelColor(channel, type, chatColor);
                     Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(resident));
                     Utils.runLater(() -> {
                         p.closeInventory();
                         getMessage("color-changed").tell(p,
                                 "channel", channel.getTag(),
+                                "type", type.getTag(),
                                 "color", chatColor.toString(),
                                 "color-name", HumanReadable.humanizedName(chatColor)
                         );
@@ -82,17 +80,10 @@ public class ColorSelectGui extends KingdomsGUI {
             }
 
             public boolean click(final Player p, final ClickType clickType) {
-                new ColorChannelSelectGui(p);
+                ColorTypeSelectGui.getInstance(channel).open(p);
                 return true;
             }
         });
-    }
-
-    public void open(Player p) {
         gui.build(p);
-    }
-
-    synchronized public static ColorSelectGui getInstance(ChatChannel channel) {
-        return instances.computeIfAbsent(channel, ColorSelectGui::new);
     }
 }

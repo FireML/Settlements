@@ -1,7 +1,10 @@
 package me.crz.minecraft.kingdoms.village;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
+import me.crz.minecraft.kingdoms.chat.ChatColorType;
 import me.crz.minecraft.kingdoms.integration.AfkProvider;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -43,7 +46,7 @@ public class Resident implements ConfigurationSerializable, Targetable {
     private Village village = null;
     private ChatChannel activeChannel = ChatChannel.GENERAL;
     private Set<ChatChannel> channels = EnumSet.of(ChatChannel.GENERAL);
-    private Map<ChatChannel, ChatColor> channelColors = new EnumMap<>(ChatChannel.class);
+    private Table<ChatChannel, ChatColorType, ChatColor> channelColors = HashBasedTable.create(ChatChannel.values().length, ChatColorType.values().length);
     private Set<UUID> ignore = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private Set<UUID> friends = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private boolean swear = true;
@@ -193,21 +196,22 @@ public class Resident implements ConfigurationSerializable, Targetable {
     }
 
     @Nullable
-    public ChatColor getChannelColor(ChatChannel channel) {
-        return channelColors.get(channel);
+    public ChatColor getChannelColor(ChatChannel channel, ChatColorType type) {
+        return channelColors.get(channel, type);
     }
 
     @Nonnull
-    public ChatColor getChannelColor(ChatChannel channel, @Nonnull ChatColor def) {
-        return channelColors.getOrDefault(channel, def);
+    public ChatColor getChannelColor(ChatChannel channel, ChatColorType type, @Nonnull ChatColor def) {
+        ChatColor color = channelColors.get(channel, type);
+        return color != null ? color : def;
     }
 
-    public ChatColor setChannelColor(ChatChannel channel, ChatColor chatColor) {
-        return chatColor != null ? channelColors.put(channel, chatColor) : removeChannelColor(channel);
+    public ChatColor setChannelColor(ChatChannel channel, ChatColorType type, ChatColor chatColor) {
+        return chatColor != null ? channelColors.put(channel, type, chatColor) : removeChannelColor(channel, type);
     }
 
-    public ChatColor removeChannelColor(ChatChannel channel) {
-        return channelColors.remove(channel);
+    public ChatColor removeChannelColor(ChatChannel channel, ChatColorType type) {
+        return channelColors.remove(channel, type);
     }
 
     public Player getPlayer() {
@@ -406,7 +410,11 @@ public class Resident implements ConfigurationSerializable, Targetable {
         map.put("lastLogin", getLastLogin());
         map.put("channels", getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
         map.put("activeChannel", getActiveChannel().name());
-        map.put("channelColors", channelColors.entrySet().stream()
+        map.put("channelColors", channelColors.column(ChatColorType.MESSAGE).entrySet().stream()
+                .collect(Collectors.toMap(
+                        entry -> entry.getKey().name(),
+                        entry -> entry.getValue().name())));
+        map.put("channelPrefixColors", channelColors.column(ChatColorType.PREFIX).entrySet().stream()
                 .collect(Collectors.toMap(
                         entry -> entry.getKey().name(),
                         entry -> entry.getValue().name())));
@@ -460,7 +468,16 @@ public class Resident implements ConfigurationSerializable, Targetable {
                 ChatChannel channel = Utils.parseEnum(ChatChannel.class, entry.getKey().toUpperCase());
                 ChatColor color = Utils.parseEnum(ChatColor.class, entry.getValue().toUpperCase());
                 if (channel != null && color != null) {
-                    resident.setChannelColor(channel, color);
+                    resident.setChannelColor(channel, ChatColorType.MESSAGE, color);
+                }
+            }
+        }
+        if (map.containsKey("channelPrefixColors")) {
+            for (Map.Entry<String, String> entry : ((Map<String, String>) map.get("channelPrefixColors")).entrySet()) {
+                ChatChannel channel = Utils.parseEnum(ChatChannel.class, entry.getKey().toUpperCase());
+                ChatColor color = Utils.parseEnum(ChatColor.class, entry.getValue().toUpperCase());
+                if (channel != null && color != null) {
+                    resident.setChannelColor(channel, ChatColorType.PREFIX, color);
                 }
             }
         }
