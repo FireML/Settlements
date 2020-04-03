@@ -74,22 +74,24 @@ public class VillageListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Resident res = ResidentManager.getInstance().getResident(event.getPlayer()); // should be cached
-        boolean activeChanged = false;
-        for (ChatChannel channel : ChatChannel.values()) {
-            if (channel != ChatChannel.GENERAL) {
-                if (channel.autoJoin(event.getPlayer())) {
-                    res.getChannels().add(channel);
-                } else if (Utils.shouldResetChannelOnLogin()) {
-                    res.getChannels().remove(channel);
-                    if (res.getActiveChannel() == channel) {
-                        activeChanged = res.setActiveChannel(res.getChannels().iterator().next());
+        Utils.runNextTick(() -> {
+            boolean activeChanged = false;
+            for (ChatChannel channel : ChatChannel.values()) {
+                if (channel != ChatChannel.GENERAL) {
+                    if (channel.autoJoin(event.getPlayer())) {
+                        res.getChannels().add(channel);
+                    } else if (Utils.shouldResetChannelOnLogin()) {
+                        res.getChannels().remove(channel);
+                        if (res.getActiveChannel() == channel) {
+                            activeChanged = res.setActiveChannel(res.getChannels().iterator().next());
+                        }
                     }
                 }
             }
-        }
-        if (activeChanged) {
-            Message.get("command.chat.active").tell(res, "name", res.getActiveChannel().getTag());
-        }
+            if (activeChanged) {
+                Message.get("command.chat.active").tell(res, "name", res.getActiveChannel().getTag());
+            }
+        });
         if (res.hasVillage()) {
             if (res.getVillageRank().below(VillageRank.getChief()) && !KingdomsPlugin.getInstance().econ.has(event.getPlayer(), res.getVillage().getTax())) {
                 Message.get("tax.debt-action." + res.getVillage().getTaxDebtAction().getKey() + ".cant-pay").tell(event.getPlayer(), "amount", String.valueOf(res.getVillage().getTax()));
