@@ -395,8 +395,10 @@ public class EmpireManager {
             return false;
         }
 
+        String oldWorldName = world.getName();
         if (KingdomsPlugin.getInstance().getMultiverse() != null) {
-            if (!KingdomsPlugin.getInstance().getMultiverse().renameWorld(world, empire.getWorldName())) {
+            World newWorld = KingdomsPlugin.getInstance().getMultiverse().renameWorld(world, empire.getWorldName());
+            if (newWorld == null) {
                 return false;
             }
             if (empire.getHome() == null) {
@@ -404,7 +406,7 @@ public class EmpireManager {
             } else {
                 empire.getHome().setWorld(empire.getWorldName());
             }
-            world.setSpawnLocation(empire.getHome().toBukkitLocation());
+            newWorld.setSpawnLocation(empire.getHome().toBukkitLocation());
         } else {
             Map<Player, Location> positions = new LinkedHashMap<>();
             for (Player player : world.getPlayers()) {
@@ -434,7 +436,8 @@ public class EmpireManager {
                 }
             }
         }
-        LandManager.getInstance().renameWorld(world.getName(), empire.getWorldName());
+        LandManager.getInstance().renameWorld(oldWorldName, empire.getWorldName());
+        KingdomsPlugin.getInstance().getLockProviders().forEach(lp -> lp.renameWorld(oldWorldName, empire.getWorldName()));
         return true;
     }
 

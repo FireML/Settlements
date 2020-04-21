@@ -229,6 +229,12 @@ public class MongoDatabaseManager extends DatabaseManager {
     }
 
     @Override
+    public void renameLockWorld(String oldName, String newName) {
+        Utils.catchSync();
+        lockCollection.updateMany(Filters.eq("world", oldName), new Document("$set", new Document("world", newName)));
+    }
+
+    @Override
     public void saveLocks(Lock... locks) {
         Utils.catchSync();
         for (Lock lock : locks) {

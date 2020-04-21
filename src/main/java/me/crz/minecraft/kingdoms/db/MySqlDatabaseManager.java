@@ -612,6 +612,21 @@ public class MySqlDatabaseManager extends DatabaseManager {
         }
     }
 
+
+    @Override
+    public void renameLockWorld(String oldName, String newName) {
+        Utils.catchSync();
+
+        try (Connection conn = ds.getConnection();
+             PreparedStatement sta = conn.prepareStatement("UPDATE " + tablePrefix + "locks SET world = ? WHERE world = ?;")) {
+            sta.setString(1, newName);
+            sta.setString(2, oldName);
+            sta.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to change locks world from " + oldName + " to " + newName + " in database! ", e);
+        }
+    }
+
     @Override
     public void saveLocks(Lock... locks) {
         for (Lock lock : locks) {

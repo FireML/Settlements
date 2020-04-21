@@ -28,6 +28,7 @@ import org.bukkit.util.Vector;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -314,6 +315,18 @@ public class LockManager implements LockProvider {
     public void removeInWorld(World world) {
         lockTable.remove(world.getName());
         DatabaseManager.getInstance().deleteLocks(world.getName());
+    }
+
+    @Override
+    public void renameWorld(String oldName, String newName) {
+        Map<SimpleChunkLocation, Map<String, Lock>> locks = lockTable.remove(oldName);
+        if (locks != null) {
+            lockTable.merge(newName, locks, (m1, m2) -> {
+                m1.putAll(m2);
+                return m1;
+            });
+            Utils.runAsync(() -> DatabaseManager.getInstance().renameLockWorld(oldName, newName));
+        }
     }
 
     synchronized public static LockManager getInstance() {

@@ -32,4 +32,6 @@ public interface LockProvider extends ConfigMessages, LandFlagBase {
     }
 
     void removeInWorld(World world);
+
+    void renameWorld(String oldName, String newName);
 }

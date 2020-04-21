@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.LinkedHashMap;
@@ -47,7 +46,7 @@ public class MultiverseIntegration {
         return mvCore.getDescription().getVersion();
     }
 
-    public boolean renameWorld(World world, String newWorldName) {
+    public World renameWorld(World world, String newWorldName) {
         Map<Player, Location> positions = new LinkedHashMap<>();
         for (Player player : world.getPlayers()) {
             positions.put(player, player.getLocation());
@@ -55,24 +54,23 @@ public class MultiverseIntegration {
         }
 
         boolean wasAutoSave = world.isAutoSave();
-        world.setAutoSave(false);
         if (!mvCore.getMVWorldManager().cloneWorld(world.getName(), newWorldName)) {
             KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not clone world " + world.getName() + " to " + newWorldName);
-            return false;
+            return null;
         }
 
         World newWorld = Bukkit.getWorld(newWorldName);
         if (newWorld == null) {
             KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not get the cloned world " + newWorldName + "!");
             mvCore.getMVWorldManager().removeWorldFromConfig(newWorldName);
-            return false;
+            return null;
         }
 
         File newWorldFolder = newWorld.getWorldFolder();
         if (!mvCore.getMVWorldManager().unloadWorld(newWorld.getName())) {
             KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not fully create the new world " + newWorldName + "! (Unload error)");
             deleteWorld(newWorld);
-            return false;
+            return null;
         }
         File worldFolder = world.getWorldFolder();
         File uidFile = new File(newWorldFolder, "uid.dat");
@@ -81,20 +79,20 @@ public class MultiverseIntegration {
             Files.copy(uidFile.toPath(), newUidFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not clone UUID of new world " + newWorldName + "!", e);
-            return false;
+            return null;
         }
         String worldName = world.getName();
         if (!mvCore.getMVWorldManager().unloadWorld(world.getName())) {
             KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not unload old world " + world.getName() + "!");
             mvCore.getMVWorldManager().removeWorldFromConfig(newWorldName);
-            return false;
+            return null;
         }
 
         if (!mvCore.getMVWorldManager().loadWorld(newWorldName)) {
             KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not load new world " + world.getName() + "!");
             mvCore.getMVWorldManager().removeWorldFromConfig(newWorldName);
             mvCore.getMVWorldManager().loadWorld(worldName);
-            return false;
+            return null;
         }
 
         newWorld = Bukkit.getWorld(newWorldName);
@@ -102,7 +100,7 @@ public class MultiverseIntegration {
             KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not get the new world " + world.getName() + " in Bukkit!");
             mvCore.getMVWorldManager().removeWorldFromConfig(newWorldName);
             mvCore.getMVWorldManager().loadWorld(worldName);
-            return false;
+            return null;
         }
 
         mvCore.getMVWorldManager().removeWorldFromConfig(worldName);
@@ -122,6 +120,6 @@ public class MultiverseIntegration {
                 e.getKey().teleportAsync(e.getValue());
             }
         }
-        return true;
+        return newWorld;
     }
 }

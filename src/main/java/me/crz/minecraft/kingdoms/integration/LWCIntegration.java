@@ -27,7 +27,11 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import javax.rmi.CORBA.Util;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Collection;
+import java.util.logging.Level;
 
 public class LWCIntegration extends JavaModule implements LockProvider, ConfigMessages {
     private final LWC lwc;
@@ -194,6 +198,25 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
                 "world = '" + world.getName() + "'",
                 KingdomsPlugin.getInstance().getConfig().getBoolean("remove-locked-blocks")
         ));
+    }
+
+    @Override
+    public void renameWorld(String oldName, String newName) {
+        Utils.runAsync(() -> {
+            PreparedStatement sta = lwc.getPhysicalDatabase().prepare("UPDATE " + lwc.getPhysicalDatabase().getPrefix() + "protections SET world = ? WHERE world = ?;");
+            if (sta == null) {
+                KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Error while trying to rename world of LWC protections");
+                return;
+            }
+            try {
+                sta.setString(1, newName);
+                sta.setString(2, oldName);
+                sta.executeUpdate();
+                lwc.getProtectionCache().clear();
+            } catch (SQLException e) {
+                KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Error while trying to rename world of LWC protections", e);
+            }
+        });
     }
 
     @Override

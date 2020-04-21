@@ -81,6 +81,8 @@ public abstract class DatabaseManager {
 
     public abstract void saveResident(Resident... residents);
 
+    public abstract void renameLockWorld(String oldName, String newName);
+
     /**
      * Queue locks for saving, does not have to be run async
      * @param locks The locks to save

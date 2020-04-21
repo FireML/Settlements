@@ -95,6 +95,11 @@ public class ChestShopIntegration implements LockProvider, ShopProvider, Listene
         });
     }
 
+    @Override
+    public void renameWorld(String oldName, String newName) {
+        // No need, ChestShop doesn't store shop information outside of signs
+    }
+
     private int removeInChunk(Chunk chunk) {
         int amount = 0;
         try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("ChestShop chunk shop removal")) {
