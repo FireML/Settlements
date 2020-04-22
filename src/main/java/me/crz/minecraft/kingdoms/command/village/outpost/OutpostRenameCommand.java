@@ -35,7 +35,7 @@ public class OutpostRenameCommand extends VillageSubCommand {
             if (resident.getVillage().getOutpostHomes().remove(args[0].toLowerCase()) != null) {
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
             }
-            getError("outpost-not-found").tell(resident, "name", args[0]);
+            getError("outpost-not-claimed").tell(resident, "name", args[0], "state", resident.getVillage().getStateTag());
             return true;
         }
 

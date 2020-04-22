@@ -700,4 +700,9 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
     }
 
     public abstract boolean isAbandoned();
+
+    @Override
+    public boolean equals(Object o) {
+        return o.getClass().equals(getClass()) && ((LandOwner) o).getId().equals(getId());
+    }
 }

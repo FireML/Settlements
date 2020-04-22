@@ -35,6 +35,7 @@ error:
   claim-too-close: "&c&l(!) &r&7You are too close to &e{owner}'s land !"
   already-own-land: "&e&l(!) &r&7Your settlement already owns this land!"
   cant-claim-here: "&c&l(!) &r&7This land is owned by &e{owner}!"
+  outpost-not-claimed: "&cOutpost &6{name} &c was removed as its land was no longer claimed by your {state}!"
   outpost-not-found: |-
     &cUnable to find outpost: &6{name}
     &cUse [&f/s outpost list](/s outpost list) to view all outposts!
