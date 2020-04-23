@@ -114,9 +114,12 @@ public class LockManager implements LockProvider {
                         cacheLock(l);
                     }
                     for (SimpleChunkLocation chunk : toLoad) {
-                        Map<String, Lock> chunkMap = lockTable.get(chunk.getWorld()).get(chunk);
-                        if (chunkMap != null) {
-                            chunkMap.remove(LOADING_KEY);
+                        Map<SimpleChunkLocation, Map<String, Lock>> worldMap = lockTable.get(chunk.getWorld());
+                        if (worldMap != null) {
+                            Map<String, Lock> chunkMap = worldMap.get(chunk);
+                            if (chunkMap != null) {
+                                chunkMap.remove(LOADING_KEY);
+                            }
                         }
                     }
                 }
@@ -126,14 +129,16 @@ public class LockManager implements LockProvider {
 
     public void unloadChunks(SimpleChunkLocation... chunks) {
         for (SimpleChunkLocation chunk : chunks) {
-            if (lockTable.containsKey(chunk.getWorld())) {
-                lockTable.get(chunk.getWorld()).remove(chunk);
+            Map<SimpleChunkLocation, Map<String, Lock>> worldMap = lockTable.get(chunk.getWorld());
+            if (worldMap != null) {
+                worldMap.remove(chunk);
             }
         }
     }
 
     public boolean isLoaded(SimpleChunkLocation chunk) {
-        return lockTable.containsKey(chunk.getWorld()) && lockTable.get(chunk.getWorld()).containsKey(chunk);
+        Map<SimpleChunkLocation, Map<String, Lock>> worldMap = lockTable.get(chunk.getWorld());
+        return worldMap != null && worldMap.containsKey(chunk);
     }
 
     public void unloadWorld(World world) {
@@ -254,9 +259,10 @@ public class LockManager implements LockProvider {
 
     private Lock getLock(Location bukkitLocation, Material type) {
         Lock lock = null;
-        if (lockTable.containsKey(bukkitLocation.getWorld().getName())) {
+        Map<SimpleChunkLocation, Map<String, Lock>> worldMap = lockTable.get(bukkitLocation.getWorld().getName());
+        if (worldMap != null) {
             SimpleBlockLocation location = new SimpleBlockLocation(bukkitLocation);
-            Map<String, Lock> chunkMap = lockTable.get(location.getWorld()).get(location.toChunkLocation());
+            Map<String, Lock> chunkMap = worldMap.get(location.toChunkLocation());
             if (chunkMap != null && !chunkMap.containsKey(LOADING_KEY)) {
                 // Chunk was cached
                 lock = chunkMap.get(location.getSimpleKey());
@@ -281,8 +287,9 @@ public class LockManager implements LockProvider {
     }
 
     public void deleteLock(Lock lock) {
-        if (lockTable.containsKey(lock.getLocation().getWorld())) {
-            Map<String, Lock> chunkMap = lockTable.get(lock.getLocation().getWorld()).get(lock.getLocation().toChunkLocation());
+        Map<SimpleChunkLocation, Map<String, Lock>> worldMap = lockTable.get(lock.getLocation().getWorld());
+        if (worldMap != null) {
+            Map<String, Lock> chunkMap = worldMap.get(lock.getLocation().toChunkLocation());
             if (chunkMap != null) {
                 chunkMap.remove(lock.getLocation().getSimpleKey(), lock);
             }
@@ -304,8 +311,9 @@ public class LockManager implements LockProvider {
     @Override
     public void removeInChunks(Collection<? extends SimpleChunkLocation> chunks) {
         for (SimpleChunkLocation chunk : chunks) {
-            if (lockTable.containsKey(chunk.getWorld())) {
-                lockTable.get(chunk.getWorld()).remove(chunk);
+            Map<SimpleChunkLocation, Map<String, Lock>> worldMap = lockTable.get(chunk.getWorld());
+            if (worldMap != null) {
+                worldMap.remove(chunk);
             }
         }
         DatabaseManager.getInstance().deleteLocksInChunks(chunks);
