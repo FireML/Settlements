@@ -703,6 +703,6 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
 
     @Override
     public boolean equals(Object o) {
-        return o.getClass().equals(getClass()) && ((LandOwner) o).getId().equals(getId());
+        return o != null && o.getClass().equals(getClass()) && ((LandOwner) o).getId().equals(getId());
     }
 }
