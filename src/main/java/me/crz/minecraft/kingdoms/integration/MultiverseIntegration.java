@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.integration;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import org.apache.commons.io.FileUtils;
@@ -51,6 +52,11 @@ public class MultiverseIntegration {
         for (Player player : world.getPlayers()) {
             positions.put(player, player.getLocation());
             Utils.teleportToSpawn(player);
+        }
+
+        MultiverseWorld oldMvWorld = mvCore.getMVWorldManager().getMVWorld(world);
+        if (oldMvWorld != null) {
+            oldMvWorld.setAlias(null);
         }
 
         boolean wasAutoSave = world.isAutoSave();
@@ -110,9 +116,16 @@ public class MultiverseIntegration {
             KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not delete old world folder " + worldFolder.getName() + "!", e);
         }
 
+        MultiverseWorld newMvWorld = mvCore.getMVWorldManager().getMVWorld(world);
+        if (newMvWorld.getAlias() != null) {
+            newMvWorld.setAlias(null);
+        }
+
         if (wasAutoSave) {
             newWorld.setAutoSave(true);
         }
+
+        mvCore.saveWorldConfig();
 
         for (Map.Entry<Player, Location> e : positions.entrySet()) {
             if (e.getKey().isOnline()) {
