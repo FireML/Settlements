@@ -24,6 +24,7 @@ perm-groups:
     - empire.ally
     - empire.banish
     - empire.bank.withdraw
+    - empire.chestshop.admin
     - empire.disband
     - empire.invite
     - empire.joinfee.set
@@ -60,6 +61,7 @@ ranks:
     - empire.banish
     - empire.banished
     - empire.build
+    - empire.chestshop.admin
     - empire.help.leader
     - empire.disband
     - empire.joinfee.set

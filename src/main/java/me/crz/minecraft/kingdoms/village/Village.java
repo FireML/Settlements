@@ -286,13 +286,8 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     }
 
     @Override
-    public boolean canAdminLocks(Resident resident) {
-        return isMember(resident) && resident.hasPermission("kingdoms.command.village.lock.admin");
-    }
-
-    @Override
-    public boolean canAdminPlots(Resident resident) {
-        return isMember(resident) && resident.hasPermission("kingdoms.command.village.plot.admin");
+    public boolean hasPermission(Resident resident, String perm) {
+        return isMember(resident) && resident.hasPermission("village." + perm);
     }
 
     @Override

@@ -31,6 +31,7 @@ perm-groups:
     - village.allyclaim
     - village.banish
     - village.bank.withdraw
+    - village.chestshop.admin
     - village.claim
     - village.disband
     - village.history
@@ -79,6 +80,7 @@ ranks:
     - village.banish
     - village.bank.withdraw
     - village.build
+    - village.chestshop.admin
     - village.history
     - village.joinfee.set
     - village.outpost.help.chief

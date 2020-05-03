@@ -38,19 +38,21 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class EmpireManager {
     private static EmpireManager instance;
-    private final Map<String, Empire> empires = new HashMap<>();
-    private final Map<IdObject, Empire> empireIds = new HashMap<>();
+    private final Map<String, Empire> empires = new ConcurrentHashMap<>();
+    private final Map<IdObject, Empire> empireIds = new ConcurrentHashMap<>();
+    private final Map<UUID, Empire> empireUuids = new ConcurrentHashMap<>();
 
     private Map<String, EmpirePerk> perks;
     private Map<String, EmpirePerk> perkTags;
@@ -62,6 +64,7 @@ public class EmpireManager {
         for (Empire empire : DatabaseManager.getInstance().getAllEmpires()) {
             empires.put(empire.getName().replace(' ', '_').toLowerCase(), empire);
             empireIds.put(empire.getId(), empire);
+            empireUuids.put(empire.getUUID(), empire);
             if (empire.isAbandoned()) {
                 long timeAbandoned = System.currentTimeMillis() - empire.getCreated();
                 long abandonTime = Utils.getAbandonTime(empire.getStateKey());
@@ -118,6 +121,12 @@ public class EmpireManager {
         }
         return empireIds.get(id);
     }
+    public Empire getEmpireFromUuid(UUID uuid) {
+        if (uuid == null) {
+            return null;
+        }
+        return empireUuids.get(uuid);
+    }
 
     public Empire getEmpireFromPlayer(Player player) {
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
@@ -151,6 +160,7 @@ public class EmpireManager {
             DatabaseManager.getInstance().saveResident(empire.getCapital().getChief());
             if (!empire.getId().isNull()) {
                 empireIds.put(empire.getId(), empire);
+                empireUuids.put(empire.getUUID(), empire);
             } else {
                 KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving empire " + empire.getName() + " to the database! No ID was returned.");
             }
@@ -216,6 +226,7 @@ public class EmpireManager {
     public void deleteEmpire(Empire empire) {
         empires.remove(empire.getName().toLowerCase());
         empireIds.remove(empire.getId());
+        empireUuids.remove(empire.getUUID());
         MessageUtils.broadcast(Message.get("broadcast.empire-deletion"), "name", empire.getName());
         for (Village member : empire.getMembers()) {
             if (empire.equals(member.getEmpire())) {

@@ -34,6 +34,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -42,6 +43,7 @@ public class VillageManager {
     private static VillageManager instance;
     private Map<String, Village> villages = new ConcurrentHashMap<>();
     private Map<IdObject, Village> villageIDs = new ConcurrentHashMap<>();
+    private Map<UUID, Village> villageUuids = new ConcurrentHashMap<>();
 
     private Map<String, LevelPerk> perks;
     private Map<String, LevelPerk> perkTags;
@@ -51,6 +53,7 @@ public class VillageManager {
         for (Village village : DatabaseManager.getInstance().getAllVillages()) {
             villages.put(village.getName().replace(' ', '_').toLowerCase(), village);
             villageIDs.put(village.getId(), village);
+            villageUuids.put(village.getUUID(), village);
             if (village.isAbandoned()) {
                 long timeAbandoned = System.currentTimeMillis() - village.getCreated();
                 long abandonTime = Utils.getAbandonTime(village.getStateKey());
@@ -104,6 +107,7 @@ public class VillageManager {
             DatabaseManager.getInstance().saveVillage(village);
             if (!village.getId().isNull()) {
                 villageIDs.put(village.getId(), village);
+                villageUuids.put(village.getUUID(), village);
                 DatabaseManager.getInstance().saveResident(chief);
             } else {
                 KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving " + village.getName() + " to the database! No ID was returned.");
@@ -124,6 +128,13 @@ public class VillageManager {
         return villageIDs.get(id);
     }
 
+    public Village getVillageFromUuid(UUID uuid) {
+        if (uuid == null) {
+            return null;
+        }
+        return villageUuids.get(uuid);
+    }
+
     public Village getVillageFromName(String name) {
         if (name == null || name.isEmpty()) {
             return null;
@@ -142,6 +153,7 @@ public class VillageManager {
     public void deleteVillage(Village village) {
         villages.remove(village.getName().replace(' ', '_').toLowerCase());
         villageIDs.remove(village.getId());
+        villageUuids.remove(village.getUUID());
         if (village.hasEmpire()) {
             village.getEmpire().getMemberIds().remove(village.getId());
         }

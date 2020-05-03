@@ -78,9 +78,15 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
 
     public abstract long getOnlineCount();
 
-    public abstract boolean canAdminLocks(Resident resident);
+    public boolean canAdminLocks(Resident resident) {
+        return hasPermission(resident, "lock.admin");
+    }
 
-    public abstract boolean canAdminPlots(Resident resident);
+    public boolean canAdminPlots(Resident resident) {
+        return hasPermission(resident, "plot.admin");
+    }
+
+    public abstract boolean hasPermission(Resident resident, String perm);
 
     public abstract boolean isTrusted(LandOwner landOwner);
 
@@ -101,6 +107,10 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
             id = IdObject.get(null);
         }
         this.id = id;
+    }
+
+    public UUID getUUID() {
+        return UUID.nameUUIDFromBytes(getIdKey().getBytes());
     }
 
     public String getName() {

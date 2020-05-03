@@ -357,13 +357,8 @@ public class Empire extends LandOwner implements Comparable<Empire> {
     }
 
     @Override
-    public boolean canAdminLocks(Resident resident) {
-        return isMember(resident) && resident.hasPermission("kingdoms.command.empire.lock.admin");
-    }
-
-    @Override
-    public boolean canAdminPlots(Resident resident) {
-        return isMember(resident) && resident.hasPermission("kingdoms.command.empire.plot.admin");
+    public boolean hasPermission(Resident resident, String perm) {
+        return isMember(resident) && resident.hasPermission("empire." + perm);
     }
 
     @Override

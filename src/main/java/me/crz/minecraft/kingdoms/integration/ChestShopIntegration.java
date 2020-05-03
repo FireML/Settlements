@@ -2,18 +2,38 @@ package me.crz.minecraft.kingdoms.integration;
 
 import co.aikar.timings.Timing;
 import com.Acrobot.ChestShop.ChestShop;
+import com.Acrobot.ChestShop.Database.Account;
+import com.Acrobot.ChestShop.Events.AccountAccessEvent;
+import com.Acrobot.ChestShop.Events.AccountQueryEvent;
+import com.Acrobot.ChestShop.Events.Economy.AccountCheckEvent;
+import com.Acrobot.ChestShop.Events.Economy.CurrencyAddEvent;
+import com.Acrobot.ChestShop.Events.Economy.CurrencyAmountEvent;
+import com.Acrobot.ChestShop.Events.Economy.CurrencyCheckEvent;
+import com.Acrobot.ChestShop.Events.Economy.CurrencyFormatEvent;
+import com.Acrobot.ChestShop.Events.Economy.CurrencyHoldEvent;
+import com.Acrobot.ChestShop.Events.Economy.CurrencySubtractEvent;
+import com.Acrobot.ChestShop.Events.Economy.CurrencyTransferEvent;
+import com.Acrobot.ChestShop.Events.PreShopCreationEvent;
 import com.Acrobot.ChestShop.Events.Protection.ProtectionCheckEvent;
 import com.Acrobot.ChestShop.Events.ShopDestroyedEvent;
+import com.Acrobot.ChestShop.Listeners.Economy.EconomyAdapter;
 import com.Acrobot.ChestShop.Security;
 import com.Acrobot.ChestShop.Signs.ChestShopSign;
 import com.Acrobot.ChestShop.Utils.uBlock;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
+import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.lock.Lock;
 import me.crz.minecraft.kingdoms.lock.LockManager;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
+import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -29,10 +49,16 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.UUID;
+import java.util.logging.Level;
 
-public class ChestShopIntegration implements LockProvider, ShopProvider, Listener {
+import static com.Acrobot.ChestShop.Signs.ChestShopSign.NAME_LINE;
+
+public class ChestShopIntegration extends EconomyAdapter implements LockProvider, ShopProvider, Listener {
     private final ChestShop chestShop;
 
     public ChestShopIntegration() {
@@ -130,5 +156,197 @@ public class ChestShopIntegration implements LockProvider, ShopProvider, Listene
     @Override
     public boolean canAccess(Player player, Block block) {
         return Security.canAccess(player, block);
+    }
+
+    private LandOwner getLandOwner(String name) {
+        String[] parts = name.split(":", 3);
+
+        if (parts.length > 2) {
+            try {
+                int id = Integer.parseInt(parts[2]);
+                if ("s".equalsIgnoreCase(parts[0]) || "v".equalsIgnoreCase(parts[0]) || "k".equalsIgnoreCase(parts[0])) {
+                    return VillageManager.getInstance().getVillageFromId(IdObject.get(id));
+                } else if ("e".equalsIgnoreCase(parts[0])) {
+                    return EmpireManager.getInstance().getEmpireFromId(IdObject.get(id));
+                }
+            } catch (IllegalArgumentException e) {
+                KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid shop owner ID " + name);
+            }
+        }
+        return null;
+    }
+
+    private LandOwner getLandOwner(UUID uuid) {
+        LandOwner landOwner = VillageManager.getInstance().getVillageFromUuid(uuid);
+        if (landOwner == null) {
+            landOwner = EmpireManager.getInstance().getEmpireFromUuid(uuid);
+        }
+        return landOwner;
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPreShopCreation(PreShopCreationEvent event) {
+        if (event.getOwnerAccount() == null) {
+            String name = event.getSignLine(NAME_LINE);
+            LandOwner landOwner = getLandOwner(name);
+            if (landOwner != null) {
+                event.setOwnerAccount(createAccount(landOwner));
+            } else if (name.length() > 1 && name.charAt(1) == ':') {
+                // Short name is possible kingdoms sign creation, check if user has access of type
+                Resident resident = ResidentManager.getInstance().getResident(event.getPlayer());
+                switch (name.toLowerCase().charAt(0)) {
+                    case 's':
+                    case 'v':
+                    case 'k':
+                        if (resident.hasVillage() && resident.hasPermission("village.chestshop.admin")) {
+                            event.setOwnerAccount(createAccount(resident.getVillage()));
+                        }
+                        break;
+                    case 'e':
+                        if (resident.hasEmpire() && resident.hasPermission("empire.chestshop.admin")) {
+                            event.setOwnerAccount(createAccount(resident.getVillage().getEmpire()));
+                        }
+                        break;
+                }
+            }
+            if (event.getOwnerAccount() != null) {
+                event.setSignLine(NAME_LINE, event.getOwnerAccount().getShortName());
+            }
+        }
+    }
+
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onAccountQuery(AccountQueryEvent event) {
+        if (event.getAccount() == null) {
+            LandOwner landOwner = getLandOwner(event.getName());
+            if (landOwner != null) {
+                event.setAccount(createAccount(landOwner));
+            } else {
+                KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not get shop owner from ID " + event.getName());
+            }
+        }
+    }
+
+    private static Account createAccount(LandOwner landOwner) {
+        return new Account(landOwner.getStateKey().charAt(0) + ":" + landOwner.getName() + ":" + landOwner.getId(), getShortName(landOwner), landOwner.getUUID());
+    }
+
+    private static String getShortName(LandOwner landOwner) {
+        String shortName = landOwner.getStateKey().charAt(0) + ":" + landOwner.getName() + ":" + landOwner.getId();
+        String noSpaceName = landOwner.getName().replace(" ", "").replace("-", "").replace("_", "");
+        if (shortName.length() > 15) {
+            shortName = landOwner.getStateKey().charAt(0) + ":" + noSpaceName + ":" + landOwner.getId();
+        }
+        if (shortName.length() > 15) {
+            shortName = landOwner.getStateKey().charAt(0) + ":" + noSpaceName.substring(0, noSpaceName.length() - (shortName.length() - 15)) + ":" + landOwner.getId();
+        }
+
+        return shortName;
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onAccountAccess(AccountAccessEvent event) {
+        LandOwner landOwner = getLandOwner(event.getAccount().getShortName());
+        if (landOwner != null) {
+            event.setAccess(landOwner.hasPermission(ResidentManager.getInstance().getResident(event.getPlayer()), "chestshop.admin"));
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onAmountCheck(CurrencyAmountEvent event) {
+        if (!event.getAmount().equals(BigDecimal.ZERO)) {
+            return;
+        }
+
+        LandOwner landOwner = getLandOwner(event.getAccount());
+        if (landOwner != null) {
+            event.setAmount(BigDecimal.valueOf(landOwner.getBank()));
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onCurrencyCheck(CurrencyCheckEvent event) {
+        if (!event.hasEnough()) {
+            LandOwner landOwner = getLandOwner(event.getAccount());
+            if (landOwner != null) {
+                try {
+                    event.hasEnough(landOwner.has(event.getAmount().setScale(0, RoundingMode.UP).longValueExact()));
+                } catch (ArithmeticException e) {
+                    KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not check balance of " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
+                    event.hasEnough(false);
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onAccountCheck(AccountCheckEvent event) {
+        if (event.hasAccount()) {
+            return;
+        }
+
+        LandOwner landOwner = getLandOwner(event.getAccount());
+        if (landOwner != null) {
+            event.hasAccount(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onCurrencyFormat(CurrencyFormatEvent event) {
+        // Ignored, formatting is forwarded to economy plugin
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onCurrencyAdd(CurrencyAddEvent event) {
+        if (event.isAdded()) {
+            return;
+        }
+
+        LandOwner landOwner = getLandOwner(event.getTarget());
+        if (landOwner != null) {
+            try {
+                landOwner.addToBank(event.getAmount().setScale(0, RoundingMode.DOWN).longValueExact());
+                event.setAdded(true);
+                Utils.runAsync(() -> DatabaseManager.getInstance().save(landOwner));
+            } catch (ArithmeticException e) {
+                KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not add money to " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onCurrencySubtraction(CurrencySubtractEvent event) {
+        if (event.isSubtracted()) {
+            return;
+        }
+
+        LandOwner landOwner = getLandOwner(event.getTarget());
+        if (landOwner != null) {
+            try {
+                landOwner.removeFromBank(event.getAmount().setScale(0, RoundingMode.UP).longValueExact());
+                event.setSubtracted(true);
+                Utils.runAsync(() -> DatabaseManager.getInstance().save(landOwner));
+            } catch (ArithmeticException e) {
+                KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not remove money from " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onCurrencyTransfer(CurrencyTransferEvent event) {
+        processTransfer(event);
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onCurrencyHoldCheck(CurrencyHoldEvent event) {
+        if (event.getAccount() == null || event.canHold()) {
+            return;
+        }
+
+        LandOwner landOwner = getLandOwner(event.getAccount());
+        if (landOwner != null) {
+            event.canHold(true);
+        }
     }
 }
