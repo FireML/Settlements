@@ -1,8 +1,13 @@
 package me.crz.minecraft.kingdoms.integration;
 
 import co.aikar.timings.Timing;
+import com.Acrobot.Breeze.Utils.MaterialUtil;
 import com.Acrobot.ChestShop.ChestShop;
+import com.Acrobot.ChestShop.Commands.Toggle;
+import com.Acrobot.ChestShop.Configuration.Messages;
+import com.Acrobot.ChestShop.Configuration.Properties;
 import com.Acrobot.ChestShop.Database.Account;
+import com.Acrobot.ChestShop.Economy.Economy;
 import com.Acrobot.ChestShop.Events.AccountAccessEvent;
 import com.Acrobot.ChestShop.Events.AccountQueryEvent;
 import com.Acrobot.ChestShop.Events.Economy.AccountCheckEvent;
@@ -14,8 +19,10 @@ import com.Acrobot.ChestShop.Events.Economy.CurrencyHoldEvent;
 import com.Acrobot.ChestShop.Events.Economy.CurrencySubtractEvent;
 import com.Acrobot.ChestShop.Events.Economy.CurrencyTransferEvent;
 import com.Acrobot.ChestShop.Events.PreShopCreationEvent;
+import com.Acrobot.ChestShop.Events.PreTransactionEvent;
 import com.Acrobot.ChestShop.Events.Protection.ProtectionCheckEvent;
 import com.Acrobot.ChestShop.Events.ShopDestroyedEvent;
+import com.Acrobot.ChestShop.Events.TransactionEvent;
 import com.Acrobot.ChestShop.Listeners.Economy.EconomyAdapter;
 import com.Acrobot.ChestShop.Security;
 import com.Acrobot.ChestShop.Signs.ChestShopSign;
@@ -30,6 +37,7 @@ import me.crz.minecraft.kingdoms.lock.Lock;
 import me.crz.minecraft.kingdoms.lock.LockManager;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.utils.IdObject;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -37,6 +45,7 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -48,6 +57,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -215,6 +225,92 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
         }
     }
 
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onTransaction(TransactionEvent event) {
+        if (event.getTransactionType() == TransactionEvent.TransactionType.BUY) {
+            sendBuyMessage(event);
+        } else {
+            sendSellMessage(event);
+        }
+    }
+
+    private void sendBuyMessage(TransactionEvent event) {
+        Player player = event.getClient();
+
+        if (Properties.SHOW_TRANSACTION_INFORMATION_OWNER && !Toggle.isIgnoring(event.getOwnerAccount().getUuid())) {
+            LandOwner landOwner = getLandOwner(event.getOwnerAccount().getUuid());
+            if (landOwner != null) {
+                sendMessage(landOwner, event.getOwnerAccount().getName(), getMessage("bought-from-shop"),
+                        event.getSign(), event.getExactPrice(), event.getStock(), "buyer", player.getName());
+            }
+        }
+    }
+
+    private void sendSellMessage(TransactionEvent event) {
+        Player player = event.getClient();
+
+        if (Properties.SHOW_TRANSACTION_INFORMATION_OWNER && !Toggle.isIgnoring(event.getOwnerAccount().getUuid())) {
+            LandOwner landOwner = getLandOwner(event.getOwnerAccount().getUuid());
+            if (landOwner != null) {
+                sendMessage(landOwner, event.getOwnerAccount().getName(), getMessage("sold-to-shop"),
+                        event.getSign(), event.getExactPrice(), event.getStock(), "seller", player.getName());
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onMessage(PreTransactionEvent event) {
+        switch (event.getTransactionOutcome()) {
+            case NOT_ENOUGH_SPACE_IN_CHEST:
+                if (Properties.SHOW_MESSAGE_FULL_SHOP && !Properties.CSTOGGLE_TOGGLES_FULL_SHOP || !Toggle.isIgnoring(event.getOwnerAccount().getUuid())) {
+                    LandOwner landOwner = getLandOwner(event.getOwnerAccount().getUuid());
+                    if (landOwner != null) {
+                        sendMessage(landOwner, event.getOwnerAccount().getName(), getMessage("not-enough-space"),
+                                event.getSign(), event.getExactPrice(), event.getStock(), "seller", event.getClient().getName());
+                    }
+                }
+                break;
+            case NOT_ENOUGH_STOCK_IN_CHEST:
+                if (Properties.SHOW_MESSAGE_OUT_OF_STOCK && !Properties.CSTOGGLE_TOGGLES_OUT_OF_STOCK || !Toggle.isIgnoring(event.getOwnerAccount().getUuid())) {
+                    LandOwner landOwner = getLandOwner(event.getOwnerAccount().getUuid());
+                    if (landOwner != null) {
+                        sendMessage(landOwner, event.getOwnerAccount().getName(), getMessage("out-of-stock"),
+                                event.getSign(), event.getExactPrice(), event.getStock(), "buyer", event.getClient().getName());
+                    }
+                }
+                break;
+        }
+    }
+
+    private void sendMessage(LandOwner landOwner, String playerName, Message rawMessage, Sign sign, BigDecimal price, ItemStack[] stock, String... replacements) {
+        Location loc = sign.getLocation();
+        String message = Messages.prefix(rawMessage.getReplacer()
+                .replace(replacements)
+                .replace("state", landOwner.getStateTag(),
+                        "item", "%item",
+                        "price", Economy.formatBalance(price),
+                        "world", loc.getWorld().getName(),
+                        "x", String.valueOf(loc.getBlockX()),
+                        "y", String.valueOf(loc.getBlockY()),
+                        "z", String.valueOf(loc.getBlockZ())
+                ).getText());
+
+        String itemList = MaterialUtil.getItemList(stock);
+
+        for (Resident resident : landOwner.getResidents()) {
+            if (landOwner.hasPermission(resident, "chestshop.admin")) {
+                Player player = resident.getPlayer();
+                if (player != null) {
+                    if (Properties.SHOWITEM_MESSAGE && MaterialUtil.Show.sendMessage(player, message, stock)) {
+                        return;
+                    }
+                    player.sendMessage(message.replace("%item", itemList));
+                } else if (playerName != null) {
+                    ChestShop.sendBungeeMessage(playerName, message.replace("%item", itemList));
+                }
+            }
+        }
+    }
 
     @EventHandler(priority = EventPriority.LOW)
     public void onAccountQuery(AccountQueryEvent event) {
@@ -229,7 +325,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
     }
 
     private static Account createAccount(LandOwner landOwner) {
-        return new Account(landOwner.getStateKey().charAt(0) + ":" + landOwner.getName() + ":" + landOwner.getId(), getShortName(landOwner), landOwner.getUUID());
+        return new Account(landOwner.getStateTag() + " " + landOwner.getName(), getShortName(landOwner), landOwner.getUUID());
     }
 
     private static String getShortName(LandOwner landOwner) {
