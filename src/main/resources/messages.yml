@@ -1358,6 +1358,10 @@ command:
       description: Set who can build in your settlement
       permission:
         description: Allows changing of the settlement build setting
+    chestshop:
+      admin:
+        permission:
+          description: Allows creation of and access to settlement shops
     claim:
       cant-claim-more: "&c&l(!) &r&7Your settlement can only claim &e{max} chunks of land!"
       no-land-around: "&c&l(!) &r&7Your claim must be connected to an existing settlement claim!"
@@ -1970,6 +1974,10 @@ command:
       description: Set who can build in your empire world
       permission:
         description: Allows changing of the empire world build setting
+    chestshop:
+      admin:
+        permission:
+          description: Allows creation of and access to empire shops
     create:
       success: |-
         &a&lSUCCESS &r&7created a new empire.
