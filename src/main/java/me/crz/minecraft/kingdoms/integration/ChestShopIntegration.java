@@ -318,8 +318,6 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             LandOwner landOwner = getLandOwner(event.getName());
             if (landOwner != null) {
                 event.setAccount(createAccount(landOwner));
-            } else {
-                KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not get shop owner from ID " + event.getName());
             }
         }
     }
