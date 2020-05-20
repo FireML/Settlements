@@ -367,6 +367,10 @@ public class Utils {
         return 25;
     }
 
+    public static boolean shouldBlockChestShopSellBelowUpkeep() {
+        return ConfigManager.getInstance().getConfig().getBoolean("chestshop.block-sell-below-upkeep");
+    }
+
     public static boolean playerIsChief(Player player, Village village) {
         return village != null && village.getChiefId().equals(player.getUniqueId());
     }

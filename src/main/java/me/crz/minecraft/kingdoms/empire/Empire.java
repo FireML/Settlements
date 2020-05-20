@@ -388,6 +388,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
         return null;
     }
 
+    @Override
     public int getUpkeep() {
         return KingdomsPlugin.getInstance().getConfig().getInt("upkeep.empire");
     }

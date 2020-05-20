@@ -709,6 +709,8 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         return landOwner;
     }
 
+    public abstract int getUpkeep();
+
     public abstract boolean isAbandoned();
 
     @Override

@@ -41,6 +41,7 @@ import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
@@ -261,7 +262,15 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onMessage(PreTransactionEvent event) {
         switch (event.getTransactionOutcome()) {
-            case NOT_ENOUGH_SPACE_IN_CHEST:
+            case SHOP_DOES_NOT_HAVE_ENOUGH_MONEY: {
+                LandOwner landOwner = getLandOwner(event.getOwnerAccount().getUuid());
+                if (landOwner != null) {
+                    sendMessage(landOwner, event.getOwnerAccount().getName(), getMessage("not-enough-money"),
+                            event.getSign(), event.getExactPrice(), event.getStock(), "seller", event.getClient().getName());
+                }
+                break;
+            }
+            case NOT_ENOUGH_SPACE_IN_CHEST: {
                 if (Properties.SHOW_MESSAGE_FULL_SHOP && !Properties.CSTOGGLE_TOGGLES_FULL_SHOP || !Toggle.isIgnoring(event.getOwnerAccount().getUuid())) {
                     LandOwner landOwner = getLandOwner(event.getOwnerAccount().getUuid());
                     if (landOwner != null) {
@@ -270,7 +279,8 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                     }
                 }
                 break;
-            case NOT_ENOUGH_STOCK_IN_CHEST:
+            }
+            case NOT_ENOUGH_STOCK_IN_CHEST: {
                 if (Properties.SHOW_MESSAGE_OUT_OF_STOCK && !Properties.CSTOGGLE_TOGGLES_OUT_OF_STOCK || !Toggle.isIgnoring(event.getOwnerAccount().getUuid())) {
                     LandOwner landOwner = getLandOwner(event.getOwnerAccount().getUuid());
                     if (landOwner != null) {
@@ -279,6 +289,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                     }
                 }
                 break;
+            }
         }
     }
 
@@ -355,7 +366,11 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
 
         LandOwner landOwner = getLandOwner(event.getAccount());
         if (landOwner != null) {
-            event.setAmount(BigDecimal.valueOf(landOwner.getBank()));
+            long amount = landOwner.getBank();
+            if (Utils.shouldBlockChestShopSellBelowUpkeep()) {
+                amount -= landOwner.getUpkeep();
+            }
+            event.setAmount(BigDecimal.valueOf(Math.max(amount, 0)));
         }
     }
 
@@ -365,7 +380,11 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             LandOwner landOwner = getLandOwner(event.getAccount());
             if (landOwner != null) {
                 try {
-                    event.hasEnough(landOwner.has(event.getAmount().setScale(0, RoundingMode.UP).longValueExact()));
+                    long amount = event.getAmount().setScale(0, RoundingMode.UP).longValueExact();
+                    if (Utils.shouldBlockChestShopSellBelowUpkeep()) {
+                        amount += landOwner.getUpkeep();
+                    }
+                    event.hasEnough(landOwner.has(amount));
                 } catch (ArithmeticException e) {
                     KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not check balance of " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
                     event.hasEnough(false);

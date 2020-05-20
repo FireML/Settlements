@@ -214,3 +214,5 @@ brewery:
     empireally: 1
     admin: 9001
     staff: 9001
+chestshop:
+  block-sell-below-upkeep: true

@@ -450,6 +450,7 @@ integration:
     out-of-stock: "{price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 is out of stock! ({buyer} tried to buy)"
     sold-to-shop: "{seller} sold {item} for {price} to your {state} shop at {world}/{x}/{y}/{z}."
     not-enough-space: "{price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 is full! ({seller} tried to sell)"
+    not-enough-money: "{price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 can't loose money as you need it to pay your upkeep! ({seller} tried to sell)"
   lwc:
     only-in-village: "&c&lYou can only lock things in a settlement claim!"
     state:
