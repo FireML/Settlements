@@ -27,6 +27,8 @@ import com.Acrobot.ChestShop.Listeners.Economy.EconomyAdapter;
 import com.Acrobot.ChestShop.Security;
 import com.Acrobot.ChestShop.Signs.ChestShopSign;
 import com.Acrobot.ChestShop.Utils.uBlock;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
@@ -41,7 +43,6 @@ import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
@@ -65,6 +66,7 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import static com.Acrobot.ChestShop.Signs.ChestShopSign.NAME_LINE;
@@ -72,8 +74,11 @@ import static com.Acrobot.ChestShop.Signs.ChestShopSign.NAME_LINE;
 public class ChestShopIntegration extends EconomyAdapter implements LockProvider, ShopProvider, Listener {
     private final ChestShop chestShop;
 
+    private final Cache<String, Long> notificationCooldown;
+
     public ChestShopIntegration() {
         chestShop = (ChestShop) Bukkit.getPluginManager().getPlugin("ChestShop");
+        notificationCooldown = CacheBuilder.newBuilder().expireAfterWrite(Utils.getChestShopNotificationCooldown(), TimeUnit.SECONDS).build();
         KingdomsPlugin.getInstance().getLockProviders().add(this);
         KingdomsPlugin.getInstance().getShopProviders().add(this);
         Bukkit.getPluginManager().registerEvents(this, KingdomsPlugin.getInstance());
@@ -259,12 +264,12 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onMessage(PreTransactionEvent event) {
         switch (event.getTransactionOutcome()) {
             case SHOP_DOES_NOT_HAVE_ENOUGH_MONEY: {
                 LandOwner landOwner = getLandOwner(event.getOwnerAccount().getUuid());
-                if (landOwner != null) {
+                if (landOwner != null && checkCoolDown(event)) {
                     sendMessage(landOwner, event.getOwnerAccount().getName(), getMessage("not-enough-money"),
                             event.getSign(), event.getExactPrice(), event.getStock(), "seller", event.getClient().getName());
                 }
@@ -273,7 +278,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             case NOT_ENOUGH_SPACE_IN_CHEST: {
                 if (Properties.SHOW_MESSAGE_FULL_SHOP && !Properties.CSTOGGLE_TOGGLES_FULL_SHOP || !Toggle.isIgnoring(event.getOwnerAccount().getUuid())) {
                     LandOwner landOwner = getLandOwner(event.getOwnerAccount().getUuid());
-                    if (landOwner != null) {
+                    if (landOwner != null && checkCoolDown(event)) {
                         sendMessage(landOwner, event.getOwnerAccount().getName(), getMessage("not-enough-space"),
                                 event.getSign(), event.getExactPrice(), event.getStock(), "seller", event.getClient().getName());
                     }
@@ -283,7 +288,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             case NOT_ENOUGH_STOCK_IN_CHEST: {
                 if (Properties.SHOW_MESSAGE_OUT_OF_STOCK && !Properties.CSTOGGLE_TOGGLES_OUT_OF_STOCK || !Toggle.isIgnoring(event.getOwnerAccount().getUuid())) {
                     LandOwner landOwner = getLandOwner(event.getOwnerAccount().getUuid());
-                    if (landOwner != null) {
+                    if (landOwner != null && checkCoolDown(event)) {
                         sendMessage(landOwner, event.getOwnerAccount().getName(), getMessage("out-of-stock"),
                                 event.getSign(), event.getExactPrice(), event.getStock(), "buyer", event.getClient().getName());
                     }
@@ -291,6 +296,16 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                 break;
             }
         }
+    }
+
+    private boolean checkCoolDown(PreTransactionEvent event) {
+        String key = event.getTransactionOutcome() + "/" + event.getSign().getLocation();
+        if (notificationCooldown.getIfPresent(key) != null) {
+            return false;
+        }
+
+        notificationCooldown.put(key, System.currentTimeMillis());
+        return true;
     }
 
     private void sendMessage(LandOwner landOwner, String playerName, Message rawMessage, Sign sign, BigDecimal price, ItemStack[] stock, String... replacements) {

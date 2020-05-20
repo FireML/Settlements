@@ -371,6 +371,10 @@ public class Utils {
         return ConfigManager.getInstance().getConfig().getBoolean("chestshop.block-sell-below-upkeep");
     }
 
+    public static int getChestShopNotificationCooldown() {
+        return ConfigManager.getInstance().getConfig().getInt("chestshop.notification-cooldown");
+    }
+
     public static boolean playerIsChief(Player player, Village village) {
         return village != null && village.getChiefId().equals(player.getUniqueId());
     }

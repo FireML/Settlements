@@ -216,3 +216,5 @@ brewery:
     staff: 9001
 chestshop:
   block-sell-below-upkeep: true
+  # Cooldown in seconds for sending notifications for a certain shop
+  notification-cooldown: 5
