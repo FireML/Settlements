@@ -375,7 +375,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
 
     @EventHandler(priority = EventPriority.LOW)
     public void onAmountCheck(CurrencyAmountEvent event) {
-        if (!event.getAmount().equals(BigDecimal.ZERO)) {
+        if (event.wasHandled() || !event.getAmount().equals(BigDecimal.ZERO)) {
             return;
         }
 
@@ -386,12 +386,13 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                 amount -= landOwner.getUpkeep();
             }
             event.setAmount(BigDecimal.valueOf(Math.max(amount, 0)));
+            event.setHandled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOW)
     public void onCurrencyCheck(CurrencyCheckEvent event) {
-        if (!event.hasEnough()) {
+        if (!event.wasHandled() && !event.hasEnough()) {
             LandOwner landOwner = getLandOwner(event.getAccount());
             if (landOwner != null) {
                 try {
@@ -400,6 +401,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                         amount += landOwner.getUpkeep();
                     }
                     event.hasEnough(landOwner.has(amount));
+                    event.setHandled(true);
                 } catch (ArithmeticException e) {
                     KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not check balance of " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
                     event.hasEnough(false);
@@ -410,13 +412,14 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
 
     @EventHandler(priority = EventPriority.LOW)
     public void onAccountCheck(AccountCheckEvent event) {
-        if (event.hasAccount()) {
+        if (event.wasHandled() || event.hasAccount()) {
             return;
         }
 
         LandOwner landOwner = getLandOwner(event.getAccount());
         if (landOwner != null) {
             event.hasAccount(true);
+            event.setHandled(true);
         }
     }
 
@@ -427,7 +430,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
 
     @EventHandler(priority = EventPriority.LOW)
     public void onCurrencyAdd(CurrencyAddEvent event) {
-        if (event.isAdded()) {
+        if (event.wasHandled()) {
             return;
         }
 
@@ -435,7 +438,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
         if (landOwner != null) {
             try {
                 landOwner.addToBank(event.getAmount().setScale(0, RoundingMode.DOWN).longValueExact());
-                event.setAdded(true);
+                event.setHandled(true);
                 Utils.runAsync(() -> DatabaseManager.getInstance().save(landOwner));
             } catch (ArithmeticException e) {
                 KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not add money to " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
@@ -445,7 +448,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
 
     @EventHandler(priority = EventPriority.LOW)
     public void onCurrencySubtraction(CurrencySubtractEvent event) {
-        if (event.isSubtracted()) {
+        if (event.wasHandled()) {
             return;
         }
 
@@ -453,7 +456,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
         if (landOwner != null) {
             try {
                 landOwner.removeFromBank(event.getAmount().setScale(0, RoundingMode.UP).longValueExact());
-                event.setSubtracted(true);
+                event.setHandled(true);
                 Utils.runAsync(() -> DatabaseManager.getInstance().save(landOwner));
             } catch (ArithmeticException e) {
                 KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not remove money from " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
@@ -468,13 +471,14 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
 
     @EventHandler(priority = EventPriority.LOW)
     public void onCurrencyHoldCheck(CurrencyHoldEvent event) {
-        if (event.getAccount() == null || event.canHold()) {
+        if (event.wasHandled() || event.getAccount() == null || event.canHold()) {
             return;
         }
 
         LandOwner landOwner = getLandOwner(event.getAccount());
         if (landOwner != null) {
             event.canHold(true);
+            event.setHandled(true);
         }
     }
 }
