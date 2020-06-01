@@ -30,6 +30,9 @@ public class PlotInfoCommand extends ResidentSubCommand {
                     (land.isEmbassy() || land.isOwnedBy(res))) {
                 res.tell(getMessage("price"), "price", String.valueOf(land.getPrice()));
             }
+            if (land.isPlot() || land.isForSale()) {
+                res.tell(getMessage("tax"), "tax", String.valueOf(land.getTax()));
+            }
         }
         if (land.hasLink()) {
             Collection<OwnedLand> linked = land.getLinked();

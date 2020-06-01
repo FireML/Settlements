@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.command.CommandSender;
 import me.crz.minecraft.kingdoms.command.SubCommand;
+import org.bukkit.entity.Player;
 
 public class ResidentShowCommand extends SubCommand {
 
@@ -22,14 +23,19 @@ public class ResidentShowCommand extends SubCommand {
 
     @Override
     public boolean run(CommandSender sender, String base, String alias, String... args) {
-        if (args.length < 1) {
+        if (args.length < 1 && !(sender instanceof Player)) {
             return false;
         }
         Utils.runAsync(() -> {
-            Resident target = ResidentManager.getInstance().getResident(args[0]);
-            if (target == null) {
-                MessageUtils.tell(sender, getError("player-not-found"), "name", args[0]);
-                return;
+            Resident target;
+            if (args.length > 0) {
+                target = ResidentManager.getInstance().getResident(args[0]);
+                if (target == null) {
+                    MessageUtils.tell(sender, getError("player-not-found"), "name", args[0]);
+                    return;
+                }
+            } else {
+                target = ResidentManager.getInstance().getResident((Player) sender);
             }
 
             OfflinePlayer op = Bukkit.getOfflinePlayer(target.getUUID());
@@ -43,6 +49,7 @@ public class ResidentShowCommand extends SubCommand {
                     "rank", target.hasVillage() ? target.getVillageRank().getTag(target.getVillage()) : "none",
                     "title", target.hasVillage() ? target.getTitle() : "none",
                     "balance", Utils.CURRENCY_FORMAT.format(balance),
+                    "tax", Utils.CURRENCY_FORMAT.format(target.getTax()),
                     "bonus", Utils.CURRENCY_FORMAT.format(target.getBonusClaims()),
                     "joindate", Utils.DATE_FORMAT.format(new Date(op.getFirstPlayed())),
                     "lastlogin", Utils.DATE_FORMAT.format(new Date(target.getLastLogin()))

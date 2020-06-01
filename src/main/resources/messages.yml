@@ -139,7 +139,7 @@ upkeep:
     charged: "&a&l(!) &7Your empire has been charged &6{charged}&7 for upkeep!"
     cant-pay: "&a&l(!) &cYour empire is &6unable&c to pay the next upkeep it will cost &6{amount}&c! Deposit money to avoid deletion!"
 tax:
-  removed: "&eRemoved &c{amount}&e of tax from your {state}'s bank!"
+  removed: "&eRemoved &c{amount}&e of tax from your account!"
   debt-action:
     none:
       cant-pay: "&cYou can't pay the tax of &e{amount}&c please make sure to earn some money!"
@@ -148,7 +148,7 @@ tax:
       cant-pay: "&cYou can't pay the tax of &e{amount}&c and will be banished tomorrow if you still can't pay itc!"
       couldnt-pay: "&e{player}&c was not able to pay the tax of &e{amount}&c and has been banished from the {state} {name}!"
 empire-tax:
-  removed: "&eRemoved &c{amount}&e of tax from your account!"
+  removed: "&eRemoved &c{amount}&e of tax from your {state}'s bank!"
   debt-action:
     none:
       cant-pay: "&a&lALERT &7Your settlement is &cunable&7 to pay tomorrows empire tax of &6{amount}&7! You should earn some money!"
@@ -156,6 +156,15 @@ empire-tax:
     kick:
       cant-pay: "&a&lALERT &7Your settlement is &cunable&7 to pay tomorrows empire tax of &6{amount}&7 and will be kicked tomorrow if it still can't pay it!"
       couldnt-pay: "&e{state} {settlement}&c was not able to pay the tax of &e{amount}&c and has been banished from the empire!"
+plot-tax:
+  removed: "&eRemoved &c{amount}&e of tax for your {state} {name} plot ({x}/{z}) from your account!"
+  debt-action:
+    none:
+      cant-pay: "&cYou can't pay the tax of &e{amount}&c for at least one of your plots. Please make sure to earn some money!"
+      couldnt-pay: "&e{player}&c was not able to pay the plot tax of &e{amount}&c for plot {x} {z}"
+    kick:
+      cant-pay: "&cYou can't pay the tax of &e{amount}&c for at least one of your plots and some of them will be removed if you still can't pay it!"
+      couldnt-pay: "&e{player}&c was not able to pay the tax of &e{amount}&c for his plot {x} {z} and is has been removed!"
 first-to-reach-level: "&6&l{name} &7&l is the first to reach &6&l{state} &7&llevel &6&l{level}"
 land-unclaim: "&e{amount}&7 chunks were automatically unclaimed!"
 events:
@@ -1151,6 +1160,7 @@ command:
           &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
           &a&lSettlement: &fnone
           &a&lBalance: &6₲{balance}
+          &a&lTax: &6₲{tax}
           &a&lBonus claims: &f{bonus}
           &a&lJoin Date: &f{joindate}
           &a&lLast Login: &f{lastlogin}
@@ -1159,6 +1169,7 @@ command:
           &a&lSettlement: &f{settlement}
           &a&lRank: &f{title}
           &a&lBalance: &6₲{balance}
+          &a&lTax: &6₲{tax}
           &a&lBonus claims: &f{bonus}
           &a&lJoin Date: &f{joindate}
           &a&lLast Login: &f{lastlogin}
@@ -1169,6 +1180,7 @@ command:
           &a&lSettlement: &f{settlement}
           &a&lRank: &f{title}
           &a&lBalance: &6₲{balance}
+          &a&lTax: &6₲{tax}
           &a&lBonus claims: &f{bonus}
           &a&lJoin Date: &f{joindate}
           &a&lLast Login: &f{lastlogin}
@@ -1217,7 +1229,8 @@ command:
         &9&lDescription: &r{description}
         &9&lModes: &7MobSpawning: &6{mobspawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explosions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}&r&7 | Embassy: &6{embassy}
       owner: "&a&lPlot Owner: &7{name}"
-      price: "&a&lPlot Price: &7{price}"
+      price: "&a&lPlot Price: &7₲{price}"
+      tax: "&a&lPlot Tax: &7₲{tax}"
       link: "[&aLinked to &7{amount}&a other plots!](&a{x}/{z} is linked to:\n&f{linked})"
       description: Get information about the current plot
     link:
@@ -1254,6 +1267,15 @@ command:
       success: "&a&lSUCCESS &7This land has been put on sale for &e₲{price}&7!"
       no-longer-for-sale: "&a&lSUCCESS &7This land is no longer for sale!"
       description: Gets or sets the price of a claimed chunk
+    tax:
+      current: "&7This plots's tax is &e₲{tax}&7!"
+      description: Plot taxes
+      set:
+        success: "&e&l(!) &r&7Daily tax of this plot was set to &e₲{amount}&7!"
+        above-max: "&c&l(!) &cMax tax amount is &e{max}&c!"
+        below-zero: "&c&l(!) &cTax amount cannot be negative!"
+        already-owned: "&c&l(!) &cYou can only change the tax of unowned claims!"
+        description: Sets the tax a player needs to pay each day he is owning this plot
     unlink:
       none-connected: "&c&l(!): &cNo plots are linked to this one!"
       disconnected: "&r&7Unlinked from {amount} other plots!"
@@ -1527,7 +1549,7 @@ command:
         &r &c- &6= other
         &r &7- &6= unclaimed
         &r &7+ &6= current
-      not-for-sale: "Nor for sale"
+      not-for-sale: "Not for sale"
       hover:
         click-to-claim: "&9Click to claim &f{x}&9/&f{z}"
         click-to-unclaim: "&9Click to unclaim &f{x}&9/&f{z}"
@@ -1541,7 +1563,7 @@ command:
         own-plot: Your plot
         plot: "Plot Owner: &7{owner}"
         embassy: "Embassy Owner: &7{owner}"
-        for-sale: "For sale: &7{price}"
+        for-sale: "For sale: &7₲{price} &fTax: &7₲{tax}"
         outpost: "Outpost: &7{name}"
         home: Home
         abandoned: |-
@@ -2274,6 +2296,8 @@ command:
         success: "&e&lALERT &r&7Tax debt action was set to &e{action}&7!"
         already-set: "&cThe action is already set to &e{action}&c!"
         description: Sets the action for when a settlement can't pay the tax
+      exempt:
+        description: Exempts a resident from having to pay the plot taxes in this empire
     transfer:
       success: "&e&l(!) &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
       already-capital: "&c&lYour village is already the capital."

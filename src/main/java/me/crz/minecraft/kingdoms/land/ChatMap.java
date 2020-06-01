@@ -249,6 +249,7 @@ public class ChatMap {
                     hover.append("\n").append(messages.getMessage("hover." + symbol.getKey()).getReplacedComponents(
                             "owner", land.isPlot() ? ResidentManager.getInstance().getResidentName(land.getPlotOwner()) : "none",
                             "price", land.isForSale() ? String.valueOf(land.getPrice()) : messages.getText("not-for-sale"),
+                            "tax", land.isForSale() ? String.valueOf(land.getTax()) : "0",
                             "description", land.getDescription(),
                             "name", land.getOutpostName()
                     ));

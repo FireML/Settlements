@@ -6,6 +6,9 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.chat.ChatColorType;
 import me.crz.minecraft.kingdoms.integration.AfkProvider;
+import me.crz.minecraft.kingdoms.land.LandManager;
+import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.land.TaxDebtAction;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
@@ -333,6 +336,22 @@ public class Resident implements ConfigurationSerializable, Targetable {
 
     public void setBonusClaims(int bonusClaims) {
         this.bonusClaims = bonusClaims;
+    }
+
+    public long getTax() {
+        long tax = 0;
+        if (hasVillage() && !hasPermission("village.tax.exempt")) {
+            tax += getVillage().getTax();
+        }
+        for (OwnedLand land : LandManager.getInstance().getOwnedPlot(getUUID())) {
+            if (!hasVillage()
+                    || !land.getLandOwner().isMember(this)
+                    || (!hasPermission(land.getLandOwner().getKey() + ".tax.exempt")
+                    && !land.getLandOwner().isChief(getVillage()))) {
+                tax += land.getTax();
+            }
+        }
+        return tax;
     }
 
     @Override

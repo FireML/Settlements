@@ -47,6 +47,7 @@ perm-groups:
     - empire.shop.repeat
     - empire.tax.set
     - empire.tax.action
+    - empire.tax.exempt
     - empire.transfer
     - empire.unally
     - empire.unbanish
@@ -79,6 +80,7 @@ ranks:
     - empire.shop.repeat
     - empire.tax.set
     - empire.tax.action
+    - empire.tax.exempt
     - empire.transfer
     - empire.unally
     - empire.unbanish

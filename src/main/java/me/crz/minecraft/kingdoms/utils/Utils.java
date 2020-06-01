@@ -158,6 +158,13 @@ public class Utils {
         return -1;
     }
 
+    public static int getPlotMaxTax() {
+        if (ConfigManager.getInstance().getConfig().isInt("plot-max-tax")) {
+            return ConfigManager.getInstance().getConfig().getInt("plot-max-tax");
+        }
+        return -1;
+    }
+
     public static int getUpkeepCost(VillageState state, int level) {
         return LEVEL_UPKEEP.computeIfAbsent(state.name() + "_" + level,
                 key -> ConfigManager.getInstance().getLevelConfig().getInt(state.name().toLowerCase() + ".level-" + level + ".claim-upkeep"));

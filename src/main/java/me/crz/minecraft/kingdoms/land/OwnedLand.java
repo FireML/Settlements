@@ -45,6 +45,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     private int unclaimIn = 0;
     private int price = 0;
     private boolean forSale = false;
+    private int tax = 0;
     private Map<PlotMode, Boolean> modes = new EnumMap<>(PlotMode.class);
     private String outpost = null;
     private String name = "";
@@ -162,6 +163,14 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public int getTax() {
+        return tax;
+    }
+
+    public void setTax(int tax) {
+        this.tax = tax;
     }
 
     public boolean isEmbassy() {
@@ -345,6 +354,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         map.put("owner", getPlotOwner() != null ? getPlotOwner() : Utils.ZERO_UUID);
         map.put("price", getPrice());
         map.put("forSale", isForSale());
+        map.put("tax", getTax());
         map.put("name", getName());
         map.put("description", getDescription());
         map.put("embassy", isEmbassy());
@@ -386,6 +396,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         land.setDescription((String) map.get("description"));
         land.setPrice((Integer) map.get("price"));
         land.setForSale((Boolean) map.get("forSale"));
+        land.setPrice((Integer) map.get("tax"));
         land.setEmbassy((Boolean) map.get("embassy"));
         Map<String, Object> modes = (Map<String, Object>) map.get("modes");
         for (PlotMode mode : PlotMode.values()) {
@@ -468,7 +479,9 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
                 "embassy", String.valueOf(isEmbassy()),
                 "x", String.valueOf(getX()),
                 "z", String.valueOf(getZ()),
-                "world", getWorldName()
+                "world", getWorldName(),
+                "tax", String.valueOf(tax),
+                "price", String.valueOf(price)
         };
     }
 

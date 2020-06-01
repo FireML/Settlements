@@ -277,6 +277,7 @@ public enum MySqlTable {
             + "FOREIGN KEY (ownerId) REFERENCES {tablePrefix}residents(id) ON DELETE SET NULL,"
             + "price INTEGER DEFAULT 0,"
             + "forSale BOOLEAN NOT NULL,"
+            + "tax INTEGER DEFAULT 0,"
             + "embassy BOOLEAN NOT NULL,"
             + "name VARCHAR(255),"
             + "description TEXT,"

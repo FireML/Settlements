@@ -7,7 +7,9 @@ import com.google.common.collect.ObjectArrays;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
+import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
+import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.land.TaxDebtAction;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
@@ -71,8 +73,8 @@ public class Empire extends LandOwner implements Comparable<Empire> {
             return;
         }
 
+        long paidTaxes = 0;
         if (getTax() > 0) {
-            long paidTaxes = 0;
             long tax = getTax();
             for (Village member : getMembers()) {
                 if (member.getId().equals(getCapitalId())) {
@@ -98,15 +100,18 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                     }
                 }
             }
-            payUpkeep(paidTaxes);
+        }
+        paidTaxes += doLandTaxes();
+        payUpkeep(paidTaxes);
 
+        if (paidTaxes > 0) {
             long finalPaidTaxes = paidTaxes;
             Utils.runAsync(() -> {
-                DatabaseManager.getInstance().saveVillages(getMembers());
+                if (getTax() > 0) {
+                    DatabaseManager.getInstance().saveVillages(getMembers());
+                }
                 DatabaseManager.getInstance().log(this, null, null, "tax", "cash", finalPaidTaxes);
             });
-        } else {
-            payUpkeep(0);
         }
     }
 
@@ -179,12 +184,26 @@ public class Empire extends LandOwner implements Comparable<Empire> {
         return false;
     }
 
+
+    @Override
+    public Collection<OwnedLand> getLand() {
+        return LandManager.getInstance().getClaimedLand(this);
+    }
+
     @Override
     public long getTaxIncome() {
         long income = 0;
         for (Village member : getMembers()) {
             if (!member.getId().equals(getCapitalId()) && member.has(getTax())) {
                 income += getTax();
+            }
+        }
+        for (OwnedLand land : getLand()) {
+            if (land.isPlot()) {
+                Resident owner = ResidentManager.getInstance().getResident(land.getPlotOwner());
+                if (owner != null && (!isMember(owner) || !owner.hasPermission("empire.tax.exempt")) && !isCapital(owner.getVillage())) {
+                    income += land.getTax();
+                }
             }
         }
         return income;

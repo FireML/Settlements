@@ -102,6 +102,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         updateResidentTitles();
         updateBanishedAllies();
         addColumn(MySqlTable.CLAIMS, "name", "VARCHAR(255) DEFAULT '' AFTER embassy");
+        addColumn(MySqlTable.CLAIMS, "tax", "INTEGER DEFAULT 0 AFTER forSale");
     }
 
     private void initializeTables() throws SQLException {
