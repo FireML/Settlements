@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.land;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -302,8 +303,14 @@ public class LandManager {
         return villageLands.get(village.getId()).size();
     }
 
-    public Collection<OwnedLand> getClaimedLand(Village village) {
-        return villageLands.get(village.getId());
+    public Collection<OwnedLand> getClaimedLand(LandOwner owner) {
+        if (owner instanceof Village) {
+            return villageLands.get(owner.getId());
+        } else if (owner instanceof Empire) {
+            return landTable.row(((Empire) owner).getWorldName()).values();
+        }
+
+        return Collections.emptySet();
     }
 
     public OwnedLand claimOutpost(Location location, Village village, String name) {

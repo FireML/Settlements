@@ -25,6 +25,7 @@ village-start-balance: 0
 outpost-creation-cost: 0
 empire-max-tax: 1000000
 village-max-tax: -1
+plot-max-tax: -1
 # Time in seconds to wait before being teleported
 teleport-delay:
   outpost: 3

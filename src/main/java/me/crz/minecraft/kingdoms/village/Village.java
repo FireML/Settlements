@@ -93,8 +93,8 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 return;
             }
         }
+        long totalTax = 0;
         if (getTax() > 0) {
-            long totalTax = 0;
             long tax = getTax();
             for (Resident resident : getResidents()) { // residents should already be cached!
                 if (isChief(resident)) {
@@ -129,12 +129,13 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                     }
                 }
             }
+        }
+        totalTax += doLandTaxes();
+        if (totalTax > 0) {
             long finalTotalTax = totalTax;
             Utils.runAsync(() -> DatabaseManager.getInstance().log(this, null, "tax", "cash", finalTotalTax));
-            payUpkeep(totalTax);
-        } else {
-            payUpkeep(0);
         }
+        payUpkeep(totalTax);
     }
 
     private void payUpkeep(long lastTax) {
@@ -460,11 +461,24 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     }
 
     @Override
+    public Collection<OwnedLand> getLand() {
+        return LandManager.getInstance().getClaimedLand(this);
+    }
+
+    @Override
     public long getTaxIncome() {
         long income = 0;
         for (Resident resident : getResidents()) {
             if (!resident.hasRankPermission("village.tax.exempt")) {
                 income += getTax();
+            }
+        }
+        for (OwnedLand land : getLand()) {
+            if (land.isPlot()) {
+                Resident owner = ResidentManager.getInstance().getResident(land.getPlotOwner());
+                if (owner != null && (!isMember(owner) || !owner.hasRankPermission("village.tax.exempt"))) {
+                    income += land.getTax();
+                }
             }
         }
         return income;
