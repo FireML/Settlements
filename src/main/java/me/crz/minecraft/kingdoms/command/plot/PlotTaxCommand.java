@@ -11,7 +11,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 public class PlotTaxCommand extends PlotSubCommand {
     public PlotTaxCommand(SubCommand parent) {
         super(parent, "tax [set <amount>]");
-        registerCommand(new PlotSubCommand(this, "set <amount>") {
+        registerCommand(new PlotSubCommand(this, "set <amount>", true) {
             @Override
             public boolean run(Resident resident, OwnedLand land, String base, String alias, String... args) {
                 if (args.length == 0) {
