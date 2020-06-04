@@ -339,10 +339,18 @@ public class Resident implements ConfigurationSerializable, Targetable {
     }
 
     public long getTax() {
-        long tax = 0;
+        return getVillageTax() + getPlotTax();
+    }
+
+    public long getVillageTax() {
         if (hasVillage() && !hasPermission("village.tax.exempt")) {
-            tax += getVillage().getTax();
+            return getVillage().getTax();
         }
+        return 0;
+    }
+
+    public long getPlotTax() {
+        long tax = 0;
         for (OwnedLand land : LandManager.getInstance().getOwnedPlot(getUUID())) {
             if (!hasVillage()
                     || !land.getLandOwner().isMember(this)

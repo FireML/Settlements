@@ -28,6 +28,8 @@ commands:
   resident:
     description: Shows you the name of the players village.
     aliases: [res]
+  tax:
+    description: Shows tax information.
   chat:
     description: Chat Channel Commands.
     aliases: [c]
@@ -159,6 +161,7 @@ permissions:
       kingdoms.prefix.staff: true
       kingdoms.chat.lock: true
       kingdoms.chat.links: true
+      kingdoms.command.tax.others: true
   kingdoms.mod:
     description: Permission for mods. Gives access to bypasses to feature limitations
     default: op
@@ -173,6 +176,7 @@ permissions:
       kingdoms.bypass.build: true
       kingdoms.bypass.ignore: true
       kingdoms.chat.links: true
+      kingdoms.command.tax.others: true
   kingdoms.user:
     description: Permission for users. Gives access to all plugin functions that a user should have.
     default: true
@@ -186,4 +190,7 @@ permissions:
     default: op
   kingdoms.chat.lock:
     description: Gives permission to lock the chat
+    default: op
+  kingdoms.command.tax.others:
+    description: Gives permission to see tax information of other players
     default: op

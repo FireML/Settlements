@@ -1186,6 +1186,18 @@ command:
           &a&lLast Login: &f{lastlogin}
       description: Shows you information about a resident
     description: Resident management commands
+  tax:
+    info:
+      info: |-
+        &a&m---------------
+        &6{state} tax: &e₲{tax}
+        &6Total Plot Tax: &e₲{plottax}
+        &6Total Tax: &e₲{totaltax}
+        &6Plots owned: &e{plotamount}
+        &a&m---------------
+        &c&l₲{totaltax} is deducted from your balance every upkeep
+      description: Tax information command
+    description: Tax command
   friend:
     description: Friend based commands
     add:
