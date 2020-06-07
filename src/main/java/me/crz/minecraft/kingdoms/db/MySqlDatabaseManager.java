@@ -103,6 +103,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
         updateBanishedAllies();
         addColumn(MySqlTable.CLAIMS, "name", "VARCHAR(255) DEFAULT '' AFTER embassy");
         addColumn(MySqlTable.CLAIMS, "tax", "INTEGER DEFAULT 0 AFTER forSale");
+        addColumn(MySqlTable.EMPIRES, "discord", "TEXT NOT NULL AFTER description");
+        addColumn(MySqlTable.SETTLEMENTS, "discord", "TEXT NOT NULL AFTER description");
     }
 
     private void initializeTables() throws SQLException {

@@ -1425,6 +1425,14 @@ command:
       confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l to confirm the &r&e&ldisbanding&r&c&l of your settlement."
       success: "&e&l(!) &r&7Your {title} has deleted your {state}."
       description: Disbands the current settlement
+    discord:
+      current: "&e{state} Discord: [&b{discordlink}](open_url={{discordlink})"
+      none: "&cNo {state} Discord setup."
+      setup: "&7Use [&e/s discord set](suggest_command=/s discord set ) to set it!"
+      set:
+        success: "&7Set {state} Discord invite to [&b{discordlink}](open_url={{discordlink})"
+        removed: "&7Removed {state} Discord invite. Old link: [&b{discordlink}](open_url={{discordlink})"
+        description: Allows setting of the discord link
     donate:
       donated: "&e{name} &r&7donated &6{amount}&r&7 to your settlement bank!"
       success: "&7Donated &6{amount}&r&7 to the bank of &e{state} {name}&7!"
@@ -2027,6 +2035,14 @@ command:
       confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l to confirm the &r&e&ldisbanding&r&c&l of your empire."
       success: "&e&l(!) &r&7Your {chieftitle} {chief} has deleted your Empire."
       description: Disbands the current empire
+    discord:
+      current: "&eEmpire Discord: [&b{discordlink}](open_url={{discordlink})"
+      none: "&cNo Empire Discord setup."
+      setup: "&7Use [&e/e discord set](suggest_command=/s discord set ) to set it!"
+      set:
+        success: "&7Set {state} Discord invite to [&b{discordlink}](open_url={{discordlink})"
+        removed: "&7Removed {state} Discord invite. Old link: [&b{discordlink}](open_url={{discordlink})"
+        description: Allows setting of the discord link
     donate:
       donated: "&e{name} &r&7donated &6{amount}&r&7 to your empire bank!"
       success: "&7Donated &6{amount}&r&7 to the bank of &eEmpire {name}&7!"

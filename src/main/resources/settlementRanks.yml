@@ -34,6 +34,7 @@ perm-groups:
     - village.chestshop.admin
     - village.claim
     - village.disband
+    - village.discord.set
     - village.history
     - village.invite
     - village.joinfee.set
@@ -97,6 +98,7 @@ ranks:
     - village.use
     - village.help.chief
     - village.disband
+    - village.discord.set
     - village.transfer
     - village.titles
     - village.settitle

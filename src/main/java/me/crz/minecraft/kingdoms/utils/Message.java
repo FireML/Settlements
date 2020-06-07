@@ -43,7 +43,7 @@ public class Message {
             text = "&cUnknown message &6" + key;
         }
         try {
-            components = MineDown.parse(text);
+            components = new MineDown(text).autoAddUrlPrefix(false).toComponent();
             if (!TextComponent.toPlainText(components).isEmpty()) {
                 String newText = TextComponent.toLegacyText(components);
                 if (newText.startsWith(ChatColor.WHITE.toString()) && !text.startsWith(ChatColor.WHITE.toString())) {

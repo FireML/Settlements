@@ -49,6 +49,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
     private IdObject id = IdObject.get(null);
     private String name;
     private String description = "";
+    private String discordLink = "";
     private long created = System.currentTimeMillis();
     private long bank = 0;
     private long joinFee = 0;
@@ -71,6 +72,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
     private Set<UUID> banishedPlayers = new LinkedHashSet<>();
     private Set<IdObject> banishedVillages = new LinkedHashSet<>();
     private Set<IdObject> banishedEmpires = new LinkedHashSet<>();
+
     protected LandOwner() {}
 
     public LandOwner(String name) {
@@ -132,6 +134,14 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
 
     public String getDescription() {
         return description;
+    }
+
+    public void setDiscord(String discordLink) {
+        this.discordLink = discordLink;
+    }
+
+    public String getDiscord() {
+        return discordLink;
     }
 
     @Override
@@ -648,6 +658,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         map.put("id", getId().value());
         map.put("name", getName());
         map.put("description", getDescription());
+        map.put("discord", getDiscord());
         map.put("created", getCreated());
         for (PlotMode mode : PlotMode.values(PlotMode.AppliesTo.LAND_OWNER)) {
             map.put(mode.name(), getMode(mode));
@@ -686,6 +697,7 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         }
         landOwner.setName((String) map.get("name"));
         landOwner.setDescription((String) map.get("description"));
+        landOwner.setDiscord((String) map.get("discord"));
         landOwner.setCreated((Long) map.get("created"));
         landOwner.setId(IdObject.get(map));
         landOwner.setBank((Long) map.get("bank"));

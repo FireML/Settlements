@@ -21,6 +21,7 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpireCreateCommand(this));
         registerCommand(new EmpireDescriptionCommand(this));
         registerCommand(new EmpireDisbandCommand(this));
+        registerCommand(new EmpireDiscordCommand(this));
         registerCommand(new EmpireDonateCommand(this));
         registerCommand(new EmpireHereCommand(this));
         registerCommand(new EmpireHomeCommand(this));
