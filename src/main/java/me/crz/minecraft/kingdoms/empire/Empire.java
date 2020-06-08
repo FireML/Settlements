@@ -32,6 +32,7 @@ import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -39,6 +40,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -113,6 +115,55 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                 DatabaseManager.getInstance().log(this, null, null, "tax", "cash", finalPaidTaxes);
             });
         }
+    }
+
+    private long doLandTaxes() {
+        long totalTax = 0;
+        Set<OwnedLand> toUnclaim = new HashSet<>();
+        for (OwnedLand land : getLand()) {
+            if (land.isPlot() && land.getTax() > 0) {
+                Resident resident = ResidentManager.getInstance().getResident(land.getPlotOwner());
+                if (isChief(resident)) {
+                    continue;
+                }
+                if (isMember(resident) && resident.hasRankPermission("empire.tax.exempt")) {
+                    continue;
+                }
+                OfflinePlayer player = resident.getPlayer();
+                if (player == null) {
+                    player = Bukkit.getOfflinePlayer(resident.getUUID());
+                }
+                if (KingdomsPlugin.getInstance().econ.withdrawPlayer(player, land.getTax()).transactionSuccess()) {
+                    addToBank(land.getTax());
+                    totalTax += land.getTax();
+                    if (player instanceof Player) {
+                        Message.get("plot-tax.removed").tell((Player) player,
+                                "amount", String.valueOf(land.getTax()),
+                                "state", getStateTag(),
+                                "name", getName(),
+                                "x", String.valueOf(land.getX()),
+                                "z", String.valueOf(land.getZ()),
+                                "world", land.getWorldName()
+                        );
+                    }
+                } else {
+                    Message.get("plot-tax.debt-action." + getTaxDebtAction().getKey() + ".couldnt-pay").tell(getOnlineResidents(),
+                            "player", resident.getName(),
+                            "amount", String.valueOf(land.getTax()),
+                            "state", getStateTag(),
+                            "name", getName(),
+                            "x", String.valueOf(land.getX()),
+                            "z", String.valueOf(land.getZ()),
+                            "world", land.getWorldName()
+                    );
+                    if (getTaxDebtAction() == TaxDebtAction.KICK && !land.containsHome() && !land.isOutpost()) {
+                        toUnclaim.add(land);
+                    }
+                }
+            }
+        }
+        LandManager.getInstance().unclaimLand(toUnclaim);
+        return totalTax;
     }
 
     private void payUpkeep(long lastTax) {

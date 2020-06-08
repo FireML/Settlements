@@ -14,7 +14,6 @@ import me.crz.minecraft.kingdoms.perk.Vaultable;
 import me.crz.minecraft.kingdoms.rank.Rank;
 import me.crz.minecraft.kingdoms.utils.ConfigKey;
 import me.crz.minecraft.kingdoms.utils.IdObject;
-import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -25,7 +24,6 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -33,7 +31,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -337,55 +334,6 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
 
     public void setBank(long bank) {
         this.bank = bank;
-    }
-
-    protected long doLandTaxes() {
-        long totalTax = 0;
-        Set<OwnedLand> toUnclaim = new HashSet<>();
-        for (OwnedLand land : getLand()) {
-            if (land.isPlot() && land.getTax() > 0) {
-                Resident resident = ResidentManager.getInstance().getResident(land.getPlotOwner());
-                if (isChief(resident)) {
-                    continue;
-                }
-                if (isMember(resident) && resident.hasRankPermission(getKey() + ".tax.exempt")) {
-                    continue;
-                }
-                OfflinePlayer player = resident.getPlayer();
-                if (player == null) {
-                    player = Bukkit.getOfflinePlayer(resident.getUUID());
-                }
-                if (KingdomsPlugin.getInstance().econ.withdrawPlayer(player, land.getTax()).transactionSuccess()) {
-                    addToBank(land.getTax());
-                    totalTax += land.getTax();
-                    if (player instanceof Player) {
-                        Message.get("plot-tax.removed").tell((Player) player,
-                                "amount", String.valueOf(land.getTax()),
-                                "state", getStateTag(),
-                                "name", getName(),
-                                "x", String.valueOf(land.getX()),
-                                "z", String.valueOf(land.getZ()),
-                                "world", land.getWorldName()
-                        );
-                    }
-                } else {
-                    Message.get("tax.debt-action." + getTaxDebtAction().getKey() + ".couldnt-pay").tell(getOnlineResidents(),
-                            "player", resident.getName(),
-                            "amount", String.valueOf(land.getTax()),
-                            "state", getStateTag(),
-                            "name", getName(),
-                            "x", String.valueOf(land.getX()),
-                            "z", String.valueOf(land.getZ()),
-                            "world", land.getWorldName()
-                    );
-                    if (getTaxDebtAction() == TaxDebtAction.KICK && !land.containsHome() && !land.isOutpost()) {
-                        toUnclaim.add(land);
-                    }
-                }
-            }
-        }
-        LandManager.getInstance().unclaimLand(toUnclaim);
-        return totalTax;
     }
 
     public void setUseState(Use u, BuildState state) {

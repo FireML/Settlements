@@ -93,7 +93,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 return;
             }
         }
-        long totalTax = 0;
+        Map<Resident, Long> taxes = new LinkedHashMap<>();
         if (getTax() > 0) {
             long tax = getTax();
             for (Resident resident : getResidents()) { // residents should already be cached!
@@ -103,39 +103,74 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 if (resident.hasRankPermission("village.tax.exempt")) {
                     continue;
                 }
-                OfflinePlayer player = resident.getPlayer();
-                if (player == null) {
-                    player = Bukkit.getOfflinePlayer(resident.getUUID());
-                }
-                if (KingdomsPlugin.getInstance().econ.withdrawPlayer(player, tax).transactionSuccess()) {
-                    addToBank(tax);
-                    totalTax += tax;
-                    if (player instanceof Player) {
-                        Message.get("tax.removed").tell((Player) player,
-                                "amount", String.valueOf(tax),
-                                "state", getState().getTag(),
-                                "name", getName());
-                    }
-                } else {
-                    Message.get("tax.debt-action." + getTaxDebtAction().getKey() + ".couldnt-pay").tell(getOnlineResidents(),
-                            "player", resident.getName(),
+                taxes.put(resident, tax);
+            }
+        }
+
+        for (Map.Entry<Resident, Long> entry : getLandTaxes().entrySet()) {
+            taxes.merge(entry.getKey(), entry.getValue(), (l1, l2) -> l1 + l2);
+        }
+
+        long totalTax = 0;
+        for (Map.Entry<Resident, Long> entry : taxes.entrySet()) {
+            Resident resident = entry.getKey();
+            long tax = entry.getValue();
+            OfflinePlayer player = resident.getPlayer();
+            if (player == null) {
+                player = Bukkit.getOfflinePlayer(resident.getUUID());
+            }
+            if (KingdomsPlugin.getInstance().econ.withdrawPlayer(player, tax).transactionSuccess()) {
+                addToBank(tax);
+                totalTax += tax;
+                if (player instanceof Player) {
+                    Message.get("tax.removed").tell((Player) player,
                             "amount", String.valueOf(tax),
                             "state", getState().getTag(),
-                            "name", getName()
-                    );
-                    if (getTaxDebtAction() == TaxDebtAction.KICK) {
+                            "name", getName());
+                }
+            } else {
+                Message.get("tax.debt-action." + getTaxDebtAction().getKey() + ".couldnt-pay").tell(getOnlineResidents(),
+                        "player", resident.getName(),
+                        "amount", String.valueOf(tax),
+                        "state", getState().getTag(),
+                        "name", getName()
+                );
+                if (getTaxDebtAction() == TaxDebtAction.KICK) {
+                    if (isMember(resident)) {
                         addBanished(resident);
                         removeMember(resident);
+                    }
+                    for (OwnedLand land : getLand()) {
+                        if (land.isOwnedBy(resident) && !land.containsHome() && !land.isOutpost()) {
+                            LandManager.getInstance().setPlotOwner(land, null);
+                        }
                     }
                 }
             }
         }
-        totalTax += doLandTaxes();
+
         if (totalTax > 0) {
             long finalTotalTax = totalTax;
             Utils.runAsync(() -> DatabaseManager.getInstance().log(this, null, "tax", "cash", finalTotalTax));
         }
         payUpkeep(totalTax);
+    }
+
+    private Map<Resident, Long> getLandTaxes() {
+        Map<Resident, Long> taxes = new LinkedHashMap<>();
+        for (OwnedLand land : getLand()) {
+            if (land.isPlot() && land.getTax() > 0) {
+                Resident resident = ResidentManager.getInstance().getResident(land.getPlotOwner());
+                if (isChief(resident)) {
+                    continue;
+                }
+                if (isMember(resident) && resident.hasRankPermission(getKey() + ".tax.exempt")) {
+                    continue;
+                }
+                taxes.put(resident, taxes.computeIfAbsent(resident, r -> 0L) + land.getTax());
+            }
+        }
+        return taxes;
     }
 
     private void payUpkeep(long lastTax) {

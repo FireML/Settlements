@@ -264,7 +264,7 @@ public class VillageManager {
         Collection<OwnedLand> lands = LandManager.getInstance().getOwnedPlot(resident.getUUID());
         Village village = resident.getVillage();
         for (OwnedLand land : lands) {
-            if (land.isOwnedBy(village)) {
+            if (land.isOwnedBy(village) && !land.isEmbassy()) {
                 LandManager.getInstance().setPlotOwner(land, null);
             }
         }
