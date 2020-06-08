@@ -1231,6 +1231,7 @@ command:
       description: Sets the build mode of a plot
     buy:
       cant-buy-embassy: "&cYou can't buy this plot as it is an embassy of your {state}!"
+      tax-warning: "&6There is plot tax of &e₲{tax}&6, type [&e/plot buy](/plot buy) again to confirm!"
       purchased: "&aSuccessfully purchased the land for {price}."
       description: Buys the chunk you are standing in
     info:

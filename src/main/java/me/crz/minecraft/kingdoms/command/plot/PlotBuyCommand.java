@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.command.plot;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
@@ -8,7 +10,12 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
 public class PlotBuyCommand extends ResidentSubCommand {
+    private Cache<UUID, String> plotBuyTimeout = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
+
     public PlotBuyCommand(PlotCommand parent) {
         super(parent, "buy");
     }
@@ -26,6 +33,15 @@ public class PlotBuyCommand extends ResidentSubCommand {
             if (land.isEmbassy() && land.isOwnedBy(res)) {
                 getError("cant-buy-embassy").tell(res, "state", res.getVillage().getState().getTag());
                 return true;
+            }
+            if (land.getTax() > 0) {
+                String cached = plotBuyTimeout.getIfPresent(res.getUUID());
+                if (cached == null || !cached.equals(land.getKey())) {
+                    plotBuyTimeout.put(res.getUUID(), land.getKey());
+                    getMessage("tax-warning").tell(res, "tax", Utils.CURRENCY_FORMAT.format(land.getTax()));
+                    return true;
+                }
+                plotBuyTimeout.invalidate(res.getUUID());
             }
             if (land.getPrice() > 0) {
                 if (Base.getEconomy().getBalance(res.getPlayer()) < land.getPrice()) {
