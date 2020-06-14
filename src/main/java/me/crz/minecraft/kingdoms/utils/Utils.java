@@ -198,6 +198,10 @@ public class Utils {
         return 4;
     }
 
+    public static int getCloseBuildingNotificationToggleTime() {
+        return ConfigManager.getInstance().getConfig().getInt("close-building-notification-toggle-time");
+    }
+
     public static int getTeleportDelay(String type) {
         if (ConfigManager.getInstance().getConfig().isInt("teleport-delay." + type)) {
             return ConfigManager.getInstance().getConfig().getInt("teleport-delay." + type);

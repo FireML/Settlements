@@ -170,8 +170,12 @@ public class VillageListener implements Listener {
         if (land == null) {
             Resident resident = ResidentManager.getInstance().getResident(player);
             for (LandOwner landOwner : LandManager.getInstance().getNearbyLandOwners(chunkLocation)) {
-                if (!landOwner.equals(resident.getVillage())) {
-                    Message.get("close-claims.player." + type).tell(player);
+                if (resident.isReceivingCloseBuildingNotification(landOwner)) {
+                    Message.get("close-claims.player." + type).tell(player,
+                            "settlement", landOwner.getName(),
+                            "state", landOwner.getStateTag(),
+                            "time", String.valueOf(Utils.getCloseBuildingNotificationToggleTime())
+                    );
                     break;
                 }
             }

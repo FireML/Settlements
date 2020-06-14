@@ -66,8 +66,8 @@ waiting:
   message: ""
 close-claims:
   player:
-    break: "&cYou are breaking a block near a settlement claim! Avoid doing this!"
-    place: "&cYou are placing a block near a settlement claim! Avoid doing this!"
+    break: "&cYou are breaking a block near a claim of {state} {settlement}! Avoid doing this! Run [&f/warningtoggle](/warningtoggle {settlement}) to disable this warning for the next {time} minutes."
+    place: "&cYou are placing a block near a claim of {state} {settlement}! Avoid doing this! Run [&f/warningtoggle](/warningtoggle {settlement}) to disable this warning for the next {time} minutes."
 banished:
   move:
     message: "&cYou're banished from the {state} {name}!"
@@ -2387,3 +2387,7 @@ command:
       description: Unlock multiple containers. (10 minute timeout after last unlock)
       toggled: "&aToggled container unlocking!&7 Run [&e/unlock toggle](/unlock toggle)&7 again to toggle it off!"
       untoggled: "&7Disabled container unlocking toggle!"
+  warningtoggle:
+    description: Toggle the warning when building near settlements
+    enabled: "&7You will now receive close building warnings for {state} {settlement} again!"
+    disabled: "&6For the next {time} minutes you will not receive close building warnings for {state} {settlement}!"

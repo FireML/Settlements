@@ -86,6 +86,10 @@ commands:
     description: Scoreboard command
   scoreboardadmin:
     description: Scoreboard admin command
+  warningtoggle:
+    description: Toggle the warning when building near settlements
+    aliases: [togglewarning]
+    usage: /<command> <settlement>
 permissions:
   kingdoms.admin:
     description: Permission for admins. Gives access to everything.

@@ -78,6 +78,7 @@ public class CommandManager extends Base implements TabExecutor {
         registerCommand(new MsgToggleCommand());
         registerCommand(new NotifyToggleCommand());
         registerCommand(new TaxCommand());
+        registerCommand(new WarningToggleCommand());
     }
 
     public void registerCommand(SubCommand ex) {

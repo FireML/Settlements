@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.village;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
@@ -7,6 +9,7 @@ import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.chat.ChatColorType;
 import me.crz.minecraft.kingdoms.integration.AfkProvider;
 import me.crz.minecraft.kingdoms.land.LandManager;
+import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -34,6 +37,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -61,6 +65,9 @@ public class Resident implements ConfigurationSerializable, Targetable {
     private boolean hasEmpireFlight = false;
     private boolean hasMessagesEnabled = true;
     private boolean notifyEnabled = true;
+    private Cache<IdObject, Boolean> closeBuildingNotificationToggles = CacheBuilder.newBuilder()
+            .expireAfterWrite(Utils.getCloseBuildingNotificationToggleTime(), TimeUnit.MINUTES)
+            .build();
 
     public Resident(UUID uuid, String name) {
         this.uuid = uuid;
@@ -567,6 +574,27 @@ public class Resident implements ConfigurationSerializable, Targetable {
 
     public void setNotifyEnabled(boolean notifyEnabled) {
         this.notifyEnabled = notifyEnabled;
+    }
+
+    public boolean isReceivingCloseBuildingNotification(LandOwner landOwner) {
+        return landOwner instanceof Village
+                && !landOwner.equals(getVillage())
+                && closeBuildingNotificationToggles.getIfPresent(landOwner.getId()) == null;
+    }
+
+    /**
+     * Toggle whether or not to receive notifications about a certain village
+     * @param village The village
+     * @return Whether or not the resident will now be receiving notifications
+     */
+    public boolean toggleCloseBuildingNotification(Village village) {
+        if (isReceivingCloseBuildingNotification(village)) {
+            closeBuildingNotificationToggles.put(village.getId(), false);
+            return false;
+        } else {
+            closeBuildingNotificationToggles.invalidate(village.getId());
+            return true;
+        }
     }
 
     @Override
