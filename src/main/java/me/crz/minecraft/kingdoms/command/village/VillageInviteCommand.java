@@ -29,7 +29,13 @@ public class VillageInviteCommand extends VillageSubCommand {
             Utils.runSync(() -> {
                 InviteCache.getPendingVillageInvites().put(invitedPlayer.getUUID(), res.getVillage().getId());
                 getMessage("received").tell(invitedPlayer, "name", res.getVillage().getName(), "state", res.getVillage().getState().getTag());
-                getMessage("joinfee").tell(invitedPlayer, "name", res.getVillage().getName(), "state", res.getVillage().getState().getTag(), "amount", String.valueOf(res.getVillage().getJoinFee()));
+                getMessage("joinfee").tell(invitedPlayer,
+                        "name", res.getVillage().getName(),
+                        "state", res.getVillage().getState().getTag(),
+                        "amount", String.valueOf(res.getVillage().getJoinFee()),
+                        "joinfee", String.valueOf(res.getVillage().getJoinFee()),
+                        "tax", String.valueOf(res.getVillage().getTax())
+                );
             });
             getMessage("alert").tell(res.getVillage().getOnlineResidents(), "player", invitedPlayer.getName());
         });
