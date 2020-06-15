@@ -504,7 +504,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
 
             @Override
             public String name() {
-                return getLandOwner().getKey() + ".map";
+                return getLandOwner() != null ? getLandOwner().getKey() + ".map" : "village.map";
             }
         };
     }

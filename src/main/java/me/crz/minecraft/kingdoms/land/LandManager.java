@@ -331,8 +331,7 @@ public class LandManager {
 
     public Set<OwnedLand> getAllConnectedLand(OwnedLand land, Function<OwnedLand, FilterResponse> filter) {
         Set<OwnedLand> found = new LinkedHashSet<>();
-        LandOwner landOwnder = land.getLandOwner();
-        if (landOwnder == null) {
+        if (land.getLandOwner() == null) {
             return found;
         }
 
@@ -370,7 +369,6 @@ public class LandManager {
                                 continue BRANCH;
                             case SKIP_BRANCH:
                                 skipBranch = true;
-                                break BRANCH;
                             case ACCEPT:
                                 branchFound.add(foundLand);
                             case CONTINUE:

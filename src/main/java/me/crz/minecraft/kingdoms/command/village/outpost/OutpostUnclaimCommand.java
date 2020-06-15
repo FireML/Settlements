@@ -12,6 +12,7 @@ import org.bukkit.Chunk;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class OutpostUnclaimCommand extends VillageSubCommand {
@@ -46,18 +47,27 @@ public class OutpostUnclaimCommand extends VillageSubCommand {
             return true;
         }
 
+        AtomicBoolean connectedToOutpost = new AtomicBoolean(false);
+        AtomicBoolean connectedToHome = new AtomicBoolean(false);
         Collection<OwnedLand> toUnclaim = LandManager.getInstance().getAllConnectedLand(land, search -> {
             if (search.isOutpost()) {
                 // skip branch if this is connected to another outpost chunk
-                getMessage("connected-to-outpost").tell(resident);
+                connectedToOutpost.set(true);
                 return LandManager.FilterResponse.SKIP_BRANCH;
-            } else if (search.containsHome()) {
+            }
+            if (search.containsHome()) {
                 // skip branch if this is connected to the home chunk
-                getMessage("connected-to-home").tell(resident);
+                connectedToHome.set(true);
                 return LandManager.FilterResponse.SKIP_BRANCH;
             }
             return LandManager.FilterResponse.ACCEPT;
         });
+
+        if (connectedToHome.get()) {
+            getMessage("connected-to-home").tell(resident);
+        } else if (connectedToOutpost.get()) {
+            getMessage("connected-to-outpost").tell(resident);
+        }
 
         toUnclaim.add(land);
         Runnable unclaim = () -> {
