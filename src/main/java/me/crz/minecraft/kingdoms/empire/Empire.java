@@ -400,7 +400,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
     }
 
     public boolean isCapital(Village village) {
-        return capital.equals(village.getId());
+        return village != null && capital.equals(village.getId());
     }
 
     public String getSymbol() {
