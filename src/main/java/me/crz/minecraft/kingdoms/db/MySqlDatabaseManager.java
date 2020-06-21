@@ -271,8 +271,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
     private void saveEmpire(Connection conn, Empire empire) {
         try {
-            save(conn, empire, "members", "permissions");
-            if (!empire.getId().isNull()) {
+            if (!save(conn, empire, "members", "permissions").isNull() && !empire.getId().isNull()) {
                 updateDataMap(conn, "empire_vaults", "empireId", (Integer) empire.getId().value(), "content", "amount", empire.getVault());
                 updateDataMap(conn, "empire_uses", "empireId", (Integer) empire.getId().value(), "type", "state",
                         empire.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
@@ -316,8 +315,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
     private void saveVillage(Connection conn, Village village) {
         try {
-            save(conn, village, "residents", "permissions");
-            if (!village.getId().isNull()) {
+            if (!save(conn, village, "residents", "permissions").isNull() && !village.getId().isNull()) {
                 updateDataMap(conn, "settlement_vaults", "settlementId", (Integer) village.getId().value(), "content", "amount", village.getVault());
                 updateDataMap(conn, "settlement_outposts", "settlementId", (Integer) village.getId().value(), "name", "", village.getOutpostHomes());
                 updateDataMap(conn, "settlement_uses", "settlementId", (Integer) village.getId().value(), "type", "state",
@@ -446,8 +444,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
     private void saveLand(Connection conn, OwnedLand land) {
         try {
-            save(conn, land, "landOwner", "uses", "modes");
-            if (!land.getId().isNull()) {
+            if (!save(conn, land, "landOwner", "uses", "modes").isNull() && !land.getId().isNull()) {
                 updateDataMap(conn, "claim_uses", "claimId", (Integer) land.getId().value(), "type", "state",
                         land.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
                 updateDataMap(conn, "claim_modes", "claimId", (Integer) land.getId().value(), "mode", "enabled",
@@ -580,6 +577,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
     }
 
     private void saveResident(Connection conn, Resident resident) {
+        if (resident == null) {
+            return;
+        }
         Map<String, Object> values = getValues(resident.serialize());
         String sql = "INSERT INTO " + tablePrefix + "residents "
                 + "(`" + String.join("`,`", values.keySet()) + "`)"
@@ -1064,6 +1064,10 @@ public class MySqlDatabaseManager extends DatabaseManager {
     // ------ Database operation helpers ----- //
 
     private IdObject save(Connection conn, DatabaseSerializable serializable, String... ignored) throws SQLException {
+        if (serializable == null) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Tried to save something to the database but it was null?", new NullPointerException().fillInStackTrace());
+            return IdObject.get(null);
+        }
         Map<String, Object> serialized = serializable.serialize();
         Map<String, Object> values = getValues(serialized, ignored);
         String sql = "INSERT INTO " + tablePrefix + serializable.getDbName() + "s "
