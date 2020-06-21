@@ -32,7 +32,7 @@ public class EmpireDiscordCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length == 0) {
-            if (resident.getVillage().getDiscord().isEmpty()) {
+            if (resident.getVillage().getEmpire().getDiscord().isEmpty()) {
                 getMessage("none").tell(resident);
             } else {
                 getMessage("current").tell(resident,
