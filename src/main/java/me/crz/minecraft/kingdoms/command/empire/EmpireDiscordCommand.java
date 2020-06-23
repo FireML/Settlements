@@ -15,11 +15,13 @@ public class EmpireDiscordCommand extends EmpireSubCommand {
                     String old = resident.getVillage().getEmpire().getDiscord();
                     resident.getVillage().getEmpire().setDiscord("");
                     getMessage("removed").tell(resident,
+                            "state", resident.getVillage().getEmpire().getStateTag(),
                             "discordlink", old
                     );
                 } else {
                     resident.getVillage().getEmpire().setDiscord(String.join(" ", args));
                     getMessage("success").tell(resident,
+                            "state", resident.getVillage().getEmpire().getStateTag(),
                             "discordlink", resident.getVillage().getEmpire().getDiscord()
                     );
                 }
@@ -33,9 +35,11 @@ public class EmpireDiscordCommand extends EmpireSubCommand {
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length == 0) {
             if (resident.getVillage().getEmpire().getDiscord().isEmpty()) {
-                getMessage("none").tell(resident);
+                getMessage("none").tell(resident,
+                        "state", resident.getVillage().getEmpire().getStateTag());
             } else {
                 getMessage("current").tell(resident,
+                        "state", resident.getVillage().getEmpire().getStateTag(),
                         "discordlink", resident.getVillage().getEmpire().getDiscord()
                 );
             }
