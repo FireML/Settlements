@@ -34,6 +34,7 @@ public enum Use implements NameTag {
     ANVIL(Tag.ANVIL.getValues()),
     ENCHANTMENT_TABLE(Material.ENCHANTING_TABLE),
     GRINDSTONE(Material.GRINDSTONE),
+    SMITING_TABLE(Material.SMITHING_TABLE),
     PORTAL(Material.END_PORTAL_FRAME),
     JUKEBOX(Material.JUKEBOX),
     SHULKER_BOX(MaterialTags.SHULKER_BOXES.getValues()),

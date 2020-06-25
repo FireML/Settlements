@@ -6,7 +6,7 @@
 
     <groupId>me.crz.minecraft.kingdoms</groupId>
     <artifactId>kingdoms</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
     <packaging>jar</packaging>
 
     <name>ApeironKingdoms</name>
@@ -200,7 +200,7 @@
         <dependency>
             <groupId>de.themoep</groupId>
             <artifactId>minedown</artifactId>
-            <version>1.6-SNAPSHOT</version>
+            <version>1.6.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -212,7 +212,7 @@
         <dependency>
             <groupId>com.destroystokyo.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.14.4-R0.1-SNAPSHOT</version>
+            <version>1.16.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
