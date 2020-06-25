@@ -141,13 +141,7 @@ public class IconRpMapping {
         }
         boolean isUnbreakable = false;
         if (iconstr == null) {
-            try {
-                isUnbreakable = item.getItemMeta().isUnbreakable();
-            } catch (NoSuchMethodError e) {
-                try {
-                    isUnbreakable = item.getItemMeta().spigot().isUnbreakable();
-                } catch (NoSuchMethodError ignored) {}
-            }
+            isUnbreakable = item.getItemMeta().isUnbreakable();
             if (isUnbreakable) {
                 iconstr = getIcon(item.getType().toString() + ":unbreakable:" + item.getDurability(), escape);
             }
