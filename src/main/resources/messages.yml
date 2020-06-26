@@ -1459,6 +1459,7 @@ command:
         &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &9&lPerks: &r&7{perks}
         &b&l{chieftitle}: &r&7{chiefonline}{chief}
         {residents}
       empire: |-
@@ -1476,7 +1477,7 @@ command:
         &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
-        &b&lMembers:
+        &b&l{chieftitle}: &r&7{chiefonline}{chief}
         {residents}
       abandoned: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
