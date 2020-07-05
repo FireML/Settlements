@@ -161,7 +161,7 @@ public class VillageClaimCommand extends VillageSubCommand {
             if (village.getState() == VillageState.VILLAGE && village.getLevel() == 1) {
                 getMessage("new-upkeep").tell(res,
                         "villageupkeep", String.valueOf(village.getUpkeep()),
-                        "upkeepperclaim", String.valueOf(Utils.getUpkeepCost(village.getState(), village.getLevel()))
+                        "upkeepperclaim", String.valueOf(Utils.getUpkeepCost(village.getState(), player.getWorld().getName(), village.getLevel()))
                 );
             }
             Utils.runAsync(() -> {

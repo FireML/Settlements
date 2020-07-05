@@ -1402,7 +1402,7 @@ command:
       cant-claim-more: "&c&l(!) &r&7Your settlement can only claim &e{max} chunks of land!"
       no-land-around: "&c&l(!) &r&7Your claim must be connected to an existing settlement claim!"
       success: "&a&lSUCCESS &r&e{player} &7has claimed land for your settlement at {x},{z}!"
-      new-upkeep: "&aYour new upkeep is now &e₲{villageupkeep}&a (₲{upkeepperclaim} per claim) [&e/s upkeep](/s upkeep)"
+      new-upkeep: "&aYour new upkeep is now &e₲{villageupkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
       home-set: "&7&l{state} home was set at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
       radius-too-large: "&c&l(!) &r&7Can't use an radius of {radius} for claiming as the maximum is {max}!"
       description: Claim a chunk of land
@@ -1875,7 +1875,7 @@ command:
       home: "&cThis land is your home, you have to move it with &7/{base} sethome&c before unclaiming this land."
       confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l in the next minute to confirm the &e&lunclaiming&c&l of [&e&l{amount}&c&l chunks](&fChunks that will be unclaimed: &7{claims})."
       success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at &f{x}-{z}!"
-      new-upkeep: "&aYour new upkeep is now &e₲{villageupkeep}&a (₲{upkeepperclaim} per claim) [&e/s upkeep](/s upkeep)"
+      new-upkeep: "&aYour new upkeep is now &e₲{villageupkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
       description: Unclaim land which is claimed by your village
       "<radius>":
         description: "Unclaims all the chunks in the stated radius (max is 5)"
@@ -1905,7 +1905,7 @@ command:
       info: |-
         &a⊱&m━━━━&r&6Upkeep&a&m━━━━&a⊰
         &a&lUpkeep cost:&e {cost}
-        &a&lUpkeep: &e{upkeep}₲ &7/&e claim &7/&e day
+        &a&lUpkeep: &e{upkeep}₲ &7/&e claim &7/&e day in this world
         &a&lTime Till Upkeep: &e{time}
         &a&lCan afford for: &6{afford} days
       afford-infinite: "infinite"

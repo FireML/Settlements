@@ -134,7 +134,7 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                 if (res.getVillage().getState() == VillageState.VILLAGE && res.getVillage().getLevel() == 1) {
                     getMessage("new-upkeep").tell(res,
                             "villageupkeep", String.valueOf(res.getVillage().getUpkeep()),
-                            "upkeepperclaim", String.valueOf(Utils.getUpkeepCost(res.getVillage().getState(), res.getVillage().getLevel()))
+                            "upkeepperclaim", String.valueOf(Utils.getUpkeepCost(res.getVillage().getState(), player.getWorld().getName(), res.getVillage().getLevel()))
                     );
                 }
                 if (args.length >= 3 && "map".equalsIgnoreCase(args[2])) {

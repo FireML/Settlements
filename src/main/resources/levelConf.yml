@@ -1,10 +1,14 @@
 village:
   level-1:
     claim-upkeep: 500
+    per-world-upkeep:
+      Kingdoms_nether: 1000
     chunks: 20
     outposts: 1
   level-2:
     claim-upkeep: 480
+    per-world-upkeep:
+      Kingdoms_nether: 960
     chunks: 40
     outposts: 1
     requirements:
@@ -13,18 +17,24 @@ village:
       OAK_LOG: 5
   level-3:
     claim-upkeep: 460
+    per-world-upkeep:
+      Kingdoms_nether: 960
     chunks: 60
     outposts: 1
     requirements:
       SAND: 10
   level-4:
     claim-upkeep: 440
+    per-world-upkeep:
+      Kingdoms_nether: 960
     chunks: 80
     outposts: 2
     requirements:
       COBBLESTONE: 64
   level-5:
     claim-upkeep: 420
+    per-world-upkeep:
+      Kingdoms_nether: 960
     chunks: 100
     outposts: 2
     requirements:
@@ -32,60 +42,80 @@ village:
 kingdom:
   level-1:
     claim-upkeep: 400
+    per-world-upkeep:
+      Kingdoms_nether: 800
     chunks: 150
     outposts: 4
     requirements:
       STONE: 1
   level-2:
     claim-upkeep: 380
+    per-world-upkeep:
+      Kingdoms_nether: 760
     chunks: 175
     outposts: 4
     requirements:
       STONE: 1
   level-3:
     claim-upkeep: 360
+    per-world-upkeep:
+      Kingdoms_nether: 720
     chunks: 200
     outposts: 6
     requirements:
       STONE: 1
   level-4:
     claim-upkeep: 340
+    per-world-upkeep:
+      Kingdoms_nether: 680
     chunks: 250
     outposts: 6
     requirements:
       STONE: 1
   level-5:
     claim-upkeep: 320
+    per-world-upkeep:
+      Kingdoms_nether: 640
     chunks: 300
     outposts: 6
     requirements:
       STONE: 1
   level-6:
     claim-upkeep: 300
+    per-world-upkeep:
+      Kingdoms_nether: 600
     chunks: 400
     outposts: 8
     requirements:
       STONE: 1
   level-7:
     claim-upkeep: 280
+    per-world-upkeep:
+      Kingdoms_nether: 560
     chunks: 650
     outposts: 8
     requirements:
       STONE: 1
   level-8:
     claim-upkeep: 260
+    per-world-upkeep:
+      Kingdoms_nether: 520
     chunks: 800
     outposts: 8
     requirements:
       STONE: 1
   level-9:
     claim-upkeep: 240
+    per-world-upkeep:
+      Kingdoms_nether: 480
     chunks: 1000
     outposts: 12
     requirements:
       STONE: 1
   level-10:
     claim-upkeep: 200
+    per-world-upkeep:
+      Kingdoms_nether: 400
     chunks: 1000
     outposts: 12
     requirements:
