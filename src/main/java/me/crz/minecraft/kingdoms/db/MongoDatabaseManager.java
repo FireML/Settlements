@@ -14,6 +14,7 @@ import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.lock.Lock;
+import me.crz.minecraft.kingdoms.portal.Portal;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -43,6 +44,7 @@ public class MongoDatabaseManager extends DatabaseManager {
     private MongoCollection<Document> settlementsCollection;
     private MongoCollection<Document> residentCollection;
     private MongoCollection<Document> landCollection;
+    private MongoCollection<Document> portalCollection;
     private MongoCollection<Document> lockCollection;
     private MongoCollection<Document> logsCollection;
     private MongoCollection<Document> otherData;
@@ -64,6 +66,7 @@ public class MongoDatabaseManager extends DatabaseManager {
         settlementsCollection = database.getCollection(tablePrefix + "settlements");
         residentCollection = database.getCollection(tablePrefix + "residents");
         landCollection = database.getCollection(tablePrefix + "lands");
+        portalCollection = database.getCollection(tablePrefix + "portals");
         lockCollection = database.getCollection(tablePrefix + "locks");
         logsCollection = database.getCollection(tablePrefix + "logs");
         otherData = database.getCollection(tablePrefix + "otherData");
@@ -226,6 +229,46 @@ public class MongoDatabaseManager extends DatabaseManager {
                 residentCollection.updateOne(Filters.eq("_id", resident.getId()), new Document("$set", createDocument(resident)));
             }
         }
+    }
+
+    @Override
+    public void savePortal(Portal portal) {
+        savePortals(portal);
+    }
+
+    @Override
+    public void savePortals(Portal... portals) {
+        Utils.catchSync();
+        for (Portal portal : portals) {
+            Document filter = new Document(portal.getLocation().serialize());
+            Document first = portalCollection.find(filter).first();
+            if (first == null || first.isEmpty()) {
+                portalCollection.insertOne(createDocument(portal));
+            } else {
+                portalCollection.updateOne(filter, new Document("$set", createDocument(portal)));
+            }
+        }
+    }
+
+    @Override
+    public void deletePortals(Portal... portals) {
+        Utils.catchSync();
+        for (Portal portal : portals) {
+            portalCollection.deleteMany(new Document(portal.getLocation().serialize()));
+        }
+    }
+
+    @Override
+    public Collection<Portal> getAllPortals() {
+        Utils.catchSync();
+        List<Portal> portals = new ArrayList<>();
+        for (Document doc : portalCollection.find()) {
+            Portal portal = createPortal(doc);
+            if (portal != null) {
+                portals.add(portal);
+            }
+        }
+        return portals;
     }
 
     @Override
@@ -460,8 +503,11 @@ public class MongoDatabaseManager extends DatabaseManager {
         return OwnedLand.deserialize(document.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
     }
 
-    private Document createDocument(Lock lock) {
-        return new Document(lock.serialize());
+    private Portal createPortal(Document document) {
+        if (document == null || document.isEmpty()) {
+            return null;
+        }
+        return Portal.deserialize(document.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
     }
 
     private Lock createLock(Document document) {

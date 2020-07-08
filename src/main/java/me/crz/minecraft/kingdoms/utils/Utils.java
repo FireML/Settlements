@@ -16,6 +16,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -69,7 +71,7 @@ public class Utils {
             EntityType.SLIME,
             EntityType.PHANTOM
     );
-    private static final BlockFace[] ADJACENT = {
+    private static final BlockFace[] CARDINAL_DIRECTIONS = {
             BlockFace.NORTH,
             BlockFace.EAST,
             BlockFace.SOUTH,
@@ -456,7 +458,7 @@ public class Utils {
 
     public static Collection<SimpleChunkLocation> getChunksAdjacent(SimpleChunkLocation location) {
         Collection<SimpleChunkLocation> chunksAdjacent = new HashSet<>();
-        for (BlockFace direction : ADJACENT) {
+        for (BlockFace direction : CARDINAL_DIRECTIONS) {
             chunksAdjacent.add(location.copy().add(direction.getModX(), direction.getModZ()));
         }
         return chunksAdjacent;
@@ -661,7 +663,24 @@ public class Utils {
         }
 
         return ExecuteMoveUtil.getInstance().execute(player, () -> {
-            player.teleportAsync(loc).thenAccept(success -> {
+            loc.getWorld().getChunkAtAsync(loc).thenAccept(c -> {
+                if (c == null) {
+                    Message.get("error.destination-obstructed").tell(player);
+                    return;
+                }
+                Block block = loc.getBlock();
+                if (!block.isPassable() || !block.getRelative(BlockFace.UP).isPassable()) {
+                    Message.get("error.destination-obstructed").tell(player);
+                    return;
+                }
+                Block down = block.getRelative(BlockFace.DOWN);
+                if (!down.getType().isSolid()) {
+                    Message.get("error.destination-obstructed").tell(player);
+                    return;
+                }
+
+                player.sendBlockChange(down.getLocation(), down.getBlockData());
+                boolean success = player.teleport(loc);
                 Message.get(messagePath + "." + (success ? "success" : "fail")).tell(player, replacements);
                 Message.get(messagePath + "." + (success ? "success" : "fail") + "-title").getTitle().withIn(0).send(player, replacements);
             });
@@ -760,5 +779,23 @@ public class Utils {
         T r = it.next();
         it.remove();
         return r;
+    }
+
+    public static BlockFace rotateClockWise(BlockFace face) {
+        int index = Arrays.asList(CARDINAL_DIRECTIONS).indexOf(face);
+        if (index + 1 < CARDINAL_DIRECTIONS.length) {
+            return CARDINAL_DIRECTIONS[index + 1];
+        } else {
+            return CARDINAL_DIRECTIONS[0];
+        }
+    }
+
+    public static BlockFace getBlockFace(String direction) {
+        for (BlockFace face : CARDINAL_DIRECTIONS) {
+            if (face.name().startsWith(direction.toUpperCase())) {
+                return face;
+            }
+        }
+        return null;
     }
 }

@@ -88,6 +88,10 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         return hasPermission(resident, "plot.admin");
     }
 
+    public boolean canAdminPortals(Resident resident) {
+        return hasPermission(resident, "portal.admin");
+    }
+
     public abstract boolean hasPermission(Resident resident, String perm);
 
     public abstract boolean isTrusted(LandOwner landOwner);

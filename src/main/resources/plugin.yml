@@ -10,6 +10,9 @@ commands:
   plot:
     description: Plot Commands.
     aliases: [p, land]
+  portal:
+    description: Portal Commands.
+    aliases: [netherportal]
   lock:
     description: Lock Commands.
     aliases: [protection,secure]

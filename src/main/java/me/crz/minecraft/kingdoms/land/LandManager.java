@@ -26,11 +26,14 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.landflags.Use;
+import me.crz.minecraft.kingdoms.portal.Portal;
+import me.crz.minecraft.kingdoms.portal.PortalManager;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.world.SimpleBlockLocation;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import me.crz.minecraft.kingdoms.world.SimpleLocation;
 import org.bukkit.Location;
@@ -130,6 +133,13 @@ public class LandManager {
         return this.getLand(new SimpleChunkLocation(location));
     }
 
+    public OwnedLand getLand(SimpleBlockLocation location) {
+        if (location == null) {
+            return null;
+        }
+        return this.getLand(new SimpleChunkLocation(location.getWorld(), location.getChunkX(), location.getChunkZ()));
+    }
+
     public OwnedLand getLand(SimpleChunkLocation location) {
         if (location == null) {
             return null;
@@ -176,6 +186,7 @@ public class LandManager {
 
     public void unclaimLand(OwnedLand... lands) {
         Set<Village> saveVillages = new HashSet<>();
+        Set<Portal> portals = new HashSet<>();
         for (OwnedLand land : lands) {
             if (land.getLandOwner() == null) {
                 continue;
@@ -194,7 +205,10 @@ public class LandManager {
             }
             KingdomsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + land.getKey() + " owned by " + land.getLandOwner().getName() + " was unclaimed");
             land.setLandOwner(null);
+
+            portals.addAll(PortalManager.getInstance().getPortals(land));
         }
+        PortalManager.getInstance().removePortals(portals);
         if (nearbyRadius > 0) {
             for (OwnedLand land : lands) {
                 for (SimpleChunkLocation chunkLocation : Utils.getChunksAround(land, nearbyRadius)) {

@@ -9,6 +9,7 @@ import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.lock.Lock;
+import me.crz.minecraft.kingdoms.portal.Portal;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
@@ -66,6 +67,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
     private SaveQueue<Empire> empireQueue;
     private SaveQueue<Resident> residentQueue;
     private SaveQueue<OwnedLand> landQueue;
+    private SaveQueue<Portal> portalQueue;
     private SaveQueue<Consumer<Connection>> lockQueue;
 
     @Override
@@ -92,6 +94,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         empireQueue = new SaveQueue<>(ds, queueSize, queueWait, this::saveEmpire);
         residentQueue = new SaveQueue<>(ds, queueSize, queueWait, this::saveResident);
         landQueue = new SaveQueue<>(ds, queueSize, queueWait, this::saveLand);
+        portalQueue = new SaveQueue<>(ds, queueSize, queueWait, this::savePortal);
         lockQueue = new SaveQueue<>(ds, queueSize, queueWait, (conn, consumer) -> consumer.accept(conn));
 
         initializeTables();
@@ -615,6 +618,95 @@ public class MySqlDatabaseManager extends DatabaseManager {
         }
     }
 
+    @Override
+    public void savePortals(Portal... portals) {
+        for (Portal portal : portals) {
+            portalQueue.add(portal.getId(), portal);
+        }
+        portalQueue.finishAdding();
+    }
+
+    @Override
+    public void savePortal(Portal portal) {
+        Utils.catchSync();
+        portalQueue.add(portal.getId(), portal);
+        portalQueue.finishAdding();
+    }
+
+    private void savePortal(Connection conn, Portal portal) {
+        try {
+            if (!save(conn, portal, "links").isNull() && !portal.getId().isNull()) {
+                updateList(conn, "portal_links", "sourceId", (Integer) portal.getId().value(), "targetId", portal.getLinks());
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while saving portal at " + portal.getLocation() + " to database!", e);
+        }
+    }
+
+    @Override
+    public Collection<Portal> getAllPortals() {
+        Utils.catchSync();
+        String sql = "SELECT * FROM " + tablePrefix + "portals;";
+        try (Connection conn = ds.getConnection();
+             ResultSet rs = conn.createStatement().executeQuery(sql)) {
+            List<Portal> portals = new ArrayList<>();
+            while (rs.next()) {
+                Portal portal = createPortal(conn, rs);
+                if (portal != null) {
+                    portals.add(portal);
+                }
+            }
+            return portals;
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to get all settlements from database!", e);
+        }
+        return Collections.EMPTY_LIST;
+    }
+
+    @Override
+    public void deletePortals(Portal... portals) {
+        Utils.catchSync();
+        List<Portal> withId = new ArrayList<>();
+        List<Portal> withoutId = new ArrayList<>();
+
+        for (Portal portal : portals) {
+            if (portal.getId().isNull()) {
+                withoutId.add(portal);
+            } else {
+                withId.add(portal);
+            }
+        }
+
+        if (!withId.isEmpty()) {
+            try (Connection conn = ds.getConnection();
+                 PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "portals WHERE id=?")) {
+                for (Portal portal : withId) {
+                    sta.setInt(1, (Integer) portal.getId().value());
+                    sta.addBatch();
+                }
+                sta.executeBatch();
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + withId.size() + " portals from database!", e);
+            }
+        }
+
+        if (!withoutId.isEmpty()) {
+            try (Connection conn = ds.getConnection();
+                 PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "portals WHERE world = ? AND x = ? AND y = ? AND z = ? LIMIT 1")) {
+                for (Portal portal : withoutId) {
+                    sta.setString(1, portal.getLocation().getWorld());
+                    sta.setInt(2, portal.getLocation().getX());
+                    sta.setInt(3, portal.getLocation().getY());
+                    sta.setInt(4, portal.getLocation().getZ());
+                    sta.addBatch();
+                }
+                sta.executeBatch();
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + withoutId.size() + " portals from database!", e);
+            }
+        }
+    }
+
 
     @Override
     public void renameLockWorld(String oldName, String newName) {
@@ -1055,6 +1147,12 @@ public class MySqlDatabaseManager extends DatabaseManager {
         return OwnedLand.deserialize(map);
     }
 
+    private Portal createPortal(Connection conn, ResultSet rs) throws SQLException {
+        Map<String, Object> map = toMap(rs);
+        map.put("links", selectList(conn, "portal_links", "sourceId", rs.getInt("id"), "targetId"));
+        return Portal.deserialize(map);
+    }
+
     private Lock createLock(Connection conn, ResultSet rs) throws SQLException {
         Map<String, Object> map = toMap(rs);
         map.put("allowed", selectList(conn, "lock_allowed", "lockId", rs.getInt("id"), "allowed"));
@@ -1312,7 +1410,11 @@ public class MySqlDatabaseManager extends DatabaseManager {
         deleteSta.setInt(1, keyId);
         int i = 2;
         for (Object entry : entries) {
-            deleteSta.setObject(i, entry);
+            if (entry instanceof IdObject) {
+                deleteSta.setInt(i, (int) ((IdObject) entry).value());
+            } else {
+                deleteSta.setObject(i, entry);
+            }
             i++;
         }
         deleteSta.executeUpdate();
@@ -1323,7 +1425,11 @@ public class MySqlDatabaseManager extends DatabaseManager {
             PreparedStatement insertSta = conn.prepareStatement(insertSql);
             for (Object entry : entries) {
                 insertSta.setInt(1, keyId);
-                insertSta.setObject(2, entry);
+                if (entry instanceof IdObject) {
+                    insertSta.setInt(2, (int) ((IdObject) entry).value());
+                } else {
+                    insertSta.setObject(2, entry);
+                }
                 insertSta.addBatch();
             }
             insertSta.executeBatch();

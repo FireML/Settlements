@@ -14,6 +14,7 @@ import me.crz.minecraft.kingdoms.command.friend.FriendCommand;
 import me.crz.minecraft.kingdoms.command.lock.LockCommand;
 import me.crz.minecraft.kingdoms.command.lock.UnlockCommand;
 import me.crz.minecraft.kingdoms.command.plot.PlotCommand;
+import me.crz.minecraft.kingdoms.command.portal.PortalCommand;
 import me.crz.minecraft.kingdoms.command.resident.ResidentCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
@@ -44,6 +45,7 @@ public class CommandManager extends Base implements TabExecutor {
 
     private void registerCommands() {
         registerCommand(new PlotCommand(null));
+        registerCommand(new PortalCommand());
         registerCommand(new LockCommand());
         registerCommand(new UnlockCommand());
         registerCommand(new VillageCommand());

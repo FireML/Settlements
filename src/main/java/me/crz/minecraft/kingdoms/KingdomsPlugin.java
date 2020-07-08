@@ -24,6 +24,8 @@ import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.lock.LockListener;
 import me.crz.minecraft.kingdoms.lock.LockManager;
+import me.crz.minecraft.kingdoms.portal.PortalListener;
+import me.crz.minecraft.kingdoms.portal.PortalManager;
 import me.crz.minecraft.kingdoms.rank.RankManager;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -152,6 +154,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             this.getServer().getPluginManager().registerEvents(new LandFlagsBlockEvents(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlagsUseEvents(), this);
             this.getServer().getPluginManager().registerEvents(new EventListener(), this);
+            this.getServer().getPluginManager().registerEvents(new PortalListener(), this);
 
             EmpireManager.getInstance().loadEmpireWorlds();
 
@@ -221,6 +224,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         VillageManager.getInstance();
         LandManager.getInstance();
         ResidentManager.getInstance();
+        PortalManager.getInstance();
         LockManager.getInstance();
         EventManager.getInstance();
         ScoreboardManager.getInstance();

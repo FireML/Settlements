@@ -7,6 +7,8 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.land.ChatMap;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.portal.Portal;
+import me.crz.minecraft.kingdoms.portal.PortalManager;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -144,11 +146,17 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                 LandManager.getInstance().unclaimLand(unclaimedLand);
 
             };
+            Set<Portal> portals = new HashSet<>();
+            for (OwnedLand land : unclaimedLand) {
+                portals.addAll(PortalManager.getInstance().getPortals(land));
+            }
             confirm.put(res.getUUID(), unclaim);
             getMessage("confirm").tell(res,
                     "command", base + " " + alias + " confirm",
                     "amount", String.valueOf(unclaimedLand.size()),
-                    "claims", unclaimedLand.stream().map(l -> l.getX() + "/" + l.getZ()).collect(Collectors.joining(", "))
+                    "claims", unclaimedLand.stream().map(l -> l.getX() + "/" + l.getZ()).collect(Collectors.joining(", ")),
+                    "portal-amount", String.valueOf(portals.size()),
+                    "portals", portals.stream().map(Portal::getLocation).map(l -> l.getX() + "/" + l.getY() + "/" + l.getZ()).collect(Collectors.joining(", "))
             );
         } else if (toUnclaim.size() == 1) {
             getError("no-village").tell(res);

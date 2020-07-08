@@ -157,6 +157,10 @@ public class SimpleBlockLocation implements ConfigurationSerializable {
         return getWorld() + "-" + getSimpleKey();
     }
 
+    public String getChunkKey() {
+        return getChunkX() + "-" + getWorld() + "-" + getChunkZ();
+    }
+
     public String getSimpleChunkKey() {
         return getChunkX() + "-" + getChunkZ();
     }

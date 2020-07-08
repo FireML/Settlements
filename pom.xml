@@ -101,6 +101,10 @@
                             <pattern>net.wesjd.anvilgui</pattern>
                             <shadedPattern>me.crz.minecraft.kingdoms.libs.anvilgui</shadedPattern>
                         </relocation>
+                        <relocation>
+                            <pattern>de.themoep.inventorygui</pattern>
+                            <shadedPattern>me.crz.minecraft.kingdoms.libs.inventorygui</shadedPattern>
+                        </relocation>
                     </relocations>
                 </configuration>
                 <executions>
@@ -218,7 +222,13 @@
         <dependency>
             <groupId>me.crz.minecraft.kingdoms.essentials</groupId>
             <artifactId>kingdomsessentials</artifactId>
-            <version>1.1.1</version>
+            <version>1.1.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.themoep</groupId>
+            <artifactId>inventorygui</artifactId>
+            <version>1.4.2-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

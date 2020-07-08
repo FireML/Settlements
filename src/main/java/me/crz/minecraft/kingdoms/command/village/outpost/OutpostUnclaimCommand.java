@@ -5,11 +5,15 @@ import com.google.common.cache.CacheBuilder;
 import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.portal.Portal;
+import me.crz.minecraft.kingdoms.portal.PortalManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.Chunk;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -77,14 +81,20 @@ public class OutpostUnclaimCommand extends VillageSubCommand {
                     "x", String.valueOf(resident.getPlayer().getLocation().getBlockX()),
                     "z", String.valueOf(resident.getPlayer().getLocation().getBlockZ()));
         };
-        if (toUnclaim.size() == 1) {
+        Set<Portal> portals = new HashSet<>();
+        for (OwnedLand ownedLand : toUnclaim) {
+            portals.addAll(PortalManager.getInstance().getPortals(ownedLand));
+        }
+        if (toUnclaim.size() == 1 && portals.isEmpty()) {
             unclaim.run();
         } else {
             confirm.put(resident.getUUID(), unclaim);
             getMessage("confirm").tell(resident,
                     "command", base + " " + alias + " confirm",
                     "amount", String.valueOf(toUnclaim.size()),
-                    "claims", toUnclaim.stream().map(l -> l.getX() + "/" + l.getZ()).collect(Collectors.joining(", "))
+                    "claims", toUnclaim.stream().map(l -> l.getX() + "/" + l.getZ()).collect(Collectors.joining(", ")),
+                    "portal-amount", String.valueOf(portals.size()),
+                    "portals", portals.stream().map(Portal::getLocation).map(l -> l.getX() + "/" + l.getY() + "/" + l.getZ()).collect(Collectors.joining(", "))
             );
         }
         return true;

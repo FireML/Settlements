@@ -305,6 +305,25 @@ public enum MySqlTable {
             + "UNIQUE (claimId, mode)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
+    PORTALS("CREATE TABLE IF NOT EXISTS {tablePrefix}portals ("
+            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+            + "world VARCHAR(255),"
+            + "x INTEGER,"
+            + "y INTEGER,"
+            + "z INTEGER,"
+            + "UNIQUE(world, y, x, z),"
+            + "direction CHAR(1)" // direction the portal is pointing: N,E,S,W
+            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
+
+    PORTAL_LINKS("CREATE TABLE IF NOT EXISTS {tablePrefix}portal_links ("
+            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+            + "sourceId INTEGER, INDEX (sourceId),"
+            + "FOREIGN KEY (sourceId) REFERENCES {tablePrefix}portals(id) ON DELETE CASCADE,"
+            + "targetId INTEGER,"
+            + "FOREIGN KEY (targetId) REFERENCES {tablePrefix}portals(id) ON DELETE CASCADE,"
+            + "UNIQUE(sourceId, targetId)"
+            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
+
     LOCKS("CREATE TABLE IF NOT EXISTS {tablePrefix}locks ("
             + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
             + "world VARCHAR(255),INDEX(world),"

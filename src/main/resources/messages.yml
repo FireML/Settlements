@@ -54,6 +54,13 @@ error:
   cant-set-embassy: "&cYou can't set an embassy here!"
   teleport-cooldown: "&cYou have to wait &e{cooldown}&c before you can teleport again!"
   nothing-to-confirm: "&cThere is nothing to confirm. It might have timed out."
+  portals-not-linked: "&cThese two portals are (no longer) linked!"
+  no-portal-found: "&cNo portal was found. Please look at one!"
+  cant-admin-portals: "&c&lYou can't manage portals!"
+  no-portals-linked:
+    create: "&cNo portals are linked! Use [&e/portal link](/portal link) to link it to another one!"
+    common: "&cNo portals are linked! Ask your {state} leadership to link it!"
+  destination-obstructed: "&c&lCan't teleport. Target location is not safe!"
 move-cancelled:
   title: "&c&lFailed"
   subtitle: "&fDon't move while {action}ing!"
@@ -385,7 +392,7 @@ names:
     anvil: "Anvils"
     enchantment-table: "Enchantment Tables"
     grindstone: "Grindstones"
-    portaL: "Portals"
+    portal: "Portals"
     jukebox: "Jukeboxes"
     shulker-box: "Shulker Boxes"
     bed: "Beds"
@@ -560,6 +567,15 @@ lock:
       ally: "&e&l(!) &r&7You are not allied to &e{state} {name}&7."
       private: "&e&l(!) &r&7Only the &ePlot owner&7 can build here."
       friends: "&e&l(!) &r&7Only the &ePlot owner's friends&7 can build here."
+portal:
+  not-registered: "&c&lPlease re-create this portal to register it!"
+  only-in-claim: "&c&lYou can only create portals in a settlement claim!"
+  not-allowed:
+    create: "&c&lYou do not have the rights to create portals in this {state}!"
+    destroy: "&c&lYou do not have the rights to destroy portals in this {state}!"
+  created: "&aYou have created a portal! Use [&e/portal link](/portal link) to link it to another one!"
+  destroyed: "&cYou have destroyed a portal!"
+  destroy-broadcast: "&cPortal at {world} {x} {y} {z} was destroyed!"
 gui:
   chat:
     channel-select:
@@ -923,6 +939,35 @@ gui:
         &7Explosions: &6{explosions}
         &7PvP: &6{pvp}
         &7Build: &6{build}
+  portal:
+    teleport:
+      title: "&5Select target"
+      portal: |-
+        &5Click to Teleport
+        &7Target: &f{world} {x}/{y}/{z}
+      previous: "Previous Page"
+      next: "Next Page"
+      close: "&cClose"
+    link:
+      title: "&5/portal link"
+      portal: |-
+        &5{world} {x}/{y}/{z}
+        &cClick to link
+      previous: "Previous Page"
+      next: "Next Page"
+      close: "&cClose"
+      success: "&aLinked to Portal at &e{world} {x}/{y}/{z}"
+      error: "&cAn error occurred while linking! Please contact an admin."
+    unlink:
+      title: "&5/portal unlink"
+      portal: |-
+        &5{world} {x}/{y}/{z}
+        &cClick to unlink
+      previous: "Previous Page"
+      next: "Next Page"
+      close: "&cClose"
+      success: "&aUnlinked from Portal at &e{world} {x}/{y}/{z}"
+      error: "&cAn error occurred while unlinking! Please contact an admin."
   private-teleports:
     title: "&2&lSettlement teleports: &r&7{page}"
     entry: "&b{name}"
@@ -1307,6 +1352,14 @@ command:
       all:
         description: Sets all flags to a certain state
     description: Plot Commands
+  portal:
+    link:
+      description: "Link portals"
+    unlink:
+      description: "Unlink portals"
+    admin:
+      description: "Allows administrating of portals"
+    description: Portal Commands
   scoreboard:
     descriptipon: "Toggle the scoreboard sidebar"
     enabled: "&eEnabled &7the scoreboard!"
@@ -1635,7 +1688,7 @@ command:
         description: Teleports to a outpost shown in the list
       unclaim:
         not-an-outpost: "&cThis land is not an outpost, please use &7/s unclaim&c to unclaim this land."
-        confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l in the next minute to confirm the &e&lunclaiming&c&l of [&e&l{amount}&c&l chunks](&fChunks that will be unclaimed: &7{claims})."
+        confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l in the next minute to confirm the &e&lunclaiming&c&l of [&e&l{amount}&c&l chunks](&fChunks that will be unclaimed:\n&7{claims}) and [&5{portal-amount} &c&lportals](&fPortals that will be removed:\n&7{portals})."
         success: "&aSuccessfully unclaimed the outpost at {x},{z} and {amount} chunks connected to it."
         connected-to-home: "&cOnly unclaiming chunks not connected to the home!"
         connected-to-outpost: "&cOnly unclaiming chunks not connected to another outpost!"
@@ -1873,7 +1926,7 @@ command:
     unclaim:
       outpost: "&cThis land is an outpost, please use &7/{base} outpost unclaim&c to unclaim this outpost."
       home: "&cThis land is your home, you have to move it with &7/{base} sethome&c before unclaiming this land."
-      confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l in the next minute to confirm the &e&lunclaiming&c&l of [&e&l{amount}&c&l chunks](&fChunks that will be unclaimed: &7{claims})."
+      confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l in the next minute to confirm the &e&lunclaiming&c&l of [&e&l{amount}&c&l chunks](&fChunks that will be unclaimed:\n&7{claims}) and [&5{portal-amount} &c&lportals](&fPortals that will be removed:\n&7{portals})."
       success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at &f{x}-{z}!"
       new-upkeep: "&aYour new upkeep is now &e₲{villageupkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
       description: Unclaim land which is claimed by your village

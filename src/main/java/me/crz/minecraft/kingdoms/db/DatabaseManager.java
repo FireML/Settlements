@@ -6,6 +6,7 @@ import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.lock.Lock;
+import me.crz.minecraft.kingdoms.portal.Portal;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -71,6 +72,8 @@ public abstract class DatabaseManager {
 
     public abstract Collection<Empire> getAllEmpires();
 
+    public abstract Collection<Portal> getAllPortals();
+
     public abstract Resident getResident(UUID uuid);
 
     public abstract Resident getResident(String name);
@@ -82,6 +85,12 @@ public abstract class DatabaseManager {
     public abstract void saveResident(Resident... residents);
 
     public abstract void renameLockWorld(String oldName, String newName);
+
+    public abstract void savePortal(Portal portal);
+
+    public abstract void savePortals(Portal... portals);
+
+    public abstract void deletePortals(Portal... portals);
 
     /**
      * Queue locks for saving, does not have to be run async
