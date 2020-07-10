@@ -25,7 +25,12 @@ public class BuildGui extends KingdomsGUI {
 
     private BuildGui() {
         super("build");
-        gui = new CInventory(getText("title"), InventorySize.ONE) {};
+        gui = new CInventory(getText("title"), InventorySize.SIX) {};
+
+        for (int i = 0; i < InventorySize.TWO.getSize(); i++) {
+            gui.addItem(i, BORDER);
+        }
+
         for (BuildState state : BuildState.values(BuildState.AppliesTo.SETTLEMENT)) {
             gui.addItem(new ClickableItem() {
                 @Override
@@ -66,7 +71,12 @@ public class BuildGui extends KingdomsGUI {
                 }
             });
         }
-        gui.addItem((gui.getMaxSlot() / 9) * 9 + 8, new ClickableItem() {
+
+        for (int i = InventorySize.FOUR.getSize(); i < InventorySize.SIX.getSize(); i++) {
+            gui.addItem(i, BORDER);
+        }
+
+        gui.addItem(InventorySize.FIVE.getSize() + 4, new ClickableItem() {
             public ItemStack getItem(final Player p) {
                 return new CItem(Material.BARRIER).setName(getText("back")).build();
             }

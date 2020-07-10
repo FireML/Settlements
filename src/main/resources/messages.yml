@@ -990,39 +990,105 @@ gui:
       &7&lLast login &a&l{lastlogin}
   settings:
     title: "&2&lSettlement Settings"
+    home: |-
+      &a&l{state} Home
+      
+      &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      &aLeft click &fto teleport
+      
+      &a▶ /s home
+    sethome: |-
+      &a&l{state} Home
+    
+      &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      &aLeft-Click &fto teleport
+      &aShift-Click &fto set new /s home
+    
+      &a▶ /s home
+    
     build: |-
       &a&lBuild
-      &7Set who can build in your {state}
-      &7Currently set to &b{build}
+      &fSet who can build on
+      &eun-owned plots
+
+      &a&m━━━━━━━━━━━━━━━━━━━━━
+      &fCurrent Settings: &e{build}
+      &aLeft-Click&f to change settings
+  
+      &a▶ /s build
     access: |-
       &a&lAccess
-      &7Set who can join your {state}
-      &7Currently set to &b{access}
+      &fSet who can use your &e/s home
+      &fSet who can join the {state}
+      
+      &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      &fCurrent Settings. &e{access}
+      &aLeft-Click&f to change settings
+  
+      &a▶ /s access
     use: |-
       &a&lUse
-      &7Set different usage rights
-      &7in your {state} claims
+      &fSet different usage rights
+      &fin your {state}
+  
+      &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      &aLeft-Click&f to change settings
+  
+      &a▶ /s use
     mode: |-
       &a&lMode
-      &7Set different settings modes
-      &7in your {state} claims
+      &fToggle settings including
+      &fexplosions, mob spawning,
+      &fPvP and more!
+  
+      &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━
+      &aLeft-Click&f to change settings
+  
+      &a▶ /s mode
     perms: |-
-      &a&lRank Perms
-      &7Edit your {state} ranks
+      &a&lRanks
+      &fSet your {state}'s
+      &fpermissions by rank
+  
+      &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      &aLeft-Click&f to change settings
+  
+      &a▶ /s perms
     perks: |-
       &a&lPerks
       &7Toggle your {state} perks
+  
+      &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      &aLeft-Click&f to change settings
+  
+      &a▶ /s perks
     shop: |-
       &a&lShop
-      &7Unlock new {state} perks
+      &fUnlock new {state} perks
+  
+      &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      &aLeft-Click&f to open shop
+  
+      &a▶ /s shop
     titles: |-
       &a&lTitle
       &e{title}
-      &7Set your {state} title
+      &fSet your {state} title
+  
+      &a&m━━━━━━━━━━━━━━━━━━━━━━
+      &aLeft-Click&f to set title
+  
+      &a▶ /s titles
     titles-edit: |-
       &a&lTitle
       &e{title}
-      &7Set and edit {state} titles
+      &fSet your {state} title
+      &fEdit available titles
+    
+      &a&m━━━━━━━━━━━━━━━━━━━━━━
+      &aLeft-Click&f to set and edit titles
+    
+      &a▶ /s titles
     entry: |-
       &a&lVillage Data
       &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
@@ -1048,6 +1114,7 @@ gui:
       online: "&a"
       offline: "&c"
       entry: "{online}{name}"
+    close: "&c&lExit"
   teleporters:
     title: "&2&l/s teleporters"
     locked: "&cLocked"
@@ -1121,6 +1188,9 @@ gui:
       &7&lState: &a&l{state}
       &7Left click: Next state
       &7Right click: Previous state
+    page:
+      next: "&7Go to next page ({page})"
+      previous: "&7Go to previous page ({page})"
   vault:
     title: "&2&l/s deposit"
     success-deposit: "&6&l{player} &7&lhas deposited:"

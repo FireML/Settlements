@@ -41,8 +41,12 @@ public class ShopGUI extends KingdomsGUI {
             return;
         }
 
-        gui = new CInventory(getText("title"), InventorySize.ONE) {};
+        gui = new CInventory(getText("title"), InventorySize.SIX) {};
         Village village = resident.getVillage();
+
+        for (int i = 0; i < InventorySize.TWO.getSize(); i++) {
+            gui.addItem(i, BORDER);
+        }
 
         for (LevelPerk perk : VillageManager.getInstance().getPerks()) {
             if (perk.getState() == VillageState.KINGDOM && village.getState() == VillageState.VILLAGE) {
@@ -193,7 +197,12 @@ public class ShopGUI extends KingdomsGUI {
                 }
             });
         }
-        gui.addItem((gui.getMaxSlot() / 9) * 9 + 8, new ClickableItem() {
+
+        for (int i = InventorySize.FOUR.getSize(); i < InventorySize.SIX.getSize(); i++) {
+            gui.addItem(i, BORDER);
+        }
+
+        gui.addItem(InventorySize.FIVE.getSize() + 4, new ClickableItem() {
             public ItemStack getItem(final Player p) {
                 return new CItem(Material.BARRIER).setName(getText("back")).build();
             }

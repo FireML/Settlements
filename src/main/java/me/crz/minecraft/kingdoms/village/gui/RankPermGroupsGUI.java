@@ -28,7 +28,11 @@ public class RankPermGroupsGUI extends KingdomsGUI {
 
     private RankPermGroupsGUI(Village village, VillageRank rank) {
         super("rank-perm-groups");
-        gui = new CInventory(getText("title", "rank", rank.getTag(village)), InventorySize.ONE) {};
+        gui = new CInventory(getText("title", "rank", rank.getTag(village)), InventorySize.SIX) {};
+
+        for (int i = 0; i < InventorySize.TWO.getSize(); i++) {
+            gui.addItem(i, BORDER);
+        }
 
         for (PermissionGroup group : VillageRank.getPermGroups()) {
             gui.addItem(new ClickableItem() {
@@ -55,7 +59,7 @@ public class RankPermGroupsGUI extends KingdomsGUI {
                 }
             });
         }
-        gui.addItem((gui.getMaxSlot() / 9) * 9 + 7, new ClickableItem() {
+        gui.addItem(InventorySize.SIX.getSize() - 1, new ClickableItem() {
             @Override
             public ItemStack getItem(Player p) {
                 Resident res = ResidentManager.getInstance().getResident(p);
@@ -81,7 +85,12 @@ public class RankPermGroupsGUI extends KingdomsGUI {
                 return true;
             }
         });
-        gui.addItem((gui.getMaxSlot() / 9) * 9 + 8, new ClickableItem() {
+
+        for (int i = InventorySize.FOUR.getSize(); i < InventorySize.SIX.getSize(); i++) {
+            gui.addItem(i, BORDER);
+        }
+
+        gui.addItem(InventorySize.FIVE.getSize() + 4, new ClickableItem() {
             public ItemStack getItem(final Player p) {
                 return new CItem(Material.BARRIER).setName(getText("back")).build();
             }
