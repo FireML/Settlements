@@ -262,8 +262,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
 
     @Override
     public boolean isTrusted(LandOwner landOwner) {
-        return isAlly(landOwner)
-                || (landOwner instanceof Empire && landOwner.equals(getEmpire()))
+        return (landOwner instanceof Empire && landOwner.equals(getEmpire()))
                 || (landOwner instanceof Village && hasEmpire() && getEmpire().isMember((Village) landOwner));
     }
 

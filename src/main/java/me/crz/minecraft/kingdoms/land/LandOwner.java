@@ -455,7 +455,8 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
     }
 
     public boolean isAlly(Resident resident) {
-        return (resident.hasVillage() && isAlly(resident.getVillage()))
+        return isMember(resident)
+                || (resident.hasVillage() && isAlly(resident.getVillage()))
                 || (resident.hasEmpire() && isAlly(resident.getVillage().getEmpire()));
     }
 
