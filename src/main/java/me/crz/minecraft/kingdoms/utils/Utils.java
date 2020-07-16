@@ -666,16 +666,19 @@ public class Utils {
             loc.getWorld().getChunkAtAsync(loc).thenAccept(c -> {
                 if (c == null) {
                     Message.get("error.destination-obstructed").tell(player);
+                    KingdomsPlugin.logDebug("Could not load chunk at " + loc);
                     return;
                 }
                 Block block = loc.getBlock();
                 if (!block.isPassable() || !block.getRelative(BlockFace.UP).isPassable()) {
                     Message.get("error.destination-obstructed").tell(player);
+                    KingdomsPlugin.logDebug("Location " + loc + " is obstructed");
                     return;
                 }
                 Block down = block.getRelative(BlockFace.DOWN);
                 if (!down.getType().isSolid()) {
                     Message.get("error.destination-obstructed").tell(player);
+                    KingdomsPlugin.logDebug("Location " + loc + " is has no floor");
                     return;
                 }
 
@@ -683,6 +686,9 @@ public class Utils {
                 boolean success = player.teleport(loc);
                 Message.get(messagePath + "." + (success ? "success" : "fail")).tell(player, replacements);
                 Message.get(messagePath + "." + (success ? "success" : "fail") + "-title").getTitle().withIn(0).send(player, replacements);
+                if (!success) {
+                    KingdomsPlugin.logDebug("Failed to teleport " + player.getName() + " to " + loc);
+                }
             });
         }, bypassDelay ? 0 : Utils.getTeleportDelay(type), "Teleport", messagePath);
     }
