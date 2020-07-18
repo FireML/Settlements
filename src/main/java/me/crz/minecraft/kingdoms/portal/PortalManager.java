@@ -292,22 +292,29 @@ public class PortalManager {
             location.getWorld().getChunkAtAsync(location).thenAccept(c -> {
                 if (c == null) {
                     Message.get("error.destination-obstructed").tell(player);
+                    KingdomsPlugin.logDebug("Could not load chunk at " + location);
                     return;
                 }
                 Block block = location.getBlock();
                 if (!block.isPassable() || !block.getRelative(BlockFace.UP).isPassable()) {
                     Message.get("error.destination-obstructed").tell(player);
+                    KingdomsPlugin.logDebug("Location " + location + " is obstructed");
                     return;
                 }
-                Block down = block.getRelative(BlockFace.DOWN);
+                Block down;
+                do {
+                    down = block.getRelative(BlockFace.DOWN);
+                } while (!down.getType().isSolid() && down.getY() > 0);
                 if (!down.getType().isSolid()) {
                     Message.get("error.destination-obstructed").tell(player);
+                    KingdomsPlugin.logDebug("Location " + location + " is has no floor");
                     return;
                 }
 
                 player.sendBlockChange(down.getLocation(), down.getBlockData());
-                if (!player.teleport(location.toCenterLocation())) {
+                if (!player.teleport(down.getRelative(BlockFace.UP).getLocation().toCenterLocation())) {
                     Message.get("error.destination-obstructed").tell(player);
+                    KingdomsPlugin.logDebug("Failed to teleport " + player.getName() + " to " + location);
                 }
             });
         }
