@@ -675,7 +675,10 @@ public class Utils {
                     KingdomsPlugin.logDebug("Location " + loc + " is obstructed");
                     return;
                 }
-                Block down = block.getRelative(BlockFace.DOWN);
+                Block down;
+                do {
+                    down = block.getRelative(BlockFace.DOWN);
+                } while (!down.getType().isSolid() && down.getY() > 0);
                 if (!down.getType().isSolid()) {
                     Message.get("error.destination-obstructed").tell(player);
                     KingdomsPlugin.logDebug("Location " + loc + " is has no floor");
@@ -683,6 +686,7 @@ public class Utils {
                 }
 
                 player.sendBlockChange(down.getLocation(), down.getBlockData());
+                loc.setY(down.getY() + 1);
                 boolean success = player.teleport(loc);
                 Message.get(messagePath + "." + (success ? "success" : "fail")).tell(player, replacements);
                 Message.get(messagePath + "." + (success ? "success" : "fail") + "-title").getTitle().withIn(0).send(player, replacements);
