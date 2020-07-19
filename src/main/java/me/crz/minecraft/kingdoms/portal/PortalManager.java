@@ -301,10 +301,10 @@ public class PortalManager {
                     KingdomsPlugin.logDebug("Location " + location + " is obstructed");
                     return;
                 }
-                Block down;
-                do {
-                    down = block.getRelative(BlockFace.DOWN);
-                } while (!down.getType().isSolid() && down.getY() > 0);
+                Block down = block.getRelative(BlockFace.DOWN);
+                while (!down.getType().isSolid() && down.getY() > 0) {
+                    down = down.getRelative(BlockFace.DOWN);
+                }
                 if (!down.getType().isSolid()) {
                     Message.get("error.destination-obstructed").tell(player);
                     KingdomsPlugin.logDebug("Location " + location + " is has no floor");
