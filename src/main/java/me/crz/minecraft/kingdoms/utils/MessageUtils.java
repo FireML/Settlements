@@ -1,6 +1,8 @@
 package me.crz.minecraft.kingdoms.utils;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import de.themoep.minedown.MineDownParser;
 import de.themoep.minedown.Replacer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -153,11 +155,20 @@ public class MessageUtils extends Base {
     }
 
     public static String replaceColorCodes(String message) {
-        return message != null ? ChatColor.translateAlternateColorCodes('&', message) : null;
+        BaseComponent[] components = toColoredComponents(message);
+        if (components == null) {
+            return null;
+        }
+        return TextComponent.toLegacyText(components);
     }
 
     public static BaseComponent[] toColoredComponents(String message) {
-        return TextComponent.fromLegacyText(replaceColorCodes(message));
+        if (message == null) {
+            return null;
+        }
+        MineDownParser parser = new MineDownParser();
+        parser.filteredOptions(ImmutableSet.of(MineDownParser.Option.ADVANCED_FORMATTING));
+        return parser.parse(message).create();
     }
 
     public static String invertColors(String text) {
