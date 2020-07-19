@@ -46,11 +46,11 @@ public class SettingsGUI extends KingdomsGUI {
             if (click.getType().isShiftClick()) {
                 if (resident.hasPermission("village.sethome")) {
                     click.getGui().close();
-                    ((VillageHomeCommand) CommandManager.getInstance().getCommand("village").getSubCommands().get("home")).run(resident, "village", "sethome");
+                    ((VillageSetHomeCommand) CommandManager.getInstance().getCommand("village").getSubCommands().get("sethome")).run(resident, "village", "sethome");
                 }
             } else if (click.getType().isLeftClick() && resident.hasVillage()) {
                 click.getGui().close();
-                ((VillageSetHomeCommand) CommandManager.getInstance().getCommand("village").getSubCommands().get("sethome")).run(resident, "village", "home");
+                ((VillageHomeCommand) CommandManager.getInstance().getCommand("village").getSubCommands().get("home")).run(resident, "village", "home");
             }
             return true;
         }, getText(resident.hasPermission("village.sethome") ? "sethome" : "home",
@@ -128,7 +128,7 @@ public class SettingsGUI extends KingdomsGUI {
         if (resident.hasPermission("village.shop")) {
             gui.addElement(new StaticGuiElement('s', new CItem(Material.POTION).hideAllFlags(true).build(),click -> {
                 if (resident.hasPermission("village.shop")) {
-                    new PerksGUI(resident).open();
+                    new ShopGUI(resident).open();
                 }
                 return true;
             }, getText("shop",
