@@ -5,10 +5,8 @@ import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
-import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
 import me.crz.minecraft.kingdoms.perk.PerkData;
-import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -22,6 +20,7 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
 public class PerksGUI extends KingdomsGUI {
+
     private final Resident resident;
     public CInventory gui;
 
@@ -33,8 +32,12 @@ public class PerksGUI extends KingdomsGUI {
             return;
         }
 
-        gui = new CInventory(getText("title"), InventorySize.ONE) {};
+        gui = new CInventory(getText("title"), InventorySize.SIX) {};
         Village village = resident.getVillage();
+
+        for (int i = 0; i < InventorySize.TWO.getSize(); i++) {
+            gui.addItem(i, BORDER);
+        }
 
         for (LevelPerk perk : VillageManager.getInstance().getPerks()) {
             if (!village.hasUnlocked(perk) || (!perk.hasEffects() && !perk.hasActions())) {
@@ -94,7 +97,12 @@ public class PerksGUI extends KingdomsGUI {
                 }
             });
         }
-        gui.addItem((gui.getMaxSlot() / 9) * 9 + 8, new ClickableItem() {
+
+        for (int i = InventorySize.FOUR.getSize(); i < InventorySize.SIX.getSize(); i++) {
+            gui.addItem(i, BORDER);
+        }
+
+        gui.addItem(InventorySize.FIVE.getSize() + 4, new ClickableItem() {
             public ItemStack getItem(final Player p) {
                 return new CItem(Material.BARRIER).setName(getText("back")).build();
             }

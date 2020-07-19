@@ -35,24 +35,22 @@ public class RankPermsGUI extends KingdomsGUI {
     private Map<UUID, Integer> playerPage = new HashMap<>();
 
     private RankPermsGUI(EmpireRank rank, PermissionGroup group) {
-        super("rank-perms");
+        super("empire.rank-perms");
         List<String> perms = group.getPermissions().stream()
                 .filter(s -> !s.contains(".help"))
                 .collect(Collectors.toList());
-        InventorySize size = InventorySize.getMatchingSize(perms.size());
-        if (size == null) {
-            size = InventorySize.SIX;
-        }
-        gui = new CInventory(getText("title", "rank", rank.getTag(), "group", group.getName()), size) {};
+        gui = new CInventory(getText("title",
+                "rank", rank.getTag(),
+                "group", group.getName()
+        ), InventorySize.SIX) {};
 
-        boolean paged = perms.size() > size.getSize() - 1;
-        int permsPerPage = paged ? size.getSize() - 9 : size.getSize();
-        for (int i = 0; i < permsPerPage; i++) {
+        boolean paged = perms.size() > InventorySize.FIVE.getSize();
+        for (int i = 0; i < InventorySize.FIVE.getSize(); i++) {
             int finalI = i;
             gui.addItem(i, new ClickableItem() {
                 @Override
                 public ItemStack getItem(Player p) {
-                    int permIndex = getPage(p) * permsPerPage + finalI;
+                    int permIndex = getPage(p) * InventorySize.FIVE.getSize() + finalI;
                     if (perms.size() <= permIndex) {
                         return null;
                     }
@@ -131,7 +129,7 @@ public class RankPermsGUI extends KingdomsGUI {
 
                 @Override
                 public boolean click(Player p, ClickType type) {
-                    int permIndex = getPage(p) * permsPerPage + finalI;
+                    int permIndex = getPage(p) * InventorySize.FIVE.getSize() + finalI;
                     if (perms.size() < permIndex) {
                         return false;
                     }
@@ -172,8 +170,12 @@ public class RankPermsGUI extends KingdomsGUI {
             });
         }
 
+        for (int i = InventorySize.FIVE.getSize(); i < InventorySize.SIX.getSize(); i++) {
+            gui.addItem(i, BORDER);
+        }
+
         if (paged) {
-            gui.addItem(permsPerPage, new ClickableItem() {
+            gui.addItem(InventorySize.FIVE.getSize(), new ClickableItem() {
                 public ItemStack getItem(final Player p) {
                     if (getPage(p) > 0) {
                         return new CItem(Material.OAK_SIGN).setName(getText("previous")).build();
@@ -192,18 +194,7 @@ public class RankPermsGUI extends KingdomsGUI {
                 }
             });
 
-            gui.addItem(permsPerPage + 4, new ClickableItem() {
-                public ItemStack getItem(final Player p) {
-                    return new CItem(Material.BARRIER).setName(getText("back")).build();
-                }
-
-                public boolean click(final Player p, final ClickType clickType) {
-                    PermsGUI.getInstance().open(p);
-                    return true;
-                }
-            });
-
-            gui.addItem(permsPerPage + 8, new ClickableItem() {
+            gui.addItem(InventorySize.FIVE.getSize() + 8, new ClickableItem() {
                 public ItemStack getItem(final Player p) {
                     if (perms.size() > (getPage(p) + 1) * InventorySize.THREE.getSize()) {
                         return new CItem(Material.OAK_SIGN).setName(getText("next")).build();
@@ -221,18 +212,18 @@ public class RankPermsGUI extends KingdomsGUI {
                     return false;
                 }
             });
-        } else {
-            gui.addItem(size.getSize() - 1, new ClickableItem() {
-                public ItemStack getItem(final Player p) {
-                    return new CItem(Material.BARRIER).setName(getText("back")).build();
-                }
-
-                public boolean click(final Player p, final ClickType clickType) {
-                    RankPermGroupsGUI.getInstance(rank).open(p);
-                    return true;
-                }
-            });
         }
+
+        gui.addItem(InventorySize.FIVE.getSize() + 4, new ClickableItem() {
+            public ItemStack getItem(final Player p) {
+                return new CItem(Material.BARRIER).setName(getText("back")).build();
+            }
+
+            public boolean click(final Player p, final ClickType clickType) {
+                RankPermGroupsGUI.getInstance(rank).open(p);
+                return true;
+            }
+        });
     }
 
     private void setPage(Player p, int page) {

@@ -1,15 +1,17 @@
 package me.crz.minecraft.kingdoms.village.gui;
 
+import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.GuiPageElement;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
 import me.crz.minecraft.kingdoms.KingdomsGUI;
-import me.crz.minecraft.kingdoms.cinventory.CInventory;
-import me.crz.minecraft.kingdoms.cinventory.CItem;
-import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
-import me.crz.minecraft.kingdoms.cinventory.InventorySize;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -17,104 +19,86 @@ import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.stream.Collectors;
-
 public class UseGui extends KingdomsGUI {
+    private static final String[] SETUP = {
+            "         ",
+            "uuuuuuuuu",
+            "uuuuuuuuu",
+            "uuuuuuuuu",
+            "aaaaaaaaa",
+            "p   b   n",
+    };
     private static UseGui instance;
-    private CInventory gui;
+    private InventoryGui gui;
 
     public UseGui() {
         super("use");
-        gui = new CInventory(getText("title"), InventorySize.FOUR) {};
+        gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title"), SETUP);
+        gui.setCloseAction(close -> false);
 
+        gui.setFiller(BORDER_ITEM);
+
+        GuiElementGroup useGroup = new GuiElementGroup('u');
         for (Use u : Use.values()) {
-            gui.addItem(new ClickableItem() {
-                public ItemStack getItem(Player p) {
-                    Village village = VillageManager.getInstance().getVillageFromPlayer(p);
-                    if (village != null) {
-                        BuildState state = village.getUseState(u);
-                        return u.getItem().setName(getMessage("entry").getReplacedText(
-                                "flag", u.getTag(),
-                                "state", state.getTag()
-                        )).build();
-                    }
-                    return null;
-                }
-
-                public boolean click(Player p, ClickType clickType) {
-                    Resident res = ResidentManager.getInstance().getResident(p);
-                    if (res.hasVillage() && res.hasPermission("village.use")) {
-                        BuildState changeTo = clickType.isLeftClick()
-                                ? res.getVillage().getUseState(u).next(BuildState.AppliesTo.SETTLEMENT)
-                                : res.getVillage().getUseState(u).previous(BuildState.AppliesTo.SETTLEMENT);
-                        res.getVillage().setUseState(u, changeTo);
-                        MessageUtils.tell(p, Message.get("command.village.use.success"),
-                                "flag", u.getTag(),
-                                "state", changeTo.getTag()
-                        );
-                        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
-                        gui.build(p);
-                        return true;
-                    }
-                    return false;
-                }
-            });
-        }
-
-        int rest = gui.getSize() % 9;
-        int slot = rest == 0 ? gui.getSize() : gui.getSize() + (9 - rest);
-        for (BuildState state : BuildState.values(BuildState.AppliesTo.SETTLEMENT)) {
-            gui.addItem(slot++, new ClickableItem() {
-                @Override
-                public ItemStack getItem(Player p) {
-                    if (ResidentManager.getInstance().doesResidentHaveVillage(p)) {
-                        return state.getItem()
-                                .setName(getMessage("toggle-all").getReplacedText("state", state.getTag()))
-                                .setLore(getMessage("toggle-all").getReplacedTextList("state", state.getTag()).stream().skip(1).collect(Collectors.toList()))
-                                .build();
-                    }
-                    return null;
-                }
-
-                @Override
-                public boolean click(Player p, ClickType clickType) {
-                    Resident res = ResidentManager.getInstance().getResident(p);
-                    if (res.hasVillage() && res.hasPermission("village.use")) {
-                        for (Use u : Use.values()) {
-                            res.getVillage().setUseState(u, state);
+            useGroup.addElement(new DynamicGuiElement('u', h -> {
+                Village village = VillageManager.getInstance().getVillageFromPlayer((Player) h);
+                if (village != null) {
+                    BuildState state = village.getUseState(u);
+                    return new StaticGuiElement('u', u.getItem().build(), click -> {
+                        Resident res = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
+                        if (res.hasVillage() && res.hasPermission("village.use")) {
+                            BuildState changeTo = click.getType().isLeftClick()
+                                    ? res.getVillage().getUseState(u).next(BuildState.AppliesTo.SETTLEMENT)
+                                    : res.getVillage().getUseState(u).previous(BuildState.AppliesTo.SETTLEMENT);
+                            res.getVillage().setUseState(u, changeTo);
+                            Message.get("command.village.use.success").tell(click.getEvent().getWhoClicked(),
+                                    "flag", u.getTag(),
+                                    "state", changeTo.getTag()
+                            );
+                            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
+                            click.getGui().draw();
                         }
-                        MessageUtils.tell(p, Message.get("command.village.use.success-all"),
-                                "state", state.getTag()
-                        );
-                        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
-                        gui.build(p);
                         return true;
-                    }
-                    return false;
+                    },getMessage("entry").getReplacedText(
+                            "flag", u.getTag(),
+                            "state", state.getTag()
+                    ));
                 }
-            });
+                return null;
+            }));
         }
+        gui.addElement(useGroup);
 
-        gui.addItem((slot / 9 ) * 9 + 8, new ClickableItem() {
-            public ItemStack getItem(Player p) {
-                return new CItem(Material.BARRIER)
-                        .setName(getText("back"))
-                        .setLore(getMessage("back").getTextList().stream().skip(1).collect(Collectors.toList()))
-                        .build();
-            }
-
-            public boolean click(Player p, ClickType clickType) {
-                new SettingsGUI(p).open();
+        GuiElementGroup allGroup = new GuiElementGroup('a');
+        for (BuildState state : BuildState.values(BuildState.AppliesTo.SETTLEMENT)) {
+            allGroup.addElement(new StaticGuiElement('a', state.getItem().build(), click -> {
+                Resident res = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
+                if (res.hasVillage() && res.hasPermission("village.use")) {
+                    for (Use u : Use.values()) {
+                        res.getVillage().setUseState(u, state);
+                    }
+                    Message.get("command.village.use.success-all").tell(click.getEvent().getWhoClicked(),
+                            "state", state.getTag()
+                    );
+                    Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
+                    click.getGui().draw();
+                }
                 return true;
-            }
-        });
+            }, getMessage("toggle-all").getReplacedText("state", state.getTag())));
+        }
+        gui.addElement(allGroup);
+
+        gui.addElement(new GuiPageElement('p', new ItemStack(Material.ARROW), GuiPageElement.PageAction.PREVIOUS, getText("page.previous", "page", "%prevpage%")));
+
+        gui.addElement(new GuiBackElement('b', new ItemStack(Material.BARRIER), getText("back")));
+
+        gui.addElement(new GuiPageElement('n', new ItemStack(Material.ARROW), GuiPageElement.PageAction.NEXT, getText("page.next", "page", "%nextpage%")));
     }
 
     public void open(Player p) {
-        gui.build(p);
+        gui.show(p);
     }
 
     synchronized public static UseGui getInstance() {

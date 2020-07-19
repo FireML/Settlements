@@ -20,7 +20,11 @@ public class RankSelectGui extends KingdomsGUI {
     public RankSelectGui(Resident resident, Consumer<VillageRank> rankConsumer) {
         super("rank-select");
         this.resident = resident;
-        gui = new CInventory(getText("title", "state", resident.hasVillage() ? resident.getVillage().getStateTag() : ""), InventorySize.ONE) {};
+        gui = new CInventory(getText("title", "state", resident.hasVillage() ? resident.getVillage().getStateTag() : ""), InventorySize.SIX) {};
+
+        for (int i = 0; i < InventorySize.TWO.getSize(); i++) {
+            gui.addItem(i, BORDER);
+        }
 
         for (VillageRank rank : VillageRank.values()) {
             gui.addItem(new ClickableItem() {
@@ -47,6 +51,10 @@ public class RankSelectGui extends KingdomsGUI {
                     return false;
                 }
             });
+        }
+
+        for (int i = InventorySize.FOUR.getSize(); i < InventorySize.SIX.getSize(); i++) {
+            gui.addItem(i, BORDER);
         }
     }
 

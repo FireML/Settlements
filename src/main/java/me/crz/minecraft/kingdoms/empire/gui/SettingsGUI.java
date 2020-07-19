@@ -1,21 +1,33 @@
 package me.crz.minecraft.kingdoms.empire.gui;
 
-import me.crz.minecraft.kingdoms.cinventory.CInventory;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
+import me.crz.minecraft.kingdoms.KingdomsGUI;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
-import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
-import me.crz.minecraft.kingdoms.cinventory.InventorySize;
+import me.crz.minecraft.kingdoms.command.CommandManager;
+import me.crz.minecraft.kingdoms.command.empire.EmpireHomeCommand;
+import me.crz.minecraft.kingdoms.command.empire.EmpireSetHomeCommand;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.KingdomsGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
 public class SettingsGUI extends KingdomsGUI {
+
+    private final static String[] SETUP = {
+            "llllillll",
+            "         ",
+            " um h  s ",
+            " ba   rp ",
+            "         ",
+            "llllcllll"
+    };
+
     private final Resident resident;
-    public CInventory gui;
+    public InventoryGui gui;
 
     public SettingsGUI(Player player) {
         this(ResidentManager.getInstance().getResident(player));
@@ -24,155 +36,116 @@ public class SettingsGUI extends KingdomsGUI {
     public SettingsGUI(Resident resident) {
         super("empire.settings");
         this.resident = resident;
-        gui = new CInventory(getText("title"), InventorySize.ONE) {};
+        gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title"), SETUP);
+        gui.setCloseAction(close -> false);
+
+        gui.addElement(new StaticGuiElement('l', BORDER_ITEM, " "));
+
+        gui.addElement(new StaticGuiElement('h', new ItemStack(Material.BEACON),click -> {
+            if (click.getType().isShiftClick()) {
+                if (resident.hasPermission("empire.sethome")) {
+                    click.getGui().close();
+                    ((EmpireSetHomeCommand) CommandManager.getInstance().getCommand("empire").getSubCommands().get("sethome")).run(resident, "empire", "sethome");
+                }
+            } else if (click.getType().isLeftClick() && resident.hasEmpire()) {
+                click.getGui().close();
+                ((EmpireHomeCommand) CommandManager.getInstance().getCommand("empire").getSubCommands().get("home")).run(resident, "empire", "home");
+            }
+            return true;
+        }, getText(resident.hasPermission("empire.sethome") ? "sethome" : "home",
+                "state", resident.getVillage().getEmpire().getStateTag()
+        )));
 
         if (resident.hasPermission("empire.setaccess")) {
-            gui.addItem(new ClickableItem() {
-                public ItemStack getItem(Player p) {
-                    return new CItem(Material.IRON_DOOR).setName(getText("access",
-                            "access", resident.getVillage().getEmpire().getAccess().getTag(),
-                            "state", resident.getVillage().getEmpire().getStateTag()
-                    )).build();
+            gui.addElement(new StaticGuiElement('a', new ItemStack(Material.IRON_DOOR),click -> {
+                if (resident.hasPermission("empire.setaccess")) {
+                    AccessGUI.getInstance().open((Player) click.getEvent().getWhoClicked());
                 }
-
-                public boolean click(Player p, ClickType clickType) {
-                    if (resident.hasPermission("empire.setaccess")) {
-                        AccessGUI.getInstance().open(p);
-                        return true;
-                    }
-                    return false;
-                }
-            });
+                return true;
+            }, getText("access",
+                    "access", resident.getVillage().getEmpire().getAccess().getTag(),
+                    "state", resident.getVillage().getEmpire().getStateTag()
+            )));
         }
 
         if (resident.hasPermission("empire.build")) {
-            gui.addItem(new ClickableItem() {
-                public ItemStack getItem(Player p) {
-                    return new CItem(Material.DIAMOND_PICKAXE).setName(getText("build",
-                            "build", resident.getVillage().getEmpire().getBuildState().getTag(),
-                            "state", resident.getVillage().getEmpire().getStateTag()
-                    )).build();
+            gui.addElement(new StaticGuiElement('b', new CItem(Material.DIAMOND_PICKAXE).hideAllFlags(true).build(), click -> {
+                if (resident.hasPermission("empire.build")) {
+                    BuildGui.getInstance().open((Player) click.getEvent().getWhoClicked());
                 }
-
-                public boolean click(Player p, ClickType clickType) {
-                    if (resident.hasPermission("empire.build")) {
-                        BuildGui.getInstance().open(p);
-                        return true;
-                    }
-                    return false;
-                }
-            });
+                return true;
+            }, getText("build",
+                    "build", resident.getVillage().getEmpire().getBuildState().getTag(),
+                    "state", resident.getVillage().getEmpire().getStateTag()
+            )));
         }
 
         if (resident.hasPermission("empire.use")) {
-            gui.addItem(new ClickableItem() {
-                public ItemStack getItem(Player p) {
-                    return new CItem(Material.LEVER).setName(getText("use",
-                            "state", resident.getVillage().getEmpire().getStateTag()
-                    )).build();
+            gui.addElement(new StaticGuiElement('u', new ItemStack(Material.LEVER),click -> {
+                if (resident.hasPermission("empire.use")) {
+                    UseGui.getInstance().open((Player) click.getEvent().getWhoClicked());
                 }
-
-                public boolean click(Player p, ClickType clickType) {
-                    if (resident.hasPermission("empire.use")) {
-                        UseGui.getInstance().open(p);
-                        return true;
-                    }
-                    return false;
-                }
-            });
+                return true;
+            }, getText("use",
+                    "state", resident.getVillage().getEmpire().getStateTag()
+            )));
         }
 
         if (resident.hasPermission("empire.mode")) {
-            gui.addItem(new ClickableItem() {
-                public ItemStack getItem(Player p) {
-                    return new CItem(Material.REDSTONE).setName(getText("mode",
-                            "state", resident.getVillage().getEmpire().getStateTag()
-                    )).build();
+            gui.addElement(new StaticGuiElement('m', new ItemStack(Material.REPEATER),click -> {
+                if (resident.hasPermission("empire.mode")) {
+                    ModeGUI.getInstance().open((Player) click.getEvent().getWhoClicked());
                 }
-
-                public boolean click(Player p, ClickType clickType) {
-                    if (resident.hasPermission("empire.mode")) {
-                        ModeGUI.getInstance().open(p);
-                        return true;
-                    }
-                    return false;
-                }
-            });
+                return true;
+            }, getText("mode",
+                    "state", resident.getVillage().getEmpire().getStateTag()
+            )));
         }
 
         if (resident.hasPermission("empire.perms")) {
-            gui.addItem(new ClickableItem() {
-                public ItemStack getItem(Player p) {
-                    return new CItem(Material.DIAMOND_SWORD).setName(getText("perms",
-                            "state", resident.getVillage().getEmpire().getStateTag()
-                    )).build();
+            gui.addElement(new StaticGuiElement('r', new ItemStack(Material.RED_BANNER),click -> {
+                if (resident.hasPermission("empire.perms")) {
+                    PermsGUI.getInstance().open((Player) click.getEvent().getWhoClicked());
                 }
-
-                public boolean click(Player p, ClickType clickType) {
-                    if (resident.hasPermission("empire.perms")) {
-                        PermsGUI.getInstance().open(p);
-                        return true;
-                    }
-                    return false;
-                }
-            });
+                return true;
+            }, getText("perms",
+                    "state", resident.getVillage().getEmpire().getStateTag()
+            )));
         }
 
         if (resident.hasPermission("empire.perks")) {
-            gui.addItem(new ClickableItem() {
-                public ItemStack getItem(Player p) {
-                    return new CItem(Material.LINGERING_POTION).setName(getText("perks",
-                            "state", resident.getVillage().getEmpire().getStateTag()
-                    )).build();
+            gui.addElement(new StaticGuiElement('p', new CItem(Material.LINGERING_POTION).hideAllFlags(true).build(),click -> {
+                if (resident.hasPermission("empire.perks")) {
+                    new PerksGUI(resident).open();
                 }
-
-                public boolean click(Player p, ClickType clickType) {
-                    if (resident.hasPermission("empire.perks")) {
-                        new PerksGUI(resident).open();
-                        return true;
-                    }
-                    return false;
-                }
-            });
+                return true;
+            }, getText("perks",
+                    "state", resident.getVillage().getEmpire().getStateTag()
+            )));
         }
 
         if (resident.hasPermission("empire.shop")) {
-            gui.addItem(new ClickableItem() {
-                public ItemStack getItem(Player p) {
-                    return new CItem(Material.POTION).setName(getText("shop",
-                            "state", resident.getVillage().getEmpire().getStateTag()
-                    )).build();
+            gui.addElement(new StaticGuiElement('s', new CItem(Material.POTION).hideAllFlags(true).build(),click -> {
+                if (resident.hasPermission("empire.shop")) {
+                    new ShopGUI(resident).open();
                 }
-
-                public boolean click(Player p, ClickType clickType) {
-                    if (resident.hasPermission("empire.shop")) {
-                        new ShopGUI(resident).open();
-                        return true;
-                    }
-                    return false;
-                }
-            });
+                return true;
+            }, getText("shop",
+                    "state", resident.getVillage().getEmpire().getStateTag()
+            )));
         }
 
-        gui.addItem(8, new ClickableItem() {
-            public ItemStack getItem(Player p) {
-                Resident resident = ResidentManager.getInstance().getResident(p);
-                if (!resident.hasEmpire()) {
-                    return null;
-                }
-                Empire empire = resident.getVillage().getEmpire();
-                return new CItem(Material.BLUE_BED).setName(
-                        getMessage("entry").getReplacedText(empire.getReplacements(SettingsGUI.this))
-                ).build();
-            }
+        Empire empire = resident.getVillage().getEmpire();
+        gui.addElement(new StaticGuiElement('i', new ItemStack(Material.BLUE_BED),
+                getText("entry", empire.getReplacements(SettingsGUI.this))));
 
-            public boolean click(Player p, ClickType clickType) {
-                return false;
-            }
-        });
+        gui.addElement(new StaticGuiElement('c', new ItemStack(Material.BARRIER), click -> {
+            click.getGui().close();
+            return true;
+        }, getText("close")));
     }
 
     public void open() {
-        gui.build(resident.getPlayer());
+        gui.show(resident.getPlayer());
     }
 }
