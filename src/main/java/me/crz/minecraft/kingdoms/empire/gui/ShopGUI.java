@@ -14,6 +14,7 @@ import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -38,8 +39,12 @@ public class ShopGUI extends KingdomsGUI {
             return;
         }
 
-        gui = new CInventory(getText("title"), InventorySize.ONE) {};
+        gui = new CInventory(getText("title"), InventorySize.SIX) {};
         Empire empire = resident.getVillage().getEmpire();
+
+        for (int i = 0; i < InventorySize.TWO.getSize(); i++) {
+            gui.addItem(i, BORDER);
+        }
 
         for (EmpirePerk perk : EmpireManager.getInstance().getPerks()) {
             if (empire.hasUnlocked(perk) && !empire.checkPerkCount(perk)) {
@@ -75,7 +80,7 @@ public class ShopGUI extends KingdomsGUI {
                                 for (Map.Entry<String, Long> cost : perk.getRepeatCost().entrySet()) {
                                     item.addLore(getMessage("cost.entry").getReplacedTextList(
                                             "type", cost.getKey(),
-                                            "icon", Utils.getIcon(resident, cost.getKey()),
+                                            "icon", resident.hasResourcePack() ? ConfigManager.getInstance().getIconRpMapping().getIcon(cost.getKey(), true) : "",
                                             "amount", String.valueOf(cost.getValue())
                                     ));
                                 }
@@ -180,7 +185,12 @@ public class ShopGUI extends KingdomsGUI {
                 }
             });
         }
-        gui.addItem((gui.getMaxSlot() / 9) * 9 + 8, new ClickableItem() {
+
+        for (int i = InventorySize.FOUR.getSize(); i < InventorySize.SIX.getSize(); i++) {
+            gui.addItem(i, BORDER);
+        }
+
+        gui.addItem(InventorySize.FIVE.getSize() + 4, new ClickableItem() {
             public ItemStack getItem(final Player p) {
                 return new CItem(Material.BARRIER).setName(getText("back")).build();
             }
