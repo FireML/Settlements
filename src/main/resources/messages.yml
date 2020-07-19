@@ -635,7 +635,6 @@ gui:
         &7Allows:
         &7- {state} Residents
         &7- Empire Members
-        &7- Allies
         &7to build
       ally: |-
         &7Allows
@@ -871,7 +870,6 @@ gui:
           &7Allows:
           &7- {state} Residents
           &7- Empire Members
-          &7- Allies
           &7to build
         ally: |-
           &7Allows
