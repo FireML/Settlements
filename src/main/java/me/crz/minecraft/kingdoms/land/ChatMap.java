@@ -17,6 +17,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -182,14 +183,14 @@ public class ChatMap {
                 ComponentBuilder cb = new ComponentBuilder((current ? Symbol.CURRENT : Symbol.NORMAL).getText());
                 if (claimable && resident.hasVillage() && canClaimCoords) {
                     cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/village claim " + x + " " + z + " map"));
-                    cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, messages.getMessage("hover.click-to-claim")
+                    cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(messages.getMessage("hover.click-to-claim")
                             .getReplacedComponents(
                                     "location", x + "-" + z,
                                     "centerx", String.valueOf(x * 16 + 8),
                                     "centerz", String.valueOf(z * 16 + 8),
                                     "x", String.valueOf(x),
                                     "z", String.valueOf(z)
-                            )));
+                            ))));
                 }
                 return cb.color(Relation.UNCLAIMED.getColor()).create();
             }
@@ -301,7 +302,7 @@ public class ChatMap {
                 cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/village unclaim " + x + " " + z + " map"));
             }
 
-            return cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover.create())).create();
+            return cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hover.create()))).create();
         }
     }
 

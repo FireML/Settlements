@@ -11,6 +11,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -71,7 +72,7 @@ public class VillageActiveCommand extends VillageSubCommand {
                 next.color(ChatColor.GRAY);
             } else {
                 next.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalPage + 1)));
-                next.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(ChatColor.YELLOW + ">>")));
+                next.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText(ChatColor.YELLOW + ">>"))));
             }
             ComponentBuilder previous = new ComponentBuilder("")
                     .append(getMessage("previous").getReplacedComponents("previous", String.valueOf(finalPage - 1)));
@@ -79,7 +80,7 @@ public class VillageActiveCommand extends VillageSubCommand {
                 previous.color(ChatColor.GRAY);
             } else {
                 previous.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalPage - 1)));
-                previous.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(ChatColor.YELLOW + "<<")));
+                previous.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText(ChatColor.YELLOW + "<<"))));
             }
 
             MessageUtils.tell(sender.getPlayer(), MessageUtils.replacePlaceholders(getMessage("footer").getReplacedComponents(

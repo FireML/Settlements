@@ -12,6 +12,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.command.CommandSender;
 
@@ -206,7 +207,7 @@ public class HelpCommand extends SubCommand {
                         next.color(net.md_5.bungee.api.ChatColor.GRAY);
                     } else {
                         next.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + (base.isEmpty() ? "" : base + " ") + alias + " " + type + " " + (page + 1)));
-                        next.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(net.md_5.bungee.api.ChatColor.YELLOW + ">>")));
+                        next.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText(net.md_5.bungee.api.ChatColor.YELLOW + ">>"))));
                     }
                     ComponentBuilder previous = new ComponentBuilder("")
                             .append(getParent().getMessage("usage.pagination.previous").getReplacedComponents("previous", String.valueOf(page - 1)));
@@ -214,7 +215,7 @@ public class HelpCommand extends SubCommand {
                         previous.color(net.md_5.bungee.api.ChatColor.GRAY);
                     } else {
                         previous.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + (base.isEmpty() ? "" : base + " ") + alias + " " + type + " " + (page - 1)));
-                        previous.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(net.md_5.bungee.api.ChatColor.YELLOW + "<<")));
+                        previous.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText(net.md_5.bungee.api.ChatColor.YELLOW + "<<"))));
                     }
 
                     MessageUtils.tell(sender, MessageUtils.replacePlaceholders(getParent().getMessage("usage.pagination.footer").getReplacedComponents(

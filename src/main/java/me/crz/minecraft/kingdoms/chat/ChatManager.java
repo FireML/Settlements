@@ -27,6 +27,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -478,7 +479,7 @@ public class ChatManager extends Base implements ConfigMessages {
         } else {
             hover = getMessage("hover.info").getComponents();
         }
-        return new HoverEvent(HoverEvent.Action.SHOW_TEXT, MessageUtils.replacePlaceholders(hover,
+        return new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(MessageUtils.replacePlaceholders(hover,
                 "name", player.getName(),
                 "displayname", player.getDisplayName(),
                 "prefix", MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(player)),
@@ -504,7 +505,7 @@ public class ChatManager extends Base implements ConfigMessages {
                         "rank", res.getVillageRank().getTag(res.getVillage()),
                         "title", res.getDisplayTitle()
                 ) : ""
-        ));
+        )));
     }
 
     public UUID getLastMessaged(Player p) {
