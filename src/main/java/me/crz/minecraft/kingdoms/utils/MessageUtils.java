@@ -159,7 +159,11 @@ public class MessageUtils extends Base {
         if (components == null) {
             return null;
         }
-        return TextComponent.toLegacyText(components);
+        String colored = TextComponent.toLegacyText(components);
+        if (colored.startsWith(ChatColor.COLOR_CHAR + "f") && !message.startsWith("&f") && !message.startsWith(ChatColor.COLOR_CHAR + "f")) {
+            colored = colored.substring(2);
+        }
+        return colored;
     }
 
     public static BaseComponent[] toColoredComponents(String message) {
