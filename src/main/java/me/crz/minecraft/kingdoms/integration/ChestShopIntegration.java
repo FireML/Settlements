@@ -45,6 +45,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -53,6 +54,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.Sign;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -65,6 +67,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -310,29 +314,34 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
 
     private void sendMessage(LandOwner landOwner, String playerName, Message rawMessage, Sign sign, BigDecimal price, ItemStack[] stock, String... replacements) {
         Location loc = sign.getLocation();
-        String message = Messages.prefix(rawMessage.getReplacer()
-                .replace(replacements)
-                .replace("state", landOwner.getStateTag(),
-                        "item", "%item",
-                        "price", Economy.formatBalance(price),
-                        "world", loc.getWorld().getName(),
-                        "x", String.valueOf(loc.getBlockX()),
-                        "y", String.valueOf(loc.getBlockY()),
-                        "z", String.valueOf(loc.getBlockZ())
-                ).getText());
+        Map<String, String> replacementMap = new LinkedHashMap<>();
+        replacementMap.put("state", landOwner.getStateTag());
+        replacementMap.put("price", Economy.formatBalance(price));
+        replacementMap.put("world", loc.getWorld().getName());
+        replacementMap.put("x", String.valueOf(loc.getBlockX()));
+        replacementMap.put("y", String.valueOf(loc.getBlockY()));
+        replacementMap.put("z", String.valueOf(loc.getBlockZ()));
 
-        String itemList = MaterialUtil.getItemList(stock);
+        for (int i = 0; i + 1 < replacements.length; i+=2) {
+            replacementMap.put(replacements[i], replacements[i + 1]);
+        }
 
         for (Resident resident : landOwner.getResidents()) {
             if (landOwner.hasPermission(resident, "chestshop.admin")) {
                 Player player = resident.getPlayer();
-                if (player != null) {
-                    if (Properties.SHOWITEM_MESSAGE && MaterialUtil.Show.sendMessage(player, message, stock)) {
+                if (Properties.SHOWITEM_MESSAGE) {
+                    replacementMap.put("item", "%item");
+                    if (MaterialUtil.Show.sendMessage(player, playerName, new ChestShopMessage(rawMessage), stock, replacementMap)) {
                         return;
                     }
-                    player.sendMessage(message.replace("%item", itemList));
+                }
+
+                if (player != null) {
+                    replacementMap.put("item", MaterialUtil.getItemList(stock));
+                    new ChestShopMessage(rawMessage).sendWithPrefix(player, replacementMap);
                 } else if (playerName != null) {
-                    ChestShop.sendBungeeMessage(playerName, message.replace("%item", itemList));
+                    replacementMap.put("item", MaterialUtil.getItemList(stock));
+                    ChestShop.sendBungeeMessage(playerName, new ChestShopMessage(rawMessage), replacementMap);
                 }
             }
         }
@@ -480,5 +489,19 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             event.canHold(true);
             event.setHandled(true);
         }
+    }
+
+    private class ChestShopMessage extends Messages.Message {
+        private final Message message;
+
+        public ChestShopMessage(Message message) {
+            super(message.getRawText());
+            this.message = message;
+        }
+
+        public BaseComponent[] getComponents(CommandSender sender, boolean prefixSuffix, Map<String, String> replacementMap, String... replacements) {
+            return message.getReplacer().replace(replacementMap).replace(replacements).getComponents();
+        }
+
     }
 }
