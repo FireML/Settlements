@@ -312,10 +312,12 @@ public class PortalManager {
                 }
 
                 player.sendBlockChange(down.getLocation(), down.getBlockData());
-                if (!player.teleport(down.getRelative(BlockFace.UP).getLocation().toCenterLocation())) {
-                    Message.get("error.destination-obstructed").tell(player);
-                    KingdomsPlugin.logDebug("Failed to teleport " + player.getName() + " to " + location);
-                }
+                player.teleportAsync(down.getRelative(BlockFace.UP).getLocation().toCenterLocation()).thenAccept(success -> {
+                    if (!success) {
+                        Message.get("error.destination-obstructed").tell(player);
+                        KingdomsPlugin.logDebug("Failed to teleport " + player.getName() + " to " + location);
+                    }
+                });
             });
         }
     }
