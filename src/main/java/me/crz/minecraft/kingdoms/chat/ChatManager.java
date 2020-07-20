@@ -36,6 +36,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -141,12 +142,12 @@ public class ChatManager extends Base implements ConfigMessages {
                 .replace("sender", new ComponentBuilder("")
                         .event(getHover(sender, res))
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + sender.getName()))
-                        .append(getMessage("format.name").getReplacedComponents(
-                                "name", sender.getName(),
-                                "displayname", sender.getDisplayName(),
-                                "prefix", senderPrefix,
-                                "suffix", senderSuffix
-                        ))
+                        .append(getMessage("format.name").getReplacedComponents(ImmutableMap.of(
+                                "name", TextComponent.fromLegacyText(sender.getName()),
+                                "displayname", TextComponent.fromLegacyText(sender.getDisplayName()),
+                                "prefix", TextComponent.fromLegacyText(senderPrefix),
+                                "suffix", TextComponent.fromLegacyText(senderSuffix)
+                        )))
                         .create());
         BaseComponent[] filteredMessage;
         BaseComponent[] unfilteredMessage;
@@ -376,15 +377,15 @@ public class ChatManager extends Base implements ConfigMessages {
         }
 
         MessageUtils.tell(sender, senderFormat, ImmutableMap.of(
-                "sender", new ComponentBuilder(
-                        getMessage("format.private.name.sender").getReplacedText(getReplacements(sender, res)))
+                "sender", new ComponentBuilder()
                         .event(senderHover)
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + sender.getName()))
+                        .append(getMessage("format.private.name.sender").getReplacedComponents(getReplacements(sender, res)))
                         .create(),
-                "target", new ComponentBuilder(
-                        getMessage("format.private.name.target").getReplacedText(getReplacements(target, tres)))
+                "target", new ComponentBuilder()
                         .event(targetHover)
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + target.getName() + " "))
+                        .append(getMessage("format.private.name.target").getReplacedComponents(getReplacements(target, tres)))
                         .create(),
                 "message", unfilteredMessage,
                 "staff", sender.hasPermission("kingdoms.prefix.staff") ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
@@ -402,15 +403,15 @@ public class ChatManager extends Base implements ConfigMessages {
             targetFormat = MineDown.parse(getMessage("format.private.target").getReplacedText("color", targetColor.toString(), "prefixColor", targetPrefixColor.toString()));
         }
         MessageUtils.tell(target, targetFormat, ImmutableMap.of(
-                "sender", new ComponentBuilder(
-                        getMessage("format.private.name.target").getReplacedText(getReplacements(sender, tres)))
+                "sender", new ComponentBuilder()
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + sender.getName() + " "))
                         .event(senderHover)
+                        .append(getMessage("format.private.name.target").getReplacedComponents(getReplacements(sender, tres)))
                         .create(),
-                "target", new ComponentBuilder(
-                        getMessage("format.private.name.sender").getReplacedText(getReplacements(target, res)))
+                "target", new ComponentBuilder()
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + target.getName()))
                         .event(targetHover)
+                        .append(getMessage("format.private.name.sender").getReplacedComponents(getReplacements(target, res)))
                         .create(),
                 "message", tres.getSwear() ? unfilteredMessage : filteredMessage,
                 "staff", sender.hasPermission("kingdoms.prefix.staff") ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
@@ -457,15 +458,15 @@ public class ChatManager extends Base implements ConfigMessages {
         }
     }
 
-    private String[] getReplacements(Player player, Resident res) {
-        return new String[] {
-                "name", player.getName(),
-                "displayname", player.getDisplayName(),
-                "prefix", MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(player)),
-                "suffix", MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerSuffix(player)),
-                "rank", res.hasVillage() ? res.getVillageRank().getTag(res.getVillage()) : "",
-                "title", res.getDisplayTitle()
-        };
+    private Map<String, BaseComponent[]> getReplacements(Player player, Resident res) {
+        Map<String, BaseComponent[]> map = new LinkedHashMap<>();
+        map.put("name", TextComponent.fromLegacyText(player.getName()));
+        map.put("displayname", TextComponent.fromLegacyText(player.getDisplayName()));
+        map.put("prefix", TextComponent.fromLegacyText(MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(player))));
+        map.put("suffix", TextComponent.fromLegacyText(MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerSuffix(player))));
+        map.put("rank", TextComponent.fromLegacyText(res.hasVillage() ? res.getVillageRank().getTag(res.getVillage()) : ""));
+        map.put("title", TextComponent.fromLegacyText(res.getDisplayTitle()));
+        return map;
     }
 
     private HoverEvent getHover(Player player, Resident res) {
