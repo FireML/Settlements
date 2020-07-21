@@ -380,7 +380,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onHopperMove(InventoryMoveItemEvent event) {
         if (LockManager.getInstance().isAlternativeHopperProtection()
-                && !(event.getSource().getHolder() instanceof HopperMinecart || event.getDestination().getHolder() instanceof HopperMinecart)) {
+                && !(event.getSource().getHolder(false) instanceof HopperMinecart || event.getDestination().getHolder(false) instanceof HopperMinecart)) {
             return;
         }
         Lock sourceLock = LockManager.getInstance().getLock(event.getSource().getHolder());
