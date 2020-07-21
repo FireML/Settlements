@@ -168,10 +168,11 @@ public class Utils {
     }
 
     public static int getUpkeepCost(VillageState state, String worldName, int level) {
+        int defaultCost = getUpkeepCost(state, level);
         return LEVEL_UPKEEP.computeIfAbsent(state.name() + "_" + worldName + "_" + level,
                 key -> ConfigManager.getInstance().getLevelConfig().getInt(
                         state.name().toLowerCase() + ".level-" + level + ".per-world-upkeep." + worldName,
-                        getUpkeepCost(state, level)
+                        defaultCost
                 ));
     }
 
