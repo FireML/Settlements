@@ -215,6 +215,10 @@ public class EventManager implements ConfigMessages {
         return activeEvent;
     }
 
+    public BossBar getActiveBar() {
+        return activeBar;
+    }
+
     public Event getEvent(String eventId) {
         return events.get(eventId.toLowerCase());
     }
@@ -289,9 +293,9 @@ public class EventManager implements ConfigMessages {
                     "name", first.getName(),
                     "amount", String.valueOf(eventData.get(first.getId()).getTotalAmount())
             );
-            List<EventManager.EventData> top = EventManager.getInstance().getTop(eventData.size());
+            List<EventData> top = EventManager.getInstance().getTop(eventData.size());
             for (int i = 0; i < top.size(); i++) {
-                EventManager.EventData eventData = top.get(i);
+                EventData eventData = top.get(i);
                 Village village = eventData.getVillage();
                 int place = i + 1;
                 getMessage("stats").tell(village.getOnlineResidents(),
