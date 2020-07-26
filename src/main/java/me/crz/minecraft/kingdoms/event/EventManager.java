@@ -254,13 +254,15 @@ public class EventManager implements ConfigMessages {
         activeBar.setVisible(true);
         activeBarTask = Utils.runRepeating(() -> {
             if (activeEvent != event || activeEventStart < 0 || System.currentTimeMillis() > eventEnd) {
-                if (activeEvent == null) {
+                if (activeEvent == null && activeBar != null) {
                     activeBar.setVisible(false);
                     activeBar.removeAll();
                     activeBar = null;
                 }
-                activeBarTask.cancel();
-                activeBarTask = null;
+                if (activeBarTask != null) {
+                    activeBarTask.cancel();
+                    activeBarTask = null;
+                }
             } else {
                 long left = eventEnd - System.currentTimeMillis();
                 activeBar.setTitle(MessageUtils.replaceColorCodes(MessageUtils.replacePlaceholders(bossBarFormat,
@@ -315,6 +317,14 @@ public class EventManager implements ConfigMessages {
             }
         }
 
+        if (activeBarTask != null) {
+            activeBarTask.cancel();
+        }
+        if (activeBar != null) {
+            activeBar.setVisible(false);
+            activeBar.removeAll();
+            activeBar = null;
+        }
         eventData.clear();
         activeEventStart = -1;
         activeEvent = null;
