@@ -332,7 +332,7 @@ chat:
   locked: "&c&lChat is currently locked!"
   nobody-nearby: "&c&lThere is nobody around you who could hear you!"
   hover:
-    info: "&aName &f{name}{rank}{balance}{village}{empire}"
+    info: "&aName &f{name}{rank}{balance}{village}{empire}\n&7&oClick to message player"
     balance: "\n&aBalance &f{balance}"
     bonus: "\n&aBonus claims &f{bonus}"
     village: "\n&a{state} &f{name}"
