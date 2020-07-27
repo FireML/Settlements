@@ -26,7 +26,12 @@ public class BuildGui extends PlotGUI {
 
     public BuildGui(Player player, OwnedLand land) {
         super("plot.build");
-        this.gui = new CInventory(getText("title"), InventorySize.ONE) {};
+        this.gui = new CInventory(getText("title"), InventorySize.SIX) {};
+
+        for (int i = 0; i < InventorySize.TWO.getSize(); i++) {
+            gui.addItem(i, BORDER);
+        }
+
         landLocation = land.getLocation().copy();
         for (BuildState state : BuildState.values(BuildState.AppliesTo.LAND)) {
             if (!land.isPlot() && !state.appliesTo(BuildState.AppliesTo.get(land.getLandOwner()))) {
@@ -84,7 +89,12 @@ public class BuildGui extends PlotGUI {
                 }
             });
         }
-        gui.addItem((gui.getMaxSlot() / 9) * 9 + 8, new ClickableItem() {
+
+        for (int i = InventorySize.FOUR.getSize(); i < InventorySize.SIX.getSize(); i++) {
+            gui.addItem(i, BORDER);
+        }
+
+        gui.addItem(InventorySize.FIVE.getSize() + 4, new ClickableItem() {
             public ItemStack getItem(final Player p) {
                 return new CItem(Material.BARRIER).setName(getText("back")).build();
             }
