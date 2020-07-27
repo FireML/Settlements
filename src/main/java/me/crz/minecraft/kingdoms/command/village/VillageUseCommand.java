@@ -37,7 +37,7 @@ public class VillageUseCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length < 2) {
-            UseGui.getInstance().open(res.getPlayer());
+            new UseGui().open(res.getPlayer());
         } else {
             try {
                 Use u = Use.valueOf(args[0].toUpperCase());

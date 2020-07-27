@@ -30,7 +30,6 @@ public class UseGui extends KingdomsGUI {
             "aaaaaaaaa",
             "p   b   n",
     };
-    private static UseGui instance;
     private InventoryGui gui;
 
     public UseGui() {
@@ -99,12 +98,5 @@ public class UseGui extends KingdomsGUI {
 
     public void open(Player p) {
         gui.show(p);
-    }
-
-    synchronized public static UseGui getInstance() {
-        if (instance == null) {
-            instance = new UseGui();
-        }
-        return instance;
     }
 }

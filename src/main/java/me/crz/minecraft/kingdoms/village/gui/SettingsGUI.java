@@ -84,7 +84,7 @@ public class SettingsGUI extends KingdomsGUI {
         if (resident.hasPermission("village.use")) {
             gui.addElement(new StaticGuiElement('u', new ItemStack(Material.LEVER),click -> {
                 if (resident.hasPermission("village.use")) {
-                    UseGui.getInstance().open((Player) click.getEvent().getWhoClicked());
+                    new UseGui().open((Player) click.getEvent().getWhoClicked());
                 }
                 return true;
             }, getText("use",
