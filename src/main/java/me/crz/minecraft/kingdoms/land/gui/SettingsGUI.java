@@ -194,6 +194,9 @@ public class SettingsGUI extends PlotGUI {
                     description.add(getText("unlink"));
                 }
             }
+            if (description.isEmpty()) {
+                return null;
+            }
             return new StaticGuiElement('l', item.build(), click -> {
                 OwnedLand currentLand = LandManager.getInstance().getLand(p.getLocation());
                 if (currentLand != null) {
