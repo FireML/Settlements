@@ -3,8 +3,10 @@ package me.crz.minecraft.kingdoms.command.empire;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 import java.util.UUID;
@@ -31,7 +33,9 @@ public class EmpireDisbandCommand extends EmpireSubCommand {
                     "capital", res.getVillage().getName(),
                     "capitalstate", res.getVillage().getState().getTag()
             );
+            Empire empire = res.getVillage().getEmpire();
             EmpireManager.getInstance().deleteEmpire(res.getVillage().getEmpire());
+            Message.get("broadcast.empire-deletion").broadcast("name", empire.getName());
         }
         return true;
     }

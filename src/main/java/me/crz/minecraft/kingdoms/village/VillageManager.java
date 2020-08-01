@@ -157,9 +157,7 @@ public class VillageManager {
         if (village.hasEmpire()) {
             village.getEmpire().getMemberIds().remove(village.getId());
         }
-        MessageUtils.broadcast(Message.get("broadcast.village-deletion"),
-                "name", village.getName(),
-                "state", village.getState().getTag());
+        KingdomsPlugin.getInstance().addNewlyDeleted(village);
 
         List<Resident> residents = village.getResidents();
         for (Resident resident : residents) {
@@ -176,11 +174,10 @@ public class VillageManager {
     }
 
     void abandonVillage(Village village) {
-        Message.get("broadcast.village-abandoned").broadcast("state", village.getStateTag(), "name", village.getName());
-
         if (village.hasEmpire()) {
             village.getEmpire().getMemberIds().remove(village.getId());
         }
+        KingdomsPlugin.getInstance().addNewlyAbandoned(village);
 
         List<Resident> residents = village.getResidents();
         for (Resident resident : residents) {
@@ -253,6 +250,9 @@ public class VillageManager {
             Utils.runLater(() -> {
                 KingdomsPlugin.getInstance().getLogger().log(Level.INFO, village.getStateTag() + " " + village.getName() + " was removed because it has been abandoned for " + Utils.getAbandonTime(village.getStateKey()) + " minutes!");
                 deleteVillage(village);
+                MessageUtils.broadcast(Message.get("broadcast.village-deletion"),
+                        "name", village.getName(),
+                        "state", village.getState().getTag());
             }, Utils.getAbandonTime(village.getStateKey()), TimeUnit.MINUTES);
         });
     }

@@ -73,6 +73,7 @@ public class EmpireManager {
                 Utils.runLater(() -> {
                     KingdomsPlugin.getInstance().getLogger().log(Level.INFO, empire.getStateTag() + " " + empire.getName() + " was removed because it has been abandoned for " + abandonTime + " minutes!");
                     deleteEmpire(empire);
+                    MessageUtils.broadcast(Message.get("broadcast.empire-deletion"), "name", empire.getName());
                 }, delay, TimeUnit.MILLISECONDS);
             }
         }
@@ -227,7 +228,7 @@ public class EmpireManager {
         empires.remove(empire.getName().toLowerCase());
         empireIds.remove(empire.getId());
         empireUuids.remove(empire.getUUID());
-        MessageUtils.broadcast(Message.get("broadcast.empire-deletion"), "name", empire.getName());
+        KingdomsPlugin.getInstance().addNewlyDeleted(empire);
         for (Village member : empire.getMembers()) {
             if (empire.equals(member.getEmpire())) {
                 member.setEmpire(null);
@@ -268,7 +269,7 @@ public class EmpireManager {
     }
 
     void abandonEmpire(Empire empire) {
-        MessageUtils.broadcast(Message.get("broadcast.empire-abandoned"), "name", empire.getName());
+        KingdomsPlugin.getInstance().addNewlyAbandoned(empire);
 
         // Remove members
         Set<Village> modifiedVillages = new HashSet<>();

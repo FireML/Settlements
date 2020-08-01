@@ -4,7 +4,9 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 
 import java.util.UUID;
@@ -33,7 +35,11 @@ public class VillageDisbandCommand extends VillageSubCommand {
                     "chief", res.getVillage().getName(),
                     "name", res.getVillage().getName()
             );
+            Village village = res.getVillage();
             VillageManager.getInstance().deleteVillage(res.getVillage());
+            Message.get("broadcast.village-deletion").broadcast(
+                    "name", village.getName(),
+                    "state", village.getState().getTag());
         }
         return true;
     }
