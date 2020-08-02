@@ -93,14 +93,14 @@ banished:
     subtitle: "&cYou're banished from the {state} {name}!"
 broadcast:
   village-deletion: "&c{state} &e{name}&c has fallen!"
-  villages-deletion: "&e{name}&c have fallen!"
+  villages-deletion: "&e{villages}&c have fallen!"
   village-abandoned: "&e{state} &f{name}&c has been abandoned! You have 2 hours to raid it"
   villages-abandoned: "&e{villages}&c have been abandoned! You have 2 hours to raid them"
-  villages-tag: "{state} {name}"
+  villages-tag: "&e{state} &f{name}&e"
   empire-deletion: "&cEmpire &e{name}&c has fallen!"
-  empires-deletion: "&cEmpire &e{name}&c have fallen!"
-  empire-abandoned: "&cEmpire &e{name}&c has been abandoned! You have 24 hours to raid it!"
-  empires-abandoned: "&cEmpires &e{empires} have been abandoned! You have 24 hours to raid it!"
+  empires-deletion: "&cEmpires &f{empires}&c have fallen!"
+  empire-abandoned: "&cEmpire &f{name}&c has been abandoned! You have 24 hours to raid it!"
+  empires-abandoned: "&cEmpires &f{empires} have been abandoned! You have 24 hours to raid it!"
   empires-tag: "{name}"
 scoreboard:
   sidebar:
