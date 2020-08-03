@@ -170,9 +170,10 @@ public class MessageUtils extends Base {
         if (message == null) {
             return null;
         }
-        MineDownParser parser = new MineDownParser();
-        parser.filteredOptions(ImmutableSet.of(MineDownParser.Option.ADVANCED_FORMATTING));
-        return parser.parse(message).create();
+        return new MineDownParser()
+                .filteredOptions(ImmutableSet.of(MineDownParser.Option.ADVANCED_FORMATTING))
+                .urlDetection(false)
+                .parse(message).create();
     }
 
     public static String invertColors(String text) {
