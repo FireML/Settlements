@@ -73,7 +73,7 @@ public class ChatMap {
             case 2:
                 return "W";
             case 3:
-                return "0\\";
+                return "0\\\\";
             case 4:
                 return "N";
             case 5:
@@ -81,7 +81,7 @@ public class ChatMap {
             case 6:
                 return "E";
             case 7:
-                return "2\\";
+                return "2\\\\";
             default:
                 return "+";
         }
@@ -89,7 +89,7 @@ public class ChatMap {
 
     public List<String> getRowSymbols(Player p) {
         String tmp = this.rpGetPlayerDirection(p);
-        List<String> temp = Arrays.asList("&e\\&eN&e/&r", "&eW&e+&eE&r", "&e/&eS&e\\&r");
+        List<String> temp = Arrays.asList("&e\\\\&eN&e/&r", "&eW&e+&eE&r", "&e/&eS&e\\\\&r");
         for (int i = 0; i < 3; ++i) {
             if (tmp.contains(String.valueOf(i))) {
                 temp.set(i, temp.get(i).replace(tmp.replace(String.valueOf(i), ""), "&c" + tmp.replace(String.valueOf(i), "")));
