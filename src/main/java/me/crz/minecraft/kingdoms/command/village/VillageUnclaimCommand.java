@@ -150,14 +150,18 @@ public class VillageUnclaimCommand extends VillageSubCommand {
             for (OwnedLand land : unclaimedLand) {
                 portals.addAll(PortalManager.getInstance().getPortals(land));
             }
-            confirm.put(res.getUUID(), unclaim);
-            getMessage("confirm").tell(res,
-                    "command", base + " " + alias + " confirm",
-                    "amount", String.valueOf(unclaimedLand.size()),
-                    "claims", unclaimedLand.stream().map(l -> l.getX() + "/" + l.getZ()).collect(Collectors.joining(", ")),
-                    "portal-amount", String.valueOf(portals.size()),
-                    "portals", portals.stream().map(Portal::getLocation).map(l -> l.getX() + "/" + l.getY() + "/" + l.getZ()).collect(Collectors.joining(", "))
-            );
+            if (unclaimedLand.size() > 1 || !portals.isEmpty() || (args.length >= 3 && "map".equalsIgnoreCase(args[2]))) {
+                confirm.put(res.getUUID(), unclaim);
+                getMessage("confirm").tell(res,
+                        "command", base + " " + alias + " confirm",
+                        "amount", String.valueOf(unclaimedLand.size()),
+                        "claims", unclaimedLand.stream().map(l -> l.getX() + "/" + l.getZ()).collect(Collectors.joining(", ")),
+                        "portal-amount", String.valueOf(portals.size()),
+                        "portals", portals.stream().map(Portal::getLocation).map(l -> l.getX() + "/" + l.getY() + "/" + l.getZ()).collect(Collectors.joining(", "))
+                );
+            } else {
+                unclaim.run();
+            }
         } else if (toUnclaim.size() == 1) {
             getError("no-village").tell(res);
         }
