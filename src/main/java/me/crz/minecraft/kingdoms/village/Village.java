@@ -141,7 +141,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                         removeMember(resident);
                     }
                     for (OwnedLand land : getLand()) {
-                        if (land.isOwnedBy(resident) && !land.containsHome() && !land.isOutpost()) {
+                        if (land.isOwnedBy(resident)) {
                             LandManager.getInstance().setPlotOwner(land, null);
                         }
                     }
