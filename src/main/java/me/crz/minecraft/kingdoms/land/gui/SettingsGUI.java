@@ -241,6 +241,12 @@ public class SettingsGUI extends PlotGUI {
             return true;
         }, getText("close")));
 
-        gui.show(p);
+        // One last check if we can really open this GUI
+        OwnedLand currentLand = LandManager.getInstance().getLand(p.getLocation());
+        if (currentLand != null && (currentLand.isPlotOwner(p) || currentLand.canAdmin(ResidentManager.getInstance().getResident(p)))) {
+            gui.show(p);
+        } else {
+            getError("not-your-plot").tell(p);
+        }
     }
 }

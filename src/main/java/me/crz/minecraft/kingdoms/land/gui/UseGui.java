@@ -45,6 +45,10 @@ public class UseGui extends PlotGUI {
     public UseGui(Player player, OwnedLand editedLand) {
         super("plot.use");
         this.landLocation = editedLand.getLocation().copy();
+        if (!editedLand.isPlotOwner(player) && !editedLand.canAdmin(ResidentManager.getInstance().getResident(player))) {
+            getError("not-your-plot").tell(player);
+            return;
+        }
         gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title"), SETUP);
         gui.setCloseAction(close -> false);
 

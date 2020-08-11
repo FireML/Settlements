@@ -26,13 +26,17 @@ public class BuildGui extends PlotGUI {
 
     public BuildGui(Player player, OwnedLand land) {
         super("plot.build");
+        landLocation = land.getLocation().copy();
+        if (!land.isPlotOwner(player) && !land.canAdmin(ResidentManager.getInstance().getResident(player))) {
+            getError("not-your-plot").tell(player);
+            return;
+        }
+
         this.gui = new CInventory(getText("title"), InventorySize.SIX) {};
 
         for (int i = 0; i < InventorySize.TWO.getSize(); i++) {
             gui.addItem(i, BORDER);
         }
-
-        landLocation = land.getLocation().copy();
         for (BuildState state : BuildState.values(BuildState.AppliesTo.LAND)) {
             if (!land.isPlot() && !state.appliesTo(BuildState.AppliesTo.get(land.getLandOwner()))) {
                 continue;
