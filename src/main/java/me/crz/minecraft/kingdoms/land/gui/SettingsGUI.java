@@ -127,7 +127,7 @@ public class SettingsGUI extends PlotGUI {
         }, getText("desc.button", "description", openedOnLand != null ? openedOnLand.getDescription() : "none")));
 
         if (openedOnLand != null && !openedOnLand.isPlot() && openedOnLand.canAdmin(ResidentManager.getInstance().getResident(p))) {
-            gui.addElement(new DynamicGuiElement('s', () -> new StaticGuiElement('s', new ItemStack(Material.REDSTONE), click -> {
+            gui.addElement(new DynamicGuiElement('s', () -> new StaticGuiElement('s', new ItemStack(Material.EMERALD), click -> {
                 OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
                 if (land != null) {
                     if (land.isForSale() && click.getType().isShiftClick()) {
