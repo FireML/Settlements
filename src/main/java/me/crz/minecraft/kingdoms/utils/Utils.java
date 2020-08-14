@@ -68,6 +68,7 @@ public class Utils {
     private static Map<String, Integer> LEVEL_OUTPOSTS = new HashMap<>();
     private static Map<String, Integer> LEVEL_UPKEEP = new HashMap<>();
     private static final Set<EntityType> SPECIAL_HOSTILE = EnumSet.of(
+            EntityType.SHULKER,
             EntityType.SLIME,
             EntityType.PHANTOM
     );
