@@ -240,6 +240,18 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
         }
     }
 
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void shopPermissionCheck(PreShopCreationEvent event) {
+        String name = event.getSignLine(NAME_LINE);
+        LandOwner landOwner = getLandOwner(name);
+        if (landOwner != null) {
+            Resident resident = ResidentManager.getInstance().getResident(event.getPlayer());
+            if (!landOwner.hasPermission(resident, "chestshop.admin")) {
+                event.setOutcome(PreShopCreationEvent.CreationOutcome.NO_PERMISSION);
+            }
+        }
+    }
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onTransaction(TransactionEvent event) {
         if (event.getTransactionType() == TransactionEvent.TransactionType.BUY) {
