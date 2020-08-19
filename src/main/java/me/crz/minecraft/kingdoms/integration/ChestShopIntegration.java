@@ -210,7 +210,12 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             String name = event.getSignLine(NAME_LINE);
             LandOwner landOwner = getLandOwner(name);
             if (landOwner != null) {
-                event.setOwnerAccount(createAccount(landOwner));
+                Resident resident = ResidentManager.getInstance().getResident(event.getPlayer());
+                if (landOwner.hasPermission(resident, "chestshop.admin")) {
+                    event.setOwnerAccount(createAccount(landOwner));
+                } else {
+                    event.setOutcome(PreShopCreationEvent.CreationOutcome.NO_PERMISSION);
+                }
             } else if (name.length() > 1 && name.charAt(1) == ':') {
                 // Short name is possible kingdoms sign creation, check if user has access of type
                 Resident resident = ResidentManager.getInstance().getResident(event.getPlayer());
