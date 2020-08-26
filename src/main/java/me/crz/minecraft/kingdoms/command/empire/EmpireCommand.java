@@ -51,6 +51,8 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpireShopCommand(this));
         registerCommand(new EmpireShowCommand(this));
         registerCommand(new EmpireTaxCommand(this));
+        registerCommand(new EmpireTitleCommand(this));
+        registerCommand(new EmpireTitlesCommand(this));
         registerCommand(new EmpireTransferCommand(this));
         registerCommand(new EmpireUnAllyCommand(this));
         registerCommand(new EmpireUnbanishCommand(this));

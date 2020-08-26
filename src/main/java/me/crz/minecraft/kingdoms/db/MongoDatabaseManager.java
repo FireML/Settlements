@@ -352,7 +352,8 @@ public class MongoDatabaseManager extends DatabaseManager {
                 map.put("name", resident.getName());
                 map.put("uuid", resident.getUUID());
                 map.put("rank", resident.getVillageRank().name());
-                map.put("title", resident.getTitle());
+                map.put("title", resident.getVillageTitle());
+                map.put("empireTitle", resident.getEmpireTitle());
             }
             if (empire != null) {
                 map.put("empire", empire.getId().value());

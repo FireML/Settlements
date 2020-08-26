@@ -47,7 +47,8 @@ public class Resident implements ConfigurationSerializable, Targetable {
     private String name;
     private VillageRank rank = VillageRank.getDefault();
     private EmpireRank empireRank = EmpireRank.getDefault();
-    private String title = null;
+    private String villageTitle = null;
+    private String empireTitle = null;
     private Village village = null;
     private ChatChannel activeChannel = ChatChannel.GENERAL;
     private Set<ChatChannel> channels = EnumSet.of(ChatChannel.GENERAL);
@@ -264,7 +265,7 @@ public class Resident implements ConfigurationSerializable, Targetable {
             setVillageRank(VillageRank.getDefault());
             setEmpireRank(EmpireRank.getDefault());
             setVillageJoin(-1);
-            setTitle(null);
+            setVillageTitle(null);
         }
     }
 
@@ -311,26 +312,59 @@ public class Resident implements ConfigurationSerializable, Targetable {
         return hasVillage() && getVillage().hasEmpire();
     }
 
-    public String getTitle() {
+    public String getVillageTitle() {
         return hasVillage()
-                ? (title != null
-                        ? (getVillage().getTitle(getVillageRank(), title) != null
-                                ? title : getVillageRank().getTag(getVillage()))
+                ? (villageTitle != null
+                        ? (getVillage().getTitle(getVillageRank(), villageTitle) != null
+                                ? villageTitle : getVillageRank().getTag(getVillage()))
                         : getVillageRank().getTag(getVillage()))
                 : "";
     }
 
-    public String getDisplayTitle() {
-        return getTitle() + (hasEmpire() ? getVillage().getEmpire().getSymbol() : "");
+    public String getEmpireTitle() {
+        return hasEmpire()
+                ? (empireTitle != null
+                        ? (getVillage().getEmpire().getTitle(getEmpireRank(), empireTitle) != null
+                                ? empireTitle : getEmpireRank().getTag(getVillage().getEmpire()))
+                        : getEmpireRank().getTag(getVillage().getEmpire()))
+                : "";
     }
 
-    public boolean setTitle(String title) {
+    public String getDisplayTitle() {
+        if (hasEmpire()) {
+             return Message.get("chat.format.title.empire").getReplacedText(
+                "empireTitle", getEmpireTitle(),
+                "empireSymbol", getVillage().getEmpire().getSymbol(),
+                "villageTitle", getVillageTitle()
+             );
+        } else if (hasVillage()) {
+            return Message.get("chat.format.title.village").getReplacedText(
+                    "villageTitle", getVillageTitle()
+            );
+        }
+        return Message.get("chat.format.title.none").getText();
+    }
+
+    public boolean setVillageTitle(String title) {
         if (!hasVillage()) {
-            this.title = null;
+            this.villageTitle = null;
         } else if (title == null) {
-            this.title = getVillageRank().getTag(getVillage());
+            this.villageTitle = getVillageRank().getTag(getVillage());
         } else if (getVillage().getTitle(getVillageRank(), title) != null) {
-            this.title = getVillage().getTitle(getVillageRank(), title);
+            this.villageTitle = getVillage().getTitle(getVillageRank(), title);
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean setEmpireTitle(String title) {
+        if (!hasEmpire()) {
+            this.empireTitle = null;
+        } else if (title == null) {
+            this.empireTitle = getEmpireRank().getTag(getVillage().getEmpire());
+        } else if (getVillage().getEmpire().getTitle(getEmpireRank(), title) != null) {
+            this.empireTitle = getVillage().getEmpire().getTitle(getEmpireRank(), title);
         } else {
             return false;
         }
@@ -439,7 +473,8 @@ public class Resident implements ConfigurationSerializable, Targetable {
         map.put("settlementId", getVillage() != null ? getVillage().getId().value() : null);
         map.put("settlementJoin", getVillageJoin());
         map.put("rank", getVillageRank().name());
-        map.put("title", title);
+        map.put("title", villageTitle);
+        map.put("empireTitle", empireTitle);
         map.put("empirerank", getEmpireRank().name());
         map.put("lastLogin", getLastLogin());
         map.put("channels", getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
@@ -484,7 +519,8 @@ public class Resident implements ConfigurationSerializable, Targetable {
         } else {
             resident.setVillage(VillageManager.getInstance().getVillageFromId(IdObject.get(map.get("settlementId"))));
         }
-        resident.setTitle((String) map.get("title"));
+        resident.setVillageTitle((String) map.get("title"));
+        resident.setEmpireTitle((String) map.get("empireTitle"));
         resident.setVillageJoin((Long) map.get("settlementJoin"));
         resident.setLastLogin((Long) map.get("lastLogin"));
         resident.getChannels().clear();

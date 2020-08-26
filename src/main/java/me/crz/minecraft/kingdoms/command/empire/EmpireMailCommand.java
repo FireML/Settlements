@@ -22,7 +22,7 @@ public class EmpireMailCommand extends EmpireSubCommand {
         }
         MailProvider mailProvider = KingdomsPlugin.getInstance().getMailProviders().iterator().next();
         String sender = getMessage("sender").getReplacedText(
-                "title", res.getTitle(),
+                "title", res.getDisplayTitle(),
                 "name", res.getName(),
                 "empirestate", res.getVillage().getEmpire().getStateTag(),
                 "empirename", res.getVillage().getEmpire().getName());

@@ -37,7 +37,7 @@ public class VillageResListCommand extends VillageSubCommand {
                                         "online", res.getPlayer() != null ? online : offline,
                                         "name", res.getName(),
                                         "rank", res.getVillageRank().getTag(res.getVillage()),
-                                        "title", res.getTitle()
+                                        "title", res.getDisplayTitle()
                                 ))
                                 .collect(Collectors.joining(separator))
                 );

@@ -64,7 +64,7 @@ public class VillageSetRankCommand extends VillageSubCommand {
                 getMessage("success").tell(village.getOnlineResidents(),
                         "rank", rank.getTag(village),
                         "setter", res.getName(),
-                        "title", res.getTitle(),
+                        "title", res.getDisplayTitle(),
                         "target", tres.getName());
         }
         return true;

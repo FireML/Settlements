@@ -490,14 +490,14 @@ public class ChatManager extends Base implements ConfigMessages {
                         "state", res.getVillage().getState().getTag(),
                         "name", res.getVillage().getName(),
                         "chiefdisplaytitle", res.getVillage().getChief().getDisplayTitle(),
-                        "chieftitle", res.getVillage().getChief().getTitle(),
+                        "chieftitle", res.getVillage().getChief().getVillageTitle(),
                         "chief", res.getVillage().getChief().getName()
                 ): "",
                 "empire", res.hasEmpire() ? getMessage("hover.empire").getReplacedText(
                         "name", res.getVillage().getEmpire().getName(),
                         "capital", res.getVillage().getEmpire().getCapital().getName(),
                         "leaderdisplaytitle", res.getVillage().getEmpire().getCapital().getChief().getDisplayTitle(),
-                        "leadertitle", res.getVillage().getEmpire().getCapital().getChief().getTitle(),
+                        "leadertitle", res.getVillage().getEmpire().getCapital().getChief().getVillageTitle(),
                         "leader", res.getVillage().getEmpire().getCapital().getChief().getName()
                 ): "",
                 "rank", res.hasVillage() ? getMessage("hover.rank").getReplacedText(

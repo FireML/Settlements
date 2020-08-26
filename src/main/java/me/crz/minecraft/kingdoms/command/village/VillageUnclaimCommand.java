@@ -124,7 +124,7 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                 unclaimedLand.forEach(l -> getMessage("success").tell(res.getVillage().getOnlineResidents(),
                         "player", res.getName(),
                         "name", res.getName(),
-                        "title", res.getTitle(),
+                        "title", res.getDisplayTitle(),
                         "rank", res.getVillageRank().getTag(res.getVillage()),
                         "world", l.getWorldName(),
                         "location", l.getSimpleKey(),

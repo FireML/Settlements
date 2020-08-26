@@ -62,7 +62,7 @@ public class ResidentClaimTransferCommand extends ResidentSubCommand {
                 });
                 getMessage("success").tell(target.getOnlineResidents(),
                         "rank", resident.getVillageRank().getTag(resident.getVillage()),
-                        "title", resident.getTitle(),
+                        "title", resident.getVillageTitle(),
                         "name", resident.getName(),
                         "amount", String.valueOf(transfer),
                         "target", target.getName(),
@@ -70,7 +70,7 @@ public class ResidentClaimTransferCommand extends ResidentSubCommand {
                 if (!target.isMember(resident)) {
                     getMessage("success").tell(resident,
                             "rank", resident.getVillageRank().getTag(resident.getVillage()),
-                            "title", resident.getTitle(),
+                            "title", resident.getVillageTitle(),
                             "name", resident.getName(),
                             "amount", String.valueOf(transfer),
                             "target", target.getName(),

@@ -63,7 +63,7 @@ public class EmpireSetRankCommand extends EmpireSubCommand {
             Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(tres));
             getMessage("success").tell(empire.getOnlineResidents(),
                     "rank", rank.getTag(),
-                    "title", res.getTitle(),
+                    "title", res.getDisplayTitle(),
                     "setter", res.getName(),
                     "target", tres.getName());
         }

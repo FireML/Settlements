@@ -144,7 +144,7 @@ public class SettingsGUI extends KingdomsGUI {
                 return true;
             }, getText(resident.hasPermission("village.titles") ? "titles-edit" : "titles",
                     "state", resident.getVillage().getStateTag(),
-                    "title", resident.getTitle()
+                    "title", resident.getVillageTitle()
             )));
         }
 

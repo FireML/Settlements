@@ -24,7 +24,7 @@ public class TitleGUI extends KingdomsGUI {
         this.resident = resident;
         gui = new CInventory(getText("title",
                 "state", resident.hasVillage() ? resident.getVillage().getStateTag() : "",
-                "title", resident.getTitle()),
+                "title", resident.getVillageTitle()),
                 InventorySize.ONE) {};
 
         for (int i = 0; i < InventorySize.TWO.getSize(); i++) {
@@ -40,7 +40,7 @@ public class TitleGUI extends KingdomsGUI {
                             "title", title,
                             "rank", rank.getTag(resident.getVillage())
                     ));
-                    if (title.equals(resident.getTitle())) {
+                    if (title.equals(resident.getVillageTitle())) {
                         item.addLore(getMessage("entry.current").getReplacedTextList(
                                 "title", title,
                                 "rank",  rank.getTag(resident.getVillage())
@@ -57,7 +57,7 @@ public class TitleGUI extends KingdomsGUI {
 
                 @Override
                 public boolean click(Player p, ClickType type) {
-                    if (resident.hasVillage() && resident.hasPermission("village.title") && rank == resident.getVillageRank() && resident.setTitle(title)) {
+                    if (resident.hasVillage() && resident.hasPermission("village.title") && rank == resident.getVillageRank() && resident.setVillageTitle(title)) {
                         Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(resident));
                         open();
                         Message message = Message.get("command.village.title.success." + resident.getVillage().getState().getKey() + "." + resident.getVillageRank().getKey());
@@ -66,7 +66,7 @@ public class TitleGUI extends KingdomsGUI {
                         }
                         message.tell(resident.getVillage().getOnlineResidents(),
                                 "rank", resident.getVillageRank().getTag(resident.getVillage()),
-                                "title", resident.getTitle(),
+                                "title", resident.getVillageTitle(),
                                 "name", resident.getName(),
                                 "villagename", resident.getVillage().getName(),
                                 "villagestate", resident.getVillage().getState().getTag()

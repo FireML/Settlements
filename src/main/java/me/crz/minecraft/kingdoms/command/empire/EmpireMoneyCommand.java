@@ -46,8 +46,8 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                                 DatabaseManager.getInstance().logDeposit(resident.getVillage().getEmpire(), resident.getVillage(), resident, deposit);
                             });
                             getMessage("deposited").tell(resident.getVillage().getEmpire().getOnlineResidents(),
-                                    "rank", resident.getVillageRank().getTag(resident.getVillage()),
-                                    "title", resident.getTitle(),
+                                    "rank", resident.getEmpireRank().getTag(resident.getVillage().getEmpire()),
+                                    "title", resident.getDisplayTitle(),
                                     "name", resident.getName(),
                                     "amount", Utils.CURRENCY_FORMAT.format(deposit));
                         } else {
@@ -83,8 +83,8 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                                 DatabaseManager.getInstance().logWithdraw(resident.getVillage().getEmpire(), resident.getVillage(), resident, withdrewInit);
                             });
                             getMessage("withdrawn").tell(resident.getVillage().getEmpire().getOnlineResidents(),
-                                    "rank", resident.getVillageRank().getTag(resident.getVillage()),
-                                    "title", resident.getTitle(),
+                                    "rank", resident.getEmpireRank().getTag(resident.getVillage().getEmpire()),
+                                    "title", resident.getDisplayTitle(),
                                     "name", resident.getName(),
                                     "amount", Utils.CURRENCY_FORMAT.format(withdrewInit));
                         } else {

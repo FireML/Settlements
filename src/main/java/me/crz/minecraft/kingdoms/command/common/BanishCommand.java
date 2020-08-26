@@ -17,14 +17,14 @@ import java.util.stream.Collectors;
 
 public interface BanishCommand extends ConfigMessages, TargetParser {
 
-    default boolean listBanished(Resident resident, LandOwner landOwner) {
+    default boolean listBanished(Resident resident, LandOwner<?> landOwner) {
         Utils.runAsync(() -> {
             resident.tell(getMessage("head"));
             if (!landOwner.getBanishedPlayers().isEmpty()) {
                 resident.tell(landOwner.getBanishedPlayers().stream()
                         .map(id -> ResidentManager.getInstance().getResident(id))
                         .filter(Objects::nonNull)
-                        .map(r -> getMessage("entry").getReplacedText("name", r.getName(), "title", r.getTitle()))
+                        .map(r -> getMessage("entry").getReplacedText("name", r.getName(), "title", r.getVillageTitle()))
                         .collect(Collectors.joining(getMessage("separator").getText())));
             }
             if (!landOwner.getBanishedVillageIds().isEmpty()) {
@@ -68,7 +68,7 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
             if (target instanceof Resident
                     && source.isMember((Resident) target)
                     && ((Resident) target).getVillageRank().atLeast(resident.getVillageRank())) {
-                resident.tell(getError("cant-banish"), "name", target.getName(), "title", ((Resident) target).getTitle());
+                resident.tell(getError("cant-banish"), "name", target.getName(), "title", ((Resident) target).getVillageTitle());
                 return;
             }
             Utils.runSync(() -> {

@@ -2,8 +2,6 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
@@ -40,15 +38,15 @@ public class VillageSetTitleCommand extends VillageSubCommand {
             }
         } else if (!res.getVillageRank().above(target.getVillageRank())) {
             getMessage("cant-set-higher").tell(res, "rank", res.getVillageRank().getTag(res.getVillage()));
-        } else if (!target.setTitle(args[1])) {
+        } else if (!target.setVillageTitle(args[1])) {
             getError("invalid-title").tell(res, "title", args[1]);
         } else {
             Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(target));
             getMessage("success").tell(res.getVillage().getOnlineResidents(),
                     "rank", target.getVillageRank().getTag(res.getVillage()),
-                    "title", target.getTitle(),
+                    "title", target.getVillageTitle(),
                     "target", target.getName(),
-                    "sendertitle", res.getTitle(),
+                    "sendertitle", res.getDisplayTitle(),
                     "sender", res.getName(),
                     "villagename", res.getVillage().getName(),
                     "villagestate", res.getVillage().getState().getTag()

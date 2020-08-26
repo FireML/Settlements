@@ -33,7 +33,7 @@ public class MoneyDepositCommand extends VillageSubCommand {
                     });
                     getMessage("deposited").tell(resident.getVillage().getOnlineResidents(),
                             "rank", resident.getVillageRank().getTag(resident.getVillage()),
-                            "title", resident.getTitle(),
+                            "title", resident.getDisplayTitle(),
                             "name", resident.getName(),
                             "amount", Utils.CURRENCY_FORMAT.format(deposit));
                 } else {

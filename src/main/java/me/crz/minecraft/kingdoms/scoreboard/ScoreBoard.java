@@ -42,8 +42,10 @@ public class ScoreBoard {
                     "kills", String.valueOf(member.getStatistic(Statistic.PLAYER_KILLS)),
                     "deaths", String.valueOf(member.getStatistic(Statistic.DEATHS)),
                     "bonus", String.valueOf(resident.getBonusClaims()),
-                    "villagetitle", resident.getTitle(),
+                    "title", resident.getDisplayTitle(),
+                    "villagetitle", resident.getVillageTitle(),
                     "villagerank", resident.hasVillage() ? resident.getVillageRank().getTag(resident.getVillage()) : "",
+                    "empiretitle", resident.getEmpireTitle(),
                     "empirerank", resident.hasEmpire() ? resident.getEmpireRank().getTag() : ""
             );
             if (resident.hasVillage()) {

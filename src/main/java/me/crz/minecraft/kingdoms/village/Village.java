@@ -15,6 +15,7 @@ import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.land.TaxDebtAction;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
+import me.crz.minecraft.kingdoms.rank.Rank;
 import me.crz.minecraft.kingdoms.rank.RankManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
@@ -39,7 +40,6 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -53,14 +53,12 @@ import java.util.stream.Collectors;
 
 import static me.crz.minecraft.kingdoms.utils.MessageUtils.yesOrNo;
 
-public class Village extends LandOwner implements Comparable<Village>, Targetable {
+public class Village extends LandOwner<VillageRank> implements Comparable<Village>, Targetable {
     private int level;
     private UUID chief;
     private Empire empire;
     private VillageState villageState;
     private Map<String, NamedLocation> outpostHomes = new LinkedHashMap<>();
-    private Multimap<String, String> rankTitles = MultimapBuilder.hashKeys().linkedHashSetValues().build();
-    private Map<String, String> defaultRankTitles = new HashMap<>();
     private Set<UUID> residents = new LinkedHashSet<>();
     private boolean allowAllyClaim = false;
 
@@ -488,8 +486,6 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
         map.put("settlementState", getState().name());
         map.put("residents", getResidentIds().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("outposts", getOutpostHomes().values().stream().collect(Collectors.toMap(NamedLocation::getName, NamedLocation::serialize)));
-        map.put("titles", getRankTitles());
-        map.put("defaulttiles", getDefaultRankTitles());
         return map;
     }
 
@@ -566,11 +562,6 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                 .map(NamedLocation::deserialize)
                 .filter(Objects::nonNull)
                 .forEach(village::setOutpostHome);
-        for (Map.Entry<String, Collection<String>> entry : ((Map<String, Collection<String>>) map.get("titles")).entrySet()) {
-            village.rankTitles.putAll(entry.getKey().toLowerCase(), entry.getValue());
-        }
-        ((Map<String, Object>) map.get("defaulttitles")).entrySet().stream()
-                .forEach(e -> village.defaultRankTitles.put(e.getKey().toLowerCase(), (String) e.getValue()));
         KingdomsPlugin.logDebug("Created village " + village.serialize());
         return village;
     }
@@ -643,7 +634,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                         .map(e -> (e.getValue().getTimes() > 1 ? e.getValue().getTimes() + "x " : "") + getPerk(e.getKey()).getTag())
                         .collect(Collectors.joining(", ")),
                 "chiefrank", VillageRank.getChief().getTag(this),
-                "chieftitle", chief.getTitle(),
+                "chieftitle", chief.getVillageTitle(),
                 "chiefdisplaytitle", chief.getDisplayTitle(),
                 "chief", chief.getName(),
                 "chiefonline", configMessages != null ? chief.getPlayer() != null ? online : offline : "",
@@ -689,7 +680,7 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
                                     "online", res.getPlayer() != null ? online : offline,
                                     "name", res.getName(),
                                     "rank", rank.getTag(this),
-                                    "title", res.getTitle()
+                                    "title", res.getVillageTitle()
                             ))
                             .collect(Collectors.joining(separator))
             );
@@ -707,79 +698,6 @@ public class Village extends LandOwner implements Comparable<Village>, Targetabl
     @Override
     public String getDbName() {
         return "settlement";
-    }
-
-    public Collection<String> getTitles(VillageRank rank) {
-        Collection<String> titles = rankTitles.get(rank.name().toLowerCase());
-        if (titles.isEmpty()) {
-            return rank.getTitles(this);
-        }
-        return titles;
-    }
-
-    public boolean addTitle(VillageRank rank, String title) {
-        if (rankTitles.get(rank.name().toLowerCase()).isEmpty()) {
-            if (getTitle(rank, title) != null) {
-                return false;
-            } else {
-                rankTitles.putAll(rank.name().toLowerCase(), rank.getTitles(this));
-            }
-        }
-        if (rankTitles.put(rank.name().toLowerCase(), title)) {
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(this));
-            return true;
-        }
-        return false;
-    }
-
-    public void setDefaultTitle(VillageRank rank, String title) {
-        String t = getTitle(rank, title);
-        defaultRankTitles.put(rank.name().toLowerCase(), title);
-        if (t == null) {
-            addTitle(rank, title);
-        } else {
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(this));
-        }
-    }
-
-    public String getDefaultTitle(VillageRank rank) {
-        return defaultRankTitles.getOrDefault(rank.name(), getTitles(rank).iterator().next());
-    }
-
-    public boolean removeTitle(VillageRank rank, String title) {
-        if (rankTitles.get(rank.name().toLowerCase()).isEmpty()) {
-            if (getTitle(rank, title) != null) {
-                rankTitles.putAll(rank.name().toLowerCase(), rank.getTitles(this));
-            } else {
-                return false;
-            }
-        }
-        String titleCase = getTitle(rank, title);
-        if (rankTitles.remove(rank.name().toLowerCase(), titleCase)) {
-            if (getDefaultTitle(rank).equals(title)) {
-                defaultRankTitles.remove(rank.name().toLowerCase());
-            }
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(this));
-            return true;
-        }
-        return false;
-    }
-
-    public String getTitle(VillageRank rank, String title) {
-        for (String rankTitle : getTitles(rank)) {
-            if (rankTitle.equalsIgnoreCase(title)) {
-                return rankTitle;
-            }
-        }
-        return null;
-    }
-
-    public Map<String, Collection<String>> getRankTitles() {
-        return rankTitles.asMap();
-    }
-
-    public Map<String, String> getDefaultRankTitles() {
-        return defaultRankTitles;
     }
 
     @Override

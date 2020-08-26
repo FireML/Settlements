@@ -123,7 +123,7 @@ scoreboard:
         &a&lEmpire
         &a(&e{empirename}&a)
         &aBank &b₲&e{empirebalance}
-        &aRank &e{empirerank}
+        &aRank &e{empiretitle}
         
         &a&l{villagestate}
         &a(&e{villagename}&a)
@@ -269,8 +269,10 @@ empire:
     subtitle: ""
   rank:
     leader: Leader
+    assistant: Assistant
     senator: Senator
-    none: No Rank
+    recruiter: Recruiter
+    member: Member
 plot:
   linked:
     message: ""
@@ -348,6 +350,10 @@ chat:
   staff: "&c&lStaff "
   format:
     name: "{displayname}"
+    title:
+      none: ""
+      village: "{villageTitle}"
+      empire: "{empireTitle} {villageTitle}{empireSymbol}"
     private:
       sender: "{prefixColor}\\[&a{sender} &7➦ &3{target}{prefixColor}] {color}{message}"
       target: "{staff}{prefixColor}\\[&3{sender} &7➦ &a{target}{prefixColor}] {color}{message}"
@@ -739,14 +745,106 @@ gui:
       title: "&2&l/e shop"
     settings:
       title: "&2&lEmpire Settings"
+      home: |-
+        &a&l{state} Home
+  
+        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        &aLeft click &fto teleport
+  
+        &a▶ /e home
+      sethome: |-
+        &a&l{state} Home
+  
+        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        &aLeft-Click &fto teleport
+        &aShift-Click &fto set new /e home
+  
+        &a▶ /e home
+        &a▶ /e sethome
+
+      build: |-
+        &a&lBuild
+        &fSet who can build on
+        &eun-owned plots
+  
+        &a&m━━━━━━━━━━━━━━━━━━━━━
+        &fCurrent Settings: &e{build}
+        &aLeft-Click&f to change settings
+  
+        &a▶ /e build
+      access: |-
+        &a&lAccess
+        &fSet who can use your &e/s home
+        &fSet who can join the {state}
+  
+        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        &fCurrent Settings. &e{access}
+        &aLeft-Click&f to change settings
+  
+        &a▶ /e access
       use: |-
         &a&lUse
-        &7Set different usage rights
-        &7in your {state} world
+        &fSet different usage rights
+        &fin your {state}
+  
+        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        &aLeft-Click&f to change settings
+  
+        &a▶ /e use
       mode: |-
         &a&lMode
-        &7Set different settings modes
-        &7in your {state} world
+        &fToggle settings including
+        &fexplosions, mob spawning,
+        &fPvP and more!
+  
+        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━
+        &aLeft-Click&f to change settings
+  
+        &a▶ /e mode
+      perms: |-
+        &a&lRanks
+        &fSet your {state}'s
+        &fpermissions by rank
+  
+        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        &aLeft-Click&f to change settings
+  
+        &a▶ /e perms
+      perks: |-
+        &a&lPerks
+        &7Toggle your {state} perks
+  
+        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        &aLeft-Click&f to change settings
+  
+        &a▶ /e perks
+      shop: |-
+        &a&lShop
+        &fUnlock new {state} perks
+  
+        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        &aLeft-Click&f to open shop
+  
+        &a▶ /e shop
+      titles: |-
+        &a&lTitle
+        &e{title}
+        &fSet your {state} title
+  
+        &a&m━━━━━━━━━━━━━━━━━━━━━━
+        &aLeft-Click&f to set title
+  
+        &a▶ /e titles
+      titles-edit: |-
+        &a&lTitle
+        &e{title}
+        &fSet your {state} title
+        &fEdit available titles
+  
+        &a&m━━━━━━━━━━━━━━━━━━━━━━
+        &aLeft-Click&f to set and edit titles
+  
+        &a▶ /e titles
       entry: |-
         &a&lEmpire Data
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
@@ -761,7 +859,7 @@ gui:
         &6&lTax debt action: &r&7{taxdebtaction}
         &6&lBonusclaims &r&7{bonusclaims}
         &6&lCapital &r&7{capitalstate}{capital}
-        &e&l{chieftitle}: &r&7{chiefonline}{chief}
+        &e&l{chiefdisplaytitle}: &r&7{chiefonline}{chief}
         &r&7{specialresidents}
         &e&lMembers: &r&7{members}
       special-residents:
@@ -770,6 +868,8 @@ gui:
         online: "&a"
         offline: "&c"
         entry: "{title} {online}{name}"
+    titles:
+      title: "&2&l/e titles gui"
     use:
       title: "&2&l/e use"
     vault:
@@ -900,35 +1000,77 @@ gui:
       title: "&2&l/plot settings"
       build: |-
         &a&lBuild
-        &7Set who can build in the plot
+        &fSet who can build in the plot
+  
+        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━
+        &fCurrent Settings: &e{build}
+        &aLeft-Click&f to change settings
+  
+        &a▶ /plot build
       use: |-
         &a&lUse
-        &7Set different usage rights in the plot
+        &fSet different usage rights
+        &fin the plot
+  
+        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        &aLeft-Click&f to change settings
+  
+        &a▶ /plot use
       mode: |-
         &a&lMode
-        &7Set different settings for the plot
+        &fToggle settings including
+        &fexplosions, mob spawning,
+        &fPvP and more!
+  
+        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━
+        &aLeft-Click&f to change settings
+  
+        &a▶ /plot mode
       name:
         button: |-
-          &a&lName &f{name}
-          &7Set the name of the plot
+          &a&lName
+          &fSet the name of the plot
+          
+          &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━
+          &fCurrent Name: &e{name}
+          &aLeft-Click&f to change name
+          
+          &a▶ /plot name <name>
         anvil:
           title: "Set the name"
           placeholder: "{name}"
       desc:
         button: |-
-          &a&lDescription &f{description}
-          &7Set the description of the plot
+          &a&lName
+          &fSet the description of the plot
+          
+          &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          &fCurrent Description: &e{description}
+          &aLeft-Click&f to change name
+          
+          &a▶ /plot description <description>
         anvil:
           title: "Set the description"
           placeholder: "{description}"
       sale:
         button-not-for-sale: |-
           &a&lSell plot
-          &7Click to set the price for the plot
+          &fSet the price for the plot
+          
+          &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          &aLeft-Click&f to set price
+
+          &a▶ /plot sale <price>
         button: |-
-          &a&lPlot Price &f({price})
-          &7Click to set the price for the plot
-          &7Shift click to make the plot not buyable
+          &a&lSell plot
+          &fSet the price for the plot
+  
+          &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          &a&lCurrent Price: &f{price}
+          &aClick to set the price for the plot
+          &aShift click to make the plot not buyable
+  
+          &a▶ /plot sale <price>|false
         anvil:
           title: "Set price"
           placeholder: "{price}"
@@ -1009,6 +1151,7 @@ gui:
       &aShift-Click &fto set new /s home
     
       &a▶ /s home
+      &a▶ /s sethome
     
     build: |-
       &a&lBuild
@@ -1107,7 +1250,7 @@ gui:
       &6&lTax debt action: &r&7{taxdebtaction}
       &6&lLand &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
       &6&lOutposts &r&7{outposts}&r&e/&r&7{maxoutposts}
-      &e&l{chieftitle}: &r&7{chief}
+      &e&l{chiefdisplaytitle}: &r&7{chief}
       &e&lMembers:
       &r&7{residents}
     bonus-claims: " Bonus: {amount}"
@@ -2192,7 +2335,7 @@ command:
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
         &6&lCapital &r&7{capitalstate} {capital}
-        &e&lLeader &r&7{chieftitle} {chiefonline}{chief}
+        &r&7{chiefdisplaytitle} {chiefonline}{chief}
         {specialresidents}
         &e&lMembers: &r&7{members}
       abandoned: |-
@@ -2424,7 +2567,7 @@ command:
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
         &6&lCapital &r&7{capitalstate} {capital}
-        &e&lLeader &r&7{chieftitle} {chiefonline}{chief}
+        &r&7{chiefdisplaytitle} {chiefonline}{chief}
         {specialresidents}
         &e&lMembers: &r&7{members}
       special-residents:
@@ -2455,6 +2598,46 @@ command:
         description: Sets the action for when a settlement can't pay the tax
       exempt:
         description: Exempts a resident from having to pay the plot taxes in this empire
+    title:
+      description: "Set your title"
+      success:
+        default: "&e{name}&7 set their title to &e{title}&7!"
+      invalid-title: "&c{title} is not a title available to you!"
+      usage:
+        entry: "&e• [&e{usage}](suggest_command={{usage})"
+    titles:
+      description: "Manage empire titles"
+      list:
+        description: "List all available titles"
+        head: "&a⊱&m━━━━&r&6Empire Titles&a&m━━━━&a⊰"
+        rank: "&6&l{rank}:&r {titles}"
+        separator: "&7, "
+        entry: "&7{title}"
+        default-entry: "&7[{title}]"
+        footer: "&7Use &e/s titles add|remove&7 to edit titles!"
+      add:
+        description: "Add new titles"
+        cant-edit-higher: "&cYou cannot edit titles of ranks above your own!"
+        too-many: "&cThe rank &e{rank}&c already has the maximum amount of titles ({max}) set!"
+        too-long: "&e{input}&c is too long! Titles have to be shorter than 16 characters!"
+        invalid-characters: "&e{input}&c contains invalid characters. Only letters, numbers, minus and underscores are allowed!"
+        prohibited-words: "&e{input}&c contains prohibited words!"
+        success: "&e{title}&7 was added to rank &e{rank}"
+        already-exists: "&e{rank}&c already has a title with the name &e{input}&c defined!"
+      set:
+        description: "Set the rank's default title"
+        cant-edit-higher: "&cYou cannot edit titles of ranks above your own!"
+        too-many: "&cThe rank &e{rank}&c already has the maximum amount of titles ({max}) set!"
+        too-long: "&e{input}&c is too long! Titles have to be shorter than 16 characters!"
+        invalid-characters: "&e{input}&c contains invalid characters. Only letters, numbers, minus and underscores are allowed!"
+        prohibited-words: "&e{input}&c contains prohibited words!"
+        success: "&e{title}&7 was set as the default title of rank &e{rank}"
+        success-new: "&7Added title &e{title}&7 and set as the default of rank &e{rank}"
+      remove:
+        description: "Remove titles"
+        cant-edit-higher: "&cYou cannot edit titles of ranks above your own!"
+        success: "&e{title}&7 was removed from rank &e{rank}"
+        doesnt-exist: "&e{rank}&c has no title with the name &e{input}&c defined!"
     transfer:
       success: "&e&l(!) &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
       already-capital: "&c&lYour village is already the capital."

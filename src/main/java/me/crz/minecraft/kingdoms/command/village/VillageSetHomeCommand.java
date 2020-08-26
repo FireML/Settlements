@@ -36,7 +36,7 @@ public class VillageSetHomeCommand extends VillageSubCommand {
                         home.setOutpost(outpost.getName());
                         getMessage("moved-outpost").tell(village.getOnlineResidents(),
                                 "rank", res.getVillageRank().getTag(village),
-                                "title", res.getTitle(),
+                                "title", res.getDisplayTitle(),
                                 "name", player.getName(),
                                 "outpost", outpost.getName(),
                                 "state", village.getState().getTag(),
@@ -59,7 +59,7 @@ public class VillageSetHomeCommand extends VillageSubCommand {
         village.setHome(player.getLocation());
         getMessage("success").tell(village.getOnlineResidents(),
                 "rank", res.getVillageRank().getTag(village),
-                "title", res.getTitle(),
+                "title", res.getVillageTitle(),
                 "name", player.getName(),
                 "state", village.getState().getTag(),
                 "world", player.getLocation().getWorld().getName(),

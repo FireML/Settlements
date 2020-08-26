@@ -87,6 +87,24 @@ public enum MySqlTable {
             + "UNIQUE (empireId, rank, permission)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
+    EMPIRE_TITLES("CREATE TABLE IF NOT EXISTS {tablePrefix}empire_titles ("
+            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+            + "empireId INTEGER, INDEX(empireId),"
+            + "FOREIGN KEY (empireId) REFERENCES {tablePrefix}empires(id) ON DELETE CASCADE,"
+            + "rank VARCHAR(255) NOT NULL,"
+            + "title VARCHAR(16) NOT NULL,"
+            + "UNIQUE (empireId, rank, title)"
+            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
+
+    EMPIRE_DEFAULTTITLES("CREATE TABLE IF NOT EXISTS {tablePrefix}empire_defaulttitles ("
+            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+            + "empireId INTEGER, INDEX(empireId),"
+            + "FOREIGN KEY (empireId) REFERENCES {tablePrefix}empires(id) ON DELETE CASCADE,"
+            + "rank VARCHAR(255) NOT NULL,"
+            + "title VARCHAR(16) NOT NULL,"
+            + "UNIQUE (empireId, rank)"
+            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
+
     SETTLEMENTS("CREATE TABLE IF NOT EXISTS {tablePrefix}settlements ("
             + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
             + "name VARCHAR(255) NOT NULL, INDEX (name), UNIQUE (name), "
@@ -217,6 +235,7 @@ public enum MySqlTable {
             + "rank VARCHAR(255),"
             + "empirerank VARCHAR(255),"
             + "title VARCHAR(16),"
+            + "empireTitle VARCHAR(16),"
             + "bonusClaims INTEGER,"
             + "lastLogin BIGINT(11) NOT NULL,"
             + "activeChannel VARCHAR(255) NOT NULL,"

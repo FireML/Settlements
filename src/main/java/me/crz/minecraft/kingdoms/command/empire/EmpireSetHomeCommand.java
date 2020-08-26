@@ -25,7 +25,7 @@ public class EmpireSetHomeCommand extends EmpireSubCommand {
         empire.setHome(player.getLocation());
         MessageUtils.tellResidents(empire.getOnlineResidents(), getMessage("success"),
                 "rank", res.getEmpireRank().getTag(),
-                "title", res.getTitle(),
+                "title", res.getDisplayTitle(),
                 "name", player.getName(),
                 "state", res.getVillage().getState().getTag(),
                 "world", player.getLocation().getWorld().getName(),

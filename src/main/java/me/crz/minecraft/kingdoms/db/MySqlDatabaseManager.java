@@ -108,6 +108,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         addColumn(MySqlTable.CLAIMS, "tax", "INTEGER DEFAULT 0 AFTER forSale");
         addColumn(MySqlTable.EMPIRES, "discord", "TEXT NOT NULL AFTER description");
         addColumn(MySqlTable.SETTLEMENTS, "discord", "TEXT NOT NULL AFTER description");
+        addColumn(MySqlTable.RESIDENTS, "empireTitle", "VARCHAR(16) AFTER title");
     }
 
     private void initializeTables() throws SQLException {
@@ -281,6 +282,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 updateDataMap(conn, "empire_perks", "empireId", (Integer) empire.getId().value(), "perk", "",
                         empire.getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
                 updateDataMap(conn, "empire_permissions", "empireId", (Integer) empire.getId().value(), "rank", "permission", empire.getRanksPermissions(), "value");
+                updateDataMap(conn, "empire_titles", "empireId", (Integer) empire.getId().value(), "rank", "title", empire.getRankTitles());
+                updateDataMap(conn, "empire_defaulttitles", "empireId", (Integer) empire.getId().value(), "rank", "title", empire.getDefaultRankTitles());
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while saving empire " + empire.getName() + " to database!", e);
@@ -1044,6 +1047,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
         map.put("uses", selectMap(conn, "empire_uses", "empireId", id, "type", "state", String.class));
         map.put("vault", selectMap(conn, "empire_vaults", "empireId", id, "content", "amount", Long.class));
+        map.put("defaulttitles", selectMap(conn, "empire_defaulttitles", "empireId", id, "rank", "title", String.class));
 
         PreparedStatement pSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_perks WHERE empireId = ?;");
         pSta.setInt(1, id);
@@ -1063,6 +1067,15 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     .put(rpRs.getString("permission"), rpRs.getBoolean("value"));
         }
         map.put("permissions", rankPermissions);
+
+        PreparedStatement tpSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_titles WHERE empireId = ?;");
+        tpSta.setInt(1, id);
+        ResultSet tpRs = tpSta.executeQuery();
+        Map<String, Collection<String>> rankTitles = new LinkedHashMap<>();
+        while (tpRs.next()) {
+            rankTitles.computeIfAbsent(tpRs.getString("rank").toLowerCase(), k -> new LinkedHashSet<>()).add(tpRs.getString("title"));
+        }
+        map.put("titles", rankTitles);
 
         return Empire.deserialize(map);
     }

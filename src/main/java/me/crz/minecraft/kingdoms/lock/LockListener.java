@@ -94,7 +94,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                     Resident owner = lock.getOwner();
                     getError("locked").tell(event.getPlayer(),
                             "name", owner != null ? owner.getName() : "-",
-                            "title", owner != null ? owner.getTitle() : "",
+                            "title", owner != null ? owner.getVillageTitle() : "",
                             "block", NameTag.getTag(lock.getBlock())
                     );
                 });
@@ -184,7 +184,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                     Resident owner = lock.getOwner();
                     getError("locked").tell(event.getPlayer(),
                             "name", owner != null ? owner.getName() : "-",
-                            "title", owner != null? owner.getTitle() : "",
+                            "title", owner != null? owner.getVillageTitle() : "",
                             "block", NameTag.getTag(lock.getBlock())
                     );
                 });
@@ -227,7 +227,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                             Resident owner = lock.getOwner();
                             getError("locked").tell(event.getPlayer(),
                                     "name", owner != null ? owner.getName() : "-",
-                                    "title", owner != null? owner.getTitle() : "",
+                                    "title", owner != null? owner.getVillageTitle() : "",
                                     "block", NameTag.getTag(lock.getBlock())
                             );
                         });
@@ -262,7 +262,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                                 Resident owner = finalL.getOwner();
                                 getError("locked").tell(event.getPlayer(),
                                         "name", owner != null ? owner.getName() : "-",
-                                        "title", owner != null ? owner.getTitle() : "",
+                                        "title", owner != null ? owner.getVillageTitle() : "",
                                         "block", NameTag.getTag(finalL.getBlock())
                                 );
                             });
@@ -289,7 +289,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                             Resident owner = lock.getOwner();
                             getError("locked").tell(event.getPlayer(),
                                     "name", owner != null ? owner.getName() : "-",
-                                    "title", owner != null? owner.getTitle() : "",
+                                    "title", owner != null? owner.getVillageTitle() : "",
                                     "block", NameTag.getTag(lock.getBlock())
                             );
                         });
@@ -311,7 +311,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                             Resident owner = lock.getOwner();
                             getError("locked").tell(event.getPlayer(),
                                     "name", owner != null ? owner.getName() : "-",
-                                    "title", owner != null? owner.getTitle() : "",
+                                    "title", owner != null? owner.getVillageTitle() : "",
                                     "block", NameTag.getTag(lock.getBlock())
                             );
                         });
@@ -321,7 +321,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                         Utils.runAsync(() -> {
                             Resident owner = lock.getOwner();
                             getMessage("info.general").tell(event.getPlayer(),
-                                    "title", owner != null? owner.getTitle() : "",
+                                    "title", owner != null? owner.getVillageTitle() : "",
                                     "owner", owner != null ? owner.getName() : "-",
                                     "hoppers", MessageUtils.yesOrNo(lock.isAllowHoppers())
                             );
@@ -329,7 +329,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                                 event.getPlayer().sendMessage(lock.getAllowedPlayers().stream()
                                         .map(id -> ResidentManager.getInstance().getResident(id))
                                         .filter(Objects::nonNull)
-                                        .map(r -> getMessage("info.entry").getReplacedText("name", r.getName(), "title", r.getTitle()))
+                                        .map(r -> getMessage("info.entry").getReplacedText("name", r.getName(), "title", r.getVillageTitle()))
                                         .collect(Collectors.joining(getMessage("info.separator").getText())));
                             }
                             if (!lock.getAllowedVillageIds().isEmpty()) {

@@ -64,7 +64,7 @@ public class PermsGUI extends KingdomsGUI {
                 }
             });
         }
-        gui.addItem((gui.getMaxSlot() / 9) * 9 + 7, new ClickableItem() {
+        gui.addItem((gui.getMaxSlot() / 9) * 9 + 8, new ClickableItem() {
             @Override
             public ItemStack getItem(Player p) {
                 Resident res = ResidentManager.getInstance().getResident(p);

@@ -47,7 +47,7 @@ public class ResidentShowCommand extends SubCommand {
                     "empirerank", target.hasEmpire() ? target.getEmpireRank().getTag() : "none",
                     "settlement", target.hasVillage() ? target.getVillage().getName() : "none",
                     "rank", target.hasVillage() ? target.getVillageRank().getTag(target.getVillage()) : "none",
-                    "title", target.hasVillage() ? target.getTitle() : "none",
+                    "title", target.hasVillage() ? target.getVillageTitle() : "none",
                     "balance", Utils.CURRENCY_FORMAT.format(balance),
                     "tax", Utils.CURRENCY_FORMAT.format(target.getTax()),
                     "bonus", Utils.CURRENCY_FORMAT.format(target.getBonusClaims()),

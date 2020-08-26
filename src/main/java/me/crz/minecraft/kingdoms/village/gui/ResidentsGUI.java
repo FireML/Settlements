@@ -60,7 +60,7 @@ public class ResidentsGUI extends KingdomsGUI {
                                 .setName(getMessage("entry").getReplacedText(
                                         "name", res.getName(),
                                         "rank", res.getVillageRank().getTag(village),
-                                        "title", res.getTitle(),
+                                        "title", res.getDisplayTitle(),
                                         "joined", Utils.TIME_FORMAT.format(res.getVillageJoin()),
                                         "lastlogin", Utils.TIME_FORMAT.format(res.getLastLogin())
                                 ))

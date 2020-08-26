@@ -32,7 +32,7 @@ public class VillageTitleCommand extends VillageSubCommand {
             }
             return true;
         }
-        if (!res.setTitle(args[0])) {
+        if (!res.setVillageTitle(args[0])) {
             getError("invalid-title").tell(res, "title", args[0]);
         } else {
             Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
@@ -42,7 +42,7 @@ public class VillageTitleCommand extends VillageSubCommand {
             }
             MessageUtils.tellResidents(res.getVillage().getOnlineResidents(), message,
                     "rank", res.getVillageRank().getTag(res.getVillage()),
-                    "title", res.getTitle(),
+                    "title", res.getVillageTitle(),
                     "name", res.getName(),
                     "villagename", res.getVillage().getName(),
                     "villagestate", res.getVillage().getState().getTag()

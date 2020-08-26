@@ -21,7 +21,7 @@ public class VillageMailCommand extends VillageSubCommand {
         }
         MailProvider mailProvider = KingdomsPlugin.getInstance().getMailProviders().iterator().next();
         String sender = getMessage("sender").getReplacedText(
-                "title", res.getTitle(),
+                "title", res.getDisplayTitle(),
                 "name", res.getName(),
                 "settlementstate", res.getVillage().getStateTag(),
                 "settlementname", res.getVillage().getName());

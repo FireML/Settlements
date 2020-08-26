@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
 
 import static me.crz.minecraft.kingdoms.utils.MessageUtils.yesOrNo;
 
-public class Empire extends LandOwner implements Comparable<Empire> {
+public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> {
     private IdObject capital;
     private String symbol = "";
     private Set<IdObject> members = new LinkedHashSet<>();
@@ -210,7 +210,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
     }
 
     @Override
-    public boolean removeAlly(LandOwner landOwner) {
+    public boolean removeAlly(LandOwner<?> landOwner) {
         if (super.removeAlly(landOwner)) {
             for (Resident resident : landOwner.getResidents()) {
                 Player player = resident.getPlayer();
@@ -585,7 +585,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                         .map(e -> (e.getValue().getTimes() > 1 ? e.getValue().getTimes() + "x " : "") + getPerk(e.getKey()).getTag())
                         .collect(Collectors.joining(", ")),
                 "chiefrank", VillageRank.getChief().getTag(capital),
-                "chieftitle", chief != null ? chief.getTitle() : "-",
+                "chieftitle", chief != null ? chief.getVillageTitle() : "-",
                 "chiefdisplaytitle", chief != null ? chief.getDisplayTitle() : "-",
                 "chief", chief != null ? chief.getName() : "-",
                 "chiefonline", configMessages != null ? chief != null && chief.getPlayer() != null ? online : offline : "",
@@ -632,7 +632,7 @@ public class Empire extends LandOwner implements Comparable<Empire> {
                                     "online", res.getPlayer() != null ? online : offline,
                                     "name", res.getName(),
                                     "rank", rank.getTag(),
-                                    "title", res.getTitle(),
+                                    "title", res.getVillageTitle(),
                                     "state", res.getVillage().getStateTag(),
                                     "settlement", res.getVillage().getName()
                             ))

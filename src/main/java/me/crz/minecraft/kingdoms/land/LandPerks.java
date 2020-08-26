@@ -195,7 +195,7 @@ public class LandPerks {
         return potionEffects.values();
     }
 
-    private <T extends Perk> Collection<? extends PerkEffect> getEffects(Player p, Resident resident, OwnedLand land, LandOwner perkable, boolean refresh) {
+    private <T extends Perk> Collection<? extends PerkEffect> getEffects(Player p, Resident resident, OwnedLand land, LandOwner<?> perkable, boolean refresh) {
         List<PerkEffect> effects = new ArrayList<>();
 
         LandOwner landOwner = null;
