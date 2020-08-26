@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.land;
 
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
@@ -62,6 +64,8 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
     private Map<Use, BuildState> use = new EnumMap<>(Use.class);
 
     private Map<String, Map<String, Boolean>> ranksPermissions = new HashMap<>();
+    protected Multimap<String, String> rankTitles = MultimapBuilder.hashKeys().linkedHashSetValues().build();
+    protected Map<String, String> defaultRankTitles = new HashMap<>();
 
     private Set<IdObject> alliedVillages = new LinkedHashSet<>();
 
@@ -600,6 +604,79 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         this.created = created;
     }
 
+    public Collection<String> getTitles(Rank rank) {
+        Collection<String> titles = rankTitles.get(rank.name().toLowerCase());
+        if (titles.isEmpty()) {
+            return rank.getTitles(this);
+        }
+        return titles;
+    }
+
+    public boolean addTitle(Rank rank, String title) {
+        if (rankTitles.get(rank.name().toLowerCase()).isEmpty()) {
+            if (getTitle(rank, title) != null) {
+                return false;
+            } else {
+                rankTitles.putAll(rank.name().toLowerCase(), rank.getTitles(this));
+            }
+        }
+        if (rankTitles.put(rank.name().toLowerCase(), title)) {
+            Utils.runAsync(() -> DatabaseManager.getInstance().save(this));
+            return true;
+        }
+        return false;
+    }
+
+    public void setDefaultTitle(Rank rank, String title) {
+        String t = getTitle(rank, title);
+        defaultRankTitles.put(rank.name().toLowerCase(), title);
+        if (t == null) {
+            addTitle(rank, title);
+        } else {
+            Utils.runAsync(() -> DatabaseManager.getInstance().save(this));
+        }
+    }
+
+    public String getDefaultTitle(Rank rank) {
+        return defaultRankTitles.getOrDefault(rank.name(), getTitles(rank).iterator().next());
+    }
+
+    public boolean removeTitle(Rank rank, String title) {
+        if (rankTitles.get(rank.name().toLowerCase()).isEmpty()) {
+            if (getTitle(rank, title) != null) {
+                rankTitles.putAll(rank.name().toLowerCase(), rank.getTitles(this));
+            } else {
+                return false;
+            }
+        }
+        String titleCase = getTitle(rank, title);
+        if (rankTitles.remove(rank.name().toLowerCase(), titleCase)) {
+            if (getDefaultTitle(rank).equals(title)) {
+                defaultRankTitles.remove(rank.name().toLowerCase());
+            }
+            Utils.runAsync(() -> DatabaseManager.getInstance().save(this));
+            return true;
+        }
+        return false;
+    }
+
+    public String getTitle(Rank rank, String title) {
+        for (String rankTitle : getTitles(rank)) {
+            if (rankTitle.equalsIgnoreCase(title)) {
+                return rankTitle;
+            }
+        }
+        return null;
+    }
+
+    public Map<String, Collection<String>> getRankTitles() {
+        return rankTitles.asMap();
+    }
+
+    public Map<String, String> getDefaultRankTitles() {
+        return defaultRankTitles;
+    }
+
     @Override
     public String getDbDescription() {
         return getStateKey() + " " + getName() + "/" + getId();
@@ -640,6 +717,8 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         map.put("vault", getVault());
         map.put("perks", getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
         map.put("permissions", getRanksPermissions());
+        map.put("titles", getRankTitles());
+        map.put("defaulttiles", getDefaultRankTitles());
         return map;
     }
 
@@ -725,6 +804,11 @@ public abstract class LandOwner implements DatabaseSerializable, Vaultable, Targ
         ((Map<String, Object>) map.get("permissions")).entrySet().stream()
                 .filter(e -> e.getValue() instanceof Map)
                 .forEach(e -> landOwner.getRanksPermissions().put(e.getKey().toLowerCase(), (Map<String, Boolean>) e.getValue()));
+        for (Map.Entry<String, Collection<String>> entry : ((Map<String, Collection<String>>) map.get("titles")).entrySet()) {
+            landOwner.rankTitles.putAll(entry.getKey().toLowerCase(), entry.getValue());
+        }
+        ((Map<String, Object>) map.get("defaulttitles")).entrySet().stream()
+                .forEach(e -> landOwner.defaultRankTitles.put(e.getKey().toLowerCase(), (String) e.getValue()));
         return landOwner;
     }
 

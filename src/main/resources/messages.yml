@@ -2455,6 +2455,46 @@ command:
         description: Sets the action for when a settlement can't pay the tax
       exempt:
         description: Exempts a resident from having to pay the plot taxes in this empire
+    title:
+      description: "Set your title"
+      success:
+        default: "&e{name}&7 set their title to &e{title}&7!"
+      invalid-title: "&c{title} is not a title available to you!"
+      usage:
+        entry: "&e• [&e{usage}](suggest_command={{usage})"
+    titles:
+      description: "Manage empire titles"
+      list:
+        description: "List all available titles"
+        head: "&a⊱&m━━━━&r&6Empire Titles&a&m━━━━&a⊰"
+        rank: "&6&l{rank}:&r {titles}"
+        separator: "&7, "
+        entry: "&7{title}"
+        default-entry: "&7[{title}]"
+        footer: "&7Use &e/s titles add|remove&7 to edit titles!"
+      add:
+        description: "Add new titles"
+        cant-edit-higher: "&cYou cannot edit titles of ranks above your own!"
+        too-many: "&cThe rank &e{rank}&c already has the maximum amount of titles ({max}) set!"
+        too-long: "&e{input}&c is too long! Titles have to be shorter than 16 characters!"
+        invalid-characters: "&e{input}&c contains invalid characters. Only letters, numbers, minus and underscores are allowed!"
+        prohibited-words: "&e{input}&c contains prohibited words!"
+        success: "&e{title}&7 was added to rank &e{rank}"
+        already-exists: "&e{rank}&c already has a title with the name &e{input}&c defined!"
+      set:
+        description: "Set the rank's default title"
+        cant-edit-higher: "&cYou cannot edit titles of ranks above your own!"
+        too-many: "&cThe rank &e{rank}&c already has the maximum amount of titles ({max}) set!"
+        too-long: "&e{input}&c is too long! Titles have to be shorter than 16 characters!"
+        invalid-characters: "&e{input}&c contains invalid characters. Only letters, numbers, minus and underscores are allowed!"
+        prohibited-words: "&e{input}&c contains prohibited words!"
+        success: "&e{title}&7 was set as the default title of rank &e{rank}"
+        success-new: "&7Added title &e{title}&7 and set as the default of rank &e{rank}"
+      remove:
+        description: "Remove titles"
+        cant-edit-higher: "&cYou cannot edit titles of ranks above your own!"
+        success: "&e{title}&7 was removed from rank &e{rank}"
+        doesnt-exist: "&e{rank}&c has no title with the name &e{input}&c defined!"
     transfer:
       success: "&e&l(!) &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
       already-capital: "&c&lYour village is already the capital."

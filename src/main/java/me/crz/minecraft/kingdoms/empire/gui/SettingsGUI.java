@@ -20,7 +20,7 @@ public class SettingsGUI extends KingdomsGUI {
     private final static String[] SETUP = {
             "llllillll",
             "         ",
-            " um h  s ",
+            " um h ts ",
             " ba   rp ",
             "         ",
             "llllcllll"
@@ -132,6 +132,18 @@ public class SettingsGUI extends KingdomsGUI {
                 return true;
             }, getText("shop",
                     "state", resident.getVillage().getEmpire().getStateTag()
+            )));
+        }
+
+        if (resident.hasPermission("empire.title")) {
+            gui.addElement(new StaticGuiElement('t', new ItemStack(Material.PAPER),click -> {
+                if (resident.hasPermission("empire.title")) {
+                    new TitleGUI(resident).open();
+                }
+                return true;
+            }, getText(resident.hasPermission("empire.titles") ? "titles-edit" : "titles",
+                    "state", resident.getVillage().getEmpire().getStateTag(),
+                    "title", resident.getTitle()
             )));
         }
 

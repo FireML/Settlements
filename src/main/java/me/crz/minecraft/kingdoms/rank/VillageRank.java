@@ -7,18 +7,15 @@ import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Next;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageState;
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-public class VillageRank extends Rank implements Next<VillageRank> {
+public class VillageRank extends Rank<Village> implements Next<VillageRank> {
 
     private Multimap<VillageState, String> titles = MultimapBuilder.enumKeys(VillageState.class).arrayListValues().build();
 
@@ -88,17 +85,13 @@ public class VillageRank extends Rank implements Next<VillageRank> {
         return rank;
     }
 
+    @Override
     public List<String> getTitles(Village village) {
         return village != null ? getTitles(village.getState()) : new ArrayList<>();
     }
 
     public List<String> getTitles(VillageState state) {
         return (List<String>) titles.get(state);
-    }
-
-    public String getTag(Village village) {
-        String title = village != null ? village.getDefaultTitle(this) : "";
-        return title.isEmpty() ? getTag() : title;
     }
 
     public static VillageRank[] values() {

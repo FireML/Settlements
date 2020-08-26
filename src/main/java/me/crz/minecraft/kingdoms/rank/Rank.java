@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.rank;
 
 import me.crz.minecraft.kingdoms.cinventory.CItem;
+import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.NameTag;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class Rank implements Rankable, NameTag, Comparable<Rank> {
+public abstract class Rank<L extends LandOwner> implements Rankable, NameTag, Comparable<Rank> {
 
     private final String name;
 
@@ -111,6 +112,13 @@ public abstract class Rank implements Rankable, NameTag, Comparable<Rank> {
 
     public void setParent(String parent) {
         this.parent = parent;
+    }
+
+    public abstract List<String> getTitles(L landOwner);
+
+    public String getTag(L landOwner) {
+        String title = landOwner != null ? landOwner.getDefaultTitle(this) : "";
+        return title.isEmpty() ? getTag() : title;
     }
 
     @Override
