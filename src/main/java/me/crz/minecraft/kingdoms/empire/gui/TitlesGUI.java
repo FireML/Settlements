@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
-import me.crz.minecraft.kingdoms.command.village.VillageTitlesCommand;
+import me.crz.minecraft.kingdoms.command.empire.EmpireTitlesCommand;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -122,7 +122,7 @@ public class TitlesGUI extends KingdomsGUI {
                                         "rank", rank.getTag(resident.getVillage().getEmpire()),
                                         "state", resident.getVillage().getEmpire().getStateTag()
                                 ))
-                                .onClose(player -> Utils.runLater(() -> open(), 1))
+                                .onClose(player -> Utils.runLater(() -> new TitlesGUI(resident, rank).open(), 1))
                                 .onComplete((player, text) -> {
                                     text = ChatColor.stripColor(text);
                                     if (rank.above(resident.getEmpireRank())) {
@@ -134,13 +134,12 @@ public class TitlesGUI extends KingdomsGUI {
                                         ));
                                     } else if (text.length() > 16) {
                                         return AnvilGUI.Response.text(getError("too-long").getReplacedText("input", text, "amount", "16"));
-                                    } else if (!VillageTitlesCommand.TITLE_PATTERN.matcher(text).matches()) {
+                                    } else if (!EmpireTitlesCommand.TITLE_PATTERN.matcher(text).matches()) {
                                         return AnvilGUI.Response.text(getError("invalid-characters").getReplacedText("input", text));
                                     } else if (ChatManager.getInstance().containsAnyCurses(text)) {
                                         return AnvilGUI.Response.text(getError("prohibited-words").getReplacedText("input", text));
                                     } else if (resident.getVillage().getEmpire().addTitle(rank, text)) {
                                         Message.get("command.empire.titles.add.success").tell(resident, "title", text, "rank", rank.getTag(resident.getVillage().getEmpire()));
-                                        Utils.runLater(() -> new TitlesGUI(resident, rank).open(), 1);
                                         return AnvilGUI.Response.close();
                                     } else {
                                         return AnvilGUI.Response.text(getError("already-exists").getReplacedText("input", text, "rank", rank.getTag(resident.getVillage().getEmpire())));

@@ -604,7 +604,7 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
         this.created = created;
     }
 
-    public Collection<String> getTitles(Rank rank) {
+    public Collection<String> getTitles(R rank) {
         Collection<String> titles = rankTitles.get(rank.name().toLowerCase());
         if (titles.isEmpty()) {
             return rank.getTitles(this);
@@ -612,7 +612,7 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
         return titles;
     }
 
-    public boolean addTitle(Rank rank, String title) {
+    public boolean addTitle(R rank, String title) {
         if (rankTitles.get(rank.name().toLowerCase()).isEmpty()) {
             if (getTitle(rank, title) != null) {
                 return false;
@@ -627,7 +627,7 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
         return false;
     }
 
-    public void setDefaultTitle(Rank rank, String title) {
+    public void setDefaultTitle(R rank, String title) {
         String t = getTitle(rank, title);
         defaultRankTitles.put(rank.name().toLowerCase(), title);
         if (t == null) {
@@ -637,11 +637,11 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
         }
     }
 
-    public String getDefaultTitle(Rank rank) {
+    public String getDefaultTitle(R rank) {
         return defaultRankTitles.getOrDefault(rank.name(), getTitles(rank).iterator().next());
     }
 
-    public boolean removeTitle(Rank rank, String title) {
+    public boolean removeTitle(R rank, String title) {
         if (rankTitles.get(rank.name().toLowerCase()).isEmpty()) {
             if (getTitle(rank, title) != null) {
                 rankTitles.putAll(rank.name().toLowerCase(), rank.getTitles(this));
@@ -660,7 +660,7 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
         return false;
     }
 
-    public String getTitle(Rank rank, String title) {
+    public String getTitle(R rank, String title) {
         for (String rankTitle : getTitles(rank)) {
             if (rankTitle.equalsIgnoreCase(title)) {
                 return rankTitle;

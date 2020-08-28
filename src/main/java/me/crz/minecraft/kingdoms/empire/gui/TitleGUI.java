@@ -57,7 +57,7 @@ public class TitleGUI extends KingdomsGUI {
 
                 @Override
                 public boolean click(Player p, ClickType type) {
-                    if (resident.hasEmpire() && resident.hasPermission("empire.title") && rank == resident.getEmpireRank() && resident.setVillageTitle(title)) {
+                    if (resident.hasEmpire() && resident.hasPermission("empire.title") && rank == resident.getEmpireRank() && resident.setEmpireTitle(title)) {
                         Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(resident));
                         open();
                         Message message = Message.get("command.empire.title.success." + resident.getEmpireRank().getKey());
