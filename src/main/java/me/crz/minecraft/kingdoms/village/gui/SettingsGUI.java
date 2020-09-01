@@ -60,7 +60,7 @@ public class SettingsGUI extends KingdomsGUI {
         if (resident.hasPermission("village.setaccess")) {
             gui.addElement(new StaticGuiElement('a', new ItemStack(Material.IRON_DOOR),click -> {
                 if (resident.hasPermission("village.setaccess")) {
-                    AccessGUI.getInstance().open((Player) click.getEvent().getWhoClicked());
+                    new AccessGUI().open((Player) click.getEvent().getWhoClicked());
                 }
                 return true;
             }, getText("access",
@@ -72,7 +72,7 @@ public class SettingsGUI extends KingdomsGUI {
         if (resident.hasPermission("village.build")) {
             gui.addElement(new StaticGuiElement('b', new CItem(Material.DIAMOND_PICKAXE).hideAllFlags(true).build(), click -> {
                 if (resident.hasPermission("village.build")) {
-                    BuildGui.getInstance().open((Player) click.getEvent().getWhoClicked());
+                    new BuildGui().open((Player) click.getEvent().getWhoClicked());
                 }
                 return true;
             }, getText("build",
@@ -95,7 +95,7 @@ public class SettingsGUI extends KingdomsGUI {
         if (resident.hasPermission("village.mode")) {
             gui.addElement(new StaticGuiElement('m', new ItemStack(Material.REPEATER),click -> {
                 if (resident.hasPermission("village.mode")) {
-                    ModeGUI.getInstance().open((Player) click.getEvent().getWhoClicked());
+                    new ModeGUI().open((Player) click.getEvent().getWhoClicked());
                 }
                 return true;
             }, getText("mode",
@@ -106,7 +106,7 @@ public class SettingsGUI extends KingdomsGUI {
         if (resident.hasPermission("village.perms")) {
             gui.addElement(new StaticGuiElement('r', new ItemStack(Material.RED_BANNER),click -> {
                 if (resident.hasPermission("village.perms")) {
-                    PermsGUI.getInstance().open((Player) click.getEvent().getWhoClicked());
+                    new PermsGUI((Player) click.getEvent().getWhoClicked()).open();
                 }
                 return true;
             }, getText("perms",

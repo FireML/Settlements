@@ -125,4 +125,23 @@ public class ColorUtils {
     public static ItemStack getColorHead(ChatColor chatColor) {
         return colorHeads.getOrDefault(chatColor, new ItemStack(Material.DIRT));
     }
+
+    public static ChatColor getColor(String colorString, ChatColor def) {
+        if (colorString != null) {
+            try {
+                return ChatColor.valueOf(colorString.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                ChatColor color = null;
+                if (colorString.length() == 1) {
+                    color = ChatColor.getByChar(colorString);
+                } else if (colorString.length() == 2) {
+                    color = ChatColor.getByChar(colorString.charAt(1));
+                }
+                if (color != null) {
+                    return color;
+                }
+            }
+        }
+        return ChatColor.WHITE;
+    }
 }

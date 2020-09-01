@@ -1,118 +1,80 @@
 package me.crz.minecraft.kingdoms.village.gui;
 
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
 import me.crz.minecraft.kingdoms.KingdomsGUI;
-import me.crz.minecraft.kingdoms.cinventory.CInventory;
-import me.crz.minecraft.kingdoms.cinventory.CItem;
-import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
-import me.crz.minecraft.kingdoms.cinventory.InventorySize;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.rank.PermissionGroup;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ConfirmationGui;
-import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 public class RankPermGroupsGUI extends KingdomsGUI {
-    private static Map<String, Map<IdObject, RankPermGroupsGUI>> instances = new ConcurrentHashMap<>();
-    public CInventory gui;
+    private final static String[] SETUP = {
+            "lllllllll",
+            "lllllllll",
+            "ggggggggg",
+            "ggggggggr",
+            "lllllllll",
+            "llllbllll"
+    };
+    private final Resident resident;
+    public InventoryGui gui;
 
-    private RankPermGroupsGUI(Village village, VillageRank rank) {
+    public RankPermGroupsGUI(Resident res, VillageRank rank) {
         super("rank-perm-groups");
-        gui = new CInventory(getText("title", "rank", rank.getTag(village)), InventorySize.SIX) {};
+        this.resident = res;
+        gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title", "rank", rank.getTag(res.getVillage())), SETUP);
+        gui.addElement(new StaticGuiElement('l', BORDER_ITEM, " "));
 
-        for (int i = 0; i < InventorySize.TWO.getSize(); i++) {
-            gui.addItem(i, BORDER);
-        }
+        GuiElementGroup group = new GuiElementGroup('g');
 
-        for (PermissionGroup group : VillageRank.getPermGroups()) {
-            gui.addItem(new ClickableItem() {
-                @Override
-                public ItemStack getItem(Player p) {
-                    Resident res = ResidentManager.getInstance().getResident(p);
-                    if (res.hasVillage()) {
-                        return group.getItem().setName(getMessage("groups." + group.getName()).getReplacedText(
-                                "rank", rank.getTag(),
-                                "state", res.getVillage().getStateTag()
-                        )).build();
+        if (res.hasVillage()) {
+            for (PermissionGroup permGroup : VillageRank.getPermGroups()) {
+                group.addElement(new StaticGuiElement('g', permGroup.getItem(), click -> {
+                    Resident r = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
+                    if (r.hasVillage() && r.hasPermission("village.perms")) {
+                        new RankPermsGUI(r, rank, permGroup).open();
                     }
-                    return null;
-                }
+                    return true;
+                }));
+            }
 
-                @Override
-                public boolean click(Player p, ClickType type) {
-                    Resident res = ResidentManager.getInstance().getResident(p);
-                    if (res.hasVillage() && res.hasPermission("village.perms")) {
-                        RankPermsGUI.getInstance(village, rank, group).open(p);
-                        return true;
+            if (res.hasVillage() && res.hasPermission("village.perms.reset")) {
+                gui.addElement(new StaticGuiElement('r', new ItemStack(Material.ORANGE_WOOL), click -> {
+                    Resident r = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
+                    if (r.hasVillage() && r.hasPermission("village.perms.reset")) {
+                        Village village = r.getVillage();
+                        new ConfirmationGui(RankPermGroupsGUI.this, "reset", () -> {
+                            if (r.hasPermission("village.perms.reset")) {
+                                village.getRanksPermissions().remove(rank.name().toLowerCase());
+                                open();
+                                Utils.runAsync(() -> DatabaseManager.getInstance().save(village));
+                            }
+                        }, this::open, "state", village.getStateTag(), "name", village.getName(), "rank", rank.getTag(village)).open((Player) click.getEvent().getWhoClicked());
                     }
-                    return false;
-                }
-            });
-        }
-        gui.addItem(InventorySize.SIX.getSize() - 1, new ClickableItem() {
-            @Override
-            public ItemStack getItem(Player p) {
-                Resident res = ResidentManager.getInstance().getResident(p);
-                if (res.hasVillage() && res.hasPermission("village.perms.reset")) {
-                    return new CItem(Material.ORANGE_WOOL).setName(getText("reset.title", "rank", rank.getTag(res.getVillage()))).build();
-                }
-                return null;
+                    return true;
+                }, getText("reset.title", "rank", rank.getTag(res.getVillage()))));
             }
-
-            @Override
-            public boolean click(Player p, ClickType clickType) {
-                Resident res = ResidentManager.getInstance().getResident(p);
-                if (res.hasVillage() && res.hasPermission("village.perms.reset")) {
-                    Village village = res.getVillage();
-                    new ConfirmationGui(RankPermGroupsGUI.this, "reset", () -> {
-                        if (res.hasPermission("village.perms.reset")) {
-                            village.getRanksPermissions().remove(rank.name().toLowerCase());
-                            open(p);
-                            Utils.runAsync(() -> DatabaseManager.getInstance().save(village));
-                        }
-                    }, () -> open(p), "state", village.getStateTag(), "name", village.getName(), "rank", rank.getTag(village)).build(p);
-                }
-                return true;
-            }
-        });
-
-        for (int i = InventorySize.FOUR.getSize(); i < InventorySize.SIX.getSize(); i++) {
-            gui.addItem(i, BORDER);
         }
 
-        gui.addItem(InventorySize.FIVE.getSize() + 4, new ClickableItem() {
-            public ItemStack getItem(final Player p) {
-                return new CItem(Material.BARRIER).setName(getText("back")).build();
-            }
+        gui.addElement(group);
 
-            public boolean click(final Player p, final ClickType clickType) {
-                PermsGUI.getInstance().open(p);
-                return true;
-            }
-        });
+        gui.addElement(new StaticGuiElement('b', new ItemStack(Material.BARRIER), click -> {
+            new PermsGUI((Player) click.getEvent().getWhoClicked()).open();
+            return true;
+        }, getText("back")));
     }
 
-    public void open(final Player p) {
-        gui.build(p);
-    }
-
-    public static void open(Resident resident, VillageRank rank) {
-        getInstance(resident.getVillage(), rank).open(resident.getPlayer());
-    }
-
-    synchronized public static RankPermGroupsGUI getInstance(Village village, VillageRank rank) {
-        return instances
-                .computeIfAbsent(rank.name(), n -> new ConcurrentHashMap<>())
-                .computeIfAbsent(village.getId(), id -> new RankPermGroupsGUI(village, rank));
+    public void open() {
+        gui.show(resident.getPlayer());
     }
 }

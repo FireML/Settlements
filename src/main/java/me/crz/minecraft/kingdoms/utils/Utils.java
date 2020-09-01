@@ -50,9 +50,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
 public class Utils {
@@ -82,15 +79,6 @@ public class Utils {
 
     public Utils() {
         super();
-    }
-
-    public static ItemStack getHead(UUID playerId, String name) {
-        ItemStack item = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta skull = (SkullMeta) item.getItemMeta();
-        skull.setDisplayName(name);
-        skull.setPlayerProfile(Bukkit.createProfile(playerId));
-        item.setItemMeta(skull);
-        return item;
     }
 
     public static boolean isWorldClaimable(World world) {
@@ -314,28 +302,9 @@ public class Utils {
     public static ChatColor getChannelColor(ChatChannel channel, ChatColorType type) {
         switch (type) {
             case PREFIX:
-                return getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-prefix-colors." + channel.getKey()), ChatColor.WHITE);
+                return ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-prefix-colors." + channel.getKey()), ChatColor.WHITE);
             case MESSAGE:
-                return getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-colors." + channel.getKey()), ChatColor.WHITE);
-        }
-        return ChatColor.WHITE;
-    }
-
-    public static ChatColor getColor(String colorString, ChatColor def) {
-        if (colorString != null) {
-            try {
-                return ChatColor.valueOf(colorString.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                ChatColor color = null;
-                if (colorString.length() == 1) {
-                    color = ChatColor.getByChar(colorString);
-                } else if (colorString.length() == 2) {
-                    color = ChatColor.getByChar(colorString.charAt(1));
-                }
-                if (color != null) {
-                    return color;
-                }
-            }
+                return ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-colors." + channel.getKey()), ChatColor.WHITE);
         }
         return ChatColor.WHITE;
     }

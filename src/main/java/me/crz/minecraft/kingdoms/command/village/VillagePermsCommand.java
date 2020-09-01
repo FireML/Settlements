@@ -154,7 +154,7 @@ public class VillagePermsCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length == 0) {
-            PermsGUI.getInstance().open(resident.getPlayer());
+            new PermsGUI(resident.getPlayer()).open();
             return true;
         }
 
@@ -164,7 +164,7 @@ public class VillagePermsCommand extends VillageSubCommand {
             return false;
         }
         if (args.length == 1) {
-            RankPermGroupsGUI.open(resident, rank);
+            new RankPermGroupsGUI(resident, rank).open();
             return true;
         } else if (args.length == 2) {
             PermissionGroup group = VillageRank.getPermGroup(args[1]);

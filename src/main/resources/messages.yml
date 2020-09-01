@@ -667,6 +667,9 @@ gui:
     entry:
       title: "&a&l{mode}"
       lore: "&7&lEnabled: &a&l{value}"
+      state:
+        true: "Yes"
+        false: "No"
     back: "&c&lBack To Settings"
   empire:
     access:
@@ -1126,14 +1129,6 @@ gui:
     entry: |-
       &e{rank}
       &bClick to select
-  residents:
-    title: "&2&lVillage Residents"
-    back: "&c&lBack To Settings"
-    entry: |-
-      &c&l{name}
-      &7&lRole &a&l{title}
-      &7&lJoined &a&l{joined}
-      &7&lLast login &a&l{lastlogin}
   settings:
     title: "&2&lSettlement Settings"
     home: |-

@@ -79,7 +79,7 @@ public class RankPermGroupsGUI extends KingdomsGUI {
                             open(p);
                             Utils.runAsync(() -> DatabaseManager.getInstance().save(empire));
                         }
-                    }, () -> open(p), "state", empire.getStateTag(), "name", empire.getName(), "rank", rank.getTag()).build(p);
+                    }, () -> open(p), "state", empire.getStateTag(), "name", empire.getName(), "rank", rank.getTag()).open(p);
                 }
                 return true;
             }

@@ -574,6 +574,10 @@ public class Resident implements ConfigurationSerializable, Targetable {
         this.id = id;
     }
 
+    /**
+     * @deprecated Use {@link Message#tell(Resident, String...)}
+     */
+    @Deprecated
     public void tell(Message message, String... replacements) {
         MessageUtils.tell(this, message, replacements);
     }

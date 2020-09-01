@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public enum PlotMode implements NameTag {
     pvp(Material.IRON_SWORD),
@@ -37,8 +40,12 @@ public enum PlotMode implements NameTag {
         }
     }
 
-    public CItem getItem() {
-        return new CItem(icon).hideAllFlags(true);
+    public ItemStack getItem() {
+        ItemStack item = new ItemStack(icon);
+        ItemMeta meta = item.getItemMeta();
+        meta.addItemFlags(ItemFlag.values());
+        item.setItemMeta(meta);
+        return item;
     }
 
     public boolean set(boolean b, ModeAble modeAble) {

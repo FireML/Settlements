@@ -4,6 +4,7 @@ import me.crz.minecraft.kingdoms.cinventory.CInventory;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -56,7 +57,7 @@ public class TeleportersGUI extends KingdomsGUI {
                     l.setLore(getMessage("village-home").getReplacedTextList("state", village != null ? village.getStateTag() : VillageState.VILLAGE.getTag()));
                     return l;
                 }
-                return Utils.getHead(village.getChiefId(), getMessage("village-home").getReplacedText("state", village.getStateTag()));
+                return ItemUtils.getHead(village.getChiefId(), getMessage("village-home").getReplacedText("state", village.getStateTag()));
             }
 
             public boolean click(Player p, ClickType clickType) {
@@ -87,7 +88,7 @@ public class TeleportersGUI extends KingdomsGUI {
                     l.setLore(getMessage("empire-home").getTextList());
                     return l;
                 }
-                return Utils.getHead(resident.getVillage().getEmpire().getCapital().getChiefId(), getText("empire-home"));
+                return ItemUtils.getHead(resident.getVillage().getEmpire().getCapital().getChiefId(), getText("empire-home"));
             }
 
             public boolean click(Player p, ClickType clickType) {

@@ -15,7 +15,7 @@ public class VillageSetAccessCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length < 1) {
-            AccessGUI.getInstance().open(resident.getPlayer());
+            new AccessGUI().open(resident.getPlayer());
             return true;
         }
         try {

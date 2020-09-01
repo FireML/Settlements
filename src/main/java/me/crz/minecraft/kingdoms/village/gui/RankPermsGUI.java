@@ -36,13 +36,13 @@ public class RankPermsGUI extends KingdomsGUI {
     public CInventory gui;
     private Map<UUID, Integer> playerPage = new HashMap<>();
 
-    private RankPermsGUI(Village village, VillageRank rank, PermissionGroup group) {
+    public RankPermsGUI(Resident resident, VillageRank rank, PermissionGroup group) {
         super("rank-perms");
         List<String> perms = group.getPermissions().stream()
                 .filter(s -> !s.contains(".help"))
                 .collect(Collectors.toList());
         gui = new CInventory(getText("title",
-                "rank", rank.getTag(village),
+                "rank", rank.getTag(resident.getVillage()),
                 "group", group.getName()
         ), InventorySize.SIX) {};
 
@@ -223,7 +223,7 @@ public class RankPermsGUI extends KingdomsGUI {
             public boolean click(final Player p, final ClickType clickType) {
                 Resident resident = ResidentManager.getInstance().getResident(p);
                 if (resident.hasVillage()) {
-                    RankPermGroupsGUI.getInstance(resident.getVillage(), rank).open(p);
+                    new RankPermGroupsGUI(resident, rank).open();
                     return true;
                 }
                 return false;
@@ -243,9 +243,8 @@ public class RankPermsGUI extends KingdomsGUI {
         return playerPage.getOrDefault(p.getUniqueId(), 0);
     }
 
-    public void open(final Player p) {
-        playerPage.remove(p.getUniqueId());
-        gui.build(p);
+    public void open() {
+        gui.show(resident.getPlayer());
     }
 
     public static void open(Resident resident, VillageRank rank, PermissionGroup group) {

@@ -4,7 +4,7 @@ import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
-import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.KingdomsGUI;
 import org.bukkit.Material;
@@ -118,7 +118,7 @@ public class PrivateTeleportersGUI extends KingdomsGUI {
 
         items = entries.stream().map(landOwner -> new ClickableItem() {
             public ItemStack getItem(Player p) {
-                return Utils.getHead(landOwner.getChiefId(), getMessage("entry").getReplacedText("name", landOwner.getName(), "state", landOwner.getStateTag()));
+                return ItemUtils.getHead(landOwner.getChiefId(), getMessage("entry").getReplacedText("name", landOwner.getName(), "state", landOwner.getStateTag()));
             }
 
             public boolean click(Player p, ClickType clickType) {
