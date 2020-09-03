@@ -1758,6 +1758,7 @@ command:
         &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
       bonus-claims: " Bonus: {amount}"
+      bonus-outposts: " Bonus: {amount}"
       residents:
         rank: "&6&l{rank}:&r {residents}"
         separator: "&7, "
