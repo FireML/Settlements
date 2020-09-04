@@ -270,7 +270,7 @@
         <dependency>
             <groupId>com.zrips.cmi</groupId>
             <artifactId>cmi-api</artifactId>
-            <version>7.6.2.0</version>
+            <version>8.7.6.12</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
