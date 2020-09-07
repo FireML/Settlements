@@ -8,6 +8,9 @@ import me.crz.minecraft.kingdoms.landflags.LandFlagBase;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.village.Resident;
+import org.bukkit.command.Command;
+import org.bukkit.command.FormattedCommandAlias;
+import org.bukkit.command.MultipleCommandAlias;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -15,12 +18,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
+import java.lang.reflect.Field;
 import java.util.UUID;
 import java.util.logging.Level;
 
 public class CmiIntegration implements IgnoreProvider, AfkProvider, MailProvider, Listener, LandFlagBase {
 
     private final CMI cmi;
+    private Field formatStringsField = null;
 
     public CmiIntegration() {
         cmi = CMI.getInstance();
@@ -33,6 +38,12 @@ public class CmiIntegration implements IgnoreProvider, AfkProvider, MailProvider
         KingdomsPlugin.getInstance().getAfkProviders().add(this);
         KingdomsPlugin.getInstance().getMailProviders().add(this);
         KingdomsPlugin.getInstance().getServer().getPluginManager().registerEvents(this, KingdomsPlugin.getInstance());
+        try {
+            formatStringsField = FormattedCommandAlias.class.getDeclaredField("formatStrings");
+            formatStringsField.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
     public CMI getCmi() {
@@ -46,19 +57,50 @@ public class CmiIntegration implements IgnoreProvider, AfkProvider, MailProvider
     @EventHandler
     public void onCommandPreProcess(PlayerCommandPreprocessEvent event) {
         String[] split = event.getMessage().substring(1).split(" ");
-        PluginCommand command = KingdomsPlugin.getInstance().getCommand(split[0]);
-        if (command != null && "cmi".equals(command.getName()) && command.getPlugin() == cmi) {
-            if (split.length > 2 && "itemframe".equalsIgnoreCase(split[1])) {
-                Entity targeted = cmi.getUtilManager().getTargetEntity(event.getPlayer(), 0.0D);
-                if (targeted != null && targeted.getType() == EntityType.ITEM_FRAME) {
-                    Pair<Boolean, String> response = this.getCanBuildAll(event.getPlayer(), targeted.getLocation());
-                    if (!response.getLeft()) {
-                        MessageUtils.tell(event.getPlayer(), response.getRight());
-                        event.setCancelled(true);
+        Command command = KingdomsPlugin.getInstance().getServer().getCommandMap().getCommand(split[0]);
+        if (command != null) {
+            if (command instanceof PluginCommand) {
+                if (!isCmiItemframeCommand(event.getMessage().substring(1))) {
+                    return;
+                }
+            } else if (command instanceof FormattedCommandAlias && formatStringsField != null) {
+                try {
+                    String[] formatStrings = (String[]) formatStringsField.get(command);
+                    boolean found = false;
+                    for (String formatString : formatStrings) {
+                        if (isCmiItemframeCommand(formatString)) {
+                            found = true;
+                            break;
+                        }
                     }
+                    if (!found) {
+                        return;
+                    }
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                return;
+            }
+
+            Entity targeted = cmi.getUtilManager().getTargetEntity(event.getPlayer(), 0.0D);
+            if (targeted != null && targeted.getType() == EntityType.ITEM_FRAME) {
+                Pair<Boolean, String> response = this.getCanBuildAll(event.getPlayer(), targeted.getLocation());
+                if (!response.getLeft()) {
+                    MessageUtils.tell(event.getPlayer(), response.getRight());
+                    event.setCancelled(true);
                 }
             }
         }
+    }
+
+    private boolean isCmiItemframeCommand(String commandString) {
+        if (commandString.startsWith("/")) {
+            commandString = commandString.substring(1);
+        }
+        String[] split = commandString.split(" ");
+        PluginCommand command = KingdomsPlugin.getInstance().getServer().getPluginCommand(split[0]);
+        return command != null && command.getPlugin() == cmi && split.length > 2 && "itemframe".equalsIgnoreCase(split[1]);
     }
 
     @Override
