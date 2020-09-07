@@ -672,14 +672,13 @@ public class Utils {
                     return;
                 }
                 Block block = loc.getBlock();
-                if (!block.isPassable() || !block.getRelative(BlockFace.UP).isPassable()) {
-                    Message.get("error.destination-obstructed").tell(player);
-                    KingdomsPlugin.logDebug("Location " + loc + " is obstructed");
-                    return;
+                Block up;
+                while (block.getY() < 256 && ((up = block.getRelative(BlockFace.UP)).isPassable() || !block.isPassable())) {
+                    block = up;
                 }
-                Block down = block.getRelative(BlockFace.DOWN);
-                while (!down.getType().isSolid() && down.getY() > 0) {
-                    down = down.getRelative(BlockFace.DOWN);
+                Block down;
+                while (!(down = block.getRelative(BlockFace.DOWN)).getType().isSolid() && down.getY() > 0) {
+                    block = down;
                 }
                 if (!down.getType().isSolid()) {
                     Message.get("error.destination-obstructed").tell(player);
@@ -688,7 +687,7 @@ public class Utils {
                 }
 
                 player.sendBlockChange(down.getLocation(), down.getBlockData());
-                loc.setY(down.getY() + 1);
+                loc.setY(block.getY());
                 player.teleportAsync(loc).thenAccept(success -> {
                     Message.get(messagePath + "." + (success ? "success" : "fail")).tell(player, replacements);
                     Message.get(messagePath + "." + (success ? "success" : "fail") + "-title").getTitle().withIn(0).send(player, replacements);
