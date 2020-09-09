@@ -53,7 +53,7 @@ public class SettingsGUI extends PlotGUI {
                 new BuildGui(p, land);
             }
             return true;
-        }, getText("build")));
+        }, getText("build", openedOnLand.getReplacements())));
 
         gui.addElement(new StaticGuiElement('u', new ItemStack(Material.LEVER), click -> {
             OwnedLand land = LandManager.getInstance().getLand(p.getLocation());

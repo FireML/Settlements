@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 
 public class PlotSettingsCommand extends PlotSubCommand {
     public PlotSettingsCommand(SubCommand parent) {
-        super(parent, "settings");
+        super(parent, "settings", "gui");
     }
 
     @Override

@@ -6,7 +6,7 @@ import me.crz.minecraft.kingdoms.village.gui.SettingsGUI;
 
 public class VillageSettingsCommand extends VillageSubCommand {
     public VillageSettingsCommand(SubCommand parent) {
-        super(parent, "settings");
+        super(parent, "settings", "gui");
     }
 
     @Override

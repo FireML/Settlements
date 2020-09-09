@@ -383,6 +383,7 @@ chat:
   messages-disabled: "&cYou cannot message &6{name}&c because you have private messages disabled! Use [&e/msgtoggle](/msgtoggle on)&c to enable it."
   target-messages-disabled: "&cYou cannot message &6{name}&c because he has private messages disabled!"
 names:
+  plot: Plot
   use:
     chest: "Chests"
     barrel: "Barrels"
@@ -1502,7 +1503,7 @@ command:
         &c&l{state}: &7{landowner}
         &9&lName: &r{name}
         &9&lDescription: &r{description}
-        &9&lModes: &7MobSpawning: &6{mobspawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explosions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}&r&7 | Embassy: &6{embassy}
+        &9&lModes: &7MobSpawning: &6{mobspawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explosions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}&r&7 (from {buildsource}) | Embassy: &6{embassy}
       owner: "&a&lPlot Owner: &7{name}"
       price: "&a&lPlot Price: &7₲{price}"
       tax: "&a&lPlot Tax: &7₲{tax}"

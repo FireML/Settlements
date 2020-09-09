@@ -6,7 +6,7 @@ import me.crz.minecraft.kingdoms.village.Resident;
 
 public class EmpireSettingsCommand extends EmpireSubCommand {
     public EmpireSettingsCommand(SubCommand parent) {
-        super(parent, "settings");
+        super(parent, "settings", "gui");
     }
 
     @Override

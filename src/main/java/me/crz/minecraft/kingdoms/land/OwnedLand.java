@@ -6,6 +6,7 @@ import me.crz.minecraft.kingdoms.db.DatabaseSerializable;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.IdObject;
+import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -476,6 +477,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
                 "pvp", String.valueOf(getMode(PlotMode.pvp)),
                 "buff", String.valueOf(getMode(PlotMode.buff)),
                 "build", isPlot() || getBuildState().appliesTo(BuildState.AppliesTo.get(getLandOwner())) ? getBuildState().getTag() : getLandOwner().getBuildState().getTag(),
+                "buildsource", isPlot() || getBuildState().appliesTo(BuildState.AppliesTo.get(getLandOwner())) ? Message.get("names.plot").getText() : getLandOwner().getStateTag(),
                 "embassy", String.valueOf(isEmbassy()),
                 "x", String.valueOf(getX()),
                 "z", String.valueOf(getZ()),
