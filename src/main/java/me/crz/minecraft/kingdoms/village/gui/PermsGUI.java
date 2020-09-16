@@ -22,22 +22,23 @@ import java.util.List;
 
 public class PermsGUI extends KingdomsGUI {
     private final static String[] SETUP = {
-            "lllllllll",
-            "lllllllll",
+            "         ",
+            "         ",
             "ggggggggg",
             "ggggggggr",
-            "lllllllll",
-            "llllbllll"
+            "         ",
+            "    b    "
     };
     private final Player player;
 
-    public InventoryGui gui;
+    private final InventoryGui gui;
 
     public PermsGUI(Player player) {
         super("perms");
         this.player = player;
         gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title"), SETUP);
-        gui.addElement(new StaticGuiElement('l', BORDER_ITEM, " "));
+        gui.setCloseAction(close -> false);
+        gui.setFiller(BORDER_ITEM);
 
         GuiElementGroup group = new GuiElementGroup('g');
 
@@ -89,7 +90,7 @@ public class PermsGUI extends KingdomsGUI {
         gui.addElement(group);
 
         gui.addElement(new StaticGuiElement('b', new ItemStack(Material.BARRIER), click -> {
-            new SettingsGUI((Player) click.getEvent().getWhoClicked()).open();
+            new SettingsGUI(res).open();
             return true;
         }, getText("back")));
     }

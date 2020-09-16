@@ -39,7 +39,7 @@ public class RankPermGroupsGUI extends KingdomsGUI {
                 public ItemStack getItem(Player p) {
                     Resident res = ResidentManager.getInstance().getResident(p);
                     if (res.hasEmpire()) {
-                        return group.getItem().setName(getMessage("groups." + group.getName()).getReplacedText(
+                        return new CItem(group.getItem()).setName(getMessage("groups." + group.getName()).getReplacedText(
                                 "rank", rank.getTag(),
                                 "state", res.getVillage().getEmpire().getStateTag()
                         )).build();

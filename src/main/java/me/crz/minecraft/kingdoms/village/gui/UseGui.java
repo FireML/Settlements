@@ -30,13 +30,12 @@ public class UseGui extends KingdomsGUI {
             "aaaaaaaaa",
             "p   b   n",
     };
-    private InventoryGui gui;
+    private final InventoryGui gui;
 
     public UseGui() {
         super("use");
         gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title"), SETUP);
         gui.setCloseAction(close -> false);
-
         gui.setFiller(BORDER_ITEM);
 
         GuiElementGroup useGroup = new GuiElementGroup('u');

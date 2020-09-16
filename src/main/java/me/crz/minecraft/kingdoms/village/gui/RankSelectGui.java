@@ -13,12 +13,12 @@ import java.util.function.Consumer;
 
 public class RankSelectGui extends KingdomsGUI {
     private final static String[] SETUP = {
-            "lllllllll",
-            "lllllllll",
+            "         ",
+            "         ",
             "ggggggggg",
             "ggggggggg",
-            "lllllllll",
-            "llllbllll"
+            "         ",
+            "    b    "
     };
     private final Resident resident;
     private final InventoryGui gui;
@@ -29,7 +29,8 @@ public class RankSelectGui extends KingdomsGUI {
         gui = new InventoryGui(KingdomsPlugin.getInstance(),
                 getText("title", "state", resident.hasVillage() ? resident.getVillage().getStateTag() : ""),
                 SETUP);
-        gui.addElement(new StaticGuiElement('l', BORDER_ITEM, " "));
+        gui.setCloseAction(close -> false);
+        gui.setFiller(BORDER_ITEM);
 
         GuiElementGroup group = new GuiElementGroup('g');
         for (VillageRank rank : VillageRank.values()) {

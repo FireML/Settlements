@@ -35,7 +35,7 @@ public class PermsGUI extends KingdomsGUI {
                 public ItemStack getItem(Player p) {
                     Resident res = ResidentManager.getInstance().getResident(p);
                     if (res.hasEmpire()) {
-                        CItem item = rank.getItem().setName(getMessage("entry.title").getReplacedText(
+                        CItem item = new CItem(rank.getItem()).setName(getMessage("entry.title").getReplacedText(
                                 "rank", rank.getTag()
                         ));
                         if (res.getEmpireRank() == EmpireRank.getLeader()
@@ -85,7 +85,7 @@ public class PermsGUI extends KingdomsGUI {
                             open(p);
                             Utils.runAsync(() -> DatabaseManager.getInstance().save(empire));
                         }
-                    }, () -> open(p), "state", empire.getStateTag(), "name", empire.getName()).build(p);
+                    }, () -> open(p), "state", empire.getStateTag(), "name", empire.getName()).open(p);
                 }
                 return true;
             }

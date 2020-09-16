@@ -31,7 +31,7 @@ public class RankSelectGui extends KingdomsGUI {
                 @Override
                 public ItemStack getItem(Player p) {
                     if (resident.hasEmpire()) {
-                        CItem item = rank.getItem().setName(getMessage("entry").getReplacedText(
+                        CItem item = new CItem(rank.getItem()).setName(getMessage("entry").getReplacedText(
                                 "rank", rank.getTag(resident.getVillage().getEmpire())
                         ));
                         if (rank == resident.getEmpireRank()) {

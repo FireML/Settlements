@@ -35,34 +35,31 @@ import java.util.List;
 
 public class PerksGUI extends KingdomsGUI {
     private final static String[] SETUP = {
-            "lllllllll",
-            "lllllllll",
+            "         ",
+            "         ",
             "ggggggggg",
             "ggggggggg",
-            "lllllllll",
-            "llllbllll"
+            "         ",
+            "    b    "
     };
 
     private final Resident resident;
-    public InventoryGui gui;
+    private final InventoryGui gui;
 
     public PerksGUI(Resident resident) {
         super("perks");
         this.resident = resident;
 
-        if (!resident.hasVillage()) {
-            return;
-        }
-
         Village village = resident.getVillage();
 
         gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title"), SETUP);
-        gui.addElement(new StaticGuiElement('l', BORDER_ITEM, " "));
+        gui.setCloseAction(close -> false);
+        gui.setFiller(BORDER_ITEM);
 
         GuiElementGroup group = new GuiElementGroup('g');
 
         for (LevelPerk perk : VillageManager.getInstance().getPerks()) {
-            if (!village.hasUnlocked(perk) || (!perk.hasEffects() && !perk.hasActions())) {
+            if (village == null || !village.hasUnlocked(perk) || (!perk.hasEffects() && !perk.hasActions())) {
                 continue;
             }
 
@@ -127,8 +124,6 @@ public class PerksGUI extends KingdomsGUI {
     }
 
     public void open() {
-        if (gui != null) {
-            gui.show(resident.getPlayer());
-        }
+        gui.show(resident.getPlayer());
     }
 }

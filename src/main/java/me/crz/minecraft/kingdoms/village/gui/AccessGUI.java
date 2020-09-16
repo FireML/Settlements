@@ -18,20 +18,21 @@ import org.bukkit.inventory.ItemStack;
 
 public class AccessGUI extends KingdomsGUI {
     private final static String[] SETUP = {
-            "lllllllll",
-            "lllllllll",
+            "         ",
+            "         ",
             "ggggggggg",
             "ggggggggg",
-            "lllllllll",
-            "llllbllll"
+            "         ",
+            "    b    "
     };
 
-    private InventoryGui gui;
+    private final InventoryGui gui;
 
     public AccessGUI() {
         super("access");
         gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title"), SETUP);
-        gui.addElement(new StaticGuiElement('l', BORDER_ITEM, " "));
+        gui.setCloseAction(close -> false);
+        gui.setFiller(BORDER_ITEM);
 
         GuiElementGroup group = new GuiElementGroup('g');
 

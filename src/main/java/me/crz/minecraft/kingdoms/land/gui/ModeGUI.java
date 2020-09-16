@@ -38,7 +38,7 @@ public class ModeGUI extends PlotGUI {
                     if (land != null) {
                         boolean enabled = m.get(land);
                         String state = yesOrNo(enabled);
-                        CItem item = m.getItem().setName(getMessage("entry.title").getReplacedText(
+                        CItem item = new CItem(m.getItem()).setName(getMessage("entry.title").getReplacedText(
                                 "mode", m.getTag(),
                                 "value", state
                         )).addLore(getMessage("entry.lore").getReplacedTextList(

@@ -19,20 +19,21 @@ import org.bukkit.inventory.ItemStack;
 
 public class ModeGUI extends KingdomsGUI {
     private final static String[] SETUP = {
-            "lllllllll",
-            "lllllllll",
+            "         ",
+            "         ",
             "ggggggggg",
             "ggggggggg",
-            "lllllllll",
-            "llllbllll"
+            "         ",
+            "    b    "
     };
 
-    public InventoryGui gui;
+    private final InventoryGui gui;
 
     public ModeGUI() {
         super("mode");
         gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title"), SETUP);
-        gui.addElement(new StaticGuiElement('l', BORDER_ITEM, " "));
+        gui.setCloseAction(close -> false);
+        gui.setFiller(BORDER_ITEM);
 
         GuiElementGroup group = new GuiElementGroup('g');
 

@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.Set;
 
 public class RewardsGUI extends KingdomsGUI {
-    private InventoryGui gui;
+    private final InventoryGui gui;
 
     public RewardsGUI(Village village) {
         super("rewards");
@@ -22,6 +22,7 @@ public class RewardsGUI extends KingdomsGUI {
 
         String[] setup = Collections.nCopies((rewards.size() - 1) / 9 + 1, "ggggggggg").toArray(new String[0]);
         gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title"), setup);
+        gui.setCloseAction(close -> false);
 
         GuiElementGroup group = new GuiElementGroup('g');
 

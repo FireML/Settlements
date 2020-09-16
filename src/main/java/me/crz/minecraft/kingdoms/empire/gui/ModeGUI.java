@@ -42,7 +42,7 @@ public class ModeGUI extends KingdomsGUI {
                     if (village != null && village.hasEmpire()) {
                         boolean enabled = m.get(village.getEmpire());
                         String state = yesOrNo(enabled);
-                        CItem item = m.getItem().setName(getMessage("entry.title").getReplacedText(
+                        CItem item = new CItem(m.getItem()).setName(getMessage("entry.title").getReplacedText(
                                 "mode", m.getTag(),
                                 "value", state
                         )).setLore(getMessage("entry.lore").getReplacedTextList(

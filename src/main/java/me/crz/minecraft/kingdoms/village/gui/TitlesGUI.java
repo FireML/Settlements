@@ -1,173 +1,164 @@
 package me.crz.minecraft.kingdoms.village.gui;
 
+import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
 import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatManager;
-import me.crz.minecraft.kingdoms.cinventory.CInventory;
-import me.crz.minecraft.kingdoms.cinventory.CItem;
-import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
-import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.command.village.VillageTitlesCommand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import net.wesjd.anvilgui.AnvilGUI;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
-public class TitlesGUI extends KingdomsGUI {
+import java.util.ArrayList;
+import java.util.List;
 
+public class TitlesGUI extends KingdomsGUI {
+    private static final String[] SETUP = {
+            "         ",
+            "         ",
+            "ggggggggg",
+            "ggggggggg",
+            "         ",
+            "    b   a"
+    };
     private final Resident resident;
-    public CInventory gui;
+    private final InventoryGui gui;
 
     public TitlesGUI(Resident resident, VillageRank rank) {
         super("titles");
         this.resident = resident;
-        gui = new CInventory(getText("title",
+        gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title",
                 "state", resident.hasVillage() ? resident.getVillage().getStateTag() : "",
-                "rank", rank.getTag(resident.getVillage())),
-                InventorySize.SIX) {};
+                "rank", rank.getTag(resident.getVillage())
+        ), SETUP);
+        gui.setCloseAction(close -> false);
+        gui.setFiller(BORDER_ITEM);
 
-        for (int i = 0; i < InventorySize.TWO.getSize(); i++) {
-            gui.addItem(i, BORDER);
-        }
+        GuiElementGroup group = new GuiElementGroup('g');
 
         for (String title : resident.getVillage().getTitles(rank)) {
-            gui.addItem(new ClickableItem() {
-                @Override
-                public ItemStack getItem(Player p) {
-                    CItem item = new CItem(Material.PAPER).setName(getMessage("entry.title").getReplacedText(
+            group.addElement(new DynamicGuiElement('g', h -> {
+                ItemStack item = new ItemStack(Material.PAPER);
+                List<String> description = new ArrayList<>();
+                description.add(getText("entry.title",
+                        "title", title,
+                        "rank", rank.getTag(resident.getVillage())
+                ));
+                if (title.equals(resident.getVillage().getDefaultTitle(rank))) {
+                    description.add(getText("entry.default",
                             "title", title,
-                            "rank", rank.getTag(resident.getVillage())
+                            "rank",  rank.getTag(resident.getVillage())
                     ));
-                    if (title.equals(resident.getVillage().getDefaultTitle(rank))) {
-                        item.addLore(getMessage("entry.default").getReplacedTextList(
-                                "title", title,
-                                "rank",  rank.getTag(resident.getVillage())
-                        ));
-                        item.glow(true);
-                    } else if (resident.hasPermission("village.titles.set")) {
-                        item.addLore(getMessage("entry.set").getReplacedTextList(
-                                "title", title,
-                                "rank",  rank.getTag(resident.getVillage())
-                        ));
-                    }
-                    if (resident.hasPermission("village.titles.remove") && !rank.above(resident.getVillageRank())) {
-                        item.addLore(getMessage("entry.remove").getReplacedTextList(
-                                "title", title,
-                                "rank",  rank.getTag(resident.getVillage())
-                        ));
-                    }
-                    return item.build();
+                    ItemUtils.setGlowing(item, true);
+                } else if (resident.hasPermission("village.titles.set")) {
+                    description.add(getText("entry.set",
+                            "title", title,
+                            "rank",  rank.getTag(resident.getVillage())
+                    ));
                 }
-
-                @Override
-                public boolean click(Player p, ClickType type) {
+                if (resident.hasPermission("village.titles.remove") && !rank.above(resident.getVillageRank())) {
+                    description.add(getText("entry.remove",
+                            "title", title,
+                            "rank",  rank.getTag(resident.getVillage())
+                    ));
+                }
+                return new StaticGuiElement('g', item, click -> {
                     if (resident.hasVillage()) {
-                        switch (type) {
+                        switch (click.getType()) {
                             case LEFT:
                             case SHIFT_LEFT:
                                 if (resident.hasPermission("village.titles.set")) {
                                     String oldRankName = rank.getTag(resident.getVillage());
                                     resident.getVillage().setDefaultTitle(rank, title);
                                     Message.get("command.village.titles.set.success").tell(resident, "title", title, "rank", oldRankName);
-                                    new TitlesGUI(resident, rank).open();
+                                    gui.draw();
                                 }
                                 return true;
                             case RIGHT:
                             case SHIFT_RIGHT:
                                 if (resident.hasPermission("village.titles.remove")) {
                                     resident.getVillage().removeTitle(rank, title);
-                                    Message.get("command.village.titles.remove.success").tell(resident, "title", title, "rank", rank.getTag(resident.getVillage()));
+                                    Message.get("command.village.titles.remove.success").tell(resident,
+                                            "title", title,
+                                            "rank", rank.getTag(resident.getVillage())
+                                    );
                                     new TitlesGUI(resident, rank).open();
-                                    return true;
                                 }
-                                return false;
+                                return true;
                         }
-                        return true;
                     }
-                    return false;
-                }
-            });
+                    return true;
+                }, description.toArray(new String[0]));
+            }));
         }
 
-        for (int i = InventorySize.FOUR.getSize(); i < InventorySize.SIX.getSize(); i++) {
-            gui.addItem(i, BORDER);
-        }
+        gui.addElement(group);
 
-        if (resident.hasPermission("village.titles.add") && !rank.above(resident.getVillageRank()) && resident.getVillage().getTitles(rank).size() < Utils.getTitlesPerRank()) {
-            gui.addItem(InventorySize.FIVE.getSize() + 8, new ClickableItem() {
-                @Override
-                public ItemStack getItem(Player p) {
-                    return new CItem(Material.WRITABLE_BOOK).setName(getMessage("add.title").getReplacedText(
-                            "rank", rank.getTag(resident.getVillage()),
-                            "state", resident.getVillage().getStateTag()
-                    )).build();
+        if (resident.hasPermission("village.titles.add")
+                && !rank.above(resident.getVillageRank())
+                && resident.getVillage().getTitles(rank).size() < Utils.getTitlesPerRank()) {
+            gui.addElement(new StaticGuiElement('a', new ItemStack(Material.WRITABLE_BOOK), click -> {
+                if (resident.hasPermission("village.titles.add")) {
+                    new AnvilGUI.Builder()
+                            .item(new ItemStack(Material.WRITABLE_BOOK))
+                            .title(getMessage("add.anvil.title").getReplacedText(
+                                    "rank", rank.getTag(resident.getVillage()),
+                                    "state", resident.getVillage().getStateTag()
+                            ))
+                            .text(getMessage("add.anvil.placeholder").getReplacedText(
+                                    "rank", rank.getTag(resident.getVillage()),
+                                    "state", resident.getVillage().getStateTag()
+                            ))
+                            .onClose(player -> Utils.runLater(() -> new TitlesGUI(resident, rank).open(), 1))
+                            .onComplete((player, text) -> {
+                                text = ChatColor.stripColor(text);
+                                if (rank.above(resident.getVillageRank())) {
+                                    return AnvilGUI.Response.text(getError("cant-edit-higher").getReplacedText("rank", resident.getVillageRank().getTag(resident.getVillage())));
+                                } else if (resident.getVillage().getTitles(rank).size() >= Utils.getTitlesPerRank()) {
+                                    return AnvilGUI.Response.text(getError("too-many").getReplacedText(
+                                            "rank", resident.getVillageRank().getTag(),
+                                            "max", String.valueOf(Utils.getTitlesPerRank())
+                                    ));
+                                } else if (text.length() > 16) {
+                                    return AnvilGUI.Response.text(getError("too-long").getReplacedText("input", text, "amount", "16"));
+                                } else if (!VillageTitlesCommand.TITLE_PATTERN.matcher(text).matches()) {
+                                    return AnvilGUI.Response.text(getError("invalid-characters").getReplacedText("input", text));
+                                } else if (ChatManager.getInstance().containsAnyCurses(text)) {
+                                    return AnvilGUI.Response.text(getError("prohibited-words").getReplacedText("input", text));
+                                } else if (resident.getVillage().addTitle(rank, text)) {
+                                    Message.get("command.village.titles.add.success").tell(resident, "title", text, "rank", rank.getTag(resident.getVillage()));
+                                    return AnvilGUI.Response.close();
+                                } else {
+                                    return AnvilGUI.Response.text(getError("already-exists").getReplacedText("input", text, "rank", rank.getTag(resident.getVillage())));
+                                }
+                            })
+                            .plugin(KingdomsPlugin.getInstance())
+                            .open((Player) click.getEvent().getWhoClicked());
                 }
-
-                @Override
-                public boolean click(Player p, ClickType c) {
-                    if (resident.hasPermission("village.titles.add")) {
-                        new AnvilGUI.Builder()
-                                .item(new ItemStack(Material.WRITABLE_BOOK))
-                                .title(getMessage("add.anvil.title").getReplacedText(
-                                        "rank", rank.getTag(resident.getVillage()),
-                                        "state", resident.getVillage().getStateTag()
-                                ))
-                                .text(getMessage("add.anvil.placeholder").getReplacedText(
-                                        "rank", rank.getTag(resident.getVillage()),
-                                        "state", resident.getVillage().getStateTag()
-                                ))
-                                .onClose(player -> Utils.runLater(() -> new TitlesGUI(resident, rank).open(), 1))
-                                .onComplete((player, text) -> {
-                                    text = ChatColor.stripColor(text);
-                                    if (rank.above(resident.getVillageRank())) {
-                                        return AnvilGUI.Response.text(getError("cant-edit-higher").getReplacedText("rank", resident.getVillageRank().getTag(resident.getVillage())));
-                                    } else if (resident.getVillage().getTitles(rank).size() >= Utils.getTitlesPerRank()) {
-                                        return AnvilGUI.Response.text(getError("too-many").getReplacedText(
-                                                "rank", resident.getVillageRank().getTag(),
-                                                "max", String.valueOf(Utils.getTitlesPerRank())
-                                        ));
-                                    } else if (text.length() > 16) {
-                                        return AnvilGUI.Response.text(getError("too-long").getReplacedText("input", text, "amount", "16"));
-                                    } else if (!VillageTitlesCommand.TITLE_PATTERN.matcher(text).matches()) {
-                                        return AnvilGUI.Response.text(getError("invalid-characters").getReplacedText("input", text));
-                                    } else if (ChatManager.getInstance().containsAnyCurses(text)) {
-                                        return AnvilGUI.Response.text(getError("prohibited-words").getReplacedText("input", text));
-                                    } else if (resident.getVillage().addTitle(rank, text)) {
-                                        Message.get("command.village.titles.add.success").tell(resident, "title", text, "rank", rank.getTag(resident.getVillage()));
-                                        return AnvilGUI.Response.close();
-                                    } else {
-                                        return AnvilGUI.Response.text(getError("already-exists").getReplacedText("input", text, "rank", rank.getTag(resident.getVillage())));
-                                    }
-                                })
-                                .plugin(KingdomsPlugin.getInstance())
-                                .open(p);
-                        return true;
-                    }
-                    return false;
-                }
-            });
-        }
-
-        gui.addItem(InventorySize.FIVE.getSize() + 4, new ClickableItem() {
-            public ItemStack getItem(final Player p) {
-                return new CItem(Material.BARRIER).setName(getText("back")).build();
-            }
-
-            public boolean click(final Player p, final ClickType clickType) {
-                new TitleGUI(resident).open();
                 return true;
-            }
-        });
+            }, getText("add.title",
+                    "rank", rank.getTag(resident.getVillage()),
+                    "state", resident.getVillage().getStateTag()
+            )));
+        }
+
+        gui.addElement(new StaticGuiElement('b', new ItemStack(Material.BARRIER), click -> {
+            new TitleGUI(resident).open();
+            return true;
+        }, getText("back")));
     }
 
     public void open() {
-        gui.build(resident.getPlayer());
+        gui.show(resident.getPlayer());
     }
 }

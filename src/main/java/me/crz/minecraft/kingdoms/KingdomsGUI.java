@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms;
 
-import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import org.bukkit.Material;
@@ -9,7 +8,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class KingdomsGUI implements ConfigMessages {
-    protected static final ItemStack BORDER_ITEM = new CItem(Material.LIME_STAINED_GLASS_PANE).setName(" ").build();
+    protected static final ItemStack BORDER_ITEM = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
     protected static final ClickableItem BORDER = new ClickableItem() {
         @Override
         public ItemStack getItem(Player p0) {

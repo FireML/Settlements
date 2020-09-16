@@ -19,21 +19,22 @@ import org.bukkit.inventory.ItemStack;
 
 public class RankPermGroupsGUI extends KingdomsGUI {
     private final static String[] SETUP = {
-            "lllllllll",
-            "lllllllll",
+            "         ",
+            "         ",
             "ggggggggg",
             "ggggggggr",
-            "lllllllll",
-            "llllbllll"
+            "         ",
+            "    b    "
     };
     private final Resident resident;
-    public InventoryGui gui;
+    private final InventoryGui gui;
 
     public RankPermGroupsGUI(Resident res, VillageRank rank) {
         super("rank-perm-groups");
         this.resident = res;
         gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title", "rank", rank.getTag(res.getVillage())), SETUP);
-        gui.addElement(new StaticGuiElement('l', BORDER_ITEM, " "));
+        gui.setCloseAction(close -> false);
+        gui.setFiller(BORDER_ITEM);
 
         GuiElementGroup group = new GuiElementGroup('g');
 

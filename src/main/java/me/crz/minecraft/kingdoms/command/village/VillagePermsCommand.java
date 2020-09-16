@@ -169,7 +169,7 @@ public class VillagePermsCommand extends VillageSubCommand {
         } else if (args.length == 2) {
             PermissionGroup group = VillageRank.getPermGroup(args[1]);
             if (group != null) {
-                RankPermsGUI.open(resident, rank, group);
+                new RankPermsGUI(resident, rank, group).open();
                 return true;
             }
             getError("invalid-group").tell(resident, "group", args[1]);
