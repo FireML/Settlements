@@ -1,27 +1,15 @@
 package me.crz.minecraft.kingdoms.scoreboard;
 
-import co.aikar.timings.Timing;
-import me.crz.minecraft.kingdoms.utils.Utils;
-import org.bukkit.ChatColor;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import co.aikar.timings.lib.MCTiming;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import org.bukkit.scoreboard.DisplaySlot;
-
-import org.bukkit.scoreboard.Team;
-
-import java.util.ArrayList;
-
 import org.bukkit.Bukkit;
-
-import java.util.HashMap;
-import java.util.List;
-
+import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.entity.Player;
 
-import java.util.UUID;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import static me.crz.minecraft.kingdoms.utils.Utils.trim;
 
@@ -44,7 +32,7 @@ public class CScoreBoard {
     }
 
     public void update() {
-        try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Scoreboard Update Sidebar")) {
+        try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("Scoreboard Update Sidebar")) {
             updateSidebar();
         }
     }

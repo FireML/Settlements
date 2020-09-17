@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.integration;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import io.papermc.lib.PaperLib;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import org.apache.commons.io.FileUtils;
@@ -130,7 +131,7 @@ public class MultiverseIntegration {
         for (Map.Entry<Player, Location> e : positions.entrySet()) {
             if (e.getKey().isOnline()) {
                 e.getValue().setWorld(newWorld);
-                e.getKey().teleportAsync(e.getValue());
+                PaperLib.teleportAsync(e.getKey(), e.getValue());
             }
         }
         return newWorld;

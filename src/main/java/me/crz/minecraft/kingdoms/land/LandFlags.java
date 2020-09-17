@@ -1,9 +1,9 @@
 package me.crz.minecraft.kingdoms.land;
 
-import co.aikar.timings.Timing;
-import com.destroystokyo.paper.event.block.TNTPrimeEvent;
+import co.aikar.timings.lib.MCTiming;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.customevents.EntityPrimeTntEvent;
 import me.crz.minecraft.kingdoms.customevents.HostileCreaturePreSpawnEvent;
 import me.crz.minecraft.kingdoms.customevents.HostileCreatureSpawnEvent;
 import me.crz.minecraft.kingdoms.customevents.PlayerMoveChunkEvent;
@@ -42,7 +42,7 @@ import java.util.logging.Level;
 
 public class LandFlags extends Base implements LandFlagBase {
     private TitleBuilder tbPvp = new TitleBuilder();
-    private final Timing mobCheckTiming;
+    private final MCTiming mobCheckTiming;
     private BukkitTask mobCheckTask = null;
     private int mobCheckPeriod = 0;
 
@@ -62,7 +62,7 @@ public class LandFlags extends Base implements LandFlagBase {
             if (mobCheckPeriod > 0) {
                 mobCheckTask = Bukkit.getScheduler().runTaskTimer(KingdomsPlugin.getInstance(), () -> {
                     int amount = 0;
-                    try (Timing ignored = mobCheckTiming.startTiming()) {
+                    try (MCTiming ignored = mobCheckTiming.startTiming()) {
                         for (World world : Bukkit.getWorlds()) {
                             if (Utils.isWorldClaimable(world) && LandManager.getInstance().hasLand(world)) {
                                 for (LivingEntity entity : world.getLivingEntities()) {
@@ -178,8 +178,8 @@ public class LandFlags extends Base implements LandFlagBase {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onTntPrime(TNTPrimeEvent e) {
-        if (e.getReason() == TNTPrimeEvent.PrimeReason.EXPLOSION && !isAllowed(e.getBlock().getLocation(), PlotMode.explosions)) {
+    public void onTntPrime(EntityPrimeTntEvent e) {
+        if (e.getReason() == EntityPrimeTntEvent.Reason.EXPLOSION && !isAllowed(e.getBlock().getLocation(), PlotMode.explosions)) {
             e.setCancelled(true);
         }
     }

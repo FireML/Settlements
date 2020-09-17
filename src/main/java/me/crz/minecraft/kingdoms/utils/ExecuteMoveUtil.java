@@ -34,9 +34,9 @@ public class ExecuteMoveUtil extends Base {
                 public void run() {
                     if (waiting.get() > 0) {
                         new TitleBuilder()
-                                .withTitle(messages.getMessage("waiting.title").getText())
-                                .withSubtitle(messages.getMessage("waiting.subtitle").getText())
-                                .withActionbar(messages.getMessage("waiting.actionbar").getText())
+                                .withTitle(messages.getMessage("waiting.title"))
+                                .withSubtitle(messages.getMessage("waiting.subtitle"))
+                                .withActionbar(messages.getMessage("waiting.actionbar"))
                                 .withTimings(0, 21, 0)
                                 .send(p,
                                         "seconds", String.valueOf(waiting.get()),
@@ -71,9 +71,9 @@ public class ExecuteMoveUtil extends Base {
                 Message.get("move-cancelled.message").tell(e.getPlayer(), "action", action.getAction());
             }
             new TitleBuilder()
-                    .withTitle(Message.get("move-cancelled.title").getText())
-                    .withSubtitle(Message.get("move-cancelled.subtitle").getText())
-                    .withActionbar(Message.get("move-cancelled.actionbar").getText())
+                    .withTitle(Message.get("move-cancelled.title"))
+                    .withSubtitle(Message.get("move-cancelled.subtitle"))
+                    .withActionbar(Message.get("move-cancelled.actionbar"))
                     .send(e.getPlayer(), "action", action.getAction());
         }
     }

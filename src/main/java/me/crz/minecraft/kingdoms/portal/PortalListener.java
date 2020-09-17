@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.portal;
 
-import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.portal.gui.PortalTeleportGui;
@@ -20,6 +19,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityPortalEnterEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
@@ -27,6 +28,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.PortalCreateEvent;
 
 import java.util.Collection;
+import java.util.List;
 
 public class PortalListener implements Listener, ConfigMessages {
 
@@ -42,7 +44,7 @@ public class PortalListener implements Listener, ConfigMessages {
             if (entity == null) {
                 Location l = e.getBlocks().get(0).getLocation();
                 double distance = Double.MAX_VALUE;
-                for (Player nearbyPlayer : l.getNearbyPlayers(5)) {
+                for (Entity nearbyPlayer : l.getWorld().getNearbyEntities(l, 5, 5, 5, en -> en instanceof Player)) {
                     double d = nearbyPlayer.getLocation().distanceSquared(l);
                     if (d < distance || entity == null) {
                         distance = d;
@@ -159,20 +161,31 @@ public class PortalListener implements Listener, ConfigMessages {
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onPortalDestroy(BlockDestroyEvent e) {
-        if (e.getBlock().getType() != Material.NETHER_PORTAL && e.getBlock().getType() != Material.OBSIDIAN) {
-            return;
-        }
+    public void onPortalExplode(BlockExplodeEvent e) {
+        handleExplosion(e.blockList());
+    }
 
-        OwnedLand land = LandManager.getInstance().getLand(e.getBlock().getLocation());
-        if (land == null || !(land.getLandOwner() instanceof Village)) {
-            return;
-        }
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onPortalExplode(EntityExplodeEvent e) {
+        handleExplosion(e.blockList());
+    }
 
-        Portal portal = PortalManager.getInstance().getPortal(e.getBlock());
+    private void handleExplosion(List<Block> blockList) {
+        for (Block block : blockList) {
+            if (block.getType() != Material.NETHER_PORTAL && block.getType() != Material.OBSIDIAN) {
+                continue;
+            }
 
-        if (portal != null && PortalManager.getInstance().removePortal(portal)) {
-            getMessage("destroy-broadcast").tell(land.getLandOwner().getOnlineResidents(), portal.getReplacements());
+            OwnedLand land = LandManager.getInstance().getLand(block.getLocation());
+            if (land == null || !(land.getLandOwner() instanceof Village)) {
+                continue;
+            }
+
+            Portal portal = PortalManager.getInstance().getPortal(block);
+
+            if (portal != null && PortalManager.getInstance().removePortal(portal)) {
+                getMessage("destroy-broadcast").tell(land.getLandOwner().getOnlineResidents(), portal.getReplacements());
+            }
         }
     }
 

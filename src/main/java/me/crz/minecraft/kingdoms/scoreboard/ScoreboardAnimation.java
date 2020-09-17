@@ -1,6 +1,6 @@
 package me.crz.minecraft.kingdoms.scoreboard;
 
-import co.aikar.timings.Timing;
+import co.aikar.timings.lib.MCTiming;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.ChatColor;
@@ -35,7 +35,7 @@ public class ScoreboardAnimation implements Listener {
     }
 
     public void onUpdate() {
-        Timing timing = KingdomsPlugin.getInstance().getAndStartTiming("Scoreboard Title Animation");
+        MCTiming timing = KingdomsPlugin.getInstance().getAndStartTiming("Scoreboard Title Animation");
         ++counter;
         String s;
         if (counter < 0) {
@@ -55,7 +55,7 @@ public class ScoreboardAnimation implements Listener {
             s = SECONDARYT;
             counter = -52;
         } else {
-            s = String.valueOf(SECONDARY) + title.substring(0, counter) + PRIMARY + title.substring(counter, title.length());
+            s = SECONDARY + title.substring(0, counter) + PRIMARY + title.substring(counter);
         }
         manager.setTitle(s);
         timing.stopTiming();

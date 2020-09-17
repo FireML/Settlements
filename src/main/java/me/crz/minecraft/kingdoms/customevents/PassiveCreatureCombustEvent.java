@@ -1,43 +1,21 @@
 package me.crz.minecraft.kingdoms.customevents;
 
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.entity.EntityCombustByEntityEvent;
+import org.bukkit.event.entity.EntityEvent;
 
-public class PassiveCreatureCombustEvent extends Event implements Cancellable {
+public class PassiveCreatureCombustEvent extends EntityEvent implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    private Entity entity;
-    private EntityType entityType;
-    private EntityCombustByEntityEvent e;
-    private Player combuster;
-    private boolean canceled;
+    private final Entity entity;
+    private final Player combuster;
+    private boolean canceled = false;
 
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
-
-    public PassiveCreatureCombustEvent(final Entity entity, final EntityType entityType, final Player combuster, final EntityCombustByEntityEvent e) {
-        super();
+    public PassiveCreatureCombustEvent(Entity entity, Player combuster) {
+        super(entity);
         this.entity = entity;
-        this.entityType = entityType;
-        this.e = e;
         this.combuster = combuster;
-    }
-
-    public Entity getEntity() {
-        return entity;
-    }
-
-    public EntityType getEntityType() {
-        return entityType;
     }
 
     public Player getCombuster() {
@@ -52,7 +30,11 @@ public class PassiveCreatureCombustEvent extends Event implements Cancellable {
         canceled = cancel;
     }
 
-    public EntityCombustByEntityEvent getBukkitEvent() {
-        return e;
+    public HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 }

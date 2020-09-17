@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.landflags;
 
-import com.destroystokyo.paper.MaterialTags;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.customevents.PassiveCreatureCombustEvent;
 import me.crz.minecraft.kingdoms.customevents.PassiveCreatureDamageEvent;
@@ -147,9 +146,10 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void on(PlayerInteractEvent e) {
-        if (e.getAction() == Action.PHYSICAL || e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
+        if (e.getClickedBlock() != null && (e.getAction() == Action.PHYSICAL
+                || e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK)) {
             Use use = null;
-            if (e.getAction() == Action.PHYSICAL && MaterialTags.PRESSURE_PLATES.isTagged(e.getClickedBlock())) {
+            if (e.getAction() == Action.PHYSICAL && Tag.PRESSURE_PLATES.isTagged(e.getClickedBlock().getType())) {
                 use = Use.PRESSURE_PLATE;
             } else {
                 if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {

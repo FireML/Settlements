@@ -1,7 +1,7 @@
 package me.crz.minecraft.kingdoms.customevents;
 
-import com.destroystokyo.paper.event.entity.PhantomPreSpawnEvent;
-import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.customevents.listeners.SpigotListener;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Ambient;
 import org.bukkit.entity.Animals;
@@ -24,19 +24,31 @@ import java.util.EnumSet;
 import java.util.Set;
 
 public class CustomEventManager implements Listener {
-    private static final Set<EntityType> SPECIAL_HOSTILE = EnumSet.of(
+    public static final Set<EntityType> SPECIAL_HOSTILE = EnumSet.of(
             EntityType.SLIME,
             EntityType.PHANTOM
     );
-    private static final Set<EntityType> SPECIAL_PASSIVE = EnumSet.of(
+    public static final Set<EntityType> SPECIAL_PASSIVE = EnumSet.of(
             EntityType.SNOWMAN,
             EntityType.VILLAGER,
             EntityType.SQUID,
             EntityType.IRON_GOLEM
     );
 
+    public CustomEventManager() {
+        try {
+            Class.forName("com.destroystokyo.paper.PaperConfig");
+            Bukkit.getPluginManager().registerEvents(
+                    (Listener) Class.forName(getClass().getPackage().getName() + ".PaperListener").newInstance(),
+                    KingdomsPlugin.getInstance()
+            );
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            Bukkit.getPluginManager().registerEvents(new SpigotListener(), KingdomsPlugin.getInstance());
+        }
+    }
+
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onMoveBlock(final PlayerMoveEvent e) {
+    public void onMoveBlock(PlayerMoveEvent e) {
         if (e.getFrom().getBlockX() == e.getTo().getBlockX() && e.getFrom().getBlockZ() == e.getTo().getBlockZ()) {
             return;
         }
@@ -48,7 +60,7 @@ public class CustomEventManager implements Listener {
         if (e.getFrom().getBlockX() >> 4 == e.getTo().getBlockX() >> 4 && e.getFrom().getBlockZ() >> 4 == e.getTo().getBlockZ() >> 4) {
             return;
         }
-        final PlayerMoveChunkEvent pmce = new PlayerMoveChunkEvent(e.getFrom().getChunk(), e.getTo().getChunk(), e.getPlayer());
+        PlayerMoveChunkEvent pmce = new PlayerMoveChunkEvent(e.getFrom().getChunk(), e.getTo().getChunk(), e.getPlayer());
         Bukkit.getServer().getPluginManager().callEvent(pmce);
         if (pmce.isCancelled()) {
             e.setCancelled(true);
@@ -56,30 +68,9 @@ public class CustomEventManager implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onHostileSpawn(final PhantomPreSpawnEvent e) {
-        final HostileCreaturePreSpawnEvent hcse = new HostileCreaturePreSpawnEvent(e.getType(), e.getSpawnLocation(), e.getReason(), e);
-        Bukkit.getPluginManager().callEvent(hcse);
-        if (hcse.isCancelled()) {
-            e.setCancelled(true);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onHostileSpawn(final PreCreatureSpawnEvent e) {
-        if ((e.getType().getEntityClass() != null && Monster.class.isAssignableFrom(e.getType().getEntityClass()))
-                || SPECIAL_HOSTILE.contains(e.getType())) {
-            final HostileCreaturePreSpawnEvent hcse = new HostileCreaturePreSpawnEvent(e.getType(), e.getSpawnLocation(), e.getReason(), e);
-            Bukkit.getPluginManager().callEvent(hcse);
-            if (hcse.isCancelled()) {
-                e.setCancelled(true);
-            }
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onHostileSpawn(final CreatureSpawnEvent e) {
+    public void onHostileSpawn(CreatureSpawnEvent e) {
         if (e.getEntity() instanceof Monster || SPECIAL_HOSTILE.contains(e.getEntityType())) {
-            final HostileCreatureSpawnEvent hcse = new HostileCreatureSpawnEvent(e.getEntity(), e.getEntityType(), e.getLocation(), e.getSpawnReason(), e);
+            HostileCreatureSpawnEvent hcse = new HostileCreatureSpawnEvent(e.getEntity(), e.getLocation(), e.getSpawnReason());
             Bukkit.getPluginManager().callEvent(hcse);
             if (hcse.isCancelled()) {
                 e.setCancelled(true);
@@ -88,7 +79,7 @@ public class CustomEventManager implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void on(final EntityDamageByEntityEvent e) {
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
         if (e.getEntity() instanceof Animals || e.getEntity() instanceof WaterMob || e.getEntity() instanceof Ambient
                 || SPECIAL_PASSIVE.contains(e.getEntityType())) {
             Player damager = null;
@@ -104,7 +95,7 @@ public class CustomEventManager implements Listener {
             } else if (e.getDamager() instanceof Creeper && ((Creeper) e.getDamager()).getTarget() instanceof Player) {
                 damager = (Player) ((Creeper) e.getDamager()).getTarget();
             }
-            final PassiveCreatureDamageEvent pcde = new PassiveCreatureDamageEvent(e.getEntity(), e.getEntityType(), damager, e);
+            PassiveCreatureDamageEvent pcde = new PassiveCreatureDamageEvent(e.getEntity(), damager, e);
             Bukkit.getPluginManager().callEvent(pcde);
             if (pcde.isCancelled()) {
                 e.setCancelled(true);
@@ -113,7 +104,7 @@ public class CustomEventManager implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void on(final EntityCombustByEntityEvent e) {
+    public void onEntityCombustByEntity(EntityCombustByEntityEvent e) {
         if (e.getEntity() instanceof Animals || e.getEntity() instanceof WaterMob || e.getEntity() instanceof Ambient
                 || SPECIAL_PASSIVE.contains(e.getEntityType())) {
             Player combuster = null;
@@ -129,7 +120,7 @@ public class CustomEventManager implements Listener {
             } else if (e.getCombuster() instanceof Creeper && ((Creeper) e.getCombuster()).getTarget() instanceof Player) {
                 combuster = (Player) ((Creeper) e.getCombuster()).getTarget();
             }
-            final PassiveCreatureCombustEvent pcce = new PassiveCreatureCombustEvent(e.getEntity(), e.getEntityType(), combuster, e);
+            PassiveCreatureCombustEvent pcce = new PassiveCreatureCombustEvent(e.getEntity(), combuster);
             Bukkit.getPluginManager().callEvent(pcce);
             if (pcce.isCancelled()) {
                 e.setCancelled(true);

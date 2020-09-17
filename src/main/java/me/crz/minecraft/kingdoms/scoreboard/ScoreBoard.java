@@ -1,7 +1,7 @@
 package me.crz.minecraft.kingdoms.scoreboard;
 
 
-import co.aikar.timings.Timing;
+import co.aikar.timings.lib.MCTiming;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.integration.PlaceholderApiIntegration;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -35,7 +35,7 @@ public class ScoreBoard {
         }
 
         Map<String, String> replacements;
-        try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Scoreboard get player sidebar replacements")) {
+        try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("Scoreboard get player sidebar replacements")) {
             replacements = Utils.toMap(
                     "balance", Utils.withSuffix((long) KingdomsPlugin.getInstance().econ.getBalance(member)),
                     "bank", Utils.CURRENCY_FORMAT.format((long) KingdomsPlugin.getInstance().econ.getBalance(member)),
@@ -63,15 +63,15 @@ public class ScoreBoard {
         }
 
         Message sidebar;
-        try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Scoreboard get player sidebar message")) {
+        try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("Scoreboard get player sidebar message")) {
             sidebar = manager.getMessage("sidebar.entries." + (resident.hasVillage() ? resident.hasEmpire() ? "empire" : "village" : "no-village"));
         }
         List<String> text;
-        try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Scoreboard get player sidebar replaced text")) {
+        try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("Scoreboard get player sidebar replaced text")) {
             text = sidebar.getReplacedTextList(replacements);
         }
         if (KingdomsPlugin.getInstance().getPlaceholderApi() != null && Utils.usePlaceholderApi("sidebar")) {
-            try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Scoreboard get player sidebar placeholder api replacements")) {
+            try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("Scoreboard get player sidebar placeholder api replacements")) {
                 String[] replacedText = PlaceholderApiIntegration.setPlaceholders(member, String.join("\n", text)).split("\n");
                 text = new ArrayList<>();
                 Collections.addAll(text, replacedText);

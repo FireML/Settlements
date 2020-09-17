@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.customevents;
 
-import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.Cancellable;
@@ -8,29 +7,17 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
-public class HostileCreaturePreSpawnEvent extends Event implements Cancellable
-{
+public class HostileCreaturePreSpawnEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    private EntityType entityType;
-    private Location location;
-    private CreatureSpawnEvent.SpawnReason spawnReason;
-    private PreCreatureSpawnEvent e;
-    private boolean canceled;
+    private final EntityType entityType;
+    private final Location location;
+    private final CreatureSpawnEvent.SpawnReason spawnReason;
+    private boolean canceled = false;
 
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
-
-    public HostileCreaturePreSpawnEvent(final EntityType entityType, final Location location, final CreatureSpawnEvent.SpawnReason spawnReason, final PreCreatureSpawnEvent e) {
-        super();
+    public HostileCreaturePreSpawnEvent(EntityType entityType, Location location, CreatureSpawnEvent.SpawnReason spawnReason) {
         this.entityType = entityType;
         this.location = location;
         this.spawnReason = spawnReason;
-        this.e = e;
     }
     
     public EntityType getEntityType() {
@@ -53,7 +40,11 @@ public class HostileCreaturePreSpawnEvent extends Event implements Cancellable
         canceled = cancel;
     }
 
-    public PreCreatureSpawnEvent getBukkitEvent() {
-        return e;
+    public HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 }

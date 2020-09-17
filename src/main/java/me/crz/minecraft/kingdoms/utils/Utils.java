@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.utils;
 
+import io.papermc.lib.PaperLib;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.chat.ChatColorType;
@@ -634,7 +635,7 @@ public class Utils {
         }
 
         return ExecuteMoveUtil.getInstance().execute(player, () -> {
-            loc.getWorld().getChunkAtAsync(loc).thenAccept(c -> {
+            PaperLib.getChunkAtAsync(loc).thenAccept(c -> {
                 if (c == null) {
                     Message.get("error.destination-obstructed").tell(player);
                     KingdomsPlugin.logDebug("Could not load chunk at " + loc);
@@ -658,9 +659,14 @@ public class Utils {
 
                 player.sendBlockChange(down.getLocation(), down.getBlockData());
                 loc.setY(down.getY() + 1);
-                player.teleportAsync(loc).thenAccept(success -> {
-                    Message.get(messagePath + "." + (success ? "success" : "fail")).tell(player, replacements);
-                    Message.get(messagePath + "." + (success ? "success" : "fail") + "-title").getTitle().withIn(0).send(player, replacements);
+                PaperLib.teleportAsync(player, loc).thenAccept(success -> {
+                    String path = messagePath + "." + (success ? "success" : "fail");
+                    Message.get(path).tell(player, replacements);
+                    new TitleBuilder()
+                            .withTitle(Message.get(path + "-title.title"))
+                            .withSubtitle(Message.get(path + "-title.subtitle"))
+                            .withActionbar(Message.get(path + "-title.actionbar"))
+                            .send(player, replacements);
                     if (!success) {
                         KingdomsPlugin.logDebug("Failed to teleport " + player.getName() + " to " + loc);
                     }
@@ -676,7 +682,7 @@ public class Utils {
                 KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not execute spawn teleport command? Is " + command + " a valid command?");
             }
         } else {
-            target.teleportAsync(Bukkit.getWorlds().get(0).getSpawnLocation());
+            PaperLib.teleportAsync(target, Bukkit.getWorlds().get(0).getSpawnLocation());
         }
     }
 

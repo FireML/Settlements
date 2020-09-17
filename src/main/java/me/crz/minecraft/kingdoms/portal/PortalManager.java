@@ -4,6 +4,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Table;
+import io.papermc.lib.PaperLib;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.IdObject;
@@ -12,6 +13,7 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.world.SimpleBlockLocation;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Axis;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -287,18 +289,21 @@ public class PortalManager {
         location.add(direction);
         location.setDirection(direction);
 
-        if (new PlayerPortalEvent(player, player.getLocation(), location,
-                PlayerTeleportEvent.TeleportCause.PLUGIN, 0, false, 0).callEvent()) {
-            location.getWorld().getChunkAtAsync(location).thenAccept(c -> {
+        PlayerPortalEvent portalEvent = new PlayerPortalEvent(player, player.getLocation(), location,
+                PlayerTeleportEvent.TeleportCause.PLUGIN, 0, false, 0);
+        Bukkit.getPluginManager().callEvent(portalEvent);
+        if (!portalEvent.isCancelled()) {
+            Location finalLocation = portalEvent.getTo();
+            PaperLib.getChunkAtAsync(location).thenAccept(c -> {
                 if (c == null) {
                     Message.get("error.destination-obstructed").tell(player);
-                    KingdomsPlugin.logDebug("Could not load chunk at " + location);
+                    KingdomsPlugin.logDebug("Could not load chunk at " + finalLocation);
                     return;
                 }
-                Block block = location.getBlock();
+                Block block = finalLocation.getBlock();
                 if (!block.isPassable() || !block.getRelative(BlockFace.UP).isPassable()) {
                     Message.get("error.destination-obstructed").tell(player);
-                    KingdomsPlugin.logDebug("Location " + location + " is obstructed");
+                    KingdomsPlugin.logDebug("Location " + finalLocation + " is obstructed");
                     return;
                 }
                 Block down = block.getRelative(BlockFace.DOWN);
@@ -307,15 +312,15 @@ public class PortalManager {
                 }
                 if (!down.getType().isSolid()) {
                     Message.get("error.destination-obstructed").tell(player);
-                    KingdomsPlugin.logDebug("Location " + location + " is has no floor");
+                    KingdomsPlugin.logDebug("Location " + finalLocation + " is has no floor");
                     return;
                 }
 
                 player.sendBlockChange(down.getLocation(), down.getBlockData());
-                player.teleportAsync(down.getRelative(BlockFace.UP).getLocation().toCenterLocation()).thenAccept(success -> {
+                PaperLib.teleportAsync(player, down.getRelative(BlockFace.UP).getLocation()).thenAccept(success -> {
                     if (!success) {
                         Message.get("error.destination-obstructed").tell(player);
-                        KingdomsPlugin.logDebug("Failed to teleport " + player.getName() + " to " + location);
+                        KingdomsPlugin.logDebug("Failed to teleport " + player.getName() + " to " + finalLocation);
                     }
                 });
             });

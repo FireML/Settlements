@@ -1,7 +1,7 @@
 package me.crz.minecraft.kingdoms;
 
-import co.aikar.timings.Timing;
-import co.aikar.timings.Timings;
+import co.aikar.timings.lib.MCTiming;
+import co.aikar.timings.lib.TimingManager;
 import com.griefcraft.lwc.LWC;
 import me.crz.minecraft.kingdoms.banish.BanishListener;
 import me.crz.minecraft.kingdoms.chat.ChatListener;
@@ -31,6 +31,8 @@ import me.crz.minecraft.kingdoms.portal.PortalManager;
 import me.crz.minecraft.kingdoms.rank.RankManager;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.adapter.ServerAdapter;
+import me.crz.minecraft.kingdoms.utils.adapter.SpigotAdapter;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -85,7 +87,9 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     private String empiresWorldSuffix = "";
     private static final Timer timer = new Timer();
     private LandFlags landFlags;
-    private Timing pluginTimings;
+    private TimingManager timingManager;
+    private MCTiming pluginTimings;
+    private ServerAdapter serverAdapter;
 
     private List<Village> newlyAbandonedVillages = new ArrayList<>();
     private List<Village> newlyDeletedVillages = new ArrayList<>();
@@ -103,7 +107,14 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        pluginTimings = Timings.of(this, "Plugin actions");
+        try {
+            Class.forName("com.destroystokyo.paper.PaperConfig");
+            serverAdapter = (ServerAdapter) Class.forName(getClass().getPackage().getName() + ".utils.adapter.PaperAdapater").newInstance();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            serverAdapter = new SpigotAdapter();
+        }
+        timingManager = TimingManager.of(this);
+        pluginTimings = timingManager.of("Plugin actions");
         instance = this;
         this.checkDataFolder();
         if (!this.setupEconomy()) {
@@ -395,12 +406,16 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         return landFlags;
     }
 
-    public Timing getTiming(String name) {
-        return Timings.of(KingdomsPlugin.getInstance(), name, pluginTimings);
+    public MCTiming getTiming(String name) {
+        return timingManager.of(name, pluginTimings);
     }
 
-    public Timing getAndStartTiming(String name) {
-        return Timings.ofStart(KingdomsPlugin.getInstance(), name, pluginTimings);
+    public MCTiming getAndStartTiming(String name) {
+        return timingManager.ofStart(name, pluginTimings);
+    }
+
+    public ServerAdapter getServerAdapter() {
+        return serverAdapter;
     }
 
     public static Timer getTimer() {

@@ -1,46 +1,22 @@
 package me.crz.minecraft.kingdoms.customevents;
 
 import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityEvent;
 
-public class HostileCreatureSpawnEvent extends Event implements Cancellable
-{
+public class HostileCreatureSpawnEvent extends EntityEvent implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    private LivingEntity entity;
-    private EntityType entityType;
-    private Location location;
-    private CreatureSpawnEvent.SpawnReason spawnReason;
-    private CreatureSpawnEvent e;
-    private boolean canceled;
+    private final Location location;
+    private final CreatureSpawnEvent.SpawnReason spawnReason;
+    private boolean canceled = false;
     
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-    
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
-    
-    public HostileCreatureSpawnEvent(final LivingEntity entity, final EntityType entityType, final Location location, final CreatureSpawnEvent.SpawnReason spawnReason, final CreatureSpawnEvent e) {
-        super();
-        this.entity = entity;
-        this.entityType = entityType;
+    public HostileCreatureSpawnEvent(LivingEntity entity, Location location, CreatureSpawnEvent.SpawnReason spawnReason) {
+        super(entity);
         this.location = location;
         this.spawnReason = spawnReason;
-        this.e = e;
-    }
-    
-    public LivingEntity getEntity() {
-        return entity;
-    }
-    
-    public EntityType getEntityType() {
-        return entityType;
     }
     
     public Location getLocation() {
@@ -59,7 +35,11 @@ public class HostileCreatureSpawnEvent extends Event implements Cancellable
         canceled = cancel;
     }
 
-    public CreatureSpawnEvent getBukkitEvent() {
-        return e;
+    public HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 }

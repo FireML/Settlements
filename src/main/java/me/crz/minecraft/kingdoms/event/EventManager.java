@@ -407,8 +407,7 @@ public class EventManager implements ConfigMessages {
         player.getInventory().addItem(reward.getItems().toArray(new ItemStack[0])).values()
                 .forEach(i -> {
                     Item item = player.getLocation().getWorld().dropItem(player.getLocation(), i);
-                    item.setOwner(player.getUniqueId());
-                    item.setCanMobPickup(false);
+                    KingdomsPlugin.getInstance().getServerAdapter().markOwned(item, player);
                 });
         for (String command : reward.getCommands()) {
             Map<String, String> replacements = Utils.toMap(

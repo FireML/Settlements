@@ -107,7 +107,9 @@ public class ChatManager extends Base implements ConfigMessages {
 
     public void sendChannelMessage(Player player, ChatChannel channel, String message) {
         Utils.runAsync(() -> {
-            if (new ChannelChatEvent(true, player, message, channel).callEvent()) {
+            ChannelChatEvent event = new ChannelChatEvent(true, player, message, channel);
+            Bukkit.getPluginManager().callEvent(event);
+            if (!event.isCancelled()) {
                 sendChannelMessage(player, ResidentManager.getInstance().getResident(player), channel, message);
             }
         });

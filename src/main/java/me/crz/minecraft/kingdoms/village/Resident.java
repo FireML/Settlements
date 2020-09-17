@@ -23,9 +23,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -206,13 +205,11 @@ public class Resident implements ConfigurationSerializable, Targetable {
         return false;
     }
 
-    @Nullable
     public ChatColor getChannelColor(ChatChannel channel, ChatColorType type) {
         return channelColors.get(channel, type);
     }
 
-    @Nonnull
-    public ChatColor getChannelColor(ChatChannel channel, ChatColorType type, @Nonnull ChatColor def) {
+    public ChatColor getChannelColor(ChatChannel channel, ChatColorType type, ChatColor def) {
         ChatColor color = channelColors.get(channel, type);
         return color != null ? color : def;
     }

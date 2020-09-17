@@ -1,6 +1,6 @@
 package me.crz.minecraft.kingdoms.empire;
 
-import co.aikar.timings.Timing;
+import co.aikar.timings.lib.MCTiming;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.ObjectArrays;
@@ -508,7 +508,7 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
             if (KingdomsPlugin.getInstance().isRunning() && mode == PlotMode.mobSpawning && !value) {
                 World world = Bukkit.getWorld(getWorldName());
                 if (world != null) {
-                    try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire mob spawning mode toggle")) {
+                    try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire mob spawning mode toggle")) {
                         for (LivingEntity entity : world.getLivingEntities()) {
                             if (Utils.isHostile(entity)) {
                                 entity.remove();

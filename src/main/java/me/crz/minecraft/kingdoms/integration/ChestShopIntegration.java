@@ -1,6 +1,6 @@
 package me.crz.minecraft.kingdoms.integration;
 
-import co.aikar.timings.Timing;
+import co.aikar.timings.lib.MCTiming;
 import com.Acrobot.Breeze.Utils.MaterialUtil;
 import com.Acrobot.ChestShop.ChestShop;
 import com.Acrobot.ChestShop.Commands.Toggle;
@@ -29,6 +29,7 @@ import com.Acrobot.ChestShop.Signs.ChestShopSign;
 import com.Acrobot.ChestShop.Utils.uBlock;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import io.papermc.lib.PaperLib;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
@@ -126,7 +127,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             for (SimpleChunkLocation chunkLocation : chunks) {
                 World world = Bukkit.getWorld(chunkLocation.getWorld());
                 if (world != null) {
-                    world.getChunkAtAsync(chunkLocation.getX(), chunkLocation.getZ()).thenAccept(this::removeInChunk);
+                    PaperLib.getChunkAtAsync(world, chunkLocation.getX(), chunkLocation.getZ()).thenAccept(this::removeInChunk);
                 }
             }
         });
@@ -148,12 +149,12 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
 
     private int removeInChunk(Chunk chunk) {
         int amount = 0;
-        try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("ChestShop chunk shop removal")) {
+        try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("ChestShop chunk shop removal")) {
             for (BlockState blockState : chunk.getTileEntities()) {
                 if (blockState instanceof Sign && ChestShopSign.isValid((Sign) blockState)) {
                     Sign sign = (Sign) blockState;
                     Container container = uBlock.findConnectedContainer(sign);
-                    new ShopDestroyedEvent(null, (Sign) sign.getBlock().getState(), container).callEvent();
+                    Bukkit.getPluginManager().callEvent(new ShopDestroyedEvent(null, (Sign) sign.getBlock().getState(), container));
                     Arrays.fill(sign.getLines(), "");
                     sign.update(true);
                     amount++;

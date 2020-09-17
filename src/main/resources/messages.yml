@@ -1776,12 +1776,12 @@ command:
       no-home: "&c&lThat {state} doesn't have a home!"
       no-access: "&c&lYou don't have access to teleport to the home of that {state}!"
       success: "&a&lTeleported to home of {state} {name}"
-      success-title: |-
-        &2&lSuccess
-        &fYou have been teleported!
-      fail-title: |-
-        &c&lFailed
-        &fUnabled to teleport!
+      success-title:
+        title: "&2&lSuccess"
+        subtitle: "&fYou have been teleported!"
+      fail-title:
+        title: "&c&lFailed"
+        subtitle: "&fUnabled to teleport!"
       description: Teleport to a settlement's home
     invite:
       already-in-village: "&c&l{name} is already in a {state}"

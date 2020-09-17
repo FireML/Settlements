@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.empire;
 
-import co.aikar.timings.Timing;
+import co.aikar.timings.lib.MCTiming;
+import io.papermc.lib.PaperLib;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
@@ -94,7 +95,7 @@ public class EmpireManager {
     }
 
     public void loadEmpireWorlds() {
-        try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
+        try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
             for (Empire empire : getEmpires()) {
                 createEmpireWorld(empire);
             }
@@ -166,7 +167,7 @@ public class EmpireManager {
                 KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving empire " + empire.getName() + " to the database! No ID was returned.");
             }
         });
-        try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
+        try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
             createEmpireWorld(empire);
             Message.get("empire-world-generated").tell(empire.getOnlineResidents());
         }
@@ -238,7 +239,7 @@ public class EmpireManager {
         }
         World empireWorld = Bukkit.getWorld(empire.getWorldName());
         if (empireWorld != null) {
-            try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire world removal")) {
+            try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire world removal")) {
                 for (Player player : empireWorld.getPlayers()) {
                     Utils.teleportToSpawn(player);
                 }
@@ -444,7 +445,7 @@ public class EmpireManager {
             for (Map.Entry<Player, Location> e : positions.entrySet()) {
                 if (e.getKey().isOnline()) {
                     e.getValue().setWorld(newWorld);
-                    e.getKey().teleportAsync(e.getValue());
+                    PaperLib.teleportAsync(e.getKey(), e.getValue());
                 }
             }
         }

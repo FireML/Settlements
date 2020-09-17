@@ -1,6 +1,6 @@
 package me.crz.minecraft.kingdoms.lock;
 
-import co.aikar.timings.Timing;
+import co.aikar.timings.lib.MCTiming;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.ImmutableMap;
@@ -28,7 +28,6 @@ import org.bukkit.util.Vector;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -79,7 +78,7 @@ public class LockManager implements LockProvider {
             // Mark all chunks that did not have locks as cached
             boolean isPresent = false;
             Map<SimpleChunkLocation, Map<String, Lock>> worldCache;
-            try (Timing t = KingdomsPlugin.getInstance().getAndStartTiming("LockManager create world chunk cache")) {
+            try (MCTiming ignored1 = KingdomsPlugin.getInstance().getAndStartTiming("LockManager create world chunk cache")) {
                 worldCache = lockTable.get(chunk.getWorld());
                 if (worldCache == null) {
                     worldCache = new ConcurrentHashMap<>();
@@ -88,10 +87,10 @@ public class LockManager implements LockProvider {
                     isPresent = true;
                 }
             }
-            try (Timing t = KingdomsPlugin.getInstance().getAndStartTiming("LockManager check chunk lock cache")) {
+            try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("LockManager check chunk lock cache")) {
                 isPresent = isPresent && worldCache.containsKey(chunk);
             }
-            try (Timing t = KingdomsPlugin.getInstance().getAndStartTiming("LockManager create chunk lock cache")) {
+            try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("LockManager create chunk lock cache")) {
                 if (!isPresent) {
                     notLoaded.add(chunk);
                     worldCache.put(chunk, new ConcurrentHashMap<>(ImmutableMap.of(LOADING_KEY, new Lock(null, null, null))));

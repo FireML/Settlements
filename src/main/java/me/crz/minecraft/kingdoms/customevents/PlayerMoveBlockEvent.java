@@ -3,29 +3,19 @@ package me.crz.minecraft.kingdoms.customevents;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.player.PlayerEvent;
 
-public class PlayerMoveBlockEvent extends Event implements Cancellable {
+public class PlayerMoveBlockEvent extends PlayerEvent implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    private Location from;
-    private Location to;
-    private Player player;
+    private final Location from;
+    private final Location to;
     private boolean canceled = false;
 
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
-
-    public PlayerMoveBlockEvent(final Location from, final Location to, final Player player) {
-        super();
+    public PlayerMoveBlockEvent(Location from, Location to, Player player) {
+        super(player);
         this.from = from;
         this.to = to;
-        this.player = player;
     }
 
     public Location getFrom() {
@@ -36,15 +26,19 @@ public class PlayerMoveBlockEvent extends Event implements Cancellable {
         return to;
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
     public boolean isCancelled() {
         return canceled;
     }
 
     public void setCancelled(final boolean cancel) {
         canceled = cancel;
+    }
+
+    public HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 }

@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.lock;
 
+import io.papermc.lib.PaperLib;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.command.common.TargetParser;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
@@ -380,7 +381,8 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onHopperMove(InventoryMoveItemEvent event) {
         if (LockManager.getInstance().isAlternativeHopperProtection()
-                && !(event.getSource().getHolder(false) instanceof HopperMinecart || event.getDestination().getHolder(false) instanceof HopperMinecart)) {
+                && !(KingdomsPlugin.getInstance().getServerAdapter().getHolder(event.getSource()) instanceof HopperMinecart
+                        || KingdomsPlugin.getInstance().getServerAdapter().getHolder(event.getDestination()) instanceof HopperMinecart)) {
             return;
         }
         Lock sourceLock = LockManager.getInstance().getLock(event.getSource().getHolder());
@@ -419,7 +421,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
     }
 
     private boolean checkForHopperLock(Player player, Block block) {
-        if (!block.isEmpty() && block.getState(false) instanceof InventoryHolder) {
+        if (!block.isEmpty() && PaperLib.getBlockState(block, false).getState() instanceof InventoryHolder) {
             // we use the alternative hopper protection, check if the hopper is placed below a container!
             Lock lock = LockManager.getInstance().getLock(block);
             if (lock != null && !lock.isAllowHoppers() && !lock.canAccess(player)) {

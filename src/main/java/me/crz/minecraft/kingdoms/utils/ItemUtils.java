@@ -1,7 +1,6 @@
 package me.crz.minecraft.kingdoms.utils;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
-import org.bukkit.Bukkit;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -63,8 +62,7 @@ public class ItemUtils {
         ItemStack item = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skull = (SkullMeta) item.getItemMeta();
         skull.setDisplayName(name);
-        PlayerProfile profile = Bukkit.createProfile(playerId, name);
-        skull.setPlayerProfile(profile);
+        KingdomsPlugin.getInstance().getServerAdapter().setProfile(skull, playerId, name);
         item.setItemMeta(skull);
         return item;
     }

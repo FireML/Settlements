@@ -1,6 +1,6 @@
 package me.crz.minecraft.kingdoms.village;
 
-import co.aikar.timings.Timing;
+import co.aikar.timings.lib.MCTiming;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.ObjectArrays;
@@ -15,7 +15,6 @@ import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.land.TaxDebtAction;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
-import me.crz.minecraft.kingdoms.rank.Rank;
 import me.crz.minecraft.kingdoms.rank.RankManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
@@ -84,7 +83,7 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
                 && LandManager.getInstance().getClaimedLandSize(this) == 0
                 && getChief().getLastLogin() + TimeUnit.DAYS.toMillis(inactiveDays) < System.currentTimeMillis()) {
             OfflinePlayer chiefPlayer = KingdomsPlugin.getInstance().getServer().getOfflinePlayer(getChiefId());
-            if (!chiefPlayer.hasPlayedBefore() || chiefPlayer.getLastSeen() + TimeUnit.DAYS.toMillis(inactiveDays) < System.currentTimeMillis()) {
+            if (!chiefPlayer.hasPlayedBefore() || chiefPlayer.getLastPlayed() + TimeUnit.DAYS.toMillis(inactiveDays) < System.currentTimeMillis()) {
                 KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " is inactive " +
                         "(chief offline for more than " + inactiveDays + ", Village level 1, no claims, no perks unlocked), removing it!");
                 VillageManager.getInstance().deleteVillage(this);
@@ -434,7 +433,7 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
     public boolean setMode(PlotMode mode, boolean value) {
         if (super.setMode(mode, value)) {
             if (KingdomsPlugin.getInstance().isRunning() && mode == PlotMode.mobSpawning && !value) {
-                try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Village mob spawning mode toggle")) {
+                try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("Village mob spawning mode toggle")) {
                     for (OwnedLand land : LandManager.getInstance().getClaimedLand(this)) {
                         World world = Bukkit.getWorld(land.getWorldName());
                         if (world != null && world.isChunkLoaded(land.getX(), land.getZ())) {
