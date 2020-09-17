@@ -15,7 +15,6 @@ import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class ModeGUI extends KingdomsGUI {
     private final static String[] SETUP = {
@@ -74,7 +73,7 @@ public class ModeGUI extends KingdomsGUI {
 
         gui.addElement(group);
 
-        gui.addElement(new StaticGuiElement('b', new ItemStack(Material.BARRIER), click -> {
+        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
             new SettingsGUI((Player) click.getEvent().getWhoClicked()).open();
             return true;
         }, getText("back")));

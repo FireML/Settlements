@@ -246,10 +246,6 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
         return outpostHomes;
     }
 
-    public boolean hasHome() {
-        return this.getHome() != null;
-    }
-
     public boolean isAllowAllyClaim() {
         return allowAllyClaim;
     }

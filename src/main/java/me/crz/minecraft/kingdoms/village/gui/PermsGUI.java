@@ -15,7 +15,6 @@ import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +67,7 @@ public class PermsGUI extends KingdomsGUI {
             }
 
             if (res.hasPermission("village.perms.reset")) {
-                gui.addElement(new StaticGuiElement('r', new ItemStack(Material.ORANGE_WOOL), click -> {
+                gui.addElement(new StaticGuiElement('r', ItemUtils.toIcon(Material.ORANGE_WOOL), click -> {
                     Resident r = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
                     if (r.hasVillage() && r.hasPermission("village.perms.reset")) {
                         Village village = r.getVillage();
@@ -89,7 +88,7 @@ public class PermsGUI extends KingdomsGUI {
 
         gui.addElement(group);
 
-        gui.addElement(new StaticGuiElement('b', new ItemStack(Material.BARRIER), click -> {
+        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
             new SettingsGUI(res).open();
             return true;
         }, getText("back")));

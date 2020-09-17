@@ -19,6 +19,8 @@ import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import org.bukkit.Material;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -70,7 +72,7 @@ public class ShopGUI extends KingdomsGUI {
 
                 group.addElement(new DynamicGuiElement('g', h -> {
                     List<String> description = new ArrayList<>();
-                    ItemStack item = new ItemStack(perk.getIcon());
+                    ItemStack item = ItemUtils.toIcon(perk.getIcon());
                     if (resident.getVillage().hasUnlocked(perk)) {
                         PerkData perkData = resident.getVillage().getPerkData(perk);
                         if (perk.getRepeat() != 0) {
@@ -163,6 +165,7 @@ public class ShopGUI extends KingdomsGUI {
                     if (!perk.getEffects().isEmpty()) {
                         ItemMeta itemMeta = item.getItemMeta();
                         if (itemMeta instanceof PotionMeta) {
+                            itemMeta.removeItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
                             PotionType type = PotionType.getByEffect(perk.getEffects().get(0).getType());
                             if (type != null) {
                                 ((PotionMeta) itemMeta).setBasePotionData(new PotionData(type));
@@ -207,7 +210,7 @@ public class ShopGUI extends KingdomsGUI {
 
         gui.addElement(group);
 
-        gui.addElement(new StaticGuiElement('b', new ItemStack(Material.BARRIER), click -> {
+        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
             new SettingsGUI(resident).open();
             return true;
         }, getText("back")));

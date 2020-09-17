@@ -47,7 +47,7 @@ public class TitleGUI extends KingdomsGUI {
             VillageRank rank = resident.getVillageRank();
             for (String title : resident.getVillage().getTitles(rank)) {
                 group.addElement(new DynamicGuiElement('g', h -> {
-                    ItemStack item = new ItemStack(Material.PAPER);
+                    ItemStack item = ItemUtils.toIcon(Material.PAPER);
                     List<String> description = new ArrayList<>();
                     description.add(getText("entry.title",
                             "title", title,
@@ -94,7 +94,7 @@ public class TitleGUI extends KingdomsGUI {
         gui.addElement(group);
 
         if (resident.hasVillage() && resident.hasPermission("village.titles")) {
-            gui.addElement(new StaticGuiElement('e', new ItemStack(Material.WRITABLE_BOOK), click -> {
+            gui.addElement(new StaticGuiElement('e', ItemUtils.toIcon(Material.WRITABLE_BOOK), click -> {
                 if (resident.hasVillage() && resident.hasPermission("village.titles")) {
                     new RankSelectGui(resident, r -> new TitlesGUI(resident, r).open()).open();
                 }
@@ -102,7 +102,7 @@ public class TitleGUI extends KingdomsGUI {
             }, getText("edit")));
         }
 
-        gui.addElement(new StaticGuiElement('b', new ItemStack(Material.BARRIER), click -> {
+        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
             new SettingsGUI(resident).open();
             return true;
         }, getText("back")));

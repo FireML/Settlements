@@ -31,6 +31,6 @@ public class Pair<L, R> {
     }
 
     public boolean equals(final Pair<L, R> pair) {
-        return left.equals(left) && right.equals(right);
+        return pair.left.equals(left) && pair.right.equals(right);
     }
 }

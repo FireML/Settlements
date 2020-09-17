@@ -8,13 +8,13 @@ import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandAccess;
+import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class AccessGUI extends KingdomsGUI {
     private final static String[] SETUP = {
@@ -42,13 +42,13 @@ public class AccessGUI extends KingdomsGUI {
                 if (resident.hasVillage()) {
                     if (resident.getVillage().getAccess() == access) {
                         return new StaticGuiElement('g',
-                                new ItemStack(Material.LIME_WOOL),
+                                ItemUtils.toIcon(Material.LIME_WOOL),
                                 getText("selected", "access", access.getTag()),
                                 getText("access." + access.getKey(), "state", resident.getVillage().getStateTag())
                         );
                     }
                     return new StaticGuiElement('g',
-                            new ItemStack(Material.LIGHT_GRAY_WOOL),
+                            ItemUtils.toIcon(Material.LIGHT_GRAY_WOOL),
                             click -> {
                                 if (resident.hasVillage() && resident.hasPermission("village.setaccess")) {
                                     resident.getVillage().setAccess(access);
@@ -68,7 +68,7 @@ public class AccessGUI extends KingdomsGUI {
 
         gui.addElement(group);
 
-        gui.addElement(new StaticGuiElement('b', new ItemStack(Material.BARRIER), click -> {
+        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
             new SettingsGUI((Player) click.getEvent().getWhoClicked()).open();
             return true;
         }, getText("back")));

@@ -1,6 +1,6 @@
 package me.crz.minecraft.kingdoms.event;
 
-import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveBlockEvent;
+import me.crz.minecraft.kingdoms.customevents.PlayerMoveBlockEvent;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;

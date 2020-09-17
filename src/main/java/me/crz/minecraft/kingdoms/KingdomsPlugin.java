@@ -5,6 +5,7 @@ import co.aikar.timings.Timings;
 import com.griefcraft.lwc.LWC;
 import me.crz.minecraft.kingdoms.banish.BanishListener;
 import me.crz.minecraft.kingdoms.chat.ChatListener;
+import me.crz.minecraft.kingdoms.customevents.CustomEventManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireListener;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
@@ -153,6 +154,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             }
             this.loadManagers();
             this.getLandPerks().runTimer();
+            this.getServer().getPluginManager().registerEvents(new CustomEventManager(), this);
             this.getServer().getPluginManager().registerEvents(new ChatListener(), this);
             this.getServer().getPluginManager().registerEvents(new BanishListener(), this);
             this.getServer().getPluginManager().registerEvents(new VaultListener(), this);

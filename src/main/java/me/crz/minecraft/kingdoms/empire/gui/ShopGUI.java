@@ -59,7 +59,7 @@ public class ShopGUI extends KingdomsGUI {
 
                 group.addElement(new DynamicGuiElement('g', h -> {
                     List<String> description = new ArrayList<>();
-                    ItemStack item = new ItemStack(perk.getIcon());
+                    ItemStack item = ItemUtils.toIcon(perk.getIcon());
                     if (resident.getVillage().getEmpire().hasUnlocked(perk)) {
                         PerkData perkData = resident.getVillage().getEmpire().getPerkData(perk);
                         if (perk.getRepeat() != 0) {
@@ -194,7 +194,7 @@ public class ShopGUI extends KingdomsGUI {
 
         gui.addElement(group);
 
-        gui.addElement(new StaticGuiElement('b', new ItemStack(Material.BARRIER), click -> {
+        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
             new SettingsGUI(resident).open();
             return true;
         }, getText("back")));

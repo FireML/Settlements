@@ -11,6 +11,7 @@ import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.landflags.Use;
+import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -18,7 +19,6 @@ import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +68,7 @@ public class UseGui extends PlotGUI {
                                 "value", land.getLandOwner().getUseState(u).getTag()
                         ));
                     }
-                    return new StaticGuiElement('u', u.getItem().build(), click -> {
+                    return new StaticGuiElement('u', u.getItem(), click -> {
                         OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
                         if (currentLand != null) {
                             Resident resident = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
@@ -113,7 +113,7 @@ public class UseGui extends PlotGUI {
         GuiElementGroup allGroup = new GuiElementGroup('a');
 
         for (BuildState state : BuildState.values(editedLand.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(editedLand.getLandOwner()))) {
-            allGroup.addElement(new StaticGuiElement('a', state.getItem().build(), click -> {
+            allGroup.addElement(new StaticGuiElement('a', state.getItem(), click -> {
                 OwnedLand land = LandManager.getInstance().getLand(landLocation);
                 if (land != null) {
                     if (land.isPlotOwner((Player) click.getEvent().getWhoClicked())
@@ -133,7 +133,7 @@ public class UseGui extends PlotGUI {
             }, getMessage("toggle-all").getReplacedText("state", state.getTag())));
         }
 
-        gui.addElement(new StaticGuiElement('r', new ItemStack(Material.EGG), click -> {
+        gui.addElement(new StaticGuiElement('r', ItemUtils.toIcon(Material.EGG), click -> {
             OwnedLand land = LandManager.getInstance().getLand(landLocation);
             if (land != null) {
                 if (land.isPlotOwner((Player) click.getEvent().getWhoClicked())
@@ -154,11 +154,11 @@ public class UseGui extends PlotGUI {
 
         gui.addElement(allGroup);
 
-        gui.addElement(new GuiPageElement('p', new ItemStack(Material.ARROW), GuiPageElement.PageAction.PREVIOUS, getText("page.previous", "page", "%prevpage%")));
+        gui.addElement(new GuiPageElement('p', ItemUtils.toIcon(Material.ARROW), GuiPageElement.PageAction.PREVIOUS, getText("page.previous", "page", "%prevpage%")));
 
-        gui.addElement(new GuiBackElement('b', new ItemStack(Material.BARRIER), getText("back")));
+        gui.addElement(new GuiBackElement('b', ItemUtils.toIcon(Material.BARRIER), getText("back")));
 
-        gui.addElement(new GuiPageElement('n', new ItemStack(Material.ARROW), GuiPageElement.PageAction.NEXT, getText("page.next", "page", "%nextpage%")));
+        gui.addElement(new GuiPageElement('n', ItemUtils.toIcon(Material.ARROW), GuiPageElement.PageAction.NEXT, getText("page.next", "page", "%nextpage%")));
     }
 
     public void open(final Player p) {

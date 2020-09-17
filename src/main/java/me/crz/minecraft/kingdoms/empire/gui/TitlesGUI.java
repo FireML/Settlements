@@ -49,7 +49,7 @@ public class TitlesGUI extends KingdomsGUI {
 
             for (String title : resident.getVillage().getEmpire().getTitles(rank)) {
                 group.addElement(new DynamicGuiElement('g', h -> {
-                    ItemStack item = new ItemStack(Material.PAPER);
+                    ItemStack item = ItemUtils.toIcon(Material.PAPER);
                     List<String> description = new ArrayList<>();
                     description.add(getText("entry.title",
                             "title", title,
@@ -109,10 +109,10 @@ public class TitlesGUI extends KingdomsGUI {
             if (resident.hasPermission("empire.titles.add")
                     && !rank.above(resident.getEmpireRank())
                     && resident.getVillage().getEmpire().getTitles(rank).size() < Utils.getTitlesPerRank()) {
-                gui.addElement(new StaticGuiElement('a', new ItemStack(Material.WRITABLE_BOOK), click -> {
+                gui.addElement(new StaticGuiElement('a', ItemUtils.toIcon(Material.WRITABLE_BOOK), click -> {
                     if (resident.hasPermission("empire.titles.add")) {
                         new AnvilGUI.Builder()
-                                .item(new ItemStack(Material.WRITABLE_BOOK))
+                                .item(ItemUtils.toIcon(Material.WRITABLE_BOOK))
                                 .title(getMessage("add.anvil.title").getReplacedText(
                                         "rank", rank.getTag(resident.getVillage().getEmpire()),
                                         "state", resident.getVillage().getStateTag()
@@ -158,7 +158,7 @@ public class TitlesGUI extends KingdomsGUI {
             }
         }
 
-        gui.addElement(new StaticGuiElement('b', new ItemStack(Material.BARRIER), click -> {
+        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
             new TitleGUI(resident).open();
             return true;
         }, getText("back")));

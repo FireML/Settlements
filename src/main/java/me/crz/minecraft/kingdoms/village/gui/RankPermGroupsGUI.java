@@ -9,13 +9,13 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.rank.PermissionGroup;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ConfirmationGui;
+import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class RankPermGroupsGUI extends KingdomsGUI {
     private final static String[] SETUP = {
@@ -50,7 +50,7 @@ public class RankPermGroupsGUI extends KingdomsGUI {
             }
 
             if (res.hasVillage() && res.hasPermission("village.perms.reset")) {
-                gui.addElement(new StaticGuiElement('r', new ItemStack(Material.ORANGE_WOOL), click -> {
+                gui.addElement(new StaticGuiElement('r', ItemUtils.toIcon(Material.ORANGE_WOOL), click -> {
                     Resident r = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
                     if (r.hasVillage() && r.hasPermission("village.perms.reset")) {
                         Village village = r.getVillage();
@@ -73,7 +73,7 @@ public class RankPermGroupsGUI extends KingdomsGUI {
 
         gui.addElement(group);
 
-        gui.addElement(new StaticGuiElement('b', new ItemStack(Material.BARRIER), click -> {
+        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
             new PermsGUI((Player) click.getEvent().getWhoClicked()).open();
             return true;
         }, getText("back")));

@@ -10,6 +10,7 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.rank.PermissionGroup;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -48,8 +49,8 @@ public class RankPermsGUI extends KingdomsGUI {
         ), SETUP);
         gui.setCloseAction(close -> false);
         gui.setFiller(BORDER_ITEM);
-        gui.addElement(new GuiPageElement('p', new ItemStack(Material.OAK_SIGN), GuiPageElement.PageAction.PREVIOUS, getText("previous")));
-        gui.addElement(new GuiPageElement('n', new ItemStack(Material.OAK_SIGN), GuiPageElement.PageAction.NEXT, getText("next")));
+        gui.addElement(new GuiPageElement('p', ItemUtils.toIcon(Material.OAK_SIGN), GuiPageElement.PageAction.PREVIOUS, getText("previous")));
+        gui.addElement(new GuiPageElement('n', ItemUtils.toIcon(Material.OAK_SIGN), GuiPageElement.PageAction.NEXT, getText("next")));
 
         GuiElementGroup g = new GuiElementGroup('g');
 
@@ -126,7 +127,7 @@ public class RankPermsGUI extends KingdomsGUI {
                         "description", Message.orElse("command." + perm + ".permission.description", Message.get("command." + perm + ".description")).getText()
                 ));
                 text.addAll(description);
-                return new StaticGuiElement('g', new ItemStack(item), click -> {
+                return new StaticGuiElement('g', ItemUtils.toIcon(item), click -> {
                     if (res.hasVillage() && res.getVillageRank().above(rank)) {
                         if (click.getType() != ClickType.MIDDLE) {
                             if (res.hasPermission("village.perms.set") && res.hasPermission(perm)) {
@@ -162,7 +163,7 @@ public class RankPermsGUI extends KingdomsGUI {
 
         gui.addElement(g);
 
-        gui.addElement(new StaticGuiElement('b', new ItemStack(Material.BARRIER), click -> {
+        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
             new RankPermGroupsGUI(res, rank).open();
             return true;
         }, getText("back")));

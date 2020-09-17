@@ -482,6 +482,10 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
         return home;
     }
 
+    public boolean hasHome() {
+        return this.getHome() != null;
+    }
+
     public Set<UUID> getBanishedPlayers() {
         return banishedPlayers;
     }

@@ -1,12 +1,13 @@
 package me.crz.minecraft.kingdoms.landflags;
 
-import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.rank.Rankable;
+import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,8 +50,8 @@ public enum BuildState implements NameTag, Rankable<BuildState> {
         throw new IllegalArgumentException("No enum constant " + s + " applying to " + to + " found!");
     }
 
-    public CItem getItem() {
-        return new CItem(icon).hideAllFlags(true);
+    public ItemStack getItem() {
+        return ItemUtils.toIcon(icon);
     }
 
     public BuildState next(AppliesTo to) {

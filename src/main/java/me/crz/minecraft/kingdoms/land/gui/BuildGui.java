@@ -8,13 +8,13 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
+import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +73,7 @@ public class BuildGui extends PlotGUI {
                     description.add(getText("description", replacements));
                 }
                 return new StaticGuiElement('g',
-                        new ItemStack(icon),
+                        ItemUtils.toIcon(icon),
                         click -> {
                             OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
                             if (state != currentLand.getBuildState()) {
@@ -96,7 +96,7 @@ public class BuildGui extends PlotGUI {
 
         gui.addElement(group);
 
-        gui.addElement(new StaticGuiElement('b', new ItemStack(Material.BARRIER), click -> {
+        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
             new SettingsGUI((Player) click.getEvent().getWhoClicked());
             return true;
         }, getText("back")));

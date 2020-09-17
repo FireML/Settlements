@@ -68,7 +68,7 @@ public class PermsGUI extends KingdomsGUI {
             }
 
             if (res.hasPermission("empire.perms.reset")) {
-                gui.addElement(new StaticGuiElement('r', new ItemStack(Material.ORANGE_WOOL), click -> {
+                gui.addElement(new StaticGuiElement('r', ItemUtils.toIcon(Material.ORANGE_WOOL), click -> {
                     Resident r = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
                     if (r.hasEmpire() && r.hasPermission("empire.perms.reset")) {
                         Empire empire = r.getVillage().getEmpire();
@@ -89,7 +89,7 @@ public class PermsGUI extends KingdomsGUI {
 
         gui.addElement(group);
 
-        gui.addElement(new StaticGuiElement('b', new ItemStack(Material.BARRIER), click -> {
+        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
             new SettingsGUI(res).open();
             return true;
         }, getText("back")));

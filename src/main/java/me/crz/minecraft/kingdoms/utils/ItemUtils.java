@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.utils;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -34,13 +35,22 @@ public class ItemUtils {
     /**
      * Hide all item flags from an item
      * @param item The item to hide the flags from
-     * @return
+     * @return The item
      */
     public static ItemStack hideAllFlags(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
         meta.addItemFlags(ItemFlag.values());
         item.setItemMeta(meta);
         return item;
+    }
+
+    /**
+     * Create an ItemStack from a material which can be used as a GUI icon (with all flags hidden)
+     * @param material The material
+     * @return The new item with all flags hidden
+     */
+    public static ItemStack toIcon(Material material) {
+        return hideAllFlags(new ItemStack(material));
     }
 
     /**
@@ -53,7 +63,8 @@ public class ItemUtils {
         ItemStack item = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skull = (SkullMeta) item.getItemMeta();
         skull.setDisplayName(name);
-        skull.setPlayerProfile(Bukkit.createProfile(playerId));
+        PlayerProfile profile = Bukkit.createProfile(playerId, name);
+        skull.setPlayerProfile(profile);
         item.setItemMeta(skull);
         return item;
     }

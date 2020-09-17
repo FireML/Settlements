@@ -2,8 +2,8 @@ package me.crz.minecraft.kingdoms.landflags;
 
 import com.destroystokyo.paper.MaterialTags;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureCombustEvent;
-import me.crz.minecraft.kingdoms.essentials.events.PassiveCreatureDamageEvent;
+import me.crz.minecraft.kingdoms.customevents.PassiveCreatureCombustEvent;
+import me.crz.minecraft.kingdoms.customevents.PassiveCreatureDamageEvent;
 import me.crz.minecraft.kingdoms.integration.ShopProvider;
 import me.crz.minecraft.kingdoms.lock.LockManager;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;

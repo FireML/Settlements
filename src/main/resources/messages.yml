@@ -1119,7 +1119,10 @@ gui:
       error: "&cAn error occurred while unlinking! Please contact an admin."
   private-teleports:
     title: "&2&lSettlement teleports: &r&7{page}"
-    entry: "&b{name}"
+    entry: "{state} &b{name}"
+    outpost: |-
+      Outpost &b{name}
+      {state} {owner}
     page:
       next: "&7Go to next page {page}"
       previous: "&7Go to previous page {page}"

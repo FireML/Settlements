@@ -72,7 +72,7 @@ public class VillageCommand extends SubCommand {
         registerCommand(new PlayerSubCommand(this, "teleporters") {
             @Override
             public boolean run(Player player, String base, String alias, String... args) {
-                TeleportersGUI.getInstance().build(player);
+                new TeleportersGUI().open(player);
                 return true;
             }
         });

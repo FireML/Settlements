@@ -1,8 +1,8 @@
 package me.crz.minecraft.kingdoms.utils;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.customevents.PlayerMoveBlockEvent;
 import org.bukkit.event.EventHandler;
-import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveBlockEvent;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;

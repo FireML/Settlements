@@ -8,13 +8,13 @@ import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
+import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
@@ -49,13 +49,13 @@ public class BuildGui extends KingdomsGUI {
                     );
                     if (resident.getVillage().getEmpire().getBuildState() == state) {
                         return new StaticGuiElement('g',
-                                new ItemStack(Material.LIME_WOOL),
+                                ItemUtils.toIcon(Material.LIME_WOOL),
                                 getMessage("selected-state").getReplacedText(replacements),
                                 getMessage("description").getReplacedText(replacements)
                         );
                     }
                     return new StaticGuiElement('g',
-                            new ItemStack(Material.LIGHT_GRAY_WOOL),
+                            ItemUtils.toIcon(Material.LIGHT_GRAY_WOOL),
                             click -> {
                                 if (resident.hasEmpire() && resident.hasPermission("empire.build")) {
                                     resident.getVillage().getEmpire().setBuildState(state);
@@ -75,7 +75,7 @@ public class BuildGui extends KingdomsGUI {
 
         gui.addElement(group);
 
-        gui.addElement(new StaticGuiElement('b', new ItemStack(Material.BARRIER), click -> {
+        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
             new SettingsGUI((Player) click.getEvent().getWhoClicked()).open();
             return true;
         }, getText("back")));

@@ -1,11 +1,12 @@
 package me.crz.minecraft.kingdoms.landflags;
 
 import com.destroystokyo.paper.MaterialTags;
+import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import org.bukkit.Material;
-import me.crz.minecraft.kingdoms.cinventory.CItem;
 import org.bukkit.Tag;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -95,8 +96,8 @@ public enum Use implements NameTag {
         this.materials = materials;
     }
 
-    public CItem getItem() {
-        return new CItem(icon).hideAllFlags(true);
+    public ItemStack getItem() {
+        return ItemUtils.toIcon(icon);
     }
 
     private Collection<Material> getMaterials() {
