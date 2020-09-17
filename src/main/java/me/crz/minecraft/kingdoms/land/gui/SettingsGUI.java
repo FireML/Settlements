@@ -40,7 +40,7 @@ public class SettingsGUI extends PlotGUI {
     public InventoryGui gui;
 
     public SettingsGUI(Player p) {
-        super("plot.settings");
+        super("settings");
         OwnedLand openedOnLand = LandManager.getInstance().getLand(p.getLocation());
         gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title"), SETUP);
         gui.setCloseAction(close -> false);
@@ -50,7 +50,7 @@ public class SettingsGUI extends PlotGUI {
         gui.addElement(new StaticGuiElement('b', new CItem(Material.DIAMOND_PICKAXE).build(), click -> {
             OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
             if (land != null) {
-                new BuildGui(p, land);
+                new BuildGui(land).open(p);
             }
             return true;
         }, getText("build")));
@@ -58,13 +58,16 @@ public class SettingsGUI extends PlotGUI {
         gui.addElement(new StaticGuiElement('u', new ItemStack(Material.LEVER), click -> {
             OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
             if (land != null) {
-                new UseGui(p, land);
+                new UseGui(land).open(p);
             }
             return true;
         }, getText("use")));
 
         gui.addElement(new StaticGuiElement('m', new ItemStack(Material.REDSTONE), click -> {
-            ModeGUI.getInstance().open(p);
+            OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+            if (land != null) {
+                new ModeGUI(land).open(p);
+            }
             return true;
         }, getText("mode")));
 
