@@ -1,32 +1,45 @@
 package me.crz.minecraft.kingdoms.chat.gui;
 
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
 import me.crz.minecraft.kingdoms.KingdomsGUI;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.chat.ChatColorType;
-import me.crz.minecraft.kingdoms.cinventory.CInventory;
-import me.crz.minecraft.kingdoms.cinventory.CItem;
-import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
-import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.ColorUtils;
 import me.crz.minecraft.kingdoms.utils.HumanReadable;
+import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.Optional;
 
 public class ColorSelectGui extends KingdomsGUI {
+    private final static String[] SETUP = {
+            "         ",
+            "         ",
+            "ggggggggg",
+            "ggggggggg",
+            "         ",
+            "    b    "
+    };
 
     public ColorSelectGui(ChatChannel channel, Player p, ChatColorType type) {
         super("chat.color-select");
 
-        CInventory gui = new CInventory(getText("title", "channel", channel.getTag()), InventorySize.ONE) {};
+        InventoryGui gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title", "channel", channel.getTag()), SETUP);
+        gui.setCloseAction(close -> true);
+        gui.setFiller(BORDER_ITEM);
+
+        GuiElementGroup group = new GuiElementGroup('g');
+
+        Resident resident = ResidentManager.getInstance().getResident(p);
+        ChatColor residentColor = resident.getChannelColor(channel, type,
+                Utils.getChannelColor(channel, type));
 
         for (String color : Utils.getChatColors()) {
             ChatColor chatColor;
@@ -35,55 +48,37 @@ public class ColorSelectGui extends KingdomsGUI {
             } catch (IllegalArgumentException e) {
                 continue;
             }
-            gui.addItem(new ClickableItem() {
-                @Override
-                public ItemStack getItem(Player p) {
-                    Resident resident = ResidentManager.getInstance().getResident(p);
-                    CItem item = new CItem(ColorUtils.getColorHead(chatColor));
-                    ChatColor residentColor = resident.getChannelColor(channel, type, Utils.getChannelColor(channel, type));
-                    if (residentColor == chatColor) {
-                        item.glow(true);
-                        item.setName(getMessage("selected-color-entry")
-                                .getReplacedText(
-                                        "color", chatColor.toString(),
-                                        "name", HumanReadable.humanizedName(chatColor)));
-                    } else {
-                        item.setName(getMessage("color-entry")
-                                .getReplacedText(
-                                        "color", chatColor.toString(),
-                                        "name", HumanReadable.humanizedName(chatColor)));
-                    }
-                    return item.build();
-                }
 
-                @Override
-                public boolean click(Player p, ClickType c) {
-                    Resident resident = ResidentManager.getInstance().getResident(p);
-                    resident.setChannelColor(channel, type, chatColor);
-                    Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(resident));
-                    Utils.runLater(() -> {
-                        p.closeInventory();
-                        getMessage("color-changed").tell(p,
-                                "channel", channel.getTag(),
-                                "type", type.getTag(),
-                                "color", chatColor.toString(),
-                                "color-name", HumanReadable.humanizedName(chatColor)
-                        );
-                    }, 1);
-                    return true;
-                }
-            });
+            group.addElement(new StaticGuiElement(
+                    'g',
+                    ItemUtils.setGlowing(ColorUtils.getColorHead(chatColor), residentColor == chatColor),
+                    click -> {
+                        Resident r = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
+                        r.setChannelColor(channel, type, chatColor);
+                        Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(r));
+                        Utils.runLater(() -> {
+                            gui.close();
+                            getMessage("color-changed").tell(r,
+                                    "channel", channel.getTag(),
+                                    "type", type.getTag(),
+                                    "color", chatColor.toString(),
+                                    "color-name", HumanReadable.humanizedName(chatColor)
+                            );
+                        }, 1);
+                        return true;
+                    },
+                    getText((residentColor == chatColor ? "selected-" : "") + "color-entry",
+                            "color", chatColor.toString(),
+                            "name", HumanReadable.humanizedName(chatColor))
+            ));
         }
-        gui.addItem((gui.getMaxSlot() / 9) * 9 + 8, new ClickableItem() {
-            public ItemStack getItem(final Player p) {
-                return new CItem(Material.BARRIER).setName(getText("back")).build();
-            }
 
-            public boolean click(final Player p, final ClickType clickType) {
-                ColorTypeSelectGui.getInstance(channel).open(p);
-                return true;
-            }
-        });
-        gui.build(p);
+        gui.addElement(group);
+
+        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
+            new ColorTypeSelectGui(channel).open((Player) click.getEvent().getWhoClicked());
+            return true;
+        }, getText("back")));
+        gui.show(p);
     }
 }
