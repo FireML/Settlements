@@ -154,7 +154,7 @@ public class EmpirePermsCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length == 0) {
-            PermsGUI.getInstance().open(resident.getPlayer());
+            new PermsGUI(resident.getPlayer()).open();
             return true;
         }
 
@@ -164,12 +164,12 @@ public class EmpirePermsCommand extends EmpireSubCommand {
             return false;
         }
         if (args.length == 1) {
-            RankPermGroupsGUI.getInstance(rank).open(resident.getPlayer());
+            new RankPermGroupsGUI(resident, rank).open();
             return true;
         } else if (args.length == 2) {
             PermissionGroup group = EmpireRank.getPermGroup(args[1]);
             if (group != null) {
-                RankPermsGUI.getInstance(rank, group).open(resident.getPlayer());
+                new RankPermsGUI(resident, rank, group).open();
                 return true;
             }
             getError("invalid-group").tell(resident, "group", args[1]);

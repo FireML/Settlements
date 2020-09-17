@@ -1,118 +1,113 @@
 package me.crz.minecraft.kingdoms.empire.gui;
 
+import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
 import me.crz.minecraft.kingdoms.KingdomsGUI;
-import me.crz.minecraft.kingdoms.cinventory.CInventory;
-import me.crz.minecraft.kingdoms.cinventory.CItem;
-import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
-import me.crz.minecraft.kingdoms.cinventory.InventorySize;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
+import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TitleGUI extends KingdomsGUI {
+    private final static String[] SETUP = {
+            "         ",
+            "         ",
+            "ggggggggg",
+            "ggggggggg",
+            "         ",
+            "    b   e"
+    };
     private final Resident resident;
-    public CInventory gui;
+    private final InventoryGui gui;
 
     public TitleGUI(Resident resident) {
-        super("title");
+        super("empire.title");
         this.resident = resident;
-        gui = new CInventory(getText("title",
-                "state", resident.hasEmpire() ? resident.getVillage().getEmpire().getStateTag() : "",
-                "title", resident.getEmpireTitle()),
-                InventorySize.ONE) {};
+        gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title",
+                "state", resident.hasVillage() ? resident.getVillage().getStateTag() : "",
+                "title", resident.getVillageTitle()
+        ), SETUP);
+        gui.setCloseAction(close -> false);
+        gui.setFiller(BORDER_ITEM);
 
-        for (int i = 0; i < InventorySize.TWO.getSize(); i++) {
-            gui.addItem(i, BORDER);
-        }
+        GuiElementGroup group = new GuiElementGroup('g');
 
-        EmpireRank rank = resident.getEmpireRank();
-        for (String title : resident.getVillage().getEmpire().getTitles(rank)) {
-            gui.addItem(new ClickableItem() {
-                @Override
-                public ItemStack getItem(Player p) {
-                    CItem item = new CItem(Material.PAPER).setName(getMessage("entry.title").getReplacedText(
+        if (resident.hasEmpire()) {
+            EmpireRank rank = resident.getEmpireRank();
+            for (String title : resident.getVillage().getEmpire().getTitles(rank)) {
+                group.addElement(new DynamicGuiElement('g', h -> {
+                    ItemStack item = new ItemStack(Material.PAPER);
+                    List<String> description = new ArrayList<>();
+                    description.add(getText("entry.title",
                             "title", title,
                             "rank", rank.getTag(resident.getVillage().getEmpire())
                     ));
                     if (title.equals(resident.getEmpireTitle())) {
-                        item.addLore(getMessage("entry.current").getReplacedTextList(
+                        ItemUtils.setGlowing(item, true);
+                        description.add(getText("entry.current",
                                 "title", title,
-                                "rank",  rank.getTag(resident.getVillage().getEmpire())
+                                "rank", rank.getTag(resident.getVillage().getEmpire())
                         ));
-                        item.glow(true);
                     } else {
-                        item.addLore(getMessage("entry.select").getReplacedTextList(
+                        description.add(getText("entry.select",
                                 "title", title,
-                                "rank",  rank.getTag(resident.getVillage().getEmpire())
+                                "rank", rank.getTag(resident.getVillage().getEmpire())
                         ));
                     }
-                    return item.build();
-                }
-
-                @Override
-                public boolean click(Player p, ClickType type) {
-                    if (resident.hasEmpire() && resident.hasPermission("empire.title") && rank == resident.getEmpireRank() && resident.setEmpireTitle(title)) {
-                        Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(resident));
-                        open();
-                        Message message = Message.get("command.empire.title.success." + resident.getEmpireRank().getKey());
-                        if (!message.exists()) {
-                            message = Message.get("command.empire.title.success.default");
-                        }
-                        message.tell(resident.getVillage().getEmpire().getOnlineResidents(),
-                                "rank", resident.getEmpireRank().getTag(resident.getVillage().getEmpire()),
-                                "title", resident.getEmpireTitle(),
-                                "name", resident.getName(),
-                                "empirename", resident.getVillage().getEmpire().getName(),
-                                "empirestate", resident.getVillage().getEmpire().getStateTag()
-                        );
-                        return true;
-                    }
-                    return false;
-                }
-            });
+                    return new StaticGuiElement('g',
+                            item,
+                            click -> {
+                                if (resident.hasEmpire() && resident.hasPermission("empire.title") && rank == resident.getEmpireRank() && resident.setEmpireTitle(title)) {
+                                    Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(resident));
+                                    gui.draw();
+                                    Message message = Message.get("command.empire.title.success." + resident.getVillage().getEmpire().getStateKey() + "." + resident.getEmpireRank().getKey());
+                                    if (!message.exists()) {
+                                        message = Message.get("command.empire.title.success.default");
+                                    }
+                                    message.tell(resident.getVillage().getEmpire().getOnlineResidents(),
+                                            "rank", resident.getVillageRank().getTag(resident.getVillage()),
+                                            "title", resident.getVillageTitle(),
+                                            "name", resident.getName(),
+                                            "empirename", resident.getVillage().getEmpire().getName(),
+                                            "empirestate", resident.getVillage().getEmpire().getStateTag()
+                                    );
+                                }
+                                return true;
+                            },
+                            description.toArray(new String[0])
+                    );
+                }));
+            }
         }
 
-        for (int i = InventorySize.FOUR.getSize(); i < InventorySize.SIX.getSize(); i++) {
-            gui.addItem(i, BORDER);
+        gui.addElement(group);
+
+        if (resident.hasEmpire() && resident.hasPermission("empire.titles")) {
+            gui.addElement(new StaticGuiElement('e', new ItemStack(Material.WRITABLE_BOOK), click -> {
+                if (resident.hasEmpire() && resident.hasPermission("empire.titles")) {
+                    new RankSelectGui(resident, r -> new TitlesGUI(resident, r).open()).open();
+                }
+                return true;
+            }, getText("edit")));
         }
 
-        gui.addItem(InventorySize.FIVE.getSize() + 8, new ClickableItem() {
-            @Override
-            public ItemStack getItem(Player p) {
-                if (resident.hasEmpire() && resident.hasPermission("empire.titles")) {
-                    return new CItem(Material.WRITABLE_BOOK).setName(getText("edit")).build();
-                }
-                return null;
-            }
-
-            @Override
-            public boolean click(Player p, ClickType clickType) {
-                if (resident.hasEmpire() && resident.hasPermission("empire.titles")) {
-                    new RankSelectGui(resident, rank -> new TitlesGUI(resident, rank).open()).open();
-                }
-                return true;
-            }
-        });
-
-        gui.addItem(InventorySize.FIVE.getSize() + 4, new ClickableItem() {
-            public ItemStack getItem(final Player p) {
-                return new CItem(Material.BARRIER).setName(getText("back")).build();
-            }
-
-            public boolean click(final Player p, final ClickType clickType) {
-                new SettingsGUI(resident).open();
-                return true;
-            }
-        });
+        gui.addElement(new StaticGuiElement('b', new ItemStack(Material.BARRIER), click -> {
+            new SettingsGUI(resident).open();
+            return true;
+        }, getText("back")));
     }
 
     public void open() {
-        gui.build(resident.getPlayer());
+        gui.show(resident.getPlayer());
     }
 }

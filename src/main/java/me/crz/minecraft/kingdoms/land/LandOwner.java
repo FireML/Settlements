@@ -263,11 +263,11 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
 
     protected abstract Set<String> getPermissions();
 
-    public Map<String, Boolean> getPermissions(Rank rank) {
+    public Map<String, Boolean> getPermissions(R rank) {
         return ranksPermissions.getOrDefault(rank.name().toLowerCase(), Collections.emptyMap());
     }
 
-    public Map<String, Optional<Boolean>> getEffectivePermissions(Rank rank) {
+    public Map<String, Optional<Boolean>> getEffectivePermissions(R rank) {
         Map<String, Optional<Boolean>> map = new LinkedHashMap<>();
         for (String perm : getPermissions()) {
             map.put(perm, getEffectivePermissionValue(rank, perm));
@@ -275,23 +275,23 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
         return map;
     }
 
-    public Optional<Boolean> getPermissionValue(Rank rank, String permission) {
+    public Optional<Boolean> getPermissionValue(R rank, String permission) {
         Map<String, Boolean> map = ranksPermissions.get(rank.name().toLowerCase());
         return Optional.ofNullable(map != null ? map.get(permission.toLowerCase()) : null);
     }
 
-    public Optional<Boolean> getInheritedPermissionValue(Rank rank, String permission) {
+    public Optional<Boolean> getInheritedPermissionValue(R rank, String permission) {
         Optional<Boolean> value = getPermissionValue(rank, permission);
         if (value.isPresent()) {
             return value;
         }
         if (rank.getInherits() != null) {
-            return getInheritedPermissionValue(rank.getInheritedRank(), permission);
+            return getInheritedPermissionValue((R) rank.getInheritedRank(), permission);
         }
         return Optional.empty();
     }
 
-    public Optional<Boolean> getEffectivePermissionValue(Rank rank, String permission) {
+    public Optional<Boolean> getEffectivePermissionValue(R rank, String permission) {
         if (rank.getParent() != null) {
             Optional<Boolean> inheritValue = getInheritedPermissionValue(rank, permission);
             if (inheritValue.isPresent()) {
@@ -301,7 +301,7 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
         return rank.getInheritedPermissionValue(permission);
     }
 
-    public boolean setPermission(Rank rank, String permission, boolean value) {
+    public boolean setPermission(R rank, String permission, boolean value) {
         if (getEffectivePermissionValue(rank, permission).orElse(false) == value) {
             return false;
         }
@@ -314,7 +314,7 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
         return prev == null || prev != value;
     }
 
-    public boolean setDefaultPermission(Rank rank, String permission) {
+    public boolean setDefaultPermission(R rank, String permission) {
         return ranksPermissions.getOrDefault(rank.name().toLowerCase(), new LinkedHashMap<>()).remove(permission.toLowerCase()) != null;
     }
 

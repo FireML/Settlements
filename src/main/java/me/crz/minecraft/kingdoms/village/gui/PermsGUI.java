@@ -67,7 +67,7 @@ public class PermsGUI extends KingdomsGUI {
                 ));
             }
 
-            if (res.hasVillage() && res.hasPermission("village.perms.reset")) {
+            if (res.hasPermission("village.perms.reset")) {
                 gui.addElement(new StaticGuiElement('r', new ItemStack(Material.ORANGE_WOOL), click -> {
                     Resident r = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
                     if (r.hasVillage() && r.hasPermission("village.perms.reset")) {

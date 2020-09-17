@@ -60,7 +60,11 @@ public class RankPermGroupsGUI extends KingdomsGUI {
                                 open();
                                 Utils.runAsync(() -> DatabaseManager.getInstance().save(village));
                             }
-                        }, this::open, "state", village.getStateTag(), "name", village.getName(), "rank", rank.getTag(village)).open((Player) click.getEvent().getWhoClicked());
+                        }, this::open,
+                                "state", village.getStateTag(),
+                                "name", village.getName(),
+                                "rank", rank.getTag(village)).open((Player) click.getEvent().getWhoClicked()
+                        );
                     }
                     return true;
                 }, getText("reset.title", "rank", rank.getTag(res.getVillage()))));

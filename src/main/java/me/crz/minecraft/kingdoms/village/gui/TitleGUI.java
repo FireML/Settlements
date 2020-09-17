@@ -43,8 +43,8 @@ public class TitleGUI extends KingdomsGUI {
 
         GuiElementGroup group = new GuiElementGroup('g');
 
-        VillageRank rank = resident.getVillageRank();
         if (resident.hasVillage()) {
+            VillageRank rank = resident.getVillageRank();
             for (String title : resident.getVillage().getTitles(rank)) {
                 group.addElement(new DynamicGuiElement('g', h -> {
                     ItemStack item = new ItemStack(Material.PAPER);
