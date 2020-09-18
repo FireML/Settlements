@@ -1522,6 +1522,7 @@ command:
       description: Sets the modes of a plot
       embassy:
         description: Sets plot as embassy for everyone to purchase
+        success-no-sale: "&7Plot set as &6{mode}&7!"
         success: "&7Plot set as &6{mode}&7 with price &6{value}!"
     set:
       embassy: The plot can be purchased by players outside of the settlement

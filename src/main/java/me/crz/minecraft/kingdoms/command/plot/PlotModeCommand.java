@@ -23,13 +23,15 @@ public class PlotModeCommand extends PlotSubCommand {
                     return true;
                 }
                 try {
-                    if (args.length > 0){
+                    land.setEmbassy(true);
+                    if (args.length > 0) {
                         int price = Integer.parseInt(args[0]);
                         land.setForSale(true);
                         land.setPrice(price);
+                        getMessage("success").tell(res, "mode", PlotMode.embassy.getTag(), "value", String.valueOf(land.getPrice()));
+                    } else {
+                        getMessage("success-no-sale").tell(res, "mode", PlotMode.embassy.getTag(), "value", String.valueOf(land.getPrice()));
                     }
-                    land.setEmbassy(true);
-                    getMessage("success").tell(res, "mode", PlotMode.embassy.getTag(), "value", String.valueOf(land.getPrice()));
                     LandManager.getInstance().saveLand(land);
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(res, "input", args[1]);
