@@ -12,6 +12,7 @@ import me.crz.minecraft.kingdoms.utils.ColorUtils;
 import me.crz.minecraft.kingdoms.utils.HumanReadable;
 import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.ChatColor;
@@ -41,7 +42,7 @@ public class ColorSelectGui extends KingdomsGUI {
         ChatColor residentColor = resident.getChannelColor(channel, type,
                 Utils.getChannelColor(channel, type));
 
-        for (String color : Utils.getChatColors()) {
+        for (String color : Config.Chat.SELECTABLE_COLORS) {
             ChatColor chatColor;
             try {
                 chatColor = ChatColor.valueOf(color.toUpperCase());

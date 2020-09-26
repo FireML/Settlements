@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 public class VillageAllyclaimCommand extends VillageSubCommand {
@@ -32,7 +33,7 @@ public class VillageAllyclaimCommand extends VillageSubCommand {
             }
         }
         Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
-        getMessage(value ? "enabled" : "disabled").tell(resident, "grace", String.valueOf(Utils.getCloseClaimsGraceDays()));
+        getMessage(value ? "enabled" : "disabled").tell(resident, "grace", String.valueOf(Config.Settlement.Claiming.Close.Unclaim.GRACE_DAYS));
 
         return true;
     }

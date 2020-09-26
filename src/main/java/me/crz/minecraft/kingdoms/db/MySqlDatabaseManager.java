@@ -10,12 +10,12 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.lock.Lock;
 import me.crz.minecraft.kingdoms.portal.Portal;
-import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -23,7 +23,6 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -49,7 +48,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -72,23 +70,18 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
     @Override
     public void connect() throws Exception {
-        ConfigurationSection config = KingdomsPlugin.getInstance().getConfig().getConfigurationSection("storage");
-        tablePrefix = config.getString("table-prefix");
-        String host = config.getString("host");
-        int port = config.getInt("port");
-        String database = config.getString("database");
-        String urlPar = config.getString("url-parameters");
-
-        int queueSize = config.getInt("queue.size");
-        int queueWait = config.getInt("queue.wait");
+        tablePrefix = Config.Storage.TABLE_PREFIX;
 
         ds = new HikariDataSource();
         initConnectionClass(ds);
 
-        ds.addDataSourceProperty("url", "jdbc:mysql://" + host + ":" + port + "/" + database + urlPar);
-        ds.setUsername(config.getString("user"));
-        ds.setPassword(config.getString("password"));
+        ds.addDataSourceProperty("url", "jdbc:mysql://" + Config.Storage.HOST + ":" + Config.Storage.PORT + "/" + Config.Storage.DATABASE + Config.Storage.URL_PARAMETERS);
+        ds.setUsername(Config.Storage.USER);
+        ds.setPassword(Config.Storage.PASSWORD);
         ds.setConnectionTimeout(5000);
+
+        int queueSize = Config.Storage.Queue.SIZE;
+        int queueWait = Config.Storage.Queue.WAIT;
 
         villageQueue = new SaveQueue<>(ds, queueSize, queueWait, this::saveVillage);
         empireQueue = new SaveQueue<>(ds, queueSize, queueWait, this::saveEmpire);
@@ -109,6 +102,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         addColumn(MySqlTable.EMPIRES, "discord", "TEXT NOT NULL AFTER description");
         addColumn(MySqlTable.SETTLEMENTS, "discord", "TEXT NOT NULL AFTER description");
         addColumn(MySqlTable.RESIDENTS, "empireTitle", "VARCHAR(16) AFTER title");
+        addColumn(MySqlTable.RESIDENTS, "socialSpy", "BOOLEAN NOT NULL DEFAULT false AFTER swear");
     }
 
     private void initializeTables() throws SQLException {
@@ -928,7 +922,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
             sta.setInt(1, (Integer) id.value());
             ResultSet rs = sta.executeQuery();
             if (rs.next()) {
-                return (int) Math.ceil(rs.getInt(1) / (double) Utils.getEntriesPerPage());
+                return (int) Math.ceil(rs.getInt(1) / (double) Config.ENTRIES_PER_PAGE);
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to get log page count for " + id, e);
@@ -961,7 +955,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         if (id.isNull() || page < 1) {
             return log;
         }
-        int start = (page-1) * Utils.getEntriesPerPage();
+        int start = (page-1) * Config.ENTRIES_PER_PAGE;
         String sql = "SELECT l.empireId, l.settlementId, l.action, l.type, l.amount, l.timestamp, r.name AS playerName, r.uuid AS playerId, r.rank AS playerRank, r.title AS playerTitle " +
                 "FROM " + tablePrefix + "logs AS l " +
                 "LEFT JOIN " + tablePrefix + "residents AS r ON l.residentId = r.id " +
@@ -977,7 +971,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         if (!resident.getVillageRank().atLeast(VillageRank.getChief())) {
             sql += " AND (l.action = 'deposit' OR l.action = 'donate')";
         }
-        sql += " ORDER BY l.id DESC LIMIT " + start + "," + Utils.getEntriesPerPage() + ";";
+        sql += " ORDER BY l.id DESC LIMIT " + start + "," + Config.ENTRIES_PER_PAGE + ";";
         try (Connection conn = ds.getConnection();
              PreparedStatement sta = conn.prepareStatement(sql)) {
             sta.setInt(1, (Integer) id.value());

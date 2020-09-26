@@ -14,6 +14,7 @@ import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -200,9 +201,8 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
                 event.setCancelled(true);
                 if ("lock".equalsIgnoreCase(action)) {
                     if (lock == null) {
-                        boolean limitedToVillage = KingdomsPlugin.getInstance().getConfig().getBoolean("only-lock-in-settlement");
                         OwnedLand land = LandManager.getInstance().getLand(event.getClickedBlock().getLocation());
-                        if (land == null && limitedToVillage) {
+                        if (land == null && Config.Lock.ONLY_IN_CLAIM) {
                             getError("only-in-claim").tell(event.getPlayer());
                         } else if (!LockManager.getInstance().isLockable(event.getClickedBlock().getType())) {
                             getError("not-lockable").tell(event.getPlayer(), "block", NameTag.getTag(event.getClickedBlock().getType()));
@@ -380,7 +380,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onHopperMove(InventoryMoveItemEvent event) {
-        if (LockManager.getInstance().isAlternativeHopperProtection()
+        if (Config.Lock.ALTERNATIVE_HOPPER_PROTECTION
                 && !(KingdomsPlugin.getInstance().getServerAdapter().getHolder(event.getSource()) instanceof HopperMinecart
                         || KingdomsPlugin.getInstance().getServerAdapter().getHolder(event.getDestination()) instanceof HopperMinecart)) {
             return;
@@ -401,7 +401,7 @@ public class LockListener implements Listener, LandFlagBase, TargetParser {
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (!LockManager.getInstance().isAlternativeHopperProtection()) {
+        if (!Config.Lock.ALTERNATIVE_HOPPER_PROTECTION) {
             return;
         }
 

@@ -6,12 +6,12 @@ import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
 import me.crz.minecraft.kingdoms.KingdomsGUI;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.command.empire.EmpireTitlesCommand;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.ChatColor;
@@ -108,7 +108,7 @@ public class TitlesGUI extends KingdomsGUI {
 
             if (resident.hasPermission("empire.titles.add")
                     && !rank.above(resident.getEmpireRank())
-                    && resident.getVillage().getEmpire().getTitles(rank).size() < Utils.getTitlesPerRank()) {
+                    && resident.getVillage().getEmpire().getTitles(rank).size() < Config.Empire.TITLES_PER_RANK) {
                 gui.addElement(new StaticGuiElement('a', ItemUtils.toIcon(Material.WRITABLE_BOOK), click -> {
                     if (resident.hasPermission("empire.titles.add")) {
                         new AnvilGUI.Builder()
@@ -127,16 +127,16 @@ public class TitlesGUI extends KingdomsGUI {
                                     if (rank.above(resident.getVillageRank())) {
                                         return AnvilGUI.Response.text(getError("cant-edit-higher")
                                                 .getReplacedText("rank", resident.getEmpireRank().getTag(resident.getVillage().getEmpire())));
-                                    } else if (resident.getVillage().getEmpire().getTitles(rank).size() >= Utils.getTitlesPerRank()) {
+                                    } else if (resident.getVillage().getEmpire().getTitles(rank).size() >= Config.Empire.TITLES_PER_RANK) {
                                         return AnvilGUI.Response.text(getError("too-many").getReplacedText(
                                                 "rank", resident.getEmpireRank().getTag(),
-                                                "max", String.valueOf(Utils.getTitlesPerRank())
+                                                "max", String.valueOf(Config.Empire.TITLES_PER_RANK)
                                         ));
                                     } else if (text.length() > 16) {
                                         return AnvilGUI.Response.text(getError("too-long").getReplacedText("input", text, "amount", "16"));
                                     } else if (!EmpireTitlesCommand.TITLE_PATTERN.matcher(text).matches()) {
                                         return AnvilGUI.Response.text(getError("invalid-characters").getReplacedText("input", text));
-                                    } else if (ChatManager.getInstance().containsAnyCurses(text)) {
+                                    } else if (Utils.containsAnyCurses(text)) {
                                         return AnvilGUI.Response.text(getError("prohibited-words").getReplacedText("input", text));
                                     } else if (resident.getVillage().getEmpire().addTitle(rank, text)) {
                                         Message.get("command.empire.titles.add.success")

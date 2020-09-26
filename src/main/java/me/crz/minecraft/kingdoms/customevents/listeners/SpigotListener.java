@@ -8,6 +8,7 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.portal.Portal;
 import me.crz.minecraft.kingdoms.portal.PortalManager;
 import me.crz.minecraft.kingdoms.utils.Message;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -123,9 +124,7 @@ public class SpigotListener implements Listener {
     // Try to catch portal removal
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPortalDestroy(BlockPhysicsEvent e) {
-        if (e.getBlock().getType() != Material.NETHER_PORTAL) {
-            return;
-        } else if (e.getBlock().getType() == e.getChangedType()) {
+        if (!Config.Portal.ENABLED || e.getBlock().getType() != Material.NETHER_PORTAL || e.getBlock().getType() == e.getChangedType()) {
             return;
         }
 

@@ -42,6 +42,7 @@ import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -83,7 +84,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
 
     public ChestShopIntegration() {
         chestShop = (ChestShop) Bukkit.getPluginManager().getPlugin("ChestShop");
-        notificationCooldown = CacheBuilder.newBuilder().expireAfterWrite(Utils.getChestShopNotificationCooldown(), TimeUnit.SECONDS).build();
+        notificationCooldown = CacheBuilder.newBuilder().expireAfterWrite(Config.Chestshop.NOTIFICATION_COOLDOWN, TimeUnit.SECONDS).build();
         KingdomsPlugin.getInstance().getLockProviders().add(this);
         KingdomsPlugin.getInstance().getShopProviders().add(this);
         Bukkit.getPluginManager().registerEvents(this, KingdomsPlugin.getInstance());
@@ -409,7 +410,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
         LandOwner landOwner = getLandOwner(event.getAccount());
         if (landOwner != null) {
             long amount = landOwner.getBank();
-            if (Utils.shouldBlockChestShopSellBelowUpkeep()) {
+            if (!Config.Chestshop.ALLOW_SELLING_BELOW_UPKEEP) {
                 amount -= landOwner.getUpkeep();
             }
             event.setAmount(BigDecimal.valueOf(Math.max(amount, 0)));
@@ -424,7 +425,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             if (landOwner != null) {
                 try {
                     long amount = event.getAmount().setScale(0, RoundingMode.UP).longValueExact();
-                    if (Utils.shouldBlockChestShopSellBelowUpkeep()) {
+                    if (!Config.Chestshop.ALLOW_SELLING_BELOW_UPKEEP) {
                         amount += landOwner.getUpkeep();
                     }
                     event.hasEnough(landOwner.has(amount));

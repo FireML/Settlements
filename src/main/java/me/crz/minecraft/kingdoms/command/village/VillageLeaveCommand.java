@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 import java.util.UUID;
@@ -15,7 +16,7 @@ public class VillageLeaveCommand extends VillageSubCommand {
 
     public VillageLeaveCommand(SubCommand parent) {
         super(parent, "leave");
-        confirm = Caffeine.newBuilder().expireAfterWrite(Utils.getCommandConfirmTime(), TimeUnit.SECONDS).build();
+        confirm = Caffeine.newBuilder().expireAfterWrite(Config.COMMAND_CONFIRM_TIME, TimeUnit.SECONDS).build();
     }
 
     @Override
@@ -29,7 +30,7 @@ public class VillageLeaveCommand extends VillageSubCommand {
             resident.leaveVillage();
         } else {
             confirm.put(resident.getUUID(), System.currentTimeMillis());
-            getMessage("confirm").tell(resident, "time", String.valueOf(Utils.getCommandConfirmTime()));
+            getMessage("confirm").tell(resident, "time", String.valueOf(Config.COMMAND_CONFIRM_TIME));
         }
         return true;
     }

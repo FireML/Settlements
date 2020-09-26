@@ -4,12 +4,10 @@ import co.aikar.timings.lib.MCTiming;
 import co.aikar.timings.lib.TimingManager;
 import com.griefcraft.lwc.LWC;
 import me.crz.minecraft.kingdoms.banish.BanishListener;
-import me.crz.minecraft.kingdoms.chat.ChatListener;
 import me.crz.minecraft.kingdoms.customevents.CustomEventManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireListener;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
-import me.crz.minecraft.kingdoms.event.EventListener;
 import me.crz.minecraft.kingdoms.event.EventManager;
 import me.crz.minecraft.kingdoms.integration.AfkProvider;
 import me.crz.minecraft.kingdoms.integration.BreweryIntegration;
@@ -24,15 +22,14 @@ import me.crz.minecraft.kingdoms.integration.ShopProvider;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.land.LandManager;
-import me.crz.minecraft.kingdoms.lock.LockListener;
 import me.crz.minecraft.kingdoms.lock.LockManager;
-import me.crz.minecraft.kingdoms.portal.PortalListener;
 import me.crz.minecraft.kingdoms.portal.PortalManager;
 import me.crz.minecraft.kingdoms.rank.RankManager;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.adapter.ServerAdapter;
 import me.crz.minecraft.kingdoms.utils.adapter.SpigotAdapter;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -63,12 +60,10 @@ import me.crz.minecraft.kingdoms.village.VillageManager;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import me.crz.minecraft.kingdoms.land.LandPerks;
-import me.crz.minecraft.kingdoms.utils.config.Data;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class KingdomsPlugin extends JavaPlugin implements Listener {
     private static KingdomsPlugin instance;
-    public static Data data;
     private LandPerks lPerks;
     public Economy econ = null;
     private MultiverseIntegration multiverse = null;
@@ -80,11 +75,8 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     private Set<ShopProvider> shopProviders = new LinkedHashSet<>();
     private Set<MailProvider> mailProviders = new LinkedHashSet<>();
 
-    public boolean emgcy = false;
     public static Chat chat;
     private boolean running = false;
-    private String empiresWorldPrefix = "";
-    private String empiresWorldSuffix = "";
     private static final Timer timer = new Timer();
     private LandFlags landFlags;
     private TimingManager timingManager;
@@ -102,6 +94,8 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         if (running) {
             running = false;
         }
+        ConfigManager.getInstance().save();
+        ConfigManager.getInstance().getDataConfig().saveConfig();
         DatabaseManager.getInstance().disable();
     }
 
@@ -127,19 +121,17 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        data = new Data();
-        if (getServer().getPluginManager().isPluginEnabled("Multiverse-Core")) {
-            multiverse = new MultiverseIntegration(this);
-            this.getLogger().log(Level.INFO, "Hooked into Multiverse-Core v" + multiverse.getVersion());
+
+        ConfigManager.getInstance();
+        try {
+            DatabaseManager.getInstance().connect();
+        } catch (Exception e) {
+            this.getLogger().log(Level.SEVERE, "Disabled due to databaser error!", e);
+            this.getServer().getPluginManager().disablePlugin(this);
+            return;
         }
-        if (getServer().getPluginManager().isPluginEnabled("LWC")) {
-            LWCIntegration lwcIntegration = new LWCIntegration(LWC.getInstance());
-            getLogger().log(Level.INFO, "Hooked into LWC " + lwcIntegration.getLWC().getPlugin().getDescription().getVersion() + "!");
-        }
-        if (getServer().getPluginManager().isPluginEnabled("ChestShop")) {
-            ChestShopIntegration csIntegration = new ChestShopIntegration();
-            getLogger().log(Level.INFO, "Hooked into ChestShop " + csIntegration.getChestShop().getDescription().getVersion() + "!");
-        }
+        this.loadManagers();
+
         if (getServer().getPluginManager().isPluginEnabled("CMI")) {
             CmiIntegration cmiIntegration = new CmiIntegration();
             getLogger().log(Level.INFO, "Hooked into CMI " + cmiIntegration.getCmi().getDescription().getVersion() + "!");
@@ -152,40 +144,38 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             BreweryIntegration breweryIntegration = new BreweryIntegration();
             getLogger().log(Level.INFO, "Hooked into Brewery " + breweryIntegration.getBrewery().getDescription().getVersion() + "!");
         }
-        if (data.load(this.getDataFolder())) {
-            ConfigManager.getInstance();
-            empiresWorldPrefix = getConfig().getString("empires-world.prefix");
-            empiresWorldSuffix = getConfig().getString("empires-world.suffix");
-            try {
-                DatabaseManager.getInstance().connect();
-            } catch (Exception e) {
-                this.getLogger().log(Level.SEVERE, "Disabled due to databaser error!", e);
-                this.getServer().getPluginManager().disablePlugin(this);
-                return;
+
+        this.getServer().getPluginManager().registerEvents(new KingdomsListener(), this);
+
+        if (!Config.Chat.CHAT_ONLY) {
+            if (getServer().getPluginManager().isPluginEnabled("Multiverse-Core")) {
+                multiverse = new MultiverseIntegration(this);
+                this.getLogger().log(Level.INFO, "Hooked into Multiverse-Core v" + multiverse.getVersion());
             }
-            this.loadManagers();
+            if (getServer().getPluginManager().isPluginEnabled("LWC")) {
+                LWCIntegration lwcIntegration = new LWCIntegration(LWC.getInstance());
+                getLogger().log(Level.INFO, "Hooked into LWC " + lwcIntegration.getLWC().getPlugin().getDescription().getVersion() + "!");
+            }
+            if (getServer().getPluginManager().isPluginEnabled("ChestShop")) {
+                ChestShopIntegration csIntegration = new ChestShopIntegration();
+                getLogger().log(Level.INFO, "Hooked into ChestShop " + csIntegration.getChestShop().getDescription().getVersion() + "!");
+            }
+
             this.getLandPerks().runTimer();
             this.getServer().getPluginManager().registerEvents(new CustomEventManager(), this);
-            this.getServer().getPluginManager().registerEvents(new ChatListener(), this);
             this.getServer().getPluginManager().registerEvents(new BanishListener(), this);
             this.getServer().getPluginManager().registerEvents(new VaultListener(), this);
             this.getServer().getPluginManager().registerEvents(new VillageListener(), this);
             this.getServer().getPluginManager().registerEvents(new EmpireListener(), this);
             this.getServer().getPluginManager().registerEvents((landFlags = new LandFlags()), this);
-            this.getServer().getPluginManager().registerEvents(new LockListener(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlagsBlockEvents(), this);
             this.getServer().getPluginManager().registerEvents(new LandFlagsUseEvents(), this);
-            this.getServer().getPluginManager().registerEvents(new EventListener(), this);
-            this.getServer().getPluginManager().registerEvents(new PortalListener(), this);
 
             EmpireManager.getInstance().loadEmpireWorlds();
 
             this.upkeep();
-            running = true;
-            return;
         }
-        this.getLogger().log(Level.SEVERE, "Disabled due to data.json error!");
-        this.getServer().getPluginManager().disablePlugin(this);
+        running = true;
     }
 
     private void upkeep() {
@@ -308,18 +298,30 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     public void loadManagers() {
         // Order is important!
+        CommandManager.getInstance();
         DatabaseManager.getInstance();
         RankManager.getInstance();
         EmpireManager.getInstance();
         VillageManager.getInstance();
-        LandManager.getInstance();
+        if (!Config.Chat.CHAT_ONLY) {
+            LandManager.getInstance();
+        }
         ResidentManager.getInstance();
-        PortalManager.getInstance();
-        LockManager.getInstance();
-        EventManager.getInstance();
-        ScoreboardManager.getInstance();
-        CommandManager.getInstance();
-        ChatManager.getInstance();
+        if (Config.Portal.ENABLED) {
+            PortalManager.getInstance();
+        }
+        if (Config.Lock.ENABLED) {
+            LockManager.getInstance();
+        }
+        if (ConfigManager.getInstance().getEventsConf().getConfig().getBoolean("enabled")) {
+            EventManager.getInstance();
+        }
+        if (Config.Sidebar.ENABLED) {
+            ScoreboardManager.getInstance();
+        }
+        if (Config.Chat.ENABLED) {
+            ChatManager.getInstance();
+        }
     }
 
     private boolean setupChat() {
@@ -364,14 +366,6 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     public boolean isRunning() {
         return running;
-    }
-
-    public String getEmpiresWorldPrefix() {
-        return empiresWorldPrefix;
-    }
-
-    public String getEmpiresWorldSuffix() {
-        return empiresWorldSuffix;
     }
 
     public Set<LockProvider> getLockProviders() {
@@ -423,7 +417,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     }
 
     public static void logDebug(String message) {
-        if (ConfigManager.getInstance().isDebug()) {
+        if (Config.DEBUG) {
             KingdomsPlugin.getInstance().getLogger().info("[DEBUG] " + message);
         }
     }

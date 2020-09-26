@@ -23,6 +23,7 @@ import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.vault.Levels;
 import org.bukkit.ChatColor;
@@ -56,11 +57,11 @@ public class VillageManager {
             villageUuids.put(village.getUUID(), village);
             if (village.isAbandoned()) {
                 long timeAbandoned = System.currentTimeMillis() - village.getCreated();
-                long abandonTime = Utils.getAbandonTime(village.getStateKey());
-                long delay = timeAbandoned > abandonTime * 60 * 1000 ? 0 : abandonTime * 60 * 1000 - timeAbandoned;
-                KingdomsPlugin.logDebug(village.getStateTag() + " " + village.getName() + " will be removed after " + abandonTime + " minutes in " + delay + "!");
+                long abandonTime = TimeUnit.MINUTES.toMillis(Config.Settlement.Upkeep.ABANDON_TIME);
+                long delay = timeAbandoned > abandonTime ? 0 : abandonTime - timeAbandoned;
+                KingdomsPlugin.logDebug(village.getStateTag() + " " + village.getName() + " will be removed after " + Config.Settlement.Upkeep.ABANDON_TIME + " minutes in " + delay + "!");
                 Utils.runLater(() -> {
-                    KingdomsPlugin.getInstance().getLogger().log(Level.INFO, village.getStateTag() + " " + village.getName() + " was removed because it has been abandoned for " + abandonTime + " minutes!");
+                    KingdomsPlugin.getInstance().getLogger().log(Level.INFO, village.getStateTag() + " " + village.getName() + " was removed because it has been abandoned for " + Config.Settlement.Upkeep.ABANDON_TIME + " minutes!");
                     deleteVillage(village);
                 }, delay, TimeUnit.MILLISECONDS);
             }
@@ -98,7 +99,7 @@ public class VillageManager {
             chief.tell(ChatColor.RED + "Error while saving " + village.getName() + " to the database! It already had an ID defined?");
             return;
         }
-        village.setBank(Math.min(Utils.getVillageStartBalance(), Utils.getVillageCreationCost()));
+        village.setBank(Config.Settlement.START_BALANCE);
         villages.put(village.getName().replace(' ', '_').toLowerCase(), village);
         chief.setVillage(village);
         chief.setVillageRank(VillageRank.getChief());
@@ -248,12 +249,12 @@ public class VillageManager {
             DatabaseManager.getInstance().saveResident(residents);
             DatabaseManager.getInstance().saveLand(changedLand);
             Utils.runLater(() -> {
-                KingdomsPlugin.getInstance().getLogger().log(Level.INFO, village.getStateTag() + " " + village.getName() + " was removed because it has been abandoned for " + Utils.getAbandonTime(village.getStateKey()) + " minutes!");
+                KingdomsPlugin.getInstance().getLogger().log(Level.INFO, village.getStateTag() + " " + village.getName() + " was removed because it has been abandoned for " + Config.Settlement.Upkeep.ABANDON_TIME + " minutes!");
                 deleteVillage(village);
                 MessageUtils.broadcast(Message.get("broadcast.village-deletion"),
                         "name", village.getName(),
                         "state", village.getState().getTag());
-            }, Utils.getAbandonTime(village.getStateKey()), TimeUnit.MINUTES);
+            }, Config.Settlement.Upkeep.ABANDON_TIME, TimeUnit.MINUTES);
         });
     }
 

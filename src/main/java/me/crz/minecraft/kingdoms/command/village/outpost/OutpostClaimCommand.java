@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.world.NamedLocation;
@@ -43,8 +44,8 @@ public class OutpostClaimCommand extends VillageSubCommand {
             return true;
         }
 
-        if (resident.getVillage().getBank() < Utils.getOutpostCreationCost()) {
-            resident.tell(getError("not-enough-money"), "amount", String.valueOf(Utils.getOutpostCreationCost()));
+        if (!resident.getVillage().has(Config.Settlement.Outpost.CREATION_COST)) {
+            getError("not-enough-money").tell(resident, "amount", String.valueOf(Config.Settlement.Outpost.CREATION_COST));
             return true;
         }
 
@@ -56,7 +57,7 @@ public class OutpostClaimCommand extends VillageSubCommand {
                 resident.tell(getError("cant-claim-here"), "owner", land.getLandOwner().getName());
             }
         } else {
-            for (SimpleChunkLocation chunk : Utils.getChunksAround(resident.getPlayer(), Utils.getClaimEnemyDistance())) {
+            for (SimpleChunkLocation chunk : Utils.getChunksAround(resident.getPlayer(), Config.Settlement.Claiming.ENEMY_DISTANCE)) {
                 OwnedLand checkLand = LandManager.getInstance().getLand(chunk);
                 if (checkLand == null) {
                     continue;
@@ -70,8 +71,8 @@ public class OutpostClaimCommand extends VillageSubCommand {
                 }
             }
             if (LandManager.getInstance().claimOutpost(resident.getPlayer().getLocation(), resident.getVillage(), args[0]) != null) {
-                MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("success"),
-                        "cost", String.valueOf(Utils.getOutpostCreationCost()),
+                getMessage("success").tell(resident.getVillage().getOnlineResidents(),
+                        "cost", String.valueOf(Config.Settlement.Outpost.CREATION_COST),
                         "player", resident.getName(),
                         "name", args[0],
                         "x", String.valueOf(resident.getPlayer().getLocation().getBlockX()),

@@ -1,3 +1,4 @@
+enabled: true
 bossbar:
   format: "&b&l{title} &f{timeleft}"
   color: yellow

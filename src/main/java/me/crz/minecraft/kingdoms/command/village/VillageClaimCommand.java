@@ -8,6 +8,7 @@ import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageState;
@@ -46,7 +47,7 @@ public class VillageClaimCommand extends VillageSubCommand {
             if (res.hasPermission("kingdoms.command.village.claim.radius")) {
                 try {
                     int radius = Integer.parseInt(args[0]);
-                    int maxRadius = KingdomsPlugin.getInstance().getConfig().getInt("claim-max-radius");
+                    int maxRadius = Config.Settlement.Claiming.MAX_RADIUS;
                     if (radius > maxRadius) {
                         getError("radius-too-large").tell(res, "radius", String.valueOf(radius), "max", String.valueOf(maxRadius));
                         return true;
@@ -116,7 +117,7 @@ public class VillageClaimCommand extends VillageSubCommand {
                 }
                 return true;
             }
-            for (SimpleChunkLocation chunk : Utils.getChunksAround(c, Utils.getClaimEnemyDistance())) {
+            for (SimpleChunkLocation chunk : Utils.getChunksAround(c, Config.Settlement.Claiming.ENEMY_DISTANCE)) {
                 OwnedLand checkLand = LandManager.getInstance().getLand(chunk);
                 if (checkLand == null) {
                     continue;

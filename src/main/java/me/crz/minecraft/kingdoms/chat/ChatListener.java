@@ -1,10 +1,23 @@
 package me.crz.minecraft.kingdoms.chat;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.land.LandManager;
+import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.land.TaxDebtAction;
+import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.utils.Message;
+import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
+import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.TabCompleteEvent;
 
 import java.util.ArrayList;
@@ -13,6 +26,9 @@ public class ChatListener implements Listener {
 
     @EventHandler
     public void onTabComplete(TabCompleteEvent event) {
+        if (!Config.Chat.ENABLED) {
+            return;
+        }
         String[] parts = event.getBuffer().split(" ");
         String last = parts[parts.length - 1];
         if (last.startsWith("@")) {
@@ -25,5 +41,28 @@ public class ChatListener implements Listener {
                     .sorted(String::compareToIgnoreCase)
                     .forEachOrdered(n -> event.getCompletions().add("@" + n));
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Resident res = ResidentManager.getInstance().getResident(event.getPlayer()); // should be cached
+        Utils.runNextTick(() -> {
+            boolean activeChanged = false;
+            for (ChatChannel channel : ChatChannel.values()) {
+                if (channel != ChatChannel.GENERAL) {
+                    if (channel.autoJoin(event.getPlayer())) {
+                        res.getChannels().add(channel);
+                    } else if (Config.Chat.RESET_CHANNELS_ON_LOGIN) {
+                        res.getChannels().remove(channel);
+                        if (res.getActiveChannel() == channel) {
+                            activeChanged = res.setActiveChannel(res.getChannels().iterator().next());
+                        }
+                    }
+                }
+            }
+            if (activeChanged) {
+                Message.get("command.chat.active").tell(res, "name", res.getActiveChannel().getTag());
+            }
+        });
     }
 }

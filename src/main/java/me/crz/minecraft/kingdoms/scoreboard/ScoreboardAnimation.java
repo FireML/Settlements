@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.scoreboard;
 import co.aikar.timings.lib.MCTiming;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 
@@ -18,7 +19,6 @@ public class ScoreboardAnimation implements Listener {
     private String bold;
 
     public ScoreboardAnimation(ScoreboardManager manager) {
-        super();
         bold = String.valueOf(ChatColor.BOLD);
         this.manager = manager;
         PRIMARYT = manager.getText("sidebar.title");
@@ -28,7 +28,7 @@ public class ScoreboardAnimation implements Listener {
         SECONDARY = ChatColor.getLastColors(SECONDARYT);
         stage = false;
         counter = -1;
-        long speed = KingdomsPlugin.getInstance().getConfig().getLong("scoreboard.animation-speed");
+        long speed = Config.Sidebar.HEADER_SPEED;
         if (speed > 0) {
             KingdomsPlugin.getInstance().getServer().getScheduler().scheduleSyncRepeatingTask(KingdomsPlugin.getInstance(), this::onUpdate, speed, speed);
         }

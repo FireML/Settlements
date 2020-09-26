@@ -1,33 +1,19 @@
 package me.crz.minecraft.kingdoms.command;
 
 import me.crz.minecraft.kingdoms.Base;
-import me.crz.minecraft.kingdoms.chat.ChatChannel;
-import me.crz.minecraft.kingdoms.chat.ChatManager;
-import me.crz.minecraft.kingdoms.chat.commands.IgnoreCommand;
-import me.crz.minecraft.kingdoms.chat.commands.MessageCommand;
-import me.crz.minecraft.kingdoms.chat.commands.MsgToggleCommand;
-import me.crz.minecraft.kingdoms.chat.commands.NotifyToggleCommand;
-import me.crz.minecraft.kingdoms.chat.commands.ReplyCommand;
 import me.crz.minecraft.kingdoms.command.admin.VillageAdminCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireCommand;
 import me.crz.minecraft.kingdoms.command.friend.FriendCommand;
-import me.crz.minecraft.kingdoms.command.lock.LockCommand;
-import me.crz.minecraft.kingdoms.command.lock.UnlockCommand;
 import me.crz.minecraft.kingdoms.command.plot.PlotCommand;
-import me.crz.minecraft.kingdoms.command.portal.PortalCommand;
 import me.crz.minecraft.kingdoms.command.resident.ResidentCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageCommand;
-import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
 import java.util.LinkedHashMap;
@@ -40,45 +26,15 @@ public class CommandManager extends Base implements TabExecutor {
     private Map<String, SubCommand> commandMap = new LinkedHashMap<>();
 
     private CommandManager() {
-        super();
+        registerCommand(new VillageAdminCommand(), false);
     }
 
     private void registerCommands() {
         registerCommand(new PlotCommand(null));
-        registerCommand(new PortalCommand());
-        registerCommand(new LockCommand());
-        registerCommand(new UnlockCommand());
         registerCommand(new VillageCommand());
         registerCommand(new EmpireCommand());
-        ChatCommand chatCommand = new ChatCommand();
-        registerCommand(chatCommand);
-        for (ChatChannel channel : ChatChannel.values()) {
-            if (channel.isPrivate()) {
-                continue;
-            }
-            SubCommand channelCommand = chatCommand.getSubCommands().get(channel.name().toLowerCase());
-            if (channelCommand != null) {
-                registerCommand(new PlayerSubCommand(null, channel.name().toLowerCase() + "chat") {
-                    @Override
-                    public boolean run(Player p, String base, String alias, String... args) {
-                        return channelCommand.execute(p, base, alias, args);
-                    }
-
-                    @Override
-                    public boolean isVisible() {
-                        return false;
-                    }
-                });
-            }
-        }
-        registerCommand(new VillageAdminCommand(), false);
         registerCommand(new ResidentCommand());
         registerCommand(new FriendCommand());
-        registerCommand(new MessageCommand());
-        registerCommand(new ReplyCommand());
-        registerCommand(new IgnoreCommand());
-        registerCommand(new MsgToggleCommand());
-        registerCommand(new NotifyToggleCommand());
         registerCommand(new TaxCommand());
         registerCommand(new WarningToggleCommand());
     }
@@ -135,7 +91,9 @@ public class CommandManager extends Base implements TabExecutor {
     synchronized public static CommandManager getInstance() {
         if (instance == null) {
             instance = new CommandManager();
-            instance.registerCommands();
+            if (!Config.Chat.CHAT_ONLY) {
+                instance.registerCommands();
+            }
         }
         return instance;
     }

@@ -26,7 +26,7 @@ import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -181,7 +182,7 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
         } else {
             KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " wasn't able to pay the upkeep of " + total + " and was abandoned!");
             setBank(0);
-            if (Utils.getAbandonTime(getStateKey()) > 0) {
+            if (Config.Empire.Upkeep.ABANDON_TIME > 0) {
                 MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.abandoned"));
                 EmpireManager.getInstance().abandonEmpire(this);
             } else {
@@ -262,9 +263,8 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
 
     @Override
     public long getTax() {
-        int maxTax = Utils.getEmpireMaxTax();
-        if (maxTax > -1 && super.getTax() > maxTax) {
-            return maxTax;
+        if (Config.Empire.MAX_TAX > -1 && super.getTax() > Config.Empire.MAX_TAX) {
+            return Config.Empire.MAX_TAX;
         }
         return super.getTax();
     }
@@ -314,7 +314,7 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
     }
 
     public int getWorldRadius() {
-        return Utils.getEmpireWorldRadius() + getBonusRadius();
+        return Config.Empire.World.BORDER_RADIUS + getBonusRadius();
     }
 
     public Village getCapital() {
@@ -369,7 +369,7 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
     }
 
     public boolean isFull() {
-        return getMemberIds().size() >= ConfigManager.getInstance().getConfig().getInt("max-empire-size");
+        return Config.Empire.MAX_SIZE > 0 && getMemberIds().size() >= Config.Empire.MAX_SIZE;
     }
 
     @Override
@@ -490,7 +490,7 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
     }
 
     public String getWorldName() {
-        return KingdomsPlugin.getInstance().getEmpiresWorldPrefix() + getName() + KingdomsPlugin.getInstance().getEmpiresWorldSuffix();
+        return Config.Empire.World.PREFIX + getName() + Config.Empire.World.SUFFIX;
     }
 
     public boolean isMember(Village village) {
@@ -570,7 +570,7 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
                 "taxdebtaction", getTaxDebtAction().getTag(),
                 "upkeep", Utils.CURRENCY_FORMAT.format(getUpkeep()),
                 "abandoned", yesOrNo(isAbandoned()),
-                "abandonedcountdown", isAbandoned() ? UtilTime.format(getCreated() + (Utils.getAbandonTime(getStateKey()) * 60 * 1000) - System.currentTimeMillis()) : "",
+                "abandonedcountdown", isAbandoned() ? UtilTime.format(getCreated() + TimeUnit.MINUTES.toMillis(Config.Empire.Upkeep.ABANDON_TIME) - System.currentTimeMillis()) : "",
                 "mobspawning", String.valueOf(getMode(PlotMode.mobSpawning)),
                 "firespread", String.valueOf(getMode(PlotMode.fireSpread)),
                 "explosions", String.valueOf(getMode(PlotMode.explosions)),
@@ -629,7 +629,7 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
                                 }
                                 return Long.compare(r1.getLastLogin(), r2.getLastLogin());
                             })
-                            .limit(Utils.getPlayersInShow())
+                            .limit(Config.PLAYERS_IN_INFO)
                             .map(res -> entry.getReplacedText(
                                     "online", res.getPlayer() != null ? online : offline,
                                     "name", res.getName(),

@@ -12,6 +12,7 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.portal.Portal;
 import me.crz.minecraft.kingdoms.portal.PortalManager;
 import me.crz.minecraft.kingdoms.utils.Message;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.Material;
 import org.bukkit.entity.Monster;
@@ -47,6 +48,10 @@ public class PaperListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPortalDestroy(BlockDestroyEvent e) {
+        if (!Config.Portal.ENABLED) {
+            return;
+        }
+
         if (e.getBlock().getType() != Material.NETHER_PORTAL && e.getBlock().getType() != Material.OBSIDIAN) {
             return;
         }

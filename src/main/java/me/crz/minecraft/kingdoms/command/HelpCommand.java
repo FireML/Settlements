@@ -7,6 +7,7 @@ import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -115,8 +116,7 @@ public class HelpCommand extends SubCommand {
             }
 
             if (!commands.isEmpty()) {
-                int entriesPerPage = Utils.getEntriesPerPage();
-                int maxPage = (int) Math.ceil(commands.size() / (double) entriesPerPage);
+                int maxPage = (int) Math.ceil(commands.size() / (double) Config.ENTRIES_PER_PAGE);
                 if (page > maxPage) {
                     page = maxPage;
                 }
@@ -127,16 +127,16 @@ public class HelpCommand extends SubCommand {
                         "aliases", getParent().getAliases().isEmpty() ? "" : getParent().getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getParent().getAliases())),
                         "path", WordUtils.capitalizeFully(base)
                 );
-                int overflow = Math.min(entriesPerPage / 3, maxPage);
-                if (commands.size() - ((maxPage - 1) * entriesPerPage) <= overflow) {
+                int overflow = Math.min(Config.ENTRIES_PER_PAGE / 3, maxPage);
+                if (commands.size() - ((maxPage - 1) * Config.ENTRIES_PER_PAGE) <= overflow) {
                     maxPage--;
-                    entriesPerPage = (int) Math.ceil(commands.size() / (double) maxPage);
+                    Config.ENTRIES_PER_PAGE = (int) Math.ceil(commands.size() / (double) maxPage);
                 }
-                int limit = entriesPerPage;
+                int limit = Config.ENTRIES_PER_PAGE;
                 if (page == maxPage) {
                     limit *= 2;
                 }
-                commands.stream().skip((page - 1) * entriesPerPage).limit(limit).forEachOrdered(e -> {
+                commands.stream().skip((page - 1) * Config.ENTRIES_PER_PAGE).limit(limit).forEachOrdered(e -> {
                     SubCommand s = e.getValue();
                     String usage;
                     String displayPath;

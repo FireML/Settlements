@@ -8,6 +8,7 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.portal.Portal;
 import me.crz.minecraft.kingdoms.portal.PortalManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.Chunk;
 
@@ -82,8 +83,10 @@ public class OutpostUnclaimCommand extends VillageSubCommand {
                     "z", String.valueOf(resident.getPlayer().getLocation().getBlockZ()));
         };
         Set<Portal> portals = new HashSet<>();
-        for (OwnedLand ownedLand : toUnclaim) {
-            portals.addAll(PortalManager.getInstance().getPortals(ownedLand));
+        if (Config.Portal.ENABLED) {
+            for (OwnedLand ownedLand : toUnclaim) {
+                portals.addAll(PortalManager.getInstance().getPortals(ownedLand));
+            }
         }
         if (toUnclaim.size() == 1 && portals.isEmpty()) {
             unclaim.run();

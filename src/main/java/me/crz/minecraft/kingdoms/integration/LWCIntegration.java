@@ -17,6 +17,7 @@ import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -27,7 +28,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import javax.rmi.CORBA.Util;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -142,12 +142,11 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
     @Override
     public void onRegisterProtection(LWCProtectionRegisterEvent event) {
         if (!event.getPlayer().hasPermission("kingdoms.bypass.restriction.lwc")) {
-            boolean limitedToVillage = plugin.getConfig().getBoolean("only-lock-in-settlement");
             Resident res = ResidentManager.getInstance().getResident(event.getPlayer());
-            if (limitedToVillage) {
+            if (Config.Lock.ONLY_IN_CLAIM) {
                 OwnedLand land = LandManager.getInstance().getLand(event.getPlayer().getLocation());
                 if (land == null) {
-                    res.tell(getMessage("only-in-village"));
+                    res.tell(getMessage("only-in-claim"));
                     event.setCancelled(true);
                     return;
                 }
@@ -186,7 +185,7 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
                                 + " AND z >= " + claim.getZ() * 16
                                 + " AND x < " + claim.getX() * 16 + 16
                                 + " AND z < " + claim.getZ() * 16 + 16
-                        , KingdomsPlugin.getInstance().getConfig().getBoolean("remove-locked-blocks"));
+                        , Config.Lock.Unclaim.REMOVE_BLOCK);
             }
         });
     }
@@ -196,7 +195,7 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
         Utils.runAsync(() -> lwc.fastRemoveProtections(
                 Bukkit.getConsoleSender(),
                 "world = '" + world.getName() + "'",
-                KingdomsPlugin.getInstance().getConfig().getBoolean("remove-locked-blocks")
+                Config.Lock.Unclaim.REMOVE_BLOCK
         ));
     }
 

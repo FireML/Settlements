@@ -8,6 +8,7 @@ import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -61,13 +62,13 @@ public class EmpireListCommand extends SubCommand {
                     .sorted(Empire::compareTo)
                     .collect(Collectors.toList());
 
-            int pages = (int) Math.ceil(empires.size() / (double) Utils.getEntriesPerPage());
+            int pages = (int) Math.ceil(empires.size() / (double) Config.ENTRIES_PER_PAGE);
             getMessage("head").tell(sender,
                     "access", finalAccess != null ? finalAccess.getTag() + " " : "",
                     "page", String.valueOf(finalPage),
                     "maxpage", String.valueOf(pages)
             );
-            for (int i = (finalPage - 1) * Utils.getEntriesPerPage(); i < empires.size() && i < finalPage * Utils.getEntriesPerPage(); i++) {
+            for (int i = (finalPage - 1) * Config.ENTRIES_PER_PAGE; i < empires.size() && i < finalPage * Config.ENTRIES_PER_PAGE; i++) {
                 Empire e = empires.get(i);
                 getMessage("entry" + (e.isAbandoned() ? "-abandoned" : "")).tell(sender, e.getReplacements(this,
                         "place", String.valueOf(i + 1),

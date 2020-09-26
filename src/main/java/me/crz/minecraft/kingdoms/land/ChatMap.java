@@ -6,6 +6,7 @@ import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -26,6 +27,7 @@ import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class ChatMap {
@@ -240,7 +242,7 @@ public class ChatMap {
             ComponentBuilder hover = new ComponentBuilder(land.getLandOwner().getName());
             if (land.getLandOwner().isAbandoned()) {
                 hover.append("\n").append(messages.getMessage("hover.abandoned").getReplacedComponents(
-                        "countdown", UtilTime.format(land.getLandOwner().getCreated() + (Utils.getAbandonTime(land.getLandOwner().getStateKey()) * 60 * 1000) - System.currentTimeMillis())
+                        "countdown", UtilTime.format(land.getLandOwner().getCreated() + TimeUnit.MINUTES.toMillis(Config.Empire.Upkeep.ABANDON_TIME) - System.currentTimeMillis())
                 ));
             } else {
                 if (!land.getDescription().isEmpty()) {

@@ -1,26 +1,26 @@
 package me.crz.minecraft.kingdoms.command.admin;
 
-import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.utils.config.Data;
-import org.bukkit.entity.Player;
+import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.village.Resident;
 
-public class VillageAdminSocialSpyCommand extends PlayerSubCommand {
+public class VillageAdminSocialSpyCommand extends ResidentSubCommand {
     public VillageAdminSocialSpyCommand(SubCommand parent) {
-        super(parent, "ss", "socialspy");
-        setPermission("kingdoms.admin.ss");
+        super(parent, "socialspy", "ss");
+        setPermission("kingdoms.admin.socialspy");
     }
 
     @Override
-    public boolean run(final Player player, final String base, final String alias, final String... args) {
-        if (Data.socialSpy.contains(player.getUniqueId().toString())) {
-            Data.socialSpy.remove(player.getUniqueId().toString());
-            MessageUtils.tell(player, "&6&lSocialSpy &c&lDisabled");
+    public boolean run(Resident resident, String base, String alias, String... args) {
+        resident.setSocialSpy(!resident.getSocialSpy());
+        if (resident.getSocialSpy()) {
+            getMessage("enabled").tell(resident);
         } else {
-            Data.socialSpy.add(player.getUniqueId().toString());
-            MessageUtils.tell(player, "&6&lSocialSpy &a&lEnabled");
+            getMessage("disabled").tell(resident);
         }
+        Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(resident));
         return true;
     }
 }

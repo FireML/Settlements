@@ -22,6 +22,7 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -68,11 +69,11 @@ public class EmpireManager {
             empireUuids.put(empire.getUUID(), empire);
             if (empire.isAbandoned()) {
                 long timeAbandoned = System.currentTimeMillis() - empire.getCreated();
-                long abandonTime = Utils.getAbandonTime(empire.getStateKey());
-                long delay = timeAbandoned > abandonTime * 60 * 1000 ? 0 : abandonTime * 60 * 1000 - timeAbandoned;
-                KingdomsPlugin.logDebug(empire.getStateTag() + " " + empire.getName() + " will be removed after " + abandonTime + " minutes in " + delay + "!");
+                long abandonTime = TimeUnit.MINUTES.toMillis(Config.Empire.Upkeep.ABANDON_TIME);
+                long delay = timeAbandoned > abandonTime ? 0 : abandonTime - timeAbandoned;
+                KingdomsPlugin.logDebug(empire.getStateTag() + " " + empire.getName() + " will be removed after " + Config.Empire.Upkeep.ABANDON_TIME + " minutes in " + delay + "!");
                 Utils.runLater(() -> {
-                    KingdomsPlugin.getInstance().getLogger().log(Level.INFO, empire.getStateTag() + " " + empire.getName() + " was removed because it has been abandoned for " + abandonTime + " minutes!");
+                    KingdomsPlugin.getInstance().getLogger().log(Level.INFO, empire.getStateTag() + " " + empire.getName() + " was removed because it has been abandoned for " + Config.Empire.Upkeep.ABANDON_TIME + " minutes!");
                     deleteEmpire(empire);
                     MessageUtils.broadcast(Message.get("broadcast.empire-deletion"), "name", empire.getName());
                 }, delay, TimeUnit.MILLISECONDS);
@@ -152,7 +153,7 @@ public class EmpireManager {
             KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving empire " + empire.getName() + " to the database! It already had an ID defined?");
             return;
         }
-        empire.setBank(Math.min(Utils.getEmpireStartBalance(), Utils.getEmpireCreationCost()));
+        empire.setBank(Config.Empire.START_BALANCE);
         empire.getCapital().setEmpire(empire);
         empire.getCapital().getChief().setEmpireRank(EmpireRank.getLeader());
         empires.put(empire.getName().replace(' ', '_').toLowerCase(), empire);
@@ -176,38 +177,27 @@ public class EmpireManager {
     private World createEmpireWorld(Empire empire) {
         String worldName = empire.getWorldName();
         World world = Bukkit.getWorld(worldName);
-        ConfigurationSection worldConfig = KingdomsPlugin.getInstance().getConfig().getConfigurationSection("empires-world");
         if (world == null) {
             WorldCreator worldCreator = new WorldCreator(worldName);
-            if (worldConfig.isString("generator")) {
-                worldCreator.generator(worldConfig.getString("generator"));
-                if (worldConfig.isString("generator-settings")) {
-                    worldCreator.generatorSettings(worldConfig.getString("generator-settings"));
+            if (!Config.Empire.World.GENERATOR.isEmpty()) {
+                worldCreator.generator(Config.Empire.World.GENERATOR);
+                if (!Config.Empire.World.GENERATOR_SETTINGS.isEmpty()) {
+                    worldCreator.generatorSettings(Config.Empire.World.GENERATOR_SETTINGS);
                 }
             }
-            if (worldConfig.isSet("seed")) {
-                if (worldConfig.isLong("seed")) {
-                    worldCreator.seed(worldConfig.getLong("seed"));
-                } else {
-                    worldCreator.seed(worldConfig.getString("seed").hashCode());
-                }
-            }
-            if (worldConfig.isBoolean("structures")) {
-                worldCreator.generateStructures(worldConfig.getBoolean("structures"));
-            }
-            if (worldConfig.isString("environment")) {
+            if (!Config.Empire.World.SEED.isEmpty()) {
                 try {
-                    worldCreator.environment(World.Environment.valueOf(worldConfig.getString("environment").toUpperCase()));
-                } catch (IllegalArgumentException e) {
-                    KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, worldConfig.getString("environment") + " is not a valid Environment for the empires world!");
+                    worldCreator.seed(Long.parseLong(Config.Empire.World.SEED));
+                } catch (NumberFormatException e) {
+                    worldCreator.seed(Config.Empire.World.SEED.hashCode());
                 }
             }
-            if (worldConfig.isString("type")) {
-                try {
-                    worldCreator.type(WorldType.valueOf(worldConfig.getString("type").toUpperCase()));
-                } catch (IllegalArgumentException e) {
-                    KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, worldConfig.getString("type") + " is not a valid type for the empires world!");
-                }
+            worldCreator.generateStructures(Config.Empire.World.STRUCTURES);
+            if (Config.Empire.World.ENVIRONMENT != null) {
+                worldCreator.environment(Config.Empire.World.ENVIRONMENT);
+            }
+            if (Config.Empire.World.TYPE != null) {
+                worldCreator.type(Config.Empire.World.TYPE);
             }
             world = Bukkit.createWorld(worldCreator);
         }
@@ -329,9 +319,9 @@ public class EmpireManager {
             DatabaseManager.getInstance().saveResident(modifiedResidents);
 
             Utils.runLater(() -> {
-                KingdomsPlugin.getInstance().getLogger().log(Level.INFO, empire.getStateTag() + " " + empire.getName() + " was removed because it has been abandoned for " + Utils.getAbandonTime(empire.getStateKey()) + " minutes!");
+                KingdomsPlugin.getInstance().getLogger().log(Level.INFO, empire.getStateTag() + " " + empire.getName() + " was removed because it has been abandoned for " + Config.Empire.Upkeep.ABANDON_TIME + " minutes!");
                 deleteEmpire(empire);
-            }, Utils.getAbandonTime(empire.getStateKey()), TimeUnit.MINUTES);
+            }, Config.Empire.Upkeep.ABANDON_TIME, TimeUnit.MINUTES);
         });
     }
 
@@ -373,11 +363,11 @@ public class EmpireManager {
     }
 
     public Empire getEmpireFromWorld(String worldName) {
-        if (worldName.startsWith(KingdomsPlugin.getInstance().getEmpiresWorldPrefix())
-                && worldName.endsWith(KingdomsPlugin.getInstance().getEmpiresWorldSuffix())) {
+        if (worldName.startsWith(Config.Empire.World.PREFIX)
+                && worldName.endsWith(Config.Empire.World.SUFFIX)) {
             return getEmpireFromName(worldName.substring(
-                    KingdomsPlugin.getInstance().getEmpiresWorldPrefix().length(),
-                    worldName.length() - KingdomsPlugin.getInstance().getEmpiresWorldSuffix().length()
+                    Config.Empire.World.PREFIX.length(),
+                    worldName.length() - Config.Empire.World.SUFFIX.length()
             ));
         }
         return null;

@@ -1,6 +1,6 @@
 package me.crz.minecraft.kingdoms.command;
 
-import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -26,7 +26,7 @@ public class WarningToggleCommand extends ResidentSubCommand {
         getMessage(resident.toggleCloseBuildingNotification(village) ? "enabled" : "disabled").tell(resident,
                 "state", village.getStateTag(),
                 "settlement", village.getName(),
-                "time", String.valueOf(Utils.getCloseBuildingNotificationToggleTime())
+                "time", String.valueOf(Config.Settlement.Claiming.Close.BuildingNotification.TOGGLE_TIME)
         );
         return true;
     }

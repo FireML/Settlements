@@ -240,10 +240,12 @@
             <id>placeholderapi</id>
             <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
+        <!-- down :S
         <repository>
             <id>brewery-repo</id>
             <url>https://zebradrive.de/maven/</url>
         </repository>
+        -->
     </repositories>
 
     <dependencies>

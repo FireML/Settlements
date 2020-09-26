@@ -69,8 +69,6 @@ public class IconRpMapping {
         String fileName = "iconrpmapping.yml";
 
         ConfigAccessor iconconfig = new ConfigAccessor(plugin, fileName);
-        iconconfig.saveDefaultConfig();
-        iconconfig.reloadConfig();
         
         offset = iconconfig.getConfig().getInt("offset");
         

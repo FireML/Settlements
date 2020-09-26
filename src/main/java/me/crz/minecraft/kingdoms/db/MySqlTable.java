@@ -239,7 +239,8 @@ public enum MySqlTable {
             + "bonusClaims INTEGER,"
             + "lastLogin BIGINT(11) NOT NULL,"
             + "activeChannel VARCHAR(255) NOT NULL,"
-            + "swear BOOLEAN NOT NULL"
+            + "swear BOOLEAN NOT NULL,"
+            + "socialSpy BOOLEAN NOT NULL"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     RESIDENT_CHANNELS("CREATE TABLE IF NOT EXISTS {tablePrefix}resident_channels ("

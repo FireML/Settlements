@@ -1,9 +1,9 @@
 package me.crz.minecraft.kingdoms.command.village;
 
-import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.gui.RankSelectGui;
 import me.crz.minecraft.kingdoms.village.gui.TitlesGUI;
@@ -50,16 +50,16 @@ public class VillageTitlesCommand extends VillageSubCommand {
                         getError("invalid-rank").tell(res, "rank", args[0]);
                     } else if (rank.above(res.getVillageRank())) {
                         getError("cant-edit-higher").tell(res, "rank", res.getVillageRank().getTag());
-                    } else if (res.getVillage().getTitles(rank).size() >= Utils.getTitlesPerRank()) {
+                    } else if (res.getVillage().getTitles(rank).size() >= Config.Settlement.TITLES_PER_RANK) {
                         getError("too-many").tell(res,
                                 "rank", res.getVillageRank().getTag(),
-                                "max", String.valueOf(Utils.getTitlesPerRank())
+                                "max", String.valueOf(Config.Settlement.TITLES_PER_RANK)
                         );
                     } else if (args[1].length() > 16) {
                         getError("too-long").tell(res, "input", args[1]);
                     } else if (!TITLE_PATTERN.matcher(args[1]).matches()) {
                         getError("invalid-characters").tell(res, "input", args[1]);
-                    } else if (ChatManager.getInstance().containsAnyCurses(args[1])) {
+                    } else if (Utils.containsAnyCurses(args[1])) {
                         getError("prohibited-words").tell(res, "input", args[1]);
                     } else if (res.getVillage().addTitle(rank, args[1])) {
                         getMessage("success").tell(res, "title", args[1], "rank", rank.getTag());
@@ -91,16 +91,16 @@ public class VillageTitlesCommand extends VillageSubCommand {
                         getMessage("success").tell(res, "title", args[1], "rank", rank.getTag());
                     } else {
                         // title doesn't exist, add it
-                        if (res.getVillage().getTitles(rank).size() >= Utils.getTitlesPerRank()) {
+                        if (res.getVillage().getTitles(rank).size() >= Config.Settlement.TITLES_PER_RANK) {
                             getError("too-many").tell(res,
                                     "rank", res.getVillageRank().getTag(),
-                                    "max", String.valueOf(Utils.getTitlesPerRank())
+                                    "max", String.valueOf(Config.Settlement.TITLES_PER_RANK)
                             );
                         } else if (args[1].length() > 16) {
                             getError("too-long").tell(res, "input", args[1]);
                         } else if (!TITLE_PATTERN.matcher(args[1]).matches()) {
                             getError("invalid-characters").tell(res, "input", args[1]);
-                        } else if (ChatManager.getInstance().containsAnyCurses(args[1])) {
+                        } else if (Utils.containsAnyCurses(args[1])) {
                             getError("prohibited-words").tell(res, "input", args[1]);
                         } else {
                             res.getVillage().setDefaultTitle(rank, args[1]);

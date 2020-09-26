@@ -32,6 +32,7 @@ import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.world.SimpleBlockLocation;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
@@ -54,8 +55,7 @@ public class LandManager {
     private Multimap<UUID, OwnedLand> linkedPlots = MultimapBuilder.hashKeys().hashSetValues().build();
 
     private LandManager() {
-        super();
-        nearbyRadius = Utils.getCloseBuildingNotificationDistance();
+        nearbyRadius = Config.Settlement.Claiming.Close.BuildingNotification.DISTANCE;
         for (OwnedLand land : DatabaseManager.getInstance().getAllLand()) {
             cacheLand(land);
         }
@@ -206,9 +206,13 @@ public class LandManager {
             KingdomsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + land.getKey() + " owned by " + land.getLandOwner().getName() + " was unclaimed");
             land.setLandOwner(null);
 
-            portals.addAll(PortalManager.getInstance().getPortals(land));
+            if (Config.Portal.ENABLED) {
+                portals.addAll(PortalManager.getInstance().getPortals(land));
+            }
         }
-        PortalManager.getInstance().removePortals(portals);
+        if (!portals.isEmpty()) {
+            PortalManager.getInstance().removePortals(portals);
+        }
         if (nearbyRadius > 0) {
             for (OwnedLand land : lands) {
                 for (SimpleChunkLocation chunkLocation : Utils.getChunksAround(land, nearbyRadius)) {
@@ -220,7 +224,7 @@ public class LandManager {
             }
         }
         Utils.runAsync(() -> {
-            if (KingdomsPlugin.getInstance().getConfig().getBoolean("remove-locks-on-unclaim")) {
+            if (Config.Lock.Unclaim.REMOVE) {
                 removeLocks(lands);
             }
             DatabaseManager.getInstance().unclaimLand(lands);
@@ -237,7 +241,7 @@ public class LandManager {
                 KingdomsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + claim.getKey() + " owned by " + village.getName() + " was unclaimed");
             }
             villageLands.removeAll(village.getId());
-            if (KingdomsPlugin.getInstance().getConfig().getBoolean("remove-locks-on-unclaim")) {
+            if (Config.Lock.Unclaim.REMOVE) {
                 removeLocks(claims);
             }
         });
@@ -328,14 +332,13 @@ public class LandManager {
     }
 
     public OwnedLand claimOutpost(Location location, Village village, String name) {
-        if (village.getBank() < Utils.getOutpostCreationCost()) {
+        if (!village.removeFromBank(Config.Settlement.Outpost.CREATION_COST)) {
             return null;
         }
         OwnedLand land = this.claimLand(new SimpleChunkLocation(location), location, village);
         land.setOutpost(name);
         cacheLand(land);
         village.setOutpostHome(name, location);
-        village.setBank(village.getBank() - Utils.getOutpostCreationCost());
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().saveVillage(village);
             DatabaseManager.getInstance().saveLand(land);
@@ -428,7 +431,7 @@ public class LandManager {
     }
 
     public void checkUnclaim() {
-        if (Utils.getCloseClaimsGraceDays() < 0) {
+        if (Config.Settlement.Claiming.Close.Unclaim.GRACE_DAYS < 0) {
             return;
         }
         Map<LandOwner, Integer> villageUnclaims = new HashMap<>();
@@ -474,7 +477,7 @@ public class LandManager {
     }
 
     public void checkClaimDistance(LandOwner source, LandOwner oldAlly) {
-        if (Utils.getClaimEnemyDistance() > 0 && (!(source instanceof Village) || !((Village) source).isAllowAllyClaim())) {
+        if (Config.Settlement.Claiming.ENEMY_DISTANCE > 0 && (!(source instanceof Village) || !((Village) source).isAllowAllyClaim())) {
             if (oldAlly instanceof Village) {
                 checkClaimDistance(source, (Village) oldAlly);
             } else if (oldAlly instanceof Empire) {
@@ -486,17 +489,15 @@ public class LandManager {
     }
 
     private void checkClaimDistance(LandOwner source, Village oldAlly) {
-        int graceDays = Utils.getCloseClaimsGraceDays();
+        int graceDays = Config.Settlement.Claiming.Close.Unclaim.GRACE_DAYS;
         if (graceDays < 0) {
             return;
         }
-        boolean unclaimOutposts = Utils.getCloseClaimsUnclaimsOutposts();
         List<OwnedLand> toSave = new ArrayList<>();
         List<OwnedLand> toUnclaim = new ArrayList<>();
-        int enemyClaimDistance = Utils.getClaimEnemyDistance();
         for (OwnedLand land : getClaimedLand(oldAlly)) {
-            if (enemyClaimDistance > 0 && (unclaimOutposts || !land.isOutpost())) {
-                for (SimpleChunkLocation c : Utils.getChunksAround(land, enemyClaimDistance)) {
+            if (Config.Settlement.Claiming.ENEMY_DISTANCE > 0 && (Config.Settlement.Claiming.Close.Unclaim.OUTPOSTS || !land.isOutpost())) {
+                for (SimpleChunkLocation c : Utils.getChunksAround(land, Config.Settlement.Claiming.ENEMY_DISTANCE)) {
                     OwnedLand around = getLand(c);
                     if (around != null && around.isOwnedBy(source)) {
                         if (graceDays > 0) {

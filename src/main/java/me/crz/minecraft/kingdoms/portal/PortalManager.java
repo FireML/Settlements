@@ -6,10 +6,13 @@ import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Table;
 import io.papermc.lib.PaperLib;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.command.CommandManager;
+import me.crz.minecraft.kingdoms.command.portal.PortalCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.world.SimpleBlockLocation;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Axis;
@@ -51,9 +54,14 @@ public class PortalManager {
             }
         }
         KingdomsPlugin.logDebug(portals.size() + " portals loaded!");
+        CommandManager.getInstance().registerCommand(new PortalCommand());
+        KingdomsPlugin.getInstance().getServer().getPluginManager().registerEvents(new PortalListener(), KingdomsPlugin.getInstance());
     }
 
     public static PortalManager getInstance() {
+        if (!Config.Portal.ENABLED) {
+            throw new IllegalStateException("Tried to get PortalManager while portals were disabled!");
+        }
         if (instance == null) {
             instance = new PortalManager();
         }

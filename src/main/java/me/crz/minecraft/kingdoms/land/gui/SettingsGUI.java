@@ -4,7 +4,6 @@ import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.ChatMap;
 import me.crz.minecraft.kingdoms.land.LandManager;
@@ -13,6 +12,7 @@ import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import net.wesjd.anvilgui.AnvilGUI;
@@ -82,9 +82,10 @@ public class SettingsGUI extends PlotGUI {
                         .onComplete((player, text) -> {
                             OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
                             if (currentLand != null && (currentLand.isPlotOwner(player) || currentLand.canAdmin(ResidentManager.getInstance().getResident(player)))) {
-                                text = MessageUtils.replaceColorCodes(ChatManager.getInstance().filterAllCurses(ChatColor.stripColor(text.trim())));
-                                if (ChatColor.stripColor(text).length() > Utils.getPlotNameLength()) {
-                                    getError("too-long").tell(player, "input", text, "amount", String.valueOf(Utils.getPlotNameLength()));
+                                text = MessageUtils.replaceColorCodes(Utils.filterAllCurses(ChatColor.stripColor(text.trim())));
+                                int maxLength = Math.min(Config.Plot.NAME_LENGTH, 255);
+                                if (ChatColor.stripColor(text).length() > maxLength) {
+                                    getError("too-long").tell(player, "input", text, "amount", String.valueOf(maxLength));
                                     return AnvilGUI.Response.text(text);
                                 }
                                 currentLand.setName(text);
@@ -111,9 +112,9 @@ public class SettingsGUI extends PlotGUI {
                         .onComplete((player, text) -> {
                             OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
                             if (currentLand != null && (currentLand.isPlotOwner(player) || currentLand.canAdmin(ResidentManager.getInstance().getResident(player)))) {
-                                text = MessageUtils.replaceColorCodes(ChatManager.getInstance().filterAllCurses(ChatColor.stripColor(text.trim())));
-                                if (ChatColor.stripColor(text).length() > Utils.getPlotDescriptionLength()) {
-                                    getError("too-long").tell(player, "input", text, "amount", String.valueOf(Utils.getPlotDescriptionLength()));
+                                text = MessageUtils.replaceColorCodes(Utils.filterAllCurses(ChatColor.stripColor(text.trim())));
+                                if (ChatColor.stripColor(text).length() > Config.Plot.DESCRIPTION_LENGTH) {
+                                    getError("too-long").tell(player, "input", text, "amount", String.valueOf(Config.Plot.DESCRIPTION_LENGTH));
                                     return AnvilGUI.Response.text(text);
                                 }
                                 currentLand.setDescription(text);
