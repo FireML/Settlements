@@ -373,7 +373,7 @@ public class Utils {
     }
 
     public static boolean getPlotMode(PlotMode mode, String type) {
-        return ConfigManager.getInstance().getConfig().getBoolean("modes." + type + "." + mode.getKey(), false);
+        return ConfigManager.getInstance().getConfig().getBoolean("modes." + type + "." + mode.getKey(), mode.getDefault());
     }
 
     public static int getPlotNameLength() {
@@ -760,6 +760,10 @@ public class Utils {
 
     public static boolean isHostile(LivingEntity entity) {
         return entity instanceof Monster || SPECIAL_HOSTILE.contains(entity.getType());
+    }
+
+    public static boolean isHostile(EntityType entityType) {
+        return entityType.getEntityClass() != null && Monster.class.isAssignableFrom(entityType.getEntityClass()) || SPECIAL_HOSTILE.contains(entityType);
     }
 
     public static WeatherState getWeatherState(World world) {

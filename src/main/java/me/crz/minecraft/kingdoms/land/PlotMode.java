@@ -14,6 +14,7 @@ import org.bukkit.Material;
 public enum PlotMode implements NameTag {
     pvp(Material.IRON_SWORD),
     mobSpawning(Material.SKELETON_SKULL),
+    passiveSpawning(Material.PIG_SPAWN_EGG, true),
     fireSpread(Material.FIREWORK_STAR),
     explosions(Material.TNT),
     buff(Material.POTION, true),

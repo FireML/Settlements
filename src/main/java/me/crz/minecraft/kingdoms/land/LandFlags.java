@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.land;
 
 import co.aikar.timings.Timing;
 import com.destroystokyo.paper.event.block.TNTPrimeEvent;
+import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.essentials.events.HostileCreaturePreSpawnEvent;
@@ -20,6 +21,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -240,12 +242,39 @@ public class LandFlags extends Base implements LandFlagBase {
     }
 
     @EventHandler(ignoreCancelled = true)
+    public void onHostileSpawn(PreCreatureSpawnEvent e) {
+        if (e.getReason() != CreatureSpawnEvent.SpawnReason.CUSTOM
+                && !Utils.isHostile(e.getType())
+                && !isAllowed(e.getSpawnLocation(), PlotMode.passiveSpawning)) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onHostileSpawn(CreatureSpawnEvent e) {
+        if (e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.CUSTOM
+                && !Utils.isHostile(e.getEntity())
+                && !isAllowed(e.getLocation(), PlotMode.passiveSpawning)) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerSpawnEggClick(PlayerInteractEvent event) {
         if (event.getClickedBlock() != null
                 && event.getItem() != null
-                && event.getItem().getType().name().endsWith("SPAWN_EGG")
-                && !isAllowed(event.getClickedBlock().getRelative(event.getBlockFace()).getLocation(), PlotMode.mobSpawning)) {
-            event.setCancelled(true);
+                && event.getItem().getType().name().endsWith("_SPAWN_EGG")) {
+            String material = event.getItem().getType().name();
+            try {
+                EntityType type = EntityType.valueOf(material.substring(0, material.length() - "_SPAWN_EGG".length()));
+                event.setCancelled(!isAllowed(
+                        event.getClickedBlock().getLocation(),
+                        Utils.isHostile(type) ? PlotMode.mobSpawning : PlotMode.passiveSpawning
+                ));
+            } catch (IllegalArgumentException e) {
+                KingdomsPlugin.logDebug("Unable to get entity type of " + material + ": " + e.getMessage());
+                event.setCancelled(true);
+            }
         }
     }
 

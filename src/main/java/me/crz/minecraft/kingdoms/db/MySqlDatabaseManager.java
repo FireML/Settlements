@@ -109,6 +109,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
         addColumn(MySqlTable.EMPIRES, "discord", "TEXT NOT NULL AFTER description");
         addColumn(MySqlTable.SETTLEMENTS, "discord", "TEXT NOT NULL AFTER description");
         addColumn(MySqlTable.RESIDENTS, "empireTitle", "VARCHAR(16) AFTER title");
+        addColumn(MySqlTable.EMPIRES, "passiveSpawning", "BOOLEAN NOT NULL AFTER mobSpawning");
+        addColumn(MySqlTable.SETTLEMENTS, "passiveSpawning", "BOOLEAN NOT NULL AFTER mobSpawning");
     }
 
     private void initializeTables() throws SQLException {

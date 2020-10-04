@@ -472,6 +472,9 @@ names:
       enemy-settlement: In enemies settlements
       unclaimed: In unclaimed area
       everywhere: Globally
+  plotmode:
+    mobspawning: "Hostile Mobspawning"
+    passivespawning: "Passive Mobspawning"
 integration:
   chestshop:
     not-allowed: "&c&lYou can only create shops in a claim or empire world!"
@@ -1081,7 +1084,8 @@ gui:
         &9&lName: &r{name}
         &9&lDescription: &r{description}
         &9&lModes:
-        &7MobSpawning: &6{mobspawning}
+        &7Hostile MobSpawning: &6{hostilespawning}
+        &7Passive MobSpawning: &6{passivespawning}
         &7FireSpread: &6{firespread}
         &7Explosions: &6{explosions}
         &7PvP: &6{pvp}
@@ -1503,7 +1507,7 @@ command:
         &c&l{state}: &7{landowner}
         &9&lName: &r{name}
         &9&lDescription: &r{description}
-        &9&lModes: &7MobSpawning: &6{mobspawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explosions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}&r&7 (from {buildsource}) | Embassy: &6{embassy}
+        &9&lModes: &7Hostile MobSpawning: &6{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explosions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}&r&7 (from {buildsource}) | Embassy: &6{embassy}
       owner: "&a&lPlot Owner: &7{name}"
       price: "&a&lPlot Price: &7₲{price}"
       tax: "&a&lPlot Tax: &7₲{tax}"
@@ -1730,7 +1734,7 @@ command:
         &6&lTax debt action: &r&7{taxdebtaction}
         &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
-        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
         &b&l{chieftitle}: &r&7{chiefonline}{chief}
         {residents}
@@ -1747,7 +1751,7 @@ command:
         &6&lTax debt action: &r&7{taxdebtaction}
         &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
-        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
         &b&l{chieftitle}: &r&7{chiefonline}{chief}
         {residents}
@@ -2036,7 +2040,7 @@ command:
         &6&lTax debt action: &r&7{taxdebtaction}
         &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
-        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &b&l{chieftitle}: &r&7{chiefonline}{chief}
         {residents}
       empire: |-
@@ -2053,7 +2057,7 @@ command:
         &6&lTax debt action: &r&7{taxdebtaction}
         &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
-        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
         &b&l{chieftitle}: &r&7{chiefonline}{chief}
         &b&lMembers:
@@ -2335,7 +2339,7 @@ command:
         &6&lTax debt action: &r&7{taxdebtaction}
         &6&lBonusoutposts &r&7{bonusoutposts}
         &6&lBonusclaims &r&7{bonus}
-        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
         &6&lCapital &r&7{capitalstate} {capital}
         &e&l{chiefempiretitle}: &r&7{chiefvillagetitle} {chiefonline}{chief}
@@ -2567,7 +2571,7 @@ command:
         &6&lTax debt action: &r&7{taxdebtaction}
         &6&lBonusoutposts &r&7{bonusoutposts}
         &6&lBonusclaims &r&7{bonus}
-        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Mobspawning: &r&e{mobspawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
         &6&lCapital &r&7{capitalstate} {capital}
         &e&l{chiefempiretitle}: &r&7{chiefvillagetitle} {chiefonline}{chief}

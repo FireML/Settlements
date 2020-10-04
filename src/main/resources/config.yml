@@ -147,12 +147,14 @@ modes:
     explosions: false
     pvp: true
     mobspawning: true
+    passivespawning: true
   # Settings for worlds that have claiming disabled
   unclaimable:
     firespread: false
     explosions: false
     pvp: true
     mobspawning: true
+    passivespawning: true
   # Override for specific worlds
   worlds:
     Resource:
@@ -163,16 +165,19 @@ modes:
       explosions: false
       pvp: true
       mobspawning: true
+      passivespawning: true
     kingdom:
       firespread: false
       explosions: false
       pvp: true
       mobspawning: true
+      passivespawning: true
     empire:
       firespread: false
       explosions: false
       pvp: true
       mobspawning: true
+      passivespawning: true
 # Amount in ticks after which the chunk queue will be processed to load the locks in it
 lock-load-queue-ticks: 20
 remove-locks-on-unclaim: true
