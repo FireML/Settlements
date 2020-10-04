@@ -60,6 +60,7 @@ public enum Use implements NameTag {
     REPEATERS(Material.REPEATER, Material.COMPARATOR),
     CAKE(Material.CAKE),
     SHOP(BuildState.PUBLIC, Material.OAK_SIGN, Collections.EMPTY_SET),
+    MAP(Material.MAP),
     INTERACT(Material.WOODEN_SHOVEL, Collections.EMPTY_SET);
 
     private final Collection<Material> materials;

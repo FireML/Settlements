@@ -430,6 +430,7 @@ names:
     repeaters: "Repeaters"
     cake: "Cake"
     shop: "Shops"
+    map: "Map"
     interact: "Other"
   levelperk:
     resistance1: Resistance 1 Buff

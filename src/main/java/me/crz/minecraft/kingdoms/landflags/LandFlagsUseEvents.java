@@ -12,6 +12,7 @@ import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -145,8 +146,19 @@ public class LandFlagsUseEvents implements LandFlagBase, Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void on(PlayerInteractEvent e) {
+        if (e.getItem() != null && e.getItem().getType() == Material.MAP
+                && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
+            e.setUseInteractedBlock(Event.Result.DENY);
+            Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.MAP, e.getPlayer().getLocation());
+            if (!response.getLeft()) {
+                MessageUtils.tell(e.getPlayer(), response.getRight());
+                e.setUseItemInHand(Event.Result.DENY);
+            }
+            return;
+        }
+
         if (e.getAction() == Action.PHYSICAL || e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
             Use use = null;
             if (e.getAction() == Action.PHYSICAL && MaterialTags.PRESSURE_PLATES.isTagged(e.getClickedBlock())) {
