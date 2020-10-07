@@ -3,10 +3,12 @@ package me.crz.minecraft.kingdoms.scoreboard;
 import co.aikar.timings.Timing;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,29 +56,32 @@ public class CScoreBoard {
             sidebarObjective = scoreboard.registerNewObjective("title", "dummy", "title");
             sidebarObjective.setDisplayName(manager.getTitle());
             sidebarObjective.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+            for (int i = 0; i < 15; i++) {
+                if (scoreboard.getTeam(String.valueOf(i)) == null) {
+                    Team team = scoreboard.registerNewTeam(String.valueOf(i));
+                    team.addEntry(ChatColor.values()[i].toString());
+                    if (i < sidebar.size()) {
+                        sidebarObjective.getScore(ChatColor.values()[i].toString()).setScore(0);
+                    }
+                }
+            }
         }
-        List<String> set = new ArrayList<>();
         if (sidebar != null && sidebar.size() > 0) {
-            int score = 15;
-            for (String line : sidebar) {
-                line = trim(line, 40);
-                if (score < 1) {
-                    break;
+            for (int i = 0; i < 15; i++) {
+                if (i < sidebar.size()) {
+                    if (sidebar.size() != this.sidebar.size() || !sidebar.get(i).equals(this.sidebar.get(i))) {
+                        String line = trim(sidebar.get(i), 64);
+                        sidebarObjective.getScore(ChatColor.values()[i].toString()).setScore(0);
+                        scoreboard.getTeam(String.valueOf(i)).setPrefix(line);
+                    }
+                } else {
+                    scoreboard.resetScores(ChatColor.values()[i].toString());
                 }
-                if (set.contains(line)) {
-                    continue;
-                }
-                set.add(line);
-                sidebarObjective.getScore(line).setScore(score);
-                --score;
+
             }
         }
-        for (String last : this.sidebar) {
-            if (!set.contains(last)) {
-                scoreboard.resetScores(last);
-            }
-        }
-        this.sidebar = set;
+        this.sidebar = sidebar;
     }
 
     public void unregister() {

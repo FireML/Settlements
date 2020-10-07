@@ -1,8 +1,10 @@
 package me.crz.minecraft.kingdoms.scoreboard.commands;
 
+import de.themoep.minedown.MineDown;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.scoreboard.ScoreboardManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -10,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandScoreboardAdmin extends SubCommand {
-    private static final int MAX_WIDTH = 40;
+    private static final int MAX_WIDTH = 64;
 
     public CommandScoreboardAdmin(ScoreboardManager manager) {
         super(null, "scoreboardadmin clear|add <line>", "sba", "boardadmin", "sidebaradmin", "sideadmin");
@@ -27,7 +29,7 @@ public class CommandScoreboardAdmin extends SubCommand {
         registerCommand(new SubCommand(this, "add <line>") {
             @Override
             public boolean run(CommandSender s, String base, String alias, String... args) {
-                String line = ChatColor.translateAlternateColorCodes('&', String.join(" ", args));
+                String line = TextComponent.toLegacyText(MineDown.parse(String.join(" ", args)));
                 manager.addCustomLines(listByWidth(line));
                 manager.update();
                 MessageUtils.tell(s, getMessage("added"), "line", line);
@@ -48,7 +50,7 @@ public class CommandScoreboardAdmin extends SubCommand {
             progress += var;
             if (l.size() == 0) {
                 if (var.length() > MAX_WIDTH) {
-                    var = var.substring(0, 40);
+                    var = var.substring(0, MAX_WIDTH);
                 }
                 l.add(var);
             } else if ((l.get(l.size() - 1) + var).length() > MAX_WIDTH) {
