@@ -105,9 +105,24 @@ public class CScoreBoard {
     }
 
     public Scoreboard getScoreboard() {
-        if (getPlayer().getScoreboard() == Bukkit.getScoreboardManager().getMainScoreboard()) {
+        if (isUsedByMultiplePlayers(getPlayer(), getPlayer().getScoreboard())) {
             getPlayer().setScoreboard(scoreboard);
         }
         return getPlayer().getScoreboard();
+    }
+
+    private boolean isUsedByMultiplePlayers(Player player, Scoreboard scoreboard) {
+        if (scoreboard == this.scoreboard) {
+            return false;
+        }
+        if (scoreboard == Bukkit.getScoreboardManager().getMainScoreboard()) {
+            return true;
+        }
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            if (onlinePlayer != player && onlinePlayer.getScoreboard() == scoreboard) {
+                return true;
+            }
+        }
+        return false;
     }
 }
