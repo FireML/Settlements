@@ -11,6 +11,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static me.crz.minecraft.kingdoms.utils.Utils.trim;
@@ -23,7 +24,7 @@ public class CScoreBoard {
     private Objective sidebarObjective;
     private Objective undernameObjective;
     private Objective tablistObjective;
-    private List<String> sidebar = new ArrayList<>();
+    private List<String> sidebar = Collections.emptyList();
 
     public CScoreBoard(Player p, ScoreboardManager manager) {
         super();
@@ -39,12 +40,13 @@ public class CScoreBoard {
     }
 
     public void updateSidebar() {
-        List<String> sidebarText = manager.getCustomLines() == null && manager.getUpdateRate() > 0 ? manager.getScoreboardPolicy().getSidebar(p) : manager.getCustomLines();
+        List<String> sidebarText = manager.getCustomLines() == null && manager.getUpdateRate() > 0 ? manager.getScoreboardPolicy().getSidebar(p) : new ArrayList<>(manager.getCustomLines());
         if (sidebarText == null) {
             if (sidebarObjective != null) {
                 sidebarObjective.unregister();
                 sidebarObjective = null;
             }
+            this.sidebar = Collections.emptyList();
             return;
         }
         setSidebar(sidebarText);
@@ -53,35 +55,37 @@ public class CScoreBoard {
     public void setSidebar(List<String> sidebar) {
         Scoreboard scoreboard = getScoreboard();
         if (sidebarObjective == null || sidebarObjective.getScoreboard() != scoreboard) {
-            sidebarObjective = scoreboard.registerNewObjective("title", "dummy", "title");
-            sidebarObjective.setDisplayName(manager.getTitle());
-            sidebarObjective.setDisplaySlot(DisplaySlot.SIDEBAR);
-
-            for (int i = 0; i < 15; i++) {
-                if (scoreboard.getTeam(String.valueOf(i)) == null) {
-                    Team team = scoreboard.registerNewTeam(String.valueOf(i));
-                    team.addEntry(ChatColor.values()[i].toString());
-                    if (i < sidebar.size()) {
-                        sidebarObjective.getScore(ChatColor.values()[i].toString()).setScore(0);
-                    }
-                }
+            sidebarObjective = scoreboard.getObjective("sidebar");
+            if (sidebarObjective != null) {
+                sidebarObjective.setDisplayName(manager.getTitle());
             }
+        }
+        if (sidebarObjective == null) {
+            sidebarObjective = scoreboard.registerNewObjective("sidebar", "dummy", manager.getTitle());
+        }
+        if (sidebarObjective.getDisplaySlot() != DisplaySlot.SIDEBAR) {
+            sidebarObjective.setDisplaySlot(DisplaySlot.SIDEBAR);
         }
         if (sidebar != null && sidebar.size() > 0) {
             for (int i = 0; i < 15; i++) {
                 if (i < sidebar.size()) {
-                    if (sidebar.size() != this.sidebar.size() || !sidebar.get(i).equals(this.sidebar.get(i))) {
+                    if (sidebar.size() > this.sidebar.size() || !sidebar.get(i).equals(this.sidebar.get(i))) {
                         String line = trim(sidebar.get(i), 64);
                         sidebarObjective.getScore(ChatColor.values()[i].toString()).setScore(0);
-                        scoreboard.getTeam(String.valueOf(i)).setPrefix(line);
+                        Team team = scoreboard.getTeam("sidebar" + i);
+                        if (team == null) {
+                            team = scoreboard.registerNewTeam("sidebar" + i);
+                            team.addEntry(ChatColor.values()[i].toString());
+                        }
+                        team.setPrefix(line);
                     }
                 } else {
                     scoreboard.resetScores(ChatColor.values()[i].toString());
                 }
 
             }
+            this.sidebar = sidebar;
         }
-        this.sidebar = sidebar;
     }
 
     public void unregister() {
