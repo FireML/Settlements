@@ -242,18 +242,20 @@ public class LandFlags extends Base implements LandFlagBase {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onHostileSpawn(PreCreatureSpawnEvent e) {
+    public void onPassiveSpawn(PreCreatureSpawnEvent e) {
         if (e.getReason() != CreatureSpawnEvent.SpawnReason.CUSTOM
                 && !Utils.isHostile(e.getType())
+                && e.getType() != EntityType.ARMOR_STAND
                 && !isAllowed(e.getSpawnLocation(), PlotMode.passiveSpawning)) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onHostileSpawn(CreatureSpawnEvent e) {
+    public void onPassiveSpawn(CreatureSpawnEvent e) {
         if (e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.CUSTOM
                 && !Utils.isHostile(e.getEntity())
+                && e.getEntityType() != EntityType.ARMOR_STAND
                 && !isAllowed(e.getLocation(), PlotMode.passiveSpawning)) {
             e.setCancelled(true);
         }
