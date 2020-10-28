@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.portal.gui.PortalTeleportGui;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -36,43 +37,59 @@ public class PortalListener implements Listener, ConfigMessages {
 
     @EventHandler(ignoreCancelled = true)
     public void onPortalCreate(PortalCreateEvent e) {
-        if (e.getReason() == PortalCreateEvent.CreateReason.NETHER_PAIR) {
-            // Disable normal portal mechanic
+        if (e.getReason() == PortalCreateEvent.CreateReason.END_PLATFORM) {
+            return;
+        }
+
+        if (!Utils.isWorldClaimable(e.getWorld())) {
+            if (Config.Portal.IGNORE_UNCLAIMABLE_WORLDS) {
+                return;
+            } else if (!Config.Portal.ONLY_INSIDE_CLAIMS) {
+                return;
+            }
+        }
+
+        if (!Config.Portal.ALLOW_NETHER_TELEPORT && e.getReason() == PortalCreateEvent.CreateReason.NETHER_PAIR) {
             e.setCancelled(true);
-        } else if (e.getReason() == PortalCreateEvent.CreateReason.FIRE) {
-            Entity entity = e.getEntity();
-            if (entity == null) {
-                Location l = e.getBlocks().get(0).getLocation();
-                double distance = Double.MAX_VALUE;
-                for (Entity nearbyPlayer : l.getWorld().getNearbyEntities(l, 5, 5, 5, en -> en instanceof Player)) {
-                    double d = nearbyPlayer.getLocation().distanceSquared(l);
-                    if (d < distance || entity == null) {
-                        distance = d;
-                        entity = nearbyPlayer;
-                    }
+            return;
+        }
+
+        Entity entity = e.getEntity();
+        if (entity == null && e.getReason() == PortalCreateEvent.CreateReason.FIRE) {
+            Location l = e.getBlocks().get(0).getLocation();
+            double distance = Double.MAX_VALUE;
+            for (Entity nearbyPlayer : l.getWorld().getNearbyEntities(l, 5, 5, 5, en -> en instanceof Player)) {
+                double d = nearbyPlayer.getLocation().distanceSquared(l);
+                if (d < distance || entity == null) {
+                    distance = d;
+                    entity = nearbyPlayer;
                 }
             }
-            if (entity instanceof Player) {
-                Resident resident = ResidentManager.getInstance().getResident((Player) entity);
-                for (BlockState block : e.getBlocks()) {
-                    OwnedLand land = LandManager.getInstance().getLand(block.getLocation());
-                    if (land == null || !(land.getLandOwner() instanceof Village)) {
+        }
+        if (entity instanceof Player) {
+            Resident resident = ResidentManager.getInstance().getResident((Player) entity);
+            for (BlockState block : e.getBlocks()) {
+                OwnedLand land = LandManager.getInstance().getLand(block.getLocation());
+                if (land == null || !(land.getLandOwner() instanceof Village)) {
+                    if (Config.Portal.ONLY_INSIDE_CLAIMS) {
                         e.setCancelled(true);
                         getMessage("only-in-claim").tell(entity);
-                        return;
-                    } else if (!land.getLandOwner().canAdminPortals(resident)) {
-                        e.setCancelled(true);
-                        getMessage("not-allowed.create").tell(e.getEntity(), "state", land.getLandOwner().getStateTag());
-                        return;
                     }
+                    return;
+                } else if (!land.getLandOwner().canAdminPortals(resident)) {
+                    e.setCancelled(true);
+                    getMessage("not-allowed.create").tell(e.getEntity(), "state", land.getLandOwner().getStateTag());
+                    return;
                 }
+            }
 
+            if (Utils.isWorldClaimable(e.getWorld())) {
                 PortalManager.getInstance().addPortal(e.getBlocks(), entity);
                 getMessage("created").tell(entity);
-            } else {
-                // Not possible to support non-player portal creation
-                e.setCancelled(true);
             }
+        } else {
+            // Not possible to support non-player portal creation
+            e.setCancelled(true);
         }
     }
 
@@ -124,15 +141,31 @@ public class PortalListener implements Listener, ConfigMessages {
 
     @EventHandler(ignoreCancelled = true)
     public void onPortalTeleport(EntityPortalEvent e) {
-        // Disable normal portal mechanic
-        e.setCancelled(true);
+        if (!Config.Portal.ALLOW_NETHER_TELEPORT) {
+            // Disable normal portal mechanic
+            e.setCancelled(true);
+        } else {
+            Portal portal = PortalManager.getInstance().getPortal(e.getFrom());
+            // Check if a portal exists and if so if it has links. If it does, cancel teleport
+            if (portal != null && !portal.getLinks().isEmpty()) {
+                e.setCancelled(true);
+            }
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onPortalTeleport(PlayerPortalEvent e) {
         if (e.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL) {
-            // Disable normal portal mechanic
-            e.setCancelled(true);
+            if (!Config.Portal.ALLOW_NETHER_TELEPORT) {
+                // Disable normal portal mechanic
+                e.setCancelled(true);
+            } else {
+                Portal portal = PortalManager.getInstance().getPortal(e.getFrom());
+                // Check if a portal exists and if so if it has links. If it does, cancel teleport
+                if (portal != null && !portal.getLinks().isEmpty()) {
+                    e.setCancelled(true);
+                }
+            }
         }
     }
 

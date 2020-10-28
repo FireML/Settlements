@@ -313,8 +313,21 @@ public class Config {
 
     public static class Portal {
         @ConfigEntry(reload = false)
-        @ConfigComment("Enable or disable the inbuilt portal handling")
+        @ConfigComment("Enable or disable the inbuilt portal handling which allows direct linking of a settlement's portals with each other")
         public static boolean ENABLED = true;
+
+        @ConfigComment("Whether unlinked portals should teleport to the nether like normal")
+        public static boolean ALLOW_NETHER_TELEPORT = false;
+
+        @ConfigComment("Only allow portals to be created and used inside of claims.\n" +
+                "Linking of portals will still be restricted to claimed land only!")
+        public static boolean ONLY_INSIDE_CLAIMS = true;
+
+        @ConfigComment("Whether portals in unclaimable worlds should just work like Vanilla nether portals\n" +
+                "If set to true but only-inside-claims is true too then players will not be able to manually link to portals in unclaimable worlds\n" +
+                "If set to false then players will not be able to create portals in unclaimable worlds if only-inside-claims is true.\n" +
+                "If set to false and only-inside-claims is false then portals will just work like normal nether portals in unclaimable worlds")
+        public static boolean IGNORE_UNCLAIMABLE_WORLDS = false;
 
     }
 
