@@ -1,7 +1,7 @@
 package me.crz.minecraft.kingdoms.command.village;
 
-import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.command.SubCommand;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -21,7 +21,7 @@ public class VillageRenameCommand extends VillageSubCommand {
         if (args.length == 0) {
             return false;
         }
-        String name = ChatManager.getInstance().filterAllCurses(String.join(" ", args).trim());
+        String name = Utils.filterAllCurses(String.join(" ", args).trim());
         if (name.toLowerCase().contains("claims")) {
             getError("invalid-characters").tell(res, "input", name);
         } else if (villageExists(name)) {

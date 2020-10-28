@@ -4,6 +4,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.TaxDebtAction;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 public class EmpireTaxCommand extends EmpireSubCommand {
@@ -23,11 +24,10 @@ public class EmpireTaxCommand extends EmpireSubCommand {
                         );
                         return true;
                     }
-                    int maxTax = Utils.getEmpireMaxTax();
-                    if (maxTax > -1 && amount > maxTax) {
+                    if (Config.Empire.MAX_TAX > -1 && amount > Config.Empire.MAX_TAX) {
                         getMessage("above-max").tell(resident,
                                 "amount", String.valueOf(amount),
-                                "max", String.valueOf(maxTax)
+                                "max", String.valueOf(Config.Empire.MAX_TAX)
                         );
                         return true;
                     }

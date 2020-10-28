@@ -16,9 +16,7 @@ package me.crz.minecraft.kingdoms.utils;
  * along with this program. If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-import com.destroystokyo.paper.profile.PlayerProfile;
-import com.destroystokyo.paper.profile.ProfileProperty;
-import org.bukkit.Bukkit;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -77,9 +75,11 @@ public class ColorUtils {
     private static void addHead(ChatColor chatColor, String textures) {
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) head.getItemMeta();
-        PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID(), "ChatColor:" + ChatColor.BLACK.name());
-        profile.setProperty(new ProfileProperty("textures", textures));
-        meta.setPlayerProfile(profile);
+        KingdomsPlugin.getInstance().getServerAdapter().setProfile(
+                meta,
+                UUID.randomUUID(),
+                "ChatColor:" + ChatColor.BLACK.name(),
+                "textures", textures);
         head.setItemMeta(meta);
         colorHeads.put(chatColor, head);
     }
@@ -124,5 +124,24 @@ public class ColorUtils {
 
     public static ItemStack getColorHead(ChatColor chatColor) {
         return colorHeads.getOrDefault(chatColor, new ItemStack(Material.DIRT));
+    }
+
+    public static ChatColor getColor(String colorString, ChatColor def) {
+        if (colorString != null) {
+            try {
+                return ChatColor.valueOf(colorString.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                ChatColor color = null;
+                if (colorString.length() == 1) {
+                    color = ChatColor.getByChar(colorString);
+                } else if (colorString.length() == 2) {
+                    color = ChatColor.getByChar(colorString.charAt(1));
+                }
+                if (color != null) {
+                    return color;
+                }
+            }
+        }
+        return ChatColor.WHITE;
     }
 }

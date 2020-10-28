@@ -6,6 +6,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.lock.LockCommand;
 import me.crz.minecraft.kingdoms.command.lock.UnlockCommand;
 import me.crz.minecraft.kingdoms.command.plot.PlotCommand;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import org.bukkit.command.CommandSender;
 
 public class EmpireCommand extends SubCommand {
@@ -40,8 +41,10 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpirePerksCommand(this));
         registerCommand(new EmpirePermsCommand(this));
         registerCommand(new PlotCommand(this));
-        registerCommand(new LockCommand());
-        registerCommand(new UnlockCommand());
+        if (Config.Lock.ENABLED) {
+            registerCommand(new LockCommand());
+            registerCommand(new UnlockCommand());
+        }
         registerCommand(new EmpireSetAccessCommand(this));
         registerCommand(new EmpireSetHomeCommand(this));
         registerCommand(new EmpireJoinFeeCommand(this));

@@ -11,7 +11,8 @@ public class VillageAdminReloadCommand extends SubCommand {
 
     @Override
     public boolean run(CommandSender sender, String base, String alias, String... args) {
-        ConfigManager.getInstance().reload();
+        ConfigManager.getInstance().getDataConfig().saveConfig();
+        ConfigManager.getInstance().reload(true);
         getMessage("success").tell(sender);
         return true;
     }

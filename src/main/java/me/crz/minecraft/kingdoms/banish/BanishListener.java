@@ -1,7 +1,7 @@
 package me.crz.minecraft.kingdoms.banish;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveChunkEvent;
+import me.crz.minecraft.kingdoms.customevents.PlayerMoveChunkEvent;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;

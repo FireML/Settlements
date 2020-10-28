@@ -6,6 +6,7 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -30,7 +31,7 @@ public class ResidentClaimTransferCommand extends ResidentSubCommand {
                 return false;
             }
         } else {
-            if ((args[0].startsWith("empire:") || args[0].startsWith("e:")) && Utils.allowClaimTransferToEmpire()) {
+            if ((args[0].startsWith("empire:") || args[0].startsWith("e:")) && Config.Empire.CLAIM_TRANSFER) {
                 target = EmpireManager.getInstance().getEmpireFromName(args[0].split(":")[1]);
                 if (target == null) {
                     getError("empire-doesnt-exist").tell(resident, "name", args[0].split(":")[1]);

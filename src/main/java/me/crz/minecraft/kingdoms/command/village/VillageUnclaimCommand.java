@@ -11,6 +11,7 @@ import me.crz.minecraft.kingdoms.portal.Portal;
 import me.crz.minecraft.kingdoms.portal.PortalManager;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
@@ -60,7 +61,7 @@ public class VillageUnclaimCommand extends VillageSubCommand {
             if (res.hasPermission("kingdoms.command.village.unclaim.radius")) {
                 try {
                     int radius = Integer.parseInt(args[0]);
-                    int maxRadius = KingdomsPlugin.getInstance().getConfig().getInt("claim-max-radius");
+                    int maxRadius = Config.Settlement.Claiming.MAX_RADIUS;
                     if (radius > maxRadius) {
                         getError("radius-too-large").tell(res, "radius", String.valueOf(radius), "max", String.valueOf(maxRadius));
                         return true;
@@ -147,8 +148,10 @@ public class VillageUnclaimCommand extends VillageSubCommand {
 
             };
             Set<Portal> portals = new HashSet<>();
-            for (OwnedLand land : unclaimedLand) {
-                portals.addAll(PortalManager.getInstance().getPortals(land));
+            if (Config.Portal.ENABLED) {
+                for (OwnedLand land : unclaimedLand) {
+                    portals.addAll(PortalManager.getInstance().getPortals(land));
+                }
             }
             if (unclaimedLand.size() > 1 || !portals.isEmpty() || (args.length >= 3 && "map".equalsIgnoreCase(args[2]))) {
                 confirm.put(res.getUUID(), unclaim);

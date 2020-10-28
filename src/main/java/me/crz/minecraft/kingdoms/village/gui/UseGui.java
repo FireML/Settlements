@@ -11,6 +11,7 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.landflags.Use;
+import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -19,7 +20,6 @@ import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class UseGui extends KingdomsGUI {
     private static final String[] SETUP = {
@@ -30,13 +30,12 @@ public class UseGui extends KingdomsGUI {
             "aaaaaaaaa",
             "p   b   n",
     };
-    private InventoryGui gui;
+    private final InventoryGui gui;
 
     public UseGui() {
         super("use");
         gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title"), SETUP);
         gui.setCloseAction(close -> false);
-
         gui.setFiller(BORDER_ITEM);
 
         GuiElementGroup useGroup = new GuiElementGroup('u');
@@ -45,7 +44,7 @@ public class UseGui extends KingdomsGUI {
                 Village village = VillageManager.getInstance().getVillageFromPlayer((Player) h);
                 if (village != null) {
                     BuildState state = village.getUseState(u);
-                    return new StaticGuiElement('u', u.getItem().build(), click -> {
+                    return new StaticGuiElement('u', u.getItem(), click -> {
                         Resident res = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
                         if (res.hasVillage() && res.hasPermission("village.use")) {
                             BuildState changeTo = click.getType().isLeftClick()
@@ -72,7 +71,7 @@ public class UseGui extends KingdomsGUI {
 
         GuiElementGroup allGroup = new GuiElementGroup('a');
         for (BuildState state : BuildState.values(BuildState.AppliesTo.SETTLEMENT)) {
-            allGroup.addElement(new StaticGuiElement('a', state.getItem().build(), click -> {
+            allGroup.addElement(new StaticGuiElement('a', state.getItem(), click -> {
                 Resident res = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
                 if (res.hasVillage() && res.hasPermission("village.use")) {
                     for (Use u : Use.values()) {
@@ -89,11 +88,11 @@ public class UseGui extends KingdomsGUI {
         }
         gui.addElement(allGroup);
 
-        gui.addElement(new GuiPageElement('p', new ItemStack(Material.ARROW), GuiPageElement.PageAction.PREVIOUS, getText("page.previous", "page", "%prevpage%")));
+        gui.addElement(new GuiPageElement('p', ItemUtils.toIcon(Material.ARROW), GuiPageElement.PageAction.PREVIOUS, getText("page.previous", "page", "%prevpage%")));
 
-        gui.addElement(new GuiBackElement('b', new ItemStack(Material.BARRIER), getText("back")));
+        gui.addElement(new GuiBackElement('b', ItemUtils.toIcon(Material.BARRIER), getText("back")));
 
-        gui.addElement(new GuiPageElement('n', new ItemStack(Material.ARROW), GuiPageElement.PageAction.NEXT, getText("page.next", "page", "%nextpage%")));
+        gui.addElement(new GuiPageElement('n', ItemUtils.toIcon(Material.ARROW), GuiPageElement.PageAction.NEXT, getText("page.next", "page", "%nextpage%")));
     }
 
     public void open(Player p) {

@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.utils;
 
-import com.destroystokyo.paper.MaterialTags;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -22,6 +21,20 @@ public class MaterialUtils {
             Material.HOPPER_MINECART,
             Material.TNT_MINECART
     );
+    public static final Set<Material> BUCKETS = EnumSet.of(
+            Material.BUCKET,
+            Material.LAVA_BUCKET,
+            Material.WATER_BUCKET
+    );
+    public static final Set<Material> FISH_BUCKETS = EnumSet.of(
+            Material.COD_BUCKET,
+            Material.PUFFERFISH_BUCKET,
+            Material.SALMON_BUCKET,
+            Material.TROPICAL_FISH_BUCKET
+    );
+    static {
+        BUCKETS.addAll(FISH_BUCKETS);
+    }
     public static final Set<Material> HOES = EnumSet.of(
             Material.DIAMOND_HOE,
             Material.GOLDEN_HOE,
@@ -147,7 +160,7 @@ public class MaterialUtils {
 
         return Tag.ITEMS_BOATS.isTagged(item.getType())
                 || MINECARTS.contains(item.getType())
-                || MaterialTags.FISH_BUCKETS.isTagged(item);
+                || BUCKETS.contains(item.getType());
     }
 
     public static Material getMaterial(@NotNull String matStr) {

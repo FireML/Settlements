@@ -1,105 +1,86 @@
 package me.crz.minecraft.kingdoms.village.gui;
 
+import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
 import me.crz.minecraft.kingdoms.KingdomsGUI;
-import me.crz.minecraft.kingdoms.cinventory.CInventory;
-import me.crz.minecraft.kingdoms.cinventory.CItem;
-import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
-import me.crz.minecraft.kingdoms.cinventory.InventorySize;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.PlotMode;
+import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
 
 public class ModeGUI extends KingdomsGUI {
-    private static ModeGUI instance;
-    public CInventory gui;
+    private final static String[] SETUP = {
+            "         ",
+            "         ",
+            "ggggggggg",
+            "ggggggggg",
+            "         ",
+            "    b    "
+    };
 
-    public String yesOrNo(final boolean b) {
-        return b ? "Yes" : "No";
-    }
+    private final InventoryGui gui;
 
-    private ModeGUI() {
+    public ModeGUI() {
         super("mode");
-        gui = new CInventory(getText("title"), InventorySize.SIX) {};
+        gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title"), SETUP);
+        gui.setCloseAction(close -> false);
+        gui.setFiller(BORDER_ITEM);
 
-        for (int i = 0; i < InventorySize.TWO.getSize(); i++) {
-            gui.addItem(i, BORDER);
-        }
+        GuiElementGroup group = new GuiElementGroup('g');
 
         for (PlotMode m : PlotMode.values(PlotMode.AppliesTo.LAND_OWNER)) {
-            gui.addItem(new ClickableItem() {
-                public ItemStack getItem(Player p) {
-                    Village village = VillageManager.getInstance().getVillageFromPlayer(p);
-                    if (village != null) {
-                        boolean enabled = m.get(village);
-                        String state = yesOrNo(enabled);
-                        CItem item = m.getItem().setName(getMessage("entry.title").getReplacedText(
-                                "mode", m.getTag(),
-                                "value", state
-                        )).setLore(getMessage("entry.lore").getReplacedTextList(
-                                "mode", m.getTag(),
-                                "value", state
-                        ));
-                        if (enabled) {
-                            item.glow(true);
-                        }
-                        return item.build();
-                    }
-                    return null;
+            group.addElement(new DynamicGuiElement('g', (h) -> {
+                Resident resident = ResidentManager.getInstance().getResident((Player) h);
+                if (resident.hasVillage()) {
+                    boolean enabled = m.get(resident.getVillage());
+                    return new StaticGuiElement('g',
+                            ItemUtils.setGlowing(m.getItem(), enabled),
+                            click -> {
+                                if (resident.hasVillage() && resident.hasPermission("village.mode")) {
+                                    boolean state = !m.get(resident.getVillage());
+                                    if (m.set(state, resident.getVillage())) {
+                                        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
+                                    }
+                                    Message.get("command.village.mode.success").tell(resident,
+                                            "mode", m.getTag(),
+                                            "value", getText("entry.state." + state)
+                                    );
+                                    gui.draw();
+                                }
+                                return true;
+                            },
+                            getText("entry.title",
+                                    "mode", m.getTag(),
+                                    "value", getText("entry.state." + enabled)
+                            ),
+                            getText("entry.lore",
+                                    "mode", m.getTag(),
+                                    "value", getText("entry.state." + enabled)
+                            )
+                    );
                 }
-
-                public boolean click(Player p, ClickType clickType) {
-                    Resident res = ResidentManager.getInstance().getResident(p);
-                    if (res.hasVillage() && res.hasPermission("village.mode")) {
-                        boolean state = !m.get(res.getVillage());
-                        if (m.set(state, res.getVillage())) {
-                            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
-                        }
-                        MessageUtils.tell(p, Message.get("command.village.mode.success"),
-                                "mode", m.getTag(),
-                                "value", yesOrNo(state)
-                        );
-                        gui.build(p);
-                        return true;
-                    }
-                    return false;
-                }
-            });
+                return null;
+            }));
         }
 
-        for (int i = InventorySize.FOUR.getSize(); i < InventorySize.SIX.getSize(); i++) {
-            gui.addItem(i, BORDER);
-        }
+        gui.addElement(group);
 
-        gui.addItem(InventorySize.FIVE.getSize() + 4, new ClickableItem() {
-            public ItemStack getItem(final Player p) {
-                return new CItem(Material.BARRIER).setName(getText("back")).build();
-            }
+        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
+            new SettingsGUI((Player) click.getEvent().getWhoClicked()).open();
+            return true;
+        }, getText("back")));
 
-            public boolean click(final Player p, final ClickType clickType) {
-                new SettingsGUI(p).open();
-                return true;
-            }
-        });
     }
 
     public void open(final Player p) {
-        gui.build(p);
-    }
-
-    synchronized public static ModeGUI getInstance() {
-        if (instance == null) {
-            instance = new ModeGUI();
-        }
-        return instance;
+        gui.show(p);
     }
 }

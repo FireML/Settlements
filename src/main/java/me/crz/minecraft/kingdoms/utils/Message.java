@@ -92,16 +92,12 @@ public class Message {
         return components;
     }
 
+    @Deprecated
     public TitleBuilder getTitle() {
-        List<String> lines = getTextList();
-        TitleBuilder builder = new TitleBuilder().withTitle(lines.get(0));
-        if (lines.size() > 1) {
-            builder.withSubtitle(lines.get(1));
-            if (lines.size() > 2) {
-                builder.withActionbar(lines.get(2));
-            }
-        }
-        return builder;
+        return new TitleBuilder()
+                .withTitle(Message.get(getKey() + ".title"))
+                .withSubtitle(Message.get(getKey() + ".subtitle"))
+                .withActionbar(Message.get(getKey() + ".actionbar"));
     }
 
     public String getReplacedText(String... replacements) {

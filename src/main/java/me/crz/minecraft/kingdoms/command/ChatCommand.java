@@ -7,7 +7,8 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.utils.config.Data;
+import me.crz.minecraft.kingdoms.utils.config.Config;
+import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.Bukkit;
@@ -38,7 +39,7 @@ public class ChatCommand extends PlayerSubCommand {
                                 Message.get("command.chat.already-joined").tell(p, "name", channel.getTag());
                             }
 
-                            if (save && !Utils.shouldResetChannelOnLogin()) {
+                            if (save && !Config.Chat.RESET_CHANNELS_ON_LOGIN) {
                                 Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
                             }
                         }
@@ -80,11 +81,11 @@ public class ChatCommand extends PlayerSubCommand {
         registerCommand(new PermissionPlayerSubCommand(this, "lock", "kingdoms.chat.lock") {
             @Override
             public boolean run(Player p, String base, String alias, String... args) {
-                if (Data.muteChat) {
-                    Data.muteChat = false;
+                if (ConfigManager.getInstance().getDataConfig().getConfig().getBoolean("chat-lock")) {
+                    ConfigManager.getInstance().getDataConfig().getConfig().set("chat-lock", false);
                     Bukkit.broadcastMessage(getMessage("unmuted").getReplacedText("name", p.getDisplayName()));
                 } else {
-                    Data.muteChat = true;
+                    ConfigManager.getInstance().getDataConfig().getConfig().set("chat-lock", true);
                     Bukkit.broadcastMessage(getMessage("muted").getReplacedText("name", p.getDisplayName()));
                 }
                 return true;

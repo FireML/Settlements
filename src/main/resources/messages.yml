@@ -485,7 +485,7 @@ integration:
     not-enough-space: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 is full! ({seller} tried to sell)"
     not-enough-money: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 can't loose money as you need it to pay your upkeep! ({seller} tried to sell)"
   lwc:
-    only-in-village: "&c&lYou can only lock things in a settlement claim!"
+    only-in-claim: "&c&lYou can only lock things in a claim!"
     state:
       use:
         residents: "&e&l(!) &r&e{use}&7 is limited to &eresidents&7 of &e{state} {name}&7."
@@ -553,7 +553,7 @@ protection:
         landowner:
           private: "&e&l(!) &r&7Only &eresidents of {state} {name}&7 can build here."
 lock:
-  only-in-claim: "&c&lYou can only lock things in a settlement claim!"
+  only-in-claim: "&c&lYou can only lock things in a claim!"
   locked: "&cThis {block} is locked by {title} {name}!"
   new-lock: "&e{block}&a is now locked!"
   not-locked: "&a{block}&c is not locked!"
@@ -586,7 +586,7 @@ lock:
       friends: "&e&l(!) &r&7Only the &ePlot owner's friends&7 can build here."
 portal:
   not-registered: "&c&lPlease re-create this portal to register it!"
-  only-in-claim: "&c&lYou can only create portals in a settlement claim!"
+  only-in-claim: "&c&lYou can only create portals in a claim!"
   not-allowed:
     create: "&c&lYou do not have the rights to create portals in this {state}!"
     destroy: "&c&lYou do not have the rights to destroy portals in this {state}!"
@@ -672,6 +672,9 @@ gui:
     entry:
       title: "&a&l{mode}"
       lore: "&7&lEnabled: &a&l{value}"
+      state:
+        true: "Yes"
+        false: "No"
     back: "&c&lBack To Settings"
   empire:
     access:
@@ -1122,7 +1125,10 @@ gui:
       error: "&cAn error occurred while unlinking! Please contact an admin."
   private-teleports:
     title: "&2&lSettlement teleports: &r&7{page}"
-    entry: "&b{name}"
+    entry: "{state} &b{name}"
+    outpost: |-
+      Outpost &b{name}
+      {state} {owner}
     page:
       next: "&7Go to next page {page}"
       previous: "&7Go to previous page {page}"
@@ -1132,14 +1138,6 @@ gui:
     entry: |-
       &e{rank}
       &bClick to select
-  residents:
-    title: "&2&lVillage Residents"
-    back: "&c&lBack To Settings"
-    entry: |-
-      &c&l{name}
-      &7&lRole &a&l{title}
-      &7&lJoined &a&l{joined}
-      &7&lLast login &a&l{lastlogin}
   settings:
     title: "&2&lSettlement Settings"
     home: |-
@@ -1786,12 +1784,12 @@ command:
       no-home: "&c&lThat {state} doesn't have a home!"
       no-access: "&c&lYou don't have access to teleport to the home of that {state}!"
       success: "&a&lTeleported to home of {state} {name}"
-      success-title: |-
-        &2&lSuccess
-        &fYou have been teleported!
-      fail-title: |-
-        &c&lFailed
-        &fUnabled to teleport!
+      success-title:
+        title: "&2&lSuccess"
+        subtitle: "&fYou have been teleported!"
+      fail-title:
+        title: "&c&lFailed"
+        subtitle: "&fUnabled to teleport!"
       description: Teleport to a settlement's home
     invite:
       already-in-village: "&c&l{name} is already in a {state}"
@@ -2215,6 +2213,10 @@ command:
     bonus:
       description: Add/set/remove bonus claims from Residents/Villages
       success: "&aSUCCESS: {operation} {amount} to {name}"
+    convertconfig:
+      description: Convert the config to a certain config version
+      same-version: "&cConfig is already version {version}."
+      success: "&aSUCCESS: Converted config from version {from} to {to}"
     world:
       description: World admin commands
       info:
@@ -2227,13 +2229,13 @@ command:
       description: Set the state and level of a settlement
     rank:
       description: Set the rank of a  player
-    emgcy:
-      description: dont touch
-    ss:
+    socialspy:
       description: Lets you see other peoples messages
+      enabled: "&6&lSocialSpy &a&lEnabled"
+      disabled: "&6&lSocialSpy &c&lDisabled"
     reload:
       description: Reload some plugin functionality
-      success: "&aConfigs reloaded. Will only affect values that are read directly from the config!"
+      success: "&aConfigs reloaded. Some values might require a restart for them to take effect!"
   empire:
     description: Commands for empire management
     allies:

@@ -1,13 +1,17 @@
 package me.crz.minecraft.kingdoms.lock;
 
-import co.aikar.timings.Timing;
+import co.aikar.timings.lib.MCTiming;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.ImmutableMap;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.command.CommandManager;
+import me.crz.minecraft.kingdoms.command.lock.LockCommand;
+import me.crz.minecraft.kingdoms.command.lock.UnlockCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.world.SimpleBlockLocation;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
@@ -28,7 +32,6 @@ import org.bukkit.util.Vector;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -48,8 +51,6 @@ public class LockManager implements LockProvider {
     private static final String LOADING_KEY = "LOADING_MARKER";
     private static LockManager instance;
     private final Set<Material> lockable = EnumSet.noneOf(Material.class);
-    private boolean alternativeHopperProtection = true;
-    private int loadQueueDelay = 20;
     private BukkitTask loadQueueTask = null;
     private final BlockingQueue<SimpleChunkLocation> loadQueue = new LinkedBlockingQueue<>();
     // Ideally this would use a Guava table but synchronized ones were only added in Guava 28 and Minecraft/Spigot uses 21
@@ -66,6 +67,11 @@ public class LockManager implements LockProvider {
                 .map(SimpleChunkLocation::new)
                 .toArray(SimpleChunkLocation[]::new));
         KingdomsPlugin.getInstance().getLockProviders().add(this);
+
+        CommandManager.getInstance().registerCommand(new LockCommand());
+        CommandManager.getInstance().registerCommand(new UnlockCommand());
+
+        KingdomsPlugin.getInstance().getServer().getPluginManager().registerEvents(new LockListener(), KingdomsPlugin.getInstance());
     }
 
     /**
@@ -79,7 +85,7 @@ public class LockManager implements LockProvider {
             // Mark all chunks that did not have locks as cached
             boolean isPresent = false;
             Map<SimpleChunkLocation, Map<String, Lock>> worldCache;
-            try (Timing t = KingdomsPlugin.getInstance().getAndStartTiming("LockManager create world chunk cache")) {
+            try (MCTiming ignored1 = KingdomsPlugin.getInstance().getAndStartTiming("LockManager create world chunk cache")) {
                 worldCache = lockTable.get(chunk.getWorld());
                 if (worldCache == null) {
                     worldCache = new ConcurrentHashMap<>();
@@ -88,10 +94,10 @@ public class LockManager implements LockProvider {
                     isPresent = true;
                 }
             }
-            try (Timing t = KingdomsPlugin.getInstance().getAndStartTiming("LockManager check chunk lock cache")) {
+            try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("LockManager check chunk lock cache")) {
                 isPresent = isPresent && worldCache.containsKey(chunk);
             }
-            try (Timing t = KingdomsPlugin.getInstance().getAndStartTiming("LockManager create chunk lock cache")) {
+            try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("LockManager create chunk lock cache")) {
                 if (!isPresent) {
                     notLoaded.add(chunk);
                     worldCache.put(chunk, new ConcurrentHashMap<>(ImmutableMap.of(LOADING_KEY, new Lock(null, null, null))));
@@ -123,7 +129,7 @@ public class LockManager implements LockProvider {
                         }
                     }
                 }
-            }, loadQueueDelay);
+            }, Config.Lock.LOAD_QUEUE_TICKS);
         }
     }
 
@@ -146,10 +152,8 @@ public class LockManager implements LockProvider {
     }
 
     public void loadConfig() {
-        alternativeHopperProtection = KingdomsPlugin.getInstance().getConfig().getBoolean("alternative-hopper-protection");
-        loadQueueDelay = KingdomsPlugin.getInstance().getConfig().getInt("lock-load-queue-ticks");
         lockable.clear();
-        for (String string : KingdomsPlugin.getInstance().getConfig().getStringList("lockable")) {
+        for (String string : Config.Lock.BLOCKS) {
             if (string.startsWith("*")) {
                 for (Material material : Material.values()) {
                     if (material.name().endsWith(string.substring(1).toUpperCase())) {
@@ -338,6 +342,9 @@ public class LockManager implements LockProvider {
     }
 
     synchronized public static LockManager getInstance() {
+        if (!Config.Lock.ENABLED) {
+            throw new IllegalStateException("Tried to get LockManager while locks were disabled!");
+        }
         if (instance == null) {
             instance = new LockManager();
         }
@@ -393,9 +400,5 @@ public class LockManager implements LockProvider {
                             -> stringLockMap.values().stream()).collect(Collectors.toSet());
         }
         return new HashSet<>();
-    }
-
-    public boolean isAlternativeHopperProtection() {
-        return alternativeHopperProtection;
     }
 }

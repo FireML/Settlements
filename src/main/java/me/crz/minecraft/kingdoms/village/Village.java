@@ -1,6 +1,6 @@
 package me.crz.minecraft.kingdoms.village;
 
-import co.aikar.timings.Timing;
+import co.aikar.timings.lib.MCTiming;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.ObjectArrays;
@@ -15,7 +15,6 @@ import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.land.TaxDebtAction;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
-import me.crz.minecraft.kingdoms.rank.Rank;
 import me.crz.minecraft.kingdoms.rank.RankManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
@@ -25,8 +24,8 @@ import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
-import me.crz.minecraft.kingdoms.utils.config.Data;
 import me.crz.minecraft.kingdoms.vault.Levels;
 import me.crz.minecraft.kingdoms.world.NamedLocation;
 import org.bukkit.Bukkit;
@@ -79,12 +78,12 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
             KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " is abandoned. No upkeep.");
             return;
         }
-        int inactiveDays = Utils.getVillageInactiveTime();
+        int inactiveDays = Config.Settlement.Upkeep.INACTIVE_TIME;
         if (inactiveDays > 0 && getLevel() == 1 && getState() == VillageState.VILLAGE && !hasEmpire() && getPerksMap().isEmpty()
                 && LandManager.getInstance().getClaimedLandSize(this) == 0
                 && getChief().getLastLogin() + TimeUnit.DAYS.toMillis(inactiveDays) < System.currentTimeMillis()) {
             OfflinePlayer chiefPlayer = KingdomsPlugin.getInstance().getServer().getOfflinePlayer(getChiefId());
-            if (!chiefPlayer.hasPlayedBefore() || chiefPlayer.getLastSeen() + TimeUnit.DAYS.toMillis(inactiveDays) < System.currentTimeMillis()) {
+            if (!chiefPlayer.hasPlayedBefore() || chiefPlayer.getLastPlayed() + TimeUnit.DAYS.toMillis(inactiveDays) < System.currentTimeMillis()) {
                 KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " is inactive " +
                         "(chief offline for more than " + inactiveDays + ", Village level 1, no claims, no perks unlocked), removing it!");
                 VillageManager.getInstance().deleteVillage(this);
@@ -205,7 +204,7 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(this));
             } else {
                 setBank(0);
-                if (Utils.getAbandonTime(getStateKey()) > 0) {
+                if (Config.Settlement.Upkeep.ABANDON_TIME > 0) {
                     KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and was abandoned!");
                     MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.abandoned"));
                     VillageManager.getInstance().abandonVillage(this);
@@ -246,10 +245,6 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
         return outpostHomes;
     }
 
-    public boolean hasHome() {
-        return this.getHome() != null;
-    }
-
     public boolean isAllowAllyClaim() {
         return allowAllyClaim;
     }
@@ -270,9 +265,9 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
 
     public void setLevel(int level) {
         this.level = level;
-        if (!Data.first.has(villageState.getKey() + "-" + level) || Data.first.getString(villageState.getKey() + "-" + level).equals("")) {
-            Data.first.put(villageState.getKey() + "-" + level, this.getName());
-            KingdomsPlugin.data.save(KingdomsPlugin.getInstance().getDataFolder());
+        if (!ConfigManager.getInstance().getDataConfig().getConfig().contains(villageState.getKey() + ".level" + level)) {
+            ConfigManager.getInstance().getDataConfig().getConfig().set(villageState.getKey() + ".level" + level, getName());
+            ConfigManager.getInstance().getDataConfig().saveConfig();
             for (Player player : Bukkit.getOnlinePlayers()) {
                 MessageUtils.tell(player, Message.get("first-to-reach-level"),
                         "name", this.getName(),
@@ -367,7 +362,7 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
     }
 
     public boolean isFull() {
-        return this.getResidentIds().size() >= ConfigManager.getInstance().getConfig().getInt("max-village-size");
+        return Config.Settlement.MAX_SIZE > 0 && getResidentIds().size() >= Config.Settlement.MAX_SIZE;
     }
 
     public VillageState getState() {
@@ -438,7 +433,7 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
     public boolean setMode(PlotMode mode, boolean value) {
         if (super.setMode(mode, value)) {
             if (KingdomsPlugin.getInstance().isRunning() && mode == PlotMode.mobSpawning && !value) {
-                try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("Village mob spawning mode toggle")) {
+                try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("Village mob spawning mode toggle")) {
                     for (OwnedLand land : LandManager.getInstance().getClaimedLand(this)) {
                         World world = Bukkit.getWorld(land.getWorldName());
                         if (world != null && world.isChunkLoaded(land.getX(), land.getZ())) {
@@ -523,9 +518,8 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
 
     @Override
     public long getTax() {
-        int maxTax = Utils.getVillageMaxTax();
-        if (maxTax > -1 && super.getTax() > maxTax) {
-            return maxTax;
+        if (Config.Settlement.MAX_TAX > -1 && super.getTax() > Config.Settlement.MAX_TAX) {
+            return Config.Settlement.MAX_TAX;
         }
         return super.getTax();
     }
@@ -605,7 +599,7 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
                 "empire", hasEmpire() ? getEmpire().getName() : "",
                 "state", getState().getTag(),
                 "abandoned", yesOrNo(isAbandoned()),
-                "abandonedcountdown", isAbandoned() ? UtilTime.format(getCreated() + (Utils.getAbandonTime(getStateKey()) * 60 * 1000) - System.currentTimeMillis()) : "",
+                "abandonedcountdown", isAbandoned() ? UtilTime.format(getCreated() + TimeUnit.MINUTES.toMillis(Config.Settlement.Upkeep.ABANDON_TIME) - System.currentTimeMillis()) : "",
                 "level", String.valueOf(getLevel()),
                 "land", String.valueOf(LandManager.getInstance().getClaimedLandSize(this)),
                 "maxland", String.valueOf(getMaxClaimableChunks()),
@@ -676,7 +670,7 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
                                 }
                                 return Long.compare(r1.getVillageJoin(), r2.getVillageJoin());
                             })
-                            .limit(Utils.getPlayersInShow())
+                            .limit(Config.PLAYERS_IN_INFO)
                             .map(res -> entry.getReplacedText(
                                     "online", res.getPlayer() != null ? online : offline,
                                     "name", res.getName(),
@@ -685,10 +679,10 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
                             ))
                             .collect(Collectors.joining(separator))
             );
-            if (rankMap.get(rank).size() > Utils.getPlayersInShow()) {
+            if (rankMap.get(rank).size() > Config.PLAYERS_IN_INFO) {
                 line += more.getReplacedText(
                         "amount", String.valueOf(rankMap.get(rank).size()),
-                        "more", String.valueOf(rankMap.get(rank).size() - Utils.getPlayersInShow())
+                        "more", String.valueOf(rankMap.get(rank).size() - Config.PLAYERS_IN_INFO)
                 );
             }
             lines.add(line);

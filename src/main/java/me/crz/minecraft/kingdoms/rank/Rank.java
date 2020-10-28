@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.rank;
 
-import me.crz.minecraft.kingdoms.cinventory.CItem;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -8,6 +7,9 @@ import me.crz.minecraft.kingdoms.utils.NameTag;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
@@ -135,8 +137,12 @@ public abstract class Rank<L extends LandOwner> implements Rankable, NameTag, Co
         this.ordinal = ordinal;
     }
 
-    public CItem getItem() {
-        return new CItem(icon).hideAllFlags(true);
+    public ItemStack getItem() {
+        ItemStack item = new ItemStack(icon);
+        ItemMeta meta = item.getItemMeta();
+        meta.addItemFlags(ItemFlag.values());
+        item.setItemMeta(meta);
+        return item;
     }
 
     @Override

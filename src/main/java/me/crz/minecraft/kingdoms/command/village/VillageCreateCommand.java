@@ -1,11 +1,11 @@
 package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.Base;
-import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -26,7 +26,7 @@ public class VillageCreateCommand extends ResidentSubCommand {
         if (args.length < 1) {
             return false;
         }
-        String name = ChatManager.getInstance().filterAllCurses(String.join(" ", args).trim());
+        String name = Utils.filterAllCurses(String.join(" ", args).trim());
         if (name.toLowerCase().contains("claims")) {
             getError("invalid-characters").tell(resident, "input", name);
         } else if (villageExists(name)) {
@@ -36,12 +36,12 @@ public class VillageCreateCommand extends ResidentSubCommand {
         } else if (!allowed.matcher(name).matches()) {
             getError("invalid-characters").tell(resident, "input", name);
         } else {
-            if (Utils.getVillageCreationCost() != 0) {
-                if (Base.getEconomy().getBalance(resident.getPlayer()) < Utils.getVillageCreationCost()) {
-                    getError("not-enough-money").tell(resident, "amount", String.valueOf(Utils.getVillageCreationCost()));
+            if (Config.Settlement.CREATION_COST != 0) {
+                if (!Base.getEconomy().has(resident.getPlayer(), Config.Settlement.CREATION_COST)) {
+                    getError("not-enough-money").tell(resident, "amount", String.valueOf(Config.Settlement.CREATION_COST));
                     return true;
                 }
-                EconomyResponse r = Base.getEconomy().withdrawPlayer(resident.getPlayer(), (double) Utils.getVillageCreationCost());
+                EconomyResponse r = Base.getEconomy().withdrawPlayer(resident.getPlayer(), (double) Config.Settlement.CREATION_COST);
                 if (!r.transactionSuccess()) {
                     MessageUtils.tell(resident, "&cAn error occurred, please tell an admin!");
                     return true;

@@ -1,11 +1,11 @@
 package me.crz.minecraft.kingdoms.landflags;
 
-import com.destroystokyo.paper.MaterialTags;
+import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import org.bukkit.Material;
-import me.crz.minecraft.kingdoms.cinventory.CItem;
 import org.bukkit.Tag;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,11 +18,11 @@ public enum Use implements NameTag {
     BARREL(Material.BARREL),
     LEVER(Material.LEVER),
     DOOR(Tag.DOORS.getValues()),
-    GATE(MaterialTags.FENCE_GATES.getValues()),
+    GATE(Tag.FENCE_GATES.getValues()),
     TRAP_DOOR(Tag.TRAPDOORS.getValues()),
     BUTTON(Tag.BUTTONS.getValues()),
-    PRESSURE_PLATE(MaterialTags.PRESSURE_PLATES.getValues()),
-    BUCKET(MaterialTags.BUCKETS.getValues()),
+    PRESSURE_PLATE(Tag.PRESSURE_PLATES.getValues()),
+    BUCKET(MaterialUtils.BUCKETS),
     RIDE(MaterialUtils.MINECARTS),
     FURNACE(Material.FURNACE),
     BLAST_FURNACE(Material.BLAST_FURNACE),
@@ -37,8 +37,8 @@ public enum Use implements NameTag {
     SMITHING_TABLE(Material.SMITHING_TABLE),
     PORTAL(Material.END_PORTAL_FRAME),
     JUKEBOX(Material.JUKEBOX),
-    SHULKER_BOX(MaterialTags.SHULKER_BOXES.getValues()),
-    BED(MaterialTags.BEDS.getValues()),
+    SHULKER_BOX(Tag.SHULKER_BOXES.getValues()),
+    BED(Tag.BEDS.getValues()),
     ARMOR_STAND(Material.ARMOR_STAND),
     ITEM_FRAME(Material.ITEM_FRAME),
     LECTERN(Material.LECTERN),
@@ -96,8 +96,8 @@ public enum Use implements NameTag {
         this.materials = materials;
     }
 
-    public CItem getItem() {
-        return new CItem(icon).hideAllFlags(true);
+    public ItemStack getItem() {
+        return ItemUtils.toIcon(icon);
     }
 
     private Collection<Material> getMaterials() {

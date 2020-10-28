@@ -9,7 +9,7 @@ import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.utils.config.Data;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -45,7 +45,7 @@ public class ResidentManager {
                 if (resident != null && (keepCached(resident) || Bukkit.getPlayer(resident.getUUID()) != null)) {
                     return Long.MAX_VALUE;
                 }
-                return TimeUnit.SECONDS.toNanos(Data.residentCacheDuration);
+                return TimeUnit.SECONDS.toNanos(Config.Cache.DURATION_RESIDENT);
             }
         };
         residentsByUuid = Caffeine.newBuilder().expireAfter(residentExpiry).build();

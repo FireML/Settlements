@@ -50,6 +50,8 @@ public class ConfigAccessor {
             throw new IllegalStateException();
         this.configFile = new File(plugin.getDataFolder(), fileName);
         this.defaults = getDefaults();
+        saveDefaultConfig();
+        reloadConfig();
     }
 
     public void reloadConfig() {
@@ -65,7 +67,7 @@ public class ConfigAccessor {
             if (defaults != null) {
                 return defaults;
             } else {
-                reloadConfig();
+                return new YamlConfiguration();
             }
         }
         return fileConfiguration;

@@ -10,7 +10,6 @@ import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.command.Command;
 import org.bukkit.command.FormattedCommandAlias;
-import org.bukkit.command.MultipleCommandAlias;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -57,7 +56,7 @@ public class CmiIntegration implements IgnoreProvider, AfkProvider, MailProvider
     @EventHandler
     public void onCommandPreProcess(PlayerCommandPreprocessEvent event) {
         String[] split = event.getMessage().substring(1).split(" ");
-        Command command = KingdomsPlugin.getInstance().getServer().getCommandMap().getCommand(split[0]);
+        Command command = KingdomsPlugin.getInstance().getServerAdapter().getCommandMap().getCommand(split[0]);
         if (command != null) {
             if (command instanceof PluginCommand) {
                 if (!isCmiItemframeCommand(event.getMessage().substring(1))) {

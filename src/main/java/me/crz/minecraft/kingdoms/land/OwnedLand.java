@@ -9,6 +9,7 @@ import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.landflags.BuildState;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -239,7 +240,8 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     public void setName(String name) {
-        this.name = ChatColor.stripColor(name).length() > Utils.getPlotNameLength() ? name.substring(0, Utils.getPlotNameLength()) : name;
+        int maxLength = Math.min(Config.Plot.NAME_LENGTH, 255);
+        this.name = ChatColor.stripColor(name).length() > maxLength ? name.substring(0, maxLength) : name;
     }
 
     public String getDescription() {
@@ -247,7 +249,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     public void setDescription(String description) {
-        this.description = ChatColor.stripColor(description).length() > Utils.getPlotDescriptionLength() ? description.substring(0, Utils.getPlotDescriptionLength()) : description;
+        this.description = ChatColor.stripColor(description).length() > Config.Plot.DESCRIPTION_LENGTH ? description.substring(0, Config.Plot.DESCRIPTION_LENGTH) : description;
     }
 
     public Collection<OwnedLand> getLinked() {

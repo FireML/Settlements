@@ -5,7 +5,7 @@ import com.google.common.cache.CacheBuilder;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveChunkEvent;
+import me.crz.minecraft.kingdoms.customevents.PlayerMoveChunkEvent;
 import me.crz.minecraft.kingdoms.land.ChatMap;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.Bukkit;

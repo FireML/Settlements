@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -40,7 +41,7 @@ public class VillageActiveCommand extends VillageSubCommand {
         int finalPage = page;
         Utils.runAsync(() -> {
             Collection<Resident> residents = sender.getVillage().getResidents();
-            int pages = (int) Math.ceil(residents.size() / (double) Utils.getEntriesPerPage());
+            int pages = (int) Math.ceil(residents.size() / (double) Config.ENTRIES_PER_PAGE);
             getMessage("head").tell(sender,
                     "page", String.valueOf(finalPage),
                     "maxpage", String.valueOf(pages)
@@ -56,8 +57,8 @@ public class VillageActiveCommand extends VillageSubCommand {
                         }
                         return Long.compare(r1.getLastLogin(), r2.getLastLogin());
                     })
-                    .skip((finalPage - 1 )* Utils.getEntriesPerPage())
-                    .limit(Utils.getEntriesPerPage())
+                    .skip((finalPage - 1 )* Config.ENTRIES_PER_PAGE)
+                    .limit(Config.ENTRIES_PER_PAGE)
                     .forEachOrdered(r -> getMessage("entry").tell(sender,
                             "title", r.getDisplayTitle(),
                             "rank", r.getVillageRank().getTag(r.getVillage()),

@@ -1,57 +1,58 @@
 package me.crz.minecraft.kingdoms.chat.gui;
 
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
 import me.crz.minecraft.kingdoms.KingdomsGUI;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.chat.ChatColorType;
-import me.crz.minecraft.kingdoms.cinventory.CInventory;
-import me.crz.minecraft.kingdoms.cinventory.CItem;
-import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
-import me.crz.minecraft.kingdoms.cinventory.InventorySize;
 import me.crz.minecraft.kingdoms.utils.ColorUtils;
 import me.crz.minecraft.kingdoms.utils.HumanReadable;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
 
 public class ColorChannelSelectGui extends KingdomsGUI {
-
-    private CInventory gui;
+    private final static String[] SETUP = {
+            "         ",
+            "         ",
+            "ggggggggg",
+            "ggggggggg",
+            "         ",
+            "         "
+    };
 
     public ColorChannelSelectGui(Player p) {
         super("chat.channel-select");
-        gui = new CInventory(getText("title"), InventorySize.ONE) {};
+        InventoryGui gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title"), SETUP);
+        gui.setCloseAction(close -> true);
+        gui.setFiller(BORDER_ITEM);
+
+        GuiElementGroup group = new GuiElementGroup('g');
 
         for (ChatChannel channel : ChatChannel.values()) {
             if (!channel.canChat(p) && !channel.isPrivate()) {
                 continue;
             }
-            gui.addItem(new ClickableItem() {
-                @Override
-                public ItemStack getItem(Player p) {
-                    Resident resident = ResidentManager.getInstance().getResident(p);
-                    ChatColor resColor = resident.getChannelColor(channel, ChatColorType.MESSAGE, Utils.getChannelColor(channel, ChatColorType.MESSAGE));
-                    return new CItem(ColorUtils.getColorHead(resColor))
-                            .setName(getMessage("channel-entry")
-                                    .getReplacedText(
-                                            "color", resColor.toString(),
-                                            "color-name", HumanReadable.humanizedName(resColor),
-                                            "channel", channel.getTag()))
-                            .build();
-                }
-
-                @Override
-                public boolean click(Player p, ClickType c) {
-                    ColorTypeSelectGui.getInstance(channel).open(p);
-                    return true;
-                }
-            });
+            Resident resident = ResidentManager.getInstance().getResident(p);
+            ChatColor resColor = resident.getChannelColor(channel, ChatColorType.MESSAGE,
+                    Utils.getChannelColor(channel, ChatColorType.MESSAGE));
+            group.addElement(new StaticGuiElement('g', ColorUtils.getColorHead(resColor), click -> {
+                new ColorTypeSelectGui(channel).open(p);
+                return true;
+            }, getText("channel-entry",
+                    "color", resColor.toString(),
+                    "color-name", HumanReadable.humanizedName(resColor),
+                    "channel", channel.getTag()
+            )));
         }
-        gui.build(p);
+
+        gui.addElement(group);
+
+        gui.show(p);
     }
 
 }

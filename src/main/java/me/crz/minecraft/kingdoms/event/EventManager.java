@@ -72,6 +72,7 @@ public class EventManager implements ConfigMessages {
 
     private EventManager() {
         loadConfig();
+        KingdomsPlugin.getInstance().getServer().getPluginManager().registerEvents(new EventListener(), KingdomsPlugin.getInstance());
     }
 
     @Override
@@ -345,6 +346,9 @@ public class EventManager implements ConfigMessages {
     }
 
     synchronized public static EventManager getInstance() {
+        if (!ConfigManager.getInstance().getEventsConf().getConfig().getBoolean("enabled")) {
+            throw new IllegalStateException("Tried to get EventManager while events were disabled!");
+        }
         if (instance == null) {
             instance = new EventManager();
         }
@@ -407,8 +411,7 @@ public class EventManager implements ConfigMessages {
         player.getInventory().addItem(reward.getItems().toArray(new ItemStack[0])).values()
                 .forEach(i -> {
                     Item item = player.getLocation().getWorld().dropItem(player.getLocation(), i);
-                    item.setOwner(player.getUniqueId());
-                    item.setCanMobPickup(false);
+                    KingdomsPlugin.getInstance().getServerAdapter().markOwned(item, player);
                 });
         for (String command : reward.getCommands()) {
             Map<String, String> replacements = Utils.toMap(

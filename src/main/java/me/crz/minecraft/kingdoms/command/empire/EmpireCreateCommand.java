@@ -1,12 +1,12 @@
 package me.crz.minecraft.kingdoms.command.empire;
 
-import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 import java.util.regex.Pattern;
@@ -30,7 +30,7 @@ public class EmpireCreateCommand extends VillageSubCommand {
         if (args.length < 1) {
             return false;
         }
-        String name = ChatManager.getInstance().filterAllCurses(String.join(" ", args).trim());
+        String name = Utils.filterAllCurses(String.join(" ", args).trim());
         if (name.toLowerCase().contains("claims")) {
             getError("invalid-characters").tell(resident, "input", name);
         } else if (empireExists(name)) {
@@ -40,12 +40,11 @@ public class EmpireCreateCommand extends VillageSubCommand {
         } else if (!allowed.matcher(name).matches()) {
             getError("invalid-characters").tell(resident, "input", name);
         } else {
-            if (Utils.getEmpireCreationCost() != 0) {
-                if (resident.getVillage().getBank() < Utils.getEmpireCreationCost()) {
-                    getError("not-enough-money").tell(resident, "amount", String.valueOf(Utils.getEmpireCreationCost()));
+            if (Config.Empire.CREATION_COST != 0) {
+                if (!resident.getVillage().removeFromBank(Config.Empire.CREATION_COST)) {
+                    getError("not-enough-money").tell(resident, "amount", String.valueOf(Config.Empire.CREATION_COST));
                     return true;
                 }
-                resident.getVillage().setBank(resident.getVillage().getBank() - Utils.getEmpireCreationCost());
             }
             Empire empire = new Empire(name, resident.getVillage().getId());
 

@@ -1,10 +1,10 @@
 package me.crz.minecraft.kingdoms.command.empire;
 
-import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 import java.util.regex.Pattern;
@@ -22,7 +22,7 @@ public class EmpireRenameCommand extends EmpireSubCommand {
         if (args.length == 0) {
             return false;
         }
-        String name = ChatManager.getInstance().filterAllCurses(String.join(" ", args).trim());
+        String name = Utils.filterAllCurses(String.join(" ", args).trim());
         if (name.toLowerCase().contains("claims")) {
             getError("invalid-characters").tell(res, "input", name);
         } else if (empireExists(name)) {
@@ -33,8 +33,8 @@ public class EmpireRenameCommand extends EmpireSubCommand {
             getError("invalid-characters").tell(res, "input", name);
         } else if (empire.isInRegen()) {
             getError("rename-in-progress").tell(res);
-        } else if (empire.getLastRename() + Utils.getEmpireWorldCooldown() * 1000 > System.currentTimeMillis()) {
-            getError("rename-on-cooldown").tell(res, "cooldown", String.valueOf(Utils.getEmpireWorldCooldown()));
+        } else if (empire.getLastRename() + Config.Empire.RENAME_COOLDOWN * 1000 > System.currentTimeMillis()) {
+            getError("rename-on-cooldown").tell(res, "cooldown", String.valueOf(Config.Empire.RENAME_COOLDOWN));
         } else if (EmpireManager.getInstance().changeName(empire, name)){
             getMessage("success").tell(empire.getOnlineResidents(), "name", empire.getName());
         } else {

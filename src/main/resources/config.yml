@@ -1,5 +1,8 @@
-# Show some debug logging messages
+# For internal usage only. Do NOT touch!
+config-version: 1
+# Log some debug messages about the inner working of the plugin
 debug: true
+
 storage:
   type: mysql
   host: localhost
@@ -10,89 +13,252 @@ storage:
   password: password
   url-parameters: ""
   queue:
-    size: 100 # Max the queue before saving happens
-    wait: 2 # Time to wait in seconds before saving queued entries
-resident-cache-duration: 120 # in seconds
-scoreboard:
-  animation-speed: 2 # in ticks (disables if set to 0 or below)
-  update: 10 # in seconds (disables scoreboard completely if set to 0 or below)
-disabled-claiming-worlds: []
-reset-channel-on-login: true
-empire-creation-cost: 0
-empire-start-balance: 0
-village-creation-cost: 0
-village-start-balance: 0
-outpost-creation-cost: 0
-empire-max-tax: 1000000
-village-max-tax: -1
-plot-max-tax: -1
-# Time in seconds to wait before being teleported
-teleport-delay:
-  outpost: 3
-  village: 3
-  kingdom: 3
-  empire: 3
-# Time to wait after teleporting if user had kingdoms.bypass.teleport-delay permission
-teleport-cooldown:
-  outpost: 3
-  village: 3
-  kingdom: 3
-  empire: 3
+    # Max size of the queue before saving happens
+    size: 100
+    # Time to wait in seconds before saving queued entries
+    wait: 2
+    
+# Upkeep scheduler settings
 upkeep:
-  empire: 1000
   hour: 0
-  timezone: EST
-# Days after which empty and inactive villages get deleted: (0 disables this)
-village-inactive-time: 30
-# How long in minutes they stay abandoned before getting deleted
-abandon-time:
-  village: 30
-  kingdom: 30
-  empire: 1440
-max-village-size: 30
-max-empire-size: 20
-# Used for teleporting players back when they
-# got into a world they shouldn't be in
-spawn-command: "spawn {player}"
-empires-world:
-  prefix: ""
-  suffix: "_Domain"
-#  generator: "generatorname"
-#  generator-settings: "settings"
-#  seed: ""
-  structures: false
-  environment: normal
-  type: normal
-  border-radius: 500
-  # Rename cooldown in seconds
-  cooldown: 30
-  # Amount of time a world can be regenerated after creation in seconds
-  regen-duration: 3600
-claim-enemy-distance: 4
-close-claims-grace-days: 4
-close-claims-unclaims-outposts: false
-# The distance in chunks in which a settlement should get a notification when someone builds/griefs
-# Set to 0 to disable
-close-building-notification-distance: 4
-# The time in minutes a disabled close building notification stays around
-close-building-notification-toggle-time: 30
-only-lock-in-settlement: true
-claim-max-radius: 5
-plot:
-  name-length: 25
-  description-length: 255
-# How often (in seconds) should the plugin check for mobs
-# that wandered into claims that had mob spawning disabled?
-# Setting this to 0 or anything below will disable this check!
-mob-flag-check-period: 30
+  timezone: UTC
+  
+# Amount of entries that should be shown per page in chat e.g. for command help messages
 entries-per-page: 10
-players-in-show: 40
+# How many players should show up in settlement/empire member lists
+players-in-info: 40
+# How long in seconds a player has time to confirm certain commands
+command-confirm-time: 30
+# Default modes of certain types or full worlds
+
+cache:
+  # Time in seconds which a resident's data stays in the cache
+  #  even if it is not needed elsewhere
+  duration-resident: 120
+
+settlement:
+  # How much a player must pay to create a settlement
+  creation-cost: 1000
+  # How much money a settlement starts with
+  start-balance: 1000
+  # Maximum size a settlement can have (0 disables the size check)
+  max-size: 30
+  # Maximum value that a settlement's tax can be set to. Set to -1 to disable maximum
+  max-tax: -1
+  # How many different titles can be configured for a rank
+  titles-per-rank: 10
+  
+  claiming:
+    # Worlds in which claiming of Settlement chunks are disabled
+    disabled-worlds:
+    - world_nether
+    # Distance in chunks that have to be between claims of non-allied settlements
+    enemy-distance: 4
+    # Maximum radius in chunks which can be (un)claimed with the radius (un)claiming commands
+    max-radius: 5
+    close:
+      building-notification:
+        # The distance in chunks in which a settlement should get a notification when someone builds/griefs
+        # Set to 0 to disable
+        distance: 4
+        # The time in minutes a disabled close building notification stays around
+        toggle-time: 30
+      unclaim:
+        # How many days to wait before automatically unclaiming claims that are too close when unallying
+        # Set to -1 to disable the automatic unclaiming of too close lands
+        grace-days: 4
+        # Whether or not outposts are unclaimed
+        outposts: false
+
+  outpost:
+    # How much a settlement must pay to create a new outpost
+    creation-cost: 0
+    
+  upkeep:
+    # The amount of minutes that a settlement will stay abandoned after not being able to pay their upkeep
+    # Abandoned settlements can be raided and fully accessed but nobody can claim them
+    abandon-time: 30
+    # The amount of days that a settlement's chief can be offline until it gets deleted
+    # Set to -1 if you don't want to delete them at all
+    inactive-time: 30
+
+empire:
+  # Whether or not a player can transfer their bought claims to an empire
+  claim-transfer: false
+  # How much a settlement must pay to create an empire
+  creation-cost: 0
+  # How much money an empire starts with
+  start-balance: 0
+  # Maximum value that an empire's tax can be set to. Set to -1 to disable maximum
+  max-tax: 1000000
+  # Maximum size an empire can have (0 disables the size check)
+  max-size: 20
+  # The cooldown in seconds after renaming an empire
+  rename-cooldown: 30
+  # How many different titles can be configured for a rank
+  titles-per-rank: 10
+  
+  world:
+    # Whether each empire should get their own world automatically generated
+    enabled: true
+    # The prefix of all empire worlds. WARNING: Changing this with existing worlds will break them!
+    prefix: ''
+    # The suffix of all empire worlds. WARNING: Changing this with existing worlds will break them!
+    suffix: _Domain
+    # The environment of the world. Can be normal, nether or the_end
+    environment: normal
+    # The type of the world. Can be normal, flat, large_biomes or amplified
+    type: normal
+    # The name of the generator to use for the empire worlds. Set to empty to not use one
+    generator: ''
+    # The settings for the defined generator
+    generator-settings: ''
+    # The seed to be used for the generator. Set to empty to use a random one for each world.
+    seed: ''
+    # Whether or not to generate structures
+    structures: false
+    # The radius that an empire world will have by default
+    border-radius: 500
+    # Amount of seconds an empire can regenerate their world after empire generation to find one they like
+    # Set to -1 to allow infinite regeneration
+    regen-duration: 3600
+  
+  upkeep:
+    # The amount of minutes that an empire will stay abandoned after not being able to pay their upkeep
+    # Abandoned empires can be raided and fully accessed
+    abandon-time: 1440
+
+plot:
+  # Maximum value that a plot's tax can be set to. Set to -1 to disable maximum
+  max-tax: -1
+  # Maximum length that plot names can be (without formatting). Cannot be longer than 255.
+  name-length: 25
+  # Maximum length that plot descriptions can be (without formatting).
+  description-length: 255
+  
+modes:
+  # Modes in unclaimed land
+  unclaimed:
+    firespread: false
+    explosion: false
+    pvp: true
+    mobspawning: true
+    passivespawning: true
+  # Settings for worlds that have claiming disabled
+  unclaimable:
+    firespread: false
+    explosion: false
+    pvp: true
+    mobspawning: true
+    passivespawning: true
+  # Override modes in specific worlds
+  worlds:
+    Resource:
+      explosions: true
+    world_nether:
+      explosions: false
+  # Modes in abandoned settlements/empires
+  abandoned:
+    # Village-level Settlements
+    village:
+      firespread: false
+      explosion: false
+      pvp: true
+      mobspawning: true
+      passivespawning: true
+    # Kingdom-level Settlements
+    kingdom:
+      firespread: false
+      explosion: false
+      pvp: true
+      mobspawning: true
+      passivespawning: true
+    # Abandoned Empire worlds
+    empire:
+      firespread: false
+      explosion: false
+      pvp: true
+      mobspawning: true
+      passivespawning: true
+
+lock:
+  # Enable or disable the inbuilt locking
+  enabled: true
+  # Whether or not locks are only allowed in settlement claims and empire worlds
+  only-in-claim: false
+  # This checks if a block is protected by checking on hopper place
+  #  rather than using the InventoryMoveItemEvent stealing of items
+  alternative-hopper-protection: true
+  # Amount in ticks after which the chunk queue will be processed to load the locks in it
+  load-queue-ticks: 20
+  # Blocks that can be locked
+  blocks:
+  - chest
+  - trapped_chest
+  - dispenser
+  - dropper
+  - furnace
+  - '*shulker_box'
+  - '*_door'
+  - '*_trapdoor'
+  - '*_fence_gate'
+  - '*_button'
+  - lever
+  - note_block
+  - jukebox
+  unclaim:
+    # Remove all locks in a chunk when it gets unclaimed
+    remove: true
+    # Also remove the blocks when the locks get removed on unclaim
+    remove-block: false
+    
+portal:
+  # Enable or disable the inbuilt portal handling
+  enabled: true
+  # Whether unlinked portals should teleport to the nether like normal
+  allow-nether-teleport: false
+  # Only allow portals to be created and used inside of claims.
+  # Linking of portals will still be restricted to claimed land only!
+  only-inside-claims: true
+  # Whether portals in unclaimable worlds should just work like Vanilla nether portals
+  # If set to true but only-inside-claims is true too then players will not be able to manually link to portals in unclaimable worlds
+  # If set to false then players will not be able to create portals in unclaimable worlds if only-inside-claims is true.
+  # If set to false and only-inside-claims is false then portals will just work like normal nether portals in unclaimable worlds
+  ignore-unclaimable-worlds: false
+  
+teleport:
+  # The command to run to teleport the player to spawn via the GUI,
+  # when a player is kicked from a settlement's claim or when an Empire world is made private/removed
+  # If not set it will teleport to the world spawn of the default world
+  spawn-command: mv tp {player} world
+  
+  # The amount of time in seconds which a player needs to stand still before being teleported to an outpost/home
+  # Set to 0 to instant teleport
+  delay:
+    outpost: 3
+    village: 3
+    kingdom: 3
+    empire: 3
+  
+  # Seconds to wait after allowing a teleport again if user has the kingdoms.bypass.teleport-delay permission
+  # Set to 0 to disable
+  cooldown:
+    outpost: 3
+    village: 3
+    kingdom: 3
+    empire: 3
+    
 chat:
-  notify:
-    # Notification sound. See https://papermc.io/javadocs/1.13/org/bukkit/Sound.html
-    sound: entity_experience_orb_pickup
-    # Cooldown between notification sounds
-    cooldown: 15
+  # Enable or disable the inbuilt chat
+  enabled: true
+  # Should this plugin only handle chat and not provide any other function?
+  # Useful for cross-server chat (requires ConnectorPlugin)
+  chat-only: false
+  # Should all channels be set to the default config on player login or be the same as on logout
+  reset-channels-on-login: true
+  # The colors that players can use for chat channels
+  
+  # The default chat channel colors
   channel-colors:
     general: white
     event: green
@@ -107,6 +273,8 @@ chat:
     empire: aqua
     private-sent: aqua
     private-received: aqua
+  
+  # The default channel prefix colors
   channel-prefix-colors:
     general: black
     event: green
@@ -121,6 +289,7 @@ chat:
     empire: aqua
     private-sent: dark_gray
     private-received: dark_gray
+    
   selectable-colors:
   - blue
   - dark_blue
@@ -137,78 +306,36 @@ chat:
   - light_purple
   - yellow
   - white
-
-# Amount of titles that can be set per rank
-titles-per-rank: 10
-# Unclaimed/abandoned modes
-modes:
-  unclaimed:
-    firespread: false
-    explosions: false
-    pvp: true
-    mobspawning: true
-    passivespawning: true
-  # Settings for worlds that have claiming disabled
-  unclaimable:
-    firespread: false
-    explosions: false
-    pvp: true
-    mobspawning: true
-    passivespawning: true
-  # Override for specific worlds
-  worlds:
-    Resource:
-      explosions: true
-  abandoned:
-    village:
-      firespread: false
-      explosions: false
-      pvp: true
-      mobspawning: true
-      passivespawning: true
-    kingdom:
-      firespread: false
-      explosions: false
-      pvp: true
-      mobspawning: true
-      passivespawning: true
-    empire:
-      firespread: false
-      explosions: false
-      pvp: true
-      mobspawning: true
-      passivespawning: true
-# Amount in ticks after which the chunk queue will be processed to load the locks in it
-lock-load-queue-ticks: 20
-remove-locks-on-unclaim: true
-remove-locked-blocks: false
-lockable:
-- chest
-- trapped_chest
-- dispenser
-- dropper
-- furnace
-- "*shulker_box"
-- "*_door"
-- "*_trapdoor"
-- "*_fence_gate"
-- "*_button"
-- lever
-- note_block
-- jukebox
-# This checks if a block is protected on place rather than using the
-# InventoryMoveItemEvent to prevent hoppers from stealing items
-alternative-hopper-protection: true
-# Whether or not a player can transfer their bought claims to an empire
-claimtransfer-to-empire: false
-# Toggle Placeholder API usage in certain places
-placeholder-api:
-  sidebar: true
-  chat:
+  
+  notify:
+    # The sound that is played when a player's name is mentioned in chat
+    sound: entity_experience_orb_pickup
+    # Seconds between notification sounds
+    cooldown: 15
+  
+  # Toggle PlaceholderAPI placeholders in certain places
+  placeholder-api:
     hover: true
     format:
       channel: true
       private: true
+
+sidebar:
+  # Enable or disable the inbuilt sidebar
+  enabled: true
+  # Seconds between scoreboard updates
+  update: 1
+  # Ticks for the scoreboard header animation (set to 0 to disable it)
+  header-speed: 2
+  # Whether PlaceholderAPI placeholders should be replaced in the sidebar
+  placeholder-api: true
+
+chestshop:
+  # Whether or not it is allowed for a settlement's/empire's shop to be sold to if the owner goes below their next upkeep
+  allow-selling-below-upkeep: false
+  # The seconds between shop transaction notifications
+  notification-cooldown: 5
+  
 brewery:
   # Players with a drunkeness above that value can no longer write in the channel
   block-channels:
@@ -222,7 +349,3 @@ brewery:
     empireally: 1
     admin: 9001
     staff: 9001
-chestshop:
-  block-sell-below-upkeep: true
-  # Cooldown in seconds for sending notifications for a certain shop
-  notification-cooldown: 5

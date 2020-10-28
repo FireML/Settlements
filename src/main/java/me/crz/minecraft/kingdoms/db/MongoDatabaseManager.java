@@ -18,6 +18,7 @@ import me.crz.minecraft.kingdoms.portal.Portal;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -400,7 +401,7 @@ public class MongoDatabaseManager extends DatabaseManager {
                 break;
 
         }
-        return (int) Math.ceil(logsCollection.countDocuments(Filters.and(filters)) / (double) Utils.getEntriesPerPage());
+        return (int) Math.ceil(logsCollection.countDocuments(Filters.and(filters)) / (double) Config.ENTRIES_PER_PAGE);
     }
 
     @Override
@@ -440,8 +441,8 @@ public class MongoDatabaseManager extends DatabaseManager {
         }
         FindIterable<Document> logIt = logsCollection.find(Filters.and(filters))
                 .sort(Sorts.descending("timestamp"))
-                .skip((page-1) * Utils.getEntriesPerPage())
-                .limit(Utils.getEntriesPerPage());
+                .skip((page-1) * Config.ENTRIES_PER_PAGE)
+                .limit(Config.ENTRIES_PER_PAGE);
         for (Document document : logIt) {
             Village village = VillageManager.getInstance().getVillageFromId(IdObject.get(document.get("village")));
             Empire empire = EmpireManager.getInstance().getEmpireFromId(IdObject.get(document.get("empire")));

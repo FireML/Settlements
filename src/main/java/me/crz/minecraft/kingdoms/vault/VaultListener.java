@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.vault;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.utils.Utils;
 
@@ -118,8 +119,7 @@ public class VaultListener extends KingdomsGUI implements Listener {
     private void addToInventory(Player player, ItemStack itemStack) {
         for (ItemStack rest : player.getInventory().addItem(itemStack).values()) {
             Item item = player.getWorld().dropItem(player.getLocation(), rest);
-            item.setOwner(player.getUniqueId());
-            item.setCanMobPickup(false);
+            KingdomsPlugin.getInstance().getServerAdapter().markOwned(item, player);
         }
     }
 

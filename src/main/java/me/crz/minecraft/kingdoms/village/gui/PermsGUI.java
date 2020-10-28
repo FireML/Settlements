@@ -1,118 +1,100 @@
 package me.crz.minecraft.kingdoms.village.gui;
 
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
 import me.crz.minecraft.kingdoms.KingdomsGUI;
-import me.crz.minecraft.kingdoms.cinventory.CInventory;
-import me.crz.minecraft.kingdoms.cinventory.CItem;
-import me.crz.minecraft.kingdoms.cinventory.ClickableItem;
-import me.crz.minecraft.kingdoms.cinventory.InventorySize;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.ConfirmationGui;
+import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PermsGUI extends KingdomsGUI {
-    private static PermsGUI instance;
-    public CInventory gui;
+    private final static String[] SETUP = {
+            "         ",
+            "         ",
+            "ggggggggg",
+            "ggggggggr",
+            "         ",
+            "    b    "
+    };
+    private final Player player;
 
-    private PermsGUI() {
+    private final InventoryGui gui;
+
+    public PermsGUI(Player player) {
         super("perms");
-        gui = new CInventory(getText("title"), InventorySize.SIX) {};
+        this.player = player;
+        gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title"), SETUP);
+        gui.setCloseAction(close -> false);
+        gui.setFiller(BORDER_ITEM);
 
-        for (int i = 0; i < InventorySize.TWO.getSize(); i++) {
-            gui.addItem(i, BORDER);
-        }
+        GuiElementGroup group = new GuiElementGroup('g');
 
-        for (VillageRank rank : VillageRank.values()) {
-            gui.addItem(new ClickableItem() {
-                @Override
-                public ItemStack getItem(Player p) {
-                    Resident res = ResidentManager.getInstance().getResident(p);
-                    if (res.hasVillage()) {
-                        CItem item = rank.getItem().setName(getMessage("entry.title").getReplacedText(
-                                "rank", rank.getTag(res.getVillage())
-                        ));
-                        if (res.getVillageRank().above(rank) || res.getVillageRank() == VillageRank.getChief()) {
-                            item.addLore(getMessage("entry.edit").getReplacedTextList(
-                                    "rank",  rank.getTag(res.getVillage())
-                            ));
-                        }
-                        if (rank == res.getVillageRank()) {
-                            item.glow(true);
-                        }
-                        return item.build();
+        Resident res = ResidentManager.getInstance().getResident(player);
+        if (res.hasVillage()) {
+            for (VillageRank rank : VillageRank.values()) {
+                List<String> text = new ArrayList<>();
+                text.add(getText("entry.title",
+                        "rank", rank.getTag(res.getVillage())
+                ));
+                if (res.getVillageRank().above(rank) || res.getVillageRank() == VillageRank.getChief()) {
+                    text.add(getText("entry.edit",
+                            "rank", rank.getTag(res.getVillage())
+                    ));
+                }
+                group.addElement(new StaticGuiElement('g',
+                        ItemUtils.setGlowing(rank.getItem(), rank == res.getVillageRank()),
+                        click -> {
+                            Resident r = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
+                            if (r.hasVillage() && r.hasPermission("village.perms")) {
+                                new RankPermGroupsGUI(r, rank).open();
+                            }
+                            return true;
+                        },
+                        text.toArray(new String[0])
+                ));
+            }
+
+            if (res.hasPermission("village.perms.reset")) {
+                gui.addElement(new StaticGuiElement('r', ItemUtils.toIcon(Material.ORANGE_WOOL), click -> {
+                    Resident r = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
+                    if (r.hasVillage() && r.hasPermission("village.perms.reset")) {
+                        Village village = r.getVillage();
+                        new ConfirmationGui(PermsGUI.this, "reset", () -> {
+                            if (r.hasPermission("village.perms.reset")) {
+                                village.getRanksPermissions().clear();
+                                open();
+                                Utils.runAsync(() -> DatabaseManager.getInstance().save(village));
+                            }
+                        }, this::open,
+                                "state", village.getStateTag(),
+                                "name", village.getName()).open((Player) click.getEvent().getWhoClicked());
                     }
-                    return null;
-                }
-
-                @Override
-                public boolean click(Player p, ClickType type) {
-                    Resident res = ResidentManager.getInstance().getResident(p);
-                    if (res.hasVillage() && res.hasPermission("village.perms")) {
-                        RankPermGroupsGUI.open(res, rank);
-                        return true;
-                    }
-                    return false;
-                }
-            });
-        }
-        gui.addItem((gui.getMaxSlot() / 9) * 9 + 8, new ClickableItem() {
-            @Override
-            public ItemStack getItem(Player p) {
-                Resident res = ResidentManager.getInstance().getResident(p);
-                if (res.hasVillage() && res.hasPermission("village.perms.reset")) {
-                    return new CItem(Material.ORANGE_WOOL).setName(getText("reset.title")).build();
-                }
-                return null;
+                    return true;
+                }, getText("reset.title")));
             }
-
-            @Override
-            public boolean click(Player p, ClickType clickType) {
-                Resident res = ResidentManager.getInstance().getResident(p);
-                if (res.hasVillage() && res.hasPermission("village.perms.reset")) {
-                    Village village = res.getVillage();
-                    new ConfirmationGui(PermsGUI.this, "reset", () -> {
-                        if (res.hasPermission("village.perms.reset")) {
-                            village.getRanksPermissions().clear();
-                            open(p);
-                            Utils.runAsync(() -> DatabaseManager.getInstance().save(village));
-                        }
-                    }, () -> open(p), "state", village.getStateTag(), "name", village.getName()).build(p);
-                }
-                return true;
-            }
-        });
-
-        for (int i = InventorySize.FOUR.getSize(); i < InventorySize.SIX.getSize(); i++) {
-            gui.addItem(i, BORDER);
         }
 
-        gui.addItem(InventorySize.FIVE.getSize() + 4, new ClickableItem() {
-            public ItemStack getItem(final Player p) {
-                return new CItem(Material.BARRIER).setName(getText("back")).build();
-            }
+        gui.addElement(group);
 
-            public boolean click(final Player p, final ClickType clickType) {
-                new SettingsGUI(p).open();
-                return true;
-            }
-        });
+        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
+            new SettingsGUI(res).open();
+            return true;
+        }, getText("back")));
     }
 
-    public void open(final Player p) {
-        gui.build(p);
-    }
-
-    synchronized public static PermsGUI getInstance() {
-        if (instance == null) {
-            instance = new PermsGUI();
-        }
-        return instance;
+    public void open() {
+        gui.show(player);
     }
 }

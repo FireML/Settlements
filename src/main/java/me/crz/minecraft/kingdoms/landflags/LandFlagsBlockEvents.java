@@ -1,6 +1,6 @@
 package me.crz.minecraft.kingdoms.landflags;
 
-import com.destroystokyo.paper.event.block.TNTPrimeEvent;
+import me.crz.minecraft.kingdoms.customevents.EntityPrimeTntEvent;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
@@ -51,10 +51,6 @@ import java.util.UUID;
 
 public class LandFlagsBlockEvents implements LandFlagBase, Listener {
 
-    public LandFlagsBlockEvents() {
-        super();
-    }
-
     @EventHandler(ignoreCancelled = true)
     public void on(BlockBreakEvent e) {
         Pair<Boolean, String> response = this.getCanBuildAll(e.getPlayer(), e.getBlock().getLocation());
@@ -70,7 +66,7 @@ public class LandFlagsBlockEvents implements LandFlagBase, Listener {
 
         if (Tag.SAPLINGS.isTagged(e.getBlock().getType()) || MaterialUtils.LOGS.contains(e.getBlock().getType())) {
             useFlag = Use.TREES;
-        } else if (Tag.LEAVES.isTagged(e.getBlock().getType()) && !((Leaves) e.getBlock().getState(false).getBlockData()).isPersistent()) {
+        } else if (Tag.LEAVES.isTagged(e.getBlock().getType()) && !((Leaves) e.getBlock().getBlockData()).isPersistent()) {
             useFlag = Use.TREES;
         }
 
@@ -83,10 +79,10 @@ public class LandFlagsBlockEvents implements LandFlagBase, Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void on(TNTPrimeEvent e) {
+    public void on(EntityPrimeTntEvent e) {
         Player player = null;
-        if (e.getReason() == TNTPrimeEvent.PrimeReason.PROJECTILE && e.getPrimerEntity() instanceof Projectile) {
-            Projectile projectile = (Projectile) e.getPrimerEntity();
+        if (e.getReason() == EntityPrimeTntEvent.Reason.PROJECTILE && e.getEntity() instanceof Projectile) {
+            Projectile projectile = (Projectile) e.getEntity();
             ProjectileSource source = projectile.getShooter();
             if (projectile.getShooter() instanceof Player) {
                 player = (Player) projectile.getShooter();
@@ -105,8 +101,8 @@ public class LandFlagsBlockEvents implements LandFlagBase, Listener {
                     }
                 }
             }
-        } else if (e.getReason() == TNTPrimeEvent.PrimeReason.ITEM && e.getPrimerEntity() instanceof Player) {
-            player = (Player) e.getPrimerEntity();
+        } else if (e.getReason() == EntityPrimeTntEvent.Reason.ITEM && e.getEntity() instanceof Player) {
+            player = (Player) e.getEntity();
         }
         if (player != null) {
             Pair<Boolean, String> response = this.getCanBuildAll(player, e.getBlock().getLocation());

@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import net.md_5.bungee.api.ChatColor;
@@ -59,14 +60,14 @@ public class VillageListCommand extends SubCommand {
                     .sorted(Village::compareTo)
                     .collect(Collectors.toList());
 
-            int pages = (int) Math.ceil(villages.size() / (double) Utils.getEntriesPerPage());
+            int pages = (int) Math.ceil(villages.size() / (double) Config.ENTRIES_PER_PAGE);
             getMessage("head").tell(sender,
                     "access", finalAccess != null ? finalAccess.getTag() + " " : "",
                     "page", String.valueOf(finalPage),
                     "maxpage", String.valueOf(pages)
             );
 
-            for (int i = (finalPage - 1) * Utils.getEntriesPerPage(); i < villages.size() && i < finalPage * Utils.getEntriesPerPage(); i++) {
+            for (int i = (finalPage - 1) * Config.ENTRIES_PER_PAGE; i < villages.size() && i < finalPage * Config.ENTRIES_PER_PAGE; i++) {
                 Village v = villages.get(i);
                 getMessage("entry" + (v.isAbandoned() ? "-abandoned" : "")).tell(sender, v.getReplacements(this,
                         "place", String.valueOf(i + 1),

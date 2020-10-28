@@ -1,31 +1,39 @@
 package me.crz.minecraft.kingdoms.utils;
 
+import io.papermc.lib.PaperLib;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.chat.ChatColorType;
+import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.PlotMode;
+import me.crz.minecraft.kingdoms.utils.config.Config;
+import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.VillageState;
-import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
-import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Ambient;
+import org.bukkit.entity.Animals;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.WaterMob;
+import org.bukkit.scheduler.BukkitTask;
 
+import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-
-import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
-
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -36,7 +44,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
@@ -44,16 +51,6 @@ import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-
-import org.bukkit.World;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitTask;
 
 public class Utils {
     public final static DecimalFormat CURRENCY_FORMAT = new DecimalFormat("#,###");
@@ -72,100 +69,25 @@ public class Utils {
             EntityType.SLIME,
             EntityType.PHANTOM
     );
+    private static final Set<EntityType> SPECIAL_PASSIVE = EnumSet.of(
+            EntityType.SNOWMAN,
+            EntityType.VILLAGER,
+            EntityType.SQUID,
+            EntityType.IRON_GOLEM
+    );
     private static final BlockFace[] CARDINAL_DIRECTIONS = {
             BlockFace.NORTH,
             BlockFace.EAST,
             BlockFace.SOUTH,
             BlockFace.WEST
     };
-    private static Set<String> disabledClaimingWorlds = null;
 
     public Utils() {
         super();
     }
 
-    public static ItemStack getHead(UUID playerId, String name) {
-        ItemStack item = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta skull = (SkullMeta) item.getItemMeta();
-        skull.setDisplayName(name);
-        skull.setPlayerProfile(Bukkit.createProfile(playerId));
-        item.setItemMeta(skull);
-        return item;
-    }
-
     public static boolean isWorldClaimable(World world) {
-        return !getDisabledClaimingWorlds().contains(world.getName()) || EmpireManager.getInstance().getEmpireFromWorld(world) != null;
-    }
-
-    public static Collection<String> getDisabledClaimingWorlds() {
-        if (disabledClaimingWorlds != null) {
-            return disabledClaimingWorlds;
-        }
-        FileConfiguration config = KingdomsPlugin.getInstance().getConfig();
-        if (config.contains("disabled-claiming-worlds")) {
-            return (disabledClaimingWorlds = new HashSet<>(config.getStringList("disabled-claiming-worlds")));
-        }
-        disabledClaimingWorlds = new HashSet<>();
-        List<String> temp = new ArrayList<>();
-        config.set("disabled-claiming-worlds", temp);
-        KingdomsPlugin.getInstance().saveConfig();
-        return disabledClaimingWorlds;
-    }
-
-    public static int getEmpireCreationCost() {
-        if (ConfigManager.getInstance().getConfig().isInt("empire-creation-cost")) {
-            return ConfigManager.getInstance().getConfig().getInt("empire-creation-cost");
-        }
-        return 0;
-    }
-
-    public static int getEmpireStartBalance() {
-        if (ConfigManager.getInstance().getConfig().isInt("empire-start-balance")) {
-            return ConfigManager.getInstance().getConfig().getInt("empire-start-balance");
-        }
-        return 0;
-    }
-
-    public static int getVillageCreationCost() {
-        if (ConfigManager.getInstance().getConfig().isInt("village-creation-cost")) {
-            return ConfigManager.getInstance().getConfig().getInt("village-creation-cost");
-        }
-        return 0;
-    }
-
-    public static int getVillageStartBalance() {
-        if (ConfigManager.getInstance().getConfig().isInt("village-start-balance")) {
-            return ConfigManager.getInstance().getConfig().getInt("village-start-balance");
-        }
-        return 0;
-    }
-
-    public static int getOutpostCreationCost() {
-        if (ConfigManager.getInstance().getConfig().isInt("outpost-creation-cost")) {
-            return ConfigManager.getInstance().getConfig().getInt("outpost-creation-cost");
-        }
-        return 0;
-    }
-
-    public static int getVillageMaxTax() {
-        if (ConfigManager.getInstance().getConfig().isInt("village-max-tax")) {
-            return ConfigManager.getInstance().getConfig().getInt("village-max-tax");
-        }
-        return -1;
-    }
-
-    public static int getEmpireMaxTax() {
-        if (ConfigManager.getInstance().getConfig().isInt("empire-max-tax")) {
-            return ConfigManager.getInstance().getConfig().getInt("empire-max-tax");
-        }
-        return -1;
-    }
-
-    public static int getPlotMaxTax() {
-        if (ConfigManager.getInstance().getConfig().isInt("plot-max-tax")) {
-            return ConfigManager.getInstance().getConfig().getInt("plot-max-tax");
-        }
-        return -1;
+        return !Config.Settlement.Claiming.DISABLED_WORLDS.contains(world.getName()) || EmpireManager.getInstance().getEmpireFromWorld(world) != null;
     }
 
     public static int getUpkeepCost(VillageState state, String worldName, int level) {
@@ -182,190 +104,34 @@ public class Utils {
                 key -> ConfigManager.getInstance().getLevelConfig().getInt(state.name().toLowerCase() + ".level-" + level + ".claim-upkeep"));
     }
 
-    public static int getClaimEnemyDistance() {
-        if (ConfigManager.getInstance().getConfig().isInt("claim-enemy-distance")) {
-            return ConfigManager.getInstance().getConfig().getInt("claim-enemy-distance");
-        }
-        return 0;
-    }
-
-    public static int getCloseClaimsGraceDays() {
-        if (ConfigManager.getInstance().getConfig().isInt("close-claims-grace-days")) {
-            return ConfigManager.getInstance().getConfig().getInt("close-claims-grace-days");
-        }
-        return 0;
-    }
-
-    public static boolean getCloseClaimsUnclaimsOutposts() {
-        if (ConfigManager.getInstance().getConfig().isBoolean("close-claims-unclaims-outposts")) {
-            return ConfigManager.getInstance().getConfig().getBoolean("close-claims-unclaims-outposts");
-        }
-        return false;
-    }
-
-    public static int getCloseBuildingNotificationDistance() {
-        if (ConfigManager.getInstance().getConfig().isInt("close-building-notification-distance")) {
-            return ConfigManager.getInstance().getConfig().getInt("close-building-notification-distance");
-        }
-        return 4;
-    }
-
-    public static int getCloseBuildingNotificationToggleTime() {
-        return ConfigManager.getInstance().getConfig().getInt("close-building-notification-toggle-time");
-    }
-
     public static int getTeleportDelay(String type) {
-        if (ConfigManager.getInstance().getConfig().isInt("teleport-delay." + type)) {
-            return ConfigManager.getInstance().getConfig().getInt("teleport-delay." + type);
+        try {
+            Field f = Config.Teleport.Delay.class.getField(type.toUpperCase());
+            return (int) f.get(null);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
         }
         return 0;
     }
 
     public static int getTeleportCooldown(String type) {
-        if (ConfigManager.getInstance().getConfig().isInt("teleport-cooldown." + type)) {
-            return ConfigManager.getInstance().getConfig().getInt("teleport-cooldown." + type);
+        try {
+            Field f = Config.Teleport.Cooldown.class.getField(type.toUpperCase());
+            return (int) f.get(null);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
         }
         return 0;
-    }
-
-    public static int getEntriesPerPage() {
-        if (ConfigManager.getInstance().getConfig().isInt("entries-per-page")) {
-            return ConfigManager.getInstance().getConfig().getInt("entries-per-page");
-        }
-        return 20;
-    }
-
-    public static int getPlayersInShow() {
-        if (ConfigManager.getInstance().getConfig().isInt("players-in-show")) {
-            return ConfigManager.getInstance().getConfig().getInt("players-in-show");
-        }
-        return 40;
-    }
-
-    public static String getSpawnCommand() {
-        if (ConfigManager.getInstance().getConfig().isString("spawn-command")) {
-            return ConfigManager.getInstance().getConfig().getString("spawn-command");
-        }
-        return "";
-    }
-
-    public static int getEmpireWorldRadius() {
-        if (ConfigManager.getInstance().getConfig().isInt("empires-world.border-radius")) {
-            return ConfigManager.getInstance().getConfig().getInt("empires-world.border-radius");
-        }
-        return 500;
-    }
-
-    public static int getEmpireWorldCooldown() {
-        if (ConfigManager.getInstance().getConfig().isInt("empires-world.cooldown")) {
-            return ConfigManager.getInstance().getConfig().getInt("empires-world.cooldown");
-        }
-        return 30;
-    }
-
-    public static int getEmpireWorldRegenDuration() {
-        if (ConfigManager.getInstance().getConfig().isInt("empires-world.regen-duration")) {
-            return ConfigManager.getInstance().getConfig().getInt("empires-world.regen-duration");
-        }
-        return 0;
-    }
-
-    public static int getCommandConfirmTime() {
-        if (ConfigManager.getInstance().getConfig().isInt("command-confirm-time")) {
-            return ConfigManager.getInstance().getConfig().getInt("command-confirm-time");
-        }
-        return 30;
-    }
-
-    public static boolean shouldResetChannelOnLogin() {
-        if (ConfigManager.getInstance().getConfig().isBoolean("reset-channel-on-login")) {
-            return ConfigManager.getInstance().getConfig().getBoolean("reset-channel-on-login");
-        }
-        return true;
-    }
-
-    public static boolean allowClaimTransferToEmpire() {
-        if (ConfigManager.getInstance().getConfig().isBoolean("claimtransfer-to-empire")) {
-            return ConfigManager.getInstance().getConfig().getBoolean("claimtransfer-to-empire");
-        }
-        return false;
-    }
-
-    public static Sound getChatNotifySound() {
-        if (ConfigManager.getInstance().getConfig().isString("chat.notify.sound")) {
-            try {
-                return Sound.valueOf(ConfigManager.getInstance().getConfig().getString("chat.notify.sound").toUpperCase());
-            } catch (IllegalArgumentException ignored) {}
-        }
-        return Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
-    }
-
-    public static int getChatNotifyCooldown() {
-        if (ConfigManager.getInstance().getConfig().isInt("chat.notify.cooldown")) {
-            return ConfigManager.getInstance().getConfig().getInt("chat.notify.cooldown");
-        }
-        return 15;
-    }
-
-    public static List<String> getChatColors() {
-        return ConfigManager.getInstance().getConfig().getStringList("chat.selectable-colors");
     }
 
     public static ChatColor getChannelColor(ChatChannel channel, ChatColorType type) {
         switch (type) {
             case PREFIX:
-                return getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-prefix-colors." + channel.getKey()), ChatColor.WHITE);
+                return ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-prefix-colors." + channel.getKey()), ChatColor.WHITE);
             case MESSAGE:
-                return getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-colors." + channel.getKey()), ChatColor.WHITE);
+                return ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-colors." + channel.getKey()), ChatColor.WHITE);
         }
         return ChatColor.WHITE;
-    }
-
-    public static ChatColor getColor(String colorString, ChatColor def) {
-        if (colorString != null) {
-            try {
-                return ChatColor.valueOf(colorString.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                ChatColor color = null;
-                if (colorString.length() == 1) {
-                    color = ChatColor.getByChar(colorString);
-                } else if (colorString.length() == 2) {
-                    color = ChatColor.getByChar(colorString.charAt(1));
-                }
-                if (color != null) {
-                    return color;
-                }
-            }
-        }
-        return ChatColor.WHITE;
-    }
-
-    public static int getTitlesPerRank() {
-        if (ConfigManager.getInstance().getConfig().isInt("titles-per-rank")) {
-            return ConfigManager.getInstance().getConfig().getInt("titles-per-rank");
-        }
-        return 10;
-    }
-
-    public static boolean usePlaceholderApi(String place) {
-        if (ConfigManager.getInstance().getConfig().isBoolean("placeholder-api." + place)) {
-            return ConfigManager.getInstance().getConfig().getBoolean("placeholder-api." + place);
-        }
-        return false;
-    }
-
-    public static long getAbandonTime(String type) {
-        if (ConfigManager.getInstance().getConfig().isInt("abandon-time." + type)) {
-            return ConfigManager.getInstance().getConfig().getInt("abandon-time." + type);
-        }
-        return type.equals("empire") ? 1440 : 30;
-    }
-
-    public static int getVillageInactiveTime() {
-        if (ConfigManager.getInstance().getConfig().isInt("village-inactive-time")) {
-            return ConfigManager.getInstance().getConfig().getInt("village-inactive-time");
-        }
-        return 30;
     }
 
     public static boolean hasPlotMode(PlotMode mode, String type) {
@@ -374,32 +140,6 @@ public class Utils {
 
     public static boolean getPlotMode(PlotMode mode, String type) {
         return ConfigManager.getInstance().getConfig().getBoolean("modes." + type + "." + mode.getKey(), mode.getDefault());
-    }
-
-    public static int getPlotNameLength() {
-        if (ConfigManager.getInstance().getConfig().isInt("plot.name-length")) {
-            return Math.min(ConfigManager.getInstance().getConfig().getInt("plot.name-length"), 255);
-        }
-        return 25;
-    }
-
-    public static int getPlotDescriptionLength() {
-        if (ConfigManager.getInstance().getConfig().isInt("plot.description-length")) {
-            return ConfigManager.getInstance().getConfig().getInt("plot.description-length");
-        }
-        return 25;
-    }
-
-    public static boolean shouldBlockChestShopSellBelowUpkeep() {
-        return ConfigManager.getInstance().getConfig().getBoolean("chestshop.block-sell-below-upkeep");
-    }
-
-    public static int getChestShopNotificationCooldown() {
-        return ConfigManager.getInstance().getConfig().getInt("chestshop.notification-cooldown");
-    }
-
-    public static boolean playerIsChief(Player player, Village village) {
-        return village != null && village.getChiefId().equals(player.getUniqueId());
     }
 
     public static boolean playerHasInvite(UUID playerId, Village joinVillage) {
@@ -425,20 +165,18 @@ public class Utils {
     }
 
     public static void addDisabledWorld(World world) {
-        Collection<String> temp = getDisabledClaimingWorlds();
+        Collection<String> temp = Config.Settlement.Claiming.DISABLED_WORLDS;
         if (!temp.contains(world.getName())) {
             temp.add(world.getName());
-            KingdomsPlugin.getInstance().getConfig().set("disabled-claiming-worlds", new ArrayList<>(temp));
-            KingdomsPlugin.getInstance().saveConfig();
+            ConfigManager.getInstance().save();
         }
     }
 
     public static void removeDisabledWorld(World world) {
-        Collection<String> temp = getDisabledClaimingWorlds();
+        Collection<String> temp = Config.Settlement.Claiming.DISABLED_WORLDS;
         if (temp.contains(world.getName())) {
             temp.remove(world.getName());
-            KingdomsPlugin.getInstance().getConfig().set("disabled-claiming-worlds", new ArrayList<>(temp));
-            KingdomsPlugin.getInstance().saveConfig();
+            ConfigManager.getInstance().save();
         }
     }
 
@@ -623,11 +361,11 @@ public class Utils {
 
     public static Date getNextUpkeep() {
         Calendar nextUpkeep = Calendar.getInstance();
-        nextUpkeep.setTimeZone(TimeZone.getTimeZone(KingdomsPlugin.getInstance().getConfig().getString("upkeep.timezone")));
-        if (nextUpkeep.get(Calendar.HOUR_OF_DAY) >= KingdomsPlugin.getInstance().getConfig().getInt("upkeep.hour")) {
+        nextUpkeep.setTimeZone(TimeZone.getTimeZone(Config.Upkeep.TIMEZONE));
+        if (nextUpkeep.get(Calendar.HOUR_OF_DAY) >= Config.Upkeep.HOUR) {
             nextUpkeep.set(Calendar.DAY_OF_YEAR, nextUpkeep.get(Calendar.DAY_OF_YEAR) + 1);
         }
-        nextUpkeep.set(Calendar.HOUR_OF_DAY, KingdomsPlugin.getInstance().getConfig().getInt("upkeep.hour"));
+        nextUpkeep.set(Calendar.HOUR_OF_DAY, Config.Upkeep.HOUR);
         nextUpkeep.set(Calendar.MINUTE, 0);
         nextUpkeep.set(Calendar.SECOND, 0);
         nextUpkeep.set(Calendar.MILLISECOND, 1);
@@ -665,7 +403,7 @@ public class Utils {
         }
 
         return ExecuteMoveUtil.getInstance().execute(player, () -> {
-            loc.getWorld().getChunkAtAsync(loc).thenAccept(c -> {
+            PaperLib.getChunkAtAsync(loc).thenAccept(c -> {
                 if (c == null) {
                     Message.get("error.destination-obstructed").tell(player);
                     KingdomsPlugin.logDebug("Could not load chunk at " + loc);
@@ -688,9 +426,14 @@ public class Utils {
 
                 player.sendBlockChange(down.getLocation(), down.getBlockData());
                 loc.setY(block.getY());
-                player.teleportAsync(loc).thenAccept(success -> {
-                    Message.get(messagePath + "." + (success ? "success" : "fail")).tell(player, replacements);
-                    Message.get(messagePath + "." + (success ? "success" : "fail") + "-title").getTitle().withIn(0).send(player, replacements);
+                PaperLib.teleportAsync(player, loc).thenAccept(success -> {
+                    String path = messagePath + "." + (success ? "success" : "fail");
+                    Message.get(path).tell(player, replacements);
+                    new TitleBuilder()
+                            .withTitle(Message.get(path + "-title.title"))
+                            .withSubtitle(Message.get(path + "-title.subtitle"))
+                            .withActionbar(Message.get(path + "-title.actionbar"))
+                            .send(player, replacements);
                     if (!success) {
                         KingdomsPlugin.logDebug("Failed to teleport " + player.getName() + " to " + loc);
                     }
@@ -700,13 +443,13 @@ public class Utils {
     }
 
     public static void teleportToSpawn(Player target) {
-        String command = getSpawnCommand();
+        String command = Config.Teleport.SPAWN_COMMAND;
         if (!command.isEmpty()) {
             if (!Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(command, "player", target.getName()))) {
                 KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not execute spawn teleport command? Is " + command + " a valid command?");
             }
         } else {
-            target.teleportAsync(Bukkit.getWorlds().get(0).getSpawnLocation());
+            PaperLib.teleportAsync(target, Bukkit.getWorlds().get(0).getSpawnLocation());
         }
     }
 
@@ -766,6 +509,10 @@ public class Utils {
         return entityType.getEntityClass() != null && Monster.class.isAssignableFrom(entityType.getEntityClass()) || SPECIAL_HOSTILE.contains(entityType);
     }
 
+    public static boolean isPassive(Entity entity) {
+        return entity instanceof Animals || entity instanceof WaterMob || entity instanceof Ambient || SPECIAL_PASSIVE.contains(entity.getType());
+    }
+
     public static WeatherState getWeatherState(World world) {
         if (world.getGameRuleValue(GameRule.DO_WEATHER_CYCLE)) {
             return WeatherState.NORMAL;
@@ -813,5 +560,13 @@ public class Utils {
             }
         }
         return null;
+    }
+
+    public static String filterAllCurses(String message) {
+        return ConfigManager.getInstance().getToggleableCurses().filterCurses(ConfigManager.getInstance().getForcedCurses().filterCurses(message));
+    }
+
+    public static boolean containsAnyCurses(String message) {
+        return ConfigManager.getInstance().getToggleableCurses().containsCurses(message) || ConfigManager.getInstance().getForcedCurses().containsCurses(message);
     }
 }

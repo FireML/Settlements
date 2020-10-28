@@ -1,13 +1,11 @@
 package me.crz.minecraft.kingdoms.land;
 
-import co.aikar.timings.Timing;
-import com.destroystokyo.paper.event.block.TNTPrimeEvent;
-import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
+import co.aikar.timings.lib.MCTiming;
 import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.essentials.events.HostileCreaturePreSpawnEvent;
-import me.crz.minecraft.kingdoms.essentials.events.HostileCreatureSpawnEvent;
-import me.crz.minecraft.kingdoms.essentials.events.PlayerMoveChunkEvent;
+import me.crz.minecraft.kingdoms.customevents.EntityPrimeTntEvent;
+import me.crz.minecraft.kingdoms.customevents.CreaturePreSpawnEvent;
+import me.crz.minecraft.kingdoms.customevents.PlayerMoveChunkEvent;
 import me.crz.minecraft.kingdoms.landflags.LandFlagBase;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -44,12 +42,11 @@ import java.util.logging.Level;
 
 public class LandFlags extends Base implements LandFlagBase {
     private TitleBuilder tbPvp = new TitleBuilder();
-    private final Timing mobCheckTiming;
+    private final MCTiming mobCheckTiming;
     private BukkitTask mobCheckTask = null;
     private int mobCheckPeriod = 0;
 
     public LandFlags() {
-        super();
         reload();
         mobCheckTiming = KingdomsPlugin.getInstance().getTiming("Mob spawning mode check");
     }
@@ -64,7 +61,7 @@ public class LandFlags extends Base implements LandFlagBase {
             if (mobCheckPeriod > 0) {
                 mobCheckTask = Bukkit.getScheduler().runTaskTimer(KingdomsPlugin.getInstance(), () -> {
                     int amount = 0;
-                    try (Timing ignored = mobCheckTiming.startTiming()) {
+                    try (MCTiming ignored = mobCheckTiming.startTiming()) {
                         for (World world : Bukkit.getWorlds()) {
                             if (Utils.isWorldClaimable(world) && LandManager.getInstance().hasLand(world)) {
                                 for (LivingEntity entity : world.getLivingEntities()) {
@@ -180,8 +177,8 @@ public class LandFlags extends Base implements LandFlagBase {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onTntPrime(TNTPrimeEvent e) {
-        if (e.getReason() == TNTPrimeEvent.PrimeReason.EXPLOSION && !isAllowed(e.getBlock().getLocation(), PlotMode.explosions)) {
+    public void onTntPrime(EntityPrimeTntEvent e) {
+        if (e.getReason() == EntityPrimeTntEvent.Reason.EXPLOSION && !isAllowed(e.getBlock().getLocation(), PlotMode.explosions)) {
             e.setCancelled(true);
         }
     }
@@ -226,38 +223,32 @@ public class LandFlags extends Base implements LandFlagBase {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onHostileSpawn(HostileCreaturePreSpawnEvent e) {
-        if (e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.CUSTOM
-                && !isAllowed(e.getLocation(), PlotMode.mobSpawning)) {
-            e.setCancelled(true);
+    public void onCreaturePreSpawn(CreaturePreSpawnEvent e) {
+        if (e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.CUSTOM) {
+            if (Utils.isHostile(e.getEntityType())) {
+                if (!isAllowed(e.getLocation(), PlotMode.mobSpawning)) {
+                    e.setCancelled(true);
+                }
+            } else if (e.getEntityType() != EntityType.ARMOR_STAND) {
+                if (!isAllowed(e.getLocation(), PlotMode.passiveSpawning)) {
+                    e.setCancelled(true);
+                }
+            }
         }
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onHostileSpawn(HostileCreatureSpawnEvent e) {
-        if (e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.CUSTOM
-                && !isAllowed(e.getLocation(), PlotMode.mobSpawning)) {
-            e.setCancelled(true);
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onPassiveSpawn(PreCreatureSpawnEvent e) {
-        if (e.getReason() != CreatureSpawnEvent.SpawnReason.CUSTOM
-                && !Utils.isHostile(e.getType())
-                && e.getType() != EntityType.ARMOR_STAND
-                && !isAllowed(e.getSpawnLocation(), PlotMode.passiveSpawning)) {
-            e.setCancelled(true);
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onPassiveSpawn(CreatureSpawnEvent e) {
-        if (e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.CUSTOM
-                && !Utils.isHostile(e.getEntity())
-                && e.getEntityType() != EntityType.ARMOR_STAND
-                && !isAllowed(e.getLocation(), PlotMode.passiveSpawning)) {
-            e.setCancelled(true);
+    public void onCreatureSpawn(CreatureSpawnEvent e) {
+        if (e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.CUSTOM) {
+            if (Utils.isHostile(e.getEntity())) {
+                if (!isAllowed(e.getLocation(), PlotMode.mobSpawning)) {
+                    e.setCancelled(true);
+                }
+            } else if (e.getEntityType() != EntityType.ARMOR_STAND) {
+                if (!isAllowed(e.getLocation(), PlotMode.passiveSpawning)) {
+                    e.setCancelled(true);
+                }
+            }
         }
     }
 

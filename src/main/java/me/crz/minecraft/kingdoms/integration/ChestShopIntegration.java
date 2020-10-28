@@ -1,6 +1,6 @@
 package me.crz.minecraft.kingdoms.integration;
 
-import co.aikar.timings.Timing;
+import co.aikar.timings.lib.MCTiming;
 import com.Acrobot.Breeze.Utils.MaterialUtil;
 import com.Acrobot.ChestShop.ChestShop;
 import com.Acrobot.ChestShop.Commands.Toggle;
@@ -29,6 +29,7 @@ import com.Acrobot.ChestShop.Signs.ChestShopSign;
 import com.Acrobot.ChestShop.Utils.uBlock;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import io.papermc.lib.PaperLib;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
@@ -41,6 +42,7 @@ import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.VillageManager;
@@ -82,7 +84,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
 
     public ChestShopIntegration() {
         chestShop = (ChestShop) Bukkit.getPluginManager().getPlugin("ChestShop");
-        notificationCooldown = CacheBuilder.newBuilder().expireAfterWrite(Utils.getChestShopNotificationCooldown(), TimeUnit.SECONDS).build();
+        notificationCooldown = CacheBuilder.newBuilder().expireAfterWrite(Config.Chestshop.NOTIFICATION_COOLDOWN, TimeUnit.SECONDS).build();
         KingdomsPlugin.getInstance().getLockProviders().add(this);
         KingdomsPlugin.getInstance().getShopProviders().add(this);
         Bukkit.getPluginManager().registerEvents(this, KingdomsPlugin.getInstance());
@@ -126,7 +128,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             for (SimpleChunkLocation chunkLocation : chunks) {
                 World world = Bukkit.getWorld(chunkLocation.getWorld());
                 if (world != null) {
-                    world.getChunkAtAsync(chunkLocation.getX(), chunkLocation.getZ()).thenAccept(this::removeInChunk);
+                    PaperLib.getChunkAtAsync(world, chunkLocation.getX(), chunkLocation.getZ()).thenAccept(this::removeInChunk);
                 }
             }
         });
@@ -148,12 +150,12 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
 
     private int removeInChunk(Chunk chunk) {
         int amount = 0;
-        try (Timing ignored = KingdomsPlugin.getInstance().getAndStartTiming("ChestShop chunk shop removal")) {
+        try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("ChestShop chunk shop removal")) {
             for (BlockState blockState : chunk.getTileEntities()) {
                 if (blockState instanceof Sign && ChestShopSign.isValid((Sign) blockState)) {
                     Sign sign = (Sign) blockState;
                     Container container = uBlock.findConnectedContainer(sign);
-                    new ShopDestroyedEvent(null, (Sign) sign.getBlock().getState(), container).callEvent();
+                    Bukkit.getPluginManager().callEvent(new ShopDestroyedEvent(null, (Sign) sign.getBlock().getState(), container));
                     Arrays.fill(sign.getLines(), "");
                     sign.update(true);
                     amount++;
@@ -408,7 +410,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
         LandOwner landOwner = getLandOwner(event.getAccount());
         if (landOwner != null) {
             long amount = landOwner.getBank();
-            if (Utils.shouldBlockChestShopSellBelowUpkeep()) {
+            if (!Config.Chestshop.ALLOW_SELLING_BELOW_UPKEEP) {
                 amount -= landOwner.getUpkeep();
             }
             event.setAmount(BigDecimal.valueOf(Math.max(amount, 0)));
@@ -423,7 +425,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             if (landOwner != null) {
                 try {
                     long amount = event.getAmount().setScale(0, RoundingMode.UP).longValueExact();
-                    if (Utils.shouldBlockChestShopSellBelowUpkeep()) {
+                    if (!Config.Chestshop.ALLOW_SELLING_BELOW_UPKEEP) {
                         amount += landOwner.getUpkeep();
                     }
                     event.hasEnough(landOwner.has(amount));

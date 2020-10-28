@@ -1,9 +1,9 @@
 package me.crz.minecraft.kingdoms.command.plot;
 
-import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 import org.bukkit.ChatColor;
 
@@ -14,7 +14,7 @@ public class PlotNameCommand extends PlotSubCommand {
 
     @Override
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
-        String name = MessageUtils.replaceColorCodes(ChatManager.getInstance().filterAllCurses(String.join(" ", args)));
+        String name = MessageUtils.replaceColorCodes(Utils.filterAllCurses(String.join(" ", args)));
         if (ChatColor.stripColor(name).length() > 16) {
             getError("too-long").tell(res, "input", name, "amount", "16");
             return true;

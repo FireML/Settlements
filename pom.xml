@@ -6,7 +6,7 @@
 
     <groupId>me.crz.minecraft.kingdoms</groupId>
     <artifactId>kingdoms</artifactId>
-    <version>1.4.1</version>
+    <version>1.5</version>
     <packaging>jar</packaging>
 
     <name>ApeironKingdoms</name>
@@ -20,6 +20,57 @@
     </properties>
 
     <profiles>
+        <!--<profile>
+            <id>default</id>
+            <activation>
+                <property>
+                    <name>!spigot</name>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.destroystokyo.paper</groupId>
+                    <artifactId>paper-api</artifactId>
+                    <version>1.16.1-R0.1-SNAPSHOT</version>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+        </profile>-->
+
+        <profile>
+            <id>spigot</id>
+            <repositories>
+                <repository>
+                    <id>spigotmc-repo</id>
+                    <url>https://hub.spigotmc.org/nexus/content/groups/public</url>
+                </repository>
+            </repositories>
+            <dependencies>
+                <dependency>
+                    <groupId>org.spigotmc</groupId>
+                    <artifactId>spigot-api</artifactId>
+                    <version>1.16.1-R0.1-SNAPSHOT</version>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+            <properties>
+                <spigot>true</spigot>
+            </properties>
+            <build>
+                <finalName>${project.name}-Spigot</finalName>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/Paper*.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
         <profile>
             <id>static_build_number</id>
             <activation>
@@ -32,6 +83,7 @@
                 <buildDescription>(compiled at ${maven.build.timestamp})</buildDescription>
             </properties>
         </profile>
+
         <profile>
             <id>dynamic_build_number</id>
             <activation>
@@ -56,6 +108,10 @@
             </resource>
         </resources>
         <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+            </plugin>
             <plugin>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.1.0</version>
@@ -105,6 +161,22 @@
                             <pattern>de.themoep.inventorygui</pattern>
                             <shadedPattern>me.crz.minecraft.kingdoms.libs.inventorygui</shadedPattern>
                         </relocation>
+                        <relocation>
+                            <pattern>io.papermc.lib</pattern>
+                            <shadedPattern>me.crz.minecraft.kingdoms.libs.paperlib</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>co.aikar.timings.lib</pattern>
+                            <shadedPattern>me.crz.minecraft.kingdoms.libs.timings</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.intellij</pattern>
+                            <shadedPattern>me.crz.minecraft.kingdoms.libs.jetbrains</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.jetbrains</pattern>
+                            <shadedPattern>me.crz.minecraft.kingdoms.libs.jetbrains</shadedPattern>
+                        </relocation>
                     </relocations>
                 </configuration>
                 <executions>
@@ -145,6 +217,10 @@
             <url>http://repo.onarandombox.com/content/repositories/multiverse</url>
         </repository>
         <repository>
+            <id>aikar</id>
+            <url>http://repo.aikar.co/nexus/content/groups/aikar/</url>
+        </repository>
+        <repository>
             <id>elmakers-repo</id>
             <url>http://maven.elmakers.com/repository/</url>
             <releases>
@@ -153,6 +229,10 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
+        </repository>
+        <repository>
+            <id>mojang-repo</id>
+            <url>https://libraries.minecraft.net/</url>
         </repository>
         <repository>
             <id>placeholderapi</id>
@@ -165,6 +245,12 @@
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>com.destroystokyo.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.16.1-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
@@ -214,21 +300,27 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.destroystokyo.paper</groupId>
-            <artifactId>paper-api</artifactId>
-            <version>1.16.1-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
+            <groupId>io.papermc</groupId>
+            <artifactId>paperlib</artifactId>
+            <version>1.0.5</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>me.crz.minecraft.kingdoms.essentials</groupId>
-            <artifactId>kingdomsessentials</artifactId>
-            <version>1.1.2</version>
-            <scope>provided</scope>
+            <groupId>co.aikar</groupId>
+            <artifactId>minecraft-timings</artifactId>
+            <version>1.0.4</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>de.themoep</groupId>
             <artifactId>inventorygui</artifactId>
             <version>1.4.2-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mojang</groupId>
+            <artifactId>authlib</artifactId>
+            <version>1.5.25</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

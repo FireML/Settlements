@@ -11,6 +11,8 @@ import me.crz.minecraft.kingdoms.command.village.money.VillageMoneyCommand;
 import me.crz.minecraft.kingdoms.command.village.outpost.OutpostTeleportCommand;
 import me.crz.minecraft.kingdoms.db.LogType;
 import me.crz.minecraft.kingdoms.teleporter.TeleportersGUI;
+import me.crz.minecraft.kingdoms.utils.config.Config;
+import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -34,7 +36,10 @@ public class VillageCommand extends SubCommand {
         registerCommand(new VillageDisbandCommand(this));
         registerCommand(new VillageDiscordCommand(this));
         registerCommand(new VillageDonateCommand(this));
-        registerCommand(new VillageEventsCommand(this));
+        if (ConfigManager.getInstance().getEventsConf().getConfig().getBoolean("enabled")) {
+            registerCommand(new VillageEventsCommand(this));
+            registerCommand(new VillageRewardsCommand(this));
+        }
         registerCommand(new VillageHereCommand(this));
         registerCommand(new VillageHistoryCommand(this, LogType.ALL));
         registerCommand(new VillageHomeCommand(this));
@@ -53,12 +58,13 @@ public class VillageCommand extends SubCommand {
         registerCommand(new OutpostTeleportCommand(outpostCommand));
         registerCommand(new VillagePerksCommand(this));
         registerCommand(new PlotCommand(this));
-        registerCommand(new LockCommand());
-        registerCommand(new UnlockCommand());
+        if (Config.Lock.ENABLED) {
+            registerCommand(new LockCommand());
+            registerCommand(new UnlockCommand());
+        }
         registerCommand(new VillagePermsCommand(this));
         registerCommand(new VillageRenameCommand(this));
         registerCommand(new VillageResListCommand(this));
-        registerCommand(new VillageRewardsCommand(this));
         registerCommand(new VillageRulesCommand(this));
         registerCommand(new VillageSetAccessCommand(this));
         registerCommand(new VillageSetHomeCommand(this));
@@ -72,7 +78,7 @@ public class VillageCommand extends SubCommand {
         registerCommand(new PlayerSubCommand(this, "teleporters") {
             @Override
             public boolean run(Player player, String base, String alias, String... args) {
-                TeleportersGUI.getInstance().build(player);
+                new TeleportersGUI().open(player);
                 return true;
             }
         });

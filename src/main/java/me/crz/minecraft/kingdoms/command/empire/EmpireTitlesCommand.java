@@ -1,9 +1,9 @@
 package me.crz.minecraft.kingdoms.command.empire;
 
-import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.empire.gui.RankSelectGui;
 import me.crz.minecraft.kingdoms.empire.gui.TitlesGUI;
@@ -50,16 +50,16 @@ public class EmpireTitlesCommand extends EmpireSubCommand {
                         getError("invalid-rank").tell(res, "rank", args[0]);
                     } else if (rank.above(res.getEmpireRank())) {
                         getError("cant-edit-higher").tell(res, "rank", res.getEmpireRank().getTag());
-                    } else if (res.getVillage().getEmpire().getTitles(rank).size() >= Utils.getTitlesPerRank()) {
+                    } else if (res.getVillage().getEmpire().getTitles(rank).size() >= Config.Empire.TITLES_PER_RANK) {
                         getError("too-many").tell(res,
                                 "rank", res.getEmpireRank().getTag(),
-                                "max", String.valueOf(Utils.getTitlesPerRank())
+                                "max", String.valueOf(Config.Empire.TITLES_PER_RANK)
                         );
                     } else if (args[1].length() > 16) {
                         getError("too-long").tell(res, "input", args[1]);
                     } else if (!TITLE_PATTERN.matcher(args[1]).matches()) {
                         getError("invalid-characters").tell(res, "input", args[1]);
-                    } else if (ChatManager.getInstance().containsAnyCurses(args[1])) {
+                    } else if (Utils.containsAnyCurses(args[1])) {
                         getError("prohibited-words").tell(res, "input", args[1]);
                     } else if (res.getVillage().getEmpire().addTitle(rank, args[1])) {
                         getMessage("success").tell(res, "title", args[1], "rank", rank.getTag());
@@ -91,16 +91,16 @@ public class EmpireTitlesCommand extends EmpireSubCommand {
                         getMessage("success").tell(res, "title", args[1], "rank", rank.getTag());
                     } else {
                         // title doesn't exist, add it
-                        if (res.getVillage().getEmpire().getTitles(rank).size() >= Utils.getTitlesPerRank()) {
+                        if (res.getVillage().getEmpire().getTitles(rank).size() >= Config.Empire.TITLES_PER_RANK) {
                             getError("too-many").tell(res,
                                     "rank", res.getEmpireRank().getTag(),
-                                    "max", String.valueOf(Utils.getTitlesPerRank())
+                                    "max", String.valueOf(Config.Empire.TITLES_PER_RANK)
                             );
                         } else if (args[1].length() > 16) {
                             getError("too-long").tell(res, "input", args[1]);
                         } else if (!TITLE_PATTERN.matcher(args[1]).matches()) {
                             getError("invalid-characters").tell(res, "input", args[1]);
-                        } else if (ChatManager.getInstance().containsAnyCurses(args[1])) {
+                        } else if (Utils.containsAnyCurses(args[1])) {
                             getError("prohibited-words").tell(res, "input", args[1]);
                         } else {
                             res.getVillage().getEmpire().setDefaultTitle(rank, args[1]);

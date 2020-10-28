@@ -18,14 +18,14 @@ import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.Utils;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -56,6 +56,7 @@ public class Resident implements ConfigurationSerializable, Targetable {
     private Set<UUID> ignore = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private Set<UUID> friends = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private boolean swear = true;
+    private boolean socialSpy = false;
     private int bonusClaims = 0;
     private long lastLogin = 0;
     private long villageJoin;
@@ -67,7 +68,7 @@ public class Resident implements ConfigurationSerializable, Targetable {
     private boolean hasMessagesEnabled = true;
     private boolean notifyEnabled = true;
     private Cache<IdObject, Boolean> closeBuildingNotificationToggles = CacheBuilder.newBuilder()
-            .expireAfterWrite(Utils.getCloseBuildingNotificationToggleTime(), TimeUnit.MINUTES)
+            .expireAfterWrite(Config.Settlement.Claiming.Close.BuildingNotification.TOGGLE_TIME, TimeUnit.MINUTES)
             .build();
 
     public Resident(UUID uuid, String name) {
@@ -169,6 +170,14 @@ public class Resident implements ConfigurationSerializable, Targetable {
         this.swear = swear;
     }
 
+    public boolean getSocialSpy() {
+        return socialSpy;
+    }
+
+    public void setSocialSpy(boolean socialSpy) {
+        this.socialSpy = socialSpy;
+    }
+
     public ChatChannel getActiveChannel() {
         return activeChannel;
     }
@@ -206,13 +215,11 @@ public class Resident implements ConfigurationSerializable, Targetable {
         return false;
     }
 
-    @Nullable
     public ChatColor getChannelColor(ChatChannel channel, ChatColorType type) {
         return channelColors.get(channel, type);
     }
 
-    @Nonnull
-    public ChatColor getChannelColor(ChatChannel channel, ChatColorType type, @Nonnull ChatColor def) {
+    public ChatColor getChannelColor(ChatChannel channel, ChatColorType type, ChatColor def) {
         ChatColor color = channelColors.get(channel, type);
         return color != null ? color : def;
     }
@@ -488,6 +495,7 @@ public class Resident implements ConfigurationSerializable, Targetable {
                         entry -> entry.getKey().name(),
                         entry -> entry.getValue().name())));
         map.put("swear", getSwear());
+        map.put("socialSpy", getSocialSpy());
         map.put("bonusClaims", getBonusClaims());
         map.put("ignores", getIgnore().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("friends", getFriends().stream().map(UUID::toString).collect(Collectors.toList()));
@@ -554,6 +562,9 @@ public class Resident implements ConfigurationSerializable, Targetable {
         if (map.containsKey("swear")) {
             resident.setSwear((Boolean) map.get("swear"));
         }
+        if (map.containsKey("socialSpy")) {
+            resident.setSocialSpy((Boolean) map.get("socialSpy"));
+        }
         if (map.containsKey("bonusClaims")) {
             resident.setBonusClaims((Integer) map.get("bonusClaims"));
         }
@@ -574,6 +585,10 @@ public class Resident implements ConfigurationSerializable, Targetable {
         this.id = id;
     }
 
+    /**
+     * @deprecated Use {@link Message#tell(Resident, String...)}
+     */
+    @Deprecated
     public void tell(Message message, String... replacements) {
         MessageUtils.tell(this, message, replacements);
     }

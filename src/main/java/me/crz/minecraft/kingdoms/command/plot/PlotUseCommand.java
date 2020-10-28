@@ -45,7 +45,7 @@ public class PlotUseCommand extends PlotSubCommand {
     @Override
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
         if (args.length < 2) {
-            new UseGui(res.getPlayer(), land);
+            new UseGui(land).open(res.getPlayer());
         } else {
             try {
                 Use use = Use.valueOf(args[0].toUpperCase());

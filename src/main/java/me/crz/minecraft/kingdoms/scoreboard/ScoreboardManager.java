@@ -7,6 +7,7 @@ import me.crz.minecraft.kingdoms.scoreboard.commands.CommandScoreboard;
 import me.crz.minecraft.kingdoms.scoreboard.commands.CommandScoreboardAdmin;
 import me.crz.minecraft.kingdoms.scoreboard.listeners.ScoreboardListeners;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
@@ -26,11 +27,10 @@ public class ScoreboardManager implements ConfigMessages {
     private long lastUpdate = System.currentTimeMillis();
     private long updateRate;
 
-    public ScoreboardManager() {
-        super();
+    private ScoreboardManager() {
         title = getText("sidebar.title");
         Base.registerListener(new ScoreboardListeners(this));
-        updateRate = KingdomsPlugin.getInstance().getConfig().getLong("scoreboard.update");
+        updateRate = Config.Sidebar.UPDATE;
         if (updateRate > 0) {
             Bukkit.getScheduler().scheduleSyncRepeatingTask(KingdomsPlugin.getInstance(), this::update, 0L, updateRate * 20);
         }
