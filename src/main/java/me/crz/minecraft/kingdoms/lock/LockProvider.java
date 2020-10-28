@@ -1,7 +1,7 @@
 package me.crz.minecraft.kingdoms.lock;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.landflags.LandFlagBase;
+import me.crz.minecraft.kingdoms.land.LandAccessChecker;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.World;
@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Collection;
 
-public interface LockProvider extends ConfigMessages, LandFlagBase {
+public interface LockProvider extends ConfigMessages, LandAccessChecker {
     boolean isLocked(Block block);
 
     boolean canAccess(Player player, Block block);

@@ -2,7 +2,7 @@ package me.crz.minecraft.kingdoms.command.plot;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import me.crz.minecraft.kingdoms.Base;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandManager;
@@ -44,16 +44,16 @@ public class PlotBuyCommand extends ResidentSubCommand {
                 plotBuyTimeout.invalidate(res.getUUID());
             }
             if (land.getPrice() > 0) {
-                if (Base.getEconomy().getBalance(res.getPlayer()) < land.getPrice()) {
-                    res.tell(getError("not-enough-money"), "amount", String.valueOf(land.getPrice()));
+                if (KingdomsPlugin.getInstance().getEconomy().getBalance(res.getPlayer()) < land.getPrice()) {
+                    getError("not-enough-money").tell(res, "amount", String.valueOf(land.getPrice()));
                     return true;
                 }
-                Base.getEconomy().withdrawPlayer(res.getPlayer(), (double) land.getPrice());
+                KingdomsPlugin.getInstance().getEconomy().withdrawPlayer(res.getPlayer(), (double) land.getPrice());
                 land.getLandOwner().setBank(land.getLandOwner().getBank() + land.getPrice());
                 Utils.runAsync(() -> DatabaseManager.getInstance().save(land.getLandOwner()));
             }
             land.setForSale(false);
-            res.tell(getMessage("purchased"), "price", String.valueOf(land.getPrice()));
+            getMessage("purchased").tell(res, "price", String.valueOf(land.getPrice()));
             LandManager.getInstance().setPlotOwner(land, res.getUUID());
         }
         return true;

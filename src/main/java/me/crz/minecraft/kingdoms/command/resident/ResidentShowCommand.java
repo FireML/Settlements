@@ -39,7 +39,7 @@ public class ResidentShowCommand extends SubCommand {
             }
 
             OfflinePlayer op = Bukkit.getOfflinePlayer(target.getUUID());
-            double balance = KingdomsPlugin.getInstance().econ.getBalance(op);
+            double balance = KingdomsPlugin.getInstance().getEconomy().getBalance(op);
 
             getMessage("info." + (target.hasVillage() ? target.hasEmpire() ? "in-empire" : "in-village" : "free")).tell(sender,
                     "name", target.getName(),

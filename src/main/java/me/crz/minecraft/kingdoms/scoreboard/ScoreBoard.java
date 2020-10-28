@@ -38,8 +38,8 @@ public class ScoreBoard {
         Map<String, String> replacements;
         try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("Scoreboard get player sidebar replacements")) {
             replacements = Utils.toMap(
-                    "balance", Utils.withSuffix((long) KingdomsPlugin.getInstance().econ.getBalance(member)),
-                    "bank", Utils.CURRENCY_FORMAT.format((long) KingdomsPlugin.getInstance().econ.getBalance(member)),
+                    "balance", Utils.withSuffix((long) KingdomsPlugin.getInstance().getEconomy().getBalance(member)),
+                    "bank", Utils.CURRENCY_FORMAT.format((long) KingdomsPlugin.getInstance().getEconomy().getBalance(member)),
                     "kills", String.valueOf(member.getStatistic(Statistic.PLAYER_KILLS)),
                     "deaths", String.valueOf(member.getStatistic(Statistic.DEATHS)),
                     "bonus", String.valueOf(resident.getBonusClaims()),

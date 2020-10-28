@@ -25,6 +25,7 @@ import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.lock.LockManager;
 import me.crz.minecraft.kingdoms.portal.PortalManager;
 import me.crz.minecraft.kingdoms.rank.RankManager;
+import me.crz.minecraft.kingdoms.utils.ExecuteMoveUtil;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.adapter.ServerAdapter;
@@ -49,9 +50,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-import me.crz.minecraft.kingdoms.landflags.LandFlagsUseEvents;
-import me.crz.minecraft.kingdoms.landflags.LandFlagsBlockEvents;
-import me.crz.minecraft.kingdoms.land.LandFlags;
+import me.crz.minecraft.kingdoms.land.LandUseListener;
+import me.crz.minecraft.kingdoms.land.LandBlockListener;
+import me.crz.minecraft.kingdoms.land.LandModeListener;
 import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.village.VillageListener;
 import me.crz.minecraft.kingdoms.vault.VaultListener;
@@ -65,7 +66,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class KingdomsPlugin extends JavaPlugin implements Listener {
     private static KingdomsPlugin instance;
     private LandPerks lPerks;
-    public Economy econ = null;
+    private Economy econ = null;
     private MultiverseIntegration multiverse = null;
     private PlaceholderApiIntegration placeholderApi = null;
 
@@ -78,7 +79,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     public static Chat chat;
     private boolean running = false;
     private static final Timer timer = new Timer();
-    private LandFlags landFlags;
+    private LandModeListener landModeListener;
     private TimingManager timingManager;
     private MCTiming pluginTimings;
     private ServerAdapter serverAdapter;
@@ -145,7 +146,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             getLogger().log(Level.INFO, "Hooked into Brewery " + breweryIntegration.getBrewery().getDescription().getVersion() + "!");
         }
 
-        this.getServer().getPluginManager().registerEvents(new KingdomsListener(), this);
+        registerListener(new KingdomsListener());
 
         if (!Config.Chat.CHAT_ONLY) {
             if (getServer().getPluginManager().isPluginEnabled("Multiverse-Core")) {
@@ -162,14 +163,14 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             }
 
             this.getLandPerks().runTimer();
-            this.getServer().getPluginManager().registerEvents(new CustomEventManager(), this);
-            this.getServer().getPluginManager().registerEvents(new BanishListener(), this);
-            this.getServer().getPluginManager().registerEvents(new VaultListener(), this);
-            this.getServer().getPluginManager().registerEvents(new VillageListener(), this);
-            this.getServer().getPluginManager().registerEvents(new EmpireListener(), this);
-            this.getServer().getPluginManager().registerEvents((landFlags = new LandFlags()), this);
-            this.getServer().getPluginManager().registerEvents(new LandFlagsBlockEvents(), this);
-            this.getServer().getPluginManager().registerEvents(new LandFlagsUseEvents(), this);
+            registerListener(new CustomEventManager());
+            registerListener(new BanishListener());
+            registerListener(new VaultListener());
+            registerListener(new VillageListener());
+            registerListener(new EmpireListener());
+            registerListener(landModeListener = new LandModeListener());
+            registerListener(new LandBlockListener());
+            registerListener(new LandUseListener());
 
             EmpireManager.getInstance().loadEmpireWorlds();
 
@@ -396,8 +397,8 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         return placeholderApi;
     }
 
-    public LandFlags getLandFlags() {
-        return landFlags;
+    public LandModeListener getLandModeListener() {
+        return landModeListener;
     }
 
     public MCTiming getTiming(String name) {
@@ -410,6 +411,14 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     public ServerAdapter getServerAdapter() {
         return serverAdapter;
+    }
+
+    public Economy getEconomy() {
+        return econ;
+    }
+
+    public void registerListener(Listener listener) {
+        getServer().getPluginManager().registerEvents(listener, this);
     }
 
     public static Timer getTimer() {

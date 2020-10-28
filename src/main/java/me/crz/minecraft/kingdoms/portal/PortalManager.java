@@ -55,7 +55,7 @@ public class PortalManager {
         }
         KingdomsPlugin.logDebug(portals.size() + " portals loaded!");
         CommandManager.getInstance().registerCommand(new PortalCommand());
-        KingdomsPlugin.getInstance().getServer().getPluginManager().registerEvents(new PortalListener(), KingdomsPlugin.getInstance());
+        KingdomsPlugin.getInstance().registerListener(new PortalListener());
     }
 
     public static PortalManager getInstance() {

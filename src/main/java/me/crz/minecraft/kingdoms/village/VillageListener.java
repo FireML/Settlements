@@ -41,11 +41,11 @@ public class VillageListener implements Listener {
                 }
             }
         }
-        if (!KingdomsPlugin.getInstance().econ.has(event.getPlayer(), plotTaxes + villageTax)) {
+        if (!KingdomsPlugin.getInstance().getEconomy().has(event.getPlayer(), plotTaxes + villageTax)) {
             Message.get("plot-tax.debt-action." + plotDebtAction.getKey() + ".cant-pay").tell(event.getPlayer(), "amount", String.valueOf(plotTaxes));
         }
         if (res.hasVillage()) {
-            if (!res.hasPermission("village.tax.exempt") && !KingdomsPlugin.getInstance().econ.has(event.getPlayer(), res.getVillage().getTax())) {
+            if (!res.hasPermission("village.tax.exempt") && !KingdomsPlugin.getInstance().getEconomy().has(event.getPlayer(), res.getVillage().getTax())) {
                 Message.get("tax.debt-action." + res.getVillage().getTaxDebtAction().getKey() + ".cant-pay").tell(event.getPlayer(), "amount", String.valueOf(res.getVillage().getTax()));
             }
 

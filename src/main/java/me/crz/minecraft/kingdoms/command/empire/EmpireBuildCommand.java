@@ -3,7 +3,7 @@ package me.crz.minecraft.kingdoms.command.empire;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.gui.BuildGui;
-import me.crz.minecraft.kingdoms.landflags.BuildState;
+import me.crz.minecraft.kingdoms.land.BuildState;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
 

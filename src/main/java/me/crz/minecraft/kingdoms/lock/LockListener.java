@@ -8,7 +8,7 @@ import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.integration.ShopProvider;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.landflags.LandFlagBase;
+import me.crz.minecraft.kingdoms.land.LandAccessChecker;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.utils.Pair;
@@ -55,7 +55,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class LockListener implements Listener, LandFlagBase, TargetParser {
+public class LockListener implements Listener, LandAccessChecker, TargetParser {
 
     // chunk load caching
     @EventHandler

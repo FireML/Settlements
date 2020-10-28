@@ -10,16 +10,16 @@ import java.util.UUID;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import me.crz.minecraft.kingdoms.Base;
+import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class ExecuteMoveUtil extends Base {
+public class ExecuteMoveUtil implements Listener {
     private static ExecuteMoveUtil instance;
     Map<UUID, ActionRunnable> scheduled = new HashMap<>();
 
     public ExecuteMoveUtil() {
         super();
-        Base.registerListener(this);
+        KingdomsPlugin.getInstance().registerListener(this);
     }
 
     /**

@@ -87,7 +87,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
         notificationCooldown = CacheBuilder.newBuilder().expireAfterWrite(Config.Chestshop.NOTIFICATION_COOLDOWN, TimeUnit.SECONDS).build();
         KingdomsPlugin.getInstance().getLockProviders().add(this);
         KingdomsPlugin.getInstance().getShopProviders().add(this);
-        Bukkit.getPluginManager().registerEvents(this, KingdomsPlugin.getInstance());
+        KingdomsPlugin.getInstance().registerListener(this);
     }
 
     @EventHandler(priority = EventPriority.LOW)

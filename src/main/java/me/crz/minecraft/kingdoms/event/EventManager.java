@@ -72,7 +72,7 @@ public class EventManager implements ConfigMessages {
 
     private EventManager() {
         loadConfig();
-        KingdomsPlugin.getInstance().getServer().getPluginManager().registerEvents(new EventListener(), KingdomsPlugin.getInstance());
+        KingdomsPlugin.getInstance().registerListener(new EventListener());
     }
 
     @Override

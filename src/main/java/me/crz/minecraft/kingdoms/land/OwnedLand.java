@@ -8,7 +8,6 @@ import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.landflags.BuildState;
 import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -38,7 +37,6 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
-import me.crz.minecraft.kingdoms.landflags.Use;
 
 public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializable, ModeAble {
     private IdObject id = IdObject.get(null);

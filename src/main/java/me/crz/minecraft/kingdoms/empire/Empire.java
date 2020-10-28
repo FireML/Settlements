@@ -12,7 +12,7 @@ import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.land.TaxDebtAction;
-import me.crz.minecraft.kingdoms.landflags.BuildState;
+import me.crz.minecraft.kingdoms.land.BuildState;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.perk.Perk;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
@@ -134,7 +134,7 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
                 if (player == null) {
                     player = Bukkit.getOfflinePlayer(resident.getUUID());
                 }
-                if (KingdomsPlugin.getInstance().econ.withdrawPlayer(player, land.getTax()).transactionSuccess()) {
+                if (KingdomsPlugin.getInstance().getEconomy().withdrawPlayer(player, land.getTax()).transactionSuccess()) {
                     addToBank(land.getTax());
                     totalTax += land.getTax();
                     if (player instanceof Player) {

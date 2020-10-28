@@ -1,6 +1,6 @@
 package me.crz.minecraft.kingdoms.command;
 
-import me.crz.minecraft.kingdoms.Base;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.command.admin.VillageAdminCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireCommand;
 import me.crz.minecraft.kingdoms.command.friend.FriendCommand;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class CommandManager extends Base implements TabExecutor {
+public class CommandManager implements TabExecutor {
     private static CommandManager instance;
     private Map<String, SubCommand> commandMap = new LinkedHashMap<>();
 
@@ -57,13 +57,13 @@ public class CommandManager extends Base implements TabExecutor {
         for (String alias : ex.getAliases()) {
             commandMap.put(alias, ex);
         }
-        PluginCommand command = getPlugin().getCommand(ex.name());
+        PluginCommand command = KingdomsPlugin.getInstance().getCommand(ex.name());
         if (command != null) {
             command.setExecutor(this);
             command.setPermission(ex.getPermission());
             command.setPermissionMessage(ex.getError("no-permission").getReplacedText("permission", ex.getPermission()));
         } else {
-            getPlugin().getLogger().log(Level.SEVERE, "Tried to register command by the name of " + ex.name() + " but it's not defined in the plugin.yml?");
+            KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Tried to register command by the name of " + ex.name() + " but it's not defined in the plugin.yml?");
         }
     }
 

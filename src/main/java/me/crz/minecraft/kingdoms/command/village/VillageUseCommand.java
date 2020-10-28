@@ -2,8 +2,8 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.landflags.BuildState;
-import me.crz.minecraft.kingdoms.landflags.Use;
+import me.crz.minecraft.kingdoms.land.BuildState;
+import me.crz.minecraft.kingdoms.land.Use;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;

@@ -34,11 +34,11 @@ public class VillageJoinCommand extends ResidentSubCommand {
             getMessage("is-full").tell(resident, "state", joinVillage.getState().getTag(), "name", joinVillage.getName());
         } else if (joinVillage.isBanished(resident.getUUID())) {
             getMessage("banished").tell(resident, "state", joinVillage.getState().getTag(), "name", joinVillage.getName());
-        } else if (joinVillage.getJoinFee() > 0 && !KingdomsPlugin.getInstance().econ.has(resident.getPlayer(), joinVillage.getJoinFee())) {
+        } else if (joinVillage.getJoinFee() > 0 && !KingdomsPlugin.getInstance().getEconomy().has(resident.getPlayer(), joinVillage.getJoinFee())) {
             getError("not-enough-money").tell(resident, "state", joinVillage.getState().getTag(), "name", joinVillage.getName(), "amount", String.valueOf(joinVillage.getJoinFee()));
         } else {
             if (joinVillage.getJoinFee() > 0) {
-                if (KingdomsPlugin.getInstance().econ.withdrawPlayer(resident.getPlayer(), joinVillage.getJoinFee()).transactionSuccess()) {
+                if (KingdomsPlugin.getInstance().getEconomy().withdrawPlayer(resident.getPlayer(), joinVillage.getJoinFee()).transactionSuccess()) {
                     joinVillage.addToBank(joinVillage.getJoinFee());
                     getMessage("money-paid").tell(resident, "amount", String.valueOf(joinVillage.getJoinFee()));
                     Utils.runAsync(() -> {

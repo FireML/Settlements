@@ -166,7 +166,7 @@ public class ConfigManager {
             if (Config.Lock.ENABLED) {
                 LockManager.getInstance().loadConfig();
             }
-            KingdomsPlugin.getInstance().getLandFlags().reload();
+            KingdomsPlugin.getInstance().getLandModeListener().reload();
             Levels.clearRequirements();
             if (getEventsConf().getConfig().getBoolean("enabled")) {
                 EventManager.getInstance().loadConfig();

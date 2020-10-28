@@ -1,12 +1,10 @@
 package me.crz.minecraft.kingdoms.land;
 
 import co.aikar.timings.lib.MCTiming;
-import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.customevents.EntityPrimeTntEvent;
 import me.crz.minecraft.kingdoms.customevents.CreaturePreSpawnEvent;
 import me.crz.minecraft.kingdoms.customevents.PlayerMoveChunkEvent;
-import me.crz.minecraft.kingdoms.landflags.LandFlagBase;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.TitleBuilder;
@@ -40,13 +38,13 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.logging.Level;
 
-public class LandFlags extends Base implements LandFlagBase {
+public class LandModeListener implements LandAccessChecker {
     private TitleBuilder tbPvp = new TitleBuilder();
     private final MCTiming mobCheckTiming;
     private BukkitTask mobCheckTask = null;
     private int mobCheckPeriod = 0;
 
-    public LandFlags() {
+    public LandModeListener() {
         reload();
         mobCheckTiming = KingdomsPlugin.getInstance().getTiming("Mob spawning mode check");
     }
@@ -286,7 +284,7 @@ public class LandFlags extends Base implements LandFlagBase {
                     "state", originalLand.getLandOwner().getStateTag()
             );
             if (originalLand.getLandOwner().equals(playerVillage) && originalLand.getLandOwner().getMode(PlotMode.buff)) {
-                Base.getLandPerks().removeEffects(player, originalLand, true);
+                KingdomsPlugin.getInstance().getLandPerks().removeEffects(player, originalLand, true);
             }
         }
 
@@ -298,7 +296,7 @@ public class LandFlags extends Base implements LandFlagBase {
                         "state", destinationLand.getLandOwner().getStateTag()
                 );
                 if (destinationLand.getLandOwner().equals(playerVillage) && destinationLand.getLandOwner().getMode(PlotMode.buff)) {
-                    Base.getLandPerks().giveEffects(player, destinationLand, true);
+                    KingdomsPlugin.getInstance().getLandPerks().giveEffects(player, destinationLand, true);
                 }
             }
             if (originalLand != null && originalLand.isPlotOwner(destinationLand.getPlotOwner()) && destinationLand.hasLink() && !originalLand.isLinked(destinationLand)) {

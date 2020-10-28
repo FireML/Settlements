@@ -17,13 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import me.crz.minecraft.kingdoms.Base;
-
-public class MessageUtils extends Base {
-
-    public MessageUtils() {
-        super();
-    }
+public class MessageUtils {
 
     public static void tell(CommandSender sender, Message message, String... replacements) {
         tell(sender, message.getComponents(), replacements);

@@ -19,12 +19,11 @@ public class CustomEventManager implements Listener {
     public CustomEventManager() {
         try {
             Class.forName("com.destroystokyo.paper.PaperConfig");
-            Bukkit.getPluginManager().registerEvents(
-                    (Listener) Class.forName(getClass().getPackage().getName() + ".PaperListener").newInstance(),
-                    KingdomsPlugin.getInstance()
+            KingdomsPlugin.getInstance().registerListener(
+                    (Listener) Class.forName(getClass().getPackage().getName() + ".PaperListener").newInstance()
             );
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            Bukkit.getPluginManager().registerEvents(new SpigotListener(), KingdomsPlugin.getInstance());
+            KingdomsPlugin.getInstance().registerListener(new SpigotListener());
         }
     }
 

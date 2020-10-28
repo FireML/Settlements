@@ -1,6 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village.money;
 
-import me.crz.minecraft.kingdoms.Base;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
@@ -24,7 +24,7 @@ public class MoneyWithdrawCommand extends VillageSubCommand {
                 return false;
             }
             if (withdrewInit <= resident.getVillage().getBank()) {
-                EconomyResponse r = Base.getEconomy().depositPlayer(resident.getPlayer(), (double) withdrewInit);
+                EconomyResponse r = KingdomsPlugin.getInstance().getEconomy().depositPlayer(resident.getPlayer(), (double) withdrewInit);
                 if (r.transactionSuccess()) {
                     resident.getVillage().removeFromBank(withdrewInit);
                     Utils.runAsync(() -> {

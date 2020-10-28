@@ -30,10 +30,6 @@ import java.util.stream.Collectors;
 public class LandPerks {
     private static final String PERK_EFFECT_KEY = "perk_effects";
 
-    public LandPerks() {
-        super();
-    }
-
     public void runTimer() {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(KingdomsPlugin.getInstance(), () -> updateEffects(true), 0L, 160L);
     }

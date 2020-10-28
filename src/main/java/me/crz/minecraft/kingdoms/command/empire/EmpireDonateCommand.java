@@ -1,6 +1,6 @@
 package me.crz.minecraft.kingdoms.command.empire;
 
-import me.crz.minecraft.kingdoms.Base;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
@@ -35,8 +35,8 @@ public class EmpireDonateCommand extends ResidentSubCommand {
             if (donate <= 0) {
                 return false;
             }
-            if (Base.getEconomy().getBalance(player) >= donate) {
-                EconomyResponse r2 = Base.getEconomy().withdrawPlayer(player, (double) donate);
+            if (KingdomsPlugin.getInstance().getEconomy().getBalance(player) >= donate) {
+                EconomyResponse r2 = KingdomsPlugin.getInstance().getEconomy().withdrawPlayer(player, (double) donate);
                 if (r2.transactionSuccess()) {
                     empire.addToBank(donate);
                     Utils.runAsync(() -> {

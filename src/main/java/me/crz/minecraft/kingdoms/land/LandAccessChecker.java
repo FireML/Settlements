@@ -1,20 +1,18 @@
-package me.crz.minecraft.kingdoms.landflags;
+package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.empire.Empire;
-import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.village.Resident;
 
 import me.crz.minecraft.kingdoms.village.ResidentManager;
-import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 
-public interface LandFlagBase extends ConfigMessages {
+public interface LandAccessChecker extends ConfigMessages, Listener {
 
     default Pair<Boolean, String> canUse(Player user, Use use, Location loc) {
         if (user.hasPermission("kingdoms.bypass.use")) {

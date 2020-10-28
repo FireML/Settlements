@@ -5,10 +5,6 @@ import java.text.DecimalFormat;
 public class UtilTime {
     private static final DecimalFormat SECONDS_FORMAT = new DecimalFormat("#.#");
 
-    public UtilTime() {
-        super();
-    }
-
     public static String format(final long milliSeconds) {
         return format((double) milliSeconds / 1000.0);
     }

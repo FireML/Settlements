@@ -3,7 +3,7 @@ package me.crz.minecraft.kingdoms.command.plot;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.gui.BuildGui;
-import me.crz.minecraft.kingdoms.landflags.BuildState;
+import me.crz.minecraft.kingdoms.land.BuildState;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.village.Resident;
 

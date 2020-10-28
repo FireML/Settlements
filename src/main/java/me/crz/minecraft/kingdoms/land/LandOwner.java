@@ -2,14 +2,11 @@ package me.crz.minecraft.kingdoms.land;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.db.DatabaseSerializable;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
-import me.crz.minecraft.kingdoms.landflags.BuildState;
-import me.crz.minecraft.kingdoms.landflags.Use;
 import me.crz.minecraft.kingdoms.perk.Perk;
 import me.crz.minecraft.kingdoms.perk.PerkData;
 import me.crz.minecraft.kingdoms.perk.Vaultable;
@@ -248,12 +245,12 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
     }
 
     public void applyEffects(Perk perk) {
-        Base.getLandPerks().updateEffects(false);
+        KingdomsPlugin.getInstance().getLandPerks().updateEffects(false);
         perk.toggleActions(this, true);
     }
 
     public void removeEffects(Perk perk) {
-        Base.getLandPerks().updateEffects(false);
+        KingdomsPlugin.getInstance().getLandPerks().updateEffects(false);
         perk.toggleActions(this, false);
     }
 

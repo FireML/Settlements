@@ -4,7 +4,7 @@ import com.Zrips.CMI.CMI;
 import com.Zrips.CMI.Containers.CMIUser;
 import com.Zrips.CMI.Containers.PlayerMail;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.landflags.LandFlagBase;
+import me.crz.minecraft.kingdoms.land.LandAccessChecker;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -21,7 +21,7 @@ import java.lang.reflect.Field;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class CmiIntegration implements IgnoreProvider, AfkProvider, MailProvider, Listener, LandFlagBase {
+public class CmiIntegration implements IgnoreProvider, AfkProvider, MailProvider, Listener, LandAccessChecker {
 
     private final CMI cmi;
     private Field formatStringsField = null;
@@ -36,7 +36,7 @@ public class CmiIntegration implements IgnoreProvider, AfkProvider, MailProvider
         KingdomsPlugin.getInstance().getIgnoreProviders().add(this);
         KingdomsPlugin.getInstance().getAfkProviders().add(this);
         KingdomsPlugin.getInstance().getMailProviders().add(this);
-        KingdomsPlugin.getInstance().getServer().getPluginManager().registerEvents(this, KingdomsPlugin.getInstance());
+        KingdomsPlugin.getInstance().registerListener(this);
         try {
             formatStringsField = FormattedCommandAlias.class.getDeclaredField("formatStrings");
             formatStringsField.setAccessible(true);

@@ -1,6 +1,6 @@
 package me.crz.minecraft.kingdoms.command.village;
 
-import me.crz.minecraft.kingdoms.Base;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -37,11 +37,11 @@ public class VillageCreateCommand extends ResidentSubCommand {
             getError("invalid-characters").tell(resident, "input", name);
         } else {
             if (Config.Settlement.CREATION_COST != 0) {
-                if (!Base.getEconomy().has(resident.getPlayer(), Config.Settlement.CREATION_COST)) {
+                if (!KingdomsPlugin.getInstance().getEconomy().has(resident.getPlayer(), Config.Settlement.CREATION_COST)) {
                     getError("not-enough-money").tell(resident, "amount", String.valueOf(Config.Settlement.CREATION_COST));
                     return true;
                 }
-                EconomyResponse r = Base.getEconomy().withdrawPlayer(resident.getPlayer(), (double) Config.Settlement.CREATION_COST);
+                EconomyResponse r = KingdomsPlugin.getInstance().getEconomy().withdrawPlayer(resident.getPlayer(), (double) Config.Settlement.CREATION_COST);
                 if (!r.transactionSuccess()) {
                     MessageUtils.tell(resident, "&cAn error occurred, please tell an admin!");
                     return true;

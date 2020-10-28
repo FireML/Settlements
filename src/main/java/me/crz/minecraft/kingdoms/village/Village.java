@@ -13,7 +13,7 @@ import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.land.TaxDebtAction;
-import me.crz.minecraft.kingdoms.landflags.BuildState;
+import me.crz.minecraft.kingdoms.land.BuildState;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
 import me.crz.minecraft.kingdoms.rank.RankManager;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
@@ -116,7 +116,7 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
             if (player == null) {
                 player = Bukkit.getOfflinePlayer(resident.getUUID());
             }
-            if (KingdomsPlugin.getInstance().econ.withdrawPlayer(player, tax).transactionSuccess()) {
+            if (KingdomsPlugin.getInstance().getEconomy().withdrawPlayer(player, tax).transactionSuccess()) {
                 addToBank(tax);
                 totalTax += tax;
                 if (player instanceof Player) {

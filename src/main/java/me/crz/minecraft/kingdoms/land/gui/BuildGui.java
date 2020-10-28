@@ -7,7 +7,7 @@ import de.themoep.inventorygui.StaticGuiElement;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.landflags.BuildState;
+import me.crz.minecraft.kingdoms.land.BuildState;
 import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.village.Resident;

@@ -15,7 +15,7 @@ public class BreweryIntegration implements Listener, ConfigMessages {
 
     public BreweryIntegration() {
         instance = P.p;
-        Bukkit.getServer().getPluginManager().registerEvents(this, KingdomsPlugin.getInstance());
+        KingdomsPlugin.getInstance().registerListener(this);
     }
 
     @EventHandler

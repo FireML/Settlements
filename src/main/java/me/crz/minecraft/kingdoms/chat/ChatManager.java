@@ -6,7 +6,6 @@ import com.google.common.collect.ImmutableMap;
 import de.themoep.minedown.MineDown;
 import de.themoep.minedown.MineDownParser;
 import de.themoep.minedown.Replacer;
-import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.commands.IgnoreCommand;
 import me.crz.minecraft.kingdoms.chat.commands.MessageCommand;
@@ -41,6 +40,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.text.DecimalFormat;
@@ -53,7 +53,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class ChatManager extends Base implements ConfigMessages {
+public class ChatManager implements ConfigMessages, Listener {
     private static ChatManager instance;
 
     private final Replacer notifyReplacer = new Replacer().placeholderPrefix("@").placeholderSuffix("");
@@ -64,7 +64,6 @@ public class ChatManager extends Base implements ConfigMessages {
     private Cache<UUID, Boolean> notifyCooldowns = Caffeine.newBuilder().expireAfterAccess(Config.Chat.Notify.COOLDOWN, TimeUnit.SECONDS).build();
 
     private ChatManager() {
-        KingdomsPlugin.getInstance().getServer().getPluginManager().registerEvents(new ChatListener(), KingdomsPlugin.getInstance());
 
         ChatCommand chatCommand = new ChatCommand();
         CommandManager.getInstance().registerCommand(chatCommand);
@@ -92,6 +91,9 @@ public class ChatManager extends Base implements ConfigMessages {
         CommandManager.getInstance().registerCommand(new IgnoreCommand());
         CommandManager.getInstance().registerCommand(new MsgToggleCommand());
         CommandManager.getInstance().registerCommand(new NotifyToggleCommand());
+
+        KingdomsPlugin.getInstance().registerListener(this);
+        KingdomsPlugin.getInstance().registerListener(new ChatListener());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -516,7 +518,7 @@ public class ChatManager extends Base implements ConfigMessages {
                 "displayname", player.getDisplayName(),
                 "prefix", MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(player)),
                 "suffix", MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerSuffix(player)),
-                "balance", getMessage("hover.balance").getReplacedText("balance", BALANCE_FORMAT.format(KingdomsPlugin.getInstance().econ.getBalance(player))),
+                "balance", getMessage("hover.balance").getReplacedText("balance", BALANCE_FORMAT.format(KingdomsPlugin.getInstance().getEconomy().getBalance(player))),
                 "bonus", getMessage("hover.bonus").getReplacedText("bonus", BALANCE_FORMAT.format(res.getBonusClaims())),
                 "village", res.hasVillage() ? getMessage("hover.village").getReplacedText(
                         "state", res.getVillage().getState().getTag(),
@@ -549,7 +551,7 @@ public class ChatManager extends Base implements ConfigMessages {
             throw new IllegalStateException("Tried to get ChatManager while chat was disabled!");
         }
         if (instance == null) {
-            Base.registerListener(instance = new ChatManager());
+            instance = new ChatManager();
         }
         return instance;
     }

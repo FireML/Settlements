@@ -82,10 +82,6 @@ public class Utils {
             BlockFace.WEST
     };
 
-    public Utils() {
-        super();
-    }
-
     public static boolean isWorldClaimable(World world) {
         return !Config.Settlement.Claiming.DISABLED_WORLDS.contains(world.getName()) || EmpireManager.getInstance().getEmpireFromWorld(world) != null;
     }

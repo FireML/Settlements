@@ -1,4 +1,4 @@
-package me.crz.minecraft.kingdoms.landflags;
+package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;

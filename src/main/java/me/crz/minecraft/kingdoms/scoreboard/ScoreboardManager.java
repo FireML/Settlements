@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.scoreboard;
 
-import me.crz.minecraft.kingdoms.Base;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.command.CommandManager;
 import me.crz.minecraft.kingdoms.scoreboard.commands.CommandScoreboard;
@@ -29,12 +28,12 @@ public class ScoreboardManager implements ConfigMessages {
 
     private ScoreboardManager() {
         title = getText("sidebar.title");
-        Base.registerListener(new ScoreboardListeners(this));
+        KingdomsPlugin.getInstance().registerListener(new ScoreboardListeners(this));
         updateRate = Config.Sidebar.UPDATE;
         if (updateRate > 0) {
             Bukkit.getScheduler().scheduleSyncRepeatingTask(KingdomsPlugin.getInstance(), this::update, 0L, updateRate * 20);
         }
-        Base.registerListener(new ScoreboardAnimation(this));
+        KingdomsPlugin.getInstance().registerListener(new ScoreboardAnimation(this));
         CommandManager.getInstance().registerCommand(new CommandScoreboard());
         CommandManager.getInstance().registerCommand(new CommandScoreboardAdmin(this), false);
     }

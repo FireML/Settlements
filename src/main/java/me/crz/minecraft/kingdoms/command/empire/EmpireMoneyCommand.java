@@ -1,6 +1,6 @@
 package me.crz.minecraft.kingdoms.command.empire;
 
-import me.crz.minecraft.kingdoms.Base;
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.command.HelpCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
@@ -37,8 +37,8 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                     if (deposit <= 0) {
                         return false;
                     }
-                    if (Base.getEconomy().getBalance(resident.getPlayer()) >= deposit) {
-                        EconomyResponse r2 = Base.getEconomy().withdrawPlayer(resident.getPlayer(), (double) deposit);
+                    if (KingdomsPlugin.getInstance().getEconomy().getBalance(resident.getPlayer()) >= deposit) {
+                        EconomyResponse r2 = KingdomsPlugin.getInstance().getEconomy().withdrawPlayer(resident.getPlayer(), (double) deposit);
                         if (r2.transactionSuccess()) {
                             resident.getVillage().getEmpire().addToBank(deposit);
                             Utils.runAsync(() -> {
@@ -75,7 +75,7 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                         return false;
                     }
                     if (withdrewInit <= resident.getVillage().getEmpire().getBank()) {
-                        EconomyResponse r = Base.getEconomy().depositPlayer(resident.getPlayer(), (double) withdrewInit);
+                        EconomyResponse r = KingdomsPlugin.getInstance().getEconomy().depositPlayer(resident.getPlayer(), (double) withdrewInit);
                         if (r.transactionSuccess()) {
                             resident.getVillage().getEmpire().removeFromBank(withdrewInit);
                             Utils.runAsync(() -> {

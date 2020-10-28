@@ -1,9 +1,6 @@
-package me.crz.minecraft.kingdoms.landflags;
+package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.customevents.EntityPrimeTntEvent;
-import me.crz.minecraft.kingdoms.land.LandManager;
-import me.crz.minecraft.kingdoms.land.LandOwner;
-import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Pair;
@@ -49,7 +46,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public class LandFlagsBlockEvents implements LandFlagBase, Listener {
+public class LandBlockListener implements LandAccessChecker, Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void on(BlockBreakEvent e) {

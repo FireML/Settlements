@@ -1,4 +1,4 @@
-package me.crz.minecraft.kingdoms.landflags;
+package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.customevents.PassiveCreatureCombustEvent;
@@ -38,7 +38,7 @@ import org.bukkit.event.player.PlayerTakeLecternBookEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.spigotmc.event.entity.EntityMountEvent;
 
-public class LandFlagsUseEvents implements LandFlagBase, Listener {
+public class LandUseListener implements LandAccessChecker, Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void on(EntityMountEvent e) {

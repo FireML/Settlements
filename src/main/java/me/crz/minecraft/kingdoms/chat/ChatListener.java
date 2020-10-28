@@ -1,11 +1,5 @@
 package me.crz.minecraft.kingdoms.chat;
 
-import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.empire.Empire;
-import me.crz.minecraft.kingdoms.land.LandManager;
-import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.land.TaxDebtAction;
-import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Config;
