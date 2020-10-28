@@ -20,19 +20,13 @@
     </properties>
 
     <profiles>
-        <profile>
+        <!--<profile>
             <id>default</id>
             <activation>
                 <property>
                     <name>!spigot</name>
                 </property>
             </activation>
-            <repositories>
-                <repository>
-                    <id>paper-repo</id>
-                    <url>https://papermc.io/repo/repository/maven-public/</url>
-                </repository>
-            </repositories>
             <dependencies>
                 <dependency>
                     <groupId>com.destroystokyo.paper</groupId>
@@ -41,7 +35,7 @@
                     <scope>provided</scope>
                 </dependency>
             </dependencies>
-        </profile>
+        </profile>-->
 
         <profile>
             <id>spigot</id>
@@ -114,6 +108,10 @@
             </resource>
         </resources>
         <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+            </plugin>
             <plugin>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.1.0</version>
@@ -240,15 +238,19 @@
             <id>placeholderapi</id>
             <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
-        <!-- down :S
         <repository>
             <id>brewery-repo</id>
             <url>https://zebradrive.de/maven/</url>
         </repository>
-        -->
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>com.destroystokyo.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.16.1-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
