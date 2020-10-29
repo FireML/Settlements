@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class VillageRank extends Rank<Village> implements Next<VillageRank> {
+public class VillageRank extends Rank<Village> implements Next<VillageRank>, Rankable<VillageRank> {
 
     private Multimap<VillageState, String> titles = MultimapBuilder.enumKeys(VillageState.class).arrayListValues().build();
 

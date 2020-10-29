@@ -34,8 +34,8 @@ public class TitleGUI extends KingdomsGUI {
         super("empire.title");
         this.resident = resident;
         gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title",
-                "state", resident.hasVillage() ? resident.getVillage().getStateTag() : "",
-                "title", resident.getVillageTitle()
+                "state", resident.hasEmpire() ? resident.getVillage().getEmpire().getStateTag() : "",
+                "title", resident.getEmpireTitle()
         ), SETUP);
         gui.setCloseAction(close -> false);
         gui.setFiller(BORDER_ITEM);
@@ -75,8 +75,8 @@ public class TitleGUI extends KingdomsGUI {
                                         message = Message.get("command.empire.title.success.default");
                                     }
                                     message.tell(resident.getVillage().getEmpire().getOnlineResidents(),
-                                            "rank", resident.getVillageRank().getTag(resident.getVillage()),
-                                            "title", resident.getVillageTitle(),
+                                            "rank", resident.getEmpireRank().getTag(resident.getVillage().getEmpire()),
+                                            "title", resident.getEmpireTitle(),
                                             "name", resident.getName(),
                                             "empirename", resident.getVillage().getEmpire().getName(),
                                             "empirestate", resident.getVillage().getEmpire().getStateTag()

@@ -27,7 +27,7 @@ public class RankSelectGui extends KingdomsGUI {
         super("empire.rank-select");
         this.resident = resident;
         gui = new InventoryGui(KingdomsPlugin.getInstance(),
-                getText("title", "state", resident.hasVillage() ? resident.getVillage().getStateTag() : ""),
+                getText("title", "state", resident.hasEmpire() ? resident.getVillage().getEmpire().getStateTag() : ""),
                 SETUP);
         gui.setCloseAction(close -> false);
         gui.setFiller(BORDER_ITEM);

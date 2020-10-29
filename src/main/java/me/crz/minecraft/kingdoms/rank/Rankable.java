@@ -11,7 +11,7 @@ public interface Rankable<T extends Rankable> {
      * @param rankable What to compare this rankable to
      * @return Whether or not the ordinal of this one is equal or below the other one
      */
-    default <T extends Rankable> boolean atLeast(T rankable) {
+    default boolean atLeast(T rankable) {
         return rankable == null || rankable.ordinal() >= this.ordinal();
     }
 
@@ -20,7 +20,7 @@ public interface Rankable<T extends Rankable> {
      * @param rankable What to compare this rankable to
      * @return Whether or not the ordinal of this one is below the other one
      */
-    default <T extends Rankable> boolean above(T rankable) {
+    default boolean above(T rankable) {
         return rankable == null || rankable.ordinal() > this.ordinal();
     }
 
@@ -29,7 +29,7 @@ public interface Rankable<T extends Rankable> {
      * @param rankable What to compare this rankable to
      * @return Whether or not the ordinal of this one is above the other one
      */
-    default <T extends Rankable> boolean below(T rankable) {
+    default boolean below(T rankable) {
         return rankable != null && rankable.ordinal() < this.ordinal();
     }
 

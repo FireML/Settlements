@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class Rank<L extends LandOwner> implements Rankable, NameTag, Comparable<Rank> {
+public abstract class Rank<L extends LandOwner> implements NameTag, Comparable<Rank> {
 
     private final String name;
 
@@ -128,7 +128,6 @@ public abstract class Rank<L extends LandOwner> implements Rankable, NameTag, Co
         return name;
     }
 
-    @Override
     public int ordinal() {
         return ordinal;
     }

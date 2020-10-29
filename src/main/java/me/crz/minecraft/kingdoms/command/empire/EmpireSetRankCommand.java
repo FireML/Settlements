@@ -23,7 +23,7 @@ public class EmpireSetRankCommand extends EmpireSubCommand {
                     "description", getDescription()
             ));
             for (EmpireRank rank : EmpireRank.values()) {
-                if (rank.below(res.getVillageRank())) {
+                if (rank.below(res.getEmpireRank())) {
                     getMessage("rank-usage.entry").tell(res,
                             "usage", getUsage(base).replace("<rank>", rank.getTag()),
                             "rank", rank.getTag(),

@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class EmpireRank extends Rank<Empire> implements Next<EmpireRank> {
+public class EmpireRank extends Rank<Empire> implements Next<EmpireRank>, Rankable<EmpireRank> {
 
     private List<String> titles;
 

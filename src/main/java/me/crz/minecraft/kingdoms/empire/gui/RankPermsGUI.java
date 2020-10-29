@@ -129,7 +129,7 @@ public class RankPermsGUI extends KingdomsGUI {
                 ));
                 text.addAll(description);
                 return new StaticGuiElement('g', ItemUtils.toIcon(item), click -> {
-                    if (res.hasVillage() && res.getVillageRank().above(rank)) {
+                    if (res.hasVillage() && res.getEmpireRank().above(rank)) {
                         if (click.getType() != ClickType.MIDDLE) {
                             if (res.hasPermission("village.perms.set") && res.hasPermission(perm)) {
                                 Optional<Boolean> currentValue = res.getVillage().getEmpire()

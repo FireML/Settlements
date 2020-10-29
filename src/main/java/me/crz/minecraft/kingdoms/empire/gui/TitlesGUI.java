@@ -67,7 +67,7 @@ public class TitlesGUI extends KingdomsGUI {
                                 "rank", rank.getTag(resident.getVillage().getEmpire())
                         ));
                     }
-                    if (resident.hasPermission("empire.titles.remove") && !rank.above(resident.getVillageRank())) {
+                    if (resident.hasPermission("empire.titles.remove") && !rank.above(resident.getEmpireRank())) {
                         description.add(getText("entry.remove",
                                 "title", title,
                                 "rank", rank.getTag(resident.getVillage().getEmpire())
@@ -115,7 +115,7 @@ public class TitlesGUI extends KingdomsGUI {
                                 .item(ItemUtils.toIcon(Material.WRITABLE_BOOK))
                                 .title(getMessage("add.anvil.title").getReplacedText(
                                         "rank", rank.getTag(resident.getVillage().getEmpire()),
-                                        "state", resident.getVillage().getStateTag()
+                                        "state", resident.getVillage().getEmpire().getStateTag()
                                 ))
                                 .text(getMessage("add.anvil.placeholder").getReplacedText(
                                         "rank", rank.getTag(resident.getVillage().getEmpire()),
@@ -124,7 +124,7 @@ public class TitlesGUI extends KingdomsGUI {
                                 .onClose(player -> Utils.runLater(() -> new TitlesGUI(resident, rank).open(), 1))
                                 .onComplete((player, text) -> {
                                     text = ChatColor.stripColor(text);
-                                    if (rank.above(resident.getVillageRank())) {
+                                    if (rank.above(resident.getEmpireRank())) {
                                         return AnvilGUI.Response.text(getError("cant-edit-higher")
                                                 .getReplacedText("rank", resident.getEmpireRank().getTag(resident.getVillage().getEmpire())));
                                     } else if (resident.getVillage().getEmpire().getTitles(rank).size() >= Config.Empire.TITLES_PER_RANK) {
