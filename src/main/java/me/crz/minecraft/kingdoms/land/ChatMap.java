@@ -6,7 +6,6 @@ import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
@@ -242,7 +241,8 @@ public class ChatMap {
             ComponentBuilder hover = new ComponentBuilder(land.getLandOwner().getName());
             if (land.getLandOwner().isAbandoned()) {
                 hover.append("\n").append(messages.getMessage("hover.abandoned").getReplacedComponents(
-                        "countdown", UtilTime.format(land.getLandOwner().getCreated() + TimeUnit.MINUTES.toMillis(Config.Empire.Upkeep.ABANDON_TIME) - System.currentTimeMillis())
+                        "countdown", UtilTime.format(land.getLandOwner().getCreated()
+                                + TimeUnit.MINUTES.toMillis(land.getLandOwner().getAbandonTimeConfig()) - System.currentTimeMillis())
                 ));
             } else {
                 if (!land.getDescription().isEmpty()) {

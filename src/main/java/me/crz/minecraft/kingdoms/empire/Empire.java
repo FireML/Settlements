@@ -463,8 +463,14 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
         return KingdomsPlugin.getInstance().getConfig().getInt("upkeep.empire");
     }
 
+    @Override
     public boolean isAbandoned() {
         return members.isEmpty();
+    }
+
+    @Override
+    public long getAbandonTimeConfig() {
+        return Config.Empire.Upkeep.ABANDON_TIME;
     }
 
     public void setInRegen(boolean inRegen) {

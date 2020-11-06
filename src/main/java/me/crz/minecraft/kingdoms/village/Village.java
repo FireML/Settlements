@@ -229,8 +229,14 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
         return amount;
     }
 
+    @Override
     public boolean isAbandoned() {
         return residents.isEmpty();
+    }
+
+    @Override
+    public long getAbandonTimeConfig() {
+        return Config.Settlement.Upkeep.ABANDON_TIME;
     }
 
     public void setOutpostHome(String name, Location loc) {

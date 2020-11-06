@@ -817,6 +817,8 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
 
     public abstract boolean isAbandoned();
 
+    public abstract long getAbandonTimeConfig();
+
     @Override
     public boolean equals(Object o) {
         return o != null && o.getClass().equals(getClass()) && ((LandOwner) o).getId().equals(getId());
