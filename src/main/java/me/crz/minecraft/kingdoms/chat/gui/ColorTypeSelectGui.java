@@ -36,6 +36,8 @@ public class ColorTypeSelectGui extends KingdomsGUI {
         super("chat.color-type-select");
 
         gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title", "channel", channel.getTag()), SETUP);
+        gui.setCloseAction(close -> false);
+        gui.setFiller(BORDER_ITEM);
 
         GuiElementGroup group = new GuiElementGroup('g');
 

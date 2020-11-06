@@ -33,7 +33,7 @@ public class ColorSelectGui extends KingdomsGUI {
         super("chat.color-select");
 
         InventoryGui gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title", "channel", channel.getTag()), SETUP);
-        gui.setCloseAction(close -> true);
+        gui.setCloseAction(close -> false);
         gui.setFiller(BORDER_ITEM);
 
         GuiElementGroup group = new GuiElementGroup('g');

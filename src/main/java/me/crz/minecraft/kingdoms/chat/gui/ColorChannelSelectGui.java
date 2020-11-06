@@ -28,7 +28,7 @@ public class ColorChannelSelectGui extends KingdomsGUI {
     public ColorChannelSelectGui(Player p) {
         super("chat.channel-select");
         InventoryGui gui = new InventoryGui(KingdomsPlugin.getInstance(), getText("title"), SETUP);
-        gui.setCloseAction(close -> true);
+        gui.setCloseAction(close -> false);
         gui.setFiller(BORDER_ITEM);
 
         GuiElementGroup group = new GuiElementGroup('g');

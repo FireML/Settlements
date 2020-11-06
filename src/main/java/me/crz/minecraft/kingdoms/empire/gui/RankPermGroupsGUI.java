@@ -48,7 +48,10 @@ public class RankPermGroupsGUI extends KingdomsGUI {
                         new RankPermsGUI(r, rank, permGroup).open();
                     }
                     return true;
-                }));
+                }, getText("groups." + permGroup.getName(),
+                        "rank", rank.getTag(),
+                        "state", res.getVillage().getStateTag()
+                )));
             }
 
             if (res.hasVillage() && res.hasPermission("empire.perms.reset")) {
