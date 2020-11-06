@@ -104,7 +104,8 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     public void onEnable() {
         try {
             Class.forName("com.destroystokyo.paper.PaperConfig");
-            serverAdapter = (ServerAdapter) Class.forName(getClass().getPackage().getName() + ".utils.adapter.PaperAdapater").newInstance();
+            serverAdapter = (ServerAdapter) Class.forName(getClass().getPackage().getName() + ".utils.adapter.PaperAdapter").newInstance();
+            logDebug("Using improved API provided by Paper.");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             serverAdapter = new SpigotAdapter();
         }

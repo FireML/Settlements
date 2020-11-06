@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.utils.adapter;
 
-import com.Zrips.CMI.Containers.CommandAlias;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Item;
