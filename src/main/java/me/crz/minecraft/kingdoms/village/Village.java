@@ -555,7 +555,7 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
         village.setChief(UUID.fromString((String) map.get("chief")));
         village.setState(VillageState.valueOf((String) map.get("settlementState")));
         village.setLevel((Integer) map.get("level"));
-        village.setAllowAllyClaim((Boolean) map.get("allowAllyClaim"));
+        village.setAllowAllyClaim(Utils.getBoolean(map.get("allowAllyClaim")));
         village.setEmpire(EmpireManager.getInstance().getEmpireFromId(IdObject.get(map.get("empireId"))));
         ((Collection<String>) map.get("residents")).stream().map(UUID::fromString).forEach(u -> village.getResidentIds().add(u));
         ((Map<String, Map<String, Object>>) map.get("outposts")).values().stream()

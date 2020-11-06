@@ -220,14 +220,14 @@ public class MongoDatabaseManager extends DatabaseManager {
     public void saveResident(Resident... residents) {
         Utils.catchSync();
         for (Resident resident : residents) {
-            if (resident.getId() == null || residentCollection.find(Filters.eq("uuid", resident.getUUID().toString())).first() == null) {
+            if (resident.getId().isNull() || residentCollection.find(Filters.eq("uuid", resident.getUUID().toString())).first() == null) {
                 residentCollection.insertOne(createDocument(resident));
                 Document document = settlementsCollection.find(Filters.eq("uuid", resident.getUUID().toString())).first();
                 if (document.containsKey("_id")) {
-                    resident.setId(document.get("_id"));
+                    resident.setId(IdObject.get(document.get("_id")));
                 }
             } else {
-                residentCollection.updateOne(Filters.eq("_id", resident.getId()), new Document("$set", createDocument(resident)));
+                residentCollection.updateOne(Filters.eq("_id", resident.getId().value()), new Document("$set", createDocument(resident)));
             }
         }
     }

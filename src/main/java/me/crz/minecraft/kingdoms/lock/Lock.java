@@ -205,7 +205,7 @@ public class Lock implements DatabaseSerializable {
             return null;
         }
         lock.setId(IdObject.get(map));
-        lock.setAllowHoppers((Boolean) map.get("allowHoppers"));
+        lock.setAllowHoppers(Utils.getBoolean(map.get("allowHoppers")));
         for (String s : ((Collection<String>) map.get("allowed"))) {
             String[] split = s.split(":", 2);
             try {

@@ -1,6 +1,5 @@
 package me.crz.minecraft.kingdoms.db;
 
-import com.zaxxer.hikari.HikariDataSource;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.chat.ChatColorType;
@@ -12,8 +11,6 @@ import me.crz.minecraft.kingdoms.lock.Lock;
 import me.crz.minecraft.kingdoms.portal.Portal;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
-import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.utils.Pair;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -22,7 +19,6 @@ import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -32,7 +28,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +42,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -56,9 +50,8 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class MySqlDatabaseManager extends DatabaseManager {
-    private HikariDataSource ds;
-    private String tablePrefix;
+public abstract class SqlDatabaseManager extends DatabaseManager {
+    protected String tablePrefix;
     private final KingdomsPlugin plugin = KingdomsPlugin.getInstance();
 
     private SaveQueue<Village> villageQueue;
@@ -72,184 +65,32 @@ public class MySqlDatabaseManager extends DatabaseManager {
     public void connect() throws Exception {
         tablePrefix = Config.Storage.TABLE_PREFIX;
 
-        ds = new HikariDataSource();
-        initConnectionClass(ds);
-
-        ds.addDataSourceProperty("url", "jdbc:mysql://" + Config.Storage.HOST + ":" + Config.Storage.PORT + "/" + Config.Storage.DATABASE + Config.Storage.URL_PARAMETERS);
-        ds.setUsername(Config.Storage.USER);
-        ds.setPassword(Config.Storage.PASSWORD);
-        ds.setConnectionTimeout(5000);
-
         int queueSize = Config.Storage.Queue.SIZE;
         int queueWait = Config.Storage.Queue.WAIT;
 
-        villageQueue = new SaveQueue<>(ds, queueSize, queueWait, this::saveVillage);
-        empireQueue = new SaveQueue<>(ds, queueSize, queueWait, this::saveEmpire);
-        residentQueue = new SaveQueue<>(ds, queueSize, queueWait, this::saveResident);
-        landQueue = new SaveQueue<>(ds, queueSize, queueWait, this::saveLand);
-        portalQueue = new SaveQueue<>(ds, queueSize, queueWait, this::savePortal);
-        lockQueue = new SaveQueue<>(ds, queueSize, queueWait, (conn, consumer) -> consumer.accept(conn));
+        villageQueue = new SaveQueue<>(this, queueSize, queueWait, this::saveVillage);
+        empireQueue = new SaveQueue<>(this, queueSize, queueWait, this::saveEmpire);
+        residentQueue = new SaveQueue<>(this, queueSize, queueWait, this::saveResident);
+        landQueue = new SaveQueue<>(this, queueSize, queueWait, this::saveLand);
+        portalQueue = new SaveQueue<>(this, queueSize, queueWait, this::savePortal);
+        lockQueue = new SaveQueue<>(this, queueSize, queueWait, (conn, consumer) -> consumer.accept(conn));
 
         initializeTables();
-        updateClaimModes();
-        updateClaimModesUniqueKey();
-        updateAllies();
-        updateLandOwnersMissingColumns();
-        updateResidentTitles();
-        updateBanishedAllies();
-        addColumn(MySqlTable.CLAIMS, "name", "VARCHAR(255) DEFAULT '' AFTER embassy");
-        addColumn(MySqlTable.CLAIMS, "tax", "INTEGER DEFAULT 0 AFTER forSale");
-        addColumn(MySqlTable.EMPIRES, "discord", "TEXT NOT NULL AFTER description");
-        addColumn(MySqlTable.SETTLEMENTS, "discord", "TEXT NOT NULL AFTER description");
-        addColumn(MySqlTable.RESIDENTS, "empireTitle", "VARCHAR(16) AFTER title");
-        addColumn(MySqlTable.RESIDENTS, "socialSpy", "BOOLEAN NOT NULL DEFAULT false AFTER swear");
-        addColumn(MySqlTable.EMPIRES, "passiveSpawning", "BOOLEAN NOT NULL AFTER mobSpawning");
-        addColumn(MySqlTable.SETTLEMENTS, "passiveSpawning", "BOOLEAN NOT NULL AFTER mobSpawning");
     }
 
-    private void initializeTables() throws SQLException {
-        try (Connection conn = ds.getConnection(); Statement sta = conn.createStatement()) {
-            sta.addBatch("SET FOREIGN_KEY_CHECKS = 0");
+    protected abstract Connection getConnection();
 
-            for (MySqlTable table : MySqlTable.values()) {
-                sta.addBatch(table.getSql(tablePrefix));
-            }
+    protected abstract void closeConnection() throws SQLException;
 
-            sta.addBatch("SET FOREIGN_KEY_CHECKS = 1");
+    protected abstract void close(Connection conn);
 
-            sta.executeBatch();
-        }
-    }
+    protected abstract void initializeTables() throws SQLException;
 
-    // Update database
+    protected abstract String getInsertIgnore();
 
-    private void updateClaimModes() {
-        String sql = "SELECT * FROM " + tablePrefix + "claims;";
-        try (Connection conn = ds.getConnection();
-             Statement sta = conn.createStatement()) {
-            boolean found = false;
-            ResultSet rs = sta.executeQuery(sql);
-            while (rs.next()) {
-                found = true;
-                try {
-                    rs.getBoolean("pvp"); // test if column exists
-                    updateDataMap(conn, "claim_modes", "claimId", rs.getInt("id"), "mode", "enabled", PlotMode.values(PlotMode.AppliesTo.LAND_OWNER).stream()
-                            .map(m -> {
-                                try {
-                                    return new Pair<>(m.name(), rs.getBoolean(m.name()));
-                                } catch (SQLException e) {
-                                    e.printStackTrace();
-                                    return null;
-                                }
-                            }).filter(Objects::nonNull).collect(Collectors.toMap(Pair::getLeft, Pair::getRight)));
-                } catch (SQLException e) {
-                    // column doesn't exist -> already updated. Don't do anything
-                    return;
-                }
-            }
-            if (found) {
-                sta.execute("ALTER TABLE " + tablePrefix + "claims "
-                        + PlotMode.values(PlotMode.AppliesTo.LAND_OWNER).stream().map(m -> "DROP COLUMN " + m.name()).collect(Collectors.joining(","))
-                        +";");
-            } else {
-                sta.addBatch("SET FOREIGN_KEY_CHECKS = 0");
-                sta.addBatch("DROP TABLE " + tablePrefix + "claims");
-                sta.addBatch(MySqlTable.CLAIMS.getSql(tablePrefix));
-                sta.addBatch("SET FOREIGN_KEY_CHECKS = 1");
-                sta.executeBatch();
-            }
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while trying update claim's table to new mode format!", e);
-        }
-    }
+    protected abstract PreparedStatement executeSerializableInsert(Connection conn, String tableName, DatabaseSerializable serializable, Map<String, Object> values) throws SQLException;
 
-    private void updateClaimModesUniqueKey() {
-        try (Connection conn = ds.getConnection()) {
-            Statement sta = conn.createStatement();
-            // test if index exists:
-            sta.execute("DROP INDEX mode ON " + tablePrefix + MySqlTable.CLAIM_MODES.getDbName());
-            // if it exists remove the table and create new one
-            sta.execute("DROP TABLE " + tablePrefix + MySqlTable.CLAIM_MODES.getDbName());
-            sta.execute(MySqlTable.CLAIM_MODES.getSql(tablePrefix));
-        } catch (SQLException e) {
-            // index doesn't exist
-        }
-    }
-
-    private void updateAllies() {
-        alterColumnOrRecreate(MySqlTable.SETTLEMENT_ALLIES, "ally", "allies", "VARCHAR(36) NOT NULL");
-        alterColumnOrRecreate(MySqlTable.EMPIRE_ALLIES, "ally", "allies", "VARCHAR(36) NOT NULL");
-    }
-
-    private void updateLandOwnersMissingColumns() {
-        addColumn(MySqlTable.SETTLEMENTS, "created", "BIGINT DEFAULT 0 AFTER description");
-        addColumn(MySqlTable.EMPIRES, "created", "BIGINT DEFAULT 0 AFTER description");
-        addColumn(MySqlTable.EMPIRES, "lastRename", "BIGINT DEFAULT 0 AFTER created");
-        addColumn(MySqlTable.SETTLEMENTS, "taxDebtAction", "VARCHAR(255) DEFAULT 'KICK' AFTER tax");
-        addColumn(MySqlTable.EMPIRES, "taxDebtAction", "VARCHAR(255) DEFAULT 'KICK' AFTER tax");
-    }
-
-    private void updateResidentTitles() {
-        try (Connection conn = ds.getConnection()) {
-            Statement sta = conn.createStatement();
-            String table = tablePrefix + MySqlTable.RESIDENTS.getDbName();
-            ResultSet rs = sta.executeQuery("SELECT title FROM " + table + " LIMIT 1;");
-            if (rs.getMetaData().getColumnType(1) != Types.VARCHAR) {
-                if (rs.next()) {
-                    plugin.getLogger().log(Level.INFO, "Converting resident titles...");
-                    sta.execute("ALTER TABLE " + table + " CHANGE COLUMN title titleIndex INTEGER NOT NULL");
-                    sta.execute("ALTER TABLE " + table + " ADD COLUMN title VARCHAR(16) after empirerank");
-
-                    ResultSet rsr = sta.executeQuery("SELECT res.id AS id, res.rank AS rank, res.titleIndex AS title, settlement.settlementState AS state" +
-                            " FROM " + table + " AS res" +
-                            " LEFT JOIN " + tablePrefix + MySqlTable.SETTLEMENTS.getDbName() + " AS settlement ON res.settlementId <=> settlement.id" +
-                            " WHERE res.settlementId IS NOT NULL AND res.titleIndex != 0");
-                    PreparedStatement pSta = conn.prepareStatement("UPDATE " + table + " SET title=? WHERE id=?");
-                    int i = 0;
-                    while (rsr.next()) {
-                        int titleIndex = rsr.getInt("title");
-                        List<String> titles = Message.get(rsr.getString("state").toLowerCase() + ".rank." + rsr.getString("rank").toLowerCase())
-                                .getTextList().stream().map(ChatColor::stripColor).collect(Collectors.toList());
-                        if (titles.size() > titleIndex) {
-                            pSta.setString(1, titles.get(titleIndex));
-                            pSta.setInt(2, rsr.getInt("id"));
-                            pSta.addBatch();
-                            i++;
-                            if (i % 1000 == 0) {
-                                pSta.executeBatch();
-                                plugin.getLogger().log(Level.INFO, "Converted " + i + "...");
-                            }
-                        }
-                    }
-                    if (i % 1000 != 0) {
-                        pSta.executeBatch();
-                        plugin.getLogger().log(Level.INFO, "Converted " + i);
-                    }
-                    sta.execute("ALTER TABLE " + table + " DROP COLUMN titleIndex");
-                    plugin.getLogger().log(Level.INFO, "Resident title conversion done!");
-                } else {
-                    sta.execute("ALTER TABLE " + table + " DROP COLUMN title");
-                    sta.execute("ALTER TABLE " + table + " ADD COLUMN title VARCHAR(16) after empirerank");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void updateBanishedAllies() {
-        alterColumnOrRecreate(MySqlTable.SETTLEMENT_ALLIES, "allies", "VARCHAR(36) NOT NULL");
-        alterOrRecreate(MySqlTable.SETTLEMENT_ALLIES, "ADD CONSTRAINT `list` UNIQUE IF NOT EXISTS (settlementId, allies)");
-
-        alterColumnOrRecreate(MySqlTable.EMPIRE_ALLIES, "allies", "VARCHAR(36) NOT NULL");
-        alterOrRecreate(MySqlTable.EMPIRE_ALLIES, "ADD CONSTRAINT `list` UNIQUE IF NOT EXISTS (empireId, allies)");
-
-        alterColumnOrRecreate(MySqlTable.SETTLEMENT_BANISHED, "banished", "VARCHAR(36) NOT NULL");
-        alterOrRecreate(MySqlTable.SETTLEMENT_BANISHED, "ADD CONSTRAINT `list` UNIQUE IF NOT EXISTS (settlementId, banished)");
-
-        alterColumnOrRecreate(MySqlTable.EMPIRE_BANISHED, "banished", "VARCHAR(36) NOT NULL");
-        alterOrRecreate(MySqlTable.EMPIRE_BANISHED, "ADD CONSTRAINT `list` UNIQUE IF NOT EXISTS (empireId, banished)");
-    }
+    protected abstract void executeDataMapUpdate(Connection conn, String tableName, String keyColumn, int keyId, String mapKey, Map<String, ?> values, Set<String> columns, String... mapValueColumns) throws SQLException;
 
     // Implement DatabaseManager methods
 
@@ -289,21 +130,24 @@ public class MySqlDatabaseManager extends DatabaseManager {
     @Override
     public void deleteEmpire(Empire empire) {
         Utils.catchSync();
+        Connection conn = getConnection();
         if (!empire.getId().isNull()) {
-            try (Connection conn = ds.getConnection();
-                 PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "empires WHERE id=?")) {
+            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "empires WHERE id=?")) {
                 sta.setInt(1, (Integer) empire.getId().value());
                 sta.executeUpdate();
             } catch (SQLException e) {
                 plugin.getLogger().log(Level.SEVERE, "Error while trying to delete empire " + empire.getId().value() + "/" + empire.getName() + " from database!", e);
+            } finally {
+                close(conn);
             }
         } else {
-            try (Connection conn = ds.getConnection();
-                 PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "empires WHERE name = ? LIMIT 1")) {
+            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "empires WHERE name = ? LIMIT 1")) {
                 sta.setString(1, empire.getName());
                 sta.executeUpdate();
             } catch (SQLException e) {
                 plugin.getLogger().log(Level.SEVERE, "Error while trying to delete empire " + empire.getId().value() + "/" + empire.getName() + " from database!", e);
+            } finally {
+                close(conn);
             }
         }
     }
@@ -345,21 +189,24 @@ public class MySqlDatabaseManager extends DatabaseManager {
     @Override
     public void deleteVillage(Village village) {
         Utils.catchSync();
+        Connection conn = getConnection();
         if (!village.getId().isNull()) {
-            try (Connection conn = ds.getConnection();
-                 PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "settlements WHERE id=?")) {
+            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "settlements WHERE id=?")) {
                 sta.setInt(1, (Integer) village.getId().value());
                 sta.executeUpdate();
             } catch (SQLException e) {
                 plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + village.getId().value() + "/" + village.getName() + " from database!", e);
+            } finally {
+                close(conn);
             }
         } else {
-            try (Connection conn = ds.getConnection();
-                 PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "settlements WHERE name = ? LIMIT 1")) {
+            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "settlements WHERE name=?")) {
                 sta.setString(1, village.getName());
                 sta.executeUpdate();
             } catch (SQLException e) {
                 plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + village.getId().value() + "/" + village.getName() + " from database!", e);
+            } finally {
+                close(conn);
             }
         }
     }
@@ -370,8 +217,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
         if (lands.length == 0) {
             return;
         }
-        try (Connection conn = ds.getConnection();
-             PreparedStatement idSta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE id = ?;");
+        Connection conn = getConnection();
+        try (PreparedStatement idSta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE id = ?;");
              PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE world = ? AND x = ? AND z = ?;")) {
             for (OwnedLand land : lands) {
                 if (land.getId().isNull()) {
@@ -388,6 +235,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
             sta.executeBatch();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + lands.length + " claims from database!", e);
+        } finally {
+            close(conn);
         }
     }
 
@@ -399,12 +248,14 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return;
         }
 
-        try (Connection conn = ds.getConnection();
-             PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE settlementId = ?;")) {
+        Connection conn = getConnection();
+        try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE settlementId = ?;")) {
             sta.setInt(1, (Integer) village.getId().value());
             sta.executeUpdate();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to delete claims of settlement " + village.getName() + " from database! ", e);
+        } finally {
+            close(conn);
         }
     }
 
@@ -412,12 +263,14 @@ public class MySqlDatabaseManager extends DatabaseManager {
     public void unclaimLand(String worldName) {
         Utils.catchSync();
 
-        try (Connection conn = ds.getConnection();
-             PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE world = ?;")) {
+        Connection conn = getConnection();
+        try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE world = ?;")) {
             sta.setString(1, worldName);
             sta.executeUpdate();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to delete claims of world " + worldName + " from database! ", e);
+        } finally {
+            close(conn);
         }
     }
 
@@ -425,13 +278,15 @@ public class MySqlDatabaseManager extends DatabaseManager {
     public void renameLandWorld(String oldName, String newName) {
         Utils.catchSync();
 
-        try (Connection conn = ds.getConnection();
-             PreparedStatement sta = conn.prepareStatement("UPDATE " + tablePrefix + "claims SET world = ? WHERE world = ?;")) {
+        Connection conn = getConnection();
+        try (PreparedStatement sta = conn.prepareStatement("UPDATE " + tablePrefix + "claims SET world = ? WHERE world = ?;")) {
             sta.setString(1, newName);
             sta.setString(2, oldName);
             sta.executeUpdate();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to change claims world from " + oldName + " to " + newName + " in database! ", e);
+        } finally {
+            close(conn);
         }
     }
 
@@ -463,8 +318,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
     public Collection<OwnedLand> getAllLand() {
         Utils.catchSync();
         String sql = "SELECT c.*, r.uuid AS `owner` FROM " + tablePrefix + "claims AS c LEFT JOIN " + tablePrefix + "residents AS r ON c.ownerId = r.id;";
-        try (Connection conn = ds.getConnection();
-             ResultSet rs = conn.createStatement().executeQuery(sql)) {
+        Connection conn = getConnection();
+        try ( ResultSet rs = conn.createStatement().executeQuery(sql)) {
             List<OwnedLand> claims = new ArrayList<>();
             while (rs.next()) {
                 OwnedLand ownedLand = createLand(conn, rs);
@@ -475,6 +330,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return claims;
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to get all claims from database!", e);
+        } finally {
+            close(conn);
         }
         return Collections.EMPTY_LIST;
     }
@@ -483,12 +340,14 @@ public class MySqlDatabaseManager extends DatabaseManager {
     public void deleteLand(IdObject idObject) {
         Utils.catchSync();
         String sql = "DELETE FROM " + tablePrefix + "claims WHERE id = ?;";
-        try (Connection conn = ds.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, (Integer) idObject.value());
             ps.executeUpdate();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to delete claims " + idObject + " from database!", e);
+        } finally {
+            close(conn);
         }
     }
 
@@ -496,8 +355,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
     public Collection<Village> getAllVillages() {
         Utils.catchSync();
         String sql = "SELECT s.*, r.uuid AS chief FROM " + tablePrefix + "settlements AS s LEFT JOIN " + tablePrefix + "residents AS r ON s.chiefId = r.id;";
-        try (Connection conn = ds.getConnection();
-             ResultSet rs = conn.createStatement().executeQuery(sql)) {
+        Connection conn = getConnection();
+        try (ResultSet rs = conn.createStatement().executeQuery(sql)) {
             List<Village> villages = new ArrayList<>();
             while (rs.next()) {
                 Village village = createVillage(conn, rs);
@@ -508,6 +367,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return villages;
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to get all settlements from database!", e);
+        } finally {
+            close(conn);
         }
         return Collections.EMPTY_LIST;
     }
@@ -516,8 +377,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
     public Collection<Empire> getAllEmpires() {
         Utils.catchSync();
         String sql = "SELECT * FROM " + tablePrefix + "empires;";
-        try (Connection conn = ds.getConnection();
-             ResultSet rs = conn.createStatement().executeQuery(sql)) {
+        Connection conn = getConnection();
+        try (ResultSet rs = conn.createStatement().executeQuery(sql)) {
             List<Empire> empires = new ArrayList<>();
             while (rs.next()) {
                 Empire empire = createEmpire(conn, rs);
@@ -528,6 +389,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return empires;
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to get all empires from database!", e);
+        } finally {
+            close(conn);
         }
         return Collections.EMPTY_LIST;
     }
@@ -536,8 +399,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
     public Resident getResident(UUID uuid) {
         Utils.catchSync();
         String sql = "SELECT * FROM " + tablePrefix + "residents WHERE uuid=?";
-        try (Connection conn = ds.getConnection();
-             PreparedStatement sta = conn.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement sta = conn.prepareStatement(sql)) {
             sta.setString(1, uuid.toString());
             ResultSet rs = sta.executeQuery();
             if (rs.next()) {
@@ -545,6 +408,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to get resident information for player with UUID " + uuid + " from database!", e);
+        } finally {
+            close(conn);
         }
         return null;
     }
@@ -556,8 +421,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
         }
         Utils.catchSync();
         String sql = "SELECT * FROM " + tablePrefix + "residents WHERE name LIKE ?";
-        try (Connection conn = ds.getConnection();
-             PreparedStatement sta = conn.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement sta = conn.prepareStatement(sql)) {
             sta.setString(1, name.replace("_", "\\_"));
             ResultSet rs = sta.executeQuery();
             if (rs.next()) {
@@ -565,6 +430,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to get resident information for player with name " + name + " from database!", e);
+        } finally {
+            close(conn);
         }
         return null;
     }
@@ -583,32 +450,22 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return;
         }
         Map<String, Object> values = getValues(resident.serialize());
-        String sql = "INSERT INTO " + tablePrefix + "residents "
-                + "(`" + String.join("`,`", values.keySet()) + "`)"
-                + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")"
-                + " ON DUPLICATE KEY UPDATE " + values.keySet().stream().map(c -> "`" + c + "`=VALUES(`" + c + "`)").collect(Collectors.joining(",")) + ";";
         try {
-            PreparedStatement sta = conn.prepareStatement(sql, resident.getId() == null ? PreparedStatement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS);
-            int i = 0;
-            for (Object value : values.values()) {
-                i++;
-                sta.setObject(i, value);
-            }
-            sta.executeUpdate();
-            if (resident.getId() == null) {
+            PreparedStatement sta = executeSerializableInsert(conn, "residents", resident, values);
+            if (resident.getId().isNull()) {
                 ResultSet rs = sta.getGeneratedKeys();
                 if (rs.next()) {
-                    resident.setId(rs.getInt(1));
+                    resident.setId(IdObject.get(rs.getInt(1)));
                 }
             }
-            if (resident.getId() != null) {
-                updateList(conn, "resident_channels", "userId", (Integer) resident.getId(), "channel", resident.getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
-                updateUserList(conn, "resident_friends", "userId", (Integer) resident.getId(), "friendId", resident.getFriends());
-                updateUserList(conn, "resident_ignores", "userId", (Integer) resident.getId(), "ignoredId", resident.getIgnore());
-                updateDataMap(conn, "resident_channel_colors", "userId", (Integer) resident.getId(), "channel", "color", Arrays.stream(ChatChannel.values())
+            if (!resident.getId().isNull()) {
+                updateList(conn, "resident_channels", "userId", (Integer) resident.getId().value(), "channel", resident.getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
+                updateUserList(conn, "resident_friends", "userId", (Integer) resident.getId().value(), "friendId", resident.getFriends());
+                updateUserList(conn, "resident_ignores", "userId", (Integer) resident.getId().value(), "ignoredId", resident.getIgnore());
+                updateDataMap(conn, "resident_channel_colors", "userId", (Integer) resident.getId().value(), "channel", "color", Arrays.stream(ChatChannel.values())
                         .filter(c -> resident.getChannelColor(c, ChatColorType.MESSAGE) != null)
                         .collect(Collectors.toMap(Enum::name, c -> resident.getChannelColor(c, ChatColorType.MESSAGE).name())));
-                updateDataMap(conn, "resident_channel_prefix_colors", "userId", (Integer) resident.getId(), "channel", "color", Arrays.stream(ChatChannel.values())
+                updateDataMap(conn, "resident_channel_prefix_colors", "userId", (Integer) resident.getId().value(), "channel", "color", Arrays.stream(ChatChannel.values())
                         .filter(c -> resident.getChannelColor(c, ChatColorType.PREFIX) != null)
                         .collect(Collectors.toMap(Enum::name, c -> resident.getChannelColor(c, ChatColorType.PREFIX).name())));
             }
@@ -646,8 +503,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
     public Collection<Portal> getAllPortals() {
         Utils.catchSync();
         String sql = "SELECT * FROM " + tablePrefix + "portals;";
-        try (Connection conn = ds.getConnection();
-             ResultSet rs = conn.createStatement().executeQuery(sql)) {
+        Connection conn = getConnection();
+        try (ResultSet rs = conn.createStatement().executeQuery(sql)) {
             List<Portal> portals = new ArrayList<>();
             while (rs.next()) {
                 Portal portal = createPortal(conn, rs);
@@ -658,6 +515,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return portals;
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to get all settlements from database!", e);
+        } finally {
+            close(conn);
         }
         return Collections.EMPTY_LIST;
     }
@@ -677,8 +536,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
         }
 
         if (!withId.isEmpty()) {
-            try (Connection conn = ds.getConnection();
-                 PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "portals WHERE id=?")) {
+            Connection conn = getConnection();
+            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "portals WHERE id=?")) {
                 for (Portal portal : withId) {
                     sta.setInt(1, (Integer) portal.getId().value());
                     sta.addBatch();
@@ -686,12 +545,14 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 sta.executeBatch();
             } catch (SQLException e) {
                 plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + withId.size() + " portals from database!", e);
+            } finally {
+                close(conn);
             }
         }
 
         if (!withoutId.isEmpty()) {
-            try (Connection conn = ds.getConnection();
-                 PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "portals WHERE world = ? AND x = ? AND y = ? AND z = ? LIMIT 1")) {
+            Connection conn = getConnection();
+            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "portals WHERE world = ? AND x = ? AND y = ? AND z = ? LIMIT 1")) {
                 for (Portal portal : withoutId) {
                     sta.setString(1, portal.getLocation().getWorld());
                     sta.setInt(2, portal.getLocation().getX());
@@ -702,6 +563,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 sta.executeBatch();
             } catch (SQLException e) {
                 plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + withoutId.size() + " portals from database!", e);
+            } finally {
+                close(conn);
             }
         }
     }
@@ -711,13 +574,15 @@ public class MySqlDatabaseManager extends DatabaseManager {
     public void renameLockWorld(String oldName, String newName) {
         Utils.catchSync();
 
-        try (Connection conn = ds.getConnection();
-             PreparedStatement sta = conn.prepareStatement("UPDATE " + tablePrefix + "locks SET world = ? WHERE world = ?;")) {
+        Connection conn = getConnection();
+        try (PreparedStatement sta = conn.prepareStatement("UPDATE " + tablePrefix + "locks SET world = ? WHERE world = ?;")) {
             sta.setString(1, newName);
             sta.setString(2, oldName);
             sta.executeUpdate();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to change locks world from " + oldName + " to " + newName + " in database! ", e);
+        } finally {
+            close(conn);
         }
     }
 
@@ -810,8 +675,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
         // make sure to save before getting new locks
         lockQueue.forceSave();
         String sql = "SELECT l.*, r.uuid AS `owner` FROM " + tablePrefix + "locks AS l LEFT JOIN " + tablePrefix + "residents AS r ON l.ownerId = r.id;";
-        try (Connection conn = ds.getConnection();
-             ResultSet rs = conn.createStatement().executeQuery(sql)) {
+        Connection conn = getConnection();
+        try (ResultSet rs = conn.createStatement().executeQuery(sql)) {
             List<Lock> locks = new ArrayList<>();
             while (rs.next()) {
                 Lock lock = createLock(conn, rs);
@@ -822,6 +687,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return locks;
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to get all locks from database!", e);
+        } finally {
+            close(conn);
         }
         return Collections.EMPTY_LIST;
     }
@@ -838,7 +705,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 " LEFT JOIN " + tablePrefix + "residents AS r ON l.ownerId = r.id" +
                 " WHERE world = ? AND x BETWEEN ? AND ? AND z BETWEEN ? AND ?;";
         List<Lock> locks = new ArrayList<>();
-        try (Connection conn = ds.getConnection(); PreparedStatement sta = conn.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement sta = conn.prepareStatement(sql)) {
             for (SimpleChunkLocation chunk : chunks) {
                 sta.setString(1, chunk.getWorld());
                 sta.setInt(2, chunk.getX() << 4);
@@ -856,6 +724,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return locks;
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to get locks in " + chunks.length + " chunks from database!", e);
+        } finally {
+            close(conn);
         }
         return Collections.EMPTY_LIST;
     }
@@ -868,8 +738,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
             return;
         }
         Utils.catchSync();
-        try (Connection conn = ds.getConnection();
-             PreparedStatement sta = conn.prepareStatement("INSERT INTO " + tablePrefix + "logs " +
+        Connection conn = getConnection();
+        try (PreparedStatement sta = conn.prepareStatement("INSERT INTO " + tablePrefix + "logs " +
                      "(`empireId`, `settlementId`, `residentId`, `action`, `type`, `amount`) " +
                      "VALUES (?, ?, ?, ?, ?, ?);"
              )
@@ -878,7 +748,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 if (value.getValue() != 0) {
                     sta.setInt(1, empire != null ? (Integer) empire.getId().value() : -1);
                     sta.setInt(2, village != null ? (Integer) village.getId().value() : -1);
-                    sta.setInt(3, resident != null && resident.getId() != null ? (Integer) resident.getId() : -1);
+                    sta.setInt(3, resident != null && resident.getId().isNull() ? (Integer) resident.getId().value() : -1);
                     sta.setString(4, action.toLowerCase());
                     sta.setString(5, value.getKey().toLowerCase());
                     sta.setLong(6, value.getValue());
@@ -888,6 +758,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
             sta.executeBatch();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close(conn);
         }
     }
 
@@ -919,8 +791,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
         if (!resident.getVillageRank().atLeast(VillageRank.getChief())) {
             sql += " AND (l.action = 'deposit' OR l.action = 'donate')";
         }
-        try (Connection conn = ds.getConnection();
-             PreparedStatement sta = conn.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement sta = conn.prepareStatement(sql)) {
             sta.setInt(1, (Integer) id.value());
             ResultSet rs = sta.executeQuery();
             if (rs.next()) {
@@ -928,6 +800,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to get log page count for " + id, e);
+        } finally {
+            close(conn);
         }
         return 0;
     }
@@ -949,7 +823,11 @@ public class MySqlDatabaseManager extends DatabaseManager {
         residentQueue.forceSave();
         landQueue.forceSave();
         lockQueue.forceSave();
-        ds.close();
+        try {
+            closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private List<String[]> getLog(String column, IdObject id, Resident resident, int page, LogType type) {
@@ -974,8 +852,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
             sql += " AND (l.action = 'deposit' OR l.action = 'donate')";
         }
         sql += " ORDER BY l.id DESC LIMIT " + start + "," + Config.ENTRIES_PER_PAGE + ";";
-        try (Connection conn = ds.getConnection();
-             PreparedStatement sta = conn.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement sta = conn.prepareStatement(sql)) {
             sta.setInt(1, (Integer) id.value());
             ResultSet rs = sta.executeQuery();
             while (rs.next()) {
@@ -1019,6 +897,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to get log for " + id, e);
+        } finally {
+            close(conn);
         }
         return log;
     }
@@ -1177,17 +1057,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
         }
         Map<String, Object> serialized = serializable.serialize();
         Map<String, Object> values = getValues(serialized, ignored);
-        String sql = "INSERT INTO " + tablePrefix + serializable.getDbName() + "s "
-                + "(`" + String.join("`,`", values.keySet()) + "`)"
-                + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")"
-                + " ON DUPLICATE KEY UPDATE " + values.keySet().stream().map(c -> "`" + c + "`=VALUES(`" + c + "`)").collect(Collectors.joining(",")) + ";";
-        PreparedStatement sta = conn.prepareStatement(sql, serializable.getId().isNull() ? PreparedStatement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS);
-        int i = 0;
-        for (Object value : values.values()) {
-            i++;
-            sta.setObject(i, value);
-        }
-        sta.executeUpdate();
+        PreparedStatement sta = executeSerializableInsert(conn, serializable.getDbName() + "s", serializable, values);
         if (serializable.getId().isNull() ) {
             ResultSet rs = sta.getGeneratedKeys();
             if (rs.next()) {
@@ -1211,8 +1081,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
     private void updateDataMap(Connection conn, String tableName, String keyColumn, int keyId, String mapKey, String mapValue, Map<String, ?> values, String... mapValueColumns) throws SQLException {
         String deleteSql;
         Map<Integer, Object> deleteObjects = new HashMap<>();
-        deleteObjects.put(1, keyId);
-        int i = 2;
+        int i = 0;
+        deleteObjects.put(++i, keyId);
         if (values.isEmpty()) {
             deleteSql = "DELETE FROM " + tablePrefix + tableName +
                     " WHERE " + keyColumn + " = ?;";
@@ -1232,19 +1102,16 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 deleteSql += " AND (" + mapKey + " NOT IN " +
                         "(" + String.join(",", Collections.nCopies(map.size(), "?")) + ")";
                 for (String key : map.keySet()) {
-                    deleteObjects.put(i, key);
-                    i++;
+                    deleteObjects.put(++i, key);
                 }
                 List<String> rankQuery = new ArrayList<>();
                 for (Map.Entry<String, Collection<Object>> entry : map.entrySet()) {
                     rankQuery.add(mapKey + " = ?" +
                             " AND " + mapValue + " NOT IN " +
                             "(" + String.join(",", Collections.nCopies(entry.getValue().size(), "?")) + ")");
-                    deleteObjects.put(i, entry.getKey());
-                    i++;
+                    deleteObjects.put(++i, entry.getKey());
                     for (Object o : entry.getValue()) {
-                        deleteObjects.put(i, o);
-                        i++;
+                        deleteObjects.put(++i, o);
                     }
                 }
                 deleteSql += " OR ((" + String.join(") OR (", rankQuery) + ")))";
@@ -1256,10 +1123,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
                 if (entry.getValue() instanceof Map) {
                     for (Object value : ((Map<Object, Object>) entry.getValue()).keySet()) {
                         entries.add("(?,?)");
-                        deleteObjects.put(i, entry.getKey());
-                        i++;
-                        deleteObjects.put(i, value);
-                        i++;
+                        deleteObjects.put(++i, entry.getKey());
+                        deleteObjects.put(++i, value);
                     }
                 }
             }
@@ -1278,8 +1143,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     " AND " + mapKey + " NOT IN " +
                     "(" + String.join(",", Collections.nCopies(values.size(), "?")) + ");";
             for (String key : values.keySet()) {
-                deleteObjects.put(i, key);
-                i++;
+                deleteObjects.put(++i, key);
             }
         }
 
@@ -1314,52 +1178,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     return;
                 }
             }
-            String insertSql = "INSERT IGNORE INTO " + tablePrefix + tableName + " (" + keyColumn + ", " + mapKey + ", " + String.join(",", columns) + ")" +
-                    " VALUES (?,?," + String.join(",", Collections.nCopies(columns.size(), "?")) + ")" +
-                    " ON DUPLICATE KEY UPDATE " + columns.stream().map(c -> "`" + c + "`=VALUES(`" + c + "`)").collect(Collectors.joining(",")) + ";";
-            PreparedStatement insertSta = conn.prepareStatement(insertSql);
-            for (Map.Entry<String, ?> entry : values.entrySet()) {
-                if (entry.getValue() instanceof Collection) {
-                    for (Object o : (Collection<Object>) entry.getValue()) {
-                        insertSta.setInt(1, keyId);
-                        insertSta.setObject(2, entry.getKey());
-                        insertSta.setObject(3, o);
-                        insertSta.addBatch();
-                    }
-                } else if (entry.getValue() instanceof Map && mapValueColumns.length > 0) {
-                    for (Map.Entry<Object, Object> o : ((Map<Object, Object>) entry.getValue()).entrySet()) {
-                        insertSta.setInt(1, keyId);
-                        insertSta.setObject(2, entry.getKey());
-                        insertSta.setObject(3, o.getKey());
-                        insertSta.setObject(4, o.getValue());
-                        insertSta.addBatch();
-                    }
-                } else {
-                    insertSta.setInt(1, keyId);
-                    insertSta.setObject(2, entry.getKey());
-
-                    int j = 3;
-                    Map<String, Object> map = null;
-                    if (entry.getValue() instanceof ConfigurationSerializable) {
-                        map = ((ConfigurationSerializable) entry.getValue()).serialize();
-                    } else if (entry.getValue() instanceof Map) {
-                        map = (Map<String, Object>) entry.getValue();
-                    }
-                    if (map != null) {
-                        Map<String, Object> serMap = getValues(map, mapKey);
-                        for (String column : columns) {
-                            insertSta.setObject(j, serMap.get(column));
-                            j++;
-                        }
-                    } else if (entry.getValue() instanceof Enum) {
-                        insertSta.setObject(j, ((Enum) entry.getValue()).name());
-                    } else {
-                        insertSta.setObject(j, entry.getValue());
-                    }
-                    insertSta.addBatch();
-                }
-            }
-            insertSta.executeBatch();
+            executeDataMapUpdate(conn, tableName, keyColumn, keyId, mapKey, values, columns, mapValueColumns);
         }
     }
 
@@ -1410,9 +1229,9 @@ public class MySqlDatabaseManager extends DatabaseManager {
             deleteSql = "DELETE FROM " + tablePrefix + tableName + " " +
                     " WHERE " + keyColumn + " = ?;";
         } else {
-            deleteSql = "DELETE t FROM " + tablePrefix + tableName + " AS t" +
-                    " WHERE t." + keyColumn + " = ?" +
-                    " AND t." + entryColumn + " NOT IN (" + String.join(",", Collections.nCopies(entries.size(), "?")) + ");";
+            deleteSql = "DELETE FROM " + tablePrefix + tableName + " " +
+                    " WHERE " + keyColumn + " = ?" +
+                    " AND " + entryColumn + " NOT IN (" + String.join(",", Collections.nCopies(entries.size(), "?")) + ");";
         }
 
         PreparedStatement deleteSta = conn.prepareStatement(deleteSql);
@@ -1420,16 +1239,15 @@ public class MySqlDatabaseManager extends DatabaseManager {
         int i = 2;
         for (Object entry : entries) {
             if (entry instanceof IdObject) {
-                deleteSta.setInt(i, (int) ((IdObject) entry).value());
+                deleteSta.setInt(i++, (int) ((IdObject) entry).value());
             } else {
-                deleteSta.setObject(i, entry);
+                deleteSta.setObject(i++, entry);
             }
-            i++;
         }
         deleteSta.executeUpdate();
 
         if (!entries.isEmpty()) {
-            String insertSql = "INSERT IGNORE INTO " + tablePrefix + tableName + " (" + keyColumn + ", " + entryColumn + ")" +
+            String insertSql = getInsertIgnore() + " INTO " + tablePrefix + tableName + " (" + keyColumn + ", " + entryColumn + ")" +
                     " VALUES (?,?);";
             PreparedStatement insertSta = conn.prepareStatement(insertSql);
             for (Object entry : entries) {
@@ -1461,13 +1279,12 @@ public class MySqlDatabaseManager extends DatabaseManager {
         deleteSta.setInt(1, keyId);
         int i = 2;
         for (UUID id : users) {
-            deleteSta.setString(i, id.toString());
-            i++;
+            deleteSta.setString(i++, id.toString());
         }
         deleteSta.executeUpdate();
 
         if (!users.isEmpty()) {
-            String insertSql = "INSERT IGNORE INTO " + tablePrefix + tableName + " (" + keyColumn + ", " + usersColumn + ")" +
+            String insertSql = getInsertIgnore() + " INTO " + tablePrefix + tableName + " (" + keyColumn + ", " + usersColumn + ")" +
                     " VALUES (?,(SELECT r.id FROM " + tablePrefix + "residents AS r WHERE r.uuid=?));";
             PreparedStatement insertSta = conn.prepareStatement(insertSql);
             for (UUID id : users) {
@@ -1481,8 +1298,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
     private void alterOrRecreate(MySqlTable table, String alterSql) {
         String sql = "SELECT * FROM " + tablePrefix + table.getDbName() + " LIMIT 1";
-        try (Connection conn = ds.getConnection();
-             Statement sta = conn.createStatement()) {
+        Connection conn = getConnection();
+        try (Statement sta = conn.createStatement()) {
             ResultSet rs = sta.executeQuery(sql);
             if (rs.next()) {
                 sta.execute("ALTER IGNORE TABLE `" + tablePrefix + table.getDbName() + "` " + alterSql);
@@ -1495,6 +1312,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to alter table " + table.getDbName(), e);
+        } finally {
+            close(conn);
         }
     }
 
@@ -1504,8 +1323,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
     private void alterColumnOrRecreate(MySqlTable table, String oldColumn, String newColumn, String columnDefinition) {
         String sql = "SELECT * FROM " + tablePrefix + table.getDbName() + " LIMIT 1;";
-        try (Connection conn = ds.getConnection();
-             Statement sta = conn.createStatement()) {
+        Connection conn = getConnection();
+        try (Statement sta = conn.createStatement()) {
             ResultSet rs = sta.executeQuery(sql);
             if (rs.next()) {
                 try {
@@ -1522,21 +1341,25 @@ public class MySqlDatabaseManager extends DatabaseManager {
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to alter table " + table.getDbName(), e);
+        } finally {
+            close(conn);
         }
     }
 
     private void addColumn(MySqlTable table, String column, String definition) {
-        try (Connection conn = ds.getConnection();
-             Statement sta = conn.createStatement()) {
+        Connection conn = getConnection();
+        try (Statement sta = conn.createStatement()) {
             sta.execute("ALTER TABLE `" + tablePrefix + table.getDbName() + "` ADD COLUMN `" + column + "` " + definition + ";");
         } catch (SQLException ignored) {
             // column exists
+        } finally {
+            close(conn);
         }
     }
 
     // ------ Utility methods ----- //
 
-    private Map<String, Object> getValues(Map<String, ?> serialized, String... ignoredKeys) {
+    protected Map<String, Object> getValues(Map<String, ?> serialized, String... ignoredKeys) {
         Set<String> ignored = new HashSet<>(Arrays.asList(ignoredKeys));
         Map<String, Object> values = new LinkedHashMap<>();
         for (Map.Entry<String, ?> entry : serialized.entrySet()) {
@@ -1555,7 +1378,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     Object id = null;
                     if (!entry.getValue().equals(Utils.ZERO_UUID)) {
                         Resident resident = ResidentManager.getInstance().getResident((UUID) entry.getValue());
-                        id = resident != null ? resident.getId() : null;
+                        id = resident != null ? resident.getId().value() : null;
                     }
                     if (!entry.getKey().endsWith("Id")) {
                         values.put(entry.getKey() + "Id", id);
@@ -1599,52 +1422,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
 
     // ---- Setup helpers --- ///
 
-    private void initConnectionClass(HikariDataSource ds) throws RuntimeException {
-        String dataSourceClassName = tryDataSourceClassName("org.mariadb.jdbc.MariaDbDataSource");
-        if (dataSourceClassName == null) {
-            dataSourceClassName = tryDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
-        }
-        if (dataSourceClassName != null) {
-           plugin.getLogger().log(Level.INFO, "Using " + dataSourceClassName + " database source");
-            ds.setDataSourceClassName(dataSourceClassName);
-        }
-
-        if (dataSourceClassName == null) {
-            String driverClassName = tryDriverClassName("org.mariadb.jdbc.Driver");
-            if (driverClassName == null) {
-                driverClassName = tryDriverClassName("com.mysql.cj.jdbc.Driver");
-            }
-            if (driverClassName == null) {
-                driverClassName = tryDriverClassName("com.mysql.jdbc.Driver");
-            }
-
-            if (driverClassName != null) {
-                plugin.getLogger().log(Level.INFO, "Using " + driverClassName + " database driver");
-                ds.setDriverClassName(driverClassName);
-            } else {
-                throw new RuntimeException("Could not find database driver or data source class! Plugin wont work without a database!");
-            }
-        }
-    }
-
-    private String tryDriverClassName(String className) {
-        try {
-            Class.forName(className).newInstance();
-            return className;
-        } catch (Exception ignored) {}
-        return null;
-    }
-
-    private String tryDataSourceClassName(String className) {
-        try {
-            Class.forName(className);
-            return className;
-        } catch (Exception ignored) {}
-        return null;
-    }
-
     public static class SaveQueue<T> {
-        private HikariDataSource ds;
+        private SqlDatabaseManager db;
         private BiConsumer<Connection, T> handleSave;
 
         private BukkitTask task = null;
@@ -1663,7 +1442,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     try {
                         while (!tQueue.isEmpty()) {
                             if (conn == null || !conn.isValid(1)) {
-                                conn = ds.getConnection();
+                                conn = db.getConnection();
                             }
                             Map.Entry<IdObject, T> e = tQueue.pollFirst();
                             if (e.getValue() != null) {
@@ -1677,13 +1456,7 @@ public class MySqlDatabaseManager extends DatabaseManager {
                     } catch (SQLException e) {
                         KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Error while saving " + queue.size() + " " + (name != null ? name : "object") + "s to database!", e);
                     } finally {
-                        if (conn != null) {
-                            try {
-                                conn.close();
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                        db.close(conn);
                     }
                 }
             }
@@ -1692,8 +1465,8 @@ public class MySqlDatabaseManager extends DatabaseManager {
         private int saveWait;
         private boolean forceSave = false;
 
-        public SaveQueue(HikariDataSource ds, int maxSize, int saveWait, BiConsumer<Connection, T> handleSave) {
-            this.ds = ds;
+        public SaveQueue(SqlDatabaseManager db, int maxSize, int saveWait, BiConsumer<Connection, T> handleSave) {
+            this.db = db;
             this.maxSize = maxSize;
             this.saveWait = saveWait;
             this.handleSave = handleSave;

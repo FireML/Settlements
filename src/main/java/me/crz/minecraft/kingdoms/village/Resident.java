@@ -7,6 +7,7 @@ import com.google.common.collect.Table;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.chat.ChatColorType;
+import me.crz.minecraft.kingdoms.db.DatabaseSerializable;
 import me.crz.minecraft.kingdoms.integration.AfkProvider;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
@@ -41,8 +42,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class Resident implements ConfigurationSerializable, Targetable {
-    private Object id = null;
+public class Resident implements ConfigurationSerializable, DatabaseSerializable, Targetable {
+    private IdObject id = IdObject.get(null);
     private UUID uuid;
     private String name;
     private VillageRank rank = VillageRank.getDefault();
@@ -474,7 +475,7 @@ public class Resident implements ConfigurationSerializable, Targetable {
             throw new IllegalArgumentException("Resident had village but village has no ID?");
         }
         Map<String, Object> map = new LinkedHashMap<>();
-        map.put("id", getId());
+        map.put("id", getId().value());
         map.put("uuid", getUUID().toString());
         map.put("name", getName());
         map.put("settlementId", getVillage() != null ? getVillage().getId().value() : null);
@@ -508,9 +509,9 @@ public class Resident implements ConfigurationSerializable, Targetable {
             return null;
         }
         Resident resident = new Resident(UUID.fromString((String) map.get("uuid")), (String) map.get("name"));
-        resident.setId(map.get("id"));
-        if (resident.getId() == null) {
-            resident.setId(map.get("_id"));
+        resident.setId(IdObject.get(map.get("id")));
+        if (resident.getId().isNull()) {
+            resident.setId(IdObject.get(map.get("_id")));
         }
         try {
             resident.setVillageRank(VillageRank.valueOf((String) map.get("rank")));
@@ -529,8 +530,8 @@ public class Resident implements ConfigurationSerializable, Targetable {
         }
         resident.setVillageTitle((String) map.get("title"));
         resident.setEmpireTitle((String) map.get("empireTitle"));
-        resident.setVillageJoin((Long) map.get("settlementJoin"));
-        resident.setLastLogin((Long) map.get("lastLogin"));
+        resident.setVillageJoin(Utils.getLong(map.get("settlementJoin")));
+        resident.setLastLogin(Utils.getLong(map.get("lastLogin")));
         resident.getChannels().clear();
         ((Collection<String>) map.get("channels")).stream()
                 .map(s -> Utils.parseEnum(ChatChannel.class, s.toUpperCase()))
@@ -560,10 +561,10 @@ public class Resident implements ConfigurationSerializable, Targetable {
             }
         }
         if (map.containsKey("swear")) {
-            resident.setSwear((Boolean) map.get("swear"));
+            resident.setSwear(Utils.getBoolean(map.get("swear")));
         }
         if (map.containsKey("socialSpy")) {
-            resident.setSocialSpy((Boolean) map.get("socialSpy"));
+            resident.setSocialSpy(Utils.getBoolean(map.get("socialSpy")));
         }
         if (map.containsKey("bonusClaims")) {
             resident.setBonusClaims((Integer) map.get("bonusClaims"));
@@ -577,12 +578,21 @@ public class Resident implements ConfigurationSerializable, Targetable {
         return resident;
     }
 
-    public Object getId() {
+    public IdObject getId() {
         return id;
     }
 
-    public void setId(Object id) {
+    @Override
+    public void setId(IdObject id) {
+        if (id == null) {
+            id = IdObject.get(null);
+        }
         this.id = id;
+    }
+
+    @Override
+    public String getDbDescription() {
+        return getName() + "/" + getId();
     }
 
     /**

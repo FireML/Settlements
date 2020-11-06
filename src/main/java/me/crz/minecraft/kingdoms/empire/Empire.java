@@ -280,7 +280,7 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
             return null;
         }
         empire.capital = IdObject.get(map.get("capitalId"));
-        empire.lastRename = (Long) map.get("lastRename");
+        empire.lastRename = Utils.getLong(map.get("lastRename"));
         empire.setSymbol((String) map.get("symbol"));
         if (map.get("members") != null && map.get("members") instanceof Collection) {
             for (Object memberId : (Collection) map.get("members")) {

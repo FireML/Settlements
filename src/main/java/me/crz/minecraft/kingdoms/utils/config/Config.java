@@ -20,13 +20,21 @@ public class Config {
     public static boolean DEBUG = true;
 
     public static class Storage {
+        @ConfigEntry(reload = false)
         public static String TYPE = "mysql";
+        @ConfigEntry(reload = false)
         public static String HOST = "localhost";
+        @ConfigEntry(reload = false)
         public static int PORT = 3306;
+        @ConfigEntry(reload = false)
         public static String USER = "root";
+        @ConfigEntry(reload = false)
         public static String DATABASE = "kingdoms";
+        @ConfigEntry(reload = false)
         public static String TABLE_PREFIX = "kingdoms_";
+        @ConfigEntry(reload = false)
         public static String PASSWORD = "password";
+        @ConfigEntry(reload = false)
         public static String URL_PARAMETERS = "";
 
         public static class Queue {

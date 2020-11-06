@@ -8,6 +8,7 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.lock.Lock;
 import me.crz.minecraft.kingdoms.portal.Portal;
 import me.crz.minecraft.kingdoms.utils.IdObject;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
@@ -23,11 +24,16 @@ public abstract class DatabaseManager {
 
     synchronized public static DatabaseManager getInstance() {
         if (instance == null) {
-            String type = KingdomsPlugin.getInstance().getConfig().getString("storage.type");
+            String type = Config.Storage.TYPE;
             if ("mongo".equalsIgnoreCase(type)) {
                 instance = new MongoDatabaseManager();
             } else if ("mysql".equalsIgnoreCase(type)) {
-                instance = new MySqlDatabaseManager();
+                instance = new MySqlDatabase();
+            } else if ("sqlite".equalsIgnoreCase(type)) {
+                instance = new SQLiteDatabase();
+            } else {
+                KingdomsPlugin.getInstance().getLogger().severe("Invalid database type config value: " + Config.Storage.TYPE);
+                KingdomsPlugin.getInstance().getServer().getPluginManager().disablePlugin(KingdomsPlugin.getInstance());
             }
         }
         return instance;

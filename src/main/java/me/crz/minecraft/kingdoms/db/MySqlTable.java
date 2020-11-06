@@ -229,7 +229,7 @@ public enum MySqlTable {
 
     RESIDENTS("CREATE TABLE IF NOT EXISTS {tablePrefix}residents ("
             + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-            + "uuid CHAR(36) NOT NULL, UNIQUE (uuid),"
+            + "uuid CHAR(36) NOT NULL, INDEX(uuid), UNIQUE (uuid),"
             + "name VARCHAR(16) NOT NULL,"
             + "settlementId INTEGER,"
             + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE SET NULL,"

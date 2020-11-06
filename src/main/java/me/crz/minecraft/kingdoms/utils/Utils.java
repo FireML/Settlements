@@ -565,4 +565,22 @@ public class Utils {
     public static boolean containsAnyCurses(String message) {
         return ConfigManager.getInstance().getToggleableCurses().containsCurses(message) || ConfigManager.getInstance().getForcedCurses().containsCurses(message);
     }
+
+    public static long getLong(Object o) {
+        if (o instanceof Long) {
+            return (Long) o;
+        } else if (o instanceof Number) {
+            return ((Number) o).longValue();
+        }
+        return Long.parseLong(String.valueOf(o));
+    }
+
+    public static boolean getBoolean(Object o) {
+        if (o instanceof Boolean) {
+            return (boolean) o;
+        } else if (o instanceof Number) {
+            return ((Number) o).longValue() != 0;
+        }
+        return Boolean.parseBoolean(String.valueOf(o));
+    }
 }

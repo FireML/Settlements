@@ -396,13 +396,13 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         land.setName((String) map.get("name"));
         land.setDescription((String) map.get("description"));
         land.setPrice((Integer) map.get("price"));
-        land.setForSale((Boolean) map.get("forSale"));
+        land.setForSale(Utils.getBoolean(map.get("forSale")));
         land.setTax((Integer) map.get("tax"));
-        land.setEmbassy((Boolean) map.get("embassy"));
+        land.setEmbassy(Utils.getBoolean(map.get("embassy")));
         Map<String, Object> modes = (Map<String, Object>) map.get("modes");
         for (PlotMode mode : PlotMode.values()) {
             if (modes.containsKey(mode.name())) {
-                land.setMode(mode, (Boolean) modes.get(mode.name()));
+                land.setMode(mode, Utils.getBoolean(modes.get(mode.name())));
             }
         }
         land.setBuildState(Utils.parseEnum((String) map.get("buildState"), land.getBuildState()));

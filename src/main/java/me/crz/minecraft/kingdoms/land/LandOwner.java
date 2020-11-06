@@ -731,16 +731,16 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
         landOwner.setName((String) map.get("name"));
         landOwner.setDescription((String) map.get("description"));
         landOwner.setDiscord((String) map.get("discord"));
-        landOwner.setCreated((Long) map.get("created"));
+        landOwner.setCreated(Utils.getLong(map.get("created")));
         landOwner.setId(IdObject.get(map));
-        landOwner.setBank((Long) map.get("bank"));
-        landOwner.setJoinFee((Long) map.get("joinFee"));
-        landOwner.setTax((Long) map.get("tax"));
+        landOwner.setBank(Utils.getLong(map.get("bank")));
+        landOwner.setJoinFee(Utils.getLong(map.get("joinFee")));
+        landOwner.setTax(Utils.getLong(map.get("tax")));
         try {
             landOwner.setTaxDebtAction(TaxDebtAction.valueOf((String) map.get("taxDebtAction")));
         } catch (IllegalArgumentException ignored) {}
         for (PlotMode mode : PlotMode.values(PlotMode.AppliesTo.LAND_OWNER)) {
-            landOwner.setMode(mode, (Boolean) map.getOrDefault(mode.name(), mode.getDefault()));
+            landOwner.setMode(mode, Utils.getBoolean(map.getOrDefault(mode.name(), mode.getDefault())));
         }
         landOwner.setBonusClaims((Integer) map.get("bonusClaims"));
         try {
@@ -798,7 +798,7 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
         }
         ((Map<String, Object>) map.get("vault")).entrySet().stream()
                 .filter(e -> e.getValue() instanceof Number)
-                .forEach(e -> landOwner.getVault().put(e.getKey(), (Long) e.getValue()));
+                .forEach(e -> landOwner.getVault().put(e.getKey(), Long.parseLong(String.valueOf(e.getValue()))));
         ((Map<String, Object>) map.get("perks")).entrySet().stream()
                 .filter(e -> e.getValue() instanceof Map)
                 .forEach(e -> landOwner.getPerksMap().put(e.getKey().toLowerCase(), PerkData.deserialize((Map<String, Object>) e.getValue())));
