@@ -41,7 +41,10 @@ public class RankSelectGui extends KingdomsGUI {
                             rankConsumer.accept(rank);
                         }
                         return true;
-                    }
+                    }, getText("entry",
+                            "state", resident.hasVillage() ? resident.getVillage().getStateTag() : "",
+                            "rank", resident.hasVillage() ? rank.getTag(resident.getVillage()) : rank.getTag()
+                    )
             ));
         }
         gui.addElement(group);
