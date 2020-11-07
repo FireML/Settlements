@@ -130,18 +130,6 @@
                             <shadedPattern>me.crz.minecraft.kingdoms.libs.commons.io</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>org.json</pattern>
-                            <shadedPattern>me.crz.minecraft.kingdoms.libs.json</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>org.bson</pattern>
-                            <shadedPattern>me.crz.minecraft.kingdoms.libs.bson</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>com.mongodb</pattern>
-                            <shadedPattern>me.crz.minecraft.kingdoms.libs.mongodb</shadedPattern>
-                        </relocation>
-                        <relocation>
                             <pattern>org.slf4j</pattern>
                             <shadedPattern>me.crz.minecraft.kingdoms.libs.slf4j</shadedPattern>
                         </relocation>
@@ -261,18 +249,6 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20180130</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongo-java-driver</artifactId>
-            <version>3.8.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

@@ -25,12 +25,12 @@ public abstract class DatabaseManager {
     synchronized public static DatabaseManager getInstance() {
         if (instance == null) {
             String type = Config.Storage.TYPE;
-            if ("mongo".equalsIgnoreCase(type)) {
-                instance = new MongoDatabaseManager();
-            } else if ("mysql".equalsIgnoreCase(type)) {
+            if ("mysql".equalsIgnoreCase(type)) {
                 instance = new MySqlDatabase();
+                KingdomsPlugin.logDebug("Using MySQL as storage.");
             } else if ("sqlite".equalsIgnoreCase(type)) {
                 instance = new SQLiteDatabase();
+                KingdomsPlugin.logDebug("Using SQLite as storage.");
             } else {
                 KingdomsPlugin.getInstance().getLogger().severe("Invalid database type config value: " + Config.Storage.TYPE);
                 KingdomsPlugin.getInstance().getServer().getPluginManager().disablePlugin(KingdomsPlugin.getInstance());
