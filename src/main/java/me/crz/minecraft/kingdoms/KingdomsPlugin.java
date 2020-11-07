@@ -101,6 +101,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        instance = this;
         try {
             Class.forName("com.destroystokyo.paper.PaperConfig");
             serverAdapter = (ServerAdapter) Class.forName(getClass().getPackage().getName() + ".utils.adapter.PaperAdapter").newInstance();
@@ -110,7 +111,6 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         }
         timingManager = TimingManager.of(this);
         pluginTimings = timingManager.of("Plugin actions");
-        instance = this;
         this.checkDataFolder();
         if (!this.setupEconomy()) {
             this.getLogger().log(Level.SEVERE, "Disabled due to missing economy provider!");
