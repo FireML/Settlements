@@ -95,7 +95,6 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         if (running) {
             running = false;
         }
-        ConfigManager.getInstance().save();
         ConfigManager.getInstance().getDataConfig().saveConfig();
         DatabaseManager.getInstance().disable();
     }

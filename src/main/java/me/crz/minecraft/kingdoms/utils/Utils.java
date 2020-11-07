@@ -164,7 +164,7 @@ public class Utils {
         Collection<String> temp = Config.Settlement.Claiming.DISABLED_WORLDS;
         if (!temp.contains(world.getName())) {
             temp.add(world.getName());
-            ConfigManager.getInstance().save();
+            ConfigManager.getInstance().savePluginConfig();
         }
     }
 
@@ -172,7 +172,7 @@ public class Utils {
         Collection<String> temp = Config.Settlement.Claiming.DISABLED_WORLDS;
         if (temp.contains(world.getName())) {
             temp.remove(world.getName());
-            ConfigManager.getInstance().save();
+            ConfigManager.getInstance().savePluginConfig();
         }
     }
 

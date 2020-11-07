@@ -483,9 +483,9 @@ public class ConfigManager {
     }
 
     /**
-     * Saves all configs that can dynamically change
+     * Saves the main plugin config
      */
-    public void save() {
+    public void savePluginConfig() {
         write(KingdomsPlugin.getInstance().getConfig(), "", Config.CONFIG_VERSION, Config.CONFIG_VERSION, Config.class);
         KingdomsPlugin.getInstance().saveConfig();
         writeComments(new File(KingdomsPlugin.getInstance().getDataFolder(), "config.yml"), Config.class, Config.CONFIG_VERSION);
