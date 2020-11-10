@@ -19,6 +19,16 @@ public class Config {
     @ConfigComment("Log some debug messages about the inner working of the plugin")
     public static boolean DEBUG = true;
 
+    @ConfigComment("Amount of entries that should be shown per page in chat e.g. for command help messages")
+    public static int ENTRIES_PER_PAGE = 10;
+
+    @ConfigEntry(old = {"players-in-show"})
+    @ConfigComment("How many players should show up in settlement/empire member lists")
+    public static int PLAYERS_IN_INFO = 40;
+
+    @ConfigComment("How long in seconds a player has time to confirm certain commands")
+    public static int COMMAND_CONFIRM_TIME = 30;
+
     public static class Storage {
         @ConfigEntry(reload = false)
         public static String TYPE = "mysql";
@@ -29,11 +39,11 @@ public class Config {
         @ConfigEntry(reload = false)
         public static String USER = "root";
         @ConfigEntry(reload = false)
+        public static String PASSWORD = "password";
+        @ConfigEntry(reload = false)
         public static String DATABASE = "kingdoms";
         @ConfigEntry(reload = false)
         public static String TABLE_PREFIX = "kingdoms_";
-        @ConfigEntry(reload = false)
-        public static String PASSWORD = "password";
         @ConfigEntry(reload = false)
         public static String URL_PARAMETERS = "";
 
@@ -51,16 +61,6 @@ public class Config {
         public static String TIMEZONE = "UTC";
         public static int HOUR = 0;
     }
-
-    @ConfigComment("Amount of entries that should be shown per page in chat e.g. for command help messages")
-    public static int ENTRIES_PER_PAGE = 10;
-
-    @ConfigEntry(old = {"players-in-show"})
-    @ConfigComment("How many players should show up in settlement/empire member lists")
-    public static int PLAYERS_IN_INFO = 40;
-
-    @ConfigComment("How long in seconds a player has time to confirm certain commands")
-    public static int COMMAND_CONFIRM_TIME = 30;
 
     public static class Cache {
         @ConfigEntry(old = {"resident-cache-duration"})
@@ -454,13 +454,16 @@ public class Config {
         @ConfigComment("Toggle PlaceholderAPI placeholders in certain places")
         public static class PlaceholderApi {
             @ConfigEntry(old = {"placeholder-api.chat.hover"})
+            @ConfigComment("Replace placeholders in the player name hovers")
             public static boolean HOVER = true;
 
             public static class Format {
                 @ConfigEntry(old = {"placeholder-api.chat.format.channel"})
+                @ConfigComment("Replace placeholders in the channel format")
                 public static boolean CHANNEL = true;
 
                 @ConfigEntry(old = {"placeholder-api.chat.format.private"})
+                @ConfigComment("Replace placeholders in the private message format")
                 public static boolean PRIVATE = true;
             }
         }

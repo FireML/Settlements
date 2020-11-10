@@ -2,15 +2,22 @@
 config-version: 1
 # Log some debug messages about the inner working of the plugin
 debug: true
+  
+# Amount of entries that should be shown per page in chat e.g. for command help messages
+entries-per-page: 10
+# How many players should show up in settlement/empire member lists
+players-in-info: 40
+# How long in seconds a player has time to confirm certain commands
+command-confirm-time: 30
 
 storage:
   type: mysql
   host: localhost
   port: 3306
   user: root
+  password: password
   database: kingdoms
   table-prefix: kingdoms_
-  password: password
   url-parameters: ""
   queue:
     # Max size of the queue before saving happens
@@ -22,14 +29,6 @@ storage:
 upkeep:
   hour: 0
   timezone: UTC
-  
-# Amount of entries that should be shown per page in chat e.g. for command help messages
-entries-per-page: 10
-# How many players should show up in settlement/empire member lists
-players-in-info: 40
-# How long in seconds a player has time to confirm certain commands
-command-confirm-time: 30
-# Default modes of certain types or full worlds
 
 cache:
   # Time in seconds which a resident's data stays in the cache
@@ -127,6 +126,8 @@ empire:
     # The amount of minutes that an empire will stay abandoned after not being able to pay their upkeep
     # Abandoned empires can be raided and fully accessed
     abandon-time: 1440
+    # The amount an empire needs to pay per day
+    cost: 1000
 
 plot:
   # Maximum value that a plot's tax can be set to. Set to -1 to disable maximum
@@ -136,6 +137,7 @@ plot:
   # Maximum length that plot descriptions can be (without formatting).
   description-length: 255
   
+# Default modes of certain types or full worlds
 modes:
   # Modes in unclaimed land
   unclaimed:
@@ -230,7 +232,7 @@ teleport:
   # The command to run to teleport the player to spawn via the GUI,
   # when a player is kicked from a settlement's claim or when an Empire world is made private/removed
   # If not set it will teleport to the world spawn of the default world
-  spawn-command: mv tp {player} world
+  spawn-command: ""
   
   # The amount of time in seconds which a player needs to stand still before being teleported to an outpost/home
   # Set to 0 to instant teleport
@@ -256,7 +258,6 @@ chat:
   chat-only: false
   # Should all channels be set to the default config on player login or be the same as on logout
   reset-channels-on-login: true
-  # The colors that players can use for chat channels
   
   # The default chat channel colors
   channel-colors:
@@ -289,7 +290,8 @@ chat:
     empire: aqua
     private-sent: dark_gray
     private-received: dark_gray
-    
+  
+  # The colors that players can use for chat channels
   selectable-colors:
   - blue
   - dark_blue
@@ -315,9 +317,12 @@ chat:
   
   # Toggle PlaceholderAPI placeholders in certain places
   placeholder-api:
+    # Replace placeholders in the player name hovers
     hover: true
     format:
+      # Replace placeholders in the channel format
       channel: true
+      # Replace placeholders in the private message format
       private: true
 
 sidebar:
