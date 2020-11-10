@@ -63,7 +63,7 @@ public class Utils {
     private static final Map<UUID, Long> TELEPORT_COOLDOWNS = new HashMap<>();
     private static Map<String, Integer> LEVEL_CHUNKS = new HashMap<>();
     private static Map<String, Integer> LEVEL_OUTPOSTS = new HashMap<>();
-    private static Map<String, Integer> LEVEL_UPKEEP = new HashMap<>();
+    private static Map<String, Long> LEVEL_UPKEEP = new HashMap<>();
     private static final Set<EntityType> SPECIAL_HOSTILE = EnumSet.of(
             EntityType.SHULKER,
             EntityType.SLIME,
@@ -86,18 +86,18 @@ public class Utils {
         return !Config.Settlement.Claiming.DISABLED_WORLDS.contains(world.getName()) || EmpireManager.getInstance().getEmpireFromWorld(world) != null;
     }
 
-    public static int getUpkeepCost(VillageState state, String worldName, int level) {
-        int defaultCost = getUpkeepCost(state, level);
+    public static long getUpkeepCost(VillageState state, String worldName, int level) {
+        long defaultCost = getUpkeepCost(state, level);
         return LEVEL_UPKEEP.computeIfAbsent(state.name() + "_" + worldName + "_" + level,
-                key -> ConfigManager.getInstance().getLevelConfig().getInt(
+                key -> ConfigManager.getInstance().getLevelConfig().getLong(
                         state.name().toLowerCase() + ".level-" + level + ".per-world-upkeep." + worldName,
                         defaultCost
                 ));
     }
 
-    public static int getUpkeepCost(VillageState state, int level) {
+    public static long getUpkeepCost(VillageState state, int level) {
         return LEVEL_UPKEEP.computeIfAbsent(state.name() + "_" + level,
-                key -> ConfigManager.getInstance().getLevelConfig().getInt(state.name().toLowerCase() + ".level-" + level + ".claim-upkeep"));
+                key -> ConfigManager.getInstance().getLevelConfig().getLong(state.name().toLowerCase() + ".level-" + level + ".claim-upkeep"));
     }
 
     public static int getTeleportDelay(String type) {

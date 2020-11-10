@@ -813,7 +813,7 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
         return landOwner;
     }
 
-    public abstract int getUpkeep();
+    public abstract long getUpkeep();
 
     public abstract boolean isAbandoned();
 

@@ -168,7 +168,7 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
     }
 
     private void payUpkeep(long lastTax) {
-        int total = getUpkeep();
+        long total = getUpkeep();
         if (removeFromBank(total)) {
             KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " was charged an upkeep of " + total + "!");
             MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.charged"), "charged", String.valueOf(total));
@@ -459,8 +459,8 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
     }
 
     @Override
-    public int getUpkeep() {
-        return KingdomsPlugin.getInstance().getConfig().getInt("upkeep.empire");
+    public long getUpkeep() {
+        return Config.Empire.Upkeep.COST;
     }
 
     @Override

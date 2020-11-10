@@ -178,7 +178,7 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
             }
             return;
         }
-        int total = getUpkeep();
+        long total = getUpkeep();
         if (removeFromBank(total)) {
             KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") was charged an upkeep of " + total + "!");
             MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.charged"), "charged", String.valueOf(total));
@@ -218,11 +218,11 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
     }
 
     @Override
-    public int getUpkeep() {
+    public long getUpkeep() {
         if (hasEmpire() && getEmpire().isCapital(this)) {
             return 0;
         }
-        int amount = 0;
+        long amount = 0;
         for (OwnedLand land : LandManager.getInstance().getClaimedLand(this)) {
             amount += Utils.getUpkeepCost(getState(), land.getWorldName(), getLevel());
         }

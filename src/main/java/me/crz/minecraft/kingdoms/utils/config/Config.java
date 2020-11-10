@@ -229,6 +229,10 @@ public class Config {
             @ConfigComment("The amount of minutes that an empire will stay abandoned after not being able to pay their upkeep\n" +
                     "Abandoned empires can be raided and fully accessed")
             public static long ABANDON_TIME = 1440;
+
+            @ConfigEntry(old = {"upkeep.empire"})
+            @ConfigComment("The amount an empire needs to pay per day")
+            public static long COST = 1000;
         }
     }
 
