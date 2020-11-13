@@ -13,6 +13,7 @@ import me.crz.minecraft.kingdoms.integration.AfkProvider;
 import me.crz.minecraft.kingdoms.integration.BreweryIntegration;
 import me.crz.minecraft.kingdoms.integration.ChestShopIntegration;
 import me.crz.minecraft.kingdoms.integration.CmiIntegration;
+import me.crz.minecraft.kingdoms.integration.EssentialsIntegration;
 import me.crz.minecraft.kingdoms.integration.IgnoreProvider;
 import me.crz.minecraft.kingdoms.integration.LWCIntegration;
 import me.crz.minecraft.kingdoms.integration.MailProvider;
@@ -25,7 +26,6 @@ import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.lock.LockManager;
 import me.crz.minecraft.kingdoms.portal.PortalManager;
 import me.crz.minecraft.kingdoms.rank.RankManager;
-import me.crz.minecraft.kingdoms.utils.ExecuteMoveUtil;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.adapter.ServerAdapter;
@@ -136,6 +136,10 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         if (getServer().getPluginManager().isPluginEnabled("CMI")) {
             CmiIntegration cmiIntegration = new CmiIntegration();
             getLogger().log(Level.INFO, "Hooked into CMI " + cmiIntegration.getCmi().getDescription().getVersion() + "!");
+        }
+        if (getServer().getPluginManager().isPluginEnabled("Essentials")) {
+            EssentialsIntegration essentialsIntegration = new EssentialsIntegration();
+            getLogger().log(Level.INFO, "Hooked into Essentials " + essentialsIntegration.getEssentials().getDescription().getVersion() + "!");
         }
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             placeholderApi = new PlaceholderApiIntegration();
