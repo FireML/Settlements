@@ -17,7 +17,7 @@ public class VillageUpkeepCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         Village village = res.getVillage();
-        int total = village.getUpkeep();
+        long total = village.getUpkeep();
         String afford;
         long upkeepAmount = total - village.getTaxIncome();
         if (upkeepAmount > 0) {
