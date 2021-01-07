@@ -1346,7 +1346,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         }
     }
 
-    private void addColumn(MySqlTable table, String column, String definition) {
+    protected void addColumn(MySqlTable table, String column, String definition) {
         Connection conn = getConnection();
         try (Statement sta = conn.createStatement()) {
             sta.execute("ALTER TABLE `" + tablePrefix + table.getDbName() + "` ADD COLUMN `" + column + "` " + definition + ";");

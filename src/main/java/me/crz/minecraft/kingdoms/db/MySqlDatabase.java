@@ -31,6 +31,8 @@ public class MySqlDatabase extends SqlDatabaseManager {
         ds.setConnectionTimeout(5000);
 
         super.connect();
+
+        addColumn(MySqlTable.RESIDENTS, "socialSpy", "BOOLEAN NOT NULL DEFAULT false AFTER swear");
     }
 
     @Override
