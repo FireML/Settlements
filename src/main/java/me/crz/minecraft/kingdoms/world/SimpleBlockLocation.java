@@ -164,4 +164,9 @@ public class SimpleBlockLocation implements ConfigurationSerializable {
     public String getSimpleChunkKey() {
         return getChunkX() + "-" + getChunkZ();
     }
+
+    @Override
+    public String toString() {
+        return "SimpleBlockLocation" + serialize().toString();
+    }
 }

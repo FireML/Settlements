@@ -134,4 +134,9 @@ public class SimpleChunkLocation implements ConfigurationSerializable {
         double z = getX() * 16 + 8.5;
         return new Location(world, x, world.getHighestBlockYAt((int) x, (int) z), z);
     }
+
+    @Override
+    public String toString() {
+        return "SimpleChunkLocation" + serialize().toString();
+    }
 }
