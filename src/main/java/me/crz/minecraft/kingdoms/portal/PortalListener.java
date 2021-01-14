@@ -1,5 +1,7 @@
 package me.crz.minecraft.kingdoms.portal;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.portal.gui.PortalTeleportGui;
@@ -30,10 +32,12 @@ import org.bukkit.event.world.PortalCreateEvent;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class PortalListener implements Listener, ConfigMessages {
 
-    private long lastMessage = 0;
+    private Cache<UUID, Long> lastPortalInteract = Caffeine.newBuilder().expireAfterWrite(1, TimeUnit.SECONDS).build();
 
     @EventHandler(ignoreCancelled = true)
     public void onPortalCreate(PortalCreateEvent e) {
@@ -109,31 +113,31 @@ public class PortalListener implements Listener, ConfigMessages {
             return;
         }
 
+        Long lastInteract = lastPortalInteract.getIfPresent(e.getEntity().getUniqueId());
+        if (lastInteract != null && lastInteract + 1000 > System.currentTimeMillis()) {
+            return;
+        }
+        lastPortalInteract.put(e.getEntity().getUniqueId(), System.currentTimeMillis());
+
         Portal portal = PortalManager.getInstance().getPortal(block);
         if (portal == null) {
-            if (lastMessage + 1000 < System.currentTimeMillis()) {
-                getError("not-registered").tell(e.getEntity());
-                lastMessage = System.currentTimeMillis();
-            }
+            getError("not-registered").tell(e.getEntity());
             return;
         }
 
         if (portal.getLinks().isEmpty()) {
-            if (lastMessage + 1000 < System.currentTimeMillis()) {
-                Resident resident = ResidentManager.getInstance().getResident((Player) e.getEntity());
-                if (land.getLandOwner().canAdminPortals(resident)) {
-                    getError("no-portals-linked.create").tell(resident, "state", land.getLandOwner().getStateTag());
-                } else {
-                    getError("no-portals-linked.common").tell(resident, "state", land.getLandOwner().getStateTag());
-                }
-                lastMessage = System.currentTimeMillis();
+            Resident resident = ResidentManager.getInstance().getResident((Player) e.getEntity());
+            if (land.getLandOwner().canAdminPortals(resident)) {
+                getError("no-portals-linked.create").tell(resident, "state", land.getLandOwner().getStateTag());
+            } else {
+                getError("no-portals-linked.common").tell(resident, "state", land.getLandOwner().getStateTag());
             }
         } else {
             Collection<Portal> links = PortalManager.getInstance().getLinks(portal);
             if (links.size() == 1) {
                 PortalManager.getInstance().teleport((Player) e.getEntity(), portal, links.iterator().next());
             } else if (!links.isEmpty()) {
-                e.getEntity().teleport(e.getLocation().subtract(e.getLocation().getDirection()));
+                e.getEntity().teleport(e.getLocation().subtract(e.getLocation().getDirection().setY(0)));
                 Utils.runLater(() -> new PortalTeleportGui(portal, links).show((Player) e.getEntity()), 2);
             }
         }

@@ -325,7 +325,7 @@ public class PortalManager {
                 }
 
                 player.sendBlockChange(down.getLocation(), down.getBlockData());
-                PaperLib.teleportAsync(player, down.getRelative(BlockFace.UP).getLocation()).thenAccept(success -> {
+                PaperLib.teleportAsync(player, down.getRelative(BlockFace.UP).getLocation().add(0.5, 0, 0.5)).thenAccept(success -> {
                     if (!success) {
                         Message.get("error.destination-obstructed").tell(player);
                         KingdomsPlugin.logDebug("Failed to teleport " + player.getName() + " to " + finalLocation);
