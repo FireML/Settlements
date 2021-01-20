@@ -24,7 +24,12 @@ public class EmpireSetAccessCommand extends EmpireSubCommand {
             Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
             resident.tell(getMessage("success"), "access", access.getTag());
         } catch (IllegalArgumentException e) {
-            resident.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base));
+            resident.tell(getMessage("usage.head"),
+                    "name", name(),
+                    "command", "/" + base + " " + alias,
+                    "usage", getUsage(base),
+                    "type", resident.getVillage().getEmpire().getStateTag() + " "
+            );
             for (LandAccess access : LandAccess.values()) {
                 resident.tell(getMessage("usage.entry"),
                         "usage", "/" + base + " " + alias + " " + access.getTag(),

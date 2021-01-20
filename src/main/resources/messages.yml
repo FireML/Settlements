@@ -2524,7 +2524,8 @@ command:
         open: Allows everyone to join without an invitation
         public: Everyone can teleport to home but requires invitation to join
         ally: Allows allies to teleport to home
-        private: Allows only members to teleport to home
+        trusted: Allows empire members to teleport to home
+        private: Allows only capital members to teleport to home
       description: Sets the access level for the empire
     settings:
       description: Show settings GUI
