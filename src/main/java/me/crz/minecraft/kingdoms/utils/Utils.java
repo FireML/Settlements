@@ -497,7 +497,7 @@ public class Utils {
         return SUFFIX_FORMAT.format(((long) Math.floor(count / Math.pow(1000.0, exp) * 100)) / 100d) + (SUFFIXES.length >= exp ? SUFFIXES[exp - 1] : "k^" + exp);
     }
 
-    public static boolean isHostile(LivingEntity entity) {
+    public static boolean isHostile(Entity entity) {
         return entity instanceof Monster || SPECIAL_HOSTILE.contains(entity.getType());
     }
 

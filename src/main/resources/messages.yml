@@ -420,6 +420,7 @@ names:
     farming: "Farming"
     trees: "Trees"
     composter: "Composters"
+    monster: "Attack Monsters"
     animal: "Attack Animals"
     sheer: "Sheering Animals"
     milk: "Milking Cows"

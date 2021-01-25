@@ -1,19 +1,21 @@
 package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.customevents.PassiveCreatureCombustEvent;
-import me.crz.minecraft.kingdoms.customevents.PassiveCreatureDamageEvent;
 import me.crz.minecraft.kingdoms.integration.ShopProvider;
 import me.crz.minecraft.kingdoms.lock.LockManager;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Creeper;
 import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
@@ -233,52 +235,73 @@ public class LandUseListener implements LandAccessChecker, Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void on(EntityDamageByEntityEvent e) {
+        Use use;
         if (e.getEntity() instanceof ItemFrame) {
-            Player p = null;
-            if (e.getDamager() instanceof Player) {
-                p = (Player) e.getDamager();
-            } else if (e.getDamager() instanceof Projectile) {
-                if (((Projectile) e.getDamager()).getShooter() instanceof Player) {
-                    p = (Player) ((Projectile) e.getDamager()).getShooter();
-                } else if (this.isLandClaimed(e.getEntity().getLocation())) {
-                    e.setCancelled(true);
-                }
+            use = Use.ITEM_FRAME;
+        } else if (Utils.isPassive(e.getEntity())) {
+            use = Use.ANIMAL;
+        } else if (Utils.isHostile(e.getEntity())) {
+            use = Use.MONSTER;
+        } else {
+            return;
+        }
+
+        Player damager = null;
+        if (e.getDamager() instanceof Player) {
+            damager = (Player) e.getDamager();
+        } else if (e.getDamager() instanceof Projectile) {
+            if (((Projectile) e.getDamager()).getShooter() instanceof Player) {
+                damager = (Player) ((Projectile) e.getDamager()).getShooter();
+            } else if (((Projectile) e.getDamager()).getShooter() instanceof Mob
+                    && ((Mob) ((Projectile) e.getDamager()).getShooter()).getTarget() instanceof Player) {
+                damager = (Player) ((Mob) ((Projectile) e.getDamager()).getShooter()).getTarget();
+            } else if (isLandClaimed(e.getEntity().getLocation())) {
+                e.setCancelled(true);
             }
-            if (p != null) {
-                Pair<Boolean, String> response = this.canUse(p, Use.ITEM_FRAME, e.getEntity().getLocation());
-                if (!response.getLeft()) {
-                    MessageUtils.tell(p, response.getRight());
-                    e.setCancelled(true);
-                }
+        } else if (e.getDamager() instanceof Creeper && ((Creeper) e.getDamager()).getTarget() instanceof Player) {
+            damager = (Player) ((Creeper) e.getDamager()).getTarget();
+        }
+
+        if (damager != null) {
+            Pair<Boolean, String> response = this.canUse(damager, use, e.getEntity().getLocation());
+            if (!response.getLeft()) {
+                MessageUtils.tell(e.getDamager(), response.getRight());
+                e.setCancelled(true);
             }
         }
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onPassiveDamage(PassiveCreatureDamageEvent e) {
-        if (e.getEntity() == null) {
+    public void on(EntityCombustByEntityEvent e) {
+        Use use;
+        if (Utils.isPassive(e.getEntity())) {
+            use = Use.ANIMAL;
+        } else if (Utils.isHostile(e.getEntity())) {
+            use = Use.MONSTER;
+        } else {
             return;
         }
-        if (e.getDamager() == null) {
-            return;
-        }
-        Pair<Boolean, String> response = this.canUse(e.getDamager(), Use.ANIMAL, e.getEntity().getLocation());
-        if (!response.getLeft()) {
-            MessageUtils.tell(e.getDamager(), response.getRight());
-            e.setCancelled(true);
-        }
-    }
 
-    @EventHandler(ignoreCancelled = true)
-    public void onPassiveCombust(PassiveCreatureCombustEvent e) {
-        if (e.getEntity() == null) {
-            return;
+        Player combuster = null;
+        if (e.getCombuster() instanceof Player) {
+            combuster = (Player) e.getCombuster();
+        } else if (e.getCombuster() instanceof Projectile) {
+            if (((Projectile) e.getCombuster()).getShooter() instanceof Player) {
+                combuster = (Player) ((Projectile) e.getCombuster()).getShooter();
+            } else if (((Projectile) e.getCombuster()).getShooter() instanceof Mob
+                    && ((Mob) ((Projectile) e.getCombuster()).getShooter()).getTarget() instanceof Player) {
+                combuster = (Player) ((Mob) ((Projectile) e.getCombuster()).getShooter()).getTarget();
+            } else if (isLandClaimed(e.getEntity().getLocation())) {
+                e.setCancelled(true);
+            }
+        } else if (e.getCombuster() instanceof Creeper && ((Creeper) e.getCombuster()).getTarget() instanceof Player) {
+            combuster = (Player) ((Creeper) e.getCombuster()).getTarget();
         }
-        if (e.getCombuster() == null) {
-            return;
-        }
-        if (!this.canUse(e.getCombuster(), Use.ANIMAL, e.getEntity().getLocation()).getLeft()) {
-            e.setCancelled(true);
+
+        if (combuster != null) {
+            if (!this.canUse(combuster, use, e.getEntity().getLocation()).getLeft()) {
+                e.setCancelled(true);
+            }
         }
     }
 
