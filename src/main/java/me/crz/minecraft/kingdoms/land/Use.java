@@ -49,7 +49,7 @@ public enum Use implements NameTag {
     FARMING(Material.STONE_HOE),
     TREES(Material.OAK_SAPLING),
     COMPOSTER(Material.COMPOSTER),
-    MONSTER(Material.ZOMBIE_HEAD),
+    MONSTER(BuildState.PUBLIC, Material.ZOMBIE_HEAD, Collections.EMPTY_SET),
     ANIMAL(Material.LEATHER),
     SHEER(Material.SHEARS),
     MILK(Material.MILK_BUCKET),
