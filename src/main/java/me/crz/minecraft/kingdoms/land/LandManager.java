@@ -53,7 +53,7 @@ public class LandManager {
     private Multimap<UUID, OwnedLand> linkedPlots = MultimapBuilder.hashKeys().hashSetValues().build();
 
     private LandManager() {
-        nearbyRadius = Config.Settlement.Claiming.Close.BuildingNotification.DISTANCE;
+        nearbyRadius = Config.Settlement.Claiming.Close.Building.DISTANCE;
         for (OwnedLand land : DatabaseManager.getInstance().getAllLand()) {
             cacheLand(land);
         }

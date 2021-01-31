@@ -1,5 +1,5 @@
 # For internal usage only. Do NOT touch!
-config-version: 1
+config-version: 2
 # Log some debug messages about the inner working of the plugin
 debug: true
   
@@ -56,10 +56,20 @@ settlement:
     # Maximum radius in chunks which can be (un)claimed with the radius (un)claiming commands
     max-radius: 5
     close:
-      building-notification:
-        # The distance in chunks in which a settlement should get a notification when someone builds/griefs
+      building:
+        # The distance in chunks to other settlements in which to allow building
+        # Outside of this distance building will not be allowed.
+        # If a notification message is set in the messages.yml at 'close-claims'
+        # then that will be sent to the player or members of the settlement.
         # Set to 0 to disable
         distance: 4
+        # Whether or not to block building outside the range.
+        block-outside: true
+        # Whether or not to block building inside the range.
+        block-inside: false
+        # Which blocks are allowed to get built anyways.
+        allowed-blocks:
+        - "*shulker_box"
         # The time in minutes a disabled close building notification stays around
         toggle-time: 30
       unclaim:

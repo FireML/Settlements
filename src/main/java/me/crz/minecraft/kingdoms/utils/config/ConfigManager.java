@@ -3,7 +3,6 @@ package me.crz.minecraft.kingdoms.utils.config;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.event.EventManager;
 import me.crz.minecraft.kingdoms.land.UseFlagManager;
-import me.crz.minecraft.kingdoms.lock.LockManager;
 import me.crz.minecraft.kingdoms.utils.CursesFilter;
 import me.crz.minecraft.kingdoms.utils.IconRpMapping;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -116,10 +115,24 @@ public class ConfigManager {
                         if (o instanceof Material) {
                             set.add((Material) o);
                         } else if (o instanceof String) {
-                            try {
-                                set.add(Material.getMaterial(((String) o).toUpperCase(Locale.ROOT)));
-                            } catch (IllegalArgumentException e) {
-                                KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, o + " is not a valid Material name in the config!");
+                            if (((String) o).startsWith("*")) {
+                                for (Material material : Material.values()) {
+                                    if (material.name().endsWith(((String) o).substring(1).toUpperCase())) {
+                                        set.add(material);
+                                    }
+                                }
+                            } else if (((String) o).endsWith("*")) {
+                                for (Material material : Material.values()) {
+                                    if (material.name().startsWith(((String) o).substring(0, ((String) o).length() - 1).toUpperCase())) {
+                                        set.add(material);
+                                    }
+                                }
+                            } else {
+                                try {
+                                    set.add(Material.valueOf(((String) o).toUpperCase(Locale.ROOT)));
+                                } catch (IllegalArgumentException e) {
+                                    KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, o + " is not a valid Material name in the config!");
+                                }
                             }
                         }
                     }
@@ -127,6 +140,7 @@ public class ConfigManager {
                 }
                 return object;
             }
+
             @Override
             public Object toYaml(Object object) {
                 if (object instanceof Collection) {
@@ -162,14 +176,11 @@ public class ConfigManager {
         if (Config.Chat.CHAT_ONLY) {
             Config.Lock.ENABLED = false;
             Config.Portal.ENABLED = false;
-            Config.Lock.ENABLED = false;
+            Config.Sidebar.ENABLED = false;
         } else if (KingdomsPlugin.getInstance().isRunning()) {
             VillageManager.getInstance().loadPerks();
             UseFlagManager.getInstance().loadConfig();
             Message.clearCache();
-            if (Config.Lock.ENABLED) {
-                LockManager.getInstance().loadConfig();
-            }
             KingdomsPlugin.getInstance().getLandModeListener().reload();
             Levels.clearRequirements();
             if (getEventsConf().getConfig().getBoolean("enabled")) {
@@ -267,7 +278,7 @@ public class ConfigManager {
 
     private void write(FileConfiguration config, String basePath, int configVersion, int removeVersion, Class<?> configClass) {
         for (Field field : configClass.getFields()) {
-            if (Modifier.isStatic(field.getModifiers())) {
+            if (Modifier.isStatic(field.getModifiers()) && Modifier.isPublic(field.getModifiers())) {
                 ConfigEntry entryInfo = field.getAnnotation(ConfigEntry.class);
                 field.setAccessible(true);
                 String path;

@@ -26,7 +26,7 @@ public class WarningToggleCommand extends ResidentSubCommand {
         getMessage(resident.toggleCloseBuildingNotification(village) ? "enabled" : "disabled").tell(resident,
                 "state", village.getStateTag(),
                 "settlement", village.getName(),
-                "time", String.valueOf(Config.Settlement.Claiming.Close.BuildingNotification.TOGGLE_TIME)
+                "time", String.valueOf(Config.Settlement.Claiming.Close.Building.TOGGLE_TIME)
         );
         return true;
     }

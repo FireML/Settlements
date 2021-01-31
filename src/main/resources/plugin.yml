@@ -132,6 +132,9 @@ permissions:
   kingdoms.bypass.build:
     description: Permission to bypass claim/world build restriction
     default: op
+  kingdoms.bypass.buildingradius:
+    description: Permission to bypass claim radius building restriction
+    default: op
   kingdoms.bypass.pvp:
     description: Permission to bypass claim/world pvp restriction
     default: op
@@ -180,6 +183,7 @@ permissions:
       kingdoms.bypass.locks: true
       kingdoms.bypass.use: true
       kingdoms.bypass.build: true
+      kingdoms.bypass.buildingradius: true
       kingdoms.bypass.ignore: true
       kingdoms.chat.links: true
       kingdoms.command.tax.others: true

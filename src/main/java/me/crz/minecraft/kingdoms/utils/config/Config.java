@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.utils.config;
 
 import com.google.common.collect.ImmutableSet;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
@@ -115,13 +116,30 @@ public class Config {
                     public static boolean OUTPOSTS = false;
                 }
 
-                public static class BuildingNotification {
-                    @ConfigEntry(old = {"close-building-notification-distance"}, reload = false)
-                    @ConfigComment("The distance in chunks in which a settlement should get a notification when someone builds/griefs\n" +
+                public static class Building {
+                    @ConfigEntry(old = {"close-building-notification-distance", "settlement.close.building-notification.distance"}, reload = false)
+                    @ConfigComment("The distance in chunks to other settlements in which to allow building\n" +
+                            "Outside of this distance building will not be allowed.\n" +
+                            "If a notification message is set in the messages.yml at 'close-claims'" +
+                            "then that will be sent to the player or members of the settlement.\n" +
                             "Set to 0 to disable")
                     public static int DISTANCE = 4;
 
-                    @ConfigEntry(old = {"close-building-notification-toggle-time"})
+                    @ConfigComment("Whether or not to block building outside the range.")
+                    public static boolean BLOCK_OUTSIDE = true;
+
+                    @ConfigComment("Whether or not to block building inside the range.")
+                    public static boolean BLOCK_INSIDE = false;
+
+                    @ConfigEntry(parser = "MaterialSet")
+                    @ConfigComment("Which blocks are allowed to get built anyways.")
+                    public static Set<Material> ALLOWED_BLOCKS;
+
+                    private static Set<String> ALLOWED_BLOCKS_DEFAULT = ImmutableSet.of(
+                            "*shulker_box"
+                    );
+
+                    @ConfigEntry(old = {"close-building-notification-toggle-time", "settlement.close.building-notification.toggle-time"})
                     @ConfigComment("The time in minutes a disabled close building notification stays around")
                     public static int TOGGLE_TIME = 30;
                 }
@@ -294,9 +312,11 @@ public class Config {
         @ConfigComment("Amount in ticks after which the chunk queue will be processed to load the locks in it")
         public static int LOAD_QUEUE_TICKS = 20;
 
-        @ConfigEntry(old = {"lockable"}, parser = "StringSet")
+        @ConfigEntry(old = {"lockable"}, parser = "MaterialSet")
         @ConfigComment("Blocks that can be locked")
-        public static Set<String> BLOCKS = ImmutableSet.of(
+        public static Set<Material> BLOCKS;
+
+        private static Set<String> BLOCKS_DEFAULT = ImmutableSet.of(
                 "chest",
                 "trapped_chest",
                 "dispenser",

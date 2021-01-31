@@ -9,7 +9,6 @@ import me.crz.minecraft.kingdoms.command.CommandManager;
 import me.crz.minecraft.kingdoms.command.lock.LockCommand;
 import me.crz.minecraft.kingdoms.command.lock.UnlockCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
-import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.world.SimpleBlockLocation;
@@ -32,7 +31,6 @@ import org.bukkit.util.Vector;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -43,14 +41,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class LockManager implements LockProvider {
     private static final String LOADING_KEY = "LOADING_MARKER";
     private static LockManager instance;
-    private final Set<Material> lockable = EnumSet.noneOf(Material.class);
     private BukkitTask loadQueueTask = null;
     private final BlockingQueue<SimpleChunkLocation> loadQueue = new LinkedBlockingQueue<>();
     // Ideally this would use a Guava table but synchronized ones were only added in Guava 28 and Minecraft/Spigot uses 21
@@ -60,7 +56,6 @@ public class LockManager implements LockProvider {
     private final Cache<UUID, String> toggledActions = Caffeine.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES).build();
 
     private LockManager() {
-        loadConfig();
         loadChunks(Bukkit.getWorlds().stream()
                 .map(World::getLoadedChunks)
                 .flatMap((Function<Chunk[], Stream<Chunk>>) Arrays::stream)
@@ -149,36 +144,6 @@ public class LockManager implements LockProvider {
 
     public void unloadWorld(World world) {
         lockTable.remove(world.getName());
-    }
-
-    public void loadConfig() {
-        lockable.clear();
-        for (String string : Config.Lock.BLOCKS) {
-            if (string.startsWith("*")) {
-                for (Material material : Material.values()) {
-                    if (material.name().endsWith(string.substring(1).toUpperCase())) {
-                        lockable.add(material);
-                    }
-                }
-            } else if (string.endsWith("*")) {
-                for (Material material : Material.values()) {
-                    if (material.name().startsWith(string.substring(0, string.length() - 1).toUpperCase())) {
-                        lockable.add(material);
-                    }
-                }
-            } else {
-                Material type = MaterialUtils.getMaterial(string);
-                if (type != null) {
-                    lockable.add(type);
-                } else {
-                    KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, string + " is not a valid Material name!");
-                }
-            }
-        }
-    }
-
-    public boolean isLockable(Material type) {
-        return lockable.contains(type);
     }
 
     public void saveLock(Lock... locks) {
@@ -276,14 +241,14 @@ public class LockManager implements LockProvider {
                     loadChunks(location.toChunkLocation());
                 }
 
-                if (isLockable(type)) {
+                if (Config.Lock.BLOCKS.contains(type)) {
                     // Return an empty lock if chunk isn't cached yet to block any interaction
                     return new Lock(Utils.ZERO_UUID, location, type);
                 }
             }
         }
 
-        if (lock != null && (type != lock.getBlock() || !isLockable(type))) { // lock is not valid
+        if (lock != null && (type != lock.getBlock() || !Config.Lock.BLOCKS.contains(type))) { // lock is not valid
             deleteLock(lock);
             return null;
         }

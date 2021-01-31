@@ -8,11 +8,12 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.TaxDebtAction;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -21,6 +22,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+
+import java.util.Collection;
 
 public class VillageListener implements Listener {
 
@@ -71,38 +74,82 @@ public class VillageListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerPlace(BlockPlaceEvent event) {
-        notifyNearbyLandOwners(event.getBlock().getLocation(), event.getPlayer(), "place");
+        handleNearbyLandOwners(event, event.getBlock().getLocation(), event.getBlock().getType(), event.getPlayer(), "place");
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerBreak(BlockBreakEvent event) {
-        notifyNearbyLandOwners(event.getBlock().getLocation(), event.getPlayer(), "break");
+        handleNearbyLandOwners(event, event.getBlock().getLocation(), event.getBlock().getType(), event.getPlayer(), "break");
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerPlaceHanging(HangingPlaceEvent event) {
-        notifyNearbyLandOwners(event.getEntity().getLocation(), event.getPlayer(), "place");
+        Material type = null;
+        switch (event.getEntity().getType()) {
+            case ITEM_FRAME:
+                type = Material.ITEM_FRAME;
+                break;
+            case PAINTING:
+                type = Material.PAINTING;
+                break;
+        }
+        handleNearbyLandOwners(event, event.getEntity().getLocation(), type, event.getPlayer(), "place");
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerBreakHanging(HangingBreakByEntityEvent event) {
         if (event.getRemover() instanceof Player) {
-            notifyNearbyLandOwners(event.getEntity().getLocation(), (Player) event.getRemover(), "break");
+            Material type = null;
+            switch (event.getEntity().getType()) {
+                case ITEM_FRAME:
+                    type = Material.ITEM_FRAME;
+                    break;
+                case PAINTING:
+                    type = Material.PAINTING;
+                    break;
+            }
+            handleNearbyLandOwners(event, event.getEntity().getLocation(), type, (Player) event.getRemover(), "break");
         }
     }
 
-    private void notifyNearbyLandOwners(Location location, Player player, String type) {
+    private void handleNearbyLandOwners(Cancellable event, Location location, Material block, Player player, String type) {
         SimpleChunkLocation chunkLocation = new SimpleChunkLocation(location);
         OwnedLand land = LandManager.getInstance().getLand(chunkLocation);
         if (land == null) {
+            Collection<LandOwner> landOwners = LandManager.getInstance().getNearbyLandOwners(chunkLocation);
+            if (Config.Settlement.Claiming.Close.Building.BLOCK_OUTSIDE && landOwners.isEmpty()
+                    && !Config.Settlement.Claiming.Close.Building.ALLOWED_BLOCKS.contains(block)
+                    && !player.hasPermission("kingdoms.bypass.buildingradius")) {
+                Message.get("close-claims.player.block").tell(player);
+                event.setCancelled(true);
+                return;
+            }
+
             Resident resident = ResidentManager.getInstance().getResident(player);
-            for (LandOwner landOwner : LandManager.getInstance().getNearbyLandOwners(chunkLocation)) {
+            Message notification = Message.get("close-claim.settlement-warning." + type);
+            for (LandOwner landOwner : landOwners) {
+                if (notification.exists()) {
+                    for (Resident r : landOwner.getOnlineResidents()) {
+                        if (r.isReceivingCloseBuildingNotification(landOwner)) {
+                            notification.tell(r,
+                                    "settlement", landOwner.getName(),
+                                    "state", landOwner.getStateTag(),
+                                    "time", String.valueOf(Config.Settlement.Claiming.Close.Building.TOGGLE_TIME)
+                            );
+                        }
+                    }
+                }
                 if (resident.isReceivingCloseBuildingNotification(landOwner)) {
                     Message.get("close-claims.player." + type).tell(player,
                             "settlement", landOwner.getName(),
                             "state", landOwner.getStateTag(),
-                            "time", String.valueOf(Config.Settlement.Claiming.Close.BuildingNotification.TOGGLE_TIME)
+                            "time", String.valueOf(Config.Settlement.Claiming.Close.Building.TOGGLE_TIME)
                     );
+                    if (Config.Settlement.Claiming.Close.Building.BLOCK_INSIDE
+                            && !Config.Settlement.Claiming.Close.Building.ALLOWED_BLOCKS.contains(block)
+                            && !player.hasPermission("kingdoms.bypass.buildingradius")) {
+                        event.setCancelled(true);
+                    }
                     break;
                 }
             }

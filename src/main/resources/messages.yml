@@ -73,9 +73,15 @@ waiting:
   actionbar: ""
   message: ""
 close-claims:
+  settlement-warning:
+    break: ""
+    place: ""
   player:
     break: "&cYou are breaking a block near a claim of {state} {settlement}! Avoid doing this! Run [&f/warningtoggle](/warningtoggle {settlement}) to disable this warning for the next {time} minutes."
     place: "&cYou are placing a block near a claim of {state} {settlement}! Avoid doing this! Run [&f/warningtoggle](/warningtoggle {settlement}) to disable this warning for the next {time} minutes."
+    block: |-
+     &cYou can only place or break blocks near claims!
+     &7Only Shulker Boxes can be places/broken.
 banished:
   move:
     message: "&cYou're banished from the {state} {name}!"

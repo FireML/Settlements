@@ -204,7 +204,7 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
                         OwnedLand land = LandManager.getInstance().getLand(event.getClickedBlock().getLocation());
                         if (land == null && Config.Lock.ONLY_IN_CLAIM) {
                             getError("only-in-claim").tell(event.getPlayer());
-                        } else if (!LockManager.getInstance().isLockable(event.getClickedBlock().getType())) {
+                        } else if (!Config.Lock.BLOCKS.contains(event.getClickedBlock().getType())) {
                             getError("not-lockable").tell(event.getPlayer(), "block", NameTag.getTag(event.getClickedBlock().getType()));
                         } else {
                             if (canAccess && LockProvider.canAccessCheck(event.getPlayer(), event.getClickedBlock())) {
