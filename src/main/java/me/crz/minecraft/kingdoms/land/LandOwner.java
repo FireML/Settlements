@@ -320,9 +320,17 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
     }
 
     public BuildState getUseState(Use u) {
-        return use.getOrDefault(u, u.getDefault(getDefaultBuildState()));
+        return getUseState(UseFlagManager.getInstance().get(u), u);
     }
 
+    public BuildState getUseState(UseFlag useFlag) {
+        return getUseState(useFlag, useFlag.getUseTypes().iterator().next());
+    }
+
+    public BuildState getUseState(UseFlag useFlag, Use u) {
+        return use.getOrDefault(u, useFlag != null
+                ? useFlag.getDefault(getDefaultBuildState()) : getDefaultBuildState());
+    }
 
     public Map<Use, BuildState> getUseStates() {
         return use;
@@ -342,10 +350,17 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
     }
 
     public void setUseState(Use u, BuildState state) {
-        if (state == u.getDefault(getDefaultBuildState())) {
+        if (state == null) {
             use.remove(u);
         } else {
             use.put(u, state);
+        }
+    }
+
+    public void setUseState(UseFlag u, BuildState state) {
+        state = u.getDefault(getDefaultBuildState()) == state ? null : state;
+        for (Use useType : u.getUseTypes()) {
+            setUseState(useType, state);
         }
     }
 
@@ -754,8 +769,9 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
         }
         Map<String, Object> uses = (Map<String, Object>) map.get("uses");
         for (Use u : Use.values()) {
-            if (uses.containsKey(u.name())) {
-                landOwner.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), u.getDefault(u.getDefault(landOwner.getDefaultBuildState()))));
+            UseFlag useFlag = UseFlagManager.getInstance().get(u);
+            if (uses.containsKey(u.name()) && useFlag != null) {
+                landOwner.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), useFlag.getDefault(landOwner.getDefaultBuildState())));
             }
         }
         for (String s : ((Collection<String>) map.get("allies"))) {

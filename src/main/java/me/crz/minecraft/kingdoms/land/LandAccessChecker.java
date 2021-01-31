@@ -15,6 +15,10 @@ import org.bukkit.event.Listener;
 public interface LandAccessChecker extends ConfigMessages, Listener {
 
     default Pair<Boolean, String> canUse(Player user, Use use, Location loc) {
+        UseFlag flag = UseFlagManager.getInstance().get(use);
+        if (flag == null) {
+            return new Pair<>(true, "");
+        }
         if (user.hasPermission("kingdoms.bypass.use")) {
             return new Pair<>(true, "");
         }

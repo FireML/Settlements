@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.utils.config;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.event.EventManager;
+import me.crz.minecraft.kingdoms.land.UseFlagManager;
 import me.crz.minecraft.kingdoms.lock.LockManager;
 import me.crz.minecraft.kingdoms.utils.CursesFilter;
 import me.crz.minecraft.kingdoms.utils.IconRpMapping;
@@ -78,6 +79,7 @@ public class ConfigManager {
     private ConfigAccessor settlementPerksConf;
     private ConfigAccessor empirePerksConf;
     private ConfigAccessor eventsConf;
+    private ConfigAccessor useFlagsConf;
     private IconRpMapping iconRpMapping;
     private CursesFilter toggleableCurses;
     private CursesFilter forcedCurses;
@@ -152,6 +154,7 @@ public class ConfigManager {
         settlementRanksConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "settlementRanks.yml");
         empireRanksConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "empireRanks.yml");
         eventsConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "events.yml");
+        useFlagsConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "useflags.yml");
         toggleableCurses = new CursesFilter(new ConfigAccessor(KingdomsPlugin.getInstance(), "curses.yml").getConfig());
         forcedCurses = new CursesFilter(new ConfigAccessor(KingdomsPlugin.getInstance(), "cursesForced.yml").getConfig());
         lastUpkeepConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "lastUpkeep.yml");
@@ -162,6 +165,7 @@ public class ConfigManager {
             Config.Lock.ENABLED = false;
         } else if (KingdomsPlugin.getInstance().isRunning()) {
             VillageManager.getInstance().loadPerks();
+            UseFlagManager.getInstance().loadConfig();
             Message.clearCache();
             if (Config.Lock.ENABLED) {
                 LockManager.getInstance().loadConfig();
@@ -457,6 +461,10 @@ public class ConfigManager {
 
     public ConfigAccessor getEventsConf() {
         return eventsConf;
+    }
+
+    public ConfigAccessor getUseFlagsConf() {
+        return useFlagsConf;
     }
 
     public CursesFilter getForcedCurses() {

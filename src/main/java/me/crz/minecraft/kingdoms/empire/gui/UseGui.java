@@ -12,7 +12,8 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.BuildState;
-import me.crz.minecraft.kingdoms.land.Use;
+import me.crz.minecraft.kingdoms.land.UseFlag;
+import me.crz.minecraft.kingdoms.land.UseFlagManager;
 import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -40,7 +41,7 @@ public class UseGui extends KingdomsGUI {
         gui.setFiller(BORDER_ITEM);
 
         GuiElementGroup useGroup = new GuiElementGroup('u');
-        for (Use u : Use.values()) {
+        for (UseFlag u : UseFlagManager.getInstance().getUseFlags()) {
             useGroup.addElement(new DynamicGuiElement('u', h -> {
                 Empire empire = EmpireManager.getInstance().getEmpireFromPlayer((Player) h);
                 if (empire != null) {
@@ -75,7 +76,7 @@ public class UseGui extends KingdomsGUI {
             allGroup.addElement(new StaticGuiElement('a', state.getItem(), click -> {
                 Resident res = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
                 if (res.hasEmpire() && res.hasPermission("empire.use")) {
-                    for (Use u : Use.values()) {
+                    for (UseFlag u : UseFlagManager.getInstance().getUseFlags()) {
                         res.getVillage().getEmpire().setUseState(u, state);
                     }
                     Message.get("command.empire.use.success-all").tell(click.getEvent().getWhoClicked(),

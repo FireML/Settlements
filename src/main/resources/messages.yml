@@ -393,7 +393,7 @@ names:
     gate: "Gates"
     trap-door: "Trap Doors"
     button: "Buttons"
-    pressure-plate: "Pressure plates"
+    pressure-plate: "Pressure Plates"
     bucket: "Buckets"
     ride: "Ridable Stuff"
     furnace: "Furnaces"
@@ -406,6 +406,7 @@ names:
     anvil: "Anvils"
     enchantment-table: "Enchantment Tables"
     grindstone: "Grindstones"
+    smithing-table: "Smithing Tables"
     portal: "Portals"
     jukebox: "Jukeboxes"
     shulker-box: "Shulker Boxes"
@@ -413,8 +414,8 @@ names:
     armor-stand: "Armorstands"
     item-frame: "Item Frames"
     lectern: "Lecterns"
-    crafting-table: "Crafting tables"
-    cartography-table: "Cartography tables"
+    crafting-table: "Crafting Tables"
+    cartography-table: "Cartography Tables"
     loom: "Looms"
     bell: "Bells"
     farming: "Farming"
@@ -422,18 +423,18 @@ names:
     composter: "Composters"
     monster: "Attack Monsters"
     animal: "Attack Animals"
-    sheer: "Sheering Animals"
-    milk: "Milking Cows"
-    leash: "Leashing Animals"
+    sheer: "Shear Animals"
+    milk: "Milk Cows"
+    leash: "Leash Animals"
     becon: "Beacons"
     brewing-stand: "Brewing Stands"
     fish: "Fishing"
     item: "Pickup Items"
     repeaters: "Repeaters"
-    cake: "Cake"
+    cake: "Cakes"
     shop: "Shops"
-    map: "Map"
-    interact: "Other"
+    map: "Maps"
+    interact: "Other interactions"
   levelperk:
     resistance1: Resistance 1 Buff
     resistance2: Resistance 2 Buff
@@ -1337,8 +1338,11 @@ gui:
     back: "&c&lBack To Settings"
     toggle-all: "&7&lClick to toggle all to &a&l{state}"
     entry: |-
-      &a&l{flag}
-      &7&lState: &a&l{state}
+      &7Grant certain players rights to
+      &a&l{flag} &7on your claims
+      
+      &7&lCurrent group: &a&l{state}
+      
       &7Left click: Next state
       &7Right click: Previous state
     page:

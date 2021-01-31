@@ -60,19 +60,52 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     public BuildState getUseState(Use u) {
-        return use.getOrDefault(u, landOwner.getUseState(u));
+        return getUseState(UseFlagManager.getInstance().get(u), u);
+    }
+
+    public BuildState getUseState(UseFlag useFlag) {
+        return getUseState(useFlag, useFlag.getUseTypes().iterator().next());
+    }
+
+    private BuildState getUseState(UseFlag useFlag, Use u) {
+        return use.getOrDefault(u, landOwner.getUseState(useFlag, u));
     }
 
     public boolean setUseState(Use u, BuildState state) {
         return use.put(u, state) != null;
     }
 
+    public boolean setUseState(UseFlag useFlag, BuildState state) {
+        boolean r = false;
+        for (Use u : useFlag.getUseTypes()) {
+            r |= setUseState(u, state);
+        }
+        return r;
+    }
+
     public boolean hasUseState(Use u) {
         return use.containsKey(u);
     }
 
+    public boolean hasUseState(UseFlag useFlag) {
+        for (Use u : useFlag.getUseTypes()) {
+            if (hasUseState(u)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean unsetUseState(Use u) {
         return use.remove(u) != null;
+    }
+
+    public boolean unsetUseState(UseFlag useFlag) {
+        boolean r = false;
+        for (Use u : useFlag.getUseTypes()) {
+            r |= unsetUseState(u);
+        }
+        return r;
     }
 
     public Map<Use, BuildState> getUseStates() {
@@ -413,8 +446,9 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
 
         Map<String, Object> uses = (Map<String, Object>) map.get("uses");
         for (Use u : Use.values()) {
-            if (uses.containsKey(u.name())) {
-                land.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), u.getDefault(land.getBuildState())));
+            UseFlag useFlag = UseFlagManager.getInstance().get(u);
+            if (uses.containsKey(u.name()) && useFlag != null) {
+                land.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), useFlag.getDefault(land.getBuildState())));
             }
         }
         if (land.getLandOwner() instanceof Village) {

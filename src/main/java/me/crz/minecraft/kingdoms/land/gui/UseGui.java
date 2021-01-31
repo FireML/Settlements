@@ -10,7 +10,8 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.BuildState;
-import me.crz.minecraft.kingdoms.land.Use;
+import me.crz.minecraft.kingdoms.land.UseFlag;
+import me.crz.minecraft.kingdoms.land.UseFlagManager;
 import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -44,7 +45,7 @@ public class UseGui extends PlotGUI {
         gui.setFiller(BORDER_ITEM);
 
         GuiElementGroup useGroup = new GuiElementGroup('u');
-        for (Use u : Use.values()) {
+        for (UseFlag u : UseFlagManager.getInstance().getUseFlags()) {
             useGroup.addElement(new DynamicGuiElement('u', h -> {
                 OwnedLand land = LandManager.getInstance().getLand(landLocation);
                 if (land != null) {
@@ -118,7 +119,7 @@ public class UseGui extends PlotGUI {
                 if (land != null) {
                     if (land.isPlotOwner((Player) click.getEvent().getWhoClicked())
                             || land.canAdmin(ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked()))) {
-                        for (Use u : Use.values()) {
+                        for (UseFlag u : UseFlagManager.getInstance().getUseFlags()) {
                             land.setUseState(u, state);
                         }
                         Message.get("command.plot.use.success-all").tell(click.getEvent().getWhoClicked(),
@@ -138,7 +139,7 @@ public class UseGui extends PlotGUI {
             if (land != null) {
                 if (land.isPlotOwner((Player) click.getEvent().getWhoClicked())
                         || land.canAdmin(ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked()))) {
-                    for (Use u : Use.values()) {
+                    for (UseFlag u : UseFlagManager.getInstance().getUseFlags()) {
                         land.unsetUseState(u);
                     }
                     Message.get("command.plot.use.unset-all").tell(click.getEvent().getWhoClicked(),

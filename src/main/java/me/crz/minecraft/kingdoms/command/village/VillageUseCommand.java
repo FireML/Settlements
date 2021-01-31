@@ -3,7 +3,8 @@ package me.crz.minecraft.kingdoms.command.village;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.BuildState;
-import me.crz.minecraft.kingdoms.land.Use;
+import me.crz.minecraft.kingdoms.land.UseFlag;
+import me.crz.minecraft.kingdoms.land.UseFlagManager;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Resident;
@@ -20,13 +21,13 @@ public class VillageUseCommand extends VillageSubCommand {
             public boolean run(Resident res, String base, String alias, String... args) {
                 try {
                     BuildState state = BuildState.valueOf(String.join("_", args).toUpperCase(), BuildState.AppliesTo.SETTLEMENT);
-                    for (Use u : Use.values()) {
+                    for (UseFlag u : UseFlagManager.getInstance().getUseFlags()) {
                         res.getVillage().setUseState(u, state);
                     }
                     Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
-                    res.tell(getMessage("success-all"), "state", state.getTag());
+                    getMessage("success-all").tell(res, "state", state.getTag());
                 } catch (IllegalArgumentException e) {
-                    res.tell(getMessage("states"), "states", BuildState.values(BuildState.AppliesTo.SETTLEMENT).stream().map(NameTag::humanizedName).collect(Collectors.joining(", ")));
+                    getMessage("states").tell(res, "states", BuildState.values(BuildState.AppliesTo.SETTLEMENT).stream().map(NameTag::humanizedName).collect(Collectors.joining(", ")));
                     return false;
                 }
                 return true;
@@ -39,15 +40,15 @@ public class VillageUseCommand extends VillageSubCommand {
         if (args.length < 2) {
             new UseGui().open(res.getPlayer());
         } else {
-            try {
-                Use u = Use.valueOf(args[0].toUpperCase());
+            UseFlag useFlag = UseFlagManager.getInstance().get(args[0]);
+            if (useFlag != null) {
                 BuildState state = BuildState.valueOf(Arrays.stream(args).skip(1).collect(Collectors.joining("_")).toUpperCase(), BuildState.AppliesTo.SETTLEMENT);
-                res.getVillage().setUseState(u, state);
+                res.getVillage().setUseState(useFlag, state);
                 Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
-                res.tell(getMessage("success"), "flag", u.name(), "state", state.getTag());
-            } catch (IllegalArgumentException e) {
-                res.tell(getMessage("flags"), "flags", Arrays.stream(Use.values()).map(u -> u.name().toLowerCase()).collect(Collectors.joining(", ")));
-                res.tell(getMessage("states"), "states", BuildState.values(BuildState.AppliesTo.SETTLEMENT).stream().map(NameTag::humanizedName).collect(Collectors.joining(", ")));
+                getMessage("success").tell(res, "flag", useFlag.name(), "state", state.getTag());
+            } else {
+                getMessage("flags").tell(res, "flags", UseFlagManager.getInstance().getUseFlags().stream().map(u -> u.name().toLowerCase()).collect(Collectors.joining(", ")));
+                getMessage("states").tell(res, "states", BuildState.values(BuildState.AppliesTo.SETTLEMENT).stream().map(NameTag::humanizedName).collect(Collectors.joining(", ")));
                 return false;
             }
         }

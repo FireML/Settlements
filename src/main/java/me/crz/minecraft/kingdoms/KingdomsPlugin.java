@@ -21,6 +21,7 @@ import me.crz.minecraft.kingdoms.integration.MultiverseIntegration;
 import me.crz.minecraft.kingdoms.integration.PlaceholderApiIntegration;
 import me.crz.minecraft.kingdoms.integration.ShopProvider;
 import me.crz.minecraft.kingdoms.land.LandOwner;
+import me.crz.minecraft.kingdoms.land.UseFlagManager;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.lock.LockManager;
@@ -311,6 +312,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         if (!Config.Chat.CHAT_ONLY) {
             LandManager.getInstance();
         }
+        UseFlagManager.getInstance();
         ResidentManager.getInstance();
         if (Config.Portal.ENABLED) {
             PortalManager.getInstance();

@@ -1,0 +1,141 @@
+# Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:useflags.yml
+
+# The list of different flags that can be configured by players on their claimed land
+flags:
+  chest:
+    type: chest
+    icon: chest
+  barrel:
+    type: barrel
+    icon: barrel
+  lever:
+    type: lever
+    icon: lever
+  door:
+    type: door
+    icon: oak_doar
+  gate:
+    type: gate
+    icon: oak_gate
+  trap_door:
+    type: trap_door
+    icon: oak_trap_door
+  button:
+    type: button
+    icon: oak_button
+  pressure_plate:
+    type: pressure_plate
+    icon: oak_pressure_plate
+  bucket:
+    type: bucket
+    icon: bucket
+  ride:
+    type: ride
+    icon: minecart
+  furnace:
+    types:
+    - furnace
+    - blast_furnace
+    icon: furnace
+  campfire:
+    type: campfire
+    icon: campfire
+  smoker:
+    type: smoker
+    icon: smoker
+  hopper:
+    type: hopper
+    icon: hopper
+  dropper:
+    type: dropper
+    icon: dropper
+  dispenser:
+    type: dispenser
+    icon: dispenser
+  anvil:
+    type: anvil
+    icon: anvil
+  grindstone:
+    type: grindstone
+    icon: grindstone
+  smithing_table:
+    type: smithing_table
+    icon: smithing_table
+  portal:
+    type: portal
+    icon: end_portal_frame
+  jukebox:
+    type: jukebox
+    icon: jukebox
+  shulker_box:
+    type: shulker_box
+    icon: shulker_box
+  bed:
+    type: bed
+    icon: red_bed
+  armor_stand:
+    type: armor_stand
+    icon: armor_stand
+  item_frame:
+    type: item_frame
+    icon: item_frame
+  lectern:
+    type: lectern
+    icon: lectern
+  cartography_table:
+    type: cartography_table
+    icon: cartography_table
+  loom:
+    type: loom
+    icon: loom
+  farming:
+    type: farming
+    icon: stone_hoe
+  trees:
+    type: trees
+    icon: oak_sapling
+  composter:
+    type: composter
+    icon: composter
+  monster:
+    type: monster
+    icon: zombie_head
+    default-state: public
+  animal:
+    type: animal
+    icon: leather
+  sheer:
+    type: sheer
+    icon: shears
+  leash:
+    type: leash
+    icon: lead
+  becon:
+    type: becon
+    icon: beacon
+  brewing_stand:
+    type: brewing_stand
+    icon: brewing_stand
+  fish:
+    type: fish
+    icon: fishing_rod
+  item:
+    type: item
+    icon: iron_ingot
+    default-state: public
+  repeaters:
+    type: repeaters
+    icon: repeater
+  cake:
+    type: cake
+    icon: cake
+  shop:
+    default-state: public
+    type: shop
+    icon: oak_sign
+  map:
+    type: map
+    icon: map
+  interact:
+    type: interact
+    icon: wooden_shovel
