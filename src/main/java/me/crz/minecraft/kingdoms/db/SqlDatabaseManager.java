@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.chat.ChatColorType;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.lock.Lock;
@@ -130,6 +131,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     @Override
     public void deleteEmpire(Empire empire) {
         Utils.catchSync();
+        empireQueue.remove(empire.getId(), empire);
         Connection conn = getConnection();
         if (!empire.getId().isNull()) {
             try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "empires WHERE id=?")) {
@@ -189,6 +191,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     @Override
     public void deleteVillage(Village village) {
         Utils.catchSync();
+        villageQueue.remove(village.getId(), village);
         Connection conn = getConnection();
         if (!village.getId().isNull()) {
             try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "settlements WHERE id=?")) {
@@ -221,6 +224,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         try (PreparedStatement idSta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE id = ?;");
              PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE world = ? AND x = ? AND z = ?;")) {
             for (OwnedLand land : lands) {
+                landQueue.remove(land.getId(), land);
                 if (land.getId().isNull()) {
                     sta.setString(1, land.getWorldName());
                     sta.setInt(2, land.getX());
@@ -248,6 +252,10 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             return;
         }
 
+        for (OwnedLand land : LandManager.getInstance().getClaimedLand(village)) {
+            landQueue.remove(land.getId(), land);
+        }
+
         Connection conn = getConnection();
         try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE settlementId = ?;")) {
             sta.setInt(1, (Integer) village.getId().value());
@@ -262,6 +270,10 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     @Override
     public void unclaimLand(String worldName) {
         Utils.catchSync();
+
+        for (OwnedLand land : LandManager.getInstance().getWorldLand(worldName)) {
+            landQueue.remove(land.getId(), land);
+        }
 
         Connection conn = getConnection();
         try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE world = ?;")) {
@@ -528,6 +540,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         List<Portal> withoutId = new ArrayList<>();
 
         for (Portal portal : portals) {
+            portalQueue.remove(portal.getId(), portal);
             if (portal.getId().isNull()) {
                 withoutId.add(portal);
             } else {
@@ -1501,6 +1514,24 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                  return true;
              }
              return false;
+        }
+
+        public boolean remove(T object) {
+            return remove(null, object);
+        }
+
+        public boolean remove(IdObject id, T object) {
+            boolean r;
+            if (id == null || id.isNull()) {
+                r = queue.values().remove(object);
+            } else {
+                r = queue.remove(id, object);
+            }
+
+            if (r && task != null && queue.isEmpty()) {
+                task.cancel();
+            }
+            return r;
         }
 
         /**

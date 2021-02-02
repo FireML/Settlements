@@ -319,6 +319,10 @@ public class LandManager {
         return villageLands.get(village.getId()).size();
     }
 
+    public Collection<OwnedLand> getWorldLand(String world) {
+        return landTable.row(world).values();
+    }
+
     public Collection<OwnedLand> getClaimedLand(LandOwner owner) {
         if (owner instanceof Village) {
             return villageLands.get(owner.getId());
