@@ -9,7 +9,7 @@ import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.TitleBuilder;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.village.Resident;
 import me.crz.minecraft.kingdoms.village.ResidentManager;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -50,9 +50,8 @@ public class LandModeListener implements LandAccessChecker {
     }
 
     public void reload() {
-        int oldMobCheckPeriod = mobCheckPeriod;
-        mobCheckPeriod = ConfigManager.getInstance().getConfig().getInt("mob-flag-check-period", 30);
-        if (mobCheckPeriod != oldMobCheckPeriod) {
+        if (mobCheckPeriod != Config.Settlement.Claiming.MOB_FLAG_CHECK_PERIOD) {
+            mobCheckPeriod = Config.Settlement.Claiming.MOB_FLAG_CHECK_PERIOD;
             if (mobCheckTask != null) {
                 mobCheckTask.cancel();
             }

@@ -104,6 +104,11 @@ public class Config {
             @ConfigComment("Maximum radius in chunks which can be (un)claimed with the radius (un)claiming commands")
             public static int MAX_RADIUS = 5;
 
+            @ConfigEntry(old = {"mob-flag-check-period"})
+            @ConfigComment("The seconds between each check for mobs to be removed in claimed land that has mobspawning turned off\n" +
+                    "Set to 0 to disable")
+            public static int MOB_FLAG_CHECK_PERIOD = 30;
+
             public static class Close {
                 public static class Unclaim {
                     @ConfigEntry(old = {"close-claims-grace-days"})

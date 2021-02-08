@@ -1,5 +1,5 @@
 # For internal usage only. Do NOT touch!
-config-version: 2
+config-version: 3
 # Log some debug messages about the inner working of the plugin
 debug: true
   
@@ -55,6 +55,9 @@ settlement:
     enemy-distance: 4
     # Maximum radius in chunks which can be (un)claimed with the radius (un)claiming commands
     max-radius: 5
+    # The seconds between each check for mobs to be removed in claimed land that has mobspawning turned off
+    # Set to 0 to disable
+    mob-flag-check-period: 30
     close:
       building:
         # The distance in chunks to other settlements in which to allow building
