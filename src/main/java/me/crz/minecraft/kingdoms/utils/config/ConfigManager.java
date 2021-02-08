@@ -201,7 +201,7 @@ public class ConfigManager {
                 } else {
                     path = basePath + field.getName().toLowerCase(Locale.ROOT).replace('_', '-');
                 }
-                Object rawValue = config.get(path);
+                Object rawValue = config.get(path, null);
                 try {
                     Object value = getParser(field).toJava(field.getType(), rawValue);
                     if (value != null) {
