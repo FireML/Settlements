@@ -294,10 +294,18 @@ public class ConfigManager {
                         if (removeVersion < entryInfo.old().length) {
                             config.set(entryInfo.old()[removeVersion], null);
                         } else if (removeVersion >= entryInfo.old().length) {
-                            config.set(basePath + field.getName().toLowerCase(Locale.ROOT).replace('_', '-'), null);
+                            String oldPath = basePath + field.getName().toLowerCase(Locale.ROOT).replace('_', '-');
+                            if (!config.contains(oldPath, true) && entryInfo.old().length > 0) {
+                                oldPath = entryInfo.old()[entryInfo.old().length - 1];
+                            }
+                            if (!oldPath.equals(path)) {
+                                config.set(oldPath, null);
+                            }
                         }
                     }
-                    config.set(path, value);
+                    if (configVersion == removeVersion || value == null || !value.equals(config.get(path, null))) {
+                        config.set(path, value);
+                    }
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
