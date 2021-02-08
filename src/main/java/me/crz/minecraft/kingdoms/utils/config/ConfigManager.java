@@ -293,7 +293,7 @@ public class ConfigManager {
                     if (configVersion != removeVersion && entryInfo != null) {
                         if (removeVersion < entryInfo.old().length) {
                             config.set(entryInfo.old()[removeVersion], null);
-                        } else if (removeVersion == entryInfo.old().length) {
+                        } else if (removeVersion >= entryInfo.old().length) {
                             config.set(basePath + field.getName().toLowerCase(Locale.ROOT).replace('_', '-'), null);
                         }
                     }
