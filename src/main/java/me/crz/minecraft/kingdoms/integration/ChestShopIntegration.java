@@ -23,9 +23,12 @@ import com.Acrobot.ChestShop.Events.PreTransactionEvent;
 import com.Acrobot.ChestShop.Events.Protection.ProtectionCheckEvent;
 import com.Acrobot.ChestShop.Events.ShopDestroyedEvent;
 import com.Acrobot.ChestShop.Events.TransactionEvent;
+import com.Acrobot.ChestShop.Libs.Kyori.adventure.text.Component;
+import com.Acrobot.ChestShop.Libs.Kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
 import com.Acrobot.ChestShop.Listeners.Economy.EconomyAdapter;
 import com.Acrobot.ChestShop.Security;
 import com.Acrobot.ChestShop.Signs.ChestShopSign;
+import com.Acrobot.ChestShop.Utils.ItemUtil;
 import com.Acrobot.ChestShop.Utils.uBlock;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -356,10 +359,10 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                 }
 
                 if (player != null) {
-                    replacementMap.put("item", MaterialUtil.getItemList(stock));
+                    replacementMap.put("item", ItemUtil.getItemList(stock));
                     new ChestShopMessage(rawMessage).sendWithPrefix(player, replacementMap);
                 } else if (playerName != null) {
-                    replacementMap.put("item", MaterialUtil.getItemList(stock));
+                    replacementMap.put("item", ItemUtil.getItemList(stock));
                     ChestShop.sendBungeeMessage(playerName, new ChestShopMessage(rawMessage), replacementMap);
                 }
             }
@@ -520,6 +523,10 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
 
         public BaseComponent[] getComponents(CommandSender sender, boolean prefixSuffix, Map<String, String> replacementMap, String... replacements) {
             return message.getReplacer().replace(replacementMap).replace(replacements).getComponents();
+        }
+
+        public Component getComponent(CommandSender sender, boolean prefixSuffix, Map<String, String> replacementMap, String... replacements) {
+            return BungeeComponentSerializer.get().deserialize(getComponents(sender, prefixSuffix, replacementMap, replacements));
         }
 
     }
