@@ -30,7 +30,8 @@ public class VillageDisbandCommand extends VillageSubCommand {
             confirm.invalidate(res.getUUID());
             getMessage("success").tell(res.getVillage().getOnlineResidents(),
                     "rank", VillageRank.getChief().getTag(res.getVillage()),
-                    "title", res.getDisplayTitle(),
+                    "title", res.getVillageTitle(),
+                    "displaytitle", res.getDisplayTitle(),
                     "state", res.getVillage().getState().getTag(),
                     "chief", res.getVillage().getName(),
                     "name", res.getVillage().getName()

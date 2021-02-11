@@ -29,7 +29,8 @@ public class EmpireDisbandCommand extends EmpireSubCommand {
             getMessage("success").tell(res.getVillage().getEmpire().getOnlineResidents(),
                     "chief", res.getName(),
                     "chiefrank", VillageRank.getChief().getTag(res.getVillage()),
-                    "chieftitle", res.getDisplayTitle(),
+                    "chieftitle", res.getVillageTitle(),
+                    "chiefdisplaytitle", res.getDisplayTitle(),
                     "capital", res.getVillage().getName(),
                     "capitalstate", res.getVillage().getState().getTag()
             );

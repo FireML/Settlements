@@ -147,7 +147,8 @@ public class VillageClaimCommand extends VillageSubCommand {
                 SimpleBlockLocation home = new SimpleBlockLocation(newLand.getLandOwner().getHome());
                 getMessage("home-set").tell(village.getOnlineResidents(),
                         "rank", res.getVillageRank().getTag(village),
-                        "title", res.getDisplayTitle(),
+                        "title", res.getVillageTitle(),
+                        "displaytitle", res.getDisplayTitle(),
                         "name", player.getName(),
                         "state", res.getVillage().getState().getTag(),
                         "world", home.getWorld(),

@@ -60,7 +60,8 @@ public class VillageActiveCommand extends VillageSubCommand {
                     .skip((finalPage - 1 )* Config.ENTRIES_PER_PAGE)
                     .limit(Config.ENTRIES_PER_PAGE)
                     .forEachOrdered(r -> getMessage("entry").tell(sender,
-                            "title", r.getDisplayTitle(),
+                            "title", r.getVillageTitle(),
+                            "displaytitle", r.getDisplayTitle(),
                             "rank", r.getVillageRank().getTag(r.getVillage()),
                             "name", r.getName(),
                             "activity", r.getPlayer() != null ? getText("online") : getText("offline", "ago", UtilTime.format(System.currentTimeMillis() - r.getLastLogin())),

@@ -33,7 +33,8 @@ public class MoneyWithdrawCommand extends VillageSubCommand {
                     });
                     getMessage("withdrawn").tell(resident.getVillage().getOnlineResidents(),
                             "rank", resident.getVillageRank().getTag(resident.getVillage()),
-                            "title", resident.getDisplayTitle(),
+                            "title", resident.getVillageTitle(),
+                            "displaytitle", resident.getDisplayTitle(),
                             "name", resident.getName(),
                             "amount", Utils.CURRENCY_FORMAT.format(withdrewInit));
                 } else {

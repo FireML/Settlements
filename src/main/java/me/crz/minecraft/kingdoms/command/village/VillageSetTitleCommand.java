@@ -46,7 +46,8 @@ public class VillageSetTitleCommand extends VillageSubCommand {
                     "rank", target.getVillageRank().getTag(res.getVillage()),
                     "title", target.getVillageTitle(),
                     "target", target.getName(),
-                    "sendertitle", res.getDisplayTitle(),
+                    "sendertitle", res.getVillageTitle(),
+                    "senderdisplaytitle", res.getDisplayTitle(),
                     "sender", res.getName(),
                     "villagename", res.getVillage().getName(),
                     "villagestate", res.getVillage().getState().getTag()

@@ -47,7 +47,8 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                             });
                             getMessage("deposited").tell(resident.getVillage().getEmpire().getOnlineResidents(),
                                     "rank", resident.getEmpireRank().getTag(resident.getVillage().getEmpire()),
-                                    "title", resident.getDisplayTitle(),
+                                    "title", resident.getVillageTitle(),
+                                    "displaytitle", resident.getDisplayTitle(),
                                     "name", resident.getName(),
                                     "amount", Utils.CURRENCY_FORMAT.format(deposit));
                         } else {
@@ -84,7 +85,8 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                             });
                             getMessage("withdrawn").tell(resident.getVillage().getEmpire().getOnlineResidents(),
                                     "rank", resident.getEmpireRank().getTag(resident.getVillage().getEmpire()),
-                                    "title", resident.getDisplayTitle(),
+                                    "title", resident.getVillageTitle(),
+                                    "displaytitle", resident.getDisplayTitle(),
                                     "name", resident.getName(),
                                     "amount", Utils.CURRENCY_FORMAT.format(withdrewInit));
                         } else {
