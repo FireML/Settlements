@@ -117,8 +117,8 @@ public class MultiverseIntegration {
             KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not delete old world folder " + worldFolder.getName() + "!", e);
         }
 
-        MultiverseWorld newMvWorld = mvCore.getMVWorldManager().getMVWorld(world);
-        if (newMvWorld.getAlias() != null) {
+        MultiverseWorld newMvWorld = mvCore.getMVWorldManager().getMVWorld(newWorld);
+        if (newMvWorld != null && newMvWorld.getAlias() != null) {
             newMvWorld.setAlias(null);
         }
 
