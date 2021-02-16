@@ -213,6 +213,10 @@ public class Config {
             @ConfigComment("The suffix of all empire worlds. WARNING: Changing this with existing worlds will break them!")
             public static String SUFFIX = "_Domain";
 
+            @ConfigEntry(reload = false)
+            @ConfigComment("Whether or not worlds should be renamed on empire rename. Might cause issues with some plugins.")
+            public static boolean RENAME = true;
+
             @ConfigEntry(old = {"empires-world.environment"})
             @ConfigComment("The environment of the world. Can be normal, nether or the_end")
             public static Environment ENVIRONMENT = Environment.NORMAL;

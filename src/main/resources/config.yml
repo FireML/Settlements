@@ -117,6 +117,8 @@ empire:
     prefix: ''
     # The suffix of all empire worlds. WARNING: Changing this with existing worlds will break them!
     suffix: _Domain
+    # Whether or not worlds should be renamed on empire rename. Might cause issues with some plugins.
+    rename: true
     # The environment of the world. Can be normal, nether or the_end
     environment: normal
     # The type of the world. Can be normal, flat, large_biomes or amplified

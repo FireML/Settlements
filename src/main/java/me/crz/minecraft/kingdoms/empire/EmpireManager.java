@@ -34,7 +34,10 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,6 +56,7 @@ public class EmpireManager {
     private final Map<String, Empire> empires = new ConcurrentHashMap<>();
     private final Map<IdObject, Empire> empireIds = new ConcurrentHashMap<>();
     private final Map<UUID, Empire> empireUuids = new ConcurrentHashMap<>();
+    private final Map<String, Empire> empireWorlds = new ConcurrentHashMap<>();
 
     private Map<String, EmpirePerk> perks;
     private Map<String, EmpirePerk> perkTags;
@@ -62,6 +66,12 @@ public class EmpireManager {
         super();
         loadPerks();
         for (Empire empire : DatabaseManager.getInstance().getAllEmpires()) {
+            if (Config.Empire.World.RENAME) {
+                World world = KingdomsPlugin.getInstance().getServer().getWorld(empire.getWorldName());
+                if (world != null) {
+                    writeIdFile(world, empire);
+                }
+            }
             empires.put(empire.getName().replace(' ', '_').toLowerCase(), empire);
             empireIds.put(empire.getId(), empire);
             empireUuids.put(empire.getUUID(), empire);
@@ -75,6 +85,26 @@ public class EmpireManager {
                     deleteEmpire(empire);
                     MessageUtils.broadcast(Message.get("broadcast.empire-deletion"), "name", empire.getName());
                 }, delay, TimeUnit.MILLISECONDS);
+            }
+        }
+
+        // Loop through all worlds to find empire ones
+        for (File world : KingdomsPlugin.getInstance().getServer().getWorldContainer().listFiles(f -> f.isDirectory())) {
+            Empire empire = getEmpireFromWorld(world);
+            if (empire != null) {
+                empire.setWorldName(world.getName());
+            }
+        }
+    }
+
+    private void writeIdFile(World world, Empire empire) {
+        empireWorlds.put(world.getWorldFolder().getName(), empire);
+        File idFile = new File(world.getWorldFolder(), "empire.id");
+        if (!idFile.exists()) {
+            try (FileWriter writer = new FileWriter(idFile)) {
+                writer.write(String.valueOf(empire.getId().value()));
+            } catch (IOException e) {
+                KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Error while trying to write empire id into world folder " + world.getName(), e);
             }
         }
     }
@@ -160,16 +190,23 @@ public class EmpireManager {
             DatabaseManager.getInstance().saveVillage(empire.getCapital());
             DatabaseManager.getInstance().saveResident(empire.getCapital().getChief());
             if (!empire.getId().isNull()) {
+                if (Config.Empire.World.RENAME) {
+                    empire.setWorldName(Config.Empire.World.PREFIX + empire.getName() + Config.Empire.World.SUFFIX);
+                } else {
+                    empire.setWorldName(Config.Empire.World.PREFIX + "id" + empire.getId().value() + Config.Empire.World.SUFFIX);
+                }
                 empireIds.put(empire.getId(), empire);
                 empireUuids.put(empire.getUUID(), empire);
+                Utils.runSync(() -> {
+                    try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
+                        createEmpireWorld(empire);
+                        Message.get("empire-world-generated").tell(empire.getOnlineResidents());
+                    }
+                });
             } else {
                 KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving empire " + empire.getName() + " to the database! No ID was returned.");
             }
         });
-        try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
-            createEmpireWorld(empire);
-            Message.get("empire-world-generated").tell(empire.getOnlineResidents());
-        }
     }
 
     private World createEmpireWorld(Empire empire) {
@@ -198,7 +235,11 @@ public class EmpireManager {
                 worldCreator.type(Config.Empire.World.TYPE);
             }
             world = Bukkit.createWorld(worldCreator);
+            if (world == null) {
+                return null;
+            }
         }
+        writeIdFile(world, empire);
         world.getWorldBorder().setCenter(0, 0);
         world.getWorldBorder().setSize(empire.getWorldRadius() * 2);
         if (empire.getHome() == null) {
@@ -217,6 +258,7 @@ public class EmpireManager {
         empires.remove(empire.getName().toLowerCase());
         empireIds.remove(empire.getId());
         empireUuids.remove(empire.getUUID());
+        empireWorlds.remove(empire.getWorldName());
         KingdomsPlugin.getInstance().addNewlyDeleted(empire);
         for (Village member : empire.getMembers()) {
             if (empire.equals(member.getEmpire())) {
@@ -246,8 +288,10 @@ public class EmpireManager {
     private void deleteWorld(World empireWorld) {
         if (KingdomsPlugin.getInstance().getMultiverse() == null) {
             if (Bukkit.unloadWorld(empireWorld, true)) {
-                if (!empireWorld.getWorldFolder().delete()) {
-                    KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could delete the files of world " + empireWorld.getName());
+                try {
+                    FileUtils.deleteDirectory(empireWorld.getWorldFolder());
+                } catch (IOException e) {
+                    KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could delete the files of world " + empireWorld.getName(), e);
                 }
             } else {
                 KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not unload and delete the world " + empireWorld.getName());
@@ -353,22 +397,44 @@ public class EmpireManager {
         });
     }
 
+    public Empire getEmpireFromWorld(File worldFolder) {
+        if (!worldFolder.exists() || !worldFolder.isDirectory()) {
+            return null;
+        }
+        return empireWorlds.computeIfAbsent(worldFolder.getName(), worldName -> {
+            File idFile = new File(worldFolder, "empire.id");
+            if (idFile.exists()) {
+                try (BufferedReader in = new BufferedReader(new FileReader(idFile))) {
+                    String idStr = in.readLine();
+                    if (idStr != null) {
+                        int id = Integer.parseInt(idStr);
+                        Empire empire = getEmpireFromId(IdObject.get(id));
+                        if (empire != null) {
+                            return empire;
+                        } else {
+                            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "No world " + worldName + " specified empire with ID " + id + " but no empire with such an id was found?");
+                        }
+                    }
+                } catch (IOException | NumberFormatException e) {
+                    KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Error while trying to read empire id file from world folder " + worldName, e);
+                }
+            }
+            return null;
+        });
+    }
+
     public Empire getEmpireFromWorld(World world) {
         if (world == null) {
             return null;
         }
-        return getEmpireFromWorld(world.getName());
+        return getEmpireFromWorld(world.getWorldFolder());
     }
 
     public Empire getEmpireFromWorld(String worldName) {
-        if (worldName.startsWith(Config.Empire.World.PREFIX)
-                && worldName.endsWith(Config.Empire.World.SUFFIX)) {
-            return getEmpireFromName(worldName.substring(
-                    Config.Empire.World.PREFIX.length(),
-                    worldName.length() - Config.Empire.World.SUFFIX.length()
-            ));
+        if (empireWorlds.containsKey(worldName)) {
+            return empireWorlds.get(worldName);
         }
-        return null;
+        return getEmpireFromWorld(new File(KingdomsPlugin.getInstance().getServer().getWorldContainer(), worldName));
     }
 
     public boolean changeName(Empire empire, String name) {
@@ -376,13 +442,16 @@ public class EmpireManager {
         World world = Bukkit.getWorld(empire.getWorldName());
         empire.setName(name);
 
-        empire.setInRegen(true);
-        if (!renameWorld(empire, world)) {
-            empire.setName(oldName);
+        if (Config.Empire.World.RENAME) {
+            empire.setInRegen(true);
+            empire.setWorldName(Config.Empire.World.PREFIX + empire.getName() + Config.Empire.World.SUFFIX);
+            if (!renameWorld(empire, world)) {
+                empire.setName(oldName);
+                empire.setInRegen(false);
+                return false;
+            }
             empire.setInRegen(false);
-            return false;
         }
-        empire.setInRegen(false);
 
         empires.remove(oldName.replace(' ', '_').toLowerCase());
         empires.put(name.replace(' ', '_').toLowerCase(), empire);

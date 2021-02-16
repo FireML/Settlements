@@ -59,6 +59,7 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
     private Set<IdObject> members = new LinkedHashSet<>();
     private boolean inRegen = false;
     private long lastRename = 0;
+    private String worldName;
 
     protected Empire() {
         super();
@@ -279,6 +280,11 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
             KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize Empire! (" + map + ")");
             return null;
         }
+        if (Config.Empire.World.RENAME) {
+            empire.worldName = Config.Empire.World.PREFIX + empire.getName() + Config.Empire.World.SUFFIX;
+        } else if (!empire.getId().isNull()) {
+            empire.worldName = Config.Empire.World.PREFIX + "id" + empire.getId().value() + Config.Empire.World.SUFFIX;
+        }
         empire.capital = IdObject.get(map.get("capitalId"));
         empire.lastRename = Utils.getLong(map.get("lastRename"));
         empire.setSymbol((String) map.get("symbol"));
@@ -496,7 +502,11 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
     }
 
     public String getWorldName() {
-        return Config.Empire.World.PREFIX + getName() + Config.Empire.World.SUFFIX;
+        return worldName;
+    }
+
+    void setWorldName(String worldName) {
+        this.worldName = worldName;
     }
 
     public boolean isMember(Village village) {

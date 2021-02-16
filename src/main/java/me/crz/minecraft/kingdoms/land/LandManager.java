@@ -144,7 +144,13 @@ public class LandManager {
         }
         OwnedLand land = landTable.get(location.getWorld(), location.getSimpleKey());
         if (land == null) {
-            Empire empire = EmpireManager.getInstance().getEmpireFromWorld(location.getWorld());
+            World world = KingdomsPlugin.getInstance().getServer().getWorld(location.getWorld());
+            Empire empire;
+            if (world != null) {
+                empire = EmpireManager.getInstance().getEmpireFromWorld(world);
+            } else {
+                empire = EmpireManager.getInstance().getEmpireFromWorld(location.getWorld());
+            }
             if (empire != null && !empire.isAbandoned()) {
                 land = new OwnedLand(empire, location);
             }
