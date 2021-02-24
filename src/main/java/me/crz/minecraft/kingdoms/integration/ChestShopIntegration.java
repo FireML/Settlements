@@ -197,6 +197,12 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             } catch (IllegalArgumentException e) {
                 KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid shop owner ID " + name);
             }
+        } else if (parts.length == 2) {
+            if ("s".equalsIgnoreCase(parts[0]) || "v".equalsIgnoreCase(parts[0]) || "k".equalsIgnoreCase(parts[0])) {
+                return VillageManager.getInstance().getVillageFromName(parts[1]);
+            } else if ("e".equalsIgnoreCase(parts[0])) {
+                return EmpireManager.getInstance().getEmpireFromName(parts[1]);
+            }
         }
         return null;
     }
