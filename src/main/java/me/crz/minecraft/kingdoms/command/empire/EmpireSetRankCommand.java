@@ -5,7 +5,7 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 
 public class EmpireSetRankCommand extends EmpireSubCommand {
     public EmpireSetRankCommand(SubCommand parent) {

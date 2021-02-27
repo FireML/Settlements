@@ -1,4 +1,4 @@
-package me.crz.minecraft.kingdoms.village;
+package me.crz.minecraft.kingdoms.resident;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -10,6 +10,8 @@ import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.utils.config.Config;
+import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;

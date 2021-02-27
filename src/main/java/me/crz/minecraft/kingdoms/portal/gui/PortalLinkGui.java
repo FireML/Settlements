@@ -8,7 +8,7 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.portal.Portal;
 import me.crz.minecraft.kingdoms.portal.PortalManager;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

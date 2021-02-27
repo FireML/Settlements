@@ -2,7 +2,6 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.land.ChatMap;
 import me.crz.minecraft.kingdoms.land.LandManager;
@@ -12,7 +11,7 @@ import me.crz.minecraft.kingdoms.portal.PortalManager;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Config;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.entity.Player;

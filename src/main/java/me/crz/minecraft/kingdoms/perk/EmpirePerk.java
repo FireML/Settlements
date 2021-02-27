@@ -4,7 +4,7 @@ import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.WeatherState;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.resident.ResidentManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;

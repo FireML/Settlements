@@ -2,8 +2,8 @@ package me.crz.minecraft.kingdoms.command.plot;
 
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
-import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.resident.Resident;
+import me.crz.minecraft.kingdoms.resident.ResidentManager;
 
 public class PlotUnownCommand extends PlotSubCommand {
     public PlotUnownCommand(PlotCommand parent) {

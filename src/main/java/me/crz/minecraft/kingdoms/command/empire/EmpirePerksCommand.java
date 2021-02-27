@@ -1,14 +1,11 @@
 package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.empire.gui.PerksGUI;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.perk.PerkData;
-import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 
 public class EmpirePerksCommand extends EmpireSubCommand {
     public EmpirePerksCommand(SubCommand parent) {

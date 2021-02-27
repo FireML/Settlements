@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.land.LandAccessChecker;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Pair;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 import org.bukkit.command.Command;
 import org.bukkit.command.FormattedCommandAlias;
 import org.bukkit.command.PluginCommand;

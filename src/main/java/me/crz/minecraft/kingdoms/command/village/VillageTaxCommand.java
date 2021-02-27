@@ -5,7 +5,7 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.TaxDebtAction;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Config;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 
 public class VillageTaxCommand extends VillageSubCommand {
     public VillageTaxCommand(SubCommand parent) {

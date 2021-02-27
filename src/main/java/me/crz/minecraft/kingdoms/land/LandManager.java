@@ -31,7 +31,7 @@ import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Config;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.resident.ResidentManager;
 import me.crz.minecraft.kingdoms.world.SimpleBlockLocation;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import me.crz.minecraft.kingdoms.world.SimpleLocation;

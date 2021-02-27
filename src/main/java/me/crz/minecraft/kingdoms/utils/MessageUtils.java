@@ -9,7 +9,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 
 import org.bukkit.Bukkit;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

@@ -9,7 +9,7 @@ import me.crz.minecraft.kingdoms.portal.Portal;
 import me.crz.minecraft.kingdoms.portal.PortalManager;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.config.Config;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 import org.bukkit.Chunk;
 
 import java.util.Collection;

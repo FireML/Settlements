@@ -2,7 +2,7 @@ package me.crz.minecraft.kingdoms.chat.commands;
 
 import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 
 public class MsgToggleCommand extends ResidentSubCommand {
 

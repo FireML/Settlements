@@ -7,6 +7,8 @@ import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.TaxDebtAction;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
+import me.crz.minecraft.kingdoms.resident.Resident;
+import me.crz.minecraft.kingdoms.resident.ResidentManager;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;

@@ -4,7 +4,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Config;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 import me.crz.minecraft.kingdoms.empire.gui.RankSelectGui;
 import me.crz.minecraft.kingdoms.empire.gui.TitlesGUI;
 

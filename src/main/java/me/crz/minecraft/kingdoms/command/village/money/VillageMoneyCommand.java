@@ -6,8 +6,8 @@ import me.crz.minecraft.kingdoms.command.village.VillageHistoryCommand;
 import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.db.LogType;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.resident.Resident;
+import me.crz.minecraft.kingdoms.resident.ResidentManager;
 import org.bukkit.entity.Player;
 
 public class VillageMoneyCommand extends VillageSubCommand {

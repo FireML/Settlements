@@ -3,7 +3,7 @@ package me.crz.minecraft.kingdoms.command.village;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.integration.MailProvider;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 import org.bukkit.ChatColor;
 
 public class VillageMailCommand extends VillageSubCommand {

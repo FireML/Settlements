@@ -1,13 +1,13 @@
 package me.crz.minecraft.kingdoms.command.friend;
 
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 import org.bukkit.Bukkit;
 
 import java.util.stream.Collectors;
 
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.resident.ResidentManager;
 import org.bukkit.entity.Player;
 import me.crz.minecraft.kingdoms.command.PlayerSubCommand;
 

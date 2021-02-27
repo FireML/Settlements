@@ -3,8 +3,8 @@ package me.crz.minecraft.kingdoms.command.village;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.resident.Resident;
+import me.crz.minecraft.kingdoms.resident.ResidentManager;
 
 public class VillageInviteCommand extends VillageSubCommand {
     public VillageInviteCommand(SubCommand parent) {

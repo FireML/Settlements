@@ -8,7 +8,7 @@ import me.crz.minecraft.kingdoms.command.village.outpost.OutpostRenameCommand;
 import me.crz.minecraft.kingdoms.command.village.outpost.OutpostSethomeCommand;
 import me.crz.minecraft.kingdoms.command.village.outpost.OutpostTeleportCommand;
 import me.crz.minecraft.kingdoms.command.village.outpost.OutpostUnclaimCommand;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 
 public class VillageOutPostCommand extends VillageSubCommand {
 

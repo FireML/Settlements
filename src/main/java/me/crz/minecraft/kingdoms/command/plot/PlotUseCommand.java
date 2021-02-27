@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.land.UseFlagManager;
 import me.crz.minecraft.kingdoms.land.gui.UseGui;
 import me.crz.minecraft.kingdoms.land.BuildState;
 import me.crz.minecraft.kingdoms.utils.NameTag;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;

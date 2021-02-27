@@ -1,7 +1,7 @@
 package me.crz.minecraft.kingdoms.scoreboard.commands;
 
 import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 
 
 public class CommandScoreboard extends ResidentSubCommand {

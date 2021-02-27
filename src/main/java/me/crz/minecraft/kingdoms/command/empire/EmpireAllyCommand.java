@@ -2,7 +2,7 @@ package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.command.common.AllyCommand;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 
 public class EmpireAllyCommand extends EmpireSubCommand implements AllyCommand {
     public EmpireAllyCommand(SubCommand parent) {

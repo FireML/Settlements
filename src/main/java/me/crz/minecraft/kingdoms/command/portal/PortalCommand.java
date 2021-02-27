@@ -7,7 +7,7 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.portal.Portal;
 import me.crz.minecraft.kingdoms.portal.gui.PortalLinkGui;
 import me.crz.minecraft.kingdoms.portal.gui.PortalUnlinkGui;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 import org.bukkit.entity.Player;
 
 public class PortalCommand extends PlayerSubCommand {

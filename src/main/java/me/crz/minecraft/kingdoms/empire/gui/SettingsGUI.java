@@ -9,8 +9,8 @@ import me.crz.minecraft.kingdoms.command.empire.EmpireHomeCommand;
 import me.crz.minecraft.kingdoms.command.empire.EmpireSetHomeCommand;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.utils.ItemUtils;
-import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.resident.Resident;
+import me.crz.minecraft.kingdoms.resident.ResidentManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 

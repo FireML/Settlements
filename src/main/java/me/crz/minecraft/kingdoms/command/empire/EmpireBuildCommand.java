@@ -5,7 +5,7 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.gui.BuildGui;
 import me.crz.minecraft.kingdoms.land.BuildState;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 
 public class EmpireBuildCommand extends EmpireSubCommand {
     public EmpireBuildCommand(SubCommand parent) {

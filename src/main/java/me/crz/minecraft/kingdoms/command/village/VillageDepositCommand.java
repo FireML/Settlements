@@ -4,7 +4,7 @@ import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.LogType;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.vault.VaultInventory;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 
 public class VillageDepositCommand extends VillageSubCommand {
     public VillageDepositCommand(SubCommand parent) {

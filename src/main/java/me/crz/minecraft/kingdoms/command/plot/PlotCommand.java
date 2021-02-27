@@ -3,7 +3,7 @@ package me.crz.minecraft.kingdoms.command.plot;
 import me.crz.minecraft.kingdoms.command.HelpCommand;
 import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 
 public class PlotCommand extends ResidentSubCommand {
     public PlotCommand(SubCommand parent) {

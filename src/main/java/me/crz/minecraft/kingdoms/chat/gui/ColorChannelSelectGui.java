@@ -10,8 +10,8 @@ import me.crz.minecraft.kingdoms.chat.ChatColorType;
 import me.crz.minecraft.kingdoms.utils.ColorUtils;
 import me.crz.minecraft.kingdoms.utils.HumanReadable;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.resident.Resident;
+import me.crz.minecraft.kingdoms.resident.ResidentManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 

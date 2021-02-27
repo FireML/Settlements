@@ -1,13 +1,13 @@
 package me.crz.minecraft.kingdoms.command.resident;
 
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.village.Resident;
+import me.crz.minecraft.kingdoms.resident.Resident;
 import org.bukkit.OfflinePlayer;
 
 import java.sql.Date;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
+import me.crz.minecraft.kingdoms.resident.ResidentManager;
 import org.bukkit.Bukkit;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import org.bukkit.command.CommandSender;

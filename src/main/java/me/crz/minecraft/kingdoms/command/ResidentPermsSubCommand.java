@@ -1,9 +1,6 @@
 package me.crz.minecraft.kingdoms.command;
 
-import me.crz.minecraft.kingdoms.village.Resident;
-import me.crz.minecraft.kingdoms.village.ResidentManager;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import me.crz.minecraft.kingdoms.resident.Resident;
 
 public abstract class ResidentPermsSubCommand extends ResidentSubCommand {
 
