@@ -50,7 +50,7 @@ public interface AllyCommand extends LandOwnerCommand {
         } else {
             InviteCache.addPendingAlly(target, source);
             MessageUtils.tellResidents(target.getOnlineResidents(), getMessage("invite"), "name", source.getName(), "state", source.getStateTag());
-            MessageUtils.tellResidents(target.getOnlineResidents(), Message.get("command." + target.getClass().getSimpleName() + ".ally.accept-info"), "name", source.getName(), "state", source.getStateTag());
+            MessageUtils.tellResidents(target.getOnlineResidents(), Message.get("command." + target.getKey() + ".ally.accept-info"), "name", source.getName(), "state", source.getStateTag());
             resident.tell(getMessage("request-send"), "name", target.getName(), "state", target.getStateTag());
         }
         return true;

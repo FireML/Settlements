@@ -545,4 +545,9 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
             }
         };
     }
+
+    @Override
+    public String name() {
+        return "OwnedLand";
+    }
 }

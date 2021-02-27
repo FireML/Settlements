@@ -4,6 +4,11 @@ package me.crz.minecraft.kingdoms.utils;
  * An object that can be used as a config key, usually an enum
  */
 public interface ConfigKey {
+
+    /**
+     * The name to use for the key
+     * @return The name of the key
+     */
     String name();
 
     default String getKey() {

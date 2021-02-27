@@ -100,4 +100,9 @@ public class Portal implements DatabaseSerializable {
             return id.hashCode();
         }
     }
+
+    @Override
+    public String name() {
+        return "Portal";
+    }
 }

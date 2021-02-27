@@ -665,4 +665,9 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     public int hashCode() {
         return uuid.hashCode() * 31 + (id == null ? 0 : id.hashCode());
     }
+
+    @Override
+    public String name() {
+        return "Resident";
+    }
 }

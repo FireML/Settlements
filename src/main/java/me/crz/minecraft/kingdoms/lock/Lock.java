@@ -238,4 +238,9 @@ public class Lock implements DatabaseSerializable {
     public boolean isValid() {
         return owner != null && !owner.equals(Utils.ZERO_UUID);
     }
+
+    @Override
+    public String name() {
+        return "Lock";
+    }
 }
