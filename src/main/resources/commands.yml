@@ -152,6 +152,7 @@ help-order:
   - build
   - buy
   - settings
+  - members list|add|remove
   - name
   - info
   - link
@@ -173,8 +174,8 @@ help-order:
   - remove s:<settlement> [toggle]
   - remove e:<empire> [toggle]
   friend:
-  - add
   - list
+  - add
   - remove
   chat:
   - "<channel>"

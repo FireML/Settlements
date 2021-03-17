@@ -68,7 +68,7 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
         }
 
         Resident owner = null;
-        boolean allowed;
+        boolean allowed = false;
         if (state.atLeast(BuildState.PRIVATE)) {
             if (land.isPlot()) {
                 allowed = land.isPlotOwner(building);
@@ -76,33 +76,44 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
                 return null;
             }
 
-        } else if (state.atLeast(BuildState.FRIENDS)) {
+        }
+        if (state.atLeast(BuildState.MEMBERS)) {
             if (land.isPlot()) {
-                owner = ResidentManager.getInstance().getResident(land.getPlotOwner());
-                allowed = owner.getFriends().contains(building.getUniqueId());
+                allowed |= land.getPlotMembers().contains(building.getUniqueId());
             } else {
                 return null;
             }
 
-        } else if (state.atLeast(BuildState.OFFICERS)) {
-            allowed = land.getLandOwner().isOfficer(building);
+        }
+        if (state.atLeast(BuildState.FRIENDS)) {
+            if (land.isPlot()) {
+                owner = ResidentManager.getInstance().getResident(land.getPlotOwner());
+                allowed |= owner.getFriends().contains(building.getUniqueId());
+            } else {
+                return null;
+            }
 
-        } else if (state.atLeast(BuildState.RESIDENTS)) {
-            allowed = land.getLandOwner().isMember(ResidentManager.getInstance().getResident(building));
+        }
+        if (state.atLeast(BuildState.OFFICERS)) {
+            allowed |= land.getLandOwner().isOfficer(building);
 
-        } else if (state.atLeast(BuildState.ALLY)) {
+        }
+        if (state.atLeast(BuildState.RESIDENTS)) {
+            allowed |= land.getLandOwner().isMember(ResidentManager.getInstance().getResident(building));
+
+        }
+        if (state.atLeast(BuildState.ALLY)) {
             Resident resident = ResidentManager.getInstance().getResident(building);
-            allowed = land.getLandOwner().equals(resident.getVillage()) || land.getLandOwner().isAlly(resident);
+            allowed |= land.getLandOwner().equals(resident.getVillage()) || land.getLandOwner().isAlly(resident);
 
-        } else if (state.atLeast(BuildState.TRUSTED)) {
+        }
+        if (state.atLeast(BuildState.TRUSTED)) {
             Resident resident = ResidentManager.getInstance().getResident(building);
-            allowed = land.getLandOwner().equals(resident.getVillage()) || land.getLandOwner().isTrusted(resident);
+            allowed |= land.getLandOwner().equals(resident.getVillage()) || land.getLandOwner().isTrusted(resident);
 
-        } else if (state.atLeast(BuildState.PUBLIC)) {
+        }
+        if (state.atLeast(BuildState.PUBLIC)) {
             allowed = true;
-
-        } else {
-            return null;
         }
 
         if (allowed) {

@@ -320,6 +320,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                         land.getModes().entrySet().stream()
                                 .filter(e -> e.getKey().appliesTo(PlotMode.AppliesTo.LAND_OWNER))
                                 .collect(Collectors.toMap(e -> e.getKey().name(), Map.Entry::getValue)));
+
+                updateUserList(conn, "claim_members", "claimId", (Integer) land.getId().value(), "memberId", land.getPlotMembers());
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while saving claim " + land.getKey() + " to database!", e);
@@ -1046,6 +1048,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         int id = rs.getInt("id");
         map.put("modes", selectMap(conn, "claim_modes", "claimId", id, "mode", "enabled", Boolean.class));
         map.put("uses", selectMap(conn, "claim_uses", "claimId", id, "type", "state", String.class));
+        map.put("plotMembers", selectResidentList(conn, "claim_members", "claimId", id, "memberId"));
         return OwnedLand.deserialize(map);
     }
 
