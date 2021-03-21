@@ -304,6 +304,7 @@ public class LandManager {
         if (land.isPlot()) {
             playerPlots.remove(land.getPlotOwner(), land.getLocation());
         }
+        land.getPlotMembers().clear();
         land.removeLink();
         land.setPlotOwner(owner);
         if (owner != null) {

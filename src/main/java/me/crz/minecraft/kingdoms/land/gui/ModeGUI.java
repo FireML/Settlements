@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.land.gui;
 
 import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
@@ -121,10 +122,7 @@ public class ModeGUI extends PlotGUI {
 
         gui.addElement(group);
 
-        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
-            new SettingsGUI((Player) click.getEvent().getWhoClicked());
-            return true;
-        }, getText("back")));
+        gui.addElement(new GuiBackElement('b', ItemUtils.toIcon(Material.BARRIER), getText("back")));
     }
 
     public void open(final Player p) {

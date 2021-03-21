@@ -327,6 +327,15 @@ public enum MySqlTable {
             + "UNIQUE (claimId, mode)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
+    CLAIM_MEMBERS("CREATE TABLE IF NOT EXISTS {tablePrefix}claim_members ("
+            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+            + "claimId INTEGER, INDEX(claimId),"
+            + "FOREIGN KEY (claimId) REFERENCES {tablePrefix}claims(id) ON DELETE CASCADE,"
+            + "memberId INTEGER,"
+            + "FOREIGN KEY (memberId) REFERENCES {tablePrefix}residents(id) ON DELETE CASCADE,"
+            + "UNIQUE (claimId, memberId)"
+            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
+
     PORTALS("CREATE TABLE IF NOT EXISTS {tablePrefix}portals ("
             + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
             + "world VARCHAR(255),"

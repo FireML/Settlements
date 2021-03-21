@@ -17,6 +17,7 @@ public class PlotCommand extends ResidentSubCommand {
         registerCommand(new PlotBuyCommand(this));
         registerCommand(new PlotUnownCommand(this));
         registerCommand(new PlotSettingsCommand(this));
+        registerCommand(new PlotMembersCommand(this));
         registerCommand(new PlotUseCommand(this));
         registerCommand(new PlotModeCommand(this));
         registerCommand(new PlotBuildCommand(this));
