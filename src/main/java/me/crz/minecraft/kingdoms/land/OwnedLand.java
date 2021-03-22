@@ -28,9 +28,12 @@ import org.bukkit.entity.Player;
 
 import java.util.Collection;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -42,6 +45,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     private IdObject id = IdObject.get(null);
     private LandOwner landOwner;
     private UUID plotOwner = null;
+    private Set<UUID> plotMembers = new HashSet<>();
     private int unclaimIn = 0;
     private int price = 0;
     private boolean forSale = false;
@@ -180,6 +184,10 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
 
     public UUID getPlotOwner() {
         return plotOwner;
+    }
+
+    public Set<UUID> getPlotMembers() {
+        return plotMembers;
     }
 
     public void setForSale(boolean forSale) {
@@ -458,6 +466,9 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
                 }
             }
         }
+        if (map.containsKey("plotMembers")) {
+            ((Collection<String>) map.get("plotMembers")).stream().map(Utils::parseUuid).filter(Objects::nonNull).forEach(m -> land.getPlotMembers().add(m));
+        }
         return land;
     }
 
@@ -504,6 +515,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
                 "state", getLandOwner().getStateTag(),
                 "name", getName(),
                 "description", getDescription(),
+                "members", String.valueOf(getPlotMembers().size()),
                 "landowner", getLandOwner().getName(),
                 "hostilespawning", String.valueOf(getMode(PlotMode.mobSpawning)),
                 "passivespawning", String.valueOf(getMode(PlotMode.passiveSpawning)),

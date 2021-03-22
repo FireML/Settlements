@@ -32,7 +32,7 @@ public class SettingsGUI extends PlotGUI {
             "ggggigggg",
             "         ",
             " um s nd ",
-            " bl      ",
+            " bl    e ",
             "         ",
             "ggggcgggg"
     };
@@ -129,6 +129,14 @@ public class SettingsGUI extends PlotGUI {
             }
             return true;
         }, getText("desc.button", "description", openedOnLand != null ? openedOnLand.getDescription() : "none")));
+
+        gui.addElement(new StaticGuiElement('e', ItemUtils.toIcon(Material.REDSTONE), click -> {
+            OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+            if (land != null) {
+                new MembersGUI(land).open(p);
+            }
+            return true;
+        }, getText("members", "amount", String.valueOf(openedOnLand.getPlotMembers().size()))));
 
         if (openedOnLand != null && !openedOnLand.isPlot() && openedOnLand.canAdmin(ResidentManager.getInstance().getResident(p))) {
             gui.addElement(new DynamicGuiElement('s', () -> new StaticGuiElement('s', ItemUtils.toIcon(Material.EMERALD), click -> {

@@ -539,7 +539,8 @@ protection:
       trusted: "&e&l(!) &r&e{use}&7 is limited to &eallies or members of the same empire&7 of &e{state} {name}&7."
       ally: "&e&l(!) &r&e{use}&7 is limited to &eallies&7 of &e{state} {name}&7."
       private: "&e&l(!) &r&e{use}&7 is limited to the &ePlot owner&7."
-      friends: "&e&l(!) &r&e{use}&7 is limited to the &ePlot owner's friends&7."
+      members: "&e&l(!) &r&e{use}&7 is limited to &ePlot members&7."
+      friends: "&e&l(!) &r&e{use}&7 is limited to &ePlot members and the owner's friends&7."
       empire:
         trusted: "&e&l(!) &r&e{use}&7 is limited to &emembers&7 of &e{state} {name}&7."
         landowner:
@@ -553,7 +554,8 @@ protection:
       trusted: "&e&l(!) &r&7Only &eallies or members of the same empire&7 as &e{state} {name}&7 can build here."
       ally: "&e&l(!) &r&7Only &eallies&e7 of &e{state} {name}&7 can build here."
       private: "&e&l(!) &r&7Only the &ePlot owner&7 can build here."
-      friends: "&e&l(!) &r&7Only the &ePlot owner and his friends&7 can build here."
+      members: "&e&l(!) &r&7Only the &ePlot owner and members of the plot&7 can build here."
+      friends: "&e&l(!) &r&7Only the &ePlot owner, his friends and member so the plot&7 can build here."
       empire:
         trusted: "&e&l(!) &r&7Only &members of {state} {name}&7 can build here."
         landowner:
@@ -975,6 +977,22 @@ gui:
         click-to-unset: |-
           &7Middle click to inherit &b{value}
           &7from parent {parent} again
+    members:
+      title: "&2&l/plot members"
+      element: |-
+        &6{name}
+        &7Click to remove
+      add: "&7Click to add members"
+      back: "&c&lBack to plot settings"
+      page:
+        next: "&7Go to next page {page}"
+        previous: "&7Go to previous page {page}"
+      players:
+        title: "Select player to add"
+        player: |-
+          &6{name}
+          &7Click to add
+        back: "&c&lBack to member list"
     mode:
       title: "&2&l/plot mode"
       entry:
@@ -1010,7 +1028,9 @@ gui:
           &7- Plot Owner
           &7to build.
         friends: |-
-          &7Allows only your friends to build
+          &7Allows only your friends and members to build
+        members: |-
+          &7Allows only members of the plot to build
         private: |-
           &7Allows only you to build
     settings:
@@ -1058,7 +1078,7 @@ gui:
           placeholder: "{name}"
       desc:
         button: |-
-          &a&lName
+          &a&lDescription
           &fSet the description of the plot
           
           &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1091,6 +1111,16 @@ gui:
         anvil:
           title: "Set price"
           placeholder: "{price}"
+      members: |-
+        &a&lMembers
+        &fGrant individual players
+        &fbuild rights on the plot!
+        &f{amount} players added.
+  
+        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━
+        &aLeft-Click&f to change settings
+  
+        &a▶ /plot members
       entry: |-
         &a⊱&m━━━━&r&6Plot Info&a&m━━━━&a⊰
         &c&l{state}: &7{landowner}
@@ -1518,6 +1548,7 @@ command:
         &c&l{state}: &7{landowner}
         &9&lName: &r{name}
         &9&lDescription: &r{description}
+        &9&lMembers: &r{members} &7[(Click to view)](/plot members list)
         &9&lModes: &7Hostile MobSpawning: &6{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explosions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}&r&7 (from {buildsource}) | Embassy: &6{embassy}
       owner: "&a&lPlot Owner: &7{name}"
       price: "&a&lPlot Price: &7₲{price}"
@@ -1530,6 +1561,19 @@ command:
       success-coords: "&a&lSUCCESS: &r&7Linked {x} {z} to your current one!"
       success-existing: "[&7Linked to other {amount} plots now!](&a{x}/{z} is linked to:\n&f{linked})"
       description: Link surrounding land flags with the current one
+    members:
+      add:
+        success: "&a&lSUCCESS: &r&7Added [{name}](Name: {name}\nUUID: {uuid}) to the plot!"
+        already-a-member: "&c[{name}](Name: {name}\nUUID: {uuid}) is already a member of the plot?"
+      remove:
+        success: "&a&lSUCCESS: &r&7Removed [{name}](Name: {name}\nUUID: {uuid}) from the plot!"
+        not-a-member: "&c[{name}](Name: {name}\nUUID: {uuid}) is not a member of the plot?"
+      list:
+        head: "&a⊱&m━━━━&r&6Plot Members [{page}/{maxpage}]&a&m━━━━&a⊰"
+        entry: "- [{name}](Name: {name}\nUUID: {uuid}) [&cx](hover=Click to remove {name} run_command=/plot members remove {uuid})"
+        footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
+        previous: "&b<< Prev "
+        next: "&b Next >>"
     mode:
       modes: "&cAvailable modes: {modes}"
       success: "&7Plot mode &6{mode}&7: &6{value}"

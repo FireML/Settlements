@@ -8,6 +8,7 @@ import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.PlotMode;
+import me.crz.minecraft.kingdoms.resident.ResidentManager;
 import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.resident.Resident;
@@ -18,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -581,5 +583,24 @@ public class Utils {
             return ((Number) o).longValue() != 0;
         }
         return Boolean.parseBoolean(String.valueOf(o));
+    }
+
+    public static String getPlayerName(UUID playerId) {
+        Player player = Bukkit.getPlayer(playerId);
+        if (player != null) {
+            return player.getName();
+        }
+
+        Resident resident = ResidentManager.getInstance().getResidentIfPreset(playerId);
+        if (resident != null) {
+            return resident.getName();
+        }
+
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerId);
+        if (offlinePlayer.getName() != null) {
+            return offlinePlayer.getName();
+        }
+
+        return playerId.toString();
     }
 }
