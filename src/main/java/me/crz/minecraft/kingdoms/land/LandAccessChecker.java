@@ -119,7 +119,7 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
         if (allowed) {
             return new Pair<>(true, "");
         }
-        return new Pair<>(false, getMessage("state." + type + "." + land.getKey() + ".plot", state.getKey()).getReplacedText(
+        return new Pair<>(false, getMessage("state." + type + "." + land.getLandOwner().getKey() + ".plot", state.getKey()).getReplacedText(
                 "owner", owner != null ? owner.getName() : land.getPlotOwner() != null ? land.getPlotOwner().toString() : "-",
                 "name", land.getLandOwner().getName(),
                 "state", land.getLandOwner().getStateTag()
