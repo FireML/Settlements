@@ -53,6 +53,7 @@ public enum Use implements NameTag {
     LEASH(Material.LEAD),
     BECON(Material.BEACON),
     BREWING_STAND(Material.BREWING_STAND),
+    DRAGON_EGG(Material.DRAGON_EGG),
     FISH(Material.FISHING_ROD),
     ITEM(),
     REPEATERS(Material.REPEATER, Material.COMPARATOR),

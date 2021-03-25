@@ -200,6 +200,9 @@ public class LandUseListener implements LandAccessChecker, Listener {
                     }
                 }
             }
+            if (e.getAction() == Action.LEFT_CLICK_BLOCK && use == null && e.getClickedBlock() != null && e.getClickedBlock().getType() == Material.DRAGON_EGG) {
+                use = Use.DRAGON_EGG;
+            }
             if (use != null) {
                 Pair<Boolean, String> response = this.canUse(e.getPlayer(), use, e.getClickedBlock().getLocation());
                 if (!response.getLeft()) {

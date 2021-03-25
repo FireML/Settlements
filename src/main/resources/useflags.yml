@@ -113,6 +113,9 @@ flags:
   becon:
     type: becon
     icon: beacon
+  dragon_egg:
+    type: dragon_egg
+    icon: dragon_egg
   brewing_stand:
     type: brewing_stand
     icon: brewing_stand
