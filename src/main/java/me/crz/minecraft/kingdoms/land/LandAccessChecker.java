@@ -67,50 +67,41 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
             state = BuildState.PRIVATE;
         }
 
+        if (!land.isPlot() && !state.appliesTo(BuildState.AppliesTo.get(land.getLandOwner()))) {
+            return null;
+        }
+
         Resident owner = null;
         boolean allowed = false;
         if (BuildState.PRIVATE.atLeast(state)) {
             if (land.isPlot()) {
                 allowed = land.isPlotOwner(building);
-            } else {
-                return null;
             }
-
         }
         if (BuildState.MEMBERS.atLeast(state)) {
             if (land.isPlot()) {
                 allowed |= land.getPlotMembers().contains(building.getUniqueId());
-            } else {
-                return null;
             }
-
         }
         if (BuildState.FRIENDS.atLeast(state)) {
             if (land.isPlot()) {
                 owner = ResidentManager.getInstance().getResident(land.getPlotOwner());
                 allowed |= owner.getFriends().contains(building.getUniqueId());
-            } else {
-                return null;
             }
-
         }
         if (BuildState.OFFICERS.atLeast(state)) {
             allowed |= land.getLandOwner().isOfficer(building);
-
         }
         if (BuildState.RESIDENTS.atLeast(state)) {
             allowed |= land.getLandOwner().isMember(ResidentManager.getInstance().getResident(building));
-
         }
         if (BuildState.ALLY == state) {
             Resident resident = ResidentManager.getInstance().getResident(building);
             allowed |= land.getLandOwner().equals(resident.getVillage()) || land.getLandOwner().isAlly(resident);
-
         }
         if (BuildState.TRUSTED == state) {
             Resident resident = ResidentManager.getInstance().getResident(building);
             allowed |= land.getLandOwner().equals(resident.getVillage()) || land.getLandOwner().isTrusted(resident);
-
         }
         if (BuildState.PUBLIC.atLeast(state)) {
             allowed = true;

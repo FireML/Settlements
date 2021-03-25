@@ -24,7 +24,7 @@ public class BuildGui extends PlotGUI {
             "         ",
             "         ",
             "ggggggggg",
-            "ggggggggg",
+            "ggggggggr",
             "         ",
             "    b    "
     };
@@ -95,6 +95,27 @@ public class BuildGui extends PlotGUI {
         }
 
         gui.addElement(group);
+
+        if (!l.isPlot()) {
+            gui.addElement(new StaticGuiElement('r', ItemUtils.toIcon(Material.EGG), click -> {
+                OwnedLand land = LandManager.getInstance().getLand(landLocation);
+                if (land != null && !land.isPlot()) {
+                    land.setBuildState(BuildState.PRIVATE);
+                    gui.draw();
+                    LandManager.getInstance().saveLand(land);
+                    Message.get("command.plot.build.reset").tell(click.getEvent().getWhoClicked(),
+                            "parent", land.getLandOwner().getStateTag(),
+                            "state", l.getLandOwner().getBuildState().getTag()
+                    );
+                }
+                return true;
+            }, getMessage("reset").getReplacedText(
+                    "parent", l.getLandOwner().getStateTag(),
+                    "state", l.getLandOwner().getBuildState().getTag()
+            )));
+        } else {
+            gui.addElement(new StaticGuiElement('r', null));
+        }
 
         gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
             new SettingsGUI((Player) click.getEvent().getWhoClicked());

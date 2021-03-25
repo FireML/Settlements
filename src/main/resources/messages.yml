@@ -1004,6 +1004,9 @@ gui:
       title: "&2&l/plot build"
       plot-state: "&7&lPlot build is set to &a&l{state}&7&l but overridden!"
       inherited-state: "&e&lBuilding state &a&l{state}&e&l is inherited!"
+      reset: |-
+        &7Click to unset the plot state and
+        &7inherit {state} from parent {parent}
       build:
         public: |-
           &7Allows everyone to build
@@ -1528,7 +1531,9 @@ command:
       description: "Allows administrating of plots"
     build:
       success: "&aSet build state of this plot to {state}"
+      reset: "&7Reset plot build state! Now inherits &6{state} &7from parent {parent}"
       states:
+        reset: reset to the build state of the {parent} ({state})
         residents: residents and officers to build in claimed land
         officers: only officers are allowed to build in claimed land
         public: allows everyone to build in your claimed land
@@ -1536,6 +1541,7 @@ command:
         trusted: allows your allies and fellow empire members to build
         private: allows you to build in your claimed land
         friends: allows your friends to build in your claimed land
+        members: allows only plot members to build in your claimed land
       description: Sets the build mode of a plot
     buy:
       cant-buy-embassy: "&cYou can't buy this plot as it is an embassy of your {state}!"

@@ -307,14 +307,13 @@ public class LandManager {
         land.getPlotMembers().clear();
         land.removeLink();
         land.setPlotOwner(owner);
+        land.setBuildState(BuildState.PRIVATE);
         if (owner != null) {
-            land.setBuildState(BuildState.PRIVATE);
             for (UseFlag useFlag : UseFlagManager.getInstance().getUseFlags()) {
                 land.setUseState(useFlag, useFlag.getDefault(BuildState.PRIVATE));
             }
         } else {
             land.setEmbassy(false);
-            land.setBuildState(land.getLandOwner().getBuildState());
             for (Use use : Use.values()) {
                 land.unsetUseState(use);
             }

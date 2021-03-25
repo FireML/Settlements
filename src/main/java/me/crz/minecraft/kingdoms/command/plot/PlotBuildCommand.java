@@ -16,17 +16,34 @@ public class PlotBuildCommand extends PlotSubCommand {
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
         if (args.length < 1) {
             new BuildGui(land).open(res.getPlayer());
+        } else if (land.isPlot() && "reset".equalsIgnoreCase(args[0])) {
+            land.setBuildState(BuildState.PRIVATE);
+            LandManager.getInstance().saveLand(land);
+            getMessage("reset").tell(res, "parent", land.getLandOwner().getStateTag(), "state", land.getLandOwner().getBuildState().getTag());
         } else {
             try {
                 BuildState newState = BuildState.valueOf(args[0].toUpperCase(), land.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(land.getLandOwner()));
                 land.setBuildState(newState);
                 LandManager.getInstance().saveLand(land);
-                res.tell(getMessage("success"), "state", newState.getTag());
+                getMessage("success").tell(res, "state", newState.getTag());
             } catch (IllegalArgumentException e) {
-                res.tell(Message.get("usage.head"), "name", "Plot Build");
+                Message.get("usage.head").tell(res, "type", "", "name", "Plot Build");
+                if (land.isPlot()) {
+                    Message.get("usage.entry").tell(res,
+                            "usage", getUsage(base).replace("<state>", "reset"),
+                            "aliases", "",
+                            "path", base + " " + alias + " reset",
+                            "description", getMessage("states.reset").getReplacedText(
+                                    "parent", land.getLandOwner().getStateTag(),
+                                    "state", land.getLandOwner().getBuildState().getTag()
+                            )
+                    );
+                }
                 for (BuildState state : BuildState.values(land.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(land.getLandOwner()))) {
-                    res.tell(Message.get("usage.entry"),
+                    Message.get("usage.entry").tell(res,
                             "usage", getUsage(base).replace("<state>", state.name().toLowerCase()),
+                            "aliases", "",
+                            "path", base + " " + alias + " " + state.name().toLowerCase(),
                             "description", getMessage("states." + state.getKey()).getText()
                     );
                 }
