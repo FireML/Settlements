@@ -328,7 +328,7 @@ public enum SQLiteTable {
             + "embassy BOOLEAN NOT NULL,"
             + "name VARCHAR(255),"
             + "description TEXT,"
-            + "buildState VARCHAR(255) NOT NULL,"
+            + "buildState VARCHAR(255),"
             + "link VARCHAR(36),"
             + "FOREIGN KEY (ownerId) REFERENCES {tablePrefix}residents(id) ON DELETE SET NULL,"
             + "UNIQUE(world, x, z)"

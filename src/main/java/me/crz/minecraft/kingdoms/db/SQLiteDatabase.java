@@ -1,7 +1,6 @@
 package me.crz.minecraft.kingdoms.db;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.utils.IdObject;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 import java.io.File;

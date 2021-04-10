@@ -305,7 +305,7 @@ public enum MySqlTable {
             + "embassy BOOLEAN NOT NULL,"
             + "name VARCHAR(255),"
             + "description TEXT,"
-            + "buildState VARCHAR(255) NOT NULL,"
+            + "buildState VARCHAR(255),"
             + "link VARCHAR(36)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 

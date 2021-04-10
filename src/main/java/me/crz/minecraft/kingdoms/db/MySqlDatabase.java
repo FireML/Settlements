@@ -2,12 +2,12 @@ package me.crz.minecraft.kingdoms.db;
 
 import com.zaxxer.hikari.HikariDataSource;
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
-import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.config.Config;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
@@ -33,6 +33,7 @@ public class MySqlDatabase extends SqlDatabaseManager {
         super.connect();
 
         addColumn(MySqlTable.RESIDENTS, "socialSpy", "BOOLEAN NOT NULL DEFAULT false AFTER swear");
+        alterColumnOrRecreate(MySqlTable.CLAIMS, "buildState", "VARCHAR(255)");
     }
 
     @Override
@@ -187,6 +188,67 @@ public class MySqlDatabase extends SqlDatabaseManager {
             return className;
         } catch (Exception ignored) {}
         return null;
+    }
+
+    private void alterOrRecreate(MySqlTable table, String alterSql) {
+        String sql = "SELECT * FROM " + tablePrefix + table.getDbName() + " LIMIT 1";
+        Connection conn = getConnection();
+        try (Statement sta = conn.createStatement()) {
+            ResultSet rs = sta.executeQuery(sql);
+            if (rs.next()) {
+                sta.execute("ALTER IGNORE TABLE `" + tablePrefix + table.getDbName() + "` " + alterSql);
+            } else {
+                sta.addBatch("SET FOREIGN_KEY_CHECKS = 0");
+                sta.addBatch("DROP TABLE " + tablePrefix + table.getDbName());
+                sta.addBatch(table.getSql(tablePrefix));
+                sta.addBatch("SET FOREIGN_KEY_CHECKS = 1");
+                sta.executeBatch();
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to alter table " + table.getDbName(), e);
+        } finally {
+            close(conn);
+        }
+    }
+
+    private void alterColumnOrRecreate(MySqlTable table, String column, String columnDefinition) {
+        alterOrRecreate(table, "MODIFY COLUMN `" + column + "` " + columnDefinition + ";");
+    }
+
+    private void alterColumnOrRecreate(MySqlTable table, String oldColumn, String newColumn, String columnDefinition) {
+        String sql = "SELECT * FROM " + tablePrefix + table.getDbName() + " LIMIT 1;";
+        Connection conn = getConnection();
+        try (Statement sta = conn.createStatement()) {
+            ResultSet rs = sta.executeQuery(sql);
+            if (rs.next()) {
+                try {
+                    rs.getObject(newColumn);
+                } catch (SQLException columnNotFound) {
+                    sta.execute("ALTER TABLE `" + tablePrefix + table.getDbName() + "` CHANGE COLUMN `" + oldColumn + "` `" + newColumn + "` " + columnDefinition + ";");
+                }
+            } else {
+                sta.addBatch("SET FOREIGN_KEY_CHECKS = 0");
+                sta.addBatch("DROP TABLE " + tablePrefix + table.getDbName());
+                sta.addBatch(table.getSql(tablePrefix));
+                sta.addBatch("SET FOREIGN_KEY_CHECKS = 1");
+                sta.executeBatch();
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to alter table " + table.getDbName(), e);
+        } finally {
+            close(conn);
+        }
+    }
+
+    protected void addColumn(MySqlTable table, String column, String definition) {
+        Connection conn = getConnection();
+        try (Statement sta = conn.createStatement()) {
+            sta.execute("ALTER TABLE `" + tablePrefix + table.getDbName() + "` ADD COLUMN `" + column + "` " + definition + ";");
+        } catch (SQLException ignored) {
+            // column exists
+        } finally {
+            close(conn);
+        }
     }
 
 }

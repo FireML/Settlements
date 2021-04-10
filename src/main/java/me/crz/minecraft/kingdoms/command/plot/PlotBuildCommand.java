@@ -17,7 +17,7 @@ public class PlotBuildCommand extends PlotSubCommand {
         if (args.length < 1) {
             new BuildGui(land).open(res.getPlayer());
         } else if (land.isPlot() && "reset".equalsIgnoreCase(args[0])) {
-            land.setBuildState(BuildState.PRIVATE);
+            land.setBuildState(null);
             LandManager.getInstance().saveLand(land);
             getMessage("reset").tell(res, "parent", land.getLandOwner().getStateTag(), "state", land.getLandOwner().getBuildState().getTag());
         } else {

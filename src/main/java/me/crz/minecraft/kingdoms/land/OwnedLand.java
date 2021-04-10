@@ -54,7 +54,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     private String outpost = null;
     private String name = "";
     private String description = "";
-    private BuildState buildState = BuildState.PRIVATE;
+    private BuildState buildState = null;
     private EnumMap<Use, BuildState> use = new EnumMap<>(Use.class);
     private UUID link;
 
@@ -401,7 +401,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         map.put("description", getDescription());
         map.put("embassy", isEmbassy());
         map.put("modes", getModes().entrySet().stream().filter(e -> e.getKey().appliesTo(PlotMode.AppliesTo.LAND_OWNER)).collect(Collectors.toMap(e -> e.getKey().name(), Map.Entry::getValue)));
-        map.put("buildState", getBuildState().name());
+        map.put("buildState", getBuildState() != null ? getBuildState().name() : null);
         map.put("link", getLink() != null ? getLink().toString() : null);
         map.put("uses", getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
         return map;
@@ -523,8 +523,8 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
                 "explosions", String.valueOf(getMode(PlotMode.explosions)),
                 "pvp", String.valueOf(getMode(PlotMode.pvp)),
                 "buff", String.valueOf(getMode(PlotMode.buff)),
-                "build", isPlot() || getBuildState().appliesTo(BuildState.AppliesTo.get(getLandOwner())) ? getBuildState().getTag() : getLandOwner().getBuildState().getTag(),
-                "buildsource", isPlot() || getBuildState().appliesTo(BuildState.AppliesTo.get(getLandOwner())) ? Message.get("names.plot").getText() : getLandOwner().getStateTag(),
+                "build", getBuildState() != null && (isPlot() || getBuildState().appliesTo(BuildState.AppliesTo.get(getLandOwner()))) ? getBuildState().getTag() : getLandOwner().getBuildState().getTag(),
+                "buildsource", getBuildState() != null && (isPlot() || getBuildState().appliesTo(BuildState.AppliesTo.get(getLandOwner()))) ? Message.get("names.plot").getText() : getLandOwner().getStateTag(),
                 "embassy", String.valueOf(isEmbassy()),
                 "x", String.valueOf(getX()),
                 "z", String.valueOf(getZ()),

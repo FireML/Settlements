@@ -63,6 +63,11 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
         if (land.isPlotOwner(building) || land.getLandOwner().isChief(building.getUniqueId())) {
             return new Pair<>(true, "");
         }
+
+        if (state == null) {
+            return null;
+        }
+
         if (!state.appliesTo(BuildState.AppliesTo.LAND)) {
             state = BuildState.PRIVATE;
         }
@@ -122,7 +127,7 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
             return new Pair<>(true, "");
         }
 
-        if (!state.appliesTo(landOwner.getBuildStateType())) {
+        if (state == null || !state.appliesTo(landOwner.getBuildStateType())) {
             state = landOwner.getDefaultBuildState();
         }
         boolean allowed;

@@ -63,7 +63,7 @@ public class BuildGui extends PlotGUI {
                         description.add(getText("plot-state", replacements));
                         description.add(getText("description", replacements));
                     }
-                } else if (state == land.getLandOwner().getBuildState() && !land.isPlot() && !land.getBuildState().appliesTo(BuildState.AppliesTo.get(land.getLandOwner()))) {
+                } else if (state == land.getLandOwner().getBuildState() && !land.isPlot() && (land.getBuildState() == null || !land.getBuildState().appliesTo(BuildState.AppliesTo.get(land.getLandOwner())))) {
                     icon = Material.LIGHT_BLUE_WOOL;
                     description.add(getText("inherited-state", replacements));
                     description.add(getText("description", replacements));
@@ -100,7 +100,7 @@ public class BuildGui extends PlotGUI {
             gui.addElement(new StaticGuiElement('r', ItemUtils.toIcon(Material.EGG), click -> {
                 OwnedLand land = LandManager.getInstance().getLand(landLocation);
                 if (land != null && !land.isPlot()) {
-                    land.setBuildState(BuildState.PRIVATE);
+                    land.setBuildState(null);
                     gui.draw();
                     LandManager.getInstance().saveLand(land);
                     Message.get("command.plot.build.reset").tell(click.getEvent().getWhoClicked(),
