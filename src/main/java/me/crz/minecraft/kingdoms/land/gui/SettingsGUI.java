@@ -245,7 +245,7 @@ public class SettingsGUI extends PlotGUI {
             if (land == null) {
                 return null;
             }
-            return new StaticGuiElement('i', ItemUtils.toIcon(Material.GREEN_BANNER), getMessage("entry").getReplacedText(land.getReplacements()));
+            return new StaticGuiElement('i', ItemUtils.toIcon(Material.GREEN_BANNER), Utils.wrap(getText("entry", land.getReplacements()), 48));
         }));
 
         gui.addElement(new StaticGuiElement('c', ItemUtils.toIcon(Material.BARRIER), click -> {

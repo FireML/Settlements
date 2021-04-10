@@ -11,6 +11,7 @@ import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.resident.Resident;
 import me.crz.minecraft.kingdoms.resident.ResidentManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -148,7 +149,7 @@ public class SettingsGUI extends KingdomsGUI {
 
         Empire empire = resident.getVillage().getEmpire();
         gui.addElement(new StaticGuiElement('i', ItemUtils.toIcon(Material.BLUE_BED),
-                getText("entry", empire.getReplacements(SettingsGUI.this))));
+                Utils.wrap(getText("entry", empire.getReplacements(SettingsGUI.this)), 48)));
 
         gui.addElement(new StaticGuiElement('c', ItemUtils.toIcon(Material.BARRIER), click -> {
             click.getGui().close();

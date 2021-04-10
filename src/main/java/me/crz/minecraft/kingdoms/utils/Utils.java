@@ -314,6 +314,9 @@ public class Utils {
     }
 
     public static <R extends Enum<R>> R parseEnum(String name, R defaultValue) {
+        if (name == null) {
+            return defaultValue;
+        }
         try {
             return Enum.valueOf(defaultValue.getDeclaringClass(), name);
         } catch (Exception e) {
@@ -354,6 +357,51 @@ public class Utils {
             return String.join(" ", split);
         }
         return String.join(" ", split).substring(0, length);
+    }
+
+    /**
+     * Wrap a string to lines with a certain length.
+     * @param string The string to wrap
+     * @param length The line length
+     * @return The string wrapped with all lines wrapped to the length. Tries to take colors/formatting into account.
+     */
+    public static String wrap(String string, int length) {
+        if (ChatColor.stripColor(string).length() < length) {
+            return string;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (String line : string.split("\n")) {
+            if (sb.length() > 0) {
+                sb.append("\n");
+            }
+            if (ChatColor.stripColor(line).length() < length) {
+                sb.append(line);
+            } else {
+                String[] parts = line.split(" ");
+                StringBuilder part1 = new StringBuilder(parts[0]);
+                int i = 1;
+                for (; i < parts.length && ChatColor.stripColor(part1 + " " + parts[i]).length() < length; i++) {
+                    part1.append(" ").append(parts[i]);
+                }
+                StringBuilder part2 = new StringBuilder(i < parts.length ? parts[i] : "");
+                for (i += 1; i < parts.length; i++) {
+                    part2.append(" ").append(parts[i]);
+                }
+                while (part1.length() > 0 && part1.charAt(part1.length() - 1) == ChatColor.COLOR_CHAR
+                        || part1.length() > 1 && part1.charAt(part1.length() - 2) == ChatColor.COLOR_CHAR) {
+                    if (part1.charAt(part1.length() - 1) == ChatColor.COLOR_CHAR) {
+                        part2.insert(0, ChatColor.COLOR_CHAR);
+                        part1 = new StringBuilder(part1.substring(0, part1.length() - 1));
+                    } else if (part1.charAt(part1.length() - 2) == ChatColor.COLOR_CHAR) {
+                        part2.insert(0, ChatColor.COLOR_CHAR).insert(1, part1.charAt(part1.length() - 1));
+                        part1 = new StringBuilder(part1.substring(0, part1.length() - 2));
+                    }
+                }
+                part2.insert(0, ChatColor.getLastColors(part1.toString()));
+                sb.append(part1).append("\n").append(wrap(part2.toString(), length));
+            }
+        }
+        return sb.toString();
     }
 
     public static Date getNextUpkeep() {

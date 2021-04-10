@@ -10,6 +10,7 @@ import me.crz.minecraft.kingdoms.command.village.VillageSetHomeCommand;
 import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.resident.Resident;
 import me.crz.minecraft.kingdoms.resident.ResidentManager;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import org.bukkit.Material;
@@ -149,7 +150,7 @@ public class SettingsGUI extends KingdomsGUI {
 
         Village village = resident.getVillage();
         gui.addElement(new StaticGuiElement('i', ItemUtils.toIcon(village.getState() == VillageState.KINGDOM ? Material.RED_BED : Material.LIME_BED),
-                getText("entry", village.getReplacements(SettingsGUI.this))));
+                Utils.wrap(getText("entry", village.getReplacements(SettingsGUI.this)), 48)));
 
         gui.addElement(new StaticGuiElement('c', ItemUtils.toIcon(Material.BARRIER), click -> {
             click.getGui().close();
