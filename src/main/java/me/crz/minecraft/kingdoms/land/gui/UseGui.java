@@ -50,7 +50,7 @@ public class UseGui extends PlotGUI {
                 OwnedLand land = LandManager.getInstance().getLand(landLocation);
                 if (land != null) {
                     BuildState state = land.getUseState(u);
-                    if (!land.isPlot() && !state.appliesTo(BuildState.AppliesTo.get(land.getLandOwner()))) {
+                    if (state == null || !land.isPlot() && !state.appliesTo(BuildState.AppliesTo.get(land.getLandOwner()))) {
                         state = land.getLandOwner().getDefaultBuildState();
                     }
                     List<String> text = new ArrayList<>();

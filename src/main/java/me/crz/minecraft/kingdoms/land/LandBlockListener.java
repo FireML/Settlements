@@ -265,7 +265,7 @@ public class LandBlockListener implements LandAccessChecker, Listener {
                     landOwner = land.getLandOwner();
                 }
                 if (land.isPlot()) {
-                    if (land.getBuildState().above(BuildState.PUBLIC)) {
+                    if (land.getBuildState() != null && land.getBuildState().above(BuildState.PUBLIC)) {
                         if (plotOwner != null && !land.getPlotOwner().equals(plotOwner)) {
                             return true;
                         }
