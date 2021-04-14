@@ -25,7 +25,12 @@ public class MySqlDatabase extends SqlDatabaseManager {
         ds = new HikariDataSource();
         initConnectionClass(ds);
 
-        ds.addDataSourceProperty("url", "jdbc:mysql://" + Config.Storage.HOST + ":" + Config.Storage.PORT + "/" + Config.Storage.DATABASE + Config.Storage.URL_PARAMETERS);
+        String url = "jdbc:mysql://" + Config.Storage.HOST + ":" + Config.Storage.PORT + "/" + Config.Storage.DATABASE + Config.Storage.URL_PARAMETERS;
+        if (ds.getDataSourceClassName() != null) {
+            ds.addDataSourceProperty("url", url);
+        } else {
+            ds.setJdbcUrl(url);
+        }
         ds.setUsername(Config.Storage.USER);
         ds.setPassword(Config.Storage.PASSWORD);
         ds.setConnectionTimeout(5000);
