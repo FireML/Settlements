@@ -315,7 +315,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         try {
             if (!save(conn, land, "landOwner", "uses", "modes").isNull() && !land.getId().isNull()) {
                 updateDataMap(conn, "claim_uses", "claimId", (Integer) land.getId().value(), "type", "state",
-                        land.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
+                        land.getUseStates().entrySet().stream().filter(e -> e.getValue() != null).collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
                 updateDataMap(conn, "claim_modes", "claimId", (Integer) land.getId().value(), "mode", "enabled",
                         land.getModes().entrySet().stream()
                                 .filter(e -> e.getKey().appliesTo(PlotMode.AppliesTo.LAND_OWNER))

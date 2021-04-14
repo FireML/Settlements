@@ -403,7 +403,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         map.put("modes", getModes().entrySet().stream().filter(e -> e.getKey().appliesTo(PlotMode.AppliesTo.LAND_OWNER)).collect(Collectors.toMap(e -> e.getKey().name(), Map.Entry::getValue)));
         map.put("buildState", getBuildState() != null ? getBuildState().name() : null);
         map.put("link", getLink() != null ? getLink().toString() : null);
-        map.put("uses", getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
+        map.put("uses", getUseStates().entrySet().stream().filter(e -> e.getValue() != null).collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
         return map;
     }
 
