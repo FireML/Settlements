@@ -473,7 +473,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     public boolean syncLinked(OwnedLand land) {
-        if (!isOwnedBy(land.getLandOwner()) || !isPlotOwner(land.getPlotOwner()) || !isLinked(land)) {
+        if (this == land || !isOwnedBy(land.getLandOwner()) || !isPlotOwner(land.getPlotOwner()) || !isLinked(land)) {
             return false;
         }
         boolean r = false;
@@ -503,6 +503,8 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
                 r |= unsetUseState(use);
             }
         }
+        getPlotMembers().clear();
+        getPlotMembers().addAll(land.getPlotMembers());
         return r;
     }
 

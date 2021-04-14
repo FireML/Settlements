@@ -115,7 +115,7 @@ public class PlotMembersCommand extends PlotSubCommand {
                     }
 
                     if (land.getPlotMembers().add(target.getUUID())) {
-                        LandManager.getInstance().saveLand(land);
+                        LandManager.getInstance().syncAndSave(land);
                         getMessage("success").tell(res, "name", target.getName(), "uuid", target.getUUID().toString());
                     } else {
                         getMessage("already-a-member").tell(res, "name", target.getName(), "uuid", target.getUUID().toString());
@@ -144,7 +144,7 @@ public class PlotMembersCommand extends PlotSubCommand {
                     }
 
                     if (land.getPlotMembers().remove(target.getUUID())) {
-                        LandManager.getInstance().saveLand(land);
+                        LandManager.getInstance().syncAndSave(land);
                         getMessage("success").tell(res, "name", target.getName(), "uuid", target.getUUID().toString());
                     } else {
                         getMessage("not-a-member").tell(res, "name", target.getName(), "uuid", target.getUUID().toString());

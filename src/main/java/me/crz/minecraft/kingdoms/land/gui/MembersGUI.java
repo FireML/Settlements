@@ -54,7 +54,7 @@ public class MembersGUI extends PlotGUI {
                         OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
                         if (currentLand != null && (currentLand.isPlotOwner((Player) click.getWhoClicked()) || currentLand.canAdmin(ResidentManager.getInstance().getResident((Player) click.getWhoClicked())))) {
                             if (currentLand.getPlotMembers().remove(memberId)) {
-                                LandManager.getInstance().saveLand(currentLand);
+                                LandManager.getInstance().syncAndSave(currentLand);
                                 Message.get("command.plot.members.remove.success").tell(click.getWhoClicked(), "name", memberName, "uuid", memberId.toString());
                                 gui.draw();
                             }
@@ -77,7 +77,7 @@ public class MembersGUI extends PlotGUI {
                 OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
                 if (currentLand != null && (currentLand.isPlotOwner((Player) click.getWhoClicked()) || currentLand.canAdmin(ResidentManager.getInstance().getResident((Player) click.getWhoClicked())))) {
                     if (currentLand.getPlotMembers().add(player.getUniqueId())) {
-                        LandManager.getInstance().saveLand(currentLand);
+                        LandManager.getInstance().syncAndSave(currentLand);
                         getMessage("command.plot.members.add.success").tell(click.getWhoClicked(), "name", player.getName(), "uuid", player.getUniqueId().toString());
                     }
                 }
