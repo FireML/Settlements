@@ -45,23 +45,26 @@ public class MembersGUI extends PlotGUI {
 
         gui.addElement(new DynamicGuiElement('m', viewer -> {
             GuiElementGroup group = new GuiElementGroup('m');
+            OwnedLand land = LandManager.getInstance().getLand(landLocation);
 
-            for (UUID memberId : editedLand.getPlotMembers()) {
-                String memberName = Utils.getPlayerName(memberId);
-                group.addElement(new StaticGuiElement('m', ItemUtils.getHead(memberId, memberName), click -> {
-                    OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
-                    if (currentLand != null && (currentLand.isPlotOwner((Player) click.getWhoClicked()) || currentLand.canAdmin(ResidentManager.getInstance().getResident((Player) click.getWhoClicked())))) {
-                        if (currentLand.getPlotMembers().remove(memberId)) {
-                            LandManager.getInstance().saveLand(currentLand);
-                            Message.get("command.plot.members.remove.success").tell(click.getWhoClicked(), "name", memberName, "uuid", memberId.toString());
-                            gui.draw();
+            if (land != null) {
+                for (UUID memberId : land.getPlotMembers()) {
+                    String memberName = Utils.getPlayerName(memberId);
+                    group.addElement(new StaticGuiElement('m', ItemUtils.getHead(memberId, memberName), click -> {
+                        OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
+                        if (currentLand != null && (currentLand.isPlotOwner((Player) click.getWhoClicked()) || currentLand.canAdmin(ResidentManager.getInstance().getResident((Player) click.getWhoClicked())))) {
+                            if (currentLand.getPlotMembers().remove(memberId)) {
+                                LandManager.getInstance().saveLand(currentLand);
+                                Message.get("command.plot.members.remove.success").tell(click.getWhoClicked(), "name", memberName, "uuid", memberId.toString());
+                                gui.draw();
+                            }
                         }
-                    }
-                    return true;
-                }, getText("element",
-                        "name", memberName,
-                        "uuid", memberId.toString()
-                )));
+                        return true;
+                    }, getText("element",
+                            "name", memberName,
+                            "uuid", memberId.toString()
+                    )));
+                }
             }
             return group;
         }));
