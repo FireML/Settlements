@@ -45,12 +45,19 @@ public class UseGui extends KingdomsGUI {
                 Village village = VillageManager.getInstance().getVillageFromPlayer((Player) h);
                 if (village != null) {
                     BuildState state = village.getUseState(u);
+                    if (state == null) {
+                        state = village.getDefaultBuildState();
+                    }
                     return new StaticGuiElement('u', u.getItem(), click -> {
                         Resident res = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
                         if (res.hasVillage() && res.hasPermission("village.use")) {
+                            BuildState currentState = res.getVillage().getUseState(u);
+                            if (currentState == null) {
+                                currentState = res.getVillage().getDefaultBuildState();
+                            }
                             BuildState changeTo = click.getType().isLeftClick()
-                                    ? res.getVillage().getUseState(u).next(BuildState.AppliesTo.SETTLEMENT)
-                                    : res.getVillage().getUseState(u).previous(BuildState.AppliesTo.SETTLEMENT);
+                                    ? currentState.next(BuildState.AppliesTo.SETTLEMENT)
+                                    : currentState.previous(BuildState.AppliesTo.SETTLEMENT);
                             res.getVillage().setUseState(u, changeTo);
                             Message.get("command.village.use.success").tell(click.getEvent().getWhoClicked(),
                                     "flag", u.getTag(),

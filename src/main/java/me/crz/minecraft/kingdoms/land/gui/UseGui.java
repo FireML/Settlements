@@ -86,7 +86,7 @@ public class UseGui extends PlotGUI {
                                     }
                                 } else {
                                     BuildState currentState = currentLand.getUseState(u);
-                                    if (!currentLand.isPlot() && !currentState.appliesTo(BuildState.AppliesTo.get(currentLand.getLandOwner()))) {
+                                    if (currentState == null || !currentLand.isPlot() && !currentState.appliesTo(BuildState.AppliesTo.get(currentLand.getLandOwner()))) {
                                         currentState = currentLand.getLandOwner().getDefaultBuildState();
                                     }
                                     BuildState changeTo = click.getType().isLeftClick()

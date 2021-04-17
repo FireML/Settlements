@@ -76,7 +76,11 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     public boolean setUseState(Use u, BuildState state) {
-        return use.put(u, state) != null;
+        if (state == null) {
+            return use.remove(u) != null;
+        } else {
+            return use.put(u, state) != null;
+        }
     }
 
     public boolean setUseState(UseFlag useFlag, BuildState state) {
