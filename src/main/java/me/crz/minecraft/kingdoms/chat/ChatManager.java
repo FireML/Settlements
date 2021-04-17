@@ -44,6 +44,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -207,7 +208,7 @@ public class ChatManager implements ConfigMessages, Listener {
         switch (channel) {
             case LOCAL:
                 tell(sender, res, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, unfilteredMessage);
-                List<Resident> nearbyPlayers = sender.getWorld().getPlayers().stream()
+                List<Resident> nearbyPlayers = new ArrayList<>(sender.getWorld().getPlayers()).stream()
                         .filter(p -> !p.equals(sender)
                                 && sender.getLocation().distanceSquared(p.getLocation()) < 200 * 200)
                         .map(p -> ResidentManager.getInstance().getResident(p))
@@ -230,14 +231,14 @@ public class ChatManager implements ConfigMessages, Listener {
                         }
                     }
                 }
-                Bukkit.getOnlinePlayers().stream()
+                new ArrayList<>(Bukkit.getOnlinePlayers()).stream()
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.getActiveChannel() == channel || r.isListening(channel))
                         .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
                 break;
             case ADMIN:
             case STAFF:
-                Bukkit.getOnlinePlayers().stream()
+                new ArrayList<>(Bukkit.getOnlinePlayers()).stream()
                         .filter(channel::canChat)
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
@@ -293,7 +294,7 @@ public class ChatManager implements ConfigMessages, Listener {
                     return;
                 }
 
-                sender.getWorld().getPlayers().stream()
+                new ArrayList<>(sender.getWorld().getPlayers()).stream()
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
@@ -306,7 +307,7 @@ public class ChatManager implements ConfigMessages, Listener {
                     return;
                 }
 
-                Bukkit.getOnlinePlayers().stream()
+                new ArrayList<>(Bukkit.getOnlinePlayers()).stream()
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
@@ -470,7 +471,7 @@ public class ChatManager implements ConfigMessages, Listener {
                 "targetdisplay", target.getDisplayName(),
                 "message", message
         );
-        for (Player pl : Bukkit.getOnlinePlayers()) {
+        for (Player pl : new ArrayList<>(Bukkit.getOnlinePlayers())) {
             if (pl != sender && pl != target && pl.hasPermission("kingdoms.admin.ss")) {
                 Resident resident = ResidentManager.getInstance().getResident(pl);
                 if (resident.getSocialSpy()) {
