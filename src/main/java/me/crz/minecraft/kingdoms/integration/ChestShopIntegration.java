@@ -355,7 +355,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
         }
 
         for (Resident resident : landOwner.getResidents()) {
-            if (landOwner.hasPermission(resident, "chestshop.admin")) {
+            if (!Toggle.isIgnoring(resident.getUUID()) && landOwner.hasPermission(resident, "chestshop.admin")) {
                 Player player = resident.getPlayer();
                 if (Properties.SHOWITEM_MESSAGE) {
                     replacementMap.put("item", "%item");
