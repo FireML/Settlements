@@ -341,8 +341,8 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
     }
 
     @Override
-    public void apply(Perk perk) {
-        super.apply(perk);
+    public void apply(Player player, Perk perk) {
+        super.apply(player, perk);
         if (perk instanceof EmpirePerk && ((EmpirePerk) perk).getBonusRadius() > 0) {
             World world = Bukkit.getWorld(getWorldName());
             if (world != null) {

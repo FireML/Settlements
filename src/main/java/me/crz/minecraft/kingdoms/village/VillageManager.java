@@ -12,6 +12,7 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.land.BuildState;
 import me.crz.minecraft.kingdoms.land.Use;
+import me.crz.minecraft.kingdoms.land.events.LandownerDisbandEvent;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.perk.LevelPerk;
 import me.crz.minecraft.kingdoms.perk.Perk;
@@ -154,6 +155,7 @@ public class VillageManager {
     }
 
     public void deleteVillage(Village village) {
+        Utils.callEvent(new LandownerDisbandEvent(village));
         villages.remove(village.getName().replace(' ', '_').toLowerCase());
         villageIDs.remove(village.getId());
         villageUuids.remove(village.getUUID());
@@ -238,7 +240,7 @@ public class VillageManager {
                 PerkData perkData = village.getPerkData(perk);
                 if (perkData != null && perkData.isActive()) {
                     perkData.toggle();
-                    village.removeEffects(perk);
+                    village.removeEffects(null, perk);
                 }
             }
         }
@@ -317,7 +319,7 @@ public class VillageManager {
             if (village.getState() == perk.getState() && village.getLevel() == perk.getLevel()) {
                 if (perk.getUnlockCost().isEmpty()) {
                     MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("levels.perk-unlocked"), "perk", perk.getTag());
-                    village.unlockPerk(perk);
+                    village.unlockPerk(res.getPlayer(), perk);
                 } else {
                     MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("levels.perk-available"), "perk", perk.getTag());
                 }

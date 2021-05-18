@@ -17,6 +17,7 @@ import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.resident.Resident;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -165,7 +166,7 @@ public class ShopGUI extends KingdomsGUI {
                             if (resident.hasPermission("empire.shop.repeat")
                                     && resident.getVillage().getEmpire().canRepeat(perk)
                                     && resident.getVillage().getEmpire().remove(perk.getRepeatCost())) {
-                                resident.getVillage().getEmpire().repeatPerk(perk);
+                                resident.getVillage().getEmpire().repeatPerk((Player) click.getWhoClicked(), perk);
                                 Message.get("command.empire.shop.unlock.success")
                                         .tell(resident.getVillage().getEmpire().getOnlineResidents(), "perk", perk.getTag());
                                 Utils.runAsync(() -> {
@@ -176,7 +177,7 @@ public class ShopGUI extends KingdomsGUI {
                             } else if (resident.hasPermission("empire.shop.unlock")
                                     && resident.getVillage().getEmpire().canUnlock(perk)
                                     && resident.getVillage().getEmpire().remove(perk.getUnlockCost())) {
-                                resident.getVillage().getEmpire().unlockPerk(perk);
+                                resident.getVillage().getEmpire().unlockPerk((Player) click.getWhoClicked(), perk);
                                 Message.get("command.empire.shop.unlock.success")
                                         .tell(resident.getVillage().getEmpire().getOnlineResidents(), "perk", perk.getTag());
                                 Utils.runAsync(() -> {

@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.land.events.LandownerChiefChangeEvent;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
@@ -36,6 +37,7 @@ public class VillageTransferCommand extends VillageSubCommand {
                 return;
             }
             Utils.runSync(() -> {
+                Utils.callEvent(new LandownerChiefChangeEvent(village, village.getChief(), tres));
                 res.setVillageRank(VillageRank.getChief().next());
                 tres.setVillageRank(VillageRank.getChief());
                 village.setChief(tres.getUUID());

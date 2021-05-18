@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.command.admin;
 
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.land.events.LandownerChiefChangeEvent;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.village.Village;
@@ -43,6 +44,7 @@ public class VillageAdminRankCommand extends SubCommand {
             Village village = tRes.getVillage();
             if (r.isChief()) {
                 Resident res = tRes.getVillage().getChief();
+                Utils.callEvent(new LandownerChiefChangeEvent(village, res, tRes));
                 res.setVillageRank(tRes.getVillageRank());
                 tRes.setVillageRank(r);
                 village.setChief(tRes.getUUID());

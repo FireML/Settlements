@@ -8,6 +8,7 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.village.events.SettlementLeaveEvent;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
@@ -495,6 +496,7 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
     @Override
     public void removeMember(Targetable target) {
         if (target instanceof Resident && isMember((Resident) target)) {
+            Utils.callEvent(new SettlementLeaveEvent(this, (Resident) target));
             residents.remove(((Resident) target).getUUID());
             VillageManager.getInstance().leaveVillage((Resident) target);
         }

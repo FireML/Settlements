@@ -13,7 +13,7 @@ resistance1:
   level: 1
   # The effects (a map list) that members of the settlement get applied
   effects:
-      # the type https://papermc.io/javadocs/org/bukkit/potion/PotionEffectType.html
+      # the type  https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html
     - type: damage_resistance
       strength: 1
       # the length of the effect after applying in seconds
@@ -73,6 +73,15 @@ speed1:
   cost:
     unlock:
       cash: 1000
+mapplot:
+  state: kingdom
+  icon: map
+  level: 2
+  actions:
+    plot: true
+  cost:
+    unlock:
+      cash: 0
 strength1:
   state: kingdom
   level: 3

@@ -390,6 +390,8 @@ public class Config {
             public static int KINGDOM = 3;
             @ConfigEntry(old = {"teleport-delay.empire"})
             public static int EMPIRE = 3;
+
+            public static int PLOTSQUARED = 3;
         }
 
         @ConfigComment("Seconds to wait after allowing a teleport again if user has the kingdoms.bypass.teleport-delay permission\n" +
@@ -543,5 +545,15 @@ public class Config {
             public static int ADMIN = 9001;
             public static int STAFF = 9001;
         }
+    }
+
+    public static class PlotSquared {
+        @ConfigComment("The world which the area for purchased plots is in.\n" +
+                "Leave empty to use the first available area globally. (E.g. if you only have one)")
+        public static String PLOT_WORLD = "";
+
+        @ConfigComment("The id of the plot area which purchased plots are added to.\n" +
+                "Leave empty to use the first available one in the world/globally")
+        public static String PLOT_AREA_ID = "";
     }
 }

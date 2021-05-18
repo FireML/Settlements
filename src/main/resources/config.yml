@@ -256,6 +256,7 @@ teleport:
     village: 3
     kingdom: 3
     empire: 3
+    plotsquared: 3
   
   # Seconds to wait after allowing a teleport again if user has the kingdoms.bypass.teleport-delay permission
   # Set to 0 to disable
@@ -264,6 +265,7 @@ teleport:
     village: 3
     kingdom: 3
     empire: 3
+    plotsquared: 3
     
 chat:
   # Enable or disable the inbuilt chat
@@ -369,3 +371,11 @@ brewery:
     empireally: 1
     admin: 9001
     staff: 9001
+    
+plotsquared:
+  # The world which the area for purchased plots is in
+  # Leave empty to use the first available area globally. (E.g. if you only have one)
+  plot-world: ""
+  # The id of the plot area which purchased plots are added to
+  # Leave empty to use the first available one in the world/globally
+  plot-area-id: ""

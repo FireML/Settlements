@@ -19,6 +19,7 @@ import me.crz.minecraft.kingdoms.integration.LWCIntegration;
 import me.crz.minecraft.kingdoms.integration.MailProvider;
 import me.crz.minecraft.kingdoms.integration.MultiverseIntegration;
 import me.crz.minecraft.kingdoms.integration.PlaceholderApiIntegration;
+import me.crz.minecraft.kingdoms.integration.PlotSquaredIntegration;
 import me.crz.minecraft.kingdoms.integration.ShopProvider;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.UseFlagManager;
@@ -132,7 +133,6 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        this.loadManagers();
 
         if (getServer().getPluginManager().isPluginEnabled("CMI")) {
             CmiIntegration cmiIntegration = new CmiIntegration();
@@ -150,8 +150,10 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             BreweryIntegration breweryIntegration = new BreweryIntegration();
             getLogger().log(Level.INFO, "Hooked into Brewery " + breweryIntegration.getBrewery().getDescription().getVersion() + "!");
         }
-
-        registerListener(new KingdomsListener());
+        if (getServer().getPluginManager().isPluginEnabled("PlotSquared")) {
+            PlotSquaredIntegration plotSquaredIntegration = new PlotSquaredIntegration();
+            getLogger().log(Level.INFO, "Hooked into PlotSquared " + plotSquaredIntegration.getPlotSquaredVersion());
+        }
 
         if (!Config.Chat.CHAT_ONLY) {
             if (getServer().getPluginManager().isPluginEnabled("Multiverse-Core")) {
@@ -166,6 +168,13 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
                 ChestShopIntegration csIntegration = new ChestShopIntegration();
                 getLogger().log(Level.INFO, "Hooked into ChestShop " + csIntegration.getChestShop().getDescription().getVersion() + "!");
             }
+        }
+
+        this.loadManagers();
+
+        registerListener(new KingdomsListener());
+
+        if (!Config.Chat.CHAT_ONLY) {
 
             this.getLandPerks().runTimer();
             registerListener(new CustomEventManager());

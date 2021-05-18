@@ -11,6 +11,7 @@ import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.land.BuildState;
 import me.crz.minecraft.kingdoms.land.Use;
+import me.crz.minecraft.kingdoms.land.events.LandownerDisbandEvent;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.perk.Perk;
@@ -255,6 +256,7 @@ public class EmpireManager {
     }
 
     public void deleteEmpire(Empire empire) {
+        Utils.callEvent(new LandownerDisbandEvent(empire));
         empires.remove(empire.getName().toLowerCase());
         empireIds.remove(empire.getId());
         empireUuids.remove(empire.getUUID());
@@ -347,7 +349,7 @@ public class EmpireManager {
                 PerkData perkData = empire.getPerkData(perk);
                 if (perkData != null && perkData.isActive()) {
                     perkData.toggle();
-                    empire.removeEffects(perk);
+                    empire.removeEffects(null, perk);
                 }
             }
         }

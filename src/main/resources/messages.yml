@@ -530,6 +530,16 @@ integration:
       entry: "&9{place}. &r&e{name}"
     top-ten-empires:
       entry: "&9{place}. &r&e{name}"
+  plotsquared:
+    teleport:
+      success: "&a&lTeleported to plot of {state} {name}"
+      success-title:
+        title: "&2&lSuccess"
+        subtitle: "&fYou have been teleported!"
+      fail-title:
+        title: "&c&lFailed"
+        subtitle: "&fUnable to teleport!"
+    failed-to-claim: "&cFailed to automatically claim a new plot!"
   brewery:
     too-drunk-for-channel: "&cYou are too drunk to speak in &f{channel}&c! Use the [Local](/localchat) or [Settlement](/settlementchat) chat!"
 protection:
@@ -1348,6 +1358,9 @@ gui:
     active: "&aEffect enabled!"
     inactive: "&cEffect disabled!"
     back: "&c&lBack To Settings"
+    actions:
+      plot:
+        purchased: "&7Click to teleport"
   shop:
     title: "&2&l/s shop"
     entry:
@@ -1852,7 +1865,7 @@ command:
         subtitle: "&fYou have been teleported!"
       fail-title:
         title: "&c&lFailed"
-        subtitle: "&fUnabled to teleport!"
+        subtitle: "&fUnable to teleport!"
       description: Teleport to a settlement's home
     invite:
       already-in-village: "&c&l{name} is already in a {state}"
@@ -1931,6 +1944,9 @@ command:
           &c&lABANDONED!!!
           &c Falls in {countdown}
       description: Shows you a map of the surrounding chunks
+    mapart:
+      description: Teleport to your settlement plot
+      no-plot: "&c&l(!) &r&7Your {state} does not have a plot yet! Purchase it with [/{base} shop](/{base} shop)"
     materials:
       max-level-reached: "&c&lYour {state} already has the max level!"
       head: "&a⊱&m━━━━&r&6Required Materials&a&m━━━━&a⊰"
@@ -1970,7 +1986,7 @@ command:
           &fYou have been teleported!
         fail-title: |-
           &c&lFailed
-          &fUnabled to teleport!
+          &fUnable to teleport!
         description: Teleports to a outpost shown in the list
       unclaim:
         not-an-outpost: "&cThis land is not an outpost, please use &7/s unclaim&c to unclaim this land."
@@ -2434,7 +2450,7 @@ command:
         &fYou have been teleported!
       fail-title: |-
         &c&lFailed
-        &fUnabled to teleport!
+        &fUnable to teleport!
       no-access: "&c&lYou don't have access to teleport to the home of that empire!"
       description: Teleport to a empires's home
     invite:

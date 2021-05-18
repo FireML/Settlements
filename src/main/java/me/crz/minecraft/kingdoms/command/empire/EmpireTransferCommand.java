@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.command.empire;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.land.events.LandownerChiefChangeEvent;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -43,8 +44,9 @@ public class EmpireTransferCommand extends EmpireSubCommand {
                 return;
             }
             Resident oldLeader = empire.getCapital().getChief();
-            oldLeader.setEmpireRank(EmpireRank.getLeader().next());
             Resident newLeader = targetVillage.getChief();
+            Utils.callEvent(new LandownerChiefChangeEvent(empire, oldLeader, newLeader));
+            oldLeader.setEmpireRank(EmpireRank.getLeader().next());
             newLeader.setEmpireRank(EmpireRank.getLeader());
             empire.setCapital(targetVillage);
             DatabaseManager.getInstance().saveEmpire(empire);
