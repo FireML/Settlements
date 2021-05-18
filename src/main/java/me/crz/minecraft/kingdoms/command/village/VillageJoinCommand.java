@@ -6,6 +6,7 @@ import me.crz.minecraft.kingdoms.command.ResidentSubCommand;
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.db.InviteCache;
+import me.crz.minecraft.kingdoms.village.events.SettlementJoinEvent;
 import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -37,6 +38,7 @@ public class VillageJoinCommand extends ResidentSubCommand {
         } else if (joinVillage.getJoinFee() > 0 && !KingdomsPlugin.getInstance().getEconomy().has(resident.getPlayer(), joinVillage.getJoinFee())) {
             getError("not-enough-money").tell(resident, "state", joinVillage.getState().getTag(), "name", joinVillage.getName(), "amount", String.valueOf(joinVillage.getJoinFee()));
         } else {
+            Utils.callEvent(new SettlementJoinEvent(joinVillage, resident));
             if (joinVillage.getJoinFee() > 0) {
                 if (KingdomsPlugin.getInstance().getEconomy().withdrawPlayer(resident.getPlayer(), joinVillage.getJoinFee()).transactionSuccess()) {
                     joinVillage.addToBank(joinVillage.getJoinFee());

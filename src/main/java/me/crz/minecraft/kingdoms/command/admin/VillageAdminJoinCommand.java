@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.command.admin;
 
 import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.village.events.SettlementJoinEvent;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.resident.Resident;
@@ -39,6 +40,7 @@ public class VillageAdminJoinCommand extends SubCommand {
                 MessageUtils.tell(sender, "&6&l" + target.getName() + "&r&c&l is already in the &r&6&l" + village.getName());
                 return;
             }
+            Utils.callEvent(new SettlementJoinEvent(village, target));
             target.setVillage(village);
             target.setVillageRank(VillageRank.getDefault());
             target.addChannel(ChatChannel.SETTLEMENT);

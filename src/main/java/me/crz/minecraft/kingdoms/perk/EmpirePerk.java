@@ -19,7 +19,7 @@ public class EmpirePerk extends Perk {
     private int bonusRadius = 0;
 
     static {
-        registerAction("flying", (e, t) -> {
+        registerAction("flying", (p, e, t) -> {
             if (e instanceof Empire) {
                 World world = Bukkit.getWorld(((Empire) e).getWorldName());
                 if (world != null) {
@@ -53,7 +53,7 @@ public class EmpirePerk extends Perk {
                 }
             }
         }, null);
-        registerAction("weather", (e, t) -> {
+        registerAction("weather", (p, e, t) -> {
             if (e instanceof Empire) {
                 World world = Bukkit.getWorld(((Empire) e).getWorldName());
                 if (world != null) {
@@ -91,7 +91,7 @@ public class EmpirePerk extends Perk {
             }
             return null;
         });
-        registerAction("time", (e, t) -> {
+        registerAction("time", (p, e, t) -> {
             if (e instanceof Empire) {
                 World world = Bukkit.getWorld(((Empire) e).getWorldName());
                 if (world != null) {

@@ -544,4 +544,12 @@ public class Config {
             public static int STAFF = 9001;
         }
     }
+
+    public static class PlotSquared {
+        @ConfigComment("The world which the area for purchased plots is in")
+        public static String PLOT_WORLD = "plotsquared";
+
+        @ConfigComment("The id of the plot area which purchased plots are added to")
+        public static String PLOT_AREA_ID = "id";
+    }
 }

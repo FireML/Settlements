@@ -23,7 +23,7 @@ public class EmpirePerksCommand extends EmpireSubCommand {
                     } else if (!perk.hasEffects() && !perk.hasEffects()) {
                         getError("no-effects").tell(resident, "perk", perk.getTag());
                     } else {
-                        resident.getVillage().getEmpire().togglePerk(perk);
+                        resident.getVillage().getEmpire().togglePerk(resident.getPlayer(), perk);
                         PerkData perkData = resident.getVillage().getEmpire().getPerkData(perk);
                         getMessage(perkData.isActive() ? "activated" : "deactivated").tell(resident.getVillage().getEmpire().getOnlineResidents(), "perk", perk.getTag());
                     }

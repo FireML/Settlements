@@ -18,6 +18,7 @@ import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.ItemUtils;
+import me.crz.minecraft.kingdoms.utils.PathedConfigMessages;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.resident.Resident;
 import me.crz.minecraft.kingdoms.resident.ResidentManager;
@@ -106,11 +107,10 @@ public class PrivateTeleportersGUI extends KingdomsGUI {
                                 click.getGui().close();
                                 if (village.getOutpostHomes().containsKey(outpost.getKey())) {
                                     Utils.teleport(
-                                            this,
+                                            new PathedConfigMessages("command.village.outpost.teleport"),
                                             (Player) click.getEvent().getWhoClicked(),
                                             village.getOutpostHomes().get(outpost.getKey()).toBukkitLocation(),
                                             "outpost",
-                                            "command.village.outpost.teleport",
                                             "name", outpost.getValue().getName()
                                     );
                                 }

@@ -31,7 +31,7 @@ public class VillageShopCommand extends VillageSubCommand {
                     } else if (resident.getVillage().hasUnlocked(perk)) {
                         getError("already-unlocked").tell(resident, "perk", perk.getTag());
                     } else if (resident.getVillage().remove(perk.getUnlockCost())) {
-                        resident.getVillage().unlockPerk(perk);
+                        resident.getVillage().unlockPerk(resident.getPlayer(), perk);
                         MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("success"), "perk", perk.getTag());
                         Utils.runAsync(() -> {
                             DatabaseManager.getInstance().saveVillage(resident.getVillage());
@@ -78,7 +78,7 @@ public class VillageShopCommand extends VillageSubCommand {
                     } else if (!resident.getVillage().checkPerkCount(perk)) {
                         getError("already-repeated").tell(resident, "perk", perk.getTag(), "amount", String.valueOf(perk.getRepeat()));
                     } else if (resident.getVillage().remove(perk.getRepeatCost())) {
-                        resident.getVillage().repeatPerk(perk);
+                        resident.getVillage().repeatPerk(resident.getPlayer(), perk);
                         MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("success"), "perk", perk.getTag());
                         Utils.runAsync(() -> {
                             DatabaseManager.getInstance().saveVillage(resident.getVillage());

@@ -22,7 +22,7 @@ public class OutpostTeleportCommand extends VillageSubCommand {
         if (location != null) {
             OwnedLand land = LandManager.getInstance().getLand(location.toChunkLocation());
             if (land != null && land.isOwnedBy(resident.getVillage())) {
-                Utils.teleport(this, resident.getPlayer(), location.toBukkitLocation(), "outpost", getConfigPath(), "name", location.getName());
+                Utils.teleport(this, resident.getPlayer(), location.toBukkitLocation(), "outpost", "name", location.getName());
             } else {
                 if (resident.getVillage().getOutpostHomes().remove(args[0].toLowerCase()) != null) {
                     Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));

@@ -530,6 +530,16 @@ integration:
       entry: "&9{place}. &r&e{name}"
     top-ten-empires:
       entry: "&9{place}. &r&e{name}"
+  plotsquared:
+    teleport:
+      success: "&a&lTeleported to plot of {state} {name}"
+      success-title:
+        title: "&2&lSuccess"
+        subtitle: "&fYou have been teleported!"
+      fail-title:
+        title: "&c&lFailed"
+        subtitle: "&fUnable to teleport!"
+    failed-to-claim: "&cFailed to automatically claim a new plot!"
   brewery:
     too-drunk-for-channel: "&cYou are too drunk to speak in &f{channel}&c! Use the [Local](/localchat) or [Settlement](/settlementchat) chat!"
 protection:
@@ -1852,7 +1862,7 @@ command:
         subtitle: "&fYou have been teleported!"
       fail-title:
         title: "&c&lFailed"
-        subtitle: "&fUnabled to teleport!"
+        subtitle: "&fUnable to teleport!"
       description: Teleport to a settlement's home
     invite:
       already-in-village: "&c&l{name} is already in a {state}"
@@ -1970,7 +1980,7 @@ command:
           &fYou have been teleported!
         fail-title: |-
           &c&lFailed
-          &fUnabled to teleport!
+          &fUnable to teleport!
         description: Teleports to a outpost shown in the list
       unclaim:
         not-an-outpost: "&cThis land is not an outpost, please use &7/s unclaim&c to unclaim this land."
@@ -2434,7 +2444,7 @@ command:
         &fYou have been teleported!
       fail-title: |-
         &c&lFailed
-        &fUnabled to teleport!
+        &fUnable to teleport!
       no-access: "&c&lYou don't have access to teleport to the home of that empire!"
       description: Teleport to a empires's home
     invite:

@@ -30,6 +30,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.WaterMob;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.lang.reflect.Field;
@@ -433,21 +435,8 @@ public class Utils {
      * Teleports a player. Checks cooldown and delay bypass permissions
      * @return false if teleport occurred instantly and no wait task was started
      */
-    public static boolean teleport(ConfigMessages messages, Player player, Location loc, String type, String messagePath, String... replacements) {
-        boolean bypassDelay = player.hasPermission("kingdoms.bypass.teleport-delay");
-        if (bypassDelay && !player.hasPermission("kingdoms.bypass.teleport-cooldown")) {
-            long cooldown = TELEPORT_COOLDOWNS.getOrDefault(player.getUniqueId(), 0L)
-                    + Utils.getTeleportCooldown(type) * 1000
-                    - System.currentTimeMillis();
-            if (cooldown > 0) {
-                messages.getError("teleport-cooldown").tell(player, "cooldown", UtilTime.format(cooldown));
-                return true;
-            } else {
-                TELEPORT_COOLDOWNS.put(player.getUniqueId(), System.currentTimeMillis());
-            }
-        }
-
-        return ExecuteMoveUtil.getInstance().execute(player, () -> {
+    public static boolean teleport(ConfigMessages messages, Player player, Location loc, String type, String... replacements) {
+        return teleport(messages, player, type, () -> {
             PaperLib.getChunkAtAsync(loc).thenAccept(c -> {
                 if (c == null) {
                     Message.get("error.destination-obstructed").tell(player);
@@ -472,19 +461,40 @@ public class Utils {
                 player.sendBlockChange(down.getLocation(), down.getBlockData());
                 loc.setY(block.getY());
                 PaperLib.teleportAsync(player, loc).thenAccept(success -> {
-                    String path = messagePath + "." + (success ? "success" : "fail");
-                    Message.get(path).tell(player, replacements);
+                    String path = success ? "success" : "fail";
+                    messages.getMessage(path).tell(player, replacements);
                     new TitleBuilder()
-                            .withTitle(Message.get(path + "-title.title"))
-                            .withSubtitle(Message.get(path + "-title.subtitle"))
-                            .withActionbar(Message.get(path + "-title.actionbar"))
+                            .withTitle(messages.getMessage(path + "-title.title"))
+                            .withSubtitle(messages.getMessage(path + "-title.subtitle"))
+                            .withActionbar(messages.getMessage(path + "-title.actionbar"))
                             .send(player, replacements);
                     if (!success) {
                         KingdomsPlugin.logDebug("Failed to teleport " + player.getName() + " to " + loc);
                     }
                 });
             });
-        }, bypassDelay ? 0 : Utils.getTeleportDelay(type), "Teleport", messagePath);
+        });
+    }
+
+    /**
+     * Teleports a player. Checks cooldown and delay bypass permissions
+     * @return false if teleport occurred instantly and no wait task was started
+     */
+    public static boolean teleport(ConfigMessages messages, Player player, String type, Runnable runnable) {
+        boolean bypassDelay = player.hasPermission("kingdoms.bypass.teleport-delay");
+        if (bypassDelay && !player.hasPermission("kingdoms.bypass.teleport-cooldown")) {
+            long cooldown = TELEPORT_COOLDOWNS.getOrDefault(player.getUniqueId(), 0L)
+                    + Utils.getTeleportCooldown(type) * 1000
+                    - System.currentTimeMillis();
+            if (cooldown > 0) {
+                messages.getError("teleport-cooldown").tell(player, "cooldown", UtilTime.format(cooldown));
+                return true;
+            } else {
+                TELEPORT_COOLDOWNS.put(player.getUniqueId(), System.currentTimeMillis());
+            }
+        }
+
+        return ExecuteMoveUtil.getInstance().execute(player, runnable, bypassDelay ? 0 : Utils.getTeleportDelay(type), "Teleport", messages);
     }
 
     public static void teleportToSpawn(Player target) {
@@ -650,5 +660,13 @@ public class Utils {
         }
 
         return playerId.toString();
+    }
+
+    public static boolean callEvent(Event event) {
+        KingdomsPlugin.getInstance().getServer().getPluginManager().callEvent(event);
+        if (event instanceof Cancellable) {
+            return ((Cancellable) event).isCancelled();
+        }
+        return false;
     }
 }
