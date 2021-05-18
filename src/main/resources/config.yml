@@ -369,3 +369,11 @@ brewery:
     empireally: 1
     admin: 9001
     staff: 9001
+    
+plotsquared:
+  # The world which the area for purchased plots is in
+  # Leave empty to use the first available area globally. (E.g. if you only have one)
+  plot-world: ""
+  # The id of the plot area which purchased plots are added to
+  # Leave empty to use the first available one in the world/globally
+  plot-area-id: ""

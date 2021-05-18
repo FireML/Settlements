@@ -201,41 +201,41 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
         return true;
     }
 
-    public boolean unlockPerk(Perk perk) {
+    public boolean unlockPerk(Player player, Perk perk) {
         if (!hasUnlocked(perk)) {
             getPerksMap().put(perk.name().toLowerCase(), new PerkData());
-            apply( perk);
+            apply(player, perk);
             return true;
         }
         return false;
     }
 
-    public void apply(Perk perk) {
+    public void apply(Player player, Perk perk) {
         if (perk.hasEffects()) {
-            applyEffects(perk);
+            applyEffects(player, perk);
         }
         runCommands(perk);
     }
 
-    public boolean repeatPerk(Perk perk) {
+    public boolean repeatPerk(Player player, Perk perk) {
         PerkData p = getPerkData(perk);
         if (p != null) {
             p.addUse();
-            apply(perk);
+            apply(player, perk);
             return true;
         }
         return false;
     }
 
-    public boolean togglePerk(Perk perk) {
+    public boolean togglePerk(Player player, Perk perk) {
         if (perk.hasEffects() || perk.hasActions()) {
             PerkData perkData = getPerkData(perk);
             if (perkData != null) {
                 perkData.toggle();
                 if (perkData.isActive()) {
-                    applyEffects(perk);
+                    applyEffects(player, perk);
                 } else {
-                    removeEffects(perk);
+                    removeEffects(player, perk);
                 }
                 Utils.runAsync(() -> DatabaseManager.getInstance().save(this));
                 return true;
@@ -244,14 +244,14 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
         return false;
     }
 
-    public void applyEffects(Perk perk) {
+    public void applyEffects(Player player, Perk perk) {
         KingdomsPlugin.getInstance().getLandPerks().updateEffects(false);
-        perk.toggleActions(this, true);
+        perk.toggleActions(player, this, true);
     }
 
-    public void removeEffects(Perk perk) {
+    public void removeEffects(Player player, Perk perk) {
         KingdomsPlugin.getInstance().getLandPerks().updateEffects(false);
-        perk.toggleActions(this, false);
+        perk.toggleActions(player, this, false);
     }
 
     public Map<String, Map<String, Boolean>> getRanksPermissions() {

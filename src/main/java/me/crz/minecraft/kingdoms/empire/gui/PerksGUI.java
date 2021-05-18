@@ -91,7 +91,7 @@ public class PerksGUI extends KingdomsGUI {
                             itemStack,
                             click -> {
                                 if (resident.hasEmpire() && resident.hasPermission("empire.perks.toggle")) {
-                                    if (resident.getVillage().getEmpire().togglePerk(perk)) {
+                                    if (resident.getVillage().getEmpire().togglePerk(resident.getPlayer(), perk)) {
                                         gui.draw();
                                         return true;
                                     }

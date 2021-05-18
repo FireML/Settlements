@@ -45,7 +45,7 @@ public class VillageHomeCommand extends ResidentSubCommand {
         }
 
         if (village.getHome() != null) {
-            Utils.teleport(this, resident.getPlayer(), village.getHome().toBukkitLocation(), village.getStateKey(), getConfigPath(),
+            Utils.teleport(this, resident.getPlayer(), village.getHome().toBukkitLocation(), village.getStateKey(),
                     "state", village.getStateKey(), "name", village.getName());
         } else {
             getMessage("no-home").tell(resident, "state", village.getStateTag());

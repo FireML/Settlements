@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.utils.ConfigKey;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,11 +74,11 @@ public class Perk implements NameTag {
         }
     }
 
-    protected static void registerAction(String name, ActionExecutor actionExecutor, StateQuery stateQuery) {
+    public static void registerAction(String name, ActionExecutor actionExecutor, StateQuery stateQuery) {
         registerAction(new Action(name, actionExecutor, stateQuery));
     }
 
-    private static void registerAction(Action action) {
+    public static void registerAction(Action action) {
         AVAILABLE_ACTIONS.put(action.name().toLowerCase(), action);
     }
 
@@ -144,9 +145,9 @@ public class Perk implements NameTag {
         return !actions.isEmpty();
     }
 
-    public void toggleActions(LandOwner landOwner, boolean enable) {
+    public void toggleActions(Player player, LandOwner landOwner, boolean enable) {
         for (Action action : actions.values()) {
-            action.onToggle(landOwner, enable);
+            action.onToggle(player, landOwner, enable);
         }
     }
 
@@ -163,13 +164,13 @@ public class Perk implements NameTag {
 
     public interface ActionExecutor {
 
-        void onToggle(LandOwner landOwner, boolean enable);
+        void onToggle(Player player, LandOwner<?> landOwner, boolean enable);
 
     }
 
     public interface StateQuery {
 
-        String getState(LandOwner landOwner);
+        String getState(LandOwner<?> landOwner);
 
     }
 
@@ -185,14 +186,14 @@ public class Perk implements NameTag {
         }
 
         @Override
-        public void onToggle(LandOwner landOwner, boolean enable) {
+        public void onToggle(Player player, LandOwner<?> landOwner, boolean enable) {
             if (actionExecutor != null) {
-                actionExecutor.onToggle(landOwner, enable);
+                actionExecutor.onToggle(player, landOwner, enable);
             }
         }
 
         @Override
-        public String getState(LandOwner landOwner) {
+        public String getState(LandOwner<?> landOwner) {
             if (stateQuery != null) {
                 return stateQuery.getState(landOwner);
             }

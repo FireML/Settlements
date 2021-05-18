@@ -19,6 +19,7 @@ import me.crz.minecraft.kingdoms.integration.LWCIntegration;
 import me.crz.minecraft.kingdoms.integration.MailProvider;
 import me.crz.minecraft.kingdoms.integration.MultiverseIntegration;
 import me.crz.minecraft.kingdoms.integration.PlaceholderApiIntegration;
+import me.crz.minecraft.kingdoms.integration.PlotSquaredIntegration;
 import me.crz.minecraft.kingdoms.integration.ShopProvider;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.UseFlagManager;
@@ -149,6 +150,10 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         if (getServer().getPluginManager().isPluginEnabled("Brewery")) {
             BreweryIntegration breweryIntegration = new BreweryIntegration();
             getLogger().log(Level.INFO, "Hooked into Brewery " + breweryIntegration.getBrewery().getDescription().getVersion() + "!");
+        }
+        if (getServer().getPluginManager().isPluginEnabled("PlotSquared")) {
+            PlotSquaredIntegration plotSquaredIntegration = new PlotSquaredIntegration();
+            getLogger().log(Level.INFO, "Hooked into PlotSquared " + plotSquaredIntegration.getPlotSquaredVersion());
         }
 
         registerListener(new KingdomsListener());

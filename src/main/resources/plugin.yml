@@ -2,7 +2,7 @@ main: me.crz.minecraft.kingdoms.KingdomsPlugin
 version: "${minecraft.plugin.version}"
 name: ApeironKingdoms
 depend: [Vault]
-softdepend: [LWC, ChestShop, Multiverse-Core, CMI, PlaceholderAPI, Brewery]
+softdepend: [LWC, ChestShop, Multiverse-Core, CMI, PlaceholderAPI, Brewery, PlotSquared]
 author: Phoenix616
 api-version: 1.16
 commands:

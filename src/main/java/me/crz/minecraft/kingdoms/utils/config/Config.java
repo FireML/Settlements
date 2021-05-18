@@ -544,4 +544,14 @@ public class Config {
             public static int STAFF = 9001;
         }
     }
+
+    public static class PlotSquared {
+        @ConfigComment("The world which the area for purchased plots is in.\n" +
+                "Leave empty to use the first available area globally. (E.g. if you only have one)")
+        public static String PLOT_WORLD = "";
+
+        @ConfigComment("The id of the plot area which purchased plots are added to.\n" +
+                "Leave empty to use the first available one in the world/globally")
+        public static String PLOT_AREA_ID = "";
+    }
 }

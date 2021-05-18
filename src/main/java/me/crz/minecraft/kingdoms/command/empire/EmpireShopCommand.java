@@ -25,7 +25,7 @@ public class EmpireShopCommand extends EmpireSubCommand {
                     } else if (resident.getVillage().getEmpire().hasUnlocked(perk)) {
                         getError("already-unlocked").tell(resident, "perk", perk.getTag());
                     } else if (resident.getVillage().remove(perk.getUnlockCost())) {
-                        resident.getVillage().getEmpire().unlockPerk(perk);
+                        resident.getVillage().getEmpire().unlockPerk(resident.getPlayer(), perk);
                         MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("success"), "perk", perk.getTag());
                         Utils.runAsync(() -> {
                             DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
@@ -66,7 +66,7 @@ public class EmpireShopCommand extends EmpireSubCommand {
                     } else if (!resident.getVillage().getEmpire().checkPerkCount(perk)) {
                         getError("already-repeated").tell(resident, "perk", perk.getTag(), "amount", String.valueOf(perk.getRepeat()));
                     } else if (resident.getVillage().getEmpire().remove(perk.getRepeatCost())) {
-                        resident.getVillage().getEmpire().repeatPerk(perk);
+                        resident.getVillage().getEmpire().repeatPerk(resident.getPlayer(), perk);
                         MessageUtils.tellResidents(resident.getVillage().getEmpire().getOnlineResidents(), getMessage("success"), "perk", perk.getTag());
                         Utils.runAsync(() -> {
                             DatabaseManager.getInstance().saveVillage(resident.getVillage());
