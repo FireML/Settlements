@@ -359,13 +359,13 @@ public enum SQLiteTable {
             + "CREATE INDEX claim_modes_id ON {tablePrefix}claim_modes (claimId);"),
 
     CLAIM_MEMBERS("CREATE TABLE IF NOT EXISTS {tablePrefix}claim_members ("
-            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "claimId INTEGER,"
             + "memberId INTEGER,"
             + "FOREIGN KEY (claimId) REFERENCES {tablePrefix}claims(id) ON DELETE CASCADE,"
             + "FOREIGN KEY (memberId) REFERENCES {tablePrefix}residents(id) ON DELETE CASCADE,"
             + "UNIQUE (claimId, memberId)"
-            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"
+            + ");"
             + "CREATE INDEX claim_members_id ON {tablePrefix}claim_members (claimId);"),
 
     PORTALS("CREATE TABLE IF NOT EXISTS {tablePrefix}portals ("

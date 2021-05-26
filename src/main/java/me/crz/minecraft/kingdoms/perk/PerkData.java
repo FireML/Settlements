@@ -27,7 +27,12 @@ public class PerkData implements ConfigurationSerializable {
         Validate.notNull(map.get("times"));
         Validate.notNull(map.get("lastUsed"));
         Validate.notNull(map.get("active"));
-        return new PerkData((Integer) map.get("times"), (Long) map.get("lastUsed"), (Boolean) map.get("active"));
+        return new PerkData(
+                (Integer) map.get("times"),
+                (Long) map.get("lastUsed"),
+                map.get("active") instanceof Boolean
+                        ? (Boolean) map.get("active")
+                        : (Integer) map.get("active") == 1);
     }
 
     public long getLastUsed() {

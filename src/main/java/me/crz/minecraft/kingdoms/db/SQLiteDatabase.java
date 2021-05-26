@@ -151,11 +151,14 @@ public class SQLiteDatabase extends SqlDatabaseManager {
                     updateSta.setInt(columns.size() + 1, keyId);
                     updateSta.setObject(columns.size() + 2, entry.getKey());
 
+                    insertSta.setInt(1, keyId);
+                    insertSta.setObject(2, entry.getKey());
+
                     int j = 0;
                     for (String column : columns) {
                         j++;
                         updateSta.setObject(j, serMap.get(column));
-                        insertSta.setObject(j, serMap.get(column));
+                        insertSta.setObject(2 + j, serMap.get(column));
                     }
                 } else if (entry.getValue() instanceof Enum) {
                     updateSta.setObject(1, ((Enum) entry.getValue()).name());
