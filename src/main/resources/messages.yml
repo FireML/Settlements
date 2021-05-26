@@ -1177,7 +1177,7 @@ gui:
       success: "&aUnlinked from Portal at &e{world} {x}/{y}/{z}"
       error: "&cAn error occurred while unlinking! Please contact an admin."
   private-teleports:
-    title: "&2&lSettlement teleports: &r&7{page}"
+    title: "&2&lSettlement teleports:"
     entry: "{state} &b{name}"
     outpost: |-
       Outpost &b{name}

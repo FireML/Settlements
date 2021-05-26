@@ -102,6 +102,6 @@ public class TeleportersGUI extends KingdomsGUI {
     }
 
     public void open(Player p) {
-        gui.build(p);
+        gui.show(p);
     }
 }
