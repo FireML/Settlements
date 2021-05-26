@@ -146,6 +146,7 @@ public class PlotSquaredIntegration implements Listener, ConfigMessages {
             Set<Plot> plots = plotArea.getPlots(event.getOldChief().getUUID());
             for (Plot plot : plots) {
                 plot.setOwner(event.getNewChief().getUUID());
+                plot.addTrusted(event.getOldChief().getUUID());
             }
         }
     }
