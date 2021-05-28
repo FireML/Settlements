@@ -315,12 +315,12 @@ public class Utils {
         }
     }
 
-    public static <R extends Enum<R>> R parseEnum(String name, R defaultValue) {
+    public static <R extends Enum<R>> R parseEnum(Class<R> enumClass, String name, R defaultValue) {
         if (name == null) {
             return defaultValue;
         }
         try {
-            return Enum.valueOf(defaultValue.getDeclaringClass(), name);
+            return Enum.valueOf(enumClass, name);
         } catch (Exception e) {
             return defaultValue;
         }

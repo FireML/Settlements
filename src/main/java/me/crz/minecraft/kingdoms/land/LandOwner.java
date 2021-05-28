@@ -771,7 +771,7 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
         for (Use u : Use.values()) {
             UseFlag useFlag = UseFlagManager.getInstance().get(u);
             if (uses.containsKey(u.name()) && useFlag != null) {
-                landOwner.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), useFlag.getDefault(landOwner.getDefaultBuildState())));
+                landOwner.setUseState(u, Utils.parseEnum(BuildState.class, (String) uses.get(u.name()), useFlag.getDefault(landOwner.getDefaultBuildState())));
             }
         }
         for (String s : ((Collection<String>) map.get("allies"))) {

@@ -450,7 +450,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
                 land.setMode(mode, Utils.getBoolean(modes.get(mode.name())));
             }
         }
-        land.setBuildState(Utils.parseEnum((String) map.get("buildState"), land.getBuildState()));
+        land.setBuildState(Utils.parseEnum(BuildState.class, (String) map.get("buildState"), land.getBuildState()));
 
         if (map.get("link") != null && !((String) map.get("link")).isEmpty()) {
             land.setLink(UUID.fromString((String) map.get("link")));
@@ -460,7 +460,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         for (Use u : Use.values()) {
             UseFlag useFlag = UseFlagManager.getInstance().get(u);
             if (uses.containsKey(u.name()) && useFlag != null) {
-                land.setUseState(u, Utils.parseEnum((String) uses.get(u.name()), useFlag.getDefault(land.getBuildState())));
+                land.setUseState(u, Utils.parseEnum(BuildState.class, (String) uses.get(u.name()), useFlag.getDefault(land.getBuildState())));
             }
         }
         if (land.getLandOwner() instanceof Village) {
