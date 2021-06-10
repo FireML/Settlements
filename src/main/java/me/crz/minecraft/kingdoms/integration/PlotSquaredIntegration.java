@@ -66,11 +66,13 @@ public class PlotSquaredIntegration implements Listener, ConfigMessages {
 
                     plot.setOwnerAbs(landOwner.getChiefId());
 
-                    for (Resident resident : landOwner.getResidents()) {
-                        plot.addTrusted(resident.getUUID());
-                    }
-
-                    DBFunc.createPlotSafe(plot, () -> teleportToPlot(player, plot), () -> getError("failed-to-claim").tell(player));
+                    DBFunc.createPlotSafe(plot, () -> {
+                        for (Resident resident : landOwner.getResidents()) {
+                            plot.addTrusted(resident.getUUID());
+                        }
+                        plotArea.addPlot(plot);
+                        teleportToPlot(player, plot);
+                    }, () -> getError("failed-to-claim").tell(player));
                     return;
                 }
                 teleportToPlot(player, plots.iterator().next());
