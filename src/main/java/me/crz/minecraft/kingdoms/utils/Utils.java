@@ -6,13 +6,16 @@ import me.crz.minecraft.kingdoms.chat.ChatChannel;
 import me.crz.minecraft.kingdoms.chat.ChatColorType;
 import me.crz.minecraft.kingdoms.db.InviteCache;
 import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.empire.EmpireLevel;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.land.PlotMode;
+import me.crz.minecraft.kingdoms.leveling.Levels;
 import me.crz.minecraft.kingdoms.resident.ResidentManager;
 import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.resident.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageLevel;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import me.crz.minecraft.kingdoms.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
@@ -64,9 +67,6 @@ public class Utils {
     public static final SimpleDateFormat ISO_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
     public static final UUID ZERO_UUID = new UUID(0, 0);
     private static final Map<UUID, Long> TELEPORT_COOLDOWNS = new HashMap<>();
-    private static Map<String, Integer> LEVEL_CHUNKS = new HashMap<>();
-    private static Map<String, Integer> LEVEL_OUTPOSTS = new HashMap<>();
-    private static Map<String, Long> LEVEL_UPKEEP = new HashMap<>();
     private static final Set<EntityType> SPECIAL_HOSTILE = EnumSet.of(
             EntityType.SHULKER,
             EntityType.SLIME,
@@ -87,20 +87,6 @@ public class Utils {
 
     public static boolean isWorldClaimable(World world) {
         return !Config.Settlement.Claiming.DISABLED_WORLDS.contains(world.getName()) || EmpireManager.getInstance().getEmpireFromWorld(world) != null;
-    }
-
-    public static long getUpkeepCost(VillageState state, String worldName, int level) {
-        long defaultCost = getUpkeepCost(state, level);
-        return LEVEL_UPKEEP.computeIfAbsent(state.name() + "_" + worldName + "_" + level,
-                key -> ConfigManager.getInstance().getLevelConfig().getLong(
-                        state.name().toLowerCase() + ".level-" + level + ".per-world-upkeep." + worldName,
-                        defaultCost
-                ));
-    }
-
-    public static long getUpkeepCost(VillageState state, int level) {
-        return LEVEL_UPKEEP.computeIfAbsent(state.name() + "_" + level,
-                key -> ConfigManager.getInstance().getLevelConfig().getLong(state.name().toLowerCase() + ".level-" + level + ".claim-upkeep"));
     }
 
     public static int getTeleportDelay(String type) {
@@ -147,16 +133,6 @@ public class Utils {
 
     public static boolean villageHasInvite(Village village, Empire joinEmpire) {
         return InviteCache.getPendingEmpireInvites().containsKey(village.getId()) && InviteCache.getPendingEmpireInvites().get(village.getId()).contains(joinEmpire.getId());
-    }
-
-    public static int getLevelChunks(VillageState state, int level) {
-        return LEVEL_CHUNKS.computeIfAbsent(state.name() + "_" + level,
-                key -> ConfigManager.getInstance().getLevelConfig().getInt(state.name().toLowerCase() + ".level-" + level + ".chunks"));
-    }
-
-    public static int getLevelOutposts(VillageState state, int level) {
-        return LEVEL_OUTPOSTS.computeIfAbsent(state.name() + "_" + level,
-                key -> ConfigManager.getInstance().getLevelConfig().getInt(state.name().toLowerCase() + ".level-" + level + ".outposts"));
     }
 
     public static int getMaxDrunkeness(ChatChannel channel) {

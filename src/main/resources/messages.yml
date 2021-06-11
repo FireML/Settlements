@@ -880,7 +880,7 @@ gui:
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
         &a&lDescription &r&7{description}
         &a&lSymbol &r&7{symbol}
-        &6&lLevel &r&7{level}
+        &a&lLevel &r&7{level}
         &6&lAccess &r&7{access}
         &6&lBank &r&7{bank}
         &6&lUpkeep: &r&7{upkeep}
@@ -1817,7 +1817,7 @@ command:
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
         &a&lDescription: &r&7{description}
         &a&lState: &r&7{state}
-        &b&lEmpire: &r&7{empire}
+        &b&lEmpire: &r&7{empire} (Lv. {empirelevel})
         &6&lAccess: &r&7{access}
         &6&lLevel: &r&7{level}
         &6&lBank: &r&7{bank}
@@ -2125,7 +2125,7 @@ command:
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
         &a&lDescription: &r&7{description}
         &a&lState: &r&7{state}
-        &b&lEmpire: &r&7{empire}
+        &b&lEmpire: &r&7{empire} (Lv. {empirelevel})
         &6&lAccess: &r&7{access}
         &6&lLevel: &r&7{level}
         &6&lBank: &r&7{bank}
@@ -2392,6 +2392,15 @@ command:
     setdescription:
       success: "&aSet description of your empire to &r{description}"
       description: Set the description of an empire
+    deposit:
+      description: Deposit an item into the vault
+      history:
+        head: "&a⊱&m━━━━&r&6Vault History [{page}/{maxpage}]&a&m━━━━&a⊰"
+        entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
+        footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
+        previous: "&b<< Prev "
+        next: "&b Next >>"
+        description: Show the vault's history
     disband:
       confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l to confirm the &r&e&ldisbanding&r&c&l of your empire."
       success: "&e&l(!) &r&7Your {chieftitle} {chief} has deleted your Empire."
@@ -2413,6 +2422,7 @@ command:
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
         &a&lDescription &r&7{description}
         &a&lSymbol &r&7{symbol}
+        &a&lLevel &r&7{level}
         &6&lAccess &r&7{access}
         &6&lBank &r&7{bank}
         &6&lUpkeep: &r&7{upkeep}
@@ -2579,6 +2589,7 @@ command:
       description: Purchase perks
       unlock:
         success: "&6&l{perk} &7&lhas been unlocked!"
+        level-too-low: "&cCan't unlock &f{perk}&c! It requires a level {level} {state}!"
         not-possible: "&f{perk} &ccan't be unlocked! {reason}"
         missing-items: "&c&lMissing Items:"
         already-unlocked: "&cPerk &f{perk} &cis already unlocked"
@@ -2588,6 +2599,7 @@ command:
           description: Buy perks in the shop
       repeat:
         success: "&6&l{perk} &7&lhas been repeated!"
+        level-too-low: "&cCan't repeat &f{perk}&c! It requires a level {level} {state}!"
         not-possible: "&f{perk} &ccan't be repeated! {reason}"
         missing-items: "&c&lMissing Items:"
         entry: "&6{amount} &e{material}"
@@ -2648,6 +2660,7 @@ command:
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
         &a&lDescription &r&7{description}
         &a&lSymbol &r&7{symbol}
+        &a&lLevel &r&7{level}
         &6&lAccess &r&7{access}
         &6&lBank &r&7{bank}
         &6&lUpkeep: &r&7{upkeep} |  &6&lJoin fee: &r&7{joinfee} | &6&lDaily tax: &r&7{tax}
@@ -2738,6 +2751,12 @@ command:
       not-allied: "&c&lYou are not allied to {state} &r&6&l{name}"
       success: "&7&lAlly &6{name} &7removed!"
       description: Remove an ally
+    upgrade:
+      not-possible: "&cThe empire cannot be leveled up! {reason}"
+      max-level-reached: "&r&c&lMax Level Reached."
+      missing-items: "&c&lMissing Items:"
+      entry: "&6{amount} &e{material}"
+      description: Manually trigger an empire upgrade
     upkeep:
       info: |-
         &a⊱&m━━━━&r&6Upkeep&a&m━━━━&a⊰

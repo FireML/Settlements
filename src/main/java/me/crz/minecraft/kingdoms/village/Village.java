@@ -29,7 +29,7 @@ import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
-import me.crz.minecraft.kingdoms.vault.Levels;
+import me.crz.minecraft.kingdoms.leveling.Levels;
 import me.crz.minecraft.kingdoms.world.NamedLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -38,10 +38,13 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -55,7 +58,7 @@ import java.util.stream.Collectors;
 
 import static me.crz.minecraft.kingdoms.utils.MessageUtils.yesOrNo;
 
-public class Village extends LandOwner<VillageRank> implements Comparable<Village>, Targetable {
+public class Village extends LandOwner<VillageRank, VillageLevel> implements Comparable<Village>, Targetable {
     private int level;
     private UUID chief;
     private Empire empire;
@@ -197,7 +200,7 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
                 if (getLevel() == 1 && getState() == VillageState.KINGDOM) {
                     KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and has been downgraded!");
                     setState(VillageState.VILLAGE);
-                    setLevel(Levels.VILLAGE_TO_KINGDOM_LEVEL);
+                    setLevel(Config.Settlement.Leveling.VILLAGE_MAX_LEVEL);
                     MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.downgraded"), "state", getState().getTag(), "level", String.valueOf(getLevel()));
                 } else {
                     KingdomsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and has had a level removed!");
@@ -227,9 +230,14 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
         }
         long amount = 0;
         for (OwnedLand land : LandManager.getInstance().getClaimedLand(this)) {
-            amount += Utils.getUpkeepCost(getState(), land.getWorldName(), getLevel());
+            amount += getClaimUpkeep(land.getWorld());
         }
         return amount;
+    }
+
+    public long getClaimUpkeep(String world) {
+        return Math.max(0, Levels.getInstance().getLevel(getState(), getLevel()).map(l -> l.getClaimUpkeep(world)).orElse(0L)
+                - (hasEmpire() ? getEmpire().getClaimUpkeepReduction() : 0));
     }
 
     @Override
@@ -268,10 +276,12 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
                 || (landOwner instanceof Village && hasEmpire() && getEmpire().isMember((Village) landOwner));
     }
 
+    @Override
     public int getLevel() {
         return level;
     }
 
+    @Override
     public void setLevel(int level) {
         this.level = level;
         if (!ConfigManager.getInstance().getDataConfig().getConfig().contains(villageState.getKey() + ".level" + level)) {
@@ -284,6 +294,12 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
                         "level", String.valueOf(level));
             }
         }
+    }
+
+    @Override
+    @Nullable
+    public VillageLevel getLevelInfo() {
+        return Levels.getInstance().getLevel(getState(), getLevel()).orElse(null);
     }
 
     @Override
@@ -383,7 +399,8 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
     }
 
     public int getMaxClaimableChunks() {
-        return Utils.getLevelChunks(getState(), getLevel()) + getBonusClaimAmount();
+        return Levels.getInstance().getLevel(getState(), getLevel()).map(VillageLevel::getChunks).orElse(0)
+                + getBonusClaimAmount();
     }
 
     public int getBonusClaimAmount() {
@@ -392,7 +409,8 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
     }
 
     public int getMaxOutposts() {
-        return Utils.getLevelOutposts(getState(), getLevel()) + getBonusOutposts() + (hasEmpire() ? getEmpire().getBonusOutposts() : 0);
+        return Levels.getInstance().getLevel(getState(), getLevel()).map(VillageLevel::getOutposts).orElse(0)
+                + getBonusOutposts() + (hasEmpire() ? getEmpire().getBonusOutposts() : 0);
     }
 
     public int getBonusOutposts() {
@@ -417,25 +435,26 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
         return empire != null;
     }
 
-    public boolean canLevelUp() {
-        if (isMaxLevel()) {
-            return false;
-        }
-        return has(getNextLevelRequirements());
-    }
-
+    @NotNull
+    @Override
     public Map<String, Long> getNextLevelRequirements() {
         int nextLevel = getLevel() + 1;
         VillageState nextState = getState();
-        if (nextState == VillageState.VILLAGE && nextLevel > Levels.VILLAGE_TO_KINGDOM_LEVEL) {
+        if (nextState == VillageState.VILLAGE && nextLevel > Config.Settlement.Leveling.VILLAGE_MAX_LEVEL) {
             nextState = VillageState.KINGDOM;
             nextLevel = 1;
         }
-        return Levels.getLevelRequirements(nextState, nextLevel);
+        return Levels.getInstance().getLevel(nextState, nextLevel).map(VillageLevel::getRequirements).orElse(Collections.emptyMap());
     }
 
+    @Override
     public boolean isMaxLevel() {
-        return (getLevel() == Levels.KINGDOMS_MAX_LEVEL && getState() == VillageState.KINGDOM) || getNextLevelRequirements() == null;
+        return (getState().atLeast(VillageState.KINGDOM) && getLevel() >= Config.Settlement.Leveling.KINGDOM_MAX_LEVEL) || getNextLevelRequirements().isEmpty();
+    }
+
+    @Override
+    public boolean checkLevelUp(Resident resident) {
+        return VillageManager.getInstance().checkLevelUp(this, resident);
     }
 
     @Override
@@ -607,6 +626,7 @@ public class Village extends LandOwner<VillageRank> implements Comparable<Villag
                 "name", getName(),
                 "description", getDescription(),
                 "empire", hasEmpire() ? getEmpire().getName() : "",
+                "empirelevel", hasEmpire() ? String.valueOf(getEmpire().getLevel()) : "",
                 "state", getState().getTag(),
                 "abandoned", yesOrNo(isAbandoned()),
                 "abandonedcountdown", isAbandoned() ? UtilTime.format(getCreated() + TimeUnit.MINUTES.toMillis(Config.Settlement.Upkeep.ABANDON_TIME) - System.currentTimeMillis()) : "",

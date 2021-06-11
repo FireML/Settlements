@@ -28,13 +28,14 @@ import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
-import me.crz.minecraft.kingdoms.vault.Levels;
+import me.crz.minecraft.kingdoms.leveling.Levels;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -305,7 +306,7 @@ public class VillageManager {
             return false;
         }
 
-        if (village.getLevel() == Levels.VILLAGE_TO_KINGDOM_LEVEL && village.getState() == VillageState.VILLAGE) {
+        if (village.getLevel() == Config.Settlement.Leveling.VILLAGE_MAX_LEVEL && village.getState() == VillageState.VILLAGE) {
             village.setState(VillageState.KINGDOM);
             village.setLevel(1);
             MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("levels.upgrade-settlement"), "state", village.getState().getTag());
@@ -329,7 +330,9 @@ public class VillageManager {
     }
 
     private void removeLevelRequirements(Village village, Resident res) {
-        Map<String, Long> levelReqs = Levels.getLevelRequirements(village.getState(), village.getLevel());
+        Map<String, Long> levelReqs = Levels.getInstance().getLevel(village.getState(), village.getLevel())
+                .map(VillageLevel::getRequirements)
+                .orElse(Collections.emptyMap());
         if (village.remove(levelReqs)) {
             Utils.runAsync(() -> {
                 DatabaseManager.getInstance().saveVillage(village);

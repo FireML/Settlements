@@ -90,6 +90,7 @@ help-order:
     - bank
     - banished
     - create
+    - deposit
     - donate
     - here
     - home

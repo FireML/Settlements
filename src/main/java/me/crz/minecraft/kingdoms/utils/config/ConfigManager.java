@@ -6,7 +6,7 @@ import me.crz.minecraft.kingdoms.land.UseFlagManager;
 import me.crz.minecraft.kingdoms.utils.CursesFilter;
 import me.crz.minecraft.kingdoms.utils.IconRpMapping;
 import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.vault.Levels;
+import me.crz.minecraft.kingdoms.leveling.Levels;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -74,6 +74,7 @@ public class ConfigManager {
     private ConfigAccessor commands;
     private ConfigAccessor data;
     private ConfigAccessor levelConf;
+    private ConfigAccessor empireLevelConf;
     private ConfigAccessor mapConf;
     private ConfigAccessor settlementPerksConf;
     private ConfigAccessor empirePerksConf;
@@ -162,6 +163,8 @@ public class ConfigManager {
         data = new ConfigAccessor(KingdomsPlugin.getInstance(), "data.yml");
         commands = new ConfigAccessor(KingdomsPlugin.getInstance(), "commands.yml");
         levelConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "levelConf.yml");
+        empireLevelConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "empireLevelConf.yml");
+        convertEmpireLevels();
         mapConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "mapConf.yml");
         settlementPerksConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "settlementPerksConf.yml");
         empirePerksConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "empirePerksConf.yml");
@@ -182,9 +185,30 @@ public class ConfigManager {
             UseFlagManager.getInstance().loadConfig();
             Message.clearCache();
             KingdomsPlugin.getInstance().getLandModeListener().reload();
-            Levels.clearRequirements();
+            Levels.getInstance().load();
             if (getEventsConf().getConfig().getBoolean("enabled")) {
                 EventManager.getInstance().loadConfig();
+            }
+        }
+    }
+
+    private void convertEmpireLevels() {
+        long upkeepCost = getConfig().getLong("empire.upkeep.cost", getConfig().getLong("upkeep.empire", -1));
+        long worldRadius = getConfig().getLong("empire.world.radius", getConfig().getLong("empires-world.border-radius", -1));
+        if (upkeepCost > -1 || worldRadius > -1) {
+            if (upkeepCost > -1) {
+                KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Found that empire upkeep cost was set to " + upkeepCost + " in the config.yml. Setting that into empireLevelConf.yml. Remove the value to allow modification of the per-level value!");
+            }
+            if (worldRadius > -1) {
+                KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Found that empire world radius was set to " + worldRadius + " in the config.yml. Setting that into empireLevelConf.yml. Remove the value to allow modification of the per-level value!");
+            }
+            for (int i = 1; i <= 10; i++) {
+                if (upkeepCost > -1 && upkeepCost != getEmpireLevelConfig().getLong("levels.level-" + i + ".upkeep")) {
+                    getEmpireLevelConfig().set("levels.level-" + i + ".upkeep", upkeepCost);
+                }
+                if (worldRadius > -1 && worldRadius + (i - 1) * 35 != getEmpireLevelConfig().getInt("levels.level-" + i + ".world-radius")) {
+                    getEmpireLevelConfig().set("levels.level-" + i + ".world-radius", worldRadius + (i - 1) * 35);
+                }
             }
         }
     }
@@ -456,6 +480,10 @@ public class ConfigManager {
 
     public FileConfiguration getLevelConfig() {
         return levelConf.getConfig();
+    }
+
+    public FileConfiguration getEmpireLevelConfig() {
+        return empireLevelConf.getConfig();
     }
 
     public FileConfiguration getMapConfig() {

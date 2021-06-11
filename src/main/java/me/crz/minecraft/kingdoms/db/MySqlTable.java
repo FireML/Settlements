@@ -7,6 +7,7 @@ public enum MySqlTable {
             + "name VARCHAR(255) NOT NULL, INDEX (name), UNIQUE (name), "
             + "capitalId INTEGER NOT NULL,"
             + "FOREIGN KEY (capitalId) REFERENCES {tablePrefix}settlements(id) ON DELETE RESTRICT,"
+            + "level INTEGER NOT NULL,"
             + "description TEXT NOT NULL,"
             + "discord TEXT NOT NULL,"
             + "created BIGINT,"

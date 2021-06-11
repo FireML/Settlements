@@ -12,6 +12,7 @@ import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.land.BuildState;
 import me.crz.minecraft.kingdoms.land.Use;
 import me.crz.minecraft.kingdoms.land.events.LandownerDisbandEvent;
+import me.crz.minecraft.kingdoms.leveling.Levels;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.perk.Perk;
@@ -42,6 +43,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -397,6 +399,50 @@ public class EmpireManager {
             DatabaseManager.getInstance().saveVillage(village);
             DatabaseManager.getInstance().saveResident(toSave);
         });
+    }
+
+    /**
+     * Check whether or not an empire can level up
+     * @param empire The Empire to check
+     * @param res
+     * @return Whether or not the empire was leveled up
+     */
+    public boolean checkLevelUp(Empire empire, Resident res) {
+        if (!empire.canLevelUp()) {
+            return false;
+        }
+
+        empire.setLevel(empire.getLevel() + 1);
+        MessageUtils.tellResidents(empire.getOnlineResidents(), Message.get("levels.upgrade"), "level", Integer.toString(empire.getLevel()), "state", empire.getStateTag());
+        removeLevelRequirements(empire, res);
+
+        for (EmpirePerk perk : getPerks()) {
+            if (empire.getLevel() == perk.getLevel()) {
+                if (perk.getUnlockCost().isEmpty()) {
+                    MessageUtils.tellResidents(empire.getOnlineResidents(), Message.get("levels.perk-unlocked"), "perk", perk.getTag());
+                    empire.unlockPerk(res.getPlayer(), perk);
+                } else {
+                    MessageUtils.tellResidents(empire.getOnlineResidents(), Message.get("levels.perk-available"), "perk", perk.getTag());
+                }
+            }
+        }
+        World world = Bukkit.getWorld(empire.getWorldName());
+        if (world != null) {
+            world.getWorldBorder().setSize(empire.getWorldRadius() * 2, 5);
+        }
+        return true;
+    }
+
+    private void removeLevelRequirements(Empire empire, Resident res) {
+        Map<String, Long> levelReqs = Levels.getInstance().getEmpireLevel(empire.getLevel())
+                .map(EmpireLevel::getRequirements)
+                .orElse(Collections.emptyMap());
+        if (empire.remove(levelReqs)) {
+            Utils.runAsync(() -> {
+                DatabaseManager.getInstance().saveEmpire(empire);
+                DatabaseManager.getInstance().logLevelup(empire, res, levelReqs);
+            });
+        }
     }
 
     public Empire getEmpireFromWorld(File worldFolder) {

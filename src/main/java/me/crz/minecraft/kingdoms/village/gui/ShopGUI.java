@@ -13,11 +13,9 @@ import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
-import me.crz.minecraft.kingdoms.vault.Levels;
 import me.crz.minecraft.kingdoms.resident.Resident;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
-import me.crz.minecraft.kingdoms.village.VillageState;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -57,15 +55,6 @@ public class ShopGUI extends KingdomsGUI {
             Village village = resident.getVillage();
 
             for (LevelPerk perk : VillageManager.getInstance().getPerks()) {
-                if (perk.getState() == VillageState.KINGDOM && village.getState() == VillageState.VILLAGE) {
-                    if (perk.getLevel() > 1 || village.getLevel() + 1 < Levels.VILLAGE_TO_KINGDOM_LEVEL) {
-                        continue;
-                    }
-                }
-                if (perk.getState() == village.getState() && village.getLevel() + 1 < perk.getLevel()) {
-                    continue;
-                }
-
                 if (village.hasUnlocked(perk) && !village.checkPerkCount(perk)) {
                     continue;
                 }
@@ -177,7 +166,7 @@ public class ShopGUI extends KingdomsGUI {
                     }
 
                     return new StaticGuiElement('g', item, click -> {
-                        if (resident.hasVillage()) {
+                        if (resident.hasVillage() && perk.matchesLevelRequirement(resident.getVillage())) {
                             if (resident.hasPermission("village.shop.repeat")
                                     && resident.getVillage().canRepeat(perk)
                                     && resident.getVillage().remove(perk.getRepeatCost())) {

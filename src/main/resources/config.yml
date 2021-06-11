@@ -47,6 +47,12 @@ settlement:
   # How many different titles can be configured for a rank
   titles-per-rank: 10
   
+  leveling:
+    # The amount of levels until a settlement converts from a Village to a Kingdom
+    village-max-level: 5
+    #The maximum amount of Kingdom levels
+    kingdom-max-level: 10
+  
   claiming:
     # Worlds in which claiming of Settlement chunks are disabled
     disabled-worlds:
@@ -110,6 +116,10 @@ empire:
   # How many different titles can be configured for a rank
   titles-per-rank: 10
   
+  leveling:
+    # The amount of levels an Empire can reach
+    max-level: 5
+
   world:
     # Whether each empire should get their own world automatically generated
     enabled: true

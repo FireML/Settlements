@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 public interface BanishCommand extends ConfigMessages, TargetParser {
 
-    default boolean listBanished(Resident resident, LandOwner<?> landOwner) {
+    default boolean listBanished(Resident resident, LandOwner<?, ?> landOwner) {
         Utils.runAsync(() -> {
             resident.tell(getMessage("head"));
             if (!landOwner.getBanishedPlayers().isEmpty()) {

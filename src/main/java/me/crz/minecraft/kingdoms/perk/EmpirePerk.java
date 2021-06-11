@@ -16,6 +16,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 public class EmpirePerk extends Perk {
+    private int level;
     private int bonusRadius = 0;
 
     static {
@@ -111,10 +112,19 @@ public class EmpirePerk extends Perk {
 
     public EmpirePerk(ConfigurationSection config) throws IllegalArgumentException {
         super(config);
+        this.level = config.getInt("level", 0);
         if (config.getBoolean("world.flying", false)) {
             actions.put("flying", AVAILABLE_ACTIONS.get("flying"));
         }
         this.bonusRadius = config.getInt("world.radius", bonusRadius);
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public boolean matchesLevelRequirement(Empire empire) {
+        return empire.getLevel() >= getLevel();
     }
 
     public boolean isFlying() {

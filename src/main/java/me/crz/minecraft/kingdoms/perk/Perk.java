@@ -164,13 +164,13 @@ public class Perk implements NameTag {
 
     public interface ActionExecutor {
 
-        void onToggle(Player player, LandOwner<?> landOwner, boolean enable);
+        void onToggle(Player player, LandOwner<?, ?> landOwner, boolean enable);
 
     }
 
     public interface StateQuery {
 
-        String getState(LandOwner<?> landOwner);
+        String getState(LandOwner<?, ?> landOwner);
 
     }
 
@@ -186,14 +186,14 @@ public class Perk implements NameTag {
         }
 
         @Override
-        public void onToggle(Player player, LandOwner<?> landOwner, boolean enable) {
+        public void onToggle(Player player, LandOwner<?, ?> landOwner, boolean enable) {
             if (actionExecutor != null) {
                 actionExecutor.onToggle(player, landOwner, enable);
             }
         }
 
         @Override
-        public String getState(LandOwner<?> landOwner) {
+        public String getState(LandOwner<?, ?> landOwner) {
             if (stateQuery != null) {
                 return stateQuery.getState(landOwner);
             }

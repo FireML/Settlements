@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 public interface AllyCommand extends LandOwnerCommand {
 
-    default boolean listAllies(Resident resident, LandOwner<?> landOwner) {
+    default boolean listAllies(Resident resident, LandOwner<?, ?> landOwner) {
         resident.tell(getMessage("head"));
         resident.tell(landOwner.getAllies().stream()
                 .map(e -> getMessage("entry").getReplacedText("name", e.getName(), "state", e.getStateTag()))

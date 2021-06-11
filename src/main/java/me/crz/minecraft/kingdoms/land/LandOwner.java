@@ -7,6 +7,8 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.db.DatabaseSerializable;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.leveling.LevelInfo;
+import me.crz.minecraft.kingdoms.leveling.Levelable;
 import me.crz.minecraft.kingdoms.perk.Perk;
 import me.crz.minecraft.kingdoms.perk.PerkData;
 import me.crz.minecraft.kingdoms.perk.Vaultable;
@@ -41,7 +43,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public abstract class LandOwner<R extends Rank> implements DatabaseSerializable, Vaultable, Targetable, ModeAble, ConfigKey {
+public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements DatabaseSerializable, Levelable<L>, Targetable, ModeAble, ConfigKey {
     private IdObject id = IdObject.get(null);
     private String name;
     private String description = "";
@@ -443,7 +445,7 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
         return false;
     }
 
-    public boolean addAlly(LandOwner<?> landOwner) {
+    public boolean addAlly(LandOwner<?, ?> landOwner) {
         if (landOwner instanceof Village) {
             return alliedVillages.add(landOwner.getId());
         } else if (landOwner instanceof Empire) {
@@ -452,7 +454,7 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
         return false;
     }
 
-    public boolean removeAlly(LandOwner<?> landOwner) {
+    public boolean removeAlly(LandOwner<?, ?> landOwner) {
         if (landOwner instanceof Village) {
             return alliedVillages.remove(landOwner.getId());
         } else if (landOwner instanceof Empire) {
@@ -461,7 +463,7 @@ public abstract class LandOwner<R extends Rank> implements DatabaseSerializable,
         return false;
     }
 
-    public boolean isAlly(LandOwner<?> landOwner) {
+    public boolean isAlly(LandOwner<?, ?> landOwner) {
         if (landOwner instanceof Village) {
             return alliedVillages.contains(landOwner.getId());
         } else if (landOwner instanceof Empire) {

@@ -2,8 +2,8 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.db.LogType;
+import me.crz.minecraft.kingdoms.leveling.DepositGUI;
 import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.vault.VaultInventory;
 import me.crz.minecraft.kingdoms.resident.Resident;
 
 public class VillageDepositCommand extends VillageSubCommand {
@@ -15,7 +15,7 @@ public class VillageDepositCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (!resident.getVillage().isMaxLevel()) {
-            new VaultInventory(resident.getPlayer()).open();
+            new DepositGUI(resident, resident.getVillage()).open();
         } else {
             resident.tell(Message.get("command.village.upgrade.max-level-reached"));
         }

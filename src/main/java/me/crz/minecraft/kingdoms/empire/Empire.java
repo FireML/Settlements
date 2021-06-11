@@ -13,6 +13,7 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.land.TaxDebtAction;
 import me.crz.minecraft.kingdoms.land.BuildState;
+import me.crz.minecraft.kingdoms.leveling.Levels;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.perk.Perk;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
@@ -29,6 +30,7 @@ import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.resident.Resident;
 import me.crz.minecraft.kingdoms.resident.ResidentManager;
+import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Bukkit;
@@ -36,10 +38,13 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -53,7 +58,8 @@ import java.util.stream.Collectors;
 
 import static me.crz.minecraft.kingdoms.utils.MessageUtils.yesOrNo;
 
-public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> {
+public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Comparable<Empire> {
+    private int level;
     private IdObject capital;
     private String symbol = "";
     private Set<IdObject> members = new LinkedHashSet<>();
@@ -65,10 +71,11 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
         super();
     }
 
-    public Empire(String name, IdObject capital) {
+    public Empire(String name, IdObject capital, int level) {
         super(name);
         this.capital = capital;
         members.add(capital);
+        this.level = level;
     }
 
     public void doUpkeep() {
@@ -199,6 +206,7 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
         map.put("capitalId", getCapitalId().value());
         map.put("lastRename", getLastRename());
         map.put("symbol", getSymbol());
+        map.put("level", getLevel());
         map.put("members", getMemberIds().stream().map(IdObject::value).filter(Objects::nonNull).collect(Collectors.toList()));
         return map;
     }
@@ -212,7 +220,7 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
     }
 
     @Override
-    public boolean removeAlly(LandOwner<?> landOwner) {
+    public boolean removeAlly(LandOwner<?, ?> landOwner) {
         if (super.removeAlly(landOwner)) {
             for (Resident resident : landOwner.getResidents()) {
                 Player player = resident.getPlayer();
@@ -288,6 +296,7 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
         empire.capital = IdObject.get(map.get("capitalId"));
         empire.lastRename = Utils.getLong(map.get("lastRename"));
         empire.setSymbol((String) map.get("symbol"));
+        empire.setLevel((Integer) map.get("level"));
         if (map.get("members") != null && map.get("members") instanceof Collection) {
             for (Object memberId : (Collection) map.get("members")) {
                 empire.members.add(IdObject.get(memberId));
@@ -320,7 +329,27 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
     }
 
     public int getWorldRadius() {
-        return Config.Empire.World.BORDER_RADIUS + getBonusRadius();
+        return Levels.getInstance().getEmpireLevel(level).map(EmpireLevel::getWorldRadius).orElse(500) + getBonusRadius();
+    }
+
+    public Long getClaimUpkeepReduction() {
+        return Levels.getInstance().getEmpireLevel(level).map(EmpireLevel::getUpkeepReduction).orElse(0L);
+    }
+
+    @Override
+    @NotNull
+    public Map<String, Long> getNextLevelRequirements() {
+        return Levels.getInstance().getEmpireLevel(getLevel() + 1).map(EmpireLevel::getRequirements).orElse(Collections.emptyMap());
+    }
+
+    @Override
+    public boolean isMaxLevel() {
+        return (getLevel() >= Config.Empire.Leveling.MAX_LEVEL) || getNextLevelRequirements().isEmpty();
+    }
+
+    @Override
+    public boolean checkLevelUp(Resident resident) {
+        return EmpireManager.getInstance().checkLevelUp(this, resident);
     }
 
     public Village getCapital() {
@@ -376,6 +405,32 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
 
     public boolean isFull() {
         return Config.Empire.MAX_SIZE > 0 && getMemberIds().size() >= Config.Empire.MAX_SIZE;
+    }
+
+    @Override
+    public int getLevel() {
+        return level;
+    }
+
+    @Override
+    public void setLevel(int level) {
+        this.level = level;
+        if (!ConfigManager.getInstance().getDataConfig().getConfig().contains("empire.level" + level)) {
+            ConfigManager.getInstance().getDataConfig().getConfig().set("empire.level" + level, getName());
+            ConfigManager.getInstance().getDataConfig().saveConfig();
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                MessageUtils.tell(player, Message.get("first-to-reach-level"),
+                        "name", this.getName(),
+                        "state", "empire",
+                        "level", String.valueOf(level));
+            }
+        }
+    }
+
+    @Override
+    @Nullable
+    public EmpireLevel getLevelInfo() {
+        return Levels.getInstance().getEmpireLevel(getLevel()).orElse(null);
     }
 
     @Override
@@ -466,7 +521,7 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
 
     @Override
     public long getUpkeep() {
-        return Config.Empire.Upkeep.COST;
+        return Levels.getInstance().getEmpireLevel(level).map(EmpireLevel::getUpkeep).orElse(0L);
     }
 
     @Override
@@ -577,6 +632,7 @@ public class Empire extends LandOwner<EmpireRank> implements Comparable<Empire> 
                 "name", getName(),
                 "description", getDescription(),
                 "symbol", getSymbol(),
+                "level", String.valueOf(getLevel()),
                 "access", getAccess().getTag(),
                 "upkeep", Utils.CURRENCY_FORMAT.format(getUpkeep()),
                 "balance", Utils.withSuffix(getBank()),

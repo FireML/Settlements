@@ -160,6 +160,14 @@ public abstract class DatabaseManager {
         }
     }
 
+    public void logDeposit(LandOwner landOwner, Resident resident, Map<String, Long> deposited) {
+        log(
+                landOwner instanceof Empire ? (Empire) landOwner : null,
+                landOwner instanceof Empire ? resident.getVillage() : (Village) landOwner,
+                resident, "deposit", deposited
+        );
+    }
+
     public void logDeposit(Village village, Resident resident, long deposited) {
         log(null, village, resident, "deposit", "cash", deposited);
     }

@@ -22,6 +22,12 @@ public class EmpireShopCommand extends EmpireSubCommand {
                     EmpirePerk perk = EmpireManager.getInstance().getPerk(String.join(" ", args));
                     if (perk == null) {
                         getError("unknown-perk").tell(resident, "perk", String.join(" ", args));
+                    } else if (!perk.matchesLevelRequirement(resident.getVillage().getEmpire())) {
+                        getError("level-too-low").tell(resident,
+                                "perk", perk.getTag(),
+                                "state", resident.getVillage().getEmpire().getStateTag(),
+                                "level", String.valueOf(perk.getLevel())
+                        );
                     } else if (resident.getVillage().getEmpire().hasUnlocked(perk)) {
                         getError("already-unlocked").tell(resident, "perk", perk.getTag());
                     } else if (resident.getVillage().remove(perk.getUnlockCost())) {
@@ -47,7 +53,7 @@ public class EmpireShopCommand extends EmpireSubCommand {
                 }
                 getMessage("usage.head").tell(resident, "name", "Unlock Perks");
                 for (EmpirePerk perk : EmpireManager.getInstance().getPerks()) {
-                    if (!resident.getVillage().getEmpire().hasUnlocked(perk)) {
+                    if (!resident.getVillage().getEmpire().hasUnlocked(perk) && perk.matchesLevelRequirement(resident.getVillage().getEmpire())) {
                         getMessage("usage.entry").tell(resident, "usage", getUsage(base).replace("<perk>", perk.name()), "description", perk.getTag());
                     }
                 }
@@ -63,6 +69,12 @@ public class EmpireShopCommand extends EmpireSubCommand {
                         getError("unknown-perk").tell(resident, "perk", String.join(" ", args));
                     } else if (!resident.getVillage().getEmpire().hasUnlocked(perk)) {
                         getError("not-unlocked").tell(resident, "perk", perk.getTag());
+                    } else if (!perk.matchesLevelRequirement(resident.getVillage().getEmpire())) {
+                        getError("level-too-low").tell(resident,
+                                "perk", perk.getTag(),
+                                "state", resident.getVillage().getEmpire().getStateTag(),
+                                "level", String.valueOf(perk.getLevel())
+                        );
                     } else if (!resident.getVillage().getEmpire().checkPerkCount(perk)) {
                         getError("already-repeated").tell(resident, "perk", perk.getTag(), "amount", String.valueOf(perk.getRepeat()));
                     } else if (resident.getVillage().getEmpire().remove(perk.getRepeatCost())) {

@@ -46,7 +46,7 @@ public class EmpireCreateCommand extends VillageSubCommand {
                     return true;
                 }
             }
-            Empire empire = new Empire(name, resident.getVillage().getId());
+            Empire empire = new Empire(name, resident.getVillage().getId(), 1);
 
             MessageUtils.broadcast(getMessage("broadcast"),
                     "name", empire.getName(),

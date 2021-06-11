@@ -20,6 +20,7 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpireBanishedCommand(this));
         registerCommand(new EmpireBuildCommand(this));
         registerCommand(new EmpireCreateCommand(this));
+        registerCommand(new EmpireDepositCommand(this));
         registerCommand(new EmpireDescriptionCommand(this));
         registerCommand(new EmpireDisbandCommand(this));
         registerCommand(new EmpireDiscordCommand(this));
@@ -59,6 +60,7 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpireTransferCommand(this));
         registerCommand(new EmpireUnAllyCommand(this));
         registerCommand(new EmpireUnbanishCommand(this));
+        registerCommand(new EmpireUpgradeCommand(this));
         registerCommand(new EmpireUpkeepCommand(this));
         registerCommand(new EmpireUseCommand(this));
     }

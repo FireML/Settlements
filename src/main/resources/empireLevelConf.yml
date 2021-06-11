@@ -1,0 +1,32 @@
+levels:
+  level-1:
+    # The amount an empire needs to pay per day
+    upkeep: 1000
+    # The base radius that an empire world will have at that level
+    world-radius: 500
+    # Lower the member per plot upkeep
+    upkeep-reduction: 20
+  level-2:
+    upkeep: 1000
+    world-radius: 535
+    upkeep-reduction: 30
+    requirements:
+      Cobblestone: 3500000000
+  level-3:
+    upkeep: 1000
+    world-radius: 570
+    upkeep-reduction: 40
+    requirements:
+      Cobblestone: 3500000000
+  level-4:
+    upkeep: 1000
+    world-radius: 605
+    upkeep-reduction: 50
+    requirements:
+      Cobblestone: 3500000000
+  level-5:
+    upkeep: 1000
+    world-radius: 740
+    upkeep-reduction: 60
+    requirements:
+      Cobblestone: 3500000000

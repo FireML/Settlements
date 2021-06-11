@@ -10,6 +10,7 @@ perm-groups:
     - village.outpost.teleport
     - village.title
     - village.rewards
+    - village.upgrade
   settings:
     icon: REDSTONE_BLOCK
     permissions:

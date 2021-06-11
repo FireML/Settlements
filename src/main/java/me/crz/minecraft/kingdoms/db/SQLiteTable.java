@@ -6,6 +6,7 @@ public enum SQLiteTable {
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "name VARCHAR(255) NOT NULL,"
             + "capitalId INTEGER NOT NULL,"
+            + "level INTEGER NOT NULL,"
             + "description TEXT NOT NULL,"
             + "discord TEXT NOT NULL,"
             + "created BIGINT,"

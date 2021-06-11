@@ -6,7 +6,9 @@ perm-groups:
     - empire.allies
     - empire.banished
     - empire.bank.history
+    - empire.deposit.history
     - empire.perms.show
+    - empire.upgrade
   settings:
     icon: REDSTONE_BLOCK
     permissions:
@@ -174,8 +176,11 @@ ranks:
     - empire.bank.balance
     - empire.bank.deposit
     - empire.bank.history
+    - empire.deposit
+    - empire.deposit.history
     - empire.help.member
     - empire.perks
     - empire.shop
     - empire.tax
+    - empire.upgrade
     - empire.upkeep

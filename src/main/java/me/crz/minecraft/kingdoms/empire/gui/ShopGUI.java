@@ -101,7 +101,7 @@ public class ShopGUI extends KingdomsGUI {
                             ItemUtils.setGlowing(item, true);
                         }
                     } else {
-                        description.add(getText("entry.unlockable",
+                        description.add(getText("entry." + (perk.matchesLevelRequirement(empire) ? "unlockable" : "locked"),
                                 "name", perk.getTag(),
                                 "times", String.valueOf(perk.getRepeat()),
                                 "cooldown", UtilTime.format(perk.getCooldown())
@@ -162,7 +162,7 @@ public class ShopGUI extends KingdomsGUI {
                     }
 
                     return new StaticGuiElement('g', item, click -> {
-                        if (resident.hasEmpire()) {
+                        if (resident.hasEmpire() && perk.matchesLevelRequirement(resident.getVillage().getEmpire())) {
                             if (resident.hasPermission("empire.shop.repeat")
                                     && resident.getVillage().getEmpire().canRepeat(perk)
                                     && resident.getVillage().getEmpire().remove(perk.getRepeatCost())) {

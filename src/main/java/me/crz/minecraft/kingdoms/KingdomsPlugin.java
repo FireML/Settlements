@@ -23,6 +23,7 @@ import me.crz.minecraft.kingdoms.integration.PlotSquaredIntegration;
 import me.crz.minecraft.kingdoms.integration.ShopProvider;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.UseFlagManager;
+import me.crz.minecraft.kingdoms.leveling.Levels;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.lock.LockManager;
@@ -57,7 +58,6 @@ import me.crz.minecraft.kingdoms.land.LandBlockListener;
 import me.crz.minecraft.kingdoms.land.LandModeListener;
 import me.crz.minecraft.kingdoms.chat.ChatManager;
 import me.crz.minecraft.kingdoms.village.VillageListener;
-import me.crz.minecraft.kingdoms.vault.VaultListener;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import net.milkbowl.vault.chat.Chat;
@@ -133,6 +133,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        Levels.getInstance();
 
         if (getServer().getPluginManager().isPluginEnabled("CMI")) {
             CmiIntegration cmiIntegration = new CmiIntegration();
@@ -179,7 +180,6 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             this.getLandPerks().runTimer();
             registerListener(new CustomEventManager());
             registerListener(new BanishListener());
-            registerListener(new VaultListener());
             registerListener(new VillageListener());
             registerListener(new EmpireListener());
             registerListener(landModeListener = new LandModeListener());

@@ -340,7 +340,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
         return true;
     }
 
-    private void sendMessage(LandOwner<?> landOwner, String playerName, Message rawMessage, Sign sign, BigDecimal price, ItemStack[] stock, String... replacements) {
+    private void sendMessage(LandOwner<?, ?> landOwner, String playerName, Message rawMessage, Sign sign, BigDecimal price, ItemStack[] stock, String... replacements) {
         Location loc = sign.getLocation();
         Map<String, String> replacementMap = new LinkedHashMap<>();
         replacementMap.put("state", landOwner.getStateTag());

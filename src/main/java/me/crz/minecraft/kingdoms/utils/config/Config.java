@@ -91,6 +91,14 @@ public class Config {
         @ConfigComment("How many different titles can be configured for a rank")
         public static int TITLES_PER_RANK = 10;
 
+        public static class Leveling {
+            @ConfigComment("The amount of levels until a settlement converts from a Village to a Kingdom")
+            public static int VILLAGE_MAX_LEVEL = 5;
+
+            @ConfigComment("The maximum amount of Kingdom levels")
+            public static int KINGDOM_MAX_LEVEL = 10;
+        }
+
         public static class Claiming {
             @ConfigEntry(old = {"disabled-claiming-worlds"}, parser = "StringSet")
             @ConfigComment("Worlds in which claiming of Settlement chunks are disabled")
@@ -200,6 +208,11 @@ public class Config {
         @ConfigComment("How many different titles can be configured for a rank")
         public static int TITLES_PER_RANK = 10;
 
+        public static class Leveling {
+            @ConfigComment("The amount of levels an Empire can reach")
+            public static int MAX_LEVEL = 5;
+        }
+
         public static class World {
             @ConfigEntry(old = {"empires-world.enabled"})
             @ConfigComment("Whether each empire should get their own world automatically generated")
@@ -241,10 +254,6 @@ public class Config {
             @ConfigComment("Whether or not to generate structures")
             public static boolean STRUCTURES = false;
 
-            @ConfigEntry(old = {"empires-world.border-radius"})
-            @ConfigComment("The radius that an empire world will have by default")
-            public static int BORDER_RADIUS = 500;
-
             @ConfigEntry(old = {"empires-world.regen-duration"})
             @ConfigComment("Amount of seconds an empire can regenerate their world after empire generation to find one they like\n" +
                     "Set to -1 to allow infinite regeneration")
@@ -256,10 +265,6 @@ public class Config {
             @ConfigComment("The amount of minutes that an empire will stay abandoned after not being able to pay their upkeep\n" +
                     "Abandoned empires can be raided and fully accessed")
             public static long ABANDON_TIME = 1440;
-
-            @ConfigEntry(old = {"upkeep.empire"})
-            @ConfigComment("The amount an empire needs to pay per day")
-            public static long COST = 1000;
         }
     }
 
