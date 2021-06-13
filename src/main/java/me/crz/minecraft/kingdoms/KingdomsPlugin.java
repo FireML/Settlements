@@ -23,7 +23,6 @@ import me.crz.minecraft.kingdoms.integration.PlotSquaredIntegration;
 import me.crz.minecraft.kingdoms.integration.ShopProvider;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.land.UseFlagManager;
-import me.crz.minecraft.kingdoms.leveling.Levels;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.lock.LockManager;
@@ -133,7 +132,6 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        Levels.getInstance();
 
         if (getServer().getPluginManager().isPluginEnabled("CMI")) {
             CmiIntegration cmiIntegration = new CmiIntegration();

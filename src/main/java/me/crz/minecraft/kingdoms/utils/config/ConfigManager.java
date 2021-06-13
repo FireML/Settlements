@@ -1,12 +1,12 @@
 package me.crz.minecraft.kingdoms.utils.config;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.event.EventManager;
 import me.crz.minecraft.kingdoms.land.UseFlagManager;
 import me.crz.minecraft.kingdoms.utils.CursesFilter;
 import me.crz.minecraft.kingdoms.utils.IconRpMapping;
 import me.crz.minecraft.kingdoms.utils.Message;
-import me.crz.minecraft.kingdoms.leveling.Levels;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -181,11 +181,13 @@ public class ConfigManager {
             Config.Portal.ENABLED = false;
             Config.Sidebar.ENABLED = false;
         } else if (KingdomsPlugin.getInstance().isRunning()) {
+            EmpireManager.getInstance().loadLevels();
+            EmpireManager.getInstance().loadPerks();
+            VillageManager.getInstance().loadLevels();
             VillageManager.getInstance().loadPerks();
             UseFlagManager.getInstance().loadConfig();
             Message.clearCache();
             KingdomsPlugin.getInstance().getLandModeListener().reload();
-            Levels.getInstance().load();
             if (getEventsConf().getConfig().getBoolean("enabled")) {
                 EventManager.getInstance().loadConfig();
             }

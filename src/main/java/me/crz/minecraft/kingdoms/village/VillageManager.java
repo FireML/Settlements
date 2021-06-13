@@ -28,7 +28,6 @@ import me.crz.minecraft.kingdoms.utils.Targetable;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
-import me.crz.minecraft.kingdoms.leveling.Levels;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -36,9 +35,11 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -50,10 +51,13 @@ public class VillageManager {
     private Map<IdObject, Village> villageIDs = new ConcurrentHashMap<>();
     private Map<UUID, Village> villageUuids = new ConcurrentHashMap<>();
 
+    private Map<VillageState, List<VillageLevel>> levels = new HashMap<>();
+
     private Map<String, LevelPerk> perks;
     private Map<String, LevelPerk> perkTags;
 
     private VillageManager() {
+        loadLevels();
         loadPerks();
         for (Village village : DatabaseManager.getInstance().getAllVillages()) {
             villages.put(village.getName().replace(' ', '_').toLowerCase(), village);
@@ -70,6 +74,25 @@ public class VillageManager {
                 }, delay, TimeUnit.MILLISECONDS);
             }
         }
+    }
+
+    public void loadLevels() {
+        levels.clear();
+        List<VillageLevel> villageLevels = new ArrayList<>();
+        for (int i = 1; i <= Config.Settlement.Leveling.VILLAGE_MAX_LEVEL; i++) {
+            VillageLevel level = new VillageLevel(i, ConfigManager.getInstance().getLevelConfig().getConfigurationSection("village.level-" + i));
+            villageLevels.add(level);
+            KingdomsPlugin.logDebug("Loaded " + level);
+        }
+        levels.put(VillageState.VILLAGE, villageLevels);
+
+        List<VillageLevel> kingdomLevels = new ArrayList<>();
+        for (int i = 1; i <= Config.Settlement.Leveling.KINGDOM_MAX_LEVEL; i++) {
+            VillageLevel level = new VillageLevel(i, ConfigManager.getInstance().getLevelConfig().getConfigurationSection("kingdom.level-" + i));
+            kingdomLevels.add(level);
+            KingdomsPlugin.logDebug("Loaded " + level);
+        }
+        levels.put(VillageState.KINGDOM, kingdomLevels);
     }
 
     public void loadPerks() {
@@ -330,7 +353,7 @@ public class VillageManager {
     }
 
     private void removeLevelRequirements(Village village, Resident res) {
-        Map<String, Long> levelReqs = Levels.getInstance().getLevel(village.getState(), village.getLevel())
+        Map<String, Long> levelReqs = getLevel(village.getState(), village.getLevel())
                 .map(VillageLevel::getRequirements)
                 .orElse(Collections.emptyMap());
         if (village.remove(levelReqs)) {
@@ -339,6 +362,14 @@ public class VillageManager {
                 DatabaseManager.getInstance().logLevelup(village, res, levelReqs);
             });
         }
+    }
+
+    public Optional<VillageLevel> getLevel(VillageState state, int level) {
+        List<VillageLevel> levels = this.levels.get(state);
+        if (levels != null && level <= levels.size()) {
+            return Optional.of(levels.get(level - 1));
+        }
+        return Optional.empty();
     }
 
     public LevelPerk getPerk(String name) {

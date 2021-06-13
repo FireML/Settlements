@@ -29,7 +29,6 @@ import me.crz.minecraft.kingdoms.utils.UtilTime;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
-import me.crz.minecraft.kingdoms.leveling.Levels;
 import me.crz.minecraft.kingdoms.world.NamedLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -236,7 +235,7 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
     }
 
     public long getClaimUpkeep(String world) {
-        return Math.max(0, Levels.getInstance().getLevel(getState(), getLevel()).map(l -> l.getClaimUpkeep(world)).orElse(0L)
+        return Math.max(0, VillageManager.getInstance().getLevel(getState(), getLevel()).map(l -> l.getClaimUpkeep(world)).orElse(0L)
                 - (hasEmpire() ? getEmpire().getClaimUpkeepReduction() : 0));
     }
 
@@ -299,7 +298,7 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
     @Override
     @Nullable
     public VillageLevel getLevelInfo() {
-        return Levels.getInstance().getLevel(getState(), getLevel()).orElse(null);
+        return VillageManager.getInstance().getLevel(getState(), getLevel()).orElse(null);
     }
 
     @Override
@@ -399,7 +398,7 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
     }
 
     public int getMaxClaimableChunks() {
-        return Levels.getInstance().getLevel(getState(), getLevel()).map(VillageLevel::getChunks).orElse(0)
+        return VillageManager.getInstance().getLevel(getState(), getLevel()).map(VillageLevel::getChunks).orElse(0)
                 + getBonusClaimAmount();
     }
 
@@ -409,7 +408,7 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
     }
 
     public int getMaxOutposts() {
-        return Levels.getInstance().getLevel(getState(), getLevel()).map(VillageLevel::getOutposts).orElse(0)
+        return VillageManager.getInstance().getLevel(getState(), getLevel()).map(VillageLevel::getOutposts).orElse(0)
                 + getBonusOutposts() + (hasEmpire() ? getEmpire().getBonusOutposts() : 0);
     }
 
@@ -444,7 +443,7 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
             nextState = VillageState.KINGDOM;
             nextLevel = 1;
         }
-        return Levels.getInstance().getLevel(nextState, nextLevel).map(VillageLevel::getRequirements).orElse(Collections.emptyMap());
+        return VillageManager.getInstance().getLevel(nextState, nextLevel).map(VillageLevel::getRequirements).orElse(Collections.emptyMap());
     }
 
     @Override

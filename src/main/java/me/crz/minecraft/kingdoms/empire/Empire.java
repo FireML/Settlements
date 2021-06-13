@@ -13,7 +13,6 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.land.TaxDebtAction;
 import me.crz.minecraft.kingdoms.land.BuildState;
-import me.crz.minecraft.kingdoms.leveling.Levels;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.perk.Perk;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
@@ -329,17 +328,17 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     public int getWorldRadius() {
-        return Levels.getInstance().getEmpireLevel(level).map(EmpireLevel::getWorldRadius).orElse(500) + getBonusRadius();
+        return EmpireManager.getInstance().getLevel(level).map(EmpireLevel::getWorldRadius).orElse(500) + getBonusRadius();
     }
 
     public Long getClaimUpkeepReduction() {
-        return Levels.getInstance().getEmpireLevel(level).map(EmpireLevel::getUpkeepReduction).orElse(0L);
+        return EmpireManager.getInstance().getLevel(level).map(EmpireLevel::getUpkeepReduction).orElse(0L);
     }
 
     @Override
     @NotNull
     public Map<String, Long> getNextLevelRequirements() {
-        return Levels.getInstance().getEmpireLevel(getLevel() + 1).map(EmpireLevel::getRequirements).orElse(Collections.emptyMap());
+        return EmpireManager.getInstance().getLevel(getLevel() + 1).map(EmpireLevel::getRequirements).orElse(Collections.emptyMap());
     }
 
     @Override
@@ -430,7 +429,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     @Override
     @Nullable
     public EmpireLevel getLevelInfo() {
-        return Levels.getInstance().getEmpireLevel(getLevel()).orElse(null);
+        return EmpireManager.getInstance().getLevel(getLevel()).orElse(null);
     }
 
     @Override
@@ -521,7 +520,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
 
     @Override
     public long getUpkeep() {
-        return Levels.getInstance().getEmpireLevel(level).map(EmpireLevel::getUpkeep).orElse(0L);
+        return EmpireManager.getInstance().getLevel(level).map(EmpireLevel::getUpkeep).orElse(0L);
     }
 
     @Override

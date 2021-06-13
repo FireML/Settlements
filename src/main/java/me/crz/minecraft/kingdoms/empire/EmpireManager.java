@@ -12,7 +12,6 @@ import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.land.BuildState;
 import me.crz.minecraft.kingdoms.land.Use;
 import me.crz.minecraft.kingdoms.land.events.LandownerDisbandEvent;
-import me.crz.minecraft.kingdoms.leveling.Levels;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.perk.Perk;
@@ -48,6 +47,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -61,12 +61,13 @@ public class EmpireManager {
     private final Map<UUID, Empire> empireUuids = new ConcurrentHashMap<>();
     private final Map<String, Empire> empireWorlds = new ConcurrentHashMap<>();
 
+    private List<EmpireLevel> levels = new ArrayList<>();
+
     private Map<String, EmpirePerk> perks;
     private Map<String, EmpirePerk> perkTags;
 
-
     public EmpireManager() {
-        super();
+        loadLevels();
         loadPerks();
         for (Empire empire : DatabaseManager.getInstance().getAllEmpires()) {
             if (Config.Empire.World.RENAME) {
@@ -97,6 +98,15 @@ public class EmpireManager {
             if (empire != null) {
                 empire.setWorldName(world.getName());
             }
+        }
+    }
+
+    public void loadLevels() {
+        levels.clear();
+        for (int i = 1; i <= Config.Empire.Leveling.MAX_LEVEL; i++) {
+            EmpireLevel level = new EmpireLevel(i, ConfigManager.getInstance().getEmpireLevelConfig().getConfigurationSection("levels.level-" + i));
+            levels.add(level);
+            KingdomsPlugin.logDebug("Loaded " + level);
         }
     }
 
@@ -165,6 +175,13 @@ public class EmpireManager {
     public Empire getEmpireFromPlayer(Player player) {
         Village village = VillageManager.getInstance().getVillageFromPlayer(player);
         return village != null ? village.getEmpire() : null;
+    }
+
+    public Optional<EmpireLevel> getLevel(int level) {
+        if (level <= levels.size()) {
+            return Optional.of(levels.get(level - 1));
+        }
+        return Optional.empty();
     }
 
     public EmpirePerk getPerk(String name) {
@@ -434,7 +451,7 @@ public class EmpireManager {
     }
 
     private void removeLevelRequirements(Empire empire, Resident res) {
-        Map<String, Long> levelReqs = Levels.getInstance().getEmpireLevel(empire.getLevel())
+        Map<String, Long> levelReqs = getLevel(empire.getLevel())
                 .map(EmpireLevel::getRequirements)
                 .orElse(Collections.emptyMap());
         if (empire.remove(levelReqs)) {
