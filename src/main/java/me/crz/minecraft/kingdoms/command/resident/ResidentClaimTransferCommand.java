@@ -56,11 +56,9 @@ public class ResidentClaimTransferCommand extends ResidentSubCommand {
             int transfer = Integer.parseInt(args[amountIndex]);
             if (resident.removeBonusClaims(transfer)) {
                 target.addBonusClaims(transfer);
-                Utils.runAsync(() -> {
-                    DatabaseManager.getInstance().saveResident(resident);
-                    DatabaseManager.getInstance().save(target);
-                    DatabaseManager.getInstance().log(target, resident, "deposit", "claim", transfer);
-                });
+                DatabaseManager.getInstance().saveResident(resident);
+                DatabaseManager.getInstance().save(target);
+                Utils.runAsync(() -> DatabaseManager.getInstance().log(target, resident, "deposit", "claim", transfer));
                 getMessage("success").tell(target.getOnlineResidents(),
                         "rank", resident.getVillageRank().getTag(resident.getVillage()),
                         "title", resident.getVillageTitle(),

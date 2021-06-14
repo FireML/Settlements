@@ -29,7 +29,7 @@ public class EmpireModeCommand extends EmpireSubCommand {
                     value = Utils.parseBoolean(args[1]);
                 }
                 if (res.getVillage().getEmpire().setMode(m, value)) {
-                    Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire()));
+                    DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire());
                 }
                 res.tell(getMessage("success"), "mode", m.name(), "value", String.valueOf(value));
             } catch (IllegalArgumentException e) {

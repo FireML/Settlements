@@ -68,7 +68,7 @@ public class TitleGUI extends KingdomsGUI {
                             item,
                             click -> {
                                 if (resident.hasVillage() && resident.hasPermission("village.title") && rank == resident.getVillageRank() && resident.setVillageTitle(title)) {
-                                    Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(resident));
+                                    DatabaseManager.getInstance().saveResident(resident);
                                     gui.draw();
                                     Message message = Message.get("command.village.title.success." + resident.getVillage().getState().getKey() + "." + resident.getVillageRank().getKey());
                                     if (!message.exists()) {

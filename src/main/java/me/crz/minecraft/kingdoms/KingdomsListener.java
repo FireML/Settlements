@@ -45,8 +45,7 @@ public class KingdomsListener implements Listener {
                 }
             }
             Resident finalRes = res;
-            Bukkit.getScheduler().runTaskAsynchronously(KingdomsPlugin.getInstance(),
-                    () -> DatabaseManager.getInstance().saveResident(finalRes));
+            DatabaseManager.getInstance().saveResident(finalRes);
         }
     }
 

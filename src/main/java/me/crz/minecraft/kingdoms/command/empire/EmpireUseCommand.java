@@ -24,7 +24,7 @@ public class EmpireUseCommand extends EmpireSubCommand {
                     for (UseFlag u : UseFlagManager.getInstance().getUseFlags()) {
                         res.getVillage().getEmpire().setUseState(u, state);
                     }
-                    Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire()));
+                    DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire());
                     getMessage("success-all").tell(res, "state", state.getTag());
                 } catch (IllegalArgumentException e) {
                     getMessage("states").tell(res, "states", BuildState.values(BuildState.AppliesTo.EMPIRE).stream().map(NameTag::humanizedName).collect(Collectors.joining(", ")));
@@ -44,7 +44,7 @@ public class EmpireUseCommand extends EmpireSubCommand {
             if (useFlag != null) {
                 BuildState state = BuildState.valueOf(Arrays.stream(args).skip(1).collect(Collectors.joining("_")).toUpperCase(), BuildState.AppliesTo.EMPIRE);
                 res.getVillage().getEmpire().setUseState(useFlag, state);
-                Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire()));
+                DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire());
                 getMessage("success").tell(res, "flag", useFlag.name(), "state", state.getTag());
             } else {
                 getMessage("flags").tell(res, "flags", UseFlagManager.getInstance().getUseFlags().stream().map(u -> u.name().toLowerCase()).collect(Collectors.joining(", ")));

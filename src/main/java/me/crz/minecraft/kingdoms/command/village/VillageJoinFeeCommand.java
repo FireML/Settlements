@@ -21,7 +21,7 @@ public class VillageJoinFeeCommand extends VillageSubCommand {
                             "state", resident.getVillage().getStateTag(),
                             "amount", String.valueOf(resident.getVillage().getJoinFee())
                     );
-                    Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
+                    DatabaseManager.getInstance().saveVillage(resident.getVillage());
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(resident, "input", args[0]);
                     return false;

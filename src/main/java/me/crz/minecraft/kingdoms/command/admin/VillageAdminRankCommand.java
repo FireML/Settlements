@@ -41,25 +41,27 @@ public class VillageAdminRankCommand extends SubCommand {
                 MessageUtils.tell(sender, getError("not-in-village"), "player", tRes.getName());
                 return;
             }
-            Village village = tRes.getVillage();
-            if (r.isChief()) {
-                Resident res = tRes.getVillage().getChief();
-                Utils.callEvent(new LandownerChiefChangeEvent(village, res, tRes));
-                res.setVillageRank(tRes.getVillageRank());
-                tRes.setVillageRank(r);
-                village.setChief(tRes.getUUID());
+            Utils.runSync(() -> {
+                Village village = tRes.getVillage();
+                if (r.isChief()) {
+                    Resident res = tRes.getVillage().getChief();
+                    Utils.callEvent(new LandownerChiefChangeEvent(village, res, tRes));
+                    res.setVillageRank(tRes.getVillageRank());
+                    tRes.setVillageRank(r);
+                    village.setChief(tRes.getUUID());
 
-                DatabaseManager.getInstance().saveVillage(village);
-                DatabaseManager.getInstance().saveResident(res);
-                DatabaseManager.getInstance().saveResident(tRes);
-            } else {
-                tRes.setVillageRank(r);
-                DatabaseManager.getInstance().saveResident(tRes);
-            }
-            if (sender instanceof Player && !village.getResidentIds().contains(((Player) sender).getUniqueId())) {
-                Message.get("command.village.setrank.success").tell(sender, "title", "", "setter", sender.getName(), "target", tRes.getName(), "rank", r.getTag(village));
-            }
-            Message.get("command.village.setrank.success").tell(village.getOnlineResidents(), "title", "", "setter", sender.getName(), "target", tRes.getName(), "rank", r.getTag(village));
+                    DatabaseManager.getInstance().saveVillage(village);
+                    DatabaseManager.getInstance().saveResident(res);
+                    DatabaseManager.getInstance().saveResident(tRes);
+                } else {
+                    tRes.setVillageRank(r);
+                    DatabaseManager.getInstance().saveResident(tRes);
+                }
+                if (sender instanceof Player && !village.getResidentIds().contains(((Player) sender).getUniqueId())) {
+                    Message.get("command.village.setrank.success").tell(sender, "title", "", "setter", sender.getName(), "target", tRes.getName(), "rank", r.getTag(village));
+                }
+                Message.get("command.village.setrank.success").tell(village.getOnlineResidents(), "title", "", "setter", sender.getName(), "target", tRes.getName(), "rank", r.getTag(village));
+            });
         });
         return true;
     }

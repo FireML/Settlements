@@ -25,7 +25,7 @@ public class VillageDiscordCommand extends VillageSubCommand {
                             "discordlink", resident.getVillage().getDiscord()
                     );
                 }
-                Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
+                DatabaseManager.getInstance().saveVillage(resident.getVillage());
                 return true;
             }
         });

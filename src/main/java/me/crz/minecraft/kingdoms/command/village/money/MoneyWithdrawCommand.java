@@ -27,10 +27,8 @@ public class MoneyWithdrawCommand extends VillageSubCommand {
                 EconomyResponse r = KingdomsPlugin.getInstance().getEconomy().depositPlayer(resident.getPlayer(), (double) withdrewInit);
                 if (r.transactionSuccess()) {
                     resident.getVillage().removeFromBank(withdrewInit);
-                    Utils.runAsync(() -> {
-                        DatabaseManager.getInstance().saveVillage(resident.getVillage());
-                        DatabaseManager.getInstance().logWithdraw(resident.getVillage(), resident, withdrewInit);
-                    });
+                    DatabaseManager.getInstance().saveVillage(resident.getVillage());
+                    Utils.runAsync(() -> DatabaseManager.getInstance().logWithdraw(resident.getVillage(), resident, withdrewInit));
                     getMessage("withdrawn").tell(resident.getVillage().getOnlineResidents(),
                             "rank", resident.getVillageRank().getTag(resident.getVillage()),
                             "title", resident.getVillageTitle(),

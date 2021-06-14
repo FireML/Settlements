@@ -33,10 +33,8 @@ public class VillageShopCommand extends VillageSubCommand {
                     } else if (resident.getVillage().remove(perk.getUnlockCost())) {
                         resident.getVillage().unlockPerk(resident.getPlayer(), perk);
                         MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("success"), "perk", perk.getTag());
-                        Utils.runAsync(() -> {
-                            DatabaseManager.getInstance().saveVillage(resident.getVillage());
-                            DatabaseManager.getInstance().log(resident.getVillage(), resident, "perk-unlock", perk.getUnlockCost());
-                        });
+                        DatabaseManager.getInstance().saveVillage(resident.getVillage());
+                        Utils.runAsync(() -> DatabaseManager.getInstance().log(resident.getVillage(), resident, "perk-unlock", perk.getUnlockCost()));
                     } else {
                         getError("not-possible").tell(resident,
                                 "perk", perk.getTag(),
@@ -80,10 +78,8 @@ public class VillageShopCommand extends VillageSubCommand {
                     } else if (resident.getVillage().remove(perk.getRepeatCost())) {
                         resident.getVillage().repeatPerk(resident.getPlayer(), perk);
                         MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("success"), "perk", perk.getTag());
-                        Utils.runAsync(() -> {
-                            DatabaseManager.getInstance().saveVillage(resident.getVillage());
-                            DatabaseManager.getInstance().log(resident.getVillage(), resident, "perk-repeat", perk.getRepeatCost());
-                        });
+                        DatabaseManager.getInstance().saveVillage(resident.getVillage());
+                        Utils.runAsync(() -> DatabaseManager.getInstance().log(resident.getVillage(), resident, "perk-repeat", perk.getRepeatCost()));
                     } else {
                         getError("not-possible").tell(resident,
                                 "perk", perk.getTag(),

@@ -13,7 +13,7 @@ public class VillageDescriptionCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         res.getVillage().setDescription(Utils.filterAllCurses(String.join(" ", args)));
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
+        DatabaseManager.getInstance().saveVillage(res.getVillage());
         getMessage("success").tell(res,
                 "state", res.getVillage().getState().getTag(),
                 "description", res.getVillage().getDescription()

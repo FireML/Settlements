@@ -58,7 +58,7 @@ public class VillageTaxCommand extends VillageSubCommand {
                                 "state", resident.getVillage().getStateTag(),
                                 "action", taxDebtAction.getTag()
                         );
-                        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
+                        DatabaseManager.getInstance().saveVillage(resident.getVillage());
                     } else {
                         getMessage("already-set").tell(resident, "action", taxDebtAction.getTag());
                     }

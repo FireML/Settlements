@@ -21,7 +21,7 @@ public class VillageSetAccessCommand extends VillageSubCommand {
         try {
             LandAccess access = LandAccess.valueOf(String.join("_", args).toUpperCase());
             resident.getVillage().setAccess(access);
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
+            DatabaseManager.getInstance().saveVillage(resident.getVillage());
             resident.tell(getMessage("success"), "access", access.getTag());
         } catch (IllegalArgumentException e) {
             resident.tell(getMessage("usage.head"),

@@ -179,7 +179,7 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
         if (hasEmpire() && getEmpire().isCapital(this)) {
             // no upkeep for empire capitals
             if (lastTax > 0) {
-                Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(this));
+                DatabaseManager.getInstance().saveVillage(this);
             }
             return;
         }
@@ -206,7 +206,7 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
                     setLevel(getLevel() - 1);
                     MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.level-removed"), "level", String.valueOf(getLevel()));
                 }
-                Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(this));
+                DatabaseManager.getInstance().saveVillage(this);
             } else {
                 setBank(0);
                 if (Config.Settlement.Upkeep.ABANDON_TIME > 0) {

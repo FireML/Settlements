@@ -22,7 +22,7 @@ public class VillageBuildCommand extends VillageSubCommand {
         try {
             BuildState newState = BuildState.valueOf(args[0].toUpperCase(), BuildState.AppliesTo.SETTLEMENT);
             res.getVillage().setBuildState(newState);
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
+            DatabaseManager.getInstance().saveVillage(res.getVillage());
             res.tell(getMessage("success"), "state", newState.getTag());
         } catch (IllegalArgumentException e) {
             res.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base));

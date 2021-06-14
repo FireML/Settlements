@@ -80,10 +80,8 @@ public class EmpireShopCommand extends EmpireSubCommand {
                     } else if (resident.getVillage().getEmpire().remove(perk.getRepeatCost())) {
                         resident.getVillage().getEmpire().repeatPerk(resident.getPlayer(), perk);
                         MessageUtils.tellResidents(resident.getVillage().getEmpire().getOnlineResidents(), getMessage("success"), "perk", perk.getTag());
-                        Utils.runAsync(() -> {
-                            DatabaseManager.getInstance().saveVillage(resident.getVillage());
-                            DatabaseManager.getInstance().log(resident.getVillage().getEmpire(), resident, "perk-repeat", perk.getRepeatCost());
-                        });
+                        DatabaseManager.getInstance().saveVillage(resident.getVillage());
+                        Utils.runAsync(() -> DatabaseManager.getInstance().log(resident.getVillage().getEmpire(), resident, "perk-repeat", perk.getRepeatCost()));
                     } else {
                         getError("not-possible").tell(resident,
                                 "perk", perk.getTag(),

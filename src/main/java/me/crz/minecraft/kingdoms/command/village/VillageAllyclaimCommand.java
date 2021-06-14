@@ -32,7 +32,7 @@ public class VillageAllyclaimCommand extends VillageSubCommand {
                 LandManager.getInstance().checkClaimDistance(resident.getVillage(), ally);
             }
         }
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
+        DatabaseManager.getInstance().saveVillage(resident.getVillage());
         getMessage(value ? "enabled" : "disabled").tell(resident, "grace", String.valueOf(Config.Settlement.Claiming.Close.Unclaim.GRACE_DAYS));
 
         return true;

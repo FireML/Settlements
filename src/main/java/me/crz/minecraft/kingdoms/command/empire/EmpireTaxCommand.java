@@ -33,7 +33,7 @@ public class EmpireTaxCommand extends EmpireSubCommand {
                     }
                     resident.getVillage().getEmpire().setTax(amount);
                     getMessage("success").tell(resident.getVillage().getEmpire().getOnlineResidents(), "amount", String.valueOf(amount));
-                    Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire()));
+                    DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(resident, "input", args[0]);
                     return false;
@@ -52,7 +52,7 @@ public class EmpireTaxCommand extends EmpireSubCommand {
                     if (taxDebtAction != resident.getVillage().getEmpire().getTaxDebtAction()) {
                         resident.getVillage().setTaxDebtAction(taxDebtAction);
                         getMessage("success").tell(resident.getVillage().getEmpire().getOnlineResidents(), "action", taxDebtAction.getTag());
-                        Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire()));
+                        DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
                     } else {
                         getMessage("already-set").tell(resident, "action", taxDebtAction.getTag());
                     }

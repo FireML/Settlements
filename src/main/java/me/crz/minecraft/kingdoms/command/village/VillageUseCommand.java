@@ -24,7 +24,7 @@ public class VillageUseCommand extends VillageSubCommand {
                     for (UseFlag u : UseFlagManager.getInstance().getUseFlags()) {
                         res.getVillage().setUseState(u, state);
                     }
-                    Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
+                    DatabaseManager.getInstance().saveVillage(res.getVillage());
                     getMessage("success-all").tell(res, "state", state.getTag());
                 } catch (IllegalArgumentException e) {
                     getMessage("states").tell(res, "states", BuildState.values(BuildState.AppliesTo.SETTLEMENT).stream().map(NameTag::humanizedName).collect(Collectors.joining(", ")));
@@ -44,7 +44,7 @@ public class VillageUseCommand extends VillageSubCommand {
             if (useFlag != null) {
                 BuildState state = BuildState.valueOf(Arrays.stream(args).skip(1).collect(Collectors.joining("_")).toUpperCase(), BuildState.AppliesTo.SETTLEMENT);
                 res.getVillage().setUseState(useFlag, state);
-                Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
+                DatabaseManager.getInstance().saveVillage(res.getVillage());
                 getMessage("success").tell(res, "flag", useFlag.name(), "state", state.getTag());
             } else {
                 getMessage("flags").tell(res, "flags", UseFlagManager.getInstance().getUseFlags().stream().map(u -> u.name().toLowerCase()).collect(Collectors.joining(", ")));

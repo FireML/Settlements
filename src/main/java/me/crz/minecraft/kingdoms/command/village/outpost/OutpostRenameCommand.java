@@ -33,7 +33,7 @@ public class OutpostRenameCommand extends VillageSubCommand {
         OwnedLand land = LandManager.getInstance().getLand(location.toChunkLocation());
         if (land == null || !land.isOwnedBy(resident.getVillage())) {
             if (resident.getVillage().getOutpostHomes().remove(args[0].toLowerCase()) != null) {
-                Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
+                DatabaseManager.getInstance().saveVillage(resident.getVillage());
             }
             getError("outpost-not-claimed").tell(resident, "name", args[0], "state", resident.getVillage().getStateTag());
             return true;
@@ -50,7 +50,7 @@ public class OutpostRenameCommand extends VillageSubCommand {
                 "newname", args[1],
                 "x", String.valueOf(resident.getPlayer().getLocation().getBlockX()),
                 "z", String.valueOf(resident.getPlayer().getLocation().getBlockZ()));
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
+        DatabaseManager.getInstance().saveVillage(resident.getVillage());
         return true;
     }
 }

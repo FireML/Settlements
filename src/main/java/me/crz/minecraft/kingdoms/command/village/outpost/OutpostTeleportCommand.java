@@ -25,7 +25,7 @@ public class OutpostTeleportCommand extends VillageSubCommand {
                 Utils.teleport(this, resident.getPlayer(), location.toBukkitLocation(), "outpost", "name", location.getName());
             } else {
                 if (resident.getVillage().getOutpostHomes().remove(args[0].toLowerCase()) != null) {
-                    Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
+                    DatabaseManager.getInstance().saveVillage(resident.getVillage());
                 }
                 getError("outpost-not-claimed").tell(resident, "name", args[0], "state", resident.getVillage().getStateTag());
             }

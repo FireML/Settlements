@@ -64,7 +64,7 @@ public class UseGui extends KingdomsGUI {
                                     "flag", u.getTag(),
                                     "state", changeTo.getTag()
                             );
-                            Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire()));
+                            DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire());
                             click.getGui().draw();
                         }
                         return true;
@@ -89,7 +89,7 @@ public class UseGui extends KingdomsGUI {
                     Message.get("command.empire.use.success-all").tell(click.getEvent().getWhoClicked(),
                             "state", state.getTag()
                     );
-                    Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire()));
+                    DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire());
                     click.getGui().draw();
                 }
                 return true;

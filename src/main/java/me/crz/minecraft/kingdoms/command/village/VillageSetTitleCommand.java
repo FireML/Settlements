@@ -41,7 +41,7 @@ public class VillageSetTitleCommand extends VillageSubCommand {
         } else if (!target.setVillageTitle(args[1])) {
             getError("invalid-title").tell(res, "title", args[1]);
         } else {
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(target));
+            DatabaseManager.getInstance().saveResident(target);
             getMessage("success").tell(res.getVillage().getOnlineResidents(),
                     "rank", target.getVillageRank().getTag(res.getVillage()),
                     "title", target.getVillageTitle(),

@@ -41,10 +41,8 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                         EconomyResponse r2 = KingdomsPlugin.getInstance().getEconomy().withdrawPlayer(resident.getPlayer(), (double) deposit);
                         if (r2.transactionSuccess()) {
                             resident.getVillage().getEmpire().addToBank(deposit);
-                            Utils.runAsync(() -> {
-                                DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
-                                DatabaseManager.getInstance().logDeposit(resident.getVillage().getEmpire(), resident.getVillage(), resident, deposit);
-                            });
+                            DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
+                            Utils.runAsync(() -> DatabaseManager.getInstance().logDeposit(resident.getVillage().getEmpire(), resident.getVillage(), resident, deposit));
                             getMessage("deposited").tell(resident.getVillage().getEmpire().getOnlineResidents(),
                                     "rank", resident.getEmpireRank().getTag(resident.getVillage().getEmpire()),
                                     "title", resident.getVillageTitle(),
@@ -79,10 +77,8 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                         EconomyResponse r = KingdomsPlugin.getInstance().getEconomy().depositPlayer(resident.getPlayer(), (double) withdrewInit);
                         if (r.transactionSuccess()) {
                             resident.getVillage().getEmpire().removeFromBank(withdrewInit);
-                            Utils.runAsync(() -> {
-                                DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
-                                DatabaseManager.getInstance().logWithdraw(resident.getVillage().getEmpire(), resident.getVillage(), resident, withdrewInit);
-                            });
+                            DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
+                            Utils.runAsync(() -> DatabaseManager.getInstance().logWithdraw(resident.getVillage().getEmpire(), resident.getVillage(), resident, withdrewInit));
                             getMessage("withdrawn").tell(resident.getVillage().getEmpire().getOnlineResidents(),
                                     "rank", resident.getEmpireRank().getTag(resident.getVillage().getEmpire()),
                                     "title", resident.getVillageTitle(),

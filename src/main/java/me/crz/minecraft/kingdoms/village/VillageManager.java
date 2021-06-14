@@ -131,17 +131,15 @@ public class VillageManager {
         chief.setVillage(village);
         chief.setVillageRank(VillageRank.getChief());
         chief.addChannel(ChatChannel.SETTLEMENT);
-        Utils.runAsync(() -> {
-            DatabaseManager.getInstance().saveVillage(village);
-            if (!village.getId().isNull()) {
-                villageIDs.put(village.getId(), village);
-                villageUuids.put(village.getUUID(), village);
-                DatabaseManager.getInstance().saveResident(chief);
-            } else {
-                KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving " + village.getName() + " to the database! No ID was returned.");
-                chief.tell(ChatColor.RED + "Error while saving " + village.getName() + " to the database! No ID was returned.");
-            }
-        });
+        DatabaseManager.getInstance().saveVillage(village);
+        if (!village.getId().isNull()) {
+            villageIDs.put(village.getId(), village);
+            villageUuids.put(village.getUUID(), village);
+            DatabaseManager.getInstance().saveResident(chief);
+        } else {
+            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving " + village.getName() + " to the database! No ID was returned.");
+            chief.tell(ChatColor.RED + "Error while saving " + village.getName() + " to the database! No ID was returned.");
+        }
     }
 
     public Village getVillageAt(Location location) {
@@ -193,9 +191,9 @@ public class VillageManager {
             removeResidentFromVillage(resident);
         }
         LandManager.getInstance().unclaimLand(village);
+        DatabaseManager.getInstance().saveResident(residents);
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().deleteVillage(village);
-            DatabaseManager.getInstance().saveResident(residents);
             for (LandOwner ally : village.getAllies()) {
                 ally.removeAlly(village);
             }
@@ -271,19 +269,17 @@ public class VillageManager {
         village.getPerksMap().clear();
 
         village.setCreated(System.currentTimeMillis());
-        Utils.runAsync(() -> {
-            DatabaseManager.getInstance().saveVillage(village);
-            DatabaseManager.getInstance().save(allies);
-            DatabaseManager.getInstance().saveResident(residents);
-            DatabaseManager.getInstance().saveLand(changedLand);
-            Utils.runLater(() -> {
-                KingdomsPlugin.getInstance().getLogger().log(Level.INFO, village.getStateTag() + " " + village.getName() + " was removed because it has been abandoned for " + Config.Settlement.Upkeep.ABANDON_TIME + " minutes!");
-                deleteVillage(village);
-                MessageUtils.broadcast(Message.get("broadcast.village-deletion"),
-                        "name", village.getName(),
-                        "state", village.getState().getTag());
-            }, Config.Settlement.Upkeep.ABANDON_TIME, TimeUnit.MINUTES);
-        });
+        DatabaseManager.getInstance().saveVillage(village);
+        DatabaseManager.getInstance().save(allies);
+        DatabaseManager.getInstance().saveResident(residents);
+        DatabaseManager.getInstance().saveLand(changedLand);
+        Utils.runLater(() -> {
+            KingdomsPlugin.getInstance().getLogger().log(Level.INFO, village.getStateTag() + " " + village.getName() + " was removed because it has been abandoned for " + Config.Settlement.Upkeep.ABANDON_TIME + " minutes!");
+            deleteVillage(village);
+            MessageUtils.broadcast(Message.get("broadcast.village-deletion"),
+                    "name", village.getName(),
+                    "state", village.getState().getTag());
+        }, Config.Settlement.Upkeep.ABANDON_TIME, TimeUnit.MINUTES);
     }
 
     /**
@@ -307,9 +303,7 @@ public class VillageManager {
                 Utils.teleportToSpawn(player);
             }
         }
-        Utils.runAsync(() -> {
-            DatabaseManager.getInstance().saveResident(resident);
-        });
+        DatabaseManager.getInstance().saveResident(resident);
     }
 
     private void removeResidentFromVillage(Resident resident) {
@@ -388,6 +382,6 @@ public class VillageManager {
         villages.remove(village.getName().replace(' ', '_').toLowerCase());
         village.setName(name);
         villages.put(village.getName().replace(' ', '_').toLowerCase(), village);
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
+        DatabaseManager.getInstance().saveVillage(village);
     }
 }

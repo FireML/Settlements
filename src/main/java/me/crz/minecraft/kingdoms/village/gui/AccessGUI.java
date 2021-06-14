@@ -53,7 +53,7 @@ public class AccessGUI extends KingdomsGUI {
                                 if (resident.hasVillage() && resident.hasPermission("village.setaccess")) {
                                     resident.getVillage().setAccess(access);
                                     Message.get("command.village.setaccess.success").tell(resident, "access", access.getTag());
-                                    Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
+                                    DatabaseManager.getInstance().saveVillage(resident.getVillage());
                                     gui.draw();
                                 }
                                 return true;

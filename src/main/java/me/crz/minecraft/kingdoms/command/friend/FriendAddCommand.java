@@ -28,7 +28,7 @@ public class FriendAddCommand extends PlayerSubCommand {
                 getError("already-friends").tell(player, "name", target.getName());
                 return;
             }
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
+            DatabaseManager.getInstance().saveResident(res);
             getMessage("success").tell(player, "name", target.getName());
         });
         return true;

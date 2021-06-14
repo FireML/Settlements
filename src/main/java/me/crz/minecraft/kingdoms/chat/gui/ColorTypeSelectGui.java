@@ -50,7 +50,7 @@ public class ColorTypeSelectGui extends KingdomsGUI {
                         if (click.getType() == ClickType.MIDDLE) {
                             resident.removeChannelColor(channel, type);
                             ChatColor defaultColor = Utils.getChannelColor(channel, type);
-                            Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(resident));
+                            DatabaseManager.getInstance().saveResident(resident);
                             Utils.runLater(() -> {
                                 gui.draw();
                                 getMessage("color-reset").tell(resident,

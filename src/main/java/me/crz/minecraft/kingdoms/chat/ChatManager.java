@@ -126,7 +126,7 @@ public class ChatManager implements ConfigMessages, Listener {
                 channel = res.getChannels().iterator().next();
             }
             if (res.setActiveChannel(channel) && !Config.Chat.RESET_CHANNELS_ON_LOGIN) {
-                Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res), true);
+                DatabaseManager.getInstance().saveResident(res);
             }
         }
         event.setCancelled(true);
@@ -227,7 +227,7 @@ public class ChatManager implements ConfigMessages, Listener {
                     if (sRes.getActiveChannel() != channel) {
                         if (res.setActiveChannel(channel)) {
                             Message.get("command.chat.joined").tell(res, "name", channel.getTag());
-                            Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res), true);
+                            DatabaseManager.getInstance().saveResident(res);
                         }
                     }
                 }

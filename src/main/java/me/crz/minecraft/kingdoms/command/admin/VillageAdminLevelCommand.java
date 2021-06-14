@@ -33,7 +33,7 @@ public class VillageAdminLevelCommand extends SubCommand {
             village.getVault().clear();
 
             sender.sendMessage(ChatColor.RED + "Set " + village.getName() + " to " + state.getTag() + "/" + level);
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
+            DatabaseManager.getInstance().saveVillage(village);
         } catch (NumberFormatException e) {
             getError("not-a-number").tell(sender, "input", args[2]);
         } catch (IllegalArgumentException e) {

@@ -35,7 +35,7 @@ public class VillageTitleCommand extends VillageSubCommand {
         if (!res.setVillageTitle(args[0])) {
             getError("invalid-title").tell(res, "title", args[0]);
         } else {
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
+            DatabaseManager.getInstance().saveResident(res);
             Message message = getMessage("success." + res.getVillage().getState().getKey() + "." + res.getVillageRank().getKey());
             if (!message.exists()) {
                 message = getMessage("success.default");

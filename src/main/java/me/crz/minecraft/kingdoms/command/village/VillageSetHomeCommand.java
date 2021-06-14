@@ -67,7 +67,7 @@ public class VillageSetHomeCommand extends VillageSubCommand {
                 "x", String.valueOf(player.getLocation().getBlockX()),
                 "y", String.valueOf(player.getLocation().getBlockY()),
                 "z", String.valueOf(player.getLocation().getBlockZ()));
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
+        DatabaseManager.getInstance().saveVillage(village);
         return true;
     }
 }

@@ -22,7 +22,7 @@ public class EmpireBuildCommand extends EmpireSubCommand {
         try {
             BuildState newState = BuildState.valueOf(args[0].toUpperCase(), BuildState.AppliesTo.EMPIRE);
             res.getVillage().getEmpire().setBuildState(newState);
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire()));
+            DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire());
             res.tell(getMessage("success"), "state", newState.getTag());
         } catch (IllegalArgumentException e) {
             res.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base));

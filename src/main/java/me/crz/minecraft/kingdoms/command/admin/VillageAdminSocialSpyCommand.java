@@ -20,7 +20,7 @@ public class VillageAdminSocialSpyCommand extends ResidentSubCommand {
         } else {
             getMessage("disabled").tell(resident);
         }
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(resident));
+        DatabaseManager.getInstance().saveResident(resident);
         return true;
     }
 }

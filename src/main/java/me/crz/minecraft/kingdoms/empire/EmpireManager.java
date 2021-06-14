@@ -205,28 +205,24 @@ public class EmpireManager {
         empire.getCapital().setEmpire(empire);
         empire.getCapital().getChief().setEmpireRank(EmpireRank.getLeader());
         empires.put(empire.getName().replace(' ', '_').toLowerCase(), empire);
-        Utils.runAsync(() -> {
-            DatabaseManager.getInstance().saveEmpire(empire);
-            DatabaseManager.getInstance().saveVillage(empire.getCapital());
-            DatabaseManager.getInstance().saveResident(empire.getCapital().getChief());
-            if (!empire.getId().isNull()) {
-                if (Config.Empire.World.RENAME) {
-                    empire.setWorldName(Config.Empire.World.PREFIX + empire.getName() + Config.Empire.World.SUFFIX);
-                } else {
-                    empire.setWorldName(Config.Empire.World.PREFIX + "id" + empire.getId().value() + Config.Empire.World.SUFFIX);
-                }
-                empireIds.put(empire.getId(), empire);
-                empireUuids.put(empire.getUUID(), empire);
-                Utils.runSync(() -> {
-                    try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
-                        createEmpireWorld(empire);
-                        Message.get("empire-world-generated").tell(empire.getOnlineResidents());
-                    }
-                });
+        DatabaseManager.getInstance().saveEmpire(empire);
+        DatabaseManager.getInstance().saveVillage(empire.getCapital());
+        DatabaseManager.getInstance().saveResident(empire.getCapital().getChief());
+        if (!empire.getId().isNull()) {
+            if (Config.Empire.World.RENAME) {
+                empire.setWorldName(Config.Empire.World.PREFIX + empire.getName() + Config.Empire.World.SUFFIX);
             } else {
-                KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving empire " + empire.getName() + " to the database! No ID was returned.");
+                empire.setWorldName(Config.Empire.World.PREFIX + "id" + empire.getId().value() + Config.Empire.World.SUFFIX);
             }
-        });
+            empireIds.put(empire.getId(), empire);
+            empireUuids.put(empire.getUUID(), empire);
+            try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
+                createEmpireWorld(empire);
+                Message.get("empire-world-generated").tell(empire.getOnlineResidents());
+            }
+        } else {
+            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving empire " + empire.getName() + " to the database! No ID was returned.");
+        }
     }
 
     private World createEmpireWorld(Empire empire) {
@@ -375,17 +371,15 @@ public class EmpireManager {
         empire.getPerksMap().clear();
 
         empire.setCreated(System.currentTimeMillis());
-        Utils.runAsync(() -> {
-            DatabaseManager.getInstance().saveEmpire(empire);
-            DatabaseManager.getInstance().save(allies);
-            DatabaseManager.getInstance().saveVillages(modifiedVillages);
-            DatabaseManager.getInstance().saveResident(modifiedResidents);
+        DatabaseManager.getInstance().saveEmpire(empire);
+        DatabaseManager.getInstance().save(allies);
+        DatabaseManager.getInstance().saveVillages(modifiedVillages);
+        DatabaseManager.getInstance().saveResident(modifiedResidents);
 
-            Utils.runLater(() -> {
-                KingdomsPlugin.getInstance().getLogger().log(Level.INFO, empire.getStateTag() + " " + empire.getName() + " was removed because it has been abandoned for " + Config.Empire.Upkeep.ABANDON_TIME + " minutes!");
-                deleteEmpire(empire);
-            }, Config.Empire.Upkeep.ABANDON_TIME, TimeUnit.MINUTES);
-        });
+        Utils.runLater(() -> {
+            KingdomsPlugin.getInstance().getLogger().log(Level.INFO, empire.getStateTag() + " " + empire.getName() + " was removed because it has been abandoned for " + Config.Empire.Upkeep.ABANDON_TIME + " minutes!");
+            deleteEmpire(empire);
+        }, Config.Empire.Upkeep.ABANDON_TIME, TimeUnit.MINUTES);
     }
 
     /**
@@ -412,10 +406,8 @@ public class EmpireManager {
                 }
             }
         }
-        Utils.runAsync(() -> {
-            DatabaseManager.getInstance().saveVillage(village);
-            DatabaseManager.getInstance().saveResident(toSave);
-        });
+        DatabaseManager.getInstance().saveVillage(village);
+        DatabaseManager.getInstance().saveResident(toSave);
     }
 
     /**
@@ -455,10 +447,8 @@ public class EmpireManager {
                 .map(EmpireLevel::getRequirements)
                 .orElse(Collections.emptyMap());
         if (empire.remove(levelReqs)) {
-            Utils.runAsync(() -> {
-                DatabaseManager.getInstance().saveEmpire(empire);
-                DatabaseManager.getInstance().logLevelup(empire, res, levelReqs);
-            });
+            DatabaseManager.getInstance().saveEmpire(empire);
+            Utils.runAsync(() -> DatabaseManager.getInstance().logLevelup(empire, res, levelReqs));
         }
     }
 
@@ -521,7 +511,7 @@ public class EmpireManager {
         empires.remove(oldName.replace(' ', '_').toLowerCase());
         empires.put(name.replace(' ', '_').toLowerCase(), empire);
 
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(empire));
+        DatabaseManager.getInstance().saveEmpire(empire);
         return true;
     }
 

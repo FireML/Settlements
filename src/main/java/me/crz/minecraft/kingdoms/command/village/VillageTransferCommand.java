@@ -45,11 +45,9 @@ public class VillageTransferCommand extends VillageSubCommand {
                     res.setEmpireRank(EmpireRank.getLeader().next());
                     tres.setEmpireRank(EmpireRank.getLeader());
                 }
-                Utils.runAsync(() -> {
-                    DatabaseManager.getInstance().saveResident(res);
-                    DatabaseManager.getInstance().saveResident(tres);
-                    DatabaseManager.getInstance().saveVillage(village);
-                });
+                DatabaseManager.getInstance().saveResident(res);
+                DatabaseManager.getInstance().saveResident(tres);
+                DatabaseManager.getInstance().saveVillage(village);
                 MessageUtils.tellResidents(village.getOnlineResidents(), getMessage("success"),
                         "rank", VillageRank.getChief().getTag(village),
                         "setter", res.getName(),

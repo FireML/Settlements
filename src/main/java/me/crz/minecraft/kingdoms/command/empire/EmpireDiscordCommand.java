@@ -25,7 +25,7 @@ public class EmpireDiscordCommand extends EmpireSubCommand {
                             "discordlink", resident.getVillage().getEmpire().getDiscord()
                     );
                 }
-                Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire()));
+                DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
                 return true;
             }
         });

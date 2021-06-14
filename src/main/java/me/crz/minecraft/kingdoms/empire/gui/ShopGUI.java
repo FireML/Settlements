@@ -169,10 +169,8 @@ public class ShopGUI extends KingdomsGUI {
                                 resident.getVillage().getEmpire().repeatPerk((Player) click.getWhoClicked(), perk);
                                 Message.get("command.empire.shop.unlock.success")
                                         .tell(resident.getVillage().getEmpire().getOnlineResidents(), "perk", perk.getTag());
-                                Utils.runAsync(() -> {
-                                    DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
-                                    DatabaseManager.getInstance().log(resident.getVillage().getEmpire(), resident, "perk-repeat", perk.getRepeatCost());
-                                });
+                                DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
+                                Utils.runAsync(() -> DatabaseManager.getInstance().log(resident.getVillage().getEmpire(), resident, "perk-repeat", perk.getRepeatCost()));
                                 gui.draw();
                             } else if (resident.hasPermission("empire.shop.unlock")
                                     && resident.getVillage().getEmpire().canUnlock(perk)
@@ -180,10 +178,8 @@ public class ShopGUI extends KingdomsGUI {
                                 resident.getVillage().getEmpire().unlockPerk((Player) click.getWhoClicked(), perk);
                                 Message.get("command.empire.shop.unlock.success")
                                         .tell(resident.getVillage().getEmpire().getOnlineResidents(), "perk", perk.getTag());
-                                Utils.runAsync(() -> {
-                                    DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
-                                    DatabaseManager.getInstance().log(resident.getVillage().getEmpire(), resident, "perk-unlock", perk.getUnlockCost());
-                                });
+                                DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
+                                Utils.runAsync(() -> DatabaseManager.getInstance().log(resident.getVillage().getEmpire(), resident, "perk-unlock", perk.getUnlockCost()));
                                 gui.draw();
                             }
                         }

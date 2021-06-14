@@ -58,7 +58,7 @@ public class EmpireJoinCommand extends VillageSubCommand {
                 member.addChannel(ChatChannel.EMPIRE);
             }
             InviteCache.getPendingEmpireInvites().remove(resident.getVillage().getId(), joinEmpire.getId());
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
+            DatabaseManager.getInstance().saveVillage(resident.getVillage());
             getMessage("success").tell(resident.getVillage().getOnlineResidents(),
                     "name", joinEmpire.getName(),
                     "state", resident.getVillage().getState().getTag()

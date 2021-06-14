@@ -60,7 +60,7 @@ public class VillageSetRankCommand extends VillageSubCommand {
             getError("rank-required").tell(res, "rank", VillageRank.values().length > rank.ordinal() + 1 ? VillageRank.values()[rank.ordinal() + 1].getTag() : "-");
         } else {
                 tres.setVillageRank(rank);
-                Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(tres));
+                DatabaseManager.getInstance().saveResident(tres);
                 getMessage("success").tell(village.getOnlineResidents(),
                         "rank", rank.getTag(village),
                         "setter", res.getName(),

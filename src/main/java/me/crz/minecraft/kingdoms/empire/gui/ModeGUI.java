@@ -47,7 +47,7 @@ public class ModeGUI extends KingdomsGUI {
                                 if (resident.hasEmpire() && resident.hasPermission("empire.mode")) {
                                     boolean state = !m.get(resident.getVillage().getEmpire());
                                     if (m.set(state, resident.getVillage().getEmpire())) {
-                                        Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire()));
+                                        DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
                                     }
                                     Message.get("command.empire.mode.success").tell(resident,
                                             "mode", m.getTag(),

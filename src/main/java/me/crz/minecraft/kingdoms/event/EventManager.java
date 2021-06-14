@@ -440,7 +440,7 @@ public class EventManager implements ConfigMessages {
         }
         if (reward.getMoney() > 0) {
             village.addToBank(reward.getMoney());
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
+            DatabaseManager.getInstance().saveVillage(village);
         }
     }
 

@@ -20,7 +20,7 @@ public class EmpireJoinFeeCommand extends EmpireSubCommand {
                     getMessage("success").tell(resident.getVillage().getEmpire().getOnlineResidents(),
                             "amount", String.valueOf(resident.getVillage().getEmpire().getJoinFee())
                     );
-                    Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire()));
+                    DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(resident, "input", args[0]);
                     return false;

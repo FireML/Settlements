@@ -46,7 +46,7 @@ public class VillageAdminBonusCommand extends SubCommand {
                             "amount", String.valueOf(amount),
                             "name", village.getName()
                     );
-                    Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
+                    DatabaseManager.getInstance().saveVillage(village);
                 }
             } else {
                 getError("village-doesnt-exist").tell(sender, "name", name);
@@ -61,7 +61,7 @@ public class VillageAdminBonusCommand extends SubCommand {
                             "amount", String.valueOf(amount),
                             "name", empire.getName()
                     );
-                    Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(empire));
+                    DatabaseManager.getInstance().saveEmpire(empire);
                 }
             } else {
                 getError("empire-doesnt-exist").tell(sender, "name", name);

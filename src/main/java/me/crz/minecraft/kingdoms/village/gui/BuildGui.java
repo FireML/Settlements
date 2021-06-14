@@ -59,7 +59,7 @@ public class BuildGui extends KingdomsGUI {
                                 if (resident.hasVillage() && resident.hasPermission("village.build")) {
                                     resident.getVillage().setBuildState(state);
                                     Message.get("command.village.build.success").tell(resident, "state", state.getTag());
-                                    Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
+                                    DatabaseManager.getInstance().saveVillage(resident.getVillage());
                                     gui.draw();
                                 }
                                 return true;

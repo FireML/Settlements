@@ -34,7 +34,7 @@ public class EmpireTitleCommand extends EmpireSubCommand {
         if (!res.setEmpireTitle(args[0])) {
             getError("invalid-title").tell(res, "title", args[0]);
         } else {
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
+            DatabaseManager.getInstance().saveResident(res);
             Message message = getMessage("title.success." + res.getEmpireRank().getKey());
             if (!message.exists()) {
                 message = getMessage("title.success.default");

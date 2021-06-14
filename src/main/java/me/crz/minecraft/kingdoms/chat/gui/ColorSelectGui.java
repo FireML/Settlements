@@ -56,7 +56,7 @@ public class ColorSelectGui extends KingdomsGUI {
                     click -> {
                         Resident r = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
                         r.setChannelColor(channel, type, chatColor);
-                        Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(r));
+                        DatabaseManager.getInstance().saveResident(r);
                         Utils.runLater(() -> {
                             gui.close();
                             getMessage("color-changed").tell(r,

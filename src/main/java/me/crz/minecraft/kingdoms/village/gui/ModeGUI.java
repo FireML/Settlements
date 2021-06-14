@@ -47,7 +47,7 @@ public class ModeGUI extends KingdomsGUI {
                                 if (resident.hasVillage() && resident.hasPermission("village.mode")) {
                                     boolean state = !m.get(resident.getVillage());
                                     if (m.set(state, resident.getVillage())) {
-                                        Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(resident.getVillage()));
+                                        DatabaseManager.getInstance().saveVillage(resident.getVillage());
                                     }
                                     Message.get("command.village.mode.success").tell(resident,
                                             "mode", m.getTag(),

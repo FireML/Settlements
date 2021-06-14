@@ -29,7 +29,7 @@ public class VillageModeCommand extends VillageSubCommand {
                     value = Utils.parseBoolean(args[1]);
                 }
                 if (res.getVillage().setMode(m, value)) {
-                    Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(res.getVillage()));
+                    DatabaseManager.getInstance().saveVillage(res.getVillage());
                 }
                 res.tell(getMessage("success"), "mode", m.name(), "value", String.valueOf(value));
             } catch (IllegalArgumentException e) {

@@ -109,7 +109,7 @@ public class LandManager {
             } else {
                 village.setHome(chunk.getCenterBukkitLocation());
             }
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveVillage(village));
+            DatabaseManager.getInstance().saveVillage(village);
         }
         KingdomsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + land.getKey() + " was claimed by " + village.getName() + "");
         cacheLand(land);
@@ -348,10 +348,8 @@ public class LandManager {
         land.setOutpost(name);
         cacheLand(land);
         village.setOutpostHome(name, location);
-        Utils.runAsync(() -> {
-            DatabaseManager.getInstance().saveVillage(village);
-            DatabaseManager.getInstance().saveLand(land);
-        });
+        DatabaseManager.getInstance().saveVillage(village);
+        DatabaseManager.getInstance().saveLand(land);
         return land;
     }
 

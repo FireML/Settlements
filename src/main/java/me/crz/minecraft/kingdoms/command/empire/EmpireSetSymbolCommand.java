@@ -22,7 +22,7 @@ public class EmpireSetSymbolCommand extends EmpireSubCommand {
         }
         resident.getVillage().getEmpire().setSymbol(symbol);
         getMessage("success").tell(resident.getVillage().getEmpire().getOnlineResidents(), "symbol", symbol);
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire()));
+        DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
         return true;
     }
 }

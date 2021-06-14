@@ -60,7 +60,7 @@ public class BuildGui extends KingdomsGUI {
                                 if (resident.hasEmpire() && resident.hasPermission("empire.build")) {
                                     resident.getVillage().getEmpire().setBuildState(state);
                                     Message.get("command.empire.build.success").tell(resident, "state", state.getTag());
-                                    Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire()));
+                                    DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
                                     gui.draw();
                                 }
                                 return true;

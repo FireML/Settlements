@@ -39,10 +39,8 @@ public class VillageDonateCommand extends ResidentSubCommand {
                 EconomyResponse r2 = KingdomsPlugin.getInstance().getEconomy().withdrawPlayer(player, (double) donate);
                 if (r2.transactionSuccess()) {
                     village.addToBank(donate);
-                    Utils.runAsync(() -> {
-                        DatabaseManager.getInstance().saveVillage(village);
-                        DatabaseManager.getInstance().log(null, village, resident, "donate", "cash", donate);
-                    });
+                    DatabaseManager.getInstance().saveVillage(village);
+                    Utils.runAsync(() -> DatabaseManager.getInstance().log(null, village, resident, "donate", "cash", donate));
                     if (!village.isMember(resident)) {
                         getMessage("success").tell(resident,
                                 "amount", Utils.CURRENCY_FORMAT.format(donate),

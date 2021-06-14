@@ -97,14 +97,12 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     @Override
     public void saveEmpire(Empire empire) {
-        Utils.catchSync();
         empireQueue.add(empire.getId(), empire);
         empireQueue.finishAdding();
     }
 
     @Override
     public void saveEmpires(Collection<Empire> empires) {
-        Utils.catchSync();
         for (Empire empire : empires) {
             empireQueue.add(empire.getId(), empire);
         }
@@ -112,6 +110,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     private void saveEmpire(Connection conn, Empire empire) {
+        Utils.catchSync();
         try {
             if (!save(conn, empire, "members", "permissions").isNull() && !empire.getId().isNull()) {
                 updateDataMap(conn, "empire_vaults", "empireId", (Integer) empire.getId().value(), "content", "amount", empire.getVault());
@@ -156,7 +155,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     @Override
     public void saveVillage(Village village) {
-        Utils.catchSync();
         villageQueue.add(village.getId(), village);
         villageQueue.finishAdding();
     }
@@ -181,7 +179,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     @Override
     public void saveVillages(Collection<Village> villages) {
-        Utils.catchSync();
         for (Village village : villages) {
             villageQueue.add(village.getId(), village);
         }
@@ -304,7 +301,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     @Override
     public void saveLand(OwnedLand... lands) {
-        Utils.catchSync();
         for (OwnedLand land : lands) {
             landQueue.add(land.getId(), land);
         }
@@ -312,6 +308,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     private void saveLand(Connection conn, OwnedLand land) {
+        Utils.catchSync();
         try {
             if (!save(conn, land, "landOwner", "uses", "modes").isNull() && !land.getId().isNull()) {
                 updateDataMap(conn, "claim_uses", "claimId", (Integer) land.getId().value(), "type", "state",
@@ -452,7 +449,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     @Override
     public void saveResident(Resident... residents) {
-        Utils.catchSync();
         for (Resident resident : residents) {
             residentQueue.add(IdObject.get(resident.getId()), resident);
         }
@@ -463,6 +459,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         if (resident == null) {
             return;
         }
+        Utils.catchSync();
         Map<String, Object> values = getValues(resident.serialize());
         try {
             PreparedStatement sta = executeSerializableInsert(conn, "residents", resident, values);
@@ -1384,6 +1381,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         private BukkitTask task = null;
         private final Map<IdObject, T> queue = new ConcurrentHashMap<>();
         private Runnable saving = () -> {
+            Utils.catchSync();
             synchronized (queue) {
                 forceSave = false;
                 if (task != null) {

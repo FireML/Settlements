@@ -40,7 +40,7 @@ public class ChatCommand extends PlayerSubCommand {
                             }
 
                             if (save && !Config.Chat.RESET_CHANNELS_ON_LOGIN) {
-                                Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
+                                DatabaseManager.getInstance().saveResident(res);
                             }
                         }
                     } else {
@@ -71,7 +71,7 @@ public class ChatCommand extends PlayerSubCommand {
                 ChatChannel channel = ChatChannel.get(args[0]);
                 if (channel != null && res.getChannels().contains(channel)) {
                     res.removeChannel(channel);
-                    Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
+                    DatabaseManager.getInstance().saveResident(res);
                 } else {
                     MessageUtils.tell(p, getError("not-a-channel"), "name", args[0]);
                 }
@@ -96,7 +96,7 @@ public class ChatCommand extends PlayerSubCommand {
             public boolean run(Player p, String base, String alias, String... args) {
                 Resident res = ResidentManager.getInstance().getResident(p);
                 res.setSwear(!res.getSwear());
-                Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(res));
+                DatabaseManager.getInstance().saveResident(res);
                 MessageUtils.tell(p, getMessage(res.getSwear() ? "enabled" : "disabled"));
                 return false;
             }

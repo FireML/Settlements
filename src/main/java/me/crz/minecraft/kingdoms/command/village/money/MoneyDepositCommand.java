@@ -27,10 +27,8 @@ public class MoneyDepositCommand extends VillageSubCommand {
                 EconomyResponse r2 = KingdomsPlugin.getInstance().getEconomy().withdrawPlayer(resident.getPlayer(), (double) deposit);
                 if (r2.transactionSuccess()) {
                     resident.getVillage().addToBank(deposit);
-                    Utils.runAsync(() -> {
-                        DatabaseManager.getInstance().saveVillage(resident.getVillage());
-                        DatabaseManager.getInstance().logDeposit(resident.getVillage(), resident, deposit);
-                    });
+                    DatabaseManager.getInstance().saveVillage(resident.getVillage());
+                    Utils.runAsync(() -> DatabaseManager.getInstance().logDeposit(resident.getVillage(), resident, deposit));
                     getMessage("deposited").tell(resident.getVillage().getOnlineResidents(),
                             "rank", resident.getVillageRank().getTag(resident.getVillage()),
                             "title", resident.getVillageTitle(),

@@ -68,7 +68,7 @@ public class TitleGUI extends KingdomsGUI {
                             item,
                             click -> {
                                 if (resident.hasEmpire() && resident.hasPermission("empire.title") && rank == resident.getEmpireRank() && resident.setEmpireTitle(title)) {
-                                    Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(resident));
+                                    DatabaseManager.getInstance().saveResident(resident);
                                     gui.draw();
                                     Message message = Message.get("command.empire.title.success." + resident.getVillage().getEmpire().getStateKey() + "." + resident.getEmpireRank().getKey());
                                     if (!message.exists()) {

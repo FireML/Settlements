@@ -56,7 +56,7 @@ public class VillageJoinCommand extends ResidentSubCommand {
             resident.setVillageRank(VillageRank.getDefault());
             resident.addChannel(ChatChannel.SETTLEMENT);
             InviteCache.getPendingVillageInvites().remove(resident.getUUID(), joinVillage.getId());
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveResident(resident));
+            DatabaseManager.getInstance().saveResident(resident);
             resident.tell(getMessage("success"), "name", joinVillage.getName(), "state", joinVillage.getState().getTag());
             getMessage("new-resident").tell(joinVillage.getOnlineResidents(), "player", resident.getName());
         }

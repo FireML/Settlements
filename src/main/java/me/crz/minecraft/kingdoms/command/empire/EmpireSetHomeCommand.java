@@ -33,7 +33,7 @@ public class EmpireSetHomeCommand extends EmpireSubCommand {
                 "x", String.valueOf(player.getLocation().getBlockX()),
                 "y", String.valueOf(player.getLocation().getBlockY()),
                 "z", String.valueOf(player.getLocation().getBlockZ()));
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveEmpire(empire));
+        DatabaseManager.getInstance().saveEmpire(empire);
         return true;
     }
 }
