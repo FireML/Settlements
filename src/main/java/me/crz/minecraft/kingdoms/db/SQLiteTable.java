@@ -24,6 +24,7 @@ public enum SQLiteTable {
             + "joinFee BIGINT,"
             + "tax BIGINT,"
             + "taxDebtAction VARCHAR(255) NOT NULL,"
+            + "finishedMissions BIGINT,"
             + "bonusClaims INTEGER,"
             + "homeLoc_world VARCHAR(255),"
             + "homeLoc_x DOUBLE,"
@@ -139,6 +140,7 @@ public enum SQLiteTable {
             + "joinFee BIGINT,"
             + "tax BIGINT,"
             + "taxDebtAction VARCHAR(255) NOT NULL,"
+            + "missionPoints BIGINT,"
             + "bonusClaims INTEGER,"
             + "homeLoc_world VARCHAR(255),"
             + "homeLoc_x DOUBLE,"
@@ -175,6 +177,17 @@ public enum SQLiteTable {
             + "UNIQUE (settlementId, content)"
             + ");"
             + "CREATE INDEX settlement_outposts_id ON {tablePrefix}settlement_outposts (settlementId);"),
+
+    SETTLEMENT_MISSIONDATA("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_missiondata ("
+            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + "settlementId INTEGER,"
+            + "mission VARCHAR(255) NOT NULL,"
+            + "type VARCHAR(255) NOT NULL,"
+            + "progress BIGINT DEFAULT 0,"
+            + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
+            + "UNIQUE (settlementId, mission, type)"
+            + ");"
+            + "CREATE INDEX settlement_missiondata_id ON {tablePrefix}settlement_missiondata (settlementId);"),
 
     SETTLEMENT_PERKS("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_perks ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"

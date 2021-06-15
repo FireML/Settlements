@@ -57,8 +57,7 @@ public class VillageManager {
     private Map<String, LevelPerk> perkTags;
 
     private VillageManager() {
-        loadLevels();
-        loadPerks();
+        loadConfig();
         for (Village village : DatabaseManager.getInstance().getAllVillages()) {
             villages.put(village.getName().replace(' ', '_').toLowerCase(), village);
             villageIDs.put(village.getId(), village);
@@ -72,11 +71,20 @@ public class VillageManager {
                     KingdomsPlugin.getInstance().getLogger().log(Level.INFO, village.getStateTag() + " " + village.getName() + " was removed because it has been abandoned for " + Config.Settlement.Upkeep.ABANDON_TIME + " minutes!");
                     deleteVillage(village);
                 }, delay, TimeUnit.MILLISECONDS);
+            } else if (village.hasEmpire() && village.getMissionData().isEmpty()) {
+                if (village.getEmpire().distributeNewMissions(village)) {
+                    DatabaseManager.getInstance().saveVillage(village);
+                }
             }
         }
     }
 
-    public void loadLevels() {
+    public void loadConfig() {
+        loadLevels();
+        loadPerks();
+    }
+
+    private void loadLevels() {
         levels.clear();
         List<VillageLevel> villageLevels = new ArrayList<>();
         for (int i = 1; i <= Config.Settlement.Leveling.VILLAGE_MAX_LEVEL; i++) {
@@ -95,7 +103,7 @@ public class VillageManager {
         levels.put(VillageState.KINGDOM, kingdomLevels);
     }
 
-    public void loadPerks() {
+    private void loadPerks() {
         perks = new LinkedHashMap<>();
         perkTags = new LinkedHashMap<>();
         for (String perkName : ConfigManager.getInstance().getPerksConfig().getKeys(false)) {

@@ -1,0 +1,30 @@
+stones:
+  # Only count if action occurs in empire world (should be false when using turn_in)
+  in-empire-world: false
+  # How many mission points the empire receives when the missions was completed
+  mission-points: 1
+  # How many contribution points a settlement receives for finishing those
+  contribution-points: 1
+  # The type of this mission. Available ones are:
+  # - turn_in: Deposit items into GUI
+  # - place: Place blocks
+  # - break: Break blocks
+  # - harvest: Harvest crops and certain other stuff like berry bushes, dropping an apple etc. depends on the requirements
+  # - kill: Kill certain monsters/animals
+  type: turn_in
+  requirements:
+    stone: 500
+dirt:
+  in-empire-world: true
+  mission-points: 1
+  contribution-points: 1
+  type: turn_in
+  requirements:
+    dirt: 1000
+wheat:
+  in-empire-world: true
+  mission-points: 1
+  contribution-points: 1
+  type: harvest
+  requirements:
+    wheat: 5000

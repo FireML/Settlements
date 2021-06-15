@@ -9,6 +9,7 @@ import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.lock.Lock;
+import me.crz.minecraft.kingdoms.missions.MissionData;
 import me.crz.minecraft.kingdoms.portal.Portal;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
@@ -28,7 +29,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -161,7 +161,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     private void saveVillage(Connection conn, Village village) {
         try {
-            if (!save(conn, village, "residents", "permissions").isNull() && !village.getId().isNull()) {
+            if (!save(conn, village, "residents", "permissions", "missiondata").isNull() && !village.getId().isNull()) {
                 updateDataMap(conn, "settlement_vaults", "settlementId", (Integer) village.getId().value(), "content", "amount", village.getVault());
                 updateDataMap(conn, "settlement_outposts", "settlementId", (Integer) village.getId().value(), "name", "", village.getOutpostHomes());
                 updateDataMap(conn, "settlement_uses", "settlementId", (Integer) village.getId().value(), "type", "state",
@@ -171,6 +171,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 updateDataMap(conn, "settlement_permissions", "settlementId", (Integer) village.getId().value(), "rank", "permission", village.getRanksPermissions(), "value");
                 updateDataMap(conn, "settlement_titles", "settlementId", (Integer) village.getId().value(), "rank", "title", village.getRankTitles());
                 updateDataMap(conn, "settlement_defaulttitles", "settlementId", (Integer) village.getId().value(), "rank", "title", village.getDefaultRankTitles());
+                updateDataMap(conn, "settlement_missiondata", "settlementId", (Integer) village.getId().value(), "mission", "type", village.getMissionDataMap(), "progress");
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while saving village " + village.getName() + " to database!", e);
@@ -1015,6 +1016,16 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                     .put(rpRs.getString("permission"), rpRs.getBoolean("value"));
         }
         map.put("permissions", rankPermissions);
+
+        PreparedStatement mdSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_missiondata WHERE settlementId = ?;");
+        mdSta.setInt(1, id);
+        ResultSet mdRs = mdSta.executeQuery();
+        Map<String, Map<String, Long>> missionData = new LinkedHashMap<>();
+        while (mdRs.next()) {
+            missionData.computeIfAbsent(mdRs.getString("mission").toLowerCase(), k -> new LinkedHashMap<>())
+                    .put(mdRs.getString("type"), mdRs.getLong("progress"));
+        }
+        map.put("missiondata", missionData);
 
         PreparedStatement tpSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_titles WHERE settlementId = ?;");
         tpSta.setInt(1, id);

@@ -8,6 +8,8 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
+import me.crz.minecraft.kingdoms.missions.Mission;
+import me.crz.minecraft.kingdoms.missions.MissionData;
 import me.crz.minecraft.kingdoms.village.events.SettlementLeaveEvent;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
@@ -47,8 +49,10 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -65,6 +69,8 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
     private Map<String, NamedLocation> outpostHomes = new LinkedHashMap<>();
     private Set<UUID> residents = new LinkedHashSet<>();
     private boolean allowAllyClaim = false;
+    private long missionPoints = 0;
+    private Map<String, MissionData> missionData = new LinkedHashMap<>();
 
     protected Village() {
         super();
@@ -302,6 +308,25 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
     }
 
     @Override
+    public Optional<VillageLevel> getNextLevel() {
+        int nextLevel = getLevel() + 1;
+        VillageState nextState = getState();
+        if (nextState == VillageState.VILLAGE && nextLevel > Config.Settlement.Leveling.VILLAGE_MAX_LEVEL) {
+            nextState = VillageState.KINGDOM;
+            nextLevel = 1;
+        }
+        return VillageManager.getInstance().getLevel(nextState, nextLevel);
+    }
+
+    public long getMissionPoints() {
+        return missionPoints;
+    }
+
+    public void setMissionPoints(long missionPoints) {
+        this.missionPoints = missionPoints;
+    }
+
+    @Override
     public boolean isChief(UUID playerId) {
         return chief.equals(playerId);
     }
@@ -427,6 +452,8 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
         this.empire = empire;
         if (empire != null) {
             empire.getMemberIds().add(getId());
+        } else {
+            getMissionData().clear();
         }
     }
 
@@ -434,16 +461,26 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
         return empire != null;
     }
 
+    public MissionData getMissionData(String missionId) {
+        return missionData.get(missionId.toLowerCase(Locale.ROOT));
+    }
+
+    public Collection<MissionData> getMissionData() {
+        return missionData.values();
+    }
+
+    public Map<String, Map<String, Long>> getMissionDataMap() {
+        return getMissionData().stream().collect(Collectors.toMap(md -> md.getMission().getDbId(), MissionData::getProgress));
+    }
+
+    public void addMissionData(MissionData md) {
+        missionData.put(md.getMission().getId().toLowerCase(Locale.ROOT), md);
+    }
+
     @NotNull
     @Override
     public Map<String, Long> getNextLevelRequirements() {
-        int nextLevel = getLevel() + 1;
-        VillageState nextState = getState();
-        if (nextState == VillageState.VILLAGE && nextLevel > Config.Settlement.Leveling.VILLAGE_MAX_LEVEL) {
-            nextState = VillageState.KINGDOM;
-            nextLevel = 1;
-        }
-        return VillageManager.getInstance().getLevel(nextState, nextLevel).map(VillageLevel::getRequirements).orElse(Collections.emptyMap());
+        return getNextLevel().map(VillageLevel::getRequirements).orElse(Collections.emptyMap());
     }
 
     @Override
@@ -454,6 +491,23 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
     @Override
     public boolean checkLevelUp(Resident resident) {
         return VillageManager.getInstance().checkLevelUp(this, resident);
+    }
+
+    @Override
+    public long getAmount(String key) {
+        if (key.equalsIgnoreCase("missionpoints")) {
+            return missionPoints;
+        }
+        return super.getAmount(key);
+    }
+
+    @Override
+    public void setAmount(String key, long amount) {
+        if ("missionpoints".equalsIgnoreCase(key)) {
+            setMissionPoints(amount);
+        } else {
+            super.setAmount(key, amount);
+        }
     }
 
     @Override
@@ -506,8 +560,10 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
         map.put("empireId", hasEmpire() ? getEmpire().getId().value() : null);
         map.put("allowAllyClaim", isAllowAllyClaim());
         map.put("settlementState", getState().name());
+        map.put("missionPoints", getMissionPoints());
         map.put("residents", getResidentIds().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("outposts", getOutpostHomes().values().stream().collect(Collectors.toMap(NamedLocation::getName, NamedLocation::serialize)));
+        map.put("missiondata", getMissionData().stream().collect(Collectors.toMap(md -> md.getMission().getDbId(), md -> md.getProgress())));
         return map;
     }
 
@@ -577,6 +633,7 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
         village.setChief(UUID.fromString((String) map.get("chief")));
         village.setState(VillageState.valueOf((String) map.get("settlementState")));
         village.setLevel((Integer) map.get("level"));
+        village.setMissionPoints((Long) map.get("missionPoints"));
         village.setAllowAllyClaim(Utils.getBoolean(map.get("allowAllyClaim")));
         village.setEmpire(EmpireManager.getInstance().getEmpireFromId(IdObject.get(map.get("empireId"))));
         ((Collection<String>) map.get("residents")).stream().map(UUID::fromString).forEach(u -> village.getResidentIds().add(u));
@@ -584,6 +641,20 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
                 .map(NamedLocation::deserialize)
                 .filter(Objects::nonNull)
                 .forEach(village::setOutpostHome);
+        ((Map<String, Object>) map.get("missiondata")).entrySet().stream()
+                .filter(e -> e.getValue() instanceof Map)
+                .forEach(e -> {
+                    Mission mission = Mission.fromDbId(e.getKey());
+                    if (mission != null) {
+                        MissionData md = new MissionData(mission);
+                        for (Map.Entry<?, ?> o : ((Map<?, ?>) e.getValue()).entrySet()) {
+                            if (o.getKey() instanceof String && o.getValue() instanceof Long) {
+                                md.getProgress().put((String) o.getKey(), (Long) o.getValue());
+                            }
+                        }
+                        village.addMissionData(md);
+                    }
+                });
         KingdomsPlugin.logDebug("Created village " + village.serialize());
         return village;
     }
@@ -630,6 +701,7 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
                 "abandoned", yesOrNo(isAbandoned()),
                 "abandonedcountdown", isAbandoned() ? UtilTime.format(getCreated() + TimeUnit.MINUTES.toMillis(Config.Settlement.Upkeep.ABANDON_TIME) - System.currentTimeMillis()) : "",
                 "level", String.valueOf(getLevel()),
+                "missionpoints", String.valueOf(getMissionPoints()),
                 "land", String.valueOf(LandManager.getInstance().getClaimedLandSize(this)),
                 "maxland", String.valueOf(getMaxClaimableChunks()),
                 "outposts", String.valueOf(getOutpostHomes().size()),

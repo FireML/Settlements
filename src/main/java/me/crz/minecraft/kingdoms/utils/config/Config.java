@@ -57,7 +57,7 @@ public class Config {
         }
     }
 
-    @ConfigComment("Upkeep scheduler settings")
+    @ConfigComment("Upkeep and mission reset scheduler settings")
     public static class Upkeep {
         public static String TIMEZONE = "UTC";
         public static int HOUR = 0;
@@ -211,6 +211,11 @@ public class Config {
         public static class Leveling {
             @ConfigComment("The amount of levels an Empire can reach")
             public static int MAX_LEVEL = 5;
+        }
+
+        public static class Missions {
+            @ConfigComment("Whether or not empire missions should be given to empire member settlements")
+            public static boolean ENABLED = true;
         }
 
         public static class World {

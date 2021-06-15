@@ -56,9 +56,11 @@ resistance1:
   # run-command:
   # - some {player} command
   cost:
-    # Cost to unlock. Can include "cash" to pay with bank or any material to pay from vault
+    # Cost to unlock. Can include "cash" to pay with bank, "missionpoints" to pay with mission points
+    # or any material to pay from vault
     # If empty it will be instantly granted when the state and level are reached
     unlock:
+      missionpoints: 1000
       cash: 1000
       stone: 100
     # If the amount is higher than 1 then this is the cost that needs to be paid to trigger it again

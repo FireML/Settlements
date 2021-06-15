@@ -25,6 +25,7 @@ public enum MySqlTable {
             + "joinFee BIGINT,"
             + "tax BIGINT,"
             + "taxDebtAction VARCHAR(255) NOT NULL,"
+            + "finishedMissions BIGINT,"
             + "bonusClaims INTEGER,"
             + "homeLoc_world VARCHAR(255),"
             + "homeLoc_x DOUBLE,"
@@ -132,6 +133,7 @@ public enum MySqlTable {
             + "joinFee BIGINT,"
             + "tax BIGINT,"
             + "taxDebtAction VARCHAR(255) NOT NULL,"
+            + "missionPoints BIGINT,"
             + "bonusClaims INTEGER,"
             + "homeLoc_world VARCHAR(255),"
             + "homeLoc_x DOUBLE,"
@@ -162,6 +164,16 @@ public enum MySqlTable {
             + "content VARCHAR(255) NOT NULL,"
             + "amount BIGINT,"
             + "UNIQUE (settlementId, content)"
+            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
+
+    SETTLEMENT_MISSIONDATA("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_missiondata ("
+            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+            + "settlementId INTEGER, INDEX (settlementId),"
+            + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
+            + "mission VARCHAR(255) NOT NULL,"
+            + "type VARCHAR(255) NOT NULL,"
+            + "progress BIGINT DEFAULT 0,"
+            + "UNIQUE list (settlementId, mission, type)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     SETTLEMENT_PERKS("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_perks ("

@@ -54,6 +54,7 @@ public class EmpireJoinCommand extends VillageSubCommand {
                 });
             }
             resident.getVillage().setEmpire(joinEmpire);
+            joinEmpire.distributeNewMissions(resident.getVillage());
             for (Resident member : resident.getVillage().getOnlineResidents()) {
                 member.addChannel(ChatChannel.EMPIRE);
             }

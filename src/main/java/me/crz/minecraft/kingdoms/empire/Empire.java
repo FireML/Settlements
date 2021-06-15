@@ -13,6 +13,7 @@ import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.land.TaxDebtAction;
 import me.crz.minecraft.kingdoms.land.BuildState;
+import me.crz.minecraft.kingdoms.missions.MissionData;
 import me.crz.minecraft.kingdoms.perk.EmpirePerk;
 import me.crz.minecraft.kingdoms.perk.Perk;
 import me.crz.minecraft.kingdoms.rank.EmpireRank;
@@ -37,7 +38,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -49,6 +49,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -65,6 +66,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     private boolean inRegen = false;
     private long lastRename = 0;
     private String worldName;
+    private long finishedMissions = 0;
 
     protected Empire() {
         super();
@@ -116,13 +118,13 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
 
         if (paidTaxes > 0) {
             long finalPaidTaxes = paidTaxes;
-            Utils.runAsync(() -> {
-                if (getTax() > 0) {
-                    DatabaseManager.getInstance().saveVillages(getMembers());
-                }
-                DatabaseManager.getInstance().log(this, null, null, "tax", "cash", finalPaidTaxes);
-            });
+            Utils.runAsync(() -> DatabaseManager.getInstance().log(this, null, null, "tax", "cash", finalPaidTaxes));
         }
+
+        if (distributeNewMissions() || getTax() > 0) {
+            DatabaseManager.getInstance().saveVillages(getMembers());
+        }
+
     }
 
     private long doLandTaxes() {
@@ -199,6 +201,28 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         }
     }
 
+    private boolean distributeNewMissions() {
+        boolean modified = false;
+        for (Village member : getMembers()) {
+            modified |= distributeNewMissions(member);
+        }
+        return modified;
+    }
+
+    public boolean distributeNewMissions(Village member) {
+        EmpireLevel levelInfo = getLevelInfo();
+        if (levelInfo != null && levelInfo.getMissions() > 0) {
+            List<EmpireMission> missions = new ArrayList<>(EmpireManager.getInstance().getMissions());
+            member.getMissionData().clear();
+            Collections.shuffle(missions);
+            for (int i = 0; i < levelInfo.getMissions() && i < missions.size(); i++) {
+                member.addMissionData(new MissionData(missions.get(i)));
+            }
+            return !member.getMissionData().isEmpty();
+        }
+        return false;
+    }
+
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = super.serialize();
@@ -206,6 +230,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         map.put("lastRename", getLastRename());
         map.put("symbol", getSymbol());
         map.put("level", getLevel());
+        map.put("finishedMissions", getFinishedMissions());
         map.put("members", getMemberIds().stream().map(IdObject::value).filter(Objects::nonNull).collect(Collectors.toList()));
         return map;
     }
@@ -296,6 +321,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         empire.lastRename = Utils.getLong(map.get("lastRename"));
         empire.setSymbol((String) map.get("symbol"));
         empire.setLevel((Integer) map.get("level"));
+        empire.setFinishedMissions((Long) map.get("finishedMissions"));
         if (map.get("members") != null && map.get("members") instanceof Collection) {
             for (Object memberId : (Collection) map.get("members")) {
                 empire.members.add(IdObject.get(memberId));
@@ -336,12 +362,6 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     @Override
-    @NotNull
-    public Map<String, Long> getNextLevelRequirements() {
-        return EmpireManager.getInstance().getLevel(getLevel() + 1).map(EmpireLevel::getRequirements).orElse(Collections.emptyMap());
-    }
-
-    @Override
     public boolean isMaxLevel() {
         return (getLevel() >= Config.Empire.Leveling.MAX_LEVEL) || getNextLevelRequirements().isEmpty();
     }
@@ -349,6 +369,23 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     @Override
     public boolean checkLevelUp(Resident resident) {
         return EmpireManager.getInstance().checkLevelUp(this, resident);
+    }
+
+    @Override
+    public long getAmount(String key) {
+        if (key.equalsIgnoreCase("missions")) {
+            return finishedMissions;
+        }
+        return super.getAmount(key);
+    }
+
+    @Override
+    public void setAmount(String key, long amount) {
+        if ("missions".equalsIgnoreCase(key)) {
+            setFinishedMissions(amount);
+        } else {
+            super.setAmount(key, amount);
+        }
     }
 
     public Village getCapital() {
@@ -433,6 +470,11 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     @Override
+    public Optional<EmpireLevel> getNextLevel() {
+        return EmpireManager.getInstance().getLevel(getLevel() + 1);
+    }
+
+    @Override
     public boolean isChief(UUID playerId) {
         return getCapital().isChief(playerId);
     }
@@ -469,6 +511,14 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
 
     public void setSymbol(String symbol) {
         this.symbol = symbol;
+    }
+
+    public long getFinishedMissions() {
+        return finishedMissions;
+    }
+
+    public void setFinishedMissions(long finishedMissions) {
+        this.finishedMissions = finishedMissions;
     }
 
     @Override
@@ -640,6 +690,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
                 "tax", Utils.CURRENCY_FORMAT.format(getTax()),
                 "taxdebtaction", getTaxDebtAction().getTag(),
                 "upkeep", Utils.CURRENCY_FORMAT.format(getUpkeep()),
+                "missions", String.valueOf(finishedMissions),
                 "abandoned", yesOrNo(isAbandoned()),
                 "abandonedcountdown", isAbandoned() ? UtilTime.format(getCreated() + TimeUnit.MINUTES.toMillis(Config.Empire.Upkeep.ABANDON_TIME) - System.currentTimeMillis()) : "",
                 "hostilespawning", String.valueOf(getMode(PlotMode.mobSpawning)),

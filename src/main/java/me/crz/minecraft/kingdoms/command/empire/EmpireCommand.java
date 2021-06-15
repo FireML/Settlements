@@ -35,6 +35,9 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpireMailCommand(this));
         registerCommand(new EmpireMapCommand(this));
         registerCommand(new EmpireMemberListCommand(this));
+        if (Config.Empire.Missions.ENABLED) {
+            registerCommand(new EmpireMissionsCommand(this));
+        }
         registerCommand(new EmpireModeCommand(this));
         registerCommand(new EmpireMoneyCommand(this));
         registerCommand(new EmpireRenameCommand(this));

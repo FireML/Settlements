@@ -40,6 +40,8 @@ public class MySqlDatabase extends SqlDatabaseManager {
         addColumn(MySqlTable.RESIDENTS, "socialSpy", "BOOLEAN NOT NULL DEFAULT false AFTER swear");
         alterColumnOrRecreate(MySqlTable.CLAIMS, "buildState", "VARCHAR(255)");
         addColumn(MySqlTable.EMPIRES, "level", "INTEGER NOT NULL DEFAULT 1 AFTER capitalId");
+        addColumn(MySqlTable.EMPIRES, "finishedMissions", "BIGINT NOT NULL DEFAULT 0 AFTER taxDebtAction");
+        addColumn(MySqlTable.SETTLEMENTS, "missionPoints", "BIGINT NOT NULL DEFAULT 0 AFTER taxDebtAction");
     }
 
     @Override

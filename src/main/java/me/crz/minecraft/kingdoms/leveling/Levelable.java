@@ -5,7 +5,9 @@ import me.crz.minecraft.kingdoms.resident.Resident;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 public interface Levelable<T extends LevelInfo> extends Vaultable {
 
@@ -16,6 +18,8 @@ public interface Levelable<T extends LevelInfo> extends Vaultable {
     @Nullable
     T getLevelInfo();
 
+    Optional<T> getNextLevel();
+
     default boolean canLevelUp() {
         if (isMaxLevel()) {
             return false;
@@ -24,7 +28,9 @@ public interface Levelable<T extends LevelInfo> extends Vaultable {
     }
 
     @NotNull
-    Map<String, Long> getNextLevelRequirements();
+    default Map<String, Long> getNextLevelRequirements() {
+        return getNextLevel().map(LevelInfo::getRequirements).orElse(Collections.emptyMap());
+    }
 
     boolean isMaxLevel();
 

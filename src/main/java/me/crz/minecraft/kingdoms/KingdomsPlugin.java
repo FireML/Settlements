@@ -26,6 +26,7 @@ import me.crz.minecraft.kingdoms.land.UseFlagManager;
 import me.crz.minecraft.kingdoms.lock.LockProvider;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.lock.LockManager;
+import me.crz.minecraft.kingdoms.missions.MissionListener;
 import me.crz.minecraft.kingdoms.portal.PortalManager;
 import me.crz.minecraft.kingdoms.rank.RankManager;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -180,6 +181,9 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             registerListener(new BanishListener());
             registerListener(new VillageListener());
             registerListener(new EmpireListener());
+            if (Config.Empire.Missions.ENABLED) {
+                registerListener(new MissionListener());
+            }
             registerListener(landModeListener = new LandModeListener());
             registerListener(new LandBlockListener());
             registerListener(new LandUseListener());

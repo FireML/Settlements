@@ -75,6 +75,7 @@ public class ConfigManager {
     private ConfigAccessor data;
     private ConfigAccessor levelConf;
     private ConfigAccessor empireLevelConf;
+    private ConfigAccessor empireMissionsConf;
     private ConfigAccessor mapConf;
     private ConfigAccessor settlementPerksConf;
     private ConfigAccessor empirePerksConf;
@@ -165,6 +166,7 @@ public class ConfigManager {
         levelConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "levelConf.yml");
         empireLevelConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "empireLevelConf.yml");
         convertEmpireLevels();
+        empireMissionsConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "empireMissions.yml");
         mapConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "mapConf.yml");
         settlementPerksConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "settlementPerksConf.yml");
         empirePerksConf = new ConfigAccessor(KingdomsPlugin.getInstance(), "empirePerksConf.yml");
@@ -181,10 +183,8 @@ public class ConfigManager {
             Config.Portal.ENABLED = false;
             Config.Sidebar.ENABLED = false;
         } else if (KingdomsPlugin.getInstance().isRunning()) {
-            EmpireManager.getInstance().loadLevels();
-            EmpireManager.getInstance().loadPerks();
-            VillageManager.getInstance().loadLevels();
-            VillageManager.getInstance().loadPerks();
+            EmpireManager.getInstance().loadConfig();
+            VillageManager.getInstance().loadConfig();
             UseFlagManager.getInstance().loadConfig();
             Message.clearCache();
             KingdomsPlugin.getInstance().getLandModeListener().reload();
@@ -486,6 +486,10 @@ public class ConfigManager {
 
     public FileConfiguration getEmpireLevelConfig() {
         return empireLevelConf.getConfig();
+    }
+
+    public FileConfiguration getEmpireMissionsConfig() {
+        return empireMissionsConf.getConfig();
     }
 
     public FileConfiguration getMapConfig() {

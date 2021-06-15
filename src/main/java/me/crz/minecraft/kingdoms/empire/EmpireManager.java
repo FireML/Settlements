@@ -43,9 +43,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -63,12 +65,13 @@ public class EmpireManager {
 
     private List<EmpireLevel> levels = new ArrayList<>();
 
+    private Map<String, EmpireMission> missions = new HashMap<>();
+
     private Map<String, EmpirePerk> perks;
     private Map<String, EmpirePerk> perkTags;
 
     public EmpireManager() {
-        loadLevels();
-        loadPerks();
+        loadConfig();
         for (Empire empire : DatabaseManager.getInstance().getAllEmpires()) {
             if (Config.Empire.World.RENAME) {
                 World world = KingdomsPlugin.getInstance().getServer().getWorld(empire.getWorldName());
@@ -101,7 +104,13 @@ public class EmpireManager {
         }
     }
 
-    public void loadLevels() {
+    public void loadConfig() {
+        loadLevels();
+        loadPerks();
+        loadMissions();
+    }
+
+    private void loadLevels() {
         levels.clear();
         for (int i = 1; i <= Config.Empire.Leveling.MAX_LEVEL; i++) {
             EmpireLevel level = new EmpireLevel(i, ConfigManager.getInstance().getEmpireLevelConfig().getConfigurationSection("levels.level-" + i));
@@ -122,7 +131,7 @@ public class EmpireManager {
         }
     }
 
-    public void loadPerks() {
+    private void loadPerks() {
         perks = new LinkedHashMap<>();
         perkTags = new LinkedHashMap<>();
         for (String perkName : ConfigManager.getInstance().getEmpirePerksConfig().getKeys(false)) {
@@ -131,7 +140,18 @@ public class EmpireManager {
                 perks.put(perk.name().toLowerCase(), perk);
                 perkTags.put(perk.getTag().toLowerCase(), perk);
             } catch (IllegalArgumentException e) {
-                KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Config for Perk " + perkName + " was invalid! " + e.getMessage());
+                KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Config for Empire Perk " + perkName + " was invalid! " + e.getMessage());
+            }
+        }
+    }
+
+    private void loadMissions() {
+        missions.clear();
+        for (String missionId : ConfigManager.getInstance().getEmpireMissionsConfig().getKeys(false)) {
+            try {
+                missions.put(missionId.toLowerCase(Locale.ROOT), new EmpireMission(ConfigManager.getInstance().getEmpireMissionsConfig().getConfigurationSection(missionId)));
+            } catch (IllegalArgumentException e) {
+                KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Config for Empire Mission " + missionId + " was invalid! " + e.getMessage());
             }
         }
     }
@@ -182,6 +202,34 @@ public class EmpireManager {
             return Optional.of(levels.get(level - 1));
         }
         return Optional.empty();
+    }
+
+    public EmpireMission getMission(String id) {
+        return missions.get(id.toLowerCase(Locale.ROOT));
+    }
+
+    public Collection<EmpireMission> getMissions() {
+        return missions.values();
+    }
+
+    public void finishMission(EmpireMission mission, Resident resident) {
+        if (!resident.hasEmpire()) {
+            // Wat
+            return;
+        }
+        Village village = resident.getVillage();
+        Empire empire = village.getEmpire();
+        village.setMissionPoints(village.getMissionPoints() + 1);
+        empire.setFinishedMissions(empire.getFinishedMissions() + 1);
+        Message.get("missions.completed").tell(empire.getOnlineResidents(),
+                "state", village.getStateTag(),
+                "name", village.getName(),
+                "mission", mission.getTag(),
+                "missionpoints", String.valueOf(village.getMissionPoints()),
+                "finishedmissions", String.valueOf(empire.getFinishedMissions())
+        );
+        KingdomsPlugin.logDebug(village.getStateTag() + " " + village.getName() + " finished mission " + mission.getTag() + " for empire " + empire.getName());
+        DatabaseManager.getInstance().saveEmpire(empire);
     }
 
     public EmpirePerk getPerk(String name) {
