@@ -62,6 +62,7 @@ error:
     create: "&cNo portals are linked! Use [&e/portal link](/portal link) to link it to another one!"
     common: "&cNo portals are linked! Ask your {state} leadership to link it!"
   destination-obstructed: "&c&lCan't teleport. Target location is not safe!"
+  destination-unknown: "&c&lCan't teleport. Target {type} is not known!"
 move-cancelled:
   title: "&c&lFailed"
   subtitle: "&fDon't move while {action}ing!"

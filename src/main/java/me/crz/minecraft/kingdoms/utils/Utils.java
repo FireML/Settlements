@@ -408,6 +408,10 @@ public class Utils {
      * @return false if teleport occurred instantly and no wait task was started
      */
     public static boolean teleport(ConfigMessages messages, Player player, Location loc, String type, String... replacements) {
+        if (loc == null || loc.getWorld() == null) {
+            Message.get("error.destination-unknown").tell(player, "type", loc == null ? "location" : "world");
+            return false;
+        }
         return teleport(messages, player, type, () -> {
             PaperLib.getChunkAtAsync(loc).thenAccept(c -> {
                 if (c == null) {
