@@ -40,18 +40,20 @@ public class VillageAdminJoinCommand extends SubCommand {
                 MessageUtils.tell(sender, "&6&l" + target.getName() + "&r&c&l is already in the &r&6&l" + village.getName());
                 return;
             }
-            Utils.callEvent(new SettlementJoinEvent(village, target));
-            target.setVillage(village);
-            target.setVillageRank(VillageRank.getDefault());
-            target.addChannel(ChatChannel.SETTLEMENT);
-            Message.get("command.chat.joined").tell(target, "name", ChatChannel.SETTLEMENT.getTag());
-            DatabaseManager.getInstance().saveResident(target);
-            MessageUtils.tell(sender, "&6&l" + target.getName() + "&r&c&l is now in " + village.getName());
-            Player targetP = target.getPlayer();
-            if (targetP != null) {
-                MessageUtils.tell(targetP, Message.get("command.village.join.success"), "name", village.getName(), "state", village.getState().getTag());
-            }
-            MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("command.village.join.new-resident"), "player", target.getName());
+            Utils.runSync(() -> {
+                Utils.callEvent(new SettlementJoinEvent(village, target));
+                target.setVillage(village);
+                target.setVillageRank(VillageRank.getDefault());
+                target.addChannel(ChatChannel.SETTLEMENT);
+                Message.get("command.chat.joined").tell(target, "name", ChatChannel.SETTLEMENT.getTag());
+                DatabaseManager.getInstance().saveResident(target);
+                MessageUtils.tell(sender, "&6&l" + target.getName() + "&r&c&l is now in " + village.getName());
+                Player targetP = target.getPlayer();
+                if (targetP != null) {
+                    MessageUtils.tell(targetP, Message.get("command.village.join.success"), "name", village.getName(), "state", village.getState().getTag());
+                }
+                MessageUtils.tellResidents(village.getOnlineResidents(), Message.get("command.village.join.new-resident"), "player", target.getName());
+            });
         });
         return true;
     }
