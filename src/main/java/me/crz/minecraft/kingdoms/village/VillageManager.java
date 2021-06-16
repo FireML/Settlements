@@ -139,15 +139,17 @@ public class VillageManager {
         chief.setVillage(village);
         chief.setVillageRank(VillageRank.getChief());
         chief.addChannel(ChatChannel.SETTLEMENT);
-        DatabaseManager.getInstance().saveVillage(village);
-        if (!village.getId().isNull()) {
-            villageIDs.put(village.getId(), village);
-            villageUuids.put(village.getUUID(), village);
-            DatabaseManager.getInstance().saveResident(chief);
-        } else {
-            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving " + village.getName() + " to the database! No ID was returned.");
-            chief.tell(ChatColor.RED + "Error while saving " + village.getName() + " to the database! No ID was returned.");
-        }
+        Utils.runAsync(() -> {
+            DatabaseManager.getInstance().addNewVillage(village);
+            if (!village.getId().isNull()) {
+                villageIDs.put(village.getId(), village);
+                villageUuids.put(village.getUUID(), village);
+                DatabaseManager.getInstance().saveResident(chief);
+            } else {
+                KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving " + village.getName() + " to the database! No ID was returned.");
+                chief.tell(ChatColor.RED + "Error while saving " + village.getName() + " to the database! No ID was returned.");
+            }
+        });
     }
 
     public Village getVillageAt(Location location) {

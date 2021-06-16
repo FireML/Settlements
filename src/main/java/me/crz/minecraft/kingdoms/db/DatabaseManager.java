@@ -41,11 +41,15 @@ public abstract class DatabaseManager {
 
     public abstract void connect() throws Exception;
 
+    public abstract void addNewEmpire(Empire empire);
+
     public abstract void saveEmpire(Empire empire);
 
     public abstract void saveEmpires(Collection<Empire> empires);
 
     public abstract void deleteEmpire(Empire village);
+
+    public abstract void addNewVillage(Village village);
 
     public abstract void saveVillage(Village village);
 

@@ -96,6 +96,12 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     // Implement DatabaseManager methods
 
     @Override
+    public void addNewEmpire(Empire empire) {
+        Utils.catchSync();
+        saveEmpire(getConnection(), empire);
+    }
+
+    @Override
     public void saveEmpire(Empire empire) {
         empireQueue.add(empire.getId(), empire);
         empireQueue.finishAdding();
@@ -151,6 +157,12 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 close(conn);
             }
         }
+    }
+
+    @Override
+    public void addNewVillage(Village village) {
+        Utils.catchSync();
+        saveVillage(getConnection(), village);
     }
 
     @Override

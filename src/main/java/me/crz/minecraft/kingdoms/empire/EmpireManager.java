@@ -253,24 +253,28 @@ public class EmpireManager {
         empire.getCapital().setEmpire(empire);
         empire.getCapital().getChief().setEmpireRank(EmpireRank.getLeader());
         empires.put(empire.getName().replace(' ', '_').toLowerCase(), empire);
-        DatabaseManager.getInstance().saveEmpire(empire);
-        DatabaseManager.getInstance().saveVillage(empire.getCapital());
-        DatabaseManager.getInstance().saveResident(empire.getCapital().getChief());
-        if (!empire.getId().isNull()) {
-            if (Config.Empire.World.RENAME) {
-                empire.setWorldName(Config.Empire.World.PREFIX + empire.getName() + Config.Empire.World.SUFFIX);
+        Utils.runAsync(() -> {
+            DatabaseManager.getInstance().addNewEmpire(empire);
+            DatabaseManager.getInstance().saveVillage(empire.getCapital());
+            DatabaseManager.getInstance().saveResident(empire.getCapital().getChief());
+            if (!empire.getId().isNull()) {
+                if (Config.Empire.World.RENAME) {
+                    empire.setWorldName(Config.Empire.World.PREFIX + empire.getName() + Config.Empire.World.SUFFIX);
+                } else {
+                    empire.setWorldName(Config.Empire.World.PREFIX + "id" + empire.getId().value() + Config.Empire.World.SUFFIX);
+                }
+                empireIds.put(empire.getId(), empire);
+                empireUuids.put(empire.getUUID(), empire);
+                Utils.runSync(() -> {
+                    try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
+                        createEmpireWorld(empire);
+                        Message.get("empire-world-generated").tell(empire.getOnlineResidents());
+                    }
+                });
             } else {
-                empire.setWorldName(Config.Empire.World.PREFIX + "id" + empire.getId().value() + Config.Empire.World.SUFFIX);
+                KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving empire " + empire.getName() + " to the database! No ID was returned.");
             }
-            empireIds.put(empire.getId(), empire);
-            empireUuids.put(empire.getUUID(), empire);
-            try (MCTiming ignored = KingdomsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
-                createEmpireWorld(empire);
-                Message.get("empire-world-generated").tell(empire.getOnlineResidents());
-            }
-        } else {
-            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving empire " + empire.getName() + " to the database! No ID was returned.");
-        }
+        });
     }
 
     private World createEmpireWorld(Empire empire) {
