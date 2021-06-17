@@ -97,6 +97,7 @@ help-order:
     - join
     - joinfee
     - list
+    - materials
     - memberlist
     - missions
     - show

@@ -4,11 +4,15 @@ import org.apache.commons.lang.WordUtils;
 
 public interface HumanReadable {
     default String humanizedName() {
-        return WordUtils.capitalizeFully(name().replace('_', ' '));
+        return humanizedName(name());
     }
 
     static String humanizedName(Enum e) {
-        return WordUtils.capitalizeFully(e.name().replace('_', ' '));
+        return humanizedName(e.name());
+    }
+
+    static String humanizedName(String string) {
+        return WordUtils.capitalizeFully(string.replace('_', ' '));
     }
 
     public String name();

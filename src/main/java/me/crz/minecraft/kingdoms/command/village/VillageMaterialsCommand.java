@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.resident.Resident;
+import me.crz.minecraft.kingdoms.utils.HumanReadable;
 import me.crz.minecraft.kingdoms.village.Village;
 
 import java.util.Map;
@@ -13,25 +14,28 @@ public class VillageMaterialsCommand extends VillageSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        if (resident.getVillage().isMaxLevel()) {
-            resident.tell(getMessage("max-level-reached"), "state", resident.getVillage().getState().getTag());
+        Village village = resident.getVillage();
+        if (village.isMaxLevel()) {
+            getMessage("max-level-reached").tell(resident, "state", resident.getVillage().getState().getTag());
             return true;
         }
-        Village village = resident.getVillage();
         Map<String, Long> nextLevelReqs = village.getNextLevelRequirements();
         if (nextLevelReqs.isEmpty()) {
-            resident.tell(getMessage("max-level-reached"), "state", resident.getVillage().getState().getTag());
+            getMessage("max-level-reached").tell(resident, "state", resident.getVillage().getState().getTag());
             return true;
         }
 
-        resident.tell(getMessage("head"));
+        getMessage("head").tell(resident);
         for (Map.Entry<String, Long> entry : nextLevelReqs.entrySet()) {
-            resident.tell(getMessage("entry"),
-                    "material", entry.getKey(),
-                    "amount", String.valueOf(entry.getValue() - village.getVault().getOrDefault(entry.getKey(), (long) 0))
+            long progress = village.getVault().getOrDefault(entry.getKey(), 0L);
+            getMessage("requirement." + (progress <= entry.getValue() ? "todo" : "done")).tell(resident,
+                    "type", HumanReadable.humanizedName(entry.getKey()),
+                    "required", String.valueOf(entry.getValue()),
+                    "progress", String.valueOf(progress),
+                    "amount", String.valueOf(entry.getValue() - progress)
             );
         }
-        resident.tell(getMessage("footer"));
+        getMessage("footer").tell(resident);
         return true;
     }
 }

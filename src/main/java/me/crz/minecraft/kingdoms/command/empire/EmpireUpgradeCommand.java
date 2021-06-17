@@ -1,11 +1,9 @@
 package me.crz.minecraft.kingdoms.command.empire;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
-import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.resident.Resident;
-import me.crz.minecraft.kingdoms.village.Village;
-import me.crz.minecraft.kingdoms.village.VillageManager;
+import me.crz.minecraft.kingdoms.utils.HumanReadable;
 
 import java.util.stream.Collectors;
 
@@ -24,9 +22,11 @@ public class EmpireUpgradeCommand extends EmpireSubCommand {
                         + empire.getNextLevelRequirements().entrySet().stream()
                     .filter(e -> !empire.getVault().containsKey(e.getKey()) || empire.getVault().get(e.getKey()) < e.getValue())
                     .map(e -> getMessage("entry").getReplacedText(
-                            "material", e.getKey(),
-                            "amount", String.valueOf(e.getValue() - empire.getVault().getOrDefault(e.getKey(), (long) 0))))
-                    .collect(Collectors.joining("\n"))
+                            "material", HumanReadable.humanizedName(e.getKey()),
+                            "required", String.valueOf(e.getValue()),
+                            "progress", String.valueOf(empire.getVault().getOrDefault(e.getKey(), 0L)),
+                            "amount", String.valueOf(e.getValue() - empire.getVault().getOrDefault(e.getKey(), 0L))
+                    )).collect(Collectors.joining("\n"))
             );
         }
         return true;

@@ -2,6 +2,7 @@ package me.crz.minecraft.kingdoms.command.village;
 
 import me.crz.minecraft.kingdoms.command.SubCommand;
 import me.crz.minecraft.kingdoms.resident.Resident;
+import me.crz.minecraft.kingdoms.utils.HumanReadable;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 
@@ -22,9 +23,11 @@ public class VillageUpgradeCommand extends VillageSubCommand {
                         + v.getNextLevelRequirements().entrySet().stream()
                     .filter(e -> !v.getVault().containsKey(e.getKey()) || v.getVault().get(e.getKey()) < e.getValue())
                     .map(e -> getMessage("entry").getReplacedText(
-                            "material", e.getKey(),
-                            "amount", String.valueOf(e.getValue() - v.getVault().getOrDefault(e.getKey(), (long) 0))))
-                    .collect(Collectors.joining("\n"))
+                            "material", HumanReadable.humanizedName(e.getKey()),
+                            "required", String.valueOf(e.getValue()),
+                            "progress", String.valueOf(v.getVault().getOrDefault(e.getKey(), 0L)),
+                            "amount", String.valueOf(e.getValue() - v.getVault().getOrDefault(e.getKey(), 0L))
+                    )).collect(Collectors.joining("\n"))
             );
         }
         return true;
