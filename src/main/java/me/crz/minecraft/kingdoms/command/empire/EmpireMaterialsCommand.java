@@ -29,7 +29,7 @@ public class EmpireMaterialsCommand extends EmpireSubCommand {
 
         getMessage("head").tell(resident);
         for (Map.Entry<String, Long> entry : nextLevelReqs.entrySet()) {
-            long progress = empire.getVault().getOrDefault(entry.getKey(), 0L);
+            long progress = empire.getAmount(entry.getKey());
             getMessage("requirement." + (progress <= entry.getValue() ? "todo" : "done")).tell(resident,
                     "type", HumanReadable.humanizedName(entry.getKey()),
                     "required", String.valueOf(entry.getValue()),

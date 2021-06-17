@@ -21,12 +21,12 @@ public class VillageUpgradeCommand extends VillageSubCommand {
             res.tell(getError("not-possible"), "reason", v.isMaxLevel() ? getText("max-level-reached") :
                 getText("missing-items") + "\n"
                         + v.getNextLevelRequirements().entrySet().stream()
-                    .filter(e -> !v.getVault().containsKey(e.getKey()) || v.getVault().get(e.getKey()) < e.getValue())
+                    .filter(e -> v.getAmount(e.getKey()) < e.getValue())
                     .map(e -> getMessage("entry").getReplacedText(
                             "material", HumanReadable.humanizedName(e.getKey()),
                             "required", String.valueOf(e.getValue()),
-                            "progress", String.valueOf(v.getVault().getOrDefault(e.getKey(), 0L)),
-                            "amount", String.valueOf(e.getValue() - v.getVault().getOrDefault(e.getKey(), 0L))
+                            "progress", String.valueOf(v.getAmount(e.getKey())),
+                            "amount", String.valueOf(e.getValue() - v.getAmount(e.getKey()))
                     )).collect(Collectors.joining("\n"))
             );
         }

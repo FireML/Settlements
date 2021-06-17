@@ -20,12 +20,12 @@ public class EmpireUpgradeCommand extends EmpireSubCommand {
             res.tell(getError("not-possible"), "reason", empire.isMaxLevel() ? getText("max-level-reached") :
                 getText("missing-items") + "\n"
                         + empire.getNextLevelRequirements().entrySet().stream()
-                    .filter(e -> !empire.getVault().containsKey(e.getKey()) || empire.getVault().get(e.getKey()) < e.getValue())
+                    .filter(e -> empire.getAmount(e.getKey()) < e.getValue())
                     .map(e -> getMessage("entry").getReplacedText(
                             "material", HumanReadable.humanizedName(e.getKey()),
                             "required", String.valueOf(e.getValue()),
-                            "progress", String.valueOf(empire.getVault().getOrDefault(e.getKey(), 0L)),
-                            "amount", String.valueOf(e.getValue() - empire.getVault().getOrDefault(e.getKey(), 0L))
+                            "progress", String.valueOf(empire.getAmount(e.getKey())),
+                            "amount", String.valueOf(e.getValue() - empire.getAmount(e.getKey()))
                     )).collect(Collectors.joining("\n"))
             );
         }

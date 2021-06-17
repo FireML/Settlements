@@ -27,7 +27,7 @@ public class VillageMaterialsCommand extends VillageSubCommand {
 
         getMessage("head").tell(resident);
         for (Map.Entry<String, Long> entry : nextLevelReqs.entrySet()) {
-            long progress = village.getVault().getOrDefault(entry.getKey(), 0L);
+            long progress = village.getAmount(entry.getKey());
             getMessage("requirement." + (progress <= entry.getValue() ? "todo" : "done")).tell(resident,
                     "type", HumanReadable.humanizedName(entry.getKey()),
                     "required", String.valueOf(entry.getValue()),
