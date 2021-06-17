@@ -4,6 +4,8 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.empire.EmpireMission;
 import me.crz.minecraft.kingdoms.resident.Resident;
 import me.crz.minecraft.kingdoms.resident.ResidentManager;
+import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -25,7 +27,14 @@ public class MissionListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        handle(event.getPlayer(), event.getBlock().getType().name(), Mission.Type.BREAK, Mission.Type.HARVEST);
+        Mission.Type[] types;
+        BlockData data = event.getBlock().getBlockData();
+        if (!(data instanceof Ageable) || ((Ageable) data).getAge() == ((Ageable) data).getMaximumAge()) {
+            types = new Mission.Type[] {Mission.Type.HARVEST, Mission.Type.BREAK};
+        } else {
+            types = new Mission.Type[] {Mission.Type.BREAK};
+        }
+        handle(event.getPlayer(), event.getBlock().getType().name(), types);
     }
 
     @EventHandler(ignoreCancelled = true)
