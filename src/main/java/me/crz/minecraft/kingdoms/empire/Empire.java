@@ -690,6 +690,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
                 "tax", Utils.CURRENCY_FORMAT.format(getTax()),
                 "taxdebtaction", getTaxDebtAction().getTag(),
                 "upkeep", Utils.CURRENCY_FORMAT.format(getUpkeep()),
+                "dailymissions", String.valueOf(getLevelInfo() != null ? getLevelInfo().getMissions() : 0),
                 "missions", String.valueOf(finishedMissions),
                 "abandoned", yesOrNo(isAbandoned()),
                 "abandonedcountdown", isAbandoned() ? UtilTime.format(getCreated() + TimeUnit.MINUTES.toMillis(Config.Empire.Upkeep.ABANDON_TIME) - System.currentTimeMillis()) : "",

@@ -1,4 +1,4 @@
-server-rules: "&6https://apeironmc.com/threads/server-rules.50/"
+server-rules: "&6https://apeironmc.com/rules"
 error:
   missing-village-id: "&cInternal error. Village ID is null?"
   missing-empire-id: "&cInternal error. Empire ID is null?"
@@ -78,8 +78,12 @@ close-claims:
     break: ""
     place: ""
   player:
-    break: "&cYou are breaking a block near a claim of {state} {settlement}! Avoid doing this! Run [&f/warningtoggle](/warningtoggle {settlement}) to disable this warning for the next {time} minutes."
-    place: "&cYou are placing a block near a claim of {state} {settlement}! Avoid doing this! Run [&f/warningtoggle](/warningtoggle {settlement}) to disable this warning for the next {time} minutes."
+    break: |-
+      &cYou are breaking a block near a claim of {state} {settlement}! Avoid doing this! 
+      &cRun [&e/warningtoggle](/warningtoggle {settlement})&c to disable this warning for the next {time} minutes.
+    place: |-
+      &cYou are placing a block near a claim of {state} {settlement}! Avoid doing this! 
+      &cRun [&e/warningtoggle](/warningtoggle {settlement})&c to disable this warning for the next {time} minutes.
     block: |-
      &cYou can only place or break blocks near claims!
      &7Only Shulker Boxes can be places/broken.
@@ -119,6 +123,7 @@ scoreboard:
 
         &aKills&3 &e{kills}
         &aDeaths&3 &e{deaths}
+        &7/scoreboard
       village: |-
         &a&l{villagestate}
         &a(&e{villagename}&a)
@@ -127,11 +132,12 @@ scoreboard:
         &aOnline &e{villageresonlinecount}
 
         &aBal &b₲&e{balance}
+        &7/scoreboard
       empire: |-
         &a&lEmpire
         &a(&e{empirename}&a)
         &aBank &b₲&e{empirebalance}
-        &aRank &e{empiretitle}
+        &aRank &e{empirerank}
         
         &a&l{villagestate}
         &a(&e{villagename}&a)
@@ -140,6 +146,7 @@ scoreboard:
         
         &aBal &b₲&e{balance}
         &aRank &e{villagetitle}
+        &7/scoreboard
 empire-world-generated: "&a&lCreated your own empire world!"
 levels:
   upgrade: "&d&lLEVEL UP &r&7Your {state} is now level &d{level}"
@@ -226,22 +233,22 @@ village:
     resident: Resident
 kingdom:
   enter:
-    message: "&f[&eKingdom&f] &7Entering &a{name}{pvp}"
+    message: "&f[&eKingdoms&f] &7Entering &a{name}{pvp}"
     actionbar: ""
     title: ""
     subtitle: ""
   enter-abandoned:
-    message: "&f[&eKingdom&f] &7Entering &cabandoned {name}{pvp}"
+    message: "&f[&eKingdoms&f] &7Entering &cabandoned {name}{pvp}"
     actionbar: ""
     title: ""
     subtitle: ""
   leave:
-    message: "&f[&eKingdom&f] &7Leaving &a{name}"
+    message: "&f[&eKingdoms&f] &7Leaving &a{name}"
     actionbar: ""
     title: ""
     subtitle: ""
   leave-abandoned:
-    message: "&f[&eKingdom&f] &7Leaving &cabandoned a{name}"
+    message: "&f[&eKingdoms&f] &7Leaving &cabandoned a{name}"
     actionbar: ""
     title: ""
     subtitle: ""
@@ -509,7 +516,7 @@ integration:
     not-enough-space: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 is full! ({seller} tried to sell)"
     not-enough-money: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 can't loose money as you need it to pay your upkeep! ({seller} tried to sell)"
   lwc:
-    only-in-claim: "&c&lYou can only lock things in a claim!"
+    only-in-village: "&c&lYou can only lock things in a settlement claim!"
     state:
       use:
         residents: "&e&l(!) &r&e{use}&7 is limited to &eresidents&7 of &e{state} {name}&7."
@@ -589,7 +596,7 @@ protection:
         landowner:
           private: "&e&l(!) &r&7Only &eresidents of {state} {name}&7 can build here."
 lock:
-  only-in-claim: "&c&lYou can only lock things in a claim!"
+  only-in-claim: "&c&lYou can only lock things in a settlement claim!"
   locked: "&cThis {block} is locked by {title} {name}!"
   new-lock: "&e{block}&a is now locked!"
   not-locked: "&a{block}&c is not locked!"
@@ -620,15 +627,6 @@ lock:
       ally: "&e&l(!) &r&7You are not allied to &e{state} {name}&7."
       private: "&e&l(!) &r&7Only the &ePlot owner&7 can build here."
       friends: "&e&l(!) &r&7Only the &ePlot owner's friends&7 can build here."
-portal:
-  not-registered: "&c&lPlease re-create this portal to register it!"
-  only-in-claim: "&c&lYou can only create portals in a claim!"
-  not-allowed:
-    create: "&c&lYou do not have the rights to create portals in this {state}!"
-    destroy: "&c&lYou do not have the rights to destroy portals in this {state}!"
-  created: "&aYou have created a portal! Use [&e/portal link](/portal link) to link it to another one!"
-  destroyed: "&cYou have destroyed a portal!"
-  destroy-broadcast: "&cPortal at {world} {x} {y} {z} was destroyed!"
 gui:
   chat:
     channel-select:
@@ -917,16 +915,17 @@ gui:
       entry: |-
         &a&lEmpire Data
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-        &a&lDescription &r&7{description}
+        &a&lBoard &r&7{description}
         &a&lSymbol &r&7{symbol}
-        &a&lLevel &r&7{level}
+        &6&lLevel &r&7{level}
         &6&lAccess &r&7{access}
         &6&lBank &r&7{bank}
         &6&lUpkeep: &r&7{upkeep}
-        &6&lJoin fee: &r&7{joinfee}
-        &6&lDaily tax: &r&7{tax}
-        &6&lTax debt action: &r&7{taxdebtaction}
-        &6&lFinished missions: &r&7{missions}
+        &6&lJoin Fee: &r&7{joinfee}
+        &6&lDaily Tax: &r&7{tax}
+        &6&lTax Evasion: &r&7{taxdebtaction}
+        &6&lDaily Missions: &r&7{dailymissions}
+        &6&lFinished Missions: &r&7{missions}
         &6&lBonusclaims &r&7{bonusclaims}
         &6&lCapital &r&7{capitalstate}{capital}
         &e&l{chiefempiretitle}: &r&7{chiefvillagetitle} {chiefonline}{chief}
@@ -1055,9 +1054,6 @@ gui:
       title: "&2&l/plot build"
       plot-state: "&7&lPlot build is set to &a&l{state}&7&l but overridden!"
       inherited-state: "&e&lBuilding state &a&l{state}&e&l is inherited!"
-      reset: |-
-        &7Click to unset the plot state and
-        &7inherit {state} from parent {parent}
       build:
         public: |-
           &7Allows everyone to build
@@ -1249,7 +1245,6 @@ gui:
     
       &a▶ /s home
       &a▶ /s sethome
-    
     build: |-
       &a&lBuild
       &fSet who can build on
@@ -1342,10 +1337,10 @@ gui:
       &6&lAccess &r&7{access}
       &6&lBank &r&7{bank}
       &6&lUpkeep: &r&7{upkeep}
-      &6&lJoin fee: &r&7{joinfee}
-      &6&lDaily tax: &r&7{tax}
-      &6&lTax debt action: &r&7{taxdebtaction}
-      &6&lCooperation points: &r&7{missionpoints}
+      &6&lJoin Fee: &r&7{joinfee}
+      &6&lDaily Tax: &r&7{tax}
+      &6&lTax Evasion Action: &r&7{taxdebtaction}
+      &6&lCooperation Points: &r&7{missionpoints}
       &6&lLand &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
       &6&lOutposts &r&7{outposts}&r&e/&r&7{maxoutposts}
       &e&l{chieftitle}: &r&7{chief}
@@ -1436,7 +1431,7 @@ gui:
       &a&l{flag} &7on your claims
       
       &7&lCurrent group: &a&l{state}
-      
+    
       &7Left click: Next state
       &7Right click: Previous state
     page:
@@ -1586,9 +1581,7 @@ command:
       description: "Allows administrating of plots"
     build:
       success: "&aSet build state of this plot to {state}"
-      reset: "&7Reset plot build state! Now inherits &6{state} &7from parent {parent}"
       states:
-        reset: reset to the build state of the {parent} ({state})
         residents: residents and officers to build in claimed land
         officers: only officers are allowed to build in claimed land
         public: allows everyone to build in your claimed land
@@ -1596,7 +1589,6 @@ command:
         trusted: allows your allies and fellow empire members to build
         private: allows you to build in your claimed land
         friends: allows your friends to build in your claimed land
-        members: allows only plot members to build in your claimed land
       description: Sets the build mode of a plot
     buy:
       cant-buy-embassy: "&cYou can't buy this plot as it is an embassy of your {state}!"
@@ -1608,7 +1600,7 @@ command:
         &a⊱&m━━━━&r&6Plot Info&a&m━━━━&a⊰
         &c&l{state}: &7{landowner}
         &9&lName: &r{name}
-        &9&lDescription: &r{description}
+        &9&lBoard: &r{description}
         &9&lMembers: &r{members} &7[(Click to view)](/plot members list)
         &9&lModes: &7Hostile MobSpawning: &6{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explosions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}&r&7 (from {buildsource}) | Embassy: &6{embassy}
       owner: "&a&lPlot Owner: &7{name}"
@@ -1845,28 +1837,24 @@ command:
         &a&lBoard: &r&7{description}
         &a&lState: &r&7Level {level} {state}
         &6&lAccess: &r&7{access}
-        &6&lJoin fee: &r&7{joinfee}
-        &6&lBank: &r&7{bank} | &6&lUpkeep: &r&7{upkeep} | &6&lDaily tax: &r&7{tax}
-        &6&lTax debt action: &r&7{taxdebtaction}
-        &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
-        &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
+        &6&lBank: &r&7{bank} 
+        &6&lUpkeep: &r&7{upkeep} | &6&lDaily tax: &r&7{tax} | &6&lJoin fee: &r&7{joinfee}
+        &6&lTax Evasion: &r&7{taxdebtaction}
+        &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims} | &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
         &b&l{chieftitle}: &r&7{chiefonline}{chief}
         {residents}
       empire: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-        &a&lDescription: &r&7{description}
-        &a&lState: &r&7{state}
+        &a&lBoard: &r&7{description}
+        &a&lState: &r&7Level {level} {state}
         &b&lEmpire: &r&7{empire} (Lv. {empirelevel})
         &6&lAccess: &r&7{access}
-        &6&lLevel: &r&7{level}
-        &6&lBank: &r&7{bank}
-        &6&lJoin fee: &r&7{joinfee}
-        &6&lDaily tax: &r&7{tax}
-        &6&lTax debt action: &r&7{taxdebtaction}
-        &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
-        &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
+        &6&lBank: &r&7{bank} | &6&lCP: &r&7{missionpoints}
+        &6&lUpkeep: &r&7{upkeep} | &6&lDaily tax: &r&7{tax} | &6&lJoin fee: &r&7{joinfee}
+        &6&lTax Evasion: &r&7{taxdebtaction}
+        &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims} | &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
         &b&l{chieftitle}: &r&7{chiefonline}{chief}
@@ -1874,7 +1862,7 @@ command:
       abandoned: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
         &c&lABANDONED!!!&r&c Falls in {abandonedcountdown}
-        &a&lDescription: &r&7{description}
+        &a&lBoard: &r&7{description}
         &a&lState: &r&7{state}
         &6&lAccess: &r&7{access}
         &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
@@ -1901,17 +1889,19 @@ command:
       no-home: "&c&lThat {state} doesn't have a home!"
       no-access: "&c&lYou don't have access to teleport to the home of that {state}!"
       success: "&a&lTeleported to home of {state} {name}"
-      success-title:
-        title: "&2&lSuccess"
-        subtitle: "&fYou have been teleported!"
-      fail-title:
-        title: "&c&lFailed"
-        subtitle: "&fUnable to teleport!"
+      success-title: |-
+        &2&lSuccess
+        &fYou have been teleported!
+      fail-title: |-
+        &c&lFailed
+        &fUnable to teleport!
       description: Teleport to a settlement's home
     invite:
       already-in-village: "&c&l{name} is already in a {state}"
       joinfee: "&7Fee to join is &e{amount}!"
-      received: "&e&l(!) &r&7Invite received from {state} {name}! Click or type [&e/s join {name}](suggest_command=/s join {name}) &7to join."
+      received: |-
+        &e&l(!) &r&7Invite received from {state} {name}! 
+        &7Click or type [&e/s join {name}](suggest_command=/s join {name}) &7to join.
       alert: "&e&l(!) &r&e{player}&7 has been invited to the settlement."
       description: Invite someone to join your village
     join:
@@ -2154,37 +2144,32 @@ command:
         &a&lBoard: &r&7{description}
         &a&lState: &r&7Level {level} {state}
         &6&lAccess: &r&7{access}
-        &6&lJoin fee: &r&7{joinfee}
-        &6&lBank: &r&7₲{bank} | &6&lUpkeep: &r&7₲{upkeep} | &6&lDaily tax: &r&7₲{tax}
-        &6&lTax debt action: &r&7{taxdebtaction}
-        &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
-        &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
+        &6&lBank: &r&7{bank} 
+        &6&lUpkeep: &r&7{upkeep} | &6&lDaily tax: &r&7{tax} | &6&lJoin fee: &r&7{joinfee}
+        &6&lTax Evasion: &r&7{taxdebtaction}
+        &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims} | &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &9&lPerks: &r&7{perks}
         &b&l{chieftitle}: &r&7{chiefonline}{chief}
         {residents}
       empire: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-        &a&lDescription: &r&7{description}
-        &a&lState: &r&7{state}
+        &a&lBoard: &r&7{description}
+        &a&lState: &r&7Level {level} {state}
         &b&lEmpire: &r&7{empire} (Lv. {empirelevel})
         &6&lAccess: &r&7{access}
-        &6&lLevel: &r&7{level}
-        &6&lBank: &r&7{bank}
-        &6&lUpkeep: &r&7{upkeep}
-        &6&lJoin fee: &r&7{joinfee}
-        &6&lDaily tax: &r&7{tax}
-        &6&lTax debt action: &r&7{taxdebtaction}
-        &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
-        &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
+        &6&lBank: &r&7{bank} | &6&lCP: &r&7{missionpoints}
+        &6&lUpkeep: &r&7{upkeep} | &6&lDaily tax: &r&7{tax} | &6&lJoin fee: &r&7{joinfee}
+        &6&lTax Evasion: &r&7{taxdebtaction}
+        &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims} | &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
         &b&l{chieftitle}: &r&7{chiefonline}{chief}
-        &b&lMembers:
         {residents}
       abandoned: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
         &c&lABANDONED!!!&r&c Falls in {abandonedcountdown}
-        &a&lDescription: &r&7{description}
+        &a&lBoard: &r&7{description}
         &a&lState: &r&7{state}
         &6&lAccess: &r&7{access}
         &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
@@ -2208,8 +2193,8 @@ command:
         below-zero: "&c&l(!) &cTax amount cannot be negative!"
         description: Sets the tax a player needs to pay each day he is in the settlement
       action:
-        success: "&e&l(!) &r&7Tax debt action was set to &e{action}&7!"
-        already-set: "&cThe action is already set to &e{action}&c!"
+        success: "&e&l(!) &r&7Tax evasion action was set to &e{action}&7!"
+        already-set: "&cThe evasion is already set to &e{action}&c!"
         description: Sets the action for when a player can't pay the tax
       exempt:
         description: Exempts a resident from having to pay the tax
@@ -2461,18 +2446,15 @@ command:
     here:
       general: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-        &a&lDescription &r&7{description}
-        &a&lSymbol &r&7{symbol}
-        &a&lLevel &r&7{level}
+        &a&lBoard &r&7{description}
+        &a&lState: &r&7{level} | &a&lSymbol &r&7{symbol}
         &6&lAccess &r&7{access}
         &6&lBank &r&7{bank}
-        &6&lUpkeep: &r&7{upkeep}
-        &6&lJoin fee: &r&7{joinfee}
-        &6&lDaily tax: &r&7{tax}
-        &6&lTax debt action: &r&7{taxdebtaction}
-        &6&lFinished missions: &r&7{missions}
-        &6&lBonusoutposts &r&7{bonusoutposts}
-        &6&lBonusclaims &r&7{bonus}
+        &6&lUpkeep: &r&7{upkeep} | &6&lDaily tax: &r&7{tax} | &6&lJoin fee: &r&7{joinfee}
+        &6&lTax Evasion: &r&7{taxdebtaction}
+        &6&lDaily Missions: &r&7{dailymissions}
+        &6&lFinished Missions: &r&7{missions}
+        &6&lBonus Claims: &r&7{bonus} | &6&lBonus Outposts: &r&7{bonusoutposts}
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
         &6&lCapital &r&7{capitalstate} {capital}
@@ -2482,8 +2464,8 @@ command:
       abandoned: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
         &c&lABANDONED!!!&r&c Falls in {abandonedcountdown}
-        &a&lDescription: &r&7{description}
-        &a&lSymbol: &r&7{symbol}
+        &a&lBoard: &r&7{description}
+        &a&lState: &r&7{level} | &a&lSymbol &r&7{symbol}
         &6&lAccess: &r&7{access}
       not-in-empire: "&cYou are not currently in an empire world!"
       description: Show in which empire world you are
@@ -2700,16 +2682,16 @@ command:
     show:
       general: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-        &a&lDescription &r&7{description}
-        &a&lSymbol &r&7{symbol}
-        &a&lLevel &r&7{level}
+        &a&lBoard &r&7{description}
+        &a&lState: &r&7{level} | &a&lSymbol &r&7{symbol}
         &6&lAccess &r&7{access}
         &6&lBank &r&7{bank}
-        &6&lUpkeep: &r&7{upkeep} |  &6&lJoin fee: &r&7{joinfee} | &6&lDaily tax: &r&7{tax}
-        &6&lTax debt action: &r&7{taxdebtaction}
-        &6&lBonusoutposts &r&7{bonusoutposts}
-        &6&lBonusclaims &r&7{bonus}
-        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 |  Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &6&lUpkeep: &r&7{upkeep} | &6&lDaily tax: &r&7{tax} | &6&lJoin fee: &r&7{joinfee}
+        &6&lTax Evasion: &r&7{taxdebtaction}
+        &6&lDaily Missions: &r&7{dailymissions}
+        &6&lFinished Missions: &r&7{missions}
+        &6&lBonus Claims: &r&7{bonus} | &6&lBonus Outposts: &r&7{bonusoutposts}
+        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
         &6&lCapital &r&7{capitalstate} {capital}
         &e&l{chiefempiretitle}: &r&7{chiefvillagetitle} {chiefonline}{chief}
@@ -2724,8 +2706,8 @@ command:
       abandoned: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
         &c&lABANDONED!!!&r&c Falls in {abandonedcountdown}
-        &a&lDescription: &r&7{description}
-        &a&lSymbol: &r&7{symbol}
+        &a&lBoard: &r&7{description}
+        &a&lState: &r&7{level} | &a&lSymbol &r&7{symbol}
         &6&lAccess: &r&7{access}
       bonus-claims: " Bonus: {amount}"
       description: Shows information on an empire
