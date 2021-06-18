@@ -239,7 +239,7 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
                 } else {
                     removeEffects(player, perk);
                 }
-                Utils.runAsync(() -> DatabaseManager.getInstance().save(this));
+                DatabaseManager.getInstance().save(this);
                 return true;
             }
         }
@@ -639,7 +639,7 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
             }
         }
         if (rankTitles.put(rank.name().toLowerCase(), title)) {
-            Utils.runAsync(() -> DatabaseManager.getInstance().save(this));
+            DatabaseManager.getInstance().save(this);
             return true;
         }
         return false;
@@ -651,7 +651,7 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         if (t == null) {
             addTitle(rank, title);
         } else {
-            Utils.runAsync(() -> DatabaseManager.getInstance().save(this));
+            DatabaseManager.getInstance().save(this);
         }
     }
 
@@ -672,7 +672,7 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
             if (getDefaultTitle(rank).equals(title)) {
                 defaultRankTitles.remove(rank.name().toLowerCase());
             }
-            Utils.runAsync(() -> DatabaseManager.getInstance().save(this));
+            DatabaseManager.getInstance().save(this);
             return true;
         }
         return false;

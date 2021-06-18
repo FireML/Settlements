@@ -75,7 +75,7 @@ public class PermsGUI extends KingdomsGUI {
                             if (r.hasPermission("village.perms.reset")) {
                                 village.getRanksPermissions().clear();
                                 open();
-                                Utils.runAsync(() -> DatabaseManager.getInstance().save(village));
+                                DatabaseManager.getInstance().save(village);
                             }
                         }, this::open,
                                 "state", village.getStateTag(),

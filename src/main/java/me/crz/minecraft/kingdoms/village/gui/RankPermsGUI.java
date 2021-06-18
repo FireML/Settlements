@@ -141,7 +141,7 @@ public class RankPermsGUI extends KingdomsGUI {
                                 }
                                 if (!currentValue.orElse(false) || currentFromRank == rank) {
                                     if (res.getVillage().setPermission(rank, perm, !currentValue.orElse(false))) {
-                                        Utils.runAsync(() -> DatabaseManager.getInstance().save(res.getVillage()));
+                                        DatabaseManager.getInstance().save(res.getVillage());
                                         gui.draw();
                                     }
                                 }
@@ -149,7 +149,7 @@ public class RankPermsGUI extends KingdomsGUI {
                         } else {
                             if (res.hasPermission("village.perms.unset")) {
                                 if (res.getVillage().setDefaultPermission(rank, perm)) {
-                                    Utils.runAsync(() -> DatabaseManager.getInstance().save(res.getVillage()));
+                                    DatabaseManager.getInstance().save(res.getVillage());
                                     gui.draw();
                                 }
                             }

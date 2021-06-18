@@ -61,7 +61,7 @@ public class RankPermGroupsGUI extends KingdomsGUI {
                             if (r.hasPermission("village.perms.reset")) {
                                 village.getRanksPermissions().remove(rank.name().toLowerCase());
                                 open();
-                                Utils.runAsync(() -> DatabaseManager.getInstance().save(village));
+                                DatabaseManager.getInstance().save(village);
                             }
                         }, this::open,
                                 "state", village.getStateTag(),

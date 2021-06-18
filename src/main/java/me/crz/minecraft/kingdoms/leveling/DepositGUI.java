@@ -119,10 +119,8 @@ public class DepositGUI extends KingdomsGUI {
                     }
                 }
                 landOwner.add(deposited);
-                Utils.runAsync(() -> {
-                    DatabaseManager.getInstance().save(landOwner);
-                    DatabaseManager.getInstance().logDeposit(landOwner, resident, deposited);
-                });
+                DatabaseManager.getInstance().save(landOwner);
+                Utils.runAsync(() -> DatabaseManager.getInstance().logDeposit(landOwner, resident, deposited));
             }
             if (!fail.isEmpty()) {
                 for (BaseComponent[] components : buildFailDepositMessage(resident, fail, TextComponent.fromLegacyText(""))) {

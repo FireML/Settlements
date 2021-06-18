@@ -476,7 +476,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             try {
                 landOwner.addToBank(event.getAmount().setScale(0, RoundingMode.DOWN).longValueExact());
                 event.setHandled(true);
-                Utils.runAsync(() -> DatabaseManager.getInstance().save(landOwner));
+                DatabaseManager.getInstance().save(landOwner);
             } catch (ArithmeticException e) {
                 KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not add money to " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
             }
@@ -494,7 +494,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             try {
                 landOwner.removeFromBank(event.getAmount().setScale(0, RoundingMode.UP).longValueExact());
                 event.setHandled(true);
-                Utils.runAsync(() -> DatabaseManager.getInstance().save(landOwner));
+                DatabaseManager.getInstance().save(landOwner);
             } catch (ArithmeticException e) {
                 KingdomsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not remove money from " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
             }
