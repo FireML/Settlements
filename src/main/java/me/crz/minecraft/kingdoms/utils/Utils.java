@@ -593,4 +593,8 @@ public class Utils {
         }
         return false;
     }
+
+    public static <R> void addAmount(Map<R, Long> m, R r, Long amount) {
+        m.put(r, m.getOrDefault(r, (long) 0) + amount);
+    }
 }

@@ -12,6 +12,7 @@ import me.crz.minecraft.kingdoms.resident.Resident;
 import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 import java.util.stream.Collectors;
 
@@ -52,29 +53,7 @@ public class MissionGui extends KingdomsGUI {
                 ));
                 if (missionData.getMission().getType() == Mission.Type.TURN_IN && !missionData.isFinished()) {
                     element.setAction(click -> {
-                        MissionData currentData = resident.getVillage().getMissionData(missionData.getMission().getId());
-                        if (!currentData.isFinished() && click.getEvent().getCursor() != null
-                                && currentData.requires(click.getEvent().getCursor().getType().name())) {
-                            if (click.getType().isShiftClick()) {
-                                String type = click.getEvent().getCursor().getType().name();
-                                long left = currentData.getMission().getRequirement(type) - currentData.getProgress(type);
-                                if (left < click.getEvent().getCursor().getAmount()) {
-                                    currentData.addProgress(type, left);
-                                    click.getEvent().getCursor().setAmount((int) (click.getEvent().getCursor().getAmount() - left));
-                                } else {
-                                    currentData.addProgress(type, click.getEvent().getCursor().getAmount());
-                                    click.getEvent().setCursor(null);
-                                }
-                            } else {
-                                click.getEvent().getCursor().setAmount(click.getEvent().getCursor().getAmount() - 1);
-                                currentData.addProgress(click.getEvent().getCursor().getType().name(), 1);
-                            }
-                            if (currentData.isFinished()) {
-                                missionData.getMission().finish(resident);
-                            }
-                            DatabaseManager.getInstance().saveVillage(resident.getVillage());
-                            click.getGui().draw();
-                        }
+                        new TurnInGUI(resident, missionData).open();
                         return true;
                     });
                 }

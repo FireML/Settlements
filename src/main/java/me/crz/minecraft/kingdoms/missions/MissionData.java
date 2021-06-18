@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.missions;
 
+import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +36,13 @@ public class MissionData implements ConfigurationSerializable {
     }
 
     public void addProgress(String type, long amount) {
-        progress.put(type.toUpperCase(Locale.ROOT), getProgress(type) + amount);
+        Utils.addAmount(progress, type.toUpperCase(Locale.ROOT), amount);
+    }
+
+    public void addProgress(Map<String, Long> map) {
+        for (Map.Entry<String, Long> entry : map.entrySet()) {
+            addProgress(entry.getKey(), entry.getValue());
+        }
     }
 
     public boolean isFinished() {

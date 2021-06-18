@@ -714,9 +714,7 @@ gui:
       
       {action}
     types:
-      turn-in: |-
-        &eClick to deposit one from cursor
-        &eShift click to deposit all
+      turn-in: "&eClick to deposit items"
       break: "&eBreak blocks"
       place: "&ePlace blocks"
       kill: "&eKill monster"
@@ -726,6 +724,12 @@ gui:
     requirement:
       todo: "&r&f(&e{progress}&f/&e{required}&f) {type}"
       done: "&r&f(&a{progress}&f/&a{required}&f) {type}"
+  turnin:
+    title: "&2{mission}"
+    success-turn-in: "&7&lTurned in:"
+    fail-turn-in: "&c&lFailed turning in Items: {reason}"
+    mission-finished: "&r&c&lMission {mission} is already finished!"
+    list-entry: "&6{amount} {icon}&e{material}"
   mode:
     title: "&2&l/s mode"
     entry:

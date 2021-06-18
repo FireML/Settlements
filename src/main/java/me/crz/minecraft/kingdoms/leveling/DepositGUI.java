@@ -89,26 +89,26 @@ public class DepositGUI extends KingdomsGUI {
                         long required = nextLevelReqs.get(material);
                         if (required <= total.get(material)) {
                             addToInventory(player, item);
-                            add(fail, item.getType(), (long) item.getAmount());
+                            Utils.addAmount(fail, item.getType(), (long) item.getAmount());
                         } else {
                             long totalAdd = item.getAmount() + total.get(material);
                             if (required - totalAdd >= 0) {
-                                add(total, material, (long) item.getAmount());
-                                add(deposited, material, (long) item.getAmount());
+                                Utils.addAmount(total, material, (long) item.getAmount());
+                                Utils.addAmount(deposited, material, (long) item.getAmount());
                             } else {
                                 long rv = required - total.get(material);
                                 long drv = item.getAmount() - rv;
-                                add(total, material, item.getAmount() - drv);
-                                add(deposited, material, item.getAmount() - drv);
+                                Utils.addAmount(total, material, item.getAmount() - drv);
+                                Utils.addAmount(deposited, material, item.getAmount() - drv);
                                 ItemStack temp = item.clone();
                                 temp.setAmount(Math.toIntExact(drv));
                                 addToInventory(player, temp);
-                                add(fail, temp.getType(), (long) temp.getAmount());
+                                Utils.addAmount(fail, temp.getType(), (long) temp.getAmount());
                             }
                         }
                     } else {
                         addToInventory(player, item);
-                        add(fail, item.getType(), (long) item.getAmount());
+                        Utils.addAmount(fail, item.getType(), (long) item.getAmount());
                     }
                 }
             }
@@ -130,7 +130,7 @@ public class DepositGUI extends KingdomsGUI {
         } else if (contents.length > 0) {
             for (ItemStack item2 : contents) {
                 if (item2 != null) {
-                    add(fail, item2.getType(), (long) item2.getAmount());
+                    Utils.addAmount(fail, item2.getType(), (long) item2.getAmount());
                     addToInventory(player, item2);
                 }
             }
@@ -146,10 +146,6 @@ public class DepositGUI extends KingdomsGUI {
             Item item = player.getWorld().dropItem(player.getLocation(), rest);
             KingdomsPlugin.getInstance().getServerAdapter().markOwned(item, player);
         }
-    }
-
-    public <R> void add(Map<R, Long> m, R mat, Long add) {
-        m.put(mat, m.getOrDefault(mat, (long) 0) + add);
     }
 
     private List<BaseComponent[]> buildFailDepositMessage(Resident resident, Map<Material, Long> fail, BaseComponent[] reason) {
