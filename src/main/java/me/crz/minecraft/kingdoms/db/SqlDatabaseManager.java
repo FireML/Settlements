@@ -1154,22 +1154,32 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             }
             deleteSql += ";";
         } else if (!mapValue.isEmpty() && values.values().iterator().next() instanceof Map) {
-            List<String> entries = new ArrayList<>();
+            List<Object> keyObjects = new ArrayList<>();
+            List<Object> valueObjects = new ArrayList<>();
             for (Map.Entry<String, ?> entry : values.entrySet()) {
                 if (entry.getValue() instanceof Map) {
                     for (Object value : ((Map<Object, Object>) entry.getValue()).keySet()) {
-                        entries.add("(?,?)");
-                        deleteObjects.put(++i, entry.getKey());
-                        deleteObjects.put(++i, value);
+                        keyObjects.add(entry.getKey());
+                        valueObjects.add(value);
                     }
                 }
+            }
+
+            for (Object o : keyObjects) {
+                deleteObjects.put(++i, o);
+            }
+            for (Object o : valueObjects) {
+                deleteObjects.put(++i, o);
             }
 
             deleteSql = "DELETE FROM " + tablePrefix + tableName +
                     " WHERE " + keyColumn + " = ?";
 
-            if (!entries.isEmpty()) {
-                deleteSql += " AND (" + mapKey + "," + mapValue + ") NOT IN (" + String.join(",", entries) + ")";
+            if (!keyObjects.isEmpty()) {
+                deleteSql += " AND " + mapKey + " NOT IN (" + String.join(",", Collections.nCopies(keyObjects.size(), "?")) + ")";
+            }
+            if (!valueObjects.isEmpty()) {
+                deleteSql += " AND " + mapValue + " NOT IN (" + String.join(",", Collections.nCopies(valueObjects.size(), "?")) + ")";
             }
             deleteSql += ";";
 
