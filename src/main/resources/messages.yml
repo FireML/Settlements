@@ -1986,6 +1986,9 @@ command:
         done: "&r&f(&a{progress}&f/&a{required}&f) - {type}"
       footer: "&7Deposit items with [&e/s deposit](/s deposit)"
       description: Shows you the materials required to upgrade
+    missions:
+      wait-for-missions: "&c&lYour {state} does not have any missions yet. Wait for the next distribution!"
+      description: View missions available to your settlement
     mode:
       modes: "&cAvailable modes: {modes}"
       success: "&7Settlement mode &6{mode}&7: &6{value}"

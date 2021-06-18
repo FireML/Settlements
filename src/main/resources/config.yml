@@ -119,6 +119,12 @@ empire:
   leveling:
     # The amount of levels an Empire can reach
     max-level: 5
+  
+  missions:
+    # Whether or not empire missions should be given to empire member settlements
+    enabled: true
+    # Should newly joined settlements be granted missions instantly or do they need to wait until the upkeep?
+    distribute-on-join: false
 
   world:
     # Whether each empire should get their own world automatically generated

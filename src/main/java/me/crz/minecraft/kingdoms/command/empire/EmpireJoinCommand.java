@@ -11,6 +11,7 @@ import me.crz.minecraft.kingdoms.land.LandAccess;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.resident.Resident;
+import me.crz.minecraft.kingdoms.utils.config.Config;
 
 public class EmpireJoinCommand extends VillageSubCommand {
     public EmpireJoinCommand(SubCommand parent) {
@@ -54,7 +55,9 @@ public class EmpireJoinCommand extends VillageSubCommand {
                 });
             }
             resident.getVillage().setEmpire(joinEmpire);
-            joinEmpire.distributeNewMissions(resident.getVillage());
+            if (Config.Empire.Missions.DISTRIBUTE_ON_JOIN) {
+                joinEmpire.distributeNewMissions(resident.getVillage());
+            }
             for (Resident member : resident.getVillage().getOnlineResidents()) {
                 member.addChannel(ChatChannel.EMPIRE);
             }

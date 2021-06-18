@@ -216,6 +216,9 @@ public class Config {
         public static class Missions {
             @ConfigComment("Whether or not empire missions should be given to empire member settlements")
             public static boolean ENABLED = true;
+
+            @ConfigComment("Should newly joined settlements be granted missions instantly or do they need to wait until the upkeep?")
+            public static boolean DISTRIBUTE_ON_JOIN = false;
         }
 
         public static class World {
