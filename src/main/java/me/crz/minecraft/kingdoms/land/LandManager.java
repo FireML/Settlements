@@ -27,6 +27,7 @@ import me.crz.minecraft.kingdoms.empire.Empire;
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.portal.Portal;
 import me.crz.minecraft.kingdoms.portal.PortalManager;
+import me.crz.minecraft.kingdoms.utils.WorldUtils;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -73,7 +74,7 @@ public class LandManager {
             if (nearbyRadius > 0) {
                 nearbyTable.removeAll(land.getKey());
                 SimpleChunkLocation landLocation = land.getLocation().copy();
-                for (SimpleChunkLocation chunkLocation : Utils.getChunksAround(land, nearbyRadius)) {
+                for (SimpleChunkLocation chunkLocation : WorldUtils.getChunksAround(land, nearbyRadius)) {
                     if (!landTable.contains(chunkLocation.getWorld(), chunkLocation.getSimpleKey())) {
                         nearbyTable.put(chunkLocation.getKey(), landLocation);
                     }
@@ -219,7 +220,7 @@ public class LandManager {
         }
         if (nearbyRadius > 0) {
             for (OwnedLand land : lands) {
-                for (SimpleChunkLocation chunkLocation : Utils.getChunksAround(land, nearbyRadius)) {
+                for (SimpleChunkLocation chunkLocation : WorldUtils.getChunksAround(land, nearbyRadius)) {
                     OwnedLand l = getLand(chunkLocation);
                     if (l != null) {
                         nearbyTable.put(land.getKey(), l.getLocation().copy());
@@ -504,7 +505,7 @@ public class LandManager {
         List<OwnedLand> toUnclaim = new ArrayList<>();
         for (OwnedLand land : getClaimedLand(oldAlly)) {
             if (Config.Settlement.Claiming.ENEMY_DISTANCE > 0 && (Config.Settlement.Claiming.Close.Unclaim.OUTPOSTS || !land.isOutpost())) {
-                for (SimpleChunkLocation c : Utils.getChunksAround(land, Config.Settlement.Claiming.ENEMY_DISTANCE)) {
+                for (SimpleChunkLocation c : WorldUtils.getChunksAround(land, Config.Settlement.Claiming.ENEMY_DISTANCE)) {
                     OwnedLand around = getLand(c);
                     if (around != null && around.isOwnedBy(source)) {
                         if (graceDays > 0) {

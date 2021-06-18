@@ -2,8 +2,8 @@ package me.crz.minecraft.kingdoms.portal;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseSerializable;
+import me.crz.minecraft.kingdoms.utils.WorldUtils;
 import me.crz.minecraft.kingdoms.utils.IdObject;
-import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.world.SimpleBlockLocation;
 import org.bukkit.block.BlockFace;
 import org.jetbrains.annotations.NotNull;
@@ -84,7 +84,7 @@ public class Portal implements DatabaseSerializable {
             KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize Portal! (" + map + ")");
             return null;
         }
-        Portal portal = new Portal(SimpleBlockLocation.deserialize(map), Utils.getBlockFace((String) map.get("direction")));
+        Portal portal = new Portal(SimpleBlockLocation.deserialize(map), WorldUtils.getBlockFace((String) map.get("direction")));
         portal.setId(IdObject.get(map));
         for (Integer id : ((Collection<Integer>) map.get("links"))) {
             portal.getLinks().add(IdObject.get(id));

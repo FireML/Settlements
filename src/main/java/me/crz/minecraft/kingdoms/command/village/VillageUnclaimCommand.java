@@ -8,6 +8,7 @@ import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.portal.Portal;
 import me.crz.minecraft.kingdoms.portal.PortalManager;
+import me.crz.minecraft.kingdoms.utils.WorldUtils;
 import me.crz.minecraft.kingdoms.utils.ConfigMessages;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Config;
@@ -66,7 +67,7 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                         return true;
                     }
                     toUnclaim.add(new SimpleChunkLocation(player.getLocation()));
-                    toUnclaim.addAll(Utils.getChunksAround(player, radius));
+                    toUnclaim.addAll(WorldUtils.getChunksAround(player, radius));
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(res, "input", args[0]);
                     return false;

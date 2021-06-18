@@ -5,6 +5,7 @@ import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.ChatMap;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.utils.WorldUtils;
 import me.crz.minecraft.kingdoms.utils.MessageUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Config;
@@ -52,7 +53,7 @@ public class VillageClaimCommand extends VillageSubCommand {
                         return true;
                     }
                     toClaim.add(new SimpleChunkLocation(player.getLocation()));
-                    toClaim.addAll(Utils.getChunksAround(player, radius));
+                    toClaim.addAll(WorldUtils.getChunksAround(player, radius));
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(res, "input", args[0]);
                     return false;
@@ -79,7 +80,7 @@ public class VillageClaimCommand extends VillageSubCommand {
         if (amountClaimed > 0) {
             boolean landAround = false;
             for (SimpleChunkLocation c : toClaim) {
-                for (SimpleChunkLocation chunk : Utils.getChunksAdjacent(c)) {
+                for (SimpleChunkLocation chunk : WorldUtils.getChunksAdjacent(c)) {
                     OwnedLand checkLand = LandManager.getInstance().getLand(chunk);
                     if (checkLand != null && checkLand.isOwnedBy(village)) {
                         landAround = true;
@@ -116,7 +117,7 @@ public class VillageClaimCommand extends VillageSubCommand {
                 }
                 return true;
             }
-            for (SimpleChunkLocation chunk : Utils.getChunksAround(c, Config.Settlement.Claiming.ENEMY_DISTANCE)) {
+            for (SimpleChunkLocation chunk : WorldUtils.getChunksAround(c, Config.Settlement.Claiming.ENEMY_DISTANCE)) {
                 OwnedLand checkLand = LandManager.getInstance().getLand(chunk);
                 if (checkLand == null) {
                     continue;

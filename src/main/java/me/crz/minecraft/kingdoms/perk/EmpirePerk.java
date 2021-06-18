@@ -1,8 +1,8 @@
 package me.crz.minecraft.kingdoms.perk;
 
 import me.crz.minecraft.kingdoms.empire.Empire;
+import me.crz.minecraft.kingdoms.utils.WorldUtils;
 import me.crz.minecraft.kingdoms.utils.UtilTime;
-import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.WeatherState;
 import me.crz.minecraft.kingdoms.resident.ResidentManager;
 import org.bukkit.Bukkit;
@@ -58,7 +58,7 @@ public class EmpirePerk extends Perk {
             if (e instanceof Empire) {
                 World world = Bukkit.getWorld(((Empire) e).getWorldName());
                 if (world != null) {
-                    WeatherState weather = Utils.getWeatherState(world);
+                    WeatherState weather = WorldUtils.getWeatherState(world);
                     switch (weather.next()) {
                         case CLEAR:
                             world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
@@ -87,7 +87,7 @@ public class EmpirePerk extends Perk {
             if (e instanceof Empire) {
                 World world = Bukkit.getWorld(((Empire) e).getWorldName());
                 if (world != null) {
-                    return Utils.getWeatherState(world).getKey();
+                    return WorldUtils.getWeatherState(world).getKey();
                 }
             }
             return null;

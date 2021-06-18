@@ -228,6 +228,9 @@ public class Config {
 
             @ConfigComment("Should finished missions be reset? If those are not reset then the settlement needs to wait for the empire to upgrade to get more!")
             public static boolean REMOVE_FINISHED_MISSIONS = true;
+
+            @ConfigComment("Time in minutes for which block placements should be cached so that break mission abuse isn't possible using (recent) player placed blocks.")
+            public static long PLACE_CACHE_TIME = 60;
         }
 
         public static class World {

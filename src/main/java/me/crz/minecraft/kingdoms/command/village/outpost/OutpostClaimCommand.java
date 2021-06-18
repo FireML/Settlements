@@ -3,6 +3,7 @@ package me.crz.minecraft.kingdoms.command.village.outpost;
 import me.crz.minecraft.kingdoms.command.village.VillageSubCommand;
 import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
+import me.crz.minecraft.kingdoms.utils.WorldUtils;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import me.crz.minecraft.kingdoms.utils.config.Config;
 import me.crz.minecraft.kingdoms.resident.Resident;
@@ -56,7 +57,7 @@ public class OutpostClaimCommand extends VillageSubCommand {
                 resident.tell(getError("cant-claim-here"), "owner", land.getLandOwner().getName());
             }
         } else {
-            for (SimpleChunkLocation chunk : Utils.getChunksAround(resident.getPlayer(), Config.Settlement.Claiming.ENEMY_DISTANCE)) {
+            for (SimpleChunkLocation chunk : WorldUtils.getChunksAround(resident.getPlayer(), Config.Settlement.Claiming.ENEMY_DISTANCE)) {
                 OwnedLand checkLand = LandManager.getInstance().getLand(chunk);
                 if (checkLand == null) {
                     continue;

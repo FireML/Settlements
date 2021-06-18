@@ -9,6 +9,7 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.command.CommandManager;
 import me.crz.minecraft.kingdoms.command.portal.PortalCommand;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
+import me.crz.minecraft.kingdoms.utils.WorldUtils;
 import me.crz.minecraft.kingdoms.utils.IdObject;
 import me.crz.minecraft.kingdoms.utils.Message;
 import me.crz.minecraft.kingdoms.utils.Utils;
@@ -171,14 +172,14 @@ public class PortalManager {
                             if (entity.getFacing().getModX() == 0) {
                                 direction = playerDirection.getOppositeFace();
                             } else {
-                                direction = Utils.rotateClockWise(playerDirection);
+                                direction = WorldUtils.rotateClockWise(playerDirection);
                             }
                             break;
                         case Z:
                             if (entity.getFacing().getModZ() == 0) {
                                 direction = playerDirection.getOppositeFace();
                             } else {
-                                direction = Utils.rotateClockWise(playerDirection);
+                                direction = WorldUtils.rotateClockWise(playerDirection);
                             }
                             break;
                     }
