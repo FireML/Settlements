@@ -213,9 +213,17 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         EmpireLevel levelInfo = getLevelInfo();
         if (levelInfo != null && levelInfo.getMissions() > 0) {
             List<EmpireMission> missions = new ArrayList<>(EmpireManager.getInstance().getMissions());
-            member.getMissionData().clear();
+            member.getMissionData().removeIf(md -> {
+                if (md.isFinished()) {
+                    return Config.Empire.Missions.REMOVE_FINISHED_MISSIONS;
+                }
+                if (md.hasProgress()) {
+                    return Config.Empire.Missions.REMOVE_STARTED_MISSIONS;
+                }
+                return Config.Empire.Missions.RREMOVE_NOT_STARTED_MISSIONS;
+            });
             Collections.shuffle(missions);
-            for (int i = 0; i < levelInfo.getMissions() && i < missions.size(); i++) {
+            for (int i = 0; member.getMissionData().size() < levelInfo.getMissions() && i < missions.size(); i++) {
                 member.addMissionData(new MissionData(missions.get(i)));
             }
             return !member.getMissionData().isEmpty();

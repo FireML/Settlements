@@ -219,6 +219,15 @@ public class Config {
 
             @ConfigComment("Should newly joined settlements be granted missions instantly or do they need to wait until the upkeep?")
             public static boolean DISTRIBUTE_ON_JOIN = false;
+
+            @ConfigComment("Should missions that are not started yet be removed and replaced by new missions on reset?")
+            public static boolean RREMOVE_NOT_STARTED_MISSIONS = true;
+
+            @ConfigComment("Should already started missions be removed and replaced by new missions on reset?")
+            public static boolean REMOVE_STARTED_MISSIONS = false;
+
+            @ConfigComment("Should finished missions be reset? If those are not reset then the settlement needs to wait for the empire to upgrade to get more!")
+            public static boolean REMOVE_FINISHED_MISSIONS = true;
         }
 
         public static class World {

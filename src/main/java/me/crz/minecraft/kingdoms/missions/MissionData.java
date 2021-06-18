@@ -47,6 +47,15 @@ public class MissionData implements ConfigurationSerializable {
         return true;
     }
 
+    public boolean hasProgress() {
+        for (Long value : getProgress().values()) {
+            if (value > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @NotNull
     @Override
     public Map<String, Object> serialize() {
