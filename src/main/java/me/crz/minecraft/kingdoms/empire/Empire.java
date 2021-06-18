@@ -329,7 +329,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         empire.lastRename = Utils.getLong(map.get("lastRename"));
         empire.setSymbol((String) map.get("symbol"));
         empire.setLevel((Integer) map.get("level"));
-        empire.setFinishedMissions((Long) map.get("finishedMissions"));
+        empire.setFinishedMissions(Utils.getLong(map.get("finishedMissions")));
         if (map.get("members") != null && map.get("members") instanceof Collection) {
             for (Object memberId : (Collection) map.get("members")) {
                 empire.members.add(IdObject.get(memberId));

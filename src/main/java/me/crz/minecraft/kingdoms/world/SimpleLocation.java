@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.world;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -197,8 +198,8 @@ public class SimpleLocation implements ConfigurationSerializable {
                 (double) map.get("x"),
                 (double) map.get("y"),
                 (double) map.get("z"),
-                (float) map.get("yaw"),
-                (float) map.get("pitch")
+                Utils.getFloat(map.get("yaw")),
+                Utils.getFloat(map.get("pitch"))
         );
     }
 

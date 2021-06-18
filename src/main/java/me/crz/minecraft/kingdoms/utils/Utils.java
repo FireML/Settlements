@@ -549,6 +549,15 @@ public class Utils {
         return Long.parseLong(String.valueOf(o));
     }
 
+    public static float getFloat(Object o) {
+        if (o instanceof Float) {
+            return (Float) o;
+        } else if (o instanceof Number) {
+            return ((Number) o).floatValue();
+        }
+        return Float.parseFloat(String.valueOf(o));
+    }
+
     public static boolean getBoolean(Object o) {
         if (o instanceof Boolean) {
             return (boolean) o;

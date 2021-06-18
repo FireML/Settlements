@@ -633,7 +633,7 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
         village.setChief(UUID.fromString((String) map.get("chief")));
         village.setState(VillageState.valueOf((String) map.get("settlementState")));
         village.setLevel((Integer) map.get("level"));
-        village.setMissionPoints((Long) map.get("missionPoints"));
+        village.setMissionPoints(Utils.getLong(map.get("missionPoints")));
         village.setAllowAllyClaim(Utils.getBoolean(map.get("allowAllyClaim")));
         village.setEmpire(EmpireManager.getInstance().getEmpireFromId(IdObject.get(map.get("empireId"))));
         ((Collection<String>) map.get("residents")).stream().map(UUID::fromString).forEach(u -> village.getResidentIds().add(u));
