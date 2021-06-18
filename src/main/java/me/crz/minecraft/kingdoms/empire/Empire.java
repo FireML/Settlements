@@ -33,6 +33,7 @@ import me.crz.minecraft.kingdoms.resident.ResidentManager;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Village;
 import me.crz.minecraft.kingdoms.village.VillageManager;
+import me.crz.minecraft.kingdoms.village.VillageState;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -725,7 +726,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
                 "chiefonline", configMessages != null ? chief != null && chief.getPlayer() != null ? online : offline : "",
                 "specialresidents", configMessages != null ? getResidentsToString(rankMessage, entry, online, offline, separator) : "",
                 "size", String.valueOf(getMembers().size()),
-                "members", getMembers().stream().map(v -> v.getState().getTag() + " " + v.getName()).collect(Collectors.joining(", ")),
+                "members", configMessages != null ? getMembersToString(configMessages) : "",
                 "resonlinecount", String.valueOf(getOnlineCount()),
                 "resotheronlinecount", String.valueOf(getOnlineCount() - 1),
                 "officerranks", Arrays.stream(EmpireRank.values())
@@ -735,6 +736,38 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
                         .collect(Collectors.joining(", "))
         };
         return initial.length > 1 ? ObjectArrays.concat(repl, initial, String.class) : repl;
+    }
+
+    private String getMembersToString(ConfigMessages configMessages) {
+        if (members.isEmpty()) {
+            return "";
+        }
+        Multimap<VillageState, Village> members = MultimapBuilder.enumKeys(VillageState.class).arrayListValues().build();
+        for (Village member : getMembers()) {
+            members.put(member.getState(), member);
+        }
+        Message stateMessage = configMessages.getMessage("members.state");
+        Message entryMessage = configMessages.getMessage("members.entry");
+        String separator = configMessages.getMessage("members.entry").getText();
+        List<String> lines = new ArrayList<>();
+        for (VillageState state : VillageState.values()) {
+            if (!members.containsKey(state)) {
+                continue;
+            }
+            lines.add(stateMessage.getReplacedText(
+                    "state", state.getTag(),
+                    "members", members.get(state).stream()
+                            .sorted()
+                            .map(v -> entryMessage.getReplacedText(
+                                    "state", v.getStateTag(),
+                                    "name", v.getName(),
+                                    "level", String.valueOf(v.getLevel()),
+                                    "residents", String.valueOf(v.getResidentIds().size())
+                            )).collect(Collectors.joining(separator))
+            ));
+        }
+
+        return String.join("\n", lines);
     }
 
     private String getResidentsToString(Message rankMessage, Message entry, String online, String offline, CharSequence separator) {
@@ -748,7 +781,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
                 // leader is listed extra, default rank is not displayed
                 continue;
             }
-            String line = rankMessage.getReplacedText(
+            lines.add(rankMessage.getReplacedText(
                     "rank", rank.getTag(),
                     "residents", rankMap.get(rank).stream()
                             .sorted((r1, r2) -> {
@@ -771,8 +804,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
                                     "settlement", res.getVillage().getName()
                             ))
                             .collect(Collectors.joining(separator))
-            );
-            lines.add(line);
+            ));
         }
         return String.join("\n", lines);
     }

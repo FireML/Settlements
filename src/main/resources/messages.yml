@@ -930,13 +930,18 @@ gui:
         &6&lCapital &r&7{capitalstate}{capital}
         &e&l{chiefempiretitle}: &r&7{chiefvillagetitle} {chiefonline}{chief}
         &r&7{specialresidents}
-        &e&lMembers: &r&7{members}
+        &e&lMembers:
+        &r&7{members}
       special-residents:
         rank: "&e&l{rank}:&r {residents}"
         separator: "&7, "
         online: "&a"
         offline: "&c"
         entry: "{title} {online}{name}"
+      members:
+        state: "&e{state}s:&r {members}"
+        entry: "&7{name}"
+        separator: "&8, "
     titles:
       title: "&2&l/e titles gui"
     use:
@@ -2465,7 +2470,8 @@ command:
         &6&lCapital &r&7{capitalstate} {capital}
         &e&l{chiefempiretitle}: &r&7{chiefvillagetitle} {chiefonline}{chief}
         {specialresidents}
-        &e&lMembers: &r&7{members}
+        &e&lMembers:
+        &r&7{members}
       abandoned: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
         &c&lABANDONED!!!&r&c Falls in {abandonedcountdown}
@@ -2480,6 +2486,10 @@ command:
         online: "&a"
         offline: "&c"
         entry: "{title} {online}{name}"
+      members:
+        state: "&e{state}:&r {members}"
+        entry: "&7{name}"
+        separator: "&8, "
     home:
       own-no-home: "&c&lYour empire doesn't have a home ask your {chief} to set one!"
       no-home: "&c&lThe empire doesn't have a home !"
@@ -2709,13 +2719,18 @@ command:
         &6&lCapital &r&7{capitalstate} {capital}
         &e&l{chiefempiretitle}: &r&7{chiefvillagetitle} {chiefonline}{chief}
         {specialresidents}
-        &e&lMembers: &r&7{members}
+        &e&lMembers:
+        &r&7{members}
       special-residents:
         rank: "&e&l{rank}:&r {residents}"
         separator: "&7, "
         online: "&a"
         offline: "&c"
         entry: "{title} {online}{name}"
+      members:
+        state: "&e{state}:&r {members}"
+        entry: "&7{name}"
+        separator: "&8, "
       abandoned: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
         &c&lABANDONED!!!&r&c Falls in {abandonedcountdown}
