@@ -221,7 +221,7 @@ public class Config {
             public static boolean DISTRIBUTE_ON_JOIN = false;
 
             @ConfigComment("Should missions that are not started yet be removed and replaced by new missions on reset?")
-            public static boolean RREMOVE_NOT_STARTED_MISSIONS = true;
+            public static boolean REMOVE_NOT_STARTED_MISSIONS = true;
 
             @ConfigComment("Should already started missions be removed and replaced by new missions on reset?")
             public static boolean REMOVE_STARTED_MISSIONS = false;

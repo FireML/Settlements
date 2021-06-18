@@ -220,7 +220,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
                 if (md.hasProgress()) {
                     return Config.Empire.Missions.REMOVE_STARTED_MISSIONS;
                 }
-                return Config.Empire.Missions.RREMOVE_NOT_STARTED_MISSIONS;
+                return Config.Empire.Missions.REMOVE_NOT_STARTED_MISSIONS;
             });
             Collections.shuffle(missions);
             for (int i = 0; member.getMissionData().size() < levelInfo.getMissions() && i < missions.size(); i++) {

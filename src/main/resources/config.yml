@@ -126,7 +126,7 @@ empire:
     # Should newly joined settlements be granted missions instantly or do they need to wait until the upkeep?
     distribute-on-join: false
     # Should missions that are not started yet be removed and replaced by new missions on reset?
-    rremove-not-started-missions: true
+    remove-not-started-missions: true
     # Should already started missions be removed and replaced by new missions on reset?
     remove-started-missions: false
     # Should finished missions be reset? If those are not reset then the settlement needs to wait for the empire to upgrade to get more!
