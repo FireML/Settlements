@@ -113,6 +113,9 @@ public class TurnInGUI extends KingdomsGUI {
                     player.sendMessage(components);
                 }
                 missionData.addProgress(deposited);
+                if (missionData.isFinished()) {
+                    missionData.getMission().finish(resident);
+                }
                 DatabaseManager.getInstance().save(resident.getVillage());
             }
             if (!fail.isEmpty()) {
