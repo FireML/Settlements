@@ -67,6 +67,8 @@ public class LockManager implements LockProvider {
         CommandManager.getInstance().registerCommand(new UnlockCommand());
 
         KingdomsPlugin.getInstance().registerListener(new LockListener());
+
+        KingdomsPlugin.logDebug("Loaded LockManager");
     }
 
     /**

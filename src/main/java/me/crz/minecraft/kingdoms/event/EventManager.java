@@ -73,6 +73,7 @@ public class EventManager implements ConfigMessages {
     private EventManager() {
         loadConfig();
         KingdomsPlugin.getInstance().registerListener(new EventListener());
+        KingdomsPlugin.logDebug("Loaded EventManager with " + events.size() + " events (" + automaticEvents.size() + " automatic events) and " + rewards.size() + " rewards");
     }
 
     @Override

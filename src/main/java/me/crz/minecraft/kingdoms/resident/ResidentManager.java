@@ -52,6 +52,7 @@ public class ResidentManager {
         };
         residentsByUuid = Caffeine.newBuilder().expireAfter(residentExpiry).build();
         residentsByName = Caffeine.newBuilder().expireAfter(residentExpiry).build();
+        KingdomsPlugin.logDebug("Loaded ResidentManager");
     }
 
     private boolean keepCached(Resident resident) {

@@ -36,6 +36,8 @@ public class ScoreboardManager implements ConfigMessages {
         KingdomsPlugin.getInstance().registerListener(new ScoreboardAnimation(this));
         CommandManager.getInstance().registerCommand(new CommandScoreboard());
         CommandManager.getInstance().registerCommand(new CommandScoreboardAdmin(this), false);
+
+        KingdomsPlugin.logDebug("Loaded ScoreboardManager");
     }
 
     public void update() {

@@ -58,6 +58,8 @@ public class LandManager {
         for (OwnedLand land : DatabaseManager.getInstance().getAllLand()) {
             cacheLand(land);
         }
+        KingdomsPlugin.logDebug("Loaded LandManager with " + villageLands.size() + " lands, " + playerPlots.size() + " player plots and " + linkedPlots.size() + " linked plots");
+
     }
 
     public void saveLand(OwnedLand... lands) {

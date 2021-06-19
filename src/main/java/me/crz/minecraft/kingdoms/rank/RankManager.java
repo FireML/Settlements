@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.rank;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import org.bukkit.configuration.Configuration;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 public class RankManager {
     private static RankManager instance;
@@ -30,6 +32,7 @@ public class RankManager {
     private RankManager() {
         loadEmpireRanks();
         loadVillageRanks();
+        KingdomsPlugin.logDebug("Loaded RankManager with " + villageRanks.size() + " village ranks and " + empireRanks.size() + " empire ranks");
     }
 
     private void loadVillageRanks() {

@@ -95,6 +95,8 @@ public class ChatManager implements ConfigMessages, Listener {
 
         KingdomsPlugin.getInstance().registerListener(this);
         KingdomsPlugin.getInstance().registerListener(new ChatListener());
+
+        KingdomsPlugin.logDebug("Loaded ChatManager with " + ChatChannel.values().length + " chat channels");
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

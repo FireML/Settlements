@@ -27,6 +27,7 @@ public class CommandManager implements TabExecutor {
 
     private CommandManager() {
         registerCommand(new VillageAdminCommand(), false);
+        KingdomsPlugin.logDebug("Loaded CommandManager for " + commandMap.size() + " commands");
     }
 
     private void registerCommands() {

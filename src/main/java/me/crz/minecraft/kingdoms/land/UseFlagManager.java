@@ -23,6 +23,7 @@ public class UseFlagManager {
 
     private UseFlagManager() {
         loadConfig();
+        KingdomsPlugin.logDebug("Loaded UseFlagManager with " + byId.size() + " use flags");
     }
 
     public void loadConfig() {

@@ -77,6 +77,7 @@ public class VillageManager {
                 }
             }
         }
+        KingdomsPlugin.logDebug("Loaded VillageManager with " + villageIDs.size() + " empires and " + perks.size() + " perks");
     }
 
     public void loadConfig() {

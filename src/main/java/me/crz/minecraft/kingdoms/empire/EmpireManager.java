@@ -102,6 +102,7 @@ public class EmpireManager {
                 empire.setWorldName(world.getName());
             }
         }
+        KingdomsPlugin.logDebug("Loaded EmpireManager with " + empireIds.size() + " empires, " + levels.size() + " levels, " + missions.size() + " missions and " + perks.size() + " perks");
     }
 
     public void loadConfig() {
