@@ -56,6 +56,15 @@ public class Config {
 
             @ConfigComment("Time to wait in seconds before saving queued entries")
             public static int WAIT = 2;
+
+            @ConfigComment("Queue settings for mission data")
+            public static class Missions {
+                @ConfigComment("Max size of the queue before saving happens")
+                public static int SIZE = 100;
+
+                @ConfigComment("Time to wait in seconds before saving queued entries")
+                public static int WAIT = 30;
+            }
         }
     }
 

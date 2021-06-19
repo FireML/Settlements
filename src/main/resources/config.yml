@@ -26,6 +26,12 @@ storage:
     size: 100
     # Time to wait in seconds before saving queued entries
     wait: 2
+    # Queue settings for mission data
+    missions:
+      # Max size of the queue before saving happens
+      size: 100
+      # Time to wait in seconds before saving queued entries
+      wait: 30
     
 # Upkeep scheduler settings
 upkeep:

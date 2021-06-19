@@ -229,6 +229,7 @@ public class EmpireManager {
                 "finishedmissions", String.valueOf(empire.getFinishedMissions())
         );
         KingdomsPlugin.logDebug(village.getStateTag() + " " + village.getName() + " finished mission " + mission.getTag() + " for empire " + empire.getName());
+        DatabaseManager.getInstance().saveVillage(village);
         DatabaseManager.getInstance().saveEmpire(empire);
     }
 

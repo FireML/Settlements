@@ -9,7 +9,6 @@ import me.crz.minecraft.kingdoms.land.LandManager;
 import me.crz.minecraft.kingdoms.land.OwnedLand;
 import me.crz.minecraft.kingdoms.land.PlotMode;
 import me.crz.minecraft.kingdoms.lock.Lock;
-import me.crz.minecraft.kingdoms.missions.MissionData;
 import me.crz.minecraft.kingdoms.portal.Portal;
 import me.crz.minecraft.kingdoms.rank.VillageRank;
 import me.crz.minecraft.kingdoms.utils.IdObject;
@@ -56,6 +55,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     protected final KingdomsPlugin plugin = KingdomsPlugin.getInstance();
 
     private SaveQueue<Village> villageQueue;
+    private SaveQueue<Village> villageMissionDataQueue;
     private SaveQueue<Empire> empireQueue;
     private SaveQueue<Resident> residentQueue;
     private SaveQueue<OwnedLand> landQueue;
@@ -68,13 +68,16 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
         int queueSize = Config.Storage.Queue.SIZE;
         int queueWait = Config.Storage.Queue.WAIT;
+        int missionQueueSize = Config.Storage.Queue.Missions.SIZE;
+        int missionQueueWait = Config.Storage.Queue.Missions.WAIT;
 
-        villageQueue = new SaveQueue<>(this, queueSize, queueWait, this::saveVillage);
-        empireQueue = new SaveQueue<>(this, queueSize, queueWait, this::saveEmpire);
-        residentQueue = new SaveQueue<>(this, queueSize, queueWait, this::saveResident);
-        landQueue = new SaveQueue<>(this, queueSize, queueWait, this::saveLand);
-        portalQueue = new SaveQueue<>(this, queueSize, queueWait, this::savePortal);
-        lockQueue = new SaveQueue<>(this, queueSize, queueWait, (conn, consumer) -> consumer.accept(conn));
+        villageQueue = new SaveQueue<>("village", this, queueSize, queueWait, this::saveVillage);
+        villageMissionDataQueue = new SaveQueue<>("village mission data", this, missionQueueSize, missionQueueWait * 20, this::saveMissionData);
+        empireQueue = new SaveQueue<>("empire", this, queueSize, queueWait, this::saveEmpire);
+        residentQueue = new SaveQueue<>("resident", this, queueSize, queueWait, this::saveResident);
+        landQueue = new SaveQueue<>("land", this, queueSize, queueWait, this::saveLand);
+        portalQueue = new SaveQueue<>("portal", this, queueSize, queueWait, this::savePortal);
+        lockQueue = new SaveQueue<>("lock", this, queueSize, queueWait, (conn, consumer) -> consumer.accept(conn));
 
         initializeTables();
     }
@@ -183,7 +186,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 updateDataMap(conn, "settlement_permissions", "settlementId", (Integer) village.getId().value(), "rank", "permission", village.getRanksPermissions(), "value");
                 updateDataMap(conn, "settlement_titles", "settlementId", (Integer) village.getId().value(), "rank", "title", village.getRankTitles());
                 updateDataMap(conn, "settlement_defaulttitles", "settlementId", (Integer) village.getId().value(), "rank", "title", village.getDefaultRankTitles());
-                updateDataMap(conn, "settlement_missiondata", "settlementId", (Integer) village.getId().value(), "mission", "type", village.getMissionDataMap(), "progress");
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while saving village " + village.getName() + " to database!", e);
@@ -196,6 +198,29 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             villageQueue.add(village.getId(), village);
         }
         villageQueue.finishAdding();
+    }
+
+    @Override
+    public void saveMissionData(Village village) {
+        villageMissionDataQueue.add(village.getId(), village);
+        villageMissionDataQueue.finishAdding();
+    }
+
+    @Override
+    public void saveMissionData(Collection<Village> villages) {
+        for (Village village : villages) {
+            villageMissionDataQueue.add(village.getId(), village);
+        }
+        villageMissionDataQueue.finishAdding();
+    }
+
+    public void saveMissionData(Connection conn, Village village) {
+        Utils.catchSync();
+        try {
+            updateDataMap(conn, "settlement_missiondata", "settlementId", (Integer) village.getId().value(), "mission", "type", village.getMissionDataMap(), "progress");
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while saving mission data for village " + village.getName() + " to database!", e);
+        }
     }
 
     @Override
@@ -844,6 +869,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     @Override
     public void disable() {
         villageQueue.forceSave();
+        villageMissionDataQueue.forceSave();
         empireQueue.forceSave();
         residentQueue.forceSave();
         landQueue.forceSave();
@@ -1409,6 +1435,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     public static class SaveQueue<T> {
         private SqlDatabaseManager db;
+        private final String type;
         private BiConsumer<Connection, T> handleSave;
 
         private BukkitTask task = null;
@@ -1451,7 +1478,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         private int saveWait;
         private boolean forceSave = false;
 
-        public SaveQueue(SqlDatabaseManager db, int maxSize, int saveWait, BiConsumer<Connection, T> handleSave) {
+        public SaveQueue(String type, SqlDatabaseManager db, int maxSize, int saveWait, BiConsumer<Connection, T> handleSave) {
+            this.type = type;
             this.db = db;
             this.maxSize = maxSize;
             this.saveWait = saveWait;
@@ -1470,6 +1498,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 }
                 queue.put(id, object);
                 if (KingdomsPlugin.getInstance().isRunning() && queue.size() >= maxSize) {
+                    KingdomsPlugin.logDebug("Triggering " + type + " save queue due to add reaching max size (" + queue.size() + ")");
                     Utils.runAsync(saving);
                 } else if (!forceSave && task == null) {
                     task = Bukkit.getScheduler().runTaskLaterAsynchronously(KingdomsPlugin.getInstance(), saving, saveWait * 20);
@@ -1483,6 +1512,9 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
          */
         public boolean finishAdding() {
              if (forceSave || (KingdomsPlugin.getInstance().isRunning() && queue.size()  > maxSize / 2)) {
+                 if (queue.size()  > maxSize / 2) {
+                     KingdomsPlugin.logDebug("Triggering " + type + " save queue due to finnish reaching half size (" + queue.size() + ")");
+                 }
                  Utils.runAsync(saving);
                  return true;
              }

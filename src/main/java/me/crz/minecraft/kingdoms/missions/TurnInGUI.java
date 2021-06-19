@@ -116,7 +116,7 @@ public class TurnInGUI extends KingdomsGUI {
                 if (missionData.isFinished()) {
                     missionData.getMission().finish(resident);
                 }
-                DatabaseManager.getInstance().save(resident.getVillage());
+                DatabaseManager.getInstance().saveMissionData(resident.getVillage());
             }
             if (!fail.isEmpty()) {
                 for (BaseComponent[] components : buildFailDepositMessage(resident, fail, TextComponent.fromLegacyText(""))) {

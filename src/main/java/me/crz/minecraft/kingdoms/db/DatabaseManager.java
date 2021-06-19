@@ -53,6 +53,10 @@ public abstract class DatabaseManager {
 
     public abstract void saveVillage(Village village);
 
+    public abstract void saveMissionData(Village village);
+
+    public abstract void saveMissionData(Collection<Village> village);
+
     public abstract void deleteVillage(Village village);
 
     public abstract void saveVillages(Collection<Village> values);

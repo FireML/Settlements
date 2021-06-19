@@ -73,7 +73,7 @@ public class VillageManager {
                 }, delay, TimeUnit.MILLISECONDS);
             } else if (village.hasEmpire() && village.getMissionData().isEmpty()) {
                 if (village.getEmpire().distributeNewMissions(village)) {
-                    DatabaseManager.getInstance().saveVillage(village);
+                    DatabaseManager.getInstance().saveMissionData(village);
                 }
             }
         }

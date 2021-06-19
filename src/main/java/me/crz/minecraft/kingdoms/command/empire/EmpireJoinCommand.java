@@ -63,6 +63,7 @@ public class EmpireJoinCommand extends VillageSubCommand {
             }
             InviteCache.getPendingEmpireInvites().remove(resident.getVillage().getId(), joinEmpire.getId());
             DatabaseManager.getInstance().saveVillage(resident.getVillage());
+            DatabaseManager.getInstance().saveMissionData(resident.getVillage());
             getMessage("success").tell(resident.getVillage().getOnlineResidents(),
                     "name", joinEmpire.getName(),
                     "state", resident.getVillage().getState().getTag()

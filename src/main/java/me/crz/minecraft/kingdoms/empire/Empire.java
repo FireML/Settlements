@@ -122,8 +122,12 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
             Utils.runAsync(() -> DatabaseManager.getInstance().log(this, null, null, "tax", "cash", finalPaidTaxes));
         }
 
-        if (distributeNewMissions() || getTax() > 0) {
+        if (getTax() > 0) {
             DatabaseManager.getInstance().saveVillages(getMembers());
+        }
+
+        if (distributeNewMissions()) {
+            DatabaseManager.getInstance().saveMissionData(getMembers());
         }
 
     }

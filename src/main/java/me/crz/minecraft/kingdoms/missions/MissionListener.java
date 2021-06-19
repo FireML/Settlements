@@ -108,7 +108,7 @@ public class MissionListener implements Listener {
                 }
             }
             if (save) {
-                DatabaseManager.getInstance().saveVillage(resident.getVillage());
+                DatabaseManager.getInstance().saveMissionData(resident.getVillage());
             }
         }
     }
