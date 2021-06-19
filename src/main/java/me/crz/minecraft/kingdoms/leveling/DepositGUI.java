@@ -41,8 +41,8 @@ public class DepositGUI extends KingdomsGUI {
     private final Resident resident;
     private final LandOwner landOwner;
 
-    public DepositGUI(Resident player, LandOwner landOwner) {
-        super("vault");
+    public DepositGUI(String namespace, Resident player, LandOwner landOwner) {
+        super(namespace + ".vault");
         this.resident = player;
         this.landOwner = landOwner;
 

@@ -2559,7 +2559,7 @@ command:
       requirement:
         todo: "&r&f(&e{progress}&f/&e{required}&f) - {type}"
         done: "&r&f(&a{progress}&f/&a{required}&f) - {type}"
-      footer: "&7Deposit items with [&e/s deposit](/s deposit)"
+      footer: "&7Deposit items with [&e/e deposit](/e deposit)"
       description: Shows you the materials required to upgrade
     mode:
       modes: "&cAvailable modes: {modes}"

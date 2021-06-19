@@ -17,7 +17,7 @@ public class EmpireDepositCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (!resident.getVillage().getEmpire().isMaxLevel()) {
-            new DepositGUI(resident, resident.getVillage().getEmpire()).open();
+            new DepositGUI("empire", resident, resident.getVillage().getEmpire()).open();
         } else {
             resident.tell(Message.get("command.empire.upgrade.max-level-reached"));
         }
