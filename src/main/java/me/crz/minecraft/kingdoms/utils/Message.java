@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -151,10 +152,13 @@ public class Message {
     private static Map<String, Message> messages = new HashMap<>();
 
     public static Message get(String key) {
-        Message message = messages.get(key.toLowerCase());
+        Message message = messages.get(key);
         if (message == null) {
-            message = new Message(key.toLowerCase());
-            messages.put(key.toLowerCase(), message);
+            message = new Message(key.toLowerCase(Locale.ROOT));
+            if (!message.exists()) {
+                message = new Message(key);
+            }
+            messages.put(key, message);
         }
         return message;
     }

@@ -67,15 +67,6 @@ public abstract class Mission implements NameTag {
         return getId();
     }
 
-    @Override
-    public String getTag() {
-        String tag = NameTag.super.getTag();
-        if (humanizedName().equals(tag)) {
-            return getType().getTag() + " " + tag;
-        }
-        return tag;
-    }
-
     public long getMissionPoints() {
         return missionPoints;
     }
