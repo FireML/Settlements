@@ -1469,7 +1469,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                     forceSave = true;
                 }
                 queue.put(id, object);
-                if (queue.size() >= maxSize) {
+                if (KingdomsPlugin.getInstance().isRunning() && queue.size() >= maxSize) {
                     Utils.runAsync(saving);
                 } else if (!forceSave && task == null) {
                     task = Bukkit.getScheduler().runTaskLaterAsynchronously(KingdomsPlugin.getInstance(), saving, saveWait * 20);
