@@ -7,6 +7,7 @@ import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.db.DatabaseManager;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.resident.Resident;
+import me.crz.minecraft.kingdoms.utils.HumanReadable;
 import me.crz.minecraft.kingdoms.utils.Utils;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -155,7 +156,7 @@ public class DepositGUI extends KingdomsGUI {
             messages.add(getMessage("list-entry").getReplacedComponents(
                     "amount", String.valueOf(entry.getValue()),
                     "icon", Utils.getIcon(resident, entry.getKey().name()),
-                    "material", entry.getKey().name()));
+                    "material", HumanReadable.humanizedName(entry.getKey().name())));
         }
         return messages;
     }
@@ -167,7 +168,7 @@ public class DepositGUI extends KingdomsGUI {
             messages.add(getMessage("list-entry").getReplacedComponents(
                     "amount", String.valueOf(entry.getValue()),
                     "icon", Utils.getIcon(resident, entry.getKey()),
-                    "material", entry.getKey()));
+                    "material", HumanReadable.humanizedName(entry.getKey())));
         }
         return messages;
     }
