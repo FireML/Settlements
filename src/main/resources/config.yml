@@ -132,7 +132,7 @@ empire:
     # Should finished missions be reset? If those are not reset then the settlement needs to wait for the empire to upgrade to get more!
     remove-finished-missions: true
     # Time in minutes for which block placements should be cached so that break mission abuse isn't possible using (recent) player placed blocks.
-    palce-cache-time: 60
+    place-cache-time: 60
 
   world:
     # Whether each empire should get their own world automatically generated
