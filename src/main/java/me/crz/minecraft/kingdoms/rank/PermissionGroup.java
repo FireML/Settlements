@@ -1,15 +1,15 @@
 package me.crz.minecraft.kingdoms.rank;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.utils.ItemUtils;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.logging.Level;
 
 public class PermissionGroup {
     private final String name;
@@ -19,7 +19,12 @@ public class PermissionGroup {
 
     public PermissionGroup(ConfigurationSection config) {
         this.name = config.getName();
-        this.icon = MaterialUtils.getMaterial(config.getString("icon"));
+        Material icon = MaterialUtils.getMaterial(config.getString("icon"));
+        if (icon != null && !icon.isItem()) {
+            KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, icon + " is not a valid icon type for permission group " + name + "! That type has no item for the GUI!");
+            icon = Material.DIRT;
+        }
+        this.icon = icon;
         for (String perm : config.getStringList("permissions")) {
             permissions.add(perm.toLowerCase());
         }

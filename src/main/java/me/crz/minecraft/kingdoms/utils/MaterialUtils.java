@@ -1,14 +1,13 @@
 package me.crz.minecraft.kingdoms.utils;
 
-import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -163,10 +162,12 @@ public class MaterialUtils {
                 || BUCKETS.contains(item.getType());
     }
 
-    public static Material getMaterial(@NotNull String matStr) {
-        Validate.notNull(matStr, "Material string cannot be null!");
+    public static Material getMaterial(String matStr) {
+        if (matStr == null) {
+            return null;
+        }
         try {
-            return Material.valueOf(matStr.toUpperCase());
+            return Material.valueOf(matStr.toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
             Material mat = Material.matchMaterial(matStr);
             if (mat == null) {

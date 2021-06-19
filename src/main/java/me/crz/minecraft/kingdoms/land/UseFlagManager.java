@@ -1,6 +1,7 @@
 package me.crz.minecraft.kingdoms.land;
 
 import me.crz.minecraft.kingdoms.KingdomsPlugin;
+import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -9,6 +10,7 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -50,15 +52,23 @@ public class UseFlagManager {
 
                 Material icon = null;
                 if (config.contains("icon", true)) {
-                    icon = Material.matchMaterial(config.getString("icon"));
+                    icon = MaterialUtils.getMaterial(config.getString("icon"));
+                }
+                if (icon != null && !icon.isItem()) {
+                    KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, icon + " is not a valid icon type for flag " + name + " in useflags.yml! That type has no item which can be displayed");
+                    icon = null;
                 }
                 if (icon == null) {
                     if (uses.size() > 0) {
                         Use use = uses.iterator().next();
-                        if (use.getMaterials().size() > 0) {
-                            icon = use.getMaterials().iterator().next();
+                        for (Material material : use.getMaterials()) {
+                            if (material.isItem()) {
+                                icon = material;
+                                break;
+                            }
+                        }
                     }
-                    if (icon == null)
+                    if (icon == null) {
                         icon = Material.BARRIER;
                     }
                 }
@@ -66,7 +76,7 @@ public class UseFlagManager {
                 BuildState defaultState = null;
                 if (config.contains("default-state", true)) {
                     try {
-                        defaultState = BuildState.valueOf(config.getString("default-state").toUpperCase());
+                        defaultState = BuildState.valueOf(config.getString("default-state", "unknown").toUpperCase(Locale.ROOT));
                     } catch (IllegalArgumentException e) {
                         KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, config.getString("default-state") + " is not a valid BuildState for flag " + name + " in useflags.yml!");
                     }

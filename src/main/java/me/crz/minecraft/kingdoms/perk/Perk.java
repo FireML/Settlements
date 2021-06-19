@@ -38,6 +38,9 @@ public class Perk implements NameTag {
         }
         this.name = config.getName();
         this.icon = Material.valueOf(config.getString("icon", icon.name()).toUpperCase());
+        if (!icon.isItem()) {
+            throw new IllegalArgumentException("Icon type " + icon + " is not an obtainable item and cannot be used for the GUI!");
+        }
         this.repeat = config.getInt("repeat", repeat);
         this.cooldown = config.getLong("cooldown", cooldown);
         for (Map<?, ?> map : config.getMapList("effects")) {

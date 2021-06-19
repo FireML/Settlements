@@ -27,7 +27,11 @@ public class Reward {
         if (config.isString("icon")) {
             Material iconMat = MaterialUtils.getMaterial(config.getString("icon"));
             if (iconMat != null) {
-                icon = new ItemStack(iconMat);
+                if (iconMat.isItem()) {
+                    icon = new ItemStack(iconMat);
+                } else {
+                    throw new IllegalArgumentException("Icon type " + iconMat + " is not an obtainable item and cannot be used for the GUI!");
+                }
             }
         }
         for (Map<?, ?> rawMap : config.getMapList("items")) {

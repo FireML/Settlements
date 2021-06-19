@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.rank;
 
+import me.crz.minecraft.kingdoms.KingdomsPlugin;
 import me.crz.minecraft.kingdoms.land.LandOwner;
 import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import me.crz.minecraft.kingdoms.utils.Message;
@@ -19,6 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Level;
 
 public abstract class Rank<L extends LandOwner> implements NameTag, Comparable<Rank> {
 
@@ -47,10 +49,15 @@ public abstract class Rank<L extends LandOwner> implements NameTag, Comparable<R
                 }
             }
             if (config.isString("icon")) {
-                icon = MaterialUtils.getMaterial(config.getString("icon"));
+                Material icon = MaterialUtils.getMaterial(config.getString("icon"));
+                if (icon != null && !icon.isItem()) {
+                    KingdomsPlugin.getInstance().getLogger().log(Level.WARNING, icon + " is not a valid icon type for " + getClass().getSimpleName() + " " + name + "! That type has no item for the GUI!");
+                    icon = null;
+                }
                 if (icon == null) {
                     icon = Material.WOODEN_SHOVEL;
                 }
+                this.icon = icon;
             }
             if (config.isString("inherits")) {
                 inherits = config.getString("inherits");

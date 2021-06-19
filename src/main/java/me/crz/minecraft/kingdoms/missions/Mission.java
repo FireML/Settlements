@@ -2,8 +2,8 @@ package me.crz.minecraft.kingdoms.missions;
 
 import me.crz.minecraft.kingdoms.empire.EmpireManager;
 import me.crz.minecraft.kingdoms.resident.Resident;
-import me.crz.minecraft.kingdoms.utils.ConfigKey;
 import me.crz.minecraft.kingdoms.utils.ItemUtils;
+import me.crz.minecraft.kingdoms.utils.MaterialUtils;
 import me.crz.minecraft.kingdoms.utils.NameTag;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -23,7 +23,10 @@ public abstract class Mission implements NameTag {
 
     public Mission(ConfigurationSection config) throws IllegalArgumentException {
         id = config.getName();
-        icon = config.isString("icon") ? Material.valueOf(config.getString("icon", "dirt").toUpperCase(Locale.ROOT)) : null;
+        icon = MaterialUtils.getMaterial(config.getString("icon"));
+        if (icon == null && config.isString("icon")) {
+            throw new IllegalArgumentException("Icon type " + config.getString("icon") + " is invalid!");
+        }
         if (icon != null && !icon.isItem()) {
             throw new IllegalArgumentException("Icon type " + icon + " is not an obtainable item and cannot be used for the GUI!");
         }
