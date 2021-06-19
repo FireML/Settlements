@@ -32,6 +32,7 @@ import me.crz.minecraft.kingdoms.resident.Resident;
 import me.crz.minecraft.kingdoms.resident.ResidentManager;
 import me.crz.minecraft.kingdoms.utils.config.ConfigManager;
 import me.crz.minecraft.kingdoms.village.Village;
+import me.crz.minecraft.kingdoms.village.VillageLevel;
 import me.crz.minecraft.kingdoms.village.VillageManager;
 import me.crz.minecraft.kingdoms.village.VillageState;
 import org.bukkit.Bukkit;
@@ -228,7 +229,8 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
                 return Config.Empire.Missions.REMOVE_NOT_STARTED_MISSIONS;
             });
             Collections.shuffle(missions);
-            for (int i = 0; member.getMissionData().size() < levelInfo.getMissions() && i < missions.size(); i++) {
+            int toDistribute = levelInfo.getMissions() + member.getExtraEmpireMissions();
+            for (int i = 0; member.getMissionData().size() < toDistribute && i < missions.size(); i++) {
                 member.addMissionData(new MissionData(missions.get(i)));
             }
             return !member.getMissionData().isEmpty();

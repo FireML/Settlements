@@ -10,6 +10,7 @@ public class VillageLevel extends LevelInfo {
     private final int chunks;
     private final int outposts;
     private final long claimUpkeep;
+    private final int extraMissions;
     private final Map<String, Long> worldClaimUpkeep = new LinkedHashMap<>();
 
     public VillageLevel(int level, ConfigurationSection config) {
@@ -17,6 +18,7 @@ public class VillageLevel extends LevelInfo {
         outposts = config.getInt("outposts", 0);
         chunks = config.getInt("chunks", 0);
         claimUpkeep = config.getLong("claim-upkeep", 0);
+        extraMissions = config.getInt("extra-missions", 0);
         ConfigurationSection worldUpkeepSection = config.getConfigurationSection("per-world-upkeep");
         if (worldUpkeepSection != null) {
             for (String world : worldUpkeepSection.getKeys(false)) {
@@ -35,6 +37,10 @@ public class VillageLevel extends LevelInfo {
 
     public long getClaimUpkeep(String world) {
         return worldClaimUpkeep.getOrDefault(world, claimUpkeep);
+    }
+
+    public int getExtraMissions() {
+        return extraMissions;
     }
 
     @Override

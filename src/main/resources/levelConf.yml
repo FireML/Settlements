@@ -5,12 +5,14 @@ village:
       Kingdoms_nether: 1000
     chunks: 20
     outposts: 1
+    extra-missions: 0
   level-2:
     claim-upkeep: 480
     per-world-upkeep:
       Kingdoms_nether: 960
     chunks: 40
     outposts: 1
+    extra-missions: 0
     requirements:
       CASH: 5 # in bank account
       STONE: 5
@@ -21,6 +23,7 @@ village:
       Kingdoms_nether: 960
     chunks: 60
     outposts: 1
+    extra-missions: 1
     requirements:
       SAND: 10
   level-4:
@@ -29,6 +32,7 @@ village:
       Kingdoms_nether: 960
     chunks: 80
     outposts: 2
+    extra-missions: 2
     requirements:
       COBBLESTONE: 64
   level-5:
@@ -37,6 +41,7 @@ village:
       Kingdoms_nether: 960
     chunks: 100
     outposts: 2
+    extra-missions: 3
     requirements:
       SAND: 64
 kingdom:
@@ -46,6 +51,7 @@ kingdom:
       Kingdoms_nether: 800
     chunks: 150
     outposts: 4
+    extra-missions: 4
     requirements:
       STONE: 1
   level-2:
@@ -54,6 +60,7 @@ kingdom:
       Kingdoms_nether: 760
     chunks: 175
     outposts: 4
+    extra-missions: 5
     requirements:
       STONE: 1
   level-3:
@@ -62,6 +69,7 @@ kingdom:
       Kingdoms_nether: 720
     chunks: 200
     outposts: 6
+    extra-missions: 6
     requirements:
       STONE: 1
   level-4:
@@ -70,6 +78,7 @@ kingdom:
       Kingdoms_nether: 680
     chunks: 250
     outposts: 6
+    extra-missions: 7
     requirements:
       STONE: 1
   level-5:
@@ -78,6 +87,7 @@ kingdom:
       Kingdoms_nether: 640
     chunks: 300
     outposts: 6
+    extra-missions: 8
     requirements:
       STONE: 1
   level-6:
@@ -86,6 +96,7 @@ kingdom:
       Kingdoms_nether: 600
     chunks: 400
     outposts: 8
+    extra-missions: 9
     requirements:
       STONE: 1
   level-7:
@@ -94,6 +105,7 @@ kingdom:
       Kingdoms_nether: 560
     chunks: 650
     outposts: 8
+    extra-missions: 10
     requirements:
       STONE: 1
   level-8:
@@ -102,6 +114,7 @@ kingdom:
       Kingdoms_nether: 520
     chunks: 800
     outposts: 8
+    extra-missions: 11
     requirements:
       STONE: 1
   level-9:
@@ -110,6 +123,7 @@ kingdom:
       Kingdoms_nether: 480
     chunks: 1000
     outposts: 12
+    extra-missions: 12
     requirements:
       STONE: 1
   level-10:
@@ -118,5 +132,6 @@ kingdom:
       Kingdoms_nether: 400
     chunks: 1000
     outposts: 12
+    extra-missions: 13
     requirements:
       STONE: 1

@@ -326,6 +326,11 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
         this.missionPoints = missionPoints;
     }
 
+    public int getExtraEmpireMissions() {
+        VillageLevel villageLevel = getLevelInfo();
+        return villageLevel != null ? villageLevel.getExtraMissions() : 0;
+    }
+
     @Override
     public boolean isChief(UUID playerId) {
         return chief.equals(playerId);
@@ -702,6 +707,7 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
                 "abandonedcountdown", isAbandoned() ? UtilTime.format(getCreated() + TimeUnit.MINUTES.toMillis(Config.Settlement.Upkeep.ABANDON_TIME) - System.currentTimeMillis()) : "",
                 "level", String.valueOf(getLevel()),
                 "missionpoints", String.valueOf(getMissionPoints()),
+                "extramissions", String.valueOf(getExtraEmpireMissions()),
                 "land", String.valueOf(LandManager.getInstance().getClaimedLandSize(this)),
                 "maxland", String.valueOf(getMaxClaimableChunks()),
                 "outposts", String.valueOf(getOutpostHomes().size()),
