@@ -15,6 +15,7 @@ import java.util.Map;
 
 public abstract class Mission implements NameTag {
     private final String id;
+    private final Material icon;
     private final long missionPoints;
     private final long contributionPoints;
     private final Type type;
@@ -22,6 +23,10 @@ public abstract class Mission implements NameTag {
 
     public Mission(ConfigurationSection config) throws IllegalArgumentException {
         id = config.getName();
+        icon = config.isString("icon") ? Material.valueOf(config.getString("icon", "dirt").toUpperCase(Locale.ROOT)) : null;
+        if (icon != null && !icon.isItem()) {
+            throw new IllegalArgumentException("Icon type " + icon + " is not an obtainable item and cannot be used for the GUI!");
+        }
         missionPoints = config.getLong("mission-points", 0);
         contributionPoints = config.getLong("contribution-points", 0);
         type = Type.valueOf(config.getString("type", "missing").toUpperCase(Locale.ROOT));
@@ -96,9 +101,15 @@ public abstract class Mission implements NameTag {
     }
 
     public ItemStack getIcon() {
+        if (icon != null) {
+            return ItemUtils.toIcon(icon);
+        }
         for (String r : getRequirements().keySet()) {
             try {
-                return ItemUtils.toIcon(Material.valueOf(r));
+                Material type = Material.valueOf(r);
+                if (type.isItem()) {
+                    return ItemUtils.toIcon(type);
+                }
             } catch (IllegalArgumentException ignored) {}
         }
         return ItemUtils.toIcon(Material.DIRT);

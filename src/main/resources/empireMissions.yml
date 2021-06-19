@@ -1,4 +1,6 @@
 stones:
+  # Specify the material of the GUI icon, will use the requirements list if not set
+  icon: stone
   # Only count if action occurs in empire world (should be false when using turn_in)
   in-empire-world: false
   # How many mission points the empire receives when the missions was completed
