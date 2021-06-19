@@ -748,7 +748,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         }
         Message stateMessage = configMessages.getMessage("members.state");
         Message entryMessage = configMessages.getMessage("members.entry");
-        String separator = configMessages.getMessage("members.entry").getText();
+        String separator = configMessages.getMessage("members.separator").getText();
         List<String> lines = new ArrayList<>();
         for (VillageState state : VillageState.values()) {
             if (!members.containsKey(state)) {
