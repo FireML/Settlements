@@ -19,6 +19,8 @@ storage:
   database: kingdoms
   table-prefix: kingdoms_
   url-parameters: ""
+  # MySQL connection timeout in ms
+  connection-timeout: 30000
   queue:
     # Max size of the queue before saving happens
     size: 100

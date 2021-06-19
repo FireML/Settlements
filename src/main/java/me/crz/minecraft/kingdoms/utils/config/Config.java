@@ -47,6 +47,8 @@ public class Config {
         public static String TABLE_PREFIX = "kingdoms_";
         @ConfigEntry(reload = false)
         public static String URL_PARAMETERS = "";
+        @ConfigComment("MySQL connection timeout in ms")
+        public static long CONNECTION_TIMEOUT = 30000;
 
         public static class Queue {
             @ConfigComment("Max size of the queue before saving happens")

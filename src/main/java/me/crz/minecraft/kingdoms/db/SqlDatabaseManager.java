@@ -1482,7 +1482,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
          * @return Whether or not a save was run due to finishing up
          */
         public boolean finishAdding() {
-             if (forceSave || queue.size()  > maxSize / 2) {
+             if (forceSave || (KingdomsPlugin.getInstance().isRunning() && queue.size()  > maxSize / 2)) {
                  Utils.runAsync(saving);
                  return true;
              }

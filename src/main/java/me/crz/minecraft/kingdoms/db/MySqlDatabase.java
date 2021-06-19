@@ -33,7 +33,7 @@ public class MySqlDatabase extends SqlDatabaseManager {
         }
         ds.setUsername(Config.Storage.USER);
         ds.setPassword(Config.Storage.PASSWORD);
-        ds.setConnectionTimeout(5000);
+        ds.setConnectionTimeout(Config.Storage.CONNECTION_TIMEOUT);
 
         super.connect();
 
