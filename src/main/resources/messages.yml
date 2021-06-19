@@ -2336,6 +2336,12 @@ command:
       description: Convert the config to a certain config version
       same-version: "&cConfig is already version {version}."
       success: "&aSUCCESS: Converted config from version {from} to {to}"
+    cooperationpoints:
+      description: Add/set/remove finished cooperation püoints of Settlements
+      success: "&aSUCCESS: {operation} {amount} to {name}"
+    empiremission:
+      description: Add/set/remove finished mission count of Empires
+      success: "&aSUCCESS: {operation} {amount} to {name}"
     world:
       description: World admin commands
       info:

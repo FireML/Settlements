@@ -20,6 +20,8 @@ public class VillageAdminCommand extends SubCommand {
             this.registerCommand(new VillageAdminWorldCommand(this));
             this.registerCommand(new VillageAdminRankCommand(this));
             this.registerCommand(new VillageAdminEmpireRankCommand(this));
+            this.registerCommand(new VillageAdminEmpireMissionCommand(this));
+            this.registerCommand(new VillageAdminCooperationPointsCommand(this));
             if (ConfigManager.getInstance().getEventsConf().getConfig().getBoolean("enabled")) {
                 this.registerCommand(new VillageAdminEventsCommand(this));
             }
