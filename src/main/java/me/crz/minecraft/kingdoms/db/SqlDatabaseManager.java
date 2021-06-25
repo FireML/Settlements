@@ -1498,18 +1498,16 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         }
 
         public void add(IdObject id, T object) {
-            synchronized (queue) {
-                if (id == null || id.isNull()) {
-                    id = IdObject.get(object.hashCode());
-                    forceSave = true;
-                }
-                queue.put(id, object);
-                if (KingdomsPlugin.getInstance().isRunning() && queue.size() >= maxSize) {
-                    KingdomsPlugin.logDebug("Triggering " + type + " save queue due to add reaching max size (" + queue.size() + ")");
-                    Utils.runAsync(saving);
-                } else if (!forceSave && task == null) {
-                    task = Bukkit.getScheduler().runTaskLaterAsynchronously(KingdomsPlugin.getInstance(), saving, saveWait * 20);
-                }
+            if (id == null || id.isNull()) {
+                id = IdObject.get(object.hashCode());
+                forceSave = true;
+            }
+            queue.put(id, object);
+            if (KingdomsPlugin.getInstance().isRunning() && queue.size() >= maxSize) {
+                KingdomsPlugin.logDebug("Triggering " + type + " save queue due to add reaching max size (" + queue.size() + ")");
+                Utils.runAsync(saving);
+            } else if (!forceSave && task == null) {
+                task = Bukkit.getScheduler().runTaskLaterAsynchronously(KingdomsPlugin.getInstance(), saving, saveWait * 20);
             }
         }
 
