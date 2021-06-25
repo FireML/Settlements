@@ -71,13 +71,18 @@ public class VillageManager {
                     KingdomsPlugin.getInstance().getLogger().log(Level.INFO, village.getStateTag() + " " + village.getName() + " was removed because it has been abandoned for " + Config.Settlement.Upkeep.ABANDON_TIME + " minutes!");
                     deleteVillage(village);
                 }, delay, TimeUnit.MILLISECONDS);
-            } else if (village.hasEmpire() && village.getMissionData().isEmpty()) {
-                if (village.getEmpire().distributeNewMissions(village)) {
-                    DatabaseManager.getInstance().saveMissionData(village);
-                }
             }
         }
         KingdomsPlugin.logDebug("Loaded VillageManager with " + villageIDs.size() + " empires and " + perks.size() + " perks");
+    }
+
+    private void checkForMissionDistribution() {
+        for (Village village : getVillages()) {
+            if (village.hasEmpire() && village.getMissionData().isEmpty()
+                    && village.getEmpire().distributeNewMissions(village)) {
+                DatabaseManager.getInstance().saveMissionData(village);
+            }
+        }
     }
 
     public void loadConfig() {
@@ -121,6 +126,7 @@ public class VillageManager {
     synchronized public static VillageManager getInstance() {
         if (instance == null) {
             instance = new VillageManager();
+            instance.checkForMissionDistribution();
         }
         return instance;
     }
