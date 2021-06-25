@@ -1454,7 +1454,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                     Connection conn = null;
                     try {
                         while (!tQueue.isEmpty()) {
-                            if (conn == null || !conn.isValid(1)) {
+                            if (conn == null || !conn.isValid(10)) {
+                                db.close(conn);
                                 conn = db.getConnection();
                             }
                             Map.Entry<IdObject, T> e = tQueue.pollFirst();
