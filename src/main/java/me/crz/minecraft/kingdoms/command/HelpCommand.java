@@ -128,15 +128,16 @@ public class HelpCommand extends SubCommand {
                         "path", WordUtils.capitalizeFully(base)
                 );
                 int overflow = Math.min(Config.ENTRIES_PER_PAGE / 3, maxPage);
+                int entriesPerPage = Config.ENTRIES_PER_PAGE;
                 if (commands.size() - ((maxPage - 1) * Config.ENTRIES_PER_PAGE) <= overflow) {
                     maxPage--;
-                    Config.ENTRIES_PER_PAGE = (int) Math.ceil(commands.size() / (double) maxPage);
+                    entriesPerPage = (int) Math.ceil(commands.size() / (double) maxPage);
                 }
-                int limit = Config.ENTRIES_PER_PAGE;
+                int limit = entriesPerPage;
                 if (page == maxPage) {
                     limit *= 2;
                 }
-                commands.stream().skip((page - 1) * Config.ENTRIES_PER_PAGE).limit(limit).forEachOrdered(e -> {
+                commands.stream().skip((page - 1) * entriesPerPage).limit(limit).forEachOrdered(e -> {
                     SubCommand s = e.getValue();
                     String usage;
                     String displayPath;
