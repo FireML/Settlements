@@ -28,6 +28,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,6 +55,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     protected String tablePrefix;
     protected final KingdomsPlugin plugin = KingdomsPlugin.getInstance();
 
+    private SaveQueue<Consumer<Connection>> logQueue;
     private SaveQueue<Village> villageQueue;
     private SaveQueue<Village> villageMissionDataQueue;
     private SaveQueue<Empire> empireQueue;
@@ -71,6 +73,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         int missionQueueSize = Config.Storage.Queue.Missions.SIZE;
         int missionQueueWait = Config.Storage.Queue.Missions.WAIT;
 
+        logQueue = new SaveQueue<>("log", this, queueSize, queueWait, (conn, consumer) -> consumer.accept(conn));
         villageQueue = new SaveQueue<>("village", this, queueSize, queueWait, this::saveVillage);
         villageMissionDataQueue = new SaveQueue<>("village mission data", this, missionQueueSize, missionQueueWait * 20, this::saveMissionData);
         empireQueue = new SaveQueue<>("empire", this, queueSize, queueWait, this::saveEmpire);
@@ -787,29 +790,32 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 || (empire != null && empire.getId().isNull())) {
             return;
         }
-        Utils.catchSync();
-        Connection conn = getConnection();
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        logQueue.add(IdObject.get(timestamp.getTime()), conn -> log(conn, timestamp, empire, village, resident, action, values));
+    }
+
+    private void log(Connection conn, Timestamp timestamp, Empire empire, Village village, Resident resident, String action, Map<String, Long> values) {
         try (PreparedStatement sta = conn.prepareStatement("INSERT INTO " + tablePrefix + "logs " +
-                     "(`empireId`, `settlementId`, `residentId`, `action`, `type`, `amount`) " +
-                     "VALUES (?, ?, ?, ?, ?, ?);"
+                     "(`empireId`, `settlementId`, `residentId`, `action`, `type`, `amount`, `timestamp`) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?);"
              )
         ) {
             for (Map.Entry<String, Long> value : values.entrySet()) {
                 if (value.getValue() != 0) {
                     sta.setInt(1, empire != null ? (Integer) empire.getId().value() : -1);
                     sta.setInt(2, village != null ? (Integer) village.getId().value() : -1);
-                    sta.setInt(3, resident != null && resident.getId().isNull() ? (Integer) resident.getId().value() : -1);
+                    sta.setInt(3, resident != null && !resident.getId().isNull() ? (Integer) resident.getId().value() : -1);
                     sta.setString(4, action.toLowerCase());
                     sta.setString(5, value.getKey().toLowerCase());
                     sta.setLong(6, value.getValue());
+                    sta.setTimestamp(7, timestamp);
                     sta.addBatch();
                 }
             }
             sta.executeBatch();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            close(conn);
         }
     }
 
