@@ -433,7 +433,10 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
     }
 
     public int getBonusClaimAmount() {
-        return getBonusClaims() + getPerksMap().entrySet().stream().mapToInt(e -> e.getValue().getTimes() * getPerk(e.getKey()).getBonusClaims()).sum()
+        return getBonusClaims() + getPerksMap().entrySet().stream()
+                .filter(e -> getPerk(e.getKey()) != null)
+                .mapToInt(e -> e.getValue().getTimes() * getPerk(e.getKey()).getBonusClaims())
+                .sum()
                 + (hasEmpire() ? getEmpire().getBonusClaimAmount() : 0);
     }
 
@@ -443,7 +446,10 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
     }
 
     public int getBonusOutposts() {
-        return getPerksMap().entrySet().stream().mapToInt(e -> e.getValue().getTimes() * getPerk(e.getKey()).getBonusOutposts()).sum();
+        return getPerksMap().entrySet().stream()
+                .filter(e -> getPerk(e.getKey()) != null)
+                .mapToInt(e -> e.getValue().getTimes() * getPerk(e.getKey()).getBonusOutposts())
+                .sum();
     }
 
     public Empire getEmpire() {

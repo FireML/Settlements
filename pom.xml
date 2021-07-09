@@ -234,10 +234,10 @@
             <id>ess-repo</id>
             <url>https://ci.ender.zone/plugin/repository/everything/</url>
         </repository>
-        <repository>
+        <!--<repository>
             <id>IntellectualSites</id>
             <url>https://mvn.intellectualsites.com/content/groups/public/</url>
-        </repository>
+        </repository>-->
     </repositories>
 
     <dependencies>
