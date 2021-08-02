@@ -1,5 +1,6 @@
 package me.crz.minecraft.kingdoms.integration;
 
+import com.plotsquared.bukkit.player.BukkitPlayerManager;
 import com.plotsquared.core.PlotSquared;
 import com.plotsquared.core.database.DBFunc;
 import com.plotsquared.core.events.TeleportCause;
@@ -32,7 +33,7 @@ public class PlotSquaredIntegration implements Listener, ConfigMessages {
     public PlotSquaredIntegration() {
         if (!Config.PlotSquared.PLOT_WORLD.isEmpty()) {
             if (!Config.PlotSquared.PLOT_AREA_ID.isEmpty()) {
-                plotArea = PlotSquared.get().getPlotArea(Config.PlotSquared.PLOT_WORLD, Config.PlotSquared.PLOT_AREA_ID);
+                plotArea = PlotSquared.get().getPlotAreaManager().getPlotArea(Config.PlotSquared.PLOT_WORLD, Config.PlotSquared.PLOT_AREA_ID);
             } else {
                 for (PlotArea area : PlotSquared.get().getPlotAreaManager().getAllPlotAreas()) {
                     if (area.getWorldName().equalsIgnoreCase(Config.PlotSquared.PLOT_WORLD)) {
@@ -42,7 +43,8 @@ public class PlotSquaredIntegration implements Listener, ConfigMessages {
                 }
             }
         } else {
-            plotArea = PlotSquared.get().getFirstPlotArea();
+            PlotArea[] areas = PlotSquared.get().getPlotAreaManager().getAllPlotAreas();
+            plotArea = areas.length > 0 ? areas[0] : null;
         }
 
         if (plotArea != null) {
@@ -59,7 +61,7 @@ public class PlotSquaredIntegration implements Listener, ConfigMessages {
             if (plotArea != null) {
                 Set<Plot> plots = plotArea.getPlots(landOwner.getChiefId());
                 if (plots.isEmpty()) {
-                    Plot plot = plotArea.getNextFreePlot(PlotSquared.imp().wrapPlayer(player), null);
+                    Plot plot = plotArea.getNextFreePlot(((BukkitPlayerManager) PlotSquared.platform().playerManager()).getPlayer(player), null);
                     if (plot == null) {
                         return;
                     }
@@ -105,7 +107,7 @@ public class PlotSquaredIntegration implements Listener, ConfigMessages {
     }
 
     private void teleportToPlot(Player player, Plot plot) {
-        Utils.teleport(this, player, "plotsquared", () -> plot.teleportPlayer(PlotSquared.imp().wrapPlayer(player), TeleportCause.PLUGIN, (success) -> {}));
+        Utils.teleport(this, player, "plotsquared", () -> plot.teleportPlayer(((BukkitPlayerManager) PlotSquared.platform().playerManager()).getPlayer(player), TeleportCause.PLUGIN, (success) -> {}));
     }
 
     public String getPlotSquaredVersion() {
@@ -137,7 +139,7 @@ public class PlotSquaredIntegration implements Listener, ConfigMessages {
         if (plotArea != null) {
             Set<Plot> plots = plotArea.getPlots(event.getLandOwner().getChiefId());
             for (Plot plot : plots) {
-                plot.deletePlot(null);
+                plotArea.removePlot(plot.getId());
             }
         }
     }
