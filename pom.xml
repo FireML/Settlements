@@ -190,7 +190,7 @@
         </repository>
         <repository>
             <id>vault-repo</id>
-            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+            <url>https://nexus.hc.to/content/repositories/pub_releases</url>
         </repository>
         <repository>
             <id>minebench-repo</id>
@@ -198,19 +198,19 @@
         </repository>
         <repository>
             <id>lwc-repo</id>
-            <url>http://repo.dmulloy2.net/nexus/repository/snapshots/</url>
+            <url>https://repo.dmulloy2.net/nexus/repository/snapshots/</url>
         </repository>
         <repository>
             <id>multiverse-repo</id>
-            <url>http://repo.onarandombox.com/content/repositories/multiverse</url>
+            <url>https://repo.onarandombox.com/content/repositories/multiverse</url>
         </repository>
         <repository>
             <id>aikar</id>
-            <url>http://repo.aikar.co/nexus/content/groups/aikar/</url>
+            <url>https://repo.aikar.co/nexus/content/groups/aikar/</url>
         </repository>
         <repository>
             <id>elmakers-repo</id>
-            <url>http://maven.elmakers.com/repository/</url>
+            <url>https://maven.elmakers.com/repository/</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
@@ -224,7 +224,7 @@
         </repository>
         <repository>
             <id>placeholderapi</id>
-            <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
         <repository>
             <id>brewery-repo</id>
