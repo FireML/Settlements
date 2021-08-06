@@ -151,8 +151,8 @@ public class ChatManager implements ConfigMessages, Listener {
             return;
         }
 
-        String senderPrefix = MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(sender));
-        String senderSuffix = MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerSuffix(sender));
+        String senderPrefix = getPlayerPrefix(sender);
+        String senderSuffix = getPlayerSuffix(sender);
 
         if (sender.hasPermission("kingdoms.chat.colour")) {
             message = MessageUtils.replaceColorCodes(message);
@@ -500,8 +500,8 @@ public class ChatManager implements ConfigMessages, Listener {
         Map<String, BaseComponent[]> map = new LinkedHashMap<>();
         map.put("name", TextComponent.fromLegacyText(player.getName()));
         map.put("displayname", TextComponent.fromLegacyText(player.getDisplayName()));
-        map.put("prefix", TextComponent.fromLegacyText(MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(player))));
-        map.put("suffix", TextComponent.fromLegacyText(MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerSuffix(player))));
+        map.put("prefix", TextComponent.fromLegacyText(getPlayerPrefix(player)));
+        map.put("suffix", TextComponent.fromLegacyText(getPlayerSuffix(player)));
         map.put("rank", TextComponent.fromLegacyText(res.hasVillage() ? res.getVillageRank().getTag(res.getVillage()) : ""));
         map.put("title", TextComponent.fromLegacyText(res.getDisplayTitle()));
         return map;
@@ -519,8 +519,8 @@ public class ChatManager implements ConfigMessages, Listener {
         return new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(MessageUtils.replacePlaceholders(hover,
                 "name", player.getName(),
                 "displayname", player.getDisplayName(),
-                "prefix", MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(player)),
-                "suffix", MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerSuffix(player)),
+                "prefix", getPlayerPrefix(player),
+                "suffix", getPlayerSuffix(player),
                 "balance", getMessage("hover.balance").getReplacedText("balance", BALANCE_FORMAT.format(KingdomsPlugin.getInstance().getEconomy().getBalance(player))),
                 "bonus", getMessage("hover.bonus").getReplacedText("bonus", BALANCE_FORMAT.format(res.getBonusClaims())),
                 "village", res.hasVillage() ? getMessage("hover.village").getReplacedText(
@@ -547,6 +547,14 @@ public class ChatManager implements ConfigMessages, Listener {
 
     public UUID getLastMessaged(Player p) {
         return lastMessage.get(p.getUniqueId());
+    }
+
+    private String getPlayerPrefix(Player sender) {
+        return KingdomsPlugin.chat != null ? MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerPrefix(sender)) : "";
+    }
+
+    private String getPlayerSuffix(Player sender) {
+        return KingdomsPlugin.chat != null ? MessageUtils.replaceColorCodes(KingdomsPlugin.chat.getPlayerSuffix(sender)) : "";
     }
 
     synchronized public static ChatManager getInstance() {

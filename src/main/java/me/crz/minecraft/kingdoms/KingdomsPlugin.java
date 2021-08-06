@@ -78,7 +78,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
     private Set<ShopProvider> shopProviders = new LinkedHashSet<>();
     private Set<MailProvider> mailProviders = new LinkedHashSet<>();
 
-    public static Chat chat;
+    public static Chat chat = null;
     private boolean running = false;
     private static final Timer timer = new Timer();
     private LandModeListener landModeListener;
@@ -119,11 +119,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        if (!this.setupChat()) {
-            this.getLogger().log(Level.SEVERE, "Disabled due to missing chat provider! (e.g. a permission plugin)");
-            this.getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
+        this.setupChat();
 
         ConfigManager.getInstance();
         try {
@@ -349,7 +345,7 @@ public class KingdomsPlugin extends JavaPlugin implements Listener {
         }
         RegisteredServiceProvider<Chat> rsp = this.getServer().getServicesManager().getRegistration(Chat.class);
         if (rsp == null) {
-            this.getLogger().log(Level.SEVERE, "No chat service provider registered!");
+            this.getLogger().log(Level.WARNING, "No chat service provider registered!");
             return false;
         }
         chat = rsp.getProvider();
