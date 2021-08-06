@@ -541,7 +541,9 @@ public class Utils {
     }
 
     public static long getLong(Object o) {
-        if (o instanceof Long) {
+        if (o == null) {
+            return 0;
+        } else if (o instanceof Long) {
             return (Long) o;
         } else if (o instanceof Number) {
             return ((Number) o).longValue();
@@ -550,7 +552,9 @@ public class Utils {
     }
 
     public static float getFloat(Object o) {
-        if (o instanceof Float) {
+        if (o == null) {
+            return 0;
+        } else if (o instanceof Float) {
             return (Float) o;
         } else if (o instanceof Number) {
             return ((Number) o).floatValue();
@@ -559,7 +563,9 @@ public class Utils {
     }
 
     public static boolean getBoolean(Object o) {
-        if (o instanceof Boolean) {
+        if (o == null) {
+            return false;
+        } else if (o instanceof Boolean) {
             return (boolean) o;
         } else if (o instanceof Number) {
             return ((Number) o).longValue() != 0;
