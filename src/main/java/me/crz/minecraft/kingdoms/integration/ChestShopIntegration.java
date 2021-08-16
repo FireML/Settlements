@@ -91,6 +91,14 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
         KingdomsPlugin.getInstance().getLockProviders().add(this);
         KingdomsPlugin.getInstance().getShopProviders().add(this);
         KingdomsPlugin.getInstance().registerListener(this);
+
+        try {
+            if (Properties.VALID_PLAYERNAME_REGEXP.equals("^\\w+$")) {
+                Properties.VALID_PLAYERNAME_REGEXP = "^([ksve]:(\\w+)?|\\w+)$";
+            } else if (!Properties.VALID_PLAYERNAME_REGEXP.equals("^([ksve]:(\\w+)?|\\w+)$")) {
+                KingdomsPlugin.getInstance().getLogger().log(Level.INFO, "Please make sure that `VALID_PLAYERNAME_REGEXP` in your ChestShop config.yml matches settlement IDs! E.g. \"^([ksve]:(\\w+)?|\\w+)$\"");
+            }
+        } catch (NoSuchFieldError ignored) {}
     }
 
     @EventHandler(priority = EventPriority.LOW)
