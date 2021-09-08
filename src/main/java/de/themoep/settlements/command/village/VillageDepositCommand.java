@@ -1,0 +1,24 @@
+package de.themoep.settlements.command.village;
+
+import de.themoep.settlements.leveling.DepositGUI;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.command.SubCommand;
+import de.themoep.settlements.db.LogType;
+import de.themoep.settlements.utils.Message;
+
+public class VillageDepositCommand extends VillageSubCommand {
+    public VillageDepositCommand(SubCommand parent) {
+        super(parent, "deposit");
+        registerCommand(new VillageHistoryCommand(this, LogType.VAULT));
+    }
+
+    @Override
+    public boolean run(Resident resident, String base, String alias, String... args) {
+        if (!resident.getVillage().isMaxLevel()) {
+            new DepositGUI("village", resident, resident.getVillage()).open();
+        } else {
+            resident.tell(Message.get("command.village.upgrade.max-level-reached"));
+        }
+        return true;
+    }
+}

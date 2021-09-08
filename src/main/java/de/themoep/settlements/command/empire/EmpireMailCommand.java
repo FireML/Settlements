@@ -1,0 +1,39 @@
+package de.themoep.settlements.command.empire;
+
+import de.themoep.settlements.integration.MailProvider;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.village.Village;
+import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.command.SubCommand;
+import org.bukkit.ChatColor;
+
+public class EmpireMailCommand extends EmpireSubCommand {
+    public EmpireMailCommand(SubCommand parent) {
+        super(parent, "mail <message>");
+    }
+
+    @Override
+    public boolean run(Resident res, String base, String alias, String... args) {
+        if (SettlementsPlugin.getInstance().getMailProviders().isEmpty()) {
+            res.getPlayer().sendMessage(ChatColor.RED + "No mail plugin installed?");
+            return true;
+        } else if (args.length == 0) {
+            return false;
+        }
+        MailProvider mailProvider = SettlementsPlugin.getInstance().getMailProviders().iterator().next();
+        String sender = getMessage("sender").getReplacedText(
+                "title", res.getVillageTitle(),
+                "displaytitle", res.getDisplayTitle(),
+                "name", res.getName(),
+                "empirestate", res.getVillage().getEmpire().getStateTag(),
+                "empirename", res.getVillage().getEmpire().getName());
+        String message = String.join(" ", args);
+        for (Village member : res.getVillage().getEmpire().getMembers()) {
+            if (!member.isMember(res)) {
+                mailProvider.sendMail(sender, member.getChief(), message);
+            }
+        }
+        getMessage("sent").tell(res, "amount", String.valueOf(res.getVillage().getEmpire().getMemberIds().size() - 1));
+        return true;
+    }
+}

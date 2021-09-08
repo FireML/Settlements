@@ -1,0 +1,40 @@
+package de.themoep.settlements.command.village;
+
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.command.SubCommand;
+import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.land.LandManager;
+import de.themoep.settlements.land.LandOwner;
+import de.themoep.settlements.utils.Utils;
+import de.themoep.settlements.utils.config.Config;
+
+public class VillageAllyclaimCommand extends VillageSubCommand {
+    public VillageAllyclaimCommand(SubCommand parent) {
+        super(parent, "allyclaim <allow|deny>", "setallyclaim");
+    }
+
+    @Override
+    public boolean run(Resident resident, String base, String alias, String... args) {
+        boolean value;
+        if (args.length > 0) {
+            try {
+                value = Utils.parseBoolean(args[0]);
+            } catch (IllegalArgumentException e) {
+                return false;
+            }
+        } else {
+            value = !resident.getVillage().isAllowAllyClaim();
+        }
+
+        resident.getVillage().setAllowAllyClaim(value);
+        if (!value) {
+            for (LandOwner ally : resident.getVillage().getAllies()) {
+                LandManager.getInstance().checkClaimDistance(resident.getVillage(), ally);
+            }
+        }
+        DatabaseManager.getInstance().saveSettlement(resident.getVillage());
+        getMessage(value ? "enabled" : "disabled").tell(resident, "grace", String.valueOf(Config.Settlement.Claiming.Close.Unclaim.GRACE_DAYS));
+
+        return true;
+    }
+}

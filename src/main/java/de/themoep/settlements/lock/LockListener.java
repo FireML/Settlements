@@ -1,0 +1,439 @@
+package de.themoep.settlements.lock;
+
+import de.themoep.settlements.command.common.TargetParser;
+import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.integration.ShopProvider;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.utils.MessageUtils;
+import de.themoep.settlements.utils.NameTag;
+import de.themoep.settlements.utils.Pair;
+import de.themoep.settlements.utils.Targetable;
+import de.themoep.settlements.utils.Utils;
+import de.themoep.settlements.utils.config.Config;
+import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.world.SimpleChunkLocation;
+import io.papermc.lib.PaperLib;
+import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.land.LandManager;
+import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.land.LandAccessChecker;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.data.Directional;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.minecart.HopperMinecart;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.event.world.StructureGrowEvent;
+import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.event.world.WorldUnloadEvent;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.InventoryHolder;
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+public class LockListener implements Listener, LandAccessChecker, TargetParser {
+
+    // chunk load caching
+    @EventHandler
+    public void onChunkLoad(ChunkLoadEvent event) {
+        LockManager.getInstance().loadChunks(new SimpleChunkLocation(event.getChunk()));
+    }
+
+    @EventHandler
+    public void onChunkUnload(ChunkUnloadEvent event) {
+        LockManager.getInstance().unloadChunks(new SimpleChunkLocation(event.getChunk()));
+    }
+
+    @EventHandler
+    public void onWorldLoad(WorldLoadEvent event) {
+        LockManager.getInstance().loadChunks(
+                Arrays.stream(event.getWorld().getLoadedChunks())
+                        .map(SimpleChunkLocation::new)
+                        .toArray(SimpleChunkLocation[]::new));
+    }
+
+    @EventHandler
+    public void onWorldUnload(WorldUnloadEvent event) {
+        LockManager.getInstance().unloadWorld(event.getWorld());
+    }
+
+    // block destruction
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+    public void onBlockBreak(BlockBreakEvent event) {
+        Lock lock = LockManager.getInstance().getLock(event.getBlock());
+        if (lock != null) {
+            if (lock.isOwner(event.getPlayer()) || event.getPlayer().hasPermission("kingdoms.bypass.lock")) {
+                getMessage("unlocked").tell(event.getPlayer(), "block", NameTag.getTag(lock.getBlock()));
+                LockManager.getInstance().deleteLock(lock);
+            } else {
+                event.setCancelled(true);
+                Utils.runAsync(() -> {
+                    Resident owner = lock.getOwner();
+                    getError("locked").tell(event.getPlayer(),
+                            "name", owner != null ? owner.getName() : "-",
+                            "title", owner != null ? owner.getVillageTitle() : "",
+                            "block", NameTag.getTag(lock.getBlock())
+                    );
+                });
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onStructureGrow(StructureGrowEvent event) {
+        for (Iterator<BlockState> it = event.getBlocks().iterator(); it.hasNext();) {
+            Lock lock = LockManager.getInstance().getLock(it.next().getBlock());
+            if (lock != null) {
+                it.remove();
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPistonExtend(BlockPistonExtendEvent event) {
+        if (containsLocked(event.getBlocks())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPistonRetract(BlockPistonRetractEvent event) {
+        if (containsLocked(event.getBlocks())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onBlockExplode(BlockExplodeEvent event) {
+        Lock lock = LockManager.getInstance().getLock(event.getBlock());
+        if (lock != null) {
+            event.setCancelled(true);
+        } else {
+            event.blockList().removeIf(b -> LockManager.getInstance().getLock(b) != null);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityExplode(EntityExplodeEvent event) {
+        event.blockList().removeIf(b -> LockManager.getInstance().getLock(b) != null);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onBlockBurn(BlockBurnEvent event) {
+        Lock lock = LockManager.getInstance().getLock(event.getBlock());
+        if (lock != null) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityChangeBlock(EntityChangeBlockEvent event) {
+        Lock lock = LockManager.getInstance().getLock(event.getBlock());
+        if (lock != null) {
+            event.setCancelled(true);
+        }
+    }
+
+    private boolean containsLocked(List<Block> blocks) {
+        for (Block block : blocks) {
+            Lock lock = LockManager.getInstance().getLock(block);
+            if (lock != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // block interacting
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onInteract(PlayerInteractEvent event) {
+        if (event.getClickedBlock() == null) {
+            return;
+        }
+
+        boolean canAccess = !event.isCancelled();
+        Lock lock = LockManager.getInstance().getLock(event.getClickedBlock());
+        if (lock != null) {
+            if (!lock.canAccess(event.getPlayer())) {
+                event.setCancelled(true);
+                Utils.runAsync(() -> {
+                    Resident owner = lock.getOwner();
+                    getError("locked").tell(event.getPlayer(),
+                            "name", owner != null ? owner.getName() : "-",
+                            "title", owner != null? owner.getVillageTitle() : "",
+                            "block", NameTag.getTag(lock.getBlock())
+                    );
+                });
+            } else if (event.isCancelled()) {
+                canAccess = true;
+                event.setCancelled(false);
+            }
+        }
+        if (event.getHand() == EquipmentSlot.HAND) {
+            String action = LockManager.getInstance().pullAction(event.getPlayer().getUniqueId());
+            if (action != null) {
+                event.setCancelled(true);
+                if ("lock".equalsIgnoreCase(action)) {
+                    if (lock == null) {
+                        OwnedLand land = LandManager.getInstance().getLand(event.getClickedBlock().getLocation());
+                        if (land == null && Config.Lock.ONLY_IN_CLAIM) {
+                            getError("only-in-claim").tell(event.getPlayer());
+                        } else if (!Config.Lock.BLOCKS.contains(event.getClickedBlock().getType())) {
+                            getError("not-lockable").tell(event.getPlayer(), "block", NameTag.getTag(event.getClickedBlock().getType()));
+                        } else {
+                            if (canAccess && LockProvider.canAccessCheck(event.getPlayer(), event.getClickedBlock())) {
+                                Pair<Boolean, String> response = getCanBuildAll(event.getPlayer(), event.getClickedBlock().getLocation());
+                                if (response.getLeft()) {
+                                    Lock l = LockManager.getInstance().registerNewLock(event.getPlayer(), event.getClickedBlock());
+                                    getMessage("new-lock").tell(event.getPlayer(), "block", NameTag.getTag(l.getBlock()));
+                                    return;
+                                } else {
+                                    MessageUtils.tell(event.getPlayer(), response.getRight());
+                                }
+                            }
+                            getError("locked").tell(event.getPlayer(),
+                                    "name", "someone",
+                                    "title", "",
+                                    "block", NameTag.getTag(event.getClickedBlock().getType())
+                            );
+                        }
+                    } else if (lock.canAccess(event.getPlayer())) {
+                        Utils.runAsync(() -> {
+                            Resident owner = lock.getOwner();
+                            getError("locked").tell(event.getPlayer(),
+                                    "name", owner != null ? owner.getName() : "-",
+                                    "title", owner != null? owner.getVillageTitle() : "",
+                                    "block", NameTag.getTag(lock.getBlock())
+                            );
+                        });
+                    }
+                } else if (canAccess && action.toLowerCase().startsWith("add")) {
+                    Lock l = null;
+                    if (lock == null) {
+                        if (ShopProvider.isShopCheck(event.getClickedBlock()) && LockProvider.canAccessCheck(event.getPlayer(), event.getClickedBlock())) {
+                            l = LockManager.getInstance().registerNewLock(event.getPlayer(), event.getClickedBlock());
+                        } else {
+                            getError("not-locked").tell(event.getPlayer(), "block", NameTag.getTag(event.getClickedBlock().getType()));
+                        }
+                    } else {
+                        l = lock;
+                    }
+
+                    if (l != null) {
+                        if (l.isOwner(event.getPlayer())) {
+                            Targetable target = getTarget(event.getPlayer(), action.substring("add ".length()));
+                            if (target != null) {
+                                if (l.grantAccess(target)) {
+                                    getMessage("access.granted").tell(event.getPlayer(), "block", NameTag.getTag(l.getBlock()), "name", target.getName());
+                                    DatabaseManager.getInstance().saveLocks(l);
+                                    return;
+                                } else {
+                                    getMessage("access.already-granted").tell(event.getPlayer(), "block", NameTag.getTag(l.getBlock()), "name", target.getName());
+                                }
+                            }
+                        } else if (l.canAccess(event.getPlayer())) {
+                            Lock finalL = l;
+                            Utils.runAsync(() -> {
+                                Resident owner = finalL.getOwner();
+                                getError("locked").tell(event.getPlayer(),
+                                        "name", owner != null ? owner.getName() : "-",
+                                        "title", owner != null ? owner.getVillageTitle() : "",
+                                        "block", NameTag.getTag(finalL.getBlock())
+                                );
+                            });
+                        }
+                    }
+                } else if (lock == null) {
+                    getError("not-locked").tell(event.getPlayer(), "block", NameTag.getTag(event.getClickedBlock().getType()));
+                } else if ("unlock".equalsIgnoreCase(action)) {
+                    if (lock.canAdministrate(event.getPlayer())) {
+                        LockManager.getInstance().deleteLock(lock);
+                        getMessage("unlocked").tell(event.getPlayer(), "block", NameTag.getTag(lock.getBlock()));
+                        return;
+                    } else {
+                        getError("cant-unlock").tell(event.getPlayer(), "block", NameTag.getTag(lock.getBlock()));
+                    }
+                } else if ("hoppers".equalsIgnoreCase(action)) {
+                    if (lock.isOwner(event.getPlayer())) {
+                        lock.setAllowHoppers(!lock.isAllowHoppers());
+                        getMessage("hoppers." + (lock.isAllowHoppers() ? "enabled" : ".disabled")).tell(event.getPlayer(), "block", NameTag.getTag(lock.getBlock()));
+                        DatabaseManager.getInstance().saveLocks(lock);
+                        return;
+                    } else if (lock.canAccess(event.getPlayer())) {
+                        Utils.runAsync(() -> {
+                            Resident owner = lock.getOwner();
+                            getError("locked").tell(event.getPlayer(),
+                                    "name", owner != null ? owner.getName() : "-",
+                                    "title", owner != null? owner.getVillageTitle() : "",
+                                    "block", NameTag.getTag(lock.getBlock())
+                            );
+                        });
+                    }
+                } else if (action.toLowerCase().startsWith("remove")) {
+                    if (lock.isOwner(event.getPlayer())) {
+                        Targetable target = getTarget(event.getPlayer(), action.substring("remove ".length()));
+                        if (target != null) {
+                            if (lock.revokeAccess(target)) {
+                                getMessage("access.revoked").tell(event.getPlayer(), "block", NameTag.getTag(lock.getBlock()), "name", target.getName());
+                                DatabaseManager.getInstance().saveLocks(lock);
+                                return;
+                            } else {
+                                getMessage("access.already-revoked").tell(event.getPlayer(), "block", NameTag.getTag(lock.getBlock()), "name", target.getName());
+                            }
+                        }
+                    } else if (lock.canAccess(event.getPlayer())) {
+                        Utils.runAsync(() -> {
+                            Resident owner = lock.getOwner();
+                            getError("locked").tell(event.getPlayer(),
+                                    "name", owner != null ? owner.getName() : "-",
+                                    "title", owner != null? owner.getVillageTitle() : "",
+                                    "block", NameTag.getTag(lock.getBlock())
+                            );
+                        });
+                    }
+                } else if (action.equalsIgnoreCase("info")) {
+                    if (lock.canAccess(event.getPlayer()) || lock.canAdministrate(event.getPlayer())) {
+                        Utils.runAsync(() -> {
+                            Resident owner = lock.getOwner();
+                            getMessage("info.general").tell(event.getPlayer(),
+                                    "title", owner != null? owner.getVillageTitle() : "",
+                                    "owner", owner != null ? owner.getName() : "-",
+                                    "hoppers", MessageUtils.yesOrNo(lock.isAllowHoppers())
+                            );
+                            if (!lock.getAllowedPlayers().isEmpty()) {
+                                event.getPlayer().sendMessage(lock.getAllowedPlayers().stream()
+                                        .map(id -> ResidentManager.getInstance().getResident(id))
+                                        .filter(Objects::nonNull)
+                                        .map(r -> getMessage("info.entry").getReplacedText("name", r.getName(), "title", r.getVillageTitle()))
+                                        .collect(Collectors.joining(getMessage("info.separator").getText())));
+                            }
+                            if (!lock.getAllowedVillageIds().isEmpty()) {
+                                event.getPlayer().sendMessage(lock.getAllowedVillageIds().stream()
+                                        .map(i -> VillageManager.getInstance().getFromId(i))
+                                        .filter(Objects::nonNull)
+                                        .map(v -> getMessage("info.entry").getReplacedText("name", v.getName(), "title", v.getStateTag()))
+                                        .collect(Collectors.joining(getMessage("info.separator").getText())));
+                            }
+                            if (!lock.getAllowedEmpireIds().isEmpty()) {
+                                event.getPlayer().sendMessage(lock.getAllowedEmpireIds().stream()
+                                        .map(i -> EmpireManager.getInstance().getEmpireFromId(i))
+                                        .filter(Objects::nonNull)
+                                        .map(e -> getMessage("info.entry").getReplacedText("name", e.getName(), "title", e.getStateTag()))
+                                        .collect(Collectors.joining(getMessage("info.separator").getText())));
+                            }
+                        });
+                    }
+                }
+                if (LockManager.getInstance().hasToggledAction(event.getPlayer().getUniqueId())) {
+                    getMessage("toggled").tell(event.getPlayer(), "toggle", action);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onSignChange(SignChangeEvent event) {
+        Lock lock = LockManager.getInstance().getLock(event.getBlock());
+        if (lock != null && !lock.canAccess(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+    public void onInventoryOpen(InventoryOpenEvent event) {
+        if (event.getPlayer() instanceof Player) {
+            Lock lock = LockManager.getInstance().getLock(event.getInventory().getHolder());
+            if (lock != null && !lock.canAccess((Player) event.getPlayer())) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    // block item moving
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+    public void onHopperMove(InventoryMoveItemEvent event) {
+        if (Config.Lock.ALTERNATIVE_HOPPER_PROTECTION
+                && !(SettlementsPlugin.getInstance().getServerAdapter().getHolder(event.getSource()) instanceof HopperMinecart
+                        || SettlementsPlugin.getInstance().getServerAdapter().getHolder(event.getDestination()) instanceof HopperMinecart)) {
+            return;
+        }
+        Lock sourceLock = LockManager.getInstance().getLock(event.getSource().getHolder());
+        if (sourceLock != null && !sourceLock.isAllowHoppers()) {
+            event.setCancelled(true);
+            return;
+        }
+        Lock destinationLock = LockManager.getInstance().getLock(event.getDestination().getHolder());
+        if (destinationLock != null && !destinationLock.isAllowHoppers()) {
+            event.setCancelled(true);
+            return;
+        }
+    }
+
+    // block placement if alternative hopper protection is enabled
+
+    @EventHandler(ignoreCancelled = true)
+    public void onBlockPlace(BlockPlaceEvent event) {
+        if (!Config.Lock.ALTERNATIVE_HOPPER_PROTECTION) {
+            return;
+        }
+
+        if (event.getBlock().getType() == Material.HOPPER) {
+            if (checkForHopperLock(event.getPlayer(), event.getBlock().getRelative(BlockFace.UP))) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+
+        if (event.getBlock().getType() == Material.HOPPER || event.getBlock().getType() == Material.DROPPER) {
+            if (checkForHopperLock(event.getPlayer(), event.getBlock().getRelative(((Directional) event.getBlock().getBlockData()).getFacing()))) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+    }
+
+    private boolean checkForHopperLock(Player player, Block block) {
+        if (!block.isEmpty() && PaperLib.getBlockState(block, false).getState() instanceof InventoryHolder) {
+            // we use the alternative hopper protection, check if the hopper is placed below a container!
+            Lock lock = LockManager.getInstance().getLock(block);
+            if (lock != null && !lock.isAllowHoppers() && !lock.canAccess(player)) {
+                getMessage("hoppers.disabled").tell(player, "block", NameTag.getTag(block.getType()));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public String name() {
+        return "lock";
+    }
+}

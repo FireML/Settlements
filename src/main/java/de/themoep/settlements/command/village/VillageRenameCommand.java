@@ -1,0 +1,43 @@
+package de.themoep.settlements.command.village;
+
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.village.Village;
+import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.command.SubCommand;
+import de.themoep.settlements.utils.Utils;
+
+import java.util.regex.Pattern;
+
+public class VillageRenameCommand extends VillageSubCommand {
+    private Pattern allowed = Pattern.compile("[\\w-]+");
+
+    public VillageRenameCommand(SubCommand parent) {
+        super(parent, "rename <name>");
+    }
+
+    @Override
+    public boolean run(Resident res, String base, String alias, String... args) {
+        Village village = res.getVillage();
+        if (args.length == 0) {
+            return false;
+        }
+        String name = Utils.filterAllCurses(String.join(" ", args).trim());
+        if (name.toLowerCase().contains("claims")) {
+            getError("invalid-characters").tell(res, "input", name);
+        } else if (villageExists(name)) {
+            getError("village-exists").tell(res, "name", name);
+        } else if (name.length() > 20) {
+            getError("too-long").tell(res, "input", name, "amount", String.valueOf(20));
+        } else if (!allowed.matcher(name).matches()) {
+            getError("invalid-characters").tell(res, "input", name);
+        } else {
+            VillageManager.getInstance().changeName(village, name);
+            getMessage("success").tell(village.getOnlineResidents(), "name", village.getName(), "state", village.getState().getTag());
+        }
+        return true;
+    }
+
+    private boolean villageExists(String name) {
+        return VillageManager.getInstance().getFromName(name) != null;
+    }
+}

@@ -4,12 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>me.crz.minecraft.kingdoms</groupId>
-    <artifactId>kingdoms</artifactId>
-    <version>1.6</version>
+    <groupId>de.themoep.settlements</groupId>
+    <artifactId>settlements</artifactId>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>ApeironKingdoms</name>
+    <name>Settlements</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -119,55 +119,55 @@
                     <relocations>
                         <relocation>
                             <pattern>io.chazza.advancementapi</pattern>
-                            <shadedPattern>me.crz.minecraft.kingdoms.libs.advancementapi</shadedPattern>
+                            <shadedPattern>de.themoep.settlements.libs.advancementapi</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.github.benmanes.caffeine</pattern>
-                            <shadedPattern>me.crz.minecraft.kingdoms.libs.caffeine</shadedPattern>
+                            <shadedPattern>de.themoep.settlements.libs.caffeine</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.apache.commons.io</pattern>
-                            <shadedPattern>me.crz.minecraft.kingdoms.libs.commons.io</shadedPattern>
+                            <shadedPattern>de.themoep.settlements.libs.commons.io</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.slf4j</pattern>
-                            <shadedPattern>me.crz.minecraft.kingdoms.libs.slf4j</shadedPattern>
+                            <shadedPattern>de.themoep.settlements.libs.slf4j</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.apache.logging.slf4j</pattern>
-                            <shadedPattern>me.crz.minecraft.kingdoms.libs.apache.logging.slf4j</shadedPattern>
+                            <shadedPattern>de.themoep.settlements.libs.apache.logging.slf4j</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.zaxxer.hikari</pattern>
-                            <shadedPattern>me.crz.minecraft.kingdoms.libs.hikari</shadedPattern>
+                            <shadedPattern>de.themoep.settlements.libs.hikari</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>de.themoep.minedown</pattern>
-                            <shadedPattern>me.crz.minecraft.kingdoms.libs.minedown</shadedPattern>
+                            <shadedPattern>de.themoep.settlements.libs.minedown</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>net.wesjd.anvilgui</pattern>
-                            <shadedPattern>me.crz.minecraft.kingdoms.libs.anvilgui</shadedPattern>
+                            <shadedPattern>de.themoep.settlements.libs.anvilgui</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>de.themoep.inventorygui</pattern>
-                            <shadedPattern>me.crz.minecraft.kingdoms.libs.inventorygui</shadedPattern>
+                            <shadedPattern>de.themoep.settlements.libs.inventorygui</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>io.papermc.lib</pattern>
-                            <shadedPattern>me.crz.minecraft.kingdoms.libs.paperlib</shadedPattern>
+                            <shadedPattern>de.themoep.settlements.libs.paperlib</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>co.aikar.timings.lib</pattern>
-                            <shadedPattern>me.crz.minecraft.kingdoms.libs.timings</shadedPattern>
+                            <shadedPattern>de.themoep.settlements.libs.timings</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.intellij</pattern>
-                            <shadedPattern>me.crz.minecraft.kingdoms.libs.jetbrains</shadedPattern>
+                            <shadedPattern>de.themoep.settlements.libs.jetbrains</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.jetbrains</pattern>
-                            <shadedPattern>me.crz.minecraft.kingdoms.libs.jetbrains</shadedPattern>
+                            <shadedPattern>de.themoep.settlements.libs.jetbrains</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

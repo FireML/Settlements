@@ -1,6 +1,6 @@
-main: me.crz.minecraft.kingdoms.KingdomsPlugin
+main: de.themoep.settlements.KingdomsPlugin
 version: "${minecraft.plugin.version}"
-name: ApeironKingdoms
+name: Settlements
 depend: [Vault]
 softdepend: [LWC, ChestShop, Multiverse-Core, CMI, PlaceholderAPI, Brewery, PlotSquared]
 author: Phoenix616

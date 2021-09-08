@@ -16,8 +16,8 @@ storage:
   port: 3306
   user: root
   password: password
-  database: kingdoms
-  table-prefix: kingdoms_
+  database: settlements
+  table-prefix: settlements_
   url-parameters: ""
   # MySQL connection timeout in ms
   connection-timeout: 30000

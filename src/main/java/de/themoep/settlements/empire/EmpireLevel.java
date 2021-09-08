@@ -1,0 +1,47 @@
+package de.themoep.settlements.empire;
+
+import de.themoep.settlements.leveling.LevelInfo;
+import org.bukkit.configuration.ConfigurationSection;
+
+public class EmpireLevel extends LevelInfo {
+    private final long upkeep;
+    private final long upkeepReduction;
+    private final int worldRadius;
+    private final int missions;
+
+    public EmpireLevel(int level, ConfigurationSection config) {
+        super(level, config);
+        upkeep = config.getLong("upkeep", 0);
+        upkeepReduction = config.getLong("upkeep-reduction", 0);
+        worldRadius = config.getInt("world-radius", 0);
+        missions = config.getInt("missions", 0);
+    }
+
+    public long getUpkeep() {
+        return upkeep;
+    }
+
+    public long getUpkeepReduction() {
+        return upkeepReduction;
+    }
+
+    public int getWorldRadius() {
+        return worldRadius;
+    }
+
+    public int getMissions() {
+        return missions;
+    }
+
+    @Override
+    public String toString() {
+        return "EmpireLevel{" +
+                "level=" + getLevel() +
+                ", requirements=" + getRequirements() +
+                ", upkeep=" + upkeep +
+                ", upkeepReduction=" + upkeepReduction +
+                ", worldRadius=" + worldRadius +
+                ", missions=" + missions +
+                '}';
+    }
+}
