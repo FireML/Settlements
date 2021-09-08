@@ -1,3 +1,5 @@
+# Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:levelconf.yml
+
 levels:
   level-1:
     # The amount an empire needs to pay per day

@@ -1,3 +1,5 @@
+# Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:config.yml
+
 # For internal usage only. Do NOT touch!
 config-version: 3
 # Log some debug messages about the inner working of the plugin

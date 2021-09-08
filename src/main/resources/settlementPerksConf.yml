@@ -1,6 +1,9 @@
+# Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:settlementperksconf.yml
+
 resistance1:
   # The icon that should be shown in the GUI. If it's a potion (the default value is a lingering one)
   # and an effect is defined then it will just use a potion of the configured effect
+  # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
   icon: lingering_potion
   # The amount of times this upgrade can be repeated. This allows to make re-purchasable upgrades to trigger effects
   # Default if not added is 0
@@ -29,7 +32,7 @@ resistance1:
         # Where the effect should happen
         # can be:
         # plot - Only for the owner of a plot on the plot
-        # plot-friends - Like plot just for friends of the resident too
+        # plot-friends - Like plot just for friends of the owner too
         # own-settlement - Effect only in own settlement (default if not set)
         # allied-settlement - Effect in own and all allied settlements
         # enemy-settlement - Effect only while in enemy settlement
@@ -51,7 +54,7 @@ resistance1:
   bonus:
     claims: 0
     outposts: 0
-  # Run an arbitrary console command for all members of the settlement
+  # Run arbitrary console commands for all members of the settlement
   # Placeholders: player, playerid, settlement, state, level, perk
   # run-command:
   # - some {player} command

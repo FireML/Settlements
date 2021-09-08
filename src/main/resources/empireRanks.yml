@@ -1,3 +1,5 @@
+# Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:empireranks.yml
+
 # Permissions that a user can toggle
 perm-groups:
   general:
