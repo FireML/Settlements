@@ -1,4 +1,4 @@
-main: de.themoep.settlements.KingdomsPlugin
+main: de.themoep.settlements.SettlementsPlugin
 version: "${minecraft.plugin.version}"
 name: Settlements
 depend: [Vault]
