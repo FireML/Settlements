@@ -10,6 +10,8 @@ import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.missions.Mission;
 import de.themoep.settlements.missions.MissionData;
+import de.themoep.settlements.rank.EmpireRank;
+import de.themoep.settlements.utils.NameTag;
 import de.themoep.settlements.village.events.SettlementLeaveEvent;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
@@ -56,6 +58,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -688,75 +691,101 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
     }
 
     public String[] getReplacements(ConfigMessages configMessages, String... initial) {
-        Message rankMessage = null;
-        Message entry = null;
-        String online = null;
-        String offline = null;
-        String separator = null;
-        Message more = null;
-        if (configMessages != null) {
-            rankMessage = configMessages.getMessage("residents.rank");
-            entry = configMessages.getMessage("residents.entry");
-            online = configMessages.getMessage("residents.online").getText();
-            offline = configMessages.getMessage("residents.offline").getText();
-            separator = configMessages.getMessage("residents.separator").getText();
-            more = configMessages.getMessage("residents.more");
+        List<String> replacements = new ArrayList<>();
+        Collections.addAll(replacements, initial);
+
+        for (Placeholder replacement : Placeholder.values()) {
+            replacements.add(replacement.name());
+            replacements.add(replacement.getValue(configMessages, this));
         }
-        Resident chief = getChief();
-        String[] repl = new String[] {
-                "name", getName(),
-                "description", getDescription(),
-                "empire", hasEmpire() ? getEmpire().getName() : "",
-                "empirelevel", hasEmpire() ? String.valueOf(getEmpire().getLevel()) : "",
-                "state", getState().getTag(),
-                "abandoned", yesOrNo(isAbandoned()),
-                "abandonedcountdown", isAbandoned() ? UtilTime.format(getCreated() + TimeUnit.MINUTES.toMillis(Config.Settlement.Upkeep.ABANDON_TIME) - System.currentTimeMillis()) : "",
-                "level", String.valueOf(getLevel()),
-                "missionpoints", String.valueOf(getMissionPoints()),
-                "extramissions", String.valueOf(getExtraEmpireMissions()),
-                "land", String.valueOf(LandManager.getInstance().getClaimedLandSize(this)),
-                "maxland", String.valueOf(getMaxClaimableChunks()),
-                "outposts", String.valueOf(getOutpostHomes().size()),
-                "maxoutposts", String.valueOf(getMaxOutposts()),
-                "balance", Utils.withSuffix(getBank()),
-                "bank", Utils.CURRENCY_FORMAT.format(getBank()),
-                "tax", Utils.CURRENCY_FORMAT.format(getTax()),
-                "taxdebtaction", getTaxDebtAction().getTag(),
-                "joinfee", Utils.CURRENCY_FORMAT.format(getJoinFee()),
-                "upkeep", Utils.CURRENCY_FORMAT.format(getUpkeep()),
-                "allowallyclaim", yesOrNo(isAllowAllyClaim()),
-                "hostilespawning", String.valueOf(getMode(PlotMode.mobSpawning)),
-                "passivespawning", String.valueOf(getMode(PlotMode.passiveSpawning)),
-                "firespread", String.valueOf(getMode(PlotMode.fireSpread)),
-                "explosions", String.valueOf(getMode(PlotMode.explosions)),
-                "pvp", String.valueOf(getMode(PlotMode.pvp)),
-                "buff", String.valueOf(getMode(PlotMode.buff)),
-                "bonusclaims", configMessages != null
-                        ? getBonusClaimAmount() > 0 ? configMessages.getMessage("bonus-claims").getReplacedText("amount", String.valueOf(getBonusClaimAmount())) : ""
-                        : String.valueOf(getBonusClaimAmount()),
-                "bonusoutposts", configMessages != null
-                        ? getBonusOutposts() > 0 ? configMessages.getMessage("bonus-outposts").getReplacedText("amount", String.valueOf(getBonusOutposts())) : ""
-                        : String.valueOf(getBonusOutposts()),
-                "access", getAccess().getTag(),
-                "perks", getPerksMap().entrySet().stream()
-                        .map(e -> (e.getValue().getTimes() > 1 ? e.getValue().getTimes() + "x " : "") + getPerk(e.getKey()).getTag())
-                        .collect(Collectors.joining(", ")),
-                "chiefrank", VillageRank.getChief().getTag(this),
-                "chieftitle", chief.getVillageTitle(),
-                "chiefdisplaytitle", chief.getDisplayTitle(),
-                "chief", chief.getName(),
-                "chiefonline", configMessages != null ? chief.getPlayer() != null ? online : offline : "",
-                "residents", configMessages != null ? getResidentsToString(rankMessage, entry, more, online, offline, separator) : String.valueOf(getResidentIds().size()),
-                "size", String.valueOf(getResidentIds().size()),
-                "resonlinecount", String.valueOf(getOnlineCount()),
-                "resotheronlinecount", String.valueOf(getOnlineCount() - 1),
-                "officerranks", Arrays.stream(VillageRank.values())
-                        .filter(r -> !r.isChief())
-                        .filter(r -> getEffectivePermissionValue(r, "village.officer").orElse(false))
-                        .map(r -> r.getTag(this))
-                        .collect(Collectors.joining(", "))
-        };
-        return initial.length > 1 ? ObjectArrays.concat(repl, initial, String.class) : repl;
+
+        return replacements.toArray(new String[0]);
+    }
+
+    public String getReplacement(ConfigMessages configMessages, String placeholder) {
+        try {
+            return Placeholder.valueOf(placeholder).getValue(configMessages, this);
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
+    }
+
+    public enum Placeholder {
+        name((c, v) -> v.getName()),
+        description((c, v) -> v.getDescription()),
+        state((c, v) -> v.getStateTag()),
+        level((c, v) -> String.valueOf(v.getLevel())),
+        empire((c, v) -> v.hasEmpire() ? v.getEmpire().getName() : ""),
+        empirelevel((c, v) -> v.hasEmpire() ? String.valueOf(v.getEmpire().getLevel()) : ""),
+        access((c, v) -> v.getAccess().getTag()),
+        upkeep((c, v) -> Utils.CURRENCY_FORMAT.format(v.getUpkeep())),
+        balance((c, v) -> Utils.withSuffix(v.getBank())),
+        bank((c, v) -> Utils.CURRENCY_FORMAT.format(v.getBank())),
+        joinfee((c, v) -> Utils.CURRENCY_FORMAT.format(v.getJoinFee())),
+        tax((c, v) -> Utils.CURRENCY_FORMAT.format(v.getTax())),
+        taxdebtaction((c, v) -> v.getTaxDebtAction().getTag()),
+        missionpoints((c, v) -> String.valueOf(v.getMissionPoints())),
+        extramissions((c, v) -> String.valueOf(v.getExtraEmpireMissions())),
+        land((c, v) -> String.valueOf(LandManager.getInstance().getClaimedLandSize(v))),
+        maxland((c, v) -> String.valueOf(v.getMaxClaimableChunks())),
+        outposts((c, v) -> String.valueOf(v.getOutpostHomes().size())),
+        maxoutposts((c, v) -> String.valueOf(v.getMaxOutposts())),
+        abandoned((c, v) -> yesOrNo(v.isAbandoned())),
+        abandonedcountdown((c, v) -> v.isAbandoned() ? UtilTime.format(v.getCreated() + TimeUnit.MINUTES.toMillis(Config.Settlement.Upkeep.ABANDON_TIME) - System.currentTimeMillis()) : ""),
+        allowallyclaim((c, v) -> yesOrNo(v.isAllowAllyClaim())),
+        hostilespawning((c, v) -> String.valueOf(v.getMode(PlotMode.mobSpawning))),
+        passivespawning((c, v) -> String.valueOf(v.getMode(PlotMode.passiveSpawning))),
+        firespread((c, v) -> String.valueOf(v.getMode(PlotMode.fireSpread))),
+        explosions((c, v) -> String.valueOf(v.getMode(PlotMode.explosions))),
+        pvp((c, v) -> String.valueOf(v.getMode(PlotMode.pvp))),
+        buff((c, v) -> String.valueOf(v.getMode(PlotMode.buff))),
+        bonusclaims((c, v) -> c != null
+                ? v.getBonusClaimAmount() > 0 ? c.getMessage("bonus-claims").getReplacedText("amount", String.valueOf(v.getBonusClaimAmount())) : ""
+                : String.valueOf(v.getBonusClaimAmount())),
+        bonusoutposts((c, v) -> c != null
+                ? v.getBonusOutposts() > 0 ? c.getMessage("bonus-outposts").getReplacedText("amount", String.valueOf(v.getBonusClaimAmount())) : ""
+                : String.valueOf(v.getBonusOutposts())),
+        bonus((c, v) -> String.valueOf(v.getBonusClaimAmount())),
+        perks((c, v) -> v.getPerksMap().entrySet().stream()
+                .map(p -> (p.getValue().getTimes() > 1 ? p.getValue().getTimes() + "x " : "") + v.getPerk(p.getKey()).getTag())
+                .collect(Collectors.joining(", "))),
+        chiefrank((c, v) -> VillageRank.getChief().getTag(v)),
+        chieftitle((c, v) -> {
+            Resident chief = v.getChief();
+            return chief != null ? chief.getVillageTitle() : "-";
+        }),
+        chiefdisplaytitle((c, v) -> {
+            Resident chief = v.getChief();
+            return chief != null ? chief.getDisplayTitle() : "-";
+        }),
+        chief((c, v) -> {
+            Resident chief = v.getChief();
+            return chief != null ? chief.getName() : "-";
+        }),
+        chiefonline((c, v) -> {
+            Resident chief = v.getChief();
+            return c != null ? (chief != null && chief.getPlayer() != null ? c.getText("residents.online") : c.getText("residents.offline")) : "";
+        }),
+        residents((c, v) -> c != null ? v.getResidentsToString(c.getMessage("residents.rank"), c.getMessage("residents.entry"), c.getMessage("residents.more"), c.getText("residents.online"), c.getText("residents.offline"), c.getText("residents.separator")) : ""),
+        size((c, v) -> String.valueOf(v.getResidentIds().size())),
+        resonlinecount((c, v) -> String.valueOf(v.getOnlineCount())),
+        resotheronlinecount((c, v) -> String.valueOf(v.getOnlineCount() - 1)),
+        officerranks((c, v) -> Arrays.stream(VillageRank.values())
+                .filter(r -> !r.isChief())
+                .filter(r -> v.getEffectivePermissionValue(r, "village.officer").orElse(false))
+                .map(r -> r.getTag(v))
+                .collect(Collectors.joining(", "))),
+        ;
+
+        private final BiFunction<ConfigMessages, Village, String> valueProvider;
+
+        Placeholder(BiFunction<ConfigMessages, Village, String> valueProvider) {
+            this.valueProvider = valueProvider;
+        }
+
+        public String getValue(ConfigMessages configMessages, Village village) {
+            return valueProvider.apply(configMessages, village);
+        }
     }
 
     private String getResidentsToString(Message rankMessage, Message entry, Message more, String online, String offline, CharSequence separator) {

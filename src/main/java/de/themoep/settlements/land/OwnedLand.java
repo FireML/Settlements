@@ -2,6 +2,7 @@ package de.themoep.settlements.land;
 
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Message;
@@ -35,6 +36,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -517,27 +519,58 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     public String[] getReplacements() {
-        return new String[] {
-                "state", getLandOwner().getStateTag(),
-                "name", getName(),
-                "description", getDescription(),
-                "members", String.valueOf(getPlotMembers().size()),
-                "landowner", getLandOwner().getName(),
-                "hostilespawning", String.valueOf(getMode(PlotMode.mobSpawning)),
-                "passivespawning", String.valueOf(getMode(PlotMode.passiveSpawning)),
-                "firespread", String.valueOf(getMode(PlotMode.fireSpread)),
-                "explosions", String.valueOf(getMode(PlotMode.explosions)),
-                "pvp", String.valueOf(getMode(PlotMode.pvp)),
-                "buff", String.valueOf(getMode(PlotMode.buff)),
-                "build", getBuildState() != null && (isPlot() || getBuildState().appliesTo(BuildState.AppliesTo.get(getLandOwner()))) ? getBuildState().getTag() : getLandOwner().getBuildState().getTag(),
-                "buildsource", getBuildState() != null && (isPlot() || getBuildState().appliesTo(BuildState.AppliesTo.get(getLandOwner()))) ? Message.get("names.plot").getText() : getLandOwner().getStateTag(),
-                "embassy", String.valueOf(isEmbassy()),
-                "x", String.valueOf(getX()),
-                "z", String.valueOf(getZ()),
-                "world", getWorldName(),
-                "tax", String.valueOf(tax),
-                "price", String.valueOf(price)
-        };
+        String[] replacements = new String[Placeholder.values().length * 2];
+
+        for (int i = 0; i < Placeholder.values().length; i++) {
+            replacements[i * 2] = Placeholder.values()[i].name();
+            replacements[i * 2 + 1] = Placeholder.values()[i].getValue(this);
+        }
+
+        return replacements;
+    }
+
+    public String getReplacement(String placeholder) {
+        try {
+            return Placeholder.valueOf(placeholder).getValue(this);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    public enum Placeholder {
+        state(l -> l.getLandOwner().getStateTag()),
+        name(OwnedLand::getName),
+        description(OwnedLand::getDescription),
+        members(l -> String.valueOf(l.getPlotMembers().size())),
+        landowner(l -> l.getLandOwner().getName()),
+        plotowner(l -> l.isPlot() && l.getPlotOwner() != null ? ResidentManager.getInstance().getResidentName(l.getPlotOwner()) : ""),
+        hostilespawning(l -> String.valueOf(l.getMode(PlotMode.mobSpawning))),
+        passivespawning(l -> String.valueOf(l.getMode(PlotMode.passiveSpawning))),
+        firespread(l -> String.valueOf(l.getMode(PlotMode.fireSpread))),
+        explosions(l -> String.valueOf(l.getMode(PlotMode.explosions))),
+        pvp(l -> String.valueOf(l.getMode(PlotMode.pvp))),
+        buff(l -> String.valueOf(l.getMode(PlotMode.buff))),
+        build(l -> l.getBuildState() != null && (l.isPlot() || l.getBuildState().appliesTo(BuildState.AppliesTo.get(l.getLandOwner())))
+                ? l.getBuildState().getTag() : l.getLandOwner().getBuildState().getTag()),
+        buildsource(l -> l.getBuildState() != null && (l.isPlot() || l.getBuildState().appliesTo(BuildState.AppliesTo.get(l.getLandOwner())))
+                ? Message.get("names.plot").getText() : l.getLandOwner().getStateTag()),
+        embassy(l -> String.valueOf(l.isEmbassy())),
+        x(l -> String.valueOf(l.getX())),
+        z(l -> String.valueOf(l.getZ())),
+        world(OwnedLand::getWorldName),
+        tax(l -> String.valueOf(l.tax)),
+        price(l -> String.valueOf(l.price)),
+        ;
+
+        private final Function<OwnedLand, String> valueProvider;
+
+        Placeholder(Function<OwnedLand, String> valueProvider) {
+            this.valueProvider = valueProvider;
+        }
+
+        public String getValue(OwnedLand ownedLand) {
+            return valueProvider.apply(ownedLand);
+        }
     }
 
     @Override

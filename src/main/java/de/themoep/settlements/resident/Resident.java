@@ -3,7 +3,9 @@ package de.themoep.settlements.resident;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ObjectArrays;
 import com.google.common.collect.Table;
+import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.integration.AfkProvider;
 import de.themoep.settlements.village.Village;
 import de.themoep.settlements.village.VillageManager;
@@ -25,9 +27,12 @@ import de.themoep.settlements.utils.config.Config;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -40,6 +45,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -468,6 +474,51 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
      */
     public void showSidebar(boolean showSidebar) {
         this.showSidebar = showSidebar;
+    }
+
+    public String[] getReplacements(String... initial) {
+        List<String> replacements = new ArrayList<>();
+        Collections.addAll(replacements, initial);
+
+        for (Placeholder replacement : Placeholder.values()) {
+            replacements.add(replacement.name());
+            replacements.add(replacement.getValue(this));
+        }
+
+        return replacements.toArray(new String[0]);
+    }
+
+    public String getReplacement(String placeholder) {
+        try {
+            return Placeholder.valueOf(placeholder).getValue(this);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    public enum Placeholder {
+                name(r -> r.getName()),
+                empire(r -> r.hasEmpire() ? r.getVillage().getEmpire().getName() : "none"),
+                empirerank(r -> r.hasEmpire() ? r.getEmpireRank().getTag() : "none"),
+                settlement(r -> r.hasVillage() ? r.getVillage().getName() : "none"),
+                rank(r -> r.hasVillage() ? r.getVillageRank().getTag(r.getVillage()) : "none"),
+                title(r -> r.hasVillage() ? r.getVillageTitle() : "none"),
+                balance(r -> Utils.CURRENCY_FORMAT.format(SettlementsPlugin.getInstance().getEconomy().getBalance(Bukkit.getOfflinePlayer(r.getUUID())))),
+                tax(r -> Utils.CURRENCY_FORMAT.format(r.getTax())),
+                bonus(r -> Utils.CURRENCY_FORMAT.format(r.getBonusClaims())),
+                joindate(r -> Utils.DATE_FORMAT.format(new Date(Bukkit.getOfflinePlayer(r.getUUID()).getFirstPlayed()))),
+                lastlogin(r -> Utils.DATE_FORMAT.format(new Date(r.getLastLogin()))),
+        ;
+
+        private final Function<Resident, String> valueProvider;
+
+        Placeholder(Function<Resident, String> valueProvider) {
+            this.valueProvider = valueProvider;
+        }
+
+        public String getValue(Resident resident) {
+            return valueProvider.apply(resident);
+        }
     }
 
     @Override

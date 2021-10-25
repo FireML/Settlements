@@ -1,5 +1,9 @@
 package de.themoep.settlements.integration;
 
+import de.themoep.settlements.land.LandManager;
+import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.resident.ResidentManager;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import me.clip.placeholderapi.PlaceholderHook;
@@ -15,6 +19,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -23,24 +28,103 @@ public class PlaceholderApiIntegration implements ConfigMessages {
 
     public PlaceholderApiIntegration() {
         apiPlugin = PlaceholderAPIPlugin.getInstance();
-        PlaceholderAPI.registerPlaceholderHook("kingdoms", new PlaceholderHook() {
+        PlaceholderHook hook = new PlaceholderHook() {
             @Override
             public String onPlaceholderRequest(Player p, String params) {
                 String[] args = params.split("_");
-                if (args.length > 1 && "top".equalsIgnoreCase(args[0])) {
-                    if ("settlements".equalsIgnoreCase(args[1])) {
-                        return getReplacedVillageString(VillageManager.getInstance().getSettlements().stream(), args);
-                    } else if ("villages".equalsIgnoreCase(args[1])) {
-                        return getReplacedVillageString(VillageManager.getInstance().getSettlements().stream().filter(v -> v.getState() == VillageState.VILLAGE), args);
-                    } else if ("kingdoms".equalsIgnoreCase(args[1])) {
-                        return getReplacedVillageString(VillageManager.getInstance().getSettlements().stream().filter(v -> v.getState() == VillageState.KINGDOM), args);
-                    } else if ("empires".equalsIgnoreCase(args[1])) {
-                        return getReplacedEmpireString(EmpireManager.getInstance().getEmpires().stream(), args);
+                if (args.length > 0) {
+                    switch (args[0].toLowerCase(Locale.ROOT)) {
+                        case "top": {
+                            if (args.length > 1) {
+                                switch (args[1].toLowerCase(Locale.ROOT)) {
+                                    case "settlements":
+                                        return getReplacedVillageString(VillageManager.getInstance().getSettlements().stream(), args);
+                                    case "villages":
+                                        return getReplacedVillageString(VillageManager.getInstance().getSettlements().stream().filter(v -> v.getState() == VillageState.VILLAGE), args);
+                                    case "kingdoms":
+                                        return getReplacedVillageString(VillageManager.getInstance().getSettlements().stream().filter(v -> v.getState() == VillageState.KINGDOM), args);
+                                    case "empires":
+                                        return getReplacedEmpireString(EmpireManager.getInstance().getEmpires().stream(), args);
+                                }
+                            }
+                            break;
+                        }
+                        case "player": {
+                            if (p != null && args.length > 1) {
+                                Resident resident = ResidentManager.getInstance().getResident(p);
+                                switch (args[1].toLowerCase(Locale.ROOT)) {
+                                    case "info": {
+                                        return resident.getReplacement(args[2]);
+                                    }
+                                    case "settlement": {
+                                        if (args.length > 2) {
+                                            if (resident.hasVillage()) {
+                                                return Utils.toMap(resident.getVillage().getReplacements(PlaceholderApiIntegration.this))
+                                                        .get(args[2].toLowerCase(Locale.ROOT));
+                                            } else {
+                                                return "";
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case "empire": {
+                                        if (args.length > 2) {
+                                            if (resident.hasEmpire()) {
+                                                return resident.getVillage().getEmpire().getReplacement(PlaceholderApiIntegration.this, args[2]);
+                                            } else {
+                                                return "";
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                        case "landowner": {
+                            if (p != null && args.length > 1) {
+                                Village v = VillageManager.getInstance().getAt(p.getLocation());
+                                if (v != null) {
+                                    return Utils.toMap(v.getReplacements(PlaceholderApiIntegration.this))
+                                            .get(args[1].toLowerCase(Locale.ROOT));
+                                }
+                                Empire e = EmpireManager.getInstance().getEmpireFromWorld(p.getWorld());
+                                if (e != null) {
+                                    return e.getReplacement(PlaceholderApiIntegration.this, args[1]);
+                                }
+                                return "";
+                            }
+                            break;
+                        }
+                        case "land": {
+                            if (p != null && args.length > 1) {
+                                OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                                if (land != null && land.isPlot()) {
+                                    return land.getReplacement(args[1]);
+                                } else {
+                                    return "";
+                                }
+                            }
+                            break;
+                        }
+                        case "plot": {
+                            if (p != null && args.length > 1) {
+                                OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+                                if (land != null) {
+                                    return land.getReplacement(args[1]);
+                                } else {
+                                    return "";
+                                }
+                            }
+                            break;
+                        }
                     }
                 }
                 return null;
             }
-        });
+        };
+        PlaceholderAPI.registerPlaceholderHook("settlements", hook);
+        PlaceholderAPI.registerPlaceholderHook("kingdoms", hook);
     }
 
     private String getReplacedVillageString(Stream<Village> villageStream, String[] args) {

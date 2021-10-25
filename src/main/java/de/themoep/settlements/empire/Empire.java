@@ -3,7 +3,7 @@ package de.themoep.settlements.empire;
 import co.aikar.timings.lib.MCTiming;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import com.google.common.collect.ObjectArrays;
+import de.themoep.settlements.integration.PlaceholderApiIntegration;
 import de.themoep.settlements.missions.MissionData;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
@@ -54,6 +54,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -686,70 +687,122 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     public String[] getReplacements(ConfigMessages configMessages, String... initial) {
-        Village capital = getCapital();
-        Resident chief = capital != null ? capital.getChief() : null;
-        Message rankMessage = null;
-        Message entry = null;
-        String online = null;
-        String offline = null;
-        String separator = null;
-        if (configMessages != null) {
-            rankMessage = configMessages.getMessage("special-residents.rank");
-            entry = configMessages.getMessage("special-residents.entry");
-            online = configMessages.getMessage("special-residents.online").getText();
-            offline = configMessages.getMessage("special-residents.offline").getText();
-            separator = configMessages.getMessage("special-residents.separator").getText();
+        List<String> replacements = new ArrayList<>();
+        Collections.addAll(replacements, initial);
+
+        for (Placeholder replacement : Placeholder.values()) {
+            replacements.add(replacement.name());
+            replacements.add(replacement.getValue(configMessages, this));
         }
-        String[] repl = new String[] {
-                "name", getName(),
-                "description", getDescription(),
-                "symbol", getSymbol(),
-                "level", String.valueOf(getLevel()),
-                "access", getAccess().getTag(),
-                "upkeep", Utils.CURRENCY_FORMAT.format(getUpkeep()),
-                "balance", Utils.withSuffix(getBank()),
-                "bank", Utils.CURRENCY_FORMAT.format(getBank()),
-                "joinfee", Utils.CURRENCY_FORMAT.format(getJoinFee()),
-                "tax", Utils.CURRENCY_FORMAT.format(getTax()),
-                "taxdebtaction", getTaxDebtAction().getTag(),
-                "upkeep", Utils.CURRENCY_FORMAT.format(getUpkeep()),
-                "dailymissions", String.valueOf(getLevelInfo() != null ? getLevelInfo().getMissions() : 0),
-                "missions", String.valueOf(finishedMissions),
-                "abandoned", yesOrNo(isAbandoned()),
-                "abandonedcountdown", isAbandoned() ? UtilTime.format(getCreated() + TimeUnit.MINUTES.toMillis(Config.Empire.Upkeep.ABANDON_TIME) - System.currentTimeMillis()) : "",
-                "hostilespawning", String.valueOf(getMode(PlotMode.mobSpawning)),
-                "passivespawning", String.valueOf(getMode(PlotMode.passiveSpawning)),
-                "firespread", String.valueOf(getMode(PlotMode.fireSpread)),
-                "explosions", String.valueOf(getMode(PlotMode.explosions)),
-                "pvp", String.valueOf(getMode(PlotMode.pvp)),
-                "buff", String.valueOf(getMode(PlotMode.buff)),
-                "bonusoutposts", String.valueOf(getBonusOutposts()),
-                "bonusclaims", String.valueOf(getBonusClaimAmount()),
-                "bonus", String.valueOf(getBonusClaimAmount()),
-                "capital", capital != null ? capital.getName() : "-",
-                "capitalstate", capital != null ? capital.getState().getTag() : "-",
-                "perks", getPerksMap().entrySet().stream()
-                        .map(e -> (e.getValue().getTimes() > 1 ? e.getValue().getTimes() + "x " : "") + getPerk(e.getKey()).getTag())
-                        .collect(Collectors.joining(", ")),
-                "chiefrank", VillageRank.getChief().getTag(capital),
-                "chieftitle", chief != null ? chief.getVillageTitle() : "-",
-                "chiefvillagetitle", chief != null ? chief.getVillageTitle() : "-",
-                "chiefempiretitle", chief != null ? chief.getEmpireTitle() : "-",
-                "chiefdisplaytitle", chief != null ? chief.getDisplayTitle() : "-",
-                "chief", chief != null ? chief.getName() : "-",
-                "chiefonline", configMessages != null ? chief != null && chief.getPlayer() != null ? online : offline : "",
-                "specialresidents", configMessages != null ? getResidentsToString(rankMessage, entry, online, offline, separator) : "",
-                "size", String.valueOf(getMembers().size()),
-                "members", configMessages != null ? getMembersToString(configMessages) : "",
-                "resonlinecount", String.valueOf(getOnlineCount()),
-                "resotheronlinecount", String.valueOf(getOnlineCount() - 1),
-                "officerranks", Arrays.stream(EmpireRank.values())
-                        .filter(r -> r != EmpireRank.getLeader())
-                        .filter(r -> getEffectivePermissionValue(r, "empire.officer").orElse(false))
-                        .map(NameTag::getTag)
-                        .collect(Collectors.joining(", "))
-        };
-        return initial.length > 1 ? ObjectArrays.concat(repl, initial, String.class) : repl;
+
+        return replacements.toArray(new String[0]);
+    }
+
+    public String getReplacement(ConfigMessages configMessages, String placeholder) {
+        try {
+            return Placeholder.valueOf(placeholder).getValue(configMessages, this);
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
+    }
+
+    public enum Placeholder {
+        name((c, e) -> e.getName()),
+        description((c, e) -> e.getDescription()),
+        state((c, e) -> e.getStateTag()),
+        symbol((c, e) -> e.getSymbol()),
+        level((c, e) -> String.valueOf(e.getLevel())),
+        access((c, e) -> e.getAccess().getTag()),
+        upkeep((c, e) -> Utils.CURRENCY_FORMAT.format(e.getUpkeep())),
+        balance((c, e) -> Utils.withSuffix(e.getBank())),
+        bank((c, e) -> Utils.CURRENCY_FORMAT.format(e.getBank())),
+        joinfee((c, e) -> Utils.CURRENCY_FORMAT.format(e.getJoinFee())),
+        tax((c, e) -> Utils.CURRENCY_FORMAT.format(e.getTax())),
+        taxdebtaction((c, e) -> e.getTaxDebtAction().getTag()),
+        dailymissions((c, e) -> String.valueOf(e.getLevelInfo() != null ? e.getLevelInfo().getMissions() : 0)),
+        missions((c, e) -> String.valueOf(e.finishedMissions)),
+        abandoned((c, e) -> yesOrNo(e.isAbandoned())),
+        abandonedcountdown((c, e) -> e.isAbandoned() ? UtilTime.format(e.getCreated() + TimeUnit.MINUTES.toMillis(Config.Empire.Upkeep.ABANDON_TIME) - System.currentTimeMillis()) : ""),
+        hostilespawning((c, e) -> String.valueOf(e.getMode(PlotMode.mobSpawning))),
+        passivespawning((c, e) -> String.valueOf(e.getMode(PlotMode.passiveSpawning))),
+        firespread((c, e) -> String.valueOf(e.getMode(PlotMode.fireSpread))),
+        explosions((c, e) -> String.valueOf(e.getMode(PlotMode.explosions))),
+        pvp((c, e) -> String.valueOf(e.getMode(PlotMode.pvp))),
+        buff((c, e) -> String.valueOf(e.getMode(PlotMode.buff))),
+        bonusoutposts((c, e) -> String.valueOf(e.getBonusOutposts())),
+        bonusclaims((c, e) -> String.valueOf(e.getBonusClaimAmount())),
+        bonus((c, e) -> String.valueOf(e.getBonusClaimAmount())),
+        capital((c, e) -> {
+            Village capital = e.getCapital();
+            return capital != null ? capital.getName() : "-";
+        }),
+        capitalstate((c, e) -> {
+            Village capital = e.getCapital();
+            return capital != null ? capital.getStateTag() : "-";
+        }),
+        perks((c, e) -> e.getPerksMap().entrySet().stream()
+                .map(p -> (p.getValue().getTimes() > 1 ? p.getValue().getTimes() + "x " : "") + e.getPerk(p.getKey()).getTag())
+                .collect(Collectors.joining(", "))),
+        chiefrank((c, e) -> {
+            Village capital = e.getCapital();
+            return VillageRank.getChief().getTag(capital);
+        }),
+        chieftitle((c, e) -> {
+            Village capital = e.getCapital();
+            Resident chief = capital != null ? capital.getChief() : null;
+            return chief != null ? chief.getVillageTitle() : "-";
+        }),
+        chiefvillagetitle((c, e) -> {
+            Village capital = e.getCapital();
+            Resident chief = capital != null ? capital.getChief() : null;
+            return chief != null ? chief.getVillageTitle() : "-";
+        }),
+        chiefsettlementtitle((c, e) -> {
+            Village capital = e.getCapital();
+            Resident chief = capital != null ? capital.getChief() : null;
+            return chief != null ? chief.getVillageTitle() : "-";
+        }),
+        chiefempiretitle((c, e) -> {
+            Village capital = e.getCapital();
+            Resident chief = capital != null ? capital.getChief() : null;
+            return chief != null ? chief.getEmpireTitle() : "-";
+        }),
+        chiefdisplaytitle((c, e) -> {
+            Village capital = e.getCapital();
+            Resident chief = capital != null ? capital.getChief() : null;
+            return chief != null ? chief.getDisplayTitle() : "-";
+        }),
+        chief((c, e) -> {
+            Village capital = e.getCapital();
+            Resident chief = capital != null ? capital.getChief() : null;
+            return chief != null ? chief.getName() : "-";
+        }),
+        chiefonline((c, e) -> {
+            Village capital = e.getCapital();
+            Resident chief = capital != null ? capital.getChief() : null;
+            return c != null ? (chief != null && chief.getPlayer() != null ? c.getText("special-residents.online") : c.getText("special-residents.offline")) : "";
+        }),
+        specialresidents((c, e) -> c != null ? e.getResidentsToString(c.getMessage("special-residents.rank"), c.getMessage("special-residents.entry"), c.getText("special-residents.online"), c.getText("special-residents.offline"), c.getText("special-residents.separator")) : ""),
+        size((c, e) -> String.valueOf(e.getMembers().size())),
+        members((c, e) -> c != null ? e.getMembersToString(c) : ""),
+        resonlinecount((c, e) -> String.valueOf(e.getOnlineCount())),
+        resotheronlinecount((c, e) -> String.valueOf(e.getOnlineCount() - 1)),
+        officerranks((c, e) -> Arrays.stream(EmpireRank.values())
+                .filter(r -> r != EmpireRank.getLeader())
+                .filter(r -> e.getEffectivePermissionValue(r, "empire.officer").orElse(false))
+                .map(NameTag::getTag)
+                .collect(Collectors.joining(", "))),
+        ;
+
+        private final BiFunction<ConfigMessages, Empire, String> valueProvider;
+
+        Placeholder(BiFunction<ConfigMessages, Empire, String> valueProvider) {
+            this.valueProvider = valueProvider;
+        }
+
+        public String getValue(ConfigMessages c, Empire e) {
+            return valueProvider.apply(c, e);
+        }
     }
 
     private String getMembersToString(ConfigMessages configMessages) {
