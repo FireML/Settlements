@@ -15,6 +15,7 @@ import de.themoep.settlements.integration.AfkProvider;
 import de.themoep.settlements.integration.BreweryIntegration;
 import de.themoep.settlements.integration.ChestShopIntegration;
 import de.themoep.settlements.integration.CmiIntegration;
+import de.themoep.settlements.integration.denizen.DenizenIntegration;
 import de.themoep.settlements.integration.EssentialsIntegration;
 import de.themoep.settlements.integration.IgnoreProvider;
 import de.themoep.settlements.integration.LWCIntegration;
@@ -149,6 +150,10 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         if (getServer().getPluginManager().isPluginEnabled("PlotSquared")) {
             PlotSquaredIntegration plotSquaredIntegration = new PlotSquaredIntegration();
             getLogger().log(Level.INFO, "Hooked into PlotSquared " + plotSquaredIntegration.getPlotSquaredVersion());
+        }
+        if (getServer().getPluginManager().isPluginEnabled("Denizen")) {
+            DenizenIntegration denizenIntegration = new DenizenIntegration();
+            getLogger().log(Level.INFO, "Hooked into Denizen " + denizenIntegration.getDenizenVersion());
         }
 
         if (!Config.Chat.CHAT_ONLY) {
