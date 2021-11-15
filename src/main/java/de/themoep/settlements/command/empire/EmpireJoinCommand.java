@@ -49,10 +49,8 @@ public class EmpireJoinCommand extends VillageSubCommand {
                 resident.getVillage().removeFromBank(joinEmpire.getJoinFee());
                 joinEmpire.addToBank(joinEmpire.getJoinFee());
                 getMessage("money-paid").tell(resident, "amount", String.valueOf(joinEmpire.getJoinFee()));
-                Utils.runAsync(() -> {
-                    DatabaseManager.getInstance().saveEmpire(joinEmpire);
-                    DatabaseManager.getInstance().log(joinEmpire, resident, "joinfee", "cash", joinEmpire.getJoinFee());
-                });
+                DatabaseManager.getInstance().saveEmpire(joinEmpire);
+                DatabaseManager.getInstance().log(joinEmpire, resident, "joinfee", "cash", joinEmpire.getJoinFee());
             }
             resident.getVillage().setEmpire(joinEmpire);
             if (Config.Empire.Missions.DISTRIBUTE_ON_JOIN) {

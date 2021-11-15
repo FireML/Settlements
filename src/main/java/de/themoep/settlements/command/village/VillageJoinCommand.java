@@ -43,10 +43,8 @@ public class VillageJoinCommand extends ResidentSubCommand {
                 if (SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(resident.getPlayer(), joinVillage.getJoinFee()).transactionSuccess()) {
                     joinVillage.addToBank(joinVillage.getJoinFee());
                     getMessage("money-paid").tell(resident, "amount", String.valueOf(joinVillage.getJoinFee()));
-                    Utils.runAsync(() -> {
-                        DatabaseManager.getInstance().saveSettlement(joinVillage);
-                        DatabaseManager.getInstance().log(joinVillage, resident, "joinfee", "cash", joinVillage.getJoinFee());
-                    });
+                    DatabaseManager.getInstance().saveSettlement(joinVillage);
+                    DatabaseManager.getInstance().log(joinVillage, resident, "joinfee", "cash", joinVillage.getJoinFee());
                 } else {
                     resident.tell("&cAn internal error occured!");
                     return true;
