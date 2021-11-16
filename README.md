@@ -30,6 +30,21 @@ Settlement or empire info via `settlements_player_settlement_<var>`/`settlements
 |`settlements_player_settlement_<var>`   | Information about the player's settlement or empty if not in one. See [Settlement Info](#settlement-info) |
 |`settlements_player_empire_<var>`       | Information about the player's empire or empty if not in one. See [Empire Info](#empire-info) |
 
+#### Relation info
+
+Get information about the relation of another player to the viewer.
+
+Relations can be `friendly` (when in same settlement), `ally` (when allied), `empire` (when in same empire) or `other` (if no relation exists).
+
+Colors can be set via `integration.placeholder-api.relation-color` in the `messages.yml`.
+
+| Placeholder                           | Functionality |
+|---------------------------------------|--------------------- |
+|`rel_settlements_relation`             | For plugins supporting [relational placeholders](https://github.com/PlaceholderAPI/PlaceholderAPI/wiki/PlaceholderExpansion#relational-placeholders) |
+|`rel_settlements_relationcolor`        | For plugins supporting relational placeholders |
+|`settlements_relation_<player>`        | For plugins not supporting relational placholders (requires including the name of the player that the placeholder is for) |
+|`settlements_relationcolor_<player>`   | For plugins not supporting relational placholders (requires including the name of the player that the placeholder is for) |
+
 ### Settlement Info
 
 Query information about the player's settlement with `settlements_player_settlement_<var>` or
