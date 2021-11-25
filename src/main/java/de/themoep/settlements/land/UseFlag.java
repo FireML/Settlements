@@ -23,7 +23,11 @@ public class UseFlag implements NameTag {
     }
 
     public ItemStack getItem() {
-        return ItemUtils.toIcon(icon);
+        return ItemUtils.toIcon(getIcon());
+    }
+
+    public Material getIcon() {
+        return icon;
     }
 
     public Collection<Use> getUseTypes() {
@@ -45,6 +49,6 @@ public class UseFlag implements NameTag {
 
     @Override
     public String getKey() {
-        return "names.use." + name().toLowerCase().replace('_', '-');
+        return "use." + name().toLowerCase().replace('_', '-');
     }
 }
