@@ -1,7 +1,7 @@
 package de.themoep.settlements.command.village;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.gui.PermsGUI;
+import de.themoep.settlements.village.gui.RanksGUI;
 import de.themoep.settlements.village.gui.RankPermGroupsGUI;
 import de.themoep.settlements.village.gui.RankPermsGUI;
 import de.themoep.settlements.command.SubCommand;
@@ -14,8 +14,8 @@ import org.bukkit.ChatColor;
 import java.util.Map;
 import java.util.Optional;
 
-public class VillagePermsCommand extends VillageSubCommand {
-    public VillagePermsCommand(SubCommand parent) {
+public class VillageRanksCommand extends VillageSubCommand {
+    public VillageRanksCommand(SubCommand parent) {
         super(parent, "perms [<rank>|show|set|unset]", "permissions", "rights");
         registerCommand(new VillageSubCommand(this, "show <rank>", "get", "list") {
             @Override
@@ -153,7 +153,7 @@ public class VillagePermsCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length == 0) {
-            new PermsGUI(resident.getPlayer()).open();
+            new RanksGUI(resident.getPlayer()).open();
             return true;
         }
 

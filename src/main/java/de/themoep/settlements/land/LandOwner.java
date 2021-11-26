@@ -337,6 +337,26 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         return use;
     }
 
+    public void setUseGroupState(UseGroup group, BuildState state) {
+        for (UseFlag flag : group.getUseFlags()) {
+            setUseState(flag, state);
+        }
+    }
+
+    public BuildState getUseGroupState(UseGroup group) {
+        BuildState groupState = null;
+        for (UseFlag flag : group.getUseFlags()) {
+            BuildState useState = getUseState(flag);
+            if (groupState == null) {
+                groupState = useState;
+            } else if (groupState != useState) {
+                groupState = null;
+                break;
+            }
+        }
+        return groupState;
+    }
+
     @Override
     public Map<String, Long> getVault() {
         return vault;

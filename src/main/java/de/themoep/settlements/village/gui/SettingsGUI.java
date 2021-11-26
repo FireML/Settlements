@@ -81,13 +81,13 @@ public class SettingsGUI extends SettlementsGUI {
             )));
         }
 
-        if (resident.hasPermission("village.use")) {
+        if (resident.hasPermission("village.perms")) {
             gui.addElement(new StaticGuiElement('u', ItemUtils.toIcon(Material.LEVER), click -> {
-                if (resident.hasPermission("village.use")) {
-                    new UseGUI().open((Player) click.getEvent().getWhoClicked());
+                if (resident.hasPermission("village.perms")) {
+                    new PermsGUI(resident).open();
                 }
                 return true;
-            }, getText("use",
+            }, getText("perms",
                     "state", resident.getVillage().getStateTag()
             )));
         }
@@ -103,13 +103,13 @@ public class SettingsGUI extends SettlementsGUI {
             )));
         }
 
-        if (resident.hasPermission("village.perms")) {
+        if (resident.hasPermission("village.ranks")) {
             gui.addElement(new StaticGuiElement('r', ItemUtils.toIcon(Material.RED_BANNER), click -> {
-                if (resident.hasPermission("village.perms")) {
-                    new PermsGUI((Player) click.getEvent().getWhoClicked()).open();
+                if (resident.hasPermission("village.ranks")) {
+                    new RanksGUI((Player) click.getEvent().getWhoClicked()).open();
                 }
                 return true;
-            }, getText("perms",
+            }, getText("ranks",
                     "state", resident.getVillage().getStateTag()
             )));
         }

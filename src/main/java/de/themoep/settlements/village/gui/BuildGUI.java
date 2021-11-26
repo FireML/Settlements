@@ -1,6 +1,7 @@
 package de.themoep.settlements.village.gui;
 
 import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
@@ -19,24 +20,18 @@ import org.bukkit.entity.Player;
 import java.util.Map;
 
 public class BuildGUI extends SettlementsGUI {
-    private final static String[] SETUP = {
-            "         ",
-            "         ",
-            "ggggggggg",
-            "ggggggggg",
-            "         ",
-            "    b    "
-    };
-
     private final InventoryGui gui;
 
     public BuildGUI() {
         super("build");
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), SETUP);
+        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), getSetup());
         gui.setCloseAction(close -> false);
-        gui.setFiller(BORDER_ITEM);
+        gui.setFiller(getIcon("filler"));
+        gui.addElements(getConfiguredElements());
+        gui.addElement(new StaticGuiElement('s', getIcon("states"), getText("states")));
 
         GuiElementGroup group = new GuiElementGroup('g');
+        group.setAlignment(GuiElementGroup.Alignment.CENTER);
 
         for (BuildState state : BuildState.values(BuildState.AppliesTo.SETTLEMENT)) {
             group.addElement(new DynamicGuiElement('g', (h) -> {
@@ -74,10 +69,7 @@ public class BuildGUI extends SettlementsGUI {
 
         gui.addElement(group);
 
-        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
-            new SettingsGUI((Player) click.getEvent().getWhoClicked()).open();
-            return true;
-        }, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), getText("back")));
     }
 
     public void open(final Player p) {
