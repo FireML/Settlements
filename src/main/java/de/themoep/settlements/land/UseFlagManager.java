@@ -6,10 +6,12 @@ import de.themoep.settlements.SettlementsPlugin;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +20,7 @@ import java.util.logging.Level;
 public class UseFlagManager {
     private static UseFlagManager instance;
 
+    private final Map<String, UseGroup> groups = new LinkedHashMap<>();
     private final Map<String, UseFlag> byId = new LinkedHashMap<>();
     private final Map<Use, UseFlag> byUseType = new EnumMap<>(Use.class);
 
@@ -27,12 +30,12 @@ public class UseFlagManager {
     }
 
     public void loadConfig() {
-        ConfigurationSection flags = ConfigManager.getInstance().getUseFlagsConf().getConfig().getConfigurationSection("flags");
-        if (flags != null) {
+        ConfigurationSection flagsConfig = ConfigManager.getInstance().getUseFlagsConf().getConfig().getConfigurationSection("flags");
+        if (flagsConfig != null) {
             byId.clear();
             byUseType.clear();
-            for (String name : flags.getKeys(false)) {
-                ConfigurationSection config = flags.getConfigurationSection(name);
+            for (String name : flagsConfig.getKeys(false)) {
+                ConfigurationSection config = flagsConfig.getConfigurationSection(name);
 
                 Set<Use> uses = EnumSet.noneOf(Use.class);
                 if (config.contains("type", true)) {
@@ -86,6 +89,69 @@ public class UseFlagManager {
                 addFlag(new UseFlag(name, defaultState, icon, uses));
             }
         }
+
+        ConfigurationSection groupsConfig = ConfigManager.getInstance().getUseFlagsConf().getConfig().getConfigurationSection("groups");
+        if (groupsConfig != null) {
+            groups.clear();
+            for (String name : groupsConfig.getKeys(false)) {
+                ConfigurationSection config = groupsConfig.getConfigurationSection(name);
+
+                List<UseFlag> flags = new ArrayList<>();
+                if (config.contains("flag", true)) {
+                    UseFlag flag = get(config.getString("flag"));
+                    if (flag != null) {
+                        flags.add(flag);
+                    } else {
+                        SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, config.getString("flag") + " is not a valid use flag for group " + name + " in useflags.yml!");
+                    }
+                } else if (config.contains("flags", true) && config.isList("flags")) {
+                    for (String type : config.getStringList("flags")) {
+                        UseFlag flag = get(type);
+                        if (flag != null) {
+                            flags.add(flag);
+                        } else {
+                            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, type + " is not a valid use flag for group " + name + " in useflags.yml!");
+                        }
+                    }
+                }
+
+                Material icon = null;
+                if (config.contains("icon", true)) {
+                    icon = MaterialUtils.getMaterial(config.getString("icon"));
+                }
+                if (icon != null && !icon.isItem()) {
+                    SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, icon + " is not a valid icon type for flag " + name + " in useflags.yml! That type has no item which can be displayed");
+                    icon = null;
+                }
+                if (icon == null) {
+                    if (flags.size() > 0) {
+                        icon = flags.iterator().next().getIcon();
+                    }
+                    if (icon == null) {
+                        icon = Material.BARRIER;
+                    }
+                }
+
+                BuildState defaultState = null;
+                if (config.contains("default-state", true)) {
+                    try {
+                        defaultState = BuildState.valueOf(config.getString("default-state", "unknown").toUpperCase(Locale.ROOT));
+                    } catch (IllegalArgumentException e) {
+                        SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, config.getString("default-state") + " is not a valid BuildState for group " + name + " in useflags.yml!");
+                    }
+                }
+
+                addGroup(new UseGroup(name, defaultState, icon, flags));
+            }
+        }
+    }
+
+    private void addGroup(UseGroup group) {
+        if (group.getUseFlags().isEmpty()) {
+            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Group " + group.name() + " in useflags.yml is not valid as it contains no use flags!");
+            return;
+        }
+        groups.put(group.getKey(), group);
     }
 
     private void addFlag(UseFlag flag) {
@@ -93,7 +159,7 @@ public class UseFlagManager {
             SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Flag " + flag.name() + " in useflags.yml is not valid as it contains no use types!");
             return;
         }
-        byId.put(flag.getKey(), flag);
+        byId.put(flag.name().toLowerCase(Locale.ROOT), flag);
         for (Use useType : flag.getUseTypes()) {
             UseFlag old = byUseType.put(useType, flag);
             if (old != null) {
@@ -110,7 +176,7 @@ public class UseFlagManager {
     }
 
     public UseFlag get(String id) {
-        return byId.get(id.toUpperCase());
+        return byId.get(id.toLowerCase(Locale.ROOT));
     }
 
     public UseFlag get(Use useType) {
@@ -119,5 +185,9 @@ public class UseFlagManager {
 
     public Collection<UseFlag> getUseFlags() {
         return byId.values();
+    }
+
+    public Collection<UseGroup> getGroups() {
+        return groups.values();
     }
 }

@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 
-public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializable, ModeAble {
+public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializable, ModeAble, FlagAble {
     private IdObject id = IdObject.get(null);
     private LandOwner landOwner;
     private UUID plotOwner = null;
@@ -65,15 +65,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         this.landOwner = landOwner;
     }
 
-    public BuildState getUseState(Use u) {
-        return getUseState(UseFlagManager.getInstance().get(u), u);
-    }
-
-    public BuildState getUseState(UseFlag useFlag) {
-        return getUseState(useFlag, useFlag.getUseTypes().iterator().next());
-    }
-
-    private BuildState getUseState(UseFlag useFlag, Use u) {
+    public BuildState getUseState(UseFlag useFlag, Use u) {
         return use.getOrDefault(u, landOwner.getUseState(useFlag, u));
     }
 
@@ -104,6 +96,21 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
             }
         }
         return false;
+    }
+
+    @Override
+    public BuildState getDefaultBuildState() {
+        return landOwner.getDefaultBuildState();
+    }
+
+    @Override
+    public BuildState.AppliesTo getBuildStateType() {
+        return BuildState.AppliesTo.LAND;
+    }
+
+    @Override
+    public void save() {
+        LandManager.getInstance().syncAndSave(this);
     }
 
     public boolean unsetUseState(Use u) {

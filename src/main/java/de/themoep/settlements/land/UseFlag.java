@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
+import java.util.Locale;
 
 public class UseFlag implements NameTag {
 
@@ -23,7 +24,11 @@ public class UseFlag implements NameTag {
     }
 
     public ItemStack getItem() {
-        return ItemUtils.toIcon(icon);
+        return ItemUtils.toIcon(getIcon());
+    }
+
+    public Material getIcon() {
+        return icon;
     }
 
     public Collection<Use> getUseTypes() {
@@ -45,6 +50,6 @@ public class UseFlag implements NameTag {
 
     @Override
     public String getKey() {
-        return "names.use." + name().toLowerCase().replace('_', '-');
+        return "use." + name().toLowerCase(Locale.ROOT).replace('_', '-');
     }
 }

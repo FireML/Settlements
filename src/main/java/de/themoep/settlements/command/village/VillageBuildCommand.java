@@ -14,7 +14,12 @@ public class VillageBuildCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length < 1) {
-            new BuildGUI().open(res.getPlayer());
+            new BuildGUI(
+                    "village",
+                    res.getVillage(),
+                    () -> res.hasVillage() && res.hasPermission(getPermission()),
+                    () -> res.getVillage().getStateTag()
+            ).open(res.getPlayer());
             return true;
         }
 

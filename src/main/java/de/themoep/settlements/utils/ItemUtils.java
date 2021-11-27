@@ -49,7 +49,7 @@ public class ItemUtils {
      * @return The new item with all flags hidden
      */
     public static ItemStack toIcon(Material material) {
-        return hideAllFlags(new ItemStack(material));
+        return material != null ? hideAllFlags(new ItemStack(material)) : null;
     }
 
     /**

@@ -1,0 +1,46 @@
+guis:
+  perms:
+    setup:
+    - "ooooooooo"
+    - "    s    "
+    - "    a    "
+    - " uuuuuuu "
+    - " uuuuuuu "
+    - " ooobooo "
+    alignments:
+      u: center
+    elements:
+      o: lime_stained_glass_pane
+      build: diamond_pickaxe # 'a'
+      states: book
+      back: barrier
+  build:
+    setup:
+    - "ooooooooo"
+    - "    s    "
+    - "         "
+    - "ggggggggg"
+    - "         "
+    - " ooobooo "
+    alignments:
+      g: center
+    elements:
+      o: lime_stained_glass_pane
+      states: book
+      back: barrier
+  use:
+    setup:
+    - "ooooooooo"
+    - "    s    "
+    - "         "
+    - " uuuuuuu "
+    - " uuuuuuu "
+    - " ooobooo "
+    alignments:
+      u: center
+    elements:
+      o: lime_stained_glass_pane
+      states: book
+      previous: arrow
+      next: arrow
+      back: barrier

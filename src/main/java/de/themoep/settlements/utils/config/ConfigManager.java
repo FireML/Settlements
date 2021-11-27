@@ -89,6 +89,8 @@ public class ConfigManager {
     private ConfigAccessor settlementRanksConf;
     private ConfigAccessor empireRanksConf;
 
+    private ConfigAccessor guisConf;
+
     private ConfigManager() {
         registerParser("StringSet", new TypelessConfigParser() {
             @Override
@@ -177,6 +179,7 @@ public class ConfigManager {
         toggleableCurses = new CursesFilter(new ConfigAccessor(SettlementsPlugin.getInstance(), "curses.yml").getConfig());
         forcedCurses = new CursesFilter(new ConfigAccessor(SettlementsPlugin.getInstance(), "cursesForced.yml").getConfig());
         lastUpkeepConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "lastUpkeep.yml");
+        guisConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "guis.yml");
         iconRpMapping = new IconRpMapping(SettlementsPlugin.getInstance());
         if (Config.Chat.CHAT_ONLY) {
             Config.Lock.ENABLED = false;
@@ -518,6 +521,10 @@ public class ConfigManager {
 
     public ConfigAccessor getUseFlagsConf() {
         return useFlagsConf;
+    }
+
+    public FileConfiguration getGuisConfig() {
+        return guisConf.getConfig();
     }
 
     public CursesFilter getForcedCurses() {

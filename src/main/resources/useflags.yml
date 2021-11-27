@@ -1,5 +1,78 @@
 # Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:useflags.yml
 
+# Grouping of flags
+groups:
+  doors:
+    icon: warped_door
+    flags:
+    - door
+    - gate
+    - trap_door
+  containers:
+    icon: chest
+    flags:
+    - chest
+    - barrel
+    - furnace
+    - smoker
+    - hopper
+    - dropper
+    - dispenser
+    - shulker_box
+  crafting:
+    icon: crafting_table
+    flags:
+    - campfire
+    - anvil
+    - grindstone
+    - smithing_table
+    - jukebox
+    - map
+    - lectern
+    - cartography_table
+    - loom
+    - brewing_stand
+  redstone:
+    icon: redstone_block
+    flags:
+    - lever
+    - button
+    - pressure_plate
+    - beacon
+    - repeaters
+    - comparators
+  entities:
+    icon: phantom_spawn_egg
+    flags:
+    - ride
+    - armor_stand
+    - item_frame
+    - leash
+    - dragon_egg
+    - cake
+  farming:
+    icon: diamond_hoe
+    flags:
+    - farming
+    - trees
+    - composter
+    - monster
+    - animal
+    - shear
+    - fish
+  other:
+    icon: bucket
+    flags:
+    - bucket
+    - portal
+    - bed
+    - interact
+    - item
+  shop:
+    icon: gold_ingot
+    flags:
+    - shop
+
 # The list of different flags that can be configured by players on their claimed land
 flags:
   chest:
@@ -104,14 +177,14 @@ flags:
   animal:
     type: animal
     icon: leather
-  sheer:
-    type: sheer
+  shear:
+    type: shear
     icon: shears
   leash:
     type: leash
     icon: lead
-  becon:
-    type: becon
+  beacon:
+    type: beacon
     icon: beacon
   dragon_egg:
     type: dragon_egg
@@ -129,6 +202,9 @@ flags:
   repeaters:
     type: repeaters
     icon: repeater
+  comparators:
+    type: comparators
+    icon: comparator
   cake:
     type: cake
     icon: cake
