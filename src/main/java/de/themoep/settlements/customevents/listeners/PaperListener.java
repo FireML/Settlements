@@ -12,7 +12,7 @@ import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.portal.PortalManager;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.village.Village;
+import de.themoep.settlements.village.Settlement;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -52,7 +52,7 @@ public class PaperListener implements Listener {
         }
 
         OwnedLand land = LandManager.getInstance().getLand(e.getBlock().getLocation());
-        if (land == null || !(land.getLandOwner() instanceof Village)) {
+        if (land == null || !(land.getLandOwner() instanceof Settlement)) {
             return;
         }
 

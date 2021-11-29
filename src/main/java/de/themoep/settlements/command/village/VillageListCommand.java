@@ -1,8 +1,8 @@
 package de.themoep.settlements.command.village;
 
 import com.google.common.collect.ImmutableMap;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.land.LandAccess;
 import de.themoep.settlements.utils.MessageUtils;
@@ -55,20 +55,20 @@ public class VillageListCommand extends SubCommand {
         LandAccess finalAccess = access;
         int finalPage = page;
         Utils.runAsync(() -> {
-            List<Village> villages = VillageManager.getInstance().getSettlements().stream()
+            List<Settlement> settlements = SettlementManager.getInstance().getSettlements().stream()
                     .filter(v -> v.getAccess().atLeast(finalAccess))
-                    .sorted(Village::compareTo)
+                    .sorted(Settlement::compareTo)
                     .collect(Collectors.toList());
 
-            int pages = (int) Math.ceil(villages.size() / (double) Config.ENTRIES_PER_PAGE);
+            int pages = (int) Math.ceil(settlements.size() / (double) Config.ENTRIES_PER_PAGE);
             getMessage("head").tell(sender,
                     "access", finalAccess != null ? finalAccess.getTag() + " " : "",
                     "page", String.valueOf(finalPage),
                     "maxpage", String.valueOf(pages)
             );
 
-            for (int i = (finalPage - 1) * Config.ENTRIES_PER_PAGE; i < villages.size() && i < finalPage * Config.ENTRIES_PER_PAGE; i++) {
-                Village v = villages.get(i);
+            for (int i = (finalPage - 1) * Config.ENTRIES_PER_PAGE; i < settlements.size() && i < finalPage * Config.ENTRIES_PER_PAGE; i++) {
+                Settlement v = settlements.get(i);
                 getMessage("entry" + (v.isAbandoned() ? "-abandoned" : "")).tell(sender, v.getReplacements(this,
                         "place", String.valueOf(i + 1),
                         "access", v.getAccess() != LandAccess.PRIVATE ? v.getAccess().getTag() : ""

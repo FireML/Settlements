@@ -48,7 +48,7 @@ import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.world.SimpleChunkLocation;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
@@ -103,7 +103,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
 
     @EventHandler(priority = EventPriority.LOW)
     public void onShopCreation(SignChangeEvent event) {
-        if (event.getPlayer().hasPermission("kingdoms.bypass.restriction.chestshop")
+        if (event.getPlayer().hasPermission("settlements.bypass.restriction.chestshop")
                 || !Utils.isWorldClaimable(event.getBlock().getWorld())) {
             return;
         }
@@ -198,7 +198,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             try {
                 int id = Integer.parseInt(parts[2]);
                 if ("s".equalsIgnoreCase(parts[0]) || "v".equalsIgnoreCase(parts[0]) || "k".equalsIgnoreCase(parts[0])) {
-                    return VillageManager.getInstance().getFromId(IdObject.get(id));
+                    return SettlementManager.getInstance().getFromId(IdObject.get(id));
                 } else if ("e".equalsIgnoreCase(parts[0])) {
                     return EmpireManager.getInstance().getEmpireFromId(IdObject.get(id));
                 }
@@ -207,7 +207,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             }
         } else if (parts.length == 2) {
             if ("s".equalsIgnoreCase(parts[0]) || "v".equalsIgnoreCase(parts[0]) || "k".equalsIgnoreCase(parts[0])) {
-                return VillageManager.getInstance().getFromName(parts[1]);
+                return SettlementManager.getInstance().getFromName(parts[1]);
             } else if ("e".equalsIgnoreCase(parts[0])) {
                 return EmpireManager.getInstance().getEmpireFromName(parts[1]);
             }
@@ -216,7 +216,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
     }
 
     private LandOwner getLandOwner(UUID uuid) {
-        LandOwner landOwner = VillageManager.getInstance().getFromUuid(uuid);
+        LandOwner landOwner = SettlementManager.getInstance().getFromUuid(uuid);
         if (landOwner == null) {
             landOwner = EmpireManager.getInstance().getEmpireFromUuid(uuid);
         }
@@ -242,13 +242,13 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                     case 's':
                     case 'v':
                     case 'k':
-                        if (resident.hasVillage() && resident.hasPermission("village.chestshop.admin")) {
-                            event.setOwnerAccount(createAccount(resident.getVillage()));
+                        if (resident.hasSettlement() && resident.hasPermission("settlement.chestshop.admin")) {
+                            event.setOwnerAccount(createAccount(resident.getSettlement()));
                         }
                         break;
                     case 'e':
                         if (resident.hasEmpire() && resident.hasPermission("empire.chestshop.admin")) {
-                            event.setOwnerAccount(createAccount(resident.getVillage().getEmpire()));
+                            event.setOwnerAccount(createAccount(resident.getSettlement().getEmpire()));
                         }
                         break;
                 }

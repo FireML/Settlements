@@ -1,7 +1,7 @@
 package de.themoep.settlements.command.village;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.village.gui.PerksGUI;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.perk.LevelPerk;
@@ -15,23 +15,23 @@ public class VillagePerksCommand extends VillageSubCommand {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length > 0) {
-                    LevelPerk perk = VillageManager.getInstance().getPerk(String.join(" ", args));
+                    LevelPerk perk = SettlementManager.getInstance().getPerk(String.join(" ", args));
                     if (perk == null) {
                         getError("unknown-perk").tell(resident, "perk", String.join(" ", args));
-                    } else if (!resident.getVillage().hasUnlocked(perk)) {
+                    } else if (!resident.getSettlement().hasUnlocked(perk)) {
                         getError("not-unlocked").tell(resident, "perk", perk.getTag());
                     } else if (!perk.hasEffects() && !perk.hasEffects()) {
                         getError("no-effects").tell(resident, "perk", perk.getTag());
                     } else {
-                        resident.getVillage().togglePerk(resident.getPlayer(), perk);
-                        PerkData perkData = resident.getVillage().getPerkData(perk);
-                        getMessage(perkData.isActive() ? "activated" : "deactivated").tell(resident.getVillage().getOnlineResidents(), "perk", perk.getTag());
+                        resident.getSettlement().togglePerk(resident.getPlayer(), perk);
+                        PerkData perkData = resident.getSettlement().getPerkData(perk);
+                        getMessage(perkData.isActive() ? "activated" : "deactivated").tell(resident.getSettlement().getOnlineResidents(), "perk", perk.getTag());
                     }
                     return true;
                 }
                 getMessage("usage.head").tell(resident, "name", "Toggle Perks");
-                for (LevelPerk perk : VillageManager.getInstance().getPerks()) {
-                    if (resident.getVillage().hasUnlocked(perk) && perk.hasEffects()) {
+                for (LevelPerk perk : SettlementManager.getInstance().getPerks()) {
+                    if (resident.getSettlement().hasUnlocked(perk) && perk.hasEffects()) {
                         getMessage("usage.entry").tell(resident, "usage", getUsage(base) + " " + perk.name(), "description", perk.getTag());
                     }
                 }

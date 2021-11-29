@@ -3,12 +3,10 @@ package de.themoep.settlements.resident;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.ObjectArrays;
 import com.google.common.collect.Table;
-import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.integration.AfkProvider;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.chat.ChatColorType;
@@ -17,7 +15,7 @@ import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.rank.EmpireRank;
-import de.themoep.settlements.rank.VillageRank;
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
@@ -27,7 +25,6 @@ import de.themoep.settlements.utils.config.Config;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
@@ -53,11 +50,11 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     private IdObject id = IdObject.get(null);
     private UUID uuid;
     private String name;
-    private VillageRank rank = VillageRank.getDefault();
+    private SettlementRank rank = SettlementRank.getDefault();
     private EmpireRank empireRank = EmpireRank.getDefault();
-    private String villageTitle = null;
+    private String settlementTitle = null;
     private String empireTitle = null;
-    private Village village = null;
+    private Settlement settlement = null;
     private ChatChannel activeChannel = ChatChannel.GENERAL;
     private Set<ChatChannel> channels = EnumSet.of(ChatChannel.GENERAL);
     private Table<ChatChannel, ChatColorType, ChatColor> channelColors = HashBasedTable.create(ChatChannel.values().length, ChatColorType.values().length);
@@ -67,7 +64,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     private boolean socialSpy = false;
     private int bonusClaims = 0;
     private long lastLogin = 0;
-    private long villageJoin;
+    private long settlementJoin;
 
     // Temporary, per session settings:
     private boolean resourcePack = false;
@@ -90,8 +87,8 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
      * @return              The value of the permission or false
      */
     public boolean hasPermission(String permission) {
-        if (!permission.startsWith("kingdoms.")) {
-            permission = "kingdoms.command." + permission;
+        if (!permission.startsWith("settlements.")) {
+            permission = "settlements.command." + permission;
         }
         if (hasRankPermission(permission)) {
             Player player = getPlayer();
@@ -103,22 +100,22 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     }
 
     public boolean hasRankPermission(String permission) {
-        if (!permission.startsWith("kingdoms.")) {
-            permission = "kingdoms.command." + permission;
+        if (!permission.startsWith("settlements.")) {
+            permission = "settlements.command." + permission;
         }
-        if (permission.startsWith("kingdoms.command.")) {
-            String rankPerm = permission.substring("kingdoms.command.".length());
-            if (!hasVillage() && !VillageRank.getChief().getInheritedPermissionValue(rankPerm).isPresent()) {
+        if (permission.startsWith("settlements.command.")) {
+            String rankPerm = permission.substring("settlements.command.".length());
+            if (!hasSettlement() && !SettlementRank.getChief().getInheritedPermissionValue(rankPerm).isPresent()) {
                 return true;
             }
 
-            Optional<Boolean> villageValue = getVillage().getEffectivePermissionValue(getVillageRank(), rankPerm);
-            if (villageValue.isPresent()) {
-                return villageValue.get();
+            Optional<Boolean> settlementValue = getSettlement().getEffectivePermissionValue(getSettlementRank(), rankPerm);
+            if (settlementValue.isPresent()) {
+                return settlementValue.get();
             }
 
-            if (rankPerm.startsWith("empire.") && getVillage().hasEmpire()) {
-                Optional<Boolean> empireValue = getVillage().getEmpire().getEffectivePermissionValue(getEmpireRank(), rankPerm);
+            if (rankPerm.startsWith("empire.") && getSettlement().hasEmpire()) {
+                Optional<Boolean> empireValue = getSettlement().getEmpire().getEffectivePermissionValue(getEmpireRank(), rankPerm);
                 if (empireValue.isPresent()) {
                     return empireValue.get();
                 }
@@ -126,13 +123,13 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
                     return false;
                 }
             }
-            return !VillageRank.getChief().getInheritedPermissionValue(rankPerm).isPresent();
+            return !SettlementRank.getChief().getInheritedPermissionValue(rankPerm).isPresent();
         }
         return true;
     }
 
-    public boolean hasVillage() {
-        return village != null;
+    public boolean hasSettlement() {
+        return settlement != null;
     }
 
     public Set<UUID> getFriends() {
@@ -256,62 +253,54 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         this.name = name;
     }
 
-    /**
-     * @deprecated Use {@link this#setVillage(Village)}
-     */
-    @Deprecated
-    public void setVillageName(String name) {
-        setVillage(VillageManager.getInstance().getFromName(name));
+    public String getSettlementName() {
+        return settlement != null ? settlement.getName() : "";
     }
 
-    public String getVillageName() {
-        return village != null ? village.getName() : "";
-    }
-
-    public void setVillage(Village village) {
-        if (getVillage() != null) {
-            getVillage().getResidentIds().remove(getUUID());
+    public void setSettlement(Settlement settlement) {
+        if (getSettlement() != null) {
+            getSettlement().getResidentIds().remove(getUUID());
         }
-        this.village = village;
-        if (village != null) {
-            village.getResidentIds().add(getUUID());
-            setVillageJoin(System.currentTimeMillis());
+        this.settlement = settlement;
+        if (settlement != null) {
+            settlement.getResidentIds().add(getUUID());
+            setSettlementJoin(System.currentTimeMillis());
         } else {
-            setVillageRank(VillageRank.getDefault());
+            setSettlementRank(SettlementRank.getDefault());
             setEmpireRank(EmpireRank.getDefault());
-            setVillageJoin(-1);
-            setVillageTitle(null);
+            setSettlementJoin(-1);
+            setSettlementTitle(null);
         }
     }
 
-    public Village getVillage() {
-        return village;
+    public Settlement getSettlement() {
+        return settlement;
     }
 
-    public boolean leaveVillage() {
-        if (hasVillage()) {
-            getVillage().removeMember(this);
+    public boolean leaveSettlement() {
+        if (hasSettlement()) {
+            getSettlement().removeMember(this);
             return true;
         }
         return false;
     }
 
-    public void setVillageRank(VillageRank rank) {
+    public void setSettlementRank(SettlementRank rank) {
         if (this.rank == rank) {
             return;
         }
-        VillageRank prev = getVillageRank();
+        SettlementRank prev = getSettlementRank();
         this.rank = rank;
-        if (hasEmpire() && getVillage().getEmpire().isCapital(getVillage())) {
-            if (rank == VillageRank.getChief()) {
+        if (hasEmpire() && getSettlement().getEmpire().isCapital(getSettlement())) {
+            if (rank == SettlementRank.getChief()) {
                 setEmpireRank(EmpireRank.getLeader());
-            } else if (prev == VillageRank.getChief()) {
+            } else if (prev == SettlementRank.getChief()) {
                 setEmpireRank(EmpireRank.getLeader().next());
             }
         }
     }
 
-    public VillageRank getVillageRank() {
+    public SettlementRank getSettlementRank() {
         return rank;
     }
 
@@ -324,24 +313,24 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     }
 
     public boolean hasEmpire() {
-        return hasVillage() && getVillage().hasEmpire();
+        return hasSettlement() && getSettlement().hasEmpire();
     }
 
-    public String getVillageTitle() {
-        return hasVillage()
-                ? (villageTitle != null
-                        ? (getVillage().getTitle(getVillageRank(), villageTitle) != null
-                                ? villageTitle : getVillageRank().getTag(getVillage()))
-                        : getVillageRank().getTag(getVillage()))
+    public String getSettlementTitle() {
+        return hasSettlement()
+                ? (settlementTitle != null
+                        ? (getSettlement().getTitle(getSettlementRank(), settlementTitle) != null
+                                ? settlementTitle : getSettlementRank().getTag(getSettlement()))
+                        : getSettlementRank().getTag(getSettlement()))
                 : "";
     }
 
     public String getEmpireTitle() {
         return hasEmpire()
                 ? (empireTitle != null
-                        ? (getVillage().getEmpire().getTitle(getEmpireRank(), empireTitle) != null
-                                ? empireTitle : getEmpireRank().getTag(getVillage().getEmpire()))
-                        : getEmpireRank().getTag(getVillage().getEmpire()))
+                        ? (getSettlement().getEmpire().getTitle(getEmpireRank(), empireTitle) != null
+                                ? empireTitle : getEmpireRank().getTag(getSettlement().getEmpire()))
+                        : getEmpireRank().getTag(getSettlement().getEmpire()))
                 : "";
     }
 
@@ -349,24 +338,24 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         if (hasEmpire()) {
              return Message.get("chat.format.title.empire").getReplacedText(
                 "empireTitle", getEmpireTitle(),
-                "empireSymbol", getVillage().getEmpire().getSymbol(),
-                "villageTitle", getVillageTitle()
+                "empireSymbol", getSettlement().getEmpire().getSymbol(),
+                "settlementTitle", getSettlementTitle()
              );
-        } else if (hasVillage()) {
-            return Message.get("chat.format.title.village").getReplacedText(
-                    "villageTitle", getVillageTitle()
+        } else if (hasSettlement()) {
+            return Message.get("chat.format.title.settlement").getReplacedText(
+                    "settlementTitle", getSettlementTitle()
             );
         }
         return Message.get("chat.format.title.none").getText();
     }
 
-    public boolean setVillageTitle(String title) {
-        if (!hasVillage()) {
-            this.villageTitle = null;
+    public boolean setSettlementTitle(String title) {
+        if (!hasSettlement()) {
+            this.settlementTitle = null;
         } else if (title == null) {
-            this.villageTitle = getVillageRank().getTag(getVillage());
-        } else if (getVillage().getTitle(getVillageRank(), title) != null) {
-            this.villageTitle = getVillage().getTitle(getVillageRank(), title);
+            this.settlementTitle = getSettlementRank().getTag(getSettlement());
+        } else if (getSettlement().getTitle(getSettlementRank(), title) != null) {
+            this.settlementTitle = getSettlement().getTitle(getSettlementRank(), title);
         } else {
             return false;
         }
@@ -377,9 +366,9 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         if (!hasEmpire()) {
             this.empireTitle = null;
         } else if (title == null) {
-            this.empireTitle = getEmpireRank().getTag(getVillage().getEmpire());
-        } else if (getVillage().getEmpire().getTitle(getEmpireRank(), title) != null) {
-            this.empireTitle = getVillage().getEmpire().getTitle(getEmpireRank(), title);
+            this.empireTitle = getEmpireRank().getTag(getSettlement().getEmpire());
+        } else if (getSettlement().getEmpire().getTitle(getEmpireRank(), title) != null) {
+            this.empireTitle = getSettlement().getEmpire().getTitle(getEmpireRank(), title);
         } else {
             return false;
         }
@@ -395,12 +384,12 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     }
 
     public long getTax() {
-        return getVillageTax() + getPlotTax();
+        return getSettlementTax() + getPlotTax();
     }
 
-    public long getVillageTax() {
-        if (hasVillage() && !hasPermission("village.tax.exempt")) {
-            return getVillage().getTax();
+    public long getSettlementTax() {
+        if (hasSettlement() && !hasPermission("settlement.tax.exempt")) {
+            return getSettlement().getTax();
         }
         return 0;
     }
@@ -408,10 +397,10 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     public long getPlotTax() {
         long tax = 0;
         for (OwnedLand land : LandManager.getInstance().getOwnedPlot(getUUID())) {
-            if (!hasVillage()
+            if (!hasSettlement()
                     || !land.getLandOwner().isMember(this)
                     || (!hasPermission(land.getLandOwner().getKey() + ".tax.exempt")
-                    && !land.getLandOwner().isChief(getVillage()))) {
+                    && !land.getLandOwner().isChief(getSettlement()))) {
                 tax += land.getTax();
             }
         }
@@ -428,12 +417,12 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         return equals(resident);
     }
 
-    public long getVillageJoin() {
-        return getVillage() != null ? villageJoin : -1;
+    public long getSettlementJoin() {
+        return getSettlement() != null ? settlementJoin : -1;
     }
 
-    public void setVillageJoin(long villageJoin) {
-        this.villageJoin = villageJoin;
+    public void setSettlementJoin(long settlementJoin) {
+        this.settlementJoin = settlementJoin;
     }
 
     public long getLastLogin() {
@@ -498,11 +487,11 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
 
     public enum Placeholder {
                 name(r -> r.getName()),
-                empire(r -> r.hasEmpire() ? r.getVillage().getEmpire().getName() : "none"),
+                empire(r -> r.hasEmpire() ? r.getSettlement().getEmpire().getName() : "none"),
                 empirerank(r -> r.hasEmpire() ? r.getEmpireRank().getTag() : "none"),
-                settlement(r -> r.hasVillage() ? r.getVillage().getName() : "none"),
-                rank(r -> r.hasVillage() ? r.getVillageRank().getTag(r.getVillage()) : "none"),
-                title(r -> r.hasVillage() ? r.getVillageTitle() : "none"),
+                settlement(r -> r.hasSettlement() ? r.getSettlement().getName() : "none"),
+                rank(r -> r.hasSettlement() ? r.getSettlementRank().getTag(r.getSettlement()) : "none"),
+                title(r -> r.hasSettlement() ? r.getSettlementTitle() : "none"),
                 balance(r -> Utils.CURRENCY_FORMAT.format(SettlementsPlugin.getInstance().getEconomy().getBalance(Bukkit.getOfflinePlayer(r.getUUID())))),
                 tax(r -> Utils.CURRENCY_FORMAT.format(r.getTax())),
                 bonus(r -> Utils.CURRENCY_FORMAT.format(r.getBonusClaims())),
@@ -523,17 +512,17 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
 
     @Override
     public Map<String, Object> serialize() {
-        if (hasVillage() && getVillage().getId().isNull()) {
-            throw new IllegalArgumentException("Resident had village but village has no ID?");
+        if (hasSettlement() && getSettlement().getId().isNull()) {
+            throw new IllegalArgumentException("Resident had settlement but settlement has no ID?");
         }
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("id", getId().value());
         map.put("uuid", getUUID().toString());
         map.put("name", getName());
-        map.put("settlementId", getVillage() != null ? getVillage().getId().value() : null);
-        map.put("settlementJoin", getVillageJoin());
-        map.put("rank", getVillageRank().name());
-        map.put("title", villageTitle);
+        map.put("settlementId", getSettlement() != null ? getSettlement().getId().value() : null);
+        map.put("settlementJoin", getSettlementJoin());
+        map.put("rank", getSettlementRank().name());
+        map.put("title", settlementTitle);
         map.put("empireTitle", empireTitle);
         map.put("empirerank", getEmpireRank().name());
         map.put("lastLogin", getLastLogin());
@@ -566,23 +555,23 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
             resident.setId(IdObject.get(map.get("_id")));
         }
         try {
-            resident.setVillageRank(VillageRank.valueOf((String) map.get("rank")));
+            resident.setSettlementRank(SettlementRank.valueOf((String) map.get("rank")));
         } catch (IllegalArgumentException e) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid village rank for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("rank"));
+            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid settlement rank for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("rank"));
         }
         try {
             resident.setEmpireRank(EmpireRank.valueOf((String) map.get("empirerank")));
         } catch (IllegalArgumentException e) {
             SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid empire rank for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("empirerank"));
         }
-        if (map.get("villageName") != null) {
-            resident.setVillage(VillageManager.getInstance().getFromName((String) map.get("villageName")));
+        if (map.get("settlementName") != null) {
+            resident.setSettlement(SettlementManager.getInstance().getFromName((String) map.get("settlementName")));
         } else {
-            resident.setVillage(VillageManager.getInstance().getFromId(IdObject.get(map.get("settlementId"))));
+            resident.setSettlement(SettlementManager.getInstance().getFromId(IdObject.get(map.get("settlementId"))));
         }
-        resident.setVillageTitle((String) map.get("title"));
+        resident.setSettlementTitle((String) map.get("title"));
         resident.setEmpireTitle((String) map.get("empireTitle"));
-        resident.setVillageJoin(Utils.getLong(map.get("settlementJoin")));
+        resident.setSettlementJoin(Utils.getLong(map.get("settlementJoin")));
         resident.setLastLogin(Utils.getLong(map.get("lastLogin")));
         resident.getChannels().clear();
         ((Collection<String>) map.get("channels")).stream()
@@ -664,7 +653,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     }
 
     public boolean hasAllies() {
-        return hasVillage() && getVillage().hasAllies() || (hasEmpire() && getVillage().getEmpire().hasAllies());
+        return hasSettlement() && getSettlement().hasAllies() || (hasEmpire() && getSettlement().getEmpire().hasAllies());
     }
 
     public boolean hasEmpireFlight() {
@@ -692,22 +681,22 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     }
 
     public boolean isReceivingCloseBuildingNotification(LandOwner landOwner) {
-        return landOwner instanceof Village
-                && !landOwner.equals(getVillage())
+        return landOwner instanceof Settlement
+                && !landOwner.equals(getSettlement())
                 && closeBuildingNotificationToggles.getIfPresent(landOwner.getId()) == null;
     }
 
     /**
-     * Toggle whether or not to receive notifications about a certain village
-     * @param village The village
+     * Toggle whether or not to receive notifications about a certain settlement
+     * @param settlement The settlement
      * @return Whether or not the resident will now be receiving notifications
      */
-    public boolean toggleCloseBuildingNotification(Village village) {
-        if (isReceivingCloseBuildingNotification(village)) {
-            closeBuildingNotificationToggles.put(village.getId(), false);
+    public boolean toggleCloseBuildingNotification(Settlement settlement) {
+        if (isReceivingCloseBuildingNotification(settlement)) {
+            closeBuildingNotificationToggles.put(settlement.getId(), false);
             return false;
         } else {
-            closeBuildingNotificationToggles.invalidate(village.getId());
+            closeBuildingNotificationToggles.invalidate(settlement.getId());
             return true;
         }
     }

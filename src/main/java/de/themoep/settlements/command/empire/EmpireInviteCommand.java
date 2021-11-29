@@ -1,8 +1,8 @@
 package de.themoep.settlements.command.empire;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.InviteCache;
 
@@ -16,22 +16,22 @@ public class EmpireInviteCommand extends EmpireSubCommand {
         if (args.length < 1) {
             return false;
         }
-        Village invitedVillage = VillageManager.getInstance().getFromName(args[0]);
-        if (invitedVillage == null) {
-            getError("village-doesnt-exist").tell(res, "name", args[0]);
+        Settlement invitedSettlement = SettlementManager.getInstance().getFromName(args[0]);
+        if (invitedSettlement == null) {
+            getError("settlement-doesnt-exist").tell(res, "name", args[0]);
             return true;
         }
-        if (invitedVillage.hasEmpire()) {
+        if (invitedSettlement.hasEmpire()) {
             getMessage("already-in-empire").tell(res,
-                    "name", invitedVillage.getName(),
-                    "state", invitedVillage.getStateTag(),
-                    "empire", invitedVillage.getEmpire().getName());
+                    "name", invitedSettlement.getName(),
+                    "state", invitedSettlement.getStateTag(),
+                    "empire", invitedSettlement.getEmpire().getName());
             return true;
         }
-        InviteCache.getPendingEmpireInvites().put(invitedVillage.getId(), res.getVillage().getEmpire().getId());
-        getMessage("received").tell(invitedVillage.getOnlineResidents(), "name", res.getVillage().getEmpire().getName());
-        getMessage("joinfee").tell(invitedVillage.getOnlineResidents(), "name", res.getVillage().getEmpire().getName(), "amount", String.valueOf(res.getVillage().getEmpire().getJoinFee()));
-        getMessage("alert").tell(res.getVillage().getEmpire().getOnlineResidents(), "name", invitedVillage.getName(), "state", invitedVillage.getStateTag());
+        InviteCache.getPendingEmpireInvites().put(invitedSettlement.getId(), res.getSettlement().getEmpire().getId());
+        getMessage("received").tell(invitedSettlement.getOnlineResidents(), "name", res.getSettlement().getEmpire().getName());
+        getMessage("joinfee").tell(invitedSettlement.getOnlineResidents(), "name", res.getSettlement().getEmpire().getName(), "amount", String.valueOf(res.getSettlement().getEmpire().getJoinFee()));
+        getMessage("alert").tell(res.getSettlement().getEmpire().getOnlineResidents(), "name", invitedSettlement.getName(), "state", invitedSettlement.getStateTag());
         return true;
     }
 }

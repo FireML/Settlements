@@ -6,14 +6,14 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class VillageLevel extends LevelInfo {
+public class SettlementLevel extends LevelInfo {
     private final int chunks;
     private final int outposts;
     private final long claimUpkeep;
     private final int extraMissions;
     private final Map<String, Long> worldClaimUpkeep = new LinkedHashMap<>();
 
-    public VillageLevel(int level, ConfigurationSection config) {
+    public SettlementLevel(int level, ConfigurationSection config) {
         super(level, config);
         outposts = config.getInt("outposts", 0);
         chunks = config.getInt("chunks", 0);
@@ -45,7 +45,7 @@ public class VillageLevel extends LevelInfo {
 
     @Override
     public String toString() {
-        return "VillageLevel{" +
+        return "SettlementLevel{" +
                 "level=" + getLevel() +
                 ", requirements=" + getRequirements() +
                 ", chunks=" + chunks +

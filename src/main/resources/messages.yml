@@ -1,22 +1,22 @@
 server-rules: "&6https://apeironmc.com/rules"
 error:
-  missing-village-id: "&cInternal error. Village ID is null?"
+  missing-settlement-id: "&cInternal error. Settlement ID is null?"
   missing-empire-id: "&cInternal error. Empire ID is null?"
   not-a-number: "&c&l(!) &r&c{input} is not a valid number!"
   not-in-current: "&c&l(!) &r&7Not currently in settlement."
-  not-in-village: "&c&lTarget player {player} isn't in a village!"
+  not-in-settlement: "&c&lTarget player {player} isn't in a settlement!"
   not-in-empire: "&c&l(!) &r&7Not currently in your empire."
   no-permission: "&cNo permission."
   no-channel-permission: "&cNo permission to use {channel} channel!"
   not-a-channel: "&cChat Channel &6{name}&c is not valid channel!"
   not-enough-money: "&c&lNot enough money in your account to pay &r&6&l{amount}&r&c&l!"
-  not-your-village: "&c&lThis is not your {state}!"
-  no-village: "&c&lNo village at your location!"
+  not-your-settlement: "&c&lThis is not your {state}!"
+  no-settlement: "&c&lNo settlement at your location!"
   invalid-rank: "&c&l(!) &r&c{rank} &7is not a valid rank!"
   invalid-group: "&c&l(!) &r&c{group} &7is not a valid group!"
-  village-exists: "&7&lA settlement with the name &6&l{name}&7&l already exists!"
+  settlement-exists: "&7&lA settlement with the name &6&l{name}&7&l already exists!"
   empire-exists: "&7&lAn empire with the name &6&l{name}&7&l already exists!"
-  village-doesnt-exist: "&c&lNo settlement with the name &6&l{name}&c&l found!"
+  settlement-doesnt-exist: "&c&lNo settlement with the name &6&l{name}&c&l found!"
   empire-doesnt-exist: "&c&lNo empire with the name &6&l{name}&c&l found!"
   ambiguous-target: |-
     &6&l{name}&c&l can both refer to a Settlement or Empire!
@@ -41,7 +41,7 @@ error:
     &cUnable to find outpost: &6{name}
     &cUse [&f/s outpost list](/s outpost list) to view all outposts!
   rank-required: "&c&lYou require the rank &r&6&l{rank} or higher&r&c&l!"
-  village-required: "&c&lYou can only do this after you joined a settlement!"
+  settlement-required: "&c&lYou can only do this after you joined a settlement!"
   empire-required: "&c&lYou can only do this after you joined an empire!"
   free-required: "&c&lYou can only do this if you are not part of a settlement yet!"
   cant-admin-plots: "&c&lYou can't manage this plot!"
@@ -104,11 +104,11 @@ banished:
     title: "&cCan't stay"
     subtitle: "&cYou're banished from the {state} {name}!"
 broadcast:
-  village-deletion: "&c{state} &e{name}&c has fallen!"
-  villages-deletion: "&e{villages}&c have fallen!"
-  village-abandoned: "&e{state} &f{name}&c has been abandoned! You have 2 hours to raid it"
-  villages-abandoned: "&e{villages}&c have been abandoned! You have 2 hours to raid them"
-  villages-tag: "&e{state} &f{name}&e"
+  settlement-deletion: "&c{state} &e{name}&c has fallen!"
+  settlements-deletion: "&e{settlements}&c have fallen!"
+  settlement-abandoned: "&e{state} &f{name}&c has been abandoned! You have 2 hours to raid it"
+  settlements-abandoned: "&e{settlements}&c have been abandoned! You have 2 hours to raid them"
+  settlements-tag: "&e{state} &f{name}&e"
   empire-deletion: "&cEmpire &e{name}&c has fallen!"
   empires-deletion: "&cEmpires &f{empires}&c have fallen!"
   empire-abandoned: "&cEmpire &f{name}&c has been abandoned! You have 24 hours to raid it!"
@@ -118,18 +118,18 @@ scoreboard:
   sidebar:
     title: "&a&lApeiron&f&lMC"
     entries:
-      no-village: |-
+      no-settlement: |-
         &aBal &b₲&e{balance}
 
         &aKills&3 &e{kills}
         &aDeaths&3 &e{deaths}
         &7/scoreboard
-      village: |-
-        &a&l{villagestate}
-        &a(&e{villagename}&a)
-        &aRank &e{villagetitle}
-        &aBank &b₲&e{villagebalance}
-        &aOnline &e{villageresonlinecount}
+      settlement: |-
+        &a&l{settlementstate}
+        &a(&e{settlementname}&a)
+        &aRank &e{settlementtitle}
+        &aBank &b₲&e{settlementbalance}
+        &aOnline &e{settlementresonlinecount}
 
         &aBal &b₲&e{balance}
         &7/scoreboard
@@ -139,13 +139,13 @@ scoreboard:
         &aBank &b₲&e{empirebalance}
         &aRank &e{empirerank}
         
-        &a&l{villagestate}
-        &a(&e{villagename}&a)
-        &aBank &b₲&e{villagebalance}
-        &aOnline &e{villageresonlinecount}
+        &a&l{settlementstate}
+        &a(&e{settlementname}&a)
+        &aBank &b₲&e{settlementbalance}
+        &aOnline &e{settlementresonlinecount}
         
         &aBal &b₲&e{balance}
-        &aRank &e{villagetitle}
+        &aRank &e{settlementtitle}
         &7/scoreboard
 empire-world-generated: "&a&lCreated your own empire world!"
 levels:
@@ -357,10 +357,10 @@ chat:
   locked: "&c&lChat is currently locked!"
   nobody-nearby: "&c&lThere is nobody around you who could hear you!"
   hover:
-    info: "&aName &f{name}{rank}{balance}{village}{empire}\n&7&oClick to message player"
+    info: "&aName &f{name}{rank}{balance}{settlement}{empire}\n&7&oClick to message player"
     balance: "\n&aBalance &f{balance}"
     bonus: "\n&aBonus claims &f{bonus}"
-    village: "\n&a{state} &f{name}"
+    settlement: "\n&a{state} &f{name}"
     empire: "\n&aEmpire &f{name}"
     rank: "\n&aRank &f{title}"
     click-to-open-url: "&9Click to open url"
@@ -369,8 +369,8 @@ chat:
     name: "{displayname}"
     title:
       none: ""
-      village: "{villageTitle}"
-      empire: "{empireTitle} {villageTitle}{empireSymbol}"
+      settlement: "{settlementTitle}"
+      empire: "{empireTitle} {settlementTitle}{empireSymbol}"
     private:
       sender: "{prefixColor}\\[&a{sender} &7➦ &3{target}{prefixColor}] {color}{message}"
       target: "{staff}{prefixColor}\\[&3{sender} &7➦ &a{target}{prefixColor}] {color}{message}"
@@ -528,7 +528,7 @@ integration:
     not-enough-space: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 is full! ({seller} tried to sell)"
     not-enough-money: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 can't loose money as you need it to pay your upkeep! ({seller} tried to sell)"
   lwc:
-    only-in-village: "&c&lYou can only lock things in a settlement claim!"
+    only-in-settlement: "&c&lYou can only lock things in a settlement claim!"
     state:
       use:
         residents: "&e&l(!) &r&e{use}&7 is limited to &eresidents&7 of &e{state} {name}&7."
@@ -594,7 +594,7 @@ protection:
         trusted: "&e&l(!) &r&e{use}&7 is limited to &emembers&7 of &e{state} {name}&7."
         landowner:
           private: "&e&l(!) &r&e{use}&7 is limited to the &eCapital of {state} {name}&7."
-      village:
+      settlement:
         landowner:
           private: "&e&l(!) &r&e{use}&7 is limited to &eResidents of {state} {name}&7."
     build:
@@ -609,7 +609,7 @@ protection:
         trusted: "&e&l(!) &r&7Only &members of {state} {name}&7 can build here."
         landowner:
           private: "&e&l(!) &r&7Only the &eCapital of {state} {name}&7 can build here."
-      village:
+      settlement:
         landowner:
           private: "&e&l(!) &r&7Only &eresidents of {state} {name}&7 can build here."
 lock:
@@ -955,7 +955,7 @@ gui:
         &6&lFinished Missions: &r&7{missions}
         &6&lBonusclaims &r&7{bonusclaims}
         &6&lCapital &r&7{capitalstate}{capital}
-        &e&l{chiefempiretitle}: &r&7{chiefvillagetitle} {chiefonline}{chief}
+        &e&l{chiefempiretitle}: &r&7{chiefsettlementtitle} {chiefonline}{chief}
         &r&7{specialresidents}
         &e&lMembers:
         &r&7{members}
@@ -1378,7 +1378,7 @@ gui:
     
       &a▶ /s titles
     entry: |-
-      &a&lVillage Data
+      &a&lSettlement Data
       &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
       &a&lDescription &r&7{description}
       &a&lState &r&7{state}
@@ -1408,7 +1408,7 @@ gui:
     title: "&2&l/s teleporters"
     locked: "&cLocked"
     private: "&e&lPrivate Warps"
-    village-home: "&e&l{state} Home"
+    settlement-home: "&e&l{state} Home"
     empire-home: "&e&lEmpire Home"
   title:
     title: "&2&lSelect your title"
@@ -1607,7 +1607,7 @@ command:
           &a&lBonus claims: &f{bonus}
           &a&lJoin Date: &f{joindate}
           &a&lLast Login: &f{lastlogin}
-        in-village: |-
+        in-settlement: |-
           &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
           &a&lSettlement: &f{settlement}
           &a&lRank: &f{title}
@@ -1785,7 +1785,7 @@ command:
     add:
       description: "Add custom lines to the scoreboard"
       added: "&7Added '&f{line}&7' to the scoreboard."
-  village:
+  settlement:
     active:
       head: "&a⊱&m━━━━&r&6Active Players [{page}/{maxpage}]&a&m━━━━&a⊰"
       entry: "&e• [&e&l{title} &r&e{name} - &r{activity}](&eLast login at {timestamp})"
@@ -1839,7 +1839,7 @@ command:
       deposit:
         deposited: "&e&l{title} &r&e{name} &r&7deposited &6{amount}&r&7 into the bank!"
         description: Deposit money into the bank
-      description: Commands to interact with the village bank
+      description: Commands to interact with the settlement bank
       balance:
         balance: "&2&lSettlement Balance: &r&7{amount}"
         description: Check the balance of the bank
@@ -1868,7 +1868,7 @@ command:
       cant-claim-more: "&c&l(!) &r&7Your settlement can only claim &e{max} chunks of land!"
       no-land-around: "&c&l(!) &r&7Your claim must be connected to an existing settlement claim!"
       success: "&a&lSUCCESS &r&e{player} &7has claimed land for your settlement at {x},{z}!"
-      new-upkeep: "&aYour new upkeep is now &e₲{villageupkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
+      new-upkeep: "&aYour new upkeep is now &e₲{settlementupkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
       home-set: "&7&l{state} home was set at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
       radius-too-large: "&c&l(!) &r&7Can't use an radius of {radius} for claiming as the maximum is {max}!"
       description: Claim a chunk of land
@@ -1883,7 +1883,7 @@ command:
         &a&lSUCCESS &r&7created a new settlement.
         &7&lNOTE:&r&7 Make sure to deposit money into your  &a/s bank&7 for the daily &a/s upkeep
       broadcast: "&e{player} has made a settlement called {name}!"
-      description: Create a new village.
+      description: Create a new settlement.
     setdescription:
       success: "&aSet description of {state} to &r{description}"
       description: Set the description of a settlement
@@ -1911,8 +1911,8 @@ command:
         head: "&a⊱&m━━━━&r&6Top {amount} Settlements&a&m━━━━&a⊰"
         entry: "&e• {place}. [&e&l{state} {name} &r&7- &e{amount}](&8{chieftitle}: &f{chief}\n&8Size: &f{size} players\n&f{description})"
         footer: "&a⊱&m━━━━&r&6Event: {event}&a&m━━━━&a⊰"
-        description: Show top 3 villages in the current event
-      description: Village events commands
+        description: Show top 3 settlements in the current event
+      description: Settlement events commands
     here:
       general: |-
         &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
@@ -1958,7 +1958,7 @@ command:
         online: "&a"
         offline: "&c"
         entry: "{online}{name}"
-      description: "Shows information on the village you are stending in "
+      description: "Shows information on the settlement you are standing in "
     history:
       head: "&a⊱&m━━━━&r&6Log History [{page}/{maxpage}]&a&m━━━━&a⊰"
       entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
@@ -1979,13 +1979,13 @@ command:
         &fUnable to teleport!
       description: Teleport to a settlement's home
     invite:
-      already-in-village: "&c&l{name} is already in a {state}"
+      already-in-settlement: "&c&l{name} is already in a {state}"
       joinfee: "&7Fee to join is &e{amount}!"
       received: |-
         &e&l(!) &r&7Invite received from {state} {name}! 
         &7Click or type [&e/s join {name}](suggest_command=/s join {name}) &7to join.
       alert: "&e&l(!) &r&e{player}&7 has been invited to the settlement."
-      description: Invite someone to join your village
+      description: Invite someone to join your settlement
     join:
       not-enough-money: "&c&l(!) &r&7You do not have enough money to pay the join fee of {amount}!"
       money-paid: "&7Paid &e{amount}&7 to join!"
@@ -1994,18 +1994,18 @@ command:
       new-resident: "&e&l(!) &r&e{player}&7 has joined the settlement!"
       is-full: "&e&l(!) &r&7The {state} {name} is full."
       banished: "&cYou are banished from {state} {name}!"
-      description: Join a village
+      description: Join a settlement
     kick:
       cant-kick-yourself: "&cYou cannot kick yourself!"
       cant-kick-higher: "&cYou cannot kick &6{rank} or higher&c!"
       kicked-alert: "&a&l(!) &r&e{player}&7 has been kicked from the settlement."
-      description: Kick a player from your village
+      description: Kick a player from your settlement
     leave:
       cant-leave-own: "&c&l(!) &r&7You cannot leave your own settlement. You must delete it."
       confirm: "&eConfirm that you want to leave by running the command again in the next &c{time} seconds&e!"
       success: "&a&lSUCCESS &r&7You have left your settlement."
       alert: "&e&l(!) &r&e{player}&7 has left the settlement."
-      description: Leave your current village
+      description: Leave your current settlement
     list:
       description: "List settlements"
       head: "&a⊱&m━━━━&r&6{access}Settlements [{page}/{maxpage}]&a&m━━━━&a⊰"
@@ -2074,7 +2074,7 @@ command:
     mode:
       modes: "&cAvailable modes: {modes}"
       success: "&7Settlement mode &6{mode}&7: &6{value}"
-      description: Changes settings for your village claims
+      description: Changes settings for your settlement claims
     officer:
       description: Members that should have officer build access
     outpost:
@@ -2123,8 +2123,8 @@ command:
       show:
         description: Show all permissions that a certain rank has
         head: "&a⊱&m━━━━&r&6{rank} Perms&a&m━━━━&a⊰"
-        entry: "&e• &f[{color}{permission}](hover={{color}{value}\n&9Click to set {opposite}} run_command=/s perms set {rank} {permission} {opposite})"
-        footer: "&a⊱&m━━━━&r&6/s perms&a&m━━━━&a⊰" # TODO: Pagination
+        entry: "&e• &f[{color}{permission}](hover={{color}{value}\n&9Click to set {opposite}} run_command=/s ranks set {rank} {permission} {opposite})"
+        footer: "&a⊱&m━━━━&r&6/s ranks&a&m━━━━&a⊰" # TODO: Pagination
       set:
         description: Set the permissions of a rank
         cant-edit-perms-permission: "&cYou can't edit the perms managing permission from the chief rank!"
@@ -2143,7 +2143,7 @@ command:
           name: Plot Manager
     rename:
       success: "&7&lSettlement has been renamed to &6&l{name}"
-      description: Renames the current village to something else
+      description: Renames the current settlement to something else
     reslist:
       head: "&a⊱&m━━━━&r&6Members&a&m━━━━&a⊰"
       rank: "&6&l{rank}:&r {residents}"
@@ -2154,7 +2154,7 @@ command:
       description: lists all residents
     rewards:
       no-rewards: |-
-        &cYour {villagestate} does not have any rewards that can be claimed!
+        &cYour {settlementstate} does not have any rewards that can be claimed!
         &7Event rewards can only be claimed until the next event starts (or the server restarts)
       description: Claim event rewards
     setaccess:
@@ -2170,7 +2170,7 @@ command:
       success: "{title} {name} &r&7&lhas set the {state} home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
       moved-outpost: "{title} {name} &r&7&lmoved the outpost &r&6&l{outpost}&7&l to the old home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
       abandoned-land: "&cCan't move home as the original land would no longer be connected to the home or an outpost!"
-      description: Sets the home for the village
+      description: Sets the home for the settlement
     joinfee:
       description: Get and set the fee a player needs to pay to join
       current: "&7Your {state}'s join fee is &e{amount}&7!"
@@ -2270,7 +2270,7 @@ command:
         online: "&a"
         offline: "&c"
         entry: "{online}{name}"
-      description: "Shows information on a village "
+      description: "Shows information on a settlement "
     tax:
       current: "&7Your {state}'s tax is &e{amount}&7!"
       description: Settlement taxes
@@ -2332,7 +2332,7 @@ command:
     transfer:
       success: "&e&l(!) &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
       already-chief: "&c&lYou can't transfer leadership to your self!"
-      description: Transfers leadership of your village
+      description: Transfers leadership of your settlement
     unally:
       cant-unally-yourself: "&c&lYou can't un-ally yourself!"
       not-allied: "&c&lYou are not allied to {state} &r&6&l{name}"
@@ -2343,8 +2343,8 @@ command:
       home: "&cThis land is your home, you have to move it with &7/{base} sethome&c before unclaiming this land."
       confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l in the next minute to confirm the &e&lunclaiming&c&l of [&e&l{amount}&c&l chunks](&fChunks that will be unclaimed:\n&7{claims}) and [&5{portal-amount} &c&lportals](&fPortals that will be removed:\n&7{portals})."
       success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at &f{x}-{z}!"
-      new-upkeep: "&aYour new upkeep is now &e₲{villageupkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
-      description: Unclaim land which is claimed by your village
+      new-upkeep: "&aYour new upkeep is now &e₲{settlementupkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
+      description: Unclaim land which is claimed by your settlement
       "<radius>":
         description: "Unclaims all the chunks in the stated radius (max is 5)"
       radius:
@@ -2364,11 +2364,11 @@ command:
       permission:
         description: Allows viewing unlocked perks
     upgrade:
-      not-possible: "&cThe village cannot be leveled up! {reason}"
+      not-possible: "&cThe settlement cannot be leveled up! {reason}"
       max-level-reached: "&r&c&lMax Level Reached."
       missing-items: "&c&lMissing Items:"
       entry: "&6{amount} &e{material}"
-      description: Manually trigger a village upgrade
+      description: Manually trigger a settlement upgrade
     upkeep:
       info: |-
         &a⊱&m━━━━&r&6Upkeep&a&m━━━━&a⊰
@@ -2383,7 +2383,7 @@ command:
       states: "&cAvailable states: {states}"
       success: "&7State of &6{flag} &7set to &6{state}"
       success-all: "&7Set all flags to &6{state}"
-      description: Set who can use stuff in your village
+      description: Set who can use stuff in your settlement
       all:
         description: Sets all flags to a certain state
     description: Settlement management command
@@ -2400,10 +2400,10 @@ command:
       description: Links you to the rules
     settings:
       description: Shows a settings gui
-  villageadmin:
-    description: Village administration command
+  settlementadmin:
+    description: Settlement administration command
     bonus:
-      description: Add/set/remove bonus claims from Residents/Villages
+      description: Add/set/remove bonus claims from Residents/Settlements
       success: "&aSUCCESS: {operation} {amount} to {name}"
     convertconfig:
       description: Convert the config to a certain config version
@@ -2460,7 +2460,7 @@ command:
       deposit:
         deposited: "&e&l{title} &r&e{name} &r&7deposited &6{amount}&r&7 into the bank!"
         description: Deposit money into the bank
-      description: Commands to interact with the village bank
+      description: Commands to interact with the settlement bank
       balance:
         balance: "&2&lEmpire Balance: &r&7{amount}"
         description: Check the balance of the bank
@@ -2551,7 +2551,7 @@ command:
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
         &6&lCapital &r&7{capitalstate} {capital}
-        &e&l{chiefempiretitle}: &r&7{chiefvillagetitle} {chiefonline}{chief}
+        &e&l{chiefempiretitle}: &r&7{chiefsettlementtitle} {chiefonline}{chief}
         {specialresidents}
         &e&lMembers:
         &r&7{members}
@@ -2800,7 +2800,7 @@ command:
         &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &9&lPerks: &r&7{perks}
         &6&lCapital &r&7{capitalstate} {capital}
-        &e&l{chiefempiretitle}: &r&7{chiefvillagetitle} {chiefonline}{chief}
+        &e&l{chiefempiretitle}: &r&7{chiefsettlementtitle} {chiefonline}{chief}
         {specialresidents}
         &e&lMembers:
         &r&7{members}
@@ -2878,7 +2878,7 @@ command:
         doesnt-exist: "&e{rank}&c has no title with the name &e{input}&c defined!"
     transfer:
       success: "&e&l(!) &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
-      already-capital: "&c&lYour village is already the capital."
+      already-capital: "&c&lYour settlement is already the capital."
       max-level-kingdom-required: "&cThe settlement needs to be a Kingdom with level 10 to be the capital of an empire!"
       description: Transfers leadership of your empire
     unally:

@@ -12,11 +12,11 @@ public class VillageDescriptionCommand extends VillageSubCommand {
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
-        res.getVillage().setDescription(Utils.filterAllCurses(String.join(" ", args)));
-        DatabaseManager.getInstance().saveSettlement(res.getVillage());
+        res.getSettlement().setDescription(Utils.filterAllCurses(String.join(" ", args)));
+        DatabaseManager.getInstance().saveSettlement(res.getSettlement());
         getMessage("success").tell(res,
-                "state", res.getVillage().getState().getTag(),
-                "description", res.getVillage().getDescription()
+                "state", res.getSettlement().getState().getTag(),
+                "description", res.getSettlement().getDescription()
         );
         return true;
     }

@@ -1,10 +1,8 @@
 package de.themoep.settlements.land;
 
-import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.rank.Rankable;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.NameTag;
-import de.themoep.settlements.village.Village;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

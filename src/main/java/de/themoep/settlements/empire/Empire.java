@@ -3,13 +3,12 @@ package de.themoep.settlements.empire;
 import co.aikar.timings.lib.MCTiming;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import de.themoep.settlements.integration.PlaceholderApiIntegration;
 import de.themoep.settlements.missions.MissionData;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
-import de.themoep.settlements.village.VillageState;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
+import de.themoep.settlements.village.SettlementState;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.LandAccess;
@@ -23,7 +22,7 @@ import de.themoep.settlements.perk.EmpirePerk;
 import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.rank.RankManager;
-import de.themoep.settlements.rank.VillageRank;
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Message;
@@ -94,7 +93,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         long paidTaxes = 0;
         if (getTax() > 0) {
             long tax = getTax();
-            for (Village member : getMembers()) {
+            for (Settlement member : getMembers()) {
                 if (member.getId().equals(getCapitalId())) {
                     continue;
                 }
@@ -128,7 +127,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         }
 
         if (getTax() > 0) {
-            DatabaseManager.getInstance().saveVillages(getMembers());
+            DatabaseManager.getInstance().saveSettlements(getMembers());
         }
 
         if (distributeNewMissions()) {
@@ -213,13 +212,13 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
 
     private boolean distributeNewMissions() {
         boolean modified = false;
-        for (Village member : getMembers()) {
+        for (Settlement member : getMembers()) {
             modified |= distributeNewMissions(member);
         }
         return modified;
     }
 
-    public boolean distributeNewMissions(Village member) {
+    public boolean distributeNewMissions(Settlement member) {
         EmpireLevel levelInfo = getLevelInfo();
         if (levelInfo != null && levelInfo.getMissions() > 0) {
             List<EmpireMission> missions = new ArrayList<>(EmpireManager.getInstance().getMissions());
@@ -256,9 +255,9 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
 
     @Override
     public void removeMember(Targetable target) {
-        if (target instanceof Village && isMember((Village) target)) {
-            members.remove(((Village) target).getId());
-            EmpireManager.getInstance().leaveEmpire((Village) target);
+        if (target instanceof Settlement && isMember((Settlement) target)) {
+            members.remove(((Settlement) target).getId());
+            EmpireManager.getInstance().leaveEmpire((Settlement) target);
         }
     }
 
@@ -297,7 +296,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     @Override
     public long getTaxIncome() {
         long income = 0;
-        for (Village member : getMembers()) {
+        for (Settlement member : getMembers()) {
             if (!member.getId().equals(getCapitalId()) && member.has(getTax())) {
                 income += getTax();
             }
@@ -305,7 +304,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         for (OwnedLand land : getLand()) {
             if (land.isPlot()) {
                 Resident owner = ResidentManager.getInstance().getResident(land.getPlotOwner());
-                if (owner != null && (!isMember(owner) || !owner.hasPermission("empire.tax.exempt")) && !isCapital(owner.getVillage())) {
+                if (owner != null && (!isMember(owner) || !owner.hasPermission("empire.tax.exempt")) && !isCapital(owner.getSettlement())) {
                     income += land.getTax();
                 }
             }
@@ -416,15 +415,15 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         }
     }
 
-    public Village getCapital() {
-        return VillageManager.getInstance().getFromId(capital);
+    public Settlement getCapital() {
+        return SettlementManager.getInstance().getFromId(capital);
     }
 
     public IdObject getCapitalId() {
         return capital;
     }
 
-    public void setCapital(Village capital) {
+    public void setCapital(Settlement capital) {
         this.capital = capital != null ? capital.getId() : IdObject.get(null);
     }
 
@@ -463,8 +462,8 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         return members;
     }
 
-    public Collection<Village> getMembers() {
-        return getMemberIds().stream().map(i -> VillageManager.getInstance().getFromId(i)).filter(Objects::nonNull).collect(Collectors.toList());
+    public Collection<Settlement> getMembers() {
+        return getMemberIds().stream().map(i -> SettlementManager.getInstance().getFromId(i)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     public boolean isFull() {
@@ -517,8 +516,8 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         if (super.isChief(target)) {
             return true;
         }
-        if (target instanceof Village) {
-            return isCapital((Village) target);
+        if (target instanceof Settlement) {
+            return isCapital((Settlement) target);
         }
         return false;
     }
@@ -529,8 +528,8 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         return hasPermission(res, "officer");
     }
 
-    public boolean isCapital(Village village) {
-        return village != null && capital.equals(village.getId());
+    public boolean isCapital(Settlement settlement) {
+        return settlement != null && capital.equals(settlement.getId());
     }
 
     public String getSymbol() {
@@ -556,7 +555,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
 
     @Override
     public long getOnlineCount() {
-        return getMembers().stream().mapToLong(Village::getOnlineCount).sum();
+        return getMembers().stream().mapToLong(Settlement::getOnlineCount).sum();
     }
 
     @Override
@@ -571,7 +570,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
 
     @Override
     public boolean isMember(Resident resident) {
-        return isMember(resident.getVillage());
+        return isMember(resident.getSettlement());
     }
 
     @Override
@@ -586,7 +585,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
 
     @Override
     public Resident getResident(String name) {
-        for (Village member : getMembers()) {
+        for (Settlement member : getMembers()) {
             for (Resident resident : member.getResidents()) {
                 if (resident.getName().equalsIgnoreCase(name)) {
                     return resident;
@@ -641,13 +640,13 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         this.worldName = worldName;
     }
 
-    public boolean isMember(Village village) {
-        return village != null && equals(village.getEmpire());
+    public boolean isMember(Settlement settlement) {
+        return settlement != null && equals(settlement.getEmpire());
     }
 
     @Override
     public boolean isTrusted(LandOwner landOwner) {
-        return landOwner instanceof Village && isMember((Village) landOwner);
+        return landOwner instanceof Settlement && isMember((Settlement) landOwner);
     }
 
     @Override
@@ -737,52 +736,52 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         bonusclaims((c, e) -> String.valueOf(e.getBonusClaimAmount())),
         bonus((c, e) -> String.valueOf(e.getBonusClaimAmount())),
         capital((c, e) -> {
-            Village capital = e.getCapital();
+            Settlement capital = e.getCapital();
             return capital != null ? capital.getName() : "-";
         }),
         capitalstate((c, e) -> {
-            Village capital = e.getCapital();
+            Settlement capital = e.getCapital();
             return capital != null ? capital.getStateTag() : "-";
         }),
         perks((c, e) -> e.getPerksMap().entrySet().stream()
                 .map(p -> (p.getValue().getTimes() > 1 ? p.getValue().getTimes() + "x " : "") + e.getPerk(p.getKey()).getTag())
                 .collect(Collectors.joining(", "))),
         chiefrank((c, e) -> {
-            Village capital = e.getCapital();
-            return VillageRank.getChief().getTag(capital);
+            Settlement capital = e.getCapital();
+            return SettlementRank.getChief().getTag(capital);
         }),
         chieftitle((c, e) -> {
-            Village capital = e.getCapital();
+            Settlement capital = e.getCapital();
             Resident chief = capital != null ? capital.getChief() : null;
-            return chief != null ? chief.getVillageTitle() : "-";
+            return chief != null ? chief.getSettlementTitle() : "-";
         }),
         chiefvillagetitle((c, e) -> {
-            Village capital = e.getCapital();
+            Settlement capital = e.getCapital();
             Resident chief = capital != null ? capital.getChief() : null;
-            return chief != null ? chief.getVillageTitle() : "-";
+            return chief != null ? chief.getSettlementTitle() : "-";
         }),
         chiefsettlementtitle((c, e) -> {
-            Village capital = e.getCapital();
+            Settlement capital = e.getCapital();
             Resident chief = capital != null ? capital.getChief() : null;
-            return chief != null ? chief.getVillageTitle() : "-";
+            return chief != null ? chief.getSettlementTitle() : "-";
         }),
         chiefempiretitle((c, e) -> {
-            Village capital = e.getCapital();
+            Settlement capital = e.getCapital();
             Resident chief = capital != null ? capital.getChief() : null;
             return chief != null ? chief.getEmpireTitle() : "-";
         }),
         chiefdisplaytitle((c, e) -> {
-            Village capital = e.getCapital();
+            Settlement capital = e.getCapital();
             Resident chief = capital != null ? capital.getChief() : null;
             return chief != null ? chief.getDisplayTitle() : "-";
         }),
         chief((c, e) -> {
-            Village capital = e.getCapital();
+            Settlement capital = e.getCapital();
             Resident chief = capital != null ? capital.getChief() : null;
             return chief != null ? chief.getName() : "-";
         }),
         chiefonline((c, e) -> {
-            Village capital = e.getCapital();
+            Settlement capital = e.getCapital();
             Resident chief = capital != null ? capital.getChief() : null;
             return c != null ? (chief != null && chief.getPlayer() != null ? c.getText("special-residents.online") : c.getText("special-residents.offline")) : "";
         }),
@@ -813,15 +812,15 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         if (members.isEmpty()) {
             return "";
         }
-        Multimap<VillageState, Village> members = MultimapBuilder.enumKeys(VillageState.class).arrayListValues().build();
-        for (Village member : getMembers()) {
+        Multimap<SettlementState, Settlement> members = MultimapBuilder.enumKeys(SettlementState.class).arrayListValues().build();
+        for (Settlement member : getMembers()) {
             members.put(member.getState(), member);
         }
         Message stateMessage = configMessages.getMessage("members.state");
         Message entryMessage = configMessages.getMessage("members.entry");
         String separator = configMessages.getMessage("members.separator").getText();
         List<String> lines = new ArrayList<>();
-        for (VillageState state : VillageState.values()) {
+        for (SettlementState state : SettlementState.values()) {
             if (!members.containsKey(state)) {
                 continue;
             }
@@ -870,9 +869,9 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
                                     "online", res.getPlayer() != null ? online : offline,
                                     "name", res.getName(),
                                     "rank", rank.getTag(),
-                                    "title", res.getVillageTitle(),
-                                    "state", res.getVillage().getStateTag(),
-                                    "settlement", res.getVillage().getName()
+                                    "title", res.getSettlementTitle(),
+                                    "state", res.getSettlement().getStateTag(),
+                                    "settlement", res.getSettlement().getName()
                             ))
                             .collect(Collectors.joining(separator))
             ));

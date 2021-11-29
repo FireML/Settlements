@@ -11,13 +11,13 @@ public class EmpireMissionsCommand extends EmpireSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        if (!resident.getVillage().getMissionData().isEmpty()) {
+        if (!resident.getSettlement().getMissionData().isEmpty()) {
             new MissionGui(resident).open();
         } else {
             getMessage("wait-for-missions").tell(resident,
-                    "state", resident.getVillage().getStateTag(),
-                    "name", resident.getVillage().getName(),
-                    "empire", resident.getVillage().getEmpire().getName()
+                    "state", resident.getSettlement().getStateTag(),
+                    "name", resident.getSettlement().getName(),
+                    "empire", resident.getSettlement().getEmpire().getName()
             );
         }
         return true;

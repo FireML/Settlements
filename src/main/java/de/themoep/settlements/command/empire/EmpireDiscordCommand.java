@@ -11,20 +11,20 @@ public class EmpireDiscordCommand extends EmpireSubCommand {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length == 0) {
-                    String old = resident.getVillage().getEmpire().getDiscord();
-                    resident.getVillage().getEmpire().setDiscord("");
+                    String old = resident.getSettlement().getEmpire().getDiscord();
+                    resident.getSettlement().getEmpire().setDiscord("");
                     getMessage("removed").tell(resident,
-                            "state", resident.getVillage().getEmpire().getStateTag(),
+                            "state", resident.getSettlement().getEmpire().getStateTag(),
                             "discordlink", old
                     );
                 } else {
-                    resident.getVillage().getEmpire().setDiscord(String.join(" ", args));
+                    resident.getSettlement().getEmpire().setDiscord(String.join(" ", args));
                     getMessage("success").tell(resident,
-                            "state", resident.getVillage().getEmpire().getStateTag(),
-                            "discordlink", resident.getVillage().getEmpire().getDiscord()
+                            "state", resident.getSettlement().getEmpire().getStateTag(),
+                            "discordlink", resident.getSettlement().getEmpire().getDiscord()
                     );
                 }
-                DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
+                DatabaseManager.getInstance().saveEmpire(resident.getSettlement().getEmpire());
                 return true;
             }
         });
@@ -33,13 +33,13 @@ public class EmpireDiscordCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length == 0) {
-            if (resident.getVillage().getEmpire().getDiscord().isEmpty()) {
+            if (resident.getSettlement().getEmpire().getDiscord().isEmpty()) {
                 getMessage("none").tell(resident,
-                        "state", resident.getVillage().getEmpire().getStateTag());
+                        "state", resident.getSettlement().getEmpire().getStateTag());
             } else {
                 getMessage("current").tell(resident,
-                        "state", resident.getVillage().getEmpire().getStateTag(),
-                        "discordlink", resident.getVillage().getEmpire().getDiscord()
+                        "state", resident.getSettlement().getEmpire().getStateTag(),
+                        "discordlink", resident.getSettlement().getEmpire().getDiscord()
                 );
             }
             if (resident.hasPermission("empire.discord.set")) {

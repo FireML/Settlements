@@ -4,7 +4,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.rank.VillageRank;
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 
@@ -24,20 +24,20 @@ public class VillageResListCommand extends VillageSubCommand {
             String online = getMessage("online").getText();
             String offline = getMessage("offline").getText();
             String separator = getMessage("separator").getText();
-            Multimap<VillageRank, Resident> rankMap = MultimapBuilder.treeKeys().arrayListValues().build();
-            for (Resident resident : sender.getVillage().getResidents()) {
-                rankMap.put(resident.getVillageRank(), resident);
+            Multimap<SettlementRank, Resident> rankMap = MultimapBuilder.treeKeys().arrayListValues().build();
+            for (Resident resident : sender.getSettlement().getResidents()) {
+                rankMap.put(resident.getSettlementRank(), resident);
             }
-            for (VillageRank rank : rankMap.keySet()) {
+            for (SettlementRank rank : rankMap.keySet()) {
                 sender.tell(getMessage("rank"),
-                        "rank", rank.getTag(sender.getVillage()),
+                        "rank", rank.getTag(sender.getSettlement()),
                         "residents", rankMap.get(rank).stream()
-                                .sorted(Comparator.comparing(Resident::getVillageJoin))
+                                .sorted(Comparator.comparing(Resident::getSettlementJoin))
                                 .map(res -> MessageUtils.replacePlaceholders(entry,
                                         "online", res.getPlayer() != null ? online : offline,
                                         "name", res.getName(),
-                                        "rank", res.getVillageRank().getTag(res.getVillage()),
-                                        "title", res.getVillageTitle(),
+                                        "rank", res.getSettlementRank().getTag(res.getSettlement()),
+                                        "title", res.getSettlementTitle(),
                                         "displaytitle", res.getDisplayTitle()
                                 ))
                                 .collect(Collectors.joining(separator))

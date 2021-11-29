@@ -11,6 +11,6 @@ public class EmpireUnAllyCommand extends EmpireSubCommand implements AllyCommand
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        return removeAlly(resident, resident.getVillage().getEmpire(), args);
+        return removeAlly(resident, resident.getSettlement().getEmpire(), args);
     }
 }

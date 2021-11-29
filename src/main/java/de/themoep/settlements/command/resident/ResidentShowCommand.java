@@ -3,12 +3,7 @@ package de.themoep.settlements.command.resident;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Utils;
-import org.bukkit.OfflinePlayer;
 
-import java.sql.Date;
-
-import de.themoep.settlements.SettlementsPlugin;
-import org.bukkit.Bukkit;
 import de.themoep.settlements.utils.MessageUtils;
 import org.bukkit.command.CommandSender;
 import de.themoep.settlements.command.SubCommand;
@@ -38,7 +33,7 @@ public class ResidentShowCommand extends SubCommand {
                 target = ResidentManager.getInstance().getResident((Player) sender);
             }
 
-            getMessage("info." + (target.hasVillage() ? target.hasEmpire() ? "in-empire" : "in-village" : "free")).tell(sender,
+            getMessage("info." + (target.hasSettlement() ? target.hasEmpire() ? "in-empire" : "in-settlement" : "free")).tell(sender,
                     target.getReplacements()
             );
         });

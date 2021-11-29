@@ -5,12 +5,12 @@ import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.rank.VillageRank;
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.ConfirmationGui;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.village.Village;
+import de.themoep.settlements.village.Settlement;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -40,22 +40,22 @@ public class RanksGUI extends SettlementsGUI {
         GuiElementGroup group = new GuiElementGroup('g');
 
         Resident res = ResidentManager.getInstance().getResident(player);
-        if (res.hasVillage()) {
-            for (VillageRank rank : VillageRank.values()) {
+        if (res.hasSettlement()) {
+            for (SettlementRank rank : SettlementRank.values()) {
                 List<String> text = new ArrayList<>();
                 text.add(getText("entry.title",
-                        "rank", rank.getTag(res.getVillage())
+                        "rank", rank.getTag(res.getSettlement())
                 ));
-                if (res.getVillageRank().above(rank) || res.getVillageRank() == VillageRank.getChief()) {
+                if (res.getSettlementRank().above(rank) || res.getSettlementRank() == SettlementRank.getChief()) {
                     text.add(getText("entry.edit",
-                            "rank", rank.getTag(res.getVillage())
+                            "rank", rank.getTag(res.getSettlement())
                     ));
                 }
                 group.addElement(new StaticGuiElement('g',
-                        ItemUtils.setGlowing(rank.getItem(), rank == res.getVillageRank()),
+                        ItemUtils.setGlowing(rank.getItem(), rank == res.getSettlementRank()),
                         click -> {
                             Resident r = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
-                            if (r.hasVillage() && r.hasPermission("village.perms")) {
+                            if (r.hasSettlement() && r.hasPermission("settlement.ranks.perms")) {
                                 new RankPermGroupsGUI(r, rank).open();
                             }
                             return true;
@@ -64,20 +64,20 @@ public class RanksGUI extends SettlementsGUI {
                 ));
             }
 
-            if (res.hasPermission("village.perms.reset")) {
+            if (res.hasPermission("settlement.ranks.perms.reset")) {
                 gui.addElement(new StaticGuiElement('r', ItemUtils.toIcon(Material.ORANGE_WOOL), click -> {
                     Resident r = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
-                    if (r.hasVillage() && r.hasPermission("village.perms.reset")) {
-                        Village village = r.getVillage();
+                    if (r.hasSettlement() && r.hasPermission("settlement.ranks.perms.reset")) {
+                        Settlement settlement = r.getSettlement();
                         new ConfirmationGui(RanksGUI.this, "reset", () -> {
-                            if (r.hasPermission("village.perms.reset")) {
-                                village.getRanksPermissions().clear();
+                            if (r.hasPermission("settlement.ranks.perms.reset")) {
+                                settlement.getRanksPermissions().clear();
                                 open();
-                                village.save();
+                                settlement.save();
                             }
                         }, this::open,
-                                "state", village.getStateTag(),
-                                "name", village.getName()).open((Player) click.getEvent().getWhoClicked());
+                                "state", settlement.getStateTag(),
+                                "name", settlement.getName()).open((Player) click.getEvent().getWhoClicked());
                     }
                     return true;
                 }, getText("reset.title")));

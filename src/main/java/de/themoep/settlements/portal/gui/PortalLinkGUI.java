@@ -41,7 +41,7 @@ public class PortalLinkGUI extends PortalGUI {
 
         List<Portal> portals = new ArrayList<>();
 
-        for (OwnedLand land : resident.getVillage().getLand()) {
+        for (OwnedLand land : resident.getSettlement().getLand()) {
             portals.addAll(PortalManager.getInstance().getPortals(land));
         }
 
@@ -65,7 +65,7 @@ public class PortalLinkGUI extends PortalGUI {
 
     public void show() {
         Player player = resident.getPlayer();
-        if (gui != null && resident.hasVillage() && resident.getVillage().canAdminPortals(resident) && player != null) {
+        if (gui != null && resident.hasSettlement() && resident.getSettlement().canAdminPortals(resident) && player != null) {
             gui.show(player);
         }
     }

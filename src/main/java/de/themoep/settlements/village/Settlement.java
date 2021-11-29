@@ -3,15 +3,12 @@ package de.themoep.settlements.village;
 import co.aikar.timings.lib.MCTiming;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import com.google.common.collect.ObjectArrays;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.missions.Mission;
 import de.themoep.settlements.missions.MissionData;
-import de.themoep.settlements.rank.EmpireRank;
-import de.themoep.settlements.utils.NameTag;
 import de.themoep.settlements.village.events.SettlementLeaveEvent;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
@@ -21,7 +18,7 @@ import de.themoep.settlements.land.TaxDebtAction;
 import de.themoep.settlements.land.BuildState;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.rank.RankManager;
-import de.themoep.settlements.rank.VillageRank;
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.ConfigMessages;
@@ -64,27 +61,27 @@ import java.util.stream.Collectors;
 
 import static de.themoep.settlements.utils.MessageUtils.yesOrNo;
 
-public class Village extends LandOwner<VillageRank, VillageLevel> implements Comparable<Village>, Targetable {
+public class Settlement extends LandOwner<SettlementRank, SettlementLevel> implements Comparable<Settlement>, Targetable {
     private int level;
     private UUID chief;
     private Empire empire;
-    private VillageState villageState;
+    private SettlementState settlementState;
     private Map<String, NamedLocation> outpostHomes = new LinkedHashMap<>();
     private Set<UUID> residents = new LinkedHashSet<>();
     private boolean allowAllyClaim = false;
     private long missionPoints = 0;
     private Map<String, MissionData> missionData = new LinkedHashMap<>();
 
-    protected Village() {
+    protected Settlement() {
         super();
     }
 
-    public Village(String name, UUID chief, int level, VillageState state) {
+    public Settlement(String name, UUID chief, int level, SettlementState state) {
         super(name);
         residents.add(chief);
         this.chief = chief;
         this.level = level;
-        this.villageState = state;
+        this.settlementState = state;
     }
 
     public void save() {
@@ -97,14 +94,14 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
             return;
         }
         int inactiveDays = Config.Settlement.Upkeep.INACTIVE_TIME;
-        if (inactiveDays > 0 && getLevel() == 1 && getState() == VillageState.VILLAGE && !hasEmpire() && getPerksMap().isEmpty()
+        if (inactiveDays > 0 && getLevel() == 1 && getState() == SettlementState.VILLAGE && !hasEmpire() && getPerksMap().isEmpty()
                 && LandManager.getInstance().getClaimedLandSize(this) == 0
                 && getChief().getLastLogin() + TimeUnit.DAYS.toMillis(inactiveDays) < System.currentTimeMillis()) {
             OfflinePlayer chiefPlayer = SettlementsPlugin.getInstance().getServer().getOfflinePlayer(getChiefId());
             if (!chiefPlayer.hasPlayedBefore() || chiefPlayer.getLastPlayed() + TimeUnit.DAYS.toMillis(inactiveDays) < System.currentTimeMillis()) {
                 SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " is inactive " +
                         "(chief offline for more than " + inactiveDays + ", Village level 1, no claims, no perks unlocked), removing it!");
-                VillageManager.getInstance().delete(this);
+                SettlementManager.getInstance().delete(this);
                 return;
             }
         }
@@ -115,7 +112,7 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
                 if (isChief(resident)) {
                     continue;
                 }
-                if (resident.hasRankPermission("village.tax.exempt")) {
+                if (resident.hasRankPermission("settlement.tax.exempt")) {
                     continue;
                 }
                 taxes.put(resident, tax);
@@ -208,10 +205,10 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
                 DatabaseManager.getInstance().log(this, null, "upkeep", "cash", total);
             });
         } else {
-            if (getLevel() > 1 || getState() == VillageState.KINGDOM) {
-                if (getLevel() == 1 && getState() == VillageState.KINGDOM) {
+            if (getLevel() > 1 || getState() == SettlementState.KINGDOM) {
+                if (getLevel() == 1 && getState() == SettlementState.KINGDOM) {
                     SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and has been downgraded!");
-                    setState(VillageState.VILLAGE);
+                    setState(SettlementState.VILLAGE);
                     setLevel(Config.Settlement.Leveling.VILLAGE_MAX_LEVEL);
                     MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.downgraded"), "state", getState().getTag(), "level", String.valueOf(getLevel()));
                 } else {
@@ -225,11 +222,11 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
                 if (Config.Settlement.Upkeep.ABANDON_TIME > 0) {
                     SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and was abandoned!");
                     MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.abandoned"));
-                    VillageManager.getInstance().abandon(this);
+                    SettlementManager.getInstance().abandon(this);
                 } else {
                     SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and was deleted!");
                     MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.deleted"));
-                    VillageManager.getInstance().delete(this);
+                    SettlementManager.getInstance().delete(this);
                 }
             }
         }
@@ -248,7 +245,7 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
     }
 
     public long getClaimUpkeep(String world) {
-        return Math.max(0, VillageManager.getInstance().getLevel(getState(), getLevel()).map(l -> l.getClaimUpkeep(world)).orElse(0L)
+        return Math.max(0, SettlementManager.getInstance().getLevel(getState(), getLevel()).map(l -> l.getClaimUpkeep(world)).orElse(0L)
                 - (hasEmpire() ? getEmpire().getClaimUpkeepReduction() : 0));
     }
 
@@ -285,7 +282,7 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
     @Override
     public boolean isTrusted(LandOwner landOwner) {
         return (landOwner instanceof Empire && landOwner.equals(getEmpire()))
-                || (landOwner instanceof Village && hasEmpire() && getEmpire().isMember((Village) landOwner));
+                || (landOwner instanceof Settlement && hasEmpire() && getEmpire().isMember((Settlement) landOwner));
     }
 
     @Override
@@ -296,13 +293,13 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
     @Override
     public void setLevel(int level) {
         this.level = level;
-        if (!ConfigManager.getInstance().getDataConfig().getConfig().contains(villageState.getKey() + ".level" + level)) {
-            ConfigManager.getInstance().getDataConfig().getConfig().set(villageState.getKey() + ".level" + level, getName());
+        if (!ConfigManager.getInstance().getDataConfig().getConfig().contains(settlementState.getKey() + ".level" + level)) {
+            ConfigManager.getInstance().getDataConfig().getConfig().set(settlementState.getKey() + ".level" + level, getName());
             ConfigManager.getInstance().getDataConfig().saveConfig();
             for (Player player : Bukkit.getOnlinePlayers()) {
                 MessageUtils.tell(player, Message.get("first-to-reach-level"),
                         "name", this.getName(),
-                        "state", villageState.name().toLowerCase(),
+                        "state", settlementState.name().toLowerCase(),
                         "level", String.valueOf(level));
             }
         }
@@ -310,19 +307,19 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
 
     @Override
     @Nullable
-    public VillageLevel getLevelInfo() {
-        return VillageManager.getInstance().getLevel(getState(), getLevel()).orElse(null);
+    public SettlementLevel getLevelInfo() {
+        return SettlementManager.getInstance().getLevel(getState(), getLevel()).orElse(null);
     }
 
     @Override
-    public Optional<VillageLevel> getNextLevel() {
+    public Optional<SettlementLevel> getNextLevel() {
         int nextLevel = getLevel() + 1;
-        VillageState nextState = getState();
-        if (nextState == VillageState.VILLAGE && nextLevel > Config.Settlement.Leveling.VILLAGE_MAX_LEVEL) {
-            nextState = VillageState.KINGDOM;
+        SettlementState nextState = getState();
+        if (nextState == SettlementState.VILLAGE && nextLevel > Config.Settlement.Leveling.VILLAGE_MAX_LEVEL) {
+            nextState = SettlementState.KINGDOM;
             nextLevel = 1;
         }
-        return VillageManager.getInstance().getLevel(nextState, nextLevel);
+        return SettlementManager.getInstance().getLevel(nextState, nextLevel);
     }
 
     public long getMissionPoints() {
@@ -334,8 +331,8 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
     }
 
     public int getExtraEmpireMissions() {
-        VillageLevel villageLevel = getLevelInfo();
-        return villageLevel != null ? villageLevel.getExtraMissions() : 0;
+        SettlementLevel settlementLevel = getLevelInfo();
+        return settlementLevel != null ? settlementLevel.getExtraMissions() : 0;
     }
 
     @Override
@@ -384,18 +381,18 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
 
     @Override
     public boolean hasPermission(Resident resident, String perm) {
-        return isMember(resident) && resident.hasPermission("village." + perm);
+        return isMember(resident) && resident.hasPermission("settlement." + perm);
     }
 
     @Override
     public boolean isOfficer(Player player) {
         Resident res = ResidentManager.getInstance().getResident(player);
-        return isMember(res) && res.hasPermission("kingdoms.command.village.officer");
+        return hasPermission(res, "officer");
     }
 
     @Override
     public boolean isMember(Resident resident) {
-        return equals(resident.getVillage());
+        return equals(resident.getSettlement());
     }
 
     @Override
@@ -426,16 +423,16 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
         return Config.Settlement.MAX_SIZE > 0 && getResidentIds().size() >= Config.Settlement.MAX_SIZE;
     }
 
-    public VillageState getState() {
-        return villageState;
+    public SettlementState getState() {
+        return settlementState;
     }
 
-    public void setState(VillageState state) {
-        this.villageState = state;
+    public void setState(SettlementState state) {
+        this.settlementState = state;
     }
 
     public int getMaxClaimableChunks() {
-        return VillageManager.getInstance().getLevel(getState(), getLevel()).map(VillageLevel::getChunks).orElse(0)
+        return SettlementManager.getInstance().getLevel(getState(), getLevel()).map(SettlementLevel::getChunks).orElse(0)
                 + getBonusClaimAmount();
     }
 
@@ -448,7 +445,7 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
     }
 
     public int getMaxOutposts() {
-        return VillageManager.getInstance().getLevel(getState(), getLevel()).map(VillageLevel::getOutposts).orElse(0)
+        return SettlementManager.getInstance().getLevel(getState(), getLevel()).map(SettlementLevel::getOutposts).orElse(0)
                 + getBonusOutposts() + (hasEmpire() ? getEmpire().getBonusOutposts() : 0);
     }
 
@@ -498,17 +495,17 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
     @NotNull
     @Override
     public Map<String, Long> getNextLevelRequirements() {
-        return getNextLevel().map(VillageLevel::getRequirements).orElse(Collections.emptyMap());
+        return getNextLevel().map(SettlementLevel::getRequirements).orElse(Collections.emptyMap());
     }
 
     @Override
     public boolean isMaxLevel() {
-        return (getState().atLeast(VillageState.KINGDOM) && getLevel() >= Config.Settlement.Leveling.KINGDOM_MAX_LEVEL) || getNextLevelRequirements().isEmpty();
+        return (getState().atLeast(SettlementState.KINGDOM) && getLevel() >= Config.Settlement.Leveling.KINGDOM_MAX_LEVEL) || getNextLevelRequirements().isEmpty();
     }
 
     @Override
     public boolean checkLevelUp(Resident resident) {
-        return VillageManager.getInstance().checkLevelUp(this, resident);
+        return SettlementManager.getInstance().checkLevelUp(this, resident);
     }
 
     @Override
@@ -532,7 +529,7 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
     public boolean setMode(PlotMode mode, boolean value) {
         if (super.setMode(mode, value)) {
             if (SettlementsPlugin.getInstance().isRunning() && mode == PlotMode.mobSpawning && !value) {
-                try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Village mob spawning mode toggle")) {
+                try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Settlement mob spawning mode toggle")) {
                     for (OwnedLand land : LandManager.getInstance().getClaimedLand(this)) {
                         World world = Bukkit.getWorld(land.getWorldName());
                         if (world != null && world.isChunkLoaded(land.getX(), land.getZ())) {
@@ -552,12 +549,12 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
 
     @Override
     public LevelPerk getPerk(String name) {
-        return VillageManager.getInstance().getPerk(name);
+        return SettlementManager.getInstance().getPerk(name);
     }
 
     @Override
     protected Set<String> getPermissions() {
-        return RankManager.getInstance().getVillageChiefRank().getInheritedPermissions();
+        return RankManager.getInstance().getSettlementChiefRank().getInheritedPermissions();
     }
 
     @Override
@@ -590,7 +587,7 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
         if (target instanceof Resident && isMember((Resident) target)) {
             Utils.callEvent(new SettlementLeaveEvent(this, (Resident) target));
             residents.remove(((Resident) target).getUUID());
-            VillageManager.getInstance().leaveVillage((Resident) target);
+            SettlementManager.getInstance().leaveSettlement((Resident) target);
         }
     }
 
@@ -603,14 +600,14 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
     public long getTaxIncome() {
         long income = 0;
         for (Resident resident : getResidents()) {
-            if (!resident.hasRankPermission("village.tax.exempt")) {
+            if (!resident.hasRankPermission("settlement.tax.exempt")) {
                 income += getTax();
             }
         }
         for (OwnedLand land : getLand()) {
             if (land.isPlot()) {
                 Resident owner = ResidentManager.getInstance().getResident(land.getPlotOwner());
-                if (owner != null && (!isMember(owner) || !owner.hasRankPermission("village.tax.exempt"))) {
+                if (owner != null && (!isMember(owner) || !owner.hasRankPermission("settlement.tax.exempt"))) {
                     income += land.getTax();
                 }
             }
@@ -638,27 +635,27 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
         return hasEmpire() && getEmpire().isCapital(this);
     }
 
-    public static Village deserialize(Map<String, Object> map) {
-        SettlementsPlugin.logDebug("Creating village from " + map);
-        Village village = LandOwner.deserialize(new Village(), map);
-        if (village == null) {
+    public static Settlement deserialize(Map<String, Object> map) {
+        SettlementsPlugin.logDebug("Creating settlement from " + map);
+        Settlement settlement = LandOwner.deserialize(new Settlement(), map);
+        if (settlement == null) {
             return null;
         }
         if (map == null || map.get("chief") == null || map.get("level") == null || map.get("settlementState") == null) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize Village! (" + map + ")");
+            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize Settlement! (" + map + ")");
             return null;
         }
-        village.setChief(UUID.fromString((String) map.get("chief")));
-        village.setState(VillageState.valueOf((String) map.get("settlementState")));
-        village.setLevel((Integer) map.get("level"));
-        village.setMissionPoints(Utils.getLong(map.get("missionPoints")));
-        village.setAllowAllyClaim(Utils.getBoolean(map.get("allowAllyClaim")));
-        village.setEmpire(EmpireManager.getInstance().getEmpireFromId(IdObject.get(map.get("empireId"))));
-        ((Collection<String>) map.get("residents")).stream().map(UUID::fromString).forEach(u -> village.getResidentIds().add(u));
+        settlement.setChief(UUID.fromString((String) map.get("chief")));
+        settlement.setState(SettlementState.valueOf((String) map.get("settlementState")));
+        settlement.setLevel((Integer) map.get("level"));
+        settlement.setMissionPoints(Utils.getLong(map.get("missionPoints")));
+        settlement.setAllowAllyClaim(Utils.getBoolean(map.get("allowAllyClaim")));
+        settlement.setEmpire(EmpireManager.getInstance().getEmpireFromId(IdObject.get(map.get("empireId"))));
+        ((Collection<String>) map.get("residents")).stream().map(UUID::fromString).forEach(u -> settlement.getResidentIds().add(u));
         ((Map<String, Map<String, Object>>) map.get("outposts")).values().stream()
                 .map(NamedLocation::deserialize)
                 .filter(Objects::nonNull)
-                .forEach(village::setOutpostHome);
+                .forEach(settlement::setOutpostHome);
         ((Map<String, Object>) map.get("missiondata")).entrySet().stream()
                 .filter(e -> e.getValue() instanceof Map)
                 .forEach(e -> {
@@ -670,15 +667,15 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
                                 md.getProgress().put((String) o.getKey(), (Long) o.getValue());
                             }
                         }
-                        village.addMissionData(md);
+                        settlement.addMissionData(md);
                     }
                 });
-        SettlementsPlugin.logDebug("Created village " + village.serialize());
-        return village;
+        SettlementsPlugin.logDebug("Created settlement " + settlement.serialize());
+        return settlement;
     }
 
     @Override
-    public int compareTo(Village v) {
+    public int compareTo(Settlement v) {
         if (v.getState() != getState())
             return getState().compareTo(v.getState());
         if (v.getLevel() != getLevel())
@@ -753,10 +750,10 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
         perks((c, v) -> v.getPerksMap().entrySet().stream()
                 .map(p -> (p.getValue().getTimes() > 1 ? p.getValue().getTimes() + "x " : "") + v.getPerk(p.getKey()).getTag())
                 .collect(Collectors.joining(", "))),
-        chiefrank((c, v) -> VillageRank.getChief().getTag(v)),
+        chiefrank((c, v) -> SettlementRank.getChief().getTag(v)),
         chieftitle((c, v) -> {
             Resident chief = v.getChief();
-            return chief != null ? chief.getVillageTitle() : "-";
+            return chief != null ? chief.getSettlementTitle() : "-";
         }),
         chiefdisplaytitle((c, v) -> {
             Resident chief = v.getChief();
@@ -774,32 +771,32 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
         size((c, v) -> String.valueOf(v.getResidentIds().size())),
         resonlinecount((c, v) -> String.valueOf(v.getOnlineCount())),
         resotheronlinecount((c, v) -> String.valueOf(v.getOnlineCount() - 1)),
-        officerranks((c, v) -> Arrays.stream(VillageRank.values())
+        officerranks((c, v) -> Arrays.stream(SettlementRank.values())
                 .filter(r -> !r.isChief())
-                .filter(r -> v.getEffectivePermissionValue(r, "village.officer").orElse(false))
+                .filter(r -> v.getEffectivePermissionValue(r, "settlement.officer").orElse(false))
                 .map(r -> r.getTag(v))
                 .collect(Collectors.joining(", "))),
         ;
 
-        private final BiFunction<ConfigMessages, Village, String> valueProvider;
+        private final BiFunction<ConfigMessages, Settlement, String> valueProvider;
 
-        Placeholder(BiFunction<ConfigMessages, Village, String> valueProvider) {
+        Placeholder(BiFunction<ConfigMessages, Settlement, String> valueProvider) {
             this.valueProvider = valueProvider;
         }
 
-        public String getValue(ConfigMessages configMessages, Village village) {
-            return valueProvider.apply(configMessages, village);
+        public String getValue(ConfigMessages configMessages, Settlement settlement) {
+            return valueProvider.apply(configMessages, settlement);
         }
     }
 
     private String getResidentsToString(Message rankMessage, Message entry, Message more, String online, String offline, CharSequence separator) {
-        Multimap<VillageRank, Resident> rankMap = MultimapBuilder.treeKeys().arrayListValues().build();
+        Multimap<SettlementRank, Resident> rankMap = MultimapBuilder.treeKeys().arrayListValues().build();
         for (Resident resident : getResidents()) {
-            rankMap.put(resident.getVillageRank(), resident);
+            rankMap.put(resident.getSettlementRank(), resident);
         }
         List<String> lines = new ArrayList<>();
-        for (VillageRank rank : rankMap.keySet()) {
-            if (rank == VillageRank.getChief()) {
+        for (SettlementRank rank : rankMap.keySet()) {
+            if (rank == SettlementRank.getChief()) {
                 // should be listed extra
                 continue;
             }
@@ -814,14 +811,14 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
                                 } else if (p1 == null && p2 != null) {
                                     return 1;
                                 }
-                                return Long.compare(r1.getVillageJoin(), r2.getVillageJoin());
+                                return Long.compare(r1.getSettlementJoin(), r2.getSettlementJoin());
                             })
                             .limit(Config.PLAYERS_IN_INFO)
                             .map(res -> entry.getReplacedText(
                                     "online", res.getPlayer() != null ? online : offline,
                                     "name", res.getName(),
                                     "rank", rank.getTag(this),
-                                    "title", res.getVillageTitle()
+                                    "title", res.getSettlementTitle()
                             ))
                             .collect(Collectors.joining(separator))
             );
@@ -843,6 +840,6 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
 
     @Override
     public String name() {
-        return "Village";
+        return "Settlement";
     }
 }

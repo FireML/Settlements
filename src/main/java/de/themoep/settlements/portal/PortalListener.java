@@ -5,7 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import de.themoep.settlements.portal.gui.PortalTeleportGUI;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.village.Village;
+import de.themoep.settlements.village.Settlement;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.utils.ConfigMessages;
@@ -74,7 +74,7 @@ public class PortalListener implements Listener, ConfigMessages {
             Resident resident = ResidentManager.getInstance().getResident((Player) entity);
             for (BlockState block : e.getBlocks()) {
                 OwnedLand land = LandManager.getInstance().getLand(block.getLocation());
-                if (land == null || !(land.getLandOwner() instanceof Village)) {
+                if (land == null || !(land.getLandOwner() instanceof Settlement)) {
                     if (Config.Portal.ONLY_INSIDE_CLAIMS) {
                         e.setCancelled(true);
                         getMessage("only-in-claim").tell(entity);
@@ -109,7 +109,7 @@ public class PortalListener implements Listener, ConfigMessages {
         }
 
         OwnedLand land = LandManager.getInstance().getLand(e.getLocation());
-        if (land == null || !(land.getLandOwner() instanceof Village)) {
+        if (land == null || !(land.getLandOwner() instanceof Settlement)) {
             return;
         }
 
@@ -180,7 +180,7 @@ public class PortalListener implements Listener, ConfigMessages {
         }
 
         OwnedLand land = LandManager.getInstance().getLand(e.getBlock().getLocation());
-        if (land == null || !(land.getLandOwner() instanceof Village)) {
+        if (land == null || !(land.getLandOwner() instanceof Settlement)) {
             return;
         }
 
@@ -214,7 +214,7 @@ public class PortalListener implements Listener, ConfigMessages {
             }
 
             OwnedLand land = LandManager.getInstance().getLand(block.getLocation());
-            if (land == null || !(land.getLandOwner() instanceof Village)) {
+            if (land == null || !(land.getLandOwner() instanceof Settlement)) {
                 continue;
             }
 

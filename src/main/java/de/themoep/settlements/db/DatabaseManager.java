@@ -11,7 +11,7 @@ import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.village.Village;
+import de.themoep.settlements.village.Settlement;
 import de.themoep.settlements.world.SimpleChunkLocation;
 
 import java.util.ArrayList;
@@ -50,21 +50,21 @@ public abstract class DatabaseManager {
 
     public abstract void deleteEmpire(Empire empire);
 
-    public abstract void addNewVillage(Village village);
+    public abstract void addNewSettlement(Settlement settlement);
 
-    public abstract void saveSettlement(Village village);
+    public abstract void saveSettlement(Settlement settlement);
 
-    public abstract void saveMissionData(Village village);
+    public abstract void saveMissionData(Settlement settlement);
 
-    public abstract void saveMissionData(Collection<Village> villages);
+    public abstract void saveMissionData(Collection<Settlement> settlements);
 
-    public abstract void deleteVillage(Village village);
+    public abstract void deleteSettlement(Settlement settlement);
 
-    public abstract void saveVillages(Collection<Village> values);
+    public abstract void saveSettlements(Collection<Settlement> values);
 
     public abstract void unclaimLand(OwnedLand... lands);
 
-    public abstract void unclaimLand(Village village);
+    public abstract void unclaimLand(Settlement settlement);
 
     public abstract void unclaimLand(String worldName);
 
@@ -83,7 +83,7 @@ public abstract class DatabaseManager {
 
     public abstract void deleteLand(IdObject idObject);
 
-    public abstract Collection<Village> getAllSettlements();
+    public abstract Collection<Settlement> getAllSettlements();
 
     public abstract Collection<Empire> getAllEmpires();
 
@@ -147,23 +147,23 @@ public abstract class DatabaseManager {
         return getLocks(chunks.toArray(new SimpleChunkLocation[0]));
     }
 
-    public abstract void log(Empire empire, Village village, Resident resident, String action, Map<String, Long> values);
+    public abstract void log(Empire empire, Settlement settlement, Resident resident, String action, Map<String, Long> values);
 
     public void log(Empire empire, Resident resident, String action, Map<String, Long> values) {
-        log(empire, resident.getVillage(), resident, action, values);
+        log(empire, resident.getSettlement(), resident, action, values);
     }
 
-    public void log(Village village, Resident resident, String action, Map<String, Long> values) {
-        log(null, village, resident, action, values);
+    public void log(Settlement settlement, Resident resident, String action, Map<String, Long> values) {
+        log(null, settlement, resident, action, values);
     }
 
-    public void log(Empire empire, Village village, Resident resident, String action, String type, long amount) {
-        log(empire, village, resident, action, ImmutableMap.of(type, amount));
+    public void log(Empire empire, Settlement settlement, Resident resident, String action, String type, long amount) {
+        log(empire, settlement, resident, action, ImmutableMap.of(type, amount));
     }
 
     public void log(LandOwner claimsHolder, Resident resident, String action, String type, long amount) {
-        if (claimsHolder instanceof Village) {
-            log(null, (Village) claimsHolder, resident, action, ImmutableMap.of(type, amount));
+        if (claimsHolder instanceof Settlement) {
+            log(null, (Settlement) claimsHolder, resident, action, ImmutableMap.of(type, amount));
         } else {
             log((Empire) claimsHolder, null, resident, action, ImmutableMap.of(type, amount));
         }
@@ -172,48 +172,48 @@ public abstract class DatabaseManager {
     public void logDeposit(LandOwner landOwner, Resident resident, Map<String, Long> deposited) {
         log(
                 landOwner instanceof Empire ? (Empire) landOwner : null,
-                landOwner instanceof Empire ? resident.getVillage() : (Village) landOwner,
+                landOwner instanceof Empire ? resident.getSettlement() : (Settlement) landOwner,
                 resident, "deposit", deposited
         );
     }
 
-    public void logDeposit(Village village, Resident resident, long deposited) {
-        log(null, village, resident, "deposit", "cash", deposited);
+    public void logDeposit(Settlement settlement, Resident resident, long deposited) {
+        log(null, settlement, resident, "deposit", "cash", deposited);
     }
 
-    public void logDeposit(Village village, Resident resident, Map<String, Long> deposited) {
-        log(null, village, resident, "deposit", deposited);
+    public void logDeposit(Settlement settlement, Resident resident, Map<String, Long> deposited) {
+        log(null, settlement, resident, "deposit", deposited);
     }
 
-    public void logDeposit(Empire empire, Village village, Resident resident, long deposited) {
-        log(empire, village, resident, "deposit", "cash", deposited);
+    public void logDeposit(Empire empire, Settlement settlement, Resident resident, long deposited) {
+        log(empire, settlement, resident, "deposit", "cash", deposited);
     }
 
-    public void logDeposit(Empire empire, Village village, Resident resident, Map<String, Long> deposited) {
-        log(empire, village, resident, "deposit", deposited);
+    public void logDeposit(Empire empire, Settlement settlement, Resident resident, Map<String, Long> deposited) {
+        log(empire, settlement, resident, "deposit", deposited);
     }
 
     public void logLevelup(Empire empire, Resident resident, Map<String, Long> removed) {
-        log(empire, resident.getVillage(), resident, "levelup", removed);
+        log(empire, resident.getSettlement(), resident, "levelup", removed);
     }
 
-    public void logLevelup(Village village, Resident resident, Map<String, Long> removed) {
-        log(null, village, resident, "levelup", removed);
+    public void logLevelup(Settlement settlement, Resident resident, Map<String, Long> removed) {
+        log(null, settlement, resident, "levelup", removed);
     }
 
-    public void logWithdraw(Village village, Resident resident, long withdrawn) {
-        log(null, village, resident, "withdraw", "cash", withdrawn);
+    public void logWithdraw(Settlement settlement, Resident resident, long withdrawn) {
+        log(null, settlement, resident, "withdraw", "cash", withdrawn);
     }
 
-    public void logWithdraw(Empire empire, Village village, Resident resident, long withdrawn) {
-        log(empire, village, resident, "withdraw", "cash", withdrawn);
+    public void logWithdraw(Empire empire, Settlement settlement, Resident resident, long withdrawn) {
+        log(empire, settlement, resident, "withdraw", "cash", withdrawn);
     }
 
-    public abstract int getLogPageCount(Village village, Resident resident, LogType type);
+    public abstract int getLogPageCount(Settlement settlement, Resident resident, LogType type);
 
     public abstract int getLogPageCount(Empire Empire, Resident resident, LogType type);
 
-    public abstract List<String[]> getLog(Village village, Resident resident, int page, LogType type);
+    public abstract List<String[]> getLog(Settlement settlement, Resident resident, int page, LogType type);
 
     public abstract List<String[]> getLog(Empire Empire, Resident resident, int page, LogType type);
 
@@ -222,16 +222,16 @@ public abstract class DatabaseManager {
     }
 
     public void save(Collection<LandOwner> landOwners) {
-        List<Village> villages = new ArrayList<>();
+        List<Settlement> settlements = new ArrayList<>();
         List<Empire> empires = new ArrayList<>();
         for (LandOwner landOwner : landOwners) {
-            if (landOwner instanceof Village) {
-                villages.add((Village) landOwner);
+            if (landOwner instanceof Settlement) {
+                settlements.add((Settlement) landOwner);
             } else if (landOwner instanceof Empire) {
                 empires.add((Empire) landOwner);
             }
         }
-        saveVillages(villages);
+        saveSettlements(settlements);
         saveEmpires(empires);
     }
 

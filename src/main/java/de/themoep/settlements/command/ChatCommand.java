@@ -77,7 +77,7 @@ public class ChatCommand extends PlayerSubCommand {
                 return true;
             }
         });
-        registerCommand(new PermissionPlayerSubCommand(this, "lock", "kingdoms.chat.lock") {
+        registerCommand(new PermissionPlayerSubCommand(this, "lock", "settlements.chat.lock") {
             @Override
             public boolean run(Player p, String base, String alias, String... args) {
                 if (ConfigManager.getInstance().getDataConfig().getConfig().getBoolean("chat-lock")) {

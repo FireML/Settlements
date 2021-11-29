@@ -14,6 +14,6 @@ public class VillageUnAllyCommand extends VillageSubCommand implements AllyComma
         if (args.length < 1) {
             return false;
         }
-        return removeAlly(resident, resident.getVillage(), args);
+        return removeAlly(resident, resident.getSettlement(), args);
     }
 }

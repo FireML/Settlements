@@ -11,7 +11,7 @@ import de.themoep.settlements.utils.Pair;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.world.SimpleChunkLocation;
 import io.papermc.lib.PaperLib;
 import de.themoep.settlements.SettlementsPlugin;
@@ -87,7 +87,7 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
     public void onBlockBreak(BlockBreakEvent event) {
         Lock lock = LockManager.getInstance().getLock(event.getBlock());
         if (lock != null) {
-            if (lock.isOwner(event.getPlayer()) || event.getPlayer().hasPermission("kingdoms.bypass.lock")) {
+            if (lock.isOwner(event.getPlayer()) || event.getPlayer().hasPermission("settlements.bypass.lock")) {
                 getMessage("unlocked").tell(event.getPlayer(), "block", NameTag.getTag(lock.getBlock()));
                 LockManager.getInstance().deleteLock(lock);
             } else {
@@ -96,7 +96,7 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
                     Resident owner = lock.getOwner();
                     getError("locked").tell(event.getPlayer(),
                             "name", owner != null ? owner.getName() : "-",
-                            "title", owner != null ? owner.getVillageTitle() : "",
+                            "title", owner != null ? owner.getSettlementTitle() : "",
                             "block", NameTag.getTag(lock.getBlock())
                     );
                 });
@@ -186,7 +186,7 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
                     Resident owner = lock.getOwner();
                     getError("locked").tell(event.getPlayer(),
                             "name", owner != null ? owner.getName() : "-",
-                            "title", owner != null? owner.getVillageTitle() : "",
+                            "title", owner != null? owner.getSettlementTitle() : "",
                             "block", NameTag.getTag(lock.getBlock())
                     );
                 });
@@ -228,7 +228,7 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
                             Resident owner = lock.getOwner();
                             getError("locked").tell(event.getPlayer(),
                                     "name", owner != null ? owner.getName() : "-",
-                                    "title", owner != null? owner.getVillageTitle() : "",
+                                    "title", owner != null? owner.getSettlementTitle() : "",
                                     "block", NameTag.getTag(lock.getBlock())
                             );
                         });
@@ -263,7 +263,7 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
                                 Resident owner = finalL.getOwner();
                                 getError("locked").tell(event.getPlayer(),
                                         "name", owner != null ? owner.getName() : "-",
-                                        "title", owner != null ? owner.getVillageTitle() : "",
+                                        "title", owner != null ? owner.getSettlementTitle() : "",
                                         "block", NameTag.getTag(finalL.getBlock())
                                 );
                             });
@@ -290,7 +290,7 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
                             Resident owner = lock.getOwner();
                             getError("locked").tell(event.getPlayer(),
                                     "name", owner != null ? owner.getName() : "-",
-                                    "title", owner != null? owner.getVillageTitle() : "",
+                                    "title", owner != null? owner.getSettlementTitle() : "",
                                     "block", NameTag.getTag(lock.getBlock())
                             );
                         });
@@ -312,7 +312,7 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
                             Resident owner = lock.getOwner();
                             getError("locked").tell(event.getPlayer(),
                                     "name", owner != null ? owner.getName() : "-",
-                                    "title", owner != null? owner.getVillageTitle() : "",
+                                    "title", owner != null? owner.getSettlementTitle() : "",
                                     "block", NameTag.getTag(lock.getBlock())
                             );
                         });
@@ -322,7 +322,7 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
                         Utils.runAsync(() -> {
                             Resident owner = lock.getOwner();
                             getMessage("info.general").tell(event.getPlayer(),
-                                    "title", owner != null? owner.getVillageTitle() : "",
+                                    "title", owner != null? owner.getSettlementTitle() : "",
                                     "owner", owner != null ? owner.getName() : "-",
                                     "hoppers", MessageUtils.yesOrNo(lock.isAllowHoppers())
                             );
@@ -330,12 +330,12 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
                                 event.getPlayer().sendMessage(lock.getAllowedPlayers().stream()
                                         .map(id -> ResidentManager.getInstance().getResident(id))
                                         .filter(Objects::nonNull)
-                                        .map(r -> getMessage("info.entry").getReplacedText("name", r.getName(), "title", r.getVillageTitle()))
+                                        .map(r -> getMessage("info.entry").getReplacedText("name", r.getName(), "title", r.getSettlementTitle()))
                                         .collect(Collectors.joining(getMessage("info.separator").getText())));
                             }
-                            if (!lock.getAllowedVillageIds().isEmpty()) {
-                                event.getPlayer().sendMessage(lock.getAllowedVillageIds().stream()
-                                        .map(i -> VillageManager.getInstance().getFromId(i))
+                            if (!lock.getAllowedSettlementIds().isEmpty()) {
+                                event.getPlayer().sendMessage(lock.getAllowedSettlementIds().stream()
+                                        .map(i -> SettlementManager.getInstance().getFromId(i))
                                         .filter(Objects::nonNull)
                                         .map(v -> getMessage("info.entry").getReplacedText("name", v.getName(), "title", v.getStateTag()))
                                         .collect(Collectors.joining(getMessage("info.separator").getText())));

@@ -31,12 +31,12 @@ public class VillageTaxCommand extends VillageSubCommand {
                         );
                         return true;
                     }
-                    resident.getVillage().setTax(amount);
-                    getMessage("success").tell(resident.getVillage().getOnlineResidents(),
-                            "state", resident.getVillage().getStateTag(),
+                    resident.getSettlement().setTax(amount);
+                    getMessage("success").tell(resident.getSettlement().getOnlineResidents(),
+                            "state", resident.getSettlement().getStateTag(),
                             "amount", String.valueOf(amount)
                     );
-                    Utils.runAsync(() -> DatabaseManager.getInstance().saveSettlement(resident.getVillage()));
+                    Utils.runAsync(() -> DatabaseManager.getInstance().saveSettlement(resident.getSettlement()));
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(resident, "input", args[0]);
                     return false;
@@ -52,13 +52,13 @@ public class VillageTaxCommand extends VillageSubCommand {
                 }
                 try {
                     TaxDebtAction taxDebtAction = TaxDebtAction.valueOf(args[0].toUpperCase());
-                    if (taxDebtAction != resident.getVillage().getTaxDebtAction()) {
-                        resident.getVillage().setTaxDebtAction(taxDebtAction);
-                        getMessage("success").tell(resident.getVillage().getOnlineResidents(),
-                                "state", resident.getVillage().getStateTag(),
+                    if (taxDebtAction != resident.getSettlement().getTaxDebtAction()) {
+                        resident.getSettlement().setTaxDebtAction(taxDebtAction);
+                        getMessage("success").tell(resident.getSettlement().getOnlineResidents(),
+                                "state", resident.getSettlement().getStateTag(),
                                 "action", taxDebtAction.getTag()
                         );
-                        DatabaseManager.getInstance().saveSettlement(resident.getVillage());
+                        DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
                     } else {
                         getMessage("already-set").tell(resident, "action", taxDebtAction.getTag());
                     }
@@ -74,8 +74,8 @@ public class VillageTaxCommand extends VillageSubCommand {
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length == 0) {
             getMessage("current").tell(resident,
-                    "state", resident.getVillage().getStateTag(),
-                    "amount", String.valueOf(resident.getVillage().getTax())
+                    "state", resident.getSettlement().getStateTag(),
+                    "amount", String.valueOf(resident.getSettlement().getTax())
             );
             return true;
         }

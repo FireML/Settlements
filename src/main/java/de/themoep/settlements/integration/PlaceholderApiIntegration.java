@@ -12,9 +12,9 @@ import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.land.LandAccess;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.Utils;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
-import de.themoep.settlements.village.VillageState;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
+import de.themoep.settlements.village.SettlementState;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.clip.placeholderapi.expansion.Relational;
 import org.bukkit.entity.Player;
@@ -95,11 +95,11 @@ public class PlaceholderApiIntegration implements ConfigMessages {
                         if (args.length > 1) {
                             switch (args[1].toLowerCase(Locale.ROOT)) {
                                 case "settlements":
-                                    return getReplacedVillageString(VillageManager.getInstance().getSettlements().stream(), args);
+                                    return getReplacedSettlementString(SettlementManager.getInstance().getSettlements().stream(), args);
                                 case "villages":
-                                    return getReplacedVillageString(VillageManager.getInstance().getSettlements().stream().filter(v -> v.getState() == VillageState.VILLAGE), args);
+                                    return getReplacedSettlementString(SettlementManager.getInstance().getSettlements().stream().filter(v -> v.getState() == SettlementState.VILLAGE), args);
                                 case "kingdoms":
-                                    return getReplacedVillageString(VillageManager.getInstance().getSettlements().stream().filter(v -> v.getState() == VillageState.KINGDOM), args);
+                                    return getReplacedSettlementString(SettlementManager.getInstance().getSettlements().stream().filter(v -> v.getState() == SettlementState.KINGDOM), args);
                                 case "empires":
                                     return getReplacedEmpireString(EmpireManager.getInstance().getEmpires().stream(), args);
                             }
@@ -115,8 +115,8 @@ public class PlaceholderApiIntegration implements ConfigMessages {
                                 }
                                 case "settlement": {
                                     if (args.length > 2) {
-                                        if (resident.hasVillage()) {
-                                            return Utils.toMap(resident.getVillage().getReplacements(PlaceholderApiIntegration.this))
+                                        if (resident.hasSettlement()) {
+                                            return Utils.toMap(resident.getSettlement().getReplacements(PlaceholderApiIntegration.this))
                                                     .get(args[2].toLowerCase(Locale.ROOT));
                                         } else {
                                             return "";
@@ -127,7 +127,7 @@ public class PlaceholderApiIntegration implements ConfigMessages {
                                 case "empire": {
                                     if (args.length > 2) {
                                         if (resident.hasEmpire()) {
-                                            return resident.getVillage().getEmpire().getReplacement(PlaceholderApiIntegration.this, args[2]);
+                                            return resident.getSettlement().getEmpire().getReplacement(PlaceholderApiIntegration.this, args[2]);
                                         } else {
                                             return "";
                                         }
@@ -140,7 +140,7 @@ public class PlaceholderApiIntegration implements ConfigMessages {
                     }
                     case "landowner": {
                         if (p != null && args.length > 1) {
-                            Village v = VillageManager.getInstance().getAt(p.getLocation());
+                            Settlement v = SettlementManager.getInstance().getAt(p.getLocation());
                             if (v != null) {
                                 return Utils.toMap(v.getReplacements(PlaceholderApiIntegration.this))
                                         .get(args[1].toLowerCase(Locale.ROOT));
@@ -189,36 +189,36 @@ public class PlaceholderApiIntegration implements ConfigMessages {
         Resident viewerResident = ResidentManager.getInstance().getResident(viewer);
         Resident targetResident = ResidentManager.getInstance().getResident(target);
 
-        if (!viewerResident.hasVillage() || !targetResident.hasVillage()) {
+        if (!viewerResident.hasSettlement() || !targetResident.hasSettlement()) {
             return "other";
         }
 
-        if (viewerResident.getVillage().isMember(targetResident)) {
+        if (viewerResident.getSettlement().isMember(targetResident)) {
             return "friendly";
         }
 
-        if (viewerResident.getVillage().isAlly(targetResident)) {
+        if (viewerResident.getSettlement().isAlly(targetResident)) {
             return "ally";
         }
 
-        if (viewerResident.hasEmpire() && viewerResident.getVillage().getEmpire().isMember(targetResident)) {
+        if (viewerResident.hasEmpire() && viewerResident.getSettlement().getEmpire().isMember(targetResident)) {
             return "empire";
         }
 
         return null;
     }
 
-    private String getReplacedVillageString(Stream<Village> villageStream, String[] args) {
+    private String getReplacedSettlementString(Stream<Settlement> settlementStream, String[] args) {
         if (args.length > 2) {
             // get specific
             try {
                 int place = Integer.parseInt(args[2]);
-                Optional<Village> village = villageStream.sorted(Village::compareTo).skip(place - 1).findFirst();
-                if (village.isPresent()) {
+                Optional<Settlement> settlement = settlementStream.sorted(Settlement::compareTo).skip(place - 1).findFirst();
+                if (settlement.isPresent()) {
                     if (args.length > 3) {
-                        return Utils.toMap(village.get().getReplacements(PlaceholderApiIntegration.this)).get(args[3].toLowerCase());
+                        return Utils.toMap(settlement.get().getReplacements(PlaceholderApiIntegration.this)).get(args[3].toLowerCase());
                     } else {
-                        return ("settlements".equalsIgnoreCase(args[1]) ? (village.get().getStateTag() + " ") : "") + village.get().getName();
+                        return ("settlements".equalsIgnoreCase(args[1]) ? (settlement.get().getStateTag() + " ") : "") + settlement.get().getName();
                     }
                 } else {
                     return getText("none");
@@ -229,7 +229,7 @@ public class PlaceholderApiIntegration implements ConfigMessages {
         } else {
             // get top 10
             List<String> lines = new ArrayList<>();
-            villageStream.sorted(Village::compareTo).limit(10)
+            settlementStream.sorted(Settlement::compareTo).limit(10)
                     .forEachOrdered(v -> lines.add(getMessage("top-ten-" + args[1].toLowerCase() + ".entry").getReplacedText(
                             "place", String.valueOf(lines.size() + 1),
                             "name", v.getName(),

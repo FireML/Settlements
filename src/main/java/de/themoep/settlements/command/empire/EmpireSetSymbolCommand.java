@@ -19,9 +19,9 @@ public class EmpireSetSymbolCommand extends EmpireSubCommand {
                 return false;
             }
         }
-        resident.getVillage().getEmpire().setSymbol(symbol);
-        getMessage("success").tell(resident.getVillage().getEmpire().getOnlineResidents(), "symbol", symbol);
-        DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
+        resident.getSettlement().getEmpire().setSymbol(symbol);
+        getMessage("success").tell(resident.getSettlement().getEmpire().getOnlineResidents(), "symbol", symbol);
+        DatabaseManager.getInstance().saveEmpire(resident.getSettlement().getEmpire());
         return true;
     }
 }

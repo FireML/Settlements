@@ -11,7 +11,7 @@ public class VillageBanishedCommand extends VillageSubCommand implements BanishC
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        return listBanished(resident, resident.getVillage());
+        return listBanished(resident, resident.getSettlement());
     }
 
 }

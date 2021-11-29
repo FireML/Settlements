@@ -1,6 +1,6 @@
 package de.themoep.settlements.perk;
 
-import de.themoep.settlements.rank.VillageRank;
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.ConfigKey;
 import de.themoep.settlements.utils.NameTag;
 import de.themoep.settlements.utils.Utils;
@@ -118,8 +118,8 @@ public class PerkEffect {
             byName.put(influenced.name.toLowerCase(), influenced);
         }
 
-        public VillageRank getRank() {
-            return VillageRank.get(name);
+        public SettlementRank getRank() {
+            return SettlementRank.get(name);
         }
 
         public static EffectInfluenced valueOf(String string) {

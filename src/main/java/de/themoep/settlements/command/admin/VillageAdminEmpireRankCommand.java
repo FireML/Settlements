@@ -39,12 +39,12 @@ public class VillageAdminEmpireRankCommand extends SubCommand {
                 MessageUtils.tell(sender, getError("not-in-empire"), "player", tRes.getName());
                 return;
             }
-            Empire empire = tRes.getVillage().getEmpire();
+            Empire empire = tRes.getSettlement().getEmpire();
             if (r == EmpireRank.getLeader()) {
                 Resident leader = empire.getCapital().getChief();
                 leader.setEmpireRank(EmpireRank.getLeader().next());
                 tRes.setEmpireRank(r);
-                empire.setCapital(tRes.getVillage());
+                empire.setCapital(tRes.getSettlement());
 
                 DatabaseManager.getInstance().saveEmpire(empire);
                 DatabaseManager.getInstance().saveResident(leader);

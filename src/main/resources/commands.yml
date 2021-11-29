@@ -1,7 +1,7 @@
 # Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:commands.yml
 
 help-order:
-  village:
+  settlement:
     general:
     - allies
     - banished

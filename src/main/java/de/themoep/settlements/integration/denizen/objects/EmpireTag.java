@@ -21,8 +21,8 @@ import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.land.Use;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -168,7 +168,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // -->
         tagProcessor.registerTag(ListTag.class, "online_residents", (attribute, object) -> {
             List<PlayerTag> members = new ArrayList<>();
-            for (Village member : object.getEmpire().getMembers()) {
+            for (Settlement member : object.getEmpire().getMembers()) {
                 for (UUID residentId : member.getResidentIds()) {
                     Player player = Bukkit.getPlayer(residentId);
                     if (player != null) {
@@ -188,7 +188,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // -->
         tagProcessor.registerTag(ListTag.class, "residents", (attribute, object) -> {
             List<PlayerTag> members = new ArrayList<>();
-            for (Village member : object.getEmpire().getMembers()) {
+            for (Settlement member : object.getEmpire().getMembers()) {
                 for (UUID residentId : member.getResidentIds()) {
                     members.add(new PlayerTag(residentId));
                 }
@@ -205,7 +205,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // -->
         tagProcessor.registerTag(ListTag.class, "members", (attribute, object) -> {
             List<SettlementTag> members = new ArrayList<>();
-            for (Village member : object.getEmpire().getMembers()) {
+            for (Settlement member : object.getEmpire().getMembers()) {
                 members.add(new SettlementTag(member));
             }
             return new ListTag(members);
@@ -332,7 +332,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // -->
         if (mechanism.matches("add_member")) {
             String name = mechanism.getValue().asString();
-            Village settlement = VillageManager.getInstance().getFromName(name);
+            Settlement settlement = SettlementManager.getInstance().getFromName(name);
             if (settlement == null) {
                 mechanism.echoError("No settlement found for '" + name + "'");
                 return;
@@ -364,7 +364,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // -->
         if (mechanism.matches("remove_member")) {
             String name = mechanism.getValue().asString();
-            Village settlement = VillageManager.getInstance().getFromName(name);
+            Settlement settlement = SettlementManager.getInstance().getFromName(name);
             if (settlement == null || !empire.isMember(settlement)) {
                 mechanism.echoError("No member found for '" + name + "'");
                 return;

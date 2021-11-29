@@ -20,19 +20,19 @@ public class EmpireLeaveCommand extends EmpireSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        if (resident.getVillage().isCapital()) {
+        if (resident.getSettlement().isCapital()) {
             getMessage("cant-leave-own").tell(resident);
         } else if (confirm.getIfPresent(resident.getUUID()) != null) {
             confirm.invalidate(resident.getUUID());
-            getMessage("success").tell(resident.getVillage().getOnlineResidents(),
-                    "state", resident.getVillage().getState().getTag(),
-                    "empire", resident.getVillage().getEmpire().getName()
+            getMessage("success").tell(resident.getSettlement().getOnlineResidents(),
+                    "state", resident.getSettlement().getState().getTag(),
+                    "empire", resident.getSettlement().getEmpire().getName()
             );
-            getMessage("alert").tell(resident.getVillage().getEmpire().getOnlineResidents(),
-                    "name", resident.getVillage().getName(),
-                    "state", resident.getVillage().getState().getTag()
+            getMessage("alert").tell(resident.getSettlement().getEmpire().getOnlineResidents(),
+                    "name", resident.getSettlement().getName(),
+                    "state", resident.getSettlement().getState().getTag()
             );
-            resident.getVillage().leaveEmpire();
+            resident.getSettlement().leaveEmpire();
         } else {
             confirm.put(resident.getUUID(), System.currentTimeMillis());
             getMessage("confirm").tell(resident, "time", String.valueOf(Config.COMMAND_CONFIRM_TIME));

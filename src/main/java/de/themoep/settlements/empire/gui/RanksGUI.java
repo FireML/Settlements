@@ -46,11 +46,11 @@ public class RanksGUI extends SettlementsGUI {
             for (EmpireRank rank : EmpireRank.values()) {
                 List<String> text = new ArrayList<>();
                 text.add(getText("entry.title",
-                        "rank", rank.getTag(res.getVillage().getEmpire())
+                        "rank", rank.getTag(res.getSettlement().getEmpire())
                 ));
                 if (res.getEmpireRank().above(rank) || res.getEmpireRank() == EmpireRank.getLeader()) {
                     text.add(getText("entry.edit",
-                            "rank", rank.getTag(res.getVillage().getEmpire())
+                            "rank", rank.getTag(res.getSettlement().getEmpire())
                     ));
                 }
                 group.addElement(new StaticGuiElement('g',
@@ -70,7 +70,7 @@ public class RanksGUI extends SettlementsGUI {
                 gui.addElement(new StaticGuiElement('r', ItemUtils.toIcon(Material.ORANGE_WOOL), click -> {
                     Resident r = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
                     if (r.hasEmpire() && r.hasPermission("empire.perms.reset")) {
-                        Empire empire = r.getVillage().getEmpire();
+                        Empire empire = r.getSettlement().getEmpire();
                         new ConfirmationGui(RanksGUI.this, "reset", () -> {
                             if (r.hasPermission("empire.perms.reset")) {
                                 empire.getRanksPermissions().clear();

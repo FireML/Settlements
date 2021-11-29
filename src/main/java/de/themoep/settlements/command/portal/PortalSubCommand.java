@@ -45,7 +45,7 @@ public abstract class PortalSubCommand extends ResidentSubCommand {
         if (!super.testAccess(resident)) {
             return false;
         }
-        if (resident.hasVillage() && resident.getVillage().canAdminPortals(resident)) {
+        if (resident.hasSettlement() && resident.getSettlement().canAdminPortals(resident)) {
             return true;
         }
         getError("cant-admin-portals").tell(resident);
@@ -57,7 +57,7 @@ public abstract class PortalSubCommand extends ResidentSubCommand {
         if (!super.hasAccess(resident)) {
             return false;
         }
-        return resident.hasVillage() && resident.getVillage().canAdminPortals(resident);
+        return resident.hasSettlement() && resident.getSettlement().canAdminPortals(resident);
     }
 
     private boolean testPortalAdmin(Resident resident, Portal portal) {
@@ -66,8 +66,8 @@ public abstract class PortalSubCommand extends ResidentSubCommand {
         }
 
         OwnedLand land = LandManager.getInstance().getLand(portal.getLocation());
-        if (!land.isOwnedBy(resident.getVillage())) {
-            getError("not-your-village").tell(resident, "state", land.getLandOwner().getStateTag());
+        if (!land.isOwnedBy(resident.getSettlement())) {
+            getError("not-your-settlement").tell(resident, "state", land.getLandOwner().getStateTag());
             return false;
         }
         return true;
@@ -76,10 +76,10 @@ public abstract class PortalSubCommand extends ResidentSubCommand {
     private boolean isPlotAdmin(Resident resident) {
         if (adminCommand) {
             if (resident != null) {
-                if (resident.hasVillage() && resident.getVillage().canAdminPlots(resident)) {
+                if (resident.hasSettlement() && resident.getSettlement().canAdminPlots(resident)) {
                     return true;
                 }
-                if (resident.hasEmpire() && resident.getVillage().getEmpire().canAdminPlots(resident)) {
+                if (resident.hasEmpire() && resident.getSettlement().getEmpire().canAdminPlots(resident)) {
                     return true;
                 }
             }

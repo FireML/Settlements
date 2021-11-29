@@ -2,7 +2,7 @@ package de.themoep.settlements.command;
 
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.village.VillageState;
+import de.themoep.settlements.village.SettlementState;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.utils.Utils;
 
@@ -23,14 +23,14 @@ public class TaxCommand extends ResidentSubCommand {
                     }
                     sender.tell(target.getName() + ":");
                 }
-                long villageTax = target.getVillageTax();
+                long settlementTax = target.getSettlementTax();
                 long plotTax = target.getPlotTax();
                 getMessage("info").tell(sender,
-                        "state", target.hasVillage() ? target.getVillage().getStateTag() : VillageState.VILLAGE.getTag(),
-                        "tax", Utils.CURRENCY_FORMAT.format(villageTax),
+                        "state", target.hasSettlement() ? target.getSettlement().getStateTag() : SettlementState.VILLAGE.getTag(),
+                        "tax", Utils.CURRENCY_FORMAT.format(settlementTax),
                         "plottax", Utils.CURRENCY_FORMAT.format(plotTax),
                         "plotamount", String.valueOf(LandManager.getInstance().getOwnedPlot(target.getUUID()).size()),
-                        "totaltax", Utils.CURRENCY_FORMAT.format(villageTax + plotTax)
+                        "totaltax", Utils.CURRENCY_FORMAT.format(settlementTax + plotTax)
                 );
                 return true;
             }

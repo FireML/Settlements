@@ -2,7 +2,7 @@ package de.themoep.settlements.command.empire;
 
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Village;
+import de.themoep.settlements.village.Settlement;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.SubCommand;
 import org.bukkit.ChatColor;
@@ -22,18 +22,18 @@ public class EmpireMailCommand extends EmpireSubCommand {
         }
         MailProvider mailProvider = SettlementsPlugin.getInstance().getMailProviders().iterator().next();
         String sender = getMessage("sender").getReplacedText(
-                "title", res.getVillageTitle(),
+                "title", res.getSettlementTitle(),
                 "displaytitle", res.getDisplayTitle(),
                 "name", res.getName(),
-                "empirestate", res.getVillage().getEmpire().getStateTag(),
-                "empirename", res.getVillage().getEmpire().getName());
+                "empirestate", res.getSettlement().getEmpire().getStateTag(),
+                "empirename", res.getSettlement().getEmpire().getName());
         String message = String.join(" ", args);
-        for (Village member : res.getVillage().getEmpire().getMembers()) {
+        for (Settlement member : res.getSettlement().getEmpire().getMembers()) {
             if (!member.isMember(res)) {
                 mailProvider.sendMail(sender, member.getChief(), message);
             }
         }
-        getMessage("sent").tell(res, "amount", String.valueOf(res.getVillage().getEmpire().getMemberIds().size() - 1));
+        getMessage("sent").tell(res, "amount", String.valueOf(res.getSettlement().getEmpire().getMemberIds().size() - 1));
         return true;
     }
 }

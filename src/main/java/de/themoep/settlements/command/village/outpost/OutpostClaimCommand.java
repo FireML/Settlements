@@ -1,7 +1,7 @@
 package de.themoep.settlements.command.village.outpost;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Village;
+import de.themoep.settlements.village.Settlement;
 import de.themoep.settlements.command.village.VillageSubCommand;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
@@ -26,32 +26,32 @@ public class OutpostClaimCommand extends VillageSubCommand {
             return false;
         }
 
-        if (LandManager.getInstance().getClaimedLand(resident.getVillage()).isEmpty()) {
+        if (LandManager.getInstance().getClaimedLand(resident.getSettlement()).isEmpty()) {
             getError("no-home").tell(resident);
             return true;
         }
 
-        NamedLocation outpost = resident.getVillage().getOutpostHomes().get(args[0].toLowerCase());
+        NamedLocation outpost = resident.getSettlement().getOutpostHomes().get(args[0].toLowerCase());
         if (outpost != null) {
             getError("already-exists").tell(resident, "name", outpost.getName());
             return true;
         }
 
-        int amountClaimed = resident.getVillage().getOutpostHomes().size();
-        int maxClaimAllowed = resident.getVillage().getMaxOutposts();
+        int amountClaimed = resident.getSettlement().getOutpostHomes().size();
+        int maxClaimAllowed = resident.getSettlement().getMaxOutposts();
         if (amountClaimed >= maxClaimAllowed) {
             resident.tell(getMessage("max-outpost-chunks"), "max", Integer.toString(maxClaimAllowed));
             return true;
         }
 
-        if (!resident.getVillage().has(Config.Settlement.Outpost.CREATION_COST)) {
+        if (!resident.getSettlement().has(Config.Settlement.Outpost.CREATION_COST)) {
             getError("not-enough-money").tell(resident, "amount", String.valueOf(Config.Settlement.Outpost.CREATION_COST));
             return true;
         }
 
         OwnedLand land = LandManager.getInstance().getLand(resident.getPlayer().getLocation());
         if (land != null) {
-            if (land.isOwnedBy(resident.getVillage())) {
+            if (land.isOwnedBy(resident.getSettlement())) {
                 resident.tell(getError("already-own-land"));
             } else {
                 resident.tell(getError("cant-claim-here"), "owner", land.getLandOwner().getName());
@@ -62,16 +62,16 @@ public class OutpostClaimCommand extends VillageSubCommand {
                 if (checkLand == null) {
                     continue;
                 }
-                if (!checkLand.isOwnedBy(resident.getVillage()) && (
-                        !checkLand.getLandOwner().isAlly(resident.getVillage()) || (
-                                !(checkLand.getLandOwner() instanceof Village)
-                                        || !((Village) checkLand.getLandOwner()).isAllowAllyClaim()))) {
+                if (!checkLand.isOwnedBy(resident.getSettlement()) && (
+                        !checkLand.getLandOwner().isAlly(resident.getSettlement()) || (
+                                !(checkLand.getLandOwner() instanceof Settlement)
+                                        || !((Settlement) checkLand.getLandOwner()).isAllowAllyClaim()))) {
                     resident.tell(getError("claim-too-close"), "owner", checkLand.getLandOwner().getName());
                     return true;
                 }
             }
-            if (LandManager.getInstance().claimOutpost(resident.getPlayer().getLocation(), resident.getVillage(), args[0]) != null) {
-                getMessage("success").tell(resident.getVillage().getOnlineResidents(),
+            if (LandManager.getInstance().claimOutpost(resident.getPlayer().getLocation(), resident.getSettlement(), args[0]) != null) {
+                getMessage("success").tell(resident.getSettlement().getOnlineResidents(),
                         "cost", String.valueOf(Config.Settlement.Outpost.CREATION_COST),
                         "player", resident.getName(),
                         "name", args[0],

@@ -12,6 +12,6 @@ public class VillageBanishCommand extends VillageSubCommand implements BanishCom
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        return banish(resident, resident.getVillage(), args);
+        return banish(resident, resident.getSettlement(), args);
     }
 }

@@ -26,12 +26,12 @@ public class MoneyDepositCommand extends VillageSubCommand {
             if (SettlementsPlugin.getInstance().getEconomy().getBalance(resident.getPlayer()) >= deposit) {
                 EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(resident.getPlayer(), (double) deposit);
                 if (r2.transactionSuccess()) {
-                    resident.getVillage().addToBank(deposit);
-                    DatabaseManager.getInstance().saveSettlement(resident.getVillage());
-                    Utils.runAsync(() -> DatabaseManager.getInstance().logDeposit(resident.getVillage(), resident, deposit));
-                    getMessage("deposited").tell(resident.getVillage().getOnlineResidents(),
-                            "rank", resident.getVillageRank().getTag(resident.getVillage()),
-                            "title", resident.getVillageTitle(),
+                    resident.getSettlement().addToBank(deposit);
+                    DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
+                    Utils.runAsync(() -> DatabaseManager.getInstance().logDeposit(resident.getSettlement(), resident, deposit));
+                    getMessage("deposited").tell(resident.getSettlement().getOnlineResidents(),
+                            "rank", resident.getSettlementRank().getTag(resident.getSettlement()),
+                            "title", resident.getSettlementTitle(),
                             "displaytitle", resident.getDisplayTitle(),
                             "name", resident.getName(),
                             "amount", Utils.CURRENCY_FORMAT.format(deposit));

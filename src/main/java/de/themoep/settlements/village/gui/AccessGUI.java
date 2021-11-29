@@ -38,27 +38,27 @@ public class AccessGUI extends SettlementsGUI {
         for (LandAccess access : LandAccess.values()) {
             group.addElement(new DynamicGuiElement('g', (h) -> {
                 Resident resident = ResidentManager.getInstance().getResident((Player) h);
-                if (resident.hasVillage()) {
-                    if (resident.getVillage().getAccess() == access) {
+                if (resident.hasSettlement()) {
+                    if (resident.getSettlement().getAccess() == access) {
                         return new StaticGuiElement('g',
                                 ItemUtils.toIcon(Material.LIME_WOOL),
                                 getText("selected", "access", access.getTag()),
-                                getText("access." + access.getKey(), "state", resident.getVillage().getStateTag())
+                                getText("access." + access.getKey(), "state", resident.getSettlement().getStateTag())
                         );
                     }
                     return new StaticGuiElement('g',
                             ItemUtils.toIcon(Material.LIGHT_GRAY_WOOL),
                             click -> {
-                                if (resident.hasVillage() && resident.hasPermission("village.setaccess")) {
-                                    resident.getVillage().setAccess(access);
-                                    Message.get("command.village.setaccess.success").tell(resident, "access", access.getTag());
-                                    DatabaseManager.getInstance().saveSettlement(resident.getVillage());
+                                if (resident.hasSettlement() && resident.hasPermission("settlement.setaccess")) {
+                                    resident.getSettlement().setAccess(access);
+                                    Message.get("command.settlement.setaccess.success").tell(resident, "access", access.getTag());
+                                    DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
                                     gui.draw();
                                 }
                                 return true;
                             },
                             getText("available", "access", access.getTag()),
-                            getText("access." + access.getKey(), "state", resident.getVillage().getStateTag())
+                            getText("access." + access.getKey(), "state", resident.getSettlement().getStateTag())
                     );
                 }
                 return null;

@@ -1,6 +1,6 @@
 package de.themoep.settlements.command.village;
 
-import de.themoep.settlements.village.Village;
+import de.themoep.settlements.village.Settlement;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.event.Event;
 import de.themoep.settlements.event.EventManager;
@@ -29,8 +29,8 @@ public class VillageEventsCommand extends SubCommand {
                 getMessage("head").tell(sender, "event", event.getTitle(), "amount", String.valueOf(top.size()));
                 for (int i = 0; i < top.size(); i++) {
                     EventManager.EventData eventData = top.get(i);
-                    Village village = eventData.getVillage();
-                    getMessage("entry").tell(sender, village.getReplacements(this,
+                    Settlement settlement = eventData.getVillage();
+                    getMessage("entry").tell(sender, settlement.getReplacements(this,
                             "place", String.valueOf(i + 1),
                             "amount", String.valueOf(eventData.getTotalAmount()),
                             "event", event.getTitle()

@@ -8,7 +8,7 @@ import de.themoep.settlements.db.DatabaseManager;
 public class VillageAdminSocialSpyCommand extends ResidentSubCommand {
     public VillageAdminSocialSpyCommand(SubCommand parent) {
         super(parent, "socialspy", "ss");
-        setPermission("kingdoms.admin.socialspy");
+        setPermission("settlements.admin.socialspy");
     }
 
     @Override

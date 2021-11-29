@@ -16,8 +16,8 @@ import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.world.SimpleLocation;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
@@ -65,11 +65,11 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     protected Multimap<String, String> rankTitles = MultimapBuilder.hashKeys().linkedHashSetValues().build();
     protected Map<String, String> defaultRankTitles = new HashMap<>();
 
-    private Set<IdObject> alliedVillages = new LinkedHashSet<>();
+    private Set<IdObject> alliedSettlements = new LinkedHashSet<>();
 
     private Set<IdObject> alliedEmpires = new LinkedHashSet<>();
     private Set<UUID> banishedPlayers = new LinkedHashSet<>();
-    private Set<IdObject> banishedVillages = new LinkedHashSet<>();
+    private Set<IdObject> banishedSettlements = new LinkedHashSet<>();
     private Set<IdObject> banishedEmpires = new LinkedHashSet<>();
 
     protected LandOwner() {}
@@ -436,7 +436,7 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
                             "playerid", resident.getUUID().toString(),
                             "settlement", getName(),
                             "state", getStateTag(),
-                            "level", LandOwner.this instanceof Village ? String.valueOf(((Village) LandOwner.this).getLevel()) : "-1",
+                            "level", LandOwner.this instanceof Settlement ? String.valueOf(((Settlement) LandOwner.this).getLevel()) : "-1",
                             "perk", perk.getTag()
                     ));
                 }
@@ -468,11 +468,11 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
             return true;
         }
         Resident resident = ResidentManager.getInstance().getResident(playerId);
-        if (resident != null && resident.hasVillage()) {
-            if (banishedVillages.contains(resident.getVillage().getId())) {
+        if (resident != null && resident.hasSettlement()) {
+            if (banishedSettlements.contains(resident.getSettlement().getId())) {
                 return true;
             }
-            if (resident.hasEmpire() && banishedEmpires.contains(resident.getVillage().getEmpire().getId())) {
+            if (resident.hasEmpire() && banishedEmpires.contains(resident.getSettlement().getEmpire().getId())) {
                 return true;
             }
         }
@@ -482,8 +482,8 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     public boolean addBanished(Targetable target) {
         if (target instanceof Resident) {
             return banishedPlayers.add(((Resident) target).getUUID());
-        } else if (target instanceof Village) {
-            return banishedVillages.add(((Village) target).getId());
+        } else if (target instanceof Settlement) {
+            return banishedSettlements.add(((Settlement) target).getId());
         } else if (target instanceof Empire) {
             return banishedEmpires.add(((Empire) target).getId());
         }
@@ -493,8 +493,8 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     public boolean removeBanished(Targetable target) {
         if (target instanceof Resident) {
             return banishedPlayers.remove(((Resident) target).getUUID());
-        } else if (target instanceof Village) {
-            return banishedVillages.remove(((Village) target).getId());
+        } else if (target instanceof Settlement) {
+            return banishedSettlements.remove(((Settlement) target).getId());
         } else if (target instanceof Empire) {
             return banishedEmpires.remove(((Empire) target).getId());
         }
@@ -502,8 +502,8 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     }
 
     public boolean addAlly(LandOwner<?, ?> landOwner) {
-        if (landOwner instanceof Village) {
-            return alliedVillages.add(landOwner.getId());
+        if (landOwner instanceof Settlement) {
+            return alliedSettlements.add(landOwner.getId());
         } else if (landOwner instanceof Empire) {
             return alliedEmpires.add(landOwner.getId());
         }
@@ -511,8 +511,8 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     }
 
     public boolean removeAlly(LandOwner<?, ?> landOwner) {
-        if (landOwner instanceof Village) {
-            return alliedVillages.remove(landOwner.getId());
+        if (landOwner instanceof Settlement) {
+            return alliedSettlements.remove(landOwner.getId());
         } else if (landOwner instanceof Empire) {
             return alliedEmpires.remove(landOwner.getId());
         }
@@ -520,8 +520,8 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     }
 
     public boolean isAlly(LandOwner<?, ?> landOwner) {
-        if (landOwner instanceof Village) {
-            return alliedVillages.contains(landOwner.getId());
+        if (landOwner instanceof Settlement) {
+            return alliedSettlements.contains(landOwner.getId());
         } else if (landOwner instanceof Empire) {
             return alliedEmpires.contains(landOwner.getId());
         }
@@ -530,17 +530,17 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
 
     public boolean isAlly(Resident resident) {
         return isMember(resident)
-                || (resident.hasVillage() && isAlly(resident.getVillage()))
-                || (resident.hasEmpire() && isAlly(resident.getVillage().getEmpire()));
+                || (resident.hasSettlement() && isAlly(resident.getSettlement()))
+                || (resident.hasEmpire() && isAlly(resident.getSettlement().getEmpire()));
     }
 
     public boolean hasAllies() {
-        return !getAlliedEmpireIds().isEmpty() || !getAlliedVillageIds().isEmpty();
+        return !getAlliedEmpireIds().isEmpty() || !getAlliedSettlementIds().isEmpty();
     }
 
     public boolean isTrusted(Resident resident) {
-        return (resident.hasVillage() && isTrusted(resident.getVillage()))
-                || (resident.hasEmpire() && isTrusted(resident.getVillage().getEmpire()));
+        return (resident.hasSettlement() && isTrusted(resident.getSettlement()))
+                || (resident.hasEmpire() && isTrusted(resident.getSettlement().getEmpire()));
     }
 
     @Override
@@ -560,13 +560,13 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         return banishedPlayers;
     }
 
-    public Set<IdObject> getBanishedVillageIds() {
-        return banishedVillages;
+    public Set<IdObject> getBanishedSettlementIds() {
+        return banishedSettlements;
     }
 
-    public Set<Village> getBanishedVillages() {
-        return banishedVillages.stream()
-                .map(id -> VillageManager.getInstance().getFromId(id))
+    public Set<Settlement> getBanishedSettlements() {
+        return banishedSettlements.stream()
+                .map(id -> SettlementManager.getInstance().getFromId(id))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
@@ -582,13 +582,13 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
                 .collect(Collectors.toSet());
     }
 
-    public Set<IdObject> getAlliedVillageIds() {
-        return alliedVillages;
+    public Set<IdObject> getAlliedSettlementIds() {
+        return alliedSettlements;
     }
 
-    public Set<Village> getAlliedVillages() {
-        return alliedVillages.stream()
-                .map(id -> VillageManager.getInstance().getFromId(id))
+    public Set<Settlement> getAlliedSettlements() {
+        return alliedSettlements.stream()
+                .map(id -> SettlementManager.getInstance().getFromId(id))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
@@ -607,7 +607,7 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     public Collection<LandOwner> getAllies() {
         List<LandOwner> landOwners = new ArrayList<>();
         landOwners.addAll(getAlliedEmpires());
-        landOwners.addAll(getAlliedVillages());
+        landOwners.addAll(getAlliedSettlements());
         return landOwners;
     }
 
@@ -779,12 +779,12 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         else
             map.put("homeLoc", new SimpleLocation(null, 0, 0, 0));
         List<String> allies = new ArrayList<>();
-        getAlliedVillageIds().stream().map(id -> "village:" + id).forEach(allies::add);
+        getAlliedSettlementIds().stream().map(id -> "settlement:" + id).forEach(allies::add);
         getAlliedEmpireIds().stream().map(id -> "empire:" + id).forEach(allies::add);
         map.put("allies", allies);
         List<String> banished = new ArrayList<>();
         getBanishedPlayers().stream().map(UUID::toString).forEach(banished::add);
-        getBanishedVillageIds().stream().map(id -> "village:" + id).forEach(banished::add);
+        getBanishedSettlementIds().stream().map(id -> "settlement:" + id).forEach(banished::add);
         getBanishedEmpireIds().stream().map(id -> "empire:" + id).forEach(banished::add);
         map.put("banished", banished);
         map.put("uses", getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
@@ -838,8 +838,8 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
                 if (split.length > 1) {
                     IdObject id = IdObject.get(Integer.parseInt(split[1]));
                     switch (split[0]) {
-                        case "village":
-                            landOwner.getAlliedVillageIds().add(id);
+                        case "settlement":
+                            landOwner.getAlliedSettlementIds().add(id);
                             break;
                         case "empire":
                             landOwner.getAlliedEmpireIds().add(id);
@@ -858,8 +858,8 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
                 } else {
                     IdObject id = IdObject.get(Integer.parseInt(split[1]));
                     switch (split[0]) {
-                        case "village":
-                            landOwner.getBanishedVillageIds().add(id);
+                        case "settlement":
+                            landOwner.getBanishedSettlementIds().add(id);
                             break;
                         case "empire":
                             landOwner.getBanishedEmpireIds().add(id);

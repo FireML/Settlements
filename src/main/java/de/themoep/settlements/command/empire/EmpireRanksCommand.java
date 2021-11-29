@@ -31,7 +31,7 @@ public class EmpireRanksCommand extends EmpireSubCommand {
                 }
 
                 getMessage("head").tell(resident, "rank", rank.getTag());
-                for (Map.Entry<String, Optional<Boolean>> e : resident.getVillage().getEmpire().getEffectivePermissions(rank).entrySet()) {
+                for (Map.Entry<String, Optional<Boolean>> e : resident.getSettlement().getEmpire().getEffectivePermissions(rank).entrySet()) {
                     getMessage("entry").tell(resident,
                             "rank", rank.name(),
                             "permission", e.getKey(),
@@ -78,7 +78,7 @@ public class EmpireRanksCommand extends EmpireSubCommand {
                     }
                 }
 
-                if (!resident.hasPermission("kingdoms.command." + permission) || !EmpireRank.isToggleablePermission(permission)) {
+                if (!resident.hasPermission("settlements.command." + permission) || !EmpireRank.isToggleablePermission(permission)) {
                     getError("cant-edit-permission").tell(resident, "permission", permission);
                     return true;
                 }
@@ -91,8 +91,8 @@ public class EmpireRanksCommand extends EmpireSubCommand {
                         return false;
                     }
                 }
-                resident.getVillage().getEmpire().setPermission(rank, permission, value);
-                Utils.runAsync(() -> DatabaseManager.getInstance().save(resident.getVillage().getEmpire()));
+                resident.getSettlement().getEmpire().setPermission(rank, permission, value);
+                Utils.runAsync(() -> DatabaseManager.getInstance().save(resident.getSettlement().getEmpire()));
                 getMessage("success").tell(resident,
                         "rank", rank.getTag(),
                         "permission", permission,
@@ -133,14 +133,14 @@ public class EmpireRanksCommand extends EmpireSubCommand {
                     }
                 }
 
-                if (!resident.hasPermission("kingdoms.command." + permission) || !EmpireRank.isToggleablePermission(permission)) {
+                if (!resident.hasPermission("settlements.command." + permission) || !EmpireRank.isToggleablePermission(permission)) {
                     getError("cant-edit-permission").tell(resident, "permission", permission);
                     return true;
                 }
 
-                resident.getVillage().getEmpire().setDefaultPermission(rank, permission);
-                Optional<Boolean> value = resident.getVillage().getEmpire().getEffectivePermissionValue(rank, permission);
-                Utils.runAsync(() -> DatabaseManager.getInstance().save(resident.getVillage().getEmpire()));
+                resident.getSettlement().getEmpire().setDefaultPermission(rank, permission);
+                Optional<Boolean> value = resident.getSettlement().getEmpire().getEffectivePermissionValue(rank, permission);
+                Utils.runAsync(() -> DatabaseManager.getInstance().save(resident.getSettlement().getEmpire()));
                 getMessage("success").tell(resident,
                         "rank", rank.getTag(),
                         "permission", permission,

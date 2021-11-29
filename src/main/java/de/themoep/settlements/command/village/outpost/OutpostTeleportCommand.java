@@ -18,16 +18,16 @@ public class OutpostTeleportCommand extends VillageSubCommand {
         if (args.length < 1) {
             return false;
         }
-        NamedLocation location = resident.getVillage().getOutpostHomes().get(args[0].toLowerCase());
+        NamedLocation location = resident.getSettlement().getOutpostHomes().get(args[0].toLowerCase());
         if (location != null) {
             OwnedLand land = LandManager.getInstance().getLand(location.toChunkLocation());
-            if (land != null && land.isOwnedBy(resident.getVillage())) {
+            if (land != null && land.isOwnedBy(resident.getSettlement())) {
                 Utils.teleport(this, resident.getPlayer(), location.toBukkitLocation(), "outpost", "name", location.getName());
             } else {
-                if (resident.getVillage().getOutpostHomes().remove(args[0].toLowerCase()) != null) {
-                    DatabaseManager.getInstance().saveSettlement(resident.getVillage());
+                if (resident.getSettlement().getOutpostHomes().remove(args[0].toLowerCase()) != null) {
+                    DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
                 }
-                getError("outpost-not-claimed").tell(resident, "name", args[0], "state", resident.getVillage().getStateTag());
+                getError("outpost-not-claimed").tell(resident, "name", args[0], "state", resident.getSettlement().getStateTag());
             }
         } else {
             getError("outpost-not-found").tell(resident, "name", args[0]);

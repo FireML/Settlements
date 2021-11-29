@@ -15,10 +15,10 @@ public class EmpireTitleCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length < 1) {
-            Collection<String> titles = res.getVillage().getEmpire().getTitles(res.getEmpireRank());
+            Collection<String> titles = res.getSettlement().getEmpire().getTitles(res.getEmpireRank());
             res.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base), "type", "");
             res.tell(getMessage("usage.entry"), "usage", getUsage(base));
-            String defaultTitle = res.getVillage().getEmpire().getDefaultTitle(res.getEmpireRank());
+            String defaultTitle = res.getSettlement().getEmpire().getDefaultTitle(res.getEmpireRank());
             res.tell(getMessage("usage.entry"), "usage", "/" + base + " " + alias + " " + defaultTitle);
             for (String title : titles) {
                 if (!title.equals(defaultTitle)) {
@@ -38,12 +38,12 @@ public class EmpireTitleCommand extends EmpireSubCommand {
             if (!message.exists()) {
                 message = getMessage("title.success.default");
             }
-            message.tell(res.getVillage().getEmpire().getOnlineResidents(),
-                    "rank", res.getEmpireRank().getTag(res.getVillage().getEmpire()),
+            message.tell(res.getSettlement().getEmpire().getOnlineResidents(),
+                    "rank", res.getEmpireRank().getTag(res.getSettlement().getEmpire()),
                     "title", res.getEmpireTitle(),
                     "name", res.getName(),
-                    "empirename", res.getVillage().getEmpire().getName(),
-                    "empirestate", res.getVillage().getEmpire().getStateTag()
+                    "empirename", res.getSettlement().getEmpire().getName(),
+                    "empirestate", res.getSettlement().getEmpire().getStateTag()
             );
         }
         return true;

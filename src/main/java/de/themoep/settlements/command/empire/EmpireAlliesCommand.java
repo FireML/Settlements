@@ -11,6 +11,6 @@ public class EmpireAlliesCommand extends EmpireSubCommand implements AllyCommand
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        return listAllies(resident, resident.getVillage().getEmpire());
+        return listAllies(resident, resident.getSettlement().getEmpire());
     }
 }

@@ -16,7 +16,7 @@ public class CommandScoreboardAdmin extends SubCommand {
 
     public CommandScoreboardAdmin(ScoreboardManager manager) {
         super(null, "scoreboardadmin clear|add <line>", "sba", "boardadmin", "sidebaradmin", "sideadmin");
-        setPermission("kingdoms.admin.scoreboard");
+        setPermission("settlements.admin.scoreboard");
         registerCommand(new SubCommand(this, "clear", "reset", "remove") {
             @Override
             public boolean run(CommandSender s, String base, String alias, String... args) {

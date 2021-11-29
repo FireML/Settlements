@@ -24,11 +24,11 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
                 resident.tell(landOwner.getBanishedPlayers().stream()
                         .map(id -> ResidentManager.getInstance().getResident(id))
                         .filter(Objects::nonNull)
-                        .map(r -> getMessage("entry").getReplacedText("name", r.getName(), "title", r.getVillageTitle()))
+                        .map(r -> getMessage("entry").getReplacedText("name", r.getName(), "title", r.getSettlementTitle()))
                         .collect(Collectors.joining(getMessage("separator").getText())));
             }
-            if (!landOwner.getBanishedVillageIds().isEmpty()) {
-                resident.tell(landOwner.getBanishedVillages().stream()
+            if (!landOwner.getBanishedSettlementIds().isEmpty()) {
+                resident.tell(landOwner.getBanishedSettlements().stream()
                         .map(v -> getMessage("entry").getReplacedText("name", v.getName(), "title", v.getStateTag()))
                         .collect(Collectors.joining(getMessage("separator").getText())));
             }
@@ -67,8 +67,8 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
 
             if (target instanceof Resident
                     && source.isMember((Resident) target)
-                    && ((Resident) target).getVillageRank().atLeast(resident.getVillageRank())) {
-                resident.tell(getError("cant-banish"), "name", target.getName(), "title", ((Resident) target).getVillageTitle());
+                    && ((Resident) target).getSettlementRank().atLeast(resident.getSettlementRank())) {
+                resident.tell(getError("cant-banish"), "name", target.getName(), "title", ((Resident) target).getSettlementTitle());
                 return;
             }
             Utils.runSync(() -> {

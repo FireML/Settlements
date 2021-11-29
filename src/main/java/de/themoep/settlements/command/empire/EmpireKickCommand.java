@@ -1,8 +1,8 @@
 package de.themoep.settlements.command.empire;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.InviteCache;
 import de.themoep.settlements.utils.MessageUtils;
@@ -18,30 +18,30 @@ public class EmpireKickCommand extends EmpireSubCommand {
             return false;
         }
 
-        if (args[0].equalsIgnoreCase(resident.getVillage().getName())) {
+        if (args[0].equalsIgnoreCase(resident.getSettlement().getName())) {
             getMessage("cant-kick-yourself").tell(resident);
             return true;
         }
 
-        Village village = VillageManager.getInstance().getFromName(args[0]);
-        if (village == null) {
-            getError("village-doesnt-exist").tell(resident);
+        Settlement settlement = SettlementManager.getInstance().getFromName(args[0]);
+        if (settlement == null) {
+            getError("settlement-doesnt-exist").tell(resident);
             return true;
         }
-        if (!resident.getVillage().getEmpire().isMember(village)) {
-            getError("not-in-current").tell(resident, "name", village.getName());
+        if (!resident.getSettlement().getEmpire().isMember(settlement)) {
+            getError("not-in-current").tell(resident, "name", settlement.getName());
             return true;
         }
-        if (village.isCapital()) {
+        if (settlement.isCapital()) {
             getMessage("cant-kick-capital").tell(resident);
             return true;
         }
-        MessageUtils.tellResidents(village.getEmpire().getOnlineResidents(), getMessage("kicked-alert"),
-                "name", village.getName(),
-                "state", village.getState().getTag()
+        MessageUtils.tellResidents(settlement.getEmpire().getOnlineResidents(), getMessage("kicked-alert"),
+                "name", settlement.getName(),
+                "state", settlement.getState().getTag()
         );
-        InviteCache.getPendingEmpireInvites().remove(village.getId(), village.getEmpire().getId());
-        village.leaveEmpire();
+        InviteCache.getPendingEmpireInvites().remove(settlement.getId(), settlement.getEmpire().getId());
+        settlement.leaveEmpire();
         return true;
     }
 }

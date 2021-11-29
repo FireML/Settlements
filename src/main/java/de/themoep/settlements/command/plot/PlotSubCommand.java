@@ -39,9 +39,9 @@ public abstract class PlotSubCommand extends ResidentSubCommand {
             return false;
         }
         if (adminCommand) {
-            if (resident.hasVillage() && resident.getVillage().canAdminPlots(resident)) {
+            if (resident.hasSettlement() && resident.getSettlement().canAdminPlots(resident)) {
                 return true;
-            } else if (resident.hasEmpire() && resident.getVillage().getEmpire().canAdminPlots(resident)) {
+            } else if (resident.hasEmpire() && resident.getSettlement().getEmpire().canAdminPlots(resident)) {
                 return true;
             }
             getError("cant-admin-plots").tell(resident);
@@ -56,8 +56,8 @@ public abstract class PlotSubCommand extends ResidentSubCommand {
             return false;
         }
         if (adminCommand) {
-            return (resident.hasVillage() && resident.getVillage().canAdminPlots(resident))
-                    || (resident.hasEmpire() && resident.getVillage().getEmpire().canAdminPlots(resident));
+            return (resident.hasSettlement() && resident.getSettlement().canAdminPlots(resident))
+                    || (resident.hasEmpire() && resident.getSettlement().getEmpire().canAdminPlots(resident));
         }
         return true;
     }
@@ -79,7 +79,7 @@ public abstract class PlotSubCommand extends ResidentSubCommand {
             if (land.isOwnedBy(resident) || land.isEmbassy()) {
                 getError("not-your-plot").tell(resident);
             } else {
-                getError("not-your-village").tell(resident, "state", land.getLandOwner().getStateTag());
+                getError("not-your-settlement").tell(resident, "state", land.getLandOwner().getStateTag());
             }
         }
         return false;
@@ -88,10 +88,10 @@ public abstract class PlotSubCommand extends ResidentSubCommand {
     private boolean isPlotAdmin(Resident resident) {
         if (adminCommand) {
             if (resident != null) {
-                if (resident.hasVillage() && resident.getVillage().canAdminPlots(resident)) {
+                if (resident.hasSettlement() && resident.getSettlement().canAdminPlots(resident)) {
                     return true;
                 }
-                if (resident.hasEmpire() && resident.getVillage().getEmpire().canAdminPlots(resident)) {
+                if (resident.hasEmpire() && resident.getSettlement().getEmpire().canAdminPlots(resident)) {
                     return true;
                 }
             }

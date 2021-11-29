@@ -20,7 +20,7 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
         EmpireSubCommand balanceCommand = new EmpireSubCommand(this, "balance") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
-                getMessage("balance").tell(resident, "amount", Utils.CURRENCY_FORMAT.format(resident.getVillage().getEmpire().getBank()));
+                getMessage("balance").tell(resident, "amount", Utils.CURRENCY_FORMAT.format(resident.getSettlement().getEmpire().getBank()));
                 return true;
             }
         };
@@ -40,12 +40,12 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                     if (SettlementsPlugin.getInstance().getEconomy().getBalance(resident.getPlayer()) >= deposit) {
                         EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(resident.getPlayer(), (double) deposit);
                         if (r2.transactionSuccess()) {
-                            resident.getVillage().getEmpire().addToBank(deposit);
-                            DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
-                            Utils.runAsync(() -> DatabaseManager.getInstance().logDeposit(resident.getVillage().getEmpire(), resident.getVillage(), resident, deposit));
-                            getMessage("deposited").tell(resident.getVillage().getEmpire().getOnlineResidents(),
-                                    "rank", resident.getEmpireRank().getTag(resident.getVillage().getEmpire()),
-                                    "title", resident.getVillageTitle(),
+                            resident.getSettlement().getEmpire().addToBank(deposit);
+                            DatabaseManager.getInstance().saveEmpire(resident.getSettlement().getEmpire());
+                            Utils.runAsync(() -> DatabaseManager.getInstance().logDeposit(resident.getSettlement().getEmpire(), resident.getSettlement(), resident, deposit));
+                            getMessage("deposited").tell(resident.getSettlement().getEmpire().getOnlineResidents(),
+                                    "rank", resident.getEmpireRank().getTag(resident.getSettlement().getEmpire()),
+                                    "title", resident.getSettlementTitle(),
                                     "displaytitle", resident.getDisplayTitle(),
                                     "name", resident.getName(),
                                     "amount", Utils.CURRENCY_FORMAT.format(deposit));
@@ -73,15 +73,15 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                     if (withdrewInit <= 0) {
                         return false;
                     }
-                    if (withdrewInit <= resident.getVillage().getEmpire().getBank()) {
+                    if (withdrewInit <= resident.getSettlement().getEmpire().getBank()) {
                         EconomyResponse r = SettlementsPlugin.getInstance().getEconomy().depositPlayer(resident.getPlayer(), (double) withdrewInit);
                         if (r.transactionSuccess()) {
-                            resident.getVillage().getEmpire().removeFromBank(withdrewInit);
-                            DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
-                            Utils.runAsync(() -> DatabaseManager.getInstance().logWithdraw(resident.getVillage().getEmpire(), resident.getVillage(), resident, withdrewInit));
-                            getMessage("withdrawn").tell(resident.getVillage().getEmpire().getOnlineResidents(),
-                                    "rank", resident.getEmpireRank().getTag(resident.getVillage().getEmpire()),
-                                    "title", resident.getVillageTitle(),
+                            resident.getSettlement().getEmpire().removeFromBank(withdrewInit);
+                            DatabaseManager.getInstance().saveEmpire(resident.getSettlement().getEmpire());
+                            Utils.runAsync(() -> DatabaseManager.getInstance().logWithdraw(resident.getSettlement().getEmpire(), resident.getSettlement(), resident, withdrewInit));
+                            getMessage("withdrawn").tell(resident.getSettlement().getEmpire().getOnlineResidents(),
+                                    "rank", resident.getEmpireRank().getTag(resident.getSettlement().getEmpire()),
+                                    "title", resident.getSettlementTitle(),
                                     "displaytitle", resident.getDisplayTitle(),
                                     "name", resident.getName(),
                                     "amount", Utils.CURRENCY_FORMAT.format(withdrewInit));

@@ -8,7 +8,7 @@ import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.portal.PortalManager;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.village.Village;
+import de.themoep.settlements.village.Settlement;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -125,7 +125,7 @@ public class SpigotListener implements Listener {
         }
 
         OwnedLand land = LandManager.getInstance().getLand(e.getBlock().getLocation());
-        if (land == null || !(land.getLandOwner() instanceof Village)) {
+        if (land == null || !(land.getLandOwner() instanceof Settlement)) {
             return;
         }
 

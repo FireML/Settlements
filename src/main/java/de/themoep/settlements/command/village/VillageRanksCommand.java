@@ -7,7 +7,7 @@ import de.themoep.settlements.village.gui.RankPermsGUI;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.rank.PermissionGroup;
-import de.themoep.settlements.rank.VillageRank;
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.ChatColor;
 
@@ -24,14 +24,14 @@ public class VillageRanksCommand extends VillageSubCommand {
                     return false;
                 }
 
-                VillageRank rank = VillageRank.get(args[0]);
+                SettlementRank rank = SettlementRank.get(args[0]);
                 if (rank == null) {
                     getError("invalid-rank").tell(resident);
                     return false;
                 }
 
-                getMessage("head").tell(resident, "rank", rank.getTag(resident.getVillage()));
-                for (Map.Entry<String, Optional<Boolean>> e : resident.getVillage().getEffectivePermissions(rank).entrySet()) {
+                getMessage("head").tell(resident, "rank", rank.getTag(resident.getSettlement()));
+                for (Map.Entry<String, Optional<Boolean>> e : resident.getSettlement().getEffectivePermissions(rank).entrySet()) {
                     getMessage("entry").tell(resident,
                             "rank", rank.name(),
                             "permission", e.getKey(),
@@ -40,7 +40,7 @@ public class VillageRanksCommand extends VillageSubCommand {
                             "color",  String.valueOf(e.getValue().orElse(false) ? ChatColor.GREEN : ChatColor.RED)
                     );
                 }
-                getMessage("footer").tell(resident, "rank", rank.getTag(resident.getVillage()));
+                getMessage("footer").tell(resident, "rank", rank.getTag(resident.getSettlement()));
                 //TODO: Pagination for permissions? Inherited values?
                 return true;
             }
@@ -52,33 +52,33 @@ public class VillageRanksCommand extends VillageSubCommand {
                     return false;
                 }
 
-                VillageRank rank = VillageRank.get(args[0]);
+                SettlementRank rank = SettlementRank.get(args[0]);
                 if (rank == null) {
                     getError("invalid-rank").tell(resident);
                     return false;
                 }
 
                 String permission = args[1].toLowerCase();
-                if (!permission.startsWith("village.") && !permission.startsWith("empire.")) {
-                    permission = "village." + permission;
+                if (!permission.startsWith("settlement.") && !permission.startsWith("empire.")) {
+                    permission = "settlement." + permission;
                 }
 
-                if (rank != VillageRank.getChief() && rank.atLeast(resident.getVillageRank())) {
-                    getError("rank-required").tell(resident, "rank", rank.next().getTag(resident.getVillage()));
+                if (rank != SettlementRank.getChief() && rank.atLeast(resident.getSettlementRank())) {
+                    getError("rank-required").tell(resident, "rank", rank.next().getTag(resident.getSettlement()));
                     return true;
                 }
-                if (rank == VillageRank.getChief()) {
-                    if (resident.getVillageRank() != rank) {
-                        getError("rank-required").tell(resident, "rank", rank.getTag(resident.getVillage()));
+                if (rank == SettlementRank.getChief()) {
+                    if (resident.getSettlementRank() != rank) {
+                        getError("rank-required").tell(resident, "rank", rank.getTag(resident.getSettlement()));
                         return true;
                     }
-                    if (permission.startsWith("village.perms")) {
+                    if (permission.startsWith("settlement.ranks")) {
                         getError("cant-edit-perms-permission");
                         return true;
                     }
                 }
 
-                if (!resident.hasPermission("kingdoms.command." + permission) || !VillageRank.isToggleablePermission(permission)) {
+                if (!resident.hasPermission("settlements.command." + permission) || !SettlementRank.isToggleablePermission(permission)) {
                     getError("cant-edit-permission").tell(resident, "permission", permission);
                     return true;
                 }
@@ -91,10 +91,10 @@ public class VillageRanksCommand extends VillageSubCommand {
                         return false;
                     }
                 }
-                resident.getVillage().setPermission(rank, permission, value);
-                Utils.runAsync(() -> DatabaseManager.getInstance().save(resident.getVillage()));
+                resident.getSettlement().setPermission(rank, permission, value);
+                Utils.runAsync(() -> DatabaseManager.getInstance().save(resident.getSettlement()));
                 getMessage("success").tell(resident,
-                        "rank", rank.getTag(resident.getVillage()),
+                        "rank", rank.getTag(resident.getSettlement()),
                         "permission", permission,
                         "value", String.valueOf(value)
                 );
@@ -107,41 +107,41 @@ public class VillageRanksCommand extends VillageSubCommand {
                 if (args.length < 2) {
                     return false;
                 }
-                VillageRank rank = VillageRank.get(args[0]);
+                SettlementRank rank = SettlementRank.get(args[0]);
                 if (rank == null) {
                     getError("invalid-rank").tell(resident);
                     return false;
                 }
                 String permission = args[1].toLowerCase();
-                if (!permission.startsWith("village.") && !permission.startsWith("empire.")) {
-                    permission = "village." + permission;
+                if (!permission.startsWith("settlement.") && !permission.startsWith("empire.")) {
+                    permission = "settlement." + permission;
                 }
 
-                if (rank != VillageRank.getChief() && rank.atLeast(resident.getVillageRank())) {
-                    getError("rank-required").tell(resident, "rank", rank.next().getTag(resident.getVillage()));
+                if (rank != SettlementRank.getChief() && rank.atLeast(resident.getSettlementRank())) {
+                    getError("rank-required").tell(resident, "rank", rank.next().getTag(resident.getSettlement()));
                     return true;
                 }
-                if (rank == VillageRank.getChief()) {
-                    if (resident.getVillageRank() != rank) {
-                        getError("rank-required").tell(resident, "rank", rank.getTag(resident.getVillage()));
+                if (rank == SettlementRank.getChief()) {
+                    if (resident.getSettlementRank() != rank) {
+                        getError("rank-required").tell(resident, "rank", rank.getTag(resident.getSettlement()));
                         return true;
                     }
-                    if (permission.startsWith("village.perms")) {
+                    if (permission.startsWith("settlement.ranks")) {
                         getError("cant-edit-perms-permission");
                         return true;
                     }
                 }
 
-                if (!resident.hasPermission("kingdoms.command." + permission) || !VillageRank.isToggleablePermission(permission)) {
+                if (!resident.hasPermission("settlements.command." + permission) || !SettlementRank.isToggleablePermission(permission)) {
                     getError("cant-edit-permission").tell(resident, "permission", permission);
                     return true;
                 }
 
-                resident.getVillage().setDefaultPermission(rank, permission);
-                Optional<Boolean> value = resident.getVillage().getEffectivePermissionValue(rank, permission);
-                Utils.runAsync(() -> DatabaseManager.getInstance().save(resident.getVillage()));
+                resident.getSettlement().setDefaultPermission(rank, permission);
+                Optional<Boolean> value = resident.getSettlement().getEffectivePermissionValue(rank, permission);
+                Utils.runAsync(() -> DatabaseManager.getInstance().save(resident.getSettlement()));
                 getMessage("success").tell(resident,
-                        "rank", rank.getTag(resident.getVillage()),
+                        "rank", rank.getTag(resident.getSettlement()),
                         "permission", permission,
                         "value", String.valueOf(value.isPresent() && value.get())
                 );
@@ -157,7 +157,7 @@ public class VillageRanksCommand extends VillageSubCommand {
             return true;
         }
 
-        VillageRank rank = VillageRank.get(args[0]);
+        SettlementRank rank = SettlementRank.get(args[0]);
         if (rank == null) {
             getError("invalid-rank").tell(resident, "rank", args[0]);
             return false;
@@ -166,7 +166,7 @@ public class VillageRanksCommand extends VillageSubCommand {
             new RankPermGroupsGUI(resident, rank).open();
             return true;
         } else if (args.length == 2) {
-            PermissionGroup group = VillageRank.getPermGroup(args[1]);
+            PermissionGroup group = SettlementRank.getPermGroup(args[1]);
             if (group != null) {
                 new RankPermsGUI(resident, rank, group).open();
                 return true;

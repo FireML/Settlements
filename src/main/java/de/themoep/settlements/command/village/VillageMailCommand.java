@@ -21,18 +21,18 @@ public class VillageMailCommand extends VillageSubCommand {
         }
         MailProvider mailProvider = SettlementsPlugin.getInstance().getMailProviders().iterator().next();
         String sender = getMessage("sender").getReplacedText(
-                "title", res.getVillageTitle(),
+                "title", res.getSettlementTitle(),
                 "displaytitle", res.getDisplayTitle(),
                 "name", res.getName(),
-                "settlementstate", res.getVillage().getStateTag(),
-                "settlementname", res.getVillage().getName());
+                "settlementstate", res.getSettlement().getStateTag(),
+                "settlementname", res.getSettlement().getName());
         String message = String.join(" ", args);
-        for (Resident resident : res.getVillage().getResidents()) {
+        for (Resident resident : res.getSettlement().getResidents()) {
             if (resident != res) {
                 mailProvider.sendMail(sender, resident, message);
             }
         }
-        getMessage("sent").tell(res, "amount", String.valueOf(res.getVillage().getResidentIds().size() - 1));
+        getMessage("sent").tell(res, "amount", String.valueOf(res.getSettlement().getResidentIds().size() - 1));
         return true;
     }
 }

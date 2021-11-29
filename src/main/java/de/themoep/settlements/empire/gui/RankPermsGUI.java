@@ -43,7 +43,7 @@ public class RankPermsGUI extends SettlementsGUI {
                 .filter(s -> !s.contains(".help"))
                 .collect(Collectors.toList());
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title",
-                "rank", rank.getTag(res.getVillage().getEmpire()),
+                "rank", rank.getTag(res.getSettlement().getEmpire()),
                 "group", group.getName()
         ), SETUP);
         gui.setCloseAction(close -> false);
@@ -64,14 +64,14 @@ public class RankPermsGUI extends SettlementsGUI {
                     permName = permName.substring("Empire ".length());
                 }
                 Material item;
-                Optional<Boolean> value = res.getVillage().getEmpire().getEffectivePermissionValue(rank, perm);
+                Optional<Boolean> value = res.getSettlement().getEmpire().getEffectivePermissionValue(rank, perm);
                 List<String> description = new ArrayList<>();
 
                 EmpireRank fromRank = rank;
                 ChatColor color;
                 if (value.orElse(false)) {
                     for (EmpireRank r : rank.getInheritedRanks()) {
-                        if (res.getVillage().getEmpire().getEffectivePermissionValue(r, perm).orElse(false)) {
+                        if (res.getSettlement().getEmpire().getEffectivePermissionValue(r, perm).orElse(false)) {
                             fromRank = r;
                         }
                     }
@@ -82,8 +82,8 @@ public class RankPermsGUI extends SettlementsGUI {
                         item = Material.GREEN_WOOL;
                         description.add(getText("entry.inherited",
                                 "perm", permName,
-                                "rank", rank.getTag(res.getVillage().getEmpire()),
-                                "from", fromRank.getTag(res.getVillage().getEmpire())
+                                "rank", rank.getTag(res.getSettlement().getEmpire()),
+                                "from", fromRank.getTag(res.getSettlement().getEmpire())
                         ));
                         color = ChatColor.DARK_GREEN;
                     }
@@ -93,12 +93,12 @@ public class RankPermsGUI extends SettlementsGUI {
                 }
 
                 boolean defaultValue = rank.getPermissionValue(perm);
-                if (fromRank == rank && res.getVillage().getEmpire().getPermissionValue(rank, perm)
+                if (fromRank == rank && res.getSettlement().getEmpire().getPermissionValue(rank, perm)
                         .orElse(false) != defaultValue) {
                     if (res.getEmpireRank().above(rank) && res.hasPermission("empire.perms.unset")) {
                         description.add(getText("entry.unset",
                                 "perm", permName,
-                                "rank", rank.getTag(res.getVillage().getEmpire()),
+                                "rank", rank.getTag(res.getSettlement().getEmpire()),
                                 "default", String.valueOf(defaultValue)
                         ));
                     }
@@ -108,13 +108,13 @@ public class RankPermsGUI extends SettlementsGUI {
                         if (fromRank == rank) {
                             description.add(getText("entry.revoke",
                                     "perm", permName,
-                                    "rank", rank.getTag(res.getVillage().getEmpire())
+                                    "rank", rank.getTag(res.getSettlement().getEmpire())
                             ));
                         }
                     } else {
                         description.add(getText("entry.grant",
                                 "perm", permName,
-                                "rank", rank.getTag(res.getVillage().getEmpire())
+                                "rank", rank.getTag(res.getSettlement().getEmpire())
                         ));
                     }
                 }
@@ -123,38 +123,38 @@ public class RankPermsGUI extends SettlementsGUI {
                 text.add(getText("entry.title",
                         "color", color.toString(),
                         "perm", permName,
-                        "rank", rank.getTag(res.getVillage().getEmpire()),
+                        "rank", rank.getTag(res.getSettlement().getEmpire()),
                         "description", Message.orElse("command." + perm + ".permission.description",
                                 Message.get("command." + perm + ".description")).getText()
                 ));
                 text.addAll(description);
                 return new StaticGuiElement('g', ItemUtils.toIcon(item), click -> {
-                    if (res.hasVillage() && res.getEmpireRank().above(rank)) {
+                    if (res.hasSettlement() && res.getEmpireRank().above(rank)) {
                         if (click.getType() != ClickType.MIDDLE) {
-                            if (res.hasPermission("village.perms.set") && res.hasPermission(perm)) {
-                                Optional<Boolean> currentValue = res.getVillage().getEmpire()
+                            if (res.hasPermission("settlement.perms.set") && res.hasPermission(perm)) {
+                                Optional<Boolean> currentValue = res.getSettlement().getEmpire()
                                         .getEffectivePermissionValue(rank, perm);
                                 EmpireRank currentFromRank = rank;
                                 if (currentValue.orElse(false)) {
                                     for (EmpireRank r : rank.getInheritedRanks()) {
-                                        if (res.getVillage().getEmpire().getEffectivePermissionValue(r, perm)
+                                        if (res.getSettlement().getEmpire().getEffectivePermissionValue(r, perm)
                                                 .orElse(false)) {
                                             currentFromRank = r;
                                         }
                                     }
                                 }
                                 if (!currentValue.orElse(false) || currentFromRank == rank) {
-                                    if (res.getVillage().getEmpire()
+                                    if (res.getSettlement().getEmpire()
                                             .setPermission(rank, perm, !currentValue.orElse(false))) {
-                                        Utils.runAsync(() -> DatabaseManager.getInstance().save(res.getVillage().getEmpire()));
+                                        Utils.runAsync(() -> DatabaseManager.getInstance().save(res.getSettlement().getEmpire()));
                                         gui.draw();
                                     }
                                 }
                             }
                         } else {
                             if (res.hasPermission("empire.perms.unset")) {
-                                if (res.getVillage().getEmpire().setDefaultPermission(rank, perm)) {
-                                    Utils.runAsync(() -> DatabaseManager.getInstance().save(res.getVillage().getEmpire()));
+                                if (res.getSettlement().getEmpire().setDefaultPermission(rank, perm)) {
+                                    Utils.runAsync(() -> DatabaseManager.getInstance().save(res.getSettlement().getEmpire()));
                                     gui.draw();
                                 }
                             }

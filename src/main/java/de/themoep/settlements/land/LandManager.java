@@ -32,7 +32,7 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.WorldUtils;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.village.Village;
+import de.themoep.settlements.village.Settlement;
 import de.themoep.settlements.world.SimpleBlockLocation;
 import de.themoep.settlements.world.SimpleChunkLocation;
 import de.themoep.settlements.world.SimpleLocation;
@@ -49,7 +49,7 @@ public class LandManager {
     private final int nearbyRadius;
     private Table<String, String, OwnedLand> landTable = HashBasedTable.create();
     private Multimap<String, SimpleChunkLocation> nearbyTable = MultimapBuilder.hashKeys().hashSetValues().build();
-    private Multimap<IdObject, OwnedLand> villageLands = MultimapBuilder.hashKeys().hashSetValues().build();
+    private Multimap<IdObject, OwnedLand> settlementLands = MultimapBuilder.hashKeys().hashSetValues().build();
     private Multimap<UUID, OwnedLand> playerPlots = MultimapBuilder.hashKeys().hashSetValues().build();
     private Multimap<UUID, OwnedLand> linkedPlots = MultimapBuilder.hashKeys().hashSetValues().build();
 
@@ -58,7 +58,7 @@ public class LandManager {
         for (OwnedLand land : DatabaseManager.getInstance().getAllLand()) {
             cacheLand(land);
         }
-        SettlementsPlugin.logDebug("Loaded LandManager with " + villageLands.size() + " lands, " + playerPlots.size() + " player plots and " + linkedPlots.size() + " linked plots");
+        SettlementsPlugin.logDebug("Loaded LandManager with " + settlementLands.size() + " lands, " + playerPlots.size() + " player plots and " + linkedPlots.size() + " linked plots");
 
     }
 
@@ -71,8 +71,8 @@ public class LandManager {
 
     private void cacheLand(OwnedLand land) {
         landTable.put(land.getWorldName(), land.getSimpleKey(), land);
-        if (land.getLandOwner() instanceof Village) {
-            villageLands.put(land.getLandOwner().getId(), land);
+        if (land.getLandOwner() instanceof Settlement) {
+            settlementLands.put(land.getLandOwner().getId(), land);
             if (nearbyRadius > 0) {
                 nearbyTable.removeAll(land.getKey());
                 SimpleChunkLocation landLocation = land.getLocation().copy();
@@ -93,28 +93,28 @@ public class LandManager {
         }
     }
 
-    public void changeOwner(Village village, Village newOwner) {
-        Collection<OwnedLand> lands = getClaimedLand(village);
-        villageLands.removeAll(village.getId());
+    public void changeOwner(Settlement settlement, Settlement newOwner) {
+        Collection<OwnedLand> lands = getClaimedLand(settlement);
+        settlementLands.removeAll(settlement.getId());
         for (OwnedLand land : lands) {
             land.setLandOwner(newOwner);
-            villageLands.put(newOwner.getId(), land);
+            settlementLands.put(newOwner.getId(), land);
         }
         DatabaseManager.getInstance().saveLand(lands.toArray(new OwnedLand[0]));
     }
 
-    public OwnedLand claimLand(SimpleChunkLocation chunk, Location location, Village village) {
-        OwnedLand land = new OwnedLand(village, chunk);
-        if (this.getClaimedLandSize(village) == 0) {
+    public OwnedLand claimLand(SimpleChunkLocation chunk, Location location, Settlement settlement) {
+        OwnedLand land = new OwnedLand(settlement, chunk);
+        if (this.getClaimedLandSize(settlement) == 0) {
             SimpleLocation home = new SimpleLocation(location);
             if (chunk.contains(home)) {
-                village.setHome(location);
+                settlement.setHome(location);
             } else {
-                village.setHome(chunk.getCenterBukkitLocation());
+                settlement.setHome(chunk.getCenterBukkitLocation());
             }
-            DatabaseManager.getInstance().saveSettlement(village);
+            DatabaseManager.getInstance().saveSettlement(settlement);
         }
-        SettlementsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + land.getKey() + " was claimed by " + village.getName() + "");
+        SettlementsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + land.getKey() + " was claimed by " + settlement.getName() + "");
         cacheLand(land);
         return land;
     }
@@ -192,7 +192,7 @@ public class LandManager {
     }
 
     public void unclaimLand(OwnedLand... lands) {
-        Set<Village> saveVillages = new HashSet<>();
+        Set<Settlement> saveSettlements = new HashSet<>();
         Set<Portal> portals = new HashSet<>();
         for (OwnedLand land : lands) {
             if (land.getLandOwner() == null) {
@@ -202,11 +202,11 @@ public class LandManager {
                 land.getLandOwner().setHome((SimpleLocation) null);
             }
             landTable.remove(land.getWorldName(), land.getSimpleKey());
-            if (land.getLandOwner() instanceof Village) {
-                villageLands.remove(land.getLandOwner().getId(), land);
+            if (land.getLandOwner() instanceof Settlement) {
+                settlementLands.remove(land.getLandOwner().getId(), land);
                 if (land.isOutpost()) {
-                    if (((Village) land.getLandOwner()).getOutpostHomes().remove(land.getOutpostName().toLowerCase()) != null) {
-                        saveVillages.add((Village) land.getLandOwner());
+                    if (((Settlement) land.getLandOwner()).getOutpostHomes().remove(land.getOutpostName().toLowerCase()) != null) {
+                        saveSettlements.add((Settlement) land.getLandOwner());
                     }
                 }
             }
@@ -235,24 +235,24 @@ public class LandManager {
                 removeLocks(lands);
             }
             DatabaseManager.getInstance().unclaimLand(lands);
-            DatabaseManager.getInstance().saveVillages(saveVillages);
+            DatabaseManager.getInstance().saveSettlements(saveSettlements);
         });
     }
 
-    public void unclaimLand(Village village) {
+    public void unclaimLand(Settlement settlement) {
         Utils.runSync(() -> {
-            List<OwnedLand> claims = new ArrayList<>(villageLands.get(village.getId()));
+            List<OwnedLand> claims = new ArrayList<>(settlementLands.get(settlement.getId()));
             for (OwnedLand claim : claims) {
                 removeLink(claim);
                 landTable.remove(claim.getWorld(), claim.getSimpleKey());
-                SettlementsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + claim.getKey() + " owned by " + village.getName() + " was unclaimed");
+                SettlementsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + claim.getKey() + " owned by " + settlement.getName() + " was unclaimed");
             }
-            villageLands.removeAll(village.getId());
+            settlementLands.removeAll(settlement.getId());
             if (Config.Lock.Unclaim.REMOVE) {
                 removeLocks(claims);
             }
         });
-        Utils.runAsync(() -> DatabaseManager.getInstance().unclaimLand(village));
+        Utils.runAsync(() -> DatabaseManager.getInstance().unclaimLand(settlement));
     }
 
     public boolean removeLink(OwnedLand land) {
@@ -325,8 +325,8 @@ public class LandManager {
         saveLand(land);
     }
 
-    public int getClaimedLandSize(Village village) {
-        return villageLands.get(village.getId()).size();
+    public int getClaimedLandSize(Settlement settlement) {
+        return settlementLands.get(settlement.getId()).size();
     }
 
     public Collection<OwnedLand> getWorldLand(String world) {
@@ -334,8 +334,8 @@ public class LandManager {
     }
 
     public Collection<OwnedLand> getClaimedLand(LandOwner owner) {
-        if (owner instanceof Village) {
-            return villageLands.get(owner.getId());
+        if (owner instanceof Settlement) {
+            return settlementLands.get(owner.getId());
         } else if (owner instanceof Empire) {
             return landTable.row(((Empire) owner).getWorldName()).values();
         }
@@ -343,15 +343,15 @@ public class LandManager {
         return Collections.emptySet();
     }
 
-    public OwnedLand claimOutpost(Location location, Village village, String name) {
-        if (!village.removeFromBank(Config.Settlement.Outpost.CREATION_COST)) {
+    public OwnedLand claimOutpost(Location location, Settlement settlement, String name) {
+        if (!settlement.removeFromBank(Config.Settlement.Outpost.CREATION_COST)) {
             return null;
         }
-        OwnedLand land = this.claimLand(new SimpleChunkLocation(location), location, village);
+        OwnedLand land = this.claimLand(new SimpleChunkLocation(location), location, settlement);
         land.setOutpost(name);
         cacheLand(land);
-        village.setOutpostHome(name, location);
-        DatabaseManager.getInstance().saveSettlement(village);
+        settlement.setOutpostHome(name, location);
+        DatabaseManager.getInstance().saveSettlement(settlement);
         DatabaseManager.getInstance().saveLand(land);
         return land;
     }
@@ -444,7 +444,7 @@ public class LandManager {
         if (Config.Settlement.Claiming.Close.Unclaim.GRACE_DAYS < 0) {
             return;
         }
-        Map<LandOwner, Integer> villageUnclaims = new HashMap<>();
+        Map<LandOwner, Integer> settlementUnclaims = new HashMap<>();
         List<OwnedLand> toUnclaim = new ArrayList<>();
         List<OwnedLand> toSave = new ArrayList<>();
         for (OwnedLand land : landTable.values()) {
@@ -452,7 +452,7 @@ public class LandManager {
                 land.setUnclaimIn(land.getUnclaimIn() - 1);
                 if (land.getUnclaimIn() == 0) {
                     toUnclaim.add(land);
-                    villageUnclaims.put(land.getLandOwner(), villageUnclaims.getOrDefault(land.getLandOwner(), 0) + 1);
+                    settlementUnclaims.put(land.getLandOwner(), settlementUnclaims.getOrDefault(land.getLandOwner(), 0) + 1);
                 } else {
                     toSave.add(land);
                 }
@@ -460,18 +460,18 @@ public class LandManager {
         }
         unclaimLand(toUnclaim);
         toUnclaim.clear();
-        for (LandOwner landOwner : villageUnclaims.keySet()) {
-            if (landOwner instanceof Village) {
-                for (OwnedLand land : getClaimedLand((Village) landOwner)) {
+        for (LandOwner landOwner : settlementUnclaims.keySet()) {
+            if (landOwner instanceof Settlement) {
+                for (OwnedLand land : getClaimedLand((Settlement) landOwner)) {
                     if (!isConnected(land)) {
                         toUnclaim.add(land);
-                        villageUnclaims.put(land.getLandOwner(), villageUnclaims.getOrDefault(land.getLandOwner(), 0) + 1);
+                        settlementUnclaims.put(land.getLandOwner(), settlementUnclaims.getOrDefault(land.getLandOwner(), 0) + 1);
                     }
                 }
             }
         }
         unclaimLand(toUnclaim);
-        for (Map.Entry<LandOwner, Integer> e : villageUnclaims.entrySet()) {
+        for (Map.Entry<LandOwner, Integer> e : settlementUnclaims.entrySet()) {
             Message.get("land-unclaim").tell(e.getKey().getOnlineResidents(), "amount", String.valueOf(e.getValue()));
         }
         DatabaseManager.getInstance().saveLand(toSave);
@@ -487,18 +487,18 @@ public class LandManager {
     }
 
     public void checkClaimDistance(LandOwner source, LandOwner oldAlly) {
-        if (Config.Settlement.Claiming.ENEMY_DISTANCE > 0 && (!(source instanceof Village) || !((Village) source).isAllowAllyClaim())) {
-            if (oldAlly instanceof Village) {
-                checkClaimDistance(source, (Village) oldAlly);
+        if (Config.Settlement.Claiming.ENEMY_DISTANCE > 0 && (!(source instanceof Settlement) || !((Settlement) source).isAllowAllyClaim())) {
+            if (oldAlly instanceof Settlement) {
+                checkClaimDistance(source, (Settlement) oldAlly);
             } else if (oldAlly instanceof Empire) {
-                for (Village v : ((Empire) oldAlly).getMembers()) {
+                for (Settlement v : ((Empire) oldAlly).getMembers()) {
                     checkClaimDistance(source, v);
                 }
             }
         }
     }
 
-    private void checkClaimDistance(LandOwner source, Village oldAlly) {
+    private void checkClaimDistance(LandOwner source, Settlement oldAlly) {
         int graceDays = Config.Settlement.Claiming.Close.Unclaim.GRACE_DAYS;
         if (graceDays < 0) {
             return;

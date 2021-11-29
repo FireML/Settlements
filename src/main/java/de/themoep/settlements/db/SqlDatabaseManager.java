@@ -10,14 +10,14 @@ import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.lock.Lock;
 import de.themoep.settlements.portal.Portal;
-import de.themoep.settlements.rank.VillageRank;
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -56,8 +56,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     protected final SettlementsPlugin plugin = SettlementsPlugin.getInstance();
 
     private SaveQueue<Consumer<Connection>> logQueue;
-    private SaveQueue<Village> villageQueue;
-    private SaveQueue<Village> villageMissionDataQueue;
+    private SaveQueue<Settlement> settlementQueue;
+    private SaveQueue<Settlement> settlementissionDataQueue;
     private SaveQueue<Empire> empireQueue;
     private SaveQueue<Resident> residentQueue;
     private SaveQueue<OwnedLand> landQueue;
@@ -74,8 +74,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         int missionQueueWait = Config.Storage.Queue.Missions.WAIT;
 
         logQueue = new SaveQueue<>("log", this, queueSize, queueWait, (conn, consumer) -> consumer.accept(conn));
-        villageQueue = new SaveQueue<>("village", this, queueSize, queueWait, this::saveVillage);
-        villageMissionDataQueue = new SaveQueue<>("village mission data", this, missionQueueSize, missionQueueWait * 20, this::saveMissionData);
+        settlementQueue = new SaveQueue<>("settlement", this, queueSize, queueWait, this::saveSettlement);
+        settlementissionDataQueue = new SaveQueue<>("settlement mission data", this, missionQueueSize, missionQueueWait * 20, this::saveMissionData);
         empireQueue = new SaveQueue<>("empire", this, queueSize, queueWait, this::saveEmpire);
         residentQueue = new SaveQueue<>("resident", this, queueSize, queueWait, this::saveResident);
         landQueue = new SaveQueue<>("land", this, queueSize, queueWait, this::saveLand);
@@ -166,86 +166,86 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public void addNewVillage(Village village) {
+    public void addNewSettlement(Settlement settlement) {
         Utils.catchSync();
-        saveVillage(getConnection(), village);
+        saveSettlement(getConnection(), settlement);
     }
 
     @Override
-    public void saveSettlement(Village village) {
-        villageQueue.add(village.getId(), village);
-        villageQueue.finishAdding();
+    public void saveSettlement(Settlement settlement) {
+        settlementQueue.add(settlement.getId(), settlement);
+        settlementQueue.finishAdding();
     }
 
-    private void saveVillage(Connection conn, Village village) {
+    private void saveSettlement(Connection conn, Settlement settlement) {
         try {
-            if (!save(conn, village, "residents", "permissions", "missiondata").isNull() && !village.getId().isNull()) {
-                updateDataMap(conn, "settlement_vaults", "settlementId", (Integer) village.getId().value(), "content", "amount", village.getVault());
-                updateDataMap(conn, "settlement_outposts", "settlementId", (Integer) village.getId().value(), "name", "", village.getOutpostHomes());
-                updateDataMap(conn, "settlement_uses", "settlementId", (Integer) village.getId().value(), "type", "state",
-                        village.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
-                updateDataMap(conn, "settlement_perks", "settlementId", (Integer) village.getId().value(), "perk", "",
-                        village.getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
-                updateDataMap(conn, "settlement_permissions", "settlementId", (Integer) village.getId().value(), "rank", "permission", village.getRanksPermissions(), "value");
-                updateDataMap(conn, "settlement_titles", "settlementId", (Integer) village.getId().value(), "rank", "title", village.getRankTitles());
-                updateDataMap(conn, "settlement_defaulttitles", "settlementId", (Integer) village.getId().value(), "rank", "title", village.getDefaultRankTitles());
+            if (!save(conn, settlement, "residents", "permissions", "missiondata").isNull() && !settlement.getId().isNull()) {
+                updateDataMap(conn, "settlement_vaults", "settlementId", (Integer) settlement.getId().value(), "content", "amount", settlement.getVault());
+                updateDataMap(conn, "settlement_outposts", "settlementId", (Integer) settlement.getId().value(), "name", "", settlement.getOutpostHomes());
+                updateDataMap(conn, "settlement_uses", "settlementId", (Integer) settlement.getId().value(), "type", "state",
+                        settlement.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
+                updateDataMap(conn, "settlement_perks", "settlementId", (Integer) settlement.getId().value(), "perk", "",
+                        settlement.getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
+                updateDataMap(conn, "settlement_permissions", "settlementId", (Integer) settlement.getId().value(), "rank", "permission", settlement.getRanksPermissions(), "value");
+                updateDataMap(conn, "settlement_titles", "settlementId", (Integer) settlement.getId().value(), "rank", "title", settlement.getRankTitles());
+                updateDataMap(conn, "settlement_defaulttitles", "settlementId", (Integer) settlement.getId().value(), "rank", "title", settlement.getDefaultRankTitles());
             }
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while saving village " + village.getName() + " to database!", e);
+            plugin.getLogger().log(Level.SEVERE, "Error while saving settlement " + settlement.getName() + " to database!", e);
         }
     }
 
     @Override
-    public void saveVillages(Collection<Village> villages) {
-        for (Village village : villages) {
-            villageQueue.add(village.getId(), village);
+    public void saveSettlements(Collection<Settlement> settlements) {
+        for (Settlement settlement : settlements) {
+            settlementQueue.add(settlement.getId(), settlement);
         }
-        villageQueue.finishAdding();
+        settlementQueue.finishAdding();
     }
 
     @Override
-    public void saveMissionData(Village village) {
-        villageMissionDataQueue.add(village.getId(), village);
-        villageMissionDataQueue.finishAdding();
+    public void saveMissionData(Settlement settlement) {
+        settlementissionDataQueue.add(settlement.getId(), settlement);
+        settlementissionDataQueue.finishAdding();
     }
 
     @Override
-    public void saveMissionData(Collection<Village> villages) {
-        for (Village village : villages) {
-            villageMissionDataQueue.add(village.getId(), village);
+    public void saveMissionData(Collection<Settlement> settlements) {
+        for (Settlement settlement : settlements) {
+            settlementissionDataQueue.add(settlement.getId(), settlement);
         }
-        villageMissionDataQueue.finishAdding();
+        settlementissionDataQueue.finishAdding();
     }
 
-    public void saveMissionData(Connection conn, Village village) {
+    public void saveMissionData(Connection conn, Settlement settlement) {
         Utils.catchSync();
         try {
-            updateDataMap(conn, "settlement_missiondata", "settlementId", (Integer) village.getId().value(), "mission", "type", village.getMissionDataMap(), "progress");
+            updateDataMap(conn, "settlement_missiondata", "settlementId", (Integer) settlement.getId().value(), "mission", "type", settlement.getMissionDataMap(), "progress");
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while saving mission data for village " + village.getName() + " to database!", e);
+            plugin.getLogger().log(Level.SEVERE, "Error while saving mission data for settlement " + settlement.getName() + " to database!", e);
         }
     }
 
     @Override
-    public void deleteVillage(Village village) {
+    public void deleteSettlement(Settlement settlement) {
         Utils.catchSync();
-        villageQueue.remove(village.getId(), village);
+        settlementQueue.remove(settlement.getId(), settlement);
         Connection conn = getConnection();
-        if (!village.getId().isNull()) {
+        if (!settlement.getId().isNull()) {
             try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "settlements WHERE id=?")) {
-                sta.setInt(1, (Integer) village.getId().value());
+                sta.setInt(1, (Integer) settlement.getId().value());
                 sta.executeUpdate();
             } catch (SQLException e) {
-                plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + village.getId().value() + "/" + village.getName() + " from database!", e);
+                plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + settlement.getId().value() + "/" + settlement.getName() + " from database!", e);
             } finally {
                 close(conn);
             }
         } else {
             try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "settlements WHERE name=?")) {
-                sta.setString(1, village.getName());
+                sta.setString(1, settlement.getName());
                 sta.executeUpdate();
             } catch (SQLException e) {
-                plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + village.getId().value() + "/" + village.getName() + " from database!", e);
+                plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + settlement.getId().value() + "/" + settlement.getName() + " from database!", e);
             } finally {
                 close(conn);
             }
@@ -283,23 +283,23 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public void unclaimLand(Village village) {
+    public void unclaimLand(Settlement settlement) {
         Utils.catchSync();
-        if (village.getId().value() == null) {
-            plugin.getLogger().log(Level.SEVERE, "Error while trying to delete claims of settlement " + village.getName() + " from database! The village has no ID?");
+        if (settlement.getId().value() == null) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to delete claims of settlement " + settlement.getName() + " from database! The settlement has no ID?");
             return;
         }
 
-        for (OwnedLand land : LandManager.getInstance().getClaimedLand(village)) {
+        for (OwnedLand land : LandManager.getInstance().getClaimedLand(settlement)) {
             landQueue.remove(land.getId(), land);
         }
 
         Connection conn = getConnection();
         try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE settlementId = ?;")) {
-            sta.setInt(1, (Integer) village.getId().value());
+            sta.setInt(1, (Integer) settlement.getId().value());
             sta.executeUpdate();
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while trying to delete claims of settlement " + village.getName() + " from database! ", e);
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to delete claims of settlement " + settlement.getName() + " from database! ", e);
         } finally {
             close(conn);
         }
@@ -404,19 +404,19 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public Collection<Village> getAllSettlements() {
+    public Collection<Settlement> getAllSettlements() {
         Utils.catchSync();
         String sql = "SELECT s.*, r.uuid AS chief FROM " + tablePrefix + "settlements AS s LEFT JOIN " + tablePrefix + "residents AS r ON s.chiefId = r.id;";
         Connection conn = getConnection();
         try (ResultSet rs = conn.createStatement().executeQuery(sql)) {
-            List<Village> villages = new ArrayList<>();
+            List<Settlement> settlements = new ArrayList<>();
             while (rs.next()) {
-                Village village = createVillage(conn, rs);
-                if (village != null) {
-                    villages.add(village);
+                Settlement settlement = createSettlement(conn, rs);
+                if (settlement != null) {
+                    settlements.add(settlement);
                 }
             }
-            return villages;
+            return settlements;
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to get all settlements from database!", e);
         } finally {
@@ -784,18 +784,18 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public void log(Empire empire, Village village, Resident resident, String action, Map<String, Long> values) {
+    public void log(Empire empire, Settlement settlement, Resident resident, String action, Map<String, Long> values) {
         if (values.isEmpty()
-                || (village != null && village.getId().isNull())
+                || (settlement != null && settlement.getId().isNull())
                 || (empire != null && empire.getId().isNull())) {
             return;
         }
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        logQueue.add(IdObject.get(timestamp.getTime()), conn -> log(conn, timestamp, empire, village, resident, action, values));
+        logQueue.add(IdObject.get(timestamp.getTime()), conn -> log(conn, timestamp, empire, settlement, resident, action, values));
     }
 
-    private void log(Connection conn, Timestamp timestamp, Empire empire, Village village, Resident resident, String action, Map<String, Long> values) {
+    private void log(Connection conn, Timestamp timestamp, Empire empire, Settlement settlement, Resident resident, String action, Map<String, Long> values) {
         try (PreparedStatement sta = conn.prepareStatement("INSERT INTO " + tablePrefix + "logs " +
                      "(`empireId`, `settlementId`, `residentId`, `action`, `type`, `amount`, `timestamp`) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?);"
@@ -804,7 +804,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             for (Map.Entry<String, Long> value : values.entrySet()) {
                 if (value.getValue() != 0) {
                     sta.setInt(1, empire != null ? (Integer) empire.getId().value() : -1);
-                    sta.setInt(2, village != null ? (Integer) village.getId().value() : -1);
+                    sta.setInt(2, settlement != null ? (Integer) settlement.getId().value() : -1);
                     sta.setInt(3, resident != null && !resident.getId().isNull() ? (Integer) resident.getId().value() : -1);
                     sta.setString(4, action.toLowerCase());
                     sta.setString(5, value.getKey().toLowerCase());
@@ -820,8 +820,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public int getLogPageCount(Village village, Resident resident, LogType type) {
-        return getLogPageCount("settlementId", village.getId(), resident, type);
+    public int getLogPageCount(Settlement settlement, Resident resident, LogType type) {
+        return getLogPageCount("settlementId", settlement.getId(), resident, type);
     }
 
     @Override
@@ -844,7 +844,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 sql += " AND l.type != 'cash' AND l.type != 'claim'";
                 break;
         }
-        if (!resident.getVillageRank().atLeast(VillageRank.getChief())) {
+        if (!resident.getSettlementRank().atLeast(SettlementRank.getChief())) {
             sql += " AND (l.action = 'deposit' OR l.action = 'donate')";
         }
         Connection conn = getConnection();
@@ -863,8 +863,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public List<String[]> getLog(Village village, Resident resident, int page, LogType type) {
-        return getLog("settlementId", village.getId(), resident, page, type);
+    public List<String[]> getLog(Settlement settlement, Resident resident, int page, LogType type) {
+        return getLog("settlementId", settlement.getId(), resident, page, type);
     }
 
     @Override
@@ -874,8 +874,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     @Override
     public void disable() {
-        villageQueue.forceSave();
-        villageMissionDataQueue.forceSave();
+        settlementQueue.forceSave();
+        settlementissionDataQueue.forceSave();
         empireQueue.forceSave();
         residentQueue.forceSave();
         landQueue.forceSave();
@@ -905,7 +905,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 sql += " AND l.type != 'cash' AND l.type != 'claim'";
                 break;
         }
-        if (!resident.getVillageRank().atLeast(VillageRank.getChief())) {
+        if (!resident.getSettlementRank().atLeast(SettlementRank.getChief())) {
             sql += " AND (l.action = 'deposit' OR l.action = 'donate')";
         }
         sql += " ORDER BY l.id DESC LIMIT " + start + "," + Config.ENTRIES_PER_PAGE + ";";
@@ -919,17 +919,17 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                     continue;
                 }
                 boolean hasPlayer = rs.getString("playerId") != null;
-                VillageRank rank = VillageRank.getDefault();
+                SettlementRank rank = SettlementRank.getDefault();
                 if (hasPlayer) {
                     try {
-                        rank = VillageRank.valueOf(rs.getString("playerRank").toUpperCase());
+                        rank = SettlementRank.valueOf(rs.getString("playerRank").toUpperCase());
                     } catch (IllegalArgumentException ignored) {}
                 }
 
-                Village village = null;
-                int villageId = rs.getInt("settlementId");
-                if (villageId > -1) {
-                    village = VillageManager.getInstance().getFromId(IdObject.get(villageId));
+                Settlement settlement = null;
+                int settlementId = rs.getInt("settlementId");
+                if (settlementId > -1) {
+                    settlement = SettlementManager.getInstance().getFromId(IdObject.get(settlementId));
                 }
                 Empire empire = null;
                 int empireId = rs.getInt("empireId");
@@ -938,12 +938,12 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 }
 
                 log.add(new String[] {
-                        "village", village != null ? village.getName() : villageId > -1 ? "id:" + villageId : "",
-                        "villagestate", village != null ? village.getState().getTag() : villageId > -1 ? "Unknown" : "",
+                        "settlement", settlement != null ? settlement.getName() : settlementId > -1 ? "id:" + settlementId : "",
+                        "settlementstate", settlement != null ? settlement.getState().getTag() : settlementId > -1 ? "Unknown" : "",
                         "empire", empire != null ? empire.getName() : empireId > -1 ? "id:" + empireId : "",
                         "name", hasPlayer ? rs.getString("playerName") : "",
                         "uuid", hasPlayer ? rs.getString("playerId") : "",
-                        "rank", hasPlayer ? rank.getTag(village) : "",
+                        "rank", hasPlayer ? rank.getTag(settlement) : "",
                         "title", hasPlayer ? rs.getString("playerTitle") : "",
                         "action", rs.getString("action") != null ? rs.getString("action") : "",
                         "type", rs.getString("type") != null ? rs.getString("type") : "?",
@@ -1013,7 +1013,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         return Empire.deserialize(map);
     }
 
-    private Village createVillage(Connection conn, ResultSet rs) throws SQLException {
+    private Settlement createSettlement(Connection conn, ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         Map<String, Object> map = toMap(rs);
 
@@ -1081,7 +1081,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         map.put("titles", rankTitles);
 
 
-        return Village.deserialize(map);
+        return Settlement.deserialize(map);
     }
 
     private Resident createResident(Connection conn, ResultSet rs) throws SQLException {

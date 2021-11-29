@@ -33,7 +33,7 @@ public class TitleGUI extends SettlementsGUI {
         super("empire.title");
         this.resident = resident;
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title",
-                "state", resident.hasEmpire() ? resident.getVillage().getEmpire().getStateTag() : "",
+                "state", resident.hasEmpire() ? resident.getSettlement().getEmpire().getStateTag() : "",
                 "title", resident.getEmpireTitle()
         ), SETUP);
         gui.setCloseAction(close -> false);
@@ -43,24 +43,24 @@ public class TitleGUI extends SettlementsGUI {
 
         if (resident.hasEmpire()) {
             EmpireRank rank = resident.getEmpireRank();
-            for (String title : resident.getVillage().getEmpire().getTitles(rank)) {
+            for (String title : resident.getSettlement().getEmpire().getTitles(rank)) {
                 group.addElement(new DynamicGuiElement('g', h -> {
                     ItemStack item = ItemUtils.toIcon(Material.PAPER);
                     List<String> description = new ArrayList<>();
                     description.add(getText("entry.title",
                             "title", title,
-                            "rank", rank.getTag(resident.getVillage().getEmpire())
+                            "rank", rank.getTag(resident.getSettlement().getEmpire())
                     ));
                     if (title.equals(resident.getEmpireTitle())) {
                         ItemUtils.setGlowing(item, true);
                         description.add(getText("entry.current",
                                 "title", title,
-                                "rank", rank.getTag(resident.getVillage().getEmpire())
+                                "rank", rank.getTag(resident.getSettlement().getEmpire())
                         ));
                     } else {
                         description.add(getText("entry.select",
                                 "title", title,
-                                "rank", rank.getTag(resident.getVillage().getEmpire())
+                                "rank", rank.getTag(resident.getSettlement().getEmpire())
                         ));
                     }
                     return new StaticGuiElement('g',
@@ -69,16 +69,16 @@ public class TitleGUI extends SettlementsGUI {
                                 if (resident.hasEmpire() && resident.hasPermission("empire.title") && rank == resident.getEmpireRank() && resident.setEmpireTitle(title)) {
                                     DatabaseManager.getInstance().saveResident(resident);
                                     gui.draw();
-                                    Message message = Message.get("command.empire.title.success." + resident.getVillage().getEmpire().getStateKey() + "." + resident.getEmpireRank().getKey());
+                                    Message message = Message.get("command.empire.title.success." + resident.getSettlement().getEmpire().getStateKey() + "." + resident.getEmpireRank().getKey());
                                     if (!message.exists()) {
                                         message = Message.get("command.empire.title.success.default");
                                     }
-                                    message.tell(resident.getVillage().getEmpire().getOnlineResidents(),
-                                            "rank", resident.getEmpireRank().getTag(resident.getVillage().getEmpire()),
+                                    message.tell(resident.getSettlement().getEmpire().getOnlineResidents(),
+                                            "rank", resident.getEmpireRank().getTag(resident.getSettlement().getEmpire()),
                                             "title", resident.getEmpireTitle(),
                                             "name", resident.getName(),
-                                            "empirename", resident.getVillage().getEmpire().getName(),
-                                            "empirestate", resident.getVillage().getEmpire().getStateTag()
+                                            "empirename", resident.getSettlement().getEmpire().getName(),
+                                            "empirestate", resident.getSettlement().getEmpire().getStateTag()
                                     );
                                 }
                                 return true;

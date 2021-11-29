@@ -17,12 +17,12 @@ import de.themoep.settlements.db.InviteCache;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.land.Use;
-import de.themoep.settlements.rank.VillageRank;
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Utils;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.village.events.SettlementJoinEvent;
 import de.themoep.settlements.world.NamedLocation;
 import org.bukkit.Bukkit;
@@ -53,7 +53,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
 
     private static final String PREFIX = "Settlement";
 
-    private final Village settlement;
+    private final Settlement settlement;
     private String prefix = PREFIX;
 
     public static SettlementTag valueOf(String string) {
@@ -68,7 +68,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
 
         string = string.replaceFirst(PREFIX.toLowerCase(Locale.ROOT) + "@", "");
 
-        Village settlement = VillageManager.getInstance().getFromName(string);
+        Settlement settlement = SettlementManager.getInstance().getFromName(string);
         if (settlement == null) {
             return null;
         }
@@ -78,10 +78,10 @@ public class SettlementTag implements ObjectTag, Adjustable {
 
     public static boolean matches(String arg) {
         arg = arg.replaceFirst(PREFIX.toLowerCase(Locale.ROOT) + "@", "");
-        return VillageManager.getInstance().getFromName(arg) != null;
+        return SettlementManager.getInstance().getFromName(arg) != null;
     }
 
-    public SettlementTag(Village settlement) {
+    public SettlementTag(Settlement settlement) {
         this.settlement = settlement;
     }
 
@@ -120,7 +120,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         return identify();
     }
 
-    public Village getSettlement() {
+    public Settlement getSettlement() {
         return settlement;
     }
 
@@ -375,8 +375,8 @@ public class SettlementTag implements ObjectTag, Adjustable {
             }
 
             Utils.callEvent(new SettlementJoinEvent(settlement, resident));
-            resident.setVillage(settlement);
-            resident.setVillageRank(VillageRank.getDefault());
+            resident.setSettlement(settlement);
+            resident.setSettlementRank(SettlementRank.getDefault());
             resident.addChannel(ChatChannel.SETTLEMENT);
             InviteCache.getPendingVillageInvites().remove(resident.getUUID(), settlement.getId());
             DatabaseManager.getInstance().saveResident(resident);
@@ -401,7 +401,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
                 return;
             }
 
-            resident.leaveVillage();
+            resident.leaveSettlement();
             return;
         }
     }

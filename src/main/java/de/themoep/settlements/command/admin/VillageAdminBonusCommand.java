@@ -2,8 +2,8 @@ package de.themoep.settlements.command.admin;
 
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
@@ -15,7 +15,7 @@ import org.bukkit.command.CommandSender;
 public class VillageAdminBonusCommand extends SubCommand {
     public VillageAdminBonusCommand(SubCommand parent) {
         super(parent, "bonus add|set|remove <player>|s:<settlement>|e:<empire> <amount>", "bonusclaims");
-        setPermission("kingdoms.admin.command.bonus");
+        setPermission("settlements.admin.command.bonus");
     }
 
     @Override
@@ -36,20 +36,20 @@ public class VillageAdminBonusCommand extends SubCommand {
             getError("not-a-number").tell(sender, "input", args[2]);
             return false;
         }
-        if (args[1].startsWith("village:") || args[1].startsWith("v:") || args[1].startsWith("settlement:") || args[1].startsWith("s:")) {
+        if ( args[1].startsWith("settlement:") || args[1].startsWith("s:")) {
             String name = args[1].split(":")[1];
-            Village village = VillageManager.getInstance().getFromName(name);
-            if (village != null) {
-                if (operation.apply(village, amount)) {
+            Settlement settlement = SettlementManager.getInstance().getFromName(name);
+            if (settlement != null) {
+                if (operation.apply(settlement, amount)) {
                     getMessage("success").tell(sender,
                             "operation", operation.name().toLowerCase(),
                             "amount", String.valueOf(amount),
-                            "name", village.getName()
+                            "name", settlement.getName()
                     );
-                    DatabaseManager.getInstance().saveSettlement(village);
+                    DatabaseManager.getInstance().saveSettlement(settlement);
                 }
             } else {
-                getError("village-doesnt-exist").tell(sender, "name", name);
+                getError("settlement-doesnt-exist").tell(sender, "name", name);
             }
         } else if (args[1].startsWith("empire:") || args[1].startsWith("e:")) {
             String name = args[1].split(":")[1];

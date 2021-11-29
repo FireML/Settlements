@@ -6,7 +6,7 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
-import de.themoep.settlements.rank.VillageRank;
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.Message;
 
 import java.util.UUID;
@@ -26,16 +26,16 @@ public class EmpireDisbandCommand extends EmpireSubCommand {
             getMessage("confirm").tell(res, "command", base + " " + alias + " confirm");
         } else {
             confirm.invalidate(res.getUUID());
-            getMessage("success").tell(res.getVillage().getEmpire().getOnlineResidents(),
+            getMessage("success").tell(res.getSettlement().getEmpire().getOnlineResidents(),
                     "chief", res.getName(),
-                    "chiefrank", VillageRank.getChief().getTag(res.getVillage()),
-                    "chieftitle", res.getVillageTitle(),
+                    "chiefrank", SettlementRank.getChief().getTag(res.getSettlement()),
+                    "chieftitle", res.getSettlementTitle(),
                     "chiefdisplaytitle", res.getDisplayTitle(),
-                    "capital", res.getVillage().getName(),
-                    "capitalstate", res.getVillage().getState().getTag()
+                    "capital", res.getSettlement().getName(),
+                    "capitalstate", res.getSettlement().getState().getTag()
             );
-            Empire empire = res.getVillage().getEmpire();
-            EmpireManager.getInstance().deleteEmpire(res.getVillage().getEmpire());
+            Empire empire = res.getSettlement().getEmpire();
+            EmpireManager.getInstance().deleteEmpire(res.getSettlement().getEmpire());
             Message.get("broadcast.empire-deletion").broadcast("name", empire.getName());
         }
         return true;

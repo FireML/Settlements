@@ -6,7 +6,7 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
-import de.themoep.settlements.village.Village;
+import de.themoep.settlements.village.Settlement;
 import io.papermc.lib.PaperLib;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
@@ -113,12 +113,12 @@ public class Utils {
         return ConfigManager.getInstance().getConfig().getBoolean("modes." + type + "." + mode.getKey(), mode.getDefault());
     }
 
-    public static boolean playerHasInvite(UUID playerId, Village joinVillage) {
-        return InviteCache.getPendingVillageInvites().containsKey(playerId) && InviteCache.getPendingVillageInvites().get(playerId).contains(joinVillage.getId());
+    public static boolean playerHasInvite(UUID playerId, Settlement joinSettlement) {
+        return InviteCache.getPendingVillageInvites().containsKey(playerId) && InviteCache.getPendingVillageInvites().get(playerId).contains(joinSettlement.getId());
     }
 
-    public static boolean villageHasInvite(Village village, Empire joinEmpire) {
-        return InviteCache.getPendingEmpireInvites().containsKey(village.getId()) && InviteCache.getPendingEmpireInvites().get(village.getId()).contains(joinEmpire.getId());
+    public static boolean villageHasInvite(Settlement settlement, Empire joinEmpire) {
+        return InviteCache.getPendingEmpireInvites().containsKey(settlement.getId()) && InviteCache.getPendingEmpireInvites().get(settlement.getId()).contains(joinEmpire.getId());
     }
 
     public static int getMaxDrunkeness(ChatChannel channel) {
@@ -423,8 +423,8 @@ public class Utils {
      * @return false if teleport occurred instantly and no wait task was started
      */
     public static boolean teleport(ConfigMessages messages, Player player, String type, Runnable runnable) {
-        boolean bypassDelay = player.hasPermission("kingdoms.bypass.teleport-delay");
-        if (bypassDelay && !player.hasPermission("kingdoms.bypass.teleport-cooldown")) {
+        boolean bypassDelay = player.hasPermission("settlements.bypass.teleport-delay");
+        if (bypassDelay && !player.hasPermission("settlements.bypass.teleport-cooldown")) {
             long cooldown = TELEPORT_COOLDOWNS.getOrDefault(player.getUniqueId(), 0L)
                     + Utils.getTeleportCooldown(type) * 1000
                     - System.currentTimeMillis();

@@ -21,9 +21,9 @@ public class EmpireUseCommand extends EmpireSubCommand {
                 try {
                     BuildState state = BuildState.valueOf(String.join("_", args).toUpperCase(), BuildState.AppliesTo.EMPIRE);
                     for (UseFlag u : UseFlagManager.getInstance().getUseFlags()) {
-                        res.getVillage().getEmpire().setUseState(u, state);
+                        res.getSettlement().getEmpire().setUseState(u, state);
                     }
-                    DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire());
+                    DatabaseManager.getInstance().saveEmpire(res.getSettlement().getEmpire());
                     getMessage("success-all").tell(res, "state", state.getTag());
                 } catch (IllegalArgumentException e) {
                     getMessage("states").tell(res, "states", BuildState.values(BuildState.AppliesTo.EMPIRE).stream().map(NameTag::humanizedName).collect(Collectors.joining(", ")));
@@ -39,15 +39,15 @@ public class EmpireUseCommand extends EmpireSubCommand {
         if (args.length < 2) {
             new PermsGUI(
                     "empire",
-                    res.getVillage().getEmpire(),
+                    res.getSettlement().getEmpire(),
                     () -> res.hasEmpire() && res.hasPermission(getPermission())
             ).open(res.getPlayer());
         } else {
             UseFlag useFlag = UseFlagManager.getInstance().get(args[0]);
             if (useFlag != null) {
                 BuildState state = BuildState.valueOf(Arrays.stream(args).skip(1).collect(Collectors.joining("_")).toUpperCase(), BuildState.AppliesTo.EMPIRE);
-                res.getVillage().getEmpire().setUseState(useFlag, state);
-                DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire());
+                res.getSettlement().getEmpire().setUseState(useFlag, state);
+                DatabaseManager.getInstance().saveEmpire(res.getSettlement().getEmpire());
                 getMessage("success").tell(res, "flag", useFlag.name(), "state", state.getTag());
             } else {
                 getMessage("flags").tell(res, "flags", UseFlagManager.getInstance().getUseFlags().stream().map(u -> u.name().toLowerCase()).collect(Collectors.joining(", ")));

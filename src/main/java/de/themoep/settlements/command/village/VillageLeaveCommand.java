@@ -20,13 +20,13 @@ public class VillageLeaveCommand extends VillageSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        if (resident.getVillage().isChief(resident)) {
+        if (resident.getSettlement().isChief(resident)) {
             getMessage("cant-leave-own").tell(resident);
         } else if (confirm.getIfPresent(resident.getUUID()) != null) {
             confirm.invalidate(resident.getUUID());
             getMessage("success").tell(resident);
-            getMessage("alert").tell(resident.getVillage().getOnlineResidents(), "player", resident.getName());
-            resident.leaveVillage();
+            getMessage("alert").tell(resident.getSettlement().getOnlineResidents(), "player", resident.getName());
+            resident.leaveSettlement();
         } else {
             confirm.put(resident.getUUID(), System.currentTimeMillis());
             getMessage("confirm").tell(resident, "time", String.valueOf(Config.COMMAND_CONFIRM_TIME));

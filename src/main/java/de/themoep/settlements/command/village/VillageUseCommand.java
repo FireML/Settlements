@@ -21,9 +21,9 @@ public class VillageUseCommand extends VillageSubCommand {
                 try {
                     BuildState state = BuildState.valueOf(String.join("_", args).toUpperCase(), BuildState.AppliesTo.SETTLEMENT);
                     for (UseFlag u : UseFlagManager.getInstance().getUseFlags()) {
-                        res.getVillage().setUseState(u, state);
+                        res.getSettlement().setUseState(u, state);
                     }
-                    DatabaseManager.getInstance().saveSettlement(res.getVillage());
+                    DatabaseManager.getInstance().saveSettlement(res.getSettlement());
                     getMessage("success-all").tell(res, "state", state.getTag());
                 } catch (IllegalArgumentException e) {
                     getMessage("states").tell(res, "states", BuildState.values(BuildState.AppliesTo.SETTLEMENT).stream().map(NameTag::humanizedName).collect(Collectors.joining(", ")));
@@ -39,15 +39,15 @@ public class VillageUseCommand extends VillageSubCommand {
         if (args.length < 2) {
             new PermsGUI(
                     "settlement",
-                    res.getVillage(),
-                    () -> res.hasVillage() && res.hasPermission(getPermission())
+                    res.getSettlement(),
+                    () -> res.hasSettlement() && res.hasPermission(getPermission())
             ).open(res.getPlayer());
         } else {
             UseFlag useFlag = UseFlagManager.getInstance().get(args[0]);
             if (useFlag != null) {
                 BuildState state = BuildState.valueOf(Arrays.stream(args).skip(1).collect(Collectors.joining("_")).toUpperCase(), BuildState.AppliesTo.SETTLEMENT);
-                res.getVillage().setUseState(useFlag, state);
-                DatabaseManager.getInstance().saveSettlement(res.getVillage());
+                res.getSettlement().setUseState(useFlag, state);
+                DatabaseManager.getInstance().saveSettlement(res.getSettlement());
                 getMessage("success").tell(res, "flag", useFlag.name(), "state", state.getTag());
             } else {
                 getMessage("flags").tell(res, "flags", UseFlagManager.getInstance().getUseFlags().stream().map(u -> u.name().toLowerCase()).collect(Collectors.joining(", ")));

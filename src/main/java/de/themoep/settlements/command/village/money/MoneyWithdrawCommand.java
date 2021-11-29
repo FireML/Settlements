@@ -23,15 +23,15 @@ public class MoneyWithdrawCommand extends VillageSubCommand {
             if (withdrewInit <= 0) {
                 return false;
             }
-            if (withdrewInit <= resident.getVillage().getBank()) {
+            if (withdrewInit <= resident.getSettlement().getBank()) {
                 EconomyResponse r = SettlementsPlugin.getInstance().getEconomy().depositPlayer(resident.getPlayer(), (double) withdrewInit);
                 if (r.transactionSuccess()) {
-                    resident.getVillage().removeFromBank(withdrewInit);
-                    DatabaseManager.getInstance().saveSettlement(resident.getVillage());
-                    Utils.runAsync(() -> DatabaseManager.getInstance().logWithdraw(resident.getVillage(), resident, withdrewInit));
-                    getMessage("withdrawn").tell(resident.getVillage().getOnlineResidents(),
-                            "rank", resident.getVillageRank().getTag(resident.getVillage()),
-                            "title", resident.getVillageTitle(),
+                    resident.getSettlement().removeFromBank(withdrewInit);
+                    DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
+                    Utils.runAsync(() -> DatabaseManager.getInstance().logWithdraw(resident.getSettlement(), resident, withdrewInit));
+                    getMessage("withdrawn").tell(resident.getSettlement().getOnlineResidents(),
+                            "rank", resident.getSettlementRank().getTag(resident.getSettlement()),
+                            "title", resident.getSettlementTitle(),
                             "displaytitle", resident.getDisplayTitle(),
                             "name", resident.getName(),
                             "amount", Utils.CURRENCY_FORMAT.format(withdrewInit));

@@ -146,10 +146,10 @@ public class ResidentTag implements ObjectTag {
         // Returns the settlement that a Resident belongs to.
         // -->
         TagRunnable.ObjectInterface<ResidentTag, SettlementTag> settlementGetter = ((attribute, object) -> {
-            if (!object.getResident().hasVillage()) {
+            if (!object.getResident().hasSettlement()) {
                 return null;
             }
-            return new SettlementTag(object.getResident().getVillage());
+            return new SettlementTag(object.getResident().getSettlement());
         });
         tagProcessor.registerTag(SettlementTag.class, "settlement", settlementGetter);
         tagProcessor.registerTag(SettlementTag.class, "village", settlementGetter);

@@ -85,11 +85,11 @@ public class MissionListener implements Listener {
         Resident resident = ResidentManager.getInstance().getResident(player);
         if (resident.hasEmpire()) {
             boolean save = false;
-            for (MissionData missionData : resident.getVillage().getMissionData()) {
+            for (MissionData missionData : resident.getSettlement().getMissionData()) {
                 if (missionData.getMission() instanceof EmpireMission
                         && ((EmpireMission) missionData.getMission()).onlyInEmpireWorld()
-                        && resident.getVillage().getEmpire().getWorldName() != null
-                        && !player.getWorld().getName().equalsIgnoreCase(resident.getVillage().getEmpire().getWorldName())) {
+                        && resident.getSettlement().getEmpire().getWorldName() != null
+                        && !player.getWorld().getName().equalsIgnoreCase(resident.getSettlement().getEmpire().getWorldName())) {
                     continue;
                 }
                 if (missionData.isFinished()) {
@@ -108,7 +108,7 @@ public class MissionListener implements Listener {
                 }
             }
             if (save) {
-                DatabaseManager.getInstance().saveMissionData(resident.getVillage());
+                DatabaseManager.getInstance().saveMissionData(resident.getSettlement());
             }
         }
     }

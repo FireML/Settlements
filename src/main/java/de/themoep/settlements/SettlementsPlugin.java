@@ -44,9 +44,9 @@ import de.themoep.settlements.utils.adapter.ServerAdapter;
 import de.themoep.settlements.utils.adapter.SpigotAdapter;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageListener;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementListener;
+import de.themoep.settlements.village.SettlementManager;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
@@ -87,8 +87,8 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     private MCTiming pluginTimings;
     private ServerAdapter serverAdapter;
 
-    private List<Village> newlyAbandonedVillages = new ArrayList<>();
-    private List<Village> newlyDeletedVillages = new ArrayList<>();
+    private List<Settlement> newlyAbandonedSettlements = new ArrayList<>();
+    private List<Settlement> newlyDeletedSettlements = new ArrayList<>();
     private List<Empire> newlyAbandonedEmpires = new ArrayList<>();
     private List<Empire> newlyDeletedEmpires = new ArrayList<>();
 
@@ -180,7 +180,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             this.getLandPerks().runTimer();
             registerListener(new CustomEventManager());
             registerListener(new BanishListener());
-            registerListener(new VillageListener());
+            registerListener(new SettlementListener());
             registerListener(new EmpireListener());
             if (Config.Empire.Missions.ENABLED) {
                 registerListener(new MissionListener());
@@ -203,34 +203,34 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             getLogger().log(Level.INFO, "Checking chunk unclaiming...");
             LandManager.getInstance().checkUnclaim();
             getLogger().log(Level.INFO, "Handling settlement taxes and upkeep...");
-            newlyAbandonedVillages.clear();
-            newlyDeletedVillages.clear();
+            newlyAbandonedSettlements.clear();
+            newlyDeletedSettlements.clear();
 
-            for (Village village : new ArrayList<>(VillageManager.getInstance().getSettlements())) {
-                village.doUpkeep();
+            for (Settlement settlement : new ArrayList<>(SettlementManager.getInstance().getSettlements())) {
+                settlement.doUpkeep();
             }
 
-            if (!newlyAbandonedVillages.isEmpty()) {
-                if (newlyAbandonedVillages.size() > 1) {
-                    Message.get("broadcast.villages-abandoned").broadcast("villages", newlyAbandonedVillages.stream()
-                            .map(v -> Message.get("broadcast.villages-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
+            if (!newlyAbandonedSettlements.isEmpty()) {
+                if (newlyAbandonedSettlements.size() > 1) {
+                    Message.get("broadcast.settlements-abandoned").broadcast("settlements", newlyAbandonedSettlements.stream()
+                            .map(v -> Message.get("broadcast.settlements-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
                             .collect(Collectors.joining(", ")));
                 } else {
-                    Message.get("broadcast.village-abandoned").broadcast("state", newlyAbandonedVillages.get(0).getStateTag(), "name", newlyAbandonedVillages.get(0).getName());
+                    Message.get("broadcast.settlement-abandoned").broadcast("state", newlyAbandonedSettlements.get(0).getStateTag(), "name", newlyAbandonedSettlements.get(0).getName());
                 }
             }
-            newlyAbandonedVillages.clear();
+            newlyAbandonedSettlements.clear();
 
-            if (!newlyDeletedVillages.isEmpty()) {
-                if (newlyDeletedVillages.size() > 1) {
-                    Message.get("broadcast.villages-deletion").broadcast("villages", newlyDeletedVillages.stream()
-                            .map(v -> Message.get("broadcast.villages-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
+            if (!newlyDeletedSettlements.isEmpty()) {
+                if (newlyDeletedSettlements.size() > 1) {
+                    Message.get("broadcast.settlements-deletion").broadcast("settlements", newlyDeletedSettlements.stream()
+                            .map(v -> Message.get("broadcast.settlements-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
                             .collect(Collectors.joining(", ")));
                 } else {
-                    Message.get("broadcast.village-deletion").broadcast("state", newlyDeletedVillages.get(0).getStateTag(), "name", newlyDeletedVillages.get(0).getName());
+                    Message.get("broadcast.settlement-deletion").broadcast("state", newlyDeletedSettlements.get(0).getStateTag(), "name", newlyDeletedSettlements.get(0).getName());
                 }
             }
-            newlyDeletedVillages.clear();
+            newlyDeletedSettlements.clear();
 
             getLogger().log(Level.INFO, "Handling empire taxes and upkeep...");
             newlyAbandonedEmpires.clear();
@@ -246,7 +246,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
                             .map(v -> Message.get("broadcast.empires-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
                             .collect(Collectors.joining(", ")));
                 } else {
-                    Message.get("broadcast.village-abandoned").broadcast("state", newlyAbandonedEmpires.get(0).getStateTag(), "name", newlyAbandonedEmpires.get(0).getName());
+                    Message.get("broadcast.empire-abandoned").broadcast("state", newlyAbandonedEmpires.get(0).getStateTag(), "name", newlyAbandonedEmpires.get(0).getName());
                 }
             }
             newlyAbandonedEmpires.clear();
@@ -278,16 +278,16 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     }
 
     public void addNewlyAbandoned(LandOwner landOwner) {
-        if (landOwner instanceof Village) {
-            newlyAbandonedVillages.add((Village) landOwner);
+        if (landOwner instanceof Settlement) {
+            newlyAbandonedSettlements.add((Settlement) landOwner);
         } else if (landOwner instanceof Empire) {
             newlyAbandonedEmpires.add((Empire) landOwner);
         }
     }
 
     public void addNewlyDeleted(LandOwner landOwner) {
-        if (landOwner instanceof Village) {
-            newlyDeletedVillages.add((Village) landOwner);
+        if (landOwner instanceof Settlement) {
+            newlyDeletedSettlements.add((Settlement) landOwner);
         } else if (landOwner instanceof Empire) {
             newlyDeletedEmpires.add((Empire) landOwner);
         }
@@ -320,7 +320,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         DatabaseManager.getInstance();
         RankManager.getInstance();
         EmpireManager.getInstance();
-        VillageManager.getInstance();
+        SettlementManager.getInstance();
         if (!Config.Chat.CHAT_ONLY) {
             LandManager.getInstance();
         }

@@ -3,8 +3,8 @@ package de.themoep.settlements.resident;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.banish.CustomRunnable;
 import de.themoep.settlements.chat.ChatChannel;
@@ -57,7 +57,7 @@ public class ResidentManager {
 
     private boolean keepCached(Resident resident) {
         return !SettlementsPlugin.getInstance().isRunning()
-                || resident.hasVillage()
+                || resident.hasSettlement()
                 || LandManager.getInstance().ownsPlot(resident.getUUID());
     }
 
@@ -159,15 +159,15 @@ public class ResidentManager {
     synchronized public static ResidentManager getInstance() {
         if (instance == null) {
             instance = new ResidentManager();
-            for (Village village : VillageManager.getInstance().getSettlements()) {
-                village.getResidents(); // pre load all residents in a village
+            for (Settlement settlement : SettlementManager.getInstance().getSettlements()) {
+                settlement.getResidents(); // pre load all residents in a settlement
             }
         }
         return instance;
     }
 
-    public boolean doesResidentHaveVillage(Player player) {
-        return this.getResident(player).hasVillage();
+    public boolean doesResidentHaveSettlement(Player player) {
+        return this.getResident(player).hasSettlement();
     }
 
     public boolean doesResidentHaveEmpire(Player player) {

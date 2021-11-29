@@ -1,12 +1,12 @@
 package de.themoep.settlements.perk;
 
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageState;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementState;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class LevelPerk extends Perk {
     private int level;
-    private VillageState state = VillageState.VILLAGE;
+    private SettlementState state = SettlementState.VILLAGE;
 
     public LevelPerk(ConfigurationSection config) throws IllegalArgumentException {
         super(config);
@@ -15,10 +15,10 @@ public class LevelPerk extends Perk {
         } else {
             throw new IllegalArgumentException("Config does not contain level!");
         }
-        this.state = VillageState.valueOf(config.getString("state", state.name()).toUpperCase());
+        this.state = SettlementState.valueOf(config.getString("state", state.name()).toUpperCase());
     }
 
-    public VillageState getState() {
+    public SettlementState getState() {
         return state;
     }
 
@@ -26,7 +26,7 @@ public class LevelPerk extends Perk {
         return level;
     }
 
-    public boolean matchesLevelRequirement(Village village) {
-        return village.getState().above(getState()) || (village.getState() == getState() && village.getLevel() >= getLevel());
+    public boolean matchesLevelRequirement(Settlement settlement) {
+        return settlement.getState().above(getState()) || (settlement.getState() == getState() && settlement.getLevel() >= getLevel());
     }
 }

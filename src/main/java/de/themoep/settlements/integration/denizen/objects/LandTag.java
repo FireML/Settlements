@@ -16,7 +16,7 @@ import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.land.Use;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.village.Village;
+import de.themoep.settlements.village.Settlement;
 import de.themoep.settlements.world.SimpleChunkLocation;
 
 import java.util.Locale;
@@ -140,7 +140,7 @@ public class LandTag implements ObjectTag, Adjustable {
         // Returns whether this land is owned by a settlement.
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_owned_by_settlement",
-                (attribute, object) -> new ElementTag(object.getLand().getLandOwner() instanceof Village));
+                (attribute, object) -> new ElementTag(object.getLand().getLandOwner() instanceof Settlement));
 
         // <--[tag]
         // @attribute <Land.settlement>
@@ -150,8 +150,8 @@ public class LandTag implements ObjectTag, Adjustable {
         // Returns the owning settlement.
         // -->
         tagProcessor.registerTag(SettlementTag.class, "settlement", ((attribute, object) -> {
-            if (object.getLand().getLandOwner() instanceof Village) {
-                return new SettlementTag((Village) object.getLand().getLandOwner());
+            if (object.getLand().getLandOwner() instanceof Settlement) {
+                return new SettlementTag((Settlement) object.getLand().getLandOwner());
             }
             return null;
         }));

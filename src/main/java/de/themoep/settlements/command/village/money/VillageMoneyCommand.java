@@ -15,11 +15,11 @@ public class VillageMoneyCommand extends VillageSubCommand {
     public VillageMoneyCommand(SubCommand parent) {
         super(parent, "bank <deposit|withdraw|balance|history> <amount>", "money");
         setHelpCommand(new HelpCommand(this));
-        getHelpCommand().setDefaultTypeProvider(s -> s instanceof Player && ResidentManager.getInstance().doesResidentHaveVillage((Player) s) ? "resident" : "none");
+        getHelpCommand().setDefaultTypeProvider(s -> s instanceof Player && ResidentManager.getInstance().doesResidentHaveSettlement((Player) s) ? "resident" : "none");
         VillageSubCommand balanceCommand = new VillageSubCommand(this, "balance") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
-                getMessage("balance").tell(resident, "amount", Utils.CURRENCY_FORMAT.format(resident.getVillage().getBank()));
+                getMessage("balance").tell(resident, "amount", Utils.CURRENCY_FORMAT.format(resident.getSettlement().getBank()));
                 return true;
             }
         };

@@ -40,7 +40,7 @@ public class PerksGUI extends SettlementsGUI {
         super("empire.perks");
         this.resident = resident;
 
-        Empire empire = resident.hasEmpire() ? resident.getVillage().getEmpire() : null;
+        Empire empire = resident.hasEmpire() ? resident.getSettlement().getEmpire() : null;
 
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), SETUP);
         gui.setCloseAction(close -> false);
@@ -55,7 +55,7 @@ public class PerksGUI extends SettlementsGUI {
 
             group.addElement(new DynamicGuiElement('g', (h) -> {
                 if (resident.hasEmpire()) {
-                    PerkData perkData = resident.getVillage().getEmpire().getPerkData(perk);
+                    PerkData perkData = resident.getSettlement().getEmpire().getPerkData(perk);
                     List<String> lore = new ArrayList<>();
                     lore.add(getText("entry", "name", perk.getTag()));
                     if (perk.hasEffects()) {
@@ -68,7 +68,7 @@ public class PerksGUI extends SettlementsGUI {
                     }
 
                     if (perk.hasActions()) {
-                        for (String state : perk.getActionStates(resident.getVillage().getEmpire())) {
+                        for (String state : perk.getActionStates(resident.getSettlement().getEmpire())) {
                             lore.add(getText("actions." + state, "name", perk.getTag()));
                         }
                     }
@@ -91,7 +91,7 @@ public class PerksGUI extends SettlementsGUI {
                             itemStack,
                             click -> {
                                 if (resident.hasEmpire() && resident.hasPermission("empire.perks.toggle")) {
-                                    if (resident.getVillage().getEmpire().togglePerk(resident.getPlayer(), perk)) {
+                                    if (resident.getSettlement().getEmpire().togglePerk(resident.getPlayer(), perk)) {
                                         gui.draw();
                                         return true;
                                     }

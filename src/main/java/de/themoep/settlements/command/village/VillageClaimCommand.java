@@ -1,8 +1,8 @@
 package de.themoep.settlements.command.village;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageState;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementState;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.ChatMap;
@@ -39,12 +39,12 @@ public class VillageClaimCommand extends VillageSubCommand {
             res.tell(getError("world-not-claimable"), "world", player.getWorld().getName());
             return true;
         }
-        Village village = res.getVillage();
-        int amountClaimed = LandManager.getInstance().getClaimedLandSize(village);
-        int maxClaimAllowed = village.getMaxClaimableChunks();
+        Settlement settlement = res.getSettlement();
+        int amountClaimed = LandManager.getInstance().getClaimedLandSize(settlement);
+        int maxClaimAllowed = settlement.getMaxClaimableChunks();
         Set<SimpleChunkLocation> toClaim = new LinkedHashSet<>();
         if (args.length == 1) {
-            if (res.hasPermission("kingdoms.command.village.claim.radius")) {
+            if (res.hasPermission("settlements.command.settlement.claim.radius")) {
                 try {
                     int radius = Integer.parseInt(args[0]);
                     int maxRadius = Config.Settlement.Claiming.MAX_RADIUS;
@@ -60,7 +60,7 @@ public class VillageClaimCommand extends VillageSubCommand {
                 }
             }
         } else if (args.length >= 2) {
-            if (res.hasPermission("kingdoms.command.village.claim.coords")) {
+            if (res.hasPermission("settlements.command.settlement.claim.coords")) {
                 try {
                     toClaim.add(new SimpleChunkLocation(player.getWorld().getName(), Integer.parseInt(args[0]), Integer.parseInt(args[1])));
                 } catch (NumberFormatException e) {
@@ -82,7 +82,7 @@ public class VillageClaimCommand extends VillageSubCommand {
             for (SimpleChunkLocation c : toClaim) {
                 for (SimpleChunkLocation chunk : WorldUtils.getChunksAdjacent(c)) {
                     OwnedLand checkLand = LandManager.getInstance().getLand(chunk);
-                    if (checkLand != null && checkLand.isOwnedBy(village)) {
+                    if (checkLand != null && checkLand.isOwnedBy(settlement)) {
                         landAround = true;
                         break;
                     }
@@ -107,7 +107,7 @@ public class VillageClaimCommand extends VillageSubCommand {
                 if (toClaim.size() > 1) {
                     continue;
                 }
-                if (land.getLandOwner().equals(village)) {
+                if (land.getLandOwner().equals(settlement)) {
                     MessageUtils.tell(player, getError("already-own-land"));
                 } else {
                     MessageUtils.tell(player, getError("cant-claim-here"),
@@ -122,10 +122,10 @@ public class VillageClaimCommand extends VillageSubCommand {
                 if (checkLand == null) {
                     continue;
                 }
-                if (!checkLand.isOwnedBy(village) && (
-                        !checkLand.getLandOwner().isAlly(village) || (
-                                !(checkLand.getLandOwner() instanceof Village)
-                                        || !((Village) checkLand.getLandOwner()).isAllowAllyClaim()))) {
+                if (!checkLand.isOwnedBy(settlement) && (
+                        !checkLand.getLandOwner().isAlly(settlement) || (
+                                !(checkLand.getLandOwner() instanceof Settlement)
+                                        || !((Settlement) checkLand.getLandOwner()).isAllowAllyClaim()))) {
                     if (toClaim.size() == 1) {
                         res.tell(getError("claim-too-close"),
                                 "owner", checkLand.getLandOwner().getName(),
@@ -137,20 +137,20 @@ public class VillageClaimCommand extends VillageSubCommand {
                     }
                 }
             }
-            OwnedLand newLand = LandManager.getInstance().claimLand(c, player.getLocation(), village);
-            MessageUtils.tellResidents(village.getOnlineResidents(), getMessage("success"),
+            OwnedLand newLand = LandManager.getInstance().claimLand(c, player.getLocation(), settlement);
+            MessageUtils.tellResidents(settlement.getOnlineResidents(), getMessage("success"),
                     "player", player.getName(),
                     "world", newLand.getWorldName(),
                     "x", String.valueOf(newLand.getX()),
                     "z", String.valueOf(newLand.getZ()));
             if (newLand.containsHome()) {
                 SimpleBlockLocation home = new SimpleBlockLocation(newLand.getLandOwner().getHome());
-                getMessage("home-set").tell(village.getOnlineResidents(),
-                        "rank", res.getVillageRank().getTag(village),
-                        "title", res.getVillageTitle(),
+                getMessage("home-set").tell(settlement.getOnlineResidents(),
+                        "rank", res.getSettlementRank().getTag(settlement),
+                        "title", res.getSettlementTitle(),
                         "displaytitle", res.getDisplayTitle(),
                         "name", player.getName(),
-                        "state", res.getVillage().getState().getTag(),
+                        "state", res.getSettlement().getState().getTag(),
                         "world", home.getWorld(),
                         "x", String.valueOf(home.getX()),
                         "y", String.valueOf(home.getY()),
@@ -160,10 +160,10 @@ public class VillageClaimCommand extends VillageSubCommand {
             amountClaimed++;
         }
         if (!toSave.isEmpty()) {
-            if (village.getState() == VillageState.VILLAGE && village.getLevel() == 1) {
+            if (settlement.getState() == SettlementState.VILLAGE && settlement.getLevel() == 1) {
                 getMessage("new-upkeep").tell(res,
-                        "villageupkeep", String.valueOf(village.getUpkeep()),
-                        "upkeepperclaim", String.valueOf(village.getClaimUpkeep(player.getWorld().getName()))
+                        "settlementupkeep", String.valueOf(settlement.getUpkeep()),
+                        "upkeepperclaim", String.valueOf(settlement.getClaimUpkeep(player.getWorld().getName()))
                 );
             }
             Utils.runAsync(() -> {

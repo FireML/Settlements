@@ -14,7 +14,7 @@ public class EmpireSetHomeCommand extends EmpireSubCommand {
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
-        Empire empire = res.getVillage().getEmpire();
+        Empire empire = res.getSettlement().getEmpire();
         Player player = res.getPlayer();
         if (!player.getWorld().getName().equals(empire.getWorldName())) {
             getError("not-in-empire-world").tell(res);
@@ -24,10 +24,10 @@ public class EmpireSetHomeCommand extends EmpireSubCommand {
         empire.setHome(player.getLocation());
         MessageUtils.tellResidents(empire.getOnlineResidents(), getMessage("success"),
                 "rank", res.getEmpireRank().getTag(),
-                "title", res.getVillageTitle(),
+                "title", res.getSettlementTitle(),
                 "displaytitle", res.getDisplayTitle(),
                 "name", player.getName(),
-                "state", res.getVillage().getState().getTag(),
+                "state", res.getSettlement().getState().getTag(),
                 "world", player.getLocation().getWorld().getName(),
                 "x", String.valueOf(player.getLocation().getBlockX()),
                 "y", String.valueOf(player.getLocation().getBlockY()),

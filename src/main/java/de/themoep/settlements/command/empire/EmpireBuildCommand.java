@@ -16,7 +16,7 @@ public class EmpireBuildCommand extends EmpireSubCommand {
         if (args.length < 1) {
             new BuildGUI(
                     "empire",
-                    res.getVillage().getEmpire(),
+                    res.getSettlement().getEmpire(),
                     () -> res.hasEmpire() && res.hasPermission(getPermission())
             ).open(res.getPlayer());
             return true;
@@ -24,8 +24,8 @@ public class EmpireBuildCommand extends EmpireSubCommand {
 
         try {
             BuildState newState = BuildState.valueOf(args[0].toUpperCase(), BuildState.AppliesTo.EMPIRE);
-            res.getVillage().getEmpire().setBuildState(newState);
-            DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire());
+            res.getSettlement().getEmpire().setBuildState(newState);
+            DatabaseManager.getInstance().saveEmpire(res.getSettlement().getEmpire());
             res.tell(getMessage("success"), "state", newState.getTag());
         } catch (IllegalArgumentException e) {
             res.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base));

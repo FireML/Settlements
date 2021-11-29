@@ -15,11 +15,11 @@ public class EmpireJoinFeeCommand extends EmpireSubCommand {
                 }
                 try {
                     long amount = Long.parseLong(args[0]);
-                    resident.getVillage().getEmpire().setJoinFee(amount);
-                    getMessage("success").tell(resident.getVillage().getEmpire().getOnlineResidents(),
-                            "amount", String.valueOf(resident.getVillage().getEmpire().getJoinFee())
+                    resident.getSettlement().getEmpire().setJoinFee(amount);
+                    getMessage("success").tell(resident.getSettlement().getEmpire().getOnlineResidents(),
+                            "amount", String.valueOf(resident.getSettlement().getEmpire().getJoinFee())
                     );
-                    DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
+                    DatabaseManager.getInstance().saveEmpire(resident.getSettlement().getEmpire());
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(resident, "input", args[0]);
                     return false;
@@ -33,7 +33,7 @@ public class EmpireJoinFeeCommand extends EmpireSubCommand {
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length == 0) {
             getMessage("current").tell(resident,
-                    "amount", String.valueOf(resident.getVillage().getEmpire().getJoinFee())
+                    "amount", String.valueOf(resident.getSettlement().getEmpire().getJoinFee())
             );
             return true;
         }

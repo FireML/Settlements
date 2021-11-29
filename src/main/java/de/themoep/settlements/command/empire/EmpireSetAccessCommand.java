@@ -19,15 +19,15 @@ public class EmpireSetAccessCommand extends EmpireSubCommand {
         }
         try {
             LandAccess access = LandAccess.valueOf(String.join("_", args).toUpperCase());
-            resident.getVillage().getEmpire().setAccess(access);
-            DatabaseManager.getInstance().saveSettlement(resident.getVillage());
+            resident.getSettlement().getEmpire().setAccess(access);
+            DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
             resident.tell(getMessage("success"), "access", access.getTag());
         } catch (IllegalArgumentException e) {
             resident.tell(getMessage("usage.head"),
                     "name", name(),
                     "command", "/" + base + " " + alias,
                     "usage", getUsage(base),
-                    "type", resident.getVillage().getEmpire().getStateTag() + " "
+                    "type", resident.getSettlement().getEmpire().getStateTag() + " "
             );
             for (LandAccess access : LandAccess.values()) {
                 resident.tell(getMessage("usage.entry"),

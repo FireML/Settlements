@@ -22,22 +22,22 @@ public class VillageInviteCommand extends VillageSubCommand {
                 res.tell(getError("player-not-found"), "name", args[0]);
                 return;
             }
-            if (invitedPlayer.hasVillage()) {
-                res.tell(getMessage("already-in-village"), "name", invitedPlayer.getName(), "state", invitedPlayer.getVillage().getState().getTag());
+            if (invitedPlayer.hasSettlement()) {
+                res.tell(getMessage("already-in-settlement"), "name", invitedPlayer.getName(), "state", invitedPlayer.getSettlement().getState().getTag());
                 return;
             }
             Utils.runSync(() -> {
-                InviteCache.getPendingVillageInvites().put(invitedPlayer.getUUID(), res.getVillage().getId());
-                getMessage("received").tell(invitedPlayer, "name", res.getVillage().getName(), "state", res.getVillage().getState().getTag());
+                InviteCache.getPendingVillageInvites().put(invitedPlayer.getUUID(), res.getSettlement().getId());
+                getMessage("received").tell(invitedPlayer, "name", res.getSettlement().getName(), "state", res.getSettlement().getState().getTag());
                 getMessage("joinfee").tell(invitedPlayer,
-                        "name", res.getVillage().getName(),
-                        "state", res.getVillage().getState().getTag(),
-                        "amount", String.valueOf(res.getVillage().getJoinFee()),
-                        "joinfee", String.valueOf(res.getVillage().getJoinFee()),
-                        "tax", String.valueOf(res.getVillage().getTax())
+                        "name", res.getSettlement().getName(),
+                        "state", res.getSettlement().getState().getTag(),
+                        "amount", String.valueOf(res.getSettlement().getJoinFee()),
+                        "joinfee", String.valueOf(res.getSettlement().getJoinFee()),
+                        "tax", String.valueOf(res.getSettlement().getTax())
                 );
             });
-            getMessage("alert").tell(res.getVillage().getOnlineResidents(), "player", invitedPlayer.getName());
+            getMessage("alert").tell(res.getSettlement().getOnlineResidents(), "player", invitedPlayer.getName());
         });
         return true;
     }

@@ -26,12 +26,12 @@ public class PlotBuyCommand extends ResidentSubCommand {
         if (land == null) {
             getError("not-a-claim").tell(res);
         } else if (!(land.isEmbassy() || land.isOwnedBy(res))) {
-            getError("not-your-village").tell(res, "state", land.getLandOwner().getStateTag());
+            getError("not-your-settlement").tell(res, "state", land.getLandOwner().getStateTag());
         } else if (!land.isForSale() || land.getLandOwner().isAbandoned()) {
             getError("not-for-sale").tell(res);
         } else {
             if (land.isEmbassy() && land.isOwnedBy(res)) {
-                getError("cant-buy-embassy").tell(res, "state", res.getVillage().getState().getTag());
+                getError("cant-buy-embassy").tell(res, "state", res.getSettlement().getState().getTag());
                 return true;
             }
             if (land.getTax() > 0) {

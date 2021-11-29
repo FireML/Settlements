@@ -12,7 +12,7 @@ import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.lock.LockProvider;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
-import de.themoep.settlements.rank.VillageRank;
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Pair;
@@ -20,8 +20,8 @@ import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.world.SimpleChunkLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -50,16 +50,16 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
 
         Block block = event.getProtection().getBlock();
 
-        if (resident.hasVillage()) {
+        if (resident.hasSettlement()) {
             OwnedLand land = LandManager.getInstance().getLand(block.getLocation());
             if (land != null) {
-                if (land.isOwnedBy(resident.getVillage())) {
-                    if (resident.hasPermission("kingdoms.command.village.lock.admin")) {
+                if (land.isOwnedBy(resident.getSettlement())) {
+                    if (resident.hasPermission("settlements.command.settlement.lock.admin")) {
                         event.setAccess(Permission.Access.ADMIN);
                         return;
                     }
-                } else if (resident.hasEmpire() && land.isOwnedBy(resident.getVillage().getEmpire())) {
-                    if (resident.hasPermission("kingdoms.command.empire.lock.admin")) {
+                } else if (resident.hasEmpire() && land.isOwnedBy(resident.getSettlement().getEmpire())) {
+                    if (resident.hasPermission("settlements.command.empire.lock.admin")) {
                         event.setAccess(Permission.Access.ADMIN);
                         return;
                     }
@@ -76,20 +76,20 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
             }
             switch (permission.getType()) {
                 case TOWN:
-                    if (resident.hasVillage()) {
+                    if (resident.hasSettlement()) {
                         if (permission.getName().startsWith("empire:") || permission.getName().startsWith("e:")) {
                             Empire empire = EmpireManager.getInstance().getEmpireFromName(permission.getName().split(":")[1]);
-                            if (empire != null && empire.isMember(resident.getVillage())) {
+                            if (empire != null && empire.isMember(resident.getSettlement())) {
                                 access = permission.getAccess();
                             }
                         } else {
-                            Village village;
+                            Settlement settlement;
                             if ("#this".equalsIgnoreCase(permission.getName())) {
-                                village = VillageManager.getInstance().getAt(block.getLocation());
+                                settlement = SettlementManager.getInstance().getAt(block.getLocation());
                             } else {
-                                village = VillageManager.getInstance().getFromName(permission.getName());
+                                settlement = SettlementManager.getInstance().getFromName(permission.getName());
                             }
-                            if (resident.getVillage().equals(village)) {
+                            if (resident.getSettlement().equals(settlement)) {
                                 access = permission.getAccess();
                             }
                         }
@@ -110,22 +110,22 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
                     }
                     break;
                 case GROUP:
-                    if (resident.hasVillage()) {
+                    if (resident.hasSettlement()) {
                         String[] split = permission.getName().split(":");
-                        Village village;
+                        Settlement settlement;
                         String rankName;
 
                         if (split.length == 1) {
                             rankName = split[0];
-                            village = VillageManager.getInstance().getAt(block.getLocation());
+                            settlement = SettlementManager.getInstance().getAt(block.getLocation());
                         } else {
                             rankName = split[1];
-                            village = VillageManager.getInstance().getFromName(split[0]);
+                            settlement = SettlementManager.getInstance().getFromName(split[0]);
                         }
-                        if (resident.getVillage().equals(village)) {
+                        if (resident.getSettlement().equals(settlement)) {
                             try {
-                                VillageRank rank = VillageRank.valueOf(rankName.toUpperCase());
-                                if (resident.getVillageRank().atLeast(rank)) {
+                                SettlementRank rank = SettlementRank.valueOf(rankName.toUpperCase());
+                                if (resident.getSettlementRank().atLeast(rank)) {
                                     access = permission.getAccess();
                                 }
                             } catch (IllegalArgumentException ignored) {
@@ -141,7 +141,7 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
 
     @Override
     public void onRegisterProtection(LWCProtectionRegisterEvent event) {
-        if (!event.getPlayer().hasPermission("kingdoms.bypass.restriction.lwc")) {
+        if (!event.getPlayer().hasPermission("settlements.bypass.restriction.lwc")) {
             Resident res = ResidentManager.getInstance().getResident(event.getPlayer());
             if (Config.Lock.ONLY_IN_CLAIM) {
                 OwnedLand land = LandManager.getInstance().getLand(event.getPlayer().getLocation());

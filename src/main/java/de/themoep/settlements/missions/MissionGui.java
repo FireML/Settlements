@@ -32,7 +32,7 @@ public class MissionGui extends SettlementsGUI {
         gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.ORANGE_BANNER), getText("info")));
 
         GuiElementGroup group = new GuiElementGroup('m');
-        for (MissionData missionData : resident.getVillage().getMissionData()) {
+        for (MissionData missionData : resident.getSettlement().getMissionData()) {
             group.addElement(new DynamicGuiElement('m', who -> {
                 StaticGuiElement element = new StaticGuiElement('m', missionData.getMission().getIcon(), getText("entry",
                         "title", missionData.getMission().getTag(),
@@ -45,7 +45,7 @@ public class MissionGui extends SettlementsGUI {
                         "action", missionData.isFinished()
                                 ? getText("finished")
                                 : (missionData.getMission() instanceof EmpireMission && ((EmpireMission) missionData.getMission()).onlyInEmpireWorld()
-                                        ? getText("only-in-empire", "empire", resident.getVillage().getEmpire().getName())
+                                        ? getText("only-in-empire", "empire", resident.getSettlement().getEmpire().getName())
                                         : getText("types." + missionData.getMission().getType().getKey())
                                 )
                 ));

@@ -29,10 +29,10 @@ public class EmpireTitlesCommand extends EmpireSubCommand {
             public boolean run(Resident res, String base, String alias, String... args) {
                 getMessage("head").tell(res);
                 for (EmpireRank rank : EmpireRank.values()) {
-                    String defaultTitle = res.getVillage().getEmpire().getDefaultTitle(rank);
+                    String defaultTitle = res.getSettlement().getEmpire().getDefaultTitle(rank);
                     getMessage("rank").tell(res,
                             "rank", rank.getTag(),
-                            "titles", res.getVillage().getEmpire().getTitles(rank).stream()
+                            "titles", res.getSettlement().getEmpire().getTitles(rank).stream()
                                     .map(t -> getText(defaultTitle.equals(t) ? "default-entry" : "entry", "title", t))
                                     .collect(Collectors.joining(getText("separator")))
                     );
@@ -50,7 +50,7 @@ public class EmpireTitlesCommand extends EmpireSubCommand {
                         getError("invalid-rank").tell(res, "rank", args[0]);
                     } else if (rank.above(res.getEmpireRank())) {
                         getError("cant-edit-higher").tell(res, "rank", res.getEmpireRank().getTag());
-                    } else if (res.getVillage().getEmpire().getTitles(rank).size() >= Config.Empire.TITLES_PER_RANK) {
+                    } else if (res.getSettlement().getEmpire().getTitles(rank).size() >= Config.Empire.TITLES_PER_RANK) {
                         getError("too-many").tell(res,
                                 "rank", res.getEmpireRank().getTag(),
                                 "max", String.valueOf(Config.Empire.TITLES_PER_RANK)
@@ -61,7 +61,7 @@ public class EmpireTitlesCommand extends EmpireSubCommand {
                         getError("invalid-characters").tell(res, "input", args[1]);
                     } else if (Utils.containsAnyCurses(args[1])) {
                         getError("prohibited-words").tell(res, "input", args[1]);
-                    } else if (res.getVillage().getEmpire().addTitle(rank, args[1])) {
+                    } else if (res.getSettlement().getEmpire().addTitle(rank, args[1])) {
                         getMessage("success").tell(res, "title", args[1], "rank", rank.getTag());
                     } else {
                         getError("already-exists").tell(res, "input", args[1], "rank", rank.getTag());
@@ -84,14 +84,14 @@ public class EmpireTitlesCommand extends EmpireSubCommand {
                         return true;
                     }
 
-                    String title = res.getVillage().getEmpire().getTitle(rank, args[1]);
+                    String title = res.getSettlement().getEmpire().getTitle(rank, args[1]);
                     if (title != null) {
                         // title exists, change order
-                        res.getVillage().getEmpire().setDefaultTitle(rank, title);
+                        res.getSettlement().getEmpire().setDefaultTitle(rank, title);
                         getMessage("success").tell(res, "title", args[1], "rank", rank.getTag());
                     } else {
                         // title doesn't exist, add it
-                        if (res.getVillage().getEmpire().getTitles(rank).size() >= Config.Empire.TITLES_PER_RANK) {
+                        if (res.getSettlement().getEmpire().getTitles(rank).size() >= Config.Empire.TITLES_PER_RANK) {
                             getError("too-many").tell(res,
                                     "rank", res.getEmpireRank().getTag(),
                                     "max", String.valueOf(Config.Empire.TITLES_PER_RANK)
@@ -103,7 +103,7 @@ public class EmpireTitlesCommand extends EmpireSubCommand {
                         } else if (Utils.containsAnyCurses(args[1])) {
                             getError("prohibited-words").tell(res, "input", args[1]);
                         } else {
-                            res.getVillage().getEmpire().setDefaultTitle(rank, args[1]);
+                            res.getSettlement().getEmpire().setDefaultTitle(rank, args[1]);
                             getMessage("success-new").tell(res, "title", args[1], "rank", rank.getTag());
                         }
                     }
@@ -121,7 +121,7 @@ public class EmpireTitlesCommand extends EmpireSubCommand {
                         getError("invalid-rank").tell(res, "rank", args[0]);
                     } else if (rank.above(res.getEmpireRank())) {
                         getError("cant-edit-higher").tell(res, "rank", res.getEmpireRank().getTag());
-                    } else if (res.getVillage().getEmpire().removeTitle(rank, args[1])) {
+                    } else if (res.getSettlement().getEmpire().removeTitle(rank, args[1])) {
                         getMessage("success").tell(res, "title", args[1], "rank", rank.getTag());
                         return true;
                     } else {

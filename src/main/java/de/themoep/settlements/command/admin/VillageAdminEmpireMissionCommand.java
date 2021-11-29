@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 public class VillageAdminEmpireMissionCommand extends SubCommand {
     public VillageAdminEmpireMissionCommand(SubCommand parent) {
         super(parent, "empiremission add|set|remove <empire> <amount>", "finishedmissions");
-        setPermission("kingdoms.admin.command.empiremission");
+        setPermission("settlements.admin.command.empiremission");
     }
 
     @Override

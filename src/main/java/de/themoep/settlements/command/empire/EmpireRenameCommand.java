@@ -18,7 +18,7 @@ public class EmpireRenameCommand extends EmpireSubCommand {
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
-        Empire empire = res.getVillage().getEmpire();
+        Empire empire = res.getSettlement().getEmpire();
         if (args.length == 0) {
             return false;
         }

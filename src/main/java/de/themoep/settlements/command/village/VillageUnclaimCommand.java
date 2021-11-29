@@ -3,7 +3,7 @@ package de.themoep.settlements.command.village;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.VillageState;
+import de.themoep.settlements.village.SettlementState;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.land.ChatMap;
 import de.themoep.settlements.land.LandManager;
@@ -58,7 +58,7 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                 }
                 return true;
             }
-            if (res.hasPermission("kingdoms.command.village.unclaim.radius")) {
+            if (res.hasPermission("settlements.command.settlement.unclaim.radius")) {
                 try {
                     int radius = Integer.parseInt(args[0]);
                     int maxRadius = Config.Settlement.Claiming.MAX_RADIUS;
@@ -74,7 +74,7 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                 }
             }
         } else if (args.length >= 2) {
-            if (res.hasPermission("kingdoms.command.village.unclaim.coords")) {
+            if (res.hasPermission("settlements.command.settlement.unclaim.coords")) {
                 try {
                     toUnclaim.add(new SimpleChunkLocation(player.getWorld().getName(), Integer.parseInt(args[0]), Integer.parseInt(args[1])));
                 } catch (NumberFormatException e) {
@@ -92,9 +92,9 @@ public class VillageUnclaimCommand extends VillageSubCommand {
         for (SimpleChunkLocation c : toUnclaim) {
             OwnedLand land = LandManager.getInstance().getLand(c);
             if (land != null) {
-                if (!land.isOwnedBy(res.getVillage())) {
+                if (!land.isOwnedBy(res.getSettlement())) {
                     if (toUnclaim.size() == 1) {
-                        res.tell(getError("not-your-village"), "state", land.getLandOwner().getStateTag());
+                        res.tell(getError("not-your-settlement"), "state", land.getLandOwner().getStateTag());
                         return true;
                     }
                 } else if (land.isOutpost()) {
@@ -102,7 +102,7 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                         getMessage("outpost").tell(res, "base", base, "outpost", land.getOutpostName());
                         return true;
                     }
-                } else if (land.containsHome() && (toUnclaim.size() > 1 || LandManager.getInstance().getClaimedLandSize(res.getVillage()) > 1)) {
+                } else if (land.containsHome() && (toUnclaim.size() > 1 || LandManager.getInstance().getClaimedLandSize(res.getSettlement()) > 1)) {
                     if (toUnclaim.size() == 1) {
                         getMessage("home").tell(res, "base", base);
                         return true;
@@ -122,12 +122,12 @@ public class VillageUnclaimCommand extends VillageSubCommand {
         }
         if (!unclaimedLand.isEmpty()) {
             Runnable unclaim = () -> {
-                unclaimedLand.forEach(l -> getMessage("success").tell(res.getVillage().getOnlineResidents(),
+                unclaimedLand.forEach(l -> getMessage("success").tell(res.getSettlement().getOnlineResidents(),
                         "player", res.getName(),
                         "name", res.getName(),
-                        "title", res.getVillageTitle(),
+                        "title", res.getSettlementTitle(),
                         "displaytitle", res.getDisplayTitle(),
-                        "rank", res.getVillageRank().getTag(res.getVillage()),
+                        "rank", res.getSettlementRank().getTag(res.getSettlement()),
                         "world", l.getWorldName(),
                         "location", l.getSimpleKey(),
                         "centerx", String.valueOf(l.getX() * 16 + 8),
@@ -135,10 +135,10 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                         "x", String.valueOf(l.getX()),
                         "z", String.valueOf(l.getZ()))
                 );
-                if (res.getVillage().getState() == VillageState.VILLAGE && res.getVillage().getLevel() == 1) {
+                if (res.getSettlement().getState() == SettlementState.VILLAGE && res.getSettlement().getLevel() == 1) {
                     getMessage("new-upkeep").tell(res,
-                            "villageupkeep", String.valueOf(res.getVillage().getUpkeep()),
-                            "upkeepperclaim", String.valueOf(res.getVillage().getClaimUpkeep(player.getWorld().getName()))
+                            "settlementupkeep", String.valueOf(res.getSettlement().getUpkeep()),
+                            "upkeepperclaim", String.valueOf(res.getSettlement().getClaimUpkeep(player.getWorld().getName()))
                     );
                 }
                 if (args.length >= 3 && "map".equalsIgnoreCase(args[2])) {
@@ -167,7 +167,7 @@ public class VillageUnclaimCommand extends VillageSubCommand {
                 unclaim.run();
             }
         } else if (toUnclaim.size() == 1) {
-            getError("no-village").tell(res);
+            getError("no-settlement").tell(res);
         }
         return true;
     }

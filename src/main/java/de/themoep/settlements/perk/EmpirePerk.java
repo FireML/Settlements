@@ -34,7 +34,7 @@ public class EmpirePerk extends Perk {
                             if (player.getAllowFlight()
                                     && player.getGameMode() != GameMode.CREATIVE
                                     && player.getGameMode() != GameMode.SPECTATOR
-                                    && !player.hasPermission("kingdoms.bypass.flyremoval")) {
+                                    && !player.hasPermission("settlements.bypass.flyremoval")) {
                                 if (player.isFlying()) {
                                     player.setFlying(false);
                                     Block block = player.getLocation().getBlock();

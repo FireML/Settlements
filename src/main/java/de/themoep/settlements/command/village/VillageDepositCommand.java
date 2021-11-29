@@ -14,10 +14,10 @@ public class VillageDepositCommand extends VillageSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        if (!resident.getVillage().isMaxLevel()) {
-            new DepositGUI("village", resident, resident.getVillage()).open();
+        if (!resident.getSettlement().isMaxLevel()) {
+            new DepositGUI("settlement", resident, resident.getSettlement()).open();
         } else {
-            resident.tell(Message.get("command.village.upgrade.max-level-reached"));
+            resident.tell(Message.get("command.settlement.upgrade.max-level-reached"));
         }
         return true;
     }

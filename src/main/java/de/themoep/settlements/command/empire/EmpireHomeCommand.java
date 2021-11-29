@@ -20,11 +20,11 @@ public class EmpireHomeCommand extends ResidentSubCommand {
             if (!resident.hasEmpire()) {
                 getError("empire-required").tell(resident);
                 return false;
-            } else if (resident.getVillage().getEmpire().getHome() == null) {
+            } else if (resident.getSettlement().getEmpire().getHome() == null) {
                 getMessage("own-no-home").tell(resident, "chief", EmpireRank.getLeader().getTag());
                 return true;
             } else {
-                empire = resident.getVillage().getEmpire();
+                empire = resident.getSettlement().getEmpire();
             }
         } else {
             String name = String.join(" ", args);

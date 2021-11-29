@@ -1,7 +1,7 @@
 package de.themoep.settlements.command.common;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Village;
+import de.themoep.settlements.village.Settlement;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.InviteCache;
 import de.themoep.settlements.land.LandManager;
@@ -32,7 +32,7 @@ public interface AllyCommand extends LandOwnerCommand {
             return true;
         }
 
-        if (target.equals(source) || target.equals(resident.getVillage())) {
+        if (target.equals(source) || target.equals(resident.getSettlement())) {
             resident.tell(getMessage("cant-ally-yourself"));
         } else if (source.isAlly(target)) {
             resident.tell(getMessage("already-allied"), "name", target.getName(), "state", target.getStateTag());
@@ -65,14 +65,14 @@ public interface AllyCommand extends LandOwnerCommand {
             return true;
         }
 
-        if (target.equals(source) || target.equals(resident.getVillage())) {
+        if (target.equals(source) || target.equals(resident.getSettlement())) {
             resident.tell(getMessage("cant-unally-yourself"));
         } else if (!source.isAlly(target)) {
             resident.tell(getMessage("not-allied"), "name", target.getName(), "state", target.getStateTag());
         } else {
             source.removeAlly(target);
             target.removeAlly(source);
-            if (!(source instanceof Village) || ((Village) source).isAllowAllyClaim()) {
+            if (!(source instanceof Settlement) || ((Settlement) source).isAllowAllyClaim()) {
                 LandManager.getInstance().checkClaimDistance(source, target);
             }
 

@@ -430,7 +430,7 @@ public class Config {
             public static int PLOTSQUARED = 3;
         }
 
-        @ConfigComment("Seconds to wait after allowing a teleport again if user has the kingdoms.bypass.teleport-delay permission\n" +
+        @ConfigComment("Seconds to wait after allowing a teleport again if user has the settlements.bypass.teleport-delay permission\n" +
                 "Set to 0 to disable")
         public static class Cooldown {
             @ConfigEntry(old = {"teleport-cooldown.outpost"})

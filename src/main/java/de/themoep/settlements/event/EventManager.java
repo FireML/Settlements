@@ -8,8 +8,8 @@ import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.ConfigManager;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import org.bukkit.Bukkit;
@@ -65,7 +65,7 @@ public class EventManager implements ConfigMessages {
     private long activeEventStart = -1;
 
     private Map<IdObject, EventData> eventData = new HashMap<>();
-    private Village first = null;
+    private Settlement first = null;
     private BukkitTask firstAnnounceTask = null;
     private Map<IdObject, Set<String>> villageRewards = new HashMap<>();
 
@@ -298,24 +298,24 @@ public class EventManager implements ConfigMessages {
             List<EventData> top = EventManager.getInstance().getTop(eventData.size());
             for (int i = 0; i < top.size(); i++) {
                 EventData eventData = top.get(i);
-                Village village = eventData.getVillage();
+                Settlement settlement = eventData.getVillage();
                 int place = i + 1;
-                getMessage("stats").tell(village.getOnlineResidents(),
+                getMessage("stats").tell(settlement.getOnlineResidents(),
                         "title", activeEvent.getTitle(),
                         "id", activeEvent.getId(),
-                        "state", village.getStateTag(),
-                        "name", village.getName(),
+                        "state", settlement.getStateTag(),
+                        "name", settlement.getName(),
                         "place", String.valueOf(place),
                         "amount", String.valueOf(eventData.getTotalAmount())
                 );
                 List<String> rewards = activeEvent.getRewards().getOrDefault(String.valueOf(place), activeEvent.getRewards().get("rest"));
                 if (rewards != null) {
-                    villageRewards.put(village.getId(), new LinkedHashSet<>(rewards));
-                    getMessage("reward-info").tell(village.getOnlineResidents(),
+                    villageRewards.put(settlement.getId(), new LinkedHashSet<>(rewards));
+                    getMessage("reward-info").tell(settlement.getOnlineResidents(),
                             "title", activeEvent.getTitle(),
                             "id", activeEvent.getId(),
-                            "state", village.getStateTag(),
-                            "name", village.getName(),
+                            "state", settlement.getStateTag(),
+                            "name", settlement.getName(),
                             "place", String.valueOf(place),
                             "amount", String.valueOf(eventData.getTotalAmount())
                     );
@@ -338,8 +338,8 @@ public class EventManager implements ConfigMessages {
         return true;
     }
 
-    public Set<String> getRewards(Village village) {
-        return villageRewards.get(village.getId());
+    public Set<String> getRewards(Settlement settlement) {
+        return villageRewards.get(settlement.getId());
     }
 
     public Reward getReward(String id) {
@@ -371,7 +371,7 @@ public class EventManager implements ConfigMessages {
         }
 
         Resident resident = ResidentManager.getInstance().getResident(player);
-        if (!resident.hasVillage()) {
+        if (!resident.hasSettlement()) {
             return;
         }
 
@@ -387,11 +387,11 @@ public class EventManager implements ConfigMessages {
             return;
         }
 
-        EventData ed = eventData.computeIfAbsent(resident.getVillage().getId(), id -> new EventData(id));
+        EventData ed = eventData.computeIfAbsent(resident.getSettlement().getId(), id -> new EventData(id));
         ed.increment(matches, amount);
 
         if (first == null || ed.getTotalAmount() > eventData.get(first.getId()).getTotalAmount()) {
-            first = resident.getVillage();
+            first = resident.getSettlement();
             if (firstAnnounceTask != null) {
                 firstAnnounceTask.cancel();
             }
@@ -408,7 +408,7 @@ public class EventManager implements ConfigMessages {
         }
     }
 
-    public void giveReward(Reward reward, Player player, Village village) {
+    public void giveReward(Reward reward, Player player, Settlement settlement) {
         player.getInventory().addItem(reward.getItems().toArray(new ItemStack[0])).values()
                 .forEach(i -> {
                     Item item = player.getLocation().getWorld().dropItem(player.getLocation(), i);
@@ -418,18 +418,18 @@ public class EventManager implements ConfigMessages {
             Map<String, String> replacements = Utils.toMap(
                 "claimer", player.getName(),
                 "claimerid", player.getUniqueId().toString(),
-                "village", village.getName(),
-                "villageid", String.valueOf(village.getId().value())
+                "settlement", settlement.getName(),
+                "settlementid", String.valueOf(settlement.getId().value())
             );
             if (command.contains("onlineresident") || command.contains("onlineresidentid")) {
-                for (Resident resident : village.getOnlineResidents()) {
+                for (Resident resident : settlement.getOnlineResidents()) {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(command, Utils.addAll(replacements,
                             "onlineresident", resident.getName(),
                             "onlineresidentid", resident.getUUID().toString()
                     )));
                 }
             } else if (command.contains("resident") || command.contains("residentid")) {
-                for (Resident resident : village.getResidents()) {
+                for (Resident resident : settlement.getResidents()) {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(command, Utils.addAll(replacements,
                             "resident", resident.getName(),
                             "residentid", resident.getUUID().toString()
@@ -440,8 +440,8 @@ public class EventManager implements ConfigMessages {
             }
         }
         if (reward.getMoney() > 0) {
-            village.addToBank(reward.getMoney());
-            DatabaseManager.getInstance().saveSettlement(village);
+            settlement.addToBank(reward.getMoney());
+            DatabaseManager.getInstance().saveSettlement(settlement);
         }
     }
 
@@ -463,8 +463,8 @@ public class EventManager implements ConfigMessages {
             totalAmount++;
         }
 
-        public Village getVillage() {
-            return VillageManager.getInstance().getFromId(id);
+        public Settlement getVillage() {
+            return SettlementManager.getInstance().getFromId(id);
         }
 
         public int getTotalAmount() {

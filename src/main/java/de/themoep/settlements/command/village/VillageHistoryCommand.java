@@ -38,12 +38,12 @@ public class VillageHistoryCommand extends VillageSubCommand {
             page = 1;
         }
         Utils.runAsync(() -> {
-            int pages = DatabaseManager.getInstance().getLogPageCount(resident.getVillage(), resident, type);
+            int pages = DatabaseManager.getInstance().getLogPageCount(resident.getSettlement(), resident, type);
             getMessage("head").tell(resident,
                     "page", String.valueOf(page),
                     "maxpage", String.valueOf(pages)
             );
-            List<String[]> history = DatabaseManager.getInstance().getLog(resident.getVillage(), resident, page, type);
+            List<String[]> history = DatabaseManager.getInstance().getLog(resident.getSettlement(), resident, page, type);
             for (String[] entry : history) {
                 getMessage("entry").tell(resident, entry);
             }

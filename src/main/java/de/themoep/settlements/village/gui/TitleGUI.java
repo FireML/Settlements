@@ -7,7 +7,7 @@ import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.rank.VillageRank;
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.resident.Resident;
@@ -33,52 +33,52 @@ public class TitleGUI extends SettlementsGUI {
         super("title");
         this.resident = resident;
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title",
-                "state", resident.hasVillage() ? resident.getVillage().getStateTag() : "",
-                "title", resident.getVillageTitle()
+                "state", resident.hasSettlement() ? resident.getSettlement().getStateTag() : "",
+                "title", resident.getSettlementTitle()
         ), SETUP);
         gui.setCloseAction(close -> false);
         gui.setFiller(BORDER_ITEM);
 
         GuiElementGroup group = new GuiElementGroup('g');
 
-        if (resident.hasVillage()) {
-            VillageRank rank = resident.getVillageRank();
-            for (String title : resident.getVillage().getTitles(rank)) {
+        if (resident.hasSettlement()) {
+            SettlementRank rank = resident.getSettlementRank();
+            for (String title : resident.getSettlement().getTitles(rank)) {
                 group.addElement(new DynamicGuiElement('g', h -> {
                     ItemStack item = ItemUtils.toIcon(Material.PAPER);
                     List<String> description = new ArrayList<>();
                     description.add(getText("entry.title",
                             "title", title,
-                            "rank", rank.getTag(resident.getVillage())
+                            "rank", rank.getTag(resident.getSettlement())
                     ));
-                    if (title.equals(resident.getVillageTitle())) {
+                    if (title.equals(resident.getSettlementTitle())) {
                         ItemUtils.setGlowing(item, true);
                         description.add(getText("entry.current",
                                 "title", title,
-                                "rank", rank.getTag(resident.getVillage())
+                                "rank", rank.getTag(resident.getSettlement())
                         ));
                     } else {
                         description.add(getText("entry.select",
                                 "title", title,
-                                "rank", rank.getTag(resident.getVillage())
+                                "rank", rank.getTag(resident.getSettlement())
                         ));
                     }
                     return new StaticGuiElement('g',
                             item,
                             click -> {
-                                if (resident.hasVillage() && resident.hasPermission("village.title") && rank == resident.getVillageRank() && resident.setVillageTitle(title)) {
+                                if (resident.hasSettlement() && resident.hasPermission("settlement.title") && rank == resident.getSettlementRank() && resident.setSettlementTitle(title)) {
                                     DatabaseManager.getInstance().saveResident(resident);
                                     gui.draw();
-                                    Message message = Message.get("command.village.title.success." + resident.getVillage().getState().getKey() + "." + resident.getVillageRank().getKey());
+                                    Message message = Message.get("command.settlement.title.success." + resident.getSettlement().getState().getKey() + "." + resident.getSettlementRank().getKey());
                                     if (!message.exists()) {
-                                        message = Message.get("command.village.title.success.default");
+                                        message = Message.get("command.settlement.title.success.default");
                                     }
-                                    message.tell(resident.getVillage().getOnlineResidents(),
-                                            "rank", resident.getVillageRank().getTag(resident.getVillage()),
-                                            "title", resident.getVillageTitle(),
+                                    message.tell(resident.getSettlement().getOnlineResidents(),
+                                            "rank", resident.getSettlementRank().getTag(resident.getSettlement()),
+                                            "title", resident.getSettlementTitle(),
                                             "name", resident.getName(),
-                                            "villagename", resident.getVillage().getName(),
-                                            "villagestate", resident.getVillage().getState().getTag()
+                                            "settlementname", resident.getSettlement().getName(),
+                                            "settlementstate", resident.getSettlement().getState().getTag()
                                     );
                                 }
                                 return true;
@@ -91,9 +91,9 @@ public class TitleGUI extends SettlementsGUI {
 
         gui.addElement(group);
 
-        if (resident.hasVillage() && resident.hasPermission("village.titles")) {
+        if (resident.hasSettlement() && resident.hasPermission("settlement.titles")) {
             gui.addElement(new StaticGuiElement('e', ItemUtils.toIcon(Material.WRITABLE_BOOK), click -> {
-                if (resident.hasVillage() && resident.hasPermission("village.titles")) {
+                if (resident.hasSettlement() && resident.hasPermission("settlement.titles")) {
                     new RankSelectGUI(resident, r -> new TitlesGUI(resident, r).open()).open();
                 }
                 return true;

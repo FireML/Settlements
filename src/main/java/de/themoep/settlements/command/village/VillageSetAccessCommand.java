@@ -19,15 +19,15 @@ public class VillageSetAccessCommand extends VillageSubCommand {
         }
         try {
             LandAccess access = LandAccess.valueOf(String.join("_", args).toUpperCase());
-            resident.getVillage().setAccess(access);
-            DatabaseManager.getInstance().saveSettlement(resident.getVillage());
+            resident.getSettlement().setAccess(access);
+            DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
             resident.tell(getMessage("success"), "access", access.getTag());
         } catch (IllegalArgumentException e) {
             resident.tell(getMessage("usage.head"),
                     "name", name(),
                     "command", "/" + base + " " + alias,
                     "usage", getUsage(base),
-                    "type", resident.getVillage().getStateTag() + " "
+                    "type", resident.getSettlement().getStateTag() + " "
             );
             for (LandAccess access : LandAccess.values()) {
                 resident.tell(getMessage("usage.entry"),

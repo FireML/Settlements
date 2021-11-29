@@ -2,8 +2,8 @@ package de.themoep.settlements.empire;
 
 import co.aikar.timings.lib.MCTiming;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import io.papermc.lib.PaperLib;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
@@ -194,8 +194,8 @@ public class EmpireManager {
     }
 
     public Empire getEmpireFromPlayer(Player player) {
-        Village village = VillageManager.getInstance().getFromPlayer(player);
-        return village != null ? village.getEmpire() : null;
+        Settlement settlement = SettlementManager.getInstance().getFromPlayer(player);
+        return settlement != null ? settlement.getEmpire() : null;
     }
 
     public Optional<EmpireLevel> getLevel(int level) {
@@ -218,19 +218,19 @@ public class EmpireManager {
             // Wat
             return;
         }
-        Village village = resident.getVillage();
-        Empire empire = village.getEmpire();
-        village.setMissionPoints(village.getMissionPoints() + 1);
+        Settlement settlement = resident.getSettlement();
+        Empire empire = settlement.getEmpire();
+        settlement.setMissionPoints(settlement.getMissionPoints() + 1);
         empire.setFinishedMissions(empire.getFinishedMissions() + 1);
         Message.get("missions.completed").tell(empire.getOnlineResidents(),
-                "state", village.getStateTag(),
-                "name", village.getName(),
+                "state", settlement.getStateTag(),
+                "name", settlement.getName(),
                 "mission", mission.getTag(),
-                "missionpoints", String.valueOf(village.getMissionPoints()),
+                "missionpoints", String.valueOf(settlement.getMissionPoints()),
                 "finishedmissions", String.valueOf(empire.getFinishedMissions())
         );
-        SettlementsPlugin.logDebug(village.getStateTag() + " " + village.getName() + " finished mission " + mission.getTag() + " for empire " + empire.getName());
-        DatabaseManager.getInstance().saveSettlement(village);
+        SettlementsPlugin.logDebug(settlement.getStateTag() + " " + settlement.getName() + " finished mission " + mission.getTag() + " for empire " + empire.getName());
+        DatabaseManager.getInstance().saveSettlement(settlement);
         DatabaseManager.getInstance().saveEmpire(empire);
     }
 
@@ -331,7 +331,7 @@ public class EmpireManager {
         empireUuids.remove(empire.getUUID());
         empireWorlds.remove(empire.getWorldName());
         SettlementsPlugin.getInstance().addNewlyDeleted(empire);
-        for (Village member : empire.getMembers()) {
+        for (Settlement member : empire.getMembers()) {
             if (empire.equals(member.getEmpire())) {
                 member.setEmpire(null);
             } else {
@@ -352,7 +352,7 @@ public class EmpireManager {
         }
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().deleteEmpire(empire);
-            DatabaseManager.getInstance().saveVillages(empire.getMembers());
+            DatabaseManager.getInstance().saveSettlements(empire.getMembers());
         });
     }
 
@@ -376,10 +376,10 @@ public class EmpireManager {
         SettlementsPlugin.getInstance().addNewlyAbandoned(empire);
 
         // Remove members
-        Set<Village> modifiedVillages = new HashSet<>();
-        for (Village member : empire.getMembers()) {
+        Set<Settlement> modifiedSettlements = new HashSet<>();
+        for (Settlement member : empire.getMembers()) {
             member.setEmpire(null);
-            modifiedVillages.add(member);
+            modifiedSettlements.add(member);
         }
         empire.getMemberIds().clear();
 
@@ -393,7 +393,7 @@ public class EmpireManager {
         }
         Collection<LandOwner> allies = empire.getAllies();
         empire.getAlliedEmpireIds().clear();
-        empire.getAlliedVillageIds().clear();
+        empire.getAlliedSettlementIds().clear();
         for (LandOwner ally : allies) {
             ally.removeAlly(empire);
         }
@@ -427,7 +427,7 @@ public class EmpireManager {
         empire.setCreated(System.currentTimeMillis());
         DatabaseManager.getInstance().saveEmpire(empire);
         DatabaseManager.getInstance().save(allies);
-        DatabaseManager.getInstance().saveVillages(modifiedVillages);
+        DatabaseManager.getInstance().saveSettlements(modifiedSettlements);
         DatabaseManager.getInstance().saveResident(modifiedResidents);
 
         Utils.runLater(() -> {
@@ -439,14 +439,14 @@ public class EmpireManager {
     /**
      * Should not be used directly! Use {@link Empire#removeMember(Targetable)}!
      */
-    void leaveEmpire(Village village) {
-        Empire empire = village.getEmpire();
+    void leaveEmpire(Settlement settlement) {
+        Empire empire = settlement.getEmpire();
         if (empire == null) {
             return;
         }
-        village.setEmpire(null);
+        settlement.setEmpire(null);
         List<Resident> toSave = new ArrayList<>();
-        for (Resident member : village.getResidents()) {
+        for (Resident member : settlement.getResidents()) {
             if (member.getEmpireRank() != EmpireRank.getDefault()) {
                 toSave.add(member);
                 member.setEmpireRank(EmpireRank.getDefault());
@@ -460,7 +460,7 @@ public class EmpireManager {
                 }
             }
         }
-        DatabaseManager.getInstance().saveSettlement(village);
+        DatabaseManager.getInstance().saveSettlement(settlement);
         DatabaseManager.getInstance().saveResident(toSave);
     }
 

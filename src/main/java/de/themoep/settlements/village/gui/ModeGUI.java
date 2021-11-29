@@ -38,17 +38,17 @@ public class ModeGUI extends SettlementsGUI {
         for (PlotMode m : PlotMode.values(PlotMode.AppliesTo.LAND_OWNER)) {
             group.addElement(new DynamicGuiElement('g', (h) -> {
                 Resident resident = ResidentManager.getInstance().getResident((Player) h);
-                if (resident.hasVillage()) {
-                    boolean enabled = m.get(resident.getVillage());
+                if (resident.hasSettlement()) {
+                    boolean enabled = m.get(resident.getSettlement());
                     return new StaticGuiElement('g',
                             ItemUtils.setGlowing(m.getItem(), enabled),
                             click -> {
-                                if (resident.hasVillage() && resident.hasPermission("village.mode")) {
-                                    boolean state = !m.get(resident.getVillage());
-                                    if (m.set(state, resident.getVillage())) {
-                                        DatabaseManager.getInstance().saveSettlement(resident.getVillage());
+                                if (resident.hasSettlement() && resident.hasPermission("settlement.mode")) {
+                                    boolean state = !m.get(resident.getSettlement());
+                                    if (m.set(state, resident.getSettlement())) {
+                                        DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
                                     }
-                                    Message.get("command.village.mode.success").tell(resident,
+                                    Message.get("command.settlement.mode.success").tell(resident,
                                             "mode", m.getTag(),
                                             "value", getText("entry.state." + state)
                                     );

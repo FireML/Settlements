@@ -1,8 +1,8 @@
 package de.themoep.settlements.command.admin;
 
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
-import de.themoep.settlements.village.VillageState;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
+import de.themoep.settlements.village.SettlementState;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import org.bukkit.ChatColor;
@@ -18,21 +18,21 @@ public class VillageAdminLevelCommand extends SubCommand {
         if (args.length < 3) {
             return false;
         }
-        Village village = VillageManager.getInstance().getFromName(args[0]);
-        if (village == null) {
-            getError("village-doesnt-exist").tell(sender, "name", args[0]);
+        Settlement settlement = SettlementManager.getInstance().getFromName(args[0]);
+        if (settlement == null) {
+            getError("settlement-doesnt-exist").tell(sender, "name", args[0]);
             return true;
         }
         try {
-            VillageState state = VillageState.valueOf(args[1].toUpperCase());
+            SettlementState state = SettlementState.valueOf(args[1].toUpperCase());
             int level = Integer.parseInt(args[2]);
 
-            village.setState(state);
-            village.setLevel(level);
-            village.getVault().clear();
+            settlement.setState(state);
+            settlement.setLevel(level);
+            settlement.getVault().clear();
 
-            sender.sendMessage(ChatColor.RED + "Set " + village.getName() + " to " + state.getTag() + "/" + level);
-            DatabaseManager.getInstance().saveSettlement(village);
+            sender.sendMessage(ChatColor.RED + "Set " + settlement.getName() + " to " + state.getTag() + "/" + level);
+            DatabaseManager.getInstance().saveSettlement(settlement);
         } catch (NumberFormatException e) {
             getError("not-a-number").tell(sender, "input", args[2]);
         } catch (IllegalArgumentException e) {

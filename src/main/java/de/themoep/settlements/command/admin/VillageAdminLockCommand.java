@@ -2,8 +2,8 @@ package de.themoep.settlements.command.admin;
 
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class VillageAdminLockCommand extends SubCommand {
     public VillageAdminLockCommand(SubCommand parent) {
         super(parent, "lock list [<world>]|get <world> <x> <y> <z>");
-        setPermission("kingdoms.admin.command.lock");
+        setPermission("settlements.admin.command.lock");
         registerCommand(new SubCommand(this, "list [<world>]") {
             @Override
             public boolean run(CommandSender sender, String base, String alias, String... args) {
@@ -81,11 +81,11 @@ public class VillageAdminLockCommand extends SubCommand {
                     .map(Resident::getName)
                     .collect(Collectors.joining(","));
         }
-        if (!lock.getAllowedVillageIds().isEmpty()) {
-            string += lock.getAllowedVillageIds().stream()
-                    .map(i -> VillageManager.getInstance().getFromId(i))
+        if (!lock.getAllowedSettlementIds().isEmpty()) {
+            string += lock.getAllowedSettlementIds().stream()
+                    .map(i -> SettlementManager.getInstance().getFromId(i))
                     .filter(Objects::nonNull)
-                    .map(Village::getName)
+                    .map(Settlement::getName)
                     .collect(Collectors.joining(","));
         }
         if (!lock.getAllowedEmpireIds().isEmpty()) {

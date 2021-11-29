@@ -33,7 +33,7 @@ public class RankPermGroupsGUI extends SettlementsGUI {
         super("empire.rank-perm-groups");
         this.resident = res;
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title",
-                "rank", rank.getTag(res.getVillage().getEmpire())
+                "rank", rank.getTag(res.getSettlement().getEmpire())
         ), SETUP);
         gui.setCloseAction(close -> false);
         gui.setFiller(BORDER_ITEM);
@@ -50,15 +50,15 @@ public class RankPermGroupsGUI extends SettlementsGUI {
                     return true;
                 }, getText("groups." + permGroup.getName(),
                         "rank", rank.getTag(),
-                        "state", res.getVillage().getStateTag()
+                        "state", res.getSettlement().getStateTag()
                 )));
             }
 
-            if (res.hasVillage() && res.hasPermission("empire.perms.reset")) {
+            if (res.hasSettlement() && res.hasPermission("empire.perms.reset")) {
                 gui.addElement(new StaticGuiElement('r', ItemUtils.toIcon(Material.ORANGE_WOOL), click -> {
                     Resident r = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
                     if (r.hasEmpire() && r.hasPermission("empire.perms.reset")) {
-                        Empire empire = r.getVillage().getEmpire();
+                        Empire empire = r.getSettlement().getEmpire();
                         new ConfirmationGui(RankPermGroupsGUI.this, "reset", () -> {
                             if (r.hasPermission("empire.perms.reset")) {
                                 empire.getRanksPermissions().remove(rank.name().toLowerCase());
@@ -72,7 +72,7 @@ public class RankPermGroupsGUI extends SettlementsGUI {
                         );
                     }
                     return true;
-                }, getText("reset.title", "rank", rank.getTag(res.getVillage().getEmpire()))));
+                }, getText("reset.title", "rank", rank.getTag(res.getSettlement().getEmpire()))));
             }
         }
 

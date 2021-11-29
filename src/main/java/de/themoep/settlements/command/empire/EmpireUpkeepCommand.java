@@ -16,7 +16,7 @@ public class EmpireUpkeepCommand extends EmpireSubCommand {
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
-        Empire empire = res.getVillage().getEmpire();
+        Empire empire = res.getSettlement().getEmpire();
         String afford;
         long upkeepAmount = empire.getUpkeep() - empire.getTaxIncome();
         if (upkeepAmount > 0) {

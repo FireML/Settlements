@@ -43,8 +43,8 @@ public class OutpostUnclaimCommand extends VillageSubCommand {
 
         Chunk currentChunk = resident.getPlayer().getLocation().getChunk();
         OwnedLand land = LandManager.getInstance().getLand(currentChunk);
-        if (land == null || !land.isOwnedBy(resident.getVillage())) {
-            resident.tell(getError("not-your-village"), "state", resident.getVillage().getState().getTag());
+        if (land == null || !land.isOwnedBy(resident.getSettlement())) {
+            resident.tell(getError("not-your-settlement"), "state", resident.getSettlement().getState().getTag());
             return true;
         }
         if (!land.isOutpost()) {
@@ -77,7 +77,7 @@ public class OutpostUnclaimCommand extends VillageSubCommand {
         toUnclaim.add(land);
         Runnable unclaim = () -> {
             LandManager.getInstance().unclaimLand(toUnclaim);
-            MessageUtils.tellResidents(resident.getVillage().getOnlineResidents(), getMessage("success"),
+            MessageUtils.tellResidents(resident.getSettlement().getOnlineResidents(), getMessage("success"),
                     "amount", String.valueOf(toUnclaim.size() - 1),
                     "x", String.valueOf(resident.getPlayer().getLocation().getBlockX()),
                     "z", String.valueOf(resident.getPlayer().getLocation().getBlockZ()));

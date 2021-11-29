@@ -36,7 +36,7 @@ public class EmpireListener implements Listener {
 
     private boolean canAccess(Player player, World world) {
         Empire empire = EmpireManager.getInstance().getEmpireFromWorld(world);
-        return empire == null || empire.canAccess(player) || player.hasPermission("kingdoms.bypass.teleport");
+        return empire == null || empire.canAccess(player) || player.hasPermission("settlements.bypass.teleport");
     }
 
     @EventHandler
@@ -69,7 +69,7 @@ public class EmpireListener implements Listener {
                 && player.getAllowFlight()
                 && player.getGameMode() != GameMode.CREATIVE
                 && player.getGameMode() != GameMode.SPECTATOR
-                && !player.hasPermission("kingdoms.bypass.flyremoval")) {
+                && !player.hasPermission("settlements.bypass.flyremoval")) {
             player.setAllowFlight(false);
             ResidentManager.getInstance().getResident(player).setHasEmpireFlight(false);
             if (player.isFlying()) {

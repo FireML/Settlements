@@ -11,6 +11,6 @@ public class VillageAllyCommand extends VillageSubCommand implements AllyCommand
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        return addAlly(resident, resident.getVillage(), args);
+        return addAlly(resident, resident.getSettlement(), args);
     }
 }

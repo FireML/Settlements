@@ -11,6 +11,6 @@ public class VillageAlliesCommand extends VillageSubCommand implements AllyComma
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        return listAllies(resident, resident.getVillage());
+        return listAllies(resident, resident.getSettlement());
     }
 }

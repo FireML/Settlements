@@ -1,7 +1,7 @@
 package de.themoep.settlements.command.village;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Village;
+import de.themoep.settlements.village.Settlement;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.utils.HumanReadable;
 
@@ -14,20 +14,20 @@ public class VillageMaterialsCommand extends VillageSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        Village village = resident.getVillage();
-        if (village.isMaxLevel()) {
-            getMessage("max-level-reached").tell(resident, "state", resident.getVillage().getState().getTag());
+        Settlement settlement = resident.getSettlement();
+        if (settlement.isMaxLevel()) {
+            getMessage("max-level-reached").tell(resident, "state", resident.getSettlement().getState().getTag());
             return true;
         }
-        Map<String, Long> nextLevelReqs = village.getNextLevelRequirements();
+        Map<String, Long> nextLevelReqs = settlement.getNextLevelRequirements();
         if (nextLevelReqs.isEmpty()) {
-            getMessage("max-level-reached").tell(resident, "state", resident.getVillage().getState().getTag());
+            getMessage("max-level-reached").tell(resident, "state", resident.getSettlement().getState().getTag());
             return true;
         }
 
         getMessage("head").tell(resident);
         for (Map.Entry<String, Long> entry : nextLevelReqs.entrySet()) {
-            long progress = village.getAmount(entry.getKey());
+            long progress = settlement.getAmount(entry.getKey());
             getMessage("requirement." + (progress <= entry.getValue() ? "todo" : "done")).tell(resident,
                     "type", HumanReadable.humanizedName(entry.getKey()),
                     "required", String.valueOf(entry.getValue()),

@@ -39,26 +39,26 @@ public class AccessGUI extends SettlementsGUI {
             group.addElement(new DynamicGuiElement('g', (h) -> {
                 Resident resident = ResidentManager.getInstance().getResident((Player) h);
                 if (resident.hasEmpire()) {
-                    if (resident.getVillage().getEmpire().getAccess() == access) {
+                    if (resident.getSettlement().getEmpire().getAccess() == access) {
                         return new StaticGuiElement('g',
                                 ItemUtils.toIcon(Material.LIME_WOOL),
                                 getText("selected", "access", access.getTag()),
-                                getText("access." + access.getKey(), "state", resident.getVillage().getEmpire().getStateTag())
+                                getText("access." + access.getKey(), "state", resident.getSettlement().getEmpire().getStateTag())
                         );
                     }
                     return new StaticGuiElement('g',
                             ItemUtils.toIcon(Material.LIGHT_GRAY_WOOL),
                             click -> {
                                 if (resident.hasEmpire() && resident.hasPermission("empire.setaccess")) {
-                                    resident.getVillage().getEmpire().setAccess(access);
+                                    resident.getSettlement().getEmpire().setAccess(access);
                                     Message.get("command.empire.setaccess.success").tell(resident, "access", access.getTag());
-                                    DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
+                                    DatabaseManager.getInstance().saveEmpire(resident.getSettlement().getEmpire());
                                     gui.draw();
                                 }
                                 return true;
                             },
                             getText("available", "access", access.getTag()),
-                            getText("access." + access.getKey(), "state", resident.getVillage().getEmpire().getStateTag())
+                            getText("access." + access.getKey(), "state", resident.getSettlement().getEmpire().getStateTag())
                     );
                 }
                 return null;

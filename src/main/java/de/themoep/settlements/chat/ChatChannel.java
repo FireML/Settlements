@@ -21,13 +21,13 @@ public enum ChatChannel implements NameTag {
     HELP("help", "h") {
         @Override
         public boolean autoJoin(Player player) {
-            return player.hasPermission("kingdoms.autojoinchannel.help");
+            return player.hasPermission("settlements.autojoinchannel.help");
         }
     },
-    SETTLEMENT("settlement", "s", "village") {
+    SETTLEMENT("settlement", "s", "village", "v", "kingdom", "k") {
         @Override
         public boolean canChat(Player player) {
-            return ResidentManager.getInstance().getResident(player).hasVillage();
+            return ResidentManager.getInstance().getResident(player).hasSettlement();
         }
 
         @Override
@@ -35,7 +35,7 @@ public enum ChatChannel implements NameTag {
             if (this.canChat(player)) {
                 return true;
             }
-            MessageUtils.tell(player, Message.get("error.village-required"));
+            MessageUtils.tell(player, Message.get("error.settlement-required"));
             return false;
         }
     },
@@ -43,7 +43,7 @@ public enum ChatChannel implements NameTag {
         @Override
         public boolean canChat(Player player) {
             Resident resident = ResidentManager.getInstance().getResident(player);
-            return resident.hasVillage() && !resident.getVillage().getAlliedVillageIds().isEmpty();
+            return resident.hasSettlement() && !resident.getSettlement().getAlliedSettlementIds().isEmpty();
         }
 
         @Override
@@ -59,8 +59,8 @@ public enum ChatChannel implements NameTag {
         @Override
         public boolean canChat(Player player) {
             Resident resident = ResidentManager.getInstance().getResident(player);
-            return resident.hasVillage() && (!resident.getVillage().getAlliedEmpireIds().isEmpty() ||
-                    resident.hasEmpire() && resident.getVillage().getEmpire().hasAllies());
+            return resident.hasSettlement() && (!resident.getSettlement().getAlliedEmpireIds().isEmpty() ||
+                    resident.hasEmpire() && resident.getSettlement().getEmpire().hasAllies());
         }
 
         @Override
@@ -90,7 +90,7 @@ public enum ChatChannel implements NameTag {
     ADMIN("admin", "ac") {
         @Override
         public boolean canChat(Player player) {
-            return player.hasPermission("kingdoms.channel.admin");
+            return player.hasPermission("settlements.channel.admin");
         }
 
         @Override
@@ -105,7 +105,7 @@ public enum ChatChannel implements NameTag {
     STAFF("staff", "sc") {
         @Override
         public boolean canChat(Player player) {
-            return player.hasPermission("kingdoms.channel.staff");
+            return player.hasPermission("settlements.channel.staff");
         }
 
         @Override

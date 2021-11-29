@@ -2,8 +2,8 @@ package de.themoep.settlements.command.village;
 
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
@@ -19,28 +19,28 @@ public class VillageShowCommand extends SubCommand {
     @Override
     public boolean run(CommandSender sender, String base, String alias, String... args) {
         if (args.length == 0 && sender instanceof Player) {
-            Village village = VillageManager.getInstance().getFromPlayer((Player) sender);
-            if (village == null) {
+            Settlement settlement = SettlementManager.getInstance().getFromPlayer((Player) sender);
+            if (settlement == null) {
                 MessageUtils.tell(sender, getError("not-in-village"));
                 return false;
             }
-            getMessage(village.hasEmpire() ? "empire" : village.isAbandoned() ? "abandoned" : "general")
-                    .tell(sender, village.getReplacements(this));
+            getMessage(settlement.hasEmpire() ? "empire" : settlement.isAbandoned() ? "abandoned" : "general")
+                    .tell(sender, settlement.getReplacements(this));
         } else if (args.length == 1) {
             String name = String.join(" ", args);
-            Village village = VillageManager.getInstance().getFromName(name);
-            if (village != null) {
-                getMessage(village.hasEmpire() ? "empire" : village.isAbandoned() ? "abandoned" : "general")
-                        .tell(sender, village.getReplacements(this));
+            Settlement settlement = SettlementManager.getInstance().getFromName(name);
+            if (settlement != null) {
+                getMessage(settlement.hasEmpire() ? "empire" : settlement.isAbandoned() ? "abandoned" : "general")
+                        .tell(sender, settlement.getReplacements(this));
                 return true;
             }
             Utils.runAsync(() -> {
                 Resident target = ResidentManager.getInstance().getResident(name);
-                if (target != null && target.hasVillage()) {
-                    getMessage(target.hasEmpire() ? "empire" : target.getVillage().isAbandoned() ? "abandoned" : "general")
-                            .tell(sender, target.getVillage().getReplacements(this));
+                if (target != null && target.hasSettlement()) {
+                    getMessage(target.hasEmpire() ? "empire" : target.getSettlement().isAbandoned() ? "abandoned" : "general")
+                            .tell(sender, target.getSettlement().getReplacements(this));
                 } else {
-                    getError("village-doesnt-exist").tell(sender, "name", name);
+                    getError("settlement-doesnt-exist").tell(sender, "name", name);
                 }
             });
         } else {

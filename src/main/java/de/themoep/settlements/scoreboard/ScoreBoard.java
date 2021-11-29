@@ -1,6 +1,5 @@
 package de.themoep.settlements.scoreboard;
 
-
 import co.aikar.timings.lib.MCTiming;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.integration.PlaceholderApiIntegration;
@@ -44,18 +43,18 @@ public class ScoreBoard {
                     "deaths", String.valueOf(member.getStatistic(Statistic.DEATHS)),
                     "bonus", String.valueOf(resident.getBonusClaims()),
                     "title", resident.getDisplayTitle(),
-                    "villagetitle", resident.getVillageTitle(),
-                    "villagerank", resident.hasVillage() ? resident.getVillageRank().getTag(resident.getVillage()) : "",
+                    "settlementtitle", resident.getSettlementTitle(),
+                    "settlementrank", resident.hasSettlement() ? resident.getSettlementRank().getTag(resident.getSettlement()) : "",
                     "empiretitle", resident.getEmpireTitle(),
                     "empirerank", resident.hasEmpire() ? resident.getEmpireRank().getTag() : ""
             );
-            if (resident.hasVillage()) {
-                String[] villageRepl = resident.getVillage().getReplacements(null);
-                for (int i = 0; i + 1 < villageRepl.length; i += 2) {
-                    replacements.put("village" + villageRepl[i], villageRepl[i + 1]);
+            if (resident.hasSettlement()) {
+                String[] settlementRepl = resident.getSettlement().getReplacements(null);
+                for (int i = 0; i + 1 < settlementRepl.length; i += 2) {
+                    replacements.put("settlement" + settlementRepl[i], settlementRepl[i + 1]);
                 }
                 if (resident.hasEmpire()) {
-                    String[] empireRepl = resident.getVillage().getEmpire().getReplacements(null);
+                    String[] empireRepl = resident.getSettlement().getEmpire().getReplacements(null);
                     for (int i = 0; i + 1 < empireRepl.length; i += 2) {
                         replacements.put("empire" + empireRepl[i], empireRepl[i + 1]);
                     }
@@ -65,7 +64,7 @@ public class ScoreBoard {
 
         Message sidebar;
         try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Scoreboard get player sidebar message")) {
-            sidebar = manager.getMessage("sidebar.entries." + (resident.hasVillage() ? resident.hasEmpire() ? "empire" : "village" : "no-village"));
+            sidebar = manager.getMessage("sidebar.entries." + (resident.hasSettlement() ? resident.hasEmpire() ? "empire" : "settlement" : "no-settlement"));
         }
         List<String> text;
         try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Scoreboard get player sidebar replaced text")) {

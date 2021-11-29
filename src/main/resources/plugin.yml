@@ -18,17 +18,17 @@ commands:
   unlock:
     description: Unlock a container.
     aliases: [unprotection,unsecure]
-  village:
-    description: Village Commands.
-    aliases: [s, settlement, kingdom, k, v]
+  settlement:
+    description: Settlement Commands.
+    aliases: [s, village, kingdom, k, v]
   empire:
     description: Empire Commands.
     aliases: [e, nation]
-  villageadmin:
+  settlementadmin:
     description: Admin Commands.
-    aliases: [va]
+    aliases: [villageadmin, va, sa, kingdomadmin, ka, empireadmin, ea]
   resident:
-    description: Shows you the name of the players village.
+    description: Shows you the name of the players settlement.
     aliases: [res]
   tax:
     description: Shows tax information.

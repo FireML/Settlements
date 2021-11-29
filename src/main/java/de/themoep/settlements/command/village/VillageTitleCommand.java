@@ -16,10 +16,10 @@ public class VillageTitleCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length < 1) {
-            Collection<String> titles = res.getVillage().getTitles(res.getVillageRank());
+            Collection<String> titles = res.getSettlement().getTitles(res.getSettlementRank());
             res.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base), "type", "");
             res.tell(getMessage("usage.entry"), "usage", getUsage(base));
-            String defaultTitle = res.getVillage().getDefaultTitle(res.getVillageRank());
+            String defaultTitle = res.getSettlement().getDefaultTitle(res.getSettlementRank());
             res.tell(getMessage("usage.entry"), "usage", "/" + base + " " + alias + " " + defaultTitle);
             for (String title : titles) {
                 if (!title.equals(defaultTitle)) {
@@ -31,20 +31,20 @@ public class VillageTitleCommand extends VillageSubCommand {
             }
             return true;
         }
-        if (!res.setVillageTitle(args[0])) {
+        if (!res.setSettlementTitle(args[0])) {
             getError("invalid-title").tell(res, "title", args[0]);
         } else {
             DatabaseManager.getInstance().saveResident(res);
-            Message message = getMessage("success." + res.getVillage().getState().getKey() + "." + res.getVillageRank().getKey());
+            Message message = getMessage("success." + res.getSettlement().getState().getKey() + "." + res.getSettlementRank().getKey());
             if (!message.exists()) {
                 message = getMessage("success.default");
             }
-            MessageUtils.tellResidents(res.getVillage().getOnlineResidents(), message,
-                    "rank", res.getVillageRank().getTag(res.getVillage()),
-                    "title", res.getVillageTitle(),
+            message.tell(res.getSettlement().getOnlineResidents(),
+                    "rank", res.getSettlementRank().getTag(res.getSettlement()),
+                    "title", res.getSettlementTitle(),
                     "name", res.getName(),
-                    "villagename", res.getVillage().getName(),
-                    "villagestate", res.getVillage().getState().getTag()
+                    "settlementname", res.getSettlement().getName(),
+                    "settlementstate", res.getSettlement().getState().getTag()
             );
         }
         return true;

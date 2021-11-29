@@ -3,7 +3,7 @@ package de.themoep.settlements.command;
 import com.google.common.collect.ImmutableMap;
 import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.rank.PermissionGroup;
-import de.themoep.settlements.rank.VillageRank;
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.config.Config;
@@ -253,7 +253,7 @@ public class HelpCommand extends SubCommand {
 
     private String getPermGroup(SubCommand subCommand) {
         String shortPermission = subCommand.getPermission().substring(PERMISSION_PREFIX.length());
-        for (PermissionGroup permGroup : VillageRank.getPermGroups()) {
+        for (PermissionGroup permGroup : SettlementRank.getPermGroups()) {
             if (permGroup.getPermissions().contains(shortPermission)) {
                 return permGroup.getName();
             }

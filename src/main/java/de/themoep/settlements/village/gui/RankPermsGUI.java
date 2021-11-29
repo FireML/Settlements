@@ -9,7 +9,7 @@ import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.rank.PermissionGroup;
-import de.themoep.settlements.rank.VillageRank;
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.resident.Resident;
@@ -35,14 +35,14 @@ public class RankPermsGUI extends SettlementsGUI {
     private final Resident res;
     private final InventoryGui gui;
 
-    public RankPermsGUI(Resident res, VillageRank rank, PermissionGroup group) {
+    public RankPermsGUI(Resident res, SettlementRank rank, PermissionGroup group) {
         super("rank-perms");
         this.res = res;
         List<String> perms = group.getPermissions().stream()
                 .filter(s -> !s.contains(".help"))
                 .collect(Collectors.toList());
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title",
-                "rank", rank.getTag(res.getVillage()),
+                "rank", rank.getTag(res.getSettlement()),
                 "group", group.getName()
         ), SETUP);
         gui.setCloseAction(close -> false);
@@ -54,23 +54,23 @@ public class RankPermsGUI extends SettlementsGUI {
 
         for (String perm : perms) {
             g.addElement(new DynamicGuiElement('g', (h) -> {
-                if (!res.hasVillage()) {
+                if (!res.hasSettlement()) {
                     return null;
                 }
 
                 String permName = Message.get("command." + perm + ".permission.name").orElse(WordUtils.capitalizeFully(perm.replace('.', ' ')));
-                if (permName.startsWith("Village ")) {
-                    permName = permName.substring("Village ".length());
+                if (permName.startsWith("Settlement ")) {
+                    permName = permName.substring("Settlement ".length());
                 }
                 Material item;
-                Optional<Boolean> value = res.getVillage().getEffectivePermissionValue(rank, perm);
+                Optional<Boolean> value = res.getSettlement().getEffectivePermissionValue(rank, perm);
                 List<String> description = new ArrayList<>();
 
-                VillageRank fromRank = rank;
+                SettlementRank fromRank = rank;
                 ChatColor color;
                 if (value.orElse(false)) {
-                    for (VillageRank r : rank.getInheritedRanks()) {
-                        if (res.getVillage().getEffectivePermissionValue(r, perm).orElse(false)) {
+                    for (SettlementRank r : rank.getInheritedRanks()) {
+                        if (res.getSettlement().getEffectivePermissionValue(r, perm).orElse(false)) {
                             fromRank = r;
                         }
                     }
@@ -81,8 +81,8 @@ public class RankPermsGUI extends SettlementsGUI {
                         item = Material.GREEN_WOOL;
                         description.add(getText("entry.inherited",
                                 "perm", permName,
-                                "rank", rank.getTag(res.getVillage()),
-                                "from", fromRank.getTag(res.getVillage())
+                                "rank", rank.getTag(res.getSettlement()),
+                                "from", fromRank.getTag(res.getSettlement())
                         ));
                         color = ChatColor.DARK_GREEN;
                     }
@@ -92,27 +92,27 @@ public class RankPermsGUI extends SettlementsGUI {
                 }
 
                 boolean defaultValue = rank.getPermissionValue(perm);
-                if (fromRank == rank && res.getVillage().getPermissionValue(rank, perm).orElse(false) != defaultValue) {
-                    if (res.getVillageRank().above(rank) && res.hasPermission("village.perms.unset")) {
+                if (fromRank == rank && res.getSettlement().getPermissionValue(rank, perm).orElse(false) != defaultValue) {
+                    if (res.getSettlementRank().above(rank) && res.hasPermission("settlement.perms.ranks.unset")) {
                         description.add(getText("entry.unset",
                                 "perm", permName,
-                                "rank", rank.getTag(res.getVillage()),
+                                "rank", rank.getTag(res.getSettlement()),
                                 "default", String.valueOf(defaultValue)
                         ));
                     }
                 }
-                if (res.getVillageRank().above(rank) && res.hasPermission("village.perms.set") && res.hasPermission(perm)) {
+                if (res.getSettlementRank().above(rank) && res.hasPermission("settlement.ranks.perms.set") && res.hasPermission(perm)) {
                     if (value.orElse(false)) {
                         if (fromRank == rank) {
                             description.add(getText("entry.revoke",
                                     "perm", permName,
-                                    "rank", rank.getTag(res.getVillage())
+                                    "rank", rank.getTag(res.getSettlement())
                             ));
                         }
                     } else {
                         description.add(getText("entry.grant",
                                 "perm", permName,
-                                "rank", rank.getTag(res.getVillage())
+                                "rank", rank.getTag(res.getSettlement())
                         ));
                     }
                 }
@@ -121,34 +121,34 @@ public class RankPermsGUI extends SettlementsGUI {
                 text.add(getText("entry.title",
                         "color", color.toString(),
                         "perm", permName,
-                        "rank", rank.getTag(res.getVillage()),
+                        "rank", rank.getTag(res.getSettlement()),
                         "description", Message.orElse("command." + perm + ".permission.description", Message.get("command." + perm + ".description")).getText()
                 ));
                 text.addAll(description);
                 return new StaticGuiElement('g', ItemUtils.toIcon(item), click -> {
-                    if (res.hasVillage() && res.getVillageRank().above(rank)) {
+                    if (res.hasSettlement() && res.getSettlementRank().above(rank)) {
                         if (click.getType() != ClickType.MIDDLE) {
-                            if (res.hasPermission("village.perms.set") && res.hasPermission(perm)) {
-                                Optional<Boolean> currentValue = res.getVillage().getEffectivePermissionValue(rank, perm);
-                                VillageRank currentFromRank = rank;
+                            if (res.hasPermission("settlement.ranks.perms.set") && res.hasPermission(perm)) {
+                                Optional<Boolean> currentValue = res.getSettlement().getEffectivePermissionValue(rank, perm);
+                                SettlementRank currentFromRank = rank;
                                 if (currentValue.orElse(false)) {
-                                    for (VillageRank r : rank.getInheritedRanks()) {
-                                        if (res.getVillage().getEffectivePermissionValue(r, perm).orElse(false)) {
+                                    for (SettlementRank r : rank.getInheritedRanks()) {
+                                        if (res.getSettlement().getEffectivePermissionValue(r, perm).orElse(false)) {
                                             currentFromRank = r;
                                         }
                                     }
                                 }
                                 if (!currentValue.orElse(false) || currentFromRank == rank) {
-                                    if (res.getVillage().setPermission(rank, perm, !currentValue.orElse(false))) {
-                                        DatabaseManager.getInstance().save(res.getVillage());
+                                    if (res.getSettlement().setPermission(rank, perm, !currentValue.orElse(false))) {
+                                        DatabaseManager.getInstance().save(res.getSettlement());
                                         gui.draw();
                                     }
                                 }
                             }
                         } else {
-                            if (res.hasPermission("village.perms.unset")) {
-                                if (res.getVillage().setDefaultPermission(rank, perm)) {
-                                    DatabaseManager.getInstance().save(res.getVillage());
+                            if (res.hasPermission("settlement.ranks.perms.unset")) {
+                                if (res.getSettlement().setDefaultPermission(rank, perm)) {
+                                    DatabaseManager.getInstance().save(res.getSettlement());
                                     gui.draw();
                                 }
                             }

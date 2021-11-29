@@ -38,12 +38,12 @@ public class EmpireHistoryCommand extends EmpireSubCommand {
             page = 1;
         }
         Utils.runAsync(() -> {
-            int pages = DatabaseManager.getInstance().getLogPageCount(resident.getVillage().getEmpire(), resident, type);
+            int pages = DatabaseManager.getInstance().getLogPageCount(resident.getSettlement().getEmpire(), resident, type);
             getMessage("head").tell(resident,
                     "page", String.valueOf(page),
                     "maxpage", String.valueOf(pages)
             );
-            List<String[]> history = DatabaseManager.getInstance().getLog(resident.getVillage().getEmpire(), resident, page, type);
+            List<String[]> history = DatabaseManager.getInstance().getLog(resident.getSettlement().getEmpire(), resident, page, type);
             for (String[] entry : history) {
                 getMessage("entry").tell(resident, entry);
             }

@@ -1,22 +1,22 @@
 package de.themoep.settlements.village.events;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Village;
+import de.themoep.settlements.village.Settlement;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 public class SettlementJoinEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private final Village settlement;
+    private final Settlement settlement;
     private final Resident resident;
 
-    public SettlementJoinEvent(Village settlement, Resident resident) {
+    public SettlementJoinEvent(Settlement settlement, Resident resident) {
         this.settlement = settlement;
         this.resident = resident;
     }
 
-    public Village getSettlement() {
+    public Settlement getSettlement() {
         return settlement;
     }
 

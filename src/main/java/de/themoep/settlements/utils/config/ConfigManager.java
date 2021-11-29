@@ -1,7 +1,7 @@
 package de.themoep.settlements.utils.config;
 
 import de.themoep.settlements.empire.EmpireManager;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.event.EventManager;
 import de.themoep.settlements.land.UseFlagManager;
@@ -187,7 +187,7 @@ public class ConfigManager {
             Config.Sidebar.ENABLED = false;
         } else if (SettlementsPlugin.getInstance().isRunning()) {
             EmpireManager.getInstance().loadConfig();
-            VillageManager.getInstance().loadConfig();
+            SettlementManager.getInstance().loadConfig();
             UseFlagManager.getInstance().loadConfig();
             Message.clearCache();
             SettlementsPlugin.getInstance().getLandModeListener().reload();

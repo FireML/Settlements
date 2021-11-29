@@ -6,7 +6,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import de.themoep.settlements.integration.denizen.objects.ResidentTag;
 import de.themoep.settlements.integration.denizen.objects.SettlementTag;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Village;
+import de.themoep.settlements.village.Settlement;
 import de.themoep.settlements.village.events.SettlementJoinEvent;
 import de.themoep.settlements.village.events.SettlementLeaveEvent;
 import org.bukkit.event.EventHandler;
@@ -37,7 +37,7 @@ public class SettlementScriptEvent extends BukkitScriptEvent implements Listener
     //
     // -->
 
-    public Village settlement;
+    public Settlement settlement;
     public Resident resident;
     public String updateType;
 

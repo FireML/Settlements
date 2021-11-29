@@ -11,6 +11,6 @@ public class EmpireBanishedCommand extends EmpireSubCommand implements BanishCom
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        return listBanished(resident, resident.getVillage().getEmpire());
+        return listBanished(resident, resident.getSettlement().getEmpire());
     }
 }

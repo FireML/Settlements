@@ -11,8 +11,8 @@ import de.themoep.settlements.command.village.VillageHomeCommand;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -41,49 +41,49 @@ public class TeleportersGUI extends SettlementsGUI {
         }, getText("private"));
 
         gui.addElement(new DynamicGuiElement('v', h -> {
-            Village village = VillageManager.getInstance().getFromPlayer((Player) h);
-            if (village == null || !village.hasHome()) {
+            Settlement settlement = SettlementManager.getInstance().getFromPlayer((Player) h);
+            if (settlement == null || !settlement.hasHome()) {
                 return new StaticGuiElement('v', ItemUtils.toIcon(Material.RED_STAINED_GLASS), getText("locked"));
             }
 
-            Resident chief = village.getChief();
+            Resident chief = settlement.getChief();
 
             return new StaticGuiElement(
                     'v',
                     ItemUtils.getHead(chief.getUUID(), chief.getName()),
                     click -> {
                         Resident resident = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
-                        if (!resident.hasVillage() || !resident.getVillage().hasHome()) {
+                        if (!resident.hasSettlement() || !resident.getSettlement().hasHome()) {
                             gui.draw();
                             return true;
                         }
 
                         click.getGui().close();
-                        ((VillageHomeCommand) CommandManager.getInstance().getCommand("village").getSubCommands().get("home")).run(
+                        ((VillageHomeCommand) CommandManager.getInstance().getCommand("settlement").getSubCommands().get("home")).run(
                                 ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked()),
-                                "village",
+                                "settlement",
                                 "home"
                         );
                         return true;
                     },
-                    getText("village-home", "state", village.getStateTag())
+                    getText("settlement-home", "state", settlement.getStateTag())
             );
         }));
 
         gui.addElement(new DynamicGuiElement('e', h -> {
-            Village village = VillageManager.getInstance().getFromPlayer((Player) h);
-            if (village == null || !village.hasHome() || !village.hasEmpire() || !village.getEmpire().hasHome()) {
+            Settlement settlement = SettlementManager.getInstance().getFromPlayer((Player) h);
+            if (settlement == null || !settlement.hasHome() || !settlement.hasEmpire() || !settlement.getEmpire().hasHome()) {
                 return new StaticGuiElement('e', ItemUtils.toIcon(Material.RED_STAINED_GLASS), getText("locked"));
             }
 
-            Resident leader = village.getEmpire().getCapital().getChief();
+            Resident leader = settlement.getEmpire().getCapital().getChief();
 
             return new StaticGuiElement(
                     'e',
                     ItemUtils.getHead(leader.getUUID(), leader.getName()),
                     click -> {
                         Resident resident = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
-                        if (!resident.hasEmpire() || !resident.getVillage().getEmpire().hasHome()) {
+                        if (!resident.hasEmpire() || !resident.getSettlement().getEmpire().hasHome()) {
                             gui.draw();
                             return true;
                         }
@@ -96,7 +96,7 @@ public class TeleportersGUI extends SettlementsGUI {
                         );
                         return true;
                     },
-                    getText("village-home", "state", village.getStateTag())
+                    getText("empire-home", "state", settlement.getStateTag())
             );
         }));
     }

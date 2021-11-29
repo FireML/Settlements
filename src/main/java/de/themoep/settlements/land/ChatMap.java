@@ -147,10 +147,10 @@ public class ChatMap {
             this.player = p;
             this.resident = ResidentManager.getInstance().getResident(p);
             this.canLinkPlot = playerLand != null && (playerLand.isPlotOwner(resident) || playerLand.canAdmin(resident));
-            if (resident.hasVillage()) {
-                this.canClaimCoords = resident.hasPermission("kingdoms.command.village.claim.coords");
-                this.canUnclaimCoords = resident.hasPermission("kingdoms.command.village.unclaim.coords");
-                for (NamedLocation o : resident.getVillage().getOutpostHomes().values()) {
+            if (resident.hasSettlement()) {
+                this.canClaimCoords = resident.hasPermission("settlements.command.settlement.claim.coords");
+                this.canUnclaimCoords = resident.hasPermission("settlements.command.settlement.unclaim.coords");
+                for (NamedLocation o : resident.getSettlement().getOutpostHomes().values()) {
                     OwnedLand outpostLand = LandManager.getInstance().getLand(o.toChunkLocation());
                     if (outpostLand != null && !outpostLand.containsHome()) {
                         ownOutposts.addAll(LandManager.getInstance().getAllConnectedLand(outpostLand, search -> {
@@ -182,8 +182,8 @@ public class ChatMap {
             OwnedLand land = LandManager.getInstance().getLand(x, z, world);
             if (land == null) {
                 ComponentBuilder cb = new ComponentBuilder((current ? Symbol.CURRENT : Symbol.NORMAL).getText());
-                if (claimable && resident.hasVillage() && canClaimCoords) {
-                    cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/village claim " + x + " " + z + " map"));
+                if (claimable && resident.hasSettlement() && canClaimCoords) {
+                    cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/settlement claim " + x + " " + z + " map"));
                     cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(messages.getMessage("hover.click-to-claim")
                             .getReplacedComponents(
                                     "location", x + "-" + z,
@@ -213,9 +213,9 @@ public class ChatMap {
                     symbol = Symbol.HOME;
                 }
 
-            } else if (resident.hasVillage() && resident.getVillage().isAlly(land.getLandOwner())) {
+            } else if (resident.hasSettlement() && resident.getSettlement().isAlly(land.getLandOwner())) {
                 relation = Relation.ALLY;
-            } else if (resident.hasEmpire() && resident.getVillage().isTrusted(land.getLandOwner())) {
+            } else if (resident.hasEmpire() && resident.getSettlement().isTrusted(land.getLandOwner())) {
                 relation = Relation.EMPIRE;
             } else {
                 relation = Relation.ENEMY;
@@ -294,14 +294,14 @@ public class ChatMap {
                         cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plot link " + x + " " + z + " map"));
                     }
                 }
-            } else if (claimable && canUnclaimCoords && land.isOwnedBy(resident.getVillage())) {
+            } else if (claimable && canUnclaimCoords && land.isOwnedBy(resident.getSettlement())) {
                 hover.append("\n").append(messages.getMessage("hover.click-to-unclaim")
                         .getReplacedComponents(
                                 "location", x + "-" + z,
                                 "x", String.valueOf(x),
                                 "z", String.valueOf(z)
                         ));
-                cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/village unclaim " + x + " " + z + " map"));
+                cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/settlement unclaim " + x + " " + z + " map"));
             }
 
             return cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hover.create()))).create();

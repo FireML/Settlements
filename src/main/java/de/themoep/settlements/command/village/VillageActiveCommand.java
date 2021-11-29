@@ -40,7 +40,7 @@ public class VillageActiveCommand extends VillageSubCommand {
         }
         int finalPage = page;
         Utils.runAsync(() -> {
-            Collection<Resident> residents = sender.getVillage().getResidents();
+            Collection<Resident> residents = sender.getSettlement().getResidents();
             int pages = (int) Math.ceil(residents.size() / (double) Config.ENTRIES_PER_PAGE);
             getMessage("head").tell(sender,
                     "page", String.valueOf(finalPage),
@@ -60,9 +60,9 @@ public class VillageActiveCommand extends VillageSubCommand {
                     .skip((finalPage - 1 )* Config.ENTRIES_PER_PAGE)
                     .limit(Config.ENTRIES_PER_PAGE)
                     .forEachOrdered(r -> getMessage("entry").tell(sender,
-                            "title", r.getVillageTitle(),
+                            "title", r.getSettlementTitle(),
                             "displaytitle", r.getDisplayTitle(),
-                            "rank", r.getVillageRank().getTag(r.getVillage()),
+                            "rank", r.getSettlementRank().getTag(r.getSettlement()),
                             "name", r.getName(),
                             "activity", r.getPlayer() != null ? getText("online") : getText("offline", "ago", UtilTime.format(System.currentTimeMillis() - r.getLastLogin())),
                             "timestamp", Utils.TIME_FORMAT.format(new Date(r.getLastLogin()))

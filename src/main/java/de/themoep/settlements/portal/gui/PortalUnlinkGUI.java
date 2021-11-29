@@ -53,7 +53,7 @@ public class PortalUnlinkGUI extends PortalGUI {
 
     public void show(Resident resident) {
         Player player = resident.getPlayer();
-        if (gui != null && resident.hasVillage() && resident.getVillage().canAdminPortals(resident) && player != null) {
+        if (gui != null && resident.hasSettlement() && resident.getSettlement().canAdminPortals(resident) && player != null) {
             gui.show(player);
         }
     }

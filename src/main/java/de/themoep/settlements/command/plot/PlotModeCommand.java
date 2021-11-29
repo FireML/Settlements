@@ -51,7 +51,7 @@ public class PlotModeCommand extends PlotSubCommand {
 
         boolean canAdmin = land.canAdmin(res);
         if (!land.isPlotOwner(res) && !canAdmin) {
-            getError("not-your-plot").tell(res, "state", res.getVillage().getState().getTag());
+            getError("not-your-plot").tell(res, "state", res.getSettlement().getState().getTag());
             return true;
         }
         try {

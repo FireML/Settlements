@@ -24,12 +24,12 @@ public class EmpireModeCommand extends EmpireSubCommand {
         try {
             PlotMode m = PlotMode.get(args[0], PlotMode.AppliesTo.LAND_OWNER);
             try {
-                boolean value = !res.getVillage().getEmpire().getMode(m);
+                boolean value = !res.getSettlement().getEmpire().getMode(m);
                 if (args.length > 1) {
                     value = Utils.parseBoolean(args[1]);
                 }
-                if (res.getVillage().getEmpire().setMode(m, value)) {
-                    DatabaseManager.getInstance().saveEmpire(res.getVillage().getEmpire());
+                if (res.getSettlement().getEmpire().setMode(m, value)) {
+                    DatabaseManager.getInstance().saveEmpire(res.getSettlement().getEmpire());
                 }
                 res.tell(getMessage("success"), "mode", m.name(), "value", String.valueOf(value));
             } catch (IllegalArgumentException e) {

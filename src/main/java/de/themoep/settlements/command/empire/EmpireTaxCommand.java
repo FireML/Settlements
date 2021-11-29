@@ -30,9 +30,9 @@ public class EmpireTaxCommand extends EmpireSubCommand {
                         );
                         return true;
                     }
-                    resident.getVillage().getEmpire().setTax(amount);
-                    getMessage("success").tell(resident.getVillage().getEmpire().getOnlineResidents(), "amount", String.valueOf(amount));
-                    DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
+                    resident.getSettlement().getEmpire().setTax(amount);
+                    getMessage("success").tell(resident.getSettlement().getEmpire().getOnlineResidents(), "amount", String.valueOf(amount));
+                    DatabaseManager.getInstance().saveEmpire(resident.getSettlement().getEmpire());
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(resident, "input", args[0]);
                     return false;
@@ -48,10 +48,10 @@ public class EmpireTaxCommand extends EmpireSubCommand {
                 }
                 try {
                     TaxDebtAction taxDebtAction = TaxDebtAction.valueOf(args[0].toUpperCase());
-                    if (taxDebtAction != resident.getVillage().getEmpire().getTaxDebtAction()) {
-                        resident.getVillage().setTaxDebtAction(taxDebtAction);
-                        getMessage("success").tell(resident.getVillage().getEmpire().getOnlineResidents(), "action", taxDebtAction.getTag());
-                        DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
+                    if (taxDebtAction != resident.getSettlement().getEmpire().getTaxDebtAction()) {
+                        resident.getSettlement().setTaxDebtAction(taxDebtAction);
+                        getMessage("success").tell(resident.getSettlement().getEmpire().getOnlineResidents(), "action", taxDebtAction.getTag());
+                        DatabaseManager.getInstance().saveEmpire(resident.getSettlement().getEmpire());
                     } else {
                         getMessage("already-set").tell(resident, "action", taxDebtAction.getTag());
                     }
@@ -66,7 +66,7 @@ public class EmpireTaxCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length == 0) {
-            getMessage("current").tell(resident, "amount", String.valueOf(resident.getVillage().getEmpire().getTax()));
+            getMessage("current").tell(resident, "amount", String.valueOf(resident.getSettlement().getEmpire().getTax()));
             return true;
         }
         return false;

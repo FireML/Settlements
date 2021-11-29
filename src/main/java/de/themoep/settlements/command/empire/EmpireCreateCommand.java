@@ -20,10 +20,10 @@ public class EmpireCreateCommand extends VillageSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        if (!resident.getVillage().isMaxLevel()) {
+        if (!resident.getSettlement().isMaxLevel()) {
             getError("max-level-kingdom-required").tell(resident,
-                    "state", resident.getVillage().getState().getTag(),
-                    "level", String.valueOf(resident.getVillage().getLevel())
+                    "state", resident.getSettlement().getState().getTag(),
+                    "level", String.valueOf(resident.getSettlement().getLevel())
             );
             return true;
         }
@@ -41,17 +41,17 @@ public class EmpireCreateCommand extends VillageSubCommand {
             getError("invalid-characters").tell(resident, "input", name);
         } else {
             if (Config.Empire.CREATION_COST != 0) {
-                if (!resident.getVillage().removeFromBank(Config.Empire.CREATION_COST)) {
+                if (!resident.getSettlement().removeFromBank(Config.Empire.CREATION_COST)) {
                     getError("not-enough-money").tell(resident, "amount", String.valueOf(Config.Empire.CREATION_COST));
                     return true;
                 }
             }
-            Empire empire = new Empire(name, resident.getVillage().getId(), 1);
+            Empire empire = new Empire(name, resident.getSettlement().getId(), 1);
 
             MessageUtils.broadcast(getMessage("broadcast"),
                     "name", empire.getName(),
-                    "capital", resident.getVillage().getName(),
-                    "capitalstate", resident.getVillage().getState().getTag(),
+                    "capital", resident.getSettlement().getName(),
+                    "capitalstate", resident.getSettlement().getState().getTag(),
                     "player", resident.getName());
             EmpireManager.getInstance().registerNewEmpire(empire);
             getMessage("success").tell(resident, "name", empire.getName());

@@ -3,7 +3,6 @@ package de.themoep.settlements.command.village;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.ResidentPermsSubCommand;
 import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.utils.MessageUtils;
 
 public abstract class VillageSubCommand extends ResidentPermsSubCommand {
 
@@ -13,8 +12,8 @@ public abstract class VillageSubCommand extends ResidentPermsSubCommand {
 
     @Override
     public boolean testAccess(Resident resident) {
-        if (!resident.hasVillage()) {
-            MessageUtils.tell(resident, getError("village-required"));
+        if (!resident.hasSettlement()) {
+            getError("settlement-required").tell(resident);
             return false;
         }
         return super.testAccess(resident);
@@ -22,7 +21,7 @@ public abstract class VillageSubCommand extends ResidentPermsSubCommand {
 
     @Override
     public boolean hasAccess(Resident resident) {
-        return resident.hasVillage() && super.hasAccess(resident);
+        return resident.hasSettlement() && super.hasAccess(resident);
     }
 
 }

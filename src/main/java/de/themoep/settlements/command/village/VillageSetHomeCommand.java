@@ -1,7 +1,7 @@
 package de.themoep.settlements.command.village;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Village;
+import de.themoep.settlements.village.Settlement;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.LandManager;
@@ -16,30 +16,30 @@ public class VillageSetHomeCommand extends VillageSubCommand {
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
-        Village village = res.getVillage();
+        Settlement settlement = res.getSettlement();
         Player player = res.getPlayer();
         OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
-        if (land == null || !land.getLandOwner().equals(village)) {
-            getError("not-your-village").tell(res, "state", res.getVillage().getState().getTag());
+        if (land == null || !land.getLandOwner().equals(settlement)) {
+            getError("not-your-settlement").tell(res, "state", res.getSettlement().getState().getTag());
             return true;
         }
 
-        if (village.getHome() != null && !land.containsHome()) {
-            OwnedLand home = LandManager.getInstance().getLand(village.getHome().toChunkLocation());
+        if (settlement.getHome() != null && !land.containsHome()) {
+            OwnedLand home = LandManager.getInstance().getLand(settlement.getHome().toChunkLocation());
             if (home != null) {
                 if (land.isOutpost()) {
-                    NamedLocation outpost = village.getOutpostHomes().get(land.getOutpostName().toLowerCase());
+                    NamedLocation outpost = settlement.getOutpostHomes().get(land.getOutpostName().toLowerCase());
                     if (outpost != null) {
                         land.setOutpost(null);
-                        outpost.copy(village.getHome());
+                        outpost.copy(settlement.getHome());
                         home.setOutpost(outpost.getName());
-                        getMessage("moved-outpost").tell(village.getOnlineResidents(),
-                                "rank", res.getVillageRank().getTag(village),
-                                "title", res.getVillageTitle(),
+                        getMessage("moved-outpost").tell(settlement.getOnlineResidents(),
+                                "rank", res.getSettlementRank().getTag(settlement),
+                                "title", res.getSettlementTitle(),
                                 "displaytitle", res.getDisplayTitle(),
                                 "name", player.getName(),
                                 "outpost", outpost.getName(),
-                                "state", village.getState().getTag(),
+                                "state", settlement.getState().getTag(),
                                 "world", outpost.getWorld(),
                                 "x", String.valueOf(outpost.getBlockX()),
                                 "y", String.valueOf(outpost.getBlockY()),
@@ -50,23 +50,23 @@ public class VillageSetHomeCommand extends VillageSubCommand {
                 if (!home.isOutpost() && LandManager.getInstance().getAllConnectedLand(home,
                         l -> l.equals(land) || l.isOutpost() ? LandManager.FilterResponse.RETURN : LandManager.FilterResponse.CONTINUE)
                         .isEmpty()) {
-                    getError("abandoned-land").tell(res, "state", res.getVillage().getState().getTag());
+                    getError("abandoned-land").tell(res, "state", res.getSettlement().getState().getTag());
                     return true;
                 }
             }
         }
 
-        village.setHome(player.getLocation());
-        getMessage("success").tell(village.getOnlineResidents(),
-                "rank", res.getVillageRank().getTag(village),
-                "title", res.getVillageTitle(),
+        settlement.setHome(player.getLocation());
+        getMessage("success").tell(settlement.getOnlineResidents(),
+                "rank", res.getSettlementRank().getTag(settlement),
+                "title", res.getSettlementTitle(),
                 "name", player.getName(),
-                "state", village.getState().getTag(),
+                "state", settlement.getState().getTag(),
                 "world", player.getLocation().getWorld().getName(),
                 "x", String.valueOf(player.getLocation().getBlockX()),
                 "y", String.valueOf(player.getLocation().getBlockY()),
                 "z", String.valueOf(player.getLocation().getBlockZ()));
-        DatabaseManager.getInstance().saveSettlement(village);
+        DatabaseManager.getInstance().saveSettlement(settlement);
         return true;
     }
 }

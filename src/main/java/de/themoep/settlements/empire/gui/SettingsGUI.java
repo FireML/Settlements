@@ -55,7 +55,7 @@ public class SettingsGUI extends SettlementsGUI {
             }
             return true;
         }, getText(resident.hasPermission("empire.sethome") ? "sethome" : "home",
-                "state", resident.getVillage().getEmpire().getStateTag()
+                "state", resident.getSettlement().getEmpire().getStateTag()
         )));
 
         if (resident.hasPermission("empire.setaccess")) {
@@ -65,8 +65,8 @@ public class SettingsGUI extends SettlementsGUI {
                 }
                 return true;
             }, getText("access",
-                    "access", resident.getVillage().getEmpire().getAccess().getTag(),
-                    "state", resident.getVillage().getEmpire().getStateTag()
+                    "access", resident.getSettlement().getEmpire().getAccess().getTag(),
+                    "state", resident.getSettlement().getEmpire().getStateTag()
             )));
         }
 
@@ -75,14 +75,14 @@ public class SettingsGUI extends SettlementsGUI {
                 if (resident.hasPermission("empire.build")) {
                     new BuildGUI(
                             "empire",
-                            resident.getVillage().getEmpire(),
+                            resident.getSettlement().getEmpire(),
                             () -> resident.hasEmpire() && resident.hasPermission("empire.build")
                     ).open(resident.getPlayer());
                 }
                 return true;
             }, getText("build",
-                    "build", resident.getVillage().getEmpire().getBuildState().getTag(),
-                    "state", resident.getVillage().getEmpire().getStateTag()
+                    "build", resident.getSettlement().getEmpire().getBuildState().getTag(),
+                    "state", resident.getSettlement().getEmpire().getStateTag()
             )));
         }
 
@@ -91,13 +91,13 @@ public class SettingsGUI extends SettlementsGUI {
                 if (resident.hasPermission("empire.use")) {
                     new PermsGUI(
                             "empire",
-                            resident.getVillage().getEmpire(),
+                            resident.getSettlement().getEmpire(),
                             () -> resident.hasEmpire() && resident.hasPermission("empire.use")
                     ).open(resident.getPlayer());
                 }
                 return true;
             }, getText("use",
-                    "state", resident.getVillage().getEmpire().getStateTag()
+                    "state", resident.getSettlement().getEmpire().getStateTag()
             )));
         }
 
@@ -108,7 +108,7 @@ public class SettingsGUI extends SettlementsGUI {
                 }
                 return true;
             }, getText("mode",
-                    "state", resident.getVillage().getEmpire().getStateTag()
+                    "state", resident.getSettlement().getEmpire().getStateTag()
             )));
         }
 
@@ -119,7 +119,7 @@ public class SettingsGUI extends SettlementsGUI {
                 }
                 return true;
             }, getText("perms",
-                    "state", resident.getVillage().getEmpire().getStateTag()
+                    "state", resident.getSettlement().getEmpire().getStateTag()
             )));
         }
 
@@ -130,7 +130,7 @@ public class SettingsGUI extends SettlementsGUI {
                 }
                 return true;
             }, getText("perks",
-                    "state", resident.getVillage().getEmpire().getStateTag()
+                    "state", resident.getSettlement().getEmpire().getStateTag()
             )));
         }
 
@@ -141,7 +141,7 @@ public class SettingsGUI extends SettlementsGUI {
                 }
                 return true;
             }, getText("shop",
-                    "state", resident.getVillage().getEmpire().getStateTag()
+                    "state", resident.getSettlement().getEmpire().getStateTag()
             )));
         }
 
@@ -152,12 +152,12 @@ public class SettingsGUI extends SettlementsGUI {
                 }
                 return true;
             }, getText(resident.hasPermission("empire.titles") ? "titles-edit" : "titles",
-                    "state", resident.getVillage().getEmpire().getStateTag(),
+                    "state", resident.getSettlement().getEmpire().getStateTag(),
                     "title", resident.getEmpireTitle()
             )));
         }
 
-        Empire empire = resident.getVillage().getEmpire();
+        Empire empire = resident.getSettlement().getEmpire();
         gui.addElement(new StaticGuiElement('i', ItemUtils.toIcon(Material.BLUE_BED),
                 Utils.wrap(getText("entry", empire.getReplacements(SettingsGUI.this)), 48)));
 

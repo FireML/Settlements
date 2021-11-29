@@ -28,47 +28,47 @@ public class EmpireJoinCommand extends VillageSubCommand {
             resident.tell(getError("empire-doesnt-exist"), "name", args[0]);
         } else if (joinEmpire.getId().isNull()) {
             getError("missing-empire-id").tell(resident, "name", joinEmpire.getName());
-        } else if (joinEmpire.getAccess().below(LandAccess.OPEN) && !Utils.villageHasInvite(resident.getVillage(), joinEmpire)) {
+        } else if (joinEmpire.getAccess().below(LandAccess.OPEN) && !Utils.villageHasInvite(resident.getSettlement(), joinEmpire)) {
             resident.tell(getMessage("no-invite"),
                     "name", joinEmpire.getName(),
-                    "state", resident.getVillage().getState().getTag()
+                    "state", resident.getSettlement().getState().getTag()
             );
         } else if (joinEmpire.isFull()) {
             resident.tell(getMessage("is-full"),
                     "name", joinEmpire.getName(),
-                    "state", resident.getVillage().getState().getTag()
+                    "state", resident.getSettlement().getState().getTag()
             );
-        } else if (joinEmpire.getJoinFee() > 0 && resident.getVillage().getBank() < joinEmpire.getJoinFee()) {
+        } else if (joinEmpire.getJoinFee() > 0 && resident.getSettlement().getBank() < joinEmpire.getJoinFee()) {
             resident.tell(getError("not-enough-money"),
                     "name", joinEmpire.getName(),
                     "amount", String.valueOf(joinEmpire.getJoinFee()),
-                    "state", resident.getVillage().getState().getTag()
+                    "state", resident.getSettlement().getState().getTag()
             );
         } else {
             if (joinEmpire.getJoinFee() > 0) {
-                resident.getVillage().removeFromBank(joinEmpire.getJoinFee());
+                resident.getSettlement().removeFromBank(joinEmpire.getJoinFee());
                 joinEmpire.addToBank(joinEmpire.getJoinFee());
                 getMessage("money-paid").tell(resident, "amount", String.valueOf(joinEmpire.getJoinFee()));
                 DatabaseManager.getInstance().saveEmpire(joinEmpire);
                 DatabaseManager.getInstance().log(joinEmpire, resident, "joinfee", "cash", joinEmpire.getJoinFee());
             }
-            resident.getVillage().setEmpire(joinEmpire);
+            resident.getSettlement().setEmpire(joinEmpire);
             if (Config.Empire.Missions.DISTRIBUTE_ON_JOIN) {
-                joinEmpire.distributeNewMissions(resident.getVillage());
+                joinEmpire.distributeNewMissions(resident.getSettlement());
             }
-            for (Resident member : resident.getVillage().getOnlineResidents()) {
+            for (Resident member : resident.getSettlement().getOnlineResidents()) {
                 member.addChannel(ChatChannel.EMPIRE);
             }
-            InviteCache.getPendingEmpireInvites().remove(resident.getVillage().getId(), joinEmpire.getId());
-            DatabaseManager.getInstance().saveSettlement(resident.getVillage());
-            DatabaseManager.getInstance().saveMissionData(resident.getVillage());
-            getMessage("success").tell(resident.getVillage().getOnlineResidents(),
+            InviteCache.getPendingEmpireInvites().remove(resident.getSettlement().getId(), joinEmpire.getId());
+            DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
+            DatabaseManager.getInstance().saveMissionData(resident.getSettlement());
+            getMessage("success").tell(resident.getSettlement().getOnlineResidents(),
                     "name", joinEmpire.getName(),
-                    "state", resident.getVillage().getState().getTag()
+                    "state", resident.getSettlement().getState().getTag()
             );
             MessageUtils.tellResidents(joinEmpire.getOnlineResidents(), getMessage("new-member"),
-                    "name", resident.getVillage().getName(),
-                    "state", resident.getVillage().getState().getTag()
+                    "name", resident.getSettlement().getName(),
+                    "state", resident.getSettlement().getState().getTag()
             );
         }
         return true;

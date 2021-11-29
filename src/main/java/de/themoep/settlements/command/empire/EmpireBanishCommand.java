@@ -12,6 +12,6 @@ public class EmpireBanishCommand extends EmpireSubCommand implements BanishComma
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        return banish(resident, resident.getVillage().getEmpire(), args);
+        return banish(resident, resident.getSettlement().getEmpire(), args);
     }
 }

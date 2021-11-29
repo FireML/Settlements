@@ -22,8 +22,8 @@ import de.themoep.settlements.utils.PathedConfigMessages;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.world.NamedLocation;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -53,13 +53,13 @@ public class PrivateTeleportersGUI extends SettlementsGUI {
 
     public PrivateTeleportersGUI(Player player) {
         super("private-teleports");
-        Village village = VillageManager.getInstance().getFromPlayer(player);
+        Settlement settlement = SettlementManager.getInstance().getFromPlayer(player);
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), SETUP);
         gui.setCloseAction(close -> false);
         gui.setFiller(BORDER_ITEM);
         GuiElementGroup group = new GuiElementGroup('g');
         try {
-            for (Supplier<GuiElement> supplier : getSuppliers(village)) {
+            for (Supplier<GuiElement> supplier : getSuppliers(settlement)) {
                 group.addElement(supplier.get());
             }
         } catch (ExecutionException e) {
@@ -88,28 +88,28 @@ public class PrivateTeleportersGUI extends SettlementsGUI {
         gui.show(player);
     }
 
-    private List<Supplier<GuiElement>> getSuppliers(Village village) throws ExecutionException {
-        return suppliers.get(village != null ? village.getId() : IdObject.get(null), () -> {
+    private List<Supplier<GuiElement>> getSuppliers(Settlement settlement) throws ExecutionException {
+        return suppliers.get(settlement != null ? settlement.getId() : IdObject.get(null), () -> {
             List<Supplier<GuiElement>> suppliers = new ArrayList<>();
 
             Set<LandOwner> entries = new LinkedHashSet<>();
-            if (village != null) {
-                for (Map.Entry<String, NamedLocation> outpost : village.getOutpostHomes().entrySet()) {
+            if (settlement != null) {
+                for (Map.Entry<String, NamedLocation> outpost : settlement.getOutpostHomes().entrySet()) {
                     String text = getText("outpost",
                             "name", outpost.getValue().getName(),
-                            "state", village.getStateTag(),
-                            "owner", village.getName()
+                            "state", settlement.getStateTag(),
+                            "owner", settlement.getName()
                     );
                     suppliers.add(() -> new StaticGuiElement(
                             'g',
                             ItemUtils.toIcon(Material.RED_BANNER),
                             click -> {
                                 click.getGui().close();
-                                if (village.getOutpostHomes().containsKey(outpost.getKey())) {
+                                if (settlement.getOutpostHomes().containsKey(outpost.getKey())) {
                                     Utils.teleport(
-                                            new PathedConfigMessages("command.village.outpost.teleport"),
+                                            new PathedConfigMessages("command.settlement.outpost.teleport"),
                                             (Player) click.getEvent().getWhoClicked(),
-                                            village.getOutpostHomes().get(outpost.getKey()).toBukkitLocation(),
+                                            settlement.getOutpostHomes().get(outpost.getKey()).toBukkitLocation(),
                                             "outpost",
                                             "name", outpost.getValue().getName()
                                     );
@@ -120,26 +120,26 @@ public class PrivateTeleportersGUI extends SettlementsGUI {
                     ));
                 }
 
-                village.getAllies().stream()
+                settlement.getAllies().stream()
                         .filter(v -> v.getAccess().atLeast(LandAccess.ALLY))
                         .forEachOrdered(entries::add);
 
-                if (village.hasEmpire()) {
-                    village.getEmpire().getMembers().stream()
-                            .filter(v -> !v.equals(village) && v.getAccess().atLeast(LandAccess.TRUSTED))
-                            .sorted(Village::compareTo)
+                if (settlement.hasEmpire()) {
+                    settlement.getEmpire().getMembers().stream()
+                            .filter(v -> !v.equals(settlement) && v.getAccess().atLeast(LandAccess.TRUSTED))
+                            .sorted(Settlement::compareTo)
                             .forEachOrdered(entries::add);
                 }
             }
 
             EmpireManager.getInstance().getEmpires().stream()
-                    .filter(e -> (village == null || !e.equals(village.getEmpire())) && e.getAccess().atLeast(LandAccess.PUBLIC))
+                    .filter(e -> (settlement == null || !e.equals(settlement.getEmpire())) && e.getAccess().atLeast(LandAccess.PUBLIC))
                     .sorted(Empire::compareTo)
                     .forEachOrdered(entries::add);
 
-            VillageManager.getInstance().getSettlements().stream()
-                    .filter(v -> !v.equals(village) && v.getAccess().atLeast(LandAccess.PUBLIC))
-                    .sorted(Village::compareTo)
+            SettlementManager.getInstance().getSettlements().stream()
+                    .filter(v -> !v.equals(settlement) && v.getAccess().atLeast(LandAccess.PUBLIC))
+                    .sorted(Settlement::compareTo)
                     .forEachOrdered(entries::add);
 
             for (LandOwner landOwner : entries) {
@@ -159,10 +159,10 @@ public class PrivateTeleportersGUI extends SettlementsGUI {
                                             "home",
                                             landOwner.getName()
                                     );
-                                } else if (landOwner instanceof Village) {
-                                    ((VillageHomeCommand) CommandManager.getInstance().getCommand("village").getSubCommands().get("home")).run(
+                                } else if (landOwner instanceof Settlement) {
+                                    ((VillageHomeCommand) CommandManager.getInstance().getCommand("settlement").getSubCommands().get("home")).run(
                                             ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked()),
-                                            "village",
+                                            "settlement",
                                             "home",
                                             landOwner.getName()
                                     );

@@ -39,14 +39,14 @@ public class ModeGUI extends SettlementsGUI {
             group.addElement(new DynamicGuiElement('g', (h) -> {
                 Resident resident = ResidentManager.getInstance().getResident((Player) h);
                 if (resident.hasEmpire()) {
-                    boolean enabled = m.get(resident.getVillage().getEmpire());
+                    boolean enabled = m.get(resident.getSettlement().getEmpire());
                     return new StaticGuiElement('g',
                             ItemUtils.setGlowing(m.getItem(), enabled),
                             click -> {
                                 if (resident.hasEmpire() && resident.hasPermission("empire.mode")) {
-                                    boolean state = !m.get(resident.getVillage().getEmpire());
-                                    if (m.set(state, resident.getVillage().getEmpire())) {
-                                        DatabaseManager.getInstance().saveEmpire(resident.getVillage().getEmpire());
+                                    boolean state = !m.get(resident.getSettlement().getEmpire());
+                                    if (m.set(state, resident.getSettlement().getEmpire())) {
+                                        DatabaseManager.getInstance().saveEmpire(resident.getSettlement().getEmpire());
                                     }
                                     Message.get("command.empire.mode.success").tell(resident,
                                             "mode", m.getTag(),

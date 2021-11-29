@@ -14,8 +14,8 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -51,19 +51,19 @@ public class ShopGUI extends SettlementsGUI {
 
         GuiElementGroup group = new GuiElementGroup('g');
 
-        if (resident.hasVillage()) {
-            Village village = resident.getVillage();
+        if (resident.hasSettlement()) {
+            Settlement settlement = resident.getSettlement();
 
-            for (LevelPerk perk : VillageManager.getInstance().getPerks()) {
-                if (village.hasUnlocked(perk) && !village.checkPerkCount(perk)) {
+            for (LevelPerk perk : SettlementManager.getInstance().getPerks()) {
+                if (settlement.hasUnlocked(perk) && !settlement.checkPerkCount(perk)) {
                     continue;
                 }
 
                 group.addElement(new DynamicGuiElement('g', h -> {
                     List<String> description = new ArrayList<>();
                     ItemStack item = ItemUtils.toIcon(perk.getIcon());
-                    if (resident.getVillage().hasUnlocked(perk)) {
-                        PerkData perkData = resident.getVillage().getPerkData(perk);
+                    if (resident.getSettlement().hasUnlocked(perk)) {
+                        PerkData perkData = resident.getSettlement().getPerkData(perk);
                         if (perk.getRepeat() != 0) {
                             description.add(getText("entry.repeat",
                                     "name", perk.getTag(),
@@ -80,7 +80,7 @@ public class ShopGUI extends SettlementsGUI {
                             } else {
                                 description.add(getText("unlimited"));
                             }
-                            if (!resident.getVillage().checkPerkCooldown(perk)) {
+                            if (!resident.getSettlement().checkPerkCooldown(perk)) {
                                 description.add(getText("cooldown", "cooldown", UtilTime.format(System.currentTimeMillis() - perkData.getLastUsed())));
                             }
                             if (!perk.getRepeatCost().isEmpty()) {
@@ -92,7 +92,7 @@ public class ShopGUI extends SettlementsGUI {
                                             "amount", String.valueOf(cost.getValue())
                                     ));
                                 }
-                                if (!resident.getVillage().has(perk.getRepeatCost())) {
+                                if (!resident.getSettlement().has(perk.getRepeatCost())) {
                                     description.add(getText("cost.too-expensive"));
                                 }
                             }
@@ -102,7 +102,7 @@ public class ShopGUI extends SettlementsGUI {
                             ItemUtils.setGlowing(item, true);
                         }
                     } else {
-                        description.add(getText("entry." + (perk.matchesLevelRequirement(resident.getVillage()) ? "unlockable" : "locked"),
+                        description.add(getText("entry." + (perk.matchesLevelRequirement(resident.getSettlement()) ? "unlockable" : "locked"),
                                 "name", perk.getTag(),
                                 "state", perk.getState().getTag(),
                                 "level", String.valueOf(perk.getLevel()),
@@ -131,7 +131,7 @@ public class ShopGUI extends SettlementsGUI {
                                             "amount", String.valueOf(cost.getValue())
                                     ));
                                 }
-                                if (!resident.getVillage().has(perk.getRepeatCost())) {
+                                if (!resident.getSettlement().has(perk.getRepeatCost())) {
                                     description.add(getText("cost.too-expensive"));
                                 }
                             }
@@ -145,7 +145,7 @@ public class ShopGUI extends SettlementsGUI {
                                         "amount", String.valueOf(cost.getValue())
                                 ));
                             }
-                            if (!resident.getVillage().has(perk.getUnlockCost())) {
+                            if (!resident.getSettlement().has(perk.getUnlockCost())) {
                                 description.add(getText("cost.too-expensive"));
                             }
                         }
@@ -166,27 +166,27 @@ public class ShopGUI extends SettlementsGUI {
                     }
 
                     return new StaticGuiElement('g', item, click -> {
-                        if (resident.hasVillage() && perk.matchesLevelRequirement(resident.getVillage())) {
-                            if (resident.hasPermission("village.shop.repeat")
-                                    && resident.getVillage().canRepeat(perk)
-                                    && resident.getVillage().remove(perk.getRepeatCost())) {
-                                resident.getVillage().repeatPerk((Player) click.getWhoClicked(), perk);
-                                Message.get("command.village.shop.unlock.success")
-                                        .tell(resident.getVillage().getOnlineResidents(), "perk", perk.getTag());
+                        if (resident.hasSettlement() && perk.matchesLevelRequirement(resident.getSettlement())) {
+                            if (resident.hasPermission("settlement.shop.repeat")
+                                    && resident.getSettlement().canRepeat(perk)
+                                    && resident.getSettlement().remove(perk.getRepeatCost())) {
+                                resident.getSettlement().repeatPerk((Player) click.getWhoClicked(), perk);
+                                Message.get("command.settlement.shop.unlock.success")
+                                        .tell(resident.getSettlement().getOnlineResidents(), "perk", perk.getTag());
                                 Utils.runAsync(() -> {
-                                    DatabaseManager.getInstance().saveSettlement(resident.getVillage());
-                                    DatabaseManager.getInstance().log(resident.getVillage(), resident, "perk-repeat", perk.getRepeatCost());
+                                    DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
+                                    DatabaseManager.getInstance().log(resident.getSettlement(), resident, "perk-repeat", perk.getRepeatCost());
                                 });
                                 gui.draw();
-                            } else if (resident.hasPermission("village.shop.unlock")
-                                    && resident.getVillage().canUnlock(perk)
-                                    && resident.getVillage().remove(perk.getUnlockCost())) {
-                                resident.getVillage().unlockPerk((Player) click.getWhoClicked(), perk);
-                                Message.get("command.village.shop.unlock.success")
-                                        .tell(resident.getVillage().getOnlineResidents(), "perk", perk.getTag());
+                            } else if (resident.hasPermission("settlement.shop.unlock")
+                                    && resident.getSettlement().canUnlock(perk)
+                                    && resident.getSettlement().remove(perk.getUnlockCost())) {
+                                resident.getSettlement().unlockPerk((Player) click.getWhoClicked(), perk);
+                                Message.get("command.settlement.shop.unlock.success")
+                                        .tell(resident.getSettlement().getOnlineResidents(), "perk", perk.getTag());
                                 Utils.runAsync(() -> {
-                                    DatabaseManager.getInstance().saveSettlement(resident.getVillage());
-                                    DatabaseManager.getInstance().log(resident.getVillage(), resident, "perk-unlock", perk.getUnlockCost());
+                                    DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
+                                    DatabaseManager.getInstance().log(resident.getSettlement(), resident, "perk-unlock", perk.getUnlockCost());
                                 });
                                 gui.draw();
                             }

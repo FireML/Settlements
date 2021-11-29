@@ -11,20 +11,20 @@ public class VillageDiscordCommand extends VillageSubCommand {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length == 0) {
-                    String old = resident.getVillage().getDiscord();
-                    resident.getVillage().setDiscord("");
+                    String old = resident.getSettlement().getDiscord();
+                    resident.getSettlement().setDiscord("");
                     getMessage("removed").tell(resident,
-                            "state", resident.getVillage().getStateTag(),
+                            "state", resident.getSettlement().getStateTag(),
                             "discordlink", old
                     );
                 } else {
-                    resident.getVillage().setDiscord(String.join(" ", args));
+                    resident.getSettlement().setDiscord(String.join(" ", args));
                     getMessage("success").tell(resident,
-                            "state", resident.getVillage().getStateTag(),
-                            "discordlink", resident.getVillage().getDiscord()
+                            "state", resident.getSettlement().getStateTag(),
+                            "discordlink", resident.getSettlement().getDiscord()
                     );
                 }
-                DatabaseManager.getInstance().saveSettlement(resident.getVillage());
+                DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
                 return true;
             }
         });
@@ -33,19 +33,19 @@ public class VillageDiscordCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length == 0) {
-            if (resident.getVillage().getDiscord().isEmpty()) {
+            if (resident.getSettlement().getDiscord().isEmpty()) {
                 getMessage("none").tell(resident,
-                        "state", resident.getVillage().getStateTag()
+                        "state", resident.getSettlement().getStateTag()
                 );
             } else {
                 getMessage("current").tell(resident,
-                        "state", resident.getVillage().getStateTag(),
-                        "discordlink", resident.getVillage().getDiscord()
+                        "state", resident.getSettlement().getStateTag(),
+                        "discordlink", resident.getSettlement().getDiscord()
                 );
             }
-            if (resident.hasPermission("village.discord.set")) {
+            if (resident.hasPermission("settlement.discord.set")) {
                 getMessage("setup").tell(resident,
-                        "state", resident.getVillage().getStateTag()
+                        "state", resident.getSettlement().getStateTag()
                 );
             }
             return true;

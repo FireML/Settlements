@@ -16,16 +16,16 @@ public class VillageBuildCommand extends VillageSubCommand {
         if (args.length < 1) {
             new BuildGUI(
                     "settlement",
-                    res.getVillage(),
-                    () -> res.hasVillage() && res.hasPermission(getPermission())
+                    res.getSettlement(),
+                    () -> res.hasSettlement() && res.hasPermission(getPermission())
             ).open(res.getPlayer());
             return true;
         }
 
         try {
             BuildState newState = BuildState.valueOf(args[0].toUpperCase(), BuildState.AppliesTo.SETTLEMENT);
-            res.getVillage().setBuildState(newState);
-            DatabaseManager.getInstance().saveSettlement(res.getVillage());
+            res.getSettlement().setBuildState(newState);
+            DatabaseManager.getInstance().saveSettlement(res.getSettlement());
             res.tell(getMessage("success"), "state", newState.getTag());
         } catch (IllegalArgumentException e) {
             res.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base));

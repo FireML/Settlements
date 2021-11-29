@@ -27,7 +27,7 @@ public class RankSelectGUI extends SettlementsGUI {
         super("empire.rank-select");
         this.resident = resident;
         gui = new InventoryGui(SettlementsPlugin.getInstance(),
-                getText("title", "state", resident.hasEmpire() ? resident.getVillage().getEmpire().getStateTag() : ""),
+                getText("title", "state", resident.hasEmpire() ? resident.getSettlement().getEmpire().getStateTag() : ""),
                 SETUP);
         gui.setCloseAction(close -> false);
         gui.setFiller(BORDER_ITEM);
@@ -42,8 +42,8 @@ public class RankSelectGUI extends SettlementsGUI {
                         }
                         return true;
                     },  getText("entry",
-                            "state", resident.hasEmpire() ? resident.getVillage().getEmpire().getStateTag() : "",
-                            "rank", resident.hasEmpire() ? rank.getTag(resident.getVillage().getEmpire()) : rank.getTag()
+                            "state", resident.hasEmpire() ? resident.getSettlement().getEmpire().getStateTag() : "",
+                            "rank", resident.hasEmpire() ? rank.getTag(resident.getSettlement().getEmpire()) : rank.getTag()
                     )
             ));
         }

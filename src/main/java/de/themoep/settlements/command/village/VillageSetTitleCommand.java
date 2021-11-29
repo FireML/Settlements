@@ -18,14 +18,14 @@ public class VillageSetTitleCommand extends VillageSubCommand {
             return false;
         }
 
-        Resident target = res.getVillage().getResident(args[0]);
+        Resident target = res.getSettlement().getResident(args[0]);
         if (target == null) {
-            getError("not-in-current").tell(res, "state", res.getVillage().getState().getTag());
+            getError("not-in-current").tell(res, "state", res.getSettlement().getState().getTag());
         } else if (args.length == 1) {
-            Collection<String> titles = res.getVillage().getTitles(target.getVillageRank());
+            Collection<String> titles = res.getSettlement().getTitles(target.getSettlementRank());
             res.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base), "type", "");
             res.tell(getMessage("usage.entry"), "usage", getUsage(base));
-            String defaultTitle = res.getVillage().getDefaultTitle(target.getVillageRank());
+            String defaultTitle = res.getSettlement().getDefaultTitle(target.getSettlementRank());
             res.tell(getMessage("usage.entry"), "usage", "/" + base + " " + alias + " " + defaultTitle);
             for (String title : titles) {
                 if (!title.equals(defaultTitle)) {
@@ -35,21 +35,21 @@ public class VillageSetTitleCommand extends VillageSubCommand {
             if (getMessage("usage.footer").exists()) {
                 res.tell(getMessage("usage.footer"), "name", name(), "command", "/" + base + " " + alias);
             }
-        } else if (!res.getVillageRank().above(target.getVillageRank())) {
-            getMessage("cant-set-higher").tell(res, "rank", res.getVillageRank().getTag(res.getVillage()));
-        } else if (!target.setVillageTitle(args[1])) {
+        } else if (!res.getSettlementRank().above(target.getSettlementRank())) {
+            getMessage("cant-set-higher").tell(res, "rank", res.getSettlementRank().getTag(res.getSettlement()));
+        } else if (!target.setSettlementTitle(args[1])) {
             getError("invalid-title").tell(res, "title", args[1]);
         } else {
             DatabaseManager.getInstance().saveResident(target);
-            getMessage("success").tell(res.getVillage().getOnlineResidents(),
-                    "rank", target.getVillageRank().getTag(res.getVillage()),
-                    "title", target.getVillageTitle(),
+            getMessage("success").tell(res.getSettlement().getOnlineResidents(),
+                    "rank", target.getSettlementRank().getTag(res.getSettlement()),
+                    "title", target.getSettlementTitle(),
                     "target", target.getName(),
-                    "sendertitle", res.getVillageTitle(),
+                    "sendertitle", res.getSettlementTitle(),
                     "senderdisplaytitle", res.getDisplayTitle(),
                     "sender", res.getName(),
-                    "villagename", res.getVillage().getName(),
-                    "villagestate", res.getVillage().getState().getTag()
+                    "settlementname", res.getSettlement().getName(),
+                    "settlementstate", res.getSettlement().getState().getTag()
             );
         }
         return true;

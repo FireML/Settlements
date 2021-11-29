@@ -89,15 +89,15 @@ public class PlotSquaredIntegration implements Listener, ConfigMessages {
             return "purchasable";
         });
 
-        VillageCommand villageCommand = (VillageCommand) CommandManager.getInstance().getCommand("village");
-        villageCommand.registerCommand(new VillageSubCommand(villageCommand, "mapart", "plotsquared") {
+        VillageCommand settlementCommand = (VillageCommand) CommandManager.getInstance().getCommand("settlement");
+        settlementCommand.registerCommand(new VillageSubCommand(settlementCommand, "mapart", "plotsquared") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
-                Set<Plot> plots = plotArea.getPlots(resident.getVillage().getChiefId());
+                Set<Plot> plots = plotArea.getPlots(resident.getSettlement().getChiefId());
                 if (!plots.isEmpty()) {
                     teleportToPlot(resident.getPlayer(), plots.iterator().next());
                 } else {
-                    getMessage("no-plot").tell(resident, "state", resident.getVillage().getStateTag(), "base", base);
+                    getMessage("no-plot").tell(resident, "state", resident.getSettlement().getStateTag(), "base", base);
                 }
                 return true;
             }

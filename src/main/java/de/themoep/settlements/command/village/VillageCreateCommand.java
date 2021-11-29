@@ -1,9 +1,9 @@
 package de.themoep.settlements.command.village;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
-import de.themoep.settlements.village.VillageState;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
+import de.themoep.settlements.village.SettlementState;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.ResidentSubCommand;
 import de.themoep.settlements.command.SubCommand;
@@ -30,7 +30,7 @@ public class VillageCreateCommand extends ResidentSubCommand {
         if (name.toLowerCase().contains("claims")) {
             getError("invalid-characters").tell(resident, "input", name);
         } else if (villageExists(name)) {
-            getError("village-exists").tell(resident, "name", name);
+            getError("settlement-exists").tell(resident, "name", name);
         } else if (name.length() > 20) {
             getError("too-long").tell(resident, "input", name, "amount", String.valueOf(20));
         } else if (!allowed.matcher(name).matches()) {
@@ -47,21 +47,21 @@ public class VillageCreateCommand extends ResidentSubCommand {
                     return true;
                 }
             }
-            Village village = new Village(name, resident.getUUID(), 1, VillageState.VILLAGE);
-            VillageManager.getInstance().registerNew(resident, village);
+            Settlement settlement = new Settlement(name, resident.getUUID(), 1, SettlementState.VILLAGE);
+            SettlementManager.getInstance().registerNew(resident, settlement);
 
             MessageUtils.broadcast(getMessage("broadcast"),
-                    "name", village.getName(),
-                    "state", village.getState().getTag(),
+                    "name", settlement.getName(),
+                    "state", settlement.getState().getTag(),
                     "player", resident.getName());
-            getMessage("success").tell(resident, "name", village.getName());
+            getMessage("success").tell(resident, "name", settlement.getName());
         }
         return true;
     }
 
     @Override
     public boolean testAccess(Resident resident) {
-        if (resident.hasVillage()) {
+        if (resident.hasSettlement()) {
             getError("free-required").tell(resident);
             return false;
         }
@@ -70,11 +70,11 @@ public class VillageCreateCommand extends ResidentSubCommand {
 
     @Override
     public boolean hasAccess(Resident resident) {
-        return !resident.hasVillage() && super.hasAccess(resident);
+        return !resident.hasSettlement() && super.hasAccess(resident);
     }
 
 
     private boolean villageExists(String name) {
-        return VillageManager.getInstance().getFromName(name) != null;
+        return SettlementManager.getInstance().getFromName(name) != null;
     }
 }

@@ -14,7 +14,7 @@ public class EmpireMaterialsCommand extends EmpireSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        Empire empire = resident.getVillage().getEmpire();
+        Empire empire = resident.getSettlement().getEmpire();
         if (empire.isMaxLevel()) {
             getMessage("max-level-reached").tell(resident);
             return true;

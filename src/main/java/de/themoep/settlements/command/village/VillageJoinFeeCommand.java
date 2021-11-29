@@ -15,12 +15,12 @@ public class VillageJoinFeeCommand extends VillageSubCommand {
                 }
                 try {
                     long amount = Long.parseLong(args[0]);
-                    resident.getVillage().setJoinFee(amount);
-                    getMessage("success").tell(resident.getVillage().getOnlineResidents(),
-                            "state", resident.getVillage().getStateTag(),
-                            "amount", String.valueOf(resident.getVillage().getJoinFee())
+                    resident.getSettlement().setJoinFee(amount);
+                    getMessage("success").tell(resident.getSettlement().getOnlineResidents(),
+                            "state", resident.getSettlement().getStateTag(),
+                            "amount", String.valueOf(resident.getSettlement().getJoinFee())
                     );
-                    DatabaseManager.getInstance().saveSettlement(resident.getVillage());
+                    DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(resident, "input", args[0]);
                     return false;
@@ -34,8 +34,8 @@ public class VillageJoinFeeCommand extends VillageSubCommand {
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length == 0) {
             getMessage("current").tell(resident,
-                    "state", resident.getVillage().getStateTag(),
-                    "amount", String.valueOf(resident.getVillage().getJoinFee())
+                    "state", resident.getSettlement().getStateTag(),
+                    "amount", String.valueOf(resident.getSettlement().getJoinFee())
             );
             return true;
         }

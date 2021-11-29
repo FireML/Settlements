@@ -2,7 +2,7 @@ package de.themoep.settlements.command.common;
 
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.Targetable;
@@ -26,10 +26,10 @@ public interface TargetParser extends ConfigMessages {
                 getError("empire-doesnt-exist").tell(player, "name", input.split(":")[1]);
                 return null;
             }
-        } else if (input.startsWith("village:") || input.startsWith("v:") || input.startsWith("settlement:") || input.startsWith("s:")) {
-            target = VillageManager.getInstance().getFromName(input.split(":")[1]);
+        } else if (input.startsWith("settlement:") || input.startsWith("s:")) {
+            target = SettlementManager.getInstance().getFromName(input.split(":")[1]);
             if (target == null) {
-                getError("village-doesnt-exist").tell(player, "name", input.split(":")[1]);
+                getError("settlement-doesnt-exist").tell(player, "name", input.split(":")[1]);
                 return null;
             }
         } else {

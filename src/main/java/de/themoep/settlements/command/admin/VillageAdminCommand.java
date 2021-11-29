@@ -9,8 +9,8 @@ import org.bukkit.command.CommandSender;
 public class VillageAdminCommand extends SubCommand {
 
     public VillageAdminCommand() {
-        super(null, "villageadmin", "va");
-        setPermission("kingdoms.admin.command");
+        super(null, "settlementadmin", "settlementsadmin", "sa", "villageadmin", "va", "kingdomadmin", "ka");
+        setPermission("settlements.admin.command");
         setHelpCommand(new HelpCommand(this));
         this.registerCommand(new VillageAdminSocialSpyCommand(this));
         this.registerCommand(new VillageAdminReloadCommand(this));

@@ -6,7 +6,7 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Pair;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.SettlementManager;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -19,7 +19,7 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
         if (flag == null) {
             return new Pair<>(true, "");
         }
-        if (user.hasPermission("kingdoms.bypass.use")) {
+        if (user.hasPermission("settlements.bypass.use")) {
             return new Pair<>(true, "");
         }
         OwnedLand land = LandManager.getInstance().getLand(loc);
@@ -40,7 +40,7 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
     }
 
     default Pair<Boolean, String> getCanBuildAll(Player building, Location loc) {
-        if (building.hasPermission("kingdoms.bypass.build")) {
+        if (building.hasPermission("settlements.bypass.build")) {
             return new Pair<>(true, "");
         }
         OwnedLand land = LandManager.getInstance().getLand(loc);
@@ -102,11 +102,11 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
         }
         if (BuildState.ALLY == state) {
             Resident resident = ResidentManager.getInstance().getResident(building);
-            allowed |= land.getLandOwner().equals(resident.getVillage()) || land.getLandOwner().isAlly(resident);
+            allowed |= land.getLandOwner().equals(resident.getSettlement()) || land.getLandOwner().isAlly(resident);
         }
         if (BuildState.TRUSTED == state) {
             Resident resident = ResidentManager.getInstance().getResident(building);
-            allowed |= land.getLandOwner().equals(resident.getVillage()) || land.getLandOwner().isTrusted(resident);
+            allowed |= land.getLandOwner().equals(resident.getSettlement()) || land.getLandOwner().isTrusted(resident);
         }
         if (BuildState.PUBLIC.atLeast(state)) {
             allowed = true;
@@ -146,15 +146,15 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
                 }
                 break;
             case RESIDENTS:
-                allowed = landOwner.equals(VillageManager.getInstance().getFromPlayer(building));
+                allowed = landOwner.equals(SettlementManager.getInstance().getFromPlayer(building));
                 break;
             case ALLY:
                 resident = ResidentManager.getInstance().getResident(building);
-                allowed = landOwner.equals(resident.getVillage()) || landOwner.isAlly(resident);
+                allowed = landOwner.equals(resident.getSettlement()) || landOwner.isAlly(resident);
                 break;
             case TRUSTED:
                 resident = ResidentManager.getInstance().getResident(building);
-                allowed = landOwner.equals(resident.getVillage()) || landOwner.isTrusted(resident);
+                allowed = landOwner.equals(resident.getSettlement()) || landOwner.isTrusted(resident);
                 break;
             case PUBLIC:
                 allowed = true;

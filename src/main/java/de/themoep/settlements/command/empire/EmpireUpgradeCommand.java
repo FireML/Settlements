@@ -15,7 +15,7 @@ public class EmpireUpgradeCommand extends EmpireSubCommand {
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
-        Empire empire = res.getVillage().getEmpire();
+        Empire empire = res.getSettlement().getEmpire();
         if (!empire.checkLevelUp(res)) {
             res.tell(getError("not-possible"), "reason", empire.isMaxLevel() ? getText("max-level-reached") :
                 getText("missing-items") + "\n"

@@ -1,7 +1,7 @@
 package de.themoep.settlements.command.resident;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.command.ResidentSubCommand;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
@@ -24,8 +24,8 @@ public class ResidentClaimTransferCommand extends ResidentSubCommand {
                 return false;
             }
             amountIndex = 0;
-            if (resident.hasVillage()) {
-                target = resident.getVillage();
+            if (resident.hasSettlement()) {
+                target = resident.getSettlement();
             } else {
                 return false;
             }
@@ -36,16 +36,16 @@ public class ResidentClaimTransferCommand extends ResidentSubCommand {
                     getError("empire-doesnt-exist").tell(resident, "name", args[0].split(":")[1]);
                     return false;
                 }
-            } else if (args[0].startsWith("village:") || args[0].startsWith("v:") || args[0].startsWith("settlement:") || args[0].startsWith("s:")) {
-                target = VillageManager.getInstance().getFromName(args[0].split(":")[1]);
+            } else if (args[0].startsWith("settlement:") || args[0].startsWith("s:")) {
+                target = SettlementManager.getInstance().getFromName(args[0].split(":")[1]);
                 if (target == null) {
-                    getError("village-doesnt-exist").tell(resident, "name", args[0].split(":")[1]);
+                    getError("settlement-doesnt-exist").tell(resident, "name", args[0].split(":")[1]);
                     return false;
                 }
             } else {
-                target = VillageManager.getInstance().getFromName(args[0]);
+                target = SettlementManager.getInstance().getFromName(args[0]);
                 if (target == null) {
-                    getError("village-doesnt-exist").tell(resident, "name", args[0]);
+                    getError("settlement-doesnt-exist").tell(resident, "name", args[0]);
                     return false;
                 }
             }
@@ -59,16 +59,16 @@ public class ResidentClaimTransferCommand extends ResidentSubCommand {
                 DatabaseManager.getInstance().save(target);
                 Utils.runAsync(() -> DatabaseManager.getInstance().log(target, resident, "deposit", "claim", transfer));
                 getMessage("success").tell(target.getOnlineResidents(),
-                        "rank", resident.getVillageRank().getTag(resident.getVillage()),
-                        "title", resident.getVillageTitle(),
+                        "rank", resident.getSettlementRank().getTag(resident.getSettlement()),
+                        "title", resident.getSettlementTitle(),
                         "name", resident.getName(),
                         "amount", String.valueOf(transfer),
                         "target", target.getName(),
                         "targetstate", target.getStateTag());
                 if (!target.isMember(resident)) {
                     getMessage("success").tell(resident,
-                            "rank", resident.getVillageRank().getTag(resident.getVillage()),
-                            "title", resident.getVillageTitle(),
+                            "rank", resident.getSettlementRank().getTag(resident.getSettlement()),
+                            "title", resident.getSettlementTitle(),
                             "name", resident.getName(),
                             "amount", String.valueOf(transfer),
                             "target", target.getName(),

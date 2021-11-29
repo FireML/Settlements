@@ -28,18 +28,18 @@ public class VillageKickCommand extends VillageSubCommand {
                 MessageUtils.tell(player, getError("player-not-found"));
                 return;
             }
-            if (!player.getVillage().equals(res.getVillage())) {
+            if (!player.getSettlement().equals(res.getSettlement())) {
                 MessageUtils.tell(player, getError("not-in-current"));
                 return;
             }
-            if (res.getVillageRank().atLeast(player.getVillageRank())) {
-                MessageUtils.tell(player, getMessage("cant-kick-higher"), "rank", res.getVillageRank().getTag(res.getVillage()));
+            if (res.getSettlementRank().atLeast(player.getSettlementRank())) {
+                MessageUtils.tell(player, getMessage("cant-kick-higher"), "rank", res.getSettlementRank().getTag(res.getSettlement()));
                 return;
             }
-            MessageUtils.tellResidents(res.getVillage().getOnlineResidents(), getMessage("kicked-alert"), "player", res.getName());
+            MessageUtils.tellResidents(res.getSettlement().getOnlineResidents(), getMessage("kicked-alert"), "player", res.getName());
             Utils.runSync(() -> {
-                InviteCache.getPendingVillageInvites().remove(res.getUUID(), res.getVillage().getId());
-                res.leaveVillage();
+                InviteCache.getPendingVillageInvites().remove(res.getUUID(), res.getSettlement().getId());
+                res.leaveSettlement();
             });
         });
         return true;

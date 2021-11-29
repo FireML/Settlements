@@ -8,8 +8,8 @@ import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.MaterialUtils;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.world.SimpleBlockLocation;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseSerializable;
@@ -36,7 +36,7 @@ public class Lock implements DatabaseSerializable {
 
     private Set<UUID> allowedPlayers = new LinkedHashSet<>();
 
-    private Set<IdObject> allowedVillages = new LinkedHashSet<>();
+    private Set<IdObject> allowedSettlements = new LinkedHashSet<>();
     private Set<IdObject> allowedEmpires = new LinkedHashSet<>();
     private boolean allowHoppers = false;
 
@@ -91,20 +91,20 @@ public class Lock implements DatabaseSerializable {
         if (canAccess(resident)) {
             return true;
         }
-        if (resident.hasVillage() && canAccess(resident.getVillage())) {
+        if (resident.hasSettlement() && canAccess(resident.getSettlement())) {
             return true;
         }
-        if (resident.hasEmpire() && canAccess(resident.getVillage().getEmpire())) {
+        if (resident.hasEmpire() && canAccess(resident.getSettlement().getEmpire())) {
             return true;
         }
-        return player.hasPermission("kingdoms.bypass.lock");
+        return player.hasPermission("settlements.bypass.lock");
     }
 
     public boolean canAccess(Targetable target) {
         if (target instanceof Resident) {
             return isOwner((Resident) target) || allowedPlayers.contains(((Resident) target).getUUID());
-        } else if (target instanceof Village) {
-            return allowedVillages.contains(((Village) target).getId());
+        } else if (target instanceof Settlement) {
+            return allowedSettlements.contains(((Settlement) target).getId());
         } else if (target instanceof Empire) {
             return allowedEmpires.contains(((Empire) target).getId());
         }
@@ -114,8 +114,8 @@ public class Lock implements DatabaseSerializable {
     public boolean grantAccess(Targetable target) {
         if (target instanceof Resident) {
             return allowedPlayers.add(((Resident) target).getUUID());
-        } else if (target instanceof Village) {
-            return allowedVillages.add(((Village) target).getId());
+        } else if (target instanceof Settlement) {
+            return allowedSettlements.add(((Settlement) target).getId());
         } else if (target instanceof Empire) {
             return allowedEmpires.add(((Empire) target).getId());
         }
@@ -125,8 +125,8 @@ public class Lock implements DatabaseSerializable {
     public boolean revokeAccess(Targetable target) {
         if (target instanceof Resident) {
             return allowedPlayers.remove(((Resident) target).getUUID());
-        } else if (target instanceof Village) {
-            return allowedVillages.remove(((Village) target).getId());
+        } else if (target instanceof Settlement) {
+            return allowedSettlements.remove(((Settlement) target).getId());
         } else if (target instanceof Empire) {
             return allowedEmpires.remove(((Empire) target).getId());
         }
@@ -146,7 +146,7 @@ public class Lock implements DatabaseSerializable {
             }
         }
 
-        return player.hasPermission("kingdoms.bypass.lock");
+        return player.hasPermission("settlements.bypass.lock");
     }
 
     public boolean isAllowHoppers() {
@@ -165,8 +165,8 @@ public class Lock implements DatabaseSerializable {
         return allowedPlayers;
     }
 
-    public Set<IdObject> getAllowedVillageIds() {
-        return allowedVillages;
+    public Set<IdObject> getAllowedSettlementIds() {
+        return allowedSettlements;
     }
 
     public Set<IdObject> getAllowedEmpireIds() {
@@ -185,7 +185,7 @@ public class Lock implements DatabaseSerializable {
         map.put("allowHoppers", isAllowHoppers());
         List<String> allowed = new ArrayList<>();
         getAllowedPlayers().stream().map(UUID::toString).forEach(allowed::add);
-        getAllowedVillageIds().stream().map(id -> "village:" + id).forEach(allowed::add);
+        getAllowedSettlementIds().stream().map(id -> "settlement:" + id).forEach(allowed::add);
         getAllowedEmpireIds().stream().map(id -> "empire:" + id).forEach(allowed::add);
         map.put("allowed", allowed);
         return map;
@@ -214,10 +214,10 @@ public class Lock implements DatabaseSerializable {
                 } else {
                     IdObject id = IdObject.get(Integer.parseInt(split[1]));
                     switch (split[0]) {
-                        case "village":
-                            Village village = VillageManager.getInstance().getFromId(id);
-                            if (village != null) {
-                                lock.getAllowedVillageIds().add(id);
+                        case "settlement":
+                            Settlement settlement = SettlementManager.getInstance().getFromId(id);
+                            if (settlement != null) {
+                                lock.getAllowedSettlementIds().add(id);
                             }
                             break;
                         case "empire":

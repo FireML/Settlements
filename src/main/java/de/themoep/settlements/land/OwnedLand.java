@@ -8,8 +8,8 @@ import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.world.NamedLocation;
 import de.themoep.settlements.world.SimpleChunkLocation;
 import de.themoep.settlements.SettlementsPlugin;
@@ -416,7 +416,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     public Map<String, Object> serialize() {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("landOwner", getLandOwner().getName());
-        map.put("settlementId", getLandOwner() instanceof Village && !getLandOwner().getId().isNull() ? getLandOwner().getId().value() : -1);
+        map.put("settlementId", getLandOwner() instanceof Settlement && !getLandOwner().getId().isNull() ? getLandOwner().getId().value() : -1);
         map.put("x", getX());
         map.put("z", getZ());
         map.put("world", getWorldName());
@@ -444,8 +444,8 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         LandOwner landOwner = EmpireManager.getInstance().getEmpireFromWorld(location.getWorld());
         if (landOwner == null) {
             landOwner = map.get("landOwner") != null
-                    ? VillageManager.getInstance().getFromName((String) map.get("landOwner"))
-                    : VillageManager.getInstance().getFromId(IdObject.get(map.get("settlementId")));
+                    ? SettlementManager.getInstance().getFromName((String) map.get("landOwner"))
+                    : SettlementManager.getInstance().getFromId(IdObject.get(map.get("settlementId")));
         }
         if (landOwner == null) {
             SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not find owner for OwnedLand! Removing it from database... (" + map + ")");
@@ -487,8 +487,8 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
                 land.setUseState(u, Utils.parseEnum(BuildState.class, (String) uses.get(u.name()), useFlag.getDefault(land.getBuildState())));
             }
         }
-        if (land.getLandOwner() instanceof Village) {
-            for (NamedLocation o : ((Village) land.getLandOwner()).getOutpostHomes().values()) {
+        if (land.getLandOwner() instanceof Settlement) {
+            for (NamedLocation o : ((Settlement) land.getLandOwner()).getOutpostHomes().values()) {
                 if (land.contains(o)) {
                     land.setOutpost(o.getName());
                 }
@@ -614,7 +614,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
 
             @Override
             public String name() {
-                return getLandOwner() != null ? getLandOwner().getKey() + ".map" : "village.map";
+                return getLandOwner() != null ? getLandOwner().getKey() + ".map" : "settlement.map";
             }
         };
     }

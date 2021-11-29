@@ -23,16 +23,16 @@ public class VillageAllyclaimCommand extends VillageSubCommand {
                 return false;
             }
         } else {
-            value = !resident.getVillage().isAllowAllyClaim();
+            value = !resident.getSettlement().isAllowAllyClaim();
         }
 
-        resident.getVillage().setAllowAllyClaim(value);
+        resident.getSettlement().setAllowAllyClaim(value);
         if (!value) {
-            for (LandOwner ally : resident.getVillage().getAllies()) {
-                LandManager.getInstance().checkClaimDistance(resident.getVillage(), ally);
+            for (LandOwner ally : resident.getSettlement().getAllies()) {
+                LandManager.getInstance().checkClaimDistance(resident.getSettlement(), ally);
             }
         }
-        DatabaseManager.getInstance().saveSettlement(resident.getVillage());
+        DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
         getMessage(value ? "enabled" : "disabled").tell(resident, "grace", String.valueOf(Config.Settlement.Claiming.Close.Unclaim.GRACE_DAYS));
 
         return true;

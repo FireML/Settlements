@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 
 public class VillageCommand extends SubCommand {
     public VillageCommand() {
-        super(null, "village", "settlement", "kingdom", "s", "v", "k");
+        super(null, "settlement", "village", "kingdom", "s", "v", "k");
         setHelpCommand(new HelpCommand(this));
         registerCommand(new ChatCommand());
         registerCommand(new VillageActiveCommand(this));

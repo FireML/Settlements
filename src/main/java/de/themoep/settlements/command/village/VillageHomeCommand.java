@@ -1,12 +1,12 @@
 package de.themoep.settlements.command.village;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.command.ResidentSubCommand;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.land.LandAccess;
-import de.themoep.settlements.rank.VillageRank;
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.Utils;
 
 public class VillageHomeCommand extends ResidentSubCommand {
@@ -16,39 +16,39 @@ public class VillageHomeCommand extends ResidentSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        Village village;
+        Settlement settlement;
         if (args.length < 1) {
-            if (!resident.hasVillage()) {
-                getError("village-required").tell(resident);
+            if (!resident.hasSettlement()) {
+                getError("settlement-required").tell(resident);
                 return false;
-            } else if (resident.getVillage().getHome() == null) {
-                getMessage("own-no-home").tell(resident, "chief", VillageRank.getChief().getTag(resident.getVillage()));
+            } else if (resident.getSettlement().getHome() == null) {
+                getMessage("own-no-home").tell(resident, "chief", SettlementRank.getChief().getTag(resident.getSettlement()));
                 return true;
             } else {
-                village = resident.getVillage();
+                settlement = resident.getSettlement();
             }
         } else {
             String name = String.join(" ", args);
-            village = VillageManager.getInstance().getFromName(name);
-            if (village == null) {
-                getError("village-doesnt-exist").tell(resident, "name", name);
+            settlement = SettlementManager.getInstance().getFromName(name);
+            if (settlement == null) {
+                getError("settlement-doesnt-exist").tell(resident, "name", name);
                 return true;
             }
         }
 
-        if (!village.isMember(resident)
-                && (village.getAccess() == LandAccess.PRIVATE
-                || (village.getAccess() == LandAccess.ALLY && !village.isAlly(resident))
-                || (village.getAccess() == LandAccess.TRUSTED && !village.isTrusted(resident)))) {
-            getMessage("no-access").tell(resident, "state", village.getStateTag());
+        if (!settlement.isMember(resident)
+                && (settlement.getAccess() == LandAccess.PRIVATE
+                || (settlement.getAccess() == LandAccess.ALLY && !settlement.isAlly(resident))
+                || (settlement.getAccess() == LandAccess.TRUSTED && !settlement.isTrusted(resident)))) {
+            getMessage("no-access").tell(resident, "state", settlement.getStateTag());
             return true;
         }
 
-        if (village.getHome() != null) {
-            Utils.teleport(this, resident.getPlayer(), village.getHome().toBukkitLocation(), village.getStateKey(),
-                    "state", village.getStateKey(), "name", village.getName());
+        if (settlement.getHome() != null) {
+            Utils.teleport(this, resident.getPlayer(), settlement.getHome().toBukkitLocation(), settlement.getStateKey(),
+                    "state", settlement.getStateKey(), "name", settlement.getName());
         } else {
-            getMessage("no-home").tell(resident, "state", village.getStateTag());
+            getMessage("no-home").tell(resident, "state", settlement.getStateTag());
         }
         return true;
     }

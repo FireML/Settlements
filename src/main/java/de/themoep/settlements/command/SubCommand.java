@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class SubCommand implements ConfigMessages, Rankable {
-    protected static final String PERMISSION_PREFIX = "kingdoms.command.";
+    protected static final String PERMISSION_PREFIX = "settlements.command.";
     private SubCommand parent;
     private List<String> aliases;
     private String usage;

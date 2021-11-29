@@ -38,8 +38,8 @@ public class TitlesGUI extends SettlementsGUI {
         super("empire.titles");
         this.resident = resident;
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title",
-                "state", resident.hasEmpire() ? resident.getVillage().getEmpire().getStateTag() : "",
-                "rank", rank.getTag(resident.getVillage().getEmpire())
+                "state", resident.hasEmpire() ? resident.getSettlement().getEmpire().getStateTag() : "",
+                "rank", rank.getTag(resident.getSettlement().getEmpire())
         ), SETUP);
         gui.setCloseAction(close -> false);
         gui.setFiller(BORDER_ITEM);
@@ -47,30 +47,30 @@ public class TitlesGUI extends SettlementsGUI {
         if (resident.hasEmpire()) {
             GuiElementGroup group = new GuiElementGroup('g');
 
-            for (String title : resident.getVillage().getEmpire().getTitles(rank)) {
+            for (String title : resident.getSettlement().getEmpire().getTitles(rank)) {
                 group.addElement(new DynamicGuiElement('g', h -> {
                     ItemStack item = ItemUtils.toIcon(Material.PAPER);
                     List<String> description = new ArrayList<>();
                     description.add(getText("entry.title",
                             "title", title,
-                            "rank", rank.getTag(resident.getVillage().getEmpire())
+                            "rank", rank.getTag(resident.getSettlement().getEmpire())
                     ));
-                    if (title.equals(resident.getVillage().getEmpire().getDefaultTitle(rank))) {
+                    if (title.equals(resident.getSettlement().getEmpire().getDefaultTitle(rank))) {
                         description.add(getText("entry.default",
                                 "title", title,
-                                "rank", rank.getTag(resident.getVillage().getEmpire())
+                                "rank", rank.getTag(resident.getSettlement().getEmpire())
                         ));
                         ItemUtils.setGlowing(item, true);
                     } else if (resident.hasPermission("empire.titles.set")) {
                         description.add(getText("entry.set",
                                 "title", title,
-                                "rank", rank.getTag(resident.getVillage().getEmpire())
+                                "rank", rank.getTag(resident.getSettlement().getEmpire())
                         ));
                     }
                     if (resident.hasPermission("empire.titles.remove") && !rank.above(resident.getEmpireRank())) {
                         description.add(getText("entry.remove",
                                 "title", title,
-                                "rank", rank.getTag(resident.getVillage().getEmpire())
+                                "rank", rank.getTag(resident.getSettlement().getEmpire())
                         ));
                     }
                     return new StaticGuiElement('g', item, click -> {
@@ -79,8 +79,8 @@ public class TitlesGUI extends SettlementsGUI {
                                 case LEFT:
                                 case SHIFT_LEFT:
                                     if (resident.hasPermission("empire.titles.set")) {
-                                        String oldRankName = rank.getTag(resident.getVillage().getEmpire());
-                                        resident.getVillage().getEmpire().setDefaultTitle(rank, title);
+                                        String oldRankName = rank.getTag(resident.getSettlement().getEmpire());
+                                        resident.getSettlement().getEmpire().setDefaultTitle(rank, title);
                                         Message.get("command.empire.titles.set.success").tell(resident, "title", title, "rank", oldRankName);
                                         gui.draw();
                                     }
@@ -88,10 +88,10 @@ public class TitlesGUI extends SettlementsGUI {
                                 case RIGHT:
                                 case SHIFT_RIGHT:
                                     if (resident.hasPermission("empire.titles.remove")) {
-                                        resident.getVillage().getEmpire().removeTitle(rank, title);
+                                        resident.getSettlement().getEmpire().removeTitle(rank, title);
                                         Message.get("command.empire.titles.remove.success").tell(resident,
                                                 "title", title,
-                                                "rank", rank.getTag(resident.getVillage().getEmpire())
+                                                "rank", rank.getTag(resident.getSettlement().getEmpire())
                                         );
                                         new TitlesGUI(resident, rank).open();
                                     }
@@ -108,26 +108,26 @@ public class TitlesGUI extends SettlementsGUI {
 
             if (resident.hasPermission("empire.titles.add")
                     && !rank.above(resident.getEmpireRank())
-                    && resident.getVillage().getEmpire().getTitles(rank).size() < Config.Empire.TITLES_PER_RANK) {
+                    && resident.getSettlement().getEmpire().getTitles(rank).size() < Config.Empire.TITLES_PER_RANK) {
                 gui.addElement(new StaticGuiElement('a', ItemUtils.toIcon(Material.WRITABLE_BOOK), click -> {
                     if (resident.hasPermission("empire.titles.add")) {
                         new AnvilGUI.Builder()
                                 .item(ItemUtils.toIcon(Material.WRITABLE_BOOK))
                                 .title(getMessage("add.anvil.title").getReplacedText(
-                                        "rank", rank.getTag(resident.getVillage().getEmpire()),
-                                        "state", resident.getVillage().getEmpire().getStateTag()
+                                        "rank", rank.getTag(resident.getSettlement().getEmpire()),
+                                        "state", resident.getSettlement().getEmpire().getStateTag()
                                 ))
                                 .text(getMessage("add.anvil.placeholder").getReplacedText(
-                                        "rank", rank.getTag(resident.getVillage().getEmpire()),
-                                        "state", resident.getVillage().getEmpire().getStateTag()
+                                        "rank", rank.getTag(resident.getSettlement().getEmpire()),
+                                        "state", resident.getSettlement().getEmpire().getStateTag()
                                 ))
                                 .onClose(player -> Utils.runLater(() -> new TitlesGUI(resident, rank).open(), 1))
                                 .onComplete((player, text) -> {
                                     text = ChatColor.stripColor(text);
                                     if (rank.above(resident.getEmpireRank())) {
                                         return AnvilGUI.Response.text(getError("cant-edit-higher")
-                                                .getReplacedText("rank", resident.getEmpireRank().getTag(resident.getVillage().getEmpire())));
-                                    } else if (resident.getVillage().getEmpire().getTitles(rank).size() >= Config.Empire.TITLES_PER_RANK) {
+                                                .getReplacedText("rank", resident.getEmpireRank().getTag(resident.getSettlement().getEmpire())));
+                                    } else if (resident.getSettlement().getEmpire().getTitles(rank).size() >= Config.Empire.TITLES_PER_RANK) {
                                         return AnvilGUI.Response.text(getError("too-many").getReplacedText(
                                                 "rank", resident.getEmpireRank().getTag(),
                                                 "max", String.valueOf(Config.Empire.TITLES_PER_RANK)
@@ -138,13 +138,13 @@ public class TitlesGUI extends SettlementsGUI {
                                         return AnvilGUI.Response.text(getError("invalid-characters").getReplacedText("input", text));
                                     } else if (Utils.containsAnyCurses(text)) {
                                         return AnvilGUI.Response.text(getError("prohibited-words").getReplacedText("input", text));
-                                    } else if (resident.getVillage().getEmpire().addTitle(rank, text)) {
+                                    } else if (resident.getSettlement().getEmpire().addTitle(rank, text)) {
                                         Message.get("command.empire.titles.add.success")
-                                                .tell(resident, "title", text, "rank", rank.getTag(resident.getVillage().getEmpire()));
+                                                .tell(resident, "title", text, "rank", rank.getTag(resident.getSettlement().getEmpire()));
                                         return AnvilGUI.Response.close();
                                     } else {
                                         return AnvilGUI.Response.text(getError("already-exists")
-                                                .getReplacedText("input", text, "rank", rank.getTag(resident.getVillage().getEmpire())));
+                                                .getReplacedText("input", text, "rank", rank.getTag(resident.getSettlement().getEmpire())));
                                     }
                                 })
                                 .plugin(SettlementsPlugin.getInstance())
@@ -152,8 +152,8 @@ public class TitlesGUI extends SettlementsGUI {
                     }
                     return true;
                 }, getText("add.title",
-                        "rank", rank.getTag(resident.getVillage().getEmpire()),
-                        "state", resident.getVillage().getEmpire().getStateTag()
+                        "rank", rank.getTag(resident.getSettlement().getEmpire()),
+                        "state", resident.getSettlement().getEmpire().getStateTag()
                 )));
             }
         }

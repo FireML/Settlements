@@ -11,7 +11,7 @@ import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.TitleBuilder;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.village.Village;
+import de.themoep.settlements.village.Settlement;
 import de.themoep.settlements.SettlementsPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -143,7 +143,7 @@ public class LandModeListener implements LandAccessChecker {
             if (isAllowed(e.getEntity().getLocation(), PlotMode.pvp) && isAllowed(damager.getLocation(), PlotMode.pvp)) {
                 return;
             }
-            if (damager.hasPermission("kingdoms.bypass.pvp")) {
+            if (damager.hasPermission("settlements.bypass.pvp")) {
                 return;
             }
             e.setCancelled(true);
@@ -166,7 +166,7 @@ public class LandModeListener implements LandAccessChecker {
             if (isAllowed(e.getEntity().getLocation(), PlotMode.pvp) && isAllowed(combuster.getLocation(), PlotMode.pvp)) {
                 return;
             }
-            if (combuster.hasPermission("kingdoms.bypass.pvp")) {
+            if (combuster.hasPermission("settlements.bypass.pvp")) {
                 return;
             }
             e.setCancelled(true);
@@ -272,29 +272,29 @@ public class LandModeListener implements LandAccessChecker {
     public void onPlayerMove(PlayerMoveChunkEvent event) {
         Player player = event.getPlayer();
         Resident resident = ResidentManager.getInstance().getResident(player);
-        Village playerVillage = resident.getVillage();
+        Settlement playerSettlement = resident.getSettlement();
         OwnedLand originalLand = LandManager.getInstance().getLand(event.getFrom());
         OwnedLand destinationLand = LandManager.getInstance().getLand(event.getTo());
-        boolean sameVillage = originalLand != null && destinationLand != null && originalLand.getLandOwner().equals(destinationLand.getLandOwner());
+        boolean sameSettlement = originalLand != null && destinationLand != null && originalLand.getLandOwner().equals(destinationLand.getLandOwner());
 
-        if (!sameVillage && originalLand != null) {
+        if (!sameSettlement && originalLand != null) {
             MessageUtils.tellAdvanced(player, originalLand.getLandOwner().getStateKey() + ".leave" + (originalLand.getLandOwner().isAbandoned() ? "-abandoned" : ""),
                     "name", originalLand.getLandOwner().getName(),
                     "state", originalLand.getLandOwner().getStateTag()
             );
-            if (originalLand.getLandOwner().equals(playerVillage) && originalLand.getLandOwner().getMode(PlotMode.buff)) {
+            if (originalLand.getLandOwner().equals(playerSettlement) && originalLand.getLandOwner().getMode(PlotMode.buff)) {
                 SettlementsPlugin.getInstance().getLandPerks().removeEffects(player, originalLand, true);
             }
         }
 
         if (destinationLand != null) {
-            if (!sameVillage) {
+            if (!sameSettlement) {
                 MessageUtils.tellAdvanced(player, destinationLand.getLandOwner().getStateKey() + ".enter" + (destinationLand.getLandOwner().isAbandoned() ? "-abandoned" : ""),
                         "pvp", destinationLand.getMode(PlotMode.pvp) ? Message.get("pvp-is-enabled").getText() : "",
                         "name", destinationLand.getLandOwner().getName(),
                         "state", destinationLand.getLandOwner().getStateTag()
                 );
-                if (destinationLand.getLandOwner().equals(playerVillage) && destinationLand.getLandOwner().getMode(PlotMode.buff)) {
+                if (destinationLand.getLandOwner().equals(playerSettlement) && destinationLand.getLandOwner().getMode(PlotMode.buff)) {
                     SettlementsPlugin.getInstance().getLandPerks().giveEffects(player, destinationLand, true);
                 }
             }

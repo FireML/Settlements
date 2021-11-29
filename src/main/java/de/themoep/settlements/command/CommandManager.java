@@ -52,7 +52,7 @@ public class CommandManager implements TabExecutor {
                 commandPerm = new Permission(ex.getPermission(), "Allows access to the command /" + ex.getPath());
                 Bukkit.getPluginManager().addPermission(commandPerm);
             }
-            commandPerm.addParent("kingdoms.user", true);
+            commandPerm.addParent("settlements.user", true);
         }
         commandMap.put(ex.name().toLowerCase(), ex);
         for (String alias : ex.getAliases()) {

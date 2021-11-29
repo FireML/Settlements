@@ -117,7 +117,7 @@ public class TurnInGUI extends SettlementsGUI {
                 if (missionData.isFinished()) {
                     missionData.getMission().finish(resident);
                 }
-                DatabaseManager.getInstance().saveMissionData(resident.getVillage());
+                DatabaseManager.getInstance().saveMissionData(resident.getSettlement());
             }
             if (!fail.isEmpty()) {
                 for (BaseComponent[] components : buildFailDepositMessage(resident, fail, TextComponent.fromLegacyText(""))) {

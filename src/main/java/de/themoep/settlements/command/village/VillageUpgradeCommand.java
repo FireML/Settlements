@@ -1,8 +1,8 @@
 package de.themoep.settlements.command.village;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.utils.HumanReadable;
 
@@ -16,8 +16,8 @@ public class VillageUpgradeCommand extends VillageSubCommand {
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
-        Village v = res.getVillage();
-        if (!VillageManager.getInstance().checkLevelUp(v, res)) {
+        Settlement v = res.getSettlement();
+        if (!SettlementManager.getInstance().checkLevelUp(v, res)) {
             res.tell(getError("not-possible"), "reason", v.isMaxLevel() ? getText("max-level-reached") :
                 getText("missing-items") + "\n"
                         + v.getNextLevelRequirements().entrySet().stream()

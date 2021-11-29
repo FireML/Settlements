@@ -1,7 +1,7 @@
 package de.themoep.settlements.command.admin;
 
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import org.bukkit.command.CommandSender;
@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 public class VillageAdminCooperationPointsCommand extends SubCommand {
     public VillageAdminCooperationPointsCommand(SubCommand parent) {
         super(parent, "cooperationpoints add|set|remove <empire> <amount>", "coop", "cp", "missionpoints", "mp");
-        setPermission("kingdoms.admin.command.cooperationpoints");
+        setPermission("settlements.admin.command.cooperationpoints");
     }
 
     @Override
@@ -31,15 +31,15 @@ public class VillageAdminCooperationPointsCommand extends SubCommand {
             return false;
         }
 
-        Village village = VillageManager.getInstance().getFromName(args[1]);
-        if (village != null) {
-            if (operation.apply(village, amount)) {
+        Settlement settlement = SettlementManager.getInstance().getFromName(args[1]);
+        if (settlement != null) {
+            if (operation.apply(settlement, amount)) {
                 getMessage("success").tell(sender,
                         "operation", operation.name().toLowerCase(),
                         "amount", String.valueOf(amount),
-                        "name", village.getName()
+                        "name", settlement.getName()
                 );
-                DatabaseManager.getInstance().saveSettlement(village);
+                DatabaseManager.getInstance().saveSettlement(settlement);
             }
         } else {
             getError("empire-doesnt-exist").tell(sender, "name", args[1]);
@@ -51,21 +51,21 @@ public class VillageAdminCooperationPointsCommand extends SubCommand {
     private enum Operation {
         ADD() {
             @Override
-            public boolean apply(Village village, int amount) {
-                village.setMissionPoints(village.getMissionPoints() + amount);
+            public boolean apply(Settlement settlement, int amount) {
+                settlement.setMissionPoints(settlement.getMissionPoints() + amount);
                 return true;
             }
         },
         SET() {
             @Override
-            public boolean apply(Village empire, int amount) {
+            public boolean apply(Settlement empire, int amount) {
                 empire.setMissionPoints(amount);
                 return true;
             }
         },
         REMOVE() {
             @Override
-            public boolean apply(Village empire, int amount) {
+            public boolean apply(Settlement empire, int amount) {
                 if (empire.getMissionPoints() >= amount) {
                     empire.setMissionPoints(empire.getMissionPoints() - amount);
                     return true;
@@ -74,6 +74,6 @@ public class VillageAdminCooperationPointsCommand extends SubCommand {
             }
         };
 
-        public abstract boolean apply(Village empire, int amount);
+        public abstract boolean apply(Settlement empire, int amount);
     }
 }

@@ -1,8 +1,8 @@
 package de.themoep.settlements.command.village;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.ResidentSubCommand;
 import de.themoep.settlements.command.SubCommand;
@@ -25,9 +25,9 @@ public class VillageDonateCommand extends ResidentSubCommand {
         }
         Player player = resident.getPlayer();
         String name = String.join(" ", Arrays.copyOfRange(args, 0, args.length - 1));
-        Village village = VillageManager.getInstance().getFromName(name);
-        if (village == null) {
-            getError("village-doesnt-exist").tell(player, "name", name);
+        Settlement settlement = SettlementManager.getInstance().getFromName(name);
+        if (settlement == null) {
+            getError("settlement-doesnt-exist").tell(player, "name", name);
             return false;
         }
         try {
@@ -38,17 +38,17 @@ public class VillageDonateCommand extends ResidentSubCommand {
             if (SettlementsPlugin.getInstance().getEconomy().getBalance(player) >= donate) {
                 EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(player, (double) donate);
                 if (r2.transactionSuccess()) {
-                    village.addToBank(donate);
-                    DatabaseManager.getInstance().saveSettlement(village);
-                    Utils.runAsync(() -> DatabaseManager.getInstance().log(null, village, resident, "donate", "cash", donate));
-                    if (!village.isMember(resident)) {
+                    settlement.addToBank(donate);
+                    DatabaseManager.getInstance().saveSettlement(settlement);
+                    Utils.runAsync(() -> DatabaseManager.getInstance().log(null, settlement, resident, "donate", "cash", donate));
+                    if (!settlement.isMember(resident)) {
                         getMessage("success").tell(resident,
                                 "amount", Utils.CURRENCY_FORMAT.format(donate),
-                                "state", village.getStateTag(),
-                                "name", village.getName()
+                                "state", settlement.getStateTag(),
+                                "name", settlement.getName()
                         );
                     }
-                    getMessage("donated").tell(village.getOnlineResidents(),
+                    getMessage("donated").tell(settlement.getOnlineResidents(),
                             "name", resident.getName(),
                             "amount", Utils.CURRENCY_FORMAT.format(donate));
                 } else {

@@ -1,8 +1,8 @@
 package de.themoep.settlements.command;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.utils.config.Config;
 
 public class WarningToggleCommand extends ResidentSubCommand {
@@ -17,15 +17,15 @@ public class WarningToggleCommand extends ResidentSubCommand {
             return false;
         }
 
-        Village village = VillageManager.getInstance().getFromName(args[0]);
-        if (village == null) {
-            getError("village-doesnt-exist").tell(resident, "name", args[0]);
+        Settlement settlement = SettlementManager.getInstance().getFromName(args[0]);
+        if (settlement == null) {
+            getError("settlement-doesnt-exist").tell(resident, "name", args[0]);
             return true;
         }
 
-        getMessage(resident.toggleCloseBuildingNotification(village) ? "enabled" : "disabled").tell(resident,
-                "state", village.getStateTag(),
-                "settlement", village.getName(),
+        getMessage(resident.toggleCloseBuildingNotification(settlement) ? "enabled" : "disabled").tell(resident,
+                "state", settlement.getStateTag(),
+                "settlement", settlement.getName(),
                 "time", String.valueOf(Config.Settlement.Claiming.Close.Building.TOGGLE_TIME)
         );
         return true;

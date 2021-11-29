@@ -1,7 +1,7 @@
 package de.themoep.settlements.rank;
 
 import de.themoep.settlements.utils.config.ConfigManager;
-import de.themoep.settlements.village.VillageState;
+import de.themoep.settlements.village.SettlementState;
 import de.themoep.settlements.SettlementsPlugin;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
@@ -20,29 +20,29 @@ public class RankManager {
     private EmpireRank empireDefaultRank = null;
     private Map<String, PermissionGroup> empirePermGroups = new LinkedHashMap<>();
 
-    private Map<String, VillageRank> villageRanks = new LinkedHashMap<>();
-    private Map<String, VillageRank> villageRanksbyTitle = new HashMap<>();
+    private Map<String, SettlementRank> settlementRanks = new LinkedHashMap<>();
+    private Map<String, SettlementRank> settlementRanksByTitle = new HashMap<>();
 
-    private VillageRank villageChiefRank = null;
-    private VillageRank villageDefaultRank = null;
-    private Map<String, PermissionGroup> villagePermGroups = new LinkedHashMap<>();
+    private SettlementRank settlementChiefRank = null;
+    private SettlementRank settlementDefaultRank = null;
+    private Map<String, PermissionGroup> settlementPermGroups = new LinkedHashMap<>();
 
     private RankManager() {
         loadEmpireRanks();
-        loadVillageRanks();
-        SettlementsPlugin.logDebug("Loaded RankManager with " + villageRanks.size() + " village ranks and " + empireRanks.size() + " empire ranks");
+        loadSettlementRanks();
+        SettlementsPlugin.logDebug("Loaded RankManager with " + settlementRanks.size() + " settlement ranks and " + empireRanks.size() + " empire ranks");
     }
 
-    private void loadVillageRanks() {
+    private void loadSettlementRanks() {
         Configuration config = ConfigManager.getInstance().getSettlementRanksConf().getConfig();
         ConfigurationSection ranks = config.getConfigurationSection("ranks");
         for (String rankName : ranks.getKeys(false)) {
-            villageRanks.put(rankName.toLowerCase(), new VillageRank(rankName, ranks.getConfigurationSection(rankName)));
+            settlementRanks.put(rankName.toLowerCase(), new SettlementRank(rankName, ranks.getConfigurationSection(rankName)));
         }
-        VillageRank lastRank = null;
-        for (VillageRank rank : villageRanks.values()) {
-            if (villageChiefRank == null) {
-                villageChiefRank = rank;
+        SettlementRank lastRank = null;
+        for (SettlementRank rank : settlementRanks.values()) {
+            if (settlementChiefRank == null) {
+                settlementChiefRank = rank;
             }
             if (lastRank != null) {
                 rank.setParent(lastRank.name());
@@ -52,18 +52,18 @@ public class RankManager {
             }
             lastRank = rank;
         }
-        villageDefaultRank = lastRank;
-        for (VillageRank rank : new ArrayList<>(villageRanks.values())) {
-            for (VillageState state : VillageState.values()) {
+        settlementDefaultRank = lastRank;
+        for (SettlementRank rank : new ArrayList<>(settlementRanks.values())) {
+            for (SettlementState state : SettlementState.values()) {
                 for (String title : rank.getTitles(state)) {
-                    villageRanksbyTitle.put(title.toLowerCase(), rank);
+                    settlementRanksByTitle.put(title.toLowerCase(), rank);
                 }
             }
         }
 
         ConfigurationSection groups = config.getConfigurationSection("perm-groups");
         for (String groupName : groups.getKeys(false)) {
-            villagePermGroups.put(groupName.toLowerCase(), new PermissionGroup(groups.getConfigurationSection(groupName)));
+            settlementPermGroups.put(groupName.toLowerCase(), new PermissionGroup(groups.getConfigurationSection(groupName)));
         }
     }
 
@@ -101,16 +101,16 @@ public class RankManager {
         return instance;
     }
 
-    public Collection<VillageRank> getVillageRanks() {
-        return villageRanks.values();
+    public Collection<SettlementRank> getSettlementRanks() {
+        return settlementRanks.values();
     }
 
     public Collection<EmpireRank> getEmpireRanks() {
         return empireRanks.values();
     }
 
-    public VillageRank getVillageRank(String name) {
-        return name != null ? villageRanks.getOrDefault(name.toLowerCase(), villageRanksbyTitle.get(name.toLowerCase())) : null;
+    public SettlementRank getSettlementRank(String name) {
+        return name != null ? settlementRanks.getOrDefault(name.toLowerCase(), settlementRanksByTitle.get(name.toLowerCase())) : null;
     }
 
     public EmpireRank getEmpireRank(String name) {
@@ -125,12 +125,12 @@ public class RankManager {
         return empireDefaultRank;
     }
 
-    public VillageRank getVillageChiefRank() {
-        return villageChiefRank;
+    public SettlementRank getSettlementChiefRank() {
+        return settlementChiefRank;
     }
 
-    public VillageRank getVillageDefaultRank() {
-        return villageDefaultRank;
+    public SettlementRank getSettlementDefaultRank() {
+        return settlementDefaultRank;
     }
 
     boolean isToggleableEmpirePerm(String permission) {
@@ -150,8 +150,8 @@ public class RankManager {
         return empirePermGroups.get(group.toLowerCase());
     }
 
-    boolean isToggleableVillagePerm(String permission) {
-        for (PermissionGroup group : villagePermGroups.values()) {
+    boolean isToggleableSettlementPerm(String permission) {
+        for (PermissionGroup group : settlementPermGroups.values()) {
             if (group.getPermissions().contains(permission.toLowerCase())) {
                 return true;
             }
@@ -159,12 +159,12 @@ public class RankManager {
         return false;
     }
 
-    public Collection<PermissionGroup> getVillagePermGroups() {
-        return villagePermGroups.values();
+    public Collection<PermissionGroup> getSettlementPermGroups() {
+        return settlementPermGroups.values();
     }
 
-    PermissionGroup getVillagePermGroup(String group) {
-        return villagePermGroups.get(group.toLowerCase());
+    PermissionGroup getSettlementPermGroup(String group) {
+        return settlementPermGroups.get(group.toLowerCase());
     }
 
 }

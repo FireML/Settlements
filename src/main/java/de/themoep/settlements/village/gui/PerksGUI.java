@@ -5,8 +5,8 @@ import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Village;
-import de.themoep.settlements.village.VillageManager;
+import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.village.SettlementManager;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.perk.LevelPerk;
@@ -40,7 +40,7 @@ public class PerksGUI extends SettlementsGUI {
         super("perks");
         this.resident = resident;
 
-        Village village = resident.getVillage();
+        Settlement settlement = resident.getSettlement();
 
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), SETUP);
         gui.setCloseAction(close -> false);
@@ -48,14 +48,14 @@ public class PerksGUI extends SettlementsGUI {
 
         GuiElementGroup group = new GuiElementGroup('g');
 
-        for (LevelPerk perk : VillageManager.getInstance().getPerks()) {
-            if (village == null || !village.hasUnlocked(perk) || (!perk.hasEffects() && !perk.hasActions())) {
+        for (LevelPerk perk : SettlementManager.getInstance().getPerks()) {
+            if (settlement == null || !settlement.hasUnlocked(perk) || (!perk.hasEffects() && !perk.hasActions())) {
                 continue;
             }
 
             group.addElement(new DynamicGuiElement('g', (h) -> {
-                if (resident.hasVillage()) {
-                    PerkData perkData = village.getPerkData(perk);
+                if (resident.hasSettlement()) {
+                    PerkData perkData = settlement.getPerkData(perk);
                     List<String> lore = new ArrayList<>();
                     lore.add(getText("entry", "name", perk.getTag()));
                     if (perk.hasEffects()) {
@@ -68,7 +68,7 @@ public class PerksGUI extends SettlementsGUI {
                     }
 
                     if (perk.hasActions()) {
-                        for (String state : perk.getActionStates(resident.getVillage())) {
+                        for (String state : perk.getActionStates(resident.getSettlement())) {
                             lore.add(getText("actions." + state, "name", perk.getTag()));
                         }
                     }
@@ -90,8 +90,8 @@ public class PerksGUI extends SettlementsGUI {
                     return new StaticGuiElement('g',
                             itemStack,
                             click -> {
-                                if (resident.hasVillage() && resident.hasPermission("village.perks.toggle")) {
-                                    if (resident.getVillage().togglePerk(resident.getPlayer(), perk)) {
+                                if (resident.hasSettlement() && resident.hasPermission("settlement.perks.toggle")) {
+                                    if (resident.getSettlement().togglePerk(resident.getPlayer(), perk)) {
                                         gui.draw();
                                         return true;
                                     }

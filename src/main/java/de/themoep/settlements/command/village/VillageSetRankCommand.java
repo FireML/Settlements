@@ -1,10 +1,10 @@
 package de.themoep.settlements.command.village;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Village;
+import de.themoep.settlements.village.Settlement;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.rank.VillageRank;
+import de.themoep.settlements.rank.SettlementRank;
 
 public class VillageSetRankCommand extends VillageSubCommand {
     public VillageSetRankCommand(SubCommand parent) {
@@ -13,25 +13,25 @@ public class VillageSetRankCommand extends VillageSubCommand {
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
-        Village village = res.getVillage();
+        Settlement settlement = res.getSettlement();
         if (args.length <= 1) {
-            getMessage("rank-usage.head").tell(res, village.getReplacements(this,
+            getMessage("rank-usage.head").tell(res, settlement.getReplacements(this,
                     "name", name(),
                     "command", "/" + base + " " + alias,
                     "usage", getUsage(base),
                     "description", getDescription()
             ));
-            for (VillageRank rank : VillageRank.values()) {
-                if (rank.below(res.getVillageRank())) {
+            for (SettlementRank rank : SettlementRank.values()) {
+                if (rank.below(res.getSettlementRank())) {
                     getMessage("rank-usage.entry").tell(res,
-                            "usage", getUsage(base).replace("<rank>", rank.getTag(res.getVillage())),
-                            "rank", rank.getTag(res.getVillage()),
+                            "usage", getUsage(base).replace("<rank>", rank.getTag(res.getSettlement())),
+                            "rank", rank.getTag(res.getSettlement()),
                             "description", getText("rank." + rank.getKey())
                     );
                 }
             }
             if (getMessage("rank-usage.footer").exists()) {
-                getMessage("rank-usage.footer").tell(res, village.getReplacements(this,
+                getMessage("rank-usage.footer").tell(res, settlement.getReplacements(this,
                         "name", name(),
                         "command", "/" + base + " " + alias,
                         "usage", getUsage(base),
@@ -41,29 +41,29 @@ public class VillageSetRankCommand extends VillageSubCommand {
             return true;
         }
 
-        Resident tres = village.getResident(args[0]);
+        Resident tres = settlement.getResident(args[0]);
         if (tres == null) {
-            getError("not-in-current").tell(res, "state", village.getState().getTag());
+            getError("not-in-current").tell(res, "state", settlement.getState().getTag());
             return true;
         }
 
-        VillageRank rank = VillageRank.get(args[1]);
+        SettlementRank rank = SettlementRank.get(args[1]);
 
         if (rank == null) {
             getError("invalid-rank").tell(res, "rank", args[1]);
-        } else if (rank == VillageRank.getChief()) {
-            getError("cant-set-chief").tell(res, "base", base, "state", village.getState().getTag());
-        } else if (!res.getVillageRank().above(tres.getVillageRank())) {
-            getMessage("cant-set-higher").tell(res, "rank", res.getVillageRank().getTag(village));
-        } else  if (!res.getVillageRank().above(rank)) {
-            getError("rank-required").tell(res, "rank", VillageRank.values().length > rank.ordinal() + 1 ? VillageRank.values()[rank.ordinal() + 1].getTag() : "-");
+        } else if (rank == SettlementRank.getChief()) {
+            getError("cant-set-chief").tell(res, "base", base, "state", settlement.getState().getTag());
+        } else if (!res.getSettlementRank().above(tres.getSettlementRank())) {
+            getMessage("cant-set-higher").tell(res, "rank", res.getSettlementRank().getTag(settlement));
+        } else  if (!res.getSettlementRank().above(rank)) {
+            getError("rank-required").tell(res, "rank", SettlementRank.values().length > rank.ordinal() + 1 ? SettlementRank.values()[rank.ordinal() + 1].getTag() : "-");
         } else {
-                tres.setVillageRank(rank);
+                tres.setSettlementRank(rank);
                 DatabaseManager.getInstance().saveResident(tres);
-                getMessage("success").tell(village.getOnlineResidents(),
-                        "rank", rank.getTag(village),
+                getMessage("success").tell(settlement.getOnlineResidents(),
+                        "rank", rank.getTag(settlement),
                         "setter", res.getName(),
-                        "title", res.getVillageTitle(),
+                        "title", res.getSettlementTitle(),
                         "displaytitle", res.getDisplayTitle(),
                         "target", tres.getName());
         }

@@ -40,9 +40,9 @@ public abstract class Rank<L extends LandOwner> implements NameTag, Comparable<R
             for (String permission : config.getStringList("permissions")) {
                 String permName = permission.toLowerCase();
                 permissions.add(permName);
-                if (Bukkit.getPluginManager().getPermission("kingdoms.command." + permName) == null) {
+                if (Bukkit.getPluginManager().getPermission("settlements.command." + permName) == null) {
                     Bukkit.getPluginManager().addPermission(new Permission(
-                            "kingdoms.command." + permName,
+                            "settlements.command." + permName,
                             Message.orElse("command." + permName + ".permission.description", Message.get("command." + permName + ".description")).getText(),
                             PermissionDefault.TRUE
                     ));

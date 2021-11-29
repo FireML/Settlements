@@ -25,7 +25,7 @@ import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
-import de.themoep.settlements.village.Village;
+import de.themoep.settlements.village.Settlement;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.commands.NotifyToggleCommand;
 import de.themoep.settlements.db.DatabaseManager;
@@ -106,11 +106,11 @@ public class ChatManager implements ConfigMessages, Listener {
         }
         Player sender = event.getPlayer();
         Resident res = ResidentManager.getInstance().getResident(sender);
-        Village village = res.getVillage();
+        Settlement settlement = res.getSettlement();
         ChatChannel channel = res.getActiveChannel();
 
         boolean resetChannel = false;
-        if (village == null) {
+        if (settlement == null) {
             switch (channel) {
                 case EMPIRE:
                 case ALLY:
@@ -154,13 +154,13 @@ public class ChatManager implements ConfigMessages, Listener {
         String senderPrefix = getPlayerPrefix(sender);
         String senderSuffix = getPlayerSuffix(sender);
 
-        if (sender.hasPermission("kingdoms.chat.colour")) {
+        if (sender.hasPermission("settlements.chat.colour")) {
             message = MessageUtils.replaceColorCodes(message);
         }
 
         message = ConfigManager.getInstance().getForcedCurses().filterCurses(message);
 
-        Village village = res.getVillage();
+        Settlement settlement = res.getSettlement();
 
         Replacer replacer = new Replacer()
                 .placeholderPrefix("{")
@@ -168,11 +168,11 @@ public class ChatManager implements ConfigMessages, Listener {
                 .replace("channel", channel.getTag())
                 .replace("prefix", TextComponent.fromLegacyText(senderPrefix))
                 .replace("suffix", TextComponent.fromLegacyText(senderSuffix))
-                .replace("rank", TextComponent.fromLegacyText(village != null ? res.getVillageRank().getTag(village) : ""))
+                .replace("rank", TextComponent.fromLegacyText(settlement != null ? res.getSettlementRank().getTag(settlement) : ""))
                 .replace("title", TextComponent.fromLegacyText(res.getDisplayTitle()))
-                .replace("state", TextComponent.fromLegacyText(village != null ? village.getState().getTag() : ""))
-                .replace("settlement", TextComponent.fromLegacyText(village != null ? village.getName() : ""))
-                .replace("empire", TextComponent.fromLegacyText(res.hasEmpire() ? village.getEmpire().getName() : ""))
+                .replace("state", TextComponent.fromLegacyText(settlement != null ? settlement.getState().getTag() : ""))
+                .replace("settlement", TextComponent.fromLegacyText(settlement != null ? settlement.getName() : ""))
+                .replace("empire", TextComponent.fromLegacyText(res.hasEmpire() ? settlement.getEmpire().getName() : ""))
                 .replace("sender", new ComponentBuilder("")
                         .event(getHover(sender, res))
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + sender.getName()))
@@ -185,19 +185,19 @@ public class ChatManager implements ConfigMessages, Listener {
                         .create());
         BaseComponent[] filteredMessage;
         BaseComponent[] unfilteredMessage;
-        if (sender.hasPermission("kingdoms.chat.links")) {
+        if (sender.hasPermission("settlements.chat.links")) {
             MineDownParser linkParser = new MineDownParser()
                     .urlDetection(true)
                     .urlHoverText(getMessage("hover.click-to-open-url").getText())
                     .disable(MineDownParser.Option.SIMPLE_FORMATTING)
                     .disable(MineDownParser.Option.ADVANCED_FORMATTING);
-            if (!sender.hasPermission("kingdoms.chat.colour")) {
+            if (!sender.hasPermission("settlements.chat.colour")) {
                 linkParser.disable(MineDownParser.Option.LEGACY_COLORS);
             }
             filteredMessage = linkParser.parse(ConfigManager.getInstance().getToggleableCurses().filterCurses(message)).create();
             unfilteredMessage = linkParser.reset().parse(message).create();
         } else {
-            if (!sender.hasPermission("kingdoms.chat.colour")) {
+            if (!sender.hasPermission("settlements.chat.colour")) {
                 message = message.replaceAll("§([0-9a-fA-F])", "&$1");
             }
             filteredMessage = TextComponent.fromLegacyText(ConfigManager.getInstance().getToggleableCurses().filterCurses(message));
@@ -215,7 +215,7 @@ public class ChatManager implements ConfigMessages, Listener {
                                 && sender.getLocation().distanceSquared(p.getLocation()) < 200 * 200)
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
-                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
+                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
                         .collect(Collectors.toList());
                 if (!nearbyPlayers.isEmpty()) {
                     nearbyPlayers.forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
@@ -244,54 +244,54 @@ public class ChatManager implements ConfigMessages, Listener {
                         .filter(channel::canChat)
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
-                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
+                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
                         .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
                 break;
             case ALLY:
-                Set<Resident> residentSet = village.getAllies().stream()
-                        .filter(a -> a instanceof Village)
+                Set<Resident> residentSet = settlement.getAllies().stream()
+                        .filter(a -> a instanceof Settlement)
                         .flatMap(a -> a.getOnlineResidents().stream())
                         .collect(Collectors.toSet());
-                residentSet.addAll(village.getOnlineResidents());
+                residentSet.addAll(settlement.getOnlineResidents());
                 residentSet.stream()
                         .filter(r -> r.isListening(channel)
-                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
+                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
                         .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
                 break;
             case EMPIREALLY:
-                Set<Resident> eAllySet = village.getAllies().stream()
+                Set<Resident> eAllySet = settlement.getAllies().stream()
                         .filter(a -> a instanceof Empire)
                         .flatMap(a -> a.getOnlineResidents().stream())
                         .collect(Collectors.toSet());
-                eAllySet.addAll(village.getOnlineResidents());
-                if (village.hasEmpire()) {
-                    eAllySet.addAll(village.getEmpire().getOnlineResidents());
-                    village.getEmpire().getAllies().stream()
+                eAllySet.addAll(settlement.getOnlineResidents());
+                if (settlement.hasEmpire()) {
+                    eAllySet.addAll(settlement.getEmpire().getOnlineResidents());
+                    settlement.getEmpire().getAllies().stream()
                             .flatMap(a -> a.getOnlineResidents().stream())
                             .forEach(eAllySet::add);
                 }
                 eAllySet.stream()
                         .filter(r -> r.isListening(channel)
-                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
+                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
                         .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
                 break;
             case EMPIRE:
-                if (village.hasEmpire()) {
-                    village.getEmpire().getOnlineResidents().stream()
+                if (settlement.hasEmpire()) {
+                    settlement.getEmpire().getOnlineResidents().stream()
                             .filter(r -> r.isListening(channel)
-                                    && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
+                                    && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
                             .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
                 }
                 break;
             case SETTLEMENT:
-                village.getOnlineResidents().stream()
+                settlement.getOnlineResidents().stream()
                         .filter(r -> r.isListening(channel)
-                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
+                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
                         .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
                 break;
             case EVENT:
                 if (ConfigManager.getInstance().getDataConfig().getConfig().getBoolean("chat-lock")
-                        && !sender.hasPermission("kingdoms.bypass.chatlock")) {
+                        && !sender.hasPermission("settlements.bypass.chatlock")) {
                     getMessage("locked").tell(sender, "channel", channel.name());
                     return;
                 }
@@ -299,12 +299,12 @@ public class ChatManager implements ConfigMessages, Listener {
                 new ArrayList<>(sender.getWorld().getPlayers()).stream()
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
-                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
+                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
                         .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
                 break;
             default:
                 if (ConfigManager.getInstance().getDataConfig().getConfig().getBoolean("chat-lock")
-                        && !sender.hasPermission("kingdoms.bypass.chatlock")) {
+                        && !sender.hasPermission("settlements.bypass.chatlock")) {
                     getMessage("locked").tell(sender, "channel", channel.name());
                     return;
                 }
@@ -312,7 +312,7 @@ public class ChatManager implements ConfigMessages, Listener {
                 new ArrayList<>(Bukkit.getOnlinePlayers()).stream()
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
-                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("kingdoms.bypass.ignore")))
+                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
                         .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
                 break;
         }
@@ -370,11 +370,11 @@ public class ChatManager implements ConfigMessages, Listener {
             getMessage("ignoring").tell(sender, "name", target.getName());
             return;
         }
-        if (tres.getIgnore().contains(res.getUUID()) && !sender.hasPermission("kingdoms.bypass.ignore")) {
+        if (tres.getIgnore().contains(res.getUUID()) && !sender.hasPermission("settlements.bypass.ignore")) {
             getMessage("ignored").tell(sender, "name", target.getName());
             return;
         }
-        if (sender.hasPermission("kingdoms.chat.colour")) {
+        if (sender.hasPermission("settlements.chat.colour")) {
             message = MessageUtils.replaceColorCodes(message);
         }
         HoverEvent senderHover = getHover(sender, res);
@@ -393,19 +393,19 @@ public class ChatManager implements ConfigMessages, Listener {
 
         BaseComponent[] filteredMessage;
         BaseComponent[] unfilteredMessage;
-        if (sender.hasPermission("kingdoms.chat.links")) {
+        if (sender.hasPermission("settlements.chat.links")) {
             MineDownParser linkParser = new MineDownParser()
                     .urlDetection(true)
                     .urlHoverText(getMessage("hover.click-to-open-url").getText())
                     .disable(MineDownParser.Option.SIMPLE_FORMATTING)
                     .disable(MineDownParser.Option.ADVANCED_FORMATTING);
-            if (!sender.hasPermission("kingdoms.chat.colour")) {
+            if (!sender.hasPermission("settlements.chat.colour")) {
                 linkParser.disable(MineDownParser.Option.LEGACY_COLORS);
             }
             filteredMessage = linkParser.parse(ConfigManager.getInstance().getToggleableCurses().filterCurses(message)).create();
             unfilteredMessage = linkParser.reset().parse(message).create();
         } else {
-            if (!sender.hasPermission("kingdoms.chat.colour")) {
+            if (!sender.hasPermission("settlements.chat.colour")) {
                 message = message.replaceAll("§([0-9a-fA-F])", "&$1");
             }
             filteredMessage = TextComponent.fromLegacyText(ConfigManager.getInstance().getToggleableCurses().filterCurses(message));
@@ -424,7 +424,7 @@ public class ChatManager implements ConfigMessages, Listener {
                         .append(getMessage("format.private.name.target").getReplacedComponents(getReplacements(target, tres)))
                         .create(),
                 "message", unfilteredMessage,
-                "staff", sender.hasPermission("kingdoms.prefix.staff") ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
+                "staff", sender.hasPermission("settlements.prefix.staff") ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
         ));
 
         ChatColor targetColor = tres.getChannelColor(ChatChannel.PRIVATE_RECEIVED, ChatColorType.MESSAGE, Utils.getChannelColor(ChatChannel.PRIVATE_RECEIVED, ChatColorType.MESSAGE));
@@ -450,7 +450,7 @@ public class ChatManager implements ConfigMessages, Listener {
                         .append(getMessage("format.private.name.sender").getReplacedComponents(getReplacements(target, res)))
                         .create(),
                 "message", tres.getSwear() ? unfilteredMessage : filteredMessage,
-                "staff", sender.hasPermission("kingdoms.prefix.staff") ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
+                "staff", sender.hasPermission("settlements.prefix.staff") ? getMessage("staff").getComponents() : new ComponentBuilder("").create()
         ));
 
         notify(tres);
@@ -459,7 +459,7 @@ public class ChatManager implements ConfigMessages, Listener {
         lastMessage.put(target.getUniqueId(), sender.getUniqueId());
 
         if (tres.isAfk()) {
-            if (target.hasPermission("kingdoms.prefix.staff")) {
+            if (target.hasPermission("settlements.prefix.staff")) {
                 getMessage("afk-staff").tell(sender, "name", tres.getName());
             } else {
                 getMessage("afk").tell(sender, "name", tres.getName());
@@ -474,7 +474,7 @@ public class ChatManager implements ConfigMessages, Listener {
                 "message", message
         );
         for (Player pl : new ArrayList<>(Bukkit.getOnlinePlayers())) {
-            if (pl != sender && pl != target && pl.hasPermission("kingdoms.admin.ss")) {
+            if (pl != sender && pl != target && pl.hasPermission("settlements.admin.ss")) {
                 Resident resident = ResidentManager.getInstance().getResident(pl);
                 if (resident.getSocialSpy()) {
                     MessageUtils.tell(pl, socialSpy);
@@ -502,7 +502,7 @@ public class ChatManager implements ConfigMessages, Listener {
         map.put("displayname", TextComponent.fromLegacyText(player.getDisplayName()));
         map.put("prefix", TextComponent.fromLegacyText(getPlayerPrefix(player)));
         map.put("suffix", TextComponent.fromLegacyText(getPlayerSuffix(player)));
-        map.put("rank", TextComponent.fromLegacyText(res.hasVillage() ? res.getVillageRank().getTag(res.getVillage()) : ""));
+        map.put("rank", TextComponent.fromLegacyText(res.hasSettlement() ? res.getSettlementRank().getTag(res.getSettlement()) : ""));
         map.put("title", TextComponent.fromLegacyText(res.getDisplayTitle()));
         return map;
     }
@@ -523,23 +523,23 @@ public class ChatManager implements ConfigMessages, Listener {
                 "suffix", getPlayerSuffix(player),
                 "balance", getMessage("hover.balance").getReplacedText("balance", BALANCE_FORMAT.format(SettlementsPlugin.getInstance().getEconomy().getBalance(player))),
                 "bonus", getMessage("hover.bonus").getReplacedText("bonus", BALANCE_FORMAT.format(res.getBonusClaims())),
-                "village", res.hasVillage() ? getMessage("hover.village").getReplacedText(
-                        "state", res.getVillage().getState().getTag(),
-                        "name", res.getVillage().getName(),
-                        "chiefdisplaytitle", res.getVillage().getChief().getDisplayTitle(),
-                        "chieftitle", res.getVillage().getChief().getVillageTitle(),
-                        "chief", res.getVillage().getChief().getName()
+                "settlement", res.hasSettlement() ? getMessage("hover.settlement").getReplacedText(
+                        "state", res.getSettlement().getState().getTag(),
+                        "name", res.getSettlement().getName(),
+                        "chiefdisplaytitle", res.getSettlement().getChief().getDisplayTitle(),
+                        "chieftitle", res.getSettlement().getChief().getSettlementTitle(),
+                        "chief", res.getSettlement().getChief().getName()
                 ): "",
                 "empire", res.hasEmpire() ? getMessage("hover.empire").getReplacedText(
-                        "name", res.getVillage().getEmpire().getName(),
-                        "capital", res.getVillage().getEmpire().getCapital().getName(),
-                        "leaderdisplaytitle", res.getVillage().getEmpire().getCapital().getChief().getDisplayTitle(),
-                        "leadertitle", res.getVillage().getEmpire().getCapital().getChief().getVillageTitle(),
-                        "leader", res.getVillage().getEmpire().getCapital().getChief().getName()
+                        "name", res.getSettlement().getEmpire().getName(),
+                        "capital", res.getSettlement().getEmpire().getCapital().getName(),
+                        "leaderdisplaytitle", res.getSettlement().getEmpire().getCapital().getChief().getDisplayTitle(),
+                        "leadertitle", res.getSettlement().getEmpire().getCapital().getChief().getSettlementTitle(),
+                        "leader", res.getSettlement().getEmpire().getCapital().getChief().getName()
                 ): "",
-                "rank", res.hasVillage() ? getMessage("hover.rank").getReplacedText(
-                        "state", res.getVillage().getState().getTag(),
-                        "rank", res.getVillageRank().getTag(res.getVillage()),
+                "rank", res.hasSettlement() ? getMessage("hover.rank").getReplacedText(
+                        "state", res.getSettlement().getState().getTag(),
+                        "rank", res.getSettlementRank().getTag(res.getSettlement()),
                         "title", res.getDisplayTitle()
                 ) : ""
         )));

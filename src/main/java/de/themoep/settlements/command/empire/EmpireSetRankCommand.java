@@ -13,7 +13,7 @@ public class EmpireSetRankCommand extends EmpireSubCommand {
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
-        Empire empire = res.getVillage().getEmpire();
+        Empire empire = res.getSettlement().getEmpire();
         if (args.length <= 1) {
             getMessage("rank-usage.head").tell(res, empire.getReplacements(this,
                     "name", name(),
@@ -62,7 +62,7 @@ public class EmpireSetRankCommand extends EmpireSubCommand {
             DatabaseManager.getInstance().saveResident(tres);
             getMessage("success").tell(empire.getOnlineResidents(),
                     "rank", rank.getTag(),
-                    "title", res.getVillageTitle(),
+                    "title", res.getSettlementTitle(),
                     "displaytitle", res.getDisplayTitle(),
                     "setter", res.getName(),
                     "target", tres.getName());
