@@ -1,7 +1,7 @@
 package de.themoep.settlements.perk;
 
-import de.themoep.settlements.village.Settlement;
-import de.themoep.settlements.village.SettlementState;
+import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.settlement.SettlementState;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class LevelPerk extends Perk {

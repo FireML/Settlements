@@ -8,8 +8,8 @@ import com.plotsquared.core.plot.Plot;
 import com.plotsquared.core.plot.PlotArea;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.CommandManager;
-import de.themoep.settlements.command.village.VillageCommand;
-import de.themoep.settlements.command.village.VillageSubCommand;
+import de.themoep.settlements.command.settlement.SettlementCommand;
+import de.themoep.settlements.command.settlement.SettlementSubCommand;
 import de.themoep.settlements.land.events.LandownerChiefChangeEvent;
 import de.themoep.settlements.land.events.LandownerDisbandEvent;
 import de.themoep.settlements.perk.Perk;
@@ -17,8 +17,8 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.village.events.SettlementJoinEvent;
-import de.themoep.settlements.village.events.SettlementLeaveEvent;
+import de.themoep.settlements.settlement.events.SettlementJoinEvent;
+import de.themoep.settlements.settlement.events.SettlementLeaveEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -89,8 +89,8 @@ public class PlotSquaredIntegration implements Listener, ConfigMessages {
             return "purchasable";
         });
 
-        VillageCommand settlementCommand = (VillageCommand) CommandManager.getInstance().getCommand("settlement");
-        settlementCommand.registerCommand(new VillageSubCommand(settlementCommand, "mapart", "plotsquared") {
+        SettlementCommand settlementCommand = (SettlementCommand) CommandManager.getInstance().getCommand("settlement");
+        settlementCommand.registerCommand(new SettlementSubCommand(settlementCommand, "mapart", "plotsquared") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 Set<Plot> plots = plotArea.getPlots(resident.getSettlement().getChiefId());

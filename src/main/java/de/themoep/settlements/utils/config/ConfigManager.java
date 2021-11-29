@@ -1,7 +1,7 @@
 package de.themoep.settlements.utils.config;
 
 import de.themoep.settlements.empire.EmpireManager;
-import de.themoep.settlements.village.SettlementManager;
+import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.event.EventManager;
 import de.themoep.settlements.land.UseFlagManager;

@@ -1,8 +1,8 @@
 package de.themoep.settlements.command.empire;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Settlement;
-import de.themoep.settlements.village.SettlementManager;
+import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;

@@ -32,7 +32,7 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.WorldUtils;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.world.SimpleBlockLocation;
 import de.themoep.settlements.world.SimpleChunkLocation;
 import de.themoep.settlements.world.SimpleLocation;

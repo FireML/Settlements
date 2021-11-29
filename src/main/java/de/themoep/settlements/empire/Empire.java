@@ -6,9 +6,9 @@ import com.google.common.collect.MultimapBuilder;
 import de.themoep.settlements.missions.MissionData;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.village.Settlement;
-import de.themoep.settlements.village.SettlementManager;
-import de.themoep.settlements.village.SettlementState;
+import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.settlement.SettlementManager;
+import de.themoep.settlements.settlement.SettlementState;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.LandAccess;
@@ -751,11 +751,6 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
             return SettlementRank.getChief().getTag(capital);
         }),
         chieftitle((c, e) -> {
-            Settlement capital = e.getCapital();
-            Resident chief = capital != null ? capital.getChief() : null;
-            return chief != null ? chief.getSettlementTitle() : "-";
-        }),
-        chiefvillagetitle((c, e) -> {
             Settlement capital = e.getCapital();
             Resident chief = capital != null ? capital.getChief() : null;
             return chief != null ? chief.getSettlementTitle() : "-";

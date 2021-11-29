@@ -1,6 +1,6 @@
 package de.themoep.settlements.command.empire;
 
-import de.themoep.settlements.command.village.VillageSubCommand;
+import de.themoep.settlements.command.settlement.SettlementSubCommand;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.empire.Empire;
@@ -11,7 +11,7 @@ import de.themoep.settlements.utils.config.Config;
 
 import java.util.regex.Pattern;
 
-public class EmpireCreateCommand extends VillageSubCommand {
+public class EmpireCreateCommand extends SettlementSubCommand {
     private Pattern allowed = Pattern.compile("[\\w-]+");
 
     public EmpireCreateCommand(SubCommand parent) {

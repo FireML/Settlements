@@ -2,8 +2,8 @@ package de.themoep.settlements.empire;
 
 import co.aikar.timings.lib.MCTiming;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Settlement;
-import de.themoep.settlements.village.SettlementManager;
+import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.settlement.SettlementManager;
 import io.papermc.lib.PaperLib;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;

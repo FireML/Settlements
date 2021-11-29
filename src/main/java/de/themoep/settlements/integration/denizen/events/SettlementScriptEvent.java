@@ -6,9 +6,9 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import de.themoep.settlements.integration.denizen.objects.ResidentTag;
 import de.themoep.settlements.integration.denizen.objects.SettlementTag;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.Settlement;
-import de.themoep.settlements.village.events.SettlementJoinEvent;
-import de.themoep.settlements.village.events.SettlementLeaveEvent;
+import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.settlement.events.SettlementJoinEvent;
+import de.themoep.settlements.settlement.events.SettlementLeaveEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 

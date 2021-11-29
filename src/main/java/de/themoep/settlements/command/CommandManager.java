@@ -1,11 +1,11 @@
 package de.themoep.settlements.command;
 
-import de.themoep.settlements.command.admin.VillageAdminCommand;
+import de.themoep.settlements.command.admin.AdminCommand;
 import de.themoep.settlements.command.empire.EmpireCommand;
 import de.themoep.settlements.command.friend.FriendCommand;
 import de.themoep.settlements.command.plot.PlotCommand;
 import de.themoep.settlements.command.resident.ResidentCommand;
-import de.themoep.settlements.command.village.VillageCommand;
+import de.themoep.settlements.command.settlement.SettlementCommand;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.config.Config;
@@ -26,13 +26,13 @@ public class CommandManager implements TabExecutor {
     private Map<String, SubCommand> commandMap = new LinkedHashMap<>();
 
     private CommandManager() {
-        registerCommand(new VillageAdminCommand(), false);
+        registerCommand(new AdminCommand(), false);
         SettlementsPlugin.logDebug("Loaded CommandManager for " + commandMap.size() + " commands");
     }
 
     private void registerCommands() {
         registerCommand(new PlotCommand(null));
-        registerCommand(new VillageCommand());
+        registerCommand(new SettlementCommand());
         registerCommand(new EmpireCommand());
         registerCommand(new ResidentCommand());
         registerCommand(new FriendCommand());

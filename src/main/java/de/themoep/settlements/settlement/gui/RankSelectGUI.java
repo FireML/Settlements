@@ -1,0 +1,56 @@
+package de.themoep.settlements.settlement.gui;
+
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.SettlementsGUI;
+import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.rank.SettlementRank;
+import de.themoep.settlements.utils.ItemUtils;
+
+import java.util.function.Consumer;
+
+public class RankSelectGUI extends SettlementsGUI {
+    private final static String[] SETUP = {
+            "         ",
+            "         ",
+            "ggggggggg",
+            "ggggggggg",
+            "         ",
+            "    b    "
+    };
+    private final Resident resident;
+    private final InventoryGui gui;
+
+    public RankSelectGUI(Resident resident, Consumer<SettlementRank> rankConsumer) {
+        super("rank-select");
+        this.resident = resident;
+        gui = new InventoryGui(SettlementsPlugin.getInstance(),
+                getText("title", "state", resident.hasSettlement() ? resident.getSettlement().getStateTag() : ""),
+                SETUP);
+        gui.setCloseAction(close -> false);
+        gui.setFiller(BORDER_ITEM);
+
+        GuiElementGroup group = new GuiElementGroup('g');
+        for (SettlementRank rank : SettlementRank.values()) {
+            group.addElement(new StaticGuiElement('g',
+                    ItemUtils.setGlowing(rank.getItem(), rank == resident.getSettlementRank()),
+                    click -> {
+                        if (resident.hasSettlement()) {
+                            rankConsumer.accept(rank);
+                        }
+                        return true;
+                    }, getText("entry",
+                            "state", resident.hasSettlement() ? resident.getSettlement().getStateTag() : "",
+                            "rank", resident.hasSettlement() ? rank.getTag(resident.getSettlement()) : rank.getTag()
+                    )
+            ));
+        }
+        gui.addElement(group);
+    }
+
+    public void open() {
+        gui.show(resident.getPlayer());
+    }
+}

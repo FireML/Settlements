@@ -8,7 +8,7 @@ import de.themoep.settlements.utils.IdObject;
 import java.util.UUID;
 
 public class InviteCache {
-    private static Multimap<UUID, IdObject> pendingVillageInvites = MultimapBuilder.hashKeys().hashSetValues().build();
+    private static Multimap<UUID, IdObject> pendingSettlementInvites = MultimapBuilder.hashKeys().hashSetValues().build();
     private static Multimap<IdObject, IdObject> pendingEmpireInvites = MultimapBuilder.hashKeys().hashSetValues().build();
     private static Multimap<String, String> pendingAlly = MultimapBuilder.hashKeys().hashSetValues().build();
 
@@ -16,8 +16,8 @@ public class InviteCache {
         super();
     }
 
-    public static Multimap<UUID, IdObject> getPendingVillageInvites() {
-        return pendingVillageInvites;
+    public static Multimap<UUID, IdObject> getPendingSettlementInvites() {
+        return pendingSettlementInvites;
     }
 
     public static Multimap<IdObject, IdObject> getPendingEmpireInvites() {

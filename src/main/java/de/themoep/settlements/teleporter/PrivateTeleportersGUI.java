@@ -11,7 +11,7 @@ import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.empire.EmpireHomeCommand;
-import de.themoep.settlements.command.village.VillageHomeCommand;
+import de.themoep.settlements.command.settlement.SettlementHomeCommand;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.land.LandAccess;
@@ -22,8 +22,8 @@ import de.themoep.settlements.utils.PathedConfigMessages;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.village.Settlement;
-import de.themoep.settlements.village.SettlementManager;
+import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.world.NamedLocation;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -160,7 +160,7 @@ public class PrivateTeleportersGUI extends SettlementsGUI {
                                             landOwner.getName()
                                     );
                                 } else if (landOwner instanceof Settlement) {
-                                    ((VillageHomeCommand) CommandManager.getInstance().getCommand("settlement").getSubCommands().get("home")).run(
+                                    ((SettlementHomeCommand) CommandManager.getInstance().getCommand("settlement").getSubCommands().get("home")).run(
                                             ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked()),
                                             "settlement",
                                             "home",

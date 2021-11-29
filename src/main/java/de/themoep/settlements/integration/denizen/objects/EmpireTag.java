@@ -21,8 +21,8 @@ import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.land.Use;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.village.Settlement;
-import de.themoep.settlements.village.SettlementManager;
+import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.settlement.SettlementManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

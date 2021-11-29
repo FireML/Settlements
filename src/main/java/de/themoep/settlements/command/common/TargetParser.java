@@ -2,7 +2,7 @@ package de.themoep.settlements.command.common;
 
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.village.SettlementManager;
+import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.Targetable;

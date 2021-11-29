@@ -1,0 +1,37 @@
+package de.themoep.settlements.command.settlement.money;
+
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.command.HelpCommand;
+import de.themoep.settlements.command.SubCommand;
+import de.themoep.settlements.command.settlement.SettlementHistoryCommand;
+import de.themoep.settlements.command.settlement.SettlementSubCommand;
+import de.themoep.settlements.db.LogType;
+import de.themoep.settlements.utils.Utils;
+import org.bukkit.entity.Player;
+
+public class SettlementMoneyCommand extends SettlementSubCommand {
+
+    public SettlementMoneyCommand(SubCommand parent) {
+        super(parent, "bank <deposit|withdraw|balance|history> <amount>", "money");
+        setHelpCommand(new HelpCommand(this));
+        getHelpCommand().setDefaultTypeProvider(s -> s instanceof Player && ResidentManager.getInstance().doesResidentHaveSettlement((Player) s) ? "resident" : "none");
+        SettlementSubCommand balanceCommand = new SettlementSubCommand(this, "balance") {
+            @Override
+            public boolean run(Resident resident, String base, String alias, String... args) {
+                getMessage("balance").tell(resident, "amount", Utils.CURRENCY_FORMAT.format(resident.getSettlement().getBank()));
+                return true;
+            }
+        };
+        parent.registerCommand(balanceCommand);
+        registerCommand(balanceCommand);
+        registerCommand(new MoneyWithdrawCommand(this));
+        registerCommand(new MoneyDepositCommand(this));
+        registerCommand(new SettlementHistoryCommand(this, LogType.BANK));
+    }
+
+    @Override
+    public boolean run(Resident resident, String base, String alias, String... args) {
+        return false;
+    }
+}

@@ -25,7 +25,7 @@ import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
-import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.commands.NotifyToggleCommand;
 import de.themoep.settlements.db.DatabaseManager;

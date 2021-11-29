@@ -11,7 +11,7 @@ import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.TitleBuilder;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.SettlementsPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

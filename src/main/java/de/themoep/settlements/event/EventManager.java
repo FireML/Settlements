@@ -8,8 +8,8 @@ import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.ConfigManager;
-import de.themoep.settlements.village.Settlement;
-import de.themoep.settlements.village.SettlementManager;
+import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import org.bukkit.Bukkit;
@@ -67,7 +67,7 @@ public class EventManager implements ConfigMessages {
     private Map<IdObject, EventData> eventData = new HashMap<>();
     private Settlement first = null;
     private BukkitTask firstAnnounceTask = null;
-    private Map<IdObject, Set<String>> villageRewards = new HashMap<>();
+    private Map<IdObject, Set<String>> settlementRewards = new HashMap<>();
 
 
     private EventManager() {
@@ -238,7 +238,7 @@ public class EventManager implements ConfigMessages {
             activeBar.removeAll();
             activeBar = null;
         }
-        villageRewards.clear();
+        settlementRewards.clear();
         eventData.clear();
         activeEvent = event;
         activeEventStart = System.currentTimeMillis();
@@ -298,7 +298,7 @@ public class EventManager implements ConfigMessages {
             List<EventData> top = EventManager.getInstance().getTop(eventData.size());
             for (int i = 0; i < top.size(); i++) {
                 EventData eventData = top.get(i);
-                Settlement settlement = eventData.getVillage();
+                Settlement settlement = eventData.getSettlement();
                 int place = i + 1;
                 getMessage("stats").tell(settlement.getOnlineResidents(),
                         "title", activeEvent.getTitle(),
@@ -310,7 +310,7 @@ public class EventManager implements ConfigMessages {
                 );
                 List<String> rewards = activeEvent.getRewards().getOrDefault(String.valueOf(place), activeEvent.getRewards().get("rest"));
                 if (rewards != null) {
-                    villageRewards.put(settlement.getId(), new LinkedHashSet<>(rewards));
+                    settlementRewards.put(settlement.getId(), new LinkedHashSet<>(rewards));
                     getMessage("reward-info").tell(settlement.getOnlineResidents(),
                             "title", activeEvent.getTitle(),
                             "id", activeEvent.getId(),
@@ -339,7 +339,7 @@ public class EventManager implements ConfigMessages {
     }
 
     public Set<String> getRewards(Settlement settlement) {
-        return villageRewards.get(settlement.getId());
+        return settlementRewards.get(settlement.getId());
     }
 
     public Reward getReward(String id) {
@@ -463,7 +463,7 @@ public class EventManager implements ConfigMessages {
             totalAmount++;
         }
 
-        public Settlement getVillage() {
+        public Settlement getSettlement() {
             return SettlementManager.getInstance().getFromId(id);
         }
 

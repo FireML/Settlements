@@ -11,7 +11,7 @@ import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.world.SimpleChunkLocation;
 
 import java.util.ArrayList;

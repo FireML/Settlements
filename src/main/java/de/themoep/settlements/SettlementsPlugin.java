@@ -44,9 +44,9 @@ import de.themoep.settlements.utils.adapter.ServerAdapter;
 import de.themoep.settlements.utils.adapter.SpigotAdapter;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
-import de.themoep.settlements.village.Settlement;
-import de.themoep.settlements.village.SettlementListener;
-import de.themoep.settlements.village.SettlementManager;
+import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.settlement.SettlementListener;
+import de.themoep.settlements.settlement.SettlementManager;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 

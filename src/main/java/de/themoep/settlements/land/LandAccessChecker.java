@@ -6,7 +6,7 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Pair;
-import de.themoep.settlements.village.SettlementManager;
+import de.themoep.settlements.settlement.SettlementManager;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

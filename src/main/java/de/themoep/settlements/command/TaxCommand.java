@@ -2,7 +2,7 @@ package de.themoep.settlements.command;
 
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.village.SettlementState;
+import de.themoep.settlements.settlement.SettlementState;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.utils.Utils;
 

@@ -6,7 +6,7 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
-import de.themoep.settlements.village.Settlement;
+import de.themoep.settlements.settlement.Settlement;
 import io.papermc.lib.PaperLib;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
@@ -114,10 +114,10 @@ public class Utils {
     }
 
     public static boolean playerHasInvite(UUID playerId, Settlement joinSettlement) {
-        return InviteCache.getPendingVillageInvites().containsKey(playerId) && InviteCache.getPendingVillageInvites().get(playerId).contains(joinSettlement.getId());
+        return InviteCache.getPendingSettlementInvites().containsKey(playerId) && InviteCache.getPendingSettlementInvites().get(playerId).contains(joinSettlement.getId());
     }
 
-    public static boolean villageHasInvite(Settlement settlement, Empire joinEmpire) {
+    public static boolean settlementHasInvite(Settlement settlement, Empire joinEmpire) {
         return InviteCache.getPendingEmpireInvites().containsKey(settlement.getId()) && InviteCache.getPendingEmpireInvites().get(settlement.getId()).contains(joinEmpire.getId());
     }
 

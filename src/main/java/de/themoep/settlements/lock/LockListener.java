@@ -11,7 +11,7 @@ import de.themoep.settlements.utils.Pair;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.village.SettlementManager;
+import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.world.SimpleChunkLocation;
 import io.papermc.lib.PaperLib;
 import de.themoep.settlements.SettlementsPlugin;

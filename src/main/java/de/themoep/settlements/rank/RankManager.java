@@ -1,7 +1,7 @@
 package de.themoep.settlements.rank;
 
 import de.themoep.settlements.utils.config.ConfigManager;
-import de.themoep.settlements.village.SettlementState;
+import de.themoep.settlements.settlement.SettlementState;
 import de.themoep.settlements.SettlementsPlugin;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;

@@ -48,7 +48,7 @@ import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.village.SettlementManager;
+import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.world.SimpleChunkLocation;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;

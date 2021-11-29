@@ -21,9 +21,9 @@ import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Utils;
-import de.themoep.settlements.village.Settlement;
-import de.themoep.settlements.village.SettlementManager;
-import de.themoep.settlements.village.events.SettlementJoinEvent;
+import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.settlement.SettlementManager;
+import de.themoep.settlements.settlement.events.SettlementJoinEvent;
 import de.themoep.settlements.world.NamedLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -378,7 +378,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
             resident.setSettlement(settlement);
             resident.setSettlementRank(SettlementRank.getDefault());
             resident.addChannel(ChatChannel.SETTLEMENT);
-            InviteCache.getPendingVillageInvites().remove(resident.getUUID(), settlement.getId());
+            InviteCache.getPendingSettlementInvites().remove(resident.getUUID(), settlement.getId());
             DatabaseManager.getInstance().saveResident(resident);
             return;
         }
