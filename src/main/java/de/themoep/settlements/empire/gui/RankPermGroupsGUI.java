@@ -79,7 +79,7 @@ public class RankPermGroupsGUI extends SettlementsGUI {
         gui.addElement(group);
 
         gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
-            new PermsGUI((Player) click.getEvent().getWhoClicked()).open();
+            new RanksGUI((Player) click.getEvent().getWhoClicked()).open();
             return true;
         }, getText("back")));
     }

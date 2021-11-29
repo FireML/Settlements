@@ -1,7 +1,7 @@
 package de.themoep.settlements.command.village;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.village.gui.UseGUI;
+import de.themoep.settlements.land.gui.PermsGUI;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.BuildState;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class VillageUseCommand extends VillageSubCommand {
     public VillageUseCommand(SubCommand parent) {
-        super(parent, "use <name> <state>");
+        super(parent, "perms [<name> <state>]", "permissions", "rights", "use", "build");
         registerCommand(new VillageSubCommand(this, "all <state>") {
             @Override
             public boolean run(Resident res, String base, String alias, String... args) {
@@ -37,7 +37,11 @@ public class VillageUseCommand extends VillageSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length < 2) {
-            new UseGUI().open(res.getPlayer());
+            new PermsGUI(
+                    "settlement",
+                    res.getVillage(),
+                    () -> res.hasVillage() && res.hasPermission(getPermission())
+            ).open(res.getPlayer());
         } else {
             UseFlag useFlag = UseFlagManager.getInstance().get(args[0]);
             if (useFlag != null) {

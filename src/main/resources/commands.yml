@@ -61,7 +61,7 @@ help-order:
     - unally
     - s unbanish <player>|s:<settlement>|e:<empire>
     - unclaim
-    - use
+    - perms
     outpost:
     - list
     - s outpost tp <name>
@@ -136,7 +136,7 @@ help-order:
     - transfer
     - unally
     - e unbanish <player>|s:<settlement>|e:<empire>
-    - use
+    - perms
     bank:
     - balance
     - deposit
@@ -157,6 +157,7 @@ help-order:
   - build
   - buy
   - settings
+  - perms
   - members list|add|remove
   - name
   - info

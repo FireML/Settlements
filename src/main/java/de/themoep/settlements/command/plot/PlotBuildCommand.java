@@ -1,11 +1,13 @@
 package de.themoep.settlements.command.plot;
 
+import de.themoep.settlements.land.gui.PermsGUI;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.gui.BuildGUI;
 import de.themoep.settlements.land.BuildState;
 import de.themoep.settlements.utils.Message;
+import de.themoep.settlements.world.SimpleChunkLocation;
 
 public class PlotBuildCommand extends PlotSubCommand {
     public PlotBuildCommand(PlotCommand parent) {
@@ -15,7 +17,22 @@ public class PlotBuildCommand extends PlotSubCommand {
     @Override
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
         if (args.length < 1) {
-            new BuildGUI(land).open(res.getPlayer());
+            SimpleChunkLocation landLocation = land.getLocation();
+            new BuildGUI(
+                    "plot",
+                    land,
+                    () -> {
+                        if (!res.hasPermission(getPermission())) {
+                            return false;
+                        }
+
+                        OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
+                        if (currentLand != null) {
+                            return currentLand.isPlotOwner(res) || currentLand.canAdmin(res);
+                        }
+                        return false;
+                    }
+            ).open(res.getPlayer());
         } else if (land.isPlot() && "reset".equalsIgnoreCase(args[0])) {
             land.setBuildState(null);
             LandManager.getInstance().saveLand(land);

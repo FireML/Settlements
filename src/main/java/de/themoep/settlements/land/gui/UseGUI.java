@@ -1,110 +1,97 @@
 package de.themoep.settlements.land.gui;
 
 import de.themoep.inventorygui.DynamicGuiElement;
-import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.GuiPageElement;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.utils.ItemUtils;
-import de.themoep.settlements.utils.Message;
-import de.themoep.settlements.world.SimpleChunkLocation;
+import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.land.LandManager;
-import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.BuildState;
+import de.themoep.settlements.land.FlagAble;
 import de.themoep.settlements.land.UseFlag;
 import de.themoep.settlements.land.UseFlagManager;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import de.themoep.settlements.land.UseGroup;
+import de.themoep.settlements.utils.Message;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.ClickType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
-public class UseGUI extends PlotGUI {
-    private static final String[] SETUP = {
-            "         ",
-            "uuuuuuuuu",
-            "uuuuuuuuu",
-            "uuuuuuuuu",
-            "aaaaaaaar",
-            "p   b   n",
-    };
+public class UseGUI extends SettlementsGUI {
     private final InventoryGui gui;
-    private final SimpleChunkLocation landLocation;
 
-    public UseGUI(OwnedLand editedLand) {
-        super("use");
-        landLocation = editedLand.getLocation().copy();
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), SETUP);
+    public UseGUI(String type, UseGroup group, FlagAble flagAble, Supplier<Boolean> permCheck) {
+        super((type == null || type.isEmpty() ? "" : type + ".") + "perms");
+        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), getSetup());
         gui.setCloseAction(close -> false);
-
-        gui.setFiller(BORDER_ITEM);
+        gui.setFiller(getIcon("filler"));
+        gui.addElements(getConfiguredElements());
+        gui.addElement(new StaticGuiElement('s', getIcon("states"), getText("states", "state", flagAble.getParent().getStateTag())));
 
         GuiElementGroup useGroup = new GuiElementGroup('u');
-        for (UseFlag u : UseFlagManager.getInstance().getUseFlags()) {
+        useGroup.setAlignment(getAlignment("u"));
+        for (UseFlag u : group.getUseFlags()) {
             useGroup.addElement(new DynamicGuiElement('u', h -> {
-                OwnedLand land = LandManager.getInstance().getLand(landLocation);
-                if (land != null) {
-                    BuildState state = land.getUseState(u);
-                    if (state == null || !land.isPlot() && !state.appliesTo(BuildState.AppliesTo.get(land.getLandOwner()))) {
-                        state = land.getLandOwner().getDefaultBuildState();
+                if (permCheck.get()) {
+                    BuildState state = flagAble.getUseState(u);
+                    if (state == null) {
+                        state = flagAble.getDefaultBuildState();
                     }
                     List<String> text = new ArrayList<>();
-                    text.add(getMessage("entry").getReplacedText(
+                    text.add(getMessage("entry.text").getReplacedText(
                             "flag", u.getTag(),
-                            "state", state.getTag()
+                            "access", state.getTag(),
+                            "nextaccess", state.next(BuildState.AppliesTo.SETTLEMENT).getTag(),
+                            "previousaccess", state.previous(BuildState.AppliesTo.SETTLEMENT).getTag()
                     ));
-                    if (land.hasUseState(u)) {
+                    FlagAble parent = flagAble.getParent();
+                    if (flagAble.hasUseState(u)) {
                         text.addAll(getMessage("entry.click-to-unset").getReplacedTextList(
-                                "parent", land.getLandOwner().getStateTag(),
-                                "value", land.getLandOwner().getUseState(u).getTag()
+                                "parent", parent.getStateTag(),
+                                "value", parent.getUseState(u).getTag()
                         ));
                     } else {
                         text.addAll(getMessage("entry.parent").getReplacedTextList(
-                                "parent", land.getLandOwner().getStateTag(),
-                                "value", land.getLandOwner().getUseState(u).getTag()
+                                "parent", parent.getStateTag(),
+                                "value", parent.getUseState(u).getTag()
                         ));
                     }
                     return new StaticGuiElement('u', u.getItem(), click -> {
-                        OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
-                        if (currentLand != null) {
-                            Resident resident = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
-                            if (currentLand.isPlotOwner(resident) || currentLand.canAdmin(resident)) {
-                                if (click.getType() == ClickType.MIDDLE) {
-                                    if (currentLand.unsetUseState(u)) {
-                                        Message.get("command.plot.use.unset").tell(resident,
-                                                "flag", u.getTag(),
-                                                "parent", currentLand.getLandOwner().getStateTag(),
-                                                "state", currentLand.getLandOwner().getUseState(u).getTag()
-                                        );
-                                    } else {
-                                        return false;
-                                    }
-                                } else {
-                                    BuildState currentState = currentLand.getUseState(u);
-                                    if (currentState == null || !currentLand.isPlot() && !currentState.appliesTo(BuildState.AppliesTo.get(currentLand.getLandOwner()))) {
-                                        currentState = currentLand.getLandOwner().getDefaultBuildState();
-                                    }
-                                    BuildState changeTo = click.getType().isLeftClick()
-                                            ? currentState.next(currentLand.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(currentLand.getLandOwner()))
-                                            : currentState.previous(currentLand.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(currentLand.getLandOwner()));
-                                    currentLand.setUseState(u, changeTo);
-                                    Message.get("command.plot.use.success").tell(resident,
+                        if (permCheck.get()) {
+                            if (click.getType() == ClickType.MIDDLE) {
+                                if (flagAble.unsetUseState(u)) {
+                                    Message.get("command." + type + ".use.unset").tell(click.getWhoClicked(),
                                             "flag", u.getTag(),
-                                            "state", changeTo.getTag()
+                                            "parent", flagAble.getParent().getStateTag(),
+                                            "state", flagAble.getParent().getUseState(u).getTag()
                                     );
+                                } else {
+                                    return false;
                                 }
-                                LandManager.getInstance().syncAndSave(currentLand);
-                                gui.draw();
-                                return true;
+                            } else {
+                                BuildState currentState = flagAble.getUseState(u);
+                                if (currentState == null) {
+                                    currentState = flagAble.getDefaultBuildState();
+                                }
+
+                                // TODO: Use unified AccessGUI to set
+                                BuildState changeTo = click.getType().isLeftClick()
+                                        ? currentState.next(flagAble.getBuildStateType())
+                                        : currentState.previous(flagAble.getBuildStateType());
+                                flagAble.setUseState(u, changeTo);
+                                Message.get("command." + type + ".use.success").tell(click.getEvent().getWhoClicked(),
+                                        "flag", u.getTag(),
+                                        "state", changeTo.getTag()
+                                );
                             }
+                            flagAble.save();
+                            click.getGui().draw();
                         }
                         return true;
-                    }, (String[]) text.toArray(new String[0]));
+                    },text.toArray(new String[0]));
                 }
                 return null;
             }));
@@ -112,63 +99,36 @@ public class UseGUI extends PlotGUI {
         gui.addElement(useGroup);
 
         GuiElementGroup allGroup = new GuiElementGroup('a');
-
-        for (BuildState state : BuildState.values(editedLand.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(editedLand.getLandOwner()))) {
+        for (BuildState state : BuildState.values(BuildState.AppliesTo.SETTLEMENT)) {
             allGroup.addElement(new StaticGuiElement('a', state.getItem(), click -> {
-                OwnedLand land = LandManager.getInstance().getLand(landLocation);
-                if (land != null) {
-                    if (land.isPlotOwner((Player) click.getEvent().getWhoClicked())
-                            || land.canAdmin(ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked()))) {
-                        for (UseFlag u : UseFlagManager.getInstance().getUseFlags()) {
-                            land.setUseState(u, state);
-                        }
-                        Message.get("command.plot.use.success-all").tell(click.getEvent().getWhoClicked(),
-                                "state", state.getTag()
-                        );
-                        LandManager.getInstance().syncAndSave(land);
-                        gui.draw();
-                        return true;
+                if (permCheck.get()) {
+                    for (UseFlag u : UseFlagManager.getInstance().getUseFlags()) {
+                        flagAble.setUseState(u, state);
                     }
+                    Message.get("command." + type + ".use.success-all").tell(click.getEvent().getWhoClicked(),
+                            "state", state.getTag()
+                    );
+                    flagAble.save();
+                    click.getGui().draw();
                 }
                 return true;
-            }, getMessage("toggle-all").getReplacedText("state", state.getTag())));
+            }, getMessage("toggle-all").getReplacedText("access", state.getTag())));
         }
-
-        gui.addElement(new StaticGuiElement('r', ItemUtils.toIcon(Material.EGG), click -> {
-            OwnedLand land = LandManager.getInstance().getLand(landLocation);
-            if (land != null) {
-                if (land.isPlotOwner((Player) click.getEvent().getWhoClicked())
-                        || land.canAdmin(ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked()))) {
-                    for (UseFlag u : UseFlagManager.getInstance().getUseFlags()) {
-                        land.unsetUseState(u);
-                    }
-                    Message.get("command.plot.use.unset-all").tell(click.getEvent().getWhoClicked(),
-                            "parent", land.getLandOwner().getStateTag()
-                    );
-                    LandManager.getInstance().syncAndSave(land);
-                    gui.draw();
-                    return true;
-                }
-            }
-            return true;
-        }, getMessage("unset-all").getReplacedText("parent", editedLand.getLandOwner().getStateTag())));
-
         gui.addElement(allGroup);
 
-        gui.addElement(new GuiPageElement('p', ItemUtils.toIcon(Material.ARROW), GuiPageElement.PageAction.PREVIOUS, getText("page.previous", "page", "%prevpage%")));
+        gui.addElement(new GuiPageElement('p', getIcon("previous"), GuiPageElement.PageAction.PREVIOUS, getText("page.previous", "page", "%prevpage%")));
 
-        gui.addElement(new GuiBackElement('b', ItemUtils.toIcon(Material.BARRIER), getText("back")));
+        gui.addElement(new StaticGuiElement('b', getIcon("back"), click -> {
+            if (!InventoryGui.goBack(click.getWhoClicked())) {
+                click.getGui().close();
+            }
+            return true;
+        }, getText("back")));
 
-        gui.addElement(new GuiPageElement('n', ItemUtils.toIcon(Material.ARROW), GuiPageElement.PageAction.NEXT, getText("page.next", "page", "%nextpage%")));
+        gui.addElement(new GuiPageElement('n', getIcon("next"), GuiPageElement.PageAction.NEXT, getText("page.next", "page", "%nextpage%")));
     }
 
-    public void open(final Player p) {
-        // One last check if we can really open this GUI
-        OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
-        if (currentLand != null && (currentLand.isPlotOwner(p) || currentLand.canAdmin(ResidentManager.getInstance().getResident(p)))) {
-            gui.show(p);
-        } else {
-            getError("not-your-plot").tell(p);
-        }
+    public void open(HumanEntity player) {
+        gui.show(player);
     }
 }

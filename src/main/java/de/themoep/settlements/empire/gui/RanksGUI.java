@@ -1,24 +1,25 @@
-package de.themoep.settlements.village.gui;
+package de.themoep.settlements.empire.gui;
 
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
+import de.themoep.settlements.empire.Empire;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.rank.VillageRank;
+import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.utils.ConfirmationGui;
 import de.themoep.settlements.utils.ItemUtils;
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.village.Village;
+import de.themoep.settlements.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PermsGUI extends SettlementsGUI {
+public class RanksGUI extends SettlementsGUI {
     private final static String[] SETUP = {
             "         ",
             "         ",
@@ -31,8 +32,8 @@ public class PermsGUI extends SettlementsGUI {
 
     private final InventoryGui gui;
 
-    public PermsGUI(Player player) {
-        super("perms");
+    public RanksGUI(Player player) {
+        super("empire.ranks");
         this.player = player;
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), SETUP);
         gui.setCloseAction(close -> false);
@@ -41,22 +42,22 @@ public class PermsGUI extends SettlementsGUI {
         GuiElementGroup group = new GuiElementGroup('g');
 
         Resident res = ResidentManager.getInstance().getResident(player);
-        if (res.hasVillage()) {
-            for (VillageRank rank : VillageRank.values()) {
+        if (res.hasEmpire()) {
+            for (EmpireRank rank : EmpireRank.values()) {
                 List<String> text = new ArrayList<>();
                 text.add(getText("entry.title",
-                        "rank", rank.getTag(res.getVillage())
+                        "rank", rank.getTag(res.getVillage().getEmpire())
                 ));
-                if (res.getVillageRank().above(rank) || res.getVillageRank() == VillageRank.getChief()) {
+                if (res.getEmpireRank().above(rank) || res.getEmpireRank() == EmpireRank.getLeader()) {
                     text.add(getText("entry.edit",
-                            "rank", rank.getTag(res.getVillage())
+                            "rank", rank.getTag(res.getVillage().getEmpire())
                     ));
                 }
                 group.addElement(new StaticGuiElement('g',
-                        ItemUtils.setGlowing(rank.getItem(), rank == res.getVillageRank()),
+                        ItemUtils.setGlowing(rank.getItem(), rank == res.getEmpireRank()),
                         click -> {
                             Resident r = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
-                            if (r.hasVillage() && r.hasPermission("village.perms")) {
+                            if (r.hasEmpire() && r.hasPermission("empire.perms")) {
                                 new RankPermGroupsGUI(r, rank).open();
                             }
                             return true;
@@ -65,20 +66,20 @@ public class PermsGUI extends SettlementsGUI {
                 ));
             }
 
-            if (res.hasPermission("village.perms.reset")) {
+            if (res.hasPermission("empire.perms.reset")) {
                 gui.addElement(new StaticGuiElement('r', ItemUtils.toIcon(Material.ORANGE_WOOL), click -> {
                     Resident r = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
-                    if (r.hasVillage() && r.hasPermission("village.perms.reset")) {
-                        Village village = r.getVillage();
-                        new ConfirmationGui(PermsGUI.this, "reset", () -> {
-                            if (r.hasPermission("village.perms.reset")) {
-                                village.getRanksPermissions().clear();
+                    if (r.hasEmpire() && r.hasPermission("empire.perms.reset")) {
+                        Empire empire = r.getVillage().getEmpire();
+                        new ConfirmationGui(RanksGUI.this, "reset", () -> {
+                            if (r.hasPermission("empire.perms.reset")) {
+                                empire.getRanksPermissions().clear();
                                 open();
-                                DatabaseManager.getInstance().save(village);
+                                Utils.runAsync(() -> DatabaseManager.getInstance().save(empire));
                             }
                         }, this::open,
-                                "state", village.getStateTag(),
-                                "name", village.getName()).open((Player) click.getEvent().getWhoClicked());
+                                "state", empire.getStateTag(),
+                                "name", empire.getName()).open((Player) click.getEvent().getWhoClicked());
                     }
                     return true;
                 }, getText("reset.title")));

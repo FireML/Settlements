@@ -22,7 +22,7 @@ perm-groups:
     - village.perks.toggle
     - village.setaccess
     - village.settings
-    - village.use
+    - village.perms
   officer:
     icon: DIAMOND_SWORD
     permissions:
@@ -99,7 +99,7 @@ ranks:
     - village.tax.exempt
     - village.unbanish
     - village.unclaim
-    - village.use
+    - village.perms
     - village.help.chief
     - village.disband
     - village.discord.set

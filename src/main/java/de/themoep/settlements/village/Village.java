@@ -87,6 +87,10 @@ public class Village extends LandOwner<VillageRank, VillageLevel> implements Com
         this.villageState = state;
     }
 
+    public void save() {
+        DatabaseManager.getInstance().saveSettlement(this);
+    }
+
     public void doUpkeep() {
         if (isAbandoned()) {
             SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " is abandoned. No upkeep.");

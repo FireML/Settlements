@@ -66,7 +66,7 @@ public class LandManager {
         for (OwnedLand land : lands) {
             cacheLand(land);
         }
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(lands));
+        DatabaseManager.getInstance().saveLand(lands);
     }
 
     private void cacheLand(OwnedLand land) {
@@ -100,7 +100,7 @@ public class LandManager {
             land.setLandOwner(newOwner);
             villageLands.put(newOwner.getId(), land);
         }
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(lands.toArray(new OwnedLand[0])));
+        DatabaseManager.getInstance().saveLand(lands.toArray(new OwnedLand[0]));
     }
 
     public OwnedLand claimLand(SimpleChunkLocation chunk, Location location, Village village) {
@@ -437,7 +437,7 @@ public class LandManager {
             }
         }
 
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(lands));
+        DatabaseManager.getInstance().saveLand(lands);
     }
 
     public void checkUnclaim() {
@@ -474,7 +474,7 @@ public class LandManager {
         for (Map.Entry<LandOwner, Integer> e : villageUnclaims.entrySet()) {
             Message.get("land-unclaim").tell(e.getKey().getOnlineResidents(), "amount", String.valueOf(e.getValue()));
         }
-        Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(toSave));
+        DatabaseManager.getInstance().saveLand(toSave);
     }
 
     public boolean isConnected(OwnedLand land) {
@@ -528,7 +528,7 @@ public class LandManager {
             Message.get("land-unclaim").tell(oldAlly.getOnlineResidents(), "amount", String.valueOf(toUnclaim.size()));
         }
         if (!toSave.isEmpty()) {
-            Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(toSave));
+            DatabaseManager.getInstance().saveLand(toSave);
         }
     }
 

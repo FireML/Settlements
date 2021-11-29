@@ -42,7 +42,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements DatabaseSerializable, Levelable<L>, Targetable, ModeAble, ConfigKey {
+public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements DatabaseSerializable, Levelable<L>, Targetable, ModeAble, FlagAble, ConfigKey {
     private IdObject id = IdObject.get(null);
     private String name;
     private String description = "";
@@ -320,14 +320,6 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         return getKey() + ":" + getId();
     }
 
-    public BuildState getUseState(Use u) {
-        return getUseState(UseFlagManager.getInstance().get(u), u);
-    }
-
-    public BuildState getUseState(UseFlag useFlag) {
-        return getUseState(useFlag, useFlag.getUseTypes().iterator().next());
-    }
-
     public BuildState getUseState(UseFlag useFlag, Use u) {
         return use.getOrDefault(u, useFlag != null
                 ? useFlag.getDefault(getDefaultBuildState()) : getDefaultBuildState());
@@ -350,24 +342,89 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         this.bank = bank;
     }
 
-    public void setUseState(Use u, BuildState state) {
+    public boolean setUseState(Use u, BuildState state) {
         if (state == null) {
-            use.remove(u);
+            return use.remove(u) != null;
         } else {
-            use.put(u, state);
+            return use.put(u, state) != null;
         }
     }
 
-    public void setUseState(UseFlag u, BuildState state) {
-        state = u.getDefault(getDefaultBuildState()) == state ? null : state;
+    public boolean unsetUseState(UseFlag u) {
+        boolean r = false;
         for (Use useType : u.getUseTypes()) {
-            setUseState(useType, state);
+            r |= use.remove(useType) != null;
         }
+        return r;
     }
 
-    public abstract BuildState getDefaultBuildState();
+    public boolean hasUseState(Use u) {
+        return use.containsKey(u);
+    }
 
-    public abstract BuildState.AppliesTo getBuildStateType();
+    public FlagAble getParent() {
+        return new FlagAble() {
+            @Override
+            public void setBuildState(BuildState buildState) {
+
+            }
+
+            @Override
+            public BuildState getBuildState() {
+                return getDefaultBuildState();
+            }
+
+            @Override
+            public BuildState getUseState(UseFlag useFlag, Use u) {
+                return useFlag != null ? useFlag.getDefault(getDefaultBuildState()) : getDefaultBuildState();
+            }
+
+            @Override
+            public Map<Use, BuildState> getUseStates() {
+                return Collections.emptyMap();
+            }
+
+            @Override
+            public boolean setUseState(Use u, BuildState state) {
+                return false;
+            }
+
+            @Override
+            public boolean unsetUseState(UseFlag u) {
+                return false;
+            }
+
+            @Override
+            public boolean hasUseState(Use u) {
+                return false;
+            }
+
+            @Override
+            public BuildState getDefaultBuildState() {
+                return LandOwner.this.getDefaultBuildState();
+            }
+
+            @Override
+            public BuildState.AppliesTo getBuildStateType() {
+                return LandOwner.this.getBuildStateType();
+            }
+
+            @Override
+            public void save() {
+
+            }
+
+            @Override
+            public FlagAble getParent() {
+                return null;
+            }
+
+            @Override
+            public String getStateTag() {
+                return LandOwner.this.getStateTag();
+            }
+        };
+    }
 
     public void runCommands(Perk perk) {
         Utils.runAsync(() -> {

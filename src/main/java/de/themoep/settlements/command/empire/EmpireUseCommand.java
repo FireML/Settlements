@@ -3,18 +3,18 @@ package de.themoep.settlements.command.empire;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.empire.gui.UseGUI;
 import de.themoep.settlements.land.BuildState;
 import de.themoep.settlements.land.UseFlag;
 import de.themoep.settlements.land.UseFlagManager;
 import de.themoep.settlements.utils.NameTag;
+import de.themoep.settlements.land.gui.PermsGUI;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class EmpireUseCommand extends EmpireSubCommand {
     public EmpireUseCommand(SubCommand parent) {
-        super(parent, "use <name> <state>");
+        super(parent, "perms [<name> <state>]", "permissions", "rights", "use", "build");
         registerCommand(new EmpireSubCommand(this, "all <state>") {
             @Override
             public boolean run(Resident res, String base, String alias, String... args) {
@@ -37,7 +37,11 @@ public class EmpireUseCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length < 2) {
-            new UseGUI().open(res.getPlayer());
+            new PermsGUI(
+                    "empire",
+                    res.getVillage().getEmpire(),
+                    () -> res.hasEmpire() && res.hasPermission(getPermission())
+            ).open(res.getPlayer());
         } else {
             UseFlag useFlag = UseFlagManager.getInstance().get(args[0]);
             if (useFlag != null) {

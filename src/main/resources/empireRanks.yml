@@ -20,7 +20,7 @@ perm-groups:
     - empire.perks.toggle
     - empire.setaccess
     - empire.settings
-    - empire.use
+    - empire.perms
   officer:
     icon: DIAMOND_SWORD
     permissions:
@@ -90,7 +90,7 @@ ranks:
     - empire.transfer
     - empire.unally
     - empire.unbanish
-    - empire.use
+    - empire.perms
     - empire.help.senator
     - empire.invite
     - empire.kick

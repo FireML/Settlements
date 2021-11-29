@@ -12,6 +12,8 @@ import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Utils;
+import de.themoep.settlements.land.gui.BuildGUI;
+import de.themoep.settlements.land.gui.PermsGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -71,7 +73,11 @@ public class SettingsGUI extends SettlementsGUI {
         if (resident.hasPermission("empire.build")) {
             gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.DIAMOND_PICKAXE), click -> {
                 if (resident.hasPermission("empire.build")) {
-                    new BuildGUI().open((Player) click.getEvent().getWhoClicked());
+                    new BuildGUI(
+                            "empire",
+                            resident.getVillage().getEmpire(),
+                            () -> resident.hasEmpire() && resident.hasPermission("empire.build")
+                    ).open(resident.getPlayer());
                 }
                 return true;
             }, getText("build",
@@ -83,7 +89,11 @@ public class SettingsGUI extends SettlementsGUI {
         if (resident.hasPermission("empire.use")) {
             gui.addElement(new StaticGuiElement('u', ItemUtils.toIcon(Material.LEVER),click -> {
                 if (resident.hasPermission("empire.use")) {
-                    new UseGUI().open((Player) click.getEvent().getWhoClicked());
+                    new PermsGUI(
+                            "empire",
+                            resident.getVillage().getEmpire(),
+                            () -> resident.hasEmpire() && resident.hasPermission("empire.use")
+                    ).open(resident.getPlayer());
                 }
                 return true;
             }, getText("use",
@@ -105,7 +115,7 @@ public class SettingsGUI extends SettlementsGUI {
         if (resident.hasPermission("empire.perms")) {
             gui.addElement(new StaticGuiElement('r', ItemUtils.toIcon(Material.RED_BANNER), click -> {
                 if (resident.hasPermission("empire.perms")) {
-                    new PermsGUI((Player) click.getEvent().getWhoClicked()).open();
+                    new RanksGUI((Player) click.getEvent().getWhoClicked()).open();
                 }
                 return true;
             }, getText("perms",

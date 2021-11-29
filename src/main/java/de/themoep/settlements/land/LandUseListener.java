@@ -122,7 +122,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void on(PlayerShearEntityEvent e) {
-        Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.SHEER, e.getEntity().getLocation());
+        Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.SHEAR, e.getEntity().getLocation());
         if (!response.getLeft()) {
             MessageUtils.tell(e.getPlayer(), response.getRight());
             e.setCancelled(true);

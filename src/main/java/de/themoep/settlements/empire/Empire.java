@@ -81,6 +81,10 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         this.level = level;
     }
 
+    public void save() {
+        DatabaseManager.getInstance().saveEmpire(this);
+    }
+
     public void doUpkeep() {
         if (isAbandoned()) {
             SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " is abandoned. No upkeep.");
@@ -522,7 +526,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     @Override
     public boolean isOfficer(Player player) {
         Resident res = ResidentManager.getInstance().getResident(player);
-        return isMember(res) && res.hasPermission("kingdoms.command.empire.officer");
+        return hasPermission(res, "officer");
     }
 
     public boolean isCapital(Village village) {

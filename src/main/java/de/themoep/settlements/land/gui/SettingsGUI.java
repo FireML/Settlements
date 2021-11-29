@@ -50,7 +50,18 @@ public class SettingsGUI extends PlotGUI {
         gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.DIAMOND_PICKAXE), click -> {
             OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
             if (land != null) {
-                new BuildGUI(land).open(p);
+                new BuildGUI(
+                        "plot",
+                        land,
+                        () -> {
+                            OwnedLand currentLand = LandManager.getInstance().getLand(p.getLocation());
+                            if (currentLand != null) {
+                                Resident res = ResidentManager.getInstance().getResident(p);
+                                return currentLand.isPlotOwner(res) || currentLand.canAdmin(res);
+                            }
+                            return false;
+                        }
+                ).open(p);
             }
             return true;
         }, getText("build", openedOnLand.getReplacements())));
@@ -58,7 +69,14 @@ public class SettingsGUI extends PlotGUI {
         gui.addElement(new StaticGuiElement('u', ItemUtils.toIcon(Material.LEVER), click -> {
             OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
             if (land != null) {
-                new UseGUI(land).open(p);
+                new PermsGUI("plot", land, () -> {
+                    OwnedLand currentLand = LandManager.getInstance().getLand(p.getLocation());
+                    if (currentLand != null) {
+                        Resident res = ResidentManager.getInstance().getResident(p);
+                        return currentLand.isPlotOwner(res) || currentLand.canAdmin(res);
+                    }
+                    return false;
+                }).open(p);
             }
             return true;
         }, getText("use")));

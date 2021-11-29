@@ -85,12 +85,8 @@ public enum BuildState implements NameTag, Rankable<BuildState> {
         EMPIRE;
 
         public static AppliesTo get(Object o) {
-            if (o instanceof Village) {
-                return SETTLEMENT;
-            } else if (o instanceof Empire) {
-                return EMPIRE;
-            } else if (o instanceof OwnedLand) {
-                return LAND;
+            if (o instanceof FlagAble) {
+                return ((FlagAble) o).getBuildStateType();
             }
             return null;
         }

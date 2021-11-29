@@ -3,8 +3,8 @@ package de.themoep.settlements.command.empire;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.empire.gui.BuildGUI;
 import de.themoep.settlements.land.BuildState;
+import de.themoep.settlements.land.gui.BuildGUI;
 
 public class EmpireBuildCommand extends EmpireSubCommand {
     public EmpireBuildCommand(SubCommand parent) {
@@ -14,7 +14,11 @@ public class EmpireBuildCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length < 1) {
-            new BuildGUI().open(res.getPlayer());
+            new BuildGUI(
+                    "empire",
+                    res.getVillage().getEmpire(),
+                    () -> res.hasEmpire() && res.hasPermission(getPermission())
+            ).open(res.getPlayer());
             return true;
         }
 

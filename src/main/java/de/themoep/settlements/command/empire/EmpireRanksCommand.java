@@ -3,7 +3,7 @@ package de.themoep.settlements.command.empire;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.empire.gui.PermsGUI;
+import de.themoep.settlements.empire.gui.RanksGUI;
 import de.themoep.settlements.empire.gui.RankPermGroupsGUI;
 import de.themoep.settlements.empire.gui.RankPermsGUI;
 import de.themoep.settlements.rank.EmpireRank;
@@ -14,9 +14,9 @@ import org.bukkit.ChatColor;
 import java.util.Map;
 import java.util.Optional;
 
-public class EmpirePermsCommand extends EmpireSubCommand {
-    public EmpirePermsCommand(SubCommand parent) {
-        super(parent, "perms [<rank>|show|set|unset]", "permissions", "rights");
+public class EmpireRanksCommand extends EmpireSubCommand {
+    public EmpireRanksCommand(SubCommand parent) {
+        super(parent, "ranks [<rank>|show|set|unset]", "rank");
         registerCommand(new EmpireSubCommand(this, "show <rank>", "get", "list") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
@@ -154,7 +154,7 @@ public class EmpirePermsCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length == 0) {
-            new PermsGUI(resident.getPlayer()).open();
+            new RanksGUI(resident.getPlayer()).open();
             return true;
         }
 

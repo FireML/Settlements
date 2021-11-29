@@ -5,16 +5,17 @@ import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.UseFlag;
 import de.themoep.settlements.land.UseFlagManager;
-import de.themoep.settlements.land.gui.UseGUI;
 import de.themoep.settlements.land.BuildState;
 import de.themoep.settlements.utils.NameTag;
+import de.themoep.settlements.land.gui.PermsGUI;
+import de.themoep.settlements.world.SimpleChunkLocation;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class PlotUseCommand extends PlotSubCommand {
-    public PlotUseCommand(PlotCommand parent) {
-        super(parent, "use <flag> <state>|parent");
+public class PlotPermsCommand extends PlotSubCommand {
+    public PlotPermsCommand(PlotCommand parent) {
+        super(parent, "perms <flag> <state>|parent", "permissions", "rights", "use", "build");
         setForceOwnUsage(true);
         registerCommand(new PlotSubCommand(this, "all <state>") {
             @Override
@@ -46,7 +47,22 @@ public class PlotUseCommand extends PlotSubCommand {
     @Override
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
         if (args.length < 2) {
-            new UseGUI(land).open(res.getPlayer());
+            SimpleChunkLocation landLocation = land.getLocation();
+            new PermsGUI(
+                    "plot",
+                    land,
+                    () -> {
+                        if (!res.hasPermission(getPermission())) {
+                            return false;
+                        }
+
+                        OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
+                        if (currentLand != null) {
+                            return currentLand.isPlotOwner(res) || currentLand.canAdmin(res);
+                        }
+                        return false;
+                    }
+            ).open(res.getPlayer());
         } else {
             UseFlag use = UseFlagManager.getInstance().get(args[0]);
             if (use != null) {

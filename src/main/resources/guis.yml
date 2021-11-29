@@ -1,0 +1,151 @@
+guis:
+  settlement:
+    perms:
+      setup:
+      - "ooooooooo"
+      - "    s    "
+      - "    a    "
+      - " uuuuuuu "
+      - " uuuuuuu "
+      - " ooobooo "
+      alignments:
+        u: center
+      elements:
+        o: lime_stained_glass_pane
+        build: diamond_pickaxe # 'a'
+        states: book
+        back: barrier
+    build:
+      setup:
+      - "ooooooooo"
+      - "    s    "
+      - "         "
+      - "ggggggggg"
+      - "         "
+      - " ooobooo "
+      alignments:
+        g: center
+      elements:
+        o: lime_stained_glass_pane
+        states: book
+        back: barrier
+        selected: lime_wool
+        individual: white_wool
+        inherited: light_blue_wool
+        unset: light_gray_wool
+    use:
+      setup:
+      - "ooooooooo"
+      - "    s    "
+      - "         "
+      - " uuuuuuu "
+      - " uuuuuuu "
+      - " ooobooo "
+      alignments:
+        u: center
+      elements:
+        o: lime_stained_glass_pane
+        states: book
+        previous: arrow
+        next: arrow
+        back: barrier
+  empire:
+    perms:
+      setup:
+      - "ooooooooo"
+      - "    s    "
+      - "    a    "
+      - " uuuuuuu "
+      - " uuuuuuu "
+      - " ooobooo "
+      alignments:
+        u: center
+      elements:
+        o: lime_stained_glass_pane
+        build: diamond_pickaxe # 'a'
+        states: book
+        back: barrier
+    build:
+      setup:
+      - "ooooooooo"
+      - "    s    "
+      - "         "
+      - "ggggggggg"
+      - "         "
+      - " ooobooo "
+      alignments:
+        g: center
+      elements:
+        o: lime_stained_glass_pane
+        states: book
+        back: barrier
+        selected: lime_wool
+        individual: white_wool
+        inherited: light_blue_wool
+        unset: light_gray_wool
+    use:
+      setup:
+      - "ooooooooo"
+      - "    s    "
+      - "         "
+      - " uuuuuuu "
+      - " uuuuuuu "
+      - " ooobooo "
+      alignments:
+        u: center
+      elements:
+        o: lime_stained_glass_pane
+        states: book
+        previous: arrow
+        next: arrow
+        back: barrier
+  plot:
+    perms:
+      setup:
+      - "ooooooooo"
+      - "    s    "
+      - "    a    "
+      - " uuuuuuu "
+      - " uuuuuuu "
+      - " ooobooo "
+      alignments:
+        u: center
+      elements:
+        o: lime_stained_glass_pane
+        build: diamond_pickaxe # 'a'
+        states: book
+        back: barrier
+    build:
+      setup:
+      - "ooooooooo"
+      - "    s    "
+      - "         "
+      - "ggggggggg"
+      - "         "
+      - " ooobooo "
+      alignments:
+        g: center
+      elements:
+        o: lime_stained_glass_pane
+        states: book
+        back: barrier
+        selected: lime_wool
+        individual: white_wool
+        inherited: light_blue_wool
+        unset: light_gray_wool
+    use:
+      setup:
+      - "ooooooooo"
+      - "    s    "
+      - "         "
+      - " uuuuuuu "
+      - " uuuuuuu "
+      - " ooobooo "
+      alignments:
+        u: center
+      elements:
+        o: lime_stained_glass_pane
+        states: book
+        previous: arrow
+        next: arrow
+        back: barrier

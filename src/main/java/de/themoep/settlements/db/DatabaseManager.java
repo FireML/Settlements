@@ -218,11 +218,7 @@ public abstract class DatabaseManager {
     public abstract List<String[]> getLog(Empire Empire, Resident resident, int page, LogType type);
 
     public void save(LandOwner landOwner) {
-        if (landOwner instanceof Village) {
-            saveSettlement((Village) landOwner);
-        } else if (landOwner instanceof Empire) {
-            saveEmpire((Empire) landOwner);
-        }
+        landOwner.save();
     }
 
     public void save(Collection<LandOwner> landOwners) {

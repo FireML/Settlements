@@ -412,6 +412,17 @@ names:
     dirt: "Turn in 1000 Dirt"
     wheat: "Harvest 5000 Wheat"
   plot: Plot
+  buildstate:
+    varied: "Varied"
+  use-group:
+    containers: "Containers"
+    entities: "Entities"
+    crafting: "Workstations"
+    doors: "Doors"
+    redstone: "Redstone"
+    farming: "Farming"
+    other: "Other"
+    shop: "Shops"
   use:
     chest: "Chests"
     barrel: "Barrels"
@@ -450,15 +461,16 @@ names:
     composter: "Composters"
     monster: "Attack Monsters"
     animal: "Attack Animals"
-    sheer: "Shear Animals"
+    shear: "Shear Animals"
     milk: "Milk Cows"
     leash: "Leash Animals"
-    becon: "Beacons"
+    beacon: "Beacons"
     dragon_egg: "Dragon Eggs"
     brewing-stand: "Brewing Stands"
     fish: "Fishing"
     item: "Pickup Items"
     repeaters: "Repeaters"
+    comparators: "Comparators"
     cake: "Cakes"
     shop: "Shops"
     map: "Maps"
@@ -682,6 +694,8 @@ gui:
     title: "&2&l/s build"
     set-state: "&7&lAllow &b&l{state}&7&l to Build"
     selected-state: "&e&lBuilding is currently set to &a&l{state}"
+    individual-state: "&7&lPlot build is set to &a&l{state}&7&l but overridden!"
+    inherited-state: "&e&lBuilding state &a&l{state}&e&l is default!"
     description: "&7{description}"
     back: "&c&lBack To Settings"
     build:
@@ -766,6 +780,8 @@ gui:
           &7- Residents of the capital
     build:
       title: "&2&l/e build"
+      individual-state: "&7&lPlot build is set to &a&l{state}&7&l but overridden!"
+      inherited-state: "&e&lBuilding state &a&l{state}&e&l is default!"
       build:
         public: |-
           &7Allows everyone to build
@@ -813,6 +829,8 @@ gui:
             &bClick to set to morning (6:00)!
     perms:
       title: "&2&l/e perms"
+    ranks:
+      title: "&2&l/e ranks"
     rank-perm-groups:
       title: "&2&l/e perms &e&l{rank}"
     rank-perms:
@@ -877,7 +895,7 @@ gui:
         &aLeft-Click&f to change settings
   
         &a▶ /e mode
-      perms: |-
+      ranks: |-
         &a&lRanks
         &fSet your {state}'s
         &fpermissions by rank
@@ -953,12 +971,18 @@ gui:
         separator: "&8, "
     titles:
       title: "&2&l/e titles gui"
-    use:
-      title: "&2&l/e use"
+    states: |-
+      &eStates
+      &fGroups that you let access to
+      &a➤ &fPrivate = &eCapital Residents
+      &a➤ &fOfficers = &eSenators & Assistant
+      &a➤ &fAlly = &eAllies & Member Residents
+      &a➤ &fTrusted = &eMember Residents
+      &a➤ &fPublic = &eEveryone
     vault:
       title: "&2&l/e vault"
-  perms:
-    title: "&2&l/s perms"
+  reset-perms:
+    title: "&2&l/s ranks"
     reset:
       title: "&cReset all permissions?"
       confirm: |-
@@ -1031,8 +1055,8 @@ gui:
     linked-to: "&bThis plot is linked to {location}"
     linked: "&e{amount}&b other plots are linked to this one"
     unlink: "&7Click to unlink!"
-    use:
-      title: "&2&l/plot use"
+    perms:
+      title: "&2&l/plot perms"
       unset-all: |-
         &7Click to unset all states and
         &7inherit from parent {parent}
@@ -1066,7 +1090,7 @@ gui:
           &7from parent {parent} again
     build:
       title: "&2&l/plot build"
-      plot-state: "&7&lPlot build is set to &a&l{state}&7&l but overridden!"
+      individual-state: "&7&lPlot build is set to &a&l{state}&7&l but overridden!"
       inherited-state: "&e&lBuilding state &a&l{state}&e&l is inherited!"
       build:
         public: |-
@@ -1197,6 +1221,17 @@ gui:
         &7Explosions: &6{explosions}
         &7PvP: &6{pvp}
         &7Build: &6{build}
+    states: |-
+      &eStates
+      &fGroups that you let access to
+      &a➤ &fPrivate = &eOnly the plot owner
+      &a➤ &fMembers = &eMembers of the plot
+      &a➤ &fFriends = &eFriends & Members
+      &a➤ &fOfficers = &e{state} Officers
+      &a➤ &fResidents = &e{state} Residents
+      &a➤ &fAlly = &eAllies & Residents
+      &a➤ &fTrusted = &eEmpire & Allies & Residents
+      &a➤ &fPublic = &eEveryone
   portal:
     teleport:
       title: "&5Select target"
@@ -1298,7 +1333,7 @@ gui:
       &aLeft-Click&f to change settings
   
       &a▶ /s mode
-    perms: |-
+    ranks: |-
       &a&lRanks
       &fSet your {state}'s
       &fpermissions by rank
@@ -1436,21 +1471,54 @@ gui:
       too-expensive: "&cYou can't pay the cost!"
     cooldown: "&aCan be repeated in {cooldown}"
     back: "&c&lBack To Settings"
+  perms:
+    title: "&2&l/s perms"
+    back: "&eBack"
+    entry:
+      text: |-
+        &e{flag}
+        &f{description} in your {state}
+        {flags}
+        
+        &fAccess: &e{access}
+        &aLeft click&b to set
+        &aShift click &bfor more options
+      parent: "&7(Default)"
+      click-to-unset: |-
+        &7Middle click to reset
+        &7to default &b{value}
+    descriptions:
+      doors: Using doors
+      containers: Using containers
+      crafting: Using workstations
+      redstone: Using redstone
+      entities: Using entities
+      farming: Farming
+      other: Using other things
+      shop: Using shop
+    flag-line: "&a➤ &f{name}"
   use:
-    title: "&2&l/s use"
-    back: "&c&lBack To Settings"
-    toggle-all: "&7&lClick to toggle all to &a&l{state}"
+    title: "&2&l/s perms"
+    back: "&eBack"
+    toggle-all: "&bClick to toggle all to &a&l{access}"
     entry: |-
-      &7Grant certain players rights to
-      &a&l{flag} &7on your claims
+      &e{flag}
       
-      &7&lCurrent group: &a&l{state}
-    
-      &7Left click: Next state
-      &7Right click: Previous state
+      &fAccess: &e{access}
+  
+      &aLeft click: &bSet to {nextaccess}
+      &aRight click: &bSet to {previousaccess}
     page:
       next: "&7Go to next page ({page})"
       previous: "&7Go to previous page ({page})"
+  states: |-
+    &eStates
+    &fGroups that you let access to
+    &a➤ &fResidents = &eResidents
+    &a➤ &fOfficers = &eElder & Assistant
+    &a➤ &fAlly = &eAllies & Residents
+    &a➤ &fTrusted = &eEmpire & Allies & Residents
+    &a➤ &fPublic = &eEveryone
   vault:
     title: "&2&l/s deposit"
     success-deposit: "&6&l{player} &7&lhas deposited:"
@@ -1686,7 +1754,7 @@ command:
     unsale:
       success: "&aThis land is no longer for sale!"
       description: Remove the ability to buy a chunk
-    use:
+    perms:
       flags: "&cAvailable flags: {flags}"
       states: "&cAvailable states: {states}"
       success: "&7Plot State of &6{flag} &7set to &6{state}"
@@ -2048,10 +2116,10 @@ command:
       description: Claim a seperate chunk of land
     teleport:
       description: Teleports to a outpost
-    perms:
+    ranks:
       description: Manage rank permissions
       permission:
-        name: "Manage perms"
+        name: "Manage ranks"
       show:
         description: Show all permissions that a certain rank has
         head: "&a⊱&m━━━━&r&6{rank} Perms&a&m━━━━&a⊰"
@@ -2310,7 +2378,7 @@ command:
         &a&lCan afford for: &6{afford} days
       afford-infinite: "infinite"
       description: Show settlement upkeep information
-    use:
+    perms:
       flags: "&cAvailable flags: {flags}"
       states: "&cAvailable states: {states}"
       success: "&7State of &6{flag} &7set to &6{state}"
@@ -2610,10 +2678,10 @@ command:
       description: List all empire members
     officer:
       description: Members that should have officer build access
-    perms:
+    ranks:
       description: Manage rank permissions
       permission:
-        name: "Manage perms"
+        name: "Manage ranks"
       show:
         description: Show all permissions that a certain rank has
         head: "&a⊱&m━━━━&r&6{rank} Perms&r&8&l--------"
@@ -2832,7 +2900,7 @@ command:
         &3&lCan afford for: &6{afford} days
       afford-infinite: "infinite"
       description: Show empire upkeep information
-    use:
+    perms:
       flags: "&cAvailable flags: {flags}"
       states: "&cAvailable states: {states}"
       success: "&7State of &6{flag} &7set to &6{state}"
