@@ -1,6 +1,7 @@
 package de.themoep.settlements.land.gui;
 
 import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.GuiPageElement;
 import de.themoep.inventorygui.InventoryGui;
@@ -8,9 +9,11 @@ import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.land.BuildState;
+import de.themoep.settlements.land.BuildStateable;
 import de.themoep.settlements.land.FlagAble;
 import de.themoep.settlements.land.UseFlag;
 import de.themoep.settlements.land.UseFlagManager;
+import de.themoep.settlements.land.UseFlagSetter;
 import de.themoep.settlements.land.UseGroup;
 import de.themoep.settlements.utils.Message;
 import org.bukkit.entity.HumanEntity;
@@ -18,13 +21,14 @@ import org.bukkit.event.inventory.ClickType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class UseGUI extends SettlementsGUI {
     private final InventoryGui gui;
 
-    public UseGUI(String type, UseGroup group, FlagAble flagAble, Supplier<Boolean> permCheck) {
-        super((type == null || type.isEmpty() ? "" : type + ".") + "perms");
+    public UseGUI(String type, UseGroup group, FlagAble flagAble, Supplier<Boolean> permCheck, BiConsumer<BuildStateable, GuiElement.Click> buildSetter) {
+        super((type == null || type.isEmpty() ? "" : type + ".") + "use");
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), getSetup());
         gui.setCloseAction(close -> false);
         gui.setFiller(getIcon("filler"));
@@ -68,27 +72,12 @@ public class UseGUI extends SettlementsGUI {
                                             "parent", flagAble.getParent().getStateTag(),
                                             "state", flagAble.getParent().getUseState(u).getTag()
                                     );
-                                } else {
-                                    return false;
+                                    flagAble.save();
+                                    click.getGui().draw();
                                 }
                             } else {
-                                BuildState currentState = flagAble.getUseState(u);
-                                if (currentState == null) {
-                                    currentState = flagAble.getDefaultBuildState();
-                                }
-
-                                // TODO: Use unified AccessGUI to set
-                                BuildState changeTo = click.getType().isLeftClick()
-                                        ? currentState.next(flagAble.getBuildStateType())
-                                        : currentState.previous(flagAble.getBuildStateType());
-                                flagAble.setUseState(u, changeTo);
-                                Message.get("command." + type + ".use.success").tell(click.getEvent().getWhoClicked(),
-                                        "flag", u.getTag(),
-                                        "state", changeTo.getTag()
-                                );
+                                buildSetter.accept(new UseFlagSetter(flagAble, u), click);
                             }
-                            flagAble.save();
-                            click.getGui().draw();
                         }
                         return true;
                     },text.toArray(new String[0]));

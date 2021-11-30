@@ -1,5 +1,6 @@
 package de.themoep.settlements.command.plot;
 
+import de.themoep.settlements.land.gui.BuildGUI;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
@@ -11,6 +12,7 @@ import de.themoep.settlements.land.gui.PermsGUI;
 import de.themoep.settlements.world.SimpleChunkLocation;
 
 import java.util.Arrays;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class PlotPermsCommand extends PlotSubCommand {
@@ -48,20 +50,22 @@ public class PlotPermsCommand extends PlotSubCommand {
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
         if (args.length < 2) {
             SimpleChunkLocation landLocation = land.getLocation();
+            Supplier<Boolean> permCheck = () -> {
+                if (!res.hasPermission(getPermission())) {
+                    return false;
+                }
+
+                OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
+                if (currentLand != null) {
+                    return currentLand.isPlotOwner(res) || currentLand.canAdmin(res);
+                }
+                return false;
+            };
             new PermsGUI(
                     "plot",
                     land,
-                    () -> {
-                        if (!res.hasPermission(getPermission())) {
-                            return false;
-                        }
-
-                        OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
-                        if (currentLand != null) {
-                            return currentLand.isPlotOwner(res) || currentLand.canAdmin(res);
-                        }
-                        return false;
-                    }
+                    permCheck,
+                    (flagAble, click) -> new BuildGUI("plot", flagAble, permCheck).open(click.getWhoClicked())
             ).open(res.getPlayer());
         } else {
             UseFlag use = UseFlagManager.getInstance().get(args[0]);

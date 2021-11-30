@@ -18,6 +18,8 @@ import de.themoep.settlements.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import java.util.function.Supplier;
+
 public class SettingsGUI extends SettlementsGUI {
 
     private final static String[] SETUP = {
@@ -90,10 +92,12 @@ public class SettingsGUI extends SettlementsGUI {
         if (resident.hasPermission("settlement.perms")) {
             gui.addElement(new StaticGuiElement('u', ItemUtils.toIcon(Material.LEVER), click -> {
                 if (resident.hasPermission("settlement.perms")) {
+                    Supplier<Boolean> permCheck = () -> resident.hasSettlement() && resident.hasPermission("settlement.perms");
                     new PermsGUI(
                             "settlement",
                             resident.getSettlement(),
-                            () -> resident.hasSettlement() && resident.hasPermission("settlement.perms")
+                            permCheck,
+                            (flagAble, c) -> new BuildGUI("settlement", flagAble, permCheck).open(c.getWhoClicked())
                     ).open(resident.getPlayer());
                 }
                 return true;

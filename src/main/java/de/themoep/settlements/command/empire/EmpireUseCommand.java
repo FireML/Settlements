@@ -1,5 +1,6 @@
 package de.themoep.settlements.command.empire;
 
+import de.themoep.settlements.land.gui.BuildGUI;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
@@ -10,6 +11,7 @@ import de.themoep.settlements.utils.NameTag;
 import de.themoep.settlements.land.gui.PermsGUI;
 
 import java.util.Arrays;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class EmpireUseCommand extends EmpireSubCommand {
@@ -37,10 +39,12 @@ public class EmpireUseCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length < 2) {
+            Supplier<Boolean> permCheck = () -> res.hasEmpire() && res.hasPermission(getPermission());
             new PermsGUI(
                     "empire",
                     res.getSettlement().getEmpire(),
-                    () -> res.hasEmpire() && res.hasPermission(getPermission())
+                    permCheck,
+                    (flagAble, click) -> new BuildGUI("empire", flagAble, permCheck).open(click.getWhoClicked())
             ).open(res.getPlayer());
         } else {
             UseFlag useFlag = UseFlagManager.getInstance().get(args[0]);

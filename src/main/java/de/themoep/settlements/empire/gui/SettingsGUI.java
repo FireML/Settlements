@@ -17,6 +17,8 @@ import de.themoep.settlements.land.gui.PermsGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import java.util.function.Supplier;
+
 public class SettingsGUI extends SettlementsGUI {
 
     private final static String[] SETUP = {
@@ -86,13 +88,15 @@ public class SettingsGUI extends SettlementsGUI {
             )));
         }
 
-        if (resident.hasPermission("empire.use")) {
+        if (resident.hasPermission("empire.perms")) {
             gui.addElement(new StaticGuiElement('u', ItemUtils.toIcon(Material.LEVER),click -> {
-                if (resident.hasPermission("empire.use")) {
+                if (resident.hasPermission("empire.perms")) {
+                    Supplier<Boolean> permCheck = () -> resident.hasEmpire() && resident.hasPermission("empire.perms");
                     new PermsGUI(
                             "empire",
                             resident.getSettlement().getEmpire(),
-                            () -> resident.hasEmpire() && resident.hasPermission("empire.use")
+                            permCheck,
+                            (flagAble, c) -> new BuildGUI("empire", flagAble, permCheck).open(c.getWhoClicked())
                     ).open(resident.getPlayer());
                 }
                 return true;
@@ -112,9 +116,9 @@ public class SettingsGUI extends SettlementsGUI {
             )));
         }
 
-        if (resident.hasPermission("empire.perms")) {
+        if (resident.hasPermission("empire.ranks")) {
             gui.addElement(new StaticGuiElement('r', ItemUtils.toIcon(Material.RED_BANNER), click -> {
-                if (resident.hasPermission("empire.perms")) {
+                if (resident.hasPermission("empire.ranks")) {
                     new RanksGUI((Player) click.getEvent().getWhoClicked()).open();
                 }
                 return true;

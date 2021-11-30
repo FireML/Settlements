@@ -1,5 +1,6 @@
 package de.themoep.settlements.command.settlement;
 
+import de.themoep.settlements.land.gui.BuildGUI;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.land.gui.PermsGUI;
 import de.themoep.settlements.command.SubCommand;
@@ -10,6 +11,7 @@ import de.themoep.settlements.land.UseFlagManager;
 import de.themoep.settlements.utils.NameTag;
 
 import java.util.Arrays;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class SettlementUseCommand extends SettlementSubCommand {
@@ -37,10 +39,12 @@ public class SettlementUseCommand extends SettlementSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length < 2) {
+            Supplier<Boolean> permCheck = () -> res.hasSettlement() && res.hasPermission(getPermission());
             new PermsGUI(
                     "settlement",
                     res.getSettlement(),
-                    () -> res.hasSettlement() && res.hasPermission(getPermission())
+                    permCheck,
+                    (flagAble, click) -> new BuildGUI("settlement", flagAble, permCheck).open(click.getWhoClicked())
             ).open(res.getPlayer());
         } else {
             UseFlag useFlag = UseFlagManager.getInstance().get(args[0]);

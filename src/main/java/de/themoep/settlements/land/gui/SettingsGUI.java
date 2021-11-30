@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class SettingsGUI extends PlotGUI {
     private final static String[] SETUP = {
@@ -69,14 +70,20 @@ public class SettingsGUI extends PlotGUI {
         gui.addElement(new StaticGuiElement('u', ItemUtils.toIcon(Material.LEVER), click -> {
             OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
             if (land != null) {
-                new PermsGUI("plot", land, () -> {
+                Supplier<Boolean> permCheck = () -> {
                     OwnedLand currentLand = LandManager.getInstance().getLand(p.getLocation());
                     if (currentLand != null) {
                         Resident res = ResidentManager.getInstance().getResident(p);
                         return currentLand.isPlotOwner(res) || currentLand.canAdmin(res);
                     }
                     return false;
-                }).open(p);
+                };
+                new PermsGUI(
+                        "plot",
+                        land,
+                        permCheck,
+                        (flagAble, c) -> new BuildGUI("plot", flagAble, permCheck).open(c.getWhoClicked())
+                ).open(p);
             }
             return true;
         }, getText("use")));

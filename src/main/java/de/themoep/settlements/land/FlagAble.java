@@ -2,11 +2,7 @@ package de.themoep.settlements.land;
 
 import java.util.Map;
 
-public interface FlagAble {
-
-    void setBuildState(BuildState buildState);
-
-    BuildState getBuildState();
+public interface FlagAble extends BuildStateable {
 
     default BuildState getUseState(Use u) {
         return getUseState(UseFlagManager.getInstance().get(u), u);
@@ -62,19 +58,5 @@ public interface FlagAble {
             }
         }
         return false;
-    }
-
-    BuildState getDefaultBuildState();
-
-    BuildState.AppliesTo getBuildStateType();
-
-    void save();
-
-    FlagAble getParent();
-
-    String getStateTag();
-
-    default boolean acceptsState(BuildState state) {
-        return state.appliesTo(getBuildStateType());
     }
 }
