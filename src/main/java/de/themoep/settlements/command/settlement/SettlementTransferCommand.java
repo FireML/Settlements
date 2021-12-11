@@ -37,18 +37,8 @@ public class SettlementTransferCommand extends SettlementSubCommand {
                 return;
             }
             Utils.runSync(() -> {
-                Utils.callEvent(new LandownerChiefChangeEvent(settlement, settlement.getChief(), tres));
-                res.setSettlementRank(SettlementRank.getChief().next());
-                tres.setSettlementRank(SettlementRank.getChief());
-                settlement.setChief(tres.getUUID());
-                if (settlement.hasEmpire() && settlement.getEmpire().isChief(res)) {
-                    res.setEmpireRank(EmpireRank.getLeader().next());
-                    tres.setEmpireRank(EmpireRank.getLeader());
-                }
-                DatabaseManager.getInstance().saveResident(res);
-                DatabaseManager.getInstance().saveResident(tres);
-                DatabaseManager.getInstance().saveSettlement(settlement);
-                MessageUtils.tellResidents(settlement.getOnlineResidents(), getMessage("success"),
+                settlement.transfer(tres);
+                getMessage("success").tell(settlement.getOnlineResidents(),
                         "rank", SettlementRank.getChief().getTag(settlement),
                         "setter", res.getName(),
                         "target", tres.getName()

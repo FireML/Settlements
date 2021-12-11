@@ -413,8 +413,8 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> map = new LinkedHashMap<>();
+    public LinkedHashMap<String, Object> serialize() {
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("landOwner", getLandOwner().getName());
         map.put("settlementId", getLandOwner() instanceof Settlement && !getLandOwner().getId().isNull() ? getLandOwner().getId().value() : -1);
         map.put("x", getX());

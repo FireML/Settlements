@@ -1,10 +1,13 @@
 package de.themoep.settlements;
 
+import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.ItemUtils;
+import de.themoep.settlements.utils.NameTag;
+import de.themoep.settlements.utils.Next;
 import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -13,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Supplier;
 
 public abstract class SettlementsGUI implements ConfigMessages {
     protected static final ItemStack BORDER_ITEM = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
@@ -68,5 +72,22 @@ public abstract class SettlementsGUI implements ConfigMessages {
         } catch (IllegalArgumentException e) {
             return GuiElementGroup.Alignment.LEFT;
         }
+    }
+
+    protected GuiElementGroup createGroup(char c) {
+        GuiElementGroup group = new GuiElementGroup('c');
+        group.setAlignment(getAlignment(String.valueOf(c)));
+        return group;
+    }
+
+    protected <S extends NameTag & Next<S>> GuiElement getCycleElement(char c, Supplier<S> s, GuiElement.Action click, String type) {
+        ItemStack icon = getIcon(type);
+        return new DynamicGuiElement(c, who -> {
+            S state = s.get();
+            return new StaticGuiElement(c, icon, click, getText(type,
+                    "state", state.getTag(),
+                    "nextstate", state.next().getTag()
+            ));
+        });
     }
 }

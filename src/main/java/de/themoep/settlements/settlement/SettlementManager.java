@@ -5,9 +5,9 @@ import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.LandAccess;
 import de.themoep.settlements.land.LandManager;
-import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.land.BuildState;
@@ -211,7 +211,7 @@ public class SettlementManager {
         DatabaseManager.getInstance().saveResident(residents);
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().deleteSettlement(settlement);
-            for (LandOwner ally : settlement.getAllies()) {
+            for (Ally ally : settlement.getAllies()) {
                 ally.removeAlly(settlement);
             }
         });
@@ -228,10 +228,9 @@ public class SettlementManager {
             removeResidentFromSettlement(resident);
         }
         settlement.getResidentIds().clear();
-        Collection<LandOwner> allies = settlement.getAllies();
-        settlement.getAlliedEmpireIds().clear();
-        settlement.getAlliedSettlementIds().clear();
-        for (LandOwner ally : allies) {
+        Collection<Ally> allies = settlement.getAllies();
+        settlement.getAllies().clear();
+        for (Ally ally : allies) {
             ally.removeAlly(settlement);
         }
         settlement.setAccess(LandAccess.PRIVATE);
@@ -287,7 +286,7 @@ public class SettlementManager {
 
         settlement.setCreated(System.currentTimeMillis());
         DatabaseManager.getInstance().saveSettlement(settlement);
-        DatabaseManager.getInstance().save(allies);
+        DatabaseManager.getInstance().saveAllies(allies);
         DatabaseManager.getInstance().saveResident(residents);
         DatabaseManager.getInstance().saveLand(changedLand);
         Utils.runLater(() -> {

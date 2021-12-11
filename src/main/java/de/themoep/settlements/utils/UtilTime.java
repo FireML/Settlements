@@ -1,15 +1,24 @@
 package de.themoep.settlements.utils;
 
 import java.text.DecimalFormat;
+import java.util.concurrent.TimeUnit;
 
 public class UtilTime {
     private static final DecimalFormat SECONDS_FORMAT = new DecimalFormat("#.#");
 
     public static String format(final long milliSeconds) {
-        return format((double) milliSeconds / 1000.0);
+        return format(TimeUnit.MILLISECONDS.toSeconds(milliSeconds));
+    }
+
+    public static String format(final long milliSeconds, boolean one) {
+        return format(TimeUnit.MILLISECONDS.toSeconds(milliSeconds), true);
     }
 
     public static String format(double seconds) {
+        return format(seconds, true);
+    }
+
+    public static String format(double seconds, boolean includeNext) {
         if (seconds < 0.0) {
             seconds = 0.0;
         }
@@ -23,29 +32,29 @@ public class UtilTime {
         int restSeconds = (int) (seconds % 60);
         int hours = (int) (minutes / 60.0);
         if (hours < 1.0) {
-            return minutes + " Minute" + plural(minutes) + " " + (restSeconds > 0 ? restSeconds + " Second" + plural(restSeconds) : "");
+            return minutes + " Minute" + plural(minutes) + " " + (includeNext && restSeconds > 0 ? restSeconds + " Second" + plural(restSeconds) : "");
         }
 
         int restMinutes = minutes % 60;
         int days = (int) (hours / 24.0);
         if (days < 1.0) {
-            return hours + " Hour" + plural(hours) + " " + (restMinutes > 0 ? restMinutes + " Minute" + plural(restMinutes) : "");
+            return hours + " Hour" + plural(hours) + " " + (includeNext && restMinutes > 0 ? restMinutes + " Minute" + plural(restMinutes) : "");
         }
 
         int restHours = hours % 24;
         int months = (int) (days / 30.0);
         if (months < 1.0) {
-            return days + " Day" + plural(days) + " " + (restHours > 0 ? restHours + " Hour" + plural(restHours) : "");
+            return days + " Day" + plural(days) + " " + (includeNext && restHours > 0 ? restHours + " Hour" + plural(restHours) : "");
         }
 
         int restDays = days % 30;
         int years = (int) (days / 365.0);
         if (years < 1.0) {
-            return months + " Month" + plural(months) + " " + (restDays > 0 ? restDays + " Day" + plural(restDays) : "");
+            return months + " Month" + plural(months) + " " + (includeNext && restDays > 0 ? restDays + " Day" + plural(restDays) : "");
         }
 
         int restMonths = months % 12;
-        return years + " Year" + plural(years) + " " + (restMonths > 0 ? restMonths + " Month" + plural(restMonths) : "");
+        return years + " Year" + plural(years) + " " + (includeNext && restMonths > 0 ? restMonths + " Month" + plural(restMonths) : "");
     }
 
     private static String plural(double number) {

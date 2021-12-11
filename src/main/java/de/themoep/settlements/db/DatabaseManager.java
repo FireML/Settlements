@@ -3,6 +3,7 @@ package de.themoep.settlements.db;
 import com.google.common.collect.ImmutableMap;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.empire.Empire;
+import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.OwnedLand;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public abstract class DatabaseManager {
@@ -233,6 +235,10 @@ public abstract class DatabaseManager {
         }
         saveSettlements(settlements);
         saveEmpires(empires);
+    }
+
+    public void saveAllies(Collection<Ally> allies) {
+        allies.stream().map(Ally::getLandOwner).filter(Objects::nonNull).forEach(DatabaseSerializable::save);
     }
 
     public abstract void disable();

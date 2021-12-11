@@ -1,25 +1,19 @@
 package de.themoep.settlements.command.common;
 
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.InviteCache;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
+import de.themoep.settlements.land.gui.AlliesGUI;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
-import de.themoep.settlements.utils.Utils;
-
-import java.util.stream.Collectors;
 
 public interface AllyCommand extends LandOwnerCommand {
 
     default boolean listAllies(Resident resident, LandOwner<?, ?> landOwner) {
-        resident.tell(getMessage("head"));
-        resident.tell(landOwner.getAllies().stream()
-                .map(e -> getMessage("entry").getReplacedText("name", e.getName(), "state", e.getStateTag()))
-                .collect(Collectors.joining(getMessage("separator").getText()))
-        );
+        new AlliesGUI(landOwner.getDbName(), resident, landOwner).open();
         return true;
     }
 
@@ -43,10 +37,8 @@ public interface AllyCommand extends LandOwnerCommand {
             target.addAlly(source);
             source.addAlly(target);
 
-            Utils.runAsync(() -> {
-                DatabaseManager.getInstance().save(target);
-                DatabaseManager.getInstance().save(source);
-            });
+            DatabaseManager.getInstance().save(target);
+            DatabaseManager.getInstance().save(source);
         } else {
             InviteCache.addPendingAlly(target, source);
             MessageUtils.tellResidents(target.getOnlineResidents(), getMessage("invite"), "name", source.getName(), "state", source.getStateTag());
@@ -76,10 +68,8 @@ public interface AllyCommand extends LandOwnerCommand {
                 LandManager.getInstance().checkClaimDistance(source, target);
             }
 
-            Utils.runAsync(() -> {
-                DatabaseManager.getInstance().save(target);
-                DatabaseManager.getInstance().save(source);
-            });
+            DatabaseManager.getInstance().save(target);
+            DatabaseManager.getInstance().save(source);
             MessageUtils.tellResidents(target.getOnlineResidents(), getMessage("success"), "name", source.getName(), "state", source.getStateTag());
             MessageUtils.tellResidents(source.getOnlineResidents(), getMessage("success"), "name", target.getName(), "state", target.getStateTag());
         }

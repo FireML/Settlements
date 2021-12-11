@@ -100,8 +100,8 @@ public class SimpleChunkLocation implements ConfigurationSerializable {
     }
 
     @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> map = new LinkedHashMap<>();
+    public LinkedHashMap<String, Object> serialize() {
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("x", getX());
         map.put("z", getZ());
         map.put("world", getWorld());

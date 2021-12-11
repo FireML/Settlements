@@ -1,7 +1,9 @@
 package de.themoep.settlements.land;
 
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.Table;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.leveling.LevelInfo;
@@ -9,9 +11,11 @@ import de.themoep.settlements.leveling.Levelable;
 import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.perk.PerkData;
 import de.themoep.settlements.rank.Rank;
+import de.themoep.settlements.rank.RankManager;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.settlement.JoinType;
 import de.themoep.settlements.utils.ConfigKey;
+import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Targetable;
@@ -32,7 +36,6 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -46,12 +49,14 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     private IdObject id = IdObject.get(null);
     private String name;
     private String description = "";
+    private String rules = "";
     private String discordLink = "";
     private long created = System.currentTimeMillis();
     private long bank = 0;
     private long joinFee = 0;
     private long tax = 0;
     private TaxDebtAction taxDebtAction = TaxDebtAction.KICK;
+    protected boolean allowAllyClaim = false;
     private Map<PlotMode, Boolean> modes = new EnumMap<>(PlotMode.class);
     private int bonusClaims = 0;
     private Map<String, Long> vault = new HashMap<>();
@@ -59,18 +64,17 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     private SimpleLocation home = null;
     private BuildState buildState = getDefaultBuildState();
     private LandAccess access = LandAccess.PRIVATE;
+    private JoinType joinType = JoinType.INVITE_ONLY;
     private Map<Use, BuildState> use = new EnumMap<>(Use.class);
 
     private Map<String, Map<String, Boolean>> ranksPermissions = new HashMap<>();
     protected Multimap<String, String> rankTitles = MultimapBuilder.hashKeys().linkedHashSetValues().build();
     protected Map<String, String> defaultRankTitles = new HashMap<>();
 
-    private Set<IdObject> alliedSettlements = new LinkedHashSet<>();
+    protected Table<String, IdObject, Ally> allies = HashBasedTable.create();
 
-    private Set<IdObject> alliedEmpires = new LinkedHashSet<>();
-    private Set<UUID> banishedPlayers = new LinkedHashSet<>();
-    private Set<IdObject> banishedSettlements = new LinkedHashSet<>();
-    private Set<IdObject> banishedEmpires = new LinkedHashSet<>();
+    protected Table<String, IdObject, Banished> banished = HashBasedTable.create();
+    private List<Unbanished> unbanished = new ArrayList<>();
 
     protected LandOwner() {}
 
@@ -137,6 +141,14 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
 
     public String getDescription() {
         return description;
+    }
+
+    public String getRules() {
+        return rules;
+    }
+
+    public void setRules(String rules) {
+        this.rules = rules;
     }
 
     public void setDiscord(String discordLink) {
@@ -261,6 +273,8 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
 
     protected abstract Set<String> getPermissions();
 
+    public abstract Collection<String> getToggleablePermissions();
+
     public Map<String, Boolean> getPermissions(R rank) {
         return ranksPermissions.getOrDefault(rank.name().toLowerCase(), Collections.emptyMap());
     }
@@ -274,11 +288,18 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     }
 
     public Optional<Boolean> getPermissionValue(R rank, String permission) {
+        if (permission.contains(".group.")) {
+            return RankManager.getInstance().getFromGroup(permission, p -> getPermissionValue(rank, p));
+        }
         Map<String, Boolean> map = ranksPermissions.get(rank.name().toLowerCase());
         return Optional.ofNullable(map != null ? map.get(permission.toLowerCase()) : null);
     }
 
     public Optional<Boolean> getInheritedPermissionValue(R rank, String permission) {
+        if (permission.contains(".group.")) {
+            return RankManager.getInstance().getFromGroup(permission, p -> getInheritedPermissionValue(rank, p));
+        }
+
         Optional<Boolean> value = getPermissionValue(rank, permission);
         if (value.isPresent()) {
             return value;
@@ -290,6 +311,10 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     }
 
     public Optional<Boolean> getEffectivePermissionValue(R rank, String permission) {
+        if (permission.contains(".group.")) {
+            return RankManager.getInstance().getFromGroup(permission, p -> getEffectivePermissionValue(rank, p));
+        }
+
         if (rank.getParent() != null) {
             Optional<Boolean> inheritValue = getInheritedPermissionValue(rank, permission);
             if (inheritValue.isPresent()) {
@@ -300,6 +325,13 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     }
 
     public boolean setPermission(R rank, String permission, boolean value) {
+        if (permission.contains(".group.")) {
+            Optional<Boolean> changed = RankManager.getInstance().applyToGroup(permission, p -> setPermission(rank, p, value));
+            if (changed.isPresent()) {
+                return changed.get();
+            }
+        }
+
         if (getEffectivePermissionValue(rank, permission).orElse(false) == value) {
             return false;
         }
@@ -313,6 +345,12 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     }
 
     public boolean setDefaultPermission(R rank, String permission) {
+        if (permission.contains(".group.")) {
+            Optional<Boolean> changed = RankManager.getInstance().applyToGroup(permission, p -> setDefaultPermission(rank, p));
+            if (changed.isPresent()) {
+                return changed.get();
+            }
+        }
         return ranksPermissions.getOrDefault(rank.name().toLowerCase(), new LinkedHashMap<>()).remove(permission.toLowerCase()) != null;
     }
 
@@ -463,69 +501,79 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         this.bonusClaims = bonusClaims;
     }
 
-    public boolean isBanished(UUID playerId) {
-        if (banishedPlayers.contains(playerId)) {
+    public boolean isBanished(Targetable target) {
+        if (target instanceof Resident) {
+            Resident res = (Resident) target;
+            return banished.contains("player", IdObject.get(res.getUUID()))
+                    || (res.hasSettlement() && isBanished(res.getSettlement()))
+                    || (res.hasEmpire() && isBanished(res.getSettlement().getEmpire()));
+        } else if (target instanceof LandOwner) {
+            if (banished.contains(((LandOwner<?, ?>) target).getDbName(), ((LandOwner<?, ?>) target).getId())) {
+                return true;
+            } else if (target instanceof Settlement && ((Settlement) target).hasEmpire()) {
+                return isBanished(((Settlement) target).getEmpire());
+            }
+        }
+        return false;
+    }
+
+    public boolean addBanished(Resident sender, Targetable target, String reason) {
+        if (isBanished(target)) {
+            return false;
+        }
+        Banished entry;
+        if (target instanceof Resident) {
+            entry = new Banished(
+                    "player",
+                    IdObject.get(((Resident) target).getUUID()),
+                    System.currentTimeMillis(),
+                    sender != null ? sender.getUUID() : Utils.ZERO_UUID,
+                    reason
+            );
             return true;
+        } else if (target instanceof LandOwner) {
+            entry = new Banished(
+                    ((LandOwner<?, ?>) target).getDbName(),
+                    ((LandOwner) target).getId(),
+                    System.currentTimeMillis(),
+                    sender != null ? sender.getUUID() : Utils.ZERO_UUID,
+                    reason
+            );
+        } else {
+            return false;
         }
-        Resident resident = ResidentManager.getInstance().getResident(playerId);
-        if (resident != null && resident.hasSettlement()) {
-            if (banishedSettlements.contains(resident.getSettlement().getId())) {
+        banished.put(entry.getType(), entry.getBanishedId(), entry);
+        return false;
+    }
+
+    public boolean removeBanished(Resident sender, Targetable target) {
+        if (target instanceof Resident) {
+            Banished entry = banished.remove("player", IdObject.get(((Resident) target).getUUID()));
+            if (entry != null) {
+                unbanished.add(entry.toUnbanish(sender));
                 return true;
             }
-            if (resident.hasEmpire() && banishedEmpires.contains(resident.getSettlement().getEmpire().getId())) {
+            return false;
+        } else if (target instanceof LandOwner) {
+            Banished entry = banished.remove(((LandOwner<?, ?>) target).getDbName(), ((LandOwner<?, ?>) target).getId());
+            if (entry != null) {
+                unbanished.add(entry.toUnbanish(sender));
                 return true;
             }
         }
         return false;
     }
 
-    public boolean addBanished(Targetable target) {
-        if (target instanceof Resident) {
-            return banishedPlayers.add(((Resident) target).getUUID());
-        } else if (target instanceof Settlement) {
-            return banishedSettlements.add(((Settlement) target).getId());
-        } else if (target instanceof Empire) {
-            return banishedEmpires.add(((Empire) target).getId());
-        }
-        return false;
-    }
-
-    public boolean removeBanished(Targetable target) {
-        if (target instanceof Resident) {
-            return banishedPlayers.remove(((Resident) target).getUUID());
-        } else if (target instanceof Settlement) {
-            return banishedSettlements.remove(((Settlement) target).getId());
-        } else if (target instanceof Empire) {
-            return banishedEmpires.remove(((Empire) target).getId());
-        }
-        return false;
-    }
-
-    public boolean addAlly(LandOwner<?, ?> landOwner) {
-        if (landOwner instanceof Settlement) {
-            return alliedSettlements.add(landOwner.getId());
-        } else if (landOwner instanceof Empire) {
-            return alliedEmpires.add(landOwner.getId());
-        }
-        return false;
+    public void addAlly(LandOwner<?, ?> landOwner) {
+        allies.put(landOwner.getDbDescription(), landOwner.getId(), new Ally(landOwner.getDbDescription(), landOwner.getId(), System.currentTimeMillis(), isAllowAllyClaim()));
     }
 
     public boolean removeAlly(LandOwner<?, ?> landOwner) {
-        if (landOwner instanceof Settlement) {
-            return alliedSettlements.remove(landOwner.getId());
-        } else if (landOwner instanceof Empire) {
-            return alliedEmpires.remove(landOwner.getId());
-        }
-        return false;
+        return allies.remove(landOwner.getDbDescription(), landOwner.getId()) != null;
     }
 
     public boolean isAlly(LandOwner<?, ?> landOwner) {
-        if (landOwner instanceof Settlement) {
-            return alliedSettlements.contains(landOwner.getId());
-        } else if (landOwner instanceof Empire) {
-            return alliedEmpires.contains(landOwner.getId());
-        }
-        return false;
+        return allies.contains(landOwner.getDbDescription(), landOwner.getId());
     }
 
     public boolean isAlly(Resident resident) {
@@ -535,7 +583,15 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     }
 
     public boolean hasAllies() {
-        return !getAlliedEmpireIds().isEmpty() || !getAlliedSettlementIds().isEmpty();
+        return !getAllies().isEmpty();
+    }
+
+    public boolean hasSettlementAllies() {
+        return getAllies().stream().anyMatch(a -> a.getType().equals("settlement"));
+    }
+
+    public boolean hasEmpireAllies() {
+        return getAllies().stream().anyMatch(a -> a.getType().equals("empire"));
     }
 
     public boolean isTrusted(Resident resident) {
@@ -556,59 +612,28 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         return this.getHome() != null;
     }
 
-    public Set<UUID> getBanishedPlayers() {
-        return banishedPlayers;
+    public Collection<Banished> getBanished() {
+        return banished.values();
     }
 
-    public Set<IdObject> getBanishedSettlementIds() {
-        return banishedSettlements;
+    public List<Unbanished> getUnbanished() {
+        return unbanished;
     }
 
-    public Set<Settlement> getBanishedSettlements() {
-        return banishedSettlements.stream()
-                .map(id -> SettlementManager.getInstance().getFromId(id))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+    public Ally getAlly(LandOwner<?, ?> landOwner) {
+        return allies.get(landOwner.getDbDescription(), landOwner.getId());
     }
 
-    public Set<IdObject> getBanishedEmpireIds() {
-        return banishedEmpires;
+    public Collection<Ally> getAllies() {
+        return allies.values();
     }
 
-    public Set<Empire> getBanishedEmpires() {
-        return banishedEmpires.stream()
-                .map(id -> EmpireManager.getInstance().getEmpireFromId(id))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+    public boolean isAllowAllyClaim() {
+        return allowAllyClaim;
     }
 
-    public Set<IdObject> getAlliedSettlementIds() {
-        return alliedSettlements;
-    }
-
-    public Set<Settlement> getAlliedSettlements() {
-        return alliedSettlements.stream()
-                .map(id -> SettlementManager.getInstance().getFromId(id))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-    }
-
-    public Set<IdObject> getAlliedEmpireIds() {
-        return alliedEmpires;
-    }
-
-    public Set<Empire> getAlliedEmpires() {
-        return alliedEmpires.stream()
-                .map(id -> EmpireManager.getInstance().getEmpireFromId(id))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-    }
-
-    public Collection<LandOwner> getAllies() {
-        List<LandOwner> landOwners = new ArrayList<>();
-        landOwners.addAll(getAlliedEmpires());
-        landOwners.addAll(getAlliedSettlements());
-        return landOwners;
+    public void setAllowAllyClaim(boolean allowAllyClaim) {
+        this.allowAllyClaim = allowAllyClaim;
     }
 
     public void setHome(SimpleLocation home) {
@@ -661,6 +686,14 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         this.access = access;
     }
 
+    public JoinType getJoinType() {
+        return joinType;
+    }
+
+    public void setJoinType(JoinType joinType) {
+        this.joinType = joinType;
+    }
+
     public abstract void removeMember(Targetable target);
 
     public boolean isChief(Targetable target) {
@@ -677,6 +710,10 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     public void setCreated(long created) {
         this.created = created;
     }
+
+    public abstract String getTitle(Resident resident);
+
+    public abstract boolean setTitle(Resident target, String title);
 
     public Collection<String> getTitles(R rank) {
         Collection<String> titles = rankTitles.get(rank.name().toLowerCase());
@@ -751,17 +788,28 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         return defaultRankTitles;
     }
 
+    public abstract int getTitlesPerRank();
+
+    public abstract R getHighestRank();
+
+    public abstract R getDefaultRank();
+
+    public abstract R getRank(Resident resident);
+
+    public abstract Collection<R> getRanks();
+
     @Override
     public String getDbDescription() {
         return getStateKey() + " " + getName() + "/" + getId();
     }
 
     @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> map = new LinkedHashMap<>();
+    public LinkedHashMap<String, Object> serialize() {
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("id", getId().value());
         map.put("name", getName());
         map.put("description", getDescription());
+        map.put("rules", getDescription());
         map.put("discord", getDiscord());
         map.put("created", getCreated());
         for (PlotMode mode : PlotMode.values(PlotMode.AppliesTo.LAND_OWNER)) {
@@ -774,19 +822,15 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         map.put("bonusClaims", getBonusClaims());
         map.put("buildState", getBuildState().name());
         map.put("access", getAccess().name());
+        map.put("joinType", getJoinType().name());
         if (getHome() != null)
             map.put("homeLoc", getHome());
         else
             map.put("homeLoc", new SimpleLocation(null, 0, 0, 0));
-        List<String> allies = new ArrayList<>();
-        getAlliedSettlementIds().stream().map(id -> "settlement:" + id).forEach(allies::add);
-        getAlliedEmpireIds().stream().map(id -> "empire:" + id).forEach(allies::add);
-        map.put("allies", allies);
-        List<String> banished = new ArrayList<>();
-        getBanishedPlayers().stream().map(UUID::toString).forEach(banished::add);
-        getBanishedSettlementIds().stream().map(id -> "settlement:" + id).forEach(banished::add);
-        getBanishedEmpireIds().stream().map(id -> "empire:" + id).forEach(banished::add);
-        map.put("banished", banished);
+        map.put("allies", getAllies());
+        map.put("allowAllyClaim", isAllowAllyClaim());
+        map.put("banished", getBanished());
+        map.put("unbanished", getUnbanished());
         map.put("uses", getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
         map.put("vault", getVault());
         map.put("perks", getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
@@ -803,6 +847,7 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         }
         landOwner.setName((String) map.get("name"));
         landOwner.setDescription((String) map.get("description"));
+        landOwner.setRules((String) map.get("rules"));
         landOwner.setDiscord((String) map.get("discord"));
         landOwner.setCreated(Utils.getLong(map.get("created")));
         landOwner.setId(IdObject.get(map));
@@ -822,6 +867,9 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         try {
             landOwner.setAccess(LandAccess.valueOf((String) map.get("access")));
         } catch (IllegalArgumentException ignored) {}
+        try {
+            landOwner.setJoinType(JoinType.valueOf((String) map.get("jointype")));
+        } catch (IllegalArgumentException ignored) {}
         if (map.get("homeLoc") != null) {
             landOwner.setHome(SimpleLocation.deserialize((Map<String, Object>) map.get("homeLoc")));
         }
@@ -832,44 +880,15 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
                 landOwner.setUseState(u, Utils.parseEnum(BuildState.class, (String) uses.get(u.name()), useFlag.getDefault(landOwner.getDefaultBuildState())));
             }
         }
-        for (String s : ((Collection<String>) map.get("allies"))) {
-            String[] split = s.split(":", 2);
-            try {
-                if (split.length > 1) {
-                    IdObject id = IdObject.get(Integer.parseInt(split[1]));
-                    switch (split[0]) {
-                        case "settlement":
-                            landOwner.getAlliedSettlementIds().add(id);
-                            break;
-                        case "empire":
-                            landOwner.getAlliedEmpireIds().add(id);
-                            break;
-                    }
-                }
-            } catch (IllegalArgumentException e) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Ally entry " + s + " could not be parsed for " + landOwner.getStateKey() + " " + landOwner.getName() + "/" + landOwner.getId() + "! " + e.getMessage());
-            }
+        for (Ally ally : ((Collection<Ally>) map.get("allies"))) {
+            landOwner.allies.put(ally.getType(), ally.getId(), ally);
         }
-        for (String s : ((Collection<String>) map.get("banished"))) {
-            String[] split = s.split(":", 2);
-            try {
-                if (split.length == 1) {
-                    landOwner.getBanishedPlayers().add(UUID.fromString(split[0]));
-                } else {
-                    IdObject id = IdObject.get(Integer.parseInt(split[1]));
-                    switch (split[0]) {
-                        case "settlement":
-                            landOwner.getBanishedSettlementIds().add(id);
-                            break;
-                        case "empire":
-                            landOwner.getBanishedEmpireIds().add(id);
-                            break;
-                    }
-                }
-            } catch (IllegalArgumentException e) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Banish entry " + s + " could not be parsed for " + landOwner.getStateKey() + " " + landOwner.getName() + "/" + landOwner.getId() + "! " + e.getMessage());
-            }
+        landOwner.setAllowAllyClaim(Utils.getBoolean(map.get("allowAllyClaim")));
+
+        for (Banished banished : ((Collection<Banished>) map.get("banished"))) {
+            landOwner.banished.put(banished.getType(), banished.getId(), banished);
         }
+        landOwner.getUnbanished().addAll(((Collection<Unbanished>) map.get("unbanished")));
         ((Map<String, Object>) map.get("vault")).entrySet().stream()
                 .filter(e -> e.getValue() instanceof Number)
                 .forEach(e -> landOwner.getVault().put(e.getKey(), Long.parseLong(String.valueOf(e.getValue()))));
@@ -897,4 +916,6 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     public boolean equals(Object o) {
         return o != null && o.getClass().equals(getClass()) && ((LandOwner) o).getId().equals(getId());
     }
+
+    public abstract String[] getReplacements(ConfigMessages configMessages, String... initial);
 }

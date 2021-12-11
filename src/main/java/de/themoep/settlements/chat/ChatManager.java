@@ -17,6 +17,7 @@ import de.themoep.settlements.command.PlayerSubCommand;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.integration.PlaceholderApiIntegration;
+import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.ConfigMessages;
@@ -249,6 +250,7 @@ public class ChatManager implements ConfigMessages, Listener {
                 break;
             case ALLY:
                 Set<Resident> residentSet = settlement.getAllies().stream()
+                        .map(Ally::getLandOwner)
                         .filter(a -> a instanceof Settlement)
                         .flatMap(a -> a.getOnlineResidents().stream())
                         .collect(Collectors.toSet());
@@ -260,6 +262,7 @@ public class ChatManager implements ConfigMessages, Listener {
                 break;
             case EMPIREALLY:
                 Set<Resident> eAllySet = settlement.getAllies().stream()
+                        .map(Ally::getLandOwner)
                         .filter(a -> a instanceof Empire)
                         .flatMap(a -> a.getOnlineResidents().stream())
                         .collect(Collectors.toSet());
@@ -267,6 +270,7 @@ public class ChatManager implements ConfigMessages, Listener {
                 if (settlement.hasEmpire()) {
                     eAllySet.addAll(settlement.getEmpire().getOnlineResidents());
                     settlement.getEmpire().getAllies().stream()
+                            .map(Ally::getLandOwner)
                             .flatMap(a -> a.getOnlineResidents().stream())
                             .forEach(eAllySet::add);
                 }

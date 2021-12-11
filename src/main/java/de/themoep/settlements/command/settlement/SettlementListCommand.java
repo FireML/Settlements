@@ -1,6 +1,7 @@
 package de.themoep.settlements.command.settlement;
 
 import com.google.common.collect.ImmutableMap;
+import de.themoep.settlements.settlement.JoinType;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.command.SubCommand;
@@ -17,6 +18,7 @@ import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class SettlementListCommand extends SubCommand {
@@ -27,13 +29,15 @@ public class SettlementListCommand extends SubCommand {
     @Override
     public boolean run(CommandSender sender, String base, String alias, String... args) {
         int page = 1;
-        LandAccess access = null;
+        String tag = null;
+        Predicate<Settlement> filter = s -> true;
         if (args.length > 0) {
             try {
                 page = Integer.parseInt(args[0]);
             } catch (IllegalArgumentException e1) {
                 if ("open".equalsIgnoreCase(args[0])) {
-                    access = LandAccess.OPEN;
+                    tag = "open";
+                    filter = s -> s.getJoinType() == JoinType.ANYONE;
                     if (args.length > 1) {
                         try {
                             page = Integer.parseInt(args[1]);
@@ -52,17 +56,17 @@ public class SettlementListCommand extends SubCommand {
             getError("not-a-number").tell(sender, "input", String.valueOf(page));
             return false;
         }
-        LandAccess finalAccess = access;
+        String finalTag = tag;
         int finalPage = page;
+        Predicate<Settlement> finalFilter = filter;
         Utils.runAsync(() -> {
             List<Settlement> settlements = SettlementManager.getInstance().getSettlements().stream()
-                    .filter(v -> v.getAccess().atLeast(finalAccess))
+                    .filter(finalFilter)
                     .sorted(Settlement::compareTo)
                     .collect(Collectors.toList());
 
             int pages = (int) Math.ceil(settlements.size() / (double) Config.ENTRIES_PER_PAGE);
             getMessage("head").tell(sender,
-                    "access", finalAccess != null ? finalAccess.getTag() + " " : "",
                     "page", String.valueOf(finalPage),
                     "maxpage", String.valueOf(pages)
             );
@@ -80,7 +84,7 @@ public class SettlementListCommand extends SubCommand {
             if (finalPage + 1 > pages) {
                 next.color(ChatColor.GRAY);
             } else {
-                next.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalAccess != null ? finalAccess.name() + " " : "") + (finalPage + 1)));
+                next.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalTag != null ? finalTag + " " : "") + (finalPage + 1)));
                 next.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText(ChatColor.YELLOW + ">>"))));
             }
             ComponentBuilder previous = new ComponentBuilder("")
@@ -88,12 +92,11 @@ public class SettlementListCommand extends SubCommand {
             if (finalPage - 1 <= 0) {
                 previous.color(ChatColor.GRAY);
             } else {
-                previous.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalAccess != null ? finalAccess.name() + " " : "") + (finalPage - 1)));
+                previous.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalTag != null ? finalTag + " " : "") + (finalPage - 1)));
                 previous.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText(ChatColor.YELLOW + "<<"))));
             }
 
             MessageUtils.tell(sender, MessageUtils.replacePlaceholders(getMessage("footer").getReplacedComponents(
-                    "access", finalAccess != null ? finalAccess.getTag() + " " : "",
                     "page", String.valueOf(finalPage),
                     "maxpage", String.valueOf(pages)
             ), ImmutableMap.of(

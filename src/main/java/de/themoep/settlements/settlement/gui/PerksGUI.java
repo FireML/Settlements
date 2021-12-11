@@ -1,6 +1,7 @@
 package de.themoep.settlements.settlement.gui;
 
 import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
@@ -24,36 +25,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PerksGUI extends SettlementsGUI {
-    private final static String[] SETUP = {
-            "         ",
-            "         ",
-            "ggggggggg",
-            "ggggggggg",
-            "         ",
-            "    b    "
-    };
-
     private final Resident resident;
     private final InventoryGui gui;
 
     public PerksGUI(Resident resident) {
-        super("perks");
+        super("settlement.perks");
         this.resident = resident;
 
         Settlement settlement = resident.getSettlement();
 
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), SETUP);
+        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), getSetup());
         gui.setCloseAction(close -> false);
-        gui.setFiller(BORDER_ITEM);
+        gui.setFiller(getIcon("filler"));
+        gui.addElements(getConfiguredElements());
 
-        GuiElementGroup group = new GuiElementGroup('g');
+        GuiElementGroup group = new GuiElementGroup('p');
+        group.setAlignment(getAlignment("p"));
 
         for (LevelPerk perk : SettlementManager.getInstance().getPerks()) {
             if (settlement == null || !settlement.hasUnlocked(perk) || (!perk.hasEffects() && !perk.hasActions())) {
                 continue;
             }
 
-            group.addElement(new DynamicGuiElement('g', (h) -> {
+            group.addElement(new DynamicGuiElement('p', (h) -> {
                 if (resident.hasSettlement()) {
                     PerkData perkData = settlement.getPerkData(perk);
                     List<String> lore = new ArrayList<>();
@@ -107,10 +101,7 @@ public class PerksGUI extends SettlementsGUI {
 
         gui.addElement(group);
 
-        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
-            new SettingsGUI((Player) click.getEvent().getWhoClicked()).open();
-            return true;
-        }, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
     }
 
     public void open() {

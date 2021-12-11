@@ -1,10 +1,10 @@
 package de.themoep.settlements.command.settlement;
 
+import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.LandManager;
-import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 
@@ -28,8 +28,8 @@ public class SettlementAllyclaimCommand extends SettlementSubCommand {
 
         resident.getSettlement().setAllowAllyClaim(value);
         if (!value) {
-            for (LandOwner ally : resident.getSettlement().getAllies()) {
-                LandManager.getInstance().checkClaimDistance(resident.getSettlement(), ally);
+            for (Ally ally : resident.getSettlement().getAllies()) {
+                LandManager.getInstance().checkClaimDistance(resident.getSettlement(), ally.getLandOwner());
             }
         }
         DatabaseManager.getInstance().saveSettlement(resident.getSettlement());

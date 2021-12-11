@@ -5,9 +5,12 @@ import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.chat.ChatColorType;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.land.Ally;
+import de.themoep.settlements.land.Banished;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.PlotMode;
+import de.themoep.settlements.land.Unbanished;
 import de.themoep.settlements.lock.Lock;
 import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.rank.SettlementRank;
@@ -976,7 +979,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         map.put("members", members);
 
         map.put("banished", selectList(conn, "empire", id, "banished"));
-        map.put("allies", selectList(conn, "empire", id, "allies"));
 
         map.put("uses", selectMap(conn, "empire_uses", "empireId", id, "type", "state", String.class));
         map.put("vault", selectMap(conn, "empire_vaults", "empireId", id, "content", "amount", Long.class));
@@ -990,6 +992,33 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             unlockedPerks.put(pRs.getString("perk").toLowerCase(), toMap(pRs));
         }
         map.put("perks", unlockedPerks);
+
+        PreparedStatement aSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_allies WHERE empireId = ?;");
+        aSta.setInt(1, id);
+        ResultSet aRs = aSta.executeQuery();
+        List<Ally> allies = new ArrayList<>();
+        while (aRs.next()) {
+            allies.add(Ally.deserialize(toMap(aRs)));
+        }
+        map.put("allies", allies);
+
+        PreparedStatement bSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_banished WHERE empireId = ?;");
+        bSta.setInt(1, id);
+        ResultSet bRs = bSta.executeQuery();
+        List<Banished> banished = new ArrayList<>();
+        while (bRs.next()) {
+            banished.add(Banished.deserialize(toMap(bRs)));
+        }
+        map.put("banished", banished);
+
+        PreparedStatement ubSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_unbanished WHERE empireId = ?;");
+        ubSta.setInt(1, id);
+        ResultSet ubRs = ubSta.executeQuery();
+        List<Unbanished> unbanished = new ArrayList<>();
+        while (ubRs.next()) {
+            unbanished.add(Unbanished.deserialize(toMap(ubRs)));
+        }
+        map.put("unbanished", unbanished);
 
         PreparedStatement rpSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_permissions WHERE empireId = ?;");
         rpSta.setInt(1, id);
@@ -1027,7 +1056,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         map.put("residents", residents);
 
         map.put("banished", selectList(conn, "settlement", id, "banished"));
-        map.put("allies", selectList(conn, "settlement", id, "allies"));
 
         map.put("uses", selectMap(conn, "settlement_uses", "settlementId", id, "type", "state", String.class));
         map.put("vault", selectMap(conn, "settlement_vaults", "settlementId", id, "content", "amount", Long.class));
@@ -1041,6 +1069,33 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             outposts.put(oRs.getString("name").toLowerCase(), toMap(oRs));
         }
         map.put("outposts", outposts);
+
+        PreparedStatement aSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_allies WHERE settlementId = ?;");
+        aSta.setInt(1, id);
+        ResultSet aRs = aSta.executeQuery();
+        List<Ally> allies = new ArrayList<>();
+        while (aRs.next()) {
+            allies.add(Ally.deserialize(toMap(aRs)));
+        }
+        map.put("allies", allies);
+
+        PreparedStatement bSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_banished WHERE settlementId = ?;");
+        bSta.setInt(1, id);
+        ResultSet bRs = bSta.executeQuery();
+        List<Banished> banished = new ArrayList<>();
+        while (bRs.next()) {
+            banished.add(Banished.deserialize(toMap(bRs)));
+        }
+        map.put("banished", banished);
+
+        PreparedStatement ubSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_unbanished WHERE settlementId = ?;");
+        ubSta.setInt(1, id);
+        ResultSet ubRs = ubSta.executeQuery();
+        List<Unbanished> unbanished = new ArrayList<>();
+        while (ubRs.next()) {
+            unbanished.add(Unbanished.deserialize(toMap(ubRs)));
+        }
+        map.put("unbanished", unbanished);
 
         PreparedStatement pSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_perks WHERE settlementId = ?;");
         pSta.setInt(1, id);
@@ -1307,9 +1362,19 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             deleteSql = "DELETE FROM " + tablePrefix + tableName + " " +
                     " WHERE " + keyColumn + " = ?;";
         } else {
+            String andSql = "";
+            Object o = entries.iterator().next();
+            if (o instanceof DatabaseSerializable) {
+                andSql = "";
+                Collection<String> keys = ((DatabaseSerializable) o).serialize().keySet();
+                for (String key : keys) {
+                    andSql += " AND " + entryColumn + "_id" + " NOT IN (" + String.join(",", Collections.nCopies(entries.size(), "?")) + ")";
+                }
+            } else {
+                andSql = " AND " + entryColumn + " NOT IN (" + String.join(",", Collections.nCopies(entries.size(), "?")) + ")";
+            }
             deleteSql = "DELETE FROM " + tablePrefix + tableName + " " +
-                    " WHERE " + keyColumn + " = ?" +
-                    " AND " + entryColumn + " NOT IN (" + String.join(",", Collections.nCopies(entries.size(), "?")) + ");";
+                    " WHERE " + keyColumn + " = ?" + andSql + ";";
         }
 
         PreparedStatement deleteSta = conn.prepareStatement(deleteSql);
@@ -1317,7 +1382,9 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         int i = 2;
         for (Object entry : entries) {
             if (entry instanceof IdObject) {
-                deleteSta.setInt(i++, (int) ((IdObject) entry).value());
+                deleteSta.setObject(i++, ((IdObject) entry).value());
+            } else if (entry instanceof DatabaseSerializable) {
+                deleteSta.setObject(i++, ((DatabaseSerializable) entry).getId().value());
             } else {
                 deleteSta.setObject(i++, entry);
             }
@@ -1325,13 +1392,32 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         deleteSta.executeUpdate();
 
         if (!entries.isEmpty()) {
-            String insertSql = getInsertIgnore() + " INTO " + tablePrefix + tableName + " (" + keyColumn + ", " + entryColumn + ")" +
-                    " VALUES (?,?);";
+            String insertSql = getInsertIgnore() + " INTO " + tablePrefix + tableName + " (" + keyColumn; // TODO: Insert update
+            Object o = entries.iterator().next();
+            if (o instanceof DatabaseSerializable) {
+                Collection<String> keys = ((DatabaseSerializable) o).serialize().keySet();
+                for (String key : keys) {
+                    insertSql += ", " + entryColumn + "_" + key;
+                }
+                insertSql += ") VALUES (" + Collections.nCopies(keys.size(), "?") + ");";
+            } else {
+                insertSql += ", " + entryColumn + ") VALUES (?,?);";
+            }
+
             PreparedStatement insertSta = conn.prepareStatement(insertSql);
             for (Object entry : entries) {
                 insertSta.setInt(1, keyId);
                 if (entry instanceof IdObject) {
-                    insertSta.setInt(2, (int) ((IdObject) entry).value());
+                    insertSta.setObject(2, ((IdObject) entry).value());
+                } else if (entry instanceof DatabaseSerializable) {
+                    int j = 2;
+                    for (Map.Entry<String, Object> e : ((DatabaseSerializable) entry).serialize().entrySet()) {
+                        if (e.getValue() instanceof IdObject) {
+                            insertSta.setObject(j++, ((IdObject) e.getValue()).value());
+                        } else {
+                            insertSta.setObject(j++, e.getValue());
+                        }
+                    }
                 } else {
                     insertSta.setObject(2, entry);
                 }

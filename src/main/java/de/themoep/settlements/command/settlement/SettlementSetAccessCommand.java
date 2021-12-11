@@ -1,20 +1,20 @@
 package de.themoep.settlements.command.settlement;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.settlement.gui.AccessGUI;
+import de.themoep.settlements.land.gui.AccessGUI;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.LandAccess;
 
 public class SettlementSetAccessCommand extends SettlementSubCommand {
     public SettlementSetAccessCommand(SubCommand parent) {
-        super(parent, "setaccess <access>",  "set", "access");
+        super(parent, "setaccess <access>",  "set", "access", "setprivacy", "privacy");
     }
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length < 1) {
-            new AccessGUI().open(resident.getPlayer());
+            new AccessGUI("settlement", resident.getSettlement()).open(resident.getPlayer());
             return true;
         }
         try {

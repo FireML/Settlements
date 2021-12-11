@@ -5,6 +5,7 @@ import de.themoep.settlements.utils.MaterialUtils;
 import de.themoep.settlements.SettlementsPlugin;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.LinkedHashSet;
@@ -17,16 +18,23 @@ public class PermissionGroup {
 
     private final Set<String> permissions = new LinkedHashSet<>();
 
-    public PermissionGroup(ConfigurationSection config) {
+    public PermissionGroup(ConfigurationSection config) throws InvalidConfigurationException {
         this.name = config.getName();
-        Material icon = MaterialUtils.getMaterial(config.getString("icon"));
-        if (icon != null && !icon.isItem()) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, icon + " is not a valid icon type for permission group " + name + "! That type has no item for the GUI!");
-            icon = Material.DIRT;
+        if (config.isString("icon")) {
+            Material icon = MaterialUtils.getMaterial(config.getString("icon"));
+            if (icon != null && !icon.isItem()) {
+                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, icon + " is not a valid icon type for permission group " + name + "! That type has no item for the GUI!");
+                icon = Material.DIRT;
+            }
+            this.icon = icon;
+        } else {
+            this.icon = null;
         }
-        this.icon = icon;
         for (String perm : config.getStringList("permissions")) {
             permissions.add(perm.toLowerCase());
+        }
+        if (permissions.isEmpty()) {
+            throw new InvalidConfigurationException("No permissions defined!");
         }
     }
 

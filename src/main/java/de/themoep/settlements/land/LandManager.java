@@ -295,6 +295,10 @@ public class LandManager {
         return instance;
     }
 
+    public int getOwnedPlotCount(UUID uniqueId) {
+        return playerPlots.get(uniqueId).size();
+    }
+
     public Collection<OwnedLand> getOwnedPlot(UUID uniqueId) {
         return playerPlots.get(uniqueId).stream().map(this::getLand).filter(Objects::nonNull).collect(Collectors.toList());
     }

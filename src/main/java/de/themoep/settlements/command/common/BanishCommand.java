@@ -1,40 +1,39 @@
 package de.themoep.settlements.command.common;
 
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.land.Banished;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.land.gui.BanishedGUI;
+import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfigMessages;
-import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 public interface BanishCommand extends ConfigMessages, TargetParser {
 
     default boolean listBanished(Resident resident, LandOwner<?, ?> landOwner) {
+        new BanishedGUI(landOwner.getDbName(), resident, landOwner).open();
+        if (true) return true;
         Utils.runAsync(() -> {
             resident.tell(getMessage("head"));
-            if (!landOwner.getBanishedPlayers().isEmpty()) {
-                resident.tell(landOwner.getBanishedPlayers().stream()
-                        .map(id -> ResidentManager.getInstance().getResident(id))
+            if (!landOwner.getBanished().isEmpty()) {
+                resident.tell(landOwner.getBanished().stream()
+                        .map(Banished::getTargetable)
+                        .map(entry -> {
+                            if (entry instanceof Resident) {
+                                return getMessage("entry").getReplacedText("name", entry.getName(), "title", ((Resident) entry).getSettlementTitle());
+                            } else if (entry instanceof LandOwner) {
+                                return getMessage("entry").getReplacedText("name", entry.getName(), "title", ((LandOwner<?, ?>) entry).getStateTag());
+                            }
+                            return null;
+                        })
                         .filter(Objects::nonNull)
-                        .map(r -> getMessage("entry").getReplacedText("name", r.getName(), "title", r.getSettlementTitle()))
-                        .collect(Collectors.joining(getMessage("separator").getText())));
-            }
-            if (!landOwner.getBanishedSettlementIds().isEmpty()) {
-                resident.tell(landOwner.getBanishedSettlements().stream()
-                        .map(v -> getMessage("entry").getReplacedText("name", v.getName(), "title", v.getStateTag()))
-                        .collect(Collectors.joining(getMessage("separator").getText())));
-            }
-            if (!landOwner.getBanishedEmpireIds().isEmpty()) {
-                resident.tell(landOwner.getBanishedEmpires().stream()
-                        .map(e -> getMessage("entry").getReplacedText("name", e.getName(), "title", e.getStateTag()))
                         .collect(Collectors.joining(getMessage("separator").getText())));
             }
         });
@@ -72,12 +71,13 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
                 return;
             }
             Utils.runSync(() -> {
-                if (!source.addBanished(target)) {
+                String reason = Arrays.stream(args).skip(1).collect(Collectors.joining(" "));
+                if (!source.addBanished(resident, target, reason)) {
                     getError("already-banished").tell(resident, "name", target.getName());
                     return;
                 }
 
-                MessageUtils.tellResidents(source.getOnlineResidents(), getMessage("banished"), "name", target.getName());
+                getMessage("banished").tell(source.getOnlineResidents(), "name", target.getName(), "reason", reason);
                 for (Resident r : target.getOnlineResidents()) {
                     Player p = r.getPlayer();
                     if (p != null) {
@@ -88,8 +88,7 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
                     }
                 }
                 source.removeMember(target);
-
-                Utils.runAsync(() -> DatabaseManager.getInstance().save(source));
+                source.save();
             });
         });
         return true;
@@ -106,13 +105,13 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
             }
 
             Utils.runSync(() -> {
-                if (!source.removeBanished(target)) {
-                    resident.tell(getError("not-banished"), "name", target.getName());
+                if (!source.removeBanished(resident, target)) {
+                    getError("not-banished").tell(resident, "name", target.getName());
                     return;
                 }
 
-                MessageUtils.tellResidents(source.getOnlineResidents(), getMessage("unbanished"), "target", target.getName());
-                Utils.runAsync(() -> DatabaseManager.getInstance().save(source));
+                getMessage("unbanished").tell(source.getOnlineResidents(), "target", target.getName());
+                source.save();
             });
         });
         return true;

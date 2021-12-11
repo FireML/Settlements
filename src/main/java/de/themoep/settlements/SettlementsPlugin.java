@@ -47,6 +47,7 @@ import de.themoep.settlements.utils.config.ConfigManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementListener;
 import de.themoep.settlements.settlement.SettlementManager;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
@@ -70,6 +71,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     private static SettlementsPlugin instance;
     private LandPerks lPerks;
     private Economy econ = null;
+    private Permission perms = null;
     private MultiverseIntegration multiverse = null;
     private PlaceholderApiIntegration placeholderApi = null;
 
@@ -115,8 +117,8 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         timingManager = TimingManager.of(this);
         pluginTimings = timingManager.of("Plugin actions");
         this.checkDataFolder();
-        if (!this.setupEconomy()) {
-            this.getLogger().log(Level.SEVERE, "Disabled due to missing economy provider!");
+        if (!this.setupEconomy() || !this.setupPermissions()) {
+            this.getLogger().log(Level.SEVERE, "Disabled due to missing service provider!");
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -373,6 +375,21 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         return econ != null;
     }
 
+    private boolean setupPermissions() {
+        if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
+            this.getLogger().log(Level.SEVERE, "Vault is not available?");
+            return false;
+        }
+        RegisteredServiceProvider<Permission> rsp = this.getServer().getServicesManager().getRegistration(Permission.class);
+        if (rsp == null) {
+            this.getLogger().log(Level.SEVERE, "No permission service provider registered!");
+            return false;
+        }
+        perms = rsp.getProvider();
+        this.getLogger().log(Level.INFO, "Hooked into permissions service provider " + perms.getName() + " " + rsp.getPlugin().getDescription().getVersion());
+        return perms != null;
+    }
+
     public void checkDataFolder() {
         if (!this.getDataFolder().exists()) {
             this.getDataFolder().mkdirs();
@@ -433,6 +450,10 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
 
     public Economy getEconomy() {
         return econ;
+    }
+
+    public Permission getPermissions() {
+        return perms;
     }
 
     public void registerListener(Listener listener) {

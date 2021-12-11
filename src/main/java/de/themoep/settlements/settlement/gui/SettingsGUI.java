@@ -1,36 +1,29 @@
 package de.themoep.settlements.settlement.gui;
 
+import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.land.gui.BuildGUI;
-import de.themoep.settlements.land.gui.PermsGUI;
+import de.themoep.settlements.SettlementsGUI;
+import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.land.gui.AccessGUI;
+import de.themoep.settlements.land.gui.RecruitmentGUI;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.settlement.SettlementState;
-import de.themoep.settlements.SettlementsGUI;
-import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.command.CommandManager;
-import de.themoep.settlements.command.settlement.SettlementHomeCommand;
-import de.themoep.settlements.command.settlement.SettlementSetHomeCommand;
-import de.themoep.settlements.utils.ItemUtils;
+import de.themoep.settlements.settlement.SettlementManager;
+import de.themoep.settlements.utils.Message;
+import de.themoep.settlements.utils.MessageUtils;
+import de.themoep.settlements.utils.SignGui;
 import de.themoep.settlements.utils.Utils;
-import org.bukkit.Material;
+import de.themoep.settlements.utils.config.Config;
+import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.entity.Player;
 
-import java.util.function.Supplier;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class SettingsGUI extends SettlementsGUI {
-
-    private final static String[] SETUP = {
-            "llllillll",
-            "         ",
-            " um h ts ",
-            " ba   rp ",
-            "         ",
-            "llllcllll"
-    };
-
+    private final Pattern namePattern;
     private final Resident resident;
     public InventoryGui gui;
 
@@ -39,32 +32,190 @@ public class SettingsGUI extends SettlementsGUI {
     }
 
     public SettingsGUI(Resident resident) {
-        super("settings");
+        super("settlement.settings");
+        namePattern = Pattern.compile(Config.Settlement.NAME_VALIDATION);
         this.resident = resident;
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), SETUP);
+        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), getSetup());
         gui.setCloseAction(close -> false);
+        gui.addElements(getConfiguredElements());
+        gui.setFiller(getIcon("filler"));
 
-        gui.addElement(new StaticGuiElement('l', BORDER_ITEM, " "));
-
-        gui.addElement(new StaticGuiElement('h', ItemUtils.toIcon(Material.BEACON),click -> {
-            if (click.getType().isShiftClick()) {
-                if (resident.hasPermission("settlement.sethome")) {
-                    click.getGui().close();
-                    ((SettlementSetHomeCommand) CommandManager.getInstance().getCommand("settlement").getSubCommands().get("sethome")).run(resident, "settlement", "sethome");
+        if (resident.hasPermission("settlement.rename")) {
+            gui.addElement(new StaticGuiElement('n', getIcon("rename"), click -> {
+                if (resident.hasPermission("settlement.rename")) {
+                    Settlement settlement = resident.getSettlement();
+                    new AnvilGUI.Builder()
+                            .itemLeft(getIcon("rename"))
+                            .title(getText("rename.anvil.title", "name", settlement.getName()))
+                            .text(getText("rename.anvil.placeholder", "name", settlement.getName()))
+                            .onClose(player -> Utils.runLater(this::open, 1))
+                            .onComplete((player, text) -> {
+                                if (settlement.hasPermission(resident, "rename")) {
+                                    String name = Utils.filterAllCurses(text.trim());
+                                    if (name.toLowerCase().contains("claims")) {
+                                        getError("invalid-characters").tell(player, "input", name);
+                                        return AnvilGUI.Response.text(getError("invalid-characters").getReplacedText("input", name));
+                                    } else if (SettlementManager.getInstance().getFromName(name) != null) {
+                                        getError("settlement-exists").tell(player, "input", name);
+                                        return AnvilGUI.Response.text(getError("settlement-exists").getReplacedText("name", name));
+                                    } else if (name.length() > Config.Settlement.NAME_LENGTH) {
+                                        getError("too-long").tell(player, "input", name, "amount", String.valueOf(Config.Settlement.NAME_LENGTH));
+                                        return AnvilGUI.Response.text(getError("too-long").getReplacedText("input", name, "amount", String.valueOf(Config.Settlement.NAME_LENGTH)));
+                                    } else if (!namePattern.matcher(name).matches()) {
+                                        getError("invalid-characters").tell(player, "input", name);
+                                        return AnvilGUI.Response.text(getError("invalid-characters").getReplacedText("input", name));
+                                    } else {
+                                        SettlementManager.getInstance().changeName(settlement, name);
+                                        Message.get("command.settlement.rename.success").tell(settlement.getOnlineResidents(), "name", settlement.getName(), "state", settlement.getState().getTag());
+                                        Utils.runLater(() -> new SettingsGUI(player), 1);
+                                    }
+                                } else {
+                                    getError("no-permission").tell(player);
+                                }
+                                return AnvilGUI.Response.close();
+                            });
                 }
-            } else if (click.getType().isLeftClick() && resident.hasSettlement()) {
-                click.getGui().close();
-                ((SettlementHomeCommand) CommandManager.getInstance().getCommand("settlement").getSubCommands().get("home")).run(resident, "settlement", "home");
-            }
-            return true;
-        }, getText(resident.hasPermission("settlement.sethome") ? "sethome" : "home",
-                "state", resident.getSettlement().getStateTag()
-        )));
+                return true;
+            }, getText("rename.entry", "state", resident.getSettlement().getStateTag(), "name", resident.getSettlement().getName())));
+        }
+
+        if (resident.hasPermission("settlement.perks")) {
+            gui.addElement(new StaticGuiElement('p', getIcon("perks"), click -> {
+                if (resident.hasPermission("settlement.perks")) {
+                    new PerksGUI(resident).open();
+                }
+                return true;
+            }, getText("perks.entry",
+                    "state", resident.getSettlement().getStateTag(),
+                    "perks", resident.getSettlement().getPerks().stream().map(p -> getText("perks.list", "name", p.getTag())).collect(Collectors.joining("\n"))
+            )));
+        }
+
+        if (resident.hasPermission("settlement.setrules")) {
+            gui.addElement(new StaticGuiElement('r', getIcon("rules"), click -> {
+                MessageUtils.tellAdvanced(resident.getPlayer(), getConfigPath() + ".rules.info");
+                new SignGui(text -> {
+                    if (resident.hasPermission("settlement.setrules")) {
+                        String rules = String.join("\n", text);
+                        if (!rules.isEmpty() && !rules.equals(resident.getSettlement().getRules())) {
+                            resident.getSettlement().setRules(rules);
+                            resident.getSettlement().save();
+                            getMessage("rules.updated").tell(resident.getSettlement().getOnlineResidents(), "state", resident.getSettlement().getStateTag());
+                        }
+                    }
+                    open();
+                }).open((Player) click.getWhoClicked());
+                return true;
+            }, getText("rules.entry", "state", resident.getSettlement().getStateTag())));
+        }
+
+        if (resident.hasPermission("settlement.discord.set")) {
+            gui.addElement(new StaticGuiElement('d', getIcon("discord"), click -> {
+                if (resident.hasPermission("settlement.discord.set")) {
+                    Settlement settlement = resident.getSettlement();
+                    new AnvilGUI.Builder()
+                            .itemLeft(getIcon("discord"))
+                            .title(getText("discord.anvil.title", "name", settlement.getName(), "discord", settlement.getDiscord()))
+                            .text(getText("discord.anvil.placeholder", "discord", settlement.getDiscord()))
+                            .onClose(player -> Utils.runLater(this::open, 1))
+                            .onComplete((player, text) -> {
+                                if (settlement.hasPermission(resident, "discord.set")) {
+                                    String link = text.trim();
+                                    String oldLink = settlement.getDiscord();
+                                    settlement.setDiscord(link);
+                                    if (text.isEmpty()) {
+                                        Message.get("command.settlement.discord.set.removed").tell(resident,
+                                                "state", settlement.getStateTag(),
+                                                "discordlink", oldLink
+                                        );
+                                    } else {
+                                        Message.get("command.settlement.discord.set.success").tell(resident,
+                                                "state", settlement.getStateTag(),
+                                                "discordlink", settlement.getDiscord()
+                                        );
+                                    }
+                                    settlement.save();
+                                    Utils.runLater(this::open, 1);
+                                } else {
+                                    getError("no-permission").tell(player);
+                                }
+                                return AnvilGUI.Response.close();
+                            });
+                }
+                return true;
+            }, getText("discord.entry", "state", resident.getSettlement().getStateTag(), "name", resident.getSettlement().getName(), "discord", resident.getSettlement().getDiscord())));
+        }
+
+        if (resident.hasPermission("settlement.joinfee.set")) {
+            gui.addElement(new StaticGuiElement('j', getIcon("joinfee"), click -> {
+                if (resident.hasPermission("settlement.joinfee.set")) {
+                    Settlement settlement = resident.getSettlement();
+                    new AnvilGUI.Builder()
+                            .itemLeft(getIcon("joinfee"))
+                            .title(getText("joinfee.anvil.title", "name", settlement.getName(), "joinfee", String.valueOf(settlement.getJoinFee())))
+                            .text(getText("joinfee.anvil.placeholder", "joinfee", String.valueOf(settlement.getJoinFee())))
+                            .onClose(player -> Utils.runLater(this::open, 1))
+                            .onComplete((player, text) -> {
+                                if (settlement.hasPermission(resident, "joinfee.set")) {
+                                    try {
+                                        if (!text.isEmpty()) {
+                                            long amount = Long.parseLong(text);
+                                            settlement.setJoinFee(amount);
+                                            Message.get("command.settlement.joinfee.set.success").tell(resident.getSettlement().getOnlineResidents(),
+                                                    "state", resident.getSettlement().getStateTag(),
+                                                    "amount", String.valueOf(resident.getSettlement().getJoinFee())
+                                            );
+                                            settlement.save();
+                                        }
+                                        Utils.runLater(this::open, 1);
+                                    } catch (NumberFormatException e) {
+                                        return AnvilGUI.Response.text(getError("not-a-number").getReplacedText("input", text));
+                                    }
+                                } else {
+                                    getError("no-permission").tell(player);
+                                }
+                                return AnvilGUI.Response.close();
+                            });
+                }
+                return true;
+            }, getText("joinfee.entry", "state", resident.getSettlement().getStateTag(), "name", resident.getSettlement().getName(), "joinfee", String.valueOf(resident.getSettlement().getJoinFee()))));
+        }
+
+        if (resident.hasPermission("settlement.setdescription")) {
+            gui.addElement(new StaticGuiElement('d', getIcon("description"), click -> {
+                if (resident.hasPermission("settlement.setdescription")) {
+                    Settlement settlement = resident.getSettlement();
+                    new AnvilGUI.Builder()
+                            .itemLeft(getIcon("description"))
+                            .title(getText("description.anvil.title", "name", settlement.getName(), "description", settlement.getDescription()))
+                            .text(getText("description.anvil.placeholder", "description", settlement.getDescription()))
+                            .onClose(player -> Utils.runLater(this::open, 1))
+                            .onComplete((player, text) -> {
+                                if (settlement.hasPermission(resident, "setdescription")) {
+                                    String description = text.trim();
+                                    settlement.setDescription(Utils.filterAllCurses(description));
+                                    if (!text.isEmpty()) {
+                                        Message.get("command.settlement.setdescription.success").tell(player,
+                                                "state", settlement.getStateTag(),
+                                                "description", settlement.getDescription()
+                                        );
+                                        settlement.save();
+                                    }
+                                    Utils.runLater(this::open, 1);
+                                } else {
+                                    getError("no-permission").tell(player);
+                                }
+                                return AnvilGUI.Response.close();
+                            });
+                }
+                return true;
+            }, getText("description.entry", "state", resident.getSettlement().getStateTag(), "name", resident.getSettlement().getName(), "description", resident.getSettlement().getDescription())));
+        }
 
         if (resident.hasPermission("settlement.setaccess")) {
-            gui.addElement(new StaticGuiElement('a', ItemUtils.toIcon(Material.IRON_DOOR), click -> {
+            gui.addElement(new StaticGuiElement('a', getIcon("access"), click -> {
                 if (resident.hasPermission("settlement.setaccess")) {
-                    new AccessGUI().open((Player) click.getEvent().getWhoClicked());
+                    new AccessGUI("settlement", resident.getSettlement()).open((Player) click.getEvent().getWhoClicked());
                 }
                 return true;
             }, getText("access",
@@ -73,103 +224,19 @@ public class SettingsGUI extends SettlementsGUI {
             )));
         }
 
-        if (resident.hasPermission("settlement.perms")) {
-            gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.DIAMOND_PICKAXE), click -> {
-                if (resident.hasPermission("settlement.perms")) {
-                    new BuildGUI(
-                            "settlement",
-                            resident.getSettlement(),
-                            () -> resident.hasSettlement() && resident.hasPermission("settlement.perms")
-                    ).open(click.getEvent().getWhoClicked());
+        if (resident.hasPermission("settlement.recruitment")) {
+            gui.addElement(new StaticGuiElement('a', getIcon("recruitment"), click -> {
+                if (resident.hasPermission("settlement.recruitment")) {
+                    new RecruitmentGUI("settlement", resident.getSettlement()).open((Player) click.getEvent().getWhoClicked());
                 }
                 return true;
-            }, getText("build",
-                    "build", resident.getSettlement().getBuildState().getTag(),
+            }, getText("recruitment",
+                    "jointype", resident.getSettlement().getJoinType().getTag(),
                     "state", resident.getSettlement().getStateTag()
             )));
         }
 
-        if (resident.hasPermission("settlement.perms")) {
-            gui.addElement(new StaticGuiElement('u', ItemUtils.toIcon(Material.LEVER), click -> {
-                if (resident.hasPermission("settlement.perms")) {
-                    Supplier<Boolean> permCheck = () -> resident.hasSettlement() && resident.hasPermission("settlement.perms");
-                    new PermsGUI(
-                            "settlement",
-                            resident.getSettlement(),
-                            permCheck,
-                            (flagAble, c) -> new BuildGUI("settlement", flagAble, permCheck).open(c.getWhoClicked())
-                    ).open(resident.getPlayer());
-                }
-                return true;
-            }, getText("perms",
-                    "state", resident.getSettlement().getStateTag()
-            )));
-        }
-
-        if (resident.hasPermission("settlement.mode")) {
-            gui.addElement(new StaticGuiElement('m', ItemUtils.toIcon(Material.REPEATER), click -> {
-                if (resident.hasPermission("settlement.mode")) {
-                    new ModeGUI().open((Player) click.getEvent().getWhoClicked());
-                }
-                return true;
-            }, getText("mode",
-                    "state", resident.getSettlement().getStateTag()
-            )));
-        }
-
-        if (resident.hasPermission("settlement.ranks")) {
-            gui.addElement(new StaticGuiElement('r', ItemUtils.toIcon(Material.RED_BANNER), click -> {
-                if (resident.hasPermission("settlement.ranks")) {
-                    new RanksGUI((Player) click.getEvent().getWhoClicked()).open();
-                }
-                return true;
-            }, getText("ranks",
-                    "state", resident.getSettlement().getStateTag()
-            )));
-        }
-
-        if (resident.hasPermission("settlement.perks")) {
-            gui.addElement(new StaticGuiElement('p', ItemUtils.toIcon(Material.LINGERING_POTION), click -> {
-                if (resident.hasPermission("settlement.perks")) {
-                    new PerksGUI(resident).open();
-                }
-                return true;
-            }, getText("perks",
-                    "state", resident.getSettlement().getStateTag()
-            )));
-        }
-
-        if (resident.hasPermission("settlement.shop")) {
-            gui.addElement(new StaticGuiElement('s', ItemUtils.toIcon(Material.POTION), click -> {
-                if (resident.hasPermission("settlement.shop")) {
-                    new ShopGUI(resident).open();
-                }
-                return true;
-            }, getText("shop",
-                    "state", resident.getSettlement().getStateTag()
-            )));
-        }
-
-        if (resident.hasPermission("settlement.title")) {
-            gui.addElement(new StaticGuiElement('t', ItemUtils.toIcon(Material.PAPER), click -> {
-                if (resident.hasPermission("settlement.title")) {
-                    new TitleGUI(resident).open();
-                }
-                return true;
-            }, getText(resident.hasPermission("settlement.titles") ? "titles-edit" : "titles",
-                    "state", resident.getSettlement().getStateTag(),
-                    "title", resident.getSettlementTitle()
-            )));
-        }
-
-        Settlement settlement = resident.getSettlement();
-        gui.addElement(new StaticGuiElement('i', ItemUtils.toIcon(settlement.getState() == SettlementState.KINGDOM ? Material.RED_BED : Material.LIME_BED),
-                Utils.wrap(getText("entry", settlement.getReplacements(SettingsGUI.this)), 48)));
-
-        gui.addElement(new StaticGuiElement('c', ItemUtils.toIcon(Material.BARRIER), click -> {
-            click.getGui().close();
-            return true;
-        }, getText("close")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), getText("back")));
     }
 
     public void open() {

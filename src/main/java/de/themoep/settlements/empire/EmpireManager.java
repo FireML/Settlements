@@ -1,6 +1,7 @@
 package de.themoep.settlements.empire;
 
 import co.aikar.timings.lib.MCTiming;
+import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
@@ -10,7 +11,6 @@ import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.LandAccess;
 import de.themoep.settlements.land.LandManager;
-import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.land.BuildState;
 import de.themoep.settlements.land.Use;
@@ -391,10 +391,9 @@ public class EmpireManager {
                 modifiedResidents.add(resident);
             }
         }
-        Collection<LandOwner> allies = empire.getAllies();
-        empire.getAlliedEmpireIds().clear();
-        empire.getAlliedSettlementIds().clear();
-        for (LandOwner ally : allies) {
+        Collection<Ally> allies = empire.getAllies();
+        empire.getAllies().clear();
+        for (Ally ally : allies) {
             ally.removeAlly(empire);
         }
         empire.setAccess(LandAccess.PUBLIC);
@@ -426,7 +425,7 @@ public class EmpireManager {
 
         empire.setCreated(System.currentTimeMillis());
         DatabaseManager.getInstance().saveEmpire(empire);
-        DatabaseManager.getInstance().save(allies);
+        DatabaseManager.getInstance().saveAllies(allies);
         DatabaseManager.getInstance().saveSettlements(modifiedSettlements);
         DatabaseManager.getInstance().saveResident(modifiedResidents);
 

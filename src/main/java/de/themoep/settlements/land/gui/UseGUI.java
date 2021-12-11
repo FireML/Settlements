@@ -1,6 +1,7 @@
 package de.themoep.settlements.land.gui;
 
 import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.GuiPageElement;
@@ -18,6 +19,7 @@ import de.themoep.settlements.land.UseGroup;
 import de.themoep.settlements.utils.Message;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.ClickType;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,16 +29,15 @@ import java.util.function.Supplier;
 public class UseGUI extends SettlementsGUI {
     private final InventoryGui gui;
 
-    public UseGUI(String type, UseGroup group, FlagAble flagAble, Supplier<Boolean> permCheck, BiConsumer<BuildStateable, GuiElement.Click> buildSetter) {
-        super((type == null || type.isEmpty() ? "" : type + ".") + "use");
+    public UseGUI(@NonNull String type, UseGroup group, FlagAble flagAble, Supplier<Boolean> permCheck, BiConsumer<BuildStateable, GuiElement.Click> buildSetter) {
+        super(type + ".use");
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), getSetup());
         gui.setCloseAction(close -> false);
         gui.setFiller(getIcon("filler"));
         gui.addElements(getConfiguredElements());
         gui.addElement(new StaticGuiElement('s', getIcon("states"), getText("states", "state", flagAble.getParent().getStateTag())));
 
-        GuiElementGroup useGroup = new GuiElementGroup('u');
-        useGroup.setAlignment(getAlignment("u"));
+        GuiElementGroup useGroup = createGroup('u');
         for (UseFlag u : group.getUseFlags()) {
             useGroup.addElement(new DynamicGuiElement('u', h -> {
                 if (permCheck.get()) {
@@ -107,12 +108,7 @@ public class UseGUI extends SettlementsGUI {
 
         gui.addElement(new GuiPageElement('p', getIcon("previous"), GuiPageElement.PageAction.PREVIOUS, getText("page.previous", "page", "%prevpage%")));
 
-        gui.addElement(new StaticGuiElement('b', getIcon("back"), click -> {
-            if (!InventoryGui.goBack(click.getWhoClicked())) {
-                click.getGui().close();
-            }
-            return true;
-        }, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
 
         gui.addElement(new GuiPageElement('n', getIcon("next"), GuiPageElement.PageAction.NEXT, getText("page.next", "page", "%nextpage%")));
     }

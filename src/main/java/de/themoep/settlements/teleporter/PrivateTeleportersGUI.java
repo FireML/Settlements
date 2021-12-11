@@ -14,6 +14,7 @@ import de.themoep.settlements.command.empire.EmpireHomeCommand;
 import de.themoep.settlements.command.settlement.SettlementHomeCommand;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.LandAccess;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.utils.IdObject;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -121,6 +123,8 @@ public class PrivateTeleportersGUI extends SettlementsGUI {
                 }
 
                 settlement.getAllies().stream()
+                        .map(Ally::getLandOwner)
+                        .filter(Objects::nonNull)
                         .filter(v -> v.getAccess().atLeast(LandAccess.ALLY))
                         .forEachOrdered(entries::add);
 

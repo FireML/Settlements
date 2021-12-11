@@ -4,7 +4,11 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.integration.AfkProvider;
+import de.themoep.settlements.land.TaxDebtAction;
+import de.themoep.settlements.rank.PermissionGroup;
+import de.themoep.settlements.rank.RankManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.SettlementsPlugin;
@@ -20,9 +24,11 @@ import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Targetable;
+import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -65,6 +71,10 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     private int bonusClaims = 0;
     private long lastLogin = 0;
     private long settlementJoin;
+    private boolean taxExempted = false;
+    private TaxDebtAction taxDebtAction = TaxDebtAction.KICK;
+    private long taxPaid = 0;
+    private long donated = 0;
 
     // Temporary, per session settings:
     private boolean resourcePack = false;
@@ -87,12 +97,24 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
      * @return              The value of the permission or false
      */
     public boolean hasPermission(String permission) {
-        if (!permission.startsWith("settlements.")) {
-            permission = "settlements.command." + permission;
+        if (permission.contains(".group.")) {
+            PermissionGroup group = RankManager.getInstance().getPermissionGroup(permission);
+            if (group != null) {
+                for (String perm : group.getPermissions()) {
+                    if (!hasPermission(perm)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
         }
+
         if (hasRankPermission(permission)) {
             Player player = getPlayer();
             if (player != null) {
+                if (!permission.startsWith("settlements.")) {
+                    permission = "settlements.command." + permission;
+                }
                 return player.hasPermission(permission);
             }
         }
@@ -100,32 +122,37 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     }
 
     public boolean hasRankPermission(String permission) {
-        if (!permission.startsWith("settlements.")) {
-            permission = "settlements.command." + permission;
+        if (permission.contains(".group.")) {
+            Optional<Boolean> r = RankManager.getInstance().applyToGroup(permission, this::hasRankPermission);
+            if (r.isPresent()) {
+                return r.get();
+            }
         }
+
+        String rankPerm = permission;
         if (permission.startsWith("settlements.command.")) {
-            String rankPerm = permission.substring("settlements.command.".length());
-            if (!hasSettlement() && !SettlementRank.getChief().getInheritedPermissionValue(rankPerm).isPresent()) {
-                return true;
-            }
-
-            Optional<Boolean> settlementValue = getSettlement().getEffectivePermissionValue(getSettlementRank(), rankPerm);
-            if (settlementValue.isPresent()) {
-                return settlementValue.get();
-            }
-
-            if (rankPerm.startsWith("empire.") && getSettlement().hasEmpire()) {
-                Optional<Boolean> empireValue = getSettlement().getEmpire().getEffectivePermissionValue(getEmpireRank(), rankPerm);
-                if (empireValue.isPresent()) {
-                    return empireValue.get();
-                }
-                if (EmpireRank.getLeader().getInheritedPermissionValue(rankPerm).isPresent()) {
-                    return false;
-                }
-            }
-            return !SettlementRank.getChief().getInheritedPermissionValue(rankPerm).isPresent();
+            rankPerm = permission.substring("settlements.command.".length());
         }
-        return true;
+
+        if (!hasSettlement() && !SettlementRank.getChief().getInheritedPermissionValue(rankPerm).isPresent()) {
+            return true;
+        }
+
+        Optional<Boolean> settlementValue = getSettlement().getEffectivePermissionValue(getSettlementRank(), rankPerm);
+        if (settlementValue.isPresent()) {
+            return settlementValue.get();
+        }
+
+        if (rankPerm.startsWith("empire.") && getSettlement().hasEmpire()) {
+            Optional<Boolean> empireValue = getSettlement().getEmpire().getEffectivePermissionValue(getEmpireRank(), rankPerm);
+            if (empireValue.isPresent()) {
+                return empireValue.get();
+            }
+            if (EmpireRank.getLeader().getInheritedPermissionValue(rankPerm).isPresent()) {
+                return false;
+            }
+        }
+        return !SettlementRank.getChief().getInheritedPermissionValue(rankPerm).isPresent();
     }
 
     public boolean hasSettlement() {
@@ -485,6 +512,42 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         }
     }
 
+    public TaxDebtAction getTaxDebtAction() {
+        return taxDebtAction;
+    }
+
+    public void setTaxDebtAction(TaxDebtAction taxDebtAction) {
+        this.taxDebtAction = taxDebtAction;
+    }
+
+    public long getTaxPaid() {
+        return taxPaid;
+    }
+
+    public void addTaxPaid(long amount) {
+        taxPaid += amount;
+    }
+
+    public long getDonated() {
+        return donated;
+    }
+
+    public void addDonated(long amount) {
+        donated += amount;
+    }
+
+    public boolean isTaxExempted() {
+        return taxExempted;
+    }
+
+    public void setTaxExempted(boolean taxExempted) {
+        this.taxExempted = taxExempted;
+    }
+
+    public void save() {
+        DatabaseManager.getInstance().saveResident(this);
+    }
+
     public enum Placeholder {
                 name(r -> r.getName()),
                 empire(r -> r.hasEmpire() ? r.getSettlement().getEmpire().getName() : "none"),
@@ -497,6 +560,22 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
                 bonus(r -> Utils.CURRENCY_FORMAT.format(r.getBonusClaims())),
                 joindate(r -> Utils.DATE_FORMAT.format(new Date(Bukkit.getOfflinePlayer(r.getUUID()).getFirstPlayed()))),
                 lastlogin(r -> Utils.DATE_FORMAT.format(new Date(r.getLastLogin()))),
+                lastloginduration(r -> {
+                     Player player = r.getPlayer();
+                     if (player != null && player.isOnline()) {
+                         return Message.get("names.online").getText();
+                     }
+                     return UtilTime.format(System.currentTimeMillis() - r.getLastLogin(), false) + " " + Message.get("names.ago").getText();
+                }),
+                plots(r -> String.valueOf(LandManager.getInstance().getOwnedPlotCount(r.getUUID()))),
+                primarygroup(r -> {
+                    Permission perms = SettlementsPlugin.getInstance().getPermissions();
+                    Player player = r.getPlayer();
+                    if (player != null) {
+                        return perms.getPrimaryGroup(player);
+                    }
+                    return perms.getPrimaryGroup((String) null, r.getName());
+                }),
         ;
 
         private final Function<Resident, String> valueProvider;
@@ -511,11 +590,11 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     }
 
     @Override
-    public Map<String, Object> serialize() {
+    public LinkedHashMap<String, Object> serialize() {
         if (hasSettlement() && getSettlement().getId().isNull()) {
             throw new IllegalArgumentException("Resident had settlement but settlement has no ID?");
         }
-        Map<String, Object> map = new LinkedHashMap<>();
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("id", getId().value());
         map.put("uuid", getUUID().toString());
         map.put("name", getName());
@@ -526,6 +605,10 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         map.put("empireTitle", empireTitle);
         map.put("empirerank", getEmpireRank().name());
         map.put("lastLogin", getLastLogin());
+        map.put("taxExempted", isTaxExempted());
+        map.put("taxDebtAction", getTaxDebtAction().name());
+        map.put("taxPaid", getTaxPaid());
+        map.put("donated", getDonated());
         map.put("channels", getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
         map.put("activeChannel", getActiveChannel().name());
         map.put("channelColors", channelColors.column(ChatColorType.MESSAGE).entrySet().stream()
@@ -573,6 +656,16 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         resident.setEmpireTitle((String) map.get("empireTitle"));
         resident.setSettlementJoin(Utils.getLong(map.get("settlementJoin")));
         resident.setLastLogin(Utils.getLong(map.get("lastLogin")));
+        if (map.containsKey("taxExempted")) {
+            resident.setTaxExempted(Utils.getBoolean(map.get("taxExempted")));
+        }
+        try {
+            resident.setTaxDebtAction(TaxDebtAction.valueOf((String) map.get("taxDebtAction")));
+        } catch (IllegalArgumentException e) {
+            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid tax debt action for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("taxDebtAction"));
+        }
+        resident.taxPaid = Utils.getLong(map.get("taxPaid"));
+        resident.donated = Utils.getLong(map.get("donated"));
         resident.getChannels().clear();
         ((Collection<String>) map.get("channels")).stream()
                 .map(s -> Utils.parseEnum(ChatChannel.class, s.toUpperCase()))

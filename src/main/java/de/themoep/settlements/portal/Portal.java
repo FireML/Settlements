@@ -1,6 +1,7 @@
 package de.themoep.settlements.portal;
 
 import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.DatabaseSerializable;
 import de.themoep.settlements.utils.WorldUtils;
 import de.themoep.settlements.utils.IdObject;
@@ -44,6 +45,11 @@ public class Portal implements DatabaseSerializable {
         return getLocation().getKey();
     }
 
+    @Override
+    public void save() {
+        DatabaseManager.getInstance().savePortal(this);
+    }
+
     public SimpleBlockLocation getLocation() {
         return location;
     }
@@ -68,8 +74,8 @@ public class Portal implements DatabaseSerializable {
     }
 
     @Override
-    public @NotNull Map<String, Object> serialize() {
-        Map<String, Object> map = new LinkedHashMap<>();
+    public @NotNull LinkedHashMap<String, Object> serialize() {
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("world", getLocation().getWorld());
         map.put("x", getLocation().getX());
         map.put("y", getLocation().getY());
