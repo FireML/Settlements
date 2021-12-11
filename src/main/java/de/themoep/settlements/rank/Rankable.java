@@ -4,14 +4,14 @@ package de.themoep.settlements.rank;
  * Classes (most often enums) that are able to be ranked.
  * When used with enums the methods correspond with the line placement of the enum constants.
  */
-public interface Rankable<T extends Rankable> {
+public interface Rankable {
 
     /**
      * Check if this rankable is at equal or higher than another one
      * @param rankable What to compare this rankable to
      * @return Whether or not the ordinal of this one is equal or below the other one
      */
-    default boolean atLeast(T rankable) {
+    default <R extends Rankable> boolean atLeast(R rankable) {
         return rankable == null || rankable.ordinal() >= this.ordinal();
     }
 
@@ -20,7 +20,7 @@ public interface Rankable<T extends Rankable> {
      * @param rankable What to compare this rankable to
      * @return Whether or not the ordinal of this one is below the other one
      */
-    default boolean above(T rankable) {
+    default <R extends Rankable> boolean above(R rankable) {
         return rankable == null || rankable.ordinal() > this.ordinal();
     }
 
@@ -29,7 +29,7 @@ public interface Rankable<T extends Rankable> {
      * @param rankable What to compare this rankable to
      * @return Whether or not the ordinal of this one is above the other one
      */
-    default boolean below(T rankable) {
+    default <R extends Rankable> boolean below(R rankable) {
         return rankable != null && rankable.ordinal() < this.ordinal();
     }
 
@@ -39,7 +39,7 @@ public interface Rankable<T extends Rankable> {
      */
     int ordinal();
 
-    default int compareTo(Rankable r) {
+    default <R extends Rankable> int compareTo(R r) {
         if (r.below(this)) {
             return 1;
         } else if (r.above(this)) {

@@ -6,6 +6,8 @@ import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.empire.EmpireHomeCommand;
 import de.themoep.settlements.command.empire.EmpireSetHomeCommand;
 import de.themoep.settlements.empire.Empire;
+import de.themoep.settlements.land.gui.RankPermsGUI;
+import de.themoep.settlements.land.gui.TitleGUI;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.SettlementsGUI;
@@ -119,7 +121,7 @@ public class SettingsGUI extends SettlementsGUI {
         if (resident.hasPermission("empire.ranks")) {
             gui.addElement(new StaticGuiElement('r', ItemUtils.toIcon(Material.RED_BANNER), click -> {
                 if (resident.hasPermission("empire.ranks")) {
-                    new RanksGUI((Player) click.getEvent().getWhoClicked()).open();
+                    new RankPermsGUI<>("empire", resident, resident.getSettlement().getEmpire()).open();
                 }
                 return true;
             }, getText("perms",
@@ -152,7 +154,7 @@ public class SettingsGUI extends SettlementsGUI {
         if (resident.hasPermission("empire.title")) {
             gui.addElement(new StaticGuiElement('t', ItemUtils.toIcon(Material.PAPER), click -> {
                 if (resident.hasPermission("empire.title")) {
-                    new TitleGUI(resident).open();
+                    new TitleGUI<>("empire", resident, resident, resident.getSettlement().getEmpire()).open();
                 }
                 return true;
             }, getText(resident.hasPermission("empire.titles") ? "titles-edit" : "titles",

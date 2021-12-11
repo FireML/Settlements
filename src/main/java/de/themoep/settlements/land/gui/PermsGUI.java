@@ -1,6 +1,7 @@
 package de.themoep.settlements.land.gui;
 
 import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.InventoryGui;
@@ -28,7 +29,7 @@ public class PermsGUI extends SettlementsGUI {
     private final InventoryGui gui;
 
     public PermsGUI(String type, FlagAble flagAble, Supplier<Boolean> permCheck, BiConsumer<BuildStateable, GuiElement.Click> buildSetter) {
-        super((type == null || type.isEmpty() ? "" : type + ".") + "perms");
+        super(type + ".perms");
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), getSetup());
         gui.setCloseAction(close -> false);
         gui.setFiller(getIcon("filler"));
@@ -45,8 +46,7 @@ public class PermsGUI extends SettlementsGUI {
                 "state", flagAble.getStateTag()
         )));
 
-        GuiElementGroup flagGroup = new GuiElementGroup('u');
-        flagGroup.setAlignment(getAlignment("u"));
+        GuiElementGroup flagGroup = createGroup('u');
         for (UseGroup group : UseFlagManager.getInstance().getGroups()) {
             List<String> flagsList = new ArrayList<>();
             for (UseFlag flag : group.getUseFlags()) {
@@ -83,12 +83,7 @@ public class PermsGUI extends SettlementsGUI {
         }
         gui.addElement(flagGroup);
 
-        gui.addElement(new StaticGuiElement('b', getIcon("back"), click -> {
-            if (!InventoryGui.goBack(click.getWhoClicked())) {
-                click.getGui().close();
-            }
-            return true;
-        }, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
 
     }
 

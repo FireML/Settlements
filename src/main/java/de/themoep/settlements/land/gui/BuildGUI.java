@@ -12,6 +12,7 @@ import de.themoep.settlements.land.BuildStateable;
 import de.themoep.settlements.utils.Message;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +22,8 @@ public class BuildGUI extends SettlementsGUI {
     private final InventoryGui gui;
 
 
-    public BuildGUI(String type, BuildStateable stateAble, Supplier<Boolean> permCheck) {
-        super((type == null || type.isEmpty() ? "" : type + ".") + "build");
+    public BuildGUI(@NonNull String type, BuildStateable stateAble, Supplier<Boolean> permCheck) {
+        super(type + ".build");
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), getSetup());
         gui.setCloseAction(close -> false);
         gui.setFiller(getIcon("filler"));

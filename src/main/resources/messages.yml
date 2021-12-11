@@ -168,6 +168,11 @@ upkeep:
     abandoned: "&a&l(!) &7Your empire is in the &cabandoned&7 state for the next 24 hours because it was &cunable&7 to pay its upkeep!"
     charged: "&a&l(!) &7Your empire has been charged &6{charged}&7 for upkeep!"
     cant-pay: "&a&l(!) &cYour empire is &6unable&c to pay the next upkeep it will cost &6{amount}&c! Deposit money to avoid deletion!"
+eviction:
+  letter:
+    sender: "{state} {name} {chieftitle} {chiefname}"
+    text: |-
+      You will be kicked from the {state} in 7 days!
 tax:
   removed: "&eRemoved &c{amount}&e of tax from your account!"
   debt-action:
@@ -400,6 +405,8 @@ chat:
   messages-disabled: "&cYou cannot message &6{name}&c because you have private messages disabled! Use [&e/msgtoggle](/msgtoggle on)&c to enable it."
   target-messages-disabled: "&cYou cannot message &6{name}&c because he has private messages disabled!"
 names:
+  online: "&aOnline"
+  ago: "ago"
   mission:
     type:
       turn-in: "Turn in"
@@ -834,7 +841,7 @@ gui:
     rank-perm-groups:
       title: "&2&l/e perms &e&l{rank}"
     rank-perms:
-      title: "&2&l/e perms &e&l{rank} {group}"
+      title: "&2&l/e ranks"
     shop:
       title: "&2&l/e shop"
     settings:
@@ -984,11 +991,11 @@ gui:
   reset-perms:
     title: "&2&l/s ranks"
     reset:
-      title: "&cReset all permissions?"
+      title: "&cReset all {rank} perms?"
       confirm: |-
         &a&lConfirm
         &7Click to reset the permissions
-        &7of all ranks in {state} {name}
+        &7of {rank} in {state} {name}
         &7to their default values!
       cancel: |-
         &c&lCancel
@@ -998,38 +1005,32 @@ gui:
     entry:
       title: "&3{rank}"
       edit: "&7Click to edit permissions."
-  rank-perm-groups:
-    title: "&2&l/s perms &e&l{rank}"
-    back: "&c&lBack to rank selection"
-    groups:
-      general: |-
-        &3General
-        General permissions for
-        residents of the {state}
-      officer: |-
-        &3Officer
-        {state} management permissions
-      settings: |-
-        &3Settings
-        Permissions for editing
-        {state} settings
-    reset:
-      title: "&cReset {rank} permissions?"
-      confirm: |-
-        &a&lConfirm
-        &7Click to reset the permissions
-        &7of rank {rank} to their default
-        &7values!
-      cancel: |-
-        &c&lCancel
-        &7Click to cancel the reseting
-        &7the perms of rank {rank}.
-
   rank-perms:
-    title: "&2&l/s perms &e&l{rank}"
-    back: "&c&lBack to group selection"
+    title: "&2&l/s ranks"
     previous: "&7Previous page"
     next: "&7Next page"
+    titles: |-
+      &eManage Titles
+      &fAdd/Edit titles for &e{rank}
+      
+      &bClick for more options
+    reset: |-
+      &eReset {rank} to default perms
+      
+      &bClick to reset
+    reset-perms:
+      title: "&cReally reset &e{rank}?"
+      confirm: "&cReset &e{rank}"
+      cancel: "&aDon't reset &e{rank}"
+    rank-entry:
+      selected: |-
+        &e{name}
+        
+        &aSelected!
+      selectable: |-
+        &e{name}
+        
+        &bClick to hilight perms for this rank
     entry:
       title: |-
         {color}{perm}
@@ -1043,6 +1044,110 @@ gui:
         &7Click to grant to &f{rank}
       revoke: |-
         &7Click to revoke from &f{rank}
+  setrank:
+    rank-select:
+      title: "&2&lSelect the {state} rank"
+      entry: |-
+        &e{rank}
+      
+        &bClick to select
+      entry-not-selectable: |-
+        &e{rank}
+      
+        &cNot selectable!
+        &cRank insufficient
+      entry-chief: |-
+        &eTransfer Ownership
+        &fMake sure the player is abiding all
+        &fthe server rules to avoid any issues!
+      
+        &b2 Click to transfer
+      entry-chief-not-selectable: |-
+        &e{rank}
+      
+        &cNot selectable!
+        &cRank insufficient
+  reslist:
+    title:  "&2&l/s res"
+    sort: |-
+      &fSorted by {state}
+      &bClick to sort by {nextstate}
+    back: "&cBack"
+    entry: |-
+      &e&l{name}
+      &fTown Info:
+      &f➤ Rank {rank}
+      &f➤ Plots Owned {plots}
+      
+      Player Info
+      &f➤ Rank {primarygroup}
+      &f➤ Balance &6{balance}
+      &f➤ Last Login &c{lastloginduration}
+      
+      &bClick for more options
+  resident:
+    title: "&2&l/s res {name}"
+    info: |-
+      &e&l{name}
+      &fTown Info:
+      &f➤ Rank {rank}
+      &f➤ Plots Owned {plots}
+  
+      Player Info
+      &f➤ Rank {primarygroup}
+      &f➤ Balance &6{balance}
+      &f➤ Last Login &c{lastloginduration}
+    tax-evasion: |-
+      &eTax Evasion action
+      &fWhat action should be taken if
+      &fthe resident can't pay taxes
+      
+      &fCurrent: &c{action}
+      &f- Ignore this if they're exempted
+      
+      &bClick to change
+    taxes:
+      entry: |-
+        &eTaxes
+        &fTotal Donation: &e${donated}
+        &fTotal Tax: &e${taxpaid}
+        &fTax Exemption: &a{exempted}
+        
+        &bClick to change
+      exempted: Exempted
+      paying: Paying
+    settitle: |-
+      &eChange title
+      &fChange title of the resident! It does not
+      &fgive any new powers and is purely cosmetic!
+      
+      &fCurrent Title: &e{title}
+      
+      &bClick to change
+    rank: |-
+      &eChange rank
+      &fChange the rank of the resident!
+      &fThis changes their settlement permission!
+      
+      &fCurrent Rank: &e{rank}
+      
+      &bClick to change
+    eviction: |-
+      &cSend Eviction Letter
+      &fMail the player for his
+      &f7 days kick notice
+      
+      &bClick to send
+    kick:
+      entry: |-
+        &cKick
+        &fSend an Eviction Letter first if the
+        &fplayer has not violated any rules!
+        
+        &bClick to kick
+      title: "&cReally kick &e{player}?"
+      confirm: "&cKick &e{player}"
+      cancel: "&aDon't kick &e{player}"
   rewards:
     title: "&2&l/s rewards"
     entry: |-
@@ -1131,7 +1236,7 @@ gui:
         &fCurrent Settings: &e{build}
         &aLeft-Click&f to change settings
   
-        &a▶ /plot build
+        &a➤ /plot build
       use: |-
         &a&lUse
         &fSet different usage rights
@@ -1140,7 +1245,7 @@ gui:
         &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━
         &aLeft-Click&f to change settings
   
-        &a▶ /plot use
+        &a➤ /plot use
       mode: |-
         &a&lMode
         &fToggle settings including
@@ -1150,7 +1255,7 @@ gui:
         &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━
         &aLeft-Click&f to change settings
   
-        &a▶ /plot mode
+        &a➤ /plot mode
       name:
         button: |-
           &a&lName
@@ -1160,7 +1265,7 @@ gui:
           &fCurrent Name: &e{name}
           &aLeft-Click&f to change name
           
-          &a▶ /plot name <name>
+          &a➤ /plot name <name>
         anvil:
           title: "Set the name"
           placeholder: "{name}"
@@ -1173,7 +1278,7 @@ gui:
           &fCurrent Description: &e{description}
           &aLeft-Click&f to change name
           
-          &a▶ /plot description <description>
+          &a➤ /plot description <description>
         anvil:
           title: "Set the description"
           placeholder: "{description}"
@@ -1185,7 +1290,7 @@ gui:
           &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
           &aLeft-Click&f to set price
 
-          &a▶ /plot sale <price>
+          &a➤ /plot sale <price>
         button: |-
           &a&lSell plot
           &fSet the price for the plot
@@ -1195,7 +1300,7 @@ gui:
           &aClick to set the price for the plot
           &aShift click to make the plot not buyable
   
-          &a▶ /plot sale <price>|false
+          &a➤ /plot sale <price>|false
         anvil:
           title: "Set price"
           placeholder: "{price}"
@@ -1208,7 +1313,7 @@ gui:
         &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━
         &aLeft-Click&f to change settings
   
-        &a▶ /plot members
+        &a➤ /plot members
       entry: |-
         &a⊱&m━━━━&r&6Plot Info&a&m━━━━&a⊰
         &c&l{state}: &7{landowner}
@@ -1271,11 +1376,6 @@ gui:
       next: "&7Go to next page {page}"
       previous: "&7Go to previous page {page}"
     back: "&c&lBack To Teleporters"
-  rank-select:
-    title: "&2&lSelect the {state} rank"
-    entry: |-
-      &e{rank}
-      &bClick to select
   settings:
     title: "&2&lSettlement Settings"
     home: |-
@@ -1418,8 +1518,10 @@ gui:
         &7Title of rank {rank}
       select: "&bClick to select"
       current: "&7Your current title!"
-    edit: "&aEdit titles"
-    back: "&c&lBack To Settings"
+    edit: |-
+      &eManage Titles
+      Add/edit titles for {rank}
+    back: "&c&lBack"
   titles:
     title: "&2&l/s titles gui"
     entry:
@@ -1435,6 +1537,26 @@ gui:
         title: "New title for {rank}:"
         placeholder: "Input Title"
     back: "&c&lBack To Title"
+    rank-select:
+      title: "&2&lSelect the {state} rank"
+      entry: |-
+        &e{rank}
+    
+        &bClick to select
+      entry-not-selectable: |-
+        &e{rank}
+    
+        &cNot selectable!
+        &cRank insufficient
+      entry-chief: |-
+        &e{rank}
+    
+        &bClick to select
+      entry-chief-not-selectable: |-
+        &e{rank}
+    
+        &cNot selectable!
+        &cRank insufficient
   perks:
     title: "&2&l/s perks"
     entry: |-
@@ -2289,7 +2411,7 @@ command:
     title:
       description: "Set your title"
       success:
-        default: "&e{name}&7 set their title to &e{title}&7!"
+        default: "&7Title of &e{name}&7 set to &e{title}&7!"
         kingdom:
           chief: "&e{name}&7 crowned themselves &e{title}&7!"
       invalid-title: "&c{title} is not a title available to you!"
@@ -2838,7 +2960,7 @@ command:
     title:
       description: "Set your title"
       success:
-        default: "&e{name}&7 set their title to &e{title}&7!"
+        default: "&7Title of &e{name}&7 set to &e{title}&7!"
       invalid-title: "&c{title} is not a title available to you!"
       usage:
         entry: "&e• [&e{usage}](suggest_command={{usage})"

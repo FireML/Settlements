@@ -1,5 +1,66 @@
 guis:
+  confirmation:
+    reset-perms:
+      setup:
+      - "   c  b   "
+      selements:
+        confirm: green_wool
+        cancel: barrier
+    kick:
+      setup:
+      - "   c  b   "
+      selements:
+        confirm: red_dye
+        cancel: barrier
+  resident:
+    title:
+      setup:
+      - "ooooooooo",
+      - "         ",
+      - " ttttttt ",
+      - " ttttttt ",
+      - "    a    ",
+      - " ooobooo "
+      alignments:
+        t: center
+      elements:
+        o: lime_stained_glass_pane
+        title: paper
+        add: writable_book
+        back: barrier
   settlement:
+    reslist:
+      setup:
+      - "ooooooooo",
+      - "rrrrrrrrr",
+      - "rrrrrrrrr",
+      - "rrrrrrrrr",
+      - "rrrrrrrrr",
+      - "ppppppsb "
+      elements:
+        o: lime_stained_glass_pane
+        page: paper
+        sort: hopper
+        back: barrier
+    resident:
+      setup:
+      - "ooooooooo",
+      - "    pa   ",
+      - "         ",
+      - "  extr lk",
+      - "         ",
+      - " ooobooo "
+      elements:
+        o: lime_stained_glass_pane
+        a: book # TODO What is this?
+        evasion: paper
+        taxes: gold_ingot
+        settitle: sign
+        rank: diamond_helmet
+        eviction: paper
+        kick: red_dye
+        back: barrier
+      
     perms:
       setup:
       - "ooooooooo"
@@ -48,6 +109,79 @@ guis:
         states: book
         previous: arrow
         next: arrow
+        back: barrier
+    rank-perms:
+      setup:
+      - "ppppppppp",
+      - "ppppppppp",
+      - "ppppppppp",
+      - "ppppppppp",
+      - "ppppppppp",
+      - "rrrrr  to"
+      elements:
+        set: lime_wool
+        inherited: green_wool
+        not-set: light_gray_wool
+        titles: writable_book
+        reset: orange_wool
+    setrank:
+      rank-select:
+        setup:
+        - "ooooooooo",
+        - "    c    ",
+        - "         ",
+        - " rrrrrrr ",
+        - "         ",
+        - " ooobooo "
+        alignments:
+          r: center
+        elements:
+          o: lime_stained_glass_pane
+          title: paper
+          add: writable_book
+    titles:
+      setup:
+      - "ooooooooo",
+      - "    a    ",
+      - "         ",
+      - " ttttttt ",
+      - " ttttttt ",
+      - " ooobooo "
+      alignments:
+        t: center
+      elements:
+        o: lime_stained_glass_pane
+        title: paper
+        add: writable_book
+        back: barrier
+      rank-select:
+        setup:
+        - "ooooooooo",
+        - "         ",
+        - "         ",
+        - " rrrrrrc ",
+        - "         ",
+        - " ooobooo "
+        alignments:
+          r: center
+        elements:
+          o: lime_stained_glass_pane
+          title: paper
+          add: writable_book
+    title:
+      setup:
+      - "ooooooooo",
+      - "         ",
+      - " ttttttt ",
+      - " ttttttt ",
+      - "    a    ",
+      - " ooobooo "
+      alignments:
+        t: center
+      elements:
+        o: lime_stained_glass_pane
+        title: paper
+        add: writable_book
         back: barrier
   empire:
     perms:
@@ -149,3 +283,61 @@ guis:
         previous: arrow
         next: arrow
         back: barrier
+    rank-perms:
+      setup:
+      - "ppppppppp",
+      - "ppppppppp",
+      - "ppppppppp",
+      - "ppppppppp",
+      - "ppppppppp",
+      - "rrrrr  to"
+      elements:
+        set: lime_wool
+        inherited: green_wool
+        not-set: light_gray_wool
+        titles: writable_book
+        reset: orange_wool
+    titles:
+      setup:
+      - "ooooooooo",
+      - "    a    ",
+      - "         ",
+      - " ttttttt ",
+      - " ttttttt ",
+      - " ooobooo "
+      alignments:
+        t: center
+      elements:
+        o: lime_stained_glass_pane
+        title: paper
+        add: writable_book
+        back: barrier
+    title:
+      setup:
+      - "ooooooooo",
+      - "         ",
+      - " ttttttt ",
+      - " ttttttt ",
+      - "    a    ",
+      - " ooobooo "
+      alignments:
+        t: center
+      elements:
+        o: lime_stained_glass_pane
+        title: paper
+        add: writable_book
+        back: barrier
+    rank-select:
+      setup:
+      - "ooooooooo",
+      - "         ",
+      - " rrrrrrr ",
+      - " rrrrrrr ",
+      - "         ",
+      - " ooobooo "
+      alignments:
+        r: center
+      elements:
+        o: lime_stained_glass_pane
+        title: paper
+        add: writable_book

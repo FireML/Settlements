@@ -15,4 +15,6 @@ public interface DatabaseSerializable extends ConfigurationSerializable, ConfigK
     }
 
     String getDbDescription();
+
+    void save();
 }

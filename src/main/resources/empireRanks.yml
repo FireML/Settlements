@@ -1,143 +1,156 @@
-# Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:empireranks.yml
+# Explanation: https://wiki.phoenix616.dev/plugin:empires:config:empireranks.yml
 
-# Permissions that a user can toggle
 perm-groups:
-  general:
-    icon: GRASS_BLOCK
+  'manage.member':
     permissions:
-    - empire.allies
-    - empire.banished
-    - empire.bank.history
-    - empire.deposit.history
-    - empire.perms.show
-    - empire.upgrade
-  settings:
-    icon: REDSTONE_BLOCK
+    - empire.member # TODO: Management GUI
+    - empire.kicknotice # TODO
+    - empire.setrank
+    - empire.settitle
+    - empire.settaxevasion # TODO
+  'manage.allies':
     permissions:
-    - empire.build
-    - empire.mode
-    - empire.perks
-    - empire.perks.toggle
+    - empire.allyclaim
+    - empire.manageally # TODO
+  'admin.allies':
+    permissions:
+    - empire.ally
+    - empire.unally
+  'manage.ranks':
+    permissions:
+    - empire.ranks
+    - empire.ranks.perms.set
+    - empire.ranks.perms.reset
+  'manage.settings':
+    permissions:
+    - empire.joinfee.set
     - empire.setaccess
+    - empire.setdescription
+    - empire.recruitement # TODO (NPC)
+    - empire.build
     - empire.settings
     - empire.perms
-  officer:
-    icon: DIAMOND_SWORD
+    - empire.mode
+    - empire.perks.toggle
+  'manage.notes':
     permissions:
-    - empire.officer
-    - empire.ally
-    - empire.banish
-    - empire.bank.withdraw
-    - empire.chestshop.admin
-    - empire.disband
-    - empire.discord.set
-    - empire.invite
-    - empire.joinfee.set
-    - empire.kick
-    - empire.lock.admin
-    - empire.mail
-    - empire.perms
-    - empire.perms.set
-    - empire.perms.unset
-    - empire.perms.reset
-    - empire.plot.admin
-    - empire.regen
-    - empire.rename
-    - empire.setdescription
     - empire.sethome
-    - empire.setrank
-    - empire.setsymbol
-    - empire.shop
+    - empire.discord.set
+    - empire.rules.set # TODO
+  'manage.bank':
+    permissions:
+    - empire.bank.withdraw
+    - empire.tax.set
+    - empire.auctiontax.set # TODO
+  'use.bank':
+    permissions:
+    - empire.bank # TODO: GUI
+    - empire.bank.storage # TODO: Add
+    - empire.bank.history
+  'manage.shop':
+    permissions:
     - empire.shop.unlock
     - empire.shop.repeat
-    - empire.tax.set
-    - empire.tax.action
-    - empire.tax.exempt
-    - empire.transfer
-    - empire.unally
-    - empire.unbanish
 
-# Ranks for people in an empire. Top ones inherit from the ones below them
+# Permissions that a user can toggle
+toggleable-permissions:
+- empire.memberlist
+- empire.group.manage.member
+- empire.kick
+- empire.titles
+- empire.group.use.bank
+- empire.bank.deposit
+- empire.group.manage.bank
+- empire.allies
+- empire.group.manage.ally
+- empire.group.admin.allies
+- empire.banished
+- empire.banish
+- empire.unbanish
+- empire.group.manage.ranks
+- empire.mail
+- empire.group.manage.notes
+- empire.group.manage.settings
+- empire.history
+- empire.rename
+- empire.disband
+- empire.rewards
+- empire.transfer
+- empire.claim
+- empire.unclaim
+- empire.plot.admin
+- empire.portal.admin
+- empire.group.manage.outpost
+- empire.outpost.unclaim
+- empire.invite
+- empire.group.manage.shop
+- empire.lock.admin
+- empire.chestshop.admin
+- empire.officer
+
+# Ranks for people in an empire.
 ranks:
   leader:
-    icon: diamond_sword
+    icon: netherite_chestplate
     inherits: member
     permissions:
-    - empire.ally
+    - empire.group.manage.member
+    - empire.group.manage.allies
+    - empire.group.admin.allies
+    - empire.group.manage.ranks
+    - empire.group.manage.notes
+    - empire.group.manage.settings
+    - empire.group.manage.bank
     - empire.banish
     - empire.banished
-    - empire.build
     - empire.chestshop.admin
     - empire.help.leader
     - empire.disband
-    - empire.discord.set
-    - empire.joinfee.set
-    - empire.bank.withdraw
-    - empire.perks.toggle
-    - empire.perms.set
-    - empire.perms.unset
     - empire.regen
     - empire.rename
-    - empire.setaccess
-    - empire.sethome
-    - empire.setrank
     - empire.setsymbol
-    - empire.shop.unlock
-    - empire.shop.repeat
-    - empire.tax.set
     - empire.tax.action
     - empire.tax.exempt
     - empire.transfer
-    - empire.unally
     - empire.unbanish
-    - empire.perms
     - empire.help.senator
     - empire.invite
     - empire.kick
     - empire.lock.admin
     - empire.mail
-    - empire.mode
     - empire.officer
-    - empire.perms
-    - empire.perms.set
-    - empire.perms.unset
-    - empire.perms.reset
     - empire.plot.admin
-    - empire.setdescription
-    - empire.settings
+    # member permissions
     - empire.allies
     - empire.joinfee
     - empire.memberlist
     - empire.bank
     - empire.bank.balance
     - empire.bank.deposit
-    - empire.bank.history
     - empire.help.member
     - empire.perks
     - empire.shop
     - empire.tax
     - empire.upkeep
   assistant:
-    icon: golden_sword
+    icon: diamond_sword
     inherits: member
     permissions:
     - empire.rename
     - empire.lock.admin
     - empire.help.assistant
-    - empire.ally
+    - empire.group.manage.allies
+    - empire.group.admin.allies
     - empire.allies
     - empire.banished
     - empire.claim
-    - empire.mode
     - empire.perks
-    - empire.perks.toggle
-    - empire.perms
-    - empire.perms.show
+    - empire.group.manage.ranks
+    - empire.group.manage.notes
+    - empire.group.manage.settings
+    - empire.group.manage.bank
     - empire.plot.admin
-    - empire.setdescription
-    - empire.setrank
-    - empire.settings
-    - empire.unally
+    - empire.group.manage.member
     - empire.invite
     - empire.kick
     - empire.help.member
@@ -145,39 +158,33 @@ ranks:
     - empire.officer
     - empire.help.recruiter
   senator:
-    icon: iron_sword
+    icon: golden_sword
     inherits: member
     permissions:
     - empire.help.senator
     - empire.invite
     - empire.kick
-    - empire.mode
     - empire.officer
-    - empire.perms
-    - empire.perms.show
-    - empire.setdescription
-    - empire.settings
-    - empire.ally
+    - empire.group.manage.allies
+    - empire.group.admin.allies
     - empire.help.recruiter
     - empire.help.member
     - empire.plot.admin
   recruiter:
-    icon: stone_sword
+    icon: iron_sword
     inherits: member
     permissions:
     - empire.invite
     - empire.kick
     - empire.help.recruiter
   member:
-    icon: stone_pickaxe
+    icon: stone_sword
     permissions:
     - empire.allies
     - empire.joinfee
     - empire.memberlist
-    - empire.bank
-    - empire.bank.balance
+    - empire.group.use.bank
     - empire.bank.deposit
-    - empire.bank.history
     - empire.deposit
     - empire.deposit.history
     - empire.help.member
