@@ -1,6 +1,7 @@
 package de.themoep.settlements.command.settlement;
 
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.JoinType;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.events.SettlementJoinEvent;
@@ -10,7 +11,6 @@ import de.themoep.settlements.command.ResidentSubCommand;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.InviteCache;
-import de.themoep.settlements.land.LandAccess;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.Utils;
 
@@ -29,7 +29,7 @@ public class SettlementJoinCommand extends ResidentSubCommand {
             getError("settlement-doesnt-exist").tell(resident, "name", args[0]);
         } else if (joinSettlement.getId().isNull()) {
             getError("missing-settlement-id").tell(resident, "name", joinSettlement.getName());
-        } else if (joinSettlement.getAccess().below(LandAccess.OPEN) && !Utils.playerHasInvite(resident.getUUID(), joinSettlement)) {
+        } else if (joinSettlement.getJoinType() != JoinType.ANYONE && !Utils.playerHasInvite(resident.getUUID(), joinSettlement)) {
             getMessage("no-invite").tell(resident, "name", joinSettlement.getName(), "state", joinSettlement.getStateTag());
         } else if (joinSettlement.isFull()) {
             getMessage("is-full").tell(resident, "state", joinSettlement.getState().getTag(), "name", joinSettlement.getName());

@@ -64,9 +64,11 @@ public class SettlementCommand extends SubCommand {
         }
         registerCommand(new SettlementRanksCommand(this));
         registerCommand(new SettlementRenameCommand(this));
+        registerCommand(new SettlementResCommand(this));
         registerCommand(new SettlementResListCommand(this));
         registerCommand(new SettlementRulesCommand(this));
         registerCommand(new SettlementSetAccessCommand(this));
+        registerCommand(new SettlementSetRecruitmentCommand(this));
         registerCommand(new SettlementSetHomeCommand(this));
         registerCommand(new SettlementJoinFeeCommand(this));
         registerCommand(new SettlementSetRankCommand(this));

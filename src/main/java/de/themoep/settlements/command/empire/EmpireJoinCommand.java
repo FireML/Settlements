@@ -8,7 +8,7 @@ import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.InviteCache;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
-import de.themoep.settlements.land.LandAccess;
+import de.themoep.settlements.settlement.JoinType;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
@@ -28,7 +28,7 @@ public class EmpireJoinCommand extends SettlementSubCommand {
             resident.tell(getError("empire-doesnt-exist"), "name", args[0]);
         } else if (joinEmpire.getId().isNull()) {
             getError("missing-empire-id").tell(resident, "name", joinEmpire.getName());
-        } else if (joinEmpire.getAccess().below(LandAccess.OPEN) && !Utils.settlementHasInvite(resident.getSettlement(), joinEmpire)) {
+        } else if (joinEmpire.getJoinType() != JoinType.ANYONE && !Utils.settlementHasInvite(resident.getSettlement(), joinEmpire)) {
             resident.tell(getMessage("no-invite"),
                     "name", joinEmpire.getName(),
                     "state", resident.getSettlement().getState().getTag()

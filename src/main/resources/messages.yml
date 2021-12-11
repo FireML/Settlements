@@ -168,6 +168,11 @@ upkeep:
     abandoned: "&a&l(!) &7Your empire is in the &cabandoned&7 state for the next 24 hours because it was &cunable&7 to pay its upkeep!"
     charged: "&a&l(!) &7Your empire has been charged &6{charged}&7 for upkeep!"
     cant-pay: "&a&l(!) &cYour empire is &6unable&c to pay the next upkeep it will cost &6{amount}&c! Deposit money to avoid deletion!"
+eviction:
+  letter:
+    sender: "{state} {name} {chieftitle} {chiefname}"
+    text: |-
+      You will be kicked from the {state} in 7 days!
 tax:
   removed: "&eRemoved &c{amount}&e of tax from your account!"
   debt-action:
@@ -400,6 +405,8 @@ chat:
   messages-disabled: "&cYou cannot message &6{name}&c because you have private messages disabled! Use [&e/msgtoggle](/msgtoggle on)&c to enable it."
   target-messages-disabled: "&cYou cannot message &6{name}&c because he has private messages disabled!"
 names:
+  online: "&aOnline"
+  ago: "ago"
   mission:
     type:
       turn-in: "Turn in"
@@ -668,17 +675,13 @@ gui:
       color-changed: "&7Changed {type} color of channel {channel} to &r{color}{color-name}"
       back: "&c&lBack To Type Selection"
   access:
-    title: "&2&l/s access"
-    back: "&c&lBack To Settings"
+    title: "Select access"
+    back: "&c&lBack"
     selected: "&a&lCurrently set to &b&l{access}"
     available: "&7{access}"
     access:
-      open: |-
-        &7Everyone can teleport to home
-        &7Allows anyone to join without invitation
       public: |-
         &7Everyone can teleport to home
-        &7Requires an invite to join the {state}
       trusted: |-
         &7Can teleport to {state} home:
         &7- Allies
@@ -834,7 +837,7 @@ gui:
     rank-perm-groups:
       title: "&2&l/e perms &e&l{rank}"
     rank-perms:
-      title: "&2&l/e perms &e&l{rank} {group}"
+      title: "&2&l/e ranks"
     shop:
       title: "&2&l/e shop"
     settings:
@@ -946,6 +949,7 @@ gui:
         &a&lSymbol &r&7{symbol}
         &6&lLevel &r&7{level}
         &6&lAccess &r&7{access}
+        &6&lRecruitment &r&7{jointype}
         &6&lBank &r&7{bank}
         &6&lUpkeep: &r&7{upkeep}
         &6&lJoin Fee: &r&7{joinfee}
@@ -984,11 +988,11 @@ gui:
   reset-perms:
     title: "&2&l/s ranks"
     reset:
-      title: "&cReset all permissions?"
+      title: "&cReset all {rank} perms?"
       confirm: |-
         &a&lConfirm
         &7Click to reset the permissions
-        &7of all ranks in {state} {name}
+        &7of {rank} in {state} {name}
         &7to their default values!
       cancel: |-
         &c&lCancel
@@ -998,38 +1002,32 @@ gui:
     entry:
       title: "&3{rank}"
       edit: "&7Click to edit permissions."
-  rank-perm-groups:
-    title: "&2&l/s perms &e&l{rank}"
-    back: "&c&lBack to rank selection"
-    groups:
-      general: |-
-        &3General
-        General permissions for
-        residents of the {state}
-      officer: |-
-        &3Officer
-        {state} management permissions
-      settings: |-
-        &3Settings
-        Permissions for editing
-        {state} settings
-    reset:
-      title: "&cReset {rank} permissions?"
-      confirm: |-
-        &a&lConfirm
-        &7Click to reset the permissions
-        &7of rank {rank} to their default
-        &7values!
-      cancel: |-
-        &c&lCancel
-        &7Click to cancel the reseting
-        &7the perms of rank {rank}.
-
   rank-perms:
-    title: "&2&l/s perms &e&l{rank}"
-    back: "&c&lBack to group selection"
+    title: "&2&l/s ranks"
     previous: "&7Previous page"
     next: "&7Next page"
+    titles: |-
+      &eManage Titles
+      &fAdd/Edit titles for &e{rank}
+      
+      &bClick for more options
+    reset: |-
+      &eReset {rank} to default perms
+      
+      &bClick to reset
+    reset-perms:
+      title: "&cReally reset &e{rank}?"
+      confirm: "&cReset &e{rank}"
+      cancel: "&aDon't reset &e{rank}"
+    rank-entry:
+      selected: |-
+        &e{name}
+        
+        &aSelected!
+      selectable: |-
+        &e{name}
+        
+        &bClick to hilight perms for this rank
     entry:
       title: |-
         {color}{perm}
@@ -1043,6 +1041,110 @@ gui:
         &7Click to grant to &f{rank}
       revoke: |-
         &7Click to revoke from &f{rank}
+  setrank:
+    rank-select:
+      title: "&2&lSelect the {state} rank"
+      entry: |-
+        &e{rank}
+      
+        &bClick to select
+      entry-not-selectable: |-
+        &e{rank}
+      
+        &cNot selectable!
+        &cRank insufficient
+      entry-chief: |-
+        &eTransfer Ownership
+        &fMake sure the player is abiding all
+        &fthe server rules to avoid any issues!
+      
+        &b2 Click to transfer
+      entry-chief-not-selectable: |-
+        &e{rank}
+      
+        &cNot selectable!
+        &cRank insufficient
+  reslist:
+    title:  "&2&l/s res"
+    sort: |-
+      &fSorted by {state}
+      &bClick to sort by {nextstate}
+    back: "&cBack"
+    entry: |-
+      &e&l{name}
+      &fTown Info:
+      &f➤ Rank {rank}
+      &f➤ Plots Owned {plots}
+      
+      Player Info
+      &f➤ Rank {primarygroup}
+      &f➤ Balance &6{balance}
+      &f➤ Last Login &c{lastloginduration}
+      
+      &bClick for more options
+  resident:
+    title: "&2&l/s res {name}"
+    info: |-
+      &e&l{name}
+      &fTown Info:
+      &f➤ Rank {rank}
+      &f➤ Plots Owned {plots}
+  
+      Player Info
+      &f➤ Rank {primarygroup}
+      &f➤ Balance &6{balance}
+      &f➤ Last Login &c{lastloginduration}
+    tax-evasion: |-
+      &eTax Evasion action
+      &fWhat action should be taken if
+      &fthe resident can't pay taxes
+      
+      &fCurrent: &c{action}
+      &f- Ignore this if they're exempted
+      
+      &bClick to change
+    taxes:
+      entry: |-
+        &eTaxes
+        &fTotal Donation: &e${donated}
+        &fTotal Tax: &e${taxpaid}
+        &fTax Exemption: &a{exempted}
+        
+        &bClick to change
+      exempted: Exempted
+      paying: Paying
+    settitle: |-
+      &eChange title
+      &fChange title of the resident! It does not
+      &fgive any new powers and is purely cosmetic!
+      
+      &fCurrent Title: &e{title}
+      
+      &bClick to change
+    rank: |-
+      &eChange rank
+      &fChange the rank of the resident!
+      &fThis changes their settlement permission!
+      
+      &fCurrent Rank: &e{rank}
+      
+      &bClick to change
+    eviction: |-
+      &cSend Eviction Letter
+      &fMail the player for his
+      &f7 days kick notice
+      
+      &bClick to send
+    kick:
+      entry: |-
+        &cKick
+        &fSend an Eviction Letter first if the
+        &fplayer has not violated any rules!
+        
+        &bClick to kick
+      title: "&cReally kick &e{player}?"
+      confirm: "&cKick &e{player}"
+      cancel: "&aDon't kick &e{player}"
   rewards:
     title: "&2&l/s rewards"
     entry: |-
@@ -1131,7 +1233,7 @@ gui:
         &fCurrent Settings: &e{build}
         &aLeft-Click&f to change settings
   
-        &a▶ /plot build
+        &a➤ /plot build
       use: |-
         &a&lUse
         &fSet different usage rights
@@ -1140,7 +1242,7 @@ gui:
         &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━
         &aLeft-Click&f to change settings
   
-        &a▶ /plot use
+        &a➤ /plot use
       mode: |-
         &a&lMode
         &fToggle settings including
@@ -1150,7 +1252,7 @@ gui:
         &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━
         &aLeft-Click&f to change settings
   
-        &a▶ /plot mode
+        &a➤ /plot mode
       name:
         button: |-
           &a&lName
@@ -1160,7 +1262,7 @@ gui:
           &fCurrent Name: &e{name}
           &aLeft-Click&f to change name
           
-          &a▶ /plot name <name>
+          &a➤ /plot name <name>
         anvil:
           title: "Set the name"
           placeholder: "{name}"
@@ -1173,7 +1275,7 @@ gui:
           &fCurrent Description: &e{description}
           &aLeft-Click&f to change name
           
-          &a▶ /plot description <description>
+          &a➤ /plot description <description>
         anvil:
           title: "Set the description"
           placeholder: "{description}"
@@ -1185,7 +1287,7 @@ gui:
           &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
           &aLeft-Click&f to set price
 
-          &a▶ /plot sale <price>
+          &a➤ /plot sale <price>
         button: |-
           &a&lSell plot
           &fSet the price for the plot
@@ -1195,7 +1297,7 @@ gui:
           &aClick to set the price for the plot
           &aShift click to make the plot not buyable
   
-          &a▶ /plot sale <price>|false
+          &a➤ /plot sale <price>|false
         anvil:
           title: "Set price"
           placeholder: "{price}"
@@ -1208,7 +1310,7 @@ gui:
         &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━
         &aLeft-Click&f to change settings
   
-        &a▶ /plot members
+        &a➤ /plot members
       entry: |-
         &a⊱&m━━━━&r&6Plot Info&a&m━━━━&a⊰
         &c&l{state}: &7{landowner}
@@ -1271,13 +1373,96 @@ gui:
       next: "&7Go to next page {page}"
       previous: "&7Go to previous page {page}"
     back: "&c&lBack To Teleporters"
-  rank-select:
-    title: "&2&lSelect the {state} rank"
-    entry: |-
-      &e{rank}
-      &bClick to select
   settings:
     title: "&2&lSettlement Settings"
+    rename:
+      entry: |-
+        &eRename {state}
+      
+        &bClick to change
+      anvil:
+        title: "Input new name"
+        placeholder: "{name}"
+    perks:
+      entry: |-
+        &eControl your perks!
+        {perks}
+  
+        &bClick to see more options
+      list: "&f{name}"
+    rules:
+      entry: |-
+        &e{state} rules
+        &fEdit your settlement rules.
+        &fThis will notify everyone if
+        &fyou made any changes
+        
+        &bClick to edit
+      info:
+        actionbar: "Write your new rules or leave empty to keep old ones!"
+      updated: "&7{state} rules been updated! Read them with [&e/s rules](/s rules)"
+    discord:
+      entry: |-
+        &eSet Discord link
+        &f{discord}
+    
+        &bClick to edit
+      anvil:
+        title: "Input new discord link"
+        placeholder: "{discord}"
+    joinfee:
+      entry: |-
+        &eSet Join Fee
+        &fAdd a charge for joining
+        
+        &fCurrent Joining fee: &e${joinfee}
+    
+        &bClick to edit
+      anvil:
+        title: "Input new join fee"
+        placeholder: "{joinfee}"
+    description:
+      entry: |-
+        &e{state} Board
+        &fSlogan or short summary about
+        &fyour settlement!
+        
+        &fCurrent: &e{description}
+    
+        &bClick to edit
+      anvil:
+        title: "Input new message"
+        placeholder: "{description}"
+    access: |-
+      &e{state} Privacy
+      &fPermit certain players to
+      &fteleport to your /s home
+      &fPublic - Everyone
+      &fTrusted - Residents, Empire, Allies
+      &fAllies - Residents and Allies
+      &fResidents - Residents only
+      
+      &fState: &e{access}
+      &bClick to change states
+    recruitement: |-
+      &eRecruitement
+      &fMethod of joining the settlement
+      
+      &fCurrent: &e{jointype}
+      &bClick to change
+  recruitment:
+    title: "Select recruitment type"
+    back: "&c&lBack"
+    selected: "&a&lCurrently set to &b&l{jointype}"
+    available: "&7{jointype}"
+    jointype:
+      invite-only: |-
+        &7Requires invite to join
+      anyone: |-
+        &7Anyone can join
+      apply: |-
+        &7Requires application
+  manage:
     home: |-
       &a&l{state} Home
       
@@ -1304,16 +1489,6 @@ gui:
       &aLeft-Click&f to change settings
   
       &a▶ /s build
-    access: |-
-      &a&lAccess
-      &fSet who can use your &e/s home
-      &fSet who can join the {state}
-      
-      &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      &fCurrent Settings. &e{access}
-      &aLeft-Click&f to change settings
-  
-      &a▶ /s access
     use: |-
       &a&lUse
       &fSet different usage rights
@@ -1342,14 +1517,6 @@ gui:
       &aLeft-Click&f to change settings
   
       &a▶ /s perms
-    perks: |-
-      &a&lPerks
-      &7Toggle your {state} perks
-  
-      &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      &aLeft-Click&f to change settings
-  
-      &a▶ /s perks
     shop: |-
       &a&lShop
       &fUnlock new {state} perks
@@ -1384,6 +1551,7 @@ gui:
       &a&lState &r&7{state}
       &6&lLevel &r&7{level}
       &6&lAccess &r&7{access}
+      &6&lRecruitment &r&7{jointype}
       &6&lBank &r&7{bank}
       &6&lUpkeep: &r&7{upkeep}
       &6&lJoin Fee: &r&7{joinfee}
@@ -1418,8 +1586,10 @@ gui:
         &7Title of rank {rank}
       select: "&bClick to select"
       current: "&7Your current title!"
-    edit: "&aEdit titles"
-    back: "&c&lBack To Settings"
+    edit: |-
+      &eManage Titles
+      Add/edit titles for {rank}
+    back: "&c&lBack"
   titles:
     title: "&2&l/s titles gui"
     entry:
@@ -1435,6 +1605,26 @@ gui:
         title: "New title for {rank}:"
         placeholder: "Input Title"
     back: "&c&lBack To Title"
+    rank-select:
+      title: "&2&lSelect the {state} rank"
+      entry: |-
+        &e{rank}
+    
+        &bClick to select
+      entry-not-selectable: |-
+        &e{rank}
+    
+        &cNot selectable!
+        &cRank insufficient
+      entry-chief: |-
+        &e{rank}
+    
+        &bClick to select
+      entry-chief-not-selectable: |-
+        &e{rank}
+    
+        &cNot selectable!
+        &cRank insufficient
   perks:
     title: "&2&l/s perks"
     entry: |-
@@ -1918,6 +2108,7 @@ command:
         &a&lBoard: &r&7{description}
         &a&lState: &r&7Level {level} {state}
         &6&lAccess: &r&7{access}
+        &6&lRecruitment &r&7{jointype}
         &6&lBank: &r&7{bank} 
         &6&lUpkeep: &r&7{upkeep} | &6&lDaily tax: &r&7{tax} | &6&lJoin fee: &r&7{joinfee}
         &6&lTax Evasion: &r&7{taxdebtaction}
@@ -1932,6 +2123,7 @@ command:
         &a&lState: &r&7Level {level} {state}
         &b&lEmpire: &r&7{empire} (Lv. {empirelevel})
         &6&lAccess: &r&7{access}
+        &6&lRecruitment &r&7{jointype}
         &6&lBank: &r&7{bank} | &6&lCP: &r&7{missionpoints}
         &6&lUpkeep: &r&7{upkeep} | &6&lDaily tax: &r&7{tax} | &6&lJoin fee: &r&7{joinfee}
         &6&lTax Evasion: &r&7{taxdebtaction}
@@ -2007,8 +2199,8 @@ command:
       description: Leave your current settlement
     list:
       description: "List settlements"
-      head: "&a⊱&m━━━━&r&6{access}Settlements [{page}/{maxpage}]&a&m━━━━&a⊰"
-      entry: "&e• {place}. [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{size} players\n&f{description})"
+      head: "&a⊱&m━━━━&r&6Settlements [{page}/{maxpage}]&a&m━━━━&a⊰"
+      entry: "&e• {place}. [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{size} players\n&8Recruitment: {jointype}\n&f{description})"
       entry-abandoned: "&e• {place}. [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&cFalls in {abandonedcountdown})"
       footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
       previous: "&b<< Prev "
@@ -2159,12 +2351,18 @@ command:
     setaccess:
       success: "&7Access changed to &6{access}"
       access:
-        open: Allows everyone to join without an invitation
-        public: Everyone can teleport to home but requires invitation to join
+        public: Everyone can teleport to home
         trusted: Allows allies and empire members to teleport to home
         ally: Allows allies to teleport to home
         private: Allows only members to teleport to home
       description: Sets the access level for the settlement
+    recruitment:
+      success: "&7Recruitment changed to &6{jointype}"
+      jointype:
+        invite: Invitation is required to join
+        anyone: Allows everyone to join without an invitation
+        apply: Application is required to join
+      description: Sets the recruitment type for the settlement
     sethome:
       success: "{title} {name} &r&7&lhas set the {state} home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
       moved-outpost: "{title} {name} &r&7&lmoved the outpost &r&6&l{outpost}&7&l to the old home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
@@ -2230,6 +2428,7 @@ command:
         &a&lBoard: &r&7{description}
         &a&lState: &r&7Level {level} {state}
         &6&lAccess: &r&7{access}
+        &6&lRecruitment &r&7{jointype}
         &6&lBank: &r&7{bank} 
         &6&lUpkeep: &r&7{upkeep} | &6&lDaily tax: &r&7{tax} | &6&lJoin fee: &r&7{joinfee}
         &6&lTax Evasion: &r&7{taxdebtaction}
@@ -2244,6 +2443,7 @@ command:
         &a&lState: &r&7Level {level} {state}
         &b&lEmpire: &r&7{empire} (Lv. {empirelevel})
         &6&lAccess: &r&7{access}
+        &6&lRecruitment &r&7{jointype}
         &6&lBank: &r&7{bank} | &6&lCP: &r&7{missionpoints}
         &6&lUpkeep: &r&7{upkeep} | &6&lDaily tax: &r&7{tax} | &6&lJoin fee: &r&7{joinfee}
         &6&lTax Evasion: &r&7{taxdebtaction}
@@ -2289,7 +2489,7 @@ command:
     title:
       description: "Set your title"
       success:
-        default: "&e{name}&7 set their title to &e{title}&7!"
+        default: "&7Title of &e{name}&7 set to &e{title}&7!"
         kingdom:
           chief: "&e{name}&7 crowned themselves &e{title}&7!"
       invalid-title: "&c{title} is not a title available to you!"
@@ -2541,6 +2741,7 @@ command:
         &a&lBoard &r&7{description}
         &a&lState: &r&7{level} | &a&lSymbol &r&7{symbol}
         &6&lAccess &r&7{access}
+        &6&lRecruitment &r&7{jointype}
         &6&lBank &r&7{bank}
         &6&lUpkeep: &r&7{upkeep} | &6&lDaily tax: &r&7{tax} | &6&lJoin fee: &r&7{joinfee}
         &6&lTax Evasion: &r&7{taxdebtaction}
@@ -2612,8 +2813,8 @@ command:
       description: Leave your current empire
     list:
       description: "List empire"
-      head: "&a⊱&m━━━━&r&6{access}Empires [{page}/{maxpage}]&a&m━━━━&a⊰"
-      entry: "&e• {place}. [&r&e{name}](&8Capital: &f{capitalstate}{capital}\n&8Leader: &f{chieftitle} {chief}\n&8Size: &f{size} members\n&f{description})"
+      head: "&a⊱&m━━━━&r&6Empires [{page}/{maxpage}]&a&m━━━━&a⊰"
+      entry: "&e• {place}. [&r&e{name} &r&7{access}](&8Capital: &f{capitalstate}{capital}\n&8Leader: &f{chieftitle} {chief}\n&8Size: &f{size} members\n&8Recruitment: {jointype}\n&f{description})"
       entry-abandoned: "&e• {place}. [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&cFalls in {abandonedcountdown})"
       footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
       previous: "&b<< Prev "
@@ -2746,6 +2947,13 @@ command:
         trusted: Allows empire members to teleport to home
         private: Allows only capital members to teleport to home
       description: Sets the access level for the empire
+    recruitment:
+      success: "&7Recruitment changed to &6{jointype}"
+      jointype:
+        invite: Invitation is required to join
+        anyone: Allows everyone to join without an invitation
+        apply: Application is required to join
+      description: Sets the recruitment type for the settlement
     settings:
       description: Show settings GUI
     sethome:
@@ -2790,6 +2998,7 @@ command:
         &a&lBoard &r&7{description}
         &a&lState: &r&7{level} | &a&lSymbol &r&7{symbol}
         &6&lAccess &r&7{access}
+        &6&lRecruitment &r&7{jointype}
         &6&lBank &r&7{bank}
         &6&lUpkeep: &r&7{upkeep} | &6&lDaily tax: &r&7{tax} | &6&lJoin fee: &r&7{joinfee}
         &6&lTax Evasion: &r&7{taxdebtaction}
@@ -2838,7 +3047,7 @@ command:
     title:
       description: "Set your title"
       success:
-        default: "&e{name}&7 set their title to &e{title}&7!"
+        default: "&7Title of &e{name}&7 set to &e{title}&7!"
       invalid-title: "&c{title} is not a title available to you!"
       usage:
         entry: "&e• [&e{usage}](suggest_command={{usage})"

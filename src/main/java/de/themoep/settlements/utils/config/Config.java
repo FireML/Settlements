@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class Config {
 
@@ -101,6 +102,12 @@ public class Config {
         @ConfigEntry(old = {"titles-per-rank"})
         @ConfigComment("How many different titles can be configured for a rank")
         public static int TITLES_PER_RANK = 10;
+
+        @ConfigComment("The maximum length of the settlement names")
+        public static int NAME_LENGTH = 20;
+
+        @ConfigComment("What regex settlement names need to match")
+        public static String NAME_VALIDATION = "[\\w-]+";
 
         public static class Leveling {
             @ConfigComment("The amount of levels until a settlement converts from a Village to a Kingdom")

@@ -5,14 +5,16 @@ import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.utils.Utils;
+import de.themoep.settlements.utils.config.Config;
 
 import java.util.regex.Pattern;
 
 public class SettlementRenameCommand extends SettlementSubCommand {
-    private Pattern allowed = Pattern.compile("[\\w-]+");
+    private final Pattern allowed;
 
     public SettlementRenameCommand(SubCommand parent) {
         super(parent, "rename <name>");
+        allowed = Pattern.compile(Config.Settlement.NAME_VALIDATION);
     }
 
     @Override
@@ -24,10 +26,10 @@ public class SettlementRenameCommand extends SettlementSubCommand {
         String name = Utils.filterAllCurses(String.join(" ", args).trim());
         if (name.toLowerCase().contains("claims")) {
             getError("invalid-characters").tell(res, "input", name);
-        } else if (villageExists(name)) {
+        } else if (SettlementManager.getInstance().getFromName(name) != null) {
             getError("settlement-exists").tell(res, "name", name);
-        } else if (name.length() > 20) {
-            getError("too-long").tell(res, "input", name, "amount", String.valueOf(20));
+        } else if (name.length() > Config.Settlement.NAME_LENGTH) {
+            getError("too-long").tell(res, "input", name, "amount", String.valueOf(Config.Settlement.NAME_LENGTH));
         } else if (!allowed.matcher(name).matches()) {
             getError("invalid-characters").tell(res, "input", name);
         } else {
@@ -35,9 +37,5 @@ public class SettlementRenameCommand extends SettlementSubCommand {
             getMessage("success").tell(settlement.getOnlineResidents(), "name", settlement.getName(), "state", settlement.getState().getTag());
         }
         return true;
-    }
-
-    private boolean villageExists(String name) {
-        return SettlementManager.getInstance().getFromName(name) != null;
     }
 }

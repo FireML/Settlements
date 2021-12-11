@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SettlementRank extends Rank<Settlement> implements Next<SettlementRank>, Rankable<SettlementRank> {
+public class SettlementRank extends Rank<Settlement, SettlementRank> {
 
     private Multimap<SettlementState, String> titles = MultimapBuilder.enumKeys(SettlementState.class).arrayListValues().build();
 

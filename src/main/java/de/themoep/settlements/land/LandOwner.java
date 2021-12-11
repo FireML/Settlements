@@ -9,8 +9,10 @@ import de.themoep.settlements.leveling.Levelable;
 import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.perk.PerkData;
 import de.themoep.settlements.rank.Rank;
+import de.themoep.settlements.rank.RankManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.settlement.JoinType;
 import de.themoep.settlements.utils.ConfigKey;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.MessageUtils;
@@ -46,6 +48,7 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     private IdObject id = IdObject.get(null);
     private String name;
     private String description = "";
+    private String rules = "";
     private String discordLink = "";
     private long created = System.currentTimeMillis();
     private long bank = 0;
@@ -59,6 +62,7 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     private SimpleLocation home = null;
     private BuildState buildState = getDefaultBuildState();
     private LandAccess access = LandAccess.PRIVATE;
+    private JoinType joinType = JoinType.INVITE_ONLY;
     private Map<Use, BuildState> use = new EnumMap<>(Use.class);
 
     private Map<String, Map<String, Boolean>> ranksPermissions = new HashMap<>();
@@ -137,6 +141,14 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
 
     public String getDescription() {
         return description;
+    }
+
+    public String getRules() {
+        return rules;
+    }
+
+    public void setRules(String rules) {
+        this.rules = rules;
     }
 
     public void setDiscord(String discordLink) {
@@ -261,6 +273,8 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
 
     protected abstract Set<String> getPermissions();
 
+    public abstract Collection<String> getToggleablePermissions();
+
     public Map<String, Boolean> getPermissions(R rank) {
         return ranksPermissions.getOrDefault(rank.name().toLowerCase(), Collections.emptyMap());
     }
@@ -274,11 +288,18 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     }
 
     public Optional<Boolean> getPermissionValue(R rank, String permission) {
+        if (permission.contains(".group.")) {
+            return RankManager.getInstance().getFromGroup(permission, p -> getPermissionValue(rank, p));
+        }
         Map<String, Boolean> map = ranksPermissions.get(rank.name().toLowerCase());
         return Optional.ofNullable(map != null ? map.get(permission.toLowerCase()) : null);
     }
 
     public Optional<Boolean> getInheritedPermissionValue(R rank, String permission) {
+        if (permission.contains(".group.")) {
+            return RankManager.getInstance().getFromGroup(permission, p -> getInheritedPermissionValue(rank, p));
+        }
+
         Optional<Boolean> value = getPermissionValue(rank, permission);
         if (value.isPresent()) {
             return value;
@@ -290,6 +311,10 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     }
 
     public Optional<Boolean> getEffectivePermissionValue(R rank, String permission) {
+        if (permission.contains(".group.")) {
+            return RankManager.getInstance().getFromGroup(permission, p -> getEffectivePermissionValue(rank, p));
+        }
+
         if (rank.getParent() != null) {
             Optional<Boolean> inheritValue = getInheritedPermissionValue(rank, permission);
             if (inheritValue.isPresent()) {
@@ -300,6 +325,13 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     }
 
     public boolean setPermission(R rank, String permission, boolean value) {
+        if (permission.contains(".group.")) {
+            Optional<Boolean> changed = RankManager.getInstance().applyToGroup(permission, p -> setPermission(rank, p, value));
+            if (changed.isPresent()) {
+                return changed.get();
+            }
+        }
+
         if (getEffectivePermissionValue(rank, permission).orElse(false) == value) {
             return false;
         }
@@ -313,6 +345,12 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     }
 
     public boolean setDefaultPermission(R rank, String permission) {
+        if (permission.contains(".group.")) {
+            Optional<Boolean> changed = RankManager.getInstance().applyToGroup(permission, p -> setDefaultPermission(rank, p));
+            if (changed.isPresent()) {
+                return changed.get();
+            }
+        }
         return ranksPermissions.getOrDefault(rank.name().toLowerCase(), new LinkedHashMap<>()).remove(permission.toLowerCase()) != null;
     }
 
@@ -661,6 +699,14 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         this.access = access;
     }
 
+    public JoinType getJoinType() {
+        return joinType;
+    }
+
+    public void setJoinType(JoinType joinType) {
+        this.joinType = joinType;
+    }
+
     public abstract void removeMember(Targetable target);
 
     public boolean isChief(Targetable target) {
@@ -677,6 +723,10 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     public void setCreated(long created) {
         this.created = created;
     }
+
+    public abstract String getTitle(Resident resident);
+
+    public abstract boolean setTitle(Resident target, String title);
 
     public Collection<String> getTitles(R rank) {
         Collection<String> titles = rankTitles.get(rank.name().toLowerCase());
@@ -751,6 +801,16 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         return defaultRankTitles;
     }
 
+    public abstract int getTitlesPerRank();
+
+    public abstract R getHighestRank();
+
+    public abstract R getDefaultRank();
+
+    public abstract R getRank(Resident resident);
+
+    public abstract Collection<R> getRanks();
+
     @Override
     public String getDbDescription() {
         return getStateKey() + " " + getName() + "/" + getId();
@@ -762,6 +822,7 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         map.put("id", getId().value());
         map.put("name", getName());
         map.put("description", getDescription());
+        map.put("rules", getDescription());
         map.put("discord", getDiscord());
         map.put("created", getCreated());
         for (PlotMode mode : PlotMode.values(PlotMode.AppliesTo.LAND_OWNER)) {
@@ -774,6 +835,7 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         map.put("bonusClaims", getBonusClaims());
         map.put("buildState", getBuildState().name());
         map.put("access", getAccess().name());
+        map.put("joinType", getJoinType().name());
         if (getHome() != null)
             map.put("homeLoc", getHome());
         else
@@ -803,6 +865,7 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         }
         landOwner.setName((String) map.get("name"));
         landOwner.setDescription((String) map.get("description"));
+        landOwner.setRules((String) map.get("rules"));
         landOwner.setDiscord((String) map.get("discord"));
         landOwner.setCreated(Utils.getLong(map.get("created")));
         landOwner.setId(IdObject.get(map));
@@ -821,6 +884,9 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         } catch (IllegalArgumentException ignored) {}
         try {
             landOwner.setAccess(LandAccess.valueOf((String) map.get("access")));
+        } catch (IllegalArgumentException ignored) {}
+        try {
+            landOwner.setJoinType(JoinType.valueOf((String) map.get("jointype")));
         } catch (IllegalArgumentException ignored) {}
         if (map.get("homeLoc") != null) {
             landOwner.setHome(SimpleLocation.deserialize((Map<String, Object>) map.get("homeLoc")));

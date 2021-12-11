@@ -1,9 +1,9 @@
 package de.themoep.settlements.command.empire;
 
+import de.themoep.settlements.land.gui.AccessGUI;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.empire.gui.AccessGUI;
 import de.themoep.settlements.land.LandAccess;
 
 public class EmpireSetAccessCommand extends EmpireSubCommand {
@@ -14,7 +14,7 @@ public class EmpireSetAccessCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length < 1) {
-            new AccessGUI().open(resident.getPlayer());
+            new AccessGUI("empire", resident.getSettlement().getEmpire()).open(resident.getPlayer());
             return true;
         }
         try {

@@ -7,8 +7,10 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.land.events.LandownerChiefChangeEvent;
 import de.themoep.settlements.missions.Mission;
 import de.themoep.settlements.missions.MissionData;
+import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.settlement.events.SettlementLeaveEvent;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
@@ -112,7 +114,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
                 if (isChief(resident)) {
                     continue;
                 }
-                if (resident.hasRankPermission("settlement.tax.exempt")) {
+                if (resident.hasRankPermission("settlement.tax.exempt") || resident.isTaxExempted()) {
                     continue;
                 }
                 taxes.put(resident, tax);
@@ -132,6 +134,8 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
                 player = Bukkit.getOfflinePlayer(resident.getUUID());
             }
             if (SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(player, tax).transactionSuccess()) {
+                resident.addTaxPaid(tax);
+                resident.save();
                 addToBank(tax);
                 totalTax += tax;
                 if (player instanceof Player) {
@@ -147,7 +151,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
                         "state", getState().getTag(),
                         "name", getName()
                 );
-                if (getTaxDebtAction() == TaxDebtAction.KICK) {
+                if (getTaxDebtAction() == TaxDebtAction.KICK && resident.getTaxDebtAction() == TaxDebtAction.KICK) {
                     if (isMember(resident)) {
                         addBanished(resident);
                         removeMember(resident);
@@ -558,6 +562,11 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
     }
 
     @Override
+    public Collection<String> getToggleablePermissions() {
+        return RankManager.getInstance().getSettlementToggleablePerms();
+    }
+
+    @Override
     public BuildState getDefaultBuildState() {
         return BuildState.RESIDENTS;
     }
@@ -582,6 +591,23 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
         return map;
     }
 
+    public void transfer(Resident newChief) {
+        if (isMember(newChief)) {
+            Resident oldChief = this.getChief();
+            Utils.callEvent(new LandownerChiefChangeEvent(this, this.getChief(), newChief));
+            oldChief.setSettlementRank(SettlementRank.getChief().next());
+            newChief.setSettlementRank(SettlementRank.getChief());
+            setChief(newChief.getUUID());
+            if (hasEmpire() && getEmpire().isChief(oldChief)) {
+                oldChief.setEmpireRank(EmpireRank.getLeader().next());
+                newChief.setEmpireRank(EmpireRank.getLeader());
+            }
+            DatabaseManager.getInstance().saveResident(oldChief);
+            DatabaseManager.getInstance().saveResident(newChief);
+            DatabaseManager.getInstance().saveSettlement(this);
+        }
+    }
+
     @Override
     public void removeMember(Targetable target) {
         if (target instanceof Resident && isMember((Resident) target)) {
@@ -589,6 +615,41 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
             residents.remove(((Resident) target).getUUID());
             SettlementManager.getInstance().leaveSettlement((Resident) target);
         }
+    }
+
+    @Override
+    public String getTitle(Resident resident) {
+        return resident.getSettlementTitle();
+    }
+
+    @Override
+    public boolean setTitle(Resident resident, String title) {
+        return resident.setSettlementTitle(title);
+    }
+
+    @Override
+    public int getTitlesPerRank() {
+        return Config.Settlement.TITLES_PER_RANK;
+    }
+
+    @Override
+    public SettlementRank getHighestRank() {
+        return SettlementRank.getChief();
+    }
+
+    @Override
+    public SettlementRank getDefaultRank() {
+        return SettlementRank.getDefault();
+    }
+
+    @Override
+    public SettlementRank getRank(Resident resident) {
+        return isMember(resident) ? resident.getSettlementRank() : null;
+    }
+
+    @Override
+    public Collection<SettlementRank> getRanks() {
+        return RankManager.getInstance().getSettlementRanks();
     }
 
     @Override
@@ -719,6 +780,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
         empire((c, v) -> v.hasEmpire() ? v.getEmpire().getName() : ""),
         empirelevel((c, v) -> v.hasEmpire() ? String.valueOf(v.getEmpire().getLevel()) : ""),
         access((c, v) -> v.getAccess().getTag()),
+        jointype((c, v) -> v.getJoinType().getTag()),
         upkeep((c, v) -> Utils.CURRENCY_FORMAT.format(v.getUpkeep())),
         balance((c, v) -> Utils.withSuffix(v.getBank())),
         bank((c, v) -> Utils.CURRENCY_FORMAT.format(v.getBank())),

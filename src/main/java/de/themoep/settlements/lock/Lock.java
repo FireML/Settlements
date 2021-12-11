@@ -1,5 +1,6 @@
 package de.themoep.settlements.lock;
 
+import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.resident.Resident;
@@ -84,6 +85,11 @@ public class Lock implements DatabaseSerializable {
     @Override
     public String getDbDescription() {
         return getLocation().getKey();
+    }
+
+    @Override
+    public void save() {
+        DatabaseManager.getInstance().saveLocks(this);
     }
 
     public boolean canAccess(Player player) {

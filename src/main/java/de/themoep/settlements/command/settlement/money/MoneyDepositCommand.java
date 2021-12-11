@@ -27,8 +27,10 @@ public class MoneyDepositCommand extends SettlementSubCommand {
                 EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(resident.getPlayer(), (double) deposit);
                 if (r2.transactionSuccess()) {
                     resident.getSettlement().addToBank(deposit);
-                    DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
-                    Utils.runAsync(() -> DatabaseManager.getInstance().logDeposit(resident.getSettlement(), resident, deposit));
+                    resident.addDonated(deposit);
+                    resident.getSettlement().save();
+                    resident.save();
+                    DatabaseManager.getInstance().logDeposit(resident.getSettlement(), resident, deposit);
                     getMessage("deposited").tell(resident.getSettlement().getOnlineResidents(),
                             "rank", resident.getSettlementRank().getTag(resident.getSettlement()),
                             "title", resident.getSettlementTitle(),
