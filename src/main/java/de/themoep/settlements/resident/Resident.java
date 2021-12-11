@@ -5,6 +5,8 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import de.themoep.settlements.integration.AfkProvider;
+import de.themoep.settlements.rank.PermissionGroup;
+import de.themoep.settlements.rank.RankManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.SettlementsPlugin;
@@ -87,12 +89,24 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
      * @return              The value of the permission or false
      */
     public boolean hasPermission(String permission) {
-        if (!permission.startsWith("settlements.")) {
-            permission = "settlements.command." + permission;
+        if (permission.contains(".group.")) {
+            PermissionGroup group = RankManager.getInstance().getPermissionGroup(permission);
+            if (group != null) {
+                for (String perm : group.getPermissions()) {
+                    if (!hasPermission(perm)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
         }
+
         if (hasRankPermission(permission)) {
             Player player = getPlayer();
             if (player != null) {
+                if (!permission.startsWith("settlements.")) {
+                    permission = "settlements.command." + permission;
+                }
                 return player.hasPermission(permission);
             }
         }
@@ -100,32 +114,37 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     }
 
     public boolean hasRankPermission(String permission) {
-        if (!permission.startsWith("settlements.")) {
-            permission = "settlements.command." + permission;
+        if (permission.contains(".group.")) {
+            Optional<Boolean> r = RankManager.getInstance().applyToGroup(permission, this::hasRankPermission);
+            if (r.isPresent()) {
+                return r.get();
+            }
         }
+
+        String rankPerm = permission;
         if (permission.startsWith("settlements.command.")) {
-            String rankPerm = permission.substring("settlements.command.".length());
-            if (!hasSettlement() && !SettlementRank.getChief().getInheritedPermissionValue(rankPerm).isPresent()) {
-                return true;
-            }
-
-            Optional<Boolean> settlementValue = getSettlement().getEffectivePermissionValue(getSettlementRank(), rankPerm);
-            if (settlementValue.isPresent()) {
-                return settlementValue.get();
-            }
-
-            if (rankPerm.startsWith("empire.") && getSettlement().hasEmpire()) {
-                Optional<Boolean> empireValue = getSettlement().getEmpire().getEffectivePermissionValue(getEmpireRank(), rankPerm);
-                if (empireValue.isPresent()) {
-                    return empireValue.get();
-                }
-                if (EmpireRank.getLeader().getInheritedPermissionValue(rankPerm).isPresent()) {
-                    return false;
-                }
-            }
-            return !SettlementRank.getChief().getInheritedPermissionValue(rankPerm).isPresent();
+            rankPerm = permission.substring("settlements.command.".length());
         }
-        return true;
+
+        if (!hasSettlement() && !SettlementRank.getChief().getInheritedPermissionValue(rankPerm).isPresent()) {
+            return true;
+        }
+
+        Optional<Boolean> settlementValue = getSettlement().getEffectivePermissionValue(getSettlementRank(), rankPerm);
+        if (settlementValue.isPresent()) {
+            return settlementValue.get();
+        }
+
+        if (rankPerm.startsWith("empire.") && getSettlement().hasEmpire()) {
+            Optional<Boolean> empireValue = getSettlement().getEmpire().getEffectivePermissionValue(getEmpireRank(), rankPerm);
+            if (empireValue.isPresent()) {
+                return empireValue.get();
+            }
+            if (EmpireRank.getLeader().getInheritedPermissionValue(rankPerm).isPresent()) {
+                return false;
+            }
+        }
+        return !SettlementRank.getChief().getInheritedPermissionValue(rankPerm).isPresent();
     }
 
     public boolean hasSettlement() {

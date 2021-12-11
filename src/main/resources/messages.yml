@@ -834,7 +834,7 @@ gui:
     rank-perm-groups:
       title: "&2&l/e perms &e&l{rank}"
     rank-perms:
-      title: "&2&l/e perms &e&l{rank} {group}"
+      title: "&2&l/e ranks"
     shop:
       title: "&2&l/e shop"
     settings:
@@ -984,11 +984,11 @@ gui:
   reset-perms:
     title: "&2&l/s ranks"
     reset:
-      title: "&cReset all permissions?"
+      title: "&cReset all {rank} perms?"
       confirm: |-
         &a&lConfirm
         &7Click to reset the permissions
-        &7of all ranks in {state} {name}
+        &7of {rank} in {state} {name}
         &7to their default values!
       cancel: |-
         &c&lCancel
@@ -998,38 +998,28 @@ gui:
     entry:
       title: "&3{rank}"
       edit: "&7Click to edit permissions."
-  rank-perm-groups:
-    title: "&2&l/s perms &e&l{rank}"
-    back: "&c&lBack to rank selection"
-    groups:
-      general: |-
-        &3General
-        General permissions for
-        residents of the {state}
-      officer: |-
-        &3Officer
-        {state} management permissions
-      settings: |-
-        &3Settings
-        Permissions for editing
-        {state} settings
-    reset:
-      title: "&cReset {rank} permissions?"
-      confirm: |-
-        &a&lConfirm
-        &7Click to reset the permissions
-        &7of rank {rank} to their default
-        &7values!
-      cancel: |-
-        &c&lCancel
-        &7Click to cancel the reseting
-        &7the perms of rank {rank}.
-
   rank-perms:
-    title: "&2&l/s perms &e&l{rank}"
-    back: "&c&lBack to group selection"
+    title: "&2&l/s ranks"
     previous: "&7Previous page"
     next: "&7Next page"
+    titles: |-
+      &eManage Titles
+      &fAdd/Edit titles for &e{rank}
+      
+      &bClick for more options
+    reset: |-
+      &eReset {rank} to default perms
+      
+      &bClick to reset
+    rank-entry:
+      selected: |-
+        &e{name}
+        
+        &aSelected!
+      selectable: |-
+        &e{name}
+        
+        &bClick to hilight perms for this rank
     entry:
       title: |-
         {color}{perm}
@@ -1418,8 +1408,10 @@ gui:
         &7Title of rank {rank}
       select: "&bClick to select"
       current: "&7Your current title!"
-    edit: "&aEdit titles"
-    back: "&c&lBack To Settings"
+    edit: |-
+      &eManage Titles
+      Add/edit titles for {rank}
+    back: "&c&lBack"
   titles:
     title: "&2&l/s titles gui"
     entry:
@@ -2289,7 +2281,7 @@ command:
     title:
       description: "Set your title"
       success:
-        default: "&e{name}&7 set their title to &e{title}&7!"
+        default: "&7Title of &e{name}&7 set to &e{title}&7!"
         kingdom:
           chief: "&e{name}&7 crowned themselves &e{title}&7!"
       invalid-title: "&c{title} is not a title available to you!"
@@ -2838,7 +2830,7 @@ command:
     title:
       description: "Set your title"
       success:
-        default: "&e{name}&7 set their title to &e{title}&7!"
+        default: "&7Title of &e{name}&7 set to &e{title}&7!"
       invalid-title: "&c{title} is not a title available to you!"
       usage:
         entry: "&e• [&e{usage}](suggest_command={{usage})"

@@ -4,6 +4,8 @@ import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.land.gui.BuildGUI;
 import de.themoep.settlements.land.gui.PermsGUI;
+import de.themoep.settlements.land.gui.RankPermsGUI;
+import de.themoep.settlements.land.gui.TitleGUI;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
@@ -120,7 +122,7 @@ public class SettingsGUI extends SettlementsGUI {
         if (resident.hasPermission("settlement.ranks")) {
             gui.addElement(new StaticGuiElement('r', ItemUtils.toIcon(Material.RED_BANNER), click -> {
                 if (resident.hasPermission("settlement.ranks")) {
-                    new RanksGUI((Player) click.getEvent().getWhoClicked()).open();
+                    new RankPermsGUI<>("settlement", resident, resident.getSettlement()).open();
                 }
                 return true;
             }, getText("ranks",
@@ -153,7 +155,7 @@ public class SettingsGUI extends SettlementsGUI {
         if (resident.hasPermission("settlement.title")) {
             gui.addElement(new StaticGuiElement('t', ItemUtils.toIcon(Material.PAPER), click -> {
                 if (resident.hasPermission("settlement.title")) {
-                    new TitleGUI(resident).open();
+                    new TitleGUI<>("settlement", resident, resident, resident.getSettlement()).open();
                 }
                 return true;
             }, getText(resident.hasPermission("settlement.titles") ? "titles-edit" : "titles",

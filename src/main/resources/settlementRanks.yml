@@ -1,245 +1,214 @@
 # Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:settlementranks.yml
 
-# Permissions that a user can toggle
 perm-groups:
-  general:
-    icon: GRASS_BLOCK
+  'manage.res':
     permissions:
-    - settlement.allies
-    - settlement.banished
-    - settlement.bank.history
-    - settlement.deposit.history
-    - settlement.outpost.teleport
-    - settlement.title
-    - settlement.rewards
-    - settlement.upgrade
-  settings:
-    icon: REDSTONE_BLOCK
+    - settlement.res # TODO: Management GUI
+    - settlement.active
+    - settlement.kicknotice # TODO
+    - settlement.setrank
+    - settlement.settitle # TODO
+    - settlement.settaxevasion # TODO
+  'manage.allies':
     permissions:
-    - settlement.build
-    - settlement.mode
-    - settlement.perks
-    - settlement.perks.toggle
+    - settlement.allyclaim
+    - settlement.manageally # TODO
+  'admin.allies':
+    permissions:
+    - settlement.ally
+    - settlement.unally
+  'manage.ranks':
+    permissions:
+    - settlement.ranks
+    - settlement.ranks.perms.set
+    - settlement.ranks.perms.reset
+  'manage.settings':
+    permissions:
+    - settlement.joinfee.set
     - settlement.setaccess
+    - settlement.setdescription
+    - settlement.recruitement # TODO (NPC)
+    - settlement.build
     - settlement.settings
     - settlement.perms
-  officer:
-    icon: DIAMOND_SWORD
+    - settlement.mode
+    - settlement.perks.toggle
+  'manage.notes':
     permissions:
-    - empire.join
-    - empire.leave
-    - settlement.officer
-    - settlement.active
-    - settlement.ally
-    - settlement.allyclaim
-    - settlement.banish
-    - settlement.bank.withdraw
-    - settlement.chestshop.admin
-    - settlement.claim
-    - settlement.disband
+    - settlement.sethome
     - settlement.discord.set
-    - settlement.history
-    - settlement.invite
-    - settlement.joinfee.set
-    - settlement.kick
-    - settlement.lock.admin
-    - settlement.mail
+    - settlement.rules.set # TODO
+  'manage.bank':
+    permissions:
+    - settlement.bank.withdraw
+    - settlement.tax.set
+    - settlement.auctiontax.set # TODO
+  'use.bank':
+    permissions:
+    - settlement.bank # TODO: GUI
+    - settlement.bank.storage # TODO: Add
+    - settlement.bank.history
+  'use.outpost':
+    permissions:
+    - settlement.outpost.help
+    - settlement.outpost.list
+    - settlement.outpost.teleport # TODO: Add NPC for everywhere
+  'manage.outpost':
+    permissions:
+    - settlement.outpost.help.elder
     - settlement.outpost.claim
     - settlement.outpost.sethome
     - settlement.outpost.rename
-    - settlement.outpost.unclaim
-    - settlement.perms
-    - settlement.perms.set
-    - settlement.perms.unset
-    - settlement.perms.reset
-    - settlement.plot.admin
-    - settlement.portal.admin
-    - settlement.rename
-    - settlement.setdescription
-    - settlement.sethome
-    - settlement.setrank
-    - settlement.shop
+  'manage.shop':
+    permissions:
     - settlement.shop.unlock
     - settlement.shop.repeat
-    - settlement.tax.set
-    - settlement.tax.action
-    - settlement.tax.exempt
-    - settlement.transfer
-    - settlement.titles
-    - settlement.settitle
-    - settlement.unally
-    - settlement.unbanish
-    - settlement.unclaim
+  
+# Permissions that a user can toggle
+toggleable-permissions:
+- settlement.reslist
+- settlement.group.manage.res
+- settlement.kick
+- settlement.titles
+- settlement.group.use.bank
+- settlement.bank.deposit
+- settlement.group.manage.bank
+- settlement.allies
+- settlement.group.manage.ally
+- settlement.group.admin.allies
+- settlement.banished
+- settlement.banish
+- settlement.unbanish
+- settlement.group.manage.ranks
+- settlement.mail
+- settlement.group.manage.notes
+- settlement.group.manage.settings
+- settlement.history
+- settlement.rename
+- settlement.disband
+- settlement.rewards
+- settlement.transfer
+- settlement.claim
+- settlement.unclaim
+- settlement.plot.admin
+- settlement.portal.admin
+- settlement.group.manage.outpost
+- settlement.outpost.unclaim
+- settlement.invite
+- settlement.group.manage.shop
+- settlement.lock.admin
+- settlement.chestshop.admin
+- settlement.officer
 
-# Ranks for people in a settlement. Top ones inherit from the ones below them
+# Ranks for people in a settlement.
 ranks:
   chief:
-    icon: diamond_sword
-    inherits: resident
+    icon: netherite_sword
     permissions:
+    - settlement.group.manage.res
+    - settlement.kick
+    - settlement.titles
+    - settlement.group.manage.ally
+    - settlement.group.admin.allies
+    - settlement.banish
+    - settlement.unbanish
+    - settlement.group.manage.ranks
+    - settlement.mail
+    - settlement.group.manage.notes
+    - settlement.group.manage.settings
+    - settlement.group.manage.bank
+    - settlement.bank.withdraw
+    - settlement.group.manage.outpost
+    - settlement.outpost.unclaim
+    - settlement.invite
+    - settlement.group.manage.shop
+    # Extra:
+    - settlement.lock.admin
+    - settlement.chestshop.admin
+    - settlement.history
+    - settlement.rename
+    - settlement.disband
+    - settlement.rewards
+    - settlement.transfer
+    - settlement.claim
+    - settlement.unclaim
+    - settlement.plot.admin
+    - settlement.portal.admin
+    - settlement.officer
+    
+    # resident base perms
+    - settlement.allies
+    - settlement.reslist
+    - settlement.banished
+    - settlement.group.use.bank
+    - settlement.bank.deposit
+  
+    # non-toggleable
+    - settlement.outpost.help.chief
+    - settlement.help.chief
+    - settlement.help.elder
+    - settlement.help.assistant
+    - settlement.help.recruiter
+    - settlement.help.builder
+    - settlement.tax.exempt
+    - settlement.officer
+
     - empire.create
     - empire.join
     - empire.help.chief
-    - settlement.active
-    - settlement.allyclaim
-    - settlement.banish
-    - settlement.bank.withdraw
-    - settlement.build
-    - settlement.chestshop.admin
-    - settlement.history
-    - settlement.joinfee.set
-    - settlement.outpost.help.chief
-    - settlement.outpost.unclaim
-    - settlement.setaccess
-    - settlement.sethome
-    - settlement.shop.unlock
-    - settlement.shop.repeat
-    - settlement.tax.set
-    - settlement.tax.action
-    - settlement.tax.exempt
-    - settlement.unbanish
-    - settlement.unclaim
-    - settlement.perms
-    - settlement.help.chief
-    - settlement.disband
-    - settlement.discord.set
-    - settlement.transfer
-    - settlement.titles
-    - settlement.settitle
-    - settlement.rename
-    - settlement.lock.admin
-    - settlement.mail
-    - settlement.help.assistant
     - empire.leave
-    - settlement.ally
-    - settlement.banished
-    - settlement.claim
-    - settlement.mode
-    - settlement.outpost.help.elder
-    - settlement.outpost.claim
-    - settlement.outpost.sethome
-    - settlement.outpost.rename
-    - settlement.perks.toggle
-    - settlement.perms
-    - settlement.perms.set
-    - settlement.perms.unset
-    - settlement.perms.reset
-    - settlement.plot.admin
-    - settlement.portal.admin
-    - settlement.rewards
-    - settlement.setdescription
-    - settlement.setrank
-    - settlement.settings
-    - settlement.unally
-    - settlement.unclaim
-    - settlement.help.elder
-    - settlement.invite
-    - settlement.kick
-    - settlement.help.recruiter
-    - settlement.officer
-    - settlement.help.builder
-    - settlement.title
+
   assistant:
-    icon: golden_sword
+    icon: diamond_sword
     inherits: resident
     permissions:
-    - settlement.rename
-    - settlement.lock.admin
-    - settlement.help.assistant
-    - empire.leave
-    - settlement.active
-    - settlement.ally
-    - settlement.banished
-    - settlement.claim
-    - settlement.mode
-    - settlement.outpost.help.elder
-    - settlement.outpost.claim
-    - settlement.outpost.sethome
-    - settlement.outpost.rename
-    - settlement.perks.toggle
-    - settlement.plot.admin
-    - settlement.setdescription
-    - settlement.setrank
-    - settlement.settings
-    - settlement.unally
-    - settlement.unclaim
-    - settlement.help.elder
-    - settlement.invite
-    - settlement.kick
-    - settlement.help.recruiter
     - settlement.officer
-    - settlement.rewards
+    - settlement.group.manage.res
+    - settlement.kick
     - settlement.titles
-    - settlement.settitle
-    - settlement.title
-    - settlement.help.builder
+    - settlement.group.manage.ally
+    - settlement.group.admin.allies
+    - settlement.group.manage.banished
+    - settlement.banish
+    - settlement.group.manage.ranks
+    - settlement.group.manage.notes
+    - settlement.group.manage.settings
+    - settlement.group.manage.bank
+    - settlement.group.manage.outpost
+    - settlement.invite
+    - settlement.lock.admin
+    
   elder:
     icon: iron_sword
     inherits: resident
     permissions:
-    - empire.leave
-    - settlement.ally
-    - settlement.banished
-    - settlement.claim
-    - settlement.mode
-    - settlement.outpost.help.elder
-    - settlement.outpost.claim
-    - settlement.outpost.sethome
-    - settlement.outpost.rename
-    - settlement.perks.toggle
-    - settlement.plot.admin
-    - settlement.setdescription
-    - settlement.setrank
-    - settlement.settings
-    - settlement.unally
-    - settlement.unclaim
-    - settlement.help.elder
-    - settlement.invite
-    - settlement.kick
-    - settlement.help.recruiter
     - settlement.officer
-    - settlement.help.builder
-    - settlement.title
+    - settlement.group.manage.res
+    - settlement.group.manage.ally
+    - settlement.group.manage.settings
+    - settlement.group.manage.outpost
+    - settlement.invite
+    
   recruiter:
-    icon: stone_sword
+    icon: gold_sword
     inherits: resident
     permissions:
+    - settlement.officer
     - settlement.invite
-    - settlement.kick
     - settlement.help.recruiter
     - settlement.help.builder
-    - settlement.title
+    
   builder:
-    icon: stone_shovel
+    icon: iron_sword
     inherits: resident
     permissions:
     - settlement.officer
     - settlement.help.builder
-    - settlement.title
   resident:
-    icon: stone_pickaxe
+    icon: stone_sword
     permissions:
     - settlement.allies
-    - settlement.bank
-    - settlement.bank.help
-    - settlement.bank.balance
-    - settlement.bank.deposit
-    - settlement.bank.history
-    - settlement.deposit
-    - settlement.deposit.history
-    - settlement.help.resident
-    - settlement.joinfee
-    - settlement.leave
-    - settlement.materials
-    - settlement.outpost
-    - settlement.outpost.help
-    - settlement.outpost.list
-    - settlement.outpost.teleport
-    - settlement.perks
     - settlement.reslist
-    - settlement.shop
-    - settlement.tax
-    - settlement.title
-    - settlement.upgrade
-    - settlement.upkeep
-    - settlement.title
+    - settlement.banished
+    - settlement.group.use.bank
+    - settlement.bank.deposit

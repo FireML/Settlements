@@ -9,6 +9,7 @@ import de.themoep.settlements.leveling.Levelable;
 import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.perk.PerkData;
 import de.themoep.settlements.rank.Rank;
+import de.themoep.settlements.rank.RankManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.ConfigKey;
@@ -261,6 +262,8 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
 
     protected abstract Set<String> getPermissions();
 
+    public abstract Collection<String> getToggleablePermissions();
+
     public Map<String, Boolean> getPermissions(R rank) {
         return ranksPermissions.getOrDefault(rank.name().toLowerCase(), Collections.emptyMap());
     }
@@ -274,11 +277,18 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     }
 
     public Optional<Boolean> getPermissionValue(R rank, String permission) {
+        if (permission.contains(".group.")) {
+            return RankManager.getInstance().getFromGroup(permission, p -> getPermissionValue(rank, p));
+        }
         Map<String, Boolean> map = ranksPermissions.get(rank.name().toLowerCase());
         return Optional.ofNullable(map != null ? map.get(permission.toLowerCase()) : null);
     }
 
     public Optional<Boolean> getInheritedPermissionValue(R rank, String permission) {
+        if (permission.contains(".group.")) {
+            return RankManager.getInstance().getFromGroup(permission, p -> getInheritedPermissionValue(rank, p));
+        }
+
         Optional<Boolean> value = getPermissionValue(rank, permission);
         if (value.isPresent()) {
             return value;
@@ -290,6 +300,10 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     }
 
     public Optional<Boolean> getEffectivePermissionValue(R rank, String permission) {
+        if (permission.contains(".group.")) {
+            return RankManager.getInstance().getFromGroup(permission, p -> getEffectivePermissionValue(rank, p));
+        }
+
         if (rank.getParent() != null) {
             Optional<Boolean> inheritValue = getInheritedPermissionValue(rank, permission);
             if (inheritValue.isPresent()) {
@@ -300,6 +314,13 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     }
 
     public boolean setPermission(R rank, String permission, boolean value) {
+        if (permission.contains(".group.")) {
+            Optional<Boolean> changed = RankManager.getInstance().applyToGroup(permission, p -> setPermission(rank, p, value));
+            if (changed.isPresent()) {
+                return changed.get();
+            }
+        }
+
         if (getEffectivePermissionValue(rank, permission).orElse(false) == value) {
             return false;
         }
@@ -313,6 +334,12 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     }
 
     public boolean setDefaultPermission(R rank, String permission) {
+        if (permission.contains(".group.")) {
+            Optional<Boolean> changed = RankManager.getInstance().applyToGroup(permission, p -> setDefaultPermission(rank, p));
+            if (changed.isPresent()) {
+                return changed.get();
+            }
+        }
         return ranksPermissions.getOrDefault(rank.name().toLowerCase(), new LinkedHashMap<>()).remove(permission.toLowerCase()) != null;
     }
 
@@ -678,6 +705,10 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         this.created = created;
     }
 
+    public abstract String getTitle(Resident resident);
+
+    public abstract boolean setTitle(Resident target, String title);
+
     public Collection<String> getTitles(R rank) {
         Collection<String> titles = rankTitles.get(rank.name().toLowerCase());
         if (titles.isEmpty()) {
@@ -750,6 +781,16 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     public Map<String, String> getDefaultRankTitles() {
         return defaultRankTitles;
     }
+
+    public abstract int getTitlesPerRank();
+
+    public abstract R getHighestRank();
+
+    public abstract R getDefaultRank();
+
+    public abstract R getRank(Resident resident);
+
+    public abstract Collection<R> getRanks();
 
     @Override
     public String getDbDescription() {

@@ -1,13 +1,10 @@
 package de.themoep.settlements.command.empire;
 
-import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.empire.gui.RanksGUI;
-import de.themoep.settlements.empire.gui.RankPermGroupsGUI;
-import de.themoep.settlements.empire.gui.RankPermsGUI;
 import de.themoep.settlements.rank.EmpireRank;
-import de.themoep.settlements.rank.PermissionGroup;
+import de.themoep.settlements.rank.SettlementRank;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.land.gui.RankPermsGUI;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.ChatColor;
 
@@ -91,8 +88,9 @@ public class EmpireRanksCommand extends EmpireSubCommand {
                         return false;
                     }
                 }
-                resident.getSettlement().getEmpire().setPermission(rank, permission, value);
-                Utils.runAsync(() -> DatabaseManager.getInstance().save(resident.getSettlement().getEmpire()));
+                if (resident.getSettlement().getEmpire().setPermission(rank, permission, value)) {
+                    resident.getSettlement().getEmpire().save();
+                }
                 getMessage("success").tell(resident,
                         "rank", rank.getTag(),
                         "permission", permission,
@@ -114,8 +112,19 @@ public class EmpireRanksCommand extends EmpireSubCommand {
                     return false;
                 }
                 String permission = args[1].toLowerCase();
-                if (!permission.startsWith("empire.")) {
-                    permission = "empire." + permission;
+                if (permission.startsWith("group.") || permission.startsWith("empire.group.")) {
+                    String group = permission.split("group\\.")[1];
+                    if (SettlementRank.getPermGroup(group) == null) {
+                        getError("unknown-permission-group").tell(resident, "input", permission);
+                        return true;
+                    }
+                    permission = "empire.group." + group;
+                } else if (!permission.startsWith("empire.")) {
+                    if (SettlementRank.getPermGroup(permission) == null) {
+                        permission = "empire." + permission;
+                    } else {
+                        permission = "empire.group." + permission;
+                    }
                 }
 
                 if (rank != EmpireRank.getLeader() && rank.atLeast(resident.getEmpireRank())) {
@@ -133,14 +142,15 @@ public class EmpireRanksCommand extends EmpireSubCommand {
                     }
                 }
 
-                if (!resident.hasPermission("settlements.command." + permission) || !EmpireRank.isToggleablePermission(permission)) {
+                if (!resident.hasPermission(permission) || !EmpireRank.isToggleablePermission(permission)) {
                     getError("cant-edit-permission").tell(resident, "permission", permission);
                     return true;
                 }
 
-                resident.getSettlement().getEmpire().setDefaultPermission(rank, permission);
+                if (resident.getSettlement().getEmpire().setDefaultPermission(rank, permission)) {
+                    resident.getSettlement().getEmpire().save();
+                }
                 Optional<Boolean> value = resident.getSettlement().getEmpire().getEffectivePermissionValue(rank, permission);
-                Utils.runAsync(() -> DatabaseManager.getInstance().save(resident.getSettlement().getEmpire()));
                 getMessage("success").tell(resident,
                         "rank", rank.getTag(),
                         "permission", permission,
@@ -154,25 +164,13 @@ public class EmpireRanksCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length == 0) {
-            new RanksGUI(resident.getPlayer()).open();
+            new RankPermsGUI<>("empire", resident, resident.getSettlement().getEmpire()).open();
             return true;
         }
 
         EmpireRank rank = EmpireRank.get(args[0]);
         if (rank == null) {
             getError("invalid-rank").tell(resident, "rank", args[0]);
-            return false;
-        }
-        if (args.length == 1) {
-            new RankPermGroupsGUI(resident, rank).open();
-            return true;
-        } else if (args.length == 2) {
-            PermissionGroup group = EmpireRank.getPermGroup(args[1]);
-            if (group != null) {
-                new RankPermsGUI(resident, rank, group).open();
-                return true;
-            }
-            getError("invalid-group").tell(resident, "group", args[1]);
         }
         return false;
     }
