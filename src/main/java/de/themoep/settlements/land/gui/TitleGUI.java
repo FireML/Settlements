@@ -1,0 +1,110 @@
+package de.themoep.settlements.land.gui;
+
+import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
+import de.themoep.settlements.SettlementsGUI;
+import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.land.LandOwner;
+import de.themoep.settlements.leveling.LevelInfo;
+import de.themoep.settlements.rank.Rank;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.utils.ItemUtils;
+import de.themoep.settlements.utils.Message;
+import org.bukkit.inventory.ItemStack;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class TitleGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Rank<L, R>> extends SettlementsGUI {
+    private final Resident resident;
+    private final InventoryGui gui;
+
+    public TitleGUI(@NonNull String type, Resident resident, Resident target, L landOwner) {
+        super(type + ".title");
+        this.resident = resident;
+        R rank = landOwner.getRank(target);
+        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title",
+                "state", landOwner.getStateTag(),
+                "resident", target.getName(),
+                "rank", rank.getTag(landOwner)
+        ), getSetup());
+        gui.setCloseAction(close -> false);
+        gui.setFiller(getIcon("filler"));
+        gui.addElements(getConfiguredElements());
+
+        if (resident.hasSettlement()) {
+            GuiElementGroup group = createGroup('t');
+
+            for (String title : landOwner.getTitles(rank)) {
+                group.addElement(new DynamicGuiElement('t', h -> {
+                    ItemStack item = getIcon("title");
+                    List<String> description = new ArrayList<>();
+                    description.add(getText("entry.title",
+                            "title", title,
+                            "rank", rank.getTag(landOwner)
+                    ));
+                    if (title.equals(landOwner.getTitle(target))) {
+                        ItemUtils.setGlowing(item, true);
+                        description.add(getText("entry.current",
+                                "title", title,
+                                "rank", rank.getTag(landOwner)
+                        ));
+                    }
+                    if (title.equals(landOwner.getDefaultTitle(rank))) {
+                        description.add(getText("entry.default",
+                                "title", title,
+                                "rank", rank.getTag(landOwner)
+                        ));
+                    }
+                    return new StaticGuiElement('t', item, click -> {
+                        if (!rank.above(landOwner.getRank(resident))
+                                && resident.hasPermission(type + ".title")
+                                && landOwner.setTitle(target, title)) {
+                            DatabaseManager.getInstance().saveResident(target);
+                            gui.draw();
+                            Message message = Message.get("command." + type + ".title.success." + landOwner.getStateKey() + "." + landOwner.getRank(resident).getKey());
+                            if (!message.exists()) {
+                                message = Message.get("command." + type + ".title.success.default");
+                            }
+                            message.tell(landOwner.getOnlineResidents(),
+                                    "rank", landOwner.getRank(target).getTag(landOwner),
+                                    "title", landOwner.getTitle(target),
+                                    "name", target.getName(),
+                                    "settlementname", landOwner.getName(),
+                                    "settlementstate", landOwner.getStateTag()
+                            );
+                        }
+                        return true;
+                    }, description.toArray(new String[0]));
+                }));
+            }
+
+            gui.addElement(group);
+
+            if (resident.hasPermission(type + ".titles.add")
+                    && !rank.above(landOwner.getRank(resident))
+                    && landOwner.getTitles(rank).size() < landOwner.getTitlesPerRank()) {
+                gui.addElement(new StaticGuiElement('a', getIcon("title"), click -> {
+                    if (resident.hasPermission(type + ".titles.add")) {
+                        new TitlesGUI<>(type, resident, landOwner, rank).open();
+                    }
+                    return true;
+                }, getText("add.title",
+                        "rank", rank.getTag(landOwner),
+                        "state", landOwner.getStateTag()
+                )));
+            }
+        }
+
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+    }
+
+    public void open() {
+        gui.show(resident.getPlayer());
+    }
+}

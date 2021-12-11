@@ -9,6 +9,7 @@ import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.missions.Mission;
 import de.themoep.settlements.missions.MissionData;
+import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.settlement.events.SettlementLeaveEvent;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
@@ -558,6 +559,11 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
     }
 
     @Override
+    public Collection<String> getToggleablePermissions() {
+        return RankManager.getInstance().getSettlementToggleablePerms();
+    }
+
+    @Override
     public BuildState getDefaultBuildState() {
         return BuildState.RESIDENTS;
     }
@@ -589,6 +595,41 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
             residents.remove(((Resident) target).getUUID());
             SettlementManager.getInstance().leaveSettlement((Resident) target);
         }
+    }
+
+    @Override
+    public String getTitle(Resident resident) {
+        return resident.getSettlementTitle();
+    }
+
+    @Override
+    public boolean setTitle(Resident resident, String title) {
+        return resident.setSettlementTitle(title);
+    }
+
+    @Override
+    public int getTitlesPerRank() {
+        return Config.Settlement.TITLES_PER_RANK;
+    }
+
+    @Override
+    public SettlementRank getHighestRank() {
+        return SettlementRank.getChief();
+    }
+
+    @Override
+    public SettlementRank getDefaultRank() {
+        return SettlementRank.getDefault();
+    }
+
+    @Override
+    public SettlementRank getRank(Resident resident) {
+        return isMember(resident) ? resident.getSettlementRank() : null;
+    }
+
+    @Override
+    public Collection<SettlementRank> getRanks() {
+        return RankManager.getInstance().getSettlementRanks();
     }
 
     @Override

@@ -1,4 +1,20 @@
 guis:
+  resident:
+    title:
+      setup:
+      - "ooooooooo",
+      - "         ",
+      - " ttttttt ",
+      - " ttttttt ",
+      - "    a    ",
+      - " ooobooo "
+      alignments:
+        t: center
+      elements:
+        o: lime_stained_glass_pane
+        title: paper
+        add: writable_book
+        back: barrier
   settlement:
     perms:
       setup:
@@ -49,6 +65,64 @@ guis:
         previous: arrow
         next: arrow
         back: barrier
+    rank-perms:
+      setup:
+      - "ppppppppp",
+      - "ppppppppp",
+      - "ppppppppp",
+      - "ppppppppp",
+      - "ppppppppp",
+      - "rrrrr  to"
+      elements:
+        set: lime_wool
+        inherited: green_wool
+        not-set: light_gray_wool
+        titles: writable_book
+        reset: orange_wool
+    titles:
+      setup:
+      - "ooooooooo",
+      - "    a    ",
+      - "         ",
+      - " ttttttt ",
+      - " ttttttt ",
+      - " ooobooo "
+      alignments:
+        t: center
+      elements:
+        o: lime_stained_glass_pane
+        title: paper
+        add: writable_book
+        back: barrier
+    title:
+      setup:
+      - "ooooooooo",
+      - "         ",
+      - " ttttttt ",
+      - " ttttttt ",
+      - "    a    ",
+      - " ooobooo "
+      alignments:
+        t: center
+      elements:
+        o: lime_stained_glass_pane
+        title: paper
+        add: writable_book
+        back: barrier
+    ranks-select:
+      setup:
+      - "ooooooooo",
+      - "         ",
+      - " rrrrrrr ",
+      - " rrrrrrr ",
+      - "         ",
+      - " ooobooo "
+      alignments:
+        r: center
+      elements:
+        o: lime_stained_glass_pane
+        title: paper
+        add: writable_book
   empire:
     perms:
       setup:
@@ -149,3 +223,61 @@ guis:
         previous: arrow
         next: arrow
         back: barrier
+    rank-perms:
+      setup:
+      - "ppppppppp",
+      - "ppppppppp",
+      - "ppppppppp",
+      - "ppppppppp",
+      - "ppppppppp",
+      - "rrrrr  to"
+      elements:
+        set: lime_wool
+        inherited: green_wool
+        not-set: light_gray_wool
+        titles: writable_book
+        reset: orange_wool
+    titles:
+      setup:
+      - "ooooooooo",
+      - "    a    ",
+      - "         ",
+      - " ttttttt ",
+      - " ttttttt ",
+      - " ooobooo "
+      alignments:
+        t: center
+      elements:
+        o: lime_stained_glass_pane
+        title: paper
+        add: writable_book
+        back: barrier
+    title:
+      setup:
+      - "ooooooooo",
+      - "         ",
+      - " ttttttt ",
+      - " ttttttt ",
+      - "    a    ",
+      - " ooobooo "
+      alignments:
+        t: center
+      elements:
+        o: lime_stained_glass_pane
+        title: paper
+        add: writable_book
+        back: barrier
+    ranks-select:
+      setup:
+      - "ooooooooo",
+      - "         ",
+      - " rrrrrrr ",
+      - " rrrrrrr ",
+      - "         ",
+      - " ooobooo "
+      alignments:
+        r: center
+      elements:
+        o: lime_stained_glass_pane
+        title: paper
+        add: writable_book

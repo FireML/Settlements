@@ -1,8 +1,8 @@
 package de.themoep.settlements.command.settlement;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.settlement.gui.RankSelectGUI;
-import de.themoep.settlements.settlement.gui.TitlesGUI;
+import de.themoep.settlements.land.gui.RankSelectGUI;
+import de.themoep.settlements.land.gui.TitlesGUI;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.Utils;
@@ -20,7 +20,7 @@ public class SettlementTitlesCommand extends SettlementSubCommand {
         registerCommand(new SettlementSubCommand(this, "gui") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
-                new RankSelectGUI(resident, rank -> new TitlesGUI(resident, rank).open()).open();
+                new RankSelectGUI<>("settlement", resident, resident.getSettlement(), rank -> new TitlesGUI<>("settlement", resident, resident.getSettlement(), rank).open()).open();
                 return true;
             }
         });

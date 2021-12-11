@@ -5,6 +5,7 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.NameTag;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.land.LandOwner;
+import de.themoep.settlements.utils.Next;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -22,7 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 
-public abstract class Rank<L extends LandOwner> implements NameTag, Comparable<Rank> {
+public abstract class Rank<L extends LandOwner, R extends Rankable> implements NameTag, Comparable<R>, Next<R>, Rankable {
 
     private final String name;
 
@@ -152,7 +153,7 @@ public abstract class Rank<L extends LandOwner> implements NameTag, Comparable<R
     }
 
     @Override
-    public int compareTo(Rank o) {
+    public int compareTo(Rankable o) {
         return Integer.compare(ordinal(), o.ordinal());
     }
 }

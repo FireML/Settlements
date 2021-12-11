@@ -3,10 +3,10 @@ package de.themoep.settlements.command.empire;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.rank.EmpireRank;
+import de.themoep.settlements.land.gui.RankSelectGUI;
+import de.themoep.settlements.land.gui.TitlesGUI;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.empire.gui.RankSelectGUI;
-import de.themoep.settlements.empire.gui.TitlesGUI;
 
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -20,7 +20,8 @@ public class EmpireTitlesCommand extends EmpireSubCommand {
         registerCommand(new EmpireSubCommand(this, "gui") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
-                new RankSelectGUI(resident, rank -> new TitlesGUI(resident, rank).open()).open();
+                new RankSelectGUI<>("empire", resident, resident.getSettlement().getEmpire(),
+                        rank -> new TitlesGUI<>("empire", resident, resident.getSettlement().getEmpire(), rank).open()).open();
                 return true;
             }
         });

@@ -449,6 +449,11 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     @Override
+    public Collection<String> getToggleablePermissions() {
+        return RankManager.getInstance().getEmpireToggleablePerms();
+    }
+
+    @Override
     public BuildState getDefaultBuildState() {
         return BuildState.PRIVATE;
     }
@@ -520,6 +525,41 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
             return isCapital((Settlement) target);
         }
         return false;
+    }
+
+    @Override
+    public String getTitle(Resident resident) {
+        return resident.getEmpireTitle();
+    }
+
+    @Override
+    public boolean setTitle(Resident resident, String title) {
+        return resident.setEmpireTitle(title);
+    }
+
+    @Override
+    public int getTitlesPerRank() {
+        return Config.Empire.TITLES_PER_RANK;
+    }
+
+    @Override
+    public EmpireRank getHighestRank() {
+        return EmpireRank.getLeader();
+    }
+
+    @Override
+    public EmpireRank getDefaultRank() {
+        return EmpireRank.getDefault();
+    }
+
+    @Override
+    public EmpireRank getRank(Resident resident) {
+        return isMember(resident) ? resident.getEmpireRank() : null;
+    }
+
+    @Override
+    public Collection<EmpireRank> getRanks() {
+        return RankManager.getInstance().getEmpireRanks();
     }
 
     @Override

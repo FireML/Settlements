@@ -1,13 +1,9 @@
 package de.themoep.settlements.command.settlement;
 
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.settlement.gui.RanksGUI;
-import de.themoep.settlements.settlement.gui.RankPermGroupsGUI;
-import de.themoep.settlements.settlement.gui.RankPermsGUI;
 import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.rank.PermissionGroup;
 import de.themoep.settlements.rank.SettlementRank;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.land.gui.RankPermsGUI;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.ChatColor;
 
@@ -59,8 +55,19 @@ public class SettlementRanksCommand extends SettlementSubCommand {
                 }
 
                 String permission = args[1].toLowerCase();
-                if (!permission.startsWith("settlement.") && !permission.startsWith("empire.")) {
-                    permission = "settlement." + permission;
+                if (permission.startsWith("group.") || permission.startsWith("settlement.group.")) {
+                    String group = permission.split("group\\.")[1];
+                    if (SettlementRank.getPermGroup(group) == null) {
+                        getError("unknown-permission-group").tell(resident, "input", permission);
+                        return true;
+                    }
+                    permission = "settlement.group." + group;
+                } else if (!permission.startsWith("settlement.") && !permission.startsWith("empire.")) {
+                    if (SettlementRank.getPermGroup(permission) == null) {
+                        permission = "settlement." + permission;
+                    } else {
+                        permission = "settlement.group." + permission;
+                    }
                 }
 
                 if (rank != SettlementRank.getChief() && rank.atLeast(resident.getSettlementRank())) {
@@ -78,7 +85,7 @@ public class SettlementRanksCommand extends SettlementSubCommand {
                     }
                 }
 
-                if (!resident.hasPermission("settlements.command." + permission) || !SettlementRank.isToggleablePermission(permission)) {
+                if (!resident.hasPermission(permission) || !SettlementRank.isToggleablePermission(permission)) {
                     getError("cant-edit-permission").tell(resident, "permission", permission);
                     return true;
                 }
@@ -91,8 +98,9 @@ public class SettlementRanksCommand extends SettlementSubCommand {
                         return false;
                     }
                 }
-                resident.getSettlement().setPermission(rank, permission, value);
-                Utils.runAsync(() -> DatabaseManager.getInstance().save(resident.getSettlement()));
+                if (resident.getSettlement().setPermission(rank, permission, value)) {
+                    resident.getSettlement().save();
+                }
                 getMessage("success").tell(resident,
                         "rank", rank.getTag(resident.getSettlement()),
                         "permission", permission,
@@ -137,9 +145,11 @@ public class SettlementRanksCommand extends SettlementSubCommand {
                     return true;
                 }
 
-                resident.getSettlement().setDefaultPermission(rank, permission);
+                if (resident.getSettlement().setDefaultPermission(rank, permission)) {
+                    resident.getSettlement().save();
+                }
+
                 Optional<Boolean> value = resident.getSettlement().getEffectivePermissionValue(rank, permission);
-                Utils.runAsync(() -> DatabaseManager.getInstance().save(resident.getSettlement()));
                 getMessage("success").tell(resident,
                         "rank", rank.getTag(resident.getSettlement()),
                         "permission", permission,
@@ -153,25 +163,13 @@ public class SettlementRanksCommand extends SettlementSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length == 0) {
-            new RanksGUI(resident.getPlayer()).open();
+            new RankPermsGUI<>("settlement", resident, resident.getSettlement()).open();
             return true;
         }
 
         SettlementRank rank = SettlementRank.get(args[0]);
         if (rank == null) {
             getError("invalid-rank").tell(resident, "rank", args[0]);
-            return false;
-        }
-        if (args.length == 1) {
-            new RankPermGroupsGUI(resident, rank).open();
-            return true;
-        } else if (args.length == 2) {
-            PermissionGroup group = SettlementRank.getPermGroup(args[1]);
-            if (group != null) {
-                new RankPermsGUI(resident, rank, group).open();
-                return true;
-            }
-            getError("invalid-group").tell(resident, "group", args[1]);
         }
         return false;
     }

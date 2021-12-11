@@ -6,7 +6,7 @@ import de.themoep.settlements.command.SubCommand;
 
 public class SettlementSettingsCommand extends SettlementSubCommand {
     public SettlementSettingsCommand(SubCommand parent) {
-        super(parent, "settings", "gui");
+        super(parent, "settings", "maintenance", "gui");
     }
 
     @Override

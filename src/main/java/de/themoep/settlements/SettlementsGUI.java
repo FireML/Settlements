@@ -69,4 +69,10 @@ public abstract class SettlementsGUI implements ConfigMessages {
             return GuiElementGroup.Alignment.LEFT;
         }
     }
+
+    protected GuiElementGroup createGroup(char c) {
+        GuiElementGroup group = new GuiElementGroup('c');
+        group.setAlignment(getAlignment(String.valueOf(c)));
+        return group;
+    }
 }
