@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public interface BanishCommand extends ConfigMessages, TargetParser {
 
     default boolean listBanished(Resident resident, LandOwner<?, ?> landOwner) {
-        new BanishedGUI(landOwner.getDbName(), resident, landOwner).open();
+        new BanishedGUI(landOwner.getKey(), resident, landOwner).open();
         if (true) return true;
         Utils.runAsync(() -> {
             resident.tell(getMessage("head"));

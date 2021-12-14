@@ -13,11 +13,20 @@ import de.themoep.settlements.utils.MessageUtils;
 public interface AllyCommand extends LandOwnerCommand {
 
     default boolean listAllies(Resident resident, LandOwner<?, ?> landOwner) {
-        new AlliesGUI(landOwner.getDbName(), resident, landOwner).open();
+        if (landOwner.hasUnlocked("allies")) {
+            new AlliesGUI(landOwner.getKey(), resident, landOwner).open();
+        } else {
+            Message.get("gui.unlockables.locked.npc").tell(resident);
+        }
         return true;
     }
 
     default boolean addAlly(Resident resident, LandOwner source, String[] args) {
+        if (!source.hasUnlocked("allies")) {
+            Message.get("gui.unlockables.locked.npc").tell(resident);
+            return true;
+        }
+
         if (args.length < 1) {
             return false;
         }

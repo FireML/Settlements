@@ -36,7 +36,7 @@ public class SettlementTaxCommand extends SettlementSubCommand {
                             "state", resident.getSettlement().getStateTag(),
                             "amount", String.valueOf(amount)
                     );
-                    Utils.runAsync(() -> DatabaseManager.getInstance().saveSettlement(resident.getSettlement()));
+                    resident.getSettlement().save();
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(resident, "input", args[0]);
                     return false;

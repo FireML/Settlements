@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 public abstract class SettlementsGUI implements ConfigMessages {
@@ -39,16 +40,26 @@ public abstract class SettlementsGUI implements ConfigMessages {
         return ConfigManager.getInstance().getGuisConfig().getStringList("guis." + getKey() + ".setup").toArray(new String[0]);
     }
 
-    protected Material getType(String c) {
+    protected ItemStack getIcon(String c) {
         String matStr = ConfigManager.getInstance().getGuisConfig().getString("guis." + getKey() + ".elements." + c);
         if (matStr != null) {
-            return Material.matchMaterial(matStr);
+            Material material;
+            if (matStr.contains(",")) {
+                String[] split = matStr.split(",");
+                material = Material.matchMaterial(split[0]);
+                if (material == Material.PLAYER_HEAD && split.length > 1) {
+                    if (split[1].length() > 16) {
+                        return ItemUtils.getHead(split[1]);
+                    } else if (split.length > 2 && split[2].length() == 36) {
+                        return ItemUtils.getHead(UUID.fromString(split[2]), split[1]);
+                    }
+                }
+            } else {
+                material = Material.matchMaterial(matStr);
+            }
+            return ItemUtils.toIcon(material);
         }
         return null;
-    }
-
-    protected ItemStack getIcon(String c) {
-        return ItemUtils.toIcon(getType(c));
     }
 
     protected List<GuiElement> getConfiguredElements() {

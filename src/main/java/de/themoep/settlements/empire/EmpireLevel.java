@@ -1,9 +1,9 @@
 package de.themoep.settlements.empire;
 
-import de.themoep.settlements.leveling.LevelInfo;
+import de.themoep.settlements.land.LandownerLevel;
 import org.bukkit.configuration.ConfigurationSection;
 
-public class EmpireLevel extends LevelInfo {
+public class EmpireLevel extends LandownerLevel {
     private final long upkeep;
     private final long upkeepReduction;
     private final int worldRadius;
@@ -42,6 +42,7 @@ public class EmpireLevel extends LevelInfo {
                 ", upkeepReduction=" + upkeepReduction +
                 ", worldRadius=" + worldRadius +
                 ", missions=" + missions +
+                ", npcs=" + getNPCs() +
                 '}';
     }
 }

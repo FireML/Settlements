@@ -64,6 +64,19 @@ public class ItemUtils {
         skull.setDisplayName(name);
         SettlementsPlugin.getInstance().getServerAdapter().setProfile(skull, playerId, name);
         item.setItemMeta(skull);
-        return item;
+        return hideAllFlags(item);
+    }
+
+    /**
+     * Get a head with a certain texture
+     * @param textures  The texture data
+     * @return The head item
+     */
+    public static ItemStack getHead(String textures) {
+        ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta skull = (SkullMeta) item.getItemMeta();
+        SettlementsPlugin.getInstance().getServerAdapter().setProfile(skull, UUID.randomUUID(), "Unknown", "textures", textures);
+        item.setItemMeta(skull);
+        return hideAllFlags(item);
     }
 }
