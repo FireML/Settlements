@@ -16,8 +16,6 @@ public interface DatabaseSerializable extends ConfigurationSerializable, ConfigK
         return getKey();
     }
 
-    String getDbDescription();
-
     void save();
 
     LinkedHashMap<String, Object> serialize();

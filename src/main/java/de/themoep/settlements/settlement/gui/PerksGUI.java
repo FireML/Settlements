@@ -10,11 +10,9 @@ import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.perk.LevelPerk;
+import de.themoep.settlements.perk.SettlementPerk;
 import de.themoep.settlements.perk.PerkData;
 import de.themoep.settlements.utils.ItemUtils;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -42,7 +40,7 @@ public class PerksGUI extends SettlementsGUI {
         GuiElementGroup group = new GuiElementGroup('p');
         group.setAlignment(getAlignment("p"));
 
-        for (LevelPerk perk : SettlementManager.getInstance().getPerks()) {
+        for (SettlementPerk perk : SettlementManager.getInstance().getPerks()) {
             if (settlement == null || !settlement.hasUnlocked(perk) || (!perk.hasEffects() && !perk.hasActions())) {
                 continue;
             }

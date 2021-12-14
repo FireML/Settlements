@@ -8,8 +8,11 @@ import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.land.events.LandownerChiefChangeEvent;
+import de.themoep.settlements.leveling.Levelable;
 import de.themoep.settlements.missions.Mission;
 import de.themoep.settlements.missions.MissionData;
+import de.themoep.settlements.npc.NpcManager;
+import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.settlement.events.SettlementLeaveEvent;
 import de.themoep.settlements.land.LandManager;
@@ -18,7 +21,7 @@ import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.land.TaxDebtAction;
 import de.themoep.settlements.land.BuildState;
-import de.themoep.settlements.perk.LevelPerk;
+import de.themoep.settlements.perk.SettlementPerk;
 import de.themoep.settlements.rank.RankManager;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
@@ -40,6 +43,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -247,6 +251,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
         return amount;
     }
 
+    @Override
     public long getClaimUpkeep(String world) {
         return Math.max(0, SettlementManager.getInstance().getLevel(getState(), getLevel()).map(l -> l.getClaimUpkeep(world)).orElse(0L)
                 - (hasEmpire() ? getEmpire().getClaimUpkeepReduction() : 0));
@@ -504,7 +509,15 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
     }
 
     @Override
+    public Collection<? extends LevelPerk> getPerks(int level) {
+        return SettlementManager.getInstance().getPerks().stream().filter(p -> p.getLevel() == level && p.getState() == settlementState).collect(Collectors.toList());
+    }
+
+    @Override
     public long getAmount(String key) {
+        if (key.equalsIgnoreCase("level")) {
+            return getState() == SettlementState.VILLAGE ? getLevel() : Config.Settlement.Leveling.VILLAGE_MAX_LEVEL + getLevel();
+        }
         if (key.equalsIgnoreCase("missionpoints")) {
             return missionPoints;
         }
@@ -543,8 +556,13 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
     }
 
     @Override
-    public LevelPerk getPerk(String name) {
+    public SettlementPerk getPerk(String name) {
         return SettlementManager.getInstance().getPerk(name);
+    }
+
+    @EventHandler
+    public boolean isUnlockable(String unlockable) {
+        return SettlementManager.getInstance().getUnlockables().contains(unlockable);
     }
 
     @Override
@@ -651,14 +669,14 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
     public long getTaxIncome() {
         long income = 0;
         for (Resident resident : getResidents()) {
-            if (!resident.hasRankPermission("settlement.tax.exempt")) {
+            if (!resident.hasRankPermission("settlement.tax.exempt") && !resident.isTaxExempted()) {
                 income += getTax();
             }
         }
         for (OwnedLand land : getLand()) {
             if (land.isPlot()) {
                 Resident owner = ResidentManager.getInstance().getResident(land.getPlotOwner());
-                if (owner != null && (!isMember(owner) || !owner.hasRankPermission("settlement.tax.exempt"))) {
+                if (owner != null && (!isMember(owner) || !owner.hasRankPermission("settlement.tax.exempt") || owner.isTaxExempted())) {
                     income += land.getTax();
                 }
             }
@@ -667,11 +685,13 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
     }
 
     @Override
-    public long getTax() {
-        if (Config.Settlement.MAX_TAX > -1 && super.getTax() > Config.Settlement.MAX_TAX) {
-            return Config.Settlement.MAX_TAX;
-        }
-        return super.getTax();
+    public long getMaxTax() {
+        return Config.Settlement.MAX_TAX;
+    }
+
+    @Override
+    public long getMaxAuctionTax() {
+        return Config.Settlement.MAX_AUCTION_TAX;
     }
 
     public boolean leaveEmpire() {

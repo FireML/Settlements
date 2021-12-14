@@ -1,5 +1,6 @@
 package de.themoep.settlements.command.empire;
 
+import de.themoep.settlements.land.gui.BankGUI;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.SettlementsPlugin;
@@ -7,6 +8,7 @@ import de.themoep.settlements.command.HelpCommand;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.LogType;
+import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.entity.Player;
@@ -103,6 +105,10 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
+        if (args.length == 0) {
+            new BankGUI(resident, resident.getSettlement().getEmpire()).open();
+            return true;
+        }
         return false;
     }
 }

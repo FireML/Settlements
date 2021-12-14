@@ -3,14 +3,18 @@ package de.themoep.settlements.perk;
 import de.themoep.settlements.utils.ConfigKey;
 import de.themoep.settlements.utils.NameTag;
 import de.themoep.settlements.land.LandOwner;
+import de.themoep.settlements.world.SimpleChunkLocation;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class Perk implements NameTag {
@@ -28,6 +32,7 @@ public class Perk implements NameTag {
     private int bonusClaims = 0;
     private int bonusOutposts = 0;
     private List<String> commands = new ArrayList<>();
+    private Collection<String> unlockables = new LinkedHashSet<>();
     private Map<String, Long> unlockCost = new HashMap<>();
     private Map<String, Long> repeatCost = new HashMap<>();
     protected Map<String, Action> actions = new LinkedHashMap<>();
@@ -53,6 +58,9 @@ public class Perk implements NameTag {
         this.bonusClaims = config.getInt("bonus.claims", bonusClaims);
         this.bonusOutposts = config.getInt("bonus.outposts", bonusOutposts);
         this.commands = config.getStringList("run-command");
+        for (String s : config.getStringList("unlockables")) {
+            this.unlockables.add(s.toLowerCase(Locale.ROOT));
+        }
         if (config.isConfigurationSection("cost.unlock")) {
             for (String type : config.getConfigurationSection("cost.unlock").getKeys(false)) {
                 unlockCost.put(type, config.getLong("cost.unlock." + type));
@@ -163,6 +171,10 @@ public class Perk implements NameTag {
             }
         }
         return states;
+    }
+
+    public Collection<String> getUnlockables() {
+        return unlockables;
     }
 
     public interface ActionExecutor {

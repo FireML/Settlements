@@ -5,7 +5,7 @@ import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.gui.ShopGUI;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.perk.LevelPerk;
+import de.themoep.settlements.perk.SettlementPerk;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 
@@ -19,7 +19,7 @@ public class SettlementShopCommand extends SettlementSubCommand {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length > 0) {
-                    LevelPerk perk = SettlementManager.getInstance().getPerk(String.join(" ", args));
+                    SettlementPerk perk = SettlementManager.getInstance().getPerk(String.join(" ", args));
                     if (perk == null) {
                         getError("unknown-perk").tell(resident, "perk", String.join(" ", args));
                     } else if (!perk.matchesLevelRequirement(resident.getSettlement())) {
@@ -31,9 +31,9 @@ public class SettlementShopCommand extends SettlementSubCommand {
                     } else if (resident.getSettlement().hasUnlocked(perk)) {
                         getError("already-unlocked").tell(resident, "perk", perk.getTag());
                     } else if (resident.getSettlement().remove(perk.getUnlockCost())) {
-                        resident.getSettlement().unlockPerk(resident.getPlayer(), perk);
-                        MessageUtils.tellResidents(resident.getSettlement().getOnlineResidents(), getMessage("success"), "perk", perk.getTag());
-                        DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
+                        resident.getSettlement().unlockPerk(resident, perk);
+                        getMessage("success").tell(resident.getSettlement(), "perk", perk.getTag());
+                        resident.getSettlement().save();
                         Utils.runAsync(() -> DatabaseManager.getInstance().log(resident.getSettlement(), resident, "perk-unlock", perk.getUnlockCost()));
                     } else {
                         getError("not-possible").tell(resident,
@@ -50,7 +50,7 @@ public class SettlementShopCommand extends SettlementSubCommand {
                     return true;
                 }
                 getMessage("usage.head").tell(resident, "name", "Unlock Perks");
-                for (LevelPerk perk : SettlementManager.getInstance().getPerks()) {
+                for (SettlementPerk perk : SettlementManager.getInstance().getPerks()) {
                     if (!resident.getSettlement().hasUnlocked(perk) && perk.matchesLevelRequirement(resident.getSettlement())) {
                         getMessage("usage.entry").tell(resident, "usage", getUsage(base).replace("<perk>", perk.name()), "description", perk.getTag());
                     }
@@ -62,7 +62,7 @@ public class SettlementShopCommand extends SettlementSubCommand {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length > 0) {
-                    LevelPerk perk = SettlementManager.getInstance().getPerk(String.join(" ", args));
+                    SettlementPerk perk = SettlementManager.getInstance().getPerk(String.join(" ", args));
                     if (perk == null) {
                         getError("unknown-perk").tell(resident, "perk", String.join(" ", args));
                     } else if (!resident.getSettlement().hasUnlocked(perk)) {
@@ -95,7 +95,7 @@ public class SettlementShopCommand extends SettlementSubCommand {
                     return true;
                 }
                 getMessage("usage.head").tell(resident, "name", "Repeat Perks");
-                for (LevelPerk perk : SettlementManager.getInstance().getPerks()) {
+                for (SettlementPerk perk : SettlementManager.getInstance().getPerks()) {
                     if (resident.getSettlement().hasUnlocked(perk) && resident.getSettlement().checkPerkCount(perk)) {
                         getMessage("usage.entry").tell(resident, "usage", getUsage(base) + " " + perk.name(), "description", perk.getTag());
                     }

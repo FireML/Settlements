@@ -31,10 +31,10 @@ public class EmpireShopCommand extends EmpireSubCommand {
                     } else if (resident.getSettlement().getEmpire().hasUnlocked(perk)) {
                         getError("already-unlocked").tell(resident, "perk", perk.getTag());
                     } else if (resident.getSettlement().remove(perk.getUnlockCost())) {
-                        resident.getSettlement().getEmpire().unlockPerk(resident.getPlayer(), perk);
-                        MessageUtils.tellResidents(resident.getSettlement().getOnlineResidents(), getMessage("success"), "perk", perk.getTag());
+                        resident.getSettlement().getEmpire().unlockPerk(resident, perk);
+                        getMessage("success").tell(resident.getSettlement().getEmpire(), "perk", perk.getTag());
+                        resident.getSettlement().getEmpire().save();
                         Utils.runAsync(() -> {
-                            DatabaseManager.getInstance().saveEmpire(resident.getSettlement().getEmpire());
                             DatabaseManager.getInstance().log(resident.getSettlement().getEmpire(), resident, "perk-unlock", perk.getUnlockCost());
                         });
                     } else {
