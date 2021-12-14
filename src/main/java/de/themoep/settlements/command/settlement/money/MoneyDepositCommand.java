@@ -5,6 +5,7 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.command.settlement.SettlementSubCommand;
 import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -15,6 +16,11 @@ public class MoneyDepositCommand extends SettlementSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
+        if (!resident.getSettlement().hasUnlocked("command.bank")) {
+            Message.get("gui.unlockables.locked.npc").tell(resident);
+            return true;
+        }
+
         if (args.length < 1) {
             return false;
         }

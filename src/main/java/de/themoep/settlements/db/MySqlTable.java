@@ -26,6 +26,7 @@ public enum MySqlTable {
             + "bank BIGINT,"
             + "joinFee BIGINT,"
             + "tax BIGINT,"
+            + "auctionTax BIGINT,"
             + "taxDebtAction VARCHAR(255) NOT NULL,"
             + "finishedMissions BIGINT,"
             + "bonusClaims INTEGER,"
@@ -88,6 +89,16 @@ public enum MySqlTable {
             + "lastUsed BIGINT,"
             + "active BOOLEAN,"
             + "UNIQUE (empireId, perk)"
+            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
+
+    EMPIRE_NPCS("CREATE TABLE IF NOT EXISTS {tablePrefix}empire_npcs ("
+            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+            + "empireId INTEGER, INDEX(empireId),"
+            + "FOREIGN KEY (empireId) REFERENCES {tablePrefix}empires(id) ON DELETE CASCADE,"
+            + "type VARCHAR(255) NOT NULL,"
+            + "npcId INTEGER NOT NULL,"
+            + "level INTEGER NOT NULL,"
+            + "UNIQUE (empireId, type)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     EMPIRE_USES("CREATE TABLE IF NOT EXISTS {tablePrefix}empire_uses ("
@@ -153,6 +164,7 @@ public enum MySqlTable {
             + "bank BIGINT,"
             + "joinFee BIGINT,"
             + "tax BIGINT,"
+            + "auctionTax BIGINT,"
             + "taxDebtAction VARCHAR(255) NOT NULL,"
             + "missionPoints BIGINT,"
             + "bonusClaims INTEGER,"
@@ -208,6 +220,16 @@ public enum MySqlTable {
             + "UNIQUE (settlementId, perk)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
+    SETTLEMENT_NPCS("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_npcs ("
+            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+            + "settlementId INTEGER, INDEX(settlementId),"
+            + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
+            + "type VARCHAR(255) NOT NULL,"
+            + "npcId INTEGER NOT NULL,"
+            + "level INTEGER NOT NULL,"
+            + "UNIQUE (settlementId, type)"
+            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
+
     SETTLEMENT_USES("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_uses ("
             + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
             + "settlementId INTEGER, INDEX(settlementId),"
@@ -230,7 +252,7 @@ public enum MySqlTable {
 
     SETTLEMENT_UNBANISHED("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_unbanished ("
             + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-            + "settlementId INTEGER, INDEX (empireId),"
+            + "settlementId INTEGER, INDEX (settlementId),"
             + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
             + "banished_id VARCHAR(128) NOT NULL,"
             + "banished_date BIGINT(11) NOT NULL,"
@@ -346,7 +368,8 @@ public enum MySqlTable {
 
     CLAIMS("CREATE TABLE IF NOT EXISTS {tablePrefix}claims ("
             + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-            + "settlementId INTEGER NOT NULL, INDEX (settlementId), "
+            + "ownerType VARCHAR(64), INDEX(ownerType),"
+            + "ownerId INTEGER NOT NULL, INDEX(ownerId),"
             + "world VARCHAR(255),INDEX(world),"
             + "x INTEGER,INDEX(x),"
             + "z INTEGER,INDEX(z),"

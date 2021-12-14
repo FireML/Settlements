@@ -73,10 +73,12 @@ public class ConfigManager {
     private ConfigAccessor messages;
     private ConfigAccessor commands;
     private ConfigAccessor data;
-    private ConfigAccessor levelConf;
+    private ConfigAccessor settlementLevelConf;
     private ConfigAccessor empireLevelConf;
     private ConfigAccessor empireMissionsConf;
     private ConfigAccessor mapConf;
+    private ConfigAccessor npcConf;
+    private ConfigAccessor npcLevelConf;
     private ConfigAccessor settlementPerksConf;
     private ConfigAccessor empirePerksConf;
     private ConfigAccessor eventsConf;
@@ -165,11 +167,13 @@ public class ConfigManager {
         messages = new ConfigAccessor(SettlementsPlugin.getInstance(), "messages.yml");
         data = new ConfigAccessor(SettlementsPlugin.getInstance(), "data.yml");
         commands = new ConfigAccessor(SettlementsPlugin.getInstance(), "commands.yml");
-        levelConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "levelConf.yml");
+        settlementLevelConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "settlementLevelConf.yml");
         empireLevelConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "empireLevelConf.yml");
         convertEmpireLevels();
         empireMissionsConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "empireMissions.yml");
         mapConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "mapConf.yml");
+        npcConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "npcConf.yml");
+        npcLevelConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "npcLevelConf.yml");
         settlementPerksConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "settlementPerksConf.yml");
         empirePerksConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "empirePerksConf.yml");
         settlementRanksConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "settlementRanks.yml");
@@ -483,8 +487,8 @@ public class ConfigManager {
         return data;
     }
 
-    public FileConfiguration getLevelConfig() {
-        return levelConf.getConfig();
+    public FileConfiguration getSettlementLevelConfig() {
+        return settlementLevelConf.getConfig();
     }
 
     public FileConfiguration getEmpireLevelConfig() {
@@ -497,6 +501,14 @@ public class ConfigManager {
 
     public FileConfiguration getMapConfig() {
         return mapConf.getConfig();
+    }
+
+    public FileConfiguration getNpcConfig() {
+        return npcConf.getConfig();
+    }
+
+    public FileConfiguration getNpcLevelConfig() {
+        return npcLevelConf.getConfig();
     }
 
     public FileConfiguration getPerksConfig() {

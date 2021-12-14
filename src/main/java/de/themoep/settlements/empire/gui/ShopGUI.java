@@ -175,10 +175,10 @@ public class ShopGUI extends SettlementsGUI {
                             } else if (resident.hasPermission("empire.shop.unlock")
                                     && resident.getSettlement().getEmpire().canUnlock(perk)
                                     && resident.getSettlement().getEmpire().remove(perk.getUnlockCost())) {
-                                resident.getSettlement().getEmpire().unlockPerk((Player) click.getWhoClicked(), perk);
+                                resident.getSettlement().getEmpire().unlockPerk(resident, perk);
                                 Message.get("command.empire.shop.unlock.success")
-                                        .tell(resident.getSettlement().getEmpire().getOnlineResidents(), "perk", perk.getTag());
-                                DatabaseManager.getInstance().saveEmpire(resident.getSettlement().getEmpire());
+                                        .tell(resident.getSettlement().getEmpire(), "perk", perk.getTag());
+                                resident.getSettlement().getEmpire().save();
                                 Utils.runAsync(() -> DatabaseManager.getInstance().log(resident.getSettlement().getEmpire(), resident, "perk-unlock", perk.getUnlockCost()));
                                 gui.draw();
                             }

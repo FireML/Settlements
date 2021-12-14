@@ -13,10 +13,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class SpigotAdapter implements ServerAdapter {
 
@@ -78,5 +82,13 @@ public class SpigotAdapter implements ServerAdapter {
     @Override
     public CommandMap getCommandMap() {
         return commandMap;
+    }
+
+    @Override
+    public ItemMeta createBookMeta(BookMeta bookMeta, String title, String author, List<BaseComponent[]> pages) {
+        bookMeta.setTitle(title);
+        bookMeta.setAuthor(author);
+        bookMeta.setPages(pages.stream().map(TextComponent::toLegacyText).collect(Collectors.toList()));
+        return bookMeta;
     }
 }

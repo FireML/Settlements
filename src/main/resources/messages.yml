@@ -1,4 +1,16 @@
 server-rules: "&6https://apeironmc.com/rules"
+rules:
+  book-text: |-
+    Terms and Conditions
+    1) Follow server rules
+    apeironmc.com/rules
+    
+    2) Respect everyone
+    {rules}
+    
+    {accept}
+  accept-action: |-
+    [\\[Accept\\]](/s rules accept)
 error:
   missing-settlement-id: "&cInternal error. Settlement ID is null?"
   missing-empire-id: "&cInternal error. Empire ID is null?"
@@ -6,7 +18,10 @@ error:
   not-in-current: "&c&l(!) &r&7Not currently in settlement."
   not-in-settlement: "&c&lTarget player {player} isn't in a settlement!"
   not-in-empire: "&c&l(!) &r&7Not currently in your empire."
+  unknown-npc-type: "&c&l(!) &r&7{input} is not a valid NPC type!"
+  unknown-npc: "&c&l(!) &r&7No {input} NPC in your {state}!"
   no-permission: "&cNo permission."
+  function-not-unlocked: "&cUpgrade NPC to unlock!"
   no-channel-permission: "&cNo permission to use {channel} channel!"
   not-a-channel: "&cChat Channel &6{name}&c is not valid channel!"
   not-enough-money: "&c&lNot enough money in your account to pay &r&6&l{amount}&r&c&l!"
@@ -150,6 +165,10 @@ scoreboard:
 empire-world-generated: "&a&lCreated your own empire world!"
 levels:
   upgrade: "&d&lLEVEL UP &r&7Your {state} is now level &d{level}"
+  upgrade-mail: |-
+    {name} was upgraded to {level}!
+    Access granted to:
+    {perks}
   upgrade-settlement: "&a&lSUCCESS &r&7The settlement has been upgraded to &e{state}!"
   perk-available: "&7Perk &6&l{perk} &7&lcan be unlocked!"
   perk-unlocked: "&6&l{perk} &7&lhas been unlocked!"
@@ -534,6 +553,8 @@ integration:
     sold-to-shop: "&a[Shop] {seller} sold {item} for {price} to your {state} shop at {world}/{x}/{y}/{z}."
     not-enough-space: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 is full! ({seller} tried to sell)"
     not-enough-money: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 can't loose money as you need it to pay your upkeep! ({seller} tried to sell)"
+  citizens:
+    new-npc-available: "&7NPC &6&l{npc} &7&lis now available at the {state} Home!"
   lwc:
     only-in-settlement: "&c&lYou can only lock things in a settlement claim!"
     state:
@@ -652,6 +673,20 @@ lock:
       private: "&e&l(!) &r&7Only the &ePlot owner&7 can build here."
       friends: "&e&l(!) &r&7Only the &ePlot owner's friends&7 can build here."
 gui:
+  no-permission: "&cUnable to modify"
+  unlockables:
+    locked:
+      npc: "&cUpgrade NPC to unlock!"
+      level: "&cUpgrade {state} to unlock!"
+      perk: "&cNot purchased yet!"
+    unlocked:
+      open: "&bClick to open"
+      change: "&bClick to change"
+      set: "&bClick to set"
+      use: "&bClick to use"
+      options: "&bClick for more options"
+      browse: "&bClick to browse"
+      view: "&bClick to view"
   chat:
     channel-select:
       title: "&2&l/chat colour"
@@ -721,6 +756,77 @@ gui:
         &7- Residents
       private: |-
         &7Only Residents can teleport to home
+  bank:
+    title: "Banker"
+    donations: |-
+      &eDonations
+      &fGive me your money!
+      
+      {action}
+    balance: |-
+      &eBalance
+      
+      &fCurrent Balance: &e${balance}
+    storage: |-
+      &eStorage Chest
+      &fShared storage of the
+      
+      {action}
+    history: |-
+      &eBank History
+      List of recent bank donations
+  
+      {action}
+    upkeep: |-
+      &eUpkeep
+      &fPrepare for upkeep to prevent
+      &fyour {state} from degrading
+      
+      &fLand tax: &e${upkeepperclaim} per claim
+      &fUpkeep cost: &e${upkeep}
+      
+      &fCan afford for: &e{afford} days
+      &fTime till upkeep: &e{time}
+      &fPayment for upkeep is taken directly from Bank
+    taxes: |-
+      &eCurrent Taxes
+      
+      &fResident taxes: &e${tax}
+      &fAuction taxes: &e${auctiontax}
+    manage-taxes: |-
+      &eManage Taxes
+      
+      {action}
+  manage-taxes:
+    tax:
+      button: |-
+        &eChange Taxes
+        &fCharge your residents with taxes!
+        &fThese taxes will be taken from their
+        &fbalance every {hour}. Server time.
+        
+        &fCurrent Tax: &e${tax}
+        
+        &bClick to edit
+        
+        &fCooldown on change: {cooldown}
+      anvil:
+        title: "Set tax"
+        placeholder: "{tax}"
+    auctiontax:
+      button: |-
+        &eAuction Taxes
+        &fCharge players for using the
+        &fAuctioneer!
+        
+        &fCurrent Tax: &e${auctiontax}
+        
+        &bClick to edit
+        
+        &fCooldown on change: {cooldown}
+      anvil:
+        title: "Set auction tax"
+        placeholder: "{auctiontax}"
   banished:
     title: "/s banished"
     sort: |-
@@ -765,27 +871,27 @@ gui:
       &fPlayers who had been restricted
       &ffrom entering the {state}
       
-      &bClick for more options
+      {action}
     allies: |-
       &eManage Allies
-      
-      &bClick for more options
+  
+      {action}
     ranks: |-
       &eManage Ranks and Titles
       &f{state} Rank management
-      
-      &bClick for more options
+  
+      {action}
     settings: |-
       &eMange {state}
       &fManage Perks and Settings
-      
-      &bClick for more options
+  
+      {action}
     land: |-
       &eManage Land Settings
       &fModify the modes and access
       &fto your claimed land
   
-      &bClick for more options
+      {action}
   build:
     title: "&2&l/s build"
     set-state: "&7&lAllow &b&l{state}&7&l to Build"
@@ -1484,8 +1590,8 @@ gui:
     rename:
       entry: |-
         &eRename {state}
-      
-        &bClick to change
+  
+        {action}
       anvil:
         title: "Input new name"
         placeholder: "{name}"
@@ -1494,7 +1600,7 @@ gui:
         &eControl your perks!
         {perks}
   
-        &bClick to see more options
+        {action}
       list: "&f{name}"
     rules:
       entry: |-
@@ -1503,16 +1609,20 @@ gui:
         &fThis will notify everyone if
         &fyou made any changes
         
-        &bClick to edit
+        &bClick with a book to use
+        &bbook text as rules!
+  
+        {action}
       info:
         actionbar: "Write your new rules or leave empty to keep old ones!"
       updated: "&7{state} rules been updated! Read them with [&e/s rules](/s rules)"
+      mail: "{state} rules have been updated! Date: {date}"
     discord:
       entry: |-
         &eSet Discord link
         &f{discord}
-    
-        &bClick to edit
+  
+        {action}
       anvil:
         title: "Input new discord link"
         placeholder: "{discord}"
@@ -1522,8 +1632,8 @@ gui:
         &fAdd a charge for joining
         
         &fCurrent Joining fee: &e${joinfee}
-    
-        &bClick to edit
+  
+        {action}
       anvil:
         title: "Input new join fee"
         placeholder: "{joinfee}"
@@ -1534,8 +1644,8 @@ gui:
         &fyour settlement!
         
         &fCurrent: &e{description}
-    
-        &bClick to edit
+  
+        {action}
       anvil:
         title: "Input new message"
         placeholder: "{description}"
@@ -1549,13 +1659,13 @@ gui:
       &fResidents - Residents only
       
       &fState: &e{access}
-      &bClick to change states
+      {action}
     recruitement: |-
       &eRecruitement
       &fMethod of joining the settlement
       
       &fCurrent: &e{jointype}
-      &bClick to change
+      {action}
   recruitment:
     title: "Select recruitment type"
     back: "&c&lBack"
@@ -1567,7 +1677,7 @@ gui:
       anyone: |-
         &7Anyone can join
       apply: |-
-        &7Requires application
+        &7Apply at Elder
   manage:
     home: |-
       &a&l{state} Home
@@ -1814,6 +1924,55 @@ gui:
     &a➤ &fAlly = &eAllies & Residents
     &a➤ &fTrusted = &eEmpire & Allies & Residents
     &a➤ &fPublic = &eEveryone
+  upgrade:
+    title: "Quarter Master"
+    navigation:
+      entry: |-
+        &e{name}
+        
+        {description}
+      description:
+        upgraded: |-
+          &aFully upgraded!
+        upgradable: |-
+          &fUpgrade this {type}!
+          {action}
+        locked: |-
+          &cUnlock this NPC first!
+      action:
+        switch: |-
+          &bClick to change tab
+        current: |-
+          &bYou are currently on this tab!
+    requirement:
+      left: |-
+        &e{name}
+        &f(&e{progress}&f/&e{required})
+      reached: |-
+        &e{name}
+        &a({progress}/{required}) Completed!
+    info: |-
+      &eProgress for {name}
+      &fUpgrading this to the next level
+      &fwill unlock the following benefits:
+      {benefits}
+    benefit: "&a➤ {name}"
+    progress: |-
+      &eHow to upgrade
+      &fYou will need to collect the materials that
+      &fare listed above and deposit them to complete
+      &fthe upgrade process!
+      
+      &fProgress {progressbar}
+    progress-bar:
+      finished: "&a{bars}"
+      left: "&f{bars}"
+    deposit: |-
+      &eDeposit Here!
+      &fDeposit the required materials here
+      &fin order to upgrade your {name}
+      
+      &bClick to deposit!
   vault:
     title: "&2&l/s deposit"
     success-deposit: "&6&l{player} &7&lhas deposited:"
@@ -2357,14 +2516,6 @@ command:
     mapart:
       description: Teleport to your settlement plot
       no-plot: "&c&l(!) &r&7Your {state} does not have a plot yet! Purchase it with [/{base} shop](/{base} shop)"
-    materials:
-      max-level-reached: "&c&lYour {state} already has the max level!"
-      head: "&a⊱&m━━━━&r&6Required Materials&a&m━━━━&a⊰"
-      requirement:
-        todo: "&r&f(&e{progress}&f/&e{required}&f) - {type}"
-        done: "&r&f(&a{progress}&f/&a{required}&f) - {type}"
-      footer: "&7Deposit items with [&e/s deposit](/s deposit)"
-      description: Shows you the materials required to upgrade
     missions:
       wait-for-missions: "&c&lYour {state} does not have any missions yet. Wait for the next distribution!"
       description: View missions available to your settlement
@@ -2590,6 +2741,14 @@ command:
         description: Sets the action for when a player can't pay the tax
       exempt:
         description: Exempts a resident from having to pay the tax
+    auctiontax:
+      current: "&7Your {state}'s auction tax is &e{amount}&7!"
+      description: Settlement auction taxes
+      set:
+        success: "&e&l(!) &r&7{state} auction tax was set &e{amount}&7!"
+        above-max: "&c&l(!) &cMax auction tax amount is &e{max}&c!"
+        below-zero: "&c&l(!) &cAuction tax amount cannot be negative!"
+        description: Sets the auction tax a player needs to pay when putting up an item for auction
     teleporters:
       description: Teleporter GUI
     title:
@@ -2692,15 +2851,6 @@ command:
       all:
         description: Sets all flags to a certain state
     description: Settlement management command
-    deposit:
-      description: Deposit an item into the vault
-      history:
-        head: "&a⊱&m━━━━&r&6Vault History [{page}/{maxpage}]&a&m━━━━&a⊰"
-        entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
-        footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
-        previous: "&b<< Prev "
-        next: "&b Next >>"
-        description: Show the vault's history
     rules:
       description: Links you to the rules
     settings:
@@ -2816,15 +2966,6 @@ command:
     setdescription:
       success: "&aSet description of your empire to &r{description}"
       description: Set the description of an empire
-    deposit:
-      description: Deposit an item into the vault
-      history:
-        head: "&a⊱&m━━━━&r&6Vault History [{page}/{maxpage}]&a&m━━━━&a⊰"
-        entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
-        footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
-        previous: "&b<< Prev "
-        next: "&b Next >>"
-        description: Show the vault's history
     disband:
       confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l to confirm the &r&e&ldisbanding&r&c&l of your empire."
       success: "&e&l(!) &r&7Your {chieftitle} {chief} has deleted your Empire."
@@ -2932,14 +3073,6 @@ command:
       description: "Allows sending a mail to all chiefs of empire member settlements"
       sender: "Leader {name}, Empire {empirename}"
       sent: "&a&lSUCCESS &r&7Sent mail to {amount} chiefs of empire member settlements!"
-    materials:
-      max-level-reached: "&c&lYour Empire already has the max level!"
-      head: "&a⊱&m━━━━&r&6Required Materials&a&m━━━━&a⊰"
-      requirement:
-        todo: "&r&f(&e{progress}&f/&e{required}&f) - {type}"
-        done: "&r&f(&a{progress}&f/&a{required}&f) - {type}"
-      footer: "&7Deposit items with [&e/e deposit](/e deposit)"
-      description: Shows you the materials required to upgrade
     mode:
       modes: "&cAvailable modes: {modes}"
       success: "&7Empire mode &6{mode}&7 set to &6{value}"
@@ -3150,6 +3283,14 @@ command:
         description: Sets the action for when a settlement can't pay the tax
       exempt:
         description: Exempts a resident from having to pay the plot taxes in this empire
+    auctiontax:
+      current: "&7Your empire's auction tax is &e{amount}&7!"
+      description: Empire auction taxes
+      set:
+        success: "&e&l(!) &r&7Empire auction tax was set &e{amount}&7!"
+        above-max: "&c&l(!) &cMax auction tax amount is &e{max}&c!"
+        below-zero: "&c&l(!) &cAuction tax amount cannot be negative!"
+        description: Sets the auction tax a player needs to pay when putting up an item for auction
     title:
       description: "Set your title"
       success:

@@ -1,4 +1,4 @@
-# Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:levelconf.yml
+# Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:settlementlevelconf.yml
 
 village:
   level-1:
@@ -8,6 +8,9 @@ village:
     chunks: 20
     outposts: 1
     extra-missions: 0
+    npcs:
+    - manager
+    - quarter_master
   level-2:
     claim-upkeep: 480
     per-world-upkeep:

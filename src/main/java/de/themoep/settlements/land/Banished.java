@@ -45,11 +45,6 @@ public class Banished implements DatabaseSerializable {
     }
 
     @Override
-    public String getDbDescription() {
-        return banishedId.toString();
-    }
-
-    @Override
     public void save() {
         throw new UnsupportedOperationException("Cannot save an individual Banish entry");
     }

@@ -16,11 +16,11 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new ChatCommand());
         registerCommand(new EmpireAlliesCommand(this));
         registerCommand(new EmpireAllyCommand(this));
+        registerCommand(new EmpireAuctionTaxCommand(this));
         registerCommand(new EmpireBanishCommand(this));
         registerCommand(new EmpireBanishedCommand(this));
         registerCommand(new EmpireBuildCommand(this));
         registerCommand(new EmpireCreateCommand(this));
-        registerCommand(new EmpireDepositCommand(this));
         registerCommand(new EmpireDescriptionCommand(this));
         registerCommand(new EmpireDisbandCommand(this));
         registerCommand(new EmpireDiscordCommand(this));
@@ -34,7 +34,6 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpireListCommand(this));
         registerCommand(new EmpireMailCommand(this));
         registerCommand(new EmpireMapCommand(this));
-        registerCommand(new EmpireMaterialsCommand(this));
         registerCommand(new EmpireMemberListCommand(this));
         if (Config.Empire.Missions.ENABLED) {
             registerCommand(new EmpireMissionsCommand(this));
