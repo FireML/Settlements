@@ -7,11 +7,11 @@ public class UtilTime {
     private static final DecimalFormat SECONDS_FORMAT = new DecimalFormat("#.#");
 
     public static String format(final long milliSeconds) {
-        return format(TimeUnit.MILLISECONDS.toSeconds(milliSeconds));
+        return format(milliSeconds / 1000d);
     }
 
     public static String format(final long milliSeconds, boolean one) {
-        return format(TimeUnit.MILLISECONDS.toSeconds(milliSeconds), true);
+        return format(milliSeconds / 1000d, true);
     }
 
     public static String format(double seconds) {

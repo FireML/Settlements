@@ -141,6 +141,10 @@ public class Message {
         MessageUtils.tellResidents(residents, this, replacements);
     }
 
+    public void tell(Targetable targetable, String... replacements) {
+        MessageUtils.tellResidents(targetable.getOnlineResidents(), this, replacements);
+    }
+
     public void tell(Resident resident, String... replacements) {
         MessageUtils.tell(resident, this, replacements);
     }

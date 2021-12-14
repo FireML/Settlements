@@ -16,6 +16,10 @@ public abstract class SettlementSubCommand extends ResidentPermsSubCommand {
             getError("settlement-required").tell(resident);
             return false;
         }
+        if (!resident.getSettlement().hasUnlocked(getPermission())) {
+            getError("function-not-unlocked").tell(resident);
+            return true;
+        }
         return super.testAccess(resident);
     }
 

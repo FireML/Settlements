@@ -6,7 +6,7 @@ import de.themoep.settlements.empire.gui.SettingsGUI;
 
 public class EmpireSettingsCommand extends EmpireSubCommand {
     public EmpireSettingsCommand(SubCommand parent) {
-        super(parent, "settings", "maintenance", "gui");
+        super(parent, "settings", "maintenance", "manager", "manage");
     }
 
     @Override
