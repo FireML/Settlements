@@ -1,0 +1,20 @@
+settlement:
+  manager:
+    type: player
+    name: Manager
+    # Skin settings for player NPCs
+    skin:
+      name: Skinname
+      textures: texturedata
+      signature: texturesignature
+    messages:
+    - Hello
+    - Hi
+    message-delay: 20
+    message-range: 5
+  quarter_master:
+    type: villager
+    name: Manager
+    villager:
+      profession: librarian
+      type: plains
