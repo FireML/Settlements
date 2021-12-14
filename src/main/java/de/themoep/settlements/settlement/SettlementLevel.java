@@ -1,12 +1,12 @@
 package de.themoep.settlements.settlement;
 
-import de.themoep.settlements.leveling.LevelInfo;
+import de.themoep.settlements.land.LandownerLevel;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class SettlementLevel extends LevelInfo {
+public class SettlementLevel extends LandownerLevel {
     private final int chunks;
     private final int outposts;
     private final long claimUpkeep;
@@ -52,6 +52,7 @@ public class SettlementLevel extends LevelInfo {
                 ", outposts=" + outposts +
                 ", claimUpkeep=" + claimUpkeep +
                 ", worldClaimUpkeep=" + worldClaimUpkeep +
+                ", npcs=" + getNPCs() +
                 '}';
     }
 }

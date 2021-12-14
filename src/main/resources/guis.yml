@@ -75,6 +75,58 @@ guis:
         page: paper
         sort: hopper
         back: barrier
+    bank:
+      setup:
+      - "ooooooooo",
+      - "    d    ",
+      - "    a    ",
+      - " sh u tm ",
+      - "         ",
+      - " ooobooo "
+      alignments:
+        p: center
+      elements:
+        o: yellow_stained_glass_pane
+        donations: hopper
+        storage: chest
+        history: book
+        upkeep: gold_ingot
+        taxes: map
+        manage-taxes: cartography_table
+        back: barrier
+    manage-taxes:
+      setup:
+      - "ooooooooo",
+      - "         ",
+      - "         ",
+      - "  t   a  ",
+      - "         ",
+      - " ooobooo "
+      alignments:
+        p: center
+      elements:
+        o: yellow_stained_glass_pane
+        tax: name_tag
+        auction-tax: beacon
+        back: barrier
+    upgrade:
+      setup:
+      - "lllllllll",
+      - "rrrrrrrrr",
+      - "rrrrrrrrr",
+      - "rrrrrrrrr",
+      - "rrrrrrrrr",
+      - " oipdobo "
+      alignments:
+        p: center
+      elements:
+        o: orange_stained_glass_pane
+        settlement: cobblestone_wall
+        progress: anvil
+        deposit: compostor
+        back: barrier
+        requirement:
+          missionpoints: red_banner
     perks:
       setup:
       - "ooooooooo",
@@ -378,6 +430,25 @@ guis:
         states: book
         previous: arrow
         next: arrow
+        back: barrier
+    bank:
+      setup:
+      - "ooooooooo",
+      - "    d    ",
+      - "    a    ",
+      - " sh u tm ",
+      - "         ",
+      - " ooobooo "
+      alignments:
+        p: center
+      elements:
+        o: yellow_stained_glass_pane
+        donations: hopper
+        storage: chest
+        history: book
+        upkeep: gold_ingot
+        taxes: map
+        manage-taxes: cartography_table
         back: barrier
   plot:
     perms:

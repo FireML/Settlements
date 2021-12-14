@@ -36,11 +36,6 @@ public class Ally implements DatabaseSerializable {
     }
 
     @Override
-    public String getDbDescription() {
-        return type + ":" + id;
-    }
-
-    @Override
     public void save() {
         throw new UnsupportedOperationException("Cannot save an individual Ally");
     }

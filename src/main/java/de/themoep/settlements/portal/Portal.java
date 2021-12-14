@@ -41,11 +41,6 @@ public class Portal implements DatabaseSerializable {
     }
 
     @Override
-    public String getDbDescription() {
-        return getLocation().getKey();
-    }
-
-    @Override
     public void save() {
         DatabaseManager.getInstance().savePortal(this);
     }

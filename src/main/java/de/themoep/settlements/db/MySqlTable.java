@@ -26,6 +26,7 @@ public enum MySqlTable {
             + "bank BIGINT,"
             + "joinFee BIGINT,"
             + "tax BIGINT,"
+            + "auctionTax BIGINT,"
             + "taxDebtAction VARCHAR(255) NOT NULL,"
             + "finishedMissions BIGINT,"
             + "bonusClaims INTEGER,"
@@ -88,6 +89,16 @@ public enum MySqlTable {
             + "lastUsed BIGINT,"
             + "active BOOLEAN,"
             + "UNIQUE (empireId, perk)"
+            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
+
+    EMPIRE_NPCS("CREATE TABLE IF NOT EXISTS {tablePrefix}empire_npcs ("
+            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+            + "empireId INTEGER, INDEX(empireId),"
+            + "FOREIGN KEY (empireId) REFERENCES {tablePrefix}empires(id) ON DELETE CASCADE,"
+            + "type VARCHAR(255) NOT NULL,"
+            + "npcId INTEGER NOT NULL,"
+            + "level INTEGER NOT NULL,"
+            + "UNIQUE (empireId, type)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     EMPIRE_USES("CREATE TABLE IF NOT EXISTS {tablePrefix}empire_uses ("
@@ -153,6 +164,7 @@ public enum MySqlTable {
             + "bank BIGINT,"
             + "joinFee BIGINT,"
             + "tax BIGINT,"
+            + "auctionTax BIGINT,"
             + "taxDebtAction VARCHAR(255) NOT NULL,"
             + "missionPoints BIGINT,"
             + "bonusClaims INTEGER,"
@@ -206,6 +218,16 @@ public enum MySqlTable {
             + "lastUsed BIGINT,"
             + "active BOOLEAN,"
             + "UNIQUE (settlementId, perk)"
+            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
+
+    SETTLEMENT_NPCS("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_npcs ("
+            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+            + "settlementId INTEGER, INDEX(settlementId),"
+            + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
+            + "type VARCHAR(255) NOT NULL,"
+            + "npcId INTEGER NOT NULL,"
+            + "level INTEGER NOT NULL,"
+            + "UNIQUE (settlementId, type)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     SETTLEMENT_USES("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_uses ("

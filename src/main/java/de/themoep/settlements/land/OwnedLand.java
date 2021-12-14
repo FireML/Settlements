@@ -358,11 +358,6 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         return "claim";
     }
 
-    @Override
-    public String getDbDescription() {
-        return getKey();
-    }
-
     public IdObject getId() {
         return id;
     }

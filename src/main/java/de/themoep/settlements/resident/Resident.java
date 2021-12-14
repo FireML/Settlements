@@ -724,11 +724,6 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         this.id = id;
     }
 
-    @Override
-    public String getDbDescription() {
-        return getName() + "/" + getId();
-    }
-
     /**
      * @deprecated Use {@link Message#tell(Resident, String...)}
      */
