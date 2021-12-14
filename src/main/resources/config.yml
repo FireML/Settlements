@@ -54,6 +54,8 @@ settlement:
   max-size: 30
   # Maximum value that a settlement's tax can be set to. Set to -1 to disable maximum
   max-tax: -1
+  # Maximum value that a settlement's auction tax can be set to. Set to -1 to disable maximum
+  max-auction-tax: -1
   # How many different titles can be configured for a rank
   titles-per-rank: 10
   
@@ -119,6 +121,8 @@ empire:
   start-balance: 0
   # Maximum value that an empire's tax can be set to. Set to -1 to disable maximum
   max-tax: 1000000
+  # Maximum value that an empire's auction tax can be set to. Set to -1 to disable maximum
+  max-auction-tax: -1
   # Maximum size an empire can have (0 disables the size check)
   max-size: 20
   # The cooldown in seconds after renaming an empire
@@ -175,8 +179,6 @@ empire:
     # The amount of minutes that an empire will stay abandoned after not being able to pay their upkeep
     # Abandoned empires can be raided and fully accessed
     abandon-time: 1440
-    # The amount an empire needs to pay per day
-    cost: 1000
 
 plot:
   # Maximum value that a plot's tax can be set to. Set to -1 to disable maximum

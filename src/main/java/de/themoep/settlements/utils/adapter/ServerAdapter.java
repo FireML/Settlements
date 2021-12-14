@@ -1,13 +1,18 @@
 package de.themoep.settlements.utils.adapter;
 
 import net.md_5.bungee.api.chat.BaseComponent;
+import org.bukkit.Material;
 import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface ServerAdapter {
@@ -51,4 +56,27 @@ public interface ServerAdapter {
      * @return The command map
      */
     CommandMap getCommandMap();
+
+    /**
+     * Create a written book
+     * @param title         The book title
+     * @param author        The book author
+     * @param components    The book components
+     * @return The book
+     */
+    default ItemStack createBook(String title, String author, List<BaseComponent[]> components) {
+        ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+        book.setItemMeta(createBookMeta((BookMeta) book.getItemMeta(), title, author, components));
+        return book;
+    }
+
+    /**
+     * Modify a book meta with components
+     * @param bookMeta      The book meta to modify
+     * @param title         The book title
+     * @param author        The book author
+     * @param pages         The book pages
+     * @return The book
+     */
+    ItemMeta createBookMeta(BookMeta bookMeta, String title, String author, List<BaseComponent[]> pages);
 }

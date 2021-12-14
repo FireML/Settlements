@@ -165,6 +165,9 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
             if (r == landOwner.getHighestRank()) {
                 // Don't show leader/chief permissions as they can't be edited anyways and they have all
                 continue;
+            } else if (landOwner.useGuestRank() && r == landOwner.getDefaultRank()) {
+                // Can't configure guest rank
+                continue;
             }
             ranksGroup.addElement(new DynamicGuiElement('r', h -> {
                 ItemStack item = r.getItem();

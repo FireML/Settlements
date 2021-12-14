@@ -3,7 +3,9 @@ package de.themoep.settlements.empire;
 import co.aikar.timings.lib.MCTiming;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import de.themoep.settlements.leveling.Levelable;
 import de.themoep.settlements.missions.MissionData;
+import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
@@ -38,6 +40,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -314,11 +317,13 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     @Override
-    public long getTax() {
-        if (Config.Empire.MAX_TAX > -1 && super.getTax() > Config.Empire.MAX_TAX) {
-            return Config.Empire.MAX_TAX;
-        }
-        return super.getTax();
+    public long getMaxTax() {
+        return Config.Empire.MAX_TAX;
+    }
+
+    @Override
+    public long getMaxAuctionTax() {
+        return Config.Empire.MAX_AUCTION_TAX;
     }
 
     public static Empire deserialize(Map<String, Object> map) {
@@ -400,7 +405,15 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     @Override
+    public Collection<? extends LevelPerk> getPerks(int level) {
+        return EmpireManager.getInstance().getPerks().stream().filter(p -> p.getLevel() == level).collect(Collectors.toList());
+    }
+
+    @Override
     public long getAmount(String key) {
+        if (key.equalsIgnoreCase("level")) {
+            return getLevel();
+        }
         if (key.equalsIgnoreCase("missions")) {
             return finishedMissions;
         }
@@ -431,6 +444,11 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     @Override
     public EmpirePerk getPerk(String name) {
         return EmpireManager.getInstance().getPerk(name);
+    }
+
+    @EventHandler
+    public boolean isUnlockable(String unlockable) {
+        return EmpireManager.getInstance().getUnlockables().contains(unlockable);
     }
 
     @Override
@@ -554,6 +572,11 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     @Override
+    public boolean useGuestRank() {
+        return false;
+    }
+
+    @Override
     public EmpireRank getRank(Resident resident) {
         return isMember(resident) ? resident.getEmpireRank() : null;
     }
@@ -639,6 +662,11 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     @Override
     public long getUpkeep() {
         return EmpireManager.getInstance().getLevel(level).map(EmpireLevel::getUpkeep).orElse(0L);
+    }
+
+    @Override
+    public long getClaimUpkeep(String world) {
+        return 0;
     }
 
     @Override

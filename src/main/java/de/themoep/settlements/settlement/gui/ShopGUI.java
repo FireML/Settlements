@@ -7,7 +7,7 @@ import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.perk.LevelPerk;
+import de.themoep.settlements.perk.SettlementPerk;
 import de.themoep.settlements.perk.PerkData;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
@@ -54,7 +54,7 @@ public class ShopGUI extends SettlementsGUI {
         if (resident.hasSettlement()) {
             Settlement settlement = resident.getSettlement();
 
-            for (LevelPerk perk : SettlementManager.getInstance().getPerks()) {
+            for (SettlementPerk perk : SettlementManager.getInstance().getPerks()) {
                 if (settlement.hasUnlocked(perk) && !settlement.checkPerkCount(perk)) {
                     continue;
                 }
@@ -181,11 +181,11 @@ public class ShopGUI extends SettlementsGUI {
                             } else if (resident.hasPermission("settlement.shop.unlock")
                                     && resident.getSettlement().canUnlock(perk)
                                     && resident.getSettlement().remove(perk.getUnlockCost())) {
-                                resident.getSettlement().unlockPerk((Player) click.getWhoClicked(), perk);
+                                resident.getSettlement().unlockPerk(resident, perk);
                                 Message.get("command.settlement.shop.unlock.success")
-                                        .tell(resident.getSettlement().getOnlineResidents(), "perk", perk.getTag());
+                                        .tell(resident.getSettlement(), "perk", perk.getTag());
+                                resident.getSettlement().save();
                                 Utils.runAsync(() -> {
-                                    DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
                                     DatabaseManager.getInstance().log(resident.getSettlement(), resident, "perk-unlock", perk.getUnlockCost());
                                 });
                                 gui.draw();

@@ -4,28 +4,26 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Table;
-import de.themoep.settlements.empire.Empire;
-import de.themoep.settlements.empire.EmpireManager;
-import de.themoep.settlements.leveling.LevelInfo;
+import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.db.DatabaseSerializable;
 import de.themoep.settlements.leveling.Levelable;
+import de.themoep.settlements.npc.NpcData;
+import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.perk.PerkData;
+import de.themoep.settlements.perk.events.PerkUnlockedEvent;
 import de.themoep.settlements.rank.Rank;
 import de.themoep.settlements.rank.RankManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.JoinType;
-import de.themoep.settlements.utils.ConfigKey;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
-import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.world.SimpleLocation;
-import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.db.DatabaseSerializable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -37,6 +35,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -45,7 +44,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements DatabaseSerializable, Levelable<L>, Targetable, ModeAble, FlagAble, ConfigKey {
+public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implements DatabaseSerializable, Levelable<L>, Targetable, ModeAble, FlagAble {
     private IdObject id = IdObject.get(null);
     private String name;
     private String description = "";
@@ -55,6 +54,7 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     private long bank = 0;
     private long joinFee = 0;
     private long tax = 0;
+    private long auctionTax = 0;
     private TaxDebtAction taxDebtAction = TaxDebtAction.KICK;
     protected boolean allowAllyClaim = false;
     private Map<PlotMode, Boolean> modes = new EnumMap<>(PlotMode.class);
@@ -75,6 +75,8 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
 
     protected Table<String, IdObject, Banished> banished = HashBasedTable.create();
     private List<Unbanished> unbanished = new ArrayList<>();
+
+    private Map<NpcType, NpcData> npcs = new EnumMap<>(NpcType.class);
 
     protected LandOwner() {}
 
@@ -170,8 +172,26 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
 
     public abstract Perk getPerk(String name);
 
+    public boolean hasUnlocked(String unlockable) {
+        if (unlockable.startsWith(getKey() + ".")) {
+            unlockable = unlockable.substring(getKey().length() + 1);
+        }
+        if (!isUnlockable(unlockable)) {
+            return true;
+        }
+        for (Perk perk : getPerks()) {
+            if (perk.getUnlockables().contains(unlockable.toLowerCase(Locale.ROOT))
+                    && hasUnlocked(perk)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected abstract boolean isUnlockable(String unlockable);
+
     public boolean hasUnlocked(Perk perk) {
-        return getPerksMap().containsKey(perk.name().toLowerCase());
+        return perk != null && getPerksMap().containsKey(perk.name().toLowerCase(Locale.ROOT));
     }
 
     public Collection<Perk> getPerks() {
@@ -214,10 +234,11 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         return true;
     }
 
-    public boolean unlockPerk(Player player, Perk perk) {
+    public boolean unlockPerk(Resident resident, Perk perk) {
         if (!hasUnlocked(perk)) {
             getPerksMap().put(perk.name().toLowerCase(), new PerkData());
-            apply(player, perk);
+            apply(resident.getPlayer(), perk);
+            Utils.callEvent(new PerkUnlockedEvent(this, resident, perk));
             return true;
         }
         return false;
@@ -508,7 +529,7 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
                     || (res.hasSettlement() && isBanished(res.getSettlement()))
                     || (res.hasEmpire() && isBanished(res.getSettlement().getEmpire()));
         } else if (target instanceof LandOwner) {
-            if (banished.contains(((LandOwner<?, ?>) target).getDbName(), ((LandOwner<?, ?>) target).getId())) {
+            if (banished.contains(((LandOwner<?, ?>) target).getKey(), ((LandOwner<?, ?>) target).getId())) {
                 return true;
             } else if (target instanceof Settlement && ((Settlement) target).hasEmpire()) {
                 return isBanished(((Settlement) target).getEmpire());
@@ -533,8 +554,8 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
             return true;
         } else if (target instanceof LandOwner) {
             entry = new Banished(
-                    ((LandOwner<?, ?>) target).getDbName(),
-                    ((LandOwner) target).getId(),
+                    ((LandOwner<?, ?>) target).getKey(),
+                    ((LandOwner<?, ?>) target).getId(),
                     System.currentTimeMillis(),
                     sender != null ? sender.getUUID() : Utils.ZERO_UUID,
                     reason
@@ -565,15 +586,15 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     }
 
     public void addAlly(LandOwner<?, ?> landOwner) {
-        allies.put(landOwner.getDbDescription(), landOwner.getId(), new Ally(landOwner.getDbDescription(), landOwner.getId(), System.currentTimeMillis(), isAllowAllyClaim()));
+        allies.put(landOwner.getKey(), landOwner.getId(), new Ally(landOwner.getKey(), landOwner.getId(), System.currentTimeMillis(), isAllowAllyClaim()));
     }
 
     public boolean removeAlly(LandOwner<?, ?> landOwner) {
-        return allies.remove(landOwner.getDbDescription(), landOwner.getId()) != null;
+        return allies.remove(landOwner.getKey(), landOwner.getId()) != null;
     }
 
     public boolean isAlly(LandOwner<?, ?> landOwner) {
-        return allies.contains(landOwner.getDbDescription(), landOwner.getId());
+        return allies.contains(landOwner.getKey(), landOwner.getId());
     }
 
     public boolean isAlly(Resident resident) {
@@ -621,7 +642,7 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     }
 
     public Ally getAlly(LandOwner<?, ?> landOwner) {
-        return allies.get(landOwner.getDbDescription(), landOwner.getId());
+        return allies.get(landOwner.getKey(), landOwner.getId());
     }
 
     public Collection<Ally> getAllies() {
@@ -655,12 +676,30 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     public abstract long getTaxIncome();
 
     public long getTax() {
+        if (getMaxTax() > -1 && tax > getMaxTax() ) {
+            return getMaxTax();
+        }
         return tax;
     }
+
+    public abstract long getMaxTax();
 
     public void setTax(long tax) {
         this.tax = tax;
     }
+
+    public long getAuctionTax() {
+        if (getMaxAuctionTax() > -1 && tax > getMaxAuctionTax() ) {
+            return getMaxAuctionTax();
+        }
+        return auctionTax;
+    }
+
+    public void setAuctionTax(long auctionTax) {
+        this.auctionTax = auctionTax;
+    }
+
+    public abstract long getMaxAuctionTax();
 
     public TaxDebtAction getTaxDebtAction() {
         return taxDebtAction;
@@ -794,14 +833,11 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
 
     public abstract R getDefaultRank();
 
+    public abstract boolean useGuestRank();
+
     public abstract R getRank(Resident resident);
 
     public abstract Collection<R> getRanks();
-
-    @Override
-    public String getDbDescription() {
-        return getStateKey() + " " + getName() + "/" + getId();
-    }
 
     @Override
     public LinkedHashMap<String, Object> serialize() {
@@ -818,6 +854,7 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         map.put("bank", getBank());
         map.put("joinFee", getJoinFee());
         map.put("tax", getTax());
+        map.put("auctionTax", getAuctionTax());
         map.put("taxDebtAction", getTaxDebtAction().name());
         map.put("bonusClaims", getBonusClaims());
         map.put("buildState", getBuildState().name());
@@ -837,6 +874,7 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         map.put("permissions", getRanksPermissions());
         map.put("titles", getRankTitles());
         map.put("defaulttiles", getDefaultRankTitles());
+        map.put("npcs", npcs.values());
         return map;
     }
 
@@ -854,6 +892,7 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         landOwner.setBank(Utils.getLong(map.get("bank")));
         landOwner.setJoinFee(Utils.getLong(map.get("joinFee")));
         landOwner.setTax(Utils.getLong(map.get("tax")));
+        landOwner.setAuctionTax(Utils.getLong(map.get("auctionTax")));
         try {
             landOwner.setTaxDebtAction(TaxDebtAction.valueOf((String) map.get("taxDebtAction")));
         } catch (IllegalArgumentException ignored) {}
@@ -903,10 +942,15 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
         }
         ((Map<String, Object>) map.get("defaulttitles")).entrySet().stream()
                 .forEach(e -> landOwner.defaultRankTitles.put(e.getKey().toLowerCase(), (String) e.getValue()));
+        for (NpcData npcData : ((Collection<NpcData>) map.get("npcs"))) {
+            landOwner.addNpc(npcData);
+        }
         return landOwner;
     }
 
     public abstract long getUpkeep();
+
+    public abstract long getClaimUpkeep(String world);
 
     public abstract boolean isAbandoned();
 
@@ -918,4 +962,19 @@ public abstract class LandOwner<R extends Rank, L extends LevelInfo> implements 
     }
 
     public abstract String[] getReplacements(ConfigMessages configMessages, String... initial);
+
+    public NpcData getNpcData(NpcType type) {
+        NpcData def = new NpcData(-1, type);
+        def.setOwner(this);
+        return npcs.getOrDefault(type, def);
+    }
+
+    public void addNpc(NpcData npcData) {
+        npcData.setOwner(this);
+        npcs.put(npcData.getType(), npcData);
+    }
+
+    public Collection<NpcData> getNpcData() {
+        return npcs.values();
+    }
 }

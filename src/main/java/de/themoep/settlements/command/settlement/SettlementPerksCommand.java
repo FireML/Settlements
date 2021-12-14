@@ -4,7 +4,7 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.gui.PerksGUI;
 import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.perk.LevelPerk;
+import de.themoep.settlements.perk.SettlementPerk;
 import de.themoep.settlements.perk.PerkData;
 
 public class SettlementPerksCommand extends SettlementSubCommand {
@@ -15,7 +15,7 @@ public class SettlementPerksCommand extends SettlementSubCommand {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (args.length > 0) {
-                    LevelPerk perk = SettlementManager.getInstance().getPerk(String.join(" ", args));
+                    SettlementPerk perk = SettlementManager.getInstance().getPerk(String.join(" ", args));
                     if (perk == null) {
                         getError("unknown-perk").tell(resident, "perk", String.join(" ", args));
                     } else if (!resident.getSettlement().hasUnlocked(perk)) {
@@ -30,7 +30,7 @@ public class SettlementPerksCommand extends SettlementSubCommand {
                     return true;
                 }
                 getMessage("usage.head").tell(resident, "name", "Toggle Perks");
-                for (LevelPerk perk : SettlementManager.getInstance().getPerks()) {
+                for (SettlementPerk perk : SettlementManager.getInstance().getPerks()) {
                     if (resident.getSettlement().hasUnlocked(perk) && perk.hasEffects()) {
                         getMessage("usage.entry").tell(resident, "usage", getUsage(base) + " " + perk.name(), "description", perk.getTag());
                     }

@@ -1,7 +1,11 @@
 package de.themoep.settlements.empire;
 
 import co.aikar.timings.lib.MCTiming;
+import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.Ally;
+import de.themoep.settlements.land.events.LandownerLeveledEvent;
+import de.themoep.settlements.npc.NpcType;
+import de.themoep.settlements.perk.events.PerkUnlockedEvent;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
@@ -69,6 +73,7 @@ public class EmpireManager {
 
     private Map<String, EmpirePerk> perks;
     private Map<String, EmpirePerk> perkTags;
+    private Set<String> unlockables;
 
     public EmpireManager() {
         loadConfig();
@@ -135,11 +140,13 @@ public class EmpireManager {
     private void loadPerks() {
         perks = new LinkedHashMap<>();
         perkTags = new LinkedHashMap<>();
+        unlockables = new HashSet<>();
         for (String perkName : ConfigManager.getInstance().getEmpirePerksConfig().getKeys(false)) {
             try {
                 EmpirePerk perk = new EmpirePerk(ConfigManager.getInstance().getEmpirePerksConfig().getConfigurationSection(perkName));
                 perks.put(perk.name().toLowerCase(), perk);
                 perkTags.put(perk.getTag().toLowerCase(), perk);
+                unlockables.addAll(perk.getUnlockables());
             } catch (IllegalArgumentException e) {
                 SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Config for Empire Perk " + perkName + " was invalid! " + e.getMessage());
             }
@@ -478,30 +485,49 @@ public class EmpireManager {
         MessageUtils.tellResidents(empire.getOnlineResidents(), Message.get("levels.upgrade"), "level", Integer.toString(empire.getLevel()), "state", empire.getStateTag());
         removeLevelRequirements(empire, res);
 
+        List<String> perksDesc = new ArrayList<>();
         for (EmpirePerk perk : getPerks()) {
             if (empire.getLevel() == perk.getLevel()) {
                 if (perk.getUnlockCost().isEmpty()) {
-                    MessageUtils.tellResidents(empire.getOnlineResidents(), Message.get("levels.perk-unlocked"), "perk", perk.getTag());
-                    empire.unlockPerk(res.getPlayer(), perk);
+                    Message.get("levels.perk-unlocked").tell(empire, "perk", perk.getTag());
+                    empire.unlockPerk(res, perk);
                 } else {
-                    MessageUtils.tellResidents(empire.getOnlineResidents(), Message.get("levels.perk-available"), "perk", perk.getTag());
+                    Message.get("levels.perk-available").tell(empire, "perk", perk.getTag());
                 }
+                perksDesc.add(perk.getTag());
             }
         }
         World world = Bukkit.getWorld(empire.getWorldName());
         if (world != null) {
             world.getWorldBorder().setSize(empire.getWorldRadius() * 2, 5);
         }
+
+        for (NpcType npc : empire.getLevelInfo().getNPCs()) {
+            perksDesc.add(npc.getTag());
+        }
+
+        String mail = Message.get("levels.upgrade-mail").getReplacedText(
+                "name", empire.getStateTag(),
+                "level", String.valueOf(empire.getLevel()),
+                "perks", String.join(", ", perksDesc)
+        );
+        for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
+            for (Resident r : empire.getResidents()) {
+                provider.sendMail(empire.getStateTag() + " " + empire.getName(), r, mail);
+            }
+        }
+
+        Utils.callEvent(new LandownerLeveledEvent(empire, res));
         return true;
     }
 
-    private void removeLevelRequirements(Empire empire, Resident res) {
+    public void removeLevelRequirements(Empire empire, Resident res) {
         Map<String, Long> levelReqs = getLevel(empire.getLevel())
                 .map(EmpireLevel::getRequirements)
                 .orElse(Collections.emptyMap());
         if (empire.remove(levelReqs)) {
-            DatabaseManager.getInstance().saveEmpire(empire);
-            Utils.runAsync(() -> DatabaseManager.getInstance().logLevelup(empire, res, levelReqs));
+            empire.save();
+            DatabaseManager.getInstance().logLevelup(empire, res, levelReqs);
         }
     }
 
@@ -626,5 +652,9 @@ public class EmpireManager {
         createEmpireWorld(empire);
         empire.setInRegen(false);
         return false;
+    }
+
+    public Set<String> getUnlockables() {
+        return unlockables;
     }
 }

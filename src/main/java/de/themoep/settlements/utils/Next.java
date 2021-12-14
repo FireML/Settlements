@@ -9,6 +9,13 @@ public interface Next<T> {
         return getValues()[0];
     }
 
+    default T previous() {
+        if (ordinal() - 1 > -1) {
+            return getValues()[ordinal() - 1];
+        }
+        return getValues()[getValues().length - 1];
+    }
+
     T[] getValues();
 
     int ordinal();

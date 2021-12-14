@@ -35,6 +35,8 @@ public class RankSelectGUI<L extends LandOwner<R, ? extends LevelInfo>, R extend
         for (R rank : landOwner.getRanks()) {
             if (rank == landOwner.getHighestRank()) {
                 continue;
+            } else if (landOwner.useGuestRank() && rank == landOwner.getDefaultRank()) {
+                continue;
             }
             group.addElement(new StaticGuiElement('r',
                     ItemUtils.setGlowing(rank.getItem(), rank == landOwner.getRank(resident)),

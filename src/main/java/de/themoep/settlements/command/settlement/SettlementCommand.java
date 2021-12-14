@@ -25,13 +25,13 @@ public class SettlementCommand extends SubCommand {
         registerCommand(new SettlementAlliesCommand(this));
         registerCommand(new SettlementAllyCommand(this));
         registerCommand(new SettlementAllyclaimCommand(this));
+        registerCommand(new SettlementAuctionTaxCommand(this));
         registerCommand(new SettlementBanishedCommand(this));
         registerCommand(new SettlementBanishCommand(this));
         registerCommand(new SettlementUnbanishCommand(this));
         registerCommand(new SettlementBuildCommand(this));
         registerCommand(new SettlementClaimCommand(this));
         registerCommand(new SettlementCreateCommand(this));
-        registerCommand(new SettlementDepositCommand(this));
         registerCommand(new SettlementDescriptionCommand(this));
         registerCommand(new SettlementDisbandCommand(this));
         registerCommand(new SettlementDiscordCommand(this));
@@ -50,7 +50,6 @@ public class SettlementCommand extends SubCommand {
         registerCommand(new SettlementListCommand(this));
         registerCommand(new SettlementMailCommand(this));
         registerCommand(new SettlementMapCommand(this));
-        registerCommand(new SettlementMaterialsCommand(this));
         registerCommand(new SettlementModeCommand(this));
         registerCommand(new SettlementMoneyCommand(this));
         SettlementSubCommand outpostCommand = new SettlementOutPostCommand(this);

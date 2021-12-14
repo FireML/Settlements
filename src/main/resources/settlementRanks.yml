@@ -34,6 +34,7 @@ perm-groups:
     - settlement.perms
     - settlement.mode
     - settlement.perks.toggle
+    - settlement.npc
   'manage.notes':
     permissions:
     - settlement.sethome
@@ -214,3 +215,7 @@ ranks:
     - settlement.banished
     - settlement.group.use.bank
     - settlement.bank.deposit
+  guest:
+    icon: stone_shovel
+    permissions:
+    - settlement.rules.accept

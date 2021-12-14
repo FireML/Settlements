@@ -3,6 +3,7 @@ package de.themoep.settlements.utils.adapter;
 import com.destroystokyo.paper.Title;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
@@ -10,9 +11,13 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class PaperAdapter implements ServerAdapter {
 
@@ -45,5 +50,12 @@ public class PaperAdapter implements ServerAdapter {
     @Override
     public CommandMap getCommandMap() {
         return Bukkit.getServer().getCommandMap();
+    }
+
+    @Override
+    public ItemMeta createBookMeta(BookMeta bookMeta, String title, String author, List<BaseComponent[]> pages) {
+        bookMeta.setTitle(title);
+        bookMeta.setAuthor(author);
+        return (ItemMeta) bookMeta.pages(pages.stream().map(c -> BungeeComponentSerializer.get().deserialize(c)).collect(Collectors.toList()));
     }
 }

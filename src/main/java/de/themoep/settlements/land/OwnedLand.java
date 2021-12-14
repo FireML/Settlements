@@ -358,11 +358,6 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         return "claim";
     }
 
-    @Override
-    public String getDbDescription() {
-        return getKey();
-    }
-
     public IdObject getId() {
         return id;
     }
@@ -416,7 +411,8 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     public LinkedHashMap<String, Object> serialize() {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("landOwner", getLandOwner().getName());
-        map.put("settlementId", getLandOwner() instanceof Settlement && !getLandOwner().getId().isNull() ? getLandOwner().getId().value() : -1);
+        map.put("landOwnerType", getLandOwner().getKey());
+        map.put("landOwnerId", !getLandOwner().getId().isNull() ? getLandOwner().getId().value() : -1);
         map.put("x", getX());
         map.put("z", getZ());
         map.put("world", getWorldName());
@@ -443,9 +439,18 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         SimpleChunkLocation location = new SimpleChunkLocation((String) map.get("world"), (Integer) map.get("x"), (Integer) map.get("z"));
         LandOwner landOwner = EmpireManager.getInstance().getEmpireFromWorld(location.getWorld());
         if (landOwner == null) {
-            landOwner = map.get("landOwner") != null
-                    ? SettlementManager.getInstance().getFromName((String) map.get("landOwner"))
-                    : SettlementManager.getInstance().getFromId(IdObject.get(map.get("settlementId")));
+            switch ((String) map.get("landOwnerType")) {
+                case "settlement":
+                    landOwner = map.get("landOwner") != null
+                            ? SettlementManager.getInstance().getFromName((String) map.get("landOwner"))
+                            : SettlementManager.getInstance().getFromId(IdObject.get(map.get("landOwnerId")));
+                    break;
+                case "empire":
+                    landOwner = map.get("landOwner") != null
+                            ? EmpireManager.getInstance().getEmpireFromName((String) map.get("landOwner"))
+                            : EmpireManager.getInstance().getEmpireFromId(IdObject.get(map.get("landOwnerId")));
+                    break;
+            }
         }
         if (landOwner == null) {
             SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not find owner for OwnedLand! Removing it from database... (" + map + ")");

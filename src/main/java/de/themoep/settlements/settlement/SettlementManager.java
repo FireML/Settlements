@@ -5,6 +5,7 @@ import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.LandAccess;
 import de.themoep.settlements.land.LandManager;
@@ -13,14 +14,17 @@ import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.land.BuildState;
 import de.themoep.settlements.land.Use;
 import de.themoep.settlements.land.events.LandownerDisbandEvent;
+import de.themoep.settlements.land.events.LandownerLeveledEvent;
 import de.themoep.settlements.lock.LockProvider;
-import de.themoep.settlements.perk.LevelPerk;
+import de.themoep.settlements.npc.NpcType;
+import de.themoep.settlements.perk.SettlementPerk;
 import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.perk.PerkData;
 import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.settlement.events.SettlementCreatedEvent;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
@@ -37,9 +41,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -53,8 +59,10 @@ public class SettlementManager {
 
     private Map<SettlementState, List<SettlementLevel>> levels = new HashMap<>();
 
-    private Map<String, LevelPerk> perks;
-    private Map<String, LevelPerk> perkTags;
+    private Map<String, SettlementPerk> perks;
+    private Map<String, SettlementPerk> perkTags;
+
+    private Set<String> unlockables;
 
     private SettlementManager() {
         loadConfig();
@@ -94,7 +102,7 @@ public class SettlementManager {
         levels.clear();
         List<SettlementLevel> settlementLevels = new ArrayList<>();
         for (int i = 1; i <= Config.Settlement.Leveling.VILLAGE_MAX_LEVEL; i++) {
-            SettlementLevel level = new SettlementLevel(i, ConfigManager.getInstance().getLevelConfig().getConfigurationSection("village.level-" + i));
+            SettlementLevel level = new SettlementLevel(i, ConfigManager.getInstance().getSettlementLevelConfig().getConfigurationSection("village.level-" + i));
             settlementLevels.add(level);
             SettlementsPlugin.logDebug("Loaded " + level);
         }
@@ -102,7 +110,7 @@ public class SettlementManager {
 
         List<SettlementLevel> kingdomLevels = new ArrayList<>();
         for (int i = 1; i <= Config.Settlement.Leveling.KINGDOM_MAX_LEVEL; i++) {
-            SettlementLevel level = new SettlementLevel(i, ConfigManager.getInstance().getLevelConfig().getConfigurationSection("kingdom.level-" + i));
+            SettlementLevel level = new SettlementLevel(i, ConfigManager.getInstance().getSettlementLevelConfig().getConfigurationSection("kingdom.level-" + i));
             kingdomLevels.add(level);
             SettlementsPlugin.logDebug("Loaded " + level);
         }
@@ -112,11 +120,13 @@ public class SettlementManager {
     private void loadPerks() {
         perks = new LinkedHashMap<>();
         perkTags = new LinkedHashMap<>();
+        unlockables = new LinkedHashSet<>();
         for (String perkName : ConfigManager.getInstance().getPerksConfig().getKeys(false)) {
             try {
-                LevelPerk perk = new LevelPerk(ConfigManager.getInstance().getPerksConfig().getConfigurationSection(perkName));
+                SettlementPerk perk = new SettlementPerk(ConfigManager.getInstance().getPerksConfig().getConfigurationSection(perkName));
                 perks.put(perk.name().toLowerCase(), perk);
                 perkTags.put(perk.getTag().toLowerCase(), perk);
+                unlockables.addAll(perk.getUnlockables());
             } catch (IllegalArgumentException e) {
                 SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Config for Perk " + perkName + " was invalid! " + e.getMessage());
             }
@@ -156,6 +166,7 @@ public class SettlementManager {
                 SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving " + settlement.getName() + " to the database! No ID was returned.");
                 chief.tell(ChatColor.RED + "Error while saving " + settlement.getName() + " to the database! No ID was returned.");
             }
+            Utils.runSync(() -> Utils.callEvent(new SettlementCreatedEvent(settlement, chief)));
         });
     }
 
@@ -349,28 +360,45 @@ public class SettlementManager {
         }
         removeLevelRequirements(settlement, res);
 
-        for (LevelPerk perk : getPerks()) {
+        List<String> perksDesc = new ArrayList<>();
+        for (SettlementPerk perk : getPerks()) {
             if (settlement.getState() == perk.getState() && settlement.getLevel() == perk.getLevel()) {
                 if (perk.getUnlockCost().isEmpty()) {
-                    MessageUtils.tellResidents(settlement.getOnlineResidents(), Message.get("levels.perk-unlocked"), "perk", perk.getTag());
-                    settlement.unlockPerk(res.getPlayer(), perk);
+                    Message.get("levels.perk-unlocked").tell(settlement, "perk", perk.getTag());
+                    settlement.unlockPerk(res, perk);
                 } else {
                     MessageUtils.tellResidents(settlement.getOnlineResidents(), Message.get("levels.perk-available"), "perk", perk.getTag());
                 }
+                perksDesc.add(perk.getTag());
             }
         }
+
+        for (NpcType npc : settlement.getLevelInfo().getNPCs()) {
+            perksDesc.add(npc.getTag());
+        }
+
+        String mail = Message.get("levels.upgrade-mail").getReplacedText(
+                "name", settlement.getStateTag(),
+                "level", String.valueOf(settlement.getLevel()),
+                "perks", String.join(", ", perksDesc)
+        );
+        for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
+            for (Resident r : settlement.getResidents()) {
+                provider.sendMail(settlement.getStateTag() + " " + settlement.getName(), r, mail);
+            }
+        }
+
+        Utils.callEvent(new LandownerLeveledEvent(settlement, res));
         return true;
     }
 
-    private void removeLevelRequirements(Settlement settlement, Resident res) {
+    public void removeLevelRequirements(Settlement settlement, Resident res) {
         Map<String, Long> levelReqs = getLevel(settlement.getState(), settlement.getLevel())
                 .map(SettlementLevel::getRequirements)
                 .orElse(Collections.emptyMap());
         if (settlement.remove(levelReqs)) {
-            Utils.runAsync(() -> {
-                DatabaseManager.getInstance().saveSettlement(settlement);
-                DatabaseManager.getInstance().logLevelup(settlement, res, levelReqs);
-            });
+            settlement.save();
+            DatabaseManager.getInstance().logLevelup(settlement, res, levelReqs);
         }
     }
 
@@ -382,15 +410,15 @@ public class SettlementManager {
         return Optional.empty();
     }
 
-    public LevelPerk getPerk(String name) {
-        LevelPerk perk = perks.get(name.toLowerCase());
+    public SettlementPerk getPerk(String name) {
+        SettlementPerk perk = perks.get(name.toLowerCase());
         if (perk == null) {
             perk = perkTags.get(name.toLowerCase());
         }
         return perk;
     }
 
-    public Collection<LevelPerk> getPerks() {
+    public Collection<SettlementPerk> getPerks() {
         return perks.values();
     }
 
@@ -399,5 +427,9 @@ public class SettlementManager {
         settlement.setName(name);
         settlements.put(settlement.getName().replace(' ', '_').toLowerCase(), settlement);
         DatabaseManager.getInstance().saveSettlement(settlement);
+    }
+
+    public Set<String> getUnlockables() {
+        return unlockables;
     }
 }

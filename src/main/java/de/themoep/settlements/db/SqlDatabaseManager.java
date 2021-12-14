@@ -8,6 +8,7 @@ import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.Banished;
 import de.themoep.settlements.land.LandManager;
+import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.land.Unbanished;
@@ -26,6 +27,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -127,12 +130,19 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     private void saveEmpire(Connection conn, Empire empire) {
         Utils.catchSync();
         try {
-            if (!save(conn, empire, "members", "permissions").isNull() && !empire.getId().isNull()) {
+            if (!save(conn, empire, "members", "permissions", "npcs").isNull() && !empire.getId().isNull()) {
                 updateDataMap(conn, "empire_vaults", "empireId", (Integer) empire.getId().value(), "content", "amount", empire.getVault());
                 updateDataMap(conn, "empire_uses", "empireId", (Integer) empire.getId().value(), "type", "state",
                         empire.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
                 updateDataMap(conn, "empire_perks", "empireId", (Integer) empire.getId().value(), "perk", "",
                         empire.getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
+                updateDataMap(conn, "empire_npcs", "empireId", (Integer) empire.getId().value(), "type", "",
+                        empire.getNpcData().stream().collect(Collectors.toMap(e -> e.getType().name(), e -> {
+                            Map<String, Object> map = e.serialize();
+                            map.remove("type");
+                            map.remove("id");
+                            return map;
+                        })));
                 updateDataMap(conn, "empire_permissions", "empireId", (Integer) empire.getId().value(), "rank", "permission", empire.getRanksPermissions(), "value");
                 updateDataMap(conn, "empire_titles", "empireId", (Integer) empire.getId().value(), "rank", "title", empire.getRankTitles());
                 updateDataMap(conn, "empire_defaulttitles", "empireId", (Integer) empire.getId().value(), "rank", "title", empire.getDefaultRankTitles());
@@ -182,13 +192,20 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     private void saveSettlement(Connection conn, Settlement settlement) {
         try {
-            if (!save(conn, settlement, "residents", "permissions", "missiondata").isNull() && !settlement.getId().isNull()) {
+            if (!save(conn, settlement, "residents", "permissions", "missiondata", "npcs").isNull() && !settlement.getId().isNull()) {
                 updateDataMap(conn, "settlement_vaults", "settlementId", (Integer) settlement.getId().value(), "content", "amount", settlement.getVault());
                 updateDataMap(conn, "settlement_outposts", "settlementId", (Integer) settlement.getId().value(), "name", "", settlement.getOutpostHomes());
                 updateDataMap(conn, "settlement_uses", "settlementId", (Integer) settlement.getId().value(), "type", "state",
                         settlement.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
                 updateDataMap(conn, "settlement_perks", "settlementId", (Integer) settlement.getId().value(), "perk", "",
                         settlement.getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
+                updateDataMap(conn, "settlement_npcs", "settlementId", (Integer) settlement.getId().value(), "type", "",
+                        settlement.getNpcData().stream().collect(Collectors.toMap(e -> e.getType().name(), e -> {
+                            Map<String, Object> map = e.serialize();
+                            map.remove("type");
+                            map.remove("id");
+                            return map;
+                        })));
                 updateDataMap(conn, "settlement_permissions", "settlementId", (Integer) settlement.getId().value(), "rank", "permission", settlement.getRanksPermissions(), "value");
                 updateDataMap(conn, "settlement_titles", "settlementId", (Integer) settlement.getId().value(), "rank", "title", settlement.getRankTitles());
                 updateDataMap(conn, "settlement_defaulttitles", "settlementId", (Integer) settlement.getId().value(), "rank", "title", settlement.getDefaultRankTitles());
@@ -978,7 +995,10 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         }
         map.put("members", members);
 
-        map.put("banished", selectList(conn, "empire", id, "banished"));
+        map.put("npcs", selectDeserializableList(conn, "empire", id, "npcs", NpcData.class));
+        map.put("allies", selectDeserializableList(conn, "empire", id, "allies", Ally.class));
+        map.put("banished", selectDeserializableList(conn, "empire", id, "banished", Banished.class));
+        map.put("unbanished", selectDeserializableList(conn, "empire", id, "unbanished", Unbanished.class));
 
         map.put("uses", selectMap(conn, "empire_uses", "empireId", id, "type", "state", String.class));
         map.put("vault", selectMap(conn, "empire_vaults", "empireId", id, "content", "amount", Long.class));
@@ -992,33 +1012,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             unlockedPerks.put(pRs.getString("perk").toLowerCase(), toMap(pRs));
         }
         map.put("perks", unlockedPerks);
-
-        PreparedStatement aSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_allies WHERE empireId = ?;");
-        aSta.setInt(1, id);
-        ResultSet aRs = aSta.executeQuery();
-        List<Ally> allies = new ArrayList<>();
-        while (aRs.next()) {
-            allies.add(Ally.deserialize(toMap(aRs)));
-        }
-        map.put("allies", allies);
-
-        PreparedStatement bSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_banished WHERE empireId = ?;");
-        bSta.setInt(1, id);
-        ResultSet bRs = bSta.executeQuery();
-        List<Banished> banished = new ArrayList<>();
-        while (bRs.next()) {
-            banished.add(Banished.deserialize(toMap(bRs)));
-        }
-        map.put("banished", banished);
-
-        PreparedStatement ubSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_unbanished WHERE empireId = ?;");
-        ubSta.setInt(1, id);
-        ResultSet ubRs = ubSta.executeQuery();
-        List<Unbanished> unbanished = new ArrayList<>();
-        while (ubRs.next()) {
-            unbanished.add(Unbanished.deserialize(toMap(ubRs)));
-        }
-        map.put("unbanished", unbanished);
 
         PreparedStatement rpSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_permissions WHERE empireId = ?;");
         rpSta.setInt(1, id);
@@ -1055,7 +1048,10 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         }
         map.put("residents", residents);
 
-        map.put("banished", selectList(conn, "settlement", id, "banished"));
+        map.put("npcs", selectDeserializableList(conn, "settlement", id, "npcs", NpcData.class));
+        map.put("allies", selectDeserializableList(conn, "settlement", id, "allies", Ally.class));
+        map.put("banished", selectDeserializableList(conn, "settlement", id, "banished", Banished.class));
+        map.put("unbanished", selectDeserializableList(conn, "settlement", id, "unbanished", Unbanished.class));
 
         map.put("uses", selectMap(conn, "settlement_uses", "settlementId", id, "type", "state", String.class));
         map.put("vault", selectMap(conn, "settlement_vaults", "settlementId", id, "content", "amount", Long.class));
@@ -1069,33 +1065,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             outposts.put(oRs.getString("name").toLowerCase(), toMap(oRs));
         }
         map.put("outposts", outposts);
-
-        PreparedStatement aSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_allies WHERE settlementId = ?;");
-        aSta.setInt(1, id);
-        ResultSet aRs = aSta.executeQuery();
-        List<Ally> allies = new ArrayList<>();
-        while (aRs.next()) {
-            allies.add(Ally.deserialize(toMap(aRs)));
-        }
-        map.put("allies", allies);
-
-        PreparedStatement bSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_banished WHERE settlementId = ?;");
-        bSta.setInt(1, id);
-        ResultSet bRs = bSta.executeQuery();
-        List<Banished> banished = new ArrayList<>();
-        while (bRs.next()) {
-            banished.add(Banished.deserialize(toMap(bRs)));
-        }
-        map.put("banished", banished);
-
-        PreparedStatement ubSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_unbanished WHERE settlementId = ?;");
-        ubSta.setInt(1, id);
-        ResultSet ubRs = ubSta.executeQuery();
-        List<Unbanished> unbanished = new ArrayList<>();
-        while (ubRs.next()) {
-            unbanished.add(Unbanished.deserialize(toMap(ubRs)));
-        }
-        map.put("unbanished", unbanished);
 
         PreparedStatement pSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_perks WHERE settlementId = ?;");
         pSta.setInt(1, id);
@@ -1324,6 +1293,27 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             map.put(rs.getString(keyColumn), (T) rs.getObject(valueColumn));
         }
         return map;
+    }
+
+    private <D extends DatabaseSerializable> List<D> selectDeserializableList(Connection conn, String ownerType, int id, String valueType, Class<D> deserializable) throws SQLException {
+        return selectDeserializableList(conn, ownerType + "_" + valueType, ownerType + "Id", id, valueType, deserializable);
+    }
+
+    private <D extends DatabaseSerializable> List<D> selectDeserializableList(Connection conn, String tableName, String keyColumn, int keyValue, String valueType, Class<D> deserializable) throws SQLException {
+        try {
+            PreparedStatement sta = conn.prepareStatement("SELECT * FROM " + tablePrefix + tableName + " WHERE " + keyColumn + "=?;");
+            sta.setInt(1, keyValue);
+            ResultSet rs = sta.executeQuery();
+            List<D> list = new ArrayList<>();
+            Method deserialize = deserializable.getMethod("deserialize");
+            while (rs.next()) {
+                list.add((D) deserialize.invoke(null, toMap(rs)));
+            }
+            return list;
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return Collections.emptyList();
     }
 
     private List<Object> selectList(Connection conn, String ownerType, int id, String valueType) throws SQLException {

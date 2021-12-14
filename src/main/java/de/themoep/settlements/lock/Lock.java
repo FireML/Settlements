@@ -83,11 +83,6 @@ public class Lock implements DatabaseSerializable {
     }
 
     @Override
-    public String getDbDescription() {
-        return getLocation().getKey();
-    }
-
-    @Override
     public void save() {
         DatabaseManager.getInstance().saveLocks(this);
     }

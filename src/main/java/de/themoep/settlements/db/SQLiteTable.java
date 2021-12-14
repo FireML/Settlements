@@ -25,6 +25,7 @@ public enum SQLiteTable {
             + "bank BIGINT,"
             + "joinFee BIGINT,"
             + "tax BIGINT,"
+            + "auctionTax BIGINT,"
             + "taxDebtAction VARCHAR(255) NOT NULL,"
             + "finishedMissions BIGINT,"
             + "bonusClaims INTEGER,"
@@ -95,6 +96,18 @@ public enum SQLiteTable {
             + ");"
             + "CREATE INDEX empire_perks_id ON {tablePrefix}empire_perks (empireId);"),
 
+    EMPIRE_NPCS("CREATE TABLE IF NOT EXISTS {tablePrefix}empire_npcs ("
+            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + "empireId INTEGER,"
+            + "type VARCHAR(255) NOT NULL,"
+            + "npcId INTEGER NOT NULL,"
+            + "level INTEGER NOT NULL,"
+            + "npcSkinName VARCHAR(255) NOT NULL,"
+            + "FOREIGN KEY (empireId) REFERENCES {tablePrefix}empires(id) ON DELETE CASCADE,"
+            + "UNIQUE (empireId, type)"
+            + ");"
+            + "CREATE INDEX empire_npcs_id ON {tablePrefix}empire_npcs (empireId);"),
+
     EMPIRE_USES("CREATE TABLE IF NOT EXISTS {tablePrefix}empire_uses ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "empireId INTEGER,"
@@ -160,6 +173,7 @@ public enum SQLiteTable {
             + "bank BIGINT,"
             + "joinFee BIGINT,"
             + "tax BIGINT,"
+            + "auctionTax BIGINT,"
             + "taxDebtAction VARCHAR(255) NOT NULL,"
             + "missionPoints BIGINT,"
             + "bonusClaims INTEGER,"
@@ -221,6 +235,18 @@ public enum SQLiteTable {
             + "UNIQUE (settlementId, perk)"
             + ");"
             + "CREATE INDEX settlement_perks_id ON {tablePrefix}settlement_perks (settlementId);"),
+
+    SETTLEMENT_NPCS("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_npcs ("
+            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + "settlementId INTEGER,"
+            + "type VARCHAR(255) NOT NULL,"
+            + "npcId INTEGER NOT NULL,"
+            + "level INTEGER NOT NULL,"
+            + "npcSkinName VARCHAR(255) NOT NULL,"
+            + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
+            + "UNIQUE (settlementId, type)"
+            + ");"
+            + "CREATE INDEX settlement_npcs_id ON {tablePrefix}settlement_npcs (settlementId);"),
 
     SETTLEMENT_USES("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_uses ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -372,7 +398,8 @@ public enum SQLiteTable {
 
     CLAIMS("CREATE TABLE IF NOT EXISTS {tablePrefix}claims ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + "settlementId INTEGER NOT NULL,"
+            + "landOwnerType VARCHAR(255) NOT NULL,"
+            + "landOwnerId INTEGER NOT NULL,"
             + "world VARCHAR(255),"
             + "x INTEGER,"
             + "z INTEGER,"
@@ -392,7 +419,8 @@ public enum SQLiteTable {
             + "CREATE INDEX claims_worlds ON {tablePrefix}claims (world);"
             + "CREATE INDEX claims_x ON {tablePrefix}claims (x);"
             + "CREATE INDEX claims_z ON {tablePrefix}claims (z);"
-            + "CREATE INDEX claims_id ON {tablePrefix}claims (settlementId);"),
+            + "CREATE INDEX claims_type ON {tablePrefix}claims (landOwnerType);"
+            + "CREATE INDEX claims_id ON {tablePrefix}claims (landOwnerId);"),
 
     CLAIM_USES("CREATE TABLE IF NOT EXISTS {tablePrefix}claim_uses ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"

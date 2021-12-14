@@ -42,6 +42,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
@@ -56,6 +57,7 @@ public class Utils {
     private final static char[] SUFFIXES = {'k', 'M', 'B', 'T', 'P', 'E'};
     public final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
     public final static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat();
+    public final static SimpleDateFormat HOUR_FORMAT = new SimpleDateFormat("HH:mm");
     public static final SimpleDateFormat ISO_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
     public static final UUID ZERO_UUID = new UUID(0, 0);
     private static final Map<UUID, Long> TELEPORT_COOLDOWNS = new HashMap<>();
@@ -246,11 +248,7 @@ public class Utils {
     }
 
     public static <R extends Enum<R>> R parseEnum(Class<R> enumClass, String name) {
-        try {
-            return Enum.valueOf(enumClass, name);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
+        return parseEnum(enumClass, name, null);
     }
 
     public static <R extends Enum<R>> R parseEnum(Class<R> enumClass, String name, R defaultValue) {
@@ -258,7 +256,7 @@ public class Utils {
             return defaultValue;
         }
         try {
-            return Enum.valueOf(enumClass, name);
+            return Enum.valueOf(enumClass, name.replace('-', '_').toUpperCase(Locale.ROOT));
         } catch (Exception e) {
             return defaultValue;
         }

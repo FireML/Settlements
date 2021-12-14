@@ -15,11 +15,11 @@ guis:
   resident:
     title:
       setup:
-      - "ooooooooo",
-      - "         ",
-      - " ttttttt ",
-      - " ttttttt ",
-      - "    a    ",
+      - "ooooooooo"
+      - "         "
+      - " ttttttt "
+      - " ttttttt "
+      - "    a    "
       - " ooobooo "
       alignments:
         t: center
@@ -31,11 +31,11 @@ guis:
   settlement:
     magement:
       setup:
-      - "ooooooooo",
-      - "         ",
-      - "  r   s  ",
-      - " d a t l ",
-      - "         ",
+      - "ooooooooo"
+      - "         "
+      - "  r   s  "
+      - " d a t l "
+      - "         "
       - " ooobooo "
       elements:
         o: lime_stained_glass_pane
@@ -45,11 +45,11 @@ guis:
         back: barrier
     settings:
       setup:
-      - "ooooooooo",
-      - "         ",
-      - "  np jb  ",
-      - "  rd ac  ",
-      - "         ",
+      - "ooooooooo"
+      - "         "
+      - "  np jb  "
+      - "  rd ac  "
+      - "         "
       - " ooobooo "
       elements:
         o: lime_stained_glass_pane
@@ -64,24 +64,84 @@ guis:
         back: barrier
     allies:
       setup:
-      - "ooooooooo",
-      - "aaaaaaaaa",
-      - "aaaaaaaaa",
-      - "aaaaaaaaa",
-      - "aaaaaaaaa",
+      - "ooooooooo"
+      - "aaaaaaaaa"
+      - "aaaaaaaaa"
+      - "aaaaaaaaa"
+      - "aaaaaaaaa"
       - "ppppppsb "
       elements:
         o: lime_stained_glass_pane
         page: paper
         sort: hopper
         back: barrier
+    bank:
+      setup:
+      - "ooooooooo"
+      - "    d    "
+      - "    a    "
+      - " sh u tm "
+      - "         "
+      - " ooobooo "
+      alignments:
+        p: center
+      elements:
+        o: yellow_stained_glass_pane
+        donations: hopper
+        storage: chest
+        history: book
+        upkeep: gold_ingot
+        taxes: map
+        manage-taxes: cartography_table
+        back: barrier
+    manage-taxes:
+      setup:
+      - "ooooooooo"
+      - "         "
+      - "         "
+      - "  t   a  "
+      - "         "
+      - " ooobooo "
+      alignments:
+        p: center
+      elements:
+        o: yellow_stained_glass_pane
+        tax: name_tag
+        auction-tax: beacon
+        back: barrier
+    upgrade:
+      setup:
+      - "lllllllll"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
+      - " oipdobo "
+      alignments:
+        p: center
+      elements:
+        o: orange_stained_glass_pane
+        settlement: cobblestone_wall
+        progress: anvil
+        deposit: compostor
+        mananger: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjkyNTFlMTg2NTdlNzMwNGVhY2VhYzVmOGQ0NDZkMjQ4ZWE0NmFmMmVhYjE0NWY4MTg1Y2VjZTc3OWYxNjQ4In19fQ==
+        quarter-master: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTY5ODQ3N2Q3ZDUzMjc0OGFmNGUwOTExNWVmMTZiYjk1OTk0ZjBlNThiMDkwZTZkMzA2NDQ1OGJiOWFlMTY4NyJ9fX0=
+        banker: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjhkYTE0NjI1NzU0Nzc5NWMzYTk1NGRiNzgxZTBkMGM0ZDBhZjAyN2YwZDE1MWQzOWE0OWUxYmJkMjFjZmM4OCJ9fX0=
+        elder: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdhOWU4YjFhZmU1ZWU1ZGQ0OTg3MzRjYzIyMWMxN2I3MWYxZGUxYTZkYzhlYWIyZmM4OGMzMzJlZDI0NGM5NyJ9fX0=
+        traveling-merchant: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWYxMzc5YTgyMjkwZDdhYmUxZWZhYWJiYzcwNzEwZmYyZWMwMmRkMzRhZGUzODZiYzAwYzkzMGM0NjFjZjkzMiJ9fX0=
+        blacksmith: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWRhZDZjYThlYWU1MDViYWVhOGE0ZjJlY2ZmZTcxOWYzMTU1YTIyZDI4ZjgyZDgyZDUyODQ0MGYxYTc3YWExNCJ9fX0=
+        auctioneer: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGM0ZDdlYTAzODE4Nzc3MGNjMmU0ODE3YzkyMDllMTliNzRmNWQyODhlZDYzMzI4MWVjY2NhZjVjOGViYzc2NyJ9fX0=
+        black-market: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGUwMmZlYmI0YzUyZGIxZmI5ZTFlNWM4NTJhNGU3MmQ4ZGZlNmM0YzA1NWE0NjQ5YWJmM2QzNTdkMjMzZmMxYiJ9fX0=
+        back: barrier
+        requirement:
+          missionpoints: red_banner
     perks:
       setup:
-      - "ooooooooo",
-      - "         ",
-      - " ppppppp ",
-      - " ppppppp ",
-      - "         ",
+      - "ooooooooo"
+      - "         "
+      - " ppppppp "
+      - " ppppppp "
+      - "         "
       - " ooobooo "
       alignments:
         p: center
@@ -90,11 +150,11 @@ guis:
         back: barrier
     access:
       setup:
-      - "ooooooooo",
-      - "         ",
-      - " aaaaaaa ",
-      - " aaaaaaa ",
-      - "         ",
+      - "ooooooooo"
+      - "         "
+      - " aaaaaaa "
+      - " aaaaaaa "
+      - "         "
       - " ooobooo "
       alignments:
         a: center
@@ -105,11 +165,11 @@ guis:
         back: barrier
     recruitment:
       setup:
-      - "ooooooooo",
-      - "         ",
-      - " jjjjjjj ",
-      - " jjjjjjj ",
-      - "         ",
+      - "ooooooooo"
+      - "         "
+      - " jjjjjjj "
+      - " jjjjjjj "
+      - "         "
       - " ooobooo "
       alignments:
         j: center
@@ -120,11 +180,11 @@ guis:
         back: barrier
     reslist:
       setup:
-      - "ooooooooo",
-      - "rrrrrrrrr",
-      - "rrrrrrrrr",
-      - "rrrrrrrrr",
-      - "rrrrrrrrr",
+      - "ooooooooo"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
       - "ppppppsb "
       elements:
         o: lime_stained_glass_pane
@@ -133,11 +193,11 @@ guis:
         back: barrier
     resident:
       setup:
-      - "ooooooooo",
-      - "    pa   ",
-      - "         ",
-      - " extr lks",
-      - "         ",
+      - "ooooooooo"
+      - "    pa   "
+      - "         "
+      - " extr lks"
+      - "         "
       - " ooobooo "
       elements:
         o: lime_stained_glass_pane
@@ -152,11 +212,11 @@ guis:
         back: barrier
     banished:
       setup:
-      - "ooooooooo",
-      - "rrrrrrrrr",
-      - "rrrrrrrrr",
-      - "rrrrrrrrr",
-      - "rrrrrrrrr",
+      - "ooooooooo"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
       - "ppppppsub"
       elements:
         o: magenta_stained_glass_pane
@@ -166,11 +226,11 @@ guis:
         back: barrier
     unbanished:
       setup:
-      - "ooooooooo",
-      - "rrrrrrrrr",
-      - "rrrrrrrrr",
-      - "rrrrrrrrr",
-      - "rrrrrrrrr",
+      - "ooooooooo"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
       - "ppppppsb "
       elements:
         o: magenta_stained_glass_pane
@@ -228,11 +288,11 @@ guis:
         back: barrier
     rank-perms:
       setup:
-      - "ppppppppp",
-      - "ppppppppp",
-      - "ppppppppp",
-      - "ppppppppp",
-      - "ppppppppp",
+      - "ppppppppp"
+      - "ppppppppp"
+      - "ppppppppp"
+      - "ppppppppp"
+      - "ppppppppp"
       - "rrrrr  to"
       elements:
         set: lime_wool
@@ -243,11 +303,11 @@ guis:
     setrank:
       rank-select:
         setup:
-        - "ooooooooo",
-        - "    c    ",
-        - "         ",
-        - " rrrrrrr ",
-        - "         ",
+        - "ooooooooo"
+        - "    c    "
+        - "         "
+        - " rrrrrrr "
+        - "         "
         - " ooobooo "
         alignments:
           r: center
@@ -257,11 +317,11 @@ guis:
           add: writable_book
     titles:
       setup:
-      - "ooooooooo",
-      - "    a    ",
-      - "         ",
-      - " ttttttt ",
-      - " ttttttt ",
+      - "ooooooooo"
+      - "    a    "
+      - "         "
+      - " ttttttt "
+      - " ttttttt "
       - " ooobooo "
       alignments:
         t: center
@@ -272,11 +332,11 @@ guis:
         back: barrier
       rank-select:
         setup:
-        - "ooooooooo",
-        - "         ",
-        - "         ",
-        - " rrrrrrc ",
-        - "         ",
+        - "ooooooooo"
+        - "         "
+        - "         "
+        - " rrrrrrc "
+        - "         "
         - " ooobooo "
         alignments:
           r: center
@@ -286,11 +346,11 @@ guis:
           add: writable_book
     title:
       setup:
-      - "ooooooooo",
-      - "         ",
-      - " ttttttt ",
-      - " ttttttt ",
-      - "    a    ",
+      - "ooooooooo"
+      - "         "
+      - " ttttttt "
+      - " ttttttt "
+      - "    a    "
       - " ooobooo "
       alignments:
         t: center
@@ -302,11 +362,11 @@ guis:
   empire:
     access:
       setup:
-      - "ooooooooo",
-      - "         ",
-      - " aaaaaaa ",
-      - " aaaaaaa ",
-      - "         ",
+      - "ooooooooo"
+      - "         "
+      - " aaaaaaa "
+      - " aaaaaaa "
+      - "         "
       - " ooobooo "
       alignments:
         a: center
@@ -317,11 +377,11 @@ guis:
         back: barrier
     recruitment:
       setup:
-      - "ooooooooo",
-      - "         ",
-      - " jjjjjjj ",
-      - " jjjjjjj ",
-      - "         ",
+      - "ooooooooo"
+      - "         "
+      - " jjjjjjj "
+      - " jjjjjjj "
+      - "         "
       - " ooobooo "
       alignments:
         j: center
@@ -378,6 +438,225 @@ guis:
         states: book
         previous: arrow
         next: arrow
+        back: barrier
+    bank:
+      setup:
+      - "ooooooooo"
+      - "    d    "
+      - "    a    "
+      - " sh u tm "
+      - "         "
+      - " ooobooo "
+      alignments:
+        p: center
+      elements:
+        o: yellow_stained_glass_pane
+        donations: hopper
+        storage: chest
+        history: book
+        upkeep: gold_ingot
+        taxes: map
+        manage-taxes: cartography_table
+        back: barrier
+    magement:
+      setup:
+      - "ooooooooo"
+      - "         "
+      - "  r   s  "
+      - " d a t l "
+      - "         "
+      - " ooobooo "
+      elements:
+        o: lime_stained_glass_pane
+        ranks: chainmail_chestplate
+        settings: cobblestone_wall
+        land: grass_block
+        back: barrier
+    settings:
+      setup:
+      - "ooooooooo"
+      - "         "
+      - "  np jb  "
+      - "  rd ac  "
+      - "         "
+      - " ooobooo "
+      elements:
+        o: lime_stained_glass_pane
+        rename: anvil
+        perks: potion
+        rules: writable_book
+        discord: blue_dye
+        joinfee: name_tag
+        description: oak_sign
+        access: oak_fence_gate
+        recruitement: acacia_door
+        back: barrier
+    allies:
+      setup:
+      - "ooooooooo"
+      - "aaaaaaaaa"
+      - "aaaaaaaaa"
+      - "aaaaaaaaa"
+      - "aaaaaaaaa"
+      - "ppppppsb "
+      elements:
+        o: lime_stained_glass_pane
+        page: paper
+        sort: hopper
+        back: barrier
+    manage-taxes:
+      setup:
+      - "ooooooooo"
+      - "         "
+      - "         "
+      - "  t   a  "
+      - "         "
+      - " ooobooo "
+      alignments:
+        p: center
+      elements:
+        o: yellow_stained_glass_pane
+        tax: name_tag
+        auction-tax: beacon
+        back: barrier
+    upgrade:
+      setup:
+      - "lllllllll"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
+      - " oipdobo "
+      alignments:
+        p: center
+      elements:
+        o: orange_stained_glass_pane
+        settlement: cobblestone_wall
+        progress: anvil
+        deposit: compostor
+        mananger: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjkyNTFlMTg2NTdlNzMwNGVhY2VhYzVmOGQ0NDZkMjQ4ZWE0NmFmMmVhYjE0NWY4MTg1Y2VjZTc3OWYxNjQ4In19fQ==
+        quarter-master: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTY5ODQ3N2Q3ZDUzMjc0OGFmNGUwOTExNWVmMTZiYjk1OTk0ZjBlNThiMDkwZTZkMzA2NDQ1OGJiOWFlMTY4NyJ9fX0=
+        banker: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjhkYTE0NjI1NzU0Nzc5NWMzYTk1NGRiNzgxZTBkMGM0ZDBhZjAyN2YwZDE1MWQzOWE0OWUxYmJkMjFjZmM4OCJ9fX0=
+        elder: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdhOWU4YjFhZmU1ZWU1ZGQ0OTg3MzRjYzIyMWMxN2I3MWYxZGUxYTZkYzhlYWIyZmM4OGMzMzJlZDI0NGM5NyJ9fX0=
+        traveling-merchant: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWYxMzc5YTgyMjkwZDdhYmUxZWZhYWJiYzcwNzEwZmYyZWMwMmRkMzRhZGUzODZiYzAwYzkzMGM0NjFjZjkzMiJ9fX0=
+        blacksmith: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWRhZDZjYThlYWU1MDViYWVhOGE0ZjJlY2ZmZTcxOWYzMTU1YTIyZDI4ZjgyZDgyZDUyODQ0MGYxYTc3YWExNCJ9fX0=
+        auctioneer: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGM0ZDdlYTAzODE4Nzc3MGNjMmU0ODE3YzkyMDllMTliNzRmNWQyODhlZDYzMzI4MWVjY2NhZjVjOGViYzc2NyJ9fX0=
+        black-market: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGUwMmZlYmI0YzUyZGIxZmI5ZTFlNWM4NTJhNGU3MmQ4ZGZlNmM0YzA1NWE0NjQ5YWJmM2QzNTdkMjMzZmMxYiJ9fX0=
+        back: barrier
+        requirement:
+          missionpoints: red_banner
+    perks:
+      setup:
+      - "ooooooooo"
+      - "         "
+      - " ppppppp "
+      - " ppppppp "
+      - "         "
+      - " ooobooo "
+      alignments:
+        p: center
+      elements:
+        o: lime_stained_glass_pane
+        back: barrier
+    banished:
+      setup:
+      - "ooooooooo"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
+      - "ppppppsub"
+      elements:
+        o: magenta_stained_glass_pane
+        page: paper
+        sort: hopper
+        unbanished: book
+        back: barrier
+    unbanished:
+      setup:
+      - "ooooooooo"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
+      - "rrrrrrrrr"
+      - "ppppppsb "
+      elements:
+        o: magenta_stained_glass_pane
+        page: paper
+        sort: hopper
+        back: barrier
+    rank-perms:
+      setup:
+      - "ppppppppp"
+      - "ppppppppp"
+      - "ppppppppp"
+      - "ppppppppp"
+      - "ppppppppp"
+      - "rrrrr  to"
+      elements:
+        set: lime_wool
+        inherited: green_wool
+        not-set: light_gray_wool
+        titles: writable_book
+        reset: orange_wool
+    setrank:
+      rank-select:
+        setup:
+        - "ooooooooo"
+        - "    c    "
+        - "         "
+        - " rrrrrrr "
+        - "         "
+        - " ooobooo "
+        alignments:
+          r: center
+        elements:
+          o: lime_stained_glass_pane
+          title: paper
+          add: writable_book
+    titles:
+      setup:
+      - "ooooooooo"
+      - "    a    "
+      - "         "
+      - " ttttttt "
+      - " ttttttt "
+      - " ooobooo "
+      alignments:
+        t: center
+      elements:
+        o: lime_stained_glass_pane
+        title: paper
+        add: writable_book
+        back: barrier
+      rank-select:
+        setup:
+        - "ooooooooo"
+        - "         "
+        - "         "
+        - " rrrrrrc "
+        - "         "
+        - " ooobooo "
+        alignments:
+          r: center
+        elements:
+          o: lime_stained_glass_pane
+          title: paper
+          add: writable_book
+    title:
+      setup:
+      - "ooooooooo"
+      - "         "
+      - " ttttttt "
+      - " ttttttt "
+      - "    a    "
+      - " ooobooo "
+      alignments:
+        t: center
+      elements:
+        o: lime_stained_glass_pane
+        title: paper
+        add: writable_book
         back: barrier
   plot:
     perms:
@@ -431,11 +710,11 @@ guis:
         back: barrier
     rank-perms:
       setup:
-      - "ppppppppp",
-      - "ppppppppp",
-      - "ppppppppp",
-      - "ppppppppp",
-      - "ppppppppp",
+      - "ppppppppp"
+      - "ppppppppp"
+      - "ppppppppp"
+      - "ppppppppp"
+      - "ppppppppp"
       - "rrrrr  to"
       elements:
         set: lime_wool
@@ -445,11 +724,11 @@ guis:
         reset: orange_wool
     titles:
       setup:
-      - "ooooooooo",
-      - "    a    ",
-      - "         ",
-      - " ttttttt ",
-      - " ttttttt ",
+      - "ooooooooo"
+      - "    a    "
+      - "         "
+      - " ttttttt "
+      - " ttttttt "
       - " ooobooo "
       alignments:
         t: center
@@ -460,11 +739,11 @@ guis:
         back: barrier
     title:
       setup:
-      - "ooooooooo",
-      - "         ",
-      - " ttttttt ",
-      - " ttttttt ",
-      - "    a    ",
+      - "ooooooooo"
+      - "         "
+      - " ttttttt "
+      - " ttttttt "
+      - "    a    "
       - " ooobooo "
       alignments:
         t: center
@@ -475,11 +754,11 @@ guis:
         back: barrier
     rank-select:
       setup:
-      - "ooooooooo",
-      - "         ",
-      - " rrrrrrr ",
-      - " rrrrrrr ",
-      - "         ",
+      - "ooooooooo"
+      - "         "
+      - " rrrrrrr "
+      - " rrrrrrr "
+      - "         "
       - " ooobooo "
       alignments:
         r: center

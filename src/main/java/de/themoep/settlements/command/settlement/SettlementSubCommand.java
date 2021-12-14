@@ -16,6 +16,14 @@ public abstract class SettlementSubCommand extends ResidentPermsSubCommand {
             getError("settlement-required").tell(resident);
             return false;
         }
+        if (!resident.getSettlement().hasUnlocked(getPermission())) {
+            getError("function-not-unlocked").tell(resident, "state", resident.getSettlement().getStateTag(), "name", resident.getSettlement().getName());
+            return false;
+        }
+        if (resident.getSettlement().useGuestRank() && resident.getSettlementRank() == resident.getSettlement().getDefaultRank()) {
+            getError("rules-not-accepted").tell(resident, "state", resident.getSettlement().getStateTag(), "name", resident.getSettlement().getName());
+            return false;
+        }
         return super.testAccess(resident);
     }
 

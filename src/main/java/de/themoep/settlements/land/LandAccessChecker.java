@@ -6,7 +6,6 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Pair;
-import de.themoep.settlements.settlement.SettlementManager;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -132,7 +131,7 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
         }
         boolean allowed;
 
-        Resident resident;
+        Resident resident = null;
         switch (state) {
             case OFFICERS:
                 allowed = landOwner.isOfficer(building);
@@ -146,21 +145,29 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
                 }
                 break;
             case RESIDENTS:
-                allowed = landOwner.equals(SettlementManager.getInstance().getFromPlayer(building));
+                resident = ResidentManager.getInstance().getResident(building);
+                allowed = landOwner.isMember(resident);
                 break;
             case ALLY:
                 resident = ResidentManager.getInstance().getResident(building);
-                allowed = landOwner.equals(resident.getSettlement()) || landOwner.isAlly(resident);
+                allowed = landOwner.isMember(resident) || landOwner.isAlly(resident);
                 break;
             case TRUSTED:
                 resident = ResidentManager.getInstance().getResident(building);
-                allowed = landOwner.equals(resident.getSettlement()) || landOwner.isTrusted(resident);
+                allowed = landOwner.isMember(resident) || landOwner.isTrusted(resident);
                 break;
             case PUBLIC:
                 allowed = true;
                 break;
             default:
                 return null;
+        }
+
+        if (allowed && resident != null && landOwner.useGuestRank() && landOwner.getRank(resident) == landOwner.getDefaultRank()) {
+            return new Pair<>(false, getError("rules-not-accepted").getReplacedText(
+                    "name", landOwner.getName(),
+                    "state", landOwner.getStateTag()
+            ));
         }
 
         if (allowed) {
