@@ -3,6 +3,8 @@ package de.themoep.settlements.resident;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
+import de.themoep.settlements.invites.InviteManager;
+import de.themoep.settlements.invites.SettlementInvite;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.SettlementsPlugin;
@@ -11,6 +13,7 @@ import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.config.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -23,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class ResidentManager {
     private static final Object RESIDENT_LOCK = new Object();
     private static ResidentManager instance;
+    private Cache<Object, Resident> residentsById;
     private Cache<Object, Resident> residentsByUuid;
     private Cache<Object, Resident> residentsByName;
 
@@ -50,6 +54,7 @@ public class ResidentManager {
                 return TimeUnit.SECONDS.toNanos(Config.Cache.DURATION_RESIDENT);
             }
         };
+        residentsById = Caffeine.newBuilder().expireAfter(residentExpiry).build();
         residentsByUuid = Caffeine.newBuilder().expireAfter(residentExpiry).build();
         residentsByName = Caffeine.newBuilder().expireAfter(residentExpiry).build();
         SettlementsPlugin.logDebug("Loaded ResidentManager");
@@ -58,10 +63,14 @@ public class ResidentManager {
     private boolean keepCached(Resident resident) {
         return !SettlementsPlugin.getInstance().isRunning()
                 || resident.hasSettlement()
+                || !InviteManager.getInstance().getInvites(resident).isEmpty()
                 || LandManager.getInstance().ownsPlot(resident.getUUID());
     }
 
     public void addResident(Resident res) {
+        if (!res.getId().isNull()) {
+            residentsById.put(res.getId(), res);
+        }
         residentsByUuid.put(res.getUUID(), res);
         residentsByName.put(res.getName().toLowerCase(), res);
     }
@@ -70,6 +79,9 @@ public class ResidentManager {
         Resident resident = getResidentIfPreset(player.getUniqueId());
         if (resident != null) {
             if (!keepCached(resident)) {
+                if (!resident.getId().isNull()) {
+                    residentsById.invalidate(resident.getId());
+                }
                 residentsByUuid.invalidate(resident.getUUID());
                 invalidateName(resident.getName());
             }
@@ -97,6 +109,22 @@ public class ResidentManager {
 
     public Resident getResident(OfflinePlayer p) {
         return this.getResident(p.getUniqueId());
+    }
+
+    public Resident getResident(IdObject id) {
+        if (id.value() instanceof UUID) {
+            return getResident((UUID) id.value());
+        }
+        Resident resident = residentsById.getIfPresent(id);
+        if (resident == null) {
+            synchronized (RESIDENT_LOCK) {
+                resident = DatabaseManager.getInstance().getResident((Integer) id.value());
+                if (resident != null) {
+                    addResident(resident);
+                }
+            }
+        }
+        return resident;
     }
 
     public Resident getResident(UUID uuid) {

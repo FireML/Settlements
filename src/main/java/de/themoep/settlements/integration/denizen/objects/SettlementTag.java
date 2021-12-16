@@ -14,6 +14,7 @@ import com.denizenscript.denizencore.tags.TagContext;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.InviteCache;
+import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.land.Use;
@@ -378,7 +379,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
             resident.setSettlement(settlement);
             resident.setSettlementRank(SettlementRank.getDefault());
             resident.addChannel(ChatChannel.SETTLEMENT);
-            InviteCache.getPendingSettlementInvites().remove(resident.getUUID(), settlement.getId());
+            InviteManager.getInstance().removeInvite(resident, settlement);
             DatabaseManager.getInstance().saveResident(resident);
             return;
         }

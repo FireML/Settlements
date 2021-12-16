@@ -21,6 +21,8 @@ import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.MessageUtils;
+import de.themoep.settlements.utils.ReplacementProvider;
+import de.themoep.settlements.utils.Sortable;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.world.SimpleLocation;
@@ -44,7 +46,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implements DatabaseSerializable, Levelable<L>, Targetable, ModeAble, FlagAble {
+public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implements DatabaseSerializable, Levelable<L>, Targetable, ModeAble, FlagAble, Sortable {
     private IdObject id = IdObject.get(null);
     private String name;
     private String description = "";
@@ -960,8 +962,6 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
     public boolean equals(Object o) {
         return o != null && o.getClass().equals(getClass()) && ((LandOwner) o).getId().equals(getId());
     }
-
-    public abstract String[] getReplacements(ConfigMessages configMessages, String... initial);
 
     public NpcData getNpcData(NpcType type) {
         NpcData def = new NpcData(-1, type);

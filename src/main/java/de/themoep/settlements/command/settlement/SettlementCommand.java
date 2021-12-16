@@ -2,6 +2,10 @@ package de.themoep.settlements.command.settlement;
 
 import de.themoep.settlements.command.settlement.money.SettlementMoneyCommand;
 import de.themoep.settlements.command.settlement.outpost.OutpostTeleportCommand;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.resident.gui.OverviewGUI;
+import de.themoep.settlements.resident.gui.StartGUI;
 import de.themoep.settlements.teleporter.TeleportersGUI;
 import de.themoep.settlements.command.ChatCommand;
 import de.themoep.settlements.command.HelpCommand;
@@ -95,6 +99,15 @@ public class SettlementCommand extends SubCommand {
 
     @Override
     public boolean run(CommandSender p, String base, String alias, String... args) {
+        if (p instanceof Player) {
+            Resident resident = ResidentManager.getInstance().getResident((Player) p);
+            if (resident.hasSettlement()) {
+                new OverviewGUI(resident).open();
+            } else {
+                new StartGUI(resident).open();
+            }
+            return true;
+        }
         return false;
     }
 }

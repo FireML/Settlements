@@ -1,5 +1,6 @@
 package de.themoep.settlements.command.settlement;
 
+import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.command.SubCommand;
@@ -38,7 +39,7 @@ public class SettlementKickCommand extends SettlementSubCommand {
             }
             MessageUtils.tellResidents(res.getSettlement().getOnlineResidents(), getMessage("kicked-alert"), "player", res.getName());
             Utils.runSync(() -> {
-                InviteCache.getPendingSettlementInvites().remove(res.getUUID(), res.getSettlement().getId());
+                InviteManager.getInstance().removeInvite(res, res.getSettlement());
                 res.leaveSettlement();
             });
         });

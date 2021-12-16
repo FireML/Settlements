@@ -1,5 +1,6 @@
 package de.themoep.settlements.command.settlement;
 
+import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.JoinType;
 import de.themoep.settlements.settlement.Settlement;
@@ -29,7 +30,7 @@ public class SettlementJoinCommand extends ResidentSubCommand {
             getError("settlement-doesnt-exist").tell(resident, "name", args[0]);
         } else if (joinSettlement.getId().isNull()) {
             getError("missing-settlement-id").tell(resident, "name", joinSettlement.getName());
-        } else if (joinSettlement.getJoinType() != JoinType.ANYONE && !Utils.playerHasInvite(resident.getUUID(), joinSettlement)) {
+        } else if (joinSettlement.getJoinType() != JoinType.ANYONE && InviteManager.getInstance().getInvite(resident, joinSettlement) == null) {
             getMessage("no-invite").tell(resident, "name", joinSettlement.getName(), "state", joinSettlement.getStateTag());
         } else if (joinSettlement.isFull()) {
             getMessage("is-full").tell(resident, "state", joinSettlement.getState().getTag(), "name", joinSettlement.getName());
@@ -53,7 +54,7 @@ public class SettlementJoinCommand extends ResidentSubCommand {
             resident.setSettlement(joinSettlement);
             resident.setSettlementRank(SettlementRank.getDefault());
             resident.addChannel(ChatChannel.SETTLEMENT);
-            InviteCache.getPendingSettlementInvites().remove(resident.getUUID(), joinSettlement.getId());
+            InviteManager.getInstance().removeInvite(resident, joinSettlement);
             DatabaseManager.getInstance().saveResident(resident);
             resident.tell(getMessage("success"), "name", joinSettlement.getName(), "state", joinSettlement.getState().getTag());
             getMessage("new-resident").tell(joinSettlement.getOnlineResidents(), "player", resident.getName());

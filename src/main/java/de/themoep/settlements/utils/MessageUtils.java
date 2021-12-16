@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableSet;
 import de.themoep.minedown.MineDownParser;
 import de.themoep.minedown.Replacer;
 import de.themoep.settlements.resident.Resident;
+import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -90,6 +91,24 @@ public class MessageUtils {
         for (String message : messages) {
             sender.sendMessage(replaceColorCodes(message));
         }
+    }
+
+    public static void sendActionBar(List<Resident> residents, Message message, String... replacements) {
+        for (Resident resident : residents) {
+            sendActionBar(resident, message, replacements);
+        }
+    }
+
+    public static void sendActionBar(Resident resident, Message message, String... replacements) {
+        sendActionBar(resident.getPlayer(), message, replacements);
+    }
+
+    public static void sendActionBar(Player player, Message message, String... replacements) {
+        if (player == null || message == null || !message.exists()) {
+            return;
+        }
+
+        player.sendActionBar(message.getReplacedComponents(replacements));
     }
 
     public static BaseComponent[] replacePlaceholders(BaseComponent[] message, String... replacements) {

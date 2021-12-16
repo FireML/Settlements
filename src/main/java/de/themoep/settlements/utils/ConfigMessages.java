@@ -53,4 +53,8 @@ public interface ConfigMessages extends ConfigKey {
         Message message = getMessage(key);
         return message.exists() ? message : getMessage("error." + key);
     }
+
+    default String getErrorText(String key, String... replacements) {
+        return getError(key).getReplacedText(replacements);
+    }
 }

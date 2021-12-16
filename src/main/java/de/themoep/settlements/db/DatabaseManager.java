@@ -3,6 +3,8 @@ package de.themoep.settlements.db;
 import com.google.common.collect.ImmutableMap;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.empire.Empire;
+import de.themoep.settlements.invites.Invite;
+import de.themoep.settlements.invites.SettlementInvite;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
@@ -11,6 +13,7 @@ import de.themoep.settlements.lock.Lock;
 import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.IdObject;
+import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.world.SimpleChunkLocation;
@@ -87,9 +90,17 @@ public abstract class DatabaseManager {
 
     public abstract Collection<Settlement> getAllSettlements();
 
+    public abstract Collection<SettlementInvite> getSettlementInvites();
+
+    public abstract <T extends Targetable & DatabaseSerializable, S extends Targetable & DatabaseSerializable> void save(Invite<T,S> invite);
+
+    public abstract <T extends Targetable & DatabaseSerializable, S extends Targetable & DatabaseSerializable> void delete(Invite<T,S> invite);
+
     public abstract Collection<Empire> getAllEmpires();
 
     public abstract Collection<Portal> getAllPortals();
+
+    public abstract Resident getResident(int id);
 
     public abstract Resident getResident(UUID uuid);
 

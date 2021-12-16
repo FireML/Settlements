@@ -3,7 +3,6 @@ package de.themoep.settlements.empire;
 import co.aikar.timings.lib.MCTiming;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import de.themoep.settlements.leveling.Levelable;
 import de.themoep.settlements.missions.MissionData;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.resident.Resident;
@@ -27,9 +26,11 @@ import de.themoep.settlements.rank.RankManager;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
+import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.NameTag;
+import de.themoep.settlements.utils.Sortable;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.Utils;
@@ -41,12 +42,14 @@ import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -942,5 +945,42 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
             ));
         }
         return String.join("\n", lines);
+    }
+
+    @Override
+    public Sort[] getSorts() {
+        return Sort.values();
+    }
+
+    @Override
+    public ItemStack getIcon() {
+        Resident chief = getCapital().getChief();
+        return ItemUtils.getHead(chief.getUUID(), chief.getName());
+    }
+
+    private enum Sort implements Sortable.Sort<Empire> {
+        LEVEL(Empire::compareTo),
+        SIZE((e1, e2) -> Integer.compare(e2.getMemberIds().size(), e1.getMemberIds().size())),
+        NAME((e1, e2) -> e1.getName().compareToIgnoreCase(e2.getName())),
+        PRIVACY((e1, e2) -> e1.getAccess().compareTo(e2.getAccess())),
+        RECRUITMENT((e1, e2) -> e1.getJoinType().compareTo(e2.getJoinType())),
+        AGE((e1, e2) -> Long.compare(e2.getCreated(), e1.getCreated())),
+        ;
+
+        private final Comparator<Empire> comparator;
+
+        Sort(Comparator<Empire> comparator) {
+            this.comparator = comparator;
+        }
+
+        @Override
+        public Sort[] getValues() {
+            return values();
+        }
+
+        @Override
+        public Comparator<Empire> getComparator() {
+            return comparator;
+        }
     }
 }

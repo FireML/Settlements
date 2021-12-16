@@ -1,9 +1,11 @@
 package de.themoep.settlements.command.settlement;
 
+import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.integration.MailProvider;
+import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.db.InviteCache;
 import de.themoep.settlements.utils.Utils;
 
 public class SettlementInviteCommand extends SettlementSubCommand {
@@ -23,19 +25,31 @@ public class SettlementInviteCommand extends SettlementSubCommand {
                 return;
             }
             if (invitedPlayer.hasSettlement()) {
-                res.tell(getMessage("already-in-settlement"), "name", invitedPlayer.getName(), "state", invitedPlayer.getSettlement().getState().getTag());
+                getMessage("already-in-settlement").tell(res, "name", invitedPlayer.getName(), "state", invitedPlayer.getSettlement().getState().getTag());
                 return;
             }
             Utils.runSync(() -> {
-                InviteCache.getPendingSettlementInvites().put(invitedPlayer.getUUID(), res.getSettlement().getId());
-                getMessage("received").tell(invitedPlayer, "name", res.getSettlement().getName(), "state", res.getSettlement().getState().getTag());
-                getMessage("joinfee").tell(invitedPlayer,
-                        "name", res.getSettlement().getName(),
-                        "state", res.getSettlement().getState().getTag(),
-                        "amount", String.valueOf(res.getSettlement().getJoinFee()),
-                        "joinfee", String.valueOf(res.getSettlement().getJoinFee()),
-                        "tax", String.valueOf(res.getSettlement().getTax())
-                );
+                InviteManager.getInstance().addInvite(invitedPlayer, res.getSettlement());
+                if (invitedPlayer.getPlayer() != null) {
+                    getMessage("received").tell(invitedPlayer, "name", res.getSettlement().getName(), "state", res.getSettlement().getState().getTag());
+                    getMessage("joinfee").tell(invitedPlayer,
+                            "name", res.getSettlement().getName(),
+                            "state", res.getSettlement().getState().getTag(),
+                            "amount", String.valueOf(res.getSettlement().getJoinFee()),
+                            "joinfee", String.valueOf(res.getSettlement().getJoinFee()),
+                            "tax", String.valueOf(res.getSettlement().getTax())
+                    );
+                } else {
+                    for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
+                        provider.sendMail(res.getSettlementTitle() + " " + res.getName(), invitedPlayer, getText("mail",
+                                "name", res.getSettlement().getName(),
+                                "state", res.getSettlement().getState().getTag(),
+                                "amount", String.valueOf(res.getSettlement().getJoinFee()),
+                                "joinfee", String.valueOf(res.getSettlement().getJoinFee()),
+                                "tax", String.valueOf(res.getSettlement().getTax())
+                        ));
+                    }
+                }
             });
             getMessage("alert").tell(res.getSettlement().getOnlineResidents(), "player", invitedPlayer.getName());
         });

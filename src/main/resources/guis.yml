@@ -2,16 +2,115 @@ guis:
   confirmation:
     reset-perms:
       setup:
-      - "   c  b   "
-      selements:
+      - "ooooooooo"
+      - "         "
+      - "    c    "
+      - "         "
+      - "         "
+      - " ooobooo "
+      elements:
+        o: yellow_stained_glass_pane
         confirm: green_wool
         cancel: barrier
     kick:
       setup:
-      - "   c  b   "
-      selements:
+      - "ooooooooo"
+      - "         "
+      - "    c    "
+      - "         "
+      - "         "
+      - " ooobooo "
+      elements:
+        o: yellow_stained_glass_pane
         confirm: red_dye
         cancel: barrier
+  general:
+    start:
+      setup:
+      - "ooooooooo"
+      - "    s    "
+      - "         "
+      - "  ic jp  "
+      - "         "
+      - " ooobooo "
+      elements:
+        o: brown_stained_glass_pane
+        start: book
+        invites: crimson_door
+        create: white_bed
+        join: oak_boat
+        public: beacon
+        back: barrier
+    overview:
+      setup:
+      - "oooosoooo"
+      - "    r    "
+      - "         "
+      - " lu h pf "
+      - "         "
+      - " ooobooo "
+      elements:
+        o: brown_stained_glass_pane
+        settlement: white_bed
+        rules: book
+        lock: chest
+        unlock: enderchest
+        home: campfire
+        plot: grass_block
+        friends: player_head
+        back: barrier
+    invites:
+      setup:
+      - "ooooooooo"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "ppppppsb "
+      elements:
+        o: brown_stained_glass_pane
+        page: paper
+        sort: hopper
+        back: barrier
+    friends:
+      setup:
+      - "ooooooooo"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "ppppppsb "
+      elements:
+        o: brown_stained_glass_pane
+        page: paper
+        sort: hopper
+        back: barrier
+    settlements:
+      setup:
+      - "ooooooooo"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "ppppppsb "
+      elements:
+        o: brown_stained_glass_pane
+        page: paper
+        sort: hopper
+        back: barrier
+    public:
+      setup:
+      - "ooooooooo"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "ppppppsb "
+      elements:
+        o: brown_stained_glass_pane
+        page: paper
+        sort: hopper
+        back: barrier
   resident:
     title:
       setup:

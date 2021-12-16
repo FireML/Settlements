@@ -396,6 +396,17 @@ public enum SQLiteTable {
             + ");"
             + "CREATE INDEX resident_ignores_id ON {tablePrefix}resident_ignores (userId);"),
 
+    INVITES("CREATE TABLE IF NOT EXISTS {tablePrefix}invites ("
+            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + "type VARCHAR(255) NOT NULL,"
+            + "targetType VARCHAR(255) NOT NULL,"
+            + "targetId INTEGER NOT NULL,"
+            + "sourceType VARCHAR(255) NOT NULL,"
+            + "sourceId INTEGER NOT NULL,"
+            + "time BIGINT(11) NOT NULL,"
+            + ");"
+            + "CREATE INDEX invite_type ON {tablePrefix}invites (type);"),
+
     CLAIMS("CREATE TABLE IF NOT EXISTS {tablePrefix}claims ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "landOwnerType VARCHAR(255) NOT NULL,"

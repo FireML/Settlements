@@ -548,14 +548,18 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         DatabaseManager.getInstance().saveResident(this);
     }
 
+    public double getBalance() {
+        return SettlementsPlugin.getInstance().getEconomy().getBalance(Bukkit.getOfflinePlayer(getUUID()));
+    }
+
     public enum Placeholder {
-                name(r -> r.getName()),
+                name(Resident::getName),
                 empire(r -> r.hasEmpire() ? r.getSettlement().getEmpire().getName() : "none"),
                 empirerank(r -> r.hasEmpire() ? r.getEmpireRank().getTag() : "none"),
                 settlement(r -> r.hasSettlement() ? r.getSettlement().getName() : "none"),
                 rank(r -> r.hasSettlement() ? r.getSettlementRank().getTag(r.getSettlement()) : "none"),
                 title(r -> r.hasSettlement() ? r.getSettlementTitle() : "none"),
-                balance(r -> Utils.CURRENCY_FORMAT.format(SettlementsPlugin.getInstance().getEconomy().getBalance(Bukkit.getOfflinePlayer(r.getUUID())))),
+                balance(r -> Utils.CURRENCY_FORMAT.format(r.getBalance())),
                 tax(r -> Utils.CURRENCY_FORMAT.format(r.getTax())),
                 bonus(r -> Utils.CURRENCY_FORMAT.format(r.getBonusClaims())),
                 joindate(r -> Utils.DATE_FORMAT.format(new Date(Bukkit.getOfflinePlayer(r.getUUID()).getFirstPlayed()))),

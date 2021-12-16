@@ -8,10 +8,8 @@ import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.land.events.LandownerChiefChangeEvent;
-import de.themoep.settlements.leveling.Levelable;
 import de.themoep.settlements.missions.Mission;
 import de.themoep.settlements.missions.MissionData;
-import de.themoep.settlements.npc.NpcManager;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.settlement.events.SettlementLeaveEvent;
@@ -28,8 +26,10 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
+import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
+import de.themoep.settlements.utils.Sortable;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.Utils;
@@ -44,6 +44,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -912,5 +914,42 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
     @Override
     public String name() {
         return "Settlement";
+    }
+
+    @Override
+    public ItemStack getIcon() {
+        Resident chief = getChief();
+        return ItemUtils.getHead(chief.getUUID(), chief.getName());
+    }
+
+    @Override
+    public Sort[] getSorts() {
+        return Sort.values();
+    }
+
+    private enum Sort implements Sortable.Sort<Settlement> {
+        LEVEL(Settlement::compareTo),
+        SIZE((s1, s2) -> Integer.compare(s2.getResidentIds().size(), s1.getResidentIds().size())),
+        NAME((s1, s2) -> s1.getName().compareToIgnoreCase(s2.getName())),
+        PRIVACY((s1, s2) -> s1.getAccess().compareTo(s2.getAccess())),
+        RECRUITMENT((s1, s2) -> s1.getJoinType().compareTo(s2.getJoinType())),
+        AGE((s1, s2) -> Long.compare(s2.getCreated(), s1.getCreated())),
+        ;
+
+        private final Comparator<Settlement> comparator;
+
+        Sort(Comparator<Settlement> comparator) {
+            this.comparator = comparator;
+        }
+
+        @Override
+        public Sort[] getValues() {
+            return values();
+        }
+
+        @Override
+        public Comparator<Settlement> getComparator() {
+            return comparator;
+        }
     }
 }

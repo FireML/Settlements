@@ -25,6 +25,7 @@ import de.themoep.settlements.integration.MultiverseIntegration;
 import de.themoep.settlements.integration.PlaceholderApiIntegration;
 import de.themoep.settlements.integration.PlotSquaredIntegration;
 import de.themoep.settlements.integration.ShopProvider;
+import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.land.LandBlockListener;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandModeListener;
@@ -335,6 +336,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         }
         UseFlagManager.getInstance();
         ResidentManager.getInstance();
+        InviteManager.getInstance();
         if (Config.Portal.ENABLED) {
             PortalManager.getInstance();
         }

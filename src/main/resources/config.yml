@@ -58,6 +58,10 @@ settlement:
   max-auction-tax: -1
   # How many different titles can be configured for a rank
   titles-per-rank: 10
+  # The maximum length of the settlement names
+  name-length: 20
+  # What regex settlement names need to match")
+  name-validation: "[\\w-]+"
   
   leveling:
     # The amount of levels until a settlement converts from a Village to a Kingdom

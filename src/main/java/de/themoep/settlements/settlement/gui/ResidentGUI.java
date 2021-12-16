@@ -8,6 +8,7 @@ import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.InviteCache;
 import de.themoep.settlements.integration.MailProvider;
+import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.land.TaxDebtAction;
 import de.themoep.settlements.land.gui.RankSelectGUI;
 import de.themoep.settlements.land.gui.TitleGUI;
@@ -134,7 +135,7 @@ public class ResidentGUI extends SettlementsGUI {
                 new ConfirmationGui(this, "kick", c -> {
                     if (resident.getSettlement().hasPermission(sender, "kick")) {
                         Message.get("command.settlement.kick.kicked-alert").tell(resident.getSettlement().getOnlineResidents(), "player", resident.getName());
-                        InviteCache.getPendingSettlementInvites().remove(resident.getUUID(), resident.getSettlement().getId());
+                        InviteManager.getInstance().removeInvite(resident, resident.getSettlement());
                         resident.leaveSettlement();
                     }
                     c.getGui().close();
@@ -154,7 +155,7 @@ public class ResidentGUI extends SettlementsGUI {
                         .onComplete((player, text) -> {
                             if (settlement.hasPermission(sender, "banish")) {
                                 String reason = text.trim();getMessage("command.settlement.banish.banished").tell(resident.getSettlement().getOnlineResidents(), "name", resident.getName(), "reason", reason);
-                                InviteCache.getPendingSettlementInvites().remove(resident.getUUID(), resident.getSettlement().getId());
+                                InviteManager.getInstance().removeInvite(resident, resident.getSettlement());
                                 resident.leaveSettlement();
                                 resident.getSettlement().addBanished(sender, resident, reason);
 

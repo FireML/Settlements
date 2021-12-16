@@ -15,7 +15,7 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import java.util.regex.Pattern;
 
 public class SettlementCreateCommand extends ResidentSubCommand {
-    private Pattern allowed = Pattern.compile("[\\w-]+");
+    private Pattern allowed = Pattern.compile(Config.Settlement.NAME_VALIDATION);
 
     public SettlementCreateCommand(SubCommand parent) {
         super(parent, "create <name>");
@@ -31,8 +31,8 @@ public class SettlementCreateCommand extends ResidentSubCommand {
             getError("invalid-characters").tell(resident, "input", name);
         } else if (settlementExists(name)) {
             getError("settlement-exists").tell(resident, "name", name);
-        } else if (name.length() > 20) {
-            getError("too-long").tell(resident, "input", name, "amount", String.valueOf(20));
+        } else if (name.length() > Config.Settlement.NAME_LENGTH) {
+            getError("too-long").tell(resident, "input", name, "amount", String.valueOf(Config.Settlement.NAME_LENGTH));
         } else if (!allowed.matcher(name).matches()) {
             getError("invalid-characters").tell(resident, "input", name);
         } else {
@@ -50,7 +50,7 @@ public class SettlementCreateCommand extends ResidentSubCommand {
             Settlement settlement = new Settlement(name, resident.getUUID(), 1, SettlementState.VILLAGE);
             SettlementManager.getInstance().registerNew(resident, settlement);
 
-            MessageUtils.broadcast(getMessage("broadcast"),
+            getMessage("broadcast").broadcast(
                     "name", settlement.getName(),
                     "state", settlement.getState().getTag(),
                     "player", resident.getName());

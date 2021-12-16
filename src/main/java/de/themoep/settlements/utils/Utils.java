@@ -2,6 +2,7 @@ package de.themoep.settlements.utils;
 
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.config.Config;
@@ -113,10 +114,6 @@ public class Utils {
 
     public static boolean getPlotMode(PlotMode mode, String type) {
         return ConfigManager.getInstance().getConfig().getBoolean("modes." + type + "." + mode.getKey(), mode.getDefault());
-    }
-
-    public static boolean playerHasInvite(UUID playerId, Settlement joinSettlement) {
-        return InviteCache.getPendingSettlementInvites().containsKey(playerId) && InviteCache.getPendingSettlementInvites().get(playerId).contains(joinSettlement.getId());
     }
 
     public static boolean settlementHasInvite(Settlement settlement, Empire joinEmpire) {
@@ -373,13 +370,13 @@ public class Utils {
      */
     public static boolean teleport(ConfigMessages messages, Player player, Location loc, String type, String... replacements) {
         if (loc == null || loc.getWorld() == null) {
-            Message.get("error.destination-unknown").tell(player, "type", loc == null ? "location" : "world");
+            messages.getError("destination-unknown").tell(player, "type", loc == null ? "location" : "world");
             return false;
         }
         return teleport(messages, player, type, () -> {
             PaperLib.getChunkAtAsync(loc).thenAccept(c -> {
                 if (c == null) {
-                    Message.get("error.destination-obstructed").tell(player);
+                    messages.getError("destination-obstructed").tell(player);
                     SettlementsPlugin.logDebug("Could not load chunk at " + loc);
                     return;
                 }
@@ -393,7 +390,7 @@ public class Utils {
                     block = down;
                 }
                 if (!down.getType().isSolid()) {
-                    Message.get("error.destination-obstructed").tell(player);
+                    messages.getError("destination-obstructed").tell(player);
                     SettlementsPlugin.logDebug("Location " + loc + " is has no floor");
                     return;
                 }

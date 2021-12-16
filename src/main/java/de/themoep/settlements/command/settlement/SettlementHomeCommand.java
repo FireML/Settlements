@@ -46,7 +46,7 @@ public class SettlementHomeCommand extends ResidentSubCommand {
 
         if (settlement.getHome() != null) {
             Utils.teleport(this, resident.getPlayer(), settlement.getHome().toBukkitLocation(), settlement.getStateKey(),
-                    "state", settlement.getStateKey(), "name", settlement.getName());
+                    "state", settlement.getStateTag(), "name", settlement.getName());
         } else {
             getMessage("no-home").tell(resident, "state", settlement.getStateTag());
         }

@@ -145,6 +145,10 @@ public class Message {
         MessageUtils.tellResidents(targetable.getOnlineResidents(), this, replacements);
     }
 
+    public void actionbar(Targetable targetable, String... replacements) {
+        MessageUtils.sendActionBar(targetable.getOnlineResidents(), this, replacements);
+    }
+
     public void tell(Resident resident, String... replacements) {
         MessageUtils.tell(resident, this, replacements);
     }

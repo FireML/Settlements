@@ -5,6 +5,8 @@ import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.chat.ChatColorType;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.invites.Invite;
+import de.themoep.settlements.invites.SettlementInvite;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.Banished;
 import de.themoep.settlements.land.LandManager;
@@ -18,6 +20,7 @@ import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.IdObject;
+import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.settlement.Settlement;
@@ -69,6 +72,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     private SaveQueue<OwnedLand> landQueue;
     private SaveQueue<Portal> portalQueue;
     private SaveQueue<Consumer<Connection>> lockQueue;
+    private SaveQueue<Invite<?, ?>> inviteQueue;
 
     @Override
     public void connect() throws Exception {
@@ -87,8 +91,13 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         landQueue = new SaveQueue<>("land", this, queueSize, queueWait, this::saveLand);
         portalQueue = new SaveQueue<>("portal", this, queueSize, queueWait, this::savePortal);
         lockQueue = new SaveQueue<>("lock", this, queueSize, queueWait, (conn, consumer) -> consumer.accept(conn));
+        inviteQueue = new SaveQueue<>("invite", this, queueSize, queueWait, this::saveInvite);
 
         initializeTables();
+    }
+
+    private <T> void saveInvite(Connection connection, T t) {
+
     }
 
     protected abstract Connection getConnection();
@@ -272,6 +281,51 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         }
     }
 
+    private <T extends Targetable & DatabaseSerializable, S extends Targetable & DatabaseSerializable> void saveInvite(Connection conn, Invite<T,S> invite) {
+        try {
+            save(conn, invite);
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while saving invite " + invite.getId() + " to database!", e);
+        }
+    }
+
+    @Override
+    public <T extends Targetable & DatabaseSerializable, S extends Targetable & DatabaseSerializable> void save(Invite<T,S> invite) {
+        inviteQueue.add(invite);
+        inviteQueue.finishAdding();
+    }
+
+    @Override
+    public <T extends Targetable & DatabaseSerializable, S extends Targetable & DatabaseSerializable> void delete(Invite<T,S> invite) {
+        Utils.catchSync();
+        inviteQueue.remove(invite.getId(), invite);
+        Connection conn = getConnection();
+        if (!invite.getId().isNull()) {
+            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "invites WHERE id=?")) {
+                sta.setInt(1, (Integer) invite.getId().value());
+                sta.executeUpdate();
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "Error while trying to delete invite " + invite.getId().value() + " from database!", e);
+            } finally {
+                close(conn);
+            }
+        } else {
+            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "invites WHERE type = ?, targetType = ?, targetId = ?, sourceType = ?, sourceId = ? LIMIT 1")) {
+                sta.setString(1, invite.name());
+                sta.setString(2, invite.getTargetType());
+                sta.setInt(3, (Integer) invite.getTargetId().value());
+                sta.setString(4, invite.getSourceType());
+                sta.setInt(5, (Integer) invite.getSourceId().value());
+                sta.executeUpdate();
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "Error while trying to delete invite " + invite + " from database!", e);
+            } finally {
+                close(conn);
+            }
+        }
+
+    }
+
     @Override
     public void unclaimLand(OwnedLand... lands) {
         Utils.catchSync();
@@ -405,7 +459,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         } finally {
             close(conn);
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     @Override
@@ -442,7 +496,29 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         } finally {
             close(conn);
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
+    }
+
+    public Collection<SettlementInvite> getSettlementInvites() {
+        Utils.catchSync();
+        Connection conn = getConnection();
+        try (PreparedStatement sta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "invites WHERE type = ?;")) {
+            sta.setString(1, "settlementinvite");
+            ResultSet rs = sta.executeQuery();
+            List<SettlementInvite> invites = new ArrayList<>();
+            while (rs.next()) {
+                SettlementInvite invite = SettlementInvite.deserialize(toMap(rs));
+                if (invite != null) {
+                    invites.add(invite);
+                }
+            }
+            return invites;
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to get all settlements from database!", e);
+        } finally {
+            close(conn);
+        }
+        return Collections.emptyList();
     }
 
     @Override
@@ -464,7 +540,26 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         } finally {
             close(conn);
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Resident getResident(int id) {
+        Utils.catchSync();
+        String sql = "SELECT * FROM " + tablePrefix + "residents WHERE id=?";
+        Connection conn = getConnection();
+        try (PreparedStatement sta = conn.prepareStatement(sql)) {
+            sta.setInt(1, id);
+            ResultSet rs = sta.executeQuery();
+            if (rs.next()) {
+                return createResident(conn, rs);
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to get resident information for player with ID " + id + " from database!", e);
+        } finally {
+            close(conn);
+        }
+        return null;
     }
 
     @Override
@@ -523,6 +618,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         Utils.catchSync();
         Map<String, Object> values = getValues(resident.serialize());
         try {
+            boolean hadId = !resident.getId().isNull();
             PreparedStatement sta = executeSerializableInsert(conn, "residents", resident, values);
             if (resident.getId().isNull()) {
                 ResultSet rs = sta.getGeneratedKeys();
@@ -540,6 +636,9 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 updateDataMap(conn, "resident_channel_prefix_colors", "userId", (Integer) resident.getId().value(), "channel", "color", Arrays.stream(ChatChannel.values())
                         .filter(c -> resident.getChannelColor(c, ChatColorType.PREFIX) != null)
                         .collect(Collectors.toMap(Enum::name, c -> resident.getChannelColor(c, ChatColorType.PREFIX).name())));
+                if (!hadId) {
+                    ResidentManager.getInstance().addResident(resident);
+                }
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while saving player " + resident.getName() + "/" + resident.getUUID() + " to database!", e);

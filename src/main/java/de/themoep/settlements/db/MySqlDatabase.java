@@ -200,8 +200,8 @@ public class MySqlDatabase extends SqlDatabaseManager {
 
     private void alterOrRecreate(MySqlTable table, String alterSql) {
         String sql = "SELECT * FROM " + tablePrefix + table.getDbName() + " LIMIT 1";
-        Connection conn = getConnection();
-        try (Statement sta = conn.createStatement()) {
+        try (Connection conn = getConnection();
+             Statement sta = conn.createStatement()) {
             ResultSet rs = sta.executeQuery(sql);
             if (rs.next()) {
                 sta.execute("ALTER IGNORE TABLE `" + tablePrefix + table.getDbName() + "` " + alterSql);
@@ -214,8 +214,6 @@ public class MySqlDatabase extends SqlDatabaseManager {
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to alter table " + table.getDbName(), e);
-        } finally {
-            close(conn);
         }
     }
 
@@ -225,8 +223,8 @@ public class MySqlDatabase extends SqlDatabaseManager {
 
     private void alterColumnOrRecreate(MySqlTable table, String oldColumn, String newColumn, String columnDefinition) {
         String sql = "SELECT * FROM " + tablePrefix + table.getDbName() + " LIMIT 1;";
-        Connection conn = getConnection();
-        try (Statement sta = conn.createStatement()) {
+        try (Connection conn = getConnection();
+             Statement sta = conn.createStatement()) {
             ResultSet rs = sta.executeQuery(sql);
             if (rs.next()) {
                 try {
@@ -243,19 +241,15 @@ public class MySqlDatabase extends SqlDatabaseManager {
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to alter table " + table.getDbName(), e);
-        } finally {
-            close(conn);
         }
     }
 
     protected void addColumn(MySqlTable table, String column, String definition) {
-        Connection conn = getConnection();
-        try (Statement sta = conn.createStatement()) {
+        try (Connection conn = getConnection();
+             Statement sta = conn.createStatement()) {
             sta.execute("ALTER TABLE `" + tablePrefix + table.getDbName() + "` ADD COLUMN `" + column + "` " + definition + ";");
         } catch (SQLException ignored) {
             // column exists
-        } finally {
-            close(conn);
         }
     }
 

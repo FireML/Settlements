@@ -208,22 +208,37 @@ public class CitizensIntegration implements Listener, ConfigMessages {
                 return;
             }
 
+            if (landOwner.useGuestRank() && landOwner.getRank(resident) == landOwner.getDefaultRank()) {
+                getError("rules-not-accepted").tell(resident, "state", landOwner.getStateTag(), "name", landOwner.getName());
+                event.setCancelled(true);
+                return;
+            }
+
             switch (typeTrait.type) {
                 case MANAGER: {
                     if (landOwner.hasPermission(resident, "settings")) {
                         new ManagementGUI(resident).open();
+                    } else {
+                        event.setCancelled(true);
+                        getError("no-permission").tell(resident);
                     }
                     return;
                 }
                 case QUARTER_MASTER: {
                     if (landOwner.hasPermission(resident, "upgrade")) {
                         new UpgradeGUI(resident, landOwner).open();
+                    } else {
+                        event.setCancelled(true);
+                        getError("no-permission").tell(resident);
                     }
                     return;
                 }
                 case BANKER: {
                     if (landOwner.hasPermission(resident, "bank")) {
                         new BankGUI(resident, landOwner).open();
+                    } else {
+                        event.setCancelled(true);
+                        getError("no-permission").tell(resident);
                     }
                     return;
                 }
@@ -234,6 +249,9 @@ public class CitizensIntegration implements Listener, ConfigMessages {
                         } else if (landOwner instanceof Empire) {
                             new de.themoep.settlements.empire.gui.ShopGUI(resident).open();
                         }
+                    } else {
+                        event.setCancelled(true);
+                        getError("no-permission").tell(resident);
                     }
                     return;
                 }
@@ -248,11 +266,11 @@ public class CitizensIntegration implements Listener, ConfigMessages {
                     return;
                 }
                 case AUCTIONEER: {
-                    // TODO: Open auction GUI
+                    // Handled in auction plugin
                     return;
                 }
                 case BLACKSMITH: {
-                    // TODO: Refine GUI
+                    // Handled in refine plugin
                     return;
                 }
             }
