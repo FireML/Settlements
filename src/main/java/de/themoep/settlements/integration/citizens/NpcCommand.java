@@ -57,11 +57,6 @@ public class NpcCommand extends ResidentSubCommand {
 
         NPC npc = citizensIntegration.getNpc(landOwner, type);
 
-        if (!resident.hasPermission(getPermission() + "." + args[1].toLowerCase(Locale.ROOT))) {
-            getError("no-permission").tell(resident);
-            return true;
-        }
-
         switch (args[1].toLowerCase(Locale.ROOT)) {
             case "teleport": {
                 Location location = resident.getPlayer().getLocation();
@@ -78,6 +73,11 @@ public class NpcCommand extends ResidentSubCommand {
                 return true;
             }
             case "skin": {
+                if (!resident.hasPermission(getPermission() + ".skin")) {
+                    getError("no-permission").tell(resident);
+                    return true;
+                }
+
                 if (args.length < 3) {
                     return false;
                 }

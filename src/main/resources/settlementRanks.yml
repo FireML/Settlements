@@ -35,6 +35,7 @@ perm-groups:
     - settlement.mode
     - settlement.perks.toggle
     - settlement.npc
+    - settlement.npc.skin
   'manage.notes':
     permissions:
     - settlement.sethome
