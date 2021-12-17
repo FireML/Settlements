@@ -27,7 +27,7 @@ public class NpcConfig {
 
     public NpcConfig(ConfigurationSection config) {
         name = config.getString("name");
-        entityType = EntityType.valueOf(config.getString("name", "villager").toUpperCase(Locale.ROOT));
+        entityType = EntityType.valueOf(config.getString("type", "villager").toUpperCase(Locale.ROOT));
 
         villagerType = Villager.Type.valueOf(config.getString("villager.type", "plains").toUpperCase(Locale.ROOT));
         villagerProfession = Villager.Profession.valueOf(config.getString("villager.profession", "nitwit").toUpperCase(Locale.ROOT));

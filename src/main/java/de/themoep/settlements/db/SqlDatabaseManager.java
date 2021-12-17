@@ -1404,7 +1404,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             sta.setInt(1, keyValue);
             ResultSet rs = sta.executeQuery();
             List<D> list = new ArrayList<>();
-            Method deserialize = deserializable.getMethod("deserialize");
+            Method deserialize = deserializable.getMethod("deserialize", Map.class);
             while (rs.next()) {
                 list.add((D) deserialize.invoke(null, toMap(rs)));
             }

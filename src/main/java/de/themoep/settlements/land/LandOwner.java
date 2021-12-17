@@ -964,6 +964,9 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
     }
 
     public NpcData getNpcData(NpcType type) {
+        if (!type.appliesTo(NpcType.AppliesTo.fromKey(getKey()))) {
+            throw new IllegalArgumentException("NPC type " + type + " does not work with " + getKey() + "!");
+        }
         NpcData def = new NpcData(-1, type);
         def.setOwner(this);
         return npcs.getOrDefault(type, def);

@@ -48,6 +48,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.Locale;
+import java.util.logging.Level;
 
 public class CitizensIntegration implements Listener, ConfigMessages {
 
@@ -76,6 +77,10 @@ public class CitizensIntegration implements Listener, ConfigMessages {
     }
 
     void createNpc(LandOwner<?, ?> landOwner, NpcType type, NpcConfig config, Location location) {
+        if (config == null) {
+            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Tried to create " + type + " NPC for " + landOwner.getKey() + " " + landOwner.getName() + " but there was no config specified for that NPC type?");
+            return;
+        }
         NPC npc = getNpc(landOwner, type);
         if (npc != null) {
             if (npc.isSpawned()) {

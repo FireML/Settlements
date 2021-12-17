@@ -36,7 +36,7 @@ public class RankManager {
     private Map<String, PermissionGroup> settlementPermGroups;
     private Collection<String> settlementToggleablePerms;
 
-    private RankManager() {
+    public void load() {
         loadEmpireRanks();
         loadSettlementRanks();
         SettlementsPlugin.logDebug("Loaded RankManager with " + settlementRanks.size() + " settlement ranks and " + empireRanks.size() + " empire ranks");
@@ -87,7 +87,7 @@ public class RankManager {
             if (settlementChiefRank.getPermissionValue(permission)) {
                 settlementToggleablePerms.add(permission);
             } else {
-                SettlementsPlugin.getInstance().getLogger().warning("Cannot make empire permission '" + permission + "' toggleable as leader rank doesn't have it!");
+                SettlementsPlugin.getInstance().getLogger().warning("Cannot make settlement permission '" + permission + "' toggleable as chief rank doesn't have it!");
             }
         }
         if (settlementToggleablePerms.isEmpty()) {

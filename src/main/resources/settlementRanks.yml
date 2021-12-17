@@ -1,29 +1,29 @@
 # Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:settlementranks.yml
 
 perm-groups:
-  'manage.res':
+  manage-res:
     permissions:
-    - settlement.res # TODO: Management GUI
+    - settlement.res
     - settlement.active
     - settlement.kicknotice # TODO
     - settlement.setrank
     - settlement.settitle
     - settlement.settaxevasion
     - settlement.settaxexempt
-  'manage.allies':
+  manage-allies:
     permissions:
     - settlement.allyclaim
     - settlement.manageally # TODO
-  'admin.allies':
+  admin-allies:
     permissions:
     - settlement.ally
     - settlement.unally
-  'manage.ranks':
+  manage-ranks:
     permissions:
     - settlement.ranks
     - settlement.ranks.perms.set
     - settlement.ranks.perms.reset
-  'manage.settings':
+  manage-settings:
     permissions:
     - settlement.joinfee.set
     - settlement.setaccess
@@ -36,34 +36,34 @@ perm-groups:
     - settlement.perks.toggle
     - settlement.npc
     - settlement.npc.skin
-  'manage.notes':
+  manage-notes:
     permissions:
     - settlement.sethome
     - settlement.discord.set
-    - settlement.rules.set # TODO
-  'manage.bank':
+    - settlement.rules.set
+  manage-bank:
     permissions:
     - settlement.bank.withdraw
     - settlement.tax.set
     - settlement.tax.action
-    - settlement.auctiontax.set # TODO
-  'use.bank':
+    - settlement.auctiontax.set
+  use-bank:
     permissions:
-    - settlement.bank # TODO: GUI
+    - settlement.bank
     - settlement.bank.storage # TODO: Add
     - settlement.bank.history
-  'use.outpost':
+  use-outpost:
     permissions:
     - settlement.outpost.help
     - settlement.outpost.list
     - settlement.outpost.teleport # TODO: Add NPC for everywhere
-  'manage.outpost':
+  manage-outpost:
     permissions:
     - settlement.outpost.help.elder
     - settlement.outpost.claim
     - settlement.outpost.sethome
     - settlement.outpost.rename
-  'manage.shop':
+  manage-shop:
     permissions:
     - settlement.shop.unlock
     - settlement.shop.repeat
@@ -71,22 +71,22 @@ perm-groups:
 # Permissions that a user can toggle
 toggleable-permissions:
 - settlement.reslist
-- settlement.group.manage.res
+- settlement.group.manage-res
 - settlement.kick
 - settlement.titles
-- settlement.group.use.bank
+- settlement.group.use-bank
 - settlement.bank.deposit
-- settlement.group.manage.bank
+- settlement.group.manage-bank
 - settlement.allies
-- settlement.group.manage.ally
-- settlement.group.admin.allies
+- settlement.group.manage-ally
+- settlement.group.admin-allies
 - settlement.banished
 - settlement.banish
 - settlement.unbanish
-- settlement.group.manage.ranks
+- settlement.group.manage-ranks
 - settlement.mail
-- settlement.group.manage.notes
-- settlement.group.manage.settings
+- settlement.group.manage-notes
+- settlement.group.manage-settings
 - settlement.history
 - settlement.rename
 - settlement.disband
@@ -96,10 +96,10 @@ toggleable-permissions:
 - settlement.unclaim
 - settlement.plot.admin
 - settlement.portal.admin
-- settlement.group.manage.outpost
+- settlement.group.manage-outpost
 - settlement.outpost.unclaim
 - settlement.invite
-- settlement.group.manage.shop
+- settlement.group.manage-shop
 - settlement.lock.admin
 - settlement.chestshop.admin
 - settlement.officer
@@ -109,23 +109,23 @@ ranks:
   chief:
     icon: netherite_chestplate
     permissions:
-    - settlement.group.manage.res
+    - settlement.group.manage-res
     - settlement.kick
     - settlement.titles
-    - settlement.group.manage.ally
-    - settlement.group.admin.allies
+    - settlement.group.manage-ally
+    - settlement.group.admin-allies
     - settlement.banish
     - settlement.unbanish
-    - settlement.group.manage.ranks
+    - settlement.group.manage-ranks
     - settlement.mail
-    - settlement.group.manage.notes
-    - settlement.group.manage.settings
-    - settlement.group.manage.bank
+    - settlement.group.manage-notes
+    - settlement.group.manage-settings
+    - settlement.group.manage-bank
     - settlement.bank.withdraw
-    - settlement.group.manage.outpost
+    - settlement.group.manage-outpost
     - settlement.outpost.unclaim
     - settlement.invite
-    - settlement.group.manage.shop
+    - settlement.group.manage-shop
     # Extra:
     - settlement.lock.admin
     - settlement.chestshop.admin
@@ -144,7 +144,7 @@ ranks:
     - settlement.allies
     - settlement.reslist
     - settlement.banished
-    - settlement.group.use.bank
+    - settlement.group.use-bank
     - settlement.bank.deposit
   
     # non-toggleable
@@ -167,18 +167,18 @@ ranks:
     inherits: resident
     permissions:
     - settlement.officer
-    - settlement.group.manage.res
+    - settlement.group.manage-res
     - settlement.kick
     - settlement.titles
-    - settlement.group.manage.ally
-    - settlement.group.admin.allies
-    - settlement.group.manage.banished
+    - settlement.group.manage-ally
+    - settlement.group.admin-allies
+    - settlement.group.manage-banished
     - settlement.banish
-    - settlement.group.manage.ranks
-    - settlement.group.manage.notes
-    - settlement.group.manage.settings
-    - settlement.group.manage.bank
-    - settlement.group.manage.outpost
+    - settlement.group.manage-ranks
+    - settlement.group.manage-notes
+    - settlement.group.manage-settings
+    - settlement.group.manage-bank
+    - settlement.group.manage-outpost
     - settlement.invite
     - settlement.lock.admin
     
@@ -187,10 +187,10 @@ ranks:
     inherits: resident
     permissions:
     - settlement.officer
-    - settlement.group.manage.res
-    - settlement.group.manage.ally
-    - settlement.group.manage.settings
-    - settlement.group.manage.outpost
+    - settlement.group.manage-res
+    - settlement.group.manage-ally
+    - settlement.group.manage-settings
+    - settlement.group.manage-outpost
     - settlement.invite
     
   recruiter:
@@ -214,7 +214,7 @@ ranks:
     - settlement.allies
     - settlement.reslist
     - settlement.banished
-    - settlement.group.use.bank
+    - settlement.group.use-bank
     - settlement.bank.deposit
   guest:
     icon: stone_shovel

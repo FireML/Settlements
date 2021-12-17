@@ -36,63 +36,73 @@ public class NpcManager {
     }
 
     public void loadConfig() {
-        loadNpcs("settlement");
-        loadNpcs("empire");
-        loadLevels("settlement", settlementLevels, settlementPerks);
-        loadLevels("empire", empireLevels, empirePerks);
+        loadNpcs(NpcType.AppliesTo.SETTLEMENT);
+        loadNpcs(NpcType.AppliesTo.EMPIRE);
+        loadLevels(NpcType.AppliesTo.SETTLEMENT, settlementLevels, settlementPerks);
+        loadLevels(NpcType.AppliesTo.EMPIRE, empireLevels, empirePerks);
     }
 
-    private void loadNpcs(String type) {
+    private void loadNpcs(NpcType.AppliesTo type) {
         for (NpcType npcType : NpcType.values()) {
-            ConfigurationSection config = ConfigManager.getInstance().getNpcConfig().getConfigurationSection(type + "." + npcType.getKey());
+            if (!npcType.appliesTo(type)) {
+                continue;
+            }
+            ConfigurationSection config = ConfigManager.getInstance().getNpcConfig().getConfigurationSection(type.getKey() + "." + npcType.getKey());
             if (config != null) {
                 try {
-                    npcConfigs.put(type + "." + npcType.getKey(), new NpcConfig(config));
+                    npcConfigs.put(type.getKey() + "." + npcType.getKey(), new NpcConfig(config));
                     continue;
                 } catch (IllegalArgumentException e) {
-                    SettlementsPlugin.getInstance().getLogger().info("Error while loading " + type + " NPC " + npcType.getKey() + ": " + e.getMessage());
+                    SettlementsPlugin.getInstance().getLogger().info("Error while loading " + type.getKey() + " NPC " + npcType.getKey() + ": " + e.getMessage());
                 }
             }
-            npcConfigs.put(type + "." + npcType.getKey(), new NpcConfig(npcType));
+            npcConfigs.put(type.getKey() + "." + npcType.getKey(), new NpcConfig(npcType));
         }
     }
 
-    private void loadLevels(String type, List<NpcLevel> levels, Map<String, NpcPerk> perks) {
+    private void loadLevels(NpcType.AppliesTo type, List<NpcLevel> levels, Map<String, NpcPerk> perks) {
         levels.clear();
 
         for (NpcType npcType : NpcType.values()) {
-            ConfigurationSection config = ConfigManager.getInstance().getNpcLevelConfig().getConfigurationSection(type + "." + npcType.getKey());
-            int amount = config.getKeys(false).size();
-            for (int i = 1; i <= amount; i++) {
-                NpcLevel level = new NpcLevel(i, config.getConfigurationSection("level-" + i));
-                levels.add(level);
-                SettlementsPlugin.logDebug("Loaded " + type + " " + npcType + " " + level);
+            if (!npcType.appliesTo(type)) {
+                continue;
+            }
+            ConfigurationSection config = ConfigManager.getInstance().getNpcLevelConfig().getConfigurationSection(type.getKey() + "." + npcType.getKey());
+            if (config != null) {
+                int amount = config.getKeys(false).size();
+                for (int i = 1; i <= amount; i++) {
+                    NpcLevel level = new NpcLevel(i, config.getConfigurationSection("level-" + i));
+                    levels.add(level);
+                    SettlementsPlugin.logDebug("Loaded " + type + " " + npcType + " " + level);
 
-                ConfigurationSection perksConfig = config.getConfigurationSection("level-" + i + ".perks");
-                if (perksConfig != null) {
-                    for (String perkName : perksConfig.getKeys(false)) {
-                        try {
-                            ConfigurationSection perkConfig = perksConfig.getConfigurationSection(perkName);
-                            if (perkConfig != null) {
-                                perkConfig.set("level", i);
-                                NpcPerk perk = new NpcPerk(perkConfig);
-                                if (perks.putIfAbsent(perk.name().toLowerCase(Locale.ROOT), perk) != null) {
-                                    SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Duplicate " + type + " NPC perk " + perkName + "!");
+                    ConfigurationSection perksConfig = config.getConfigurationSection("level-" + i + ".perks");
+                    if (perksConfig != null) {
+                        for (String perkName : perksConfig.getKeys(false)) {
+                            try {
+                                ConfigurationSection perkConfig = perksConfig.getConfigurationSection(perkName);
+                                if (perkConfig != null) {
+                                    perkConfig.set("level", i);
+                                    NpcPerk perk = new NpcPerk(perkConfig);
+                                    if (perks.putIfAbsent(perk.name().toLowerCase(Locale.ROOT), perk) != null) {
+                                        SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Duplicate " + type + " NPC perk " + perkName + "!");
+                                    }
+                                    switch (type) {
+                                        case SETTLEMENT:
+                                            SettlementManager.getInstance().getUnlockables().addAll(perk.getUnlockables());
+                                            break;
+                                        case EMPIRE:
+                                            EmpireManager.getInstance().getUnlockables().addAll(perk.getUnlockables());
+                                            break;
+                                    }
                                 }
-                                switch (type) {
-                                    case "settlement":
-                                        SettlementManager.getInstance().getUnlockables().addAll(perk.getUnlockables());
-                                        break;
-                                    case "empire":
-                                        EmpireManager.getInstance().getUnlockables().addAll(perk.getUnlockables());
-                                        break;
-                                }
+                            } catch (IllegalArgumentException e) {
+                                SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Config for " + type + " " + npcType + " NPC Perk " + perkName + " was invalid! " + e.getMessage());
                             }
-                        } catch (IllegalArgumentException e) {
-                            SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Config for " + type + " " + npcType + " NPC Perk " + perkName + " was invalid! " + e.getMessage());
                         }
                     }
                 }
+            } else {
+                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "No levels configured for " + type + " NPC " + npcType);
             }
         }
     }

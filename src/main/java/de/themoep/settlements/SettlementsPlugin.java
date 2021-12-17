@@ -327,7 +327,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         // Order is important!
         CommandManager.getInstance();
         DatabaseManager.getInstance();
-        RankManager.getInstance();
+        RankManager.getInstance().load();
         EmpireManager.getInstance();
         SettlementManager.getInstance();
         NpcManager.getInstance();

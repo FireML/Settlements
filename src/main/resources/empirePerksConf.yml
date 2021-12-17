@@ -70,6 +70,7 @@ resistance1:
     repeating:
       cash: 100
 speed1:
+  level: 1
   effects:
     - type: speed
       strength: 1
@@ -77,6 +78,7 @@ speed1:
     unlock:
       cash: 1000
 strength1:
+  level: 1
   effects:
     - type: increase_damage
       strength: 1
@@ -84,6 +86,7 @@ strength1:
     unlock:
       cash: 1000
 regen1:
+  level: 1
   effects:
     - type: regeneration
       strength: 1
@@ -91,6 +94,7 @@ regen1:
     unlock:
       cash: 1000
 speed2:
+  level: 1
   effects:
     - type: speed
       strength: 2
@@ -98,6 +102,7 @@ speed2:
     unlock:
       cash: 1000
 resistance2:
+  level: 1
   effects:
     - type: damage_resistance
       strength: 2
@@ -105,6 +110,7 @@ resistance2:
     unlock:
       cash: 1000
 regen2:
+  level: 1
   effects:
     - type: regeneration
       strength: 2
@@ -112,6 +118,7 @@ regen2:
     unlock:
       cash: 1000
 haste1:
+  level: 1
   effects:
     - type: fast_digging
       strength: 1
@@ -119,6 +126,7 @@ haste1:
     unlock:
       cash: 1000
 haste2:
+  level: 1
   effects:
     - type: fast_digging
       strength: 1
@@ -126,6 +134,7 @@ haste2:
     unlock:
       cash: 1000
 nightvision:
+  level: 1
   effects:
     - type: night_vision
       strength: 1
@@ -133,6 +142,7 @@ nightvision:
     unlock:
       cash: 1000
 extra-claims:
+  level: 1
   repeat: 24 # as often as you want
   bonus:
     claims: 20
@@ -142,6 +152,7 @@ extra-claims:
     repeat:
       cash: 1000
 extra-radius:
+  level: 1
   repeat: 19
   world:
     radius: 50
@@ -151,6 +162,7 @@ extra-radius:
     repeat:
       cash: 1000
 flying:
+  level: 1
   icon: feather
   actions:
     flying: true
@@ -158,6 +170,7 @@ flying:
     unlock:
       cash: 1000
 weather-control:
+  level: 1
   icon: blaze_rod
   actions:
     weather: true
@@ -165,6 +178,7 @@ weather-control:
     unlock:
       cash: 1000
 time-control:
+  level: 1
   icon: clock
   actions:
     time: true
@@ -172,6 +186,7 @@ time-control:
     unlock:
       cash: 1000
 keep-inv:
+  level: 1
   icon: skeleton_skull
   actions:
     toggle: true
@@ -179,6 +194,7 @@ keep-inv:
     unlock:
       cash: 1000
 keep-exp:
+  level: 1
   icon: experience_bottle
   actions:
     toggle: true

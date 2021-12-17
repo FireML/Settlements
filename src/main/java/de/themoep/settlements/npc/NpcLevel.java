@@ -22,4 +22,13 @@ public class NpcLevel extends LevelInfo {
     public Set<String> getPerks() {
         return perks;
     }
+
+    @Override
+    public String toString() {
+        return "NpcLevel{" +
+                "level=" + getLevel() +
+                ", requirements=" + getRequirements() +
+                ", perks=" + perks +
+                '}';
+    }
 }

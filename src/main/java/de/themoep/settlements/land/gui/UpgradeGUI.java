@@ -42,8 +42,14 @@ public class UpgradeGUI extends ConfigurableGui {
         List<Levelable<? extends LevelInfo>> levelables = new ArrayList<>();
         levelables.add(selected);
 
+        NpcType.AppliesTo landOwnerType = NpcType.AppliesTo.fromKey(landOwner.getKey());
         for (NpcType npcType : NpcType.values()) {
-            levelables.add(landOwner.getNpcData(npcType));
+            if (npcType.appliesTo(landOwnerType)) {
+                NpcData data = landOwner.getNpcData(npcType);
+                if (data != null) {
+                    levelables.add(data);
+                }
+            }
         }
 
         GuiElementGroup navBar = new GuiElementGroup('l');

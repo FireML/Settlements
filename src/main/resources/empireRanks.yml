@@ -1,27 +1,27 @@
 # Explanation: https://wiki.phoenix616.dev/plugin:empires:config:empireranks.yml
 
 perm-groups:
-  'manage.member':
+  manage-member:
     permissions:
     - empire.member # TODO: Management GUI
     - empire.kicknotice # TODO
     - empire.setrank
     - empire.settitle
     - empire.settaxevasion # TODO
-  'manage.allies':
+  manage-allies:
     permissions:
     - empire.allyclaim
     - empire.manageally # TODO
-  'admin.allies':
+  admin-allies:
     permissions:
     - empire.ally
     - empire.unally
-  'manage.ranks':
+  manage-ranks:
     permissions:
     - empire.ranks
     - empire.ranks.perms.set
     - empire.ranks.perms.reset
-  'manage.settings':
+  manage-settings:
     permissions:
     - empire.joinfee.set
     - empire.setaccess
@@ -32,22 +32,22 @@ perm-groups:
     - empire.perms
     - empire.mode
     - empire.perks.toggle
-  'manage.notes':
+  manage-notes:
     permissions:
     - empire.sethome
     - empire.discord.set
     - empire.rules.set # TODO
-  'manage.bank':
+  manage-bank:
     permissions:
     - empire.bank.withdraw
     - empire.tax.set
     - empire.auctiontax.set # TODO
-  'use.bank':
+  use-bank:
     permissions:
     - empire.bank # TODO: GUI
     - empire.bank.storage # TODO: Add
     - empire.bank.history
-  'manage.shop':
+  manage-shop:
     permissions:
     - empire.shop.unlock
     - empire.shop.repeat
@@ -55,22 +55,22 @@ perm-groups:
 # Permissions that a user can toggle
 toggleable-permissions:
 - empire.memberlist
-- empire.group.manage.member
+- empire.group.manage-.member
 - empire.kick
 - empire.titles
-- empire.group.use.bank
+- empire.group.use-bank
 - empire.bank.deposit
-- empire.group.manage.bank
+- empire.group.manage-bank
 - empire.allies
-- empire.group.manage.ally
-- empire.group.admin.allies
+- empire.group.manage-ally
+- empire.group.admin-allies
 - empire.banished
 - empire.banish
 - empire.unbanish
-- empire.group.manage.ranks
+- empire.group.manage-ranks
 - empire.mail
-- empire.group.manage.notes
-- empire.group.manage.settings
+- empire.group.manage-notes
+- empire.group.manage-settings
 - empire.history
 - empire.rename
 - empire.disband
@@ -80,10 +80,10 @@ toggleable-permissions:
 - empire.unclaim
 - empire.plot.admin
 - empire.portal.admin
-- empire.group.manage.outpost
+- empire.group.manage-outpost
 - empire.outpost.unclaim
 - empire.invite
-- empire.group.manage.shop
+- empire.group.manage-shop
 - empire.lock.admin
 - empire.chestshop.admin
 - empire.officer
@@ -94,13 +94,13 @@ ranks:
     icon: netherite_chestplate
     inherits: member
     permissions:
-    - empire.group.manage.member
-    - empire.group.manage.allies
-    - empire.group.admin.allies
-    - empire.group.manage.ranks
-    - empire.group.manage.notes
-    - empire.group.manage.settings
-    - empire.group.manage.bank
+    - empire.group.manage-member
+    - empire.group.manage-allies
+    - empire.group.admin-allies
+    - empire.group.manage-ranks
+    - empire.group.manage-notes
+    - empire.group.manage-settings
+    - empire.group.manage-bank
     - empire.banish
     - empire.banished
     - empire.chestshop.admin
@@ -139,18 +139,18 @@ ranks:
     - empire.rename
     - empire.lock.admin
     - empire.help.assistant
-    - empire.group.manage.allies
-    - empire.group.admin.allies
+    - empire.group.manage-allies
+    - empire.group.admin-allies
     - empire.allies
     - empire.banished
     - empire.claim
     - empire.perks
-    - empire.group.manage.ranks
-    - empire.group.manage.notes
-    - empire.group.manage.settings
-    - empire.group.manage.bank
+    - empire.group.manage-ranks
+    - empire.group.manage-notes
+    - empire.group.manage-settings
+    - empire.group.manage-bank
     - empire.plot.admin
-    - empire.group.manage.member
+    - empire.group.manage-member
     - empire.invite
     - empire.kick
     - empire.help.member
@@ -165,8 +165,8 @@ ranks:
     - empire.invite
     - empire.kick
     - empire.officer
-    - empire.group.manage.allies
-    - empire.group.admin.allies
+    - empire.group.manage-allies
+    - empire.group.admin-allies
     - empire.help.recruiter
     - empire.help.member
     - empire.plot.admin
@@ -183,7 +183,7 @@ ranks:
     - empire.allies
     - empire.joinfee
     - empire.memberlist
-    - empire.group.use.bank
+    - empire.group.use-bank
     - empire.bank.deposit
     - empire.deposit
     - empire.deposit.history
