@@ -370,13 +370,12 @@ public enum MySqlTable {
 
     INVITES("CREATE TABLE IF NOT EXISTS {tablePrefix}invites ("
             + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-            + "type VARCHAR(255) NOT NULL, INDEX (type)"
+            + "type VARCHAR(255) NOT NULL, INDEX (type),"
             + "targetType VARCHAR(255) NOT NULL,"
             + "targetId INTEGER NOT NULL,"
             + "sourceType VARCHAR(255) NOT NULL,"
             + "sourceId INTEGER NOT NULL,"
-            + "time BIGINT(11) NOT NULL,"
-            + "UNIQUE (settlementId, name),"
+            + "time BIGINT(11) NOT NULL"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     CLAIMS("CREATE TABLE IF NOT EXISTS {tablePrefix}claims ("

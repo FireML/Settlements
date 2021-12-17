@@ -403,7 +403,7 @@ public enum SQLiteTable {
             + "targetId INTEGER NOT NULL,"
             + "sourceType VARCHAR(255) NOT NULL,"
             + "sourceId INTEGER NOT NULL,"
-            + "time BIGINT(11) NOT NULL,"
+            + "time BIGINT(11) NOT NULL"
             + ");"
             + "CREATE INDEX invite_type ON {tablePrefix}invites (type);"),
 
