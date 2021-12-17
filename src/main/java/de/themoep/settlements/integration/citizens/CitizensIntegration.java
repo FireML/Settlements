@@ -204,12 +204,8 @@ public class CitizensIntegration implements Listener, ConfigMessages {
 
         SettlementsTrait typeTrait = npc.getTraitNullable(SettlementsTrait.class);
         if (typeTrait != null) {
-            LandOwner<?, ?> landOwner;
-            if (typeTrait.ownerType.equals("settlement")) {
-                landOwner = SettlementManager.getInstance().getFromId(IdObject.get(typeTrait.ownerId));
-            } else if (typeTrait.ownerType.equals("empire")) {
-                landOwner = EmpireManager.getInstance().getEmpireFromId(IdObject.get(typeTrait.ownerId));
-            } else {
+            LandOwner<?, ?> landOwner = typeTrait.getOwner();
+            if (landOwner == null) {
                 return;
             }
 
@@ -328,5 +324,18 @@ public class CitizensIntegration implements Listener, ConfigMessages {
 
         @Persist(required = true)
         private int ownerId;
+
+        public NpcType getType() {
+            return type;
+        }
+
+        public LandOwner<?, ?> getOwner() {
+            if (ownerType.equals("settlement")) {
+                return SettlementManager.getInstance().getFromId(IdObject.get(ownerId));
+            } else if (ownerType.equals("empire")) {
+                return EmpireManager.getInstance().getEmpireFromId(IdObject.get(ownerId));
+            }
+            return null;
+        }
     }
 }
