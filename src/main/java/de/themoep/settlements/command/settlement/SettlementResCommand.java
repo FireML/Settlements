@@ -15,6 +15,7 @@ public class SettlementResCommand extends SettlementSubCommand {
     public boolean run(Resident sender, String base, String alias, String... args) {
         if (args.length == 0) {
             new ResListGUI(sender, sender.getSettlement()).open();
+            return true;
         }
         Resident target = sender.getSettlement().getResident(args[0]);
         if (target != null && sender.getSettlement().isMember(target)) {
