@@ -75,7 +75,7 @@ public class StartGUI extends ConfigurableGui {
                 }
             }, request -> request.getReplacements(this)).open();
             return true;
-        }, getText("invites", "amount", String.valueOf(requests.size()))));
+        }, getText("requests", "amount", String.valueOf(requests.size()))));
 
         gui.addElement(new StaticGuiElement('c', getIcon("create"), click -> {
             if (resident.hasPermission("settlements.command.settlement.create")) {

@@ -751,18 +751,18 @@ gui:
           &e{name}
           &fBoard: &e{description}
           &fState: &e{state}
-          &fLevel: &7e{level}
-          &fPrivacy: &7{access}
-          &fRecruitment: &7{jointype}
-          &fBank: &7{bank}
-          &fUpkeep: &7{upkeep}
-          &fJoin Fee: &7{joinfee}
-          &fDaily Tax: &7{tax}
-          &fAuction Tax: &7{auctiontax}
-          &fTax Evasion Action: &7{taxdebtaction}
-          &fMission Points: &7{missionpoints}
-          &fLand &e{land}&f/&e{maxland}{bonusclaims}
-          &fOutposts &e{outposts}&f/&e{maxoutposts}
+          &fLevel: &e{level}
+          &fPrivacy: &e{access}
+          &fRecruitment: &e{jointype}
+          &fBank: &e{bank}
+          &fUpkeep: &e{upkeep}
+          &fJoin Fee: &e{joinfee}
+          &fDaily Tax: &e{tax}
+          &fAuction Tax: &e{auctiontax}
+          &fTax Evasion Action: &e{taxdebtaction}
+          &fMission Points: &e{missionpoints}
+          &fLand: &e{land}&f/&e{maxland}{bonusclaims}
+          &fOutposts: &e{outposts}&f/&e{maxoutposts}
           &f{chieftitle}: &e{chief}
           &fMembers:
           &7{residents}
@@ -772,17 +772,17 @@ gui:
           &fState: &e{state}
           &fLevel: &e{level}
           &fEmpire: &e{empire}
-          &fPrivacy: &7{access}
-          &fRecruitment: &7{jointype}
-          &fBank: &7{bank}
-          &fUpkeep: &7{upkeep}
-          &fJoin Fee: &7{joinfee}
-          &fDaily Tax: &7{tax}
-          &fAuction Tax: &7{auctiontax}
-          &fTax Evasion Action: &7{taxdebtaction}
-          &fMission Points: &7{missionpoints}
-          &fLand &e{land}&f/&e{maxland}{bonusclaims}
-          &fOutposts &e{outposts}&f/&e{maxoutposts}
+          &fPrivacy: &e{access}
+          &fRecruitment: &e{jointype}
+          &fBank: &e{bank}
+          &fUpkeep: &e{upkeep}
+          &fJoin Fee: &e{joinfee}
+          &fDaily Tax: &e{tax}
+          &fAuction Tax: &e{auctiontax}
+          &fTax Evasion Action: &e{taxdebtaction}
+          &fMission Points: &e{missionpoints}
+          &fLand: &e{land}&f/&e{maxland}{bonusclaims}
+          &fOutposts: &e{outposts}&f/&e{maxoutposts}
           &f{chieftitle}: &e{chief}
           &fMembers:
           &7{residents}
@@ -811,6 +811,11 @@ gui:
         &bClick to toggle
       home: |-
         &e{state} Home
+      plot: |-
+        &ePlot Settings
+        &fYou must be standing in your plot
+        
+        {action}
       friends: |-
         &eFriend requests
         &fCheck if you have any friend requests
