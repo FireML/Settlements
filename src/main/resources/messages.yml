@@ -686,6 +686,8 @@ lock:
       friends: "&e&l(!) &r&7Only the &ePlot owner's friends&7 can build here."
 gui:
   no-permission: "&cUnable to modify"
+  back: "&cBack"
+  close: "&cClose"
   unlockables:
     locked:
       npc: "&cUpgrade NPC to unlock!"

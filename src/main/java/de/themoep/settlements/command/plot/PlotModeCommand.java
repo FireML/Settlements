@@ -45,7 +45,7 @@ public class PlotModeCommand extends PlotSubCommand {
     @Override
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
         if (args.length < 1) {
-            new ModeGUI(land).open(res.getPlayer());
+            new ModeGUI(res, land).open();
             return true;
         }
 

@@ -83,7 +83,7 @@ public class OverviewGUI extends ConfigurableGui {
         gui.addElement(new StaticGuiElement('p', getIcon("plot"), click -> {
             OwnedLand currentLand = LandManager.getInstance().getLand(click.getWhoClicked().getLocation());
             if (currentLand != null && (currentLand.isPlotOwner(resident) || currentLand.canAdmin(resident))) {
-                new SettingsGUI(resident.getPlayer());
+                new SettingsGUI(resident).open();
             }
             return true;
         }, getText("plot",

@@ -1,7 +1,7 @@
 package de.themoep.settlements.land.gui;
 
 import de.themoep.inventorygui.DynamicGuiElement;
-import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
@@ -18,7 +18,6 @@ import de.themoep.settlements.land.OwnedLand;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -29,52 +28,36 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public class SettingsGUI extends PlotGUI {
-    private final static String[] SETUP = {
-            "ggggigggg",
-            "         ",
-            " um s nd ",
-            " bl    e ",
-            "         ",
-            "ggggcgggg"
-    };
 
-    public InventoryGui gui;
+    public SettingsGUI(Resident resident) {
+        super(resident, LandManager.getInstance().getLand(resident.getPlayer().getLocation()), "settings");
+        OwnedLand openedOnLand = LandManager.getInstance().getLand(landLocation);
 
-    public SettingsGUI(Player p) {
-        super("settings");
-        OwnedLand openedOnLand = LandManager.getInstance().getLand(p.getLocation());
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), SETUP);
-        gui.setCloseAction(close -> false);
-
-        gui.addElement(new StaticGuiElement('g', BORDER_ITEM, " "));
-
-        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.DIAMOND_PICKAXE), click -> {
-            OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+        gui.addElement(new StaticGuiElement('a', getIcon("access"), click -> {
+            OwnedLand land = LandManager.getInstance().getLand(landLocation);
             if (land != null) {
                 new BuildGUI(
                         "plot",
                         land,
                         () -> {
-                            OwnedLand currentLand = LandManager.getInstance().getLand(p.getLocation());
+                            OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
                             if (currentLand != null) {
-                                Resident res = ResidentManager.getInstance().getResident(p);
-                                return currentLand.isPlotOwner(res) || currentLand.canAdmin(res);
+                                return currentLand.isPlotOwner(resident) || currentLand.canAdmin(resident);
                             }
                             return false;
                         }
-                ).open(p);
+                ).open(resident.getPlayer());
             }
             return true;
         }, getText("build", openedOnLand.getReplacements())));
 
-        gui.addElement(new StaticGuiElement('u', ItemUtils.toIcon(Material.LEVER), click -> {
-            OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+        gui.addElement(new StaticGuiElement('p', getIcon("perms"), click -> {
+            OwnedLand land = LandManager.getInstance().getLand(landLocation);
             if (land != null) {
                 Supplier<Boolean> permCheck = () -> {
-                    OwnedLand currentLand = LandManager.getInstance().getLand(p.getLocation());
+                    OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
                     if (currentLand != null) {
-                        Resident res = ResidentManager.getInstance().getResident(p);
-                        return currentLand.isPlotOwner(res) || currentLand.canAdmin(res);
+                        return currentLand.isPlotOwner(resident) || currentLand.canAdmin(resident);
                     }
                     return false;
                 };
@@ -83,27 +66,27 @@ public class SettingsGUI extends PlotGUI {
                         land,
                         permCheck,
                         (flagAble, c) -> new BuildGUI("plot", flagAble, permCheck).open(c.getWhoClicked())
-                ).open(p);
+                ).open(resident.getPlayer());
             }
             return true;
         }, getText("use")));
 
-        gui.addElement(new StaticGuiElement('m', ItemUtils.toIcon(Material.REDSTONE), click -> {
-            OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+        gui.addElement(new StaticGuiElement('m', getIcon("mode"), click -> {
+            OwnedLand land = LandManager.getInstance().getLand(landLocation);
             if (land != null) {
-                new ModeGUI(land).open(p);
+                new ModeGUI(resident, land).open();
             }
             return true;
         }, getText("mode")));
 
-        gui.addElement(new StaticGuiElement('n', ItemUtils.toIcon(Material.NAME_TAG), click -> {
-            OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+        gui.addElement(new StaticGuiElement('n', getIcon("name"), click -> {
+            OwnedLand land = LandManager.getInstance().getLand(landLocation);
             if (land != null) {
                 new AnvilGUI.Builder()
                         .item(ItemUtils.toIcon(Material.WRITABLE_BOOK))
                         .title(getText("name.anvil.title", "name", land.getName()))
                         .text(getText("name.anvil.placeholder", "name", land.getName().isEmpty() ? " " : land.getName().replace(ChatColor.COLOR_CHAR, '&')))
-                        .onClose(player -> Utils.runLater(() -> new SettingsGUI(player), 1))
+                        .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))
                         .onComplete((player, text) -> {
                             OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
                             if (currentLand != null && (currentLand.isPlotOwner(player) || currentLand.canAdmin(ResidentManager.getInstance().getResident(player)))) {
@@ -115,25 +98,25 @@ public class SettingsGUI extends PlotGUI {
                                 }
                                 currentLand.setName(text);
                                 LandManager.getInstance().syncAndSave(currentLand);
-                                Message.get("command.plot.name.success").tell(p, "description", currentLand.getName(), "name", currentLand.getName());
+                                Message.get("command.plot.name.success").tell(resident, "description", currentLand.getName(), "name", currentLand.getName());
                             }
-                            Utils.runLater(() -> new SettingsGUI(player), 1);
+                            Utils.runLater(() -> new SettingsGUI(resident).open(), 1);
                             return AnvilGUI.Response.close();
                         })
                         .plugin(SettlementsPlugin.getInstance())
-                        .open(p);
+                        .open(resident.getPlayer());
             }
             return true;
-        }, getText("name.button", "name", openedOnLand != null ? openedOnLand.getName() : "none")));
+        }, getText("name.button", "name", openedOnLand.getName())));
 
-        gui.addElement(new StaticGuiElement('d', ItemUtils.toIcon(Material.WRITABLE_BOOK), click -> {
-            OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+        gui.addElement(new StaticGuiElement('d', getIcon("description"), click -> {
+            OwnedLand land = LandManager.getInstance().getLand(landLocation);
             if (land != null) {
                 new AnvilGUI.Builder()
                         .item(ItemUtils.toIcon(Material.WRITABLE_BOOK))
                         .title(getText("desc.anvil.title", "description", land.getDescription()))
                         .text(getText("desc.anvil.placeholder", "description", land.getDescription().isEmpty() ? " " : land.getDescription().replace(ChatColor.COLOR_CHAR, '&')))
-                        .onClose(player -> Utils.runLater(() -> new SettingsGUI(player), 1))
+                        .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))
                         .onComplete((player, text) -> {
                             OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
                             if (currentLand != null && (currentLand.isPlotOwner(player) || currentLand.canAdmin(ResidentManager.getInstance().getResident(player)))) {
@@ -144,28 +127,28 @@ public class SettingsGUI extends PlotGUI {
                                 }
                                 currentLand.setDescription(text);
                                 LandManager.getInstance().syncAndSave(currentLand);
-                                Message.get("command.plot.desc.success").tell(p, "description", currentLand.getDescription());
+                                Message.get("command.plot.desc.success").tell(resident, "description", currentLand.getDescription());
                             }
-                            Utils.runLater(() -> new SettingsGUI(player), 1);
+                            Utils.runLater(() -> new SettingsGUI(resident).open(), 1);
                             return AnvilGUI.Response.close();
                         })
                         .plugin(SettlementsPlugin.getInstance())
-                        .open(p);
+                        .open(resident.getPlayer());
             }
             return true;
-        }, getText("desc.button", "description", openedOnLand != null ? openedOnLand.getDescription() : "none")));
+        }, getText("desc.button", "description", openedOnLand.getDescription())));
 
-        gui.addElement(new StaticGuiElement('e', ItemUtils.toIcon(Material.REDSTONE), click -> {
-            OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+        gui.addElement(new StaticGuiElement('e', getIcon("members"), click -> {
+            OwnedLand land = LandManager.getInstance().getLand(landLocation);
             if (land != null) {
-                new MembersGUI(land).open(p);
+                new MembersGUI(resident, land).open();
             }
             return true;
         }, getText("members", "amount", String.valueOf(openedOnLand.getPlotMembers().size()))));
 
-        if (openedOnLand != null && !openedOnLand.isPlot() && openedOnLand.canAdmin(ResidentManager.getInstance().getResident(p))) {
-            gui.addElement(new DynamicGuiElement('s', () -> new StaticGuiElement('s', ItemUtils.toIcon(Material.EMERALD), click -> {
-                OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+        if (!openedOnLand.isPlot() && openedOnLand.canAdmin(resident)) {
+            gui.addElement(new DynamicGuiElement('s', () -> new StaticGuiElement('s', getIcon("sale"), click -> {
+                OwnedLand land = LandManager.getInstance().getLand(landLocation);
                 if (land != null) {
                     if (land.isForSale() && click.getType().isShiftClick()) {
                         land.setForSale(false);
@@ -173,13 +156,13 @@ public class SettingsGUI extends PlotGUI {
                         land.setEmbassy(false);
                         gui.draw();
                         LandManager.getInstance().saveLand(land);
-                        Message.get("command.plot.unsale.success").tell(p);
+                        Message.get("command.plot.unsale.success").tell(resident);
                     } else {
                         new AnvilGUI.Builder()
                                 .item(ItemUtils.toIcon(Material.EMERALD))
                                 .title(getText("sale.anvil.title", "price", String.valueOf(land.getPrice())))
                                 .text(getText("sale.anvil.placeholder", "price", land.getPrice() > 0 ? String.valueOf(land.getPrice()) : " "))
-                                .onClose(player -> Utils.runLater(() -> new SettingsGUI(player), 1))
+                                .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))
                                 .onComplete((player, text) -> {
                                     OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
                                     if (currentLand != null && currentLand.canAdmin(ResidentManager.getInstance().getResident(player))) {
@@ -202,11 +185,11 @@ public class SettingsGUI extends PlotGUI {
                                             return AnvilGUI.Response.text(text);
                                         }
                                     }
-                                    Utils.runLater(() -> new SettingsGUI(player), 1);
+                                    Utils.runLater(() -> new SettingsGUI(resident).open(), 1);
                                     return AnvilGUI.Response.close();
                                 })
                                 .plugin(SettlementsPlugin.getInstance())
-                                .open(p);
+                                .open(resident.getPlayer());
                     }
                 }
                 return true;
@@ -214,17 +197,17 @@ public class SettingsGUI extends PlotGUI {
         }
 
         gui.addElement(new DynamicGuiElement('l', () -> {
-            OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+            OwnedLand land = LandManager.getInstance().getLand(landLocation);
             if (land == null) {
                 return null;
             }
             List<String> description = new ArrayList<>();
-            ItemStack item = ItemUtils.toIcon(Material.MAP);
+            ItemStack item = getIcon("link");
             if (land.hasLink()) {
                 description.add(getMessage("linked").getReplacedText("amount", String.valueOf(land.getLinked().size() - 1)));
                 ItemUtils.setGlowing(item, true);
             }
-            if (land.isPlotOwner(p) || (land.canAdmin(ResidentManager.getInstance().getResident(p)) && (land.isPlot() || land.hasLink()))) {
+            if (land.isPlotOwner(resident) || (land.canAdmin(resident) && (land.isPlot() || land.hasLink()))) {
                 if (description.isEmpty()) {
                     description.add(getText("link"));
                 } else {
@@ -235,11 +218,10 @@ public class SettingsGUI extends PlotGUI {
                 return null;
             }
             return new StaticGuiElement('l', item, click -> {
-                OwnedLand currentLand = LandManager.getInstance().getLand(p.getLocation());
+                OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
                 if (currentLand != null) {
-                    Resident resident = ResidentManager.getInstance().getResident(p);
                     boolean canAdmin = currentLand.canAdmin(resident);
-                    if (currentLand.isPlotOwner(p) || canAdmin) {
+                    if (currentLand.isPlotOwner(resident) || canAdmin) {
                         if (currentLand.hasLink()) {
                             Collection<OwnedLand> linkedLands = currentLand.getLinked();
                             int linked = linkedLands.size() - 1;
@@ -254,10 +236,10 @@ public class SettingsGUI extends PlotGUI {
                                 Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(toSave));
                                 gui.draw();
                             }
-                            Message.get("command.plot.unlink.disconnected").tell(p, "amount", String.valueOf(linked));
+                            Message.get("command.plot.unlink.disconnected").tell(resident, "amount", String.valueOf(linked));
                         } else if (currentLand.isPlot()) {
                             gui.close();
-                            Utils.runAsync(() -> new ChatMap(p, currentLand.getMapKey()));
+                            Utils.runAsync(() -> new ChatMap(resident.getPlayer(), currentLand.getMapKey()));
                         }
                     }
                 }
@@ -266,24 +248,14 @@ public class SettingsGUI extends PlotGUI {
         }));
 
         gui.addElement(new DynamicGuiElement('i', () -> {
-            OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
+            OwnedLand land = LandManager.getInstance().getLand(landLocation);
             if (land == null) {
                 return null;
             }
-            return new StaticGuiElement('i', ItemUtils.toIcon(Material.GREEN_BANNER), Utils.wrap(getText("entry", land.getReplacements()), 48));
+            return new StaticGuiElement('i', getIcon("info"), Utils.wrap(getText("entry", land.getReplacements()), 48));
         }));
 
-        gui.addElement(new StaticGuiElement('c', ItemUtils.toIcon(Material.BARRIER), click -> {
-            click.getGui().close();
-            return true;
-        }, getText("close")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
 
-        // One last check if we can really open this GUI
-        OwnedLand currentLand = LandManager.getInstance().getLand(p.getLocation());
-        if (currentLand != null && (currentLand.isPlotOwner(p) || currentLand.canAdmin(ResidentManager.getInstance().getResident(p)))) {
-            gui.show(p);
-        } else {
-            getError("not-your-plot").tell(p);
-        }
     }
 }

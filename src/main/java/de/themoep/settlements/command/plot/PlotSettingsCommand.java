@@ -13,7 +13,7 @@ public class PlotSettingsCommand extends PlotSubCommand {
     @Override
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
         if (args.length < 1) {
-            new SettingsGUI(res.getPlayer());
+            new SettingsGUI(res).open();
         }
         return true;
     }

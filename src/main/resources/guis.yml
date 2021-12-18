@@ -758,6 +758,65 @@ guis:
         add: writable_book
         back: barrier
   plot:
+    settings:
+      setup:
+      - "ooooioooo"
+      - "         "
+      - " pm s nd "
+      - " al    e "
+      - "         "
+      - "ooooboooo"
+      elements:
+        o: lime_stained_glass_pane
+        info: green_banner
+        access: diamond_pickaxe
+        perms: lever
+        mode: redstone
+        name: name_tax
+        description: writable_book
+        members: player_head
+        sale: emerald
+        link: map
+        back: barrier
+    members:
+      setup:
+      - "ooooooooo"
+      - "mmmmmmmmm"
+      - "mmmmmmmmm"
+      - "mmmmmmmmm"
+      - "mmmmmmmmm"
+      - "pppppp ab"
+      elements:
+        o: lime_stained_glass_pane
+        page: paper
+        sort: hopper
+        back: barrier
+    players:
+      setup:
+      - "ooooooooo"
+      - "ggggggggg"
+      - "ggggggggg"
+      - "ggggggggg"
+      - "ggggggggg"
+      - "pppppp  b"
+      elements:
+        o: lime_stained_glass_pane
+        page: paper
+        sort: hopper
+        back: barrier
+    mode:
+      setup:
+      - "ooooooooo"
+      - "         "
+      - " mmmmmmm "
+      - " mmmmmmm "
+      - "         "
+      - " ooobooo "
+      allignment:
+        m: center
+      elements:
+        o: lime_stained_glass_pane
+        back: barrier
     perms:
       setup:
       - "ooooooooo"
@@ -806,50 +865,6 @@ guis:
         states: book
         previous: arrow
         next: arrow
-        back: barrier
-    rank-perms:
-      setup:
-      - "ppppppppp"
-      - "ppppppppp"
-      - "ppppppppp"
-      - "ppppppppp"
-      - "ppppppppp"
-      - "rrrrr  to"
-      elements:
-        set: lime_wool
-        inherited: green_wool
-        not-set: light_gray_wool
-        titles: writable_book
-        reset: orange_wool
-    titles:
-      setup:
-      - "ooooooooo"
-      - "    a    "
-      - "         "
-      - " ttttttt "
-      - " ttttttt "
-      - " ooobooo "
-      alignments:
-        t: center
-      elements:
-        o: lime_stained_glass_pane
-        title: paper
-        add: writable_book
-        back: barrier
-    title:
-      setup:
-      - "ooooooooo"
-      - "         "
-      - " ttttttt "
-      - " ttttttt "
-      - "    a    "
-      - " ooobooo "
-      alignments:
-        t: center
-      elements:
-        o: lime_stained_glass_pane
-        title: paper
-        add: writable_book
         back: barrier
     rank-select:
       setup:

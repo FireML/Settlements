@@ -3,18 +3,15 @@ package de.themoep.settlements.land.gui;
 import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
-import de.themoep.inventorygui.GuiPageElement;
-import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
+import de.themoep.settlements.land.LandManager;
+import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.PlayerSelectGUI;
 import de.themoep.settlements.utils.Utils;
-import de.themoep.settlements.world.SimpleChunkLocation;
-import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.land.LandManager;
-import de.themoep.settlements.land.OwnedLand;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -22,23 +19,9 @@ import org.bukkit.inventory.ItemStack;
 import java.util.UUID;
 
 public class MembersGUI extends PlotGUI {
-    private final static String[] SETUP = {
-            "         ",
-            "mmmmmmmmm",
-            "mmmmmmmmm",
-            "mmmmmmmmm",
-            "mmmmmmmma",
-            "p   b   n"
-    };
-    private final InventoryGui gui;
-    private final SimpleChunkLocation landLocation;
 
-    public MembersGUI(OwnedLand editedLand) {
-        super("members");
-        landLocation = editedLand.getLocation().copy();
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), SETUP);
-        gui.setCloseAction(close -> false);
-        gui.setFiller(BORDER_ITEM);
+    public MembersGUI(Resident resident, OwnedLand editedLand) {
+        super(resident, editedLand, "members");
 
         gui.addElement(new DynamicGuiElement('m', viewer -> {
             GuiElementGroup group = new GuiElementGroup('m');
@@ -67,8 +50,7 @@ public class MembersGUI extends PlotGUI {
         }));
 
         gui.addElement(new StaticGuiElement('a', new ItemStack(Material.PLAYER_HEAD), click -> {
-            new PlayerSelectGUI(this, "players",
-                    BORDER_ITEM,
+            new PlayerSelectGUI(this, resident, editedLand, "players",
                     player -> player != click.getWhoClicked() && !editedLand.isPlotOwner(player) && !editedLand.getPlotMembers().contains(player.getUniqueId()),
                     player -> {
                 OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
@@ -78,24 +60,27 @@ public class MembersGUI extends PlotGUI {
                         getMessage("command.plot.members.add.success").tell(click.getWhoClicked(), "name", player.getName(), "uuid", player.getUniqueId().toString());
                     }
                 }
-            }, editedLand.getReplacements()).open((Player) click.getWhoClicked());
+            }).open();
             return true;
         }, getText("add")));
 
-        gui.addElement(new GuiPageElement('p', ItemUtils.toIcon(Material.ARROW), GuiPageElement.PageAction.PREVIOUS, getText("page.previous", "page", "%prevpage%")));
+        GuiElementGroup pages = new GuiElementGroup('p');
+        gui.addElement(pages);
 
-        gui.addElement(new GuiBackElement('b', ItemUtils.toIcon(Material.BARRIER), getText("back")));
-
-        gui.addElement(new GuiPageElement('n', ItemUtils.toIcon(Material.ARROW), GuiPageElement.PageAction.NEXT, getText("page.next", "page", "%nextpage%")));
-    }
-
-    public void open(final Player p) {
-        // One last check if we can really open this GUI
-        OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
-        if (currentLand != null && (currentLand.isPlotOwner(p) || currentLand.canAdmin(ResidentManager.getInstance().getResident(p)))) {
-            gui.show(p);
-        } else {
-            getError("not-your-plot").tell(p);
+        for (int i = 0; i < gui.getPageAmount(resident.getPlayer()) && i < pages.getSlots().length; i++) {
+            int page = i;
+            pages.addElement(new DynamicGuiElement('p', who -> {
+                ItemStack icon = getIcon("page");
+                if (page == gui.getPageNumber(who)) {
+                    ItemUtils.setGlowing(icon, true);
+                }
+                return new StaticGuiElement('p', icon, page + 1, click -> {
+                    gui.setPageNumber(click.getWhoClicked(), page);
+                    return true;
+                }, getText("page", "page", String.valueOf(page + 1), "pages", String.valueOf(gui.getPageAmount(who))));
+            }));
         }
+
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
     }
 }

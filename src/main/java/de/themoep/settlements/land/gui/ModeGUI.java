@@ -3,51 +3,31 @@ package de.themoep.settlements.land.gui;
 import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
-import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
-import de.themoep.settlements.world.SimpleChunkLocation;
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.PlotMode;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ModeGUI extends PlotGUI {
-    private final static String[] SETUP = {
-            "         ",
-            "         ",
-            "ggggggggg",
-            "ggggggggg",
-            "         ",
-            "    b    "
-    };
-    private final InventoryGui gui;
-    private final SimpleChunkLocation landLocation;
 
     public String yesOrNo(final boolean b) {
         return b ? "Yes" : "No";
     }
 
-    public ModeGUI(OwnedLand editedLand) {
-        super("mode");
-        landLocation = editedLand.getLocation().copy();
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), SETUP);
-        gui.setCloseAction(close -> false);
-        gui.setFiller(BORDER_ITEM);
+    public ModeGUI(Resident resident, OwnedLand editedLand) {
+        super(resident, editedLand, "mode");
 
-        GuiElementGroup group = new GuiElementGroup('g');
+        GuiElementGroup group = new GuiElementGroup('m');
 
         for (PlotMode m : PlotMode.values(PlotMode.AppliesTo.LAND)) {
-            group.addElement(new DynamicGuiElement('g', (h) -> {
+            group.addElement(new DynamicGuiElement('m', (h) -> {
                 OwnedLand land = LandManager.getInstance().getLand(h.getLocation());
                 if (land != null) {
                     boolean enabled = m.get(land);
@@ -73,12 +53,11 @@ public class ModeGUI extends PlotGUI {
                             ));
                         }
                     }
-                    return new StaticGuiElement('g',
+                    return new StaticGuiElement('m',
                             ItemUtils.setGlowing(m.getItem(), enabled),
                             click -> {
-                                OwnedLand currentLand = LandManager.getInstance().getLand(click.getEvent().getWhoClicked().getLocation());
+                                OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
                                 if (currentLand != null) {
-                                    Resident resident = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
                                     boolean canAdmin = currentLand.canAdmin(resident);
                                     if (currentLand.isPlotOwner(resident) || canAdmin) {
                                         if (m == PlotMode.embassy) {
@@ -122,16 +101,6 @@ public class ModeGUI extends PlotGUI {
 
         gui.addElement(group);
 
-        gui.addElement(new GuiBackElement('b', ItemUtils.toIcon(Material.BARRIER), getText("back")));
-    }
-
-    public void open(final Player p) {
-        // One last check if we can really open this GUI
-        OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
-        if (currentLand != null && (currentLand.isPlotOwner(p) || currentLand.canAdmin(ResidentManager.getInstance().getResident(p)))) {
-            gui.show(p);
-        } else {
-            getError("not-your-plot").tell(p);
-        }
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
     }
 }

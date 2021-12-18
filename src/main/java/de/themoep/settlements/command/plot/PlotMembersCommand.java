@@ -158,7 +158,7 @@ public class PlotMembersCommand extends PlotSubCommand {
     @Override
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
         if (args.length == 0) {
-            new MembersGUI(land).open(res.getPlayer());
+            new MembersGUI(res, land).open();
             return true;
         }
         return false;
