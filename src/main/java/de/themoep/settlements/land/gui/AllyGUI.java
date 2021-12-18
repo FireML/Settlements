@@ -26,63 +26,65 @@ public class AllyGUI extends ConfigurableGui implements AllyCommand {
 
         gui.addElement(new StaticGuiElement('i', ally.getLandOwner().getIcon(), getText("info." + ally.getType(), ally.getLandOwner().getReplacements(this))));
 
-        gui.addElement(new DynamicGuiElement('c', who -> new StaticGuiElement('c', getIcon("nearbyclaim"), click -> {
-            ally.setNearbyClaim(!ally.isNearbyClaim());
-            ally.save();
+        if (resident.hasPermission("manageally")) {
+            gui.addElement(new DynamicGuiElement('c', who -> new StaticGuiElement('c', getIcon("nearbyclaim"), click -> {
+                ally.setNearbyClaim(!ally.isNearbyClaim());
+                ally.save();
 
-            if (!ally.isNearbyClaim()) {
-                LandManager.getInstance().checkClaimDistance(resident.getSettlement(), ally.getLandOwner());
-            }
-            Message.get("command." + landOwner.getKey() + "." + (ally.isNearbyClaim() ? "enabled" : "disabled")).tell(resident,
-                    "grace", String.valueOf(Config.Settlement.Claiming.Close.Unclaim.GRACE_DAYS));
-            return true;
-        }, getText("nearbyclaim",
-                "state", landOwner.getStateTag(),
-                "current", getText(ally.isNearbyClaim() ? "enabled" : "disabled")
-        ))));
+                if (!ally.isNearbyClaim()) {
+                    LandManager.getInstance().checkClaimDistance(resident.getSettlement(), ally.getLandOwner());
+                }
+                Message.get("command." + landOwner.getKey() + "." + (ally.isNearbyClaim() ? "enabled" : "disabled")).tell(resident,
+                        "grace", String.valueOf(Config.Settlement.Claiming.Close.Unclaim.GRACE_DAYS));
+                return true;
+            }, getText("nearbyclaim",
+                    "state", landOwner.getStateTag(),
+                    "current", getText(ally.isNearbyClaim() ? "enabled" : "disabled")
+            ))));
 
-        gui.addElement(new StaticGuiElement('r', getIcon("unally"), click -> {
-            new ConfirmationGui(this, "unally", c -> {
-                LandOwner target = ally.getLandOwner();
+            gui.addElement(new StaticGuiElement('r', getIcon("unally"), click -> {
+                new ConfirmationGui(this, "unally", c -> {
+                    LandOwner target = ally.getLandOwner();
 
-                if (!landOwner.isAlly(target)) {
+                    if (!landOwner.isAlly(target)) {
+                        c.getGui().close();
+                    }
+
+                    Ally sourceAlly = landOwner.removeAlly(target);
+                    Ally targetAlly = target.removeAlly(target);
+                    if (!landOwner.isAllowAllyClaim() || !target.isAllowAllyClaim() || (sourceAlly != null && !sourceAlly.isNearbyClaim()) || (targetAlly != null && !targetAlly.isNearbyClaim())) {
+                        LandManager.getInstance().checkClaimDistance(landOwner, target);
+                    }
+
+                    if (sourceAlly != null) {
+                        Utils.runAsync(() -> DatabaseManager.getInstance().delete(landOwner, sourceAlly));
+                    } else {
+                        DatabaseManager.getInstance().save(landOwner);
+                    }
+                    if (targetAlly != null) {
+                        Utils.runAsync(() -> DatabaseManager.getInstance().delete(target, targetAlly));
+                    } else {
+                        DatabaseManager.getInstance().save(target);
+                    }
+                    getMessage("success").tell(target, "name", landOwner.getName(), "state", landOwner.getStateTag());
+                    getMessage("success").tell(landOwner, "name", target.getName(), "state", target.getStateTag());
+                    for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
+                        provider.sendMail(landOwner.getStateTag() + " " + landOwner.getName(), target.getChief(), getText("success",
+                                "name", landOwner.getName(), "state", landOwner.getStateTag()
+                        ));
+                        provider.sendMail(target.getStateTag() + " " + target.getName(), landOwner.getChief(), getText("success",
+                                "name", target.getName(), "state", target.getStateTag()
+                        ));
+                    }
                     c.getGui().close();
-                }
+                }, c -> {
+                    InventoryGui.goBack(c.getWhoClicked());
+                }, "name", ally.getLandOwner().getName(), "state", ally.getLandOwner().getStateTag()).open(resident.getPlayer());
+                return true;
+            }, getText("unally.entry")));
 
-                Ally sourceAlly = landOwner.removeAlly(target);
-                Ally targetAlly = target.removeAlly(target);
-                if (!landOwner.isAllowAllyClaim() || !target.isAllowAllyClaim() || (sourceAlly != null && !sourceAlly.isNearbyClaim()) || (targetAlly != null && !targetAlly.isNearbyClaim())) {
-                    LandManager.getInstance().checkClaimDistance(landOwner, target);
-                }
-
-                if (sourceAlly != null) {
-                    Utils.runAsync(() -> DatabaseManager.getInstance().delete(landOwner, sourceAlly));
-                } else {
-                    DatabaseManager.getInstance().save(landOwner);
-                }
-                if (targetAlly != null) {
-                    Utils.runAsync(() -> DatabaseManager.getInstance().delete(target, targetAlly));
-                } else {
-                    DatabaseManager.getInstance().save(target);
-                }
-                getMessage("success").tell(target, "name", landOwner.getName(), "state", landOwner.getStateTag());
-                getMessage("success").tell(landOwner, "name", target.getName(), "state", target.getStateTag());
-                for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
-                    provider.sendMail(landOwner.getStateTag() + " " + landOwner.getName(), target.getChief(), getText("success",
-                            "name", landOwner.getName(), "state", landOwner.getStateTag()
-                    ));
-                    provider.sendMail(target.getStateTag() + " " + target.getName(), landOwner.getChief(), getText("success",
-                            "name", target.getName(), "state", target.getStateTag()
-                    ));
-                }
-                c.getGui().close();
-            }, c -> {
-                InventoryGui.goBack(c.getWhoClicked());
-            }, "name", ally.getLandOwner().getName(), "state", ally.getLandOwner().getStateTag()).open(resident.getPlayer());
-            return true;
-        }, getText("unally.entry")));
-
-        // TODO: Per ally options
+            // TODO: Per ally options
+        }
 
 
         gui.addElement(new GuiBackElement('b', getIcon("back"), getText("back")));
