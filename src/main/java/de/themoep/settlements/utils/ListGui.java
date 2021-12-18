@@ -76,7 +76,7 @@ public class ListGui<T extends Sortable<T>> extends ConfigurableGui {
             }));
         }
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
     }
 
     public void open() {

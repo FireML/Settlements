@@ -169,7 +169,7 @@ public class ResidentGUI extends SettlementsGUI {
             }, getText("banish.entry", "player", resident.getName(), "state", resident.getSettlement().getStateTag())));
         }
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
     }
 
     public void open() {

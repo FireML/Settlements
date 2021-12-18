@@ -82,7 +82,7 @@ public class UnbanishedGUI extends SettlementsGUI {
             }));
         }
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
     }
 
     public void open() {

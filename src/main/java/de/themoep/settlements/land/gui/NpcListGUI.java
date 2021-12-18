@@ -56,7 +56,7 @@ public class NpcListGUI extends ConfigurableGui {
 
         gui.addElement(group);
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
     }
 
 }
