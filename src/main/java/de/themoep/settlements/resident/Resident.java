@@ -550,12 +550,20 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         taxPaid += amount;
     }
 
+    public void setTaxPaid(int amount) {
+        this.taxPaid = amount;
+    }
+
     public long getDonated() {
         return donated;
     }
 
     public void addDonated(long amount) {
         donated += amount;
+    }
+
+    public void setDonated(int amount) {
+        this.donated = amount;
     }
 
     public boolean isTaxExempted() {

@@ -39,7 +39,6 @@ public class SettlementJoinCommand extends ResidentSubCommand {
         } else if (joinSettlement.getJoinFee() > 0 && !SettlementsPlugin.getInstance().getEconomy().has(resident.getPlayer(), joinSettlement.getJoinFee())) {
             getError("not-enough-money").tell(resident, "state", joinSettlement.getState().getTag(), "name", joinSettlement.getName(), "amount", String.valueOf(joinSettlement.getJoinFee()));
         } else {
-            Utils.callEvent(new SettlementJoinEvent(joinSettlement, resident));
             if (joinSettlement.getJoinFee() > 0) {
                 if (SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(resident.getPlayer(), joinSettlement.getJoinFee()).transactionSuccess()) {
                     joinSettlement.addToBank(joinSettlement.getJoinFee());
@@ -51,11 +50,7 @@ public class SettlementJoinCommand extends ResidentSubCommand {
                     return true;
                 }
             }
-            resident.setSettlement(joinSettlement);
-            resident.setSettlementRank(SettlementRank.getDefault());
-            resident.addChannel(ChatChannel.SETTLEMENT);
-            InviteManager.getInstance().removeInvite(resident, joinSettlement);
-            DatabaseManager.getInstance().saveResident(resident);
+            joinSettlement.addMember(resident);
             resident.tell(getMessage("success"), "name", joinSettlement.getName(), "state", joinSettlement.getState().getTag());
             getMessage("new-resident").tell(joinSettlement.getOnlineResidents(), "player", resident.getName());
         }

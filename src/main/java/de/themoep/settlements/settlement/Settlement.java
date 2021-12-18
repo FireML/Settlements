@@ -4,14 +4,17 @@ import co.aikar.timings.lib.MCTiming;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.land.events.LandownerChiefChangeEvent;
 import de.themoep.settlements.missions.Mission;
 import de.themoep.settlements.missions.MissionData;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.rank.EmpireRank;
+import de.themoep.settlements.settlement.events.SettlementJoinEvent;
 import de.themoep.settlements.settlement.events.SettlementLeaveEvent;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
@@ -624,6 +627,22 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
             Utils.callEvent(new SettlementLeaveEvent(this, (Resident) target));
             residents.remove(((Resident) target).getUUID());
             SettlementManager.getInstance().leaveSettlement((Resident) target);
+        }
+    }
+
+    public void addMember(Targetable target) {
+        if (target instanceof Resident && !isMember((Resident) target)) {
+            Resident resident = (Resident) target;
+            Utils.callEvent(new SettlementJoinEvent(this, resident));
+            resident.setSettlement(this);
+            resident.setSettlementRank(SettlementRank.getDefault());
+            resident.addChannel(ChatChannel.SETTLEMENT);
+            resident.setDonated(0);
+            resident.setTaxPaid(0);
+            resident.setTaxExempted(false);
+            resident.setTaxDebtAction(getTaxDebtAction());
+            InviteManager.getInstance().removeInvite(resident, this);
+            resident.save();
         }
     }
 

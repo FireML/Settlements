@@ -323,6 +323,9 @@ public class SettlementManager {
         removeResidentFromSettlement(resident);
         resident.removeChannel(ChatChannel.SETTLEMENT);
         resident.removeChannel(ChatChannel.EMPIRE);
+        resident.setTaxExempted(false);
+        resident.setTaxPaid(0);
+        resident.setDonated(0);
         Player player = resident.getPlayer();
         if (player != null) {
             Empire empire = EmpireManager.getInstance().getEmpireFromWorld(player.getWorld());
