@@ -267,6 +267,7 @@ village:
     builder: Builder
     recruiter: Recruiter
     resident: Resident
+    guest: Guest
 kingdom:
   enter:
     message: "&f[&eKingdoms&f] &7Entering &a{name}{pvp}"
@@ -299,6 +300,7 @@ kingdom:
     builder: Architect
     recruiter: Greeter
     resident: Resident
+    guest: Guest
 empire:
   enter:
     message: "&f[&eEmpire&f] &7Entering &a{name}{pvp}"
