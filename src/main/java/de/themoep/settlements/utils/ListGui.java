@@ -49,13 +49,15 @@ public class ListGui<T extends Sortable<T>> extends ConfigurableGui {
         });
         gui.addElement(sortedGroup);
 
-        gui.addElement(getCycleElement('s', () -> sort, click -> {
-            if (sort != null) {
-                sort = sort.next();
-            }
-            click.getGui().draw();
-            return true;
-        }, "sort"));
+        if (sort != null) {
+            gui.addElement(getCycleElement('s', () -> sort, click -> {
+                if (sort != null) {
+                    sort = sort.next();
+                }
+                click.getGui().draw();
+                return true;
+            }, "sort"));
+        }
 
         GuiElementGroup pages = new GuiElementGroup('p');
         gui.addElement(pages);
