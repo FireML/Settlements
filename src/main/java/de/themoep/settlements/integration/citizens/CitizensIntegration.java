@@ -9,6 +9,7 @@ import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.LandownerLevel;
 import de.themoep.settlements.land.events.LandownerLeveledEvent;
 import de.themoep.settlements.land.gui.BankGUI;
+import de.themoep.settlements.land.gui.ElderGUI;
 import de.themoep.settlements.land.gui.UpgradeGUI;
 import de.themoep.settlements.npc.NpcConfig;
 import de.themoep.settlements.npc.NpcData;
@@ -262,8 +263,7 @@ public class CitizensIntegration implements Listener, ConfigMessages {
                     return;
                 }
                 case ELDER: {
-                    // TODO: Application process
-                    //new ApplicationsGUI(resident, landOwner).open();
+                    new ElderGUI(resident, landOwner).open();
                     return;
                 }
                 case AUCTIONEER: {

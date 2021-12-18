@@ -44,7 +44,7 @@ public abstract class Invite<T extends Targetable & DatabaseSerializable, S exte
 
     @Override
     public IdObject getId() {
-        return null;
+        return id;
     }
 
     @Override

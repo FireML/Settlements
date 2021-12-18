@@ -13,7 +13,7 @@ perm-groups:
   manage-allies:
     permissions:
     - settlement.allyclaim
-    - settlement.manageally # TODO
+    - settlement.manageally
   admin-allies:
     permissions:
     - settlement.ally
@@ -28,7 +28,7 @@ perm-groups:
     - settlement.joinfee.set
     - settlement.setaccess
     - settlement.setdescription
-    - settlement.recruitment # TODO (NPC)
+    - settlement.recruitment
     - settlement.build
     - settlement.settings
     - settlement.perms

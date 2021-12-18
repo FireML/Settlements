@@ -1,19 +1,19 @@
 package de.themoep.settlements.command.settlement;
 
+import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.command.ResidentSubCommand;
+import de.themoep.settlements.command.SubCommand;
+import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.invites.InviteManager;
+import de.themoep.settlements.land.JoinRequest;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.JoinType;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
-import de.themoep.settlements.settlement.events.SettlementJoinEvent;
-import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.chat.ChatChannel;
-import de.themoep.settlements.command.ResidentSubCommand;
-import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.db.InviteCache;
-import de.themoep.settlements.rank.SettlementRank;
-import de.themoep.settlements.utils.Utils;
+import de.themoep.settlements.utils.Message;
+import de.themoep.settlements.utils.MessageUtils;
+
+import java.util.stream.Collectors;
 
 public class SettlementJoinCommand extends ResidentSubCommand {
     public SettlementJoinCommand(SubCommand parent) {
@@ -30,14 +30,32 @@ public class SettlementJoinCommand extends ResidentSubCommand {
             getError("settlement-doesnt-exist").tell(resident, "name", args[0]);
         } else if (joinSettlement.getId().isNull()) {
             getError("missing-settlement-id").tell(resident, "name", joinSettlement.getName());
-        } else if (joinSettlement.getJoinType() != JoinType.ANYONE && InviteManager.getInstance().getInvite(resident, joinSettlement) == null) {
-            getMessage("no-invite").tell(resident, "name", joinSettlement.getName(), "state", joinSettlement.getStateTag());
         } else if (joinSettlement.isFull()) {
             getMessage("is-full").tell(resident, "state", joinSettlement.getState().getTag(), "name", joinSettlement.getName());
         } else if (joinSettlement.isBanished(resident)) {
             getMessage("banished").tell(resident, "state", joinSettlement.getState().getTag(), "name", joinSettlement.getName());
         } else if (joinSettlement.getJoinFee() > 0 && !SettlementsPlugin.getInstance().getEconomy().has(resident.getPlayer(), joinSettlement.getJoinFee())) {
             getError("not-enough-money").tell(resident, "state", joinSettlement.getState().getTag(), "name", joinSettlement.getName(), "amount", String.valueOf(joinSettlement.getJoinFee()));
+        } else if (joinSettlement.getJoinType() != JoinType.ANYONE && InviteManager.getInstance().getInvite(resident, joinSettlement) == null) {
+            if (joinSettlement.getJoinType() == JoinType.APPLY) {
+                if (joinSettlement.hasUnlocked("recruitment") && joinSettlement.hasUnlocked("command.recruitment")) {
+                    getMessage("applied").tell(resident, "name", joinSettlement.getName(), "state", joinSettlement.getStateTag());
+                    JoinRequest request = new JoinRequest(joinSettlement, resident);
+                    joinSettlement.addJoinRequest(request);
+                    request.save();
+                    MessageUtils.notify(
+                            joinSettlement.getResidents().stream().filter(r -> r.hasPermission("settlement.recruitment")).collect(Collectors.toList()),
+                            Message.get("command.settlement.join.someone-applied"),
+                            "name", resident.getName(),
+                            "state", joinSettlement.getStateTag()
+                    );
+                } else {
+                    getError("not-unlocked").tell(resident, "function", "recruitment", "name", joinSettlement.getName(), "state", joinSettlement.getStateTag());
+                    getMessage("no-invite").tell(resident, "name", joinSettlement.getName(), "state", joinSettlement.getStateTag());
+                }
+            } else {
+                getMessage("no-invite").tell(resident, "name", joinSettlement.getName(), "state", joinSettlement.getStateTag());
+            }
         } else {
             if (joinSettlement.getJoinFee() > 0) {
                 if (SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(resident.getPlayer(), joinSettlement.getJoinFee()).transactionSuccess()) {

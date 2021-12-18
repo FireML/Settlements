@@ -68,9 +68,9 @@ public class StartGUI extends ConfigurableGui {
                 // accept invite
                 if (request instanceof SettlementInvite) {
                     if (handleJoin(resident, (Settlement) request.getSource())) {
-                        click.getGui().close();
+                        c.getGui().close();
                     } else {
-                        click.getGui().draw();
+                        c.getGui().draw();
                     }
                 }
             }, request -> request.getReplacements(this)).open();

@@ -115,20 +115,34 @@ guis:
         confirm: red_dye
         cancel: barrier
   settlement:
-    magement:
+    management:
       setup:
       - "ooooooooo"
-      - "         "
-      - "  r n s  "
+      - "    n    "
+      - "  r e s  "
       - " d a t l "
       - "         "
       - " ooobooo "
       elements:
         o: lime_stained_glass_pane
         npc: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTY5ODQ3N2Q3ZDUzMjc0OGFmNGUwOTExNWVmMTZiYjk1OTk0ZjBlNThiMDkwZTZkMzA2NDQ1OGJiOWFlMTY4NyJ9fX0=
+        recruitment: player_head
         ranks: chainmail_chestplate
         settings: cobblestone_wall
         land: grass_block
+        back: barrier
+    requests:
+      setup:
+      - "ooooooooo"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "ppppppsb "
+      elements:
+        o: lime_stained_glass_pane
+        page: paper
+        sort: hopper
         back: barrier
     npclist:
       setup:
@@ -143,6 +157,34 @@ guis:
       elements:
         o: lime_stained_glass_pane
         back: barrier
+    elder:
+      setup:
+      - "ooooooooo"
+      - "         "
+      - "    e    "
+      - "         "
+      - "         "
+      - " ooobooo "
+      elements:
+        o: blue_stained_glass_pane
+        recruit: crimson_door
+        missions: orange_banner
+        back: barrier
+    missions:
+      setup:
+      - "ooooioooo"
+      - "         "
+      - " mmmmmmm "
+      - " mmmmmmm "
+      - "         "
+      - " ooobooo "
+      alignment:
+        m: center
+      elements:
+        o: blue_stained_glass_pane
+        info: orange_banner
+        back: barrier
+
     settings:
       setup:
       - "ooooooooo"
