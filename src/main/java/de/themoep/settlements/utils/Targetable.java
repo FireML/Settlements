@@ -27,4 +27,6 @@ public interface Targetable {
     boolean isMember(Resident resident);
 
     String getName();
+
+    IdObject getId();
 }

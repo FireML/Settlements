@@ -65,6 +65,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
     private BuildState buildState = getDefaultBuildState();
     private LandAccess access = LandAccess.PRIVATE;
     private JoinType joinType = JoinType.INVITE_ONLY;
+    private Map<IdObject, JoinRequest> joinRequests = new HashMap<>();
     private Map<Use, BuildState> use = new EnumMap<>(Use.class);
 
     private Map<String, Map<String, Boolean>> ranksPermissions = new HashMap<>();
@@ -640,6 +641,26 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         return allyRequests.values();
     }
 
+    public boolean hasJoinRequest(Targetable targetable) {
+        return joinRequests.containsKey(targetable.getId());
+    }
+
+    public JoinRequest addJoinRequest(JoinRequest request) {
+        return joinRequests.put(request.getSourceId(), request);
+    }
+
+    public JoinRequest removeJoinRequest(Targetable targetable) {
+        return joinRequests.remove(targetable.getId());
+    }
+
+    public JoinRequest removeJoinRequest(JoinRequest request) {
+        return joinRequests.remove(request.getSourceId());
+    }
+
+    public Collection<JoinRequest> getJoinRequests() {
+        return joinRequests.values();
+    }
+
     public boolean isTrusted(Resident resident) {
         return (resident.hasSettlement() && isTrusted(resident.getSettlement()))
                 || (resident.hasEmpire() && isTrusted(resident.getSettlement().getEmpire()));
@@ -885,6 +906,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         map.put("buildState", getBuildState().name());
         map.put("access", getAccess().name());
         map.put("joinType", getJoinType().name());
+        map.put("joinRequests", getJoinRequests());
         if (getHome() != null)
             map.put("homeLoc", getHome());
         else
@@ -917,6 +939,9 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         landOwner.setId(IdObject.get(map));
         landOwner.setBank(Utils.getLong(map.get("bank")));
         landOwner.setJoinFee(Utils.getLong(map.get("joinFee")));
+        for (JoinRequest request : ((Collection<JoinRequest>) map.get("joinRequests"))) {
+            landOwner.addJoinRequest(request);
+        }
         landOwner.setTax(Utils.getLong(map.get("tax")));
         landOwner.setAuctionTax(Utils.getLong(map.get("auctionTax")));
         try {

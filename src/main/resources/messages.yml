@@ -34,6 +34,7 @@ error:
   no-permission: "&cNo permission."
   rules-not-accepted: "&cYou must accept the [&e{state} rules](/s rules) first!"
   function-not-unlocked: "&cUpgrade NPC to unlock!"
+  not-unlocked: "&cThe {state} does not have the {function} function unlocked yet!"
   no-channel-permission: "&cNo permission to use {channel} channel!"
   not-a-channel: "&cChat Channel &6{name}&c is not valid channel!"
   not-enough-money: "&c&lNot enough money in your account to pay &r&6&l{amount}&r&c&l!"
@@ -1120,12 +1121,19 @@ gui:
       &fDate: &e{unbanishdate}
   management:
     title: "Manage {state}"
+    applications: |-
+      &eView Join Requests
+      &fSee a list of everyone who
+      &fapplied to join the {state}
+      &fand accept or reject them
+  
+      {action}
     reslist: |-
       &eManage Residents
       &fInformation about the residents
       &fSet their Rank, Title and Taxes
   
-      &bClick to browse
+      {action}
     banished: |-
       &eBanished List
       &fPlayers who had been restricted
@@ -1169,6 +1177,48 @@ gui:
         &e{name}
         
         &cNot unlocked yet
+  elder:
+    title: "{type}"
+    recruit:
+      apply: |-
+        &eApply to join!
+        &fRequest to join the {state}
+        &fJoin Fee: &e${joinfee}
+        &fTaxes: &e${tax}
+        
+        &bClick here to request
+      cancel-apply: |-
+        &eYou have applied to join!
+        &fWait until you have been approved!
+        &fJoin Fee: &e${joinfee}
+        &fTaxes: &e${tax}
+        
+        &cClick to cancel your request
+      invite-only: |-
+        &cYou can only join after
+        &cbeing invited
+      invited: |-
+        &eYou have been invited!
+        &fJoin Fee: &e${joinfee}
+        &fTaxes: &e${tax}
+        
+        &bClick to join
+      anyone: |-
+        &eAnyone can join the {state}
+        &fJoin Fee: &e${joinfee}
+        &fTaxes: &e${tax}
+        
+        &bClick to join &f{name}
+      banished: |-
+        &cYou are banished
+    missions: |-
+      &e{amount} Missions available
+      {missions}
+      
+      &bClick for more details
+    mission-entry: "&f{action} &e{title}"
+    back: "&cClose"
+    
   build:
     title: "&2&l/s build"
     set-state: "&7&lAllow &b&l{state}&7&l to Build"
@@ -1923,6 +1973,14 @@ gui:
         &7Anyone can join
       apply: |-
         &7Apply at Elder
+  requests:
+    title: "Join Requests"
+    entry: |-
+      &e{name}
+      &fBalance: &e${balance}
+      
+      &bLeft-Click to accept
+      &cRight-Click to reject
   manage:
     home: |-
       &e{state} Home
@@ -2691,6 +2749,9 @@ command:
       not-enough-money: "&c&l(!) &r&7You do not have enough money to pay the join fee of {amount}!"
       money-paid: "&7Paid &e{amount}&7 to join!"
       no-invite: "&c&l(!) &r&7You do not have an invite for this settlement."
+      applied: "&aYou have applied to join {state} {name}."
+      apply-cancelled: "&7Cancelled application to {state} {name}."
+      someone-applied: "&e{name}&f applied to join your {state}!"
       success: "&a&lSUCCESS &r&7You have joined {state} {name}."
       new-resident: "&e&l(!) &r&e{player}&7 has joined the settlement!"
       is-full: "&e&l(!) &r&7The {state} {name} is full."
@@ -2868,6 +2929,9 @@ command:
         invite: Invitation is required to join
         anyone: Allows everyone to join without an invitation
         apply: Application is required to join
+      banished: "&e{name}&c is banished from your {state}!"
+      is-full: "&cYour {state} is full!"
+      not-enough-money: "&e{name}&c does not have enough money!"
       description: Sets the recruitment type for the settlement
     sethome:
       success: "{title} {name} &r&7&lhas set the {state} home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"

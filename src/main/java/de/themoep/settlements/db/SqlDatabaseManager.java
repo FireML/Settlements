@@ -10,6 +10,7 @@ import de.themoep.settlements.invites.SettlementInvite;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.AllyRequest;
 import de.themoep.settlements.land.Banished;
+import de.themoep.settlements.land.JoinRequest;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.npc.NpcData;
@@ -1120,6 +1121,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         }
         map.put("members", members);
 
+        map.put("joinRequests", getJoinRequests(conn, "empire", id));
         map.put("npcs", selectDeserializableList(conn, "empire", id, "npcs", NpcData.class));
         map.put("allies", selectDeserializableList(conn, "empire", id, "allies", Ally.class));
         map.put("allyRequests", getAllyRequests(conn, "empire", id));
@@ -1174,6 +1176,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         }
         map.put("residents", residents);
 
+        map.put("joinRequests", getJoinRequests(conn, "settlement", id));
         map.put("npcs", selectDeserializableList(conn, "settlement", id, "npcs", NpcData.class));
         map.put("allies", selectDeserializableList(conn, "settlement", id, "allies", Ally.class));
         map.put("allyRequests", getAllyRequests(conn, "settlement", id));
@@ -1255,6 +1258,32 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             return requests;
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to get all ally requests of " + type + " " + id + " from database!", e);
+        } finally {
+            close(conn);
+        }
+        return Collections.emptyList();
+    }
+
+    private Collection<JoinRequest> getJoinRequests(Connection conn, String type, int id) {
+        Utils.catchSync();
+        String sql = "SELECT *" +
+                " FROM " + tablePrefix + "invites" +
+                " WHERE type = ? AND targetType = ? AND targetId = ?;";
+        try (PreparedStatement sta = conn.prepareStatement(sql)) {
+            sta.setString(1, "joinrequest");
+            sta.setString(2, type);
+            sta.setInt(3, id);
+            ResultSet rs = sta.executeQuery();
+            List<JoinRequest> requests = new ArrayList<>();
+            while (rs.next()) {
+                JoinRequest request = JoinRequest.deserialize(toMap(rs));
+                if (request != null) {
+                    requests.add(request);
+                }
+            }
+            return requests;
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to get all join requests of " + type + " " + id + " from database!", e);
         } finally {
             close(conn);
         }

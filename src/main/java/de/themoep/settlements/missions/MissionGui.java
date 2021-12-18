@@ -1,38 +1,29 @@
 package de.themoep.settlements.missions;
 
 import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
-import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.SettlementsGUI;
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.empire.EmpireMission;
+import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.utils.ItemUtils;
+import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.utils.ConfigurableGui;
 import org.apache.commons.lang.WordUtils;
-import org.bukkit.Material;
 
 import java.util.stream.Collectors;
 
-public class MissionGui extends SettlementsGUI {
+public class MissionGui extends ConfigurableGui {
 
-    private static final String[] SETUP = new String[] {
-            "bmmmmmmmm",
-            "mmmmmmmmm",
-            "mmmmmmmmm"
-    };
-    private final InventoryGui gui;
-    private final Resident resident;
+    public MissionGui(Resident resident, LandOwner landOwner) {
+        super(resident, "missions");
 
-    public MissionGui(Resident resident) {
-        super("missions");
-        this.resident = resident;
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), SETUP);
+        gui.addElement(new StaticGuiElement('i', getIcon("info"), getText("info")));
 
-        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.ORANGE_BANNER), getText("info")));
+        Settlement settlement = (Settlement) landOwner;
 
         GuiElementGroup group = new GuiElementGroup('m');
-        for (MissionData missionData : resident.getSettlement().getMissionData()) {
+        for (MissionData missionData : settlement.getMissionData()) {
             group.addElement(new DynamicGuiElement('m', who -> {
                 StaticGuiElement element = new StaticGuiElement('m', missionData.getMission().getIcon(), getText("entry",
                         "title", missionData.getMission().getTag(),
@@ -59,6 +50,8 @@ public class MissionGui extends SettlementsGUI {
             }));
         }
         gui.addElement(group);
+
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
     }
 
     public void open() {
