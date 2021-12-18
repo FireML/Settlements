@@ -542,6 +542,17 @@ public class Utils {
         return Long.parseLong(String.valueOf(o));
     }
 
+    public static int getInt(Object o) {
+        if (o == null) {
+            return 0;
+        } else if (o instanceof Integer) {
+            return (Integer) o;
+        } else if (o instanceof Number) {
+            return ((Number) o).intValue();
+        }
+        return Integer.parseInt(String.valueOf(o));
+    }
+
     public static float getFloat(Object o) {
         if (o == null) {
             return 0;
