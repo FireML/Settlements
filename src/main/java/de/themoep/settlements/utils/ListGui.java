@@ -11,17 +11,19 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Collection;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class ListGui<T extends Sortable<T>> extends ConfigurableGui {
 
     private Sortable.Sort<T> sort = null;
 
-    public ListGui(Resident resident, String type, Collection<T> sortables, BiConsumer<GuiElement.Click, T> onSelect, Function<T, String[]> replacementsProvider) {
+    public ListGui(Resident resident, String type, Supplier<Collection<T>> sortablesProvider, BiConsumer<GuiElement.Click, T> onSelect, Function<T, String[]> replacementsProvider) {
         super(resident, type);
 
         Sortable.Sort<T>[] sorts;
-        if (!sortables.isEmpty()) {
-            sorts = sortables.iterator().next().getSorts();
+        Collection<T> s = sortablesProvider.get();
+        if (!s.isEmpty()) {
+            sorts = s.iterator().next().getSorts();
             sort = sorts[0];
         }
 
@@ -29,6 +31,7 @@ public class ListGui<T extends Sortable<T>> extends ConfigurableGui {
             GuiElementGroup group = new GuiElementGroup('e');
 
             if (sort != null) {
+                Collection<T> sortables = sortablesProvider.get();
                 sortables.stream().sorted(sort.getComparator()).forEachOrdered(sortable -> {
                     Message message = getMessage("entry." + sortable.getKey());
                     if (!message.exists()) {

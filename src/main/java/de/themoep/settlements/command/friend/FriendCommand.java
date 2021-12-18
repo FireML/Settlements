@@ -10,6 +10,7 @@ public class FriendCommand extends PlayerSubCommand {
         super(null, "friend");
         setHelpCommand(new HelpCommand(this));
         registerCommand(new FriendAddCommand(this));
+        registerCommand(new FriendAcceptCommand(this));
         registerCommand(new FriendRemoveCommand(this));
         registerCommand(new FriendListCommand(this));
     }

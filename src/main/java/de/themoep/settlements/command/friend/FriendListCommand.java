@@ -1,10 +1,14 @@
 package de.themoep.settlements.command.friend;
 
+import de.themoep.settlements.resident.FriendRequest;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Utils;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import de.themoep.settlements.utils.MessageUtils;
@@ -19,18 +23,36 @@ public class FriendListCommand extends PlayerSubCommand {
     @Override
     public boolean run(Player player, String base, String alias, String... args) {
         Utils.runAsync(() -> {
-            MessageUtils.tell(player, getMessage("head"));
-            MessageUtils.tell(player, ResidentManager.getInstance().getResident(player).getFriends().stream().map(id -> {
-                Player p = Bukkit.getPlayer(id);
-                if (p != null && p.isOnline()) {
-                    return getMessage("entry").getReplacedText("online", getText("online"), "name", p.getName());
+            Resident resident = ResidentManager.getInstance().getResident(player);
+            if (resident.getFriends().isEmpty()) {
+                getError("no-friends").tell(resident);
+            } else {
+                getMessage("head").tell(resident);
+                MessageUtils.tell(player, resident.getFriends().stream().map(id -> {
+                    Player p = Bukkit.getPlayer(id);
+                    if (p != null && p.isOnline()) {
+                        return getMessage("entry").getReplacedText("online", getText("online"), "name", p.getName());
+                    }
+                    Resident target = ResidentManager.getInstance().getResident(id);
+                    if (target != null) {
+                        return getMessage("entry").getReplacedText("online", getText("offline"), "name", target.getName());
+                    }
+                    return getMessage("entry").getReplacedText("online", getText("offline"), "name", id.toString());
+                }).collect(Collectors.joining(getText("separator"))));
+            }
+            if (!resident.getFriendRequests().isEmpty()) {
+                getMessage("head-requests").tell(resident);
+                ComponentBuilder builder = new ComponentBuilder();
+                List<FriendRequest> requests = new ArrayList<>(resident.getFriendRequests());
+                for (int i = 0; i < requests.size(); i++) {
+                    if (i > 0) {
+                        builder.append(getMessage("separator").getComponents());
+                    }
+                    FriendRequest request = requests.get(i);
+                    builder.append(getMessage("request-entry").getReplacedComponents("name", request.getSenderName()));
                 }
-                Resident resident = ResidentManager.getInstance().getResident(id);
-                if (resident != null) {
-                    return getMessage("entry").getReplacedText("online", getText("offline"), "name", resident.getName());
-                }
-                return getMessage("entry").getReplacedText("online", getText("offline"), "name", id.toString());
-            }).collect(Collectors.joining(getText("separator"))));
+                MessageUtils.tell(player, builder.create());
+            }
         });
         return true;
     }

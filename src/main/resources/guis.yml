@@ -36,7 +36,7 @@ guis:
       elements:
         o: brown_stained_glass_pane
         start: book
-        invites: crimson_door
+        requests: crimson_door
         create: white_bed
         join: oak_boat
         public: beacon
@@ -59,7 +59,7 @@ guis:
         plot: grass_block
         friends: player_head
         back: barrier
-    invites:
+    requests:
       setup:
       - "ooooooooo"
       - "eeeeeeeee"

@@ -1,15 +1,16 @@
 package de.themoep.settlements.command.friend;
 
+import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.resident.FriendRequest;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.entity.Player;
 import de.themoep.settlements.command.PlayerSubCommand;
 
 public class FriendRemoveCommand extends PlayerSubCommand {
     public FriendRemoveCommand(PlayerSubCommand parent) {
-        super(parent, "remove <name>");
+        super(parent, "remove <name>", "reject");
     }
 
     @Override
@@ -18,18 +19,26 @@ public class FriendRemoveCommand extends PlayerSubCommand {
             return false;
         }
         Utils.runAsync(() -> {
+            Resident res = ResidentManager.getInstance().getResident(player);
+            FriendRequest request = res.removeFriendRequest(args[0]);
+            if (request != null) {
+                DatabaseManager.getInstance().delete(request);
+                getMessage("removed-request").tell(res, "name", request.getSenderName());
+                return;
+            }
             Resident target = ResidentManager.getInstance().getResident(args[0]);
             if (target == null ) {
                 getError("player-not-found").tell(player, "name", args[0]);
                 return;
             }
-            Resident res = ResidentManager.getInstance().getResident(player);
             if (!res.removeFriend(target.getUUID())) {
-                getError("not-friends").tell(player, "name", target.getName());
+                getError("not-friends").tell(res, "name", target.getName());
                 return;
             }
-            DatabaseManager.getInstance().saveResident(res);
-            getMessage("success").tell(player, "name", target.getName());
+            target.removeFriend(res.getUUID());
+            res.save();
+            target.save();
+            getMessage("success").tell(res, "name", target.getName());
         });
         return true;
     }

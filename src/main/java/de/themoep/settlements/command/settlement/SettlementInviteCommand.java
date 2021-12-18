@@ -21,11 +21,15 @@ public class SettlementInviteCommand extends SettlementSubCommand {
         Utils.runAsync(() -> {
             Resident invitedPlayer = ResidentManager.getInstance().getResident(args[0]);
             if (invitedPlayer == null) {
-                res.tell(getError("player-not-found"), "name", args[0]);
+                getError("player-not-found").tell(res, "name", args[0]);
                 return;
             }
             if (invitedPlayer.hasSettlement()) {
                 getMessage("already-in-settlement").tell(res, "name", invitedPlayer.getName(), "state", invitedPlayer.getSettlement().getState().getTag());
+                return;
+            }
+            if (InviteManager.getInstance().getInvite(invitedPlayer, res.getSettlement()) != null) {
+                getMessage("already-has-invite").tell(res, "name", invitedPlayer.getName(), "state", res.getSettlement().getState().getTag());
                 return;
             }
             Utils.runSync(() -> {

@@ -62,19 +62,20 @@ public class StartGUI extends ConfigurableGui {
             return true;
         }, getText("start", "playername", resident.getName())));
 
-        Collection<Invite<?, ?>> invites = getInvites(resident);
-        gui.addElement(new StaticGuiElement('i', ItemUtils.setGlowing(getIcon("invites"), !invites.isEmpty()), click -> {
-            Collection<Invite<?, ?>> currentInvitations = getInvites(resident);
-            new ListGui<>(resident, "general.invites", currentInvitations, (c, invite) -> {
+        Collection<Invite<?, ?>> requests = getRequests(resident);
+        gui.addElement(new StaticGuiElement('i', ItemUtils.setGlowing(getIcon("requests"), !requests.isEmpty()), click -> {
+            new ListGui<>(resident, "general.requests", () -> getRequests(resident), (c, request) -> {
                 // accept invite
-                if (invite instanceof SettlementInvite) {
-                    if (handleJoin(resident, (Settlement) invite.getSource())) {
+                if (request instanceof SettlementInvite) {
+                    if (handleJoin(resident, (Settlement) request.getSource())) {
                         click.getGui().close();
+                    } else {
+                        click.getGui().draw();
                     }
                 }
-            }, invite -> new String[0]).open();
+            }, request -> request.getReplacements(this)).open();
             return true;
-        }, getText("invites", "amount", String.valueOf(invites.size()))));
+        }, getText("invites", "amount", String.valueOf(requests.size()))));
 
         gui.addElement(new StaticGuiElement('c', getIcon("create"), click -> {
             if (resident.hasPermission("settlements.command.settlement.create")) {
@@ -127,10 +128,12 @@ public class StartGUI extends ConfigurableGui {
         )));
 
         gui.addElement(new StaticGuiElement('j', getIcon("join"), click -> {
-            new ListGui<>(resident, "general.settlements", SettlementManager.getInstance().getSettlements(), (c, settlement) -> {
+            new ListGui<>(resident, "general.settlements", () -> SettlementManager.getInstance().getSettlements(), (c, settlement) -> {
                 // Join if open to anyone or Invite is available
                 if (handleJoin(resident, settlement)) {
                     click.getGui().close();
+                } else {
+                    click.getGui().draw();
                 }
             }, settlement -> {
                 String action;
@@ -157,7 +160,7 @@ public class StartGUI extends ConfigurableGui {
         }, getText("join")));
 
         gui.addElement(new StaticGuiElement('p', getIcon("public"), click -> {
-            new ListGui<>(resident, "general.public", SettlementManager.getInstance().getSettlements().stream()
+            new ListGui<>(resident, "general.public", () -> SettlementManager.getInstance().getSettlements().stream()
                     .filter(s -> s.getAccess() == LandAccess.PUBLIC)
                     .collect(Collectors.toList()), (c, settlement) -> {
                 // teleport to public settlements
@@ -165,6 +168,8 @@ public class StartGUI extends ConfigurableGui {
                     click.getGui().close();
                     ((SettlementHomeCommand) CommandManager.getInstance().getCommand("settlement").getSubCommands().get("home"))
                             .run(resident, "settlement", "home", settlement.getName());
+                } else {
+                    click.getGui().draw();
                 }
             }, settlement -> new String[0]).open();
             return true;
@@ -173,7 +178,7 @@ public class StartGUI extends ConfigurableGui {
         gui.addElement(new GuiBackElement('b', getIcon("back"), getText("back")));
     }
 
-    private Collection<Invite<?, ?>> getInvites(Resident resident) {
+    private Collection<Invite<?, ?>> getRequests(Resident resident) {
         return new ArrayList<>(InviteManager.getInstance().getInvites(resident));
     }
 

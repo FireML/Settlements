@@ -1,6 +1,7 @@
 package de.themoep.settlements.resident.gui;
 
 import de.themoep.inventorygui.GuiBackElement;
+import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
@@ -8,6 +9,7 @@ import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.settlement.SettlementHomeCommand;
 import de.themoep.settlements.command.settlement.SettlementRulesCommand;
 import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.invites.Invite;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.invites.SettlementInvite;
@@ -15,6 +17,7 @@ import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.gui.SettingsGUI;
 import de.themoep.settlements.rank.SettlementRank;
+import de.themoep.settlements.resident.FriendRequest;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.JoinType;
 import de.themoep.settlements.settlement.Settlement;
@@ -31,7 +34,7 @@ import java.util.Collection;
 public class OverviewGUI extends ConfigurableGui {
 
     public OverviewGUI(Resident resident) {
-        super(resident, "general.start",
+        super(resident, "general.overview",
                 "state", resident.hasSettlement() ? resident.getSettlement().getStateTag() : "",
                 "name", resident.hasSettlement() ? resident.getSettlement().getName() : ""
         );
@@ -82,25 +85,48 @@ public class OverviewGUI extends ConfigurableGui {
                 )
         )));
 
-        Collection<Invite<?, ?>> invites = getInvites(resident);
-        gui.addElement(new StaticGuiElement('f', ItemUtils.setGlowing(getIcon("friends"), !invites.isEmpty()), click -> {
-            Collection<Invite<?, ?>> currentInvitations = getInvites(resident);
-            new ListGui<>(resident, "general.friends", currentInvitations, (c, invite) -> {
-                // accept invite
-                if (invite instanceof SettlementInvite) {
-                    if (handleJoin(resident, (Settlement) invite.getSource())) {
-                        click.getGui().close();
+        Collection<FriendRequest> requests = resident.getFriendRequests();
+        gui.addElement(new StaticGuiElement('f', ItemUtils.setGlowing(getIcon("friends"), !requests.isEmpty()), click -> {
+            new ListGui<>(resident, "general.requests", () -> new ArrayList<>(resident.getFriendRequests()), (c, request) -> {
+                // accept request
+                if (request instanceof FriendRequest) {
+                    FriendRequest currentRequest = resident.removeFriendRequest(((FriendRequest) request).getSenderName());
+                    if (currentRequest == null) {
+                        // No request sent?
+                        c.getGui().draw();
+                        return;
                     }
+                    c.getGui().close();
+                    Utils.runAsync(() -> {
+                        Resident sender = (Resident) request.getSource();
+                        DatabaseManager.getInstance().delete(request);
+                        FriendRequest reverseRequest = sender.removeFriendRequest(resident.getName());
+                        if (reverseRequest != null) {
+                            DatabaseManager.getInstance().delete(reverseRequest);
+                        }
+                        Utils.runSync(() -> {
+                            sender.addFriend(resident.getUUID());
+                            resident.addFriend(sender.getUUID());
+                            getMessage("success").tell(resident, "name", sender.getName());
+                            if (sender.getPlayer() != null) {
+                                getMessage("received").tell(sender, "name", resident.getName());
+                            } else {
+                                for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
+                                    provider.sendMail(resident.getSettlementTitle() + " " + resident.getName(), sender, getText("mail",
+                                            "name", resident.getName()
+                                    ));
+                                }
+                            }
+                            sender.save();
+                            resident.save();
+                        });
+                    });
                 }
-            }, invite -> new String[0]).open();
+            }, request -> request.getReplacements(this)).open();
             return true;
-        }, getText("friends", "amount", String.valueOf(invites.size()))));
+        }, getText("friends", "amount", String.valueOf(requests.size()))));
 
         gui.addElement(new GuiBackElement('b', getIcon("back"), getText("back")));
-    }
-
-    private Collection<Invite<?, ?>> getInvites(Resident resident) {
-        return new ArrayList<>(/*InviteManager.getInstance().getFriendRequests(resident)*/);
     }
 
     private boolean handleJoin(Resident resident, Settlement settlement) {

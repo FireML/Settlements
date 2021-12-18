@@ -41,6 +41,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -66,6 +67,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     private Table<ChatChannel, ChatColorType, ChatColor> channelColors = HashBasedTable.create(ChatChannel.values().length, ChatColorType.values().length);
     private Set<UUID> ignore = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private Set<UUID> friends = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private Map<String, FriendRequest> friendRequests = new ConcurrentHashMap<>();
     private boolean swear = true;
     private boolean socialSpy = false;
     private int bonusClaims = 0;
@@ -163,12 +165,32 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         return friends;
     }
 
+    public boolean isFriend(Resident resident) {
+        return friends.contains(resident.getUUID());
+    }
+
     public boolean addFriend(UUID id) {
         return friends.add(id);
     }
 
     public boolean removeFriend(UUID id) {
         return friends.remove(id);
+    }
+
+    public boolean addFriendRequest(FriendRequest friendRequest) {
+        return friendRequests.put(friendRequest.getSenderName().toLowerCase(Locale.ROOT), friendRequest) != null;
+    }
+
+    public FriendRequest removeFriendRequest(String playerName) {
+        return friendRequests.remove(playerName.toLowerCase(Locale.ROOT));
+    }
+
+    public FriendRequest getFriendRequest(String playerName) {
+        return friendRequests.get(playerName.toLowerCase(Locale.ROOT));
+    }
+
+    public Collection<FriendRequest> getFriendRequests() {
+        return friendRequests.values();
     }
 
     public Set<UUID> getIgnore() {
@@ -628,6 +650,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         map.put("bonusClaims", getBonusClaims());
         map.put("ignores", getIgnore().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("friends", getFriends().stream().map(UUID::toString).collect(Collectors.toList()));
+        map.put("friendRequests", getFriendRequests());
         return map;
     }
 
@@ -712,6 +735,9 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         }
         if (map.containsKey("friends")) {
             ((Collection<String>) map.get("friends")).stream().map(Utils::parseUuid).filter(Objects::nonNull).forEach(resident::addFriend);
+        }
+        if (map.containsKey("friendRequests")) {
+            ((Collection<FriendRequest>) map.get("friendRequests")).forEach(resident::addFriendRequest);
         }
         return resident;
     }

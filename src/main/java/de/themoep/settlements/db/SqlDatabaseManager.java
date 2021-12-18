@@ -17,6 +17,7 @@ import de.themoep.settlements.land.Unbanished;
 import de.themoep.settlements.lock.Lock;
 import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.rank.SettlementRank;
+import de.themoep.settlements.resident.FriendRequest;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.IdObject;
@@ -1212,10 +1213,37 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         int id = rs.getInt("id");
         map.put("channels", selectList(conn, "resident_channels", "userId", id, "channel"));
         map.put("friends", selectResidentList(conn, "resident_friends", "userId", id, "friendId"));
+        map.put("friendRequests", getFriendRequests(conn, id));
         map.put("ignores", selectResidentList(conn, "resident_ignores", "userId", id, "ignoredId"));
         map.put("channelColors", selectMap(conn, "resident_channel_colors", "userId", id, "channel", "color", String.class));
         map.put("channelPrefixColors", selectMap(conn, "resident_channel_prefix_colors", "userId", id, "channel", "color", String.class));
         return Resident.deserialize(map);
+    }
+
+    private Collection<FriendRequest> getFriendRequests(Connection conn, int id) {
+        Utils.catchSync();
+        String sql = "SELECT i.targetId AS targetId, i.sourceId AS sourceId, i.time AS time, r.uuid as senderUuid, r.name as senderName" +
+                " FROM " + tablePrefix + "invites AS i" +
+                " JOIN " + tablePrefix + "residents AS r ON i.sourceId = r.id" +
+                " WHERE i.type = ? AND i.targetId = ?;";
+        try (PreparedStatement sta = conn.prepareStatement(sql)) {
+            sta.setString(1, "friendrequest");
+            sta.setInt(2, id);
+            ResultSet rs = sta.executeQuery();
+            List<FriendRequest> requests = new ArrayList<>();
+            while (rs.next()) {
+                FriendRequest request = FriendRequest.deserialize(toMap(rs));
+                if (request != null) {
+                    requests.add(request);
+                }
+            }
+            return requests;
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to get all friend requests of resident " + id + " from database!", e);
+        } finally {
+            close(conn);
+        }
+        return Collections.emptyList();
     }
 
     private OwnedLand createLand(Connection conn, ResultSet rs) throws SQLException {
