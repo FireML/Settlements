@@ -140,7 +140,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     private void saveEmpire(Connection conn, Empire empire) {
         Utils.catchSync();
         try {
-            if (!save(conn, empire, "members", "permissions", "npcs").isNull() && !empire.getId().isNull()) {
+            if (!save(conn, empire, "members", "permissions", "npcs").isNull() && empire.getId() != null && !empire.getId().isNull()) {
                 updateDataMap(conn, "empire_vaults", "empireId", (Integer) empire.getId().value(), "content", "amount", empire.getVault());
                 updateDataMap(conn, "empire_uses", "empireId", (Integer) empire.getId().value(), "type", "state",
                         empire.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
@@ -167,7 +167,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         Utils.catchSync();
         empireQueue.remove(empire.getId(), empire);
         Connection conn = getConnection();
-        if (!empire.getId().isNull()) {
+        if (empire.getId() != null && !empire.getId().isNull()) {
             try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "empires WHERE id=?")) {
                 sta.setInt(1, (Integer) empire.getId().value());
                 sta.executeUpdate();
@@ -261,7 +261,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         Utils.catchSync();
         settlementQueue.remove(settlement.getId(), settlement);
         Connection conn = getConnection();
-        if (!settlement.getId().isNull()) {
+        if (settlement.getId() != null && !settlement.getId().isNull()) {
             try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "settlements WHERE id=?")) {
                 sta.setInt(1, (Integer) settlement.getId().value());
                 sta.executeUpdate();
@@ -301,7 +301,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         Utils.catchSync();
         inviteQueue.remove(invite.getId(), invite);
         Connection conn = getConnection();
-        if (!invite.getId().isNull()) {
+        if (invite.getId() != null && !invite.getId().isNull()) {
             try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "invites WHERE id=?")) {
                 sta.setInt(1, (Integer) invite.getId().value());
                 sta.executeUpdate();
@@ -619,15 +619,15 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         Utils.catchSync();
         Map<String, Object> values = getValues(resident.serialize());
         try {
-            boolean hadId = !resident.getId().isNull();
+            boolean hadId = resident.getId() != null && !resident.getId().isNull();
             PreparedStatement sta = executeSerializableInsert(conn, "residents", resident, values);
-            if (resident.getId().isNull()) {
+            if (!hadId) {
                 ResultSet rs = sta.getGeneratedKeys();
                 if (rs.next()) {
                     resident.setId(IdObject.get(rs.getInt(1)));
                 }
             }
-            if (!resident.getId().isNull()) {
+            if (resident.getId() != null && !resident.getId().isNull()) {
                 updateList(conn, "resident_channels", "userId", (Integer) resident.getId().value(), "channel", resident.getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
                 updateUserList(conn, "resident_friends", "userId", (Integer) resident.getId().value(), "friendId", resident.getFriends());
                 updateUserList(conn, "resident_ignores", "userId", (Integer) resident.getId().value(), "ignoredId", resident.getIgnore());
@@ -663,7 +663,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     private void savePortal(Connection conn, Portal portal) {
         try {
-            if (!save(conn, portal, "links").isNull() && !portal.getId().isNull()) {
+            if (!save(conn, portal, "links").isNull() && portal.getId() != null && !portal.getId().isNull()) {
                 updateList(conn, "portal_links", "sourceId", (Integer) portal.getId().value(), "targetId", portal.getLinks());
             }
         } catch (SQLException e) {
@@ -701,7 +701,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
         for (Portal portal : portals) {
             portalQueue.remove(portal.getId(), portal);
-            if (portal.getId().isNull()) {
+            if (portal.getId() != null && portal.getId().isNull()) {
                 withoutId.add(portal);
             } else {
                 withId.add(portal);
@@ -783,8 +783,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         for (Lock lock : locks) {
             lockQueue.add(lock.getId(), conn -> {
                 try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "locks WHERE " +
-                         (lock.getId().isNull() ? "world = ? AND x = ? AND y = ? AND z = ?;" : "id = ?;"))) {
-                    if (lock.getId().isNull()) {
+                         (lock.getId() == null || lock.getId().isNull() ? "world = ? AND x = ? AND y = ? AND z = ?;" : "id = ?;"))) {
+                    if (lock.getId() == null || lock.getId().isNull()) {
                         sta.setString(1, lock.getLocation().getWorld());
                         sta.setInt(2, lock.getLocation().getX());
                         sta.setInt(3, lock.getLocation().getY());
@@ -906,8 +906,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     @Override
     public void log(Empire empire, Settlement settlement, Resident resident, String action, Map<String, Long> values) {
         if (values.isEmpty()
-                || (settlement != null && settlement.getId().isNull())
-                || (empire != null && empire.getId().isNull())) {
+                || (settlement != null && settlement.getId() == null || settlement.getId().isNull())
+                || (empire != null && empire.getId() == null || empire.getId().isNull())) {
             return;
         }
 
@@ -925,7 +925,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 if (value.getValue() != 0) {
                     sta.setInt(1, empire != null ? (Integer) empire.getId().value() : -1);
                     sta.setInt(2, settlement != null ? (Integer) settlement.getId().value() : -1);
-                    sta.setInt(3, resident != null && !resident.getId().isNull() ? (Integer) resident.getId().value() : -1);
+                    sta.setInt(3, resident != null && resident.getId() != null && !resident.getId().isNull() ? (Integer) resident.getId().value() : -1);
                     sta.setString(4, action.toLowerCase());
                     sta.setString(5, value.getKey().toLowerCase());
                     sta.setLong(6, value.getValue());
@@ -950,7 +950,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     private int getLogPageCount(String column, IdObject id, Resident resident, LogType type) {
-        if (id.isNull()) {
+        if (id == null || id.isNull()) {
             return 0;
         }
         String sql = "SELECT count(l.id) " +
@@ -1009,7 +1009,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     private List<String[]> getLog(String column, IdObject id, Resident resident, int page, LogType type) {
         List<String[]> log = new ArrayList<>();
-        if (id.isNull() || page < 1) {
+        if (id == null || id.isNull() || page < 1) {
             return log;
         }
         int start = (page-1) * Config.ENTRIES_PER_PAGE;
@@ -1277,13 +1277,13 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         Map<String, Object> serialized = serializable.serialize();
         Map<String, Object> values = getValues(serialized, ignored);
         PreparedStatement sta = executeSerializableInsert(conn, serializable.getDbName() + "s", serializable, values);
-        if (serializable.getId().isNull() ) {
+        if (serializable.getId() == null || serializable.getId().isNull()) {
             ResultSet rs = sta.getGeneratedKeys();
             if (rs.next()) {
                 serializable.setId(IdObject.get(rs.getInt(1)));
             }
         }
-        if (!serializable.getId().isNull()) {
+        if (serializable.getId() != null && !serializable.getId().isNull()) {
             Set<String> ignoredSet = new HashSet<>(Arrays.asList(ignored));
             for (Map.Entry<String, Object> e : serialized.entrySet()) {
                 if (!ignoredSet.contains(e.getKey())) {

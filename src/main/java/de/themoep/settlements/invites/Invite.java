@@ -12,7 +12,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 
 public abstract class Invite<T extends Targetable & DatabaseSerializable, S extends Targetable & DatabaseSerializable> implements DatabaseSerializable, Sortable<Invite<?, ?>> {
-    private IdObject id;
+    private IdObject id = IdObject.get(null);
 
     private final String targetType;
     protected final IdObject targetId;
