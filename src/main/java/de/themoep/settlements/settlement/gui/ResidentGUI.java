@@ -112,9 +112,9 @@ public class ResidentGUI extends SettlementsGUI {
             return true;
         }, getText("rank", "rank", resident.getSettlementRank().getTag())));
 
-        if (sender.hasPermission("settlement.kick")) {
+        if (sender.hasPermission("settlement.kicknotice")) {
             gui.addElement(new StaticGuiElement('l', getIcon("eviction"), click -> {
-                if (resident.getSettlement().hasPermission(sender, "kick")) {
+                if (resident.getSettlement().hasPermission(sender, "kicknotice")) {
                     for (MailProvider mailProvider : SettlementsPlugin.getInstance().getMailProviders()) {
                         mailProvider.sendMail(Message.get("eviction.sender").getReplacedText(
                                         "state", resident.getSettlement().getStateTag(),
@@ -127,13 +127,17 @@ public class ResidentGUI extends SettlementsGUI {
                                         "name", resident.getSettlement().getName()
                                 ));
                     }
+                    Message.get("command.settlement.kicknotice.success").tell(sender, "name", resident.getName());
+                    Message.get("command.settlement.kicknotice.success").actionbar(sender, "name", resident.getName());
                 }
                 return true;
             }, getText("eviction")));
+        }
 
+        if (sender.hasPermission("settlement.kick")) {
             gui.addElement(new StaticGuiElement('k', getIcon("kick"), click -> {
                 new ConfirmationGui(this, "kick", c -> {
-                    if (resident.getSettlement().hasPermission(sender, name() + "kick")) {
+                    if (resident.getSettlement().hasPermission(sender, "settlement.kick")) {
                         Message.get("command.settlement.kick.kicked-alert").tell(resident.getSettlement().getOnlineResidents(), "player", resident.getName());
                         InviteManager.getInstance().removeInvite(resident, resident.getSettlement());
                         resident.leaveSettlement();

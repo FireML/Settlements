@@ -5,7 +5,7 @@ perm-groups:
     permissions:
     - settlement.res
     - settlement.active
-    - settlement.kicknotice # TODO
+    - settlement.kicknotice
     - settlement.setrank
     - settlement.settitle
     - settlement.settaxevasion

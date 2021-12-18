@@ -2701,6 +2701,10 @@ command:
       cant-kick-higher: "&cYou cannot kick &6{rank} or higher&c!"
       kicked-alert: "&a&l(!) &r&e{player}&7 has been kicked from the settlement."
       description: Kick a player from your settlement
+    kicknotice:
+      cant-kick-higher: "&cYou cannot kick &6{rank} or higher&c!"
+      success: "&aSent kick notice to &e{name}"
+      description: Send a kick notice to a player from your settlement
     leave:
       cant-leave-own: "&c&l(!) &r&7You cannot leave your own settlement. You must delete it."
       confirm: "&eConfirm that you want to leave by running the command again in the next &c{time} seconds&e!"

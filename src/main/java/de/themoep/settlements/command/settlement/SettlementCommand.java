@@ -50,6 +50,7 @@ public class SettlementCommand extends SubCommand {
         registerCommand(new SettlementInviteCommand(this));
         registerCommand(new SettlementJoinCommand(this));
         registerCommand(new SettlementKickCommand(this));
+        registerCommand(new SettlementKickNoticeCommand(this));
         registerCommand(new SettlementLeaveCommand(this));
         registerCommand(new SettlementListCommand(this));
         registerCommand(new SettlementMailCommand(this));
