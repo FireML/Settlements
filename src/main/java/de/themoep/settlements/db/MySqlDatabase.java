@@ -139,7 +139,7 @@ public class MySqlDatabase extends SqlDatabaseManager {
                     map = (Map<String, Object>) entry.getValue();
                 }
                 if (map != null) {
-                    Map<String, Object> serMap = getValues(map, mapKey);
+                    Map<String, Object> serMap = getValues(conn, map, mapKey);
                     for (String column : columns) {
                         insertSta.setObject(j++, serMap.get(column));
                     }

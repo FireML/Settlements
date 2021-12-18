@@ -32,6 +32,9 @@ public class SettlementListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Resident res = ResidentManager.getInstance().getResident(event.getPlayer()); // should be cached
+        if (res.getId() == null || res.getId().isNull()) {
+            res.save();
+        }
         long settlementTax = res.hasSettlement() ? res.getSettlement().getTax() : 0;
         long plotTaxes = 0;
         TaxDebtAction plotDebtAction = TaxDebtAction.NONE;

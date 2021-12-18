@@ -642,7 +642,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             return;
         }
         Utils.catchSync();
-        Map<String, Object> values = getValues(resident.serialize());
+        Map<String, Object> values = getValues(conn, resident.serialize());
         try {
             boolean hadId = resident.getId() != null && !resident.getId().isNull();
             PreparedStatement sta = executeSerializableInsert(conn, "residents", resident, values);
@@ -1328,7 +1328,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             return IdObject.get(null);
         }
         Map<String, Object> serialized = serializable.serialize();
-        Map<String, Object> values = getValues(serialized, ignored);
+        Map<String, Object> values = getValues(conn, serialized, ignored);
         PreparedStatement sta = executeSerializableInsert(conn, serializable.getDbName() + "s", serializable, values);
         if (serializable.getId() == null || serializable.getId().isNull()) {
             ResultSet rs = sta.getGeneratedKeys();
@@ -1443,7 +1443,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             }
             if (value instanceof Map && mapValueColumns.length == 0) {
                 if (((Map) value).keySet().iterator().next() instanceof String) {
-                    for (String column : getValues((Map<String, ?>) value, mapKey).keySet()) {
+                    for (String column : getValues(conn, (Map<String, ?>) value, mapKey).keySet()) {
                         if (mapValue.isEmpty()) {
                             columns.add(column);
                         } else {
@@ -1632,7 +1632,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     // ------ Utility methods ----- //
 
-    protected Map<String, Object> getValues(Map<String, ?> serialized, String... ignoredKeys) {
+    protected Map<String, Object> getValues(Connection conn, Map<String, ?> serialized, String... ignoredKeys) {
         Set<String> ignored = new HashSet<>(Arrays.asList(ignoredKeys));
         Map<String, Object> values = new LinkedHashMap<>();
         for (Map.Entry<String, ?> entry : serialized.entrySet()) {
@@ -1640,7 +1640,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 if (entry.getValue() instanceof Collection || entry.getValue() instanceof Map) {
                     // ignored
                 } else if (entry.getValue() instanceof ConfigurationSerializable) {
-                    for (Map.Entry<String, Object> serEntry : getValues(((ConfigurationSerializable) entry.getValue()).serialize(), ignoredKeys).entrySet()) {
+                    for (Map.Entry<String, Object> serEntry : getValues(conn, ((ConfigurationSerializable) entry.getValue()).serialize(), ignoredKeys).entrySet()) {
                         if (!entry.getKey().isEmpty()) {
                             values.put(entry.getKey() + "_" + serEntry.getKey(), serEntry.getValue());
                         } else {
@@ -1651,7 +1651,12 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                     Object id = null;
                     if (!entry.getValue().equals(Utils.ZERO_UUID)) {
                         Resident resident = ResidentManager.getInstance().getResident((UUID) entry.getValue());
-                        id = resident != null ? resident.getId().value() : null;
+                        if (resident != null) {
+                            if (resident.getId() == null || resident.getId().isNull()) {
+                                saveResident(conn, resident);
+                            }
+                            id = resident.getId().value();
+                        }
                     }
                     if (!entry.getKey().endsWith("Id")) {
                         values.put(entry.getKey() + "Id", id);

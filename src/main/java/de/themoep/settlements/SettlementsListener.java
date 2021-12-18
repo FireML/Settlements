@@ -43,8 +43,7 @@ public class SettlementsListener implements Listener {
                     Message.get("command.chat.joined").tell(res, "name", ChatChannel.GENERAL.getTag());
                 }
             }
-            Resident finalRes = res;
-            DatabaseManager.getInstance().saveResident(finalRes);
+            res.save();
         }
     }
 

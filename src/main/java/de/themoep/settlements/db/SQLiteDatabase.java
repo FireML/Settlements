@@ -146,7 +146,7 @@ public class SQLiteDatabase extends SqlDatabaseManager {
                     map = (Map<String, Object>) entry.getValue();
                 }
                 if (map != null) {
-                    Map<String, Object> serMap = getValues(map, mapKey);
+                    Map<String, Object> serMap = getValues(conn, map, mapKey);
 
                     updateSta.setInt(columns.size() + 1, keyId);
                     updateSta.setObject(columns.size() + 2, entry.getKey());

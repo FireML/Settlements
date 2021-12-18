@@ -139,6 +139,12 @@ public class ResidentManager {
                     } else {
                         addResident(resident);
                     }
+                } else {
+                    Player player = SettlementsPlugin.getInstance().getServer().getPlayer(uuid);
+                    if (player != null) {
+                        resident = new Resident(player.getUniqueId(), player.getName());
+                        addResident(resident);
+                    }
                 }
             }
         }
