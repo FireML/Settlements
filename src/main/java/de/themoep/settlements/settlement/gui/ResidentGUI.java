@@ -95,7 +95,7 @@ public class ResidentGUI extends SettlementsGUI {
                     resident.save();
                     InventoryGui.goBack(click.getWhoClicked());
                 }, rank -> {
-                    new ConfirmationGui(this, "transfer", c -> {
+                    new ConfirmationGui(this, name() + ".transfer", c -> {
                         resident.getSettlement().transfer(resident);
                         Message.get("command.settlement.tranfer.success").tell(resident.getSettlement().getOnlineResidents(),
                                 "rank", SettlementRank.getChief().getTag(resident.getSettlement()),
@@ -133,7 +133,7 @@ public class ResidentGUI extends SettlementsGUI {
 
             gui.addElement(new StaticGuiElement('k', getIcon("kick"), click -> {
                 new ConfirmationGui(this, "kick", c -> {
-                    if (resident.getSettlement().hasPermission(sender, "kick")) {
+                    if (resident.getSettlement().hasPermission(sender, name() + "kick")) {
                         Message.get("command.settlement.kick.kicked-alert").tell(resident.getSettlement().getOnlineResidents(), "player", resident.getName());
                         InviteManager.getInstance().removeInvite(resident, resident.getSettlement());
                         resident.leaveSettlement();

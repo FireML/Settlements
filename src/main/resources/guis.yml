@@ -1,29 +1,4 @@
 guis:
-  confirmation:
-    reset-perms:
-      setup:
-      - "ooooooooo"
-      - "         "
-      - "    c    "
-      - "         "
-      - "         "
-      - " ooobooo "
-      elements:
-        o: yellow_stained_glass_pane
-        confirm: green_wool
-        cancel: barrier
-    kick:
-      setup:
-      - "ooooooooo"
-      - "         "
-      - "    c    "
-      - "         "
-      - "         "
-      - " ooobooo "
-      elements:
-        o: yellow_stained_glass_pane
-        confirm: red_dye
-        cancel: barrier
   general:
     start:
       setup:
@@ -127,6 +102,18 @@ guis:
         title: paper
         add: writable_book
         back: barrier
+    kick:
+      setup:
+      - "ooooooooo"
+      - "         "
+      - "    c    "
+      - "         "
+      - "         "
+      - " ooobooo "
+      elements:
+        o: yellow_stained_glass_pane
+        confirm: red_dye
+        cancel: barrier
   settlement:
     magement:
       setup:
@@ -168,12 +155,39 @@ guis:
       - "aaaaaaaaa"
       - "aaaaaaaaa"
       - "aaaaaaaaa"
-      - "ppppppsb "
+      - "ppppppsrb"
       elements:
         o: lime_stained_glass_pane
         page: paper
         sort: hopper
+        requests: nether_star
         back: barrier
+    ally:
+      setup:
+      - "ooooioooo"
+      - "      cr "
+      - "    a    "
+      - " uuuuuuu "
+      - " uuuuuuu "
+      - " ooobooo "
+      elements:
+        o: lime_stained_glass_pane
+        info: player_head
+        nearbyclaim: grass_block
+        unally: red_dye
+        build: diamond_pickaxe
+      unally:
+        setup:
+        - "ooooooooo"
+        - "         "
+        - "    c    "
+        - "         "
+        - "         "
+        - " ooobooo "
+        elements:
+          o: yellow_stained_glass_pane
+          confirm: red_dye
+          cancel: barrier
     bank:
       setup:
       - "ooooooooo"
@@ -399,6 +413,18 @@ guis:
         not-set: light_gray_wool
         titles: writable_book
         reset: orange_wool
+      reset-perms:
+        setup:
+        - "ooooooooo"
+        - "         "
+        - "    c    "
+        - "         "
+        - "         "
+        - " ooobooo "
+        elements:
+          o: yellow_stained_glass_pane
+          confirm: green_wool
+          cancel: barrier
     setrank:
       rank-select:
         setup:
@@ -698,6 +724,18 @@ guis:
         not-set: light_gray_wool
         titles: writable_book
         reset: orange_wool
+      reset-perms:
+        setup:
+        - "ooooooooo"
+        - "         "
+        - "    c    "
+        - "         "
+        - "         "
+        - " ooobooo "
+        elements:
+          o: yellow_stained_glass_pane
+          confirm: green_wool
+          cancel: barrier
     setrank:
       rank-select:
         setup:

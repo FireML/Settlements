@@ -7,13 +7,20 @@ import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.Ally;
+import de.themoep.settlements.land.AllyRequest;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ItemUtils;
+import de.themoep.settlements.utils.ListGui;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class AlliesGUI extends SettlementsGUI {
 
@@ -36,7 +43,7 @@ public class AlliesGUI extends SettlementsGUI {
                     .sorted((a1, a2) -> a1.compareTo(sort, a2))
                     .forEach(a -> group.addElement(
                             new StaticGuiElement('a', ItemUtils.getHead(resident.getUUID(), resident.getName()), click -> {
-                                new AllyGUI(type, resident, a).open();
+                                new AllyGUI(landOwner, resident, a).open();
                                 return true;
                             }, getText("entry." + a.getType(), a.getLandOwner().getReplacements(this, "allydate", Utils.DATE_FORMAT.format(a.getCreationDate()))))
                     ));
@@ -50,6 +57,46 @@ public class AlliesGUI extends SettlementsGUI {
             click.getGui().draw();
             return true;
         }, "sort"));
+
+        Collection<AllyRequest> requests = landOwner.getAllyRequests();
+        gui.addElement(new StaticGuiElement('f', ItemUtils.setGlowing(getIcon("requests"), !requests.isEmpty()), click -> {
+            new ListGui<>(resident, "general.requests", () -> new ArrayList<>(landOwner.getAllyRequests()), (c, request) -> {
+                // accept request
+                if (request instanceof AllyRequest) {
+                    AllyRequest currentRequest = landOwner.removeAllyRequest(((AllyRequest) request));
+                    if (currentRequest == null) {
+                        // No request sent?
+                        c.getGui().draw();
+                        return;
+                    }
+                    c.getGui().close();
+                    Utils.runAsync(() -> {
+                        LandOwner sender = ((AllyRequest) request).getSource();
+                        DatabaseManager.getInstance().delete(request);
+                        AllyRequest reverseRequest = sender.removeAllyRequest(landOwner);
+                        if (reverseRequest != null) {
+                            DatabaseManager.getInstance().delete(reverseRequest);
+                        }
+                        Utils.runSync(() -> {
+                            sender.addAlly(landOwner).save();
+                            landOwner.addAlly(sender).save();
+                            getMessage("success").tell(resident, "name", sender.getName());
+                            getMessage("now-allied-to").tell(sender, "name", landOwner.getName(), "state", landOwner.getStateTag());
+                            getMessage("now-allied-to").tell(landOwner, "name", sender.getName(), "state", sender.getStateTag());
+                            for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
+                                provider.sendMail(sender.getStateTag() + " " + sender.getName(), landOwner.getChief(), getText("now-allied-to",
+                                        "name", sender.getName(), "state", sender.getStateTag()
+                                ));
+                                provider.sendMail(landOwner.getStateTag() + " " + landOwner.getName(), sender.getChief(), getText("now-allied-to",
+                                        "name", landOwner.getName(), "state", landOwner.getStateTag()
+                                ));
+                            }
+                        });
+                    });
+                }
+            }, request -> request.getReplacements(this)).open();
+            return true;
+        }, getText("requests", "amount", String.valueOf(requests.size()))));
 
         GuiElementGroup pages = new GuiElementGroup('p');
         gui.addElement(pages);

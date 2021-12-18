@@ -1,14 +1,16 @@
 package de.themoep.settlements.command.common;
 
+import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.db.InviteCache;
+import de.themoep.settlements.integration.MailProvider;
+import de.themoep.settlements.land.Ally;
+import de.themoep.settlements.land.AllyRequest;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.gui.AlliesGUI;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.Message;
-import de.themoep.settlements.utils.MessageUtils;
+import de.themoep.settlements.utils.Utils;
 
 public interface AllyCommand extends LandOwnerCommand {
 
@@ -39,20 +41,34 @@ public interface AllyCommand extends LandOwnerCommand {
             resident.tell(getMessage("cant-ally-yourself"));
         } else if (source.isAlly(target)) {
             resident.tell(getMessage("already-allied"), "name", target.getName(), "state", target.getStateTag());
-        } else if (InviteCache.hasPendingAlly(source, target)) {
-            MessageUtils.tellResidents(target.getOnlineResidents(), getMessage("now-allied-to"), "name", source.getName(), "state", source.getStateTag());
-            MessageUtils.tellResidents(source.getOnlineResidents(), getMessage("now-allied-to"), "name", target.getName(), "state", target.getStateTag());
-            InviteCache.removePendingAlly(source, target);
-            target.addAlly(source);
-            source.addAlly(target);
-
-            DatabaseManager.getInstance().save(target);
-            DatabaseManager.getInstance().save(source);
+        } else if (source.hasAllyRequest(target)) {
+            AllyRequest request = source.removeAllyRequest(target);
+            if (request != null) {
+                Utils.runAsync(() -> DatabaseManager.getInstance().delete(request));
+            }
+            AllyRequest targetRequest = target.removeAllyRequest(source);
+            if (targetRequest != null) {
+                Utils.runAsync(() -> DatabaseManager.getInstance().delete(targetRequest));
+            }
+            target.addAlly(source).save();
+            source.addAlly(target).save();
+            getMessage("now-allied-to").tell(target, "name", source.getName(), "state", source.getStateTag());
+            getMessage("now-allied-to").tell(source, "name", target.getName(), "state", target.getStateTag());
+            for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
+                provider.sendMail(source.getStateTag() + " " + source.getName(), target.getChief(), getText("now-allied-to",
+                        "name", source.getName(), "state", source.getStateTag()
+                ));
+                provider.sendMail(target.getStateTag() + " " + target.getName(), source.getChief(), getText("now-allied-to",
+                        "name", target.getName(), "state", target.getStateTag()
+                ));
+            }
         } else {
-            InviteCache.addPendingAlly(target, source);
-            MessageUtils.tellResidents(target.getOnlineResidents(), getMessage("invite"), "name", source.getName(), "state", source.getStateTag());
-            MessageUtils.tellResidents(target.getOnlineResidents(), Message.get("command." + target.getKey() + ".ally.accept-info"), "name", source.getName(), "state", source.getStateTag());
-            resident.tell(getMessage("request-send"), "name", target.getName(), "state", target.getStateTag());
+            AllyRequest request = new AllyRequest(target, source);
+            target.addAllyRequest(request);
+            request.save();
+            getMessage("invite").tell(target, "name", source.getName(), "state", source.getStateTag());
+            Message.get("command." + target.getKey() + ".ally.accept-info").tell(target, "name", source.getName(), "state", source.getStateTag());
+            getMessage("request-send").tell(resident, "name", target.getName(), "state", target.getStateTag());
         }
         return true;
     }
@@ -68,19 +84,37 @@ public interface AllyCommand extends LandOwnerCommand {
 
         if (target.equals(source) || target.equals(resident.getSettlement())) {
             resident.tell(getMessage("cant-unally-yourself"));
+        } else if (source.hasAllyRequest(target)) {
+
         } else if (!source.isAlly(target)) {
-            resident.tell(getMessage("not-allied"), "name", target.getName(), "state", target.getStateTag());
+            getMessage("not-allied").tell(resident, "name", target.getName(), "state", target.getStateTag());
         } else {
-            source.removeAlly(target);
-            target.removeAlly(source);
-            if (!(source instanceof Settlement) || ((Settlement) source).isAllowAllyClaim()) {
+            Ally sourceAlly = source.removeAlly(target);
+            Ally targetAlly = target.removeAlly(source);
+            if (!source.isAllowAllyClaim() || !target.isAllowAllyClaim() || (sourceAlly != null && !sourceAlly.isNearbyClaim()) || (targetAlly != null && !targetAlly.isNearbyClaim())) {
                 LandManager.getInstance().checkClaimDistance(source, target);
             }
 
-            DatabaseManager.getInstance().save(target);
-            DatabaseManager.getInstance().save(source);
-            MessageUtils.tellResidents(target.getOnlineResidents(), getMessage("success"), "name", source.getName(), "state", source.getStateTag());
-            MessageUtils.tellResidents(source.getOnlineResidents(), getMessage("success"), "name", target.getName(), "state", target.getStateTag());
+            if (sourceAlly != null) {
+                Utils.runAsync(() -> DatabaseManager.getInstance().delete(source, sourceAlly));
+            } else {
+                DatabaseManager.getInstance().save(source);
+            }
+            if (targetAlly != null) {
+                Utils.runAsync(() -> DatabaseManager.getInstance().delete(target, targetAlly));
+            } else {
+                DatabaseManager.getInstance().save(target);
+            }
+            getMessage("success").tell(target, "name", source.getName(), "state", source.getStateTag());
+            getMessage("success").tell(source, "name", target.getName(), "state", target.getStateTag());
+            for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
+                provider.sendMail(source.getStateTag() + " " + source.getName(), target.getChief(), getText("success",
+                        "name", source.getName(), "state", source.getStateTag()
+                ));
+                provider.sendMail(target.getStateTag() + " " + target.getName(), source.getChief(), getText("success",
+                        "name", target.getName(), "state", target.getStateTag()
+                ));
+            }
         }
         return true;
     }

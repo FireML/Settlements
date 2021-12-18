@@ -8,8 +8,10 @@ import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.invites.Invite;
 import de.themoep.settlements.invites.SettlementInvite;
 import de.themoep.settlements.land.Ally;
+import de.themoep.settlements.land.AllyRequest;
 import de.themoep.settlements.land.Banished;
 import de.themoep.settlements.land.LandManager;
+import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.PlotMode;
@@ -74,6 +76,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     private SaveQueue<Portal> portalQueue;
     private SaveQueue<Consumer<Connection>> lockQueue;
     private SaveQueue<Invite<?, ?>> inviteQueue;
+    private SaveQueue<Ally> allyQueue;
 
     @Override
     public void connect() throws Exception {
@@ -95,10 +98,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         inviteQueue = new SaveQueue<>("invite", this, queueSize, queueWait, this::saveInvite);
 
         initializeTables();
-    }
-
-    private <T> void saveInvite(Connection connection, T t) {
-
     }
 
     protected abstract Connection getConnection();
@@ -140,7 +139,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     private void saveEmpire(Connection conn, Empire empire) {
         Utils.catchSync();
         try {
-            if (!save(conn, empire, "members", "permissions", "npcs").isNull() && empire.getId() != null && !empire.getId().isNull()) {
+            if (!save(conn, empire, "members", "permissions", "npcs", "allyRequests").isNull() && empire.getId() != null && !empire.getId().isNull()) {
                 updateDataMap(conn, "empire_vaults", "empireId", (Integer) empire.getId().value(), "content", "amount", empire.getVault());
                 updateDataMap(conn, "empire_uses", "empireId", (Integer) empire.getId().value(), "type", "state",
                         empire.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
@@ -202,7 +201,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     private void saveSettlement(Connection conn, Settlement settlement) {
         try {
-            if (!save(conn, settlement, "residents", "permissions", "missiondata", "npcs").isNull() && !settlement.getId().isNull()) {
+            if (!save(conn, settlement, "residents", "permissions", "missiondata", "npcs", "allyRequests").isNull() && !settlement.getId().isNull()) {
                 updateDataMap(conn, "settlement_vaults", "settlementId", (Integer) settlement.getId().value(), "content", "amount", settlement.getVault());
                 updateDataMap(conn, "settlement_outposts", "settlementId", (Integer) settlement.getId().value(), "name", "", settlement.getOutpostHomes());
                 updateDataMap(conn, "settlement_uses", "settlementId", (Integer) settlement.getId().value(), "type", "state",
@@ -276,6 +275,32 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 sta.executeUpdate();
             } catch (SQLException e) {
                 plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + settlement.getId().value() + "/" + settlement.getName() + " from database!", e);
+            } finally {
+                close(conn);
+            }
+        }
+    }
+
+    @Override
+    public void delete(LandOwner landOwner, Ally ally) {
+        Utils.catchSync();
+        Connection conn = getConnection();
+        if (ally.getId() != null && !ally.getId().isNull()) {
+            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + landOwner.getDbName() + "_allies WHERE id=?")) {
+                sta.setInt(1, (Integer) ally.getId().value());
+                sta.executeUpdate();
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + landOwner.getDbName() + " " + landOwner.getName() + " ally " + ally + " from database!", e);
+            } finally {
+                close(conn);
+            }
+        } else {
+            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + landOwner.getDbName() + "_allies WHERE " + landOwner.getDbName() + "Id = ?, allies_id = ? LIMIT 1")) {
+                sta.setInt(1, (Integer) landOwner.getId().value());
+                sta.setInt(2, (Integer) ally.getId().value());
+                sta.executeUpdate();
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + landOwner.getDbName() + " " + landOwner.getName() + " ally " + ally + " from database!", e);
             } finally {
                 close(conn);
             }
@@ -1097,6 +1122,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
         map.put("npcs", selectDeserializableList(conn, "empire", id, "npcs", NpcData.class));
         map.put("allies", selectDeserializableList(conn, "empire", id, "allies", Ally.class));
+        map.put("allyRequests", getAllyRequests(conn, "empire", id));
         map.put("banished", selectDeserializableList(conn, "empire", id, "banished", Banished.class));
         map.put("unbanished", selectDeserializableList(conn, "empire", id, "unbanished", Unbanished.class));
 
@@ -1150,6 +1176,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
         map.put("npcs", selectDeserializableList(conn, "settlement", id, "npcs", NpcData.class));
         map.put("allies", selectDeserializableList(conn, "settlement", id, "allies", Ally.class));
+        map.put("allyRequests", getAllyRequests(conn, "settlement", id));
         map.put("banished", selectDeserializableList(conn, "settlement", id, "banished", Banished.class));
         map.put("unbanished", selectDeserializableList(conn, "settlement", id, "unbanished", Unbanished.class));
 
@@ -1206,6 +1233,32 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
 
         return Settlement.deserialize(map);
+    }
+
+    private Collection<AllyRequest> getAllyRequests(Connection conn, String type, int id) {
+        Utils.catchSync();
+        String sql = "SELECT *" +
+                " FROM " + tablePrefix + "invites" +
+                " WHERE type = ? AND targetType = ? AND targetId = ?;";
+        try (PreparedStatement sta = conn.prepareStatement(sql)) {
+            sta.setString(1, "allyrequest");
+            sta.setString(2, type);
+            sta.setInt(3, id);
+            ResultSet rs = sta.executeQuery();
+            List<AllyRequest> requests = new ArrayList<>();
+            while (rs.next()) {
+                AllyRequest request = AllyRequest.deserialize(toMap(rs));
+                if (request != null) {
+                    requests.add(request);
+                }
+            }
+            return requests;
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to get all ally requests of " + type + " " + id + " from database!", e);
+        } finally {
+            close(conn);
+        }
+        return Collections.emptyList();
     }
 
     private Resident createResident(Connection conn, ResultSet rs) throws SQLException {

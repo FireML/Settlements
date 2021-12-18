@@ -55,7 +55,7 @@ public abstract class Invite<T extends Targetable & DatabaseSerializable, S exte
     public abstract T getTarget();
 
     public boolean isTarget(T target) {
-        return target != null && target.getId().equals(targetId);
+        return target != null && target.getKey().equals(targetType) && target.getId().equals(targetId);
     }
 
     public String getTargetType() {
@@ -69,7 +69,7 @@ public abstract class Invite<T extends Targetable & DatabaseSerializable, S exte
     public abstract S getSource();
 
     public boolean isSource(S source) {
-        return source != null && source.getId().equals(sourceId);
+        return source != null && source.getKey().equals(sourceType) && source.getId().equals(sourceId);
     }
 
     public String getSourceType() {

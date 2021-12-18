@@ -1,4 +1,4 @@
-package de.themoep.settlements.land.gui;
+package de.themoep.settlements.land.gui.plot;
 
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;

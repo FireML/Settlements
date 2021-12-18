@@ -18,7 +18,7 @@ public class ConfirmationGui extends SettlementsGUI {
     private final InventoryGui gui;
 
     public ConfirmationGui(ConfigMessages configMessages, String name, Consumer<GuiElement.Click> confirmedAction, Consumer<GuiElement.Click> cancelAction, String... replacements) {
-        super("confirmation." + name);
+        super(name);
         gui = new InventoryGui(SettlementsPlugin.getInstance(), configMessages.getText(name + ".title", replacements), getSetup());
         gui.addElements(getConfiguredElements());
 

@@ -1,5 +1,6 @@
 package de.themoep.settlements.land;
 
+import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.DatabaseSerializable;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
@@ -11,7 +12,6 @@ import de.themoep.settlements.utils.Next;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 public class Ally implements DatabaseSerializable {
     private final String type;
@@ -37,7 +37,7 @@ public class Ally implements DatabaseSerializable {
 
     @Override
     public void save() {
-        throw new UnsupportedOperationException("Cannot save an individual Ally");
+        DatabaseManager.getInstance().save(getLandOwner());
     }
 
     public String getType() {
@@ -97,12 +97,12 @@ public class Ally implements DatabaseSerializable {
                 (Boolean) map.get("allies_nearbyClaim"));
     }
 
-    public boolean removeAlly(LandOwner landOwner) {
+    public Ally removeAlly(LandOwner landOwner) {
         LandOwner ally = getLandOwner();
         if (ally != null) {
             return ally.removeAlly(landOwner);
         }
-        return false;
+        return null;
     }
 
     public int compareTo(Sort sort, Ally other) {

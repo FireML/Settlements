@@ -18,10 +18,8 @@ import de.themoep.settlements.rank.RankManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.JoinType;
 import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.MessageUtils;
-import de.themoep.settlements.utils.ReplacementProvider;
 import de.themoep.settlements.utils.Sortable;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
@@ -74,6 +72,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
     protected Map<String, String> defaultRankTitles = new HashMap<>();
 
     protected Table<String, IdObject, Ally> allies = HashBasedTable.create();
+    private Table<String, IdObject, AllyRequest> allyRequests = HashBasedTable.create();
 
     protected Table<String, IdObject, Banished> banished = HashBasedTable.create();
     private List<Unbanished> unbanished = new ArrayList<>();
@@ -109,6 +108,8 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
     public abstract boolean isChief(UUID playerId);
 
     public abstract UUID getChiefId();
+
+    public abstract Resident getChief();
 
     public abstract boolean isOfficer(Player player);
 
@@ -587,12 +588,14 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         return false;
     }
 
-    public void addAlly(LandOwner<?, ?> landOwner) {
-        allies.put(landOwner.getKey(), landOwner.getId(), new Ally(landOwner.getKey(), landOwner.getId(), System.currentTimeMillis(), isAllowAllyClaim()));
+    public Ally addAlly(LandOwner<?, ?> landOwner) {
+        Ally ally = new Ally(landOwner.getKey(), landOwner.getId(), System.currentTimeMillis(), isAllowAllyClaim());
+        allies.put(landOwner.getKey(), landOwner.getId(), ally);
+        return ally;
     }
 
-    public boolean removeAlly(LandOwner<?, ?> landOwner) {
-        return allies.remove(landOwner.getKey(), landOwner.getId()) != null;
+    public Ally removeAlly(LandOwner<?, ?> landOwner) {
+        return allies.remove(landOwner.getKey(), landOwner.getId());
     }
 
     public boolean isAlly(LandOwner<?, ?> landOwner) {
@@ -615,6 +618,26 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
 
     public boolean hasEmpireAllies() {
         return getAllies().stream().anyMatch(a -> a.getType().equals("empire"));
+    }
+
+    public boolean hasAllyRequest(LandOwner<?, ?> landOwner) {
+        return allyRequests.contains(landOwner.getKey(), landOwner.getId());
+    }
+
+    public AllyRequest addAllyRequest(AllyRequest request) {
+        return allyRequests.put(request.getSourceType(), request.getSourceId(), request);
+    }
+
+    public AllyRequest removeAllyRequest(LandOwner<?, ?> landOwner) {
+        return allyRequests.remove(landOwner.getKey(), landOwner.getId());
+    }
+
+    public AllyRequest removeAllyRequest(AllyRequest request) {
+        return allyRequests.remove(request.getSourceType(), request.getSourceId());
+    }
+
+    public Collection<AllyRequest> getAllyRequests() {
+        return allyRequests.values();
     }
 
     public boolean isTrusted(Resident resident) {
@@ -867,6 +890,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         else
             map.put("homeLoc", new SimpleLocation(null, 0, 0, 0));
         map.put("allies", getAllies());
+        map.put("allyRequests", getAllyRequests());
         map.put("allowAllyClaim", isAllowAllyClaim());
         map.put("banished", getBanished());
         map.put("unbanished", getUnbanished());
@@ -923,6 +947,9 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         }
         for (Ally ally : ((Collection<Ally>) map.get("allies"))) {
             landOwner.allies.put(ally.getType(), ally.getId(), ally);
+        }
+        for (AllyRequest request : ((Collection<AllyRequest>) map.get("allyRequests"))) {
+            landOwner.addAllyRequest(request);
         }
         landOwner.setAllowAllyClaim(Utils.getBoolean(map.get("allowAllyClaim")));
 

@@ -3,6 +3,7 @@ package de.themoep.settlements.empire;
 import co.aikar.timings.lib.MCTiming;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.missions.MissionData;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.resident.Resident;
@@ -269,8 +270,9 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     @Override
-    public boolean removeAlly(LandOwner<?, ?> landOwner) {
-        if (super.removeAlly(landOwner)) {
+    public Ally removeAlly(LandOwner<?, ?> landOwner) {
+        Ally ally = super.removeAlly(landOwner);
+        if (ally != null) {
             for (Resident resident : landOwner.getResidents()) {
                 Player player = resident.getPlayer();
                 if (player != null) {
@@ -289,9 +291,8 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
                     }
                 }
             }
-            return true;
         }
-        return false;
+        return ally;
     }
 
 
@@ -536,6 +537,11 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     @Override
     public UUID getChiefId() {
         return getCapital().getChiefId();
+    }
+
+    @Override
+    public Resident getChief() {
+        return getCapital().getChief();
     }
 
     @Override

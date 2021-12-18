@@ -67,6 +67,8 @@ public abstract class DatabaseManager {
 
     public abstract void saveSettlements(Collection<Settlement> values);
 
+    public abstract void delete(LandOwner landOwner, Ally ally);
+
     public abstract void unclaimLand(OwnedLand... lands);
 
     public abstract void unclaimLand(Settlement settlement);

@@ -3,15 +3,12 @@ package de.themoep.settlements.utils;
 import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
-import de.themoep.inventorygui.GuiPageElement;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.land.OwnedLand;
-import de.themoep.settlements.land.gui.PlotGUI;
+import de.themoep.settlements.land.gui.plot.PlotGUI;
 import de.themoep.settlements.resident.Resident;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

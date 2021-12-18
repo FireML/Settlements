@@ -6,7 +6,7 @@ import de.themoep.settlements.command.common.AllyCommand;
 
 public class SettlementUnAllyCommand extends SettlementSubCommand implements AllyCommand {
     public SettlementUnAllyCommand(SubCommand parent) {
-        super(parent, "unally s:<settlement>|e:<empire>");
+        super(parent, "unally s:<settlement>|e:<empire>", "rejectally");
     }
 
     @Override

@@ -690,6 +690,8 @@ gui:
   no-permission: "&cUnable to modify"
   back: "&cBack"
   close: "&cClose"
+  enabled: "&aEnabled"
+  disabled: "&cDisabled"
   unlockables:
     locked:
       npc: "&cUpgrade NPC to unlock!"
@@ -931,6 +933,30 @@ gui:
     page: "Page {page}"
   ally:
     title: "/s allies"
+    nearbyclaim: |-
+      &fAllow Ally near us
+      
+      &fAllowing them to claim closer
+      &fto your {state} borders
+      
+      &fClaim near us: {current}
+      
+      &bClick to change
+    unally:
+      entry: |-
+        &cRemove Ally
+        
+        &bClick to remove
+      title: "&cUnally from {name}?"
+      confirm: |-
+        &a&lConfirm
+        &7Click to confirm that you
+        &7want to remove ally with
+        &7{state} {name}
+      cancel: |-
+        &c&lCancel
+        &7Click to cancel the unally
+        &7from {state} {name}.
   access:
     title: "Select access"
     back: "&c&lBack"
