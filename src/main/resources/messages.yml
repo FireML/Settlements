@@ -933,6 +933,44 @@ gui:
     page: "Page {page}"
   ally:
     title: "/s allies"
+    info:
+      settlement: |-
+        &e{name}
+        &fBoard: &e{description}
+        &f{state}: &eLevel {level}
+        &fAccess: &e{access}
+        &fBank: &e${bank}
+        &fCooperation Points: &e{missionpoints}
+        &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims}
+        &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}
+        &f{chieftitle}: &r&7{chief}
+        &fMembers:
+        &f{residents}
+      empire: |-
+        &e{name}
+        &fBoard: &e{description}
+        &fSymbol: &e{symbol}
+        &fEmpire: &eLevel {level}
+        &fAccess: &e{access}
+        &fBank: &e${bank}
+        &fDaily Missions: &e{dailymissions}
+        &fFinished Missions: &e{missions}
+        &fCapital: &e{capitalstate}{capital}
+        &f{chiefempiretitle}: &r&7{chiefsettlementtitle} {chiefonline}{chief}
+        &f{specialresidents}
+        &fMembers:
+        &f{members}
+      special-residents:
+        rank: "&e&l{rank}:&r {residents}"
+        separator: "&7, "
+        online: "&a"
+        offline: "&c"
+        entry: "{title} {online}{name}"
+      members:
+        state: "&e{state}:&r {members}"
+        entry: "&7{name}"
+        separator: "&8, "
+      
     nearbyclaim: |-
       &fAllow Ally near us
       
@@ -1264,126 +1302,98 @@ gui:
     settings:
       title: "&2&lEmpire Settings"
       home: |-
-        &a&l{state} Home
+        &e{state} Home
   
-        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        &aLeft click &fto teleport
+        &eClick to teleport
   
-        &a▶ /e home
+        &a➤ /e home
       sethome: |-
-        &a&l{state} Home
+        &e{state} Home
   
-        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        &aLeft-Click &fto teleport
-        &aShift-Click &fto set new /e home
+        &bClick to teleport
+        &bShift-Click to set new /e home
   
-        &a▶ /e home
-        &a▶ /e sethome
+        &a➤ /e home
+        &a➤ /e sethome
 
       build: |-
-        &a&lBuild
+        &eBuild
         &fSet who can build on
-        &eun-owned plots
+        &fun-owned plots
   
-        &a&m━━━━━━━━━━━━━━━━━━━━━
         &fCurrent Settings: &e{build}
-        &aLeft-Click&f to change settings
-  
-        &a▶ /e build
+        &bClick to change settings
       access: |-
-        &a&lAccess
-        &fSet who can use your &e/s home
+        &eAccess
+        &fSet who can use your &e/e home
         &fSet who can join the {state}
   
-        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        &fCurrent Settings. &e{access}
-        &aLeft-Click&f to change settings
-  
-        &a▶ /e access
+        &fCurrent Settings: &e{access}
+        
+        &bClick to change settings
       use: |-
-        &a&lUse
+        &ePerms
         &fSet different usage rights
         &fin your {state}
   
-        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        &aLeft-Click&f to change settings
-  
-        &a▶ /e use
+        &bClick to change settings
       mode: |-
-        &a&lMode
+        &eMode
         &fToggle settings including
         &fexplosions, mob spawning,
         &fPvP and more!
   
-        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━
-        &aLeft-Click&f to change settings
-  
-        &a▶ /e mode
+        &bClick to change settings
       ranks: |-
-        &a&lRanks
+        &eRanks
         &fSet your {state}'s
         &fpermissions by rank
   
-        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        &aLeft-Click&f to change settings
-  
-        &a▶ /e perms
+        &bClick to change settings
       perks: |-
-        &a&lPerks
+        &ePerks
         &7Toggle your {state} perks
   
-        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        &aLeft-Click&f to change settings
-  
-        &a▶ /e perks
+        &bClick to change settings
       shop: |-
-        &a&lShop
+        &eShop
         &fUnlock new {state} perks
   
-        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        &aLeft-Click&f to open shop
-  
-        &a▶ /e shop
+        &bClick to open shop
       titles: |-
-        &a&lTitle
-        &e{title}
+        &eTitle
         &fSet your {state} title
+        
+        &fYour Title: &e{title}
   
-        &a&m━━━━━━━━━━━━━━━━━━━━━━
-        &aLeft-Click&f to set title
-  
-        &a▶ /e titles
+        &bClick to set title
       titles-edit: |-
-        &a&lTitle
-        &e{title}
+        &eTitle
         &fSet your {state} title
-        &fEdit available titles
   
-        &a&m━━━━━━━━━━━━━━━━━━━━━━
-        &aLeft-Click&f to set and edit titles
+        &fYour Title: &e{title}
   
-        &a▶ /e titles
+        &bClick to set title and edit titles
       entry: |-
-        &a&lEmpire Data
-        &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-        &a&lBoard &r&7{description}
-        &a&lSymbol &r&7{symbol}
-        &6&lLevel &r&7{level}
-        &6&lAccess &r&7{access}
-        &6&lRecruitment &r&7{jointype}
-        &6&lBank &r&7{bank}
-        &6&lUpkeep: &r&7{upkeep}
-        &6&lJoin Fee: &r&7{joinfee}
-        &6&lDaily Tax: &r&7{tax}
-        &6&lTax Evasion: &r&7{taxdebtaction}
-        &6&lDaily Missions: &r&7{dailymissions}
-        &6&lFinished Missions: &r&7{missions}
-        &6&lBonusclaims &r&7{bonusclaims}
-        &6&lCapital &r&7{capitalstate}{capital}
-        &e&l{chiefempiretitle}: &r&7{chiefsettlementtitle} {chiefonline}{chief}
-        &r&7{specialresidents}
-        &e&lMembers:
-        &r&7{members}
+        &e{name}
+        &fBoard: &e{description}
+        &fSymbol: &e{symbol}
+        &fEmpire: &eLevel {level}
+        &fAccess: &e{access}
+        &fRecruitment: &e{jointype}
+        &fBank: &e${bank}
+        &fUpkeep: &e${upkeep}
+        &fJoin Fee: &e${joinfee}
+        &fDaily Tax: &e${tax}
+        &fTax Evasion: &e{taxdebtaction}
+        &fDaily Missions: &e{dailymissions}
+        &fFinished Missions: &e{missions}
+        &fBonusclaims: &e{bonusclaims}
+        &fCapital: &e{capitalstate}{capital}
+        &f{chiefempiretitle}: &r&7{chiefsettlementtitle} {chiefonline}{chief}
+        &f{specialresidents}
+        &fMembers:
+        &f{members}
       special-residents:
         rank: "&e&l{rank}:&r {residents}"
         separator: "&7, "
@@ -1658,31 +1668,29 @@ gui:
     settings:
       title: "&2&l/plot settings"
       build: |-
-        &a&lBuild
+        &eBuild
         &fSet who can build in the plot
   
-        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━
         &fCurrent Settings: &e{build}
-        &aLeft-Click&f to change settings
+        
+        &bClick to change settings
   
         &a➤ /plot build
       use: |-
-        &a&lUse
+        &elUse
         &fSet different usage rights
         &fin the plot
   
-        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        &aLeft-Click&f to change settings
+        &bClick to change settings
   
         &a➤ /plot use
       mode: |-
-        &a&lMode
+        &eMode
         &fToggle settings including
         &fexplosions, mob spawning,
         &fPvP and more!
   
-        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━
-        &aLeft-Click&f to change settings
+        &bClick to change settings
   
         &a➤ /plot mode
       name:
@@ -1690,9 +1698,9 @@ gui:
           &a&lName
           &fSet the name of the plot
           
-          &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━
           &fCurrent Name: &e{name}
-          &aLeft-Click&f to change name
+          
+          &bClick to change name
           
           &a➤ /plot name <name>
         anvil:
@@ -1700,12 +1708,12 @@ gui:
           placeholder: "{name}"
       desc:
         button: |-
-          &a&lDescription
+          &eDescription
           &fSet the description of the plot
           
-          &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
           &fCurrent Description: &e{description}
-          &aLeft-Click&f to change name
+  
+          &bClick to change description
           
           &a➤ /plot description <description>
         anvil:
@@ -1713,48 +1721,46 @@ gui:
           placeholder: "{description}"
       sale:
         button-not-for-sale: |-
-          &a&lSell plot
+          &eSell plot
           &fSet the price for the plot
           
-          &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-          &aLeft-Click&f to set price
+          &bClick to set price
 
           &a➤ /plot sale <price>
         button: |-
-          &a&lSell plot
+          &eSell plot
           &fSet the price for the plot
   
-          &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-          &a&lCurrent Price: &f{price}
-          &aClick to set the price for the plot
-          &aShift click to make the plot not buyable
+          &fCurrent Price: &e{price}
+          
+          &bClick to set the price for the plot
+          &bShift click to make the plot not buyable
   
           &a➤ /plot sale <price>|false
         anvil:
           title: "Set price"
           placeholder: "{price}"
       members: |-
-        &a&lMembers
+        &eMembers
         &fGrant individual players
         &fbuild rights on the plot!
         &f{amount} players added.
   
-        &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━
-        &aLeft-Click&f to change settings
+        &bClick to change settings
   
         &a➤ /plot members
       entry: |-
-        &a⊱&m━━━━&r&6Plot Info&a&m━━━━&a⊰
-        &c&l{state}: &7{landowner}
-        &9&lName: &r{name}
-        &9&lDescription: &r{description}
-        &9&lModes:
-        &7Hostile MobSpawning: &6{hostilespawning}
-        &7Passive MobSpawning: &6{passivespawning}
-        &7FireSpread: &6{firespread}
-        &7Explosions: &6{explosions}
-        &7PvP: &6{pvp}
-        &7Build: &6{build}
+        &ePlot Info
+        &f{state}: &e{landowner}
+        &fName: &e{name}
+        &fDescription: &e{description}
+        &fModes:
+        &fHostile MobSpawning: &e{hostilespawning}
+        &fPassive MobSpawning: &e{passivespawning}
+        &fFireSpread: &e{firespread}
+        &fExplosions: &e{explosions}
+        &fPvP: &e{pvp}
+        &fBuild: &e{build}
     states: |-
       &eStates
       &fGroups that you let access to
@@ -1900,105 +1906,88 @@ gui:
         &7Apply at Elder
   manage:
     home: |-
-      &a&l{state} Home
+      &e{state} Home
       
-      &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      &aLeft click &fto teleport
+      &bLeft click to teleport
       
-      &a▶ /s home
+      &a➤ /s home
     sethome: |-
-      &a&l{state} Home
+      &e{state} Home
     
-      &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      &aLeft-Click &fto teleport
-      &aShift-Click &fto set new /s home
+      &bClick to teleport
+      &bShift-Click to set new /s home
     
-      &a▶ /s home
-      &a▶ /s sethome
+      &a➤ /s home
+      &a➤ /s sethome
     build: |-
-      &a&lBuild
+      &eBuild
       &fSet who can build on
-      &eun-owned plots
+      &fun-owned plots
 
-      &a&m━━━━━━━━━━━━━━━━━━━━━
       &fCurrent Settings: &e{build}
-      &aLeft-Click&f to change settings
-  
-      &a▶ /s build
+      
+      &bClick to change settings
     use: |-
-      &a&lUse
+      &ePerms
       &fSet different usage rights
       &fin your {state}
   
-      &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      &aLeft-Click&f to change settings
-  
-      &a▶ /s use
+      &bClick to change settings
     mode: |-
-      &a&lMode
+      &eMode
       &fToggle settings including
       &fexplosions, mob spawning,
       &fPvP and more!
   
-      &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━
-      &aLeft-Click&f to change settings
-  
-      &a▶ /s mode
+      &bClick to change settings
     ranks: |-
-      &a&lRanks
+      &eRanks
       &fSet your {state}'s
       &fpermissions by rank
   
-      &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      &aLeft-Click&f to change settings
-  
-      &a▶ /s perms
+      &bClick to change settings
     shop: |-
-      &a&lShop
+      &eShop
       &fUnlock new {state} perks
   
-      &a&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      &aLeft-Click&f to open shop
-  
-      &a▶ /s shop
+      &bClick to open shop
     titles: |-
-      &a&lTitle
-      &e{title}
+      &eTitle
       &fSet your {state} title
+      
+      &fCurrent title: &e{title}
   
-      &a&m━━━━━━━━━━━━━━━━━━━━━━
-      &aLeft-Click&f to set title
+      &bClick to set title
   
       &a▶ /s titles
     titles-edit: |-
-      &a&lTitle
-      &e{title}
+      &eTitle
       &fSet your {state} title
       &fEdit available titles
-    
-      &a&m━━━━━━━━━━━━━━━━━━━━━━
-      &aLeft-Click&f to set and edit titles
+  
+      &fCurrent title: &e{title}
+  
+      &bClick to set and edit titles
     
       &a▶ /s titles
     entry: |-
-      &a&lSettlement Data
-      &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-      &a&lDescription &r&7{description}
-      &a&lState &r&7{state}
-      &6&lLevel &r&7{level}
-      &6&lAccess &r&7{access}
-      &6&lRecruitment &r&7{jointype}
-      &6&lBank &r&7{bank}
-      &6&lUpkeep: &r&7{upkeep}
-      &6&lJoin Fee: &r&7{joinfee}
-      &6&lDaily Tax: &r&7{tax}
-      &6&lTax Evasion Action: &r&7{taxdebtaction}
-      &6&lCooperation Points: &r&7{missionpoints}
-      &6&lLand &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
-      &6&lOutposts &r&7{outposts}&r&e/&r&7{maxoutposts}
-      &e&l{chieftitle}: &r&7{chief}
-      &e&lMembers:
-      &r&7{residents}
+      &e{name}
+      &fBoard: &e{description}
+      &f{state}: &eLevel {level}
+      &fAccess: &e{access}
+      &fRecruitment: &e{jointype}
+      &fBank: &e${bank}
+      &fUpkeep: &e${upkeep}
+      &fJoin Fee: &e${joinfee}
+      &fDaily Tax: &e${tax}
+      &fAuction Tax: &e${tax}
+      &fTax Evasion Action: &e{taxdebtaction}
+      &fCooperation Points: &e{missionpoints}
+      &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims}
+      &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}
+      &f{chieftitle}: &r&7{chief}
+      &fMembers:
+      &f{residents}
     bonus-claims: " Bonus: {amount}"
     residents:
       rank: "&6&l{rank}:&r {residents}"
@@ -2274,33 +2263,33 @@ command:
     show:
       info:
         free: |-
-          &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-          &a&lSettlement: &fnone
-          &a&lBalance: &6₲{balance}
-          &a&lTax: &6₲{tax}
-          &a&lBonus claims: &f{bonus}
-          &a&lJoin Date: &f{joindate}
-          &a&lLast Login: &f{lastlogin}
+          &e&l{name}
+          &fSettlement: &enone
+          &fBalance: &e${balance}
+          &fTax: &e${tax}
+          &fBonus claims: &e{bonus}
+          &fJoin Date: &e{joindate}
+          &fLast Login: &e{lastlogin}
         in-settlement: |-
-          &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-          &a&lSettlement: &f{settlement}
-          &a&lRank: &f{title}
-          &a&lBalance: &6₲{balance}
-          &a&lTax: &6₲{tax}
-          &a&lBonus claims: &f{bonus}
-          &a&lJoin Date: &f{joindate}
-          &a&lLast Login: &f{lastlogin}
+          &e&l{name}
+          &fSettlement: e{settlement}
+          &fRank: &e{title}
+          &fBalance: &e${balance}
+          &fTax: &e${tax}
+          &fBonus claims: &e{bonus}
+          &fJoin Date: &e{joindate}
+          &fLast Login: &e{lastlogin}
         in-empire: |-
-          &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-          &a&lEmpire: &f{empire}
-          &a&lEmpire Rank: &f{empirerank}
-          &a&lSettlement: &f{settlement}
-          &a&lRank: &f{title}
-          &a&lBalance: &6₲{balance}
-          &a&lTax: &6₲{tax}
-          &a&lBonus claims: &f{bonus}
-          &a&lJoin Date: &f{joindate}
-          &a&lLast Login: &f{lastlogin}
+          &e&l{name}
+          &fEmpire: &e{empire}
+          &fEmpire Rank: &e{empirerank}
+          &fSettlement: &e{settlement}
+          &fRank: &e{title}
+          &fBalance: &e${balance}
+          &fTax: &e${tax}
+          &fBonus claims: e{bonus}
+          &fJoin Date: &e{joindate}
+          &fLast Login: &e{lastlogin}
       description: Shows you information about a resident
     description: Resident management commands
   tax:
@@ -2605,42 +2594,41 @@ command:
       description: Settlement events commands
     here:
       general: |-
-        &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-        &a&lBoard: &r&7{description}
-        &a&lState: &r&7Level {level} {state}
-        &6&lAccess: &r&7{access}
-        &6&lRecruitment &r&7{jointype}
-        &6&lBank: &r&7{bank} 
-        &6&lUpkeep: &r&7{upkeep} | &6&lDaily tax: &r&7{tax} | &6&lJoin fee: &r&7{joinfee}
-        &6&lTax Evasion: &r&7{taxdebtaction}
-        &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims} | &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
-        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
-        &9&lPerks: &r&7{perks}
-        &b&l{chieftitle}: &r&7{chiefonline}{chief}
+        &e&l{name}
+        &fBoard: &e{description}
+        &f{state}: &eLevel {level}
+        &fAccess: &e{access}
+        &fRecruitment: &e{jointype}
+        &fBank: &e${bank}
+        &fUpkeep: &e{upkeep} | &fDaily tax: &e${tax} | &fJoin fee: &e${joinfee}
+        &fTax Evasion: &e{taxdebtaction}
+        &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
+        &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &ferks: &r&7{perks}
+        &e{chieftitle}: &r&7{chiefonline}{chief}
         {residents}
       empire: |-
-        &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-        &a&lBoard: &r&7{description}
-        &a&lState: &r&7Level {level} {state}
-        &b&lEmpire: &r&7{empire} (Lv. {empirelevel})
-        &6&lAccess: &r&7{access}
-        &6&lRecruitment &r&7{jointype}
-        &6&lBank: &r&7{bank} | &6&lCP: &r&7{missionpoints}
-        &6&lUpkeep: &r&7{upkeep} | &6&lDaily tax: &r&7{tax} | &6&lJoin fee: &r&7{joinfee}
-        &6&lTax Evasion: &r&7{taxdebtaction}
-        &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims} | &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
-        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
-        &9&lPerks: &r&7{perks}
-        &b&l{chieftitle}: &r&7{chiefonline}{chief}
+        &e&l{name}
+        &fBoard: &e{description}
+        &f{state}: &eLevel {level}
+        &fAccess: &e{access}
+        &fRecruitment: &e{jointype}
+        &fBank: &e${bank}
+        &fUpkeep: &e{upkeep} | &fDaily tax: &e${tax} | &fJoin fee: &e${joinfee}
+        &fTax Evasion: &e{taxdebtaction}
+        &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
+        &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &ferks: &r&7{perks}
+        &e{chieftitle}: &r&7{chiefonline}{chief}
         {residents}
       abandoned: |-
-        &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
+        &e&l{name}
         &c&lABANDONED!!!&r&c Falls in {abandonedcountdown}
-        &a&lBoard: &r&7{description}
-        &a&lState: &r&7{state}
-        &6&lAccess: &r&7{access}
-        &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
-        &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
+        &fBoard: &e{description}
+        &fState: &e{state}
+        &fAccess: &e{access}
+        &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
+        &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims}
       bonus-claims: " Bonus: {amount}"
       bonus-outposts: " Bonus: {amount}"
       residents:
@@ -2919,42 +2907,41 @@ command:
           description: Buy perks again in the shop
     show:
       general: |-
-        &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-        &a&lBoard: &r&7{description}
-        &a&lState: &r&7Level {level} {state}
-        &6&lAccess: &r&7{access}
-        &6&lRecruitment &r&7{jointype}
-        &6&lBank: &r&7{bank} 
-        &6&lUpkeep: &r&7{upkeep} | &6&lDaily tax: &r&7{tax} | &6&lJoin fee: &r&7{joinfee}
-        &6&lTax Evasion: &r&7{taxdebtaction}
-        &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims} | &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
-        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
-        &9&lPerks: &r&7{perks}
-        &b&l{chieftitle}: &r&7{chiefonline}{chief}
+        &e&l{name}
+        &fBoard: &e{description}
+        &f{state}: &eLevel {level}
+        &fAccess: &e{access}
+        &fRecruitment: &e{jointype}
+        &fBank: &e${bank}
+        &fUpkeep: &e{upkeep} | &fDaily tax: &e${tax} | &fJoin fee: &e${joinfee}
+        &fTax Evasion: &e{taxdebtaction}
+        &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
+        &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &ferks: &r&7{perks}
+        &e{chieftitle}: &r&7{chiefonline}{chief}
         {residents}
       empire: |-
-        &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-        &a&lBoard: &r&7{description}
-        &a&lState: &r&7Level {level} {state}
-        &b&lEmpire: &r&7{empire} (Lv. {empirelevel})
-        &6&lAccess: &r&7{access}
-        &6&lRecruitment &r&7{jointype}
-        &6&lBank: &r&7{bank} | &6&lCP: &r&7{missionpoints}
-        &6&lUpkeep: &r&7{upkeep} | &6&lDaily tax: &r&7{tax} | &6&lJoin fee: &r&7{joinfee}
-        &6&lTax Evasion: &r&7{taxdebtaction}
-        &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims} | &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
-        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
-        &9&lPerks: &r&7{perks}
-        &b&l{chieftitle}: &r&7{chiefonline}{chief}
+        &e&l{name}
+        &fBoard: &e{description}
+        &f{state}: &eLevel {level}
+        &fAccess: &e{access}
+        &fRecruitment: &e{jointype}
+        &fBank: &e${bank}
+        &fUpkeep: &e{upkeep} | &fDaily tax: &e${tax} | &fJoin fee: &e${joinfee}
+        &fTax Evasion: &e{taxdebtaction}
+        &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
+        &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
+        &ferks: &r&7{perks}
+        &e{chieftitle}: &r&7{chiefonline}{chief}
         {residents}
       abandoned: |-
-        &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
+        &e&l{name}
         &c&lABANDONED!!!&r&c Falls in {abandonedcountdown}
-        &a&lBoard: &r&7{description}
-        &a&lState: &r&7{state}
-        &6&lAccess: &r&7{access}
-        &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
-        &6&lLand: &r&7{land}&r&e/&r&7{maxland}{bonusclaims}
+        &fBoard: &e{description}
+        &fState: &e{state}
+        &fAccess: &e{access}
+        &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
+        &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} 
       bonus-outposts: " Bonus: {amount}"
       bonus-claims: " Bonus: {amount}"
       residents:
@@ -3225,30 +3212,30 @@ command:
       description: Donate money to a certain empire
     here:
       general: |-
-        &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-        &a&lBoard &r&7{description}
-        &a&lState: &r&7{level} | &a&lSymbol &r&7{symbol}
-        &6&lAccess &r&7{access}
-        &6&lRecruitment &r&7{jointype}
-        &6&lBank &r&7{bank}
-        &6&lUpkeep: &r&7{upkeep} | &6&lDaily tax: &r&7{tax} | &6&lJoin fee: &r&7{joinfee}
-        &6&lTax Evasion: &r&7{taxdebtaction}
-        &6&lDaily Missions: &r&7{dailymissions}
-        &6&lFinished Missions: &r&7{missions}
-        &6&lBonus Claims: &r&7{bonus} | &6&lBonus Outposts: &r&7{bonusoutposts}
-        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
-        &9&lPerks: &r&7{perks}
-        &6&lCapital &r&7{capitalstate} {capital}
-        &e&l{chiefempiretitle}: &r&7{chiefsettlementtitle} {chiefonline}{chief}
+        &e&l{name}&
+        &fBoard; &e{description}
+        &fEmpire: &eLevel {level} | &a&lSymbol &e{symbol}
+        &fAccess: &e{access}
+        &fRecruitment_ &e{jointype}
+        &fBank: &e${bank}
+        &fUpkeep: &e{upkeep} | &fDaily tax: &e{tax} | &fJoin fee: &e{joinfee}
+        &fTax Evasion: &e{taxdebtaction}
+        &fDaily Missions: &e{dailymissions}
+        &fFinished Missions: &e{missions}
+        &fBonus Claims: &e{bonus} | &fBonus Outposts: &e{bonusoutposts}
+        &fMode: &ePvP: &r&e{pvp}&e | Hostile Mobspawning: &r&e{hostilespawning}&e | Passive Mobspawning: &r&e{passivespawning}&e | Firespread: &r&e{firespread}&e | Explosions: &r&e{explosions}&e | Buff : &r&e{buff}&e
+        &fPerks: &e{perks}
+        &fCapital &e{capitalstate} {capital}
+        &f{chiefempiretitle}: &e{chiefsettlementtitle} {chiefonline}{chief}
         {specialresidents}
         &e&lMembers:
         &r&7{members}
       abandoned: |-
-        &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
+        &e&l{name}
         &c&lABANDONED!!!&r&c Falls in {abandonedcountdown}
-        &a&lBoard: &r&7{description}
-        &a&lState: &r&7{level} | &a&lSymbol &r&7{symbol}
-        &6&lAccess: &r&7{access}
+        &fBoard: &e{description}
+        &fState: &eEmpire | &fSymbol &r&7{symbol}
+        &fAccess: &e{access}
       not-in-empire: "&cYou are not currently in an empire world!"
       description: Show in which empire world you are
       special-residents:
@@ -3474,21 +3461,21 @@ command:
       success: "&bSet empire symbol to &e{symbol}"
     show:
       general: |-
-        &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
-        &a&lBoard &r&7{description}
-        &a&lState: &r&7{level} | &a&lSymbol &r&7{symbol}
-        &6&lAccess &r&7{access}
-        &6&lRecruitment &r&7{jointype}
-        &6&lBank &r&7{bank}
-        &6&lUpkeep: &r&7{upkeep} | &6&lDaily tax: &r&7{tax} | &6&lJoin fee: &r&7{joinfee}
-        &6&lTax Evasion: &r&7{taxdebtaction}
-        &6&lDaily Missions: &r&7{dailymissions}
-        &6&lFinished Missions: &r&7{missions}
-        &6&lBonus Claims: &r&7{bonus} | &6&lBonus Outposts: &r&7{bonusoutposts}
-        &9&lMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
-        &9&lPerks: &r&7{perks}
-        &6&lCapital &r&7{capitalstate} {capital}
-        &e&l{chiefempiretitle}: &r&7{chiefsettlementtitle} {chiefonline}{chief}
+        &e&l{name}&
+        &fBoard; &e{description}
+        &fEmpire: &eLevel {level} | &a&lSymbol &e{symbol}
+        &fAccess: &e{access}
+        &fRecruitment_ &e{jointype}
+        &fBank: &e${bank}
+        &fUpkeep: &e{upkeep} | &fDaily tax: &e{tax} | &fJoin fee: &e{joinfee}
+        &fTax Evasion: &e{taxdebtaction}
+        &fDaily Missions: &e{dailymissions}
+        &fFinished Missions: &e{missions}
+        &fBonus Claims: &e{bonus} | &fBonus Outposts: &e{bonusoutposts}
+        &fMode: &ePvP: &r&e{pvp}&e | Hostile Mobspawning: &r&e{hostilespawning}&e | Passive Mobspawning: &r&e{passivespawning}&e | Firespread: &r&e{firespread}&e | Explosions: &r&e{explosions}&e | Buff : &r&e{buff}&e
+        &fPerks: &e{perks}
+        &fCapital &e{capitalstate} {capital}
+        &f{chiefempiretitle}: &e{chiefsettlementtitle} {chiefonline}{chief}
         {specialresidents}
         &e&lMembers:
         &r&7{members}
@@ -3503,11 +3490,11 @@ command:
         entry: "&7{name}"
         separator: "&8, "
       abandoned: |-
-        &a⊱&m━━━━&r&6{name}&a&m━━━━&a⊰
+        &e&l{name}
         &c&lABANDONED!!!&r&c Falls in {abandonedcountdown}
-        &a&lBoard: &r&7{description}
-        &a&lState: &r&7{level} | &a&lSymbol &r&7{symbol}
-        &6&lAccess: &r&7{access}
+        &fBoard: &e{description}
+        &fState: &eEmpire | &fSymbol &r&7{symbol}
+        &fAccess: &e{access}
       bonus-claims: " Bonus: {amount}"
       description: Shows information on an empire
     tax:

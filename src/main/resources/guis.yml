@@ -29,7 +29,7 @@ guis:
         settlement: white_bed
         rules: book
         lock: chest
-        unlock: enderchest
+        unlock: ender_chest
         home: campfire
         plot: grass_block
         friends: player_head
