@@ -5,6 +5,7 @@ import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.land.gui.NpcListGUI;
 import de.themoep.settlements.npc.NpcConfig;
 import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.npc.NpcManager;
@@ -37,6 +38,10 @@ public class NpcCommand extends ResidentSubCommand {
         LandOwner<?, ?> landOwner = ownerQuery.apply(resident);
         if (landOwner == null) {
             getError("settlement-required").tell(resident);
+            return true;
+        }
+        if (args.length < 1) {
+            new NpcListGUI(resident, landOwner).open();
             return true;
         }
         if (args.length < 2) {

@@ -1124,12 +1124,19 @@ gui:
       &eManage Residents
       &fInformation about the residents
       &fSet their Rank, Title and Taxes
+  
+      &bClick to browse
     banished: |-
       &eBanished List
       &fPlayers who had been restricted
       &ffrom entering the {state}
       
       {action}
+    npc: |-
+      &eNPC
+      &fManage your NPCs
+      
+      &bClick to view
     allies: |-
       &eManage Allies
   
@@ -1150,6 +1157,18 @@ gui:
       &fto your claimed land
   
       {action}
+  npclist:
+    title: "NPCs"
+    entry:
+      unlocked: |-
+        &e{name}
+        
+        &bClick to teleport
+        &bto your Location
+      locked: |-
+        &e{name}
+        
+        &cNot unlocked yet
   build:
     title: "&2&l/s build"
     set-state: "&7&lAllow &b&l{state}&7&l to Build"

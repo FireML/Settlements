@@ -72,7 +72,7 @@ public class CitizensIntegration implements Listener, ConfigMessages {
         createNpc(event.getSettlement(), NpcType.QUARTER_MASTER, event.getResident().getPlayer().getLocation());
     }
 
-    void createNpc(LandOwner<?, ?> landOwner, NpcType type, Location location) {
+    public void createNpc(LandOwner<?, ?> landOwner, NpcType type, Location location) {
         createNpc(landOwner, type, NpcManager.getInstance().getConfig(landOwner, type), location);
     }
 

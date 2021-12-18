@@ -4,6 +4,9 @@ import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.StaticGuiElement;
+import de.themoep.settlements.leveling.Levelable;
+import de.themoep.settlements.npc.NpcConfig;
+import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.NameTag;
@@ -11,6 +14,7 @@ import de.themoep.settlements.utils.Next;
 import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -60,6 +64,23 @@ public abstract class SettlementsGUI implements ConfigMessages {
             return ItemUtils.toIcon(material);
         }
         return null;
+    }
+
+    protected ItemStack getIcon(Levelable<?> selected) {
+        if (selected instanceof NpcData) {
+            NpcConfig config = ((NpcData) selected).getConfig();
+            if (config.getEntityType() == EntityType.PLAYER) {
+                if (!config.getSkinTextures().isEmpty()) {
+                    return ItemUtils.getHead(config.getSkinTextures());
+                } else if (!config.getSkinName().isEmpty()) {
+                    return ItemUtils.getHead(config.getSkinUuid(), config.getSkinName());
+                }
+            }
+            return getIcon(((NpcData) selected).getType().getKey());
+        } else if (selected != null) {
+            return getIcon(selected.getKey());
+        }
+        return getIcon("selectable");
     }
 
     protected List<GuiElement> getConfiguredElements() {

@@ -8,10 +8,12 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.land.gui.AlliesGUI;
 import de.themoep.settlements.land.gui.BanishedGUI;
 import de.themoep.settlements.land.gui.BuildGUI;
+import de.themoep.settlements.land.gui.NpcListGUI;
 import de.themoep.settlements.land.gui.PermsGUI;
 import de.themoep.settlements.land.gui.RankPermsGUI;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ItemUtils;
+import de.themoep.settlements.utils.ListGui;
 
 import java.util.function.Supplier;
 
@@ -59,6 +61,15 @@ public class ManagementGUI extends SettlementsGUI {
                 "state", resident.getSettlement().getStateTag(),
                 "action", resident.getSettlement().hasUnlocked("allies") ? resident.hasPermission("settlement.allies") ? getText("unlockables.unlocked.options") : getText("no-permission") : getText("unlockables.locked.npc")
         )));
+
+        if (SettlementsPlugin.getInstance().getCitizens() != null && resident.hasPermission("command.npc")) {
+            gui.addElement(new StaticGuiElement('n', getIcon("npc"), click -> {
+                if (resident.hasPermission("command.npc")) {
+                    new NpcListGUI(resident, resident.getSettlement()).open();
+                }
+                return true;
+            }, getText("npc")));
+        }
 
         gui.addElement(new StaticGuiElement('t', getIcon("ranks"), click -> {
             if (resident.hasPermission("settlement.ranks")) {

@@ -164,21 +164,4 @@ public class UpgradeGUI extends ConfigurableGui {
             return true;
         }, getText("deposit", "name", selected.getTag()))));
     }
-
-    private ItemStack getIcon(Levelable<?> selected) {
-        if (selected instanceof NpcData) {
-            NpcConfig config = ((NpcData) selected).getConfig();
-            if (config.getEntityType() == EntityType.PLAYER) {
-                if (!config.getSkinTextures().isEmpty()) {
-                    return ItemUtils.getHead(config.getSkinTextures());
-                } else if (!config.getSkinName().isEmpty()) {
-                    return ItemUtils.getHead(config.getSkinUuid(), config.getSkinName());
-                }
-            }
-            return getIcon(((NpcData) selected).getType().getKey());
-        } else if (selected != null) {
-            return getIcon(selected.getKey());
-        }
-        return getIcon("selectable");
-    }
 }

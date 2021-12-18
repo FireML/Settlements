@@ -75,6 +75,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     private LandPerks lPerks;
     private Economy econ = null;
     private Permission perms = null;
+    private CitizensIntegration citizensIntegration = null;
     private MultiverseIntegration multiverse = null;
     private PlaceholderApiIntegration placeholderApi = null;
 
@@ -157,7 +158,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             getLogger().log(Level.INFO, "Hooked into PlotSquared " + plotSquaredIntegration.getPlotSquaredVersion());
         }
         if (getServer().getPluginManager().isPluginEnabled("Citizens")) {
-            CitizensIntegration citizensIntegration = new CitizensIntegration();
+            citizensIntegration = new CitizensIntegration();
             getLogger().log(Level.INFO, "Hooked into Citizens " + citizensIntegration.getCitizensVersion());
         }
         if (getServer().getPluginManager().isPluginEnabled("Denizen")) {
@@ -439,6 +440,10 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
 
     public PlaceholderApiIntegration getPlaceholderApi() {
         return placeholderApi;
+    }
+
+    public CitizensIntegration getCitizens() {
+        return citizensIntegration;
     }
 
     public LandModeListener getLandModeListener() {
