@@ -293,10 +293,15 @@ public class CitizensIntegration implements Listener, ConfigMessages {
 
     public NPC getNpc(LandOwner<?, ?> landOwner, NpcType type) {
         NpcData npcData = landOwner.getNpcData(type);
-        if (npcData == null) {
+        if (npcData == null || npcData.getNpcId() < 0) {
             return null;
         }
-        return CitizensAPI.getNPCRegistry().getById(npcData.getNpcId());
+        try {
+            return CitizensAPI.getNPCRegistry().getById(npcData.getNpcId());
+        } catch (IllegalArgumentException e) {
+            SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Error while trying to get NPC with id " + npcData.getNpcId() + ": " + e.getMessage());
+            return null;
+        }
     }
 
     @Override
