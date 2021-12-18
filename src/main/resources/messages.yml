@@ -809,6 +809,9 @@ gui:
         &fCurrent: {status}
         
         &bClick to toggle
+      toggle-status:
+        enabled: "&aEnabled"
+        disabled: "&cDisabled"
       home: |-
         &e{state} Home
       plot: |-

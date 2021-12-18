@@ -334,13 +334,17 @@ public class LockManager implements LockProvider {
     }
 
     public boolean hasToggledAction(UUID playerId) {
-        return toggledActions.getIfPresent(playerId) != null;
+        return getToggledAction(playerId) != null;
+    }
+
+    public String getToggledAction(UUID playerId) {
+        return toggledActions.getIfPresent(playerId);
     }
 
     private String getAction(UUID playerId) {
         String action = interactActions.getIfPresent(playerId);
         if (action == null) {
-            action = toggledActions.getIfPresent(playerId);
+            action = getToggledAction(playerId);
         }
         return action;
     }

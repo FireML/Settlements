@@ -1,5 +1,6 @@
 package de.themoep.settlements.resident.gui;
 
+import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
@@ -16,6 +17,7 @@ import de.themoep.settlements.invites.SettlementInvite;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.gui.SettingsGUI;
+import de.themoep.settlements.lock.LockManager;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.FriendRequest;
 import de.themoep.settlements.resident.Resident;
@@ -53,15 +55,23 @@ public class OverviewGUI extends ConfigurableGui {
             return true;
         }, getText("rules", "state", settlement.getStateTag(), "name", settlement.getName())));
 
-        gui.addElement(new StaticGuiElement('l', getIcon("lock"), click -> {
-            // Lock?
-            return true;
-        }, getText("lock")));
+        gui.addElement(new DynamicGuiElement('l', who -> {
+            boolean isLock = "lock".equals(LockManager.getInstance().getToggledAction(who.getUniqueId()));
+            return new StaticGuiElement('l', getIcon("lock"), click -> {
+                LockManager.getInstance().toggleAction(click.getWhoClicked().getUniqueId(), "lock");
+                click.getGui().draw();
+                return true;
+            }, getText("lock", "status", getText("toggle-status." + (isLock ? "enabled" : "disabled"))));
+        }));
 
-        gui.addElement(new StaticGuiElement('u', getIcon("unlock"), click -> {
-            // Lock?
-            return true;
-        }, getText("unlock")));
+        gui.addElement(new DynamicGuiElement('u', who -> {
+            boolean isUnlock = "unlock".equals(LockManager.getInstance().getToggledAction(who.getUniqueId()));
+            return new StaticGuiElement('u', getIcon("unlock"), click -> {
+                LockManager.getInstance().toggleAction(click.getWhoClicked().getUniqueId(), "unlock");
+                click.getGui().draw();
+                return true;
+            }, getText("unlock", "status", getText("toggle-status." + (isUnlock ? "enabled" : "disabled"))));
+        }));
 
         gui.addElement(new StaticGuiElement('h', getIcon("home"), click -> {
             ((SettlementHomeCommand) CommandManager.getInstance().getCommand("settlement").getSubCommands().get("home"))
