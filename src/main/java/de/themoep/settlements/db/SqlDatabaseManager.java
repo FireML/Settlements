@@ -140,7 +140,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     private void saveEmpire(Connection conn, Empire empire) {
         Utils.catchSync();
         try {
-            if (!save(conn, empire, "members", "permissions", "npcs", "allyRequests").isNull() && empire.getId() != null && !empire.getId().isNull()) {
+            if (!save(conn, empire, "members", "permissions", "npcs", "allyRequests", "joinRequests").isNull() && empire.getId() != null && !empire.getId().isNull()) {
                 updateDataMap(conn, "empire_vaults", "empireId", (Integer) empire.getId().value(), "content", "amount", empire.getVault());
                 updateDataMap(conn, "empire_uses", "empireId", (Integer) empire.getId().value(), "type", "state",
                         empire.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
@@ -202,7 +202,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     private void saveSettlement(Connection conn, Settlement settlement) {
         try {
-            if (!save(conn, settlement, "residents", "permissions", "missiondata", "npcs", "allyRequests").isNull() && !settlement.getId().isNull()) {
+            if (!save(conn, settlement, "residents", "permissions", "missiondata", "npcs", "allyRequests", "joinRequests").isNull() && !settlement.getId().isNull()) {
                 updateDataMap(conn, "settlement_vaults", "settlementId", (Integer) settlement.getId().value(), "content", "amount", settlement.getVault());
                 updateDataMap(conn, "settlement_outposts", "settlementId", (Integer) settlement.getId().value(), "name", "", settlement.getOutpostHomes());
                 updateDataMap(conn, "settlement_uses", "settlementId", (Integer) settlement.getId().value(), "type", "state",
