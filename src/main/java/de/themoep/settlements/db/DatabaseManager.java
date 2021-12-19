@@ -85,7 +85,7 @@ public abstract class DatabaseManager {
 
     public abstract void unclaimLand(OwnedLand... lands);
 
-    public abstract void unclaimLand(Settlement settlement);
+    public abstract void unclaimLand(LandOwner landOwner);
 
     public abstract void unclaimLand(String worldName);
 
@@ -127,6 +127,12 @@ public abstract class DatabaseManager {
     }
 
     public abstract void saveResident(Resident... residents);
+
+    /**
+     * Saves the resident information directly to the database, bypassing the queue!
+     * Should be run async!
+     */
+    public abstract void saveResidentNow(Resident resident);
 
     public abstract void renameLockWorld(String oldName, String newName);
 

@@ -958,7 +958,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
             landOwner.setAccess(LandAccess.valueOf((String) map.get("access")));
         } catch (IllegalArgumentException ignored) {}
         try {
-            landOwner.setJoinType(JoinType.valueOf((String) map.get("jointype")));
+            landOwner.setJoinType(JoinType.valueOf((String) map.get("joinType")));
         } catch (IllegalArgumentException ignored) {}
         if (map.get("homeLoc") != null) {
             landOwner.setHome(SimpleLocation.deserialize((Map<String, Object>) map.get("homeLoc")));

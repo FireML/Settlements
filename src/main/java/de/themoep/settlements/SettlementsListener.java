@@ -31,6 +31,7 @@ public class SettlementsListener implements Listener {
                 res = new Resident(event.getUniqueId(), event.getName());
                 res.updateLastLogin();
                 ResidentManager.getInstance().addResident(res);
+                DatabaseManager.getInstance().saveResidentNow(res);
             } else {
                 res.updateLastLogin();
                 if (!res.getName().equalsIgnoreCase(event.getName())) {
@@ -42,8 +43,8 @@ public class SettlementsListener implements Listener {
                     res.setActiveChannel(ChatChannel.GENERAL);
                     Message.get("command.chat.joined").tell(res, "name", ChatChannel.GENERAL.getTag());
                 }
+                res.save();
             }
-            res.save();
         }
     }
 

@@ -409,23 +409,24 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public void unclaimLand(Settlement settlement) {
+    public void unclaimLand(LandOwner landOwner) {
         Utils.catchSync();
-        if (settlement.getId().value() == null) {
-            plugin.getLogger().log(Level.SEVERE, "Error while trying to delete claims of settlement " + settlement.getName() + " from database! The settlement has no ID?");
+        if (landOwner.getId().value() == null) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to delete claims of " + landOwner.getDbName() + " " + landOwner.getName() + " from database! It has no ID?");
             return;
         }
 
-        for (OwnedLand land : LandManager.getInstance().getClaimedLand(settlement)) {
+        for (OwnedLand land : LandManager.getInstance().getClaimedLand(landOwner)) {
             landQueue.remove(land.getId(), land);
         }
 
         Connection conn = getConnection();
-        try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE settlementId = ?;")) {
-            sta.setInt(1, (Integer) settlement.getId().value());
+        try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE landOwnerType = ? AND landOwnerId = ?;")) {
+            sta.setString(1, landOwner.getDbName());
+            sta.setInt(2, (Integer) landOwner.getId().value());
             sta.executeUpdate();
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while trying to delete claims of settlement " + settlement.getName() + " from database! ", e);
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to delete claims of " + landOwner.getDbName() + " " + landOwner.getName() + " from database! ", e);
         } finally {
             close(conn);
         }
@@ -661,6 +662,17 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             residentQueue.add(IdObject.get(resident.getId()), resident);
         }
         residentQueue.finishAdding();
+    }
+
+    @Override
+    public void saveResidentNow(Resident resident) {
+        residentQueue.remove(resident);
+        Connection conn = getConnection();
+        try {
+            saveResident(conn, resident);
+        } finally {
+            close(conn);
+        }
     }
 
     private void saveResident(Connection conn, Resident resident) {
@@ -1283,8 +1295,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             return requests;
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to get all ally requests of " + type + " " + id + " from database!", e);
-        } finally {
-            close(conn);
         }
         return Collections.emptyList();
     }
@@ -1309,8 +1319,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             return requests;
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to get all join requests of " + type + " " + id + " from database!", e);
-        } finally {
-            close(conn);
         }
         return Collections.emptyList();
     }
@@ -1357,8 +1365,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             return requests;
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to get all friend requests of resident " + id + " from database!", e);
-        } finally {
-            close(conn);
         }
         return Collections.emptyList();
     }
@@ -1819,7 +1825,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         }
 
         public void add(T object) {
-            add(null, object);
+            add(object instanceof DatabaseSerializable ? ((DatabaseSerializable) object).getId() : null, object);
         }
 
         public void add(IdObject id, T object) {
@@ -1852,7 +1858,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         }
 
         public boolean remove(T object) {
-            return remove(null, object);
+            return remove(object instanceof DatabaseSerializable ? ((DatabaseSerializable) object).getId() : null, object);
         }
 
         public boolean remove(IdObject id, T object) {
