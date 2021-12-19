@@ -175,6 +175,7 @@ public enum SQLiteTable {
             + "tax NUMERIC(19,4),"
             + "auctionTax NUMERIC(19,4),"
             + "taxDebtAction VARCHAR(255) NOT NULL,"
+            + "finishedMissions BIGINT,"
             + "missionPoints BIGINT,"
             + "bonusClaims INTEGER,"
             + "homeLoc_world VARCHAR(255),"
@@ -335,6 +336,7 @@ public enum SQLiteTable {
             + "title VARCHAR(16),"
             + "empireTitle VARCHAR(16),"
             + "bonusClaims INTEGER,"
+            + "missionPoints BIGINT,"
             + "lastLogin BIGINT(11) NOT NULL,"
             + "taxExempted BOOLEAN NOT NULL,"
             + "taxDebtAction VARCHAR(255) NOT NULL,"
@@ -395,6 +397,17 @@ public enum SQLiteTable {
             + "UNIQUE (userId, ignoredId)"
             + ");"
             + "CREATE INDEX resident_ignores_id ON {tablePrefix}resident_ignores (userId);"),
+
+    RESIDENT_MISSIONDATA("CREATE TABLE IF NOT EXISTS {tablePrefix}resident_missiondata ("
+            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + "userId INTEGER,"
+            + "mission VARCHAR(255) NOT NULL,"
+            + "type VARCHAR(255) NOT NULL,"
+            + "progress BIGINT DEFAULT 0,"
+            + "FOREIGN KEY (userId) REFERENCES {tablePrefix}residents(id) ON DELETE CASCADE,"
+            + "UNIQUE (userId, mission, type)"
+            + ");"
+            + "CREATE INDEX resident_missiondata_id ON {tablePrefix}resident_missiondata (userId);"),
 
     INVITES("CREATE TABLE IF NOT EXISTS {tablePrefix}invites ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
