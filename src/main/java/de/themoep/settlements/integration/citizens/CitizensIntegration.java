@@ -141,10 +141,8 @@ public class CitizensIntegration implements Listener, ConfigMessages {
                     .setSkinName(npcData.getNpcSkinName(), true);
         }
 
-        if (npcData.isUnlocked()) {
-            npcData.setNpcId(npc.getId());
-        } else {
-            npcData = new NpcData(npc.getId(), type);
+        npcData.setNpcId(npc.getId());
+        if (!npcData.isUnlocked()) {
             npcData.setLevel(1);
         }
         landOwner.addNpc(npcData);
