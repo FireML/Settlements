@@ -192,7 +192,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             registerListener(new BanishListener());
             registerListener(new SettlementListener());
             registerListener(new EmpireListener());
-            if (Config.Empire.Missions.ENABLED) {
+            if (Config.Settlement.Missions.ENABLED || Config.Empire.Missions.ENABLED) {
                 registerListener(new MissionListener());
             }
             registerListener(landModeListener = new LandModeListener());

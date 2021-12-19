@@ -120,6 +120,26 @@ public class Config {
             public static int KINGDOM_MAX_LEVEL = 10;
         }
 
+        public static class Missions {
+            @ConfigComment("Whether or not settlement missions should be given to residents")
+            public static boolean ENABLED = true;
+
+            @ConfigComment("Should newly joined resident be granted missions instantly or do they need to wait until the upkeep?")
+            public static boolean DISTRIBUTE_ON_JOIN = false;
+
+            @ConfigComment("Should missions that are not started yet be removed and replaced by new missions on reset?")
+            public static boolean REMOVE_NOT_STARTED_MISSIONS = true;
+
+            @ConfigComment("Should already started missions be removed and replaced by new missions on reset?")
+            public static boolean REMOVE_STARTED_MISSIONS = false;
+
+            @ConfigComment("Should finished missions be reset? If those are not reset then the resident needs to wait for the settlement to upgrade to get more!")
+            public static boolean REMOVE_FINISHED_MISSIONS = true;
+
+            @ConfigComment("Time in minutes for which block placements should be cached so that break mission abuse isn't possible using (recent) player placed blocks.")
+            public static long PLACE_CACHE_TIME = 60;
+        }
+
         public static class Claiming {
             @ConfigEntry(old = {"disabled-claiming-worlds"}, parser = "StringSet")
             @ConfigComment("Worlds in which claiming of Settlement chunks are disabled")
@@ -239,7 +259,7 @@ public class Config {
 
         public static class Missions {
             @ConfigComment("Whether or not empire missions should be given to empire member settlements")
-            public static boolean ENABLED = true;
+            public static boolean ENABLED = false;
 
             @ConfigComment("Should newly joined settlements be granted missions instantly or do they need to wait until the upkeep?")
             public static boolean DISTRIBUTE_ON_JOIN = false;

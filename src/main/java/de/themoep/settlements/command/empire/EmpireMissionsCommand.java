@@ -12,7 +12,7 @@ public class EmpireMissionsCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (!resident.getSettlement().getMissionData().isEmpty()) {
-            new MissionGui(resident, resident.getSettlement()).open();
+            new MissionGui(resident, resident.getSettlement().getEmpire(), resident.getSettlement()).open();
         } else {
             getMessage("wait-for-missions").tell(resident,
                     "state", resident.getSettlement().getStateTag(),

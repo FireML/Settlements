@@ -5,8 +5,12 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.empire.EmpireMission;
 import de.themoep.settlements.integration.AfkProvider;
 import de.themoep.settlements.land.TaxDebtAction;
+import de.themoep.settlements.missions.Mission;
+import de.themoep.settlements.missions.MissionData;
+import de.themoep.settlements.missions.MissionTaker;
 import de.themoep.settlements.rank.PermissionGroup;
 import de.themoep.settlements.rank.RankManager;
 import de.themoep.settlements.settlement.Settlement;
@@ -20,6 +24,7 @@ import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.rank.SettlementRank;
+import de.themoep.settlements.settlement.SettlementMission;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
@@ -53,7 +58,7 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class Resident implements ConfigurationSerializable, DatabaseSerializable, Targetable {
+public class Resident implements ConfigurationSerializable, DatabaseSerializable, Targetable, MissionTaker<SettlementMission> {
     private IdObject id = IdObject.get(null);
     private UUID uuid;
     private String name;
@@ -70,6 +75,8 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     private Map<String, FriendRequest> friendRequests = new ConcurrentHashMap<>();
     private boolean swear = true;
     private boolean socialSpy = false;
+    private long missionPoints = 0;
+    private Map<String, MissionData> missionData = new LinkedHashMap<>();
     private int bonusClaims = 0;
     private long lastLogin = 0;
     private long settlementJoin;
@@ -284,6 +291,35 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
 
     public ChatColor removeChannelColor(ChatChannel channel, ChatColorType type) {
         return channelColors.remove(channel, type);
+    }
+
+    public MissionData getMissionData(String missionId) {
+        return missionData.get(missionId.toLowerCase(Locale.ROOT));
+    }
+
+    public Collection<MissionData> getMissionData() {
+        return missionData.values();
+    }
+
+    @Override
+    public int getExtraMissions() {
+        return 0;
+    }
+
+    public Map<String, Map<String, Long>> getMissionDataMap() {
+        return getMissionData().stream().collect(Collectors.toMap(md -> md.getMission().getDbId(), MissionData::getProgress));
+    }
+
+    public void addMissionData(MissionData md) {
+        missionData.put(md.getMission().getId().toLowerCase(Locale.ROOT), md);
+    }
+
+    public long getMissionPoints() {
+        return missionPoints;
+    }
+
+    public void setMissionPoints(long missionPoints) {
+        this.missionPoints = missionPoints;
     }
 
     public Player getPlayer() {
@@ -592,6 +628,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
                 balance(r -> Utils.CURRENCY_FORMAT.format(r.getBalance())),
                 tax(r -> Utils.CURRENCY_FORMAT.format(r.getTax())),
                 bonus(r -> Utils.CURRENCY_FORMAT.format(r.getBonusClaims())),
+                missionpoints(r -> String.valueOf(r.getMissionPoints())),
                 joindate(r -> Utils.DATE_FORMAT.format(new Date(Bukkit.getOfflinePlayer(r.getUUID()).getFirstPlayed()))),
                 lastlogin(r -> Utils.DATE_FORMAT.format(new Date(r.getLastLogin()))),
                 lastloginduration(r -> {
@@ -643,6 +680,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         map.put("taxDebtAction", getTaxDebtAction().name());
         map.put("taxPaid", getTaxPaid());
         map.put("donated", getDonated());
+        map.put("missionPoints", getMissionPoints());
         map.put("channels", getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
         map.put("activeChannel", getActiveChannel().name());
         map.put("channelColors", channelColors.column(ChatColorType.MESSAGE).entrySet().stream()
@@ -701,6 +739,21 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         }
         resident.taxPaid = Utils.getLong(map.get("taxPaid"));
         resident.donated = Utils.getLong(map.get("donated"));
+        resident.setMissionPoints(Utils.getLong(map.get("missionPoints")));
+        ((Map<String, Object>) map.get("missiondata")).entrySet().stream()
+                .filter(e -> e.getValue() instanceof Map)
+                .forEach(e -> {
+                    Mission mission = Mission.fromDbId(e.getKey());
+                    if (mission != null) {
+                        MissionData md = new MissionData(mission);
+                        for (Map.Entry<?, ?> o : ((Map<?, ?>) e.getValue()).entrySet()) {
+                            if (o.getKey() instanceof String && o.getValue() instanceof Long) {
+                                md.getProgress().put((String) o.getKey(), (Long) o.getValue());
+                            }
+                        }
+                        resident.addMissionData(md);
+                    }
+                });
         resident.getChannels().clear();
         ((Collection<String>) map.get("channels")).stream()
                 .map(s -> Utils.parseEnum(ChatChannel.class, s.toUpperCase()))

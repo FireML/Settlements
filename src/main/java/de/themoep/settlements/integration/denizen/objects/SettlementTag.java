@@ -375,12 +375,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
                 return;
             }
 
-            Utils.callEvent(new SettlementJoinEvent(settlement, resident));
-            resident.setSettlement(settlement);
-            resident.setSettlementRank(SettlementRank.getDefault());
-            resident.addChannel(ChatChannel.SETTLEMENT);
-            InviteManager.getInstance().removeInvite(resident, settlement);
-            DatabaseManager.getInstance().saveResident(resident);
+            settlement.addMember(resident);
             return;
         }
 

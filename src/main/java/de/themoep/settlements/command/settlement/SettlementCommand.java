@@ -55,6 +55,9 @@ public class SettlementCommand extends SubCommand {
         registerCommand(new SettlementListCommand(this));
         registerCommand(new SettlementMailCommand(this));
         registerCommand(new SettlementMapCommand(this));
+        if (Config.Settlement.Missions.ENABLED) {
+            registerCommand(new SettlementMissionsCommand(this));
+        }
         registerCommand(new SettlementModeCommand(this));
         registerCommand(new SettlementMoneyCommand(this));
         SettlementSubCommand outpostCommand = new SettlementOutPostCommand(this);

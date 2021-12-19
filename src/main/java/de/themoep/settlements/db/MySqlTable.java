@@ -167,6 +167,7 @@ public enum MySqlTable {
             + "tax NUMERIC(19,4),"
             + "auctionTax NUMERIC(19,4),"
             + "taxDebtAction VARCHAR(255) NOT NULL,"
+            + "finishedMissions BIGINT,"
             + "missionPoints BIGINT,"
             + "bonusClaims INTEGER,"
             + "homeLoc_world VARCHAR(255),"
@@ -314,6 +315,7 @@ public enum MySqlTable {
             + "title VARCHAR(16),"
             + "empireTitle VARCHAR(16),"
             + "bonusClaims INTEGER,"
+            + "missionPoints BIGINT,"
             + "lastLogin BIGINT(11) NOT NULL,"
             + "taxExempted BOOLEAN NOT NULL,"
             + "taxDebtAction VARCHAR(255) NOT NULL,"
@@ -366,6 +368,16 @@ public enum MySqlTable {
             + "ignoredId INTEGER,"
             + "FOREIGN KEY (ignoredId) REFERENCES {tablePrefix}residents(id) ON DELETE CASCADE,"
             + "UNIQUE (userId, ignoredId)"
+            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
+
+    RESIDENT_MISSIONDATA("CREATE TABLE IF NOT EXISTS {tablePrefix}resident_missiondata ("
+            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+            + "userId INTEGER, INDEX (userId),"
+            + "FOREIGN KEY (userId) REFERENCES {tablePrefix}residents(id) ON DELETE CASCADE,"
+            + "mission VARCHAR(255) NOT NULL,"
+            + "type VARCHAR(255) NOT NULL,"
+            + "progress BIGINT DEFAULT 0,"
+            + "UNIQUE list (userId, mission, type)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     INVITES("CREATE TABLE IF NOT EXISTS {tablePrefix}invites ("

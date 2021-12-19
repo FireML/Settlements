@@ -41,12 +41,8 @@ public class AdminJoinCommand extends SubCommand {
                 return;
             }
             Utils.runSync(() -> {
-                Utils.callEvent(new SettlementJoinEvent(settlement, target));
-                target.setSettlement(settlement);
-                target.setSettlementRank(SettlementRank.getDefault());
-                target.addChannel(ChatChannel.SETTLEMENT);
+                settlement.addMember(target);
                 Message.get("command.chat.joined").tell(target, "name", ChatChannel.SETTLEMENT.getTag());
-                DatabaseManager.getInstance().saveResident(target);
                 MessageUtils.tell(sender, "&6&l" + target.getName() + "&r&c&l is now in " + settlement.getName());
                 Player targetP = target.getPlayer();
                 if (targetP != null) {

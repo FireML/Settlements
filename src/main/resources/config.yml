@@ -68,7 +68,21 @@ settlement:
     village-max-level: 5
     #The maximum amount of Kingdom levels
     kingdom-max-level: 10
-  
+
+  missions:
+    # Whether or not settlement missions should be given to residents
+    enabled: true
+    # Should newly joined residents be granted missions instantly or do they need to wait until the upkeep?
+    distribute-on-join: false
+    # Should missions that are not started yet be removed and replaced by new missions on reset?
+    remove-not-started-missions: true
+    # Should already started missions be removed and replaced by new missions on reset?
+    remove-started-missions: false
+    # Should finished missions be reset? If those are not reset then the resident needs to wait for the settlement to upgrade to get more!
+    remove-finished-missions: true
+    # Time in minutes for which block placements should be cached so that break mission abuse isn't possible using (recent) player placed blocks.
+    place-cache-time: 60
+    
   claiming:
     # Worlds in which claiming of Settlement chunks are disabled
     disabled-worlds:
@@ -140,7 +154,7 @@ empire:
   
   missions:
     # Whether or not empire missions should be given to empire member settlements
-    enabled: true
+    enabled: false
     # Should newly joined settlements be granted missions instantly or do they need to wait until the upkeep?
     distribute-on-join: false
     # Should missions that are not started yet be removed and replaced by new missions on reset?

@@ -1,0 +1,34 @@
+# Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:settlementissions.yml
+
+stones:
+  # Specify the material of the GUI icon, will use the requirements list if not set
+  icon: stone
+  # Only count if action occurs on settlement claim (should be false when using turn_in)
+  on-settlement-claim: false
+  # How many mission points the settlement receives when the missions were completed
+  mission-points: 1
+  # How many contribution points a resident receives for finishing those
+  contribution-points: 1
+  # The type of this mission. Available ones are:
+  # - turn_in: Deposit items into GUI
+  # - place: Place blocks
+  # - break: Break blocks
+  # - harvest: Harvest crops and certain other stuff like berry bushes, dropping an apple etc. depends on the requirements
+  # - kill: Kill certain monsters/animals
+  type: turn_in
+  requirements:
+    stone: 500
+dirt:
+  on-settlement-claim: false
+  mission-points: 1
+  contribution-points: 1
+  type: turn_in
+  requirements:
+    dirt: 1000
+wheat:
+  on-settlement-claim: true
+  mission-points: 1
+  contribution-points: 1
+  type: harvest
+  requirements:
+    wheat: 5000

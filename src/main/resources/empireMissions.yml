@@ -5,6 +5,8 @@ stones:
   icon: stone
   # Only count if action occurs in empire world (should be false when using turn_in)
   in-empire-world: false
+  # Only count if action occurs on empire claim (should be false when using turn_in)
+  on-empire-claim: false
   # How many mission points the empire receives when the missions was completed
   mission-points: 1
   # How many contribution points a settlement receives for finishing those

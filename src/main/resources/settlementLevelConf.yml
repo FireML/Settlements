@@ -7,6 +7,9 @@ village:
       Kingdoms_nether: 1000
     chunks: 20
     outposts: 1
+    # The amount of settlement missions available to residents per day
+    missions: 3
+    # Extra empire missions
     extra-missions: 0
     npcs:
     - manager
@@ -17,6 +20,8 @@ village:
       Kingdoms_nether: 960
     chunks: 40
     outposts: 1
+    # The amount of settlement missions available to residents per day
+    missions: 3
     extra-missions: 0
     requirements:
       CASH: 5 # in bank account
@@ -28,6 +33,7 @@ village:
       Kingdoms_nether: 960
     chunks: 60
     outposts: 1
+    missions: 4
     extra-missions: 1
     requirements:
       SAND: 10
@@ -37,6 +43,7 @@ village:
       Kingdoms_nether: 960
     chunks: 80
     outposts: 2
+    missions: 5
     extra-missions: 2
     requirements:
       COBBLESTONE: 64
@@ -46,6 +53,7 @@ village:
       Kingdoms_nether: 960
     chunks: 100
     outposts: 2
+    missions: 6
     extra-missions: 3
     requirements:
       SAND: 64
@@ -56,6 +64,7 @@ kingdom:
       Kingdoms_nether: 800
     chunks: 150
     outposts: 4
+    missions: 7
     extra-missions: 4
     requirements:
       STONE: 1
@@ -65,6 +74,7 @@ kingdom:
       Kingdoms_nether: 760
     chunks: 175
     outposts: 4
+    missions: 8
     extra-missions: 5
     requirements:
       STONE: 1
@@ -83,6 +93,7 @@ kingdom:
       Kingdoms_nether: 680
     chunks: 250
     outposts: 6
+    missions: 9
     extra-missions: 7
     requirements:
       STONE: 1
@@ -92,6 +103,7 @@ kingdom:
       Kingdoms_nether: 640
     chunks: 300
     outposts: 6
+    missions: 10
     extra-missions: 8
     requirements:
       STONE: 1
@@ -101,6 +113,7 @@ kingdom:
       Kingdoms_nether: 600
     chunks: 400
     outposts: 8
+    missions: 11
     extra-missions: 9
     requirements:
       STONE: 1
@@ -110,6 +123,7 @@ kingdom:
       Kingdoms_nether: 560
     chunks: 650
     outposts: 8
+    missions: 12
     extra-missions: 10
     requirements:
       STONE: 1
@@ -119,6 +133,7 @@ kingdom:
       Kingdoms_nether: 520
     chunks: 800
     outposts: 8
+    missions: 13
     extra-missions: 11
     requirements:
       STONE: 1
@@ -128,6 +143,7 @@ kingdom:
       Kingdoms_nether: 480
     chunks: 1000
     outposts: 12
+    missions: 14
     extra-missions: 12
     requirements:
       STONE: 1
@@ -137,6 +153,7 @@ kingdom:
       Kingdoms_nether: 400
     chunks: 1000
     outposts: 12
+    missions: 15
     extra-missions: 13
     requirements:
       STONE: 1

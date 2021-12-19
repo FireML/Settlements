@@ -70,9 +70,10 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     private SaveQueue<Consumer<Connection>> logQueue;
     private SaveQueue<Settlement> settlementQueue;
-    private SaveQueue<Settlement> settlementissionDataQueue;
+    private SaveQueue<Settlement> settlementMissionDataQueue;
     private SaveQueue<Empire> empireQueue;
     private SaveQueue<Resident> residentQueue;
+    private SaveQueue<Resident> residentMissionDataQueue;
     private SaveQueue<OwnedLand> landQueue;
     private SaveQueue<Portal> portalQueue;
     private SaveQueue<Consumer<Connection>> lockQueue;
@@ -90,7 +91,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
         logQueue = new SaveQueue<>("log", this, queueSize, queueWait, (conn, consumer) -> consumer.accept(conn));
         settlementQueue = new SaveQueue<>("settlement", this, queueSize, queueWait, this::saveSettlement);
-        settlementissionDataQueue = new SaveQueue<>("settlement mission data", this, missionQueueSize, missionQueueWait * 20, this::saveMissionData);
+        settlementMissionDataQueue = new SaveQueue<>("settlement mission data", this, missionQueueSize, missionQueueWait * 20, this::saveSettlementMissionData);
+        residentMissionDataQueue = new SaveQueue<>("resident mission data", this, missionQueueSize, missionQueueWait * 20, this::saveResidentMissionData);
         empireQueue = new SaveQueue<>("empire", this, queueSize, queueWait, this::saveEmpire);
         residentQueue = new SaveQueue<>("resident", this, queueSize, queueWait, this::saveResident);
         landQueue = new SaveQueue<>("land", this, queueSize, queueWait, this::saveLand);
@@ -235,24 +237,47 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     @Override
     public void saveMissionData(Settlement settlement) {
-        settlementissionDataQueue.add(settlement.getId(), settlement);
-        settlementissionDataQueue.finishAdding();
+        settlementMissionDataQueue.add(settlement.getId(), settlement);
+        settlementMissionDataQueue.finishAdding();
     }
 
     @Override
-    public void saveMissionData(Collection<Settlement> settlements) {
+    public void saveSettlementMissionData(Collection<Settlement> settlements) {
         for (Settlement settlement : settlements) {
-            settlementissionDataQueue.add(settlement.getId(), settlement);
+            settlementMissionDataQueue.add(settlement.getId(), settlement);
         }
-        settlementissionDataQueue.finishAdding();
+        settlementMissionDataQueue.finishAdding();
     }
 
-    public void saveMissionData(Connection conn, Settlement settlement) {
+    public void saveSettlementMissionData(Connection conn, Settlement settlement) {
         Utils.catchSync();
         try {
             updateDataMap(conn, "settlement_missiondata", "settlementId", (Integer) settlement.getId().value(), "mission", "type", settlement.getMissionDataMap(), "progress");
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while saving mission data for settlement " + settlement.getName() + " to database!", e);
+        }
+    }
+
+    @Override
+    public void saveMissionData(Resident resident) {
+        residentMissionDataQueue.add(resident.getId(), resident);
+        residentMissionDataQueue.finishAdding();
+    }
+
+    @Override
+    public void saveResidentMissionData(Collection<Resident> residents) {
+        for (Resident resident : residents) {
+            residentMissionDataQueue.add(resident.getId(), resident);
+        }
+        residentMissionDataQueue.finishAdding();
+    }
+
+    public void saveResidentMissionData(Connection conn, Resident resident) {
+        Utils.catchSync();
+        try {
+            updateDataMap(conn, "resident_missiondata", "userId", (Integer) resident.getId().value(), "mission", "type", resident.getMissionDataMap(), "progress");
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while saving mission data for resident " + resident.getName() + " to database!", e);
         }
     }
 
@@ -1021,7 +1046,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     @Override
     public void disable() {
         settlementQueue.forceSave();
-        settlementissionDataQueue.forceSave();
+        settlementMissionDataQueue.forceSave();
         empireQueue.forceSave();
         residentQueue.forceSave();
         landQueue.forceSave();
@@ -1299,6 +1324,16 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         map.put("ignores", selectResidentList(conn, "resident_ignores", "userId", id, "ignoredId"));
         map.put("channelColors", selectMap(conn, "resident_channel_colors", "userId", id, "channel", "color", String.class));
         map.put("channelPrefixColors", selectMap(conn, "resident_channel_prefix_colors", "userId", id, "channel", "color", String.class));
+
+        PreparedStatement mdSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "resident_missiondata WHERE userId = ?;");
+        mdSta.setInt(1, id);
+        ResultSet mdRs = mdSta.executeQuery();
+        Map<String, Map<String, Long>> missionData = new LinkedHashMap<>();
+        while (mdRs.next()) {
+            missionData.computeIfAbsent(mdRs.getString("mission").toLowerCase(), k -> new LinkedHashMap<>())
+                    .put(mdRs.getString("type"), mdRs.getLong("progress"));
+        }
+        map.put("missiondata", missionData);
         return Resident.deserialize(map);
     }
 

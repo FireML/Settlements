@@ -5,7 +5,6 @@ import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.empire.EmpireMission;
-import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfigurableGui;
@@ -15,12 +14,13 @@ import java.util.stream.Collectors;
 
 public class MissionGui extends ConfigurableGui {
 
-    public MissionGui(Resident resident, LandOwner landOwner) {
+    public MissionGui(Resident resident, MissionProvider<?> provider, MissionTaker<?> taker) {
         super(resident, "missions");
 
-        gui.addElement(new StaticGuiElement('i', getIcon("info"), getText("info")));
+        gui.addElement(new StaticGuiElement('i', getIcon("info"), getText("info",
+                Mission.getReplacements(this, provider, taker))));
 
-        Settlement settlement = (Settlement) landOwner;
+        Settlement settlement = (Settlement) provider;
 
         GuiElementGroup group = new GuiElementGroup('m');
         for (MissionData missionData : settlement.getMissionData()) {

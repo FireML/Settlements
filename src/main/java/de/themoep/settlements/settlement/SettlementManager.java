@@ -5,6 +5,7 @@ import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.empire.EmpireMission;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.LandAccess;
@@ -16,6 +17,7 @@ import de.themoep.settlements.land.Use;
 import de.themoep.settlements.land.events.LandownerDisbandEvent;
 import de.themoep.settlements.land.events.LandownerLeveledEvent;
 import de.themoep.settlements.lock.LockProvider;
+import de.themoep.settlements.missions.MissionTaker;
 import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.perk.SettlementPerk;
 import de.themoep.settlements.perk.Perk;
@@ -43,6 +45,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -58,6 +61,8 @@ public class SettlementManager {
     private Map<UUID, Settlement> settlementUuids = new ConcurrentHashMap<>();
 
     private Map<SettlementState, List<SettlementLevel>> levels = new HashMap<>();
+
+    private Map<String, SettlementMission> missions = new HashMap<>();
 
     private Map<String, SettlementPerk> perks;
     private Map<String, SettlementPerk> perkTags;
@@ -326,6 +331,8 @@ public class SettlementManager {
         resident.setTaxExempted(false);
         resident.setTaxPaid(0);
         resident.setDonated(0);
+        resident.getMissionData().clear();
+        DatabaseManager.getInstance().saveMissionData(resident);
         Player player = resident.getPlayer();
         if (player != null) {
             Empire empire = EmpireManager.getInstance().getEmpireFromWorld(player.getWorld());
@@ -411,6 +418,34 @@ public class SettlementManager {
             return Optional.of(levels.get(level - 1));
         }
         return Optional.empty();
+    }
+
+    public SettlementMission getMission(String id) {
+        return missions.get(id.toLowerCase(Locale.ROOT));
+    }
+
+    public Collection<SettlementMission> getMissions() {
+        return missions.values();
+    }
+
+    public void finishMission(SettlementMission mission, Resident resident) {
+        if (!resident.hasSettlement()) {
+            // Wat
+            return;
+        }
+        Settlement settlement = resident.getSettlement();
+        resident.setMissionPoints(resident.getMissionPoints() + 1);
+        settlement.setFinishedMissions(settlement.getFinishedMissions() + 1);
+        Message.get("missions.completed").tell(settlement,
+                "state", settlement.getStateTag(),
+                "name", settlement.getName(),
+                "mission", mission.getTag(),
+                "missionpoints", String.valueOf(resident.getMissionPoints()),
+                "finishedmissions", String.valueOf(settlement.getFinishedMissions())
+        );
+        SettlementsPlugin.logDebug(resident.getName() + " finished mission " + mission.getTag() + " for " + settlement.getStateTag() + " " + settlement.getName());
+        settlement.save();
+        resident.save();
     }
 
     public SettlementPerk getPerk(String name) {

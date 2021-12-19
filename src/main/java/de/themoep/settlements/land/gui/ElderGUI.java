@@ -1,19 +1,15 @@
 package de.themoep.settlements.land.gui;
 
 import de.themoep.inventorygui.GuiBackElement;
-import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.empire.EmpireMission;
-import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.land.JoinRequest;
-import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
-import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.missions.Mission;
 import de.themoep.settlements.missions.MissionGui;
-import de.themoep.settlements.npc.NpcData;
+import de.themoep.settlements.missions.MissionProvider;
 import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.JoinType;
@@ -22,11 +18,6 @@ import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
-import net.citizensnpcs.api.npc.NPC;
-import org.apache.commons.lang.WordUtils;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.stream.Collectors;
 
@@ -36,32 +27,12 @@ public class ElderGUI extends ConfigurableGui {
         super(resident, landOwner.getKey() + ".elder", "type", NpcType.ELDER.getTag());
 
         if (landOwner.isMember(resident)) {
-            if (landOwner instanceof Settlement) {
+            if (landOwner instanceof MissionProvider && !((MissionProvider<?>) landOwner).getMissionTaker(resident).getMissionData().isEmpty()) {
                 gui.addElement(new StaticGuiElement('e', getIcon("missions"), click -> {
-                    new MissionGui(resident, landOwner).open();
+                    new MissionGui(resident, (MissionProvider<?>) landOwner, ((MissionProvider<?>) landOwner).getMissionTaker(resident)).open();
                     return true;
                 }, getText("missions",
-                        "amount", String.valueOf(((Settlement) landOwner).getMissionData().size()),
-                        "missions", ((Settlement) landOwner).getMissionData().stream()
-                                .map(m -> getText("mission-entry",
-                                        "title", m.getMission().getTag(),
-                                        "requirements", m.getMission().getRequirements().entrySet().stream().map(e ->
-                                                getText("requirement." + (m.getProgress(e.getKey()) < e.getValue() ? "todo" : "done"),
-                                                        "progress", String.valueOf(m.getProgress(e.getKey())),
-                                                        "required", String.valueOf(e.getValue()),
-                                                        "type", WordUtils.capitalizeFully(e.getKey().replace('_', ' '))
-                                                )).collect(Collectors.joining("\n")),
-                                        "action", m.isFinished()
-                                                ? getText("finished")
-                                                : (m.getMission() instanceof EmpireMission && ((EmpireMission) m.getMission()).onlyInEmpireWorld()
-                                                ? getText("only-in-empire", "empire", resident.getSettlement().getEmpire().getName())
-                                                : getText("types." + m.getMission().getType().getKey())
-                                        ),
-                                        "missionpoints", String.valueOf(m.getMission().getMissionPoints()),
-                                        "contributionpoints", String.valueOf(m.getMission().getMissionPoints())
-                                )).collect(Collectors.joining("\n")),
-                        "state", landOwner.getStateTag(),
-                        "name", landOwner.getName()
+                        Mission.getReplacements(this, (MissionProvider<?>) landOwner, resident)
                 )));
             }
         } else if (landOwner.isBanished(resident)) {

@@ -1,10 +1,14 @@
 package de.themoep.settlements.missions;
 
+import de.themoep.settlements.empire.EmpireMission;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.settlement.SettlementMission;
+import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.MaterialUtils;
 import de.themoep.settlements.utils.NameTag;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -12,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public abstract class Mission implements NameTag {
     private final String id;
@@ -111,11 +116,43 @@ public abstract class Mission implements NameTag {
 
     public abstract void finish(Resident resident);
 
+    public abstract boolean isValid(Resident resident, MissionProvider provider);
+
     public enum Type implements NameTag {
         TURN_IN,
         PLACE,
         BREAK,
         HARVEST,
         KILL
+    }
+
+    public static String[] getReplacements(ConfigMessages messages, MissionProvider<?> provider, MissionTaker<?> taker) {
+        return new String[] {
+                "amount", String.valueOf(taker.getMissionData().size()),
+                "missions", taker.getMissionData().stream()
+                .map(m -> messages.getText("mission-entry",
+                        "title", m.getMission().getTag(),
+                        "requirements", m.getMission().getRequirements().entrySet().stream().map(e ->
+                                messages.getText("requirement." + (m.getProgress(e.getKey()) < e.getValue() ? "todo" : "done"),
+                                        "progress", String.valueOf(m.getProgress(e.getKey())),
+                                        "required", String.valueOf(e.getValue()),
+                                        "type", WordUtils.capitalizeFully(e.getKey().replace('_', ' '))
+                                )).collect(Collectors.joining("\n")),
+                        "action", m.isFinished()
+                                ? messages.getText("finished")
+                                : m.getMission() instanceof EmpireMission && ((EmpireMission) m.getMission()).onlyInEmpireWorld()
+                                ? messages.getText("only-in-empire", "empire", provider.getName())
+                                : m.getMission() instanceof EmpireMission && ((EmpireMission) m.getMission()).onlyOnEmpireClaim()
+                                ? messages.getText("only-on-claim", "state", provider.getStateTag(), "name", provider.getName())
+                                : m.getMission() instanceof SettlementMission && ((SettlementMission) m.getMission()).onlyOnSettlementClaim()
+                                ? messages.getText("only-on-claim", "state", provider.getStateTag(), "name", provider.getName())
+                                : messages.getText("types." + m.getMission().getType().getKey())
+                        ,
+                        "missionpoints", String.valueOf(m.getMission().getMissionPoints()),
+                        "contributionpoints", String.valueOf(m.getMission().getMissionPoints())
+                )).collect(Collectors.joining("\n")),
+                "state", provider.getStateTag(),
+                "name", provider.getName()
+        };
     }
 }

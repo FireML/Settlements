@@ -1588,12 +1588,13 @@ gui:
     info: |-
       &e&l{name}
       &fTown Info:
-      &f➤ Rank {rank}
-      &f➤ Plots Owned {plots}
+      &f➤ Rank: &6{rank}
+      &f➤ Plots Owned: &6{plots}
   
       Player Info
-      &f➤ Rank {primarygroup}
-      &f➤ Balance &6{balance}
+      &f➤ Rank: &6{primarygroup}
+      &f➤ Balance: &6${balance}
+      &f➤ Cooperation Points: &6{missionpoints}
       &f➤ Last Login &c{lastloginduration}
     tax-evasion: |-
       &eTax Evasion action
@@ -2353,6 +2354,7 @@ command:
           &fRank: &e{title}
           &fBalance: &e${balance}
           &fTax: &e${tax}
+          &fCooperation Points: &e${missionpoints}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
@@ -2364,6 +2366,7 @@ command:
           &fRank: &e{title}
           &fBalance: &e${balance}
           &fTax: &e${tax}
+          &fCooperation Points: &e${missionpoints}
           &fBonus claims: e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
@@ -2827,7 +2830,7 @@ command:
       description: Teleport to your settlement plot
       no-plot: "&c&l(!) &r&7Your {state} does not have a plot yet! Purchase it with [/{base} shop](/{base} shop)"
     missions:
-      wait-for-missions: "&c&lYour {state} does not have any missions yet. Wait for the next distribution!"
+      wait-for-missions: "&c&lYou do not have any missions from your {state} yet. Wait for the next distribution!"
       description: View missions available to your settlement
     mode:
       modes: "&cAvailable modes: {modes}"
@@ -3430,6 +3433,9 @@ command:
       head: "&a⊱&m━━━━&r&6Members&a&m━━━━&a⊰"
       entry: "&e• [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{size} players\n&f{description})"
       description: List all empire members
+    missions:
+      wait-for-missions: "&c&lYou do not have any missions from your {state} yet. Wait for the next distribution!"
+      description: View missions available to your settlement
     officer:
       description: Members that should have officer build access
     ranks:

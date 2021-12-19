@@ -5,6 +5,8 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.missions.MissionData;
+import de.themoep.settlements.missions.MissionProvider;
+import de.themoep.settlements.missions.MissionTaker;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
@@ -67,7 +69,7 @@ import java.util.stream.Collectors;
 
 import static de.themoep.settlements.utils.MessageUtils.yesOrNo;
 
-public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Comparable<Empire> {
+public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Comparable<Empire>, MissionProvider<EmpireMission> {
     private int level;
     private IdObject capital;
     private String symbol = "";
@@ -139,7 +141,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         }
 
         if (distributeNewMissions()) {
-            DatabaseManager.getInstance().saveMissionData(getMembers());
+            DatabaseManager.getInstance().saveSettlementMissionData(getMembers());
         }
 
     }
@@ -226,7 +228,8 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         return modified;
     }
 
-    public boolean distributeNewMissions(Settlement member) {
+    @Override
+    public <T extends MissionTaker<EmpireMission>> boolean distributeNewMissions(T member) {
         EmpireLevel levelInfo = getLevelInfo();
         if (levelInfo != null && levelInfo.getMissions() > 0) {
             List<EmpireMission> missions = new ArrayList<>(EmpireManager.getInstance().getMissions());
@@ -240,7 +243,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
                 return Config.Empire.Missions.REMOVE_NOT_STARTED_MISSIONS;
             });
             Collections.shuffle(missions);
-            int toDistribute = levelInfo.getMissions() + member.getExtraEmpireMissions();
+            int toDistribute = levelInfo.getMissions() + member.getExtraMissions();
             for (int i = 0; member.getMissionData().size() < toDistribute && i < missions.size(); i++) {
                 member.addMissionData(new MissionData(missions.get(i)));
             }
@@ -654,6 +657,11 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     @Override
     public String getStateTag() {
         return State.EMPIRE.getTag();
+    }
+
+    @Override
+    public MissionTaker<EmpireMission> getMissionTaker(Resident resident) {
+        return isMember(resident) ? resident.getSettlement() : null;
     }
 
     @Override

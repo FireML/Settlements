@@ -7,6 +7,7 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.empire.EmpireMission;
+import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.WorldUtils;
 import de.themoep.settlements.utils.config.Config;
 import org.bukkit.block.data.Ageable;
@@ -31,9 +32,11 @@ public class MissionListener implements Listener {
     private final boolean cacheInEmpireWorldOnly;
 
     public MissionListener() {
-        playerPlaced = Caffeine.newBuilder().expireAfterAccess(Config.Empire.Missions.PLACE_CACHE_TIME, TimeUnit.MINUTES).build();
-        hasBreakMission = EmpireManager.getInstance().getMissions().stream().anyMatch(m -> m.getType() == Mission.Type.BREAK);
-        cacheInEmpireWorldOnly = EmpireManager.getInstance().getMissions().stream().noneMatch(EmpireMission::onlyInEmpireWorld);
+        playerPlaced = Caffeine.newBuilder().expireAfterAccess(Math.max(Config.Settlement.Missions.PLACE_CACHE_TIME, Config.Empire.Missions.PLACE_CACHE_TIME), TimeUnit.MINUTES).build();
+        hasBreakMission = SettlementManager.getInstance().getMissions().stream().anyMatch(m -> m.getType() == Mission.Type.BREAK)
+                || EmpireManager.getInstance().getMissions().stream().anyMatch(m -> m.getType() == Mission.Type.BREAK);
+        cacheInEmpireWorldOnly = SettlementManager.getInstance().getMissions().isEmpty()
+                && EmpireManager.getInstance().getMissions().stream().noneMatch(EmpireMission::onlyInEmpireWorld);
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -83,33 +86,34 @@ public class MissionListener implements Listener {
 
     private void handle(Player player, String type, Mission.Type... missionTypes) {
         Resident resident = ResidentManager.getInstance().getResident(player);
-        if (resident.hasEmpire()) {
-            boolean save = false;
-            for (MissionData missionData : resident.getSettlement().getMissionData()) {
-                if (missionData.getMission() instanceof EmpireMission
-                        && ((EmpireMission) missionData.getMission()).onlyInEmpireWorld()
-                        && resident.getSettlement().getEmpire().getWorldName() != null
-                        && !player.getWorld().getName().equalsIgnoreCase(resident.getSettlement().getEmpire().getWorldName())) {
-                    continue;
-                }
-                if (missionData.isFinished()) {
-                    continue;
-                }
-                for (Mission.Type missionType : missionTypes) {
-                    if (missionData.getMission().getType() == missionType
-                            && missionData.requires(type)) {
-                        missionData.addProgress(type, 1);
-                        save = true;
-                        if (missionData.isFinished()) {
-                            missionData.getMission().finish(resident);
-                        }
-                        break;
+        if (resident.hasSettlement()) {
+            handle(resident, resident.getSettlement(), resident, type, missionTypes);
+            if (resident.hasEmpire()) {
+                handle(resident, resident.getSettlement().getEmpire(), resident.getSettlement(), type, missionTypes);
+            }
+        }
+    }
+
+    private <M extends Mission> void handle(Resident resident, MissionProvider<M> provider, MissionTaker<M> taker, String type, Mission.Type[] missionTypes) {
+        boolean save = false;
+        for (MissionData missionData : taker.getMissionData()) {
+            if (missionData.getMission().isValid(resident, provider) && missionData.isFinished()) {
+                continue;
+            }
+            for (Mission.Type missionType : missionTypes) {
+                if (missionData.getMission().getType() == missionType
+                        && missionData.requires(type)) {
+                    missionData.addProgress(type, 1);
+                    save = true;
+                    if (missionData.isFinished()) {
+                        missionData.getMission().finish(resident);
                     }
+                    break;
                 }
             }
-            if (save) {
-                DatabaseManager.getInstance().saveMissionData(resident.getSettlement());
-            }
+        }
+        if (save) {
+            DatabaseManager.getInstance().saveMissionData(taker);
         }
     }
 

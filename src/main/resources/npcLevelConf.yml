@@ -93,6 +93,7 @@ settlement:
         recruitment-command:
           unlockables:
           - command.recruitment
+          - command.missions
   traveling-merchant:
     level-1: {}
     level-2:
@@ -222,6 +223,7 @@ empire:
         recruitment-command:
           unlockables:
           - command.recruitment
+          - command.missions
   traveling-merchant:
     level-1: {}
     level-2:

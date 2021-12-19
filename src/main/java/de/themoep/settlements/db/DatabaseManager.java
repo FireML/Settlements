@@ -10,6 +10,7 @@ import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.lock.Lock;
+import de.themoep.settlements.missions.MissionTaker;
 import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.IdObject;
@@ -23,6 +24,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 public abstract class DatabaseManager {
@@ -59,9 +61,21 @@ public abstract class DatabaseManager {
 
     public abstract void saveSettlement(Settlement settlement);
 
+    public void saveMissionData(MissionTaker<?> taker) {
+        if (taker instanceof Settlement) {
+            saveMissionData((Settlement) taker);
+        } else if (taker instanceof Resident) {
+            saveMissionData((Resident) taker);
+        }
+    }
+
     public abstract void saveMissionData(Settlement settlement);
 
-    public abstract void saveMissionData(Collection<Settlement> settlements);
+    public abstract void saveSettlementMissionData(Collection<Settlement> settlements);
+
+    public abstract void saveMissionData(Resident resident);
+
+    public abstract void saveResidentMissionData(Collection<Resident> residents);
 
     public abstract void deleteSettlement(Settlement settlement);
 

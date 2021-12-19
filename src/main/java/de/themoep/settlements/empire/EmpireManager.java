@@ -344,6 +344,7 @@ public class EmpireManager {
             } else {
                 empire.getMemberIds().remove(member.getId());
             }
+            member.getMissionData().clear();
         }
         World empireWorld = Bukkit.getWorld(empire.getWorldName());
         if (empireWorld != null) {
@@ -359,6 +360,7 @@ public class EmpireManager {
         }
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().deleteEmpire(empire);
+            DatabaseManager.getInstance().saveSettlementMissionData(empire.getMembers());
             DatabaseManager.getInstance().saveSettlements(empire.getMembers());
         });
     }
@@ -386,6 +388,7 @@ public class EmpireManager {
         Set<Settlement> modifiedSettlements = new HashSet<>();
         for (Settlement member : empire.getMembers()) {
             member.setEmpire(null);
+            member.getMissionData().clear();
             modifiedSettlements.add(member);
         }
         empire.getMemberIds().clear();
@@ -433,6 +436,7 @@ public class EmpireManager {
         empire.setCreated(System.currentTimeMillis());
         DatabaseManager.getInstance().saveEmpire(empire);
         DatabaseManager.getInstance().saveAllies(allies);
+        DatabaseManager.getInstance().saveSettlementMissionData(modifiedSettlements);
         DatabaseManager.getInstance().saveSettlements(modifiedSettlements);
         DatabaseManager.getInstance().saveResident(modifiedResidents);
 
@@ -466,6 +470,8 @@ public class EmpireManager {
                 }
             }
         }
+        settlement.getMissionData().clear();
+        DatabaseManager.getInstance().saveMissionData(settlement);
         DatabaseManager.getInstance().saveSettlement(settlement);
         DatabaseManager.getInstance().saveResident(toSave);
     }

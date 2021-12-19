@@ -152,7 +152,6 @@ public class OverviewGUI extends ConfigurableGui {
             } else if (settlement.getJoinFee() > 0 && !SettlementsPlugin.getInstance().getEconomy().has(resident.getPlayer(), settlement.getJoinFee())) {
                 getError("not-enough-money").actionbar(resident, "state", settlement.getState().getTag(), "name", settlement.getName(), "amount", String.valueOf(settlement.getJoinFee()));
             } else {
-                Utils.callEvent(new SettlementJoinEvent(settlement, resident));
                 if (settlement.getJoinFee() > 0) {
                     if (SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(resident.getPlayer(), settlement.getJoinFee()).transactionSuccess()) {
                         settlement.addToBank(settlement.getJoinFee());
@@ -164,11 +163,7 @@ public class OverviewGUI extends ConfigurableGui {
                         return false;
                     }
                 }
-                resident.setSettlement(settlement);
-                resident.setSettlementRank(SettlementRank.getDefault());
-                resident.addChannel(ChatChannel.SETTLEMENT);
-                InviteManager.getInstance().removeInvite(resident, settlement);
-                resident.save();
+                settlement.addMember(resident);
                 Message.get("command.settlement.join.success").tell(resident, "name", settlement.getName(), "state", settlement.getState().getTag());
                 Message.get("command.settlement.join.new-resident").tell(settlement, "player", resident.getName());
                 return true;

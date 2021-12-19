@@ -8,10 +8,13 @@ import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.empire.EmpireMission;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.land.events.LandownerChiefChangeEvent;
 import de.themoep.settlements.missions.Mission;
 import de.themoep.settlements.missions.MissionData;
+import de.themoep.settlements.missions.MissionProvider;
+import de.themoep.settlements.missions.MissionTaker;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.settlement.events.SettlementJoinEvent;
@@ -72,7 +75,8 @@ import java.util.stream.Collectors;
 
 import static de.themoep.settlements.utils.MessageUtils.yesOrNo;
 
-public class Settlement extends LandOwner<SettlementRank, SettlementLevel> implements Comparable<Settlement>, Targetable {
+public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
+        implements Comparable<Settlement>, Targetable, MissionProvider<SettlementMission>, MissionTaker<EmpireMission> {
     private int level;
     private UUID chief;
     private Empire empire;
@@ -80,6 +84,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
     private Map<String, NamedLocation> outpostHomes = new LinkedHashMap<>();
     private Set<UUID> residents = new LinkedHashSet<>();
     private long missionPoints = 0;
+    private long finishedMissions = 0;
     private Map<String, MissionData> missionData = new LinkedHashMap<>();
 
     protected Settlement() {
@@ -178,6 +183,42 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
             Utils.runAsync(() -> DatabaseManager.getInstance().log(this, null, "tax", "cash", finalTotalTax));
         }
         payUpkeep(totalTax);
+
+        if (distributeNewMissions()) {
+            DatabaseManager.getInstance().saveResidentMissionData(getResidents());
+        }
+    }
+
+    private boolean distributeNewMissions() {
+        boolean modified = false;
+        for (Resident resident : getResidents()) {
+            modified |= distributeNewMissions(resident);
+        }
+        return modified;
+    }
+
+    @Override
+    public <T extends MissionTaker<SettlementMission>> boolean distributeNewMissions(T taker) {
+        SettlementLevel levelInfo = getLevelInfo();
+        if (levelInfo != null && levelInfo.getMissions() > 0) {
+            List<EmpireMission> missions = new ArrayList<>(EmpireManager.getInstance().getMissions());
+            taker.getMissionData().removeIf(md -> {
+                if (md.isFinished()) {
+                    return Config.Settlement.Missions.REMOVE_FINISHED_MISSIONS;
+                }
+                if (md.hasProgress()) {
+                    return Config.Settlement.Missions.REMOVE_STARTED_MISSIONS;
+                }
+                return Config.Settlement.Missions.REMOVE_NOT_STARTED_MISSIONS;
+            });
+            Collections.shuffle(missions);
+            int toDistribute = levelInfo.getMissions() + taker.getExtraMissions();
+            for (int i = 0; taker.getMissionData().size() < toDistribute && i < missions.size(); i++) {
+                taker.addMissionData(new MissionData(missions.get(i)));
+            }
+            return !taker.getMissionData().isEmpty();
+        }
+        return false;
     }
 
     private Map<Resident, Long> getLandTaxes() {
@@ -335,7 +376,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
         this.missionPoints = missionPoints;
     }
 
-    public int getExtraEmpireMissions() {
+    public int getExtraMissions() {
         SettlementLevel settlementLevel = getLevelInfo();
         return settlementLevel != null ? settlementLevel.getExtraMissions() : 0;
     }
@@ -403,6 +444,11 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
     @Override
     public String getStateTag() {
         return getState().getTag();
+    }
+
+    @Override
+    public MissionTaker<SettlementMission> getMissionTaker(Resident resident) {
+        return resident;
     }
 
     @Override
@@ -523,6 +569,9 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
         if (key.equalsIgnoreCase("level")) {
             return getState() == SettlementState.VILLAGE ? getLevel() : Config.Settlement.Leveling.VILLAGE_MAX_LEVEL + getLevel();
         }
+        if (key.equalsIgnoreCase("missions")) {
+            return finishedMissions;
+        }
         if (key.equalsIgnoreCase("missionpoints")) {
             return missionPoints;
         }
@@ -531,11 +580,21 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
 
     @Override
     public void setAmount(String key, long amount) {
-        if ("missionpoints".equalsIgnoreCase(key)) {
+        if ("missions".equalsIgnoreCase(key)) {
+            setFinishedMissions(amount);
+        } else if ("missionpoints".equalsIgnoreCase(key)) {
             setMissionPoints(amount);
         } else {
             super.setAmount(key, amount);
         }
+    }
+
+    public long getFinishedMissions() {
+        return finishedMissions;
+    }
+
+    public void setFinishedMissions(long finishedMissions) {
+        this.finishedMissions = finishedMissions;
     }
 
     @Override
@@ -597,6 +656,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
         map.put("level", getLevel());
         map.put("empireId", hasEmpire() ? getEmpire().getId().value() : null);
         map.put("settlementState", getState().name());
+        map.put("finishedMissions", getFinishedMissions());
         map.put("missionPoints", getMissionPoints());
         map.put("residents", getResidentIds().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("outposts", getOutpostHomes().values().stream().collect(Collectors.toMap(NamedLocation::getName, NamedLocation::serialize)));
@@ -640,6 +700,9 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
             resident.setDonated(0);
             resident.setTaxPaid(0);
             resident.setTaxExempted(false);
+            if (Config.Settlement.Missions.DISTRIBUTE_ON_JOIN) {
+                distributeNewMissions(resident);
+            }
             resident.setTaxDebtAction(getTaxDebtAction());
             InviteManager.getInstance().removeInvite(resident, this);
             resident.save();
@@ -745,6 +808,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
         settlement.setChief(UUID.fromString((String) map.get("chief")));
         settlement.setState(SettlementState.valueOf((String) map.get("settlementState")));
         settlement.setLevel((Integer) map.get("level"));
+        settlement.setFinishedMissions(Utils.getLong(map.get("finishedMissions")));
         settlement.setMissionPoints(Utils.getLong(map.get("missionPoints")));
         settlement.setEmpire(EmpireManager.getInstance().getEmpireFromId(IdObject.get(map.get("empireId"))));
         ((Collection<String>) map.get("residents")).stream().map(UUID::fromString).forEach(u -> settlement.getResidentIds().add(u));
@@ -822,8 +886,9 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel> imple
         joinfee((c, v) -> Utils.CURRENCY_FORMAT.format(v.getJoinFee())),
         tax((c, v) -> Utils.CURRENCY_FORMAT.format(v.getTax())),
         taxdebtaction((c, v) -> v.getTaxDebtAction().getTag()),
+        missions((c, v) -> String.valueOf(v.getFinishedMissions())),
         missionpoints((c, v) -> String.valueOf(v.getMissionPoints())),
-        extramissions((c, v) -> String.valueOf(v.getExtraEmpireMissions())),
+        extramissions((c, v) -> String.valueOf(v.getExtraMissions())),
         land((c, v) -> String.valueOf(LandManager.getInstance().getClaimedLandSize(v))),
         maxland((c, v) -> String.valueOf(v.getMaxClaimableChunks())),
         outposts((c, v) -> String.valueOf(v.getOutpostHomes().size())),
