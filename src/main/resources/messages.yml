@@ -32,6 +32,7 @@ error:
   unknown-npc-type: "&c&l(!) &r&7{input} is not a valid NPC type!"
   unknown-npc: "&c&l(!) &r&7No {input} NPC in your {state}!"
   no-permission: "&cNo permission."
+  no-world: "&c{state} {name} has not unlocked a world."
   rules-not-accepted: "&cYou must accept the [&e{state} rules](/s rules) first!"
   function-not-unlocked: "&cUpgrade NPC to unlock!"
   not-unlocked: "&cThe {state} does not have the {function} function unlocked yet!"

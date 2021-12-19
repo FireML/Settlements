@@ -5,14 +5,15 @@ levels:
     # The amount an empire needs to pay per day
     upkeep: 1000
     # The base radius that an empire world will have at that level
-    world-radius: 500
+    # Set to 0 or below to disable the empire world on that level
+    world-radius: 0
     # Lower the member per plot upkeep
     upkeep-reduction: 20
     # The amount of missions available to member settlements per day
     missions: 3
   level-2:
     upkeep: 1000
-    world-radius: 535
+    world-radius: 500
     upkeep-reduction: 30
     missions: 4
     requirements:
@@ -20,7 +21,7 @@ levels:
       Cobblestone: 3500000000
   level-3:
     upkeep: 1000
-    world-radius: 570
+    world-radius: 550
     upkeep-reduction: 40
     missions: 5
     requirements:

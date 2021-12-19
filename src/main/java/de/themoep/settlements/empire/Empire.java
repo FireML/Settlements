@@ -714,6 +714,10 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         return "Empire";
     }
 
+    public boolean hasWorld() {
+        return worldName != null && getLevelInfo().getWorldRadius() > 0;
+    }
+
     private enum State implements NameTag {
         EMPIRE;
     }

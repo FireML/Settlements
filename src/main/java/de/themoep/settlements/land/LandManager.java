@@ -146,7 +146,7 @@ public class LandManager {
             return null;
         }
         OwnedLand land = landTable.get(location.getWorld(), location.getSimpleKey());
-        if (land == null) {
+        if (land == null && Config.Empire.World.ENABLED) {
             World world = SettlementsPlugin.getInstance().getServer().getWorld(location.getWorld());
             Empire empire;
             if (world != null) {

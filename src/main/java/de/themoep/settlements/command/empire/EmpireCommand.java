@@ -41,7 +41,6 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpireModeCommand(this));
         registerCommand(new EmpireMoneyCommand(this));
         registerCommand(new EmpireRenameCommand(this));
-        registerCommand(new EmpireRegenCommand(this));
         registerCommand(new EmpirePerksCommand(this));
         registerCommand(new EmpireRanksCommand(this));
         registerCommand(new PlotCommand(this));
@@ -67,6 +66,10 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpireUpgradeCommand(this));
         registerCommand(new EmpireUpkeepCommand(this));
         registerCommand(new EmpireUseCommand(this));
+        if (Config.Empire.World.ENABLED) {
+            registerCommand(new EmpireWorldCommand(this));
+            registerCommand(new EmpireRegenCommand(this));
+        }
     }
 
     @Override

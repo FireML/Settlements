@@ -78,7 +78,7 @@ public class EmpireManager {
     public EmpireManager() {
         loadConfig();
         for (Empire empire : DatabaseManager.getInstance().getAllEmpires()) {
-            if (Config.Empire.World.RENAME) {
+            if (Config.Empire.World.ENABLED && Config.Empire.World.RENAME) {
                 World world = SettlementsPlugin.getInstance().getServer().getWorld(empire.getWorldName());
                 if (world != null) {
                     writeIdFile(world, empire);
@@ -100,11 +100,13 @@ public class EmpireManager {
             }
         }
 
-        // Loop through all worlds to find empire ones
-        for (File world : SettlementsPlugin.getInstance().getServer().getWorldContainer().listFiles(f -> f.isDirectory())) {
-            Empire empire = getEmpireFromWorld(world);
-            if (empire != null) {
-                empire.setWorldName(world.getName());
+        if (Config.Empire.World.ENABLED) {
+            // Loop through all worlds to find empire ones
+            for (File world : SettlementsPlugin.getInstance().getServer().getWorldContainer().listFiles(f -> f.isDirectory())) {
+                Empire empire = getEmpireFromWorld(world);
+                if (empire != null && empire.getLevelInfo().getWorldRadius() > 0) {
+                    empire.setWorldName(world.getName());
+                }
             }
         }
         SettlementsPlugin.logDebug("Loaded EmpireManager with " + empireIds.size() + " empires, " + levels.size() + " levels, " + missions.size() + " missions and " + perks.size() + " perks");
@@ -267,19 +269,21 @@ public class EmpireManager {
             DatabaseManager.getInstance().saveSettlement(empire.getCapital());
             DatabaseManager.getInstance().saveResident(empire.getCapital().getChief());
             if (!empire.getId().isNull()) {
-                if (Config.Empire.World.RENAME) {
-                    empire.setWorldName(Config.Empire.World.PREFIX + empire.getName() + Config.Empire.World.SUFFIX);
-                } else {
-                    empire.setWorldName(Config.Empire.World.PREFIX + "id" + empire.getId().value() + Config.Empire.World.SUFFIX);
-                }
                 empireIds.put(empire.getId(), empire);
                 empireUuids.put(empire.getUUID(), empire);
-                Utils.runSync(() -> {
-                    try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
-                        createEmpireWorld(empire);
-                        Message.get("empire-world-generated").tell(empire.getOnlineResidents());
+                if (Config.Empire.World.ENABLED && empire.getLevelInfo().getWorldRadius() > 0) {
+                    if (Config.Empire.World.RENAME) {
+                        empire.setWorldName(Config.Empire.World.PREFIX + empire.getName() + Config.Empire.World.SUFFIX);
+                    } else {
+                        empire.setWorldName(Config.Empire.World.PREFIX + "id" + empire.getId().value() + Config.Empire.World.SUFFIX);
                     }
-                });
+                    Utils.runSync(() -> {
+                        try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
+                            createEmpireWorld(empire);
+                            Message.get("empire-world-generated").tell(empire.getOnlineResidents());
+                        }
+                    });
+                }
             } else {
                 SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving empire " + empire.getName() + " to the database! No ID was returned.");
             }
@@ -287,6 +291,9 @@ public class EmpireManager {
     }
 
     private World createEmpireWorld(Empire empire) {
+        if (!Config.Empire.World.ENABLED || !empire.hasWorld()) {
+            return null;
+        }
         String worldName = empire.getWorldName();
         World world = Bukkit.getWorld(worldName);
         if (world == null) {
@@ -346,16 +353,18 @@ public class EmpireManager {
             }
             member.getMissionData().clear();
         }
-        World empireWorld = Bukkit.getWorld(empire.getWorldName());
-        if (empireWorld != null) {
-            try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Empire world removal")) {
-                for (Player player : empireWorld.getPlayers()) {
-                    Utils.teleportToSpawn(player);
+        if (Config.Empire.World.ENABLED && empire.getWorldName() != null) {
+            World empireWorld = Bukkit.getWorld(empire.getWorldName());
+            if (empireWorld != null) {
+                try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Empire world removal")) {
+                    for (Player player : empireWorld.getPlayers()) {
+                        Utils.teleportToSpawn(player);
+                    }
+                    for (LockProvider lockProvider : SettlementsPlugin.getInstance().getLockProviders()) {
+                        lockProvider.removeInWorld(empireWorld);
+                    }
+                    deleteWorld(empireWorld);
                 }
-                for (LockProvider lockProvider : SettlementsPlugin.getInstance().getLockProviders()) {
-                    lockProvider.removeInWorld(empireWorld);
-                }
-                deleteWorld(empireWorld);
             }
         }
         Utils.runAsync(() -> {
@@ -415,10 +424,12 @@ public class EmpireManager {
                 empire.setMode(mode, Utils.getPlotMode(mode, "abandoned." + empire.getStateKey()));
             }
         }
-        World empireWorld = Bukkit.getWorld(empire.getWorldName());
-        if (empireWorld != null) {
-            for (LockProvider lockProvider : SettlementsPlugin.getInstance().getLockProviders()) {
-                lockProvider.removeInWorld(empireWorld);
+        if (Config.Empire.World.ENABLED && empire.hasWorld()) {
+            World empireWorld = Bukkit.getWorld(empire.getWorldName());
+            if (empireWorld != null) {
+                for (LockProvider lockProvider : SettlementsPlugin.getInstance().getLockProviders()) {
+                    lockProvider.removeInWorld(empireWorld);
+                }
             }
         }
         LandManager.getInstance().removeWorld(empire.getWorldName());
@@ -487,6 +498,7 @@ public class EmpireManager {
             return false;
         }
 
+        int oldRadius = empire.getLevelInfo().getWorldRadius();
         empire.setLevel(empire.getLevel() + 1);
         MessageUtils.tellResidents(empire.getOnlineResidents(), Message.get("levels.upgrade"), "level", Integer.toString(empire.getLevel()), "state", empire.getStateTag());
         removeLevelRequirements(empire, res);
@@ -503,9 +515,26 @@ public class EmpireManager {
                 perksDesc.add(perk.getTag());
             }
         }
-        World world = Bukkit.getWorld(empire.getWorldName());
-        if (world != null) {
-            world.getWorldBorder().setSize(empire.getWorldRadius() * 2, 5);
+
+        if (Config.Empire.World.ENABLED) {
+            if (oldRadius == 0 && !empire.hasWorld() && empire.getLevelInfo().getWorldRadius() > 0) {
+                if (Config.Empire.World.RENAME) {
+                    empire.setWorldName(Config.Empire.World.PREFIX + empire.getName() + Config.Empire.World.SUFFIX);
+                } else {
+                    empire.setWorldName(Config.Empire.World.PREFIX + "id" + empire.getId().value() + Config.Empire.World.SUFFIX);
+                }
+                Utils.runSync(() -> {
+                    try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
+                        createEmpireWorld(empire);
+                        Message.get("empire-world-generated").tell(empire.getOnlineResidents());
+                    }
+                });
+            } else if (empire.hasWorld()) {
+                World world = Bukkit.getWorld(empire.getWorldName());
+                if (world != null) {
+                    world.getWorldBorder().setSize(empire.getWorldRadius() * 2, 5);
+                }
+            }
         }
 
         for (NpcType npc : empire.getLevelInfo().getNPCs()) {
@@ -538,7 +567,7 @@ public class EmpireManager {
     }
 
     public Empire getEmpireFromWorld(File worldFolder) {
-        if (!worldFolder.exists() || !worldFolder.isDirectory()) {
+        if (!worldFolder.exists() || !worldFolder.isDirectory() || !Config.Empire.World.ENABLED) {
             return null;
         }
         return empireWorlds.computeIfAbsent(worldFolder.getName(), worldName -> {
@@ -549,7 +578,7 @@ public class EmpireManager {
                     if (idStr != null) {
                         int id = Integer.parseInt(idStr);
                         Empire empire = getEmpireFromId(IdObject.get(id));
-                        if (empire != null) {
+                        if (empire != null && empire.hasWorld()) {
                             return empire;
                         } else {
                             SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "No world " + worldName + " specified empire with ID " + id + " but no empire with such an id was found?");
@@ -564,13 +593,16 @@ public class EmpireManager {
     }
 
     public Empire getEmpireFromWorld(World world) {
-        if (world == null) {
+        if (world == null || !Config.Empire.World.ENABLED) {
             return null;
         }
         return getEmpireFromWorld(world.getWorldFolder());
     }
 
     public Empire getEmpireFromWorld(String worldName) {
+        if (!Config.Empire.World.ENABLED) {
+            return null;
+        }
         if (empireWorlds.containsKey(worldName)) {
             return empireWorlds.get(worldName);
         }
@@ -582,7 +614,7 @@ public class EmpireManager {
         World world = Bukkit.getWorld(empire.getWorldName());
         empire.setName(name);
 
-        if (Config.Empire.World.RENAME) {
+        if (Config.Empire.World.ENABLED && Config.Empire.World.RENAME && empire.hasWorld()) {
             empire.setInRegen(true);
             empire.setWorldName(Config.Empire.World.PREFIX + empire.getName() + Config.Empire.World.SUFFIX);
             if (!renameWorld(empire, world)) {
@@ -601,7 +633,7 @@ public class EmpireManager {
     }
 
     private boolean renameWorld(Empire empire, World world) {
-        if (world == null) {
+        if (world == null || !Config.Empire.World.ENABLED) {
             return false;
         }
 
@@ -652,11 +684,14 @@ public class EmpireManager {
     }
 
     public boolean regenWorld(Empire empire) {
-        World world = Bukkit.getWorld(empire.getWorldName());
-        empire.setInRegen(true);
-        deleteWorld(world);
-        createEmpireWorld(empire);
-        empire.setInRegen(false);
+        if (Config.Empire.World.ENABLED && empire.hasWorld()) {
+            World world = Bukkit.getWorld(empire.getWorldName());
+            empire.setInRegen(true);
+            deleteWorld(world);
+            createEmpireWorld(empire);
+            empire.setInRegen(false);
+            return true;
+        }
         return false;
     }
 
