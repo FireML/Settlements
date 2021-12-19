@@ -22,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -40,6 +41,9 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
                 .filter(s -> !s.contains(".help"))
                 .collect(Collectors.toList());
         rank = landOwner.getDefaultRank();
+        if (landOwner.useGuestRank()) {
+            rank = (R) rank.getParentRank();
+        }
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title",
                 "state", landOwner.getStateTag(),
                 "name", landOwner.getName()
@@ -56,7 +60,7 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
                     return null;
                 }
 
-                String permName = Message.get("command." + perm + ".permission.name").orElse(WordUtils.capitalizeFully(perm.replace('.', ' ')));
+                String permName = Message.get("command." + perm + ".permission.name").orElse(WordUtils.capitalizeFully(perm.replace('.', ' ').replace('-', ' ')));
                 if (permName.toLowerCase(Locale.ROOT).startsWith(type + " ")) {
                     permName = permName.substring(type.length() + 1);
                 }
@@ -161,13 +165,13 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
 
         GuiElementGroup ranksGroup = createGroup('r');
 
-        for (R r : landOwner.getRanks()) {
+        landOwner.getRanks().stream().sorted(Comparator.reverseOrder()).forEachOrdered(r -> {
             if (r == landOwner.getHighestRank()) {
                 // Don't show leader/chief permissions as they can't be edited anyways and they have all
-                continue;
+                return;
             } else if (landOwner.useGuestRank() && r == landOwner.getDefaultRank()) {
                 // Can't configure guest rank
-                continue;
+                return;
             }
             ranksGroup.addElement(new DynamicGuiElement('r', h -> {
                 ItemStack item = r.getItem();
@@ -180,11 +184,11 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
                     click.getGui().draw();
                     return true;
                 }, getText("rank-entry." + (selected ? "selected" : "selectable"),
-                        "name", rank.getTag(landOwner),
+                        "name", r.getTag(landOwner),
                         "state", landOwner.getStateTag()
                 ));
             }));
-        }
+        });
 
         gui.addElements(ranksGroup);
 
@@ -198,7 +202,7 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
 
         if (res.hasPermission(type + ".ranks.perms.reset")) {
             gui.addElement(new DynamicGuiElement('o', h -> new StaticGuiElement('o', getIcon("reset"), click -> {
-                new ConfirmationGui(RankPermsGUI.this, type + ".reset-perms", c -> {
+                new ConfirmationGui(name() + ".reset-perms", c -> {
                     if (res.hasPermission(type + ".perms.reset")) {
                         boolean changed = false;
                         for (String permission : rank.getPermissions()) {

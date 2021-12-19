@@ -8,6 +8,9 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Called after a landowner achieved a new level
+ */
 public class LandownerLeveledEvent extends Event {
     private final static HandlerList handlerList = new HandlerList();
     private final LandOwner<?, ? extends LandownerLevel> leveled;

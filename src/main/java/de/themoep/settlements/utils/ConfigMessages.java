@@ -33,6 +33,12 @@ public interface ConfigMessages extends ConfigKey {
                     }
                 }
             }
+            if (!key.isEmpty()) {
+                Message m = Message.get(pathParts[0] + "." + key);
+                if (m.exists()) {
+                    return m;
+                }
+            }
         }
         Message keyMessage = Message.get(key);
         if (keyMessage.exists()) {

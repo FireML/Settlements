@@ -1,6 +1,7 @@
 package de.themoep.settlements.land.gui;
 
 import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.db.DatabaseSerializable;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -63,9 +65,11 @@ public class UpgradeGUI extends ConfigurableGui {
                             click.getGui().draw();
                         }
                         return true;
-                    }, getText("navigation.entry", "name", levelable instanceof LandOwner ? ((LandOwner<?, ?>) levelable).getStateTag() : "npc"),
-                                getText("navigation.description." + (levelable.isMaxLevel() ? "upgraded" : levelable.getLevel() > 0 ? "upgradable" : "locked"),
-                                        "action", getText("navigation.action." + (levelable == selected ? "current" : "switch"))))));
+                    }, getText("navigation.entry",
+                                "type", levelable instanceof NpcData ? "npc" : levelable.getTag(),
+                                "description", getText("navigation.description." + (levelable.isMaxLevel() ? "upgraded" : levelable.getLevel() > 0 ? "upgradable" : "locked"),
+                                        "action", getText("navigation.action." + (levelable == selected ? "current" : "switch")))
+            ))));
         }
 
         gui.addElement(navBar);
@@ -83,17 +87,17 @@ public class UpgradeGUI extends ConfigurableGui {
                     }
 
                     if (icon == null) {
-                        icon = getIcon("requirement." + entry.getKey());
+                        icon = getIcon("requirement." + entry.getKey().toLowerCase(Locale.ROOT));
                     }
 
                     boolean hasReached = landOwner.has(entry.getKey(), entry.getValue());
 
-                    return new StaticGuiElement('r', ItemUtils.setGlowing(icon, hasReached), getText("requirement." + (hasReached ? "left" : "reached"),
+                    reqGroup.addElement(new StaticGuiElement('r', ItemUtils.setGlowing(icon, hasReached), getText("requirement." + (hasReached ? "reached" : "left"),
                             "name", HumanReadable.humanizedName(entry.getKey()),
                             "required", String.valueOf(entry.getValue()),
                             "progress", String.valueOf(selected.getAmount(entry.getKey())),
                             "amount", String.valueOf(entry.getValue() - selected.getAmount(entry.getKey()))
-                    ));
+                    )));
                 }
             }
 
@@ -106,12 +110,12 @@ public class UpgradeGUI extends ConfigurableGui {
                 Collection<? extends LevelPerk> perks = selected.getPerks(nextLevel.getLevel());
                 return new StaticGuiElement('i', getIcon(selected), getText("info",
                         "name", selected.getTag(),
-                        "benefits", getText("benefits", "benefits", perks.stream()
+                        "benefits", perks.stream()
                                 .map(p -> getText("benefit",
                                         "name", p.getTag(),
                                         "description", Message.get("description." + p.getKey()).getText()
                                 )).collect(Collectors.joining("\n")))
-                ));
+                );
             }
             return null;
         }));
@@ -126,12 +130,13 @@ public class UpgradeGUI extends ConfigurableGui {
                                 "bars", String.join("", Collections.nCopies((int) Math.floor(progress * 50), "|"))) +
                                 getText("progress-bar.unfinished",
                                         "bars", String.join("", Collections.nCopies((int) Math.ceil((1 - progress) * 50), "|")))
-                ));
+                        )
+                );
             }
             return null;
         }));
 
-        gui.addElement(new DynamicGuiElement('d', who -> new StaticGuiElement('d', getIcon(selected), click -> {
+        gui.addElement(new DynamicGuiElement('d', who -> new StaticGuiElement('d', getIcon("deposit"), click -> {
             if (click.getType() == ClickType.LEFT && click.getEvent().getCursor() != null) {
                 Map<String, Long> requirements = selected.getNextLevelRequirements();
                 ItemStack cursor = click.getEvent().getCursor();
@@ -163,5 +168,7 @@ public class UpgradeGUI extends ConfigurableGui {
             }
             return true;
         }, getText("deposit", "name", selected.getTag()))));
+
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
     }
 }

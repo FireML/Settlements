@@ -24,6 +24,9 @@ import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.land.events.LandClaimEvent;
+import de.themoep.settlements.land.events.LandClaimedEvent;
+import de.themoep.settlements.land.events.LandUnclaimEvent;
 import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.portal.PortalManager;
 import de.themoep.settlements.resident.ResidentManager;
@@ -105,6 +108,7 @@ public class LandManager {
 
     public OwnedLand claimLand(SimpleChunkLocation chunk, Location location, Settlement settlement) {
         OwnedLand land = new OwnedLand(settlement, chunk);
+        Utils.callEvent(new LandClaimEvent(land));
         if (this.getClaimedLandSize(settlement) == 0) {
             SimpleLocation home = new SimpleLocation(location);
             if (chunk.contains(home)) {
@@ -116,6 +120,7 @@ public class LandManager {
         }
         SettlementsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + land.getKey() + " was claimed by " + settlement.getName() + "");
         cacheLand(land);
+        Utils.callEvent(new LandClaimedEvent(land));
         return land;
     }
 
@@ -201,6 +206,7 @@ public class LandManager {
             if (land.containsHome()) {
                 land.getLandOwner().setHome((SimpleLocation) null);
             }
+            Utils.callEvent(new LandUnclaimEvent(land));
             landTable.remove(land.getWorldName(), land.getSimpleKey());
             if (land.getLandOwner() instanceof Settlement) {
                 settlementLands.remove(land.getLandOwner().getId(), land);
@@ -243,6 +249,7 @@ public class LandManager {
         Utils.runSync(() -> {
             List<OwnedLand> claims = new ArrayList<>(settlementLands.get(settlement.getId()));
             for (OwnedLand claim : claims) {
+                Utils.callEvent(new LandUnclaimEvent(claim));
                 removeLink(claim);
                 landTable.remove(claim.getWorld(), claim.getSimpleKey());
                 SettlementsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + claim.getKey() + " owned by " + settlement.getName() + " was unclaimed");

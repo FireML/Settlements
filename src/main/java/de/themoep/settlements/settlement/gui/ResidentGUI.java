@@ -15,25 +15,18 @@ import de.themoep.settlements.land.gui.TitleGUI;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.ConfirmationGui;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import net.wesjd.anvilgui.AnvilGUI;
 
-public class ResidentGUI extends SettlementsGUI {
-
-    private final InventoryGui gui;
-    private final Resident resident;
+public class ResidentGUI extends ConfigurableGui {
 
     public ResidentGUI(Resident sender, Resident resident) {
-        super("settlement.resident");
-        this.resident = sender;
+        super(sender, "settlement.resident", resident.getReplacements());
         String[] replacements = resident.getReplacements();
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title", replacements), getSetup());
-        gui.setCloseAction(close -> false);
-        gui.setFiller(getIcon("filler"));
-        gui.addElements(getConfiguredElements());
 
         gui.addElement(new StaticGuiElement('p',
                 ItemUtils.getHead(resident.getUUID(), resident.getName()),
@@ -95,7 +88,7 @@ public class ResidentGUI extends SettlementsGUI {
                     resident.save();
                     InventoryGui.goBack(click.getWhoClicked());
                 }, rank -> {
-                    new ConfirmationGui(this, name() + ".transfer", c -> {
+                    new ConfirmationGui(name() + "settlement.setrank.transfer", c -> {
                         resident.getSettlement().transfer(resident);
                         Message.get("command.settlement.tranfer.success").tell(resident.getSettlement().getOnlineResidents(),
                                 "rank", SettlementRank.getChief().getTag(resident.getSettlement()),
@@ -136,7 +129,7 @@ public class ResidentGUI extends SettlementsGUI {
 
         if (sender.hasPermission("settlement.kick")) {
             gui.addElement(new StaticGuiElement('k', getIcon("kick"), click -> {
-                new ConfirmationGui(this, "kick", c -> {
+                new ConfirmationGui(name() + ".kick", c -> {
                     if (resident.getSettlement().hasPermission(sender, "settlement.kick")) {
                         Message.get("command.settlement.kick.kicked-alert").tell(resident.getSettlement().getOnlineResidents(), "player", resident.getName());
                         InviteManager.getInstance().removeInvite(resident, resident.getSettlement());
@@ -174,9 +167,5 @@ public class ResidentGUI extends SettlementsGUI {
         }
 
         gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
-    }
-
-    public void open() {
-        gui.show(resident.getPlayer());
     }
 }

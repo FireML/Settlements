@@ -3,6 +3,7 @@ package de.themoep.settlements.resident;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
+import de.themoep.settlements.integration.citizens.CitizensIntegration;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.invites.SettlementInvite;
 import de.themoep.settlements.settlement.Settlement;
@@ -99,6 +100,9 @@ public class ResidentManager {
     }
 
     public Resident getResident(Player p) {
+        if (SettlementsPlugin.getInstance().getCitizens() != null && SettlementsPlugin.getInstance().getCitizens().isNpc(p)) {
+            return null;
+        }
         Resident resident = getResident(p.getUniqueId());
         if (resident == null) {
             resident = new Resident(p.getUniqueId(), p.getName());
@@ -128,6 +132,9 @@ public class ResidentManager {
     }
 
     public Resident getResident(UUID uuid) {
+        if (SettlementsPlugin.getInstance().getCitizens() != null && SettlementsPlugin.getInstance().getCitizens().isNpc(uuid)) {
+            return null;
+        }
         Resident resident = residentsByUuid.getIfPresent(uuid);
         if (resident == null) {
             synchronized (RESIDENT_LOCK) {

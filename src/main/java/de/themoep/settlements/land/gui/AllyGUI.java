@@ -43,7 +43,7 @@ public class AllyGUI extends ConfigurableGui implements AllyCommand {
             ))));
 
             gui.addElement(new StaticGuiElement('r', getIcon("unally"), click -> {
-                new ConfirmationGui(this, "unally", c -> {
+                new ConfirmationGui(name() + ".unally", c -> {
                     LandOwner target = ally.getLandOwner();
 
                     if (!landOwner.isAlly(target)) {

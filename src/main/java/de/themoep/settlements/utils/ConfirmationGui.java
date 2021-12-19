@@ -12,25 +12,22 @@ import org.bukkit.inventory.ItemStack;
 import java.util.function.Consumer;
 
 public class ConfirmationGui extends SettlementsGUI {
-    private final static String[] SETUP = {
-            "   c  b   "
-    };
     private final InventoryGui gui;
 
-    public ConfirmationGui(ConfigMessages configMessages, String name, Consumer<GuiElement.Click> confirmedAction, Consumer<GuiElement.Click> cancelAction, String... replacements) {
+    public ConfirmationGui(String name, Consumer<GuiElement.Click> confirmedAction, Consumer<GuiElement.Click> cancelAction, String... replacements) {
         super(name);
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), configMessages.getText(name + ".title", replacements), getSetup());
+        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText(name + ".title", replacements), getSetup());
         gui.addElements(getConfiguredElements());
 
         gui.addElement(new StaticGuiElement('c', new ItemStack(Material.GREEN_WOOL), click -> {
             confirmedAction.accept(click);
             return true;
-        }, configMessages.getText(name + ".confirm", replacements)));
+        }, getText("confirm", replacements)));
 
         gui.addElement(new StaticGuiElement('b', new ItemStack(Material.RED_WOOL), click -> {
             cancelAction.accept(click);
             return true;
-        }, configMessages.getText(name + ".cancel", replacements)));
+        }, getText("cancel", replacements)));
     }
 
     public void open(Player player) {

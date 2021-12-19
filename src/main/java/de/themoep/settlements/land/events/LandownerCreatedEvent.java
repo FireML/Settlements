@@ -1,23 +1,23 @@
-package de.themoep.settlements.settlement.events;
+package de.themoep.settlements.land.events;
 
+import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.settlement.Settlement;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class SettlementCreatedEvent extends Event {
+public class LandownerCreatedEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private final Settlement settlement;
+    private final LandOwner<?, ?> landOwner;
     private final Resident resident;
 
-    public SettlementCreatedEvent(Settlement settlement, Resident resident) {
-        this.settlement = settlement;
+    public LandownerCreatedEvent(LandOwner<?, ?> landOwner, Resident resident) {
+        this.landOwner = landOwner;
         this.resident = resident;
     }
 
-    public Settlement getSettlement() {
-        return settlement;
+    public LandOwner<?, ?> getLandOwner() {
+        return landOwner;
     }
 
     public Resident getResident() {

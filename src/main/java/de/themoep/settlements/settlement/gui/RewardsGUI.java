@@ -24,7 +24,7 @@ public class RewardsGUI extends SettlementsGUI {
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), setup);
         gui.setCloseAction(close -> false);
 
-        GuiElementGroup group = new GuiElementGroup('g');
+        GuiElementGroup group = createGroup('g');
 
         for (String rewardId : rewards) {
             Reward reward = EventManager.getInstance().getReward(rewardId);

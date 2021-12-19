@@ -131,7 +131,7 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
 
     @Override
     public boolean isMaxLevel() {
-        return getNextLevelRequirements().isEmpty();
+        return isUnlocked() && getNextLevelRequirements().isEmpty();
     }
 
     @Override

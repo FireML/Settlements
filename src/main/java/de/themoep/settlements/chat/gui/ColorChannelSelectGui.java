@@ -1,47 +1,34 @@
 package de.themoep.settlements.chat.gui;
 
 import de.themoep.inventorygui.GuiElementGroup;
-import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.utils.ColorUtils;
-import de.themoep.settlements.utils.HumanReadable;
-import de.themoep.settlements.utils.Utils;
-import de.themoep.settlements.SettlementsGUI;
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.chat.ChatColorType;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.utils.ColorUtils;
+import de.themoep.settlements.utils.ConfigurableGui;
+import de.themoep.settlements.utils.HumanReadable;
+import de.themoep.settlements.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class ColorChannelSelectGui extends SettlementsGUI {
-    private final static String[] SETUP = {
-            "         ",
-            "         ",
-            "ggggggggg",
-            "ggggggggg",
-            "         ",
-            "         "
-    };
+public class ColorChannelSelectGui extends ConfigurableGui {
 
-    public ColorChannelSelectGui(Player p) {
-        super("chat.channel-select");
-        InventoryGui gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), SETUP);
-        gui.setCloseAction(close -> false);
-        gui.setFiller(BORDER_ITEM);
+    public ColorChannelSelectGui(Resident resident) {
+        super(resident, "chat.channel-select");
 
-        GuiElementGroup group = new GuiElementGroup('g');
+        GuiElementGroup group = createGroup('c');
+
+        Player player = resident.getPlayer();
 
         for (ChatChannel channel : ChatChannel.values()) {
-            if (!channel.canChat(p) && !channel.isPrivate()) {
+            if (!channel.canChat(player) && !channel.isPrivate()) {
                 continue;
             }
-            Resident resident = ResidentManager.getInstance().getResident(p);
             ChatColor resColor = resident.getChannelColor(channel, ChatColorType.MESSAGE,
                     Utils.getChannelColor(channel, ChatColorType.MESSAGE));
-            group.addElement(new StaticGuiElement('g', ColorUtils.getColorHead(resColor), click -> {
-                new ColorTypeSelectGui(channel).open(p);
+            group.addElement(new StaticGuiElement('c', ColorUtils.getColorHead(resColor), click -> {
+                new ColorTypeSelectGui(resident, channel).open();
                 return true;
             }, getText("channel-entry",
                     "color", resColor.toString(),
@@ -51,8 +38,6 @@ public class ColorChannelSelectGui extends SettlementsGUI {
         }
 
         gui.addElement(group);
-
-        gui.show(p);
     }
 
 }

@@ -15,7 +15,7 @@ settlement:
     message-range: 5
   quarter-master:
     type: villager
-    name: Manager
+    name: Quarter Master
     villager:
       profession: librarian
       type: plains

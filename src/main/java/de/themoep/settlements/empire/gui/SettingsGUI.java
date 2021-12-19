@@ -1,6 +1,6 @@
 package de.themoep.settlements.empire.gui;
 
-import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.empire.EmpireHomeCommand;
@@ -10,9 +10,7 @@ import de.themoep.settlements.land.gui.AccessGUI;
 import de.themoep.settlements.land.gui.RankPermsGUI;
 import de.themoep.settlements.land.gui.TitleGUI;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.SettlementsGUI;
-import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.land.gui.BuildGUI;
@@ -22,31 +20,10 @@ import org.bukkit.entity.Player;
 
 import java.util.function.Supplier;
 
-public class SettingsGUI extends SettlementsGUI {
-
-    private final static String[] SETUP = {
-            "llllillll",
-            "         ",
-            " um h ts ",
-            " ba   rp ",
-            "         ",
-            "llllcllll"
-    };
-
-    private final Resident resident;
-    public InventoryGui gui;
-
-    public SettingsGUI(Player player) {
-        this(ResidentManager.getInstance().getResident(player));
-    }
+public class SettingsGUI extends ConfigurableGui {
 
     public SettingsGUI(Resident resident) {
-        super("empire.settings");
-        this.resident = resident;
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), SETUP);
-        gui.setCloseAction(close -> false);
-
-        gui.addElement(new StaticGuiElement('l', BORDER_ITEM, " "));
+        super(resident, "empire.settings");
 
         gui.addElement(new StaticGuiElement('h', ItemUtils.toIcon(Material.BEACON), click -> {
             if (click.getType().isShiftClick()) {
@@ -111,7 +88,7 @@ public class SettingsGUI extends SettlementsGUI {
         if (resident.hasPermission("empire.mode")) {
             gui.addElement(new StaticGuiElement('m', ItemUtils.toIcon(Material.REPEATER),click -> {
                 if (resident.hasPermission("empire.mode")) {
-                    new ModeGUI().open((Player) click.getEvent().getWhoClicked());
+                    new ModeGUI(resident).open();
                 }
                 return true;
             }, getText("mode",
@@ -168,10 +145,7 @@ public class SettingsGUI extends SettlementsGUI {
         gui.addElement(new StaticGuiElement('i', ItemUtils.toIcon(Material.BLUE_BED),
                 Utils.wrap(getText("entry", empire.getReplacements(SettingsGUI.this)), 48)));
 
-        gui.addElement(new StaticGuiElement('c', ItemUtils.toIcon(Material.BARRIER), click -> {
-            click.getGui().close();
-            return true;
-        }, getText("close")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), getText("back")));
     }
 
     public void open() {

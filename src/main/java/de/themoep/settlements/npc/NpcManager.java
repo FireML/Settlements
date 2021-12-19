@@ -116,11 +116,11 @@ public class NpcManager {
 
     private NpcLevel getLevelInternal(LandOwner<?, ?> owner, int level) {
         if (owner instanceof Settlement) {
-            if (settlementLevels.size() <= level) {
+            if (settlementLevels.size() >= level) {
                 return settlementLevels.get(level - 1);
             }
         } else if (owner instanceof Empire) {
-            if (empireLevels.size() <= level) {
+            if (empireLevels.size() >= level) {
                 return empireLevels.get(level - 1);
             }
         }

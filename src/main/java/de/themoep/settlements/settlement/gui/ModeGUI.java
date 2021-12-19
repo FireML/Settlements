@@ -1,6 +1,7 @@
 package de.themoep.settlements.settlement.gui;
 
 import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
@@ -8,6 +9,7 @@ import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.PlotMode;
+import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.resident.Resident;
@@ -15,32 +17,19 @@ import de.themoep.settlements.resident.ResidentManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-public class ModeGUI extends SettlementsGUI {
-    private final static String[] SETUP = {
-            "         ",
-            "         ",
-            "ggggggggg",
-            "ggggggggg",
-            "         ",
-            "    b    "
-    };
+public class ModeGUI extends ConfigurableGui {
 
-    private final InventoryGui gui;
+    public ModeGUI(Resident res) {
+        super(res, "mode");
 
-    public ModeGUI() {
-        super("mode");
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), SETUP);
-        gui.setCloseAction(close -> false);
-        gui.setFiller(BORDER_ITEM);
-
-        GuiElementGroup group = new GuiElementGroup('g');
+        GuiElementGroup group = createGroup('m');
 
         for (PlotMode m : PlotMode.values(PlotMode.AppliesTo.LAND_OWNER)) {
-            group.addElement(new DynamicGuiElement('g', (h) -> {
+            group.addElement(new DynamicGuiElement('m', (h) -> {
                 Resident resident = ResidentManager.getInstance().getResident((Player) h);
                 if (resident.hasSettlement()) {
                     boolean enabled = m.get(resident.getSettlement());
-                    return new StaticGuiElement('g',
+                    return new StaticGuiElement('m',
                             ItemUtils.setGlowing(m.getItem(), enabled),
                             click -> {
                                 if (resident.hasSettlement() && resident.hasPermission("settlement.mode")) {
@@ -72,14 +61,7 @@ public class ModeGUI extends SettlementsGUI {
 
         gui.addElement(group);
 
-        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
-            new SettingsGUI((Player) click.getEvent().getWhoClicked()).open();
-            return true;
-        }, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
 
-    }
-
-    public void open(final Player p) {
-        gui.show(p);
     }
 }

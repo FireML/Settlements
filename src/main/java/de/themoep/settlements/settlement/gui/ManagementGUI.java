@@ -124,7 +124,7 @@ public class ManagementGUI extends SettlementsGUI {
                 "action", resident.hasPermission("settlement.ranks") ? getText("unlockables.unlocked.options") : getText("no-permission")
         )));
 
-        gui.addElement(new StaticGuiElement('t', getIcon("settings"), click -> {
+        gui.addElement(new StaticGuiElement('s', getIcon("settings"), click -> {
             if (resident.hasPermission("settlement.settings")) {
                 new SettingsGUI(resident).open();
             }
@@ -134,7 +134,7 @@ public class ManagementGUI extends SettlementsGUI {
                 "action", resident.hasPermission("settlement.settings") ? getText("unlockables.unlocked.options") : getText("no-permission")
         )));
 
-        gui.addElement(new StaticGuiElement('t', getIcon("land"), click -> {
+        gui.addElement(new StaticGuiElement('l', getIcon("land"), click -> {
             if (resident.hasPermission("settlement.perms")) {
                 Supplier<Boolean> permCheck = () -> resident.getSettlement().hasPermission(resident, "perms");
                 new PermsGUI("settlement",
@@ -149,7 +149,7 @@ public class ManagementGUI extends SettlementsGUI {
                 "action", resident.hasPermission("settlement.perms") ? getText("unlockables.unlocked.options") : getText("no-permission")
         )));
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
     }
 
     private Collection<Invite<?, ?>> getRequests(Resident resident) {

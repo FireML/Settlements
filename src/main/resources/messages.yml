@@ -691,6 +691,7 @@ lock:
 gui:
   no-permission: "&cUnable to modify"
   back: "&cBack"
+  page: "Page {page}"
   close: "&cClose"
   enabled: "&aEnabled"
   disabled: "&cDisabled"
@@ -908,7 +909,7 @@ gui:
       color-changed: "&7Changed {type} color of channel {channel} to &r{color}{color-name}"
       back: "&c&lBack To Type Selection"
   allies:
-    title: "/s allies"
+    title: "Manage Allies"
     entry:
       settlement: |-
         &e{name}
@@ -934,7 +935,7 @@ gui:
       &bClick to sort by {nextstate}
     page: "Page {page}"
   ally:
-    title: "/s allies"
+    title: "Manage Ally"
     info:
       settlement: |-
         &e{name}
@@ -1088,7 +1089,7 @@ gui:
         title: "Set auction tax"
         placeholder: "{auctiontax}"
   banished:
-    title: "/s banished"
+    title: "Manage Banished"
     sort: |-
       &fSorted by {state}
       &bClick to sort by {nextstate}
@@ -1106,7 +1107,7 @@ gui:
       
       &bClick to browse
   unbanished:
-    title: "/s banished"
+    title: "Unbanishment History"
     sort: |-
       &fSorted by {state}
       &bClick to sort by {nextstate}
@@ -1122,7 +1123,7 @@ gui:
       &fDate: &e{unbanishdate}
   management:
     title: "Manage {state}"
-    applications: |-
+    recruitment: |-
       &eView Join Requests
       &fSee a list of everyone who
       &fapplied to join the {state}
@@ -1167,7 +1168,7 @@ gui:
   
       {action}
   npclist:
-    title: "NPCs"
+    title: "Manage your NPCs"
     entry:
       unlocked: |-
         &e{name}
@@ -1221,7 +1222,7 @@ gui:
     back: "&cClose"
     
   build:
-    title: "&2&l/s build"
+    title: "Manage Building"
     set-state: "&7&lAllow &b&l{state}&7&l to Build"
     selected-state: "&e&lBuilding is currently set to &a&l{state}"
     individual-state: "&7&lPlot build is set to &a&l{state}&7&l but overridden!"
@@ -1251,12 +1252,11 @@ gui:
         &7- Assistant
         &7to build.
   missions:
-    title: "&2&l/e missions"
+    title: "Available Missions"
     info: |-
       &a&lDaily Missions
       &eDoing missions will reward
-      &ethe town Contribution Points
-      &ewhich can be used in the shop
+      &eContribution Points
     entry: |-
       &a&l{title}
       {requirements}
@@ -1280,7 +1280,7 @@ gui:
     mission-finished: "&r&c&lMission {mission} is already finished!"
     list-entry: "&6{amount} {icon}&e{material}"
   mode:
-    title: "&2&l/s mode"
+    title: "Toggle Modes"
     entry:
       title: "&a&l{mode}"
       lore: "&7&lEnabled: &a&l{value}"
@@ -1289,10 +1289,8 @@ gui:
         false: "No"
     back: "&c&lBack To Settings"
   empire:
-    allies:
-      title: "/e allies"
     access:
-      title: "&2&l/e access"
+      title: "Set Empire Access"
       access:
         open: |-
           &7Everyone can teleport to home
@@ -1311,7 +1309,7 @@ gui:
           &7Can teleport to {state} home:
           &7- Residents of the capital
     build:
-      title: "&2&l/e build"
+      title: "Manage Building"
       individual-state: "&7&lPlot build is set to &a&l{state}&7&l but overridden!"
       inherited-state: "&e&lBuilding state &a&l{state}&e&l is default!"
       build:
@@ -1328,10 +1326,7 @@ gui:
           &7Allows all members to build
         private: |-
           &7Allows only capital residents to build
-    mode:
-      title: "&2&l/e mode"
     perks:
-      title: "&2&l/e perks"
       actions:
         weather:
           clear: |-
@@ -1359,16 +1354,6 @@ gui:
           night: |-
             &eNight
             &bClick to set to morning (6:00)!
-    perms:
-      title: "&2&l/e perms"
-    ranks:
-      title: "&2&l/e ranks"
-    rank-perm-groups:
-      title: "&2&l/e perms &e&l{rank}"
-    rank-perms:
-      title: "&2&l/e ranks"
-    shop:
-      title: "&2&l/e shop"
     settings:
       title: "&2&lEmpire Settings"
       home: |-
@@ -1474,8 +1459,6 @@ gui:
         state: "&e{state}s:&r {members}"
         entry: "&7{name}"
         separator: "&8, "
-    titles:
-      title: "&2&l/e titles gui"
     states: |-
       &eStates
       &fGroups that you let access to
@@ -1484,25 +1467,6 @@ gui:
       &a➤ &fAlly = &eAllies & Member Residents
       &a➤ &fTrusted = &eMember Residents
       &a➤ &fPublic = &eEveryone
-    vault:
-      title: "&2&l/e vault"
-  reset-perms:
-    title: "&2&l/s ranks"
-    reset:
-      title: "&cReset all {rank} perms?"
-      confirm: |-
-        &a&lConfirm
-        &7Click to reset the permissions
-        &7of {rank} in {state} {name}
-        &7to their default values!
-      cancel: |-
-        &c&lCancel
-        &7Click to cancel the reseting
-        &7of all rank permissions.
-    back: "&c&lBack To Settings"
-    entry:
-      title: "&3{rank}"
-      edit: "&7Click to edit permissions."
   rank-perms:
     title: "&2&l/s ranks"
     previous: "&7Previous page"
@@ -1517,9 +1481,22 @@ gui:
       
       &bClick to reset
     reset-perms:
-      title: "&cReally reset &e{rank}?"
-      confirm: "&cReset &e{rank}"
-      cancel: "&aDon't reset &e{rank}"
+      title: "Reset all {rank} perms?"
+      reset:
+        title: "&cReset all {rank} perms?"
+        confirm: |-
+          &a&lConfirm
+          &7Click to reset the permissions
+          &7of {rank} in {state} {name}
+          &7to their default values!
+        cancel: |-
+          &c&lCancel
+          &7Click to cancel the reseting
+          &7of all rank permissions.
+      back: "&c&lBack To Settings"
+      entry:
+        title: "&3{rank}"
+        edit: "&7Click to edit permissions."
     rank-entry:
       selected: |-
         &e{name}
@@ -1565,13 +1542,19 @@ gui:
       
         &cNot selectable!
         &cRank insufficient
+    transfer:
+      confirm: |-
+        &a&lConfirm
+        &7Click to transfer {state}
+        &7{settlement} to {name}
+      cancel: |-
+        &c&lCancel
+        &7Click to not transfer
   reslist:
     title:  "&2&l/s res"
     sort: |-
       &fSorted by {state}
       &bClick to sort by {nextstate}
-    page: "Page {page}"
-    back: "&cBack"
     entry: |-
       &e&l{name}
       &fTown Info:
@@ -2214,6 +2197,7 @@ gui:
     &a➤ &fPublic = &eEveryone
   upgrade:
     title: "Quarter Master"
+    back: "&cClose"
     navigation:
       entry: |-
         &e{name}
@@ -2254,7 +2238,7 @@ gui:
       &fProgress {progressbar}
     progress-bar:
       finished: "&a{bars}"
-      left: "&f{bars}"
+      unfinished: "&f{bars}"
     deposit: |-
       &eDeposit Here!
       &fDeposit the required materials here
@@ -2543,6 +2527,59 @@ command:
       description: "Add custom lines to the scoreboard"
       added: "&7Added '&f{line}&7' to the scoreboard."
   settlement:
+    group:
+      manage-res:
+        description: |-
+          &9Manage Members
+          &9- View active
+          &9- Send kick notices
+          &9- Set ranks
+          &9- Set titles
+          &9- Set tax evasion
+          &9- Set tax excempt
+      manage-allies:
+        description: |-
+          &9Manage Allies
+          &9- Set nearby Claim
+      admin-allies:
+        description: |-
+          &9Administrate Allies
+          &9- Create new ally
+          &9- Break an ally
+      manage-ranks:
+        description: "Manage Ranks"
+      manage-settings:
+        description: "Manage Settings"
+      manage-notes:
+        description: |-
+          &9Manage Minor Settings
+          &9- Change Home Location
+          &9- Change rules
+          &9- Set Discord Link
+      manage-bank:
+        description: |-
+          &9Manage Bank
+          &9- Set Resident Taxes
+          &9- Set Auction Taxes
+      use-bank:
+        description: |-
+          &9Use Bank
+          &9- Use Storage
+          &9- See History
+      use-outpost:
+        description: "Use Outpost Teleports"
+      manage-outpost:
+        description: "Manage Outposts"
+      manage-shop:
+        description: "Buy in the Shop"
+    portal:
+      link:
+        description: "Link portals"
+      unlink:
+        description: "Unlink portals"
+      admin:
+        description: "Allows administrating of portals"
+      description: Portal Commands
     active:
       head: "&a⊱&m━━━━&r&6Active Players [{page}/{maxpage}]&a&m━━━━&a⊰"
       entry: "&e• [&e&l{title} &r&e{name} - &r{activity}](&eLast login at {timestamp})"
@@ -2637,11 +2674,13 @@ command:
         description: "Claims a chunk at specific coordinates"
     create:
       success: |-
+        &7
         &a&l               Congratulations
-        &r&7       You have created a new settlement!
-        &r&7 Start by creating your first claim with [&e/s claim](/s claim)
+        &r&7        You have created a new settlement!
+        &r&7    Start by creating your first claim with [&e/s claim](/s claim)
         &r&7 That will also set your Settlement Home and Manager
-        &r&7           (Both can be moved later)
+        &r&7              (Both can be moved later)
+        &7
       broadcast: "&e{player} has made a settlement called {name}!"
       description: Create a new settlement.
     setdescription:
@@ -3210,6 +3249,48 @@ command:
       success: "&aConfigs reloaded. Some values might require a restart for them to take effect!"
   empire:
     description: Commands for empire management
+    group:
+      manage-member:
+        description: |-
+          &9Manage Members
+          &9- Send kick notices
+          &9- Set ranks
+          &9- Set titles
+          &9- Set tax evasion
+      manage-allies:
+        description: |-
+          &9Manage Allies
+          &9- Set nearby Claim
+      admin-allies:
+        description: |-
+          &9Administrate Allies
+          &9- Create new ally
+          &9- Break an ally
+      manage-ranks:
+        description: "Manage Ranks"
+      manage-settings:
+        description: "Manage Settings"
+      manage-notes:
+        description: |-
+          &9Manage Minor Settings
+          &9- Change Home Location
+          &9- Change rules
+          &9- Set Discord Link
+      manage-bank:
+        description: |-
+          &9Manage Bank
+          &9- Set Taxes
+      use-bank:
+        description: |-
+          &9Use Bank
+          &9- Use Storage
+          &9- See History
+      use-outpost:
+        description: "Use Outpost Teleports"
+      manage-outpost:
+        description: "Manage Outposts"
+      manage-shop:
+        description: "Buy in the Shop"
     allies:
       head: "&a⊱&m━━━━&r&6Allies&a&m━━━━&a⊰"
       entry: "&a{state} {name}"

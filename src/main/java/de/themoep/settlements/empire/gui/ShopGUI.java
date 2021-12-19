@@ -1,22 +1,20 @@
 package de.themoep.settlements.empire.gui;
 
 import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
-import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.SettlementsGUI;
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.perk.EmpirePerk;
 import de.themoep.settlements.perk.PerkData;
+import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.Utils;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -28,27 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ShopGUI extends SettlementsGUI {
-    private static final String[] SETUP = {
-            "         ",
-            "         ",
-            "ggggggggg",
-            "ggggggggg",
-            "         ",
-            "    b    ",
-    };
-    private final Resident resident;
-    private final InventoryGui gui;
+public class ShopGUI extends ConfigurableGui {
 
     public ShopGUI(Resident resident) {
-        super("empire.shop");
-        this.resident = resident;
+        super(resident, "empire.shop");
 
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), SETUP);
-        gui.setCloseAction(close -> false);
-        gui.setFiller(BORDER_ITEM);
-
-        GuiElementGroup group = new GuiElementGroup('g');
+        GuiElementGroup group = createGroup('g');
 
         if (resident.hasEmpire()) {
             Empire empire = resident.getSettlement().getEmpire();
@@ -191,10 +174,7 @@ public class ShopGUI extends SettlementsGUI {
 
         gui.addElement(group);
 
-        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
-            new SettingsGUI(resident).open();
-            return true;
-        }, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
     }
 
     public void open() {

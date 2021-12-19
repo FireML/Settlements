@@ -3,6 +3,7 @@ package de.themoep.settlements.empire;
 import co.aikar.timings.lib.MCTiming;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.Ally;
+import de.themoep.settlements.land.events.LandownerAbandonedEvent;
 import de.themoep.settlements.land.events.LandownerLeveledEvent;
 import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.perk.events.PerkUnlockedEvent;
@@ -445,6 +446,9 @@ public class EmpireManager {
         empire.getPerksMap().clear();
 
         empire.setCreated(System.currentTimeMillis());
+
+        Utils.callEvent(new LandownerAbandonedEvent(empire));
+
         DatabaseManager.getInstance().saveEmpire(empire);
         DatabaseManager.getInstance().saveAllies(allies);
         DatabaseManager.getInstance().saveSettlementMissionData(modifiedSettlements);

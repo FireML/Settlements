@@ -17,7 +17,7 @@ public class SettlementModeCommand extends SettlementSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length < 1) {
-            new ModeGUI().open(res.getPlayer());
+            new ModeGUI(res).open();
             return true;
         }
 

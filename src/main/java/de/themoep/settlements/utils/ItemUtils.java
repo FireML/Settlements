@@ -19,6 +19,9 @@ public class ItemUtils {
      * @return The item
      */
     public static ItemStack setGlowing(ItemStack item, boolean glowing) {
+        if (item == null) {
+            return null;
+        }
         ItemMeta meta = item.getItemMeta();
         if (glowing) {
             meta.addEnchant(Enchantment.DAMAGE_ALL, 1, true);

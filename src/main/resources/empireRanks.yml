@@ -4,14 +4,15 @@ perm-groups:
   manage-member:
     permissions:
     - empire.member # TODO: Management GUI
-    - empire.kicknotice # TODO
+    - empire.kicknotice
     - empire.setrank
     - empire.settitle
     - empire.settaxevasion # TODO
+    - empire.settaxexempt
   manage-allies:
     permissions:
     - empire.allyclaim
-    - empire.manageally # TODO
+    - empire.manageally
   admin-allies:
     permissions:
     - empire.ally
@@ -62,7 +63,7 @@ toggleable-permissions:
 - empire.bank.deposit
 - empire.group.manage-bank
 - empire.allies
-- empire.group.manage-ally
+- empire.group.manage-allies
 - empire.group.admin-allies
 - empire.banished
 - empire.banish

@@ -23,6 +23,7 @@ public class MissionGui extends ConfigurableGui {
         Settlement settlement = (Settlement) provider;
 
         GuiElementGroup group = new GuiElementGroup('m');
+        group.setAlignment(getAlignment("m"));
         for (MissionData missionData : settlement.getMissionData()) {
             group.addElement(new DynamicGuiElement('m', who -> {
                 StaticGuiElement element = new StaticGuiElement('m', missionData.getMission().getIcon(), getText("entry",

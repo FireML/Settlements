@@ -12,6 +12,7 @@ import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.perk.SettlementPerk;
 import de.themoep.settlements.perk.PerkData;
+import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.ItemUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -22,23 +23,14 @@ import org.bukkit.potion.PotionType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PerksGUI extends SettlementsGUI {
-    private final Resident resident;
-    private final InventoryGui gui;
+public class PerksGUI extends ConfigurableGui {
 
     public PerksGUI(Resident resident) {
-        super("settlement.perks");
-        this.resident = resident;
+        super(resident, "settlement.perks");
 
         Settlement settlement = resident.getSettlement();
 
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), getSetup());
-        gui.setCloseAction(close -> false);
-        gui.setFiller(getIcon("filler"));
-        gui.addElements(getConfiguredElements());
-
-        GuiElementGroup group = new GuiElementGroup('p');
-        group.setAlignment(getAlignment("p"));
+        GuiElementGroup group = createGroup('p');
 
         for (SettlementPerk perk : SettlementManager.getInstance().getPerks()) {
             if (settlement == null || !settlement.hasUnlocked(perk) || (!perk.hasEffects() && !perk.hasActions())) {

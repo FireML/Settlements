@@ -1,19 +1,16 @@
 package de.themoep.settlements.empire.gui;
 
 import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
-import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.SettlementsGUI;
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.perk.EmpirePerk;
 import de.themoep.settlements.perk.PerkData;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.ItemUtils;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -23,37 +20,20 @@ import org.bukkit.potion.PotionType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PerksGUI extends SettlementsGUI {
-    private final static String[] SETUP = {
-            "         ",
-            "         ",
-            "ggggggggg",
-            "ggggggggg",
-            "         ",
-            "    b    "
-    };
-
-    private final Resident resident;
-    private final InventoryGui gui;
-
+public class PerksGUI extends ConfigurableGui {
     public PerksGUI(Resident resident) {
-        super("empire.perks");
-        this.resident = resident;
+        super(resident, "empire.perks");
 
         Empire empire = resident.hasEmpire() ? resident.getSettlement().getEmpire() : null;
 
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), SETUP);
-        gui.setCloseAction(close -> false);
-        gui.setFiller(BORDER_ITEM);
-
-        GuiElementGroup group = new GuiElementGroup('g');
+        GuiElementGroup group = createGroup('p');
 
         for (EmpirePerk perk : EmpireManager.getInstance().getPerks()) {
             if (empire == null || !empire.hasUnlocked(perk) || (!perk.hasEffects() && !perk.hasActions())) {
                 continue;
             }
 
-            group.addElement(new DynamicGuiElement('g', (h) -> {
+            group.addElement(new DynamicGuiElement('p', (h) -> {
                 if (resident.hasEmpire()) {
                     PerkData perkData = resident.getSettlement().getEmpire().getPerkData(perk);
                     List<String> lore = new ArrayList<>();
@@ -87,7 +67,7 @@ public class PerksGUI extends SettlementsGUI {
                         }
                     }
 
-                    return new StaticGuiElement('g',
+                    return new StaticGuiElement('p',
                             itemStack,
                             click -> {
                                 if (resident.hasEmpire() && resident.hasPermission("empire.perks.toggle")) {
@@ -107,10 +87,7 @@ public class PerksGUI extends SettlementsGUI {
 
         gui.addElement(group);
 
-        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
-            new SettingsGUI((Player) click.getEvent().getWhoClicked()).open();
-            return true;
-        }, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
     }
 
     public void open() {

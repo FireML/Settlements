@@ -5,7 +5,6 @@ import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
-import de.themoep.settlements.empire.EmpireMission;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.LandAccess;
@@ -17,7 +16,6 @@ import de.themoep.settlements.land.Use;
 import de.themoep.settlements.land.events.LandownerDisbandEvent;
 import de.themoep.settlements.land.events.LandownerLeveledEvent;
 import de.themoep.settlements.lock.LockProvider;
-import de.themoep.settlements.missions.MissionTaker;
 import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.perk.SettlementPerk;
 import de.themoep.settlements.perk.Perk;
@@ -26,7 +24,8 @@ import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.settlement.events.SettlementCreatedEvent;
+import de.themoep.settlements.land.events.LandownerAbandonedEvent;
+import de.themoep.settlements.land.events.LandownerCreatedEvent;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
@@ -171,7 +170,7 @@ public class SettlementManager {
                 SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving " + settlement.getName() + " to the database! No ID was returned.");
                 chief.tell(ChatColor.RED + "Error while saving " + settlement.getName() + " to the database! No ID was returned.");
             }
-            Utils.runSync(() -> Utils.callEvent(new SettlementCreatedEvent(settlement, chief)));
+            Utils.runSync(() -> Utils.callEvent(new LandownerCreatedEvent(settlement, chief)));
         });
     }
 
@@ -301,6 +300,9 @@ public class SettlementManager {
         settlement.getPerksMap().clear();
 
         settlement.setCreated(System.currentTimeMillis());
+
+        Utils.callEvent(new LandownerAbandonedEvent(settlement));
+
         DatabaseManager.getInstance().saveSettlement(settlement);
         DatabaseManager.getInstance().saveAllies(allies);
         DatabaseManager.getInstance().saveResident(residents);

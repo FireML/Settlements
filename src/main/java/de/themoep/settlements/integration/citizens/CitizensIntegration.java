@@ -5,8 +5,11 @@ import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.empire.gui.SettingsGUI;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.LandownerLevel;
+import de.themoep.settlements.land.events.LandClaimedEvent;
+import de.themoep.settlements.land.events.LandUnclaimEvent;
 import de.themoep.settlements.land.events.LandownerLeveledEvent;
 import de.themoep.settlements.land.gui.BankGUI;
 import de.themoep.settlements.land.gui.ElderGUI;
@@ -19,13 +22,15 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
-import de.themoep.settlements.settlement.events.SettlementCreatedEvent;
+import de.themoep.settlements.land.events.LandownerAbandonedEvent;
+import de.themoep.settlements.land.events.LandownerCreatedEvent;
 import de.themoep.settlements.settlement.gui.ManagementGUI;
 import de.themoep.settlements.teleporter.TeleportersGUI;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.config.ConfigManager;
+import de.themoep.settlements.world.SimpleLocation;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCClickEvent;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
@@ -36,6 +41,7 @@ import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.TraitInfo;
 import net.citizensnpcs.api.trait.TraitName;
 import net.citizensnpcs.trait.Anchors;
+import net.citizensnpcs.trait.LookClose;
 import net.citizensnpcs.trait.SkinTrait;
 import net.citizensnpcs.trait.VillagerProfession;
 import net.citizensnpcs.trait.text.Text;
@@ -44,23 +50,24 @@ import net.citizensnpcs.trait.waypoint.WanderWaypointProvider;
 import net.citizensnpcs.trait.waypoint.Waypoints;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.Locale;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class CitizensIntegration implements Listener, ConfigMessages {
 
 
     public CitizensIntegration() {
-        SettlementsPlugin.getInstance().getServer().getPluginManager().registerEvents(this, SettlementsPlugin.getInstance());
-
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SettlementsTrait.class));
 
         SubCommand settlementCommand = CommandManager.getInstance().getCommand("settlement");
         settlementCommand.registerCommand(new NpcCommand(this, settlementCommand, Resident::getSettlement));
+        SettlementsPlugin.getInstance().getServer().getPluginManager().registerEvents(this, SettlementsPlugin.getInstance());
     }
 
     public String getCitizensVersion() {
@@ -68,9 +75,32 @@ public class CitizensIntegration implements Listener, ConfigMessages {
     }
 
     @EventHandler
-    public void onSettlementCreate(SettlementCreatedEvent event) {
-        createNpc(event.getSettlement(), NpcType.MANAGER, event.getResident().getPlayer().getLocation());
-        createNpc(event.getSettlement(), NpcType.QUARTER_MASTER, event.getResident().getPlayer().getLocation());
+    public void onSettlementCreate(LandownerCreatedEvent event) {
+        unlockNpc(event.getLandOwner(), NpcType.MANAGER);
+        unlockNpc(event.getLandOwner(), NpcType.QUARTER_MASTER);
+        if (event.getLandOwner().getHome() != null) {
+            createNpc(event.getLandOwner(), NpcType.MANAGER, event.getLandOwner().getHome().toBukkitLocation());
+            createNpc(event.getLandOwner(), NpcType.QUARTER_MASTER, event.getLandOwner().getHome().toBukkitLocation());
+        }
+    }
+
+    @EventHandler
+    public void onCaimed(LandClaimedEvent event) {
+        handle(event, NpcType.MANAGER);
+        handle(event, NpcType.QUARTER_MASTER);
+    }
+
+    private void handle(LandClaimedEvent event, NpcType type) {
+        NpcData npcData = event.getLandOwner().getNpcData(type);
+        if (npcData.isUnlocked() && getNpc(event.getLandOwner(), type) == null) {
+            Location location;
+            if (event.getLandOwner().getHome() != null) {
+                location = event.getLandOwner().getHome().toBukkitLocation();
+            } else {
+                location = event.getLand().getCenterBukkitLocation();
+            }
+            createNpc(event.getLandOwner(), type, location);
+        }
     }
 
     public void createNpc(LandOwner<?, ?> landOwner, NpcType type, Location location) {
@@ -103,17 +133,22 @@ public class CitizensIntegration implements Listener, ConfigMessages {
         typeTrait.type = type;
         typeTrait.ownerType = landOwner.getDbName();
         typeTrait.ownerId = (int) landOwner.getId().value();
+        npc.addTrait(typeTrait);
+
+        LookClose lookTrait = npc.getOrAddTrait(LookClose.class);
+        lookTrait.lookClose(true);
 
         Anchors anchors = npc.getOrAddTrait(Anchors.class);
         anchors.addAnchor("home", location);
 
+         /* TODO: Custom waypoint provider to check claims
         Waypoints waypoints = npc.getOrAddTrait(Waypoints.class);
-        waypoints.setWaypointProvider("wander");
+        waypoints.setWaypointProvider("wanderclaims");
         if (waypoints.getCurrentProvider() instanceof WanderWaypointProvider) {
             WanderWaypointProvider wander = (WanderWaypointProvider) waypoints.getCurrentProvider();
             wander.setXYRange(2, 2);
             wander.addRegionCentre(location);
-        }
+        } */
 
         if (!config.getMessages().isEmpty()) {
             Text textTrait = npc.getOrAddTrait(Text.class);
@@ -159,12 +194,16 @@ public class CitizensIntegration implements Listener, ConfigMessages {
                 String skinName = config.getSkinName();
                 String texture = config.getSkinTextures();
                 String signature = config.getSkinSignature();
-                if (!texture.isEmpty() && !signature.isEmpty() && !skinName.isEmpty()) {
-                    skinTrait.setSkinPersistent(skinName, signature, texture);
-                } else if (!texture.isEmpty() && !signature.isEmpty()) {
-                    skinTrait.setTexture(texture, signature);
-                } else if (!skinName.isEmpty()) {
-                    skinTrait.setSkinName(skinName);
+                try {
+                    if (!texture.isEmpty() && !signature.isEmpty() && !skinName.isEmpty()) {
+                        skinTrait.setSkinPersistent(skinName, signature, texture);
+                    } else if (!texture.isEmpty() && !signature.isEmpty()) {
+                        skinTrait.setTexture(texture, signature);
+                    } else if (!skinName.isEmpty()) {
+                        skinTrait.setSkinName(skinName);
+                    }
+                } catch (IllegalArgumentException e) {
+                    SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid texture data specified! (name: " + skinName + ", texture: " + texture + ", signature: " + signature + ") " + e.getMessage());
                 }
                 break;
             }
@@ -217,7 +256,11 @@ public class CitizensIntegration implements Listener, ConfigMessages {
             switch (typeTrait.type) {
                 case MANAGER: {
                     if (landOwner.hasPermission(resident, "settings")) {
-                        new ManagementGUI(resident).open();
+                        if (landOwner instanceof Settlement) {
+                            new ManagementGUI(resident).open();
+                        } else if (landOwner instanceof Empire) {
+                            new SettingsGUI(resident).open();
+                        }
                     } else {
                         event.setCancelled(true);
                         getError("no-permission").tell(resident);
@@ -281,10 +324,50 @@ public class CitizensIntegration implements Listener, ConfigMessages {
         LandownerLevel level = event.getLeveled().getLevelInfo();
         if (level != null) {
             for (NpcType npc : level.getNPCs()) {
-                createNpc(event.getLeveled(), npc, event.getLeveled().getHome().toBukkitLocation());
+                unlockNpc(event.getLeveled(), npc);
+                if (event.getLeveled().getHome() != null) {
+                    createNpc(event.getLeveled(), npc, event.getLeveled().getHome().toBukkitLocation());
+                }
                 getMessage("new-npcs-available").tell(event.getLeveled(),
                         "npc", npc.getTag(),
                         "state", event.getLeveled().getStateTag());
+            }
+        }
+    }
+
+    private void unlockNpc(LandOwner<?, ?> landOwner, NpcType type) {
+        NpcData npcData = landOwner.getNpcData(type);
+        if (!npcData.isUnlocked()) {
+            npcData.setLevel(1);
+            npcData.save();
+        }
+        landOwner.addNpc(npcData);
+    }
+
+    @EventHandler
+    public void onSettlementDisband(LandownerAbandonedEvent event) {
+        for (NpcData npcData : event.getLandOwner().getNpcData()) {
+            if (npcData.getNpcId() > -1) {
+                NPC npc = CitizensAPI.getNPCRegistry().getById(npcData.getNpcId());
+                if (npc != null) {
+                    CitizensAPI.getNPCRegistry().deregister(npc);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onUnclaim(LandUnclaimEvent event) {
+        for (NpcData npcData : event.getLandOwner().getNpcData()) {
+            if (npcData.getNpcId() > -1) {
+                NPC npc = CitizensAPI.getNPCRegistry().getById(npcData.getNpcId());
+                if (npc != null && npc.isSpawned() && event.getLand().contains(new SimpleLocation(npc.getEntity().getLocation()))) {
+                    if (event.getLand().getLandOwner().getHome() != null) {
+                        npc.teleport(event.getLand().getLandOwner().getHome().toBukkitLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                    } else {
+                        npc.despawn();
+                    }
+                }
             }
         }
     }
@@ -312,6 +395,14 @@ public class CitizensIntegration implements Listener, ConfigMessages {
         return "integration";
     }
 
+    public boolean isNpc(UUID playerId) {
+        return playerId.version() == 2 || CitizensAPI.getNPCRegistry().getByUniqueIdGlobal(playerId) != null;
+    }
+
+    public boolean isNpc(Player player) {
+        return CitizensAPI.getNPCRegistry().isNPC(player);
+    }
+
     @TraitName("settlements")
     public static class SettlementsTrait extends Trait {
 
@@ -319,13 +410,13 @@ public class CitizensIntegration implements Listener, ConfigMessages {
             super("settlements");
         }
 
-        @Persist(required = true)
+        @Persist(value = "type", namespace = "settlements", required = true)
         private NpcType type;
 
-        @Persist(required = true)
+        @Persist(value = "ownerType", required = true)
         private String ownerType;
 
-        @Persist(required = true)
+        @Persist(value = "ownerId", required = true)
         private int ownerId;
 
         public NpcType getType() {

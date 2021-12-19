@@ -6,6 +6,9 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Called before a land owner chief was changed
+ */
 public class LandownerChiefChangeEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private final LandOwner landOwner;

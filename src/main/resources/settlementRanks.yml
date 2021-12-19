@@ -78,7 +78,7 @@ toggleable-permissions:
 - settlement.bank.deposit
 - settlement.group.manage-bank
 - settlement.allies
-- settlement.group.manage-ally
+- settlement.group.manage-allies
 - settlement.group.admin-allies
 - settlement.banished
 - settlement.banish
@@ -194,7 +194,7 @@ ranks:
     - settlement.invite
     
   recruiter:
-    icon: gold_sword
+    icon: golden_sword
     inherits: resident
     permissions:
     - settlement.officer

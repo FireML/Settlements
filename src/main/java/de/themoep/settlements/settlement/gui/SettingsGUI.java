@@ -12,6 +12,7 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
+import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.SignGui;
@@ -28,23 +29,16 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class SettingsGUI extends SettlementsGUI {
+public class SettingsGUI extends ConfigurableGui {
     private final Pattern namePattern;
-    private final Resident resident;
-    public InventoryGui gui;
 
     public SettingsGUI(Player player) {
         this(ResidentManager.getInstance().getResident(player));
     }
 
     public SettingsGUI(Resident resident) {
-        super("settlement.settings");
+        super(resident, "settlement.settings");
         namePattern = Pattern.compile(Config.Settlement.NAME_VALIDATION);
-        this.resident = resident;
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), getSetup());
-        gui.setCloseAction(close -> false);
-        gui.addElements(getConfiguredElements());
-        gui.setFiller(getIcon("filler"));
 
         gui.addElement(new StaticGuiElement('n', getIcon("rename"), click -> {
             if (resident.hasPermission("settlement.rename")) {
@@ -282,10 +276,6 @@ public class SettingsGUI extends SettlementsGUI {
                 "action", resident.getSettlement().hasUnlocked("recruitment") ? resident.hasPermission("settlement.recruitment") ? getText("unlockables.unlocked.change") : getText("no-permission") : getText("unlockables.locked.npc")
         )));
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), getText("back")));
-    }
-
-    public void open() {
-        gui.show(resident.getPlayer());
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
     }
 }

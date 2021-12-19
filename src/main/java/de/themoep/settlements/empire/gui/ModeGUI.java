@@ -1,6 +1,7 @@
 package de.themoep.settlements.empire.gui;
 
 import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
@@ -10,12 +11,13 @@ import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.PlotMode;
+import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-public class ModeGUI extends SettlementsGUI {
+public class ModeGUI extends ConfigurableGui {
     private final static String[] SETUP = {
             "         ",
             "         ",
@@ -25,15 +27,10 @@ public class ModeGUI extends SettlementsGUI {
             "    b    "
     };
 
-    private final InventoryGui gui;
+    public ModeGUI(Resident res) {
+        super(res, "empire.mode");
 
-    public ModeGUI() {
-        super("empire.mode");
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), SETUP);
-        gui.setCloseAction(close -> false);
-        gui.setFiller(BORDER_ITEM);
-
-        GuiElementGroup group = new GuiElementGroup('g');
+        GuiElementGroup group = createGroup('g');
 
         for (PlotMode m : PlotMode.values(PlotMode.AppliesTo.LAND)) {
             group.addElement(new DynamicGuiElement('g', (h) -> {
@@ -52,7 +49,7 @@ public class ModeGUI extends SettlementsGUI {
                                             "mode", m.getTag(),
                                             "value", getText("entry.state." + state)
                                     );
-                                    gui.draw();
+                                    click.getGui().draw();
                                 }
                                 return true;
                             },
@@ -72,14 +69,7 @@ public class ModeGUI extends SettlementsGUI {
 
         gui.addElement(group);
 
-        gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
-            new SettingsGUI((Player) click.getEvent().getWhoClicked()).open();
-            return true;
-        }, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
 
-    }
-
-    public void open(final Player p) {
-        gui.show(p);
     }
 }

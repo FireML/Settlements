@@ -9,27 +9,21 @@ import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.NameTag;
 import de.themoep.settlements.utils.Next;
 import org.bukkit.inventory.ItemStack;
 
-public class ResListGUI extends SettlementsGUI {
+public class ResListGUI extends ConfigurableGui {
 
-    private final InventoryGui gui;
-    private final Resident resident;
     private Sort sort = Sort.RANK;
 
     public ResListGUI(Resident resident, Settlement settlement) {
-        super("settlement.reslist");
-        this.resident = resident;
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), getSetup());
-        gui.setCloseAction(close -> false);
-        gui.setFiller(getIcon("filler"));
-        gui.addElements(getConfiguredElements());
+        super(resident, "settlement.reslist");
 
         DynamicGuiElement sortedGroup = new DynamicGuiElement('r', who -> {
-            GuiElementGroup group = new GuiElementGroup('r');
+            GuiElementGroup group = createGroup('r');
             settlement.getResidents().stream().sorted((r1, r2) -> {
                 switch (sort) {
                     case RANK:
@@ -73,10 +67,6 @@ public class ResListGUI extends SettlementsGUI {
         }
 
         gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
-    }
-
-    public void open() {
-        gui.show(resident.getPlayer());
     }
 
     private enum Sort implements NameTag, Next<Sort> {

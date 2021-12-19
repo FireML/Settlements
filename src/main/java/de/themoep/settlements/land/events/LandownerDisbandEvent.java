@@ -5,15 +5,18 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Called before a landowner was fully disbanded
+ */
 public class LandownerDisbandEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private final LandOwner landOwner;
+    private final LandOwner<?, ?> landOwner;
 
-    public LandownerDisbandEvent(LandOwner landOwner) {
+    public LandownerDisbandEvent(LandOwner<?, ?> landOwner) {
         this.landOwner = landOwner;
     }
 
-    public LandOwner getLandOwner() {
+    public LandOwner<?, ?> getLandOwner() {
         return landOwner;
     }
 

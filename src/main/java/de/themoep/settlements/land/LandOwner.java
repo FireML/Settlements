@@ -177,8 +177,11 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
     public abstract Perk getPerk(String name);
 
     public boolean hasUnlocked(String unlockable) {
-        if (unlockable.startsWith(getKey() + ".")) {
-            unlockable = unlockable.substring(getKey().length() + 1);
+        if (unlockable.startsWith("settlements.")) {
+            unlockable = unlockable.substring("settlements.".length());
+        }
+        if (unlockable.contains(getKey() + ".")) {
+            unlockable = unlockable.replace(getKey() + ".", "");
         }
         if (!isUnlockable(unlockable)) {
             return true;

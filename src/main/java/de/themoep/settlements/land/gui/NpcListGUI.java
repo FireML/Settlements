@@ -20,7 +20,7 @@ public class NpcListGUI extends ConfigurableGui {
     public NpcListGUI(Resident resident, LandOwner<?, ?> landOwner) {
         super(resident, landOwner.getKey() + ".npclist");
 
-        GuiElementGroup group = new GuiElementGroup('n');
+        GuiElementGroup group = createGroup('n');
 
         NpcType.AppliesTo appliesTo = NpcType.AppliesTo.fromKey(landOwner.getKey());
         for (NpcType type : NpcType.values()) {

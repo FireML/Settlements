@@ -53,7 +53,7 @@ public interface Levelable<T extends LevelInfo> extends Vaultable, NameTag {
         double totalProgress = 0;
 
         for (Map.Entry<String, Long> requirement : requirements.entrySet()) {
-            totalProgress += requirement.getValue() / (double) getAmount(requirement.getKey());
+            totalProgress += Math.min(1, (double) getAmount(requirement.getKey()) / requirement.getValue());
         }
 
         return totalProgress / requirements.size();

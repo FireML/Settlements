@@ -100,10 +100,10 @@ public class ChatCommand extends PlayerSubCommand {
                 return false;
             }
         });
-        registerCommand(new PlayerSubCommand(this, "colour", "color", "colours", "colors") {
+        registerCommand(new ResidentSubCommand(this, "colour", "color", "colours", "colors") {
             @Override
-            public boolean run(Player player, String base, String alias, String... args) {
-                new ColorChannelSelectGui(player);
+            public boolean run(Resident resident, String base, String alias, String... args) {
+                new ColorChannelSelectGui(resident).open();
                 return true;
             }
         });
