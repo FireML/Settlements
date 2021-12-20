@@ -1,5 +1,7 @@
 package de.themoep.settlements.integration.citizens;
 
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.SubCommand;
@@ -28,7 +30,7 @@ import de.themoep.settlements.settlement.gui.ManagementGUI;
 import de.themoep.settlements.teleporter.TeleportersGUI;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
-import de.themoep.settlements.utils.MessageUtils;
+import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import de.themoep.settlements.world.SimpleLocation;
 import net.citizensnpcs.api.CitizensAPI;
@@ -44,23 +46,27 @@ import net.citizensnpcs.trait.Anchors;
 import net.citizensnpcs.trait.LookClose;
 import net.citizensnpcs.trait.SkinTrait;
 import net.citizensnpcs.trait.VillagerProfession;
-import net.citizensnpcs.trait.text.Text;
 import net.citizensnpcs.trait.versioned.VillagerTrait;
-import net.citizensnpcs.trait.waypoint.WanderWaypointProvider;
-import net.citizensnpcs.trait.waypoint.Waypoints;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
 
 public class CitizensIntegration implements Listener, ConfigMessages {
 
+    private static final Random RANDOM = new Random();
 
     public CitizensIntegration() {
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SettlementsTrait.class));
@@ -133,6 +139,7 @@ public class CitizensIntegration implements Listener, ConfigMessages {
         typeTrait.type = type;
         typeTrait.ownerType = landOwner.getDbName();
         typeTrait.ownerId = (int) landOwner.getId().value();
+        typeTrait.messages = config.getMessages();
         npc.addTrait(typeTrait);
 
         LookClose lookTrait = npc.getOrAddTrait(LookClose.class);
@@ -149,25 +156,6 @@ public class CitizensIntegration implements Listener, ConfigMessages {
             wander.setXYRange(2, 2);
             wander.addRegionCentre(location);
         } */
-
-        if (!config.getMessages().isEmpty()) {
-            Text textTrait = npc.getOrAddTrait(Text.class);
-
-            for (String message : config.getMessages()) {
-                textTrait.add(MessageUtils.replaceColorCodes(message));
-            }
-
-            if (config.getMessageDelay() > 0) {
-                textTrait.setDelay(config.getMessageDelay());
-            }
-            if (config.getMessageRange() > 0) {
-                textTrait.setRange(config.getMessageRange());
-            }
-
-            if (!textTrait.shouldTalkClose()) {
-                textTrait.toggle();
-            }
-        }
 
         if (npcData.getNpcSkinName().isEmpty()) {
             applyNpcTraits(npc, config);
@@ -404,13 +392,13 @@ public class CitizensIntegration implements Listener, ConfigMessages {
     }
 
     @TraitName("settlements")
-    public static class SettlementsTrait extends Trait {
+    public static class SettlementsTrait extends Trait implements ConfigMessages {
 
         public SettlementsTrait() {
             super("settlements");
         }
 
-        @Persist(value = "type", namespace = "settlements", required = true)
+        @Persist(value = "type", required = true)
         private NpcType type;
 
         @Persist(value = "ownerType", required = true)
@@ -419,9 +407,11 @@ public class CitizensIntegration implements Listener, ConfigMessages {
         @Persist(value = "ownerId", required = true)
         private int ownerId;
 
-        public NpcType getType() {
-            return type;
-        }
+        @Persist("messages")
+        private List<String> messages;
+
+        private Map<UUID, Long> speakCooldown = new HashMap<>();
+        private Multimap<UUID, String> spokenMessages = MultimapBuilder.hashKeys().hashSetValues().build();
 
         public LandOwner<?, ?> getOwner() {
             if (ownerType.equals("settlement")) {
@@ -430,6 +420,105 @@ public class CitizensIntegration implements Listener, ConfigMessages {
                 return EmpireManager.getInstance().getEmpireFromId(IdObject.get(ownerId));
             }
             return null;
+        }
+
+        public NpcType getType() {
+            return type;
+        }
+
+        @EventHandler
+        public void onQuit(PlayerQuitEvent event) {
+            speakCooldown.remove(event.getPlayer().getUniqueId());
+            spokenMessages.removeAll(event.getPlayer().getUniqueId());
+        }
+
+        @Override
+        public void run() {
+            // Only continue if this NPC has spawned
+            if (!npc.isSpawned()) {
+                return;
+            }
+            LandOwner landOwner = getOwner();
+            int range = Config.Citizens.TALK_RANGE;
+            // Check whether any player are nearby and handle talking to them
+
+            long currentTime = System.currentTimeMillis();
+
+            for (Player player : npc.getEntity().getWorld().getPlayers()) {
+                if (player.getLocation().distanceSquared(npc.getEntity().getLocation()) < range * range) {
+                    long lastSpoken = speakCooldown.getOrDefault(player.getUniqueId(), 0L);
+                    // Check if there is a talk delay and if the cooldown has been reached or if no message was sent before
+                    if (lastSpoken + Config.Citizens.TALK_DELAY * 1000 < currentTime) {
+                        // Get which message should be sent
+                        String message = chooseMessage(player);
+                        if (message != null) {
+                            // If there should be a message, send it
+                            getMessage("talk").tell(player,
+                                    "message", message,
+                                    "state", landOwner.getStateTag(),
+                                    "name", landOwner.getName(),
+                                    "player", player.getName(),
+                                    "npc", type.getTag()
+                            );
+                            if (!Config.Citizens.REPEAT_MESSAGES) {
+                                spokenMessages.put(player.getUniqueId(), message);
+                            }
+                            if (Config.Citizens.TALK_DELAY > 0) {
+                                // Store cooldown if there is a delay
+                                speakCooldown.put(player.getUniqueId(), currentTime);
+                            }
+                        }
+                    }
+                } else {
+                    // Remove cooldown when player is outside range
+                    speakCooldown.remove(player.getUniqueId());
+                    if (Config.Citizens.TALK_DELAY > 0) {
+                        // Remove spoken message if there is a delay
+                        spokenMessages.removeAll(player.getUniqueId());
+                    }
+                }
+            }
+        }
+
+        /**
+         * Choose a random message from the available ones
+         * @param player The player to choose for
+         * @return The random message or null if none is available and all were used
+         */
+        private String chooseMessage(Player player) {
+            Collection<String> spoken = spokenMessages.get(player.getUniqueId());
+            if (spoken.size() < messages.size()) {
+                int startIndex = RANDOM.nextInt(messages.size());
+                if (Config.Citizens.REPEAT_MESSAGES) {
+                    return messages.get(startIndex);
+                }
+                int index = startIndex;
+                String message;
+                // Get the message at the index and check if it was already spoken it
+                while (spoken.contains(message = messages.get(index))) {
+                    index++;
+                    // Loop back to start as the start index is somewhere at random
+                    if (index == messages.size()) {
+                        index = 0;
+                    }
+                    // We haven't found anything if we reached the start again
+                    if (index == startIndex) {
+                        return null;
+                    }
+                }
+                return message;
+            }
+            return null;
+        }
+
+        @Override
+        public String name() {
+            return "citizens";
+        }
+
+        @Override
+        public String type() {
+            return "integration";
         }
     }
 }

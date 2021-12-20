@@ -433,3 +433,11 @@ plotsquared:
   # The id of the plot area which purchased plots are added to
   # Leave empty to use the first available one in the world/globally
   plot-area-id: ""
+  
+citizens:
+  # The range in blocks in which NPCs will talk with players
+  talk-range: 3
+  # The delay in seconds between messages
+  talk-delay: 10
+  # Repeat messages while inside range
+  repeat-messages: false

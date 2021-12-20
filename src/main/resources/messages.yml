@@ -571,6 +571,7 @@ integration:
     not-enough-money: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 can't loose money as you need it to pay your upkeep! ({seller} tried to sell)"
   citizens:
     new-npc-available: "&7NPC &6&l{npc} &7&lis now available at the {state} Home!"
+    talk: "&b{state} {npc}: &f"
   lwc:
     only-in-settlement: "&c&lYou can only lock things in a settlement claim!"
     state:

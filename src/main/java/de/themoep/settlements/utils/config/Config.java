@@ -625,4 +625,15 @@ public class Config {
                 "Leave empty to use the first available one in the world/globally")
         public static String PLOT_AREA_ID = "";
     }
+
+    public static class Citizens {
+        @ConfigComment("The range in blocks in which NPCs will talk with players")
+        public static int TALK_RANGE = 3;
+
+        @ConfigComment("The delay in seconds between messages")
+        public static long TALK_DELAY = 10;
+
+        @ConfigComment("Repeat messages while inside range")
+        public static boolean REPEAT_MESSAGES = false;
+    }
 }
