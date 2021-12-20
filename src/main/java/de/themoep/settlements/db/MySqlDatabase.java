@@ -2,6 +2,7 @@ package de.themoep.settlements.db;
 
 import com.zaxxer.hikari.HikariDataSource;
 import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.config.Config;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
@@ -98,7 +99,7 @@ public class MySqlDatabase extends SqlDatabaseManager {
 
         int i = 0;
         for (Object value : values.values()) {
-            sta.setObject(++i, value);
+            sta.setObject(++i, value instanceof IdObject ? ((IdObject) value).value() : value);
         }
 
         sta.executeUpdate();
@@ -116,15 +117,15 @@ public class MySqlDatabase extends SqlDatabaseManager {
                 for (Object o : (Collection<Object>) entry.getValue()) {
                     insertSta.setInt(1, keyId);
                     insertSta.setObject(2, entry.getKey());
-                    insertSta.setObject(3, o);
+                    insertSta.setObject(3, o instanceof IdObject ? ((IdObject) o).value() : o);
                     insertSta.addBatch();
                 }
             } else if (entry.getValue() instanceof Map && mapValueColumns.length > 0) {
                 for (Map.Entry<Object, Object> o : ((Map<Object, Object>) entry.getValue()).entrySet()) {
                     insertSta.setInt(1, keyId);
                     insertSta.setObject(2, entry.getKey());
-                    insertSta.setObject(3, o.getKey());
-                    insertSta.setObject(4, o.getValue());
+                    insertSta.setObject(3, o.getKey() instanceof IdObject ? ((IdObject) o.getKey()).value() : o.getKey());
+                    insertSta.setObject(4, o.getValue() instanceof IdObject ? ((IdObject) o.getValue()).value() : o.getKey());
                     insertSta.addBatch();
                 }
             } else {
@@ -141,12 +142,13 @@ public class MySqlDatabase extends SqlDatabaseManager {
                 if (map != null) {
                     Map<String, Object> serMap = getValues(conn, map, mapKey);
                     for (String column : columns) {
-                        insertSta.setObject(j++, serMap.get(column));
+                        Object o = serMap.get(column);
+                        insertSta.setObject(j++, o instanceof IdObject ? ((IdObject) o).value() : o);
                     }
                 } else if (entry.getValue() instanceof Enum) {
                     insertSta.setObject(j, ((Enum) entry.getValue()).name());
                 } else {
-                    insertSta.setObject(j, entry.getValue());
+                    insertSta.setObject(j, entry.getValue() instanceof IdObject ? ((IdObject) entry.getValue()).value() : entry.getValue());
                 }
                 insertSta.addBatch();
             }

@@ -337,7 +337,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         try {
             save(conn, invite);
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while saving invite " + invite.getId() + " to database!", e);
+            plugin.getLogger().log(Level.SEVERE, "Error while saving invite " + invite + " to database!", e);
         }
     }
 
