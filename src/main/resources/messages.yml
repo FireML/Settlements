@@ -2246,8 +2246,8 @@ gui:
       &fin order to upgrade your {name}
       
       &bClick to deposit!
-  vault:
-    title: "&2&l/s deposit"
+  deposit:
+    title: "Deposit Materials"
     success-deposit: "&6&l{player} &7&lhas deposited:"
     fail-deposit: "&c&lFailed Deposited Items: {reason}"
     max-level-reached: "&r&c&lMax Level Reached"

@@ -1035,4 +1035,9 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
     public Collection<NpcData> getNpcData() {
         return npcs.values();
     }
+
+    @Override
+    public void logDeposit(Resident resident, Map<String, Long> deposited) {
+        Utils.runAsync(() -> DatabaseManager.getInstance().logDeposit(this, resident, deposited));
+    }
 }

@@ -180,6 +180,16 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
     }
 
     @Override
+    public void logDeposit(Resident resident, Map<String, Long> deposited) {
+        owner.logDeposit(resident, deposited); // TODO: Per NPC
+    }
+
+    @Override
+    public Collection<Resident> getOnlineResidents() {
+        return owner.getOnlineResidents();
+    }
+
+    @Override
     public Map<String, Long> getVault() {
         return owner.getVault(); // TODO: Per NPC "vault"
     }

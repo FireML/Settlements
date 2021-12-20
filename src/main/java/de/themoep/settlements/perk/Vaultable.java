@@ -1,8 +1,12 @@
 package de.themoep.settlements.perk;
 
+import de.themoep.settlements.db.DatabaseSerializable;
+import de.themoep.settlements.resident.Resident;
+
+import java.util.Collection;
 import java.util.Map;
 
-public interface Vaultable {
+public interface Vaultable extends DatabaseSerializable {
     Map<String, Long> getVault();
 
     long getBank();
@@ -91,4 +95,8 @@ public interface Vaultable {
         }
         return false;
     }
+
+    void logDeposit(Resident resident, Map<String, Long> deposited);
+
+    Collection<Resident> getOnlineResidents();
 }

@@ -5,6 +5,7 @@ import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.db.DatabaseSerializable;
+import de.themoep.settlements.land.DepositGUI;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.LandownerLevel;
 import de.themoep.settlements.leveling.LevelInfo;
@@ -137,7 +138,9 @@ public class UpgradeGUI extends ConfigurableGui {
         }));
 
         gui.addElement(new DynamicGuiElement('d', who -> new StaticGuiElement('d', getIcon("deposit"), click -> {
-            if (click.getType() == ClickType.LEFT && click.getEvent().getCursor() != null) {
+            if (click.getEvent().getCursor() != null) {
+                new DepositGUI<>(landOwner.getKey(), resident, selected).open();
+            } else if (click.getType() == ClickType.LEFT && click.getEvent().getCursor() != null) {
                 Map<String, Long> requirements = selected.getNextLevelRequirements();
                 ItemStack cursor = click.getEvent().getCursor();
                 String type = cursor.getType().name();
