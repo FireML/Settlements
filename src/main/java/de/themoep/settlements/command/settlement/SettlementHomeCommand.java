@@ -44,6 +44,13 @@ public class SettlementHomeCommand extends ResidentSubCommand {
             return true;
         }
 
+        if (settlement.getAccess() != LandAccess.PUBLIC && settlement.isMember(resident)
+                && resident.getSettlementRank() == resident.getSettlement().getDefaultRank()
+                && !resident.getSettlementRank().getInheritedPermissionValue("command.home").orElse(false)) {
+            getError("rules-not-accepted").tell(resident, "state", resident.getSettlement().getStateTag(), "name", resident.getSettlement().getName());
+            return true;
+        }
+
         if (settlement.getHome() != null) {
             Utils.teleport(this, resident.getPlayer(), settlement.getHome().toBukkitLocation(), settlement.getStateKey(),
                     "state", settlement.getStateTag(), "name", settlement.getName());

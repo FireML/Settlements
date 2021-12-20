@@ -225,4 +225,6 @@ ranks:
   guest:
     icon: stone_shovel
     permissions:
+    - settlement.rules
     - settlement.rules.accept
+    - settlement.leave
