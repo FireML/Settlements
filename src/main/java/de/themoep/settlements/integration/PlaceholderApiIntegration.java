@@ -205,7 +205,7 @@ public class PlaceholderApiIntegration implements ConfigMessages {
             return "empire";
         }
 
-        return null;
+        return "other";
     }
 
     private String getReplacedVillageString(Stream<Village> villageStream, String[] args) {
