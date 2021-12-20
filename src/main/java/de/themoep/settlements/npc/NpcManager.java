@@ -1,5 +1,7 @@
 package de.themoep.settlements.npc;
 
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
@@ -10,7 +12,6 @@ import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,10 +26,10 @@ public class NpcManager {
 
     private Map<String, NpcConfig> npcConfigs = new HashMap<>();
 
-    private List<NpcLevel> settlementLevels = new ArrayList<>();
+    private Multimap<NpcType, NpcLevel> settlementLevels = MultimapBuilder.enumKeys(NpcType.class).arrayListValues().build();
     private Map<String, NpcPerk> settlementPerks = new LinkedHashMap<>();
 
-    private List<NpcLevel> empireLevels = new ArrayList<>();
+    private Multimap<NpcType, NpcLevel> empireLevels = MultimapBuilder.enumKeys(NpcType.class).arrayListValues().build();
     private Map<String, NpcPerk> empirePerks = new LinkedHashMap<>();
 
     private NpcManager() {
@@ -60,7 +61,7 @@ public class NpcManager {
         }
     }
 
-    private void loadLevels(NpcType.AppliesTo type, List<NpcLevel> levels, Map<String, NpcPerk> perks) {
+    private void loadLevels(NpcType.AppliesTo type, Multimap<NpcType, NpcLevel> levels, Map<String, NpcPerk> perks) {
         levels.clear();
 
         for (NpcType npcType : NpcType.values()) {
@@ -71,33 +72,31 @@ public class NpcManager {
             if (config != null) {
                 int amount = config.getKeys(false).size();
                 for (int i = 1; i <= amount; i++) {
-                    NpcLevel level = new NpcLevel(i, config.getConfigurationSection("level-" + i));
-                    levels.add(level);
+                    ConfigurationSection levelConfig = config.getConfigurationSection("level-" + i);
+                    NpcLevel level = new NpcLevel(i, levelConfig);
+                    levels.put(npcType, level);
                     SettlementsPlugin.logDebug("Loaded " + type + " " + npcType + " " + level);
 
-                    ConfigurationSection perksConfig = config.getConfigurationSection("level-" + i + ".perks");
-                    if (perksConfig != null) {
-                        for (String perkName : perksConfig.getKeys(false)) {
-                            try {
-                                ConfigurationSection perkConfig = perksConfig.getConfigurationSection(perkName);
-                                if (perkConfig != null) {
-                                    perkConfig.set("level", i);
-                                    NpcPerk perk = new NpcPerk(perkConfig);
-                                    if (perks.putIfAbsent(perk.name().toLowerCase(Locale.ROOT), perk) != null) {
-                                        SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Duplicate " + type + " NPC perk " + perkName + "!");
-                                    }
-                                    switch (type) {
-                                        case SETTLEMENT:
-                                            SettlementManager.getInstance().getUnlockables().addAll(perk.getUnlockables());
-                                            break;
-                                        case EMPIRE:
-                                            EmpireManager.getInstance().getUnlockables().addAll(perk.getUnlockables());
-                                            break;
-                                    }
+                    for (String perkName : level.getPerks()) {
+                        try {
+                            ConfigurationSection perkConfig = levelConfig.getConfigurationSection("perks." + perkName);
+                            if (perkConfig != null) {
+                                perkConfig.set("level", i);
+                                NpcPerk perk = new NpcPerk(perkConfig);
+                                if (perks.putIfAbsent(perk.name().toLowerCase(Locale.ROOT), perk) != null) {
+                                    SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Duplicate " + type + " NPC perk " + perkName + "!");
                                 }
-                            } catch (IllegalArgumentException e) {
-                                SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Config for " + type + " " + npcType + " NPC Perk " + perkName + " was invalid! " + e.getMessage());
+                                switch (type) {
+                                    case SETTLEMENT:
+                                        SettlementManager.getInstance().getUnlockables().addAll(perk.getUnlockables());
+                                        break;
+                                    case EMPIRE:
+                                        EmpireManager.getInstance().getUnlockables().addAll(perk.getUnlockables());
+                                        break;
+                                }
                             }
+                        } catch (IllegalArgumentException e) {
+                            SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Config for " + type + " " + npcType + " NPC Perk " + perkName + " was invalid! " + e.getMessage());
                         }
                     }
                 }
@@ -114,21 +113,23 @@ public class NpcManager {
         return instance;
     }
 
-    private NpcLevel getLevelInternal(LandOwner<?, ?> owner, int level) {
+    private NpcLevel getLevelInternal(LandOwner<?, ?> owner, NpcType type, int level) {
+        List<NpcLevel> levels;
         if (owner instanceof Settlement) {
-            if (settlementLevels.size() >= level) {
-                return settlementLevels.get(level - 1);
-            }
+            levels = ((List<NpcLevel>) settlementLevels.get(type));
         } else if (owner instanceof Empire) {
-            if (empireLevels.size() >= level) {
-                return empireLevels.get(level - 1);
-            }
+            levels = ((List<NpcLevel>) empireLevels.get(type));
+        } else {
+            return null;
+        }
+        if (levels.size() >= level) {
+            return levels.get(level - 1);
         }
         return null;
     }
 
-    public Optional<NpcLevel> getLevel(LandOwner<?, ?> owner, int level) {
-        return Optional.ofNullable(getLevelInternal(owner, level));
+    public Optional<NpcLevel> getLevel(LandOwner<?, ?> owner, NpcType type, int level) {
+        return Optional.ofNullable(getLevelInternal(owner, type, level));
     }
 
     public NpcPerk getPerk(LandOwner<?, ?> owner, String name) {

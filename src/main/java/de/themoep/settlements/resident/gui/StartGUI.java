@@ -1,9 +1,7 @@
 package de.themoep.settlements.resident.gui;
 
-import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.settlement.SettlementHomeCommand;
 import de.themoep.settlements.db.DatabaseManager;
@@ -11,13 +9,11 @@ import de.themoep.settlements.invites.Invite;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.invites.SettlementInvite;
 import de.themoep.settlements.land.LandAccess;
-import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.JoinType;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.SettlementState;
-import de.themoep.settlements.settlement.events.SettlementJoinEvent;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.ListGui;
@@ -174,8 +170,6 @@ public class StartGUI extends ConfigurableGui {
             }, settlement -> new String[0]).open();
             return true;
         }, getText("public")));
-
-        gui.addElement(new GuiBackElement('b', getIcon("back"), getText("back")));
     }
 
     private Collection<Invite<?, ?>> getRequests(Resident resident) {

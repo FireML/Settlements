@@ -6,11 +6,12 @@ rules:
     apeironmc.com/rules
     
     2) Respect everyone
+    
     {rules}
     
     {accept}
   accept-action: |-
-    [\\[Accept\\]](/s rules accept)
+    [&1\[Accept\]](/s rules accept)
 start-guide:
   book:
     page1: |-
@@ -571,7 +572,7 @@ integration:
     not-enough-money: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 can't loose money as you need it to pay your upkeep! ({seller} tried to sell)"
   citizens:
     new-npc-available: "&7NPC &6&l{npc} &7&lis now available at the {state} Home!"
-    talk: "&b{state} {npc}: &f"
+    talk: "&e{state} {npc}: &f{message}"
   lwc:
     only-in-settlement: "&c&lYou can only lock things in a settlement claim!"
     state:
@@ -704,6 +705,8 @@ gui:
       level: "&cUpgrade {state} to unlock!"
       perk: "&cNot purchased yet!"
       money: "&cNot enough money"
+      rank: "&cRank too low"
+      permission: "&cNo Permission"
       invite-only: "&cInvite only"
       application-required: "&cApply at Elder"
     unlocked:
@@ -714,8 +717,10 @@ gui:
       options: "&bClick for more options"
       browse: "&bClick to browse"
       view: "&bClick to view"
+      edit: "&bClick to edit"
       create: "&bClick to create"
       join: "&bClick to join"
+      banish: "&bClick to banish"
       invited: |-
         &bYou have been invited to join them!
         &bClick to join!
@@ -748,7 +753,7 @@ gui:
         
         &bClick to browse
       public: |-
-        %eBrowse Public Settlements
+        &eBrowse Public Settlements
         &fBrowse settlements that are
         &fopen to public visiting
         
@@ -822,6 +827,11 @@ gui:
       toggle-status:
         enabled: "&aEnabled"
         disabled: "&cDisabled"
+      npc: |-
+        &eNPC
+        &fManage your NPCs
+    
+        &bClick to view
       home: |-
         &e{state} Home
       plot: |-
@@ -1577,10 +1587,19 @@ gui:
       &f➤ Plots Owned: &6{plots}
   
       Player Info
-      &f➤ Rank: &6{primarygroup}
+      &f➤ Rank: &6{vaultprefix}
       &f➤ Balance: &6${balance}
       &f➤ Cooperation Points: &6{missionpoints}
       &f➤ Last Login &c{lastloginduration}
+    accepted:
+      entry: |-
+        &eTerms and Conditions
+        &fIf they have accepted the
+        &f{state} rule book
+        
+        {accepted}
+      accepted: "&aAccepted"
+      not-accepted: "&cNot yet"
     tax-evasion: |-
       &eTax Evasion action
       &fWhat action should be taken if
@@ -1637,8 +1656,8 @@ gui:
         &cBanish the player
         &fKick and block a player from your
         &fsettlement if they violated the rules!
-        
-        &bClick to banish
+  
+        {action}
       anvil:
         title: "&cBanish &e{player}?"
         placeholder: "Reason"
@@ -2208,7 +2227,7 @@ gui:
         upgraded: |-
           &aFully upgraded!
         upgradable: |-
-          &fUpgrade this {type}!
+          &r&fUpgrade this {type}!
           {action}
         locked: |-
           &cUnlock this NPC first!
@@ -2239,7 +2258,7 @@ gui:
       &fProgress {progressbar}
     progress-bar:
       finished: "&a{bars}"
-      unfinished: "&f{bars}"
+      unfinished: "&c{bars}"
     deposit: |-
       &eDeposit Here!
       &fDeposit the required materials here
@@ -2877,6 +2896,14 @@ command:
       modes: "&cAvailable modes: {modes}"
       success: "&7Settlement mode &6{mode}&7: &6{value}"
       description: Changes settings for your settlement claims
+    npc:
+      skin:
+        success: "&aSuccessfully changed the skin of your {state} {type}"
+        description: Change an NPC's skin
+      teleport:
+        success: "&aTeleported your {state} {type} to your location"
+        description: Move NPCs
+      description: Manage your NPCs
     officer:
       description: Members that should have officer build access
     outpost:

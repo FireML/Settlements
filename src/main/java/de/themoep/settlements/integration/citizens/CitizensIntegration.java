@@ -338,6 +338,7 @@ public class CitizensIntegration implements Listener, ConfigMessages {
             if (npcData.getNpcId() > -1) {
                 NPC npc = CitizensAPI.getNPCRegistry().getById(npcData.getNpcId());
                 if (npc != null) {
+                    npc.despawn();
                     CitizensAPI.getNPCRegistry().deregister(npc);
                 }
             }
@@ -451,7 +452,7 @@ public class CitizensIntegration implements Listener, ConfigMessages {
                     if (lastSpoken + Config.Citizens.TALK_DELAY * 1000 < currentTime) {
                         // Get which message should be sent
                         String message = chooseMessage(player);
-                        if (message != null) {
+                        if (message != null && !message.isEmpty()) {
                             // If there should be a message, send it
                             getMessage("talk").tell(player,
                                     "message", message,

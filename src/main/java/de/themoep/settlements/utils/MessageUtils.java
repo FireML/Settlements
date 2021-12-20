@@ -175,7 +175,7 @@ public class MessageUtils {
             return null;
         }
         String colored = TextComponent.toLegacyText(components);
-        if (colored.startsWith(ChatColor.COLOR_CHAR + "f") && !message.startsWith("&f") && !message.startsWith(ChatColor.COLOR_CHAR + "f")) {
+        if (colored.startsWith(ChatColor.WHITE.toString()) && !message.startsWith("&f") && !message.startsWith(ChatColor.WHITE.toString())) {
             colored = colored.substring(2);
         }
         return colored;

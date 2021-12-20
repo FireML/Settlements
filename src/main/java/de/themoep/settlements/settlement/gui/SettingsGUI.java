@@ -72,7 +72,9 @@ public class SettingsGUI extends ConfigurableGui {
                                 getError("no-permission").tell(player);
                             }
                             return AnvilGUI.Response.close();
-                        });
+                        })
+                        .plugin(SettlementsPlugin.getInstance())
+                        .open(resident.getPlayer());
             }
             return true;
         }, getText("rename.entry",
@@ -117,10 +119,10 @@ public class SettingsGUI extends ConfigurableGui {
                     }
                 }
             }
-            MessageUtils.tellAdvanced(resident.getPlayer(), getConfigPath() + ".rules.info");
+            getMessage("rules.info,actionbar").actionbar(resident);
             new SignGui(text -> {
                 if (resident.hasPermission("settlement.setrules")) {
-                    String rules = String.join("\n", text);
+                    String rules = String.join("\n", text).trim();
                     if (!rules.isEmpty() && !rules.equals(resident.getSettlement().getRules())) {
                         resident.getSettlement().setRules(rules);
                         resident.getSettlement().save();
@@ -172,7 +174,9 @@ public class SettingsGUI extends ConfigurableGui {
                                 getError("no-permission").tell(player);
                             }
                             return AnvilGUI.Response.close();
-                        });
+                        })
+                        .plugin(SettlementsPlugin.getInstance())
+                        .open(resident.getPlayer());
             }
             return true;
         }, getText("discord.entry", "state", resident.getSettlement().getStateTag(),
@@ -210,7 +214,9 @@ public class SettingsGUI extends ConfigurableGui {
                                 getError("no-permission").tell(player);
                             }
                             return AnvilGUI.Response.close();
-                        });
+                        })
+                        .plugin(SettlementsPlugin.getInstance())
+                        .open(resident.getPlayer());
             }
             return true;
         }, getText("joinfee.entry",
@@ -220,7 +226,7 @@ public class SettingsGUI extends ConfigurableGui {
                 "action", resident.hasPermission("settlement.joinfee.set") ? getText("unlockables.unlocked.edit") : getText("no-permission")
         )));
 
-        gui.addElement(new StaticGuiElement('d', getIcon("description"), click -> {
+        gui.addElement(new StaticGuiElement('e', getIcon("description"), click -> {
             if (resident.hasPermission("settlement.setdescription")) {
                 Settlement settlement = resident.getSettlement();
                 new AnvilGUI.Builder()
@@ -244,7 +250,9 @@ public class SettingsGUI extends ConfigurableGui {
                                 getError("no-permission").tell(player);
                             }
                             return AnvilGUI.Response.close();
-                        });
+                        })
+                        .plugin(SettlementsPlugin.getInstance())
+                        .open(resident.getPlayer());
             }
             return true;
         }, getText("description.entry",
@@ -265,7 +273,7 @@ public class SettingsGUI extends ConfigurableGui {
                 "action", resident.hasPermission("settlement.setaccess") ? getText("unlockables.unlocked.change") : getText("no-permission")
         )));
 
-        gui.addElement(new StaticGuiElement('a', getIcon("recruitment"), click -> {
+        gui.addElement(new StaticGuiElement('c', getIcon("recruitment"), click -> {
             if (resident.hasPermission("settlement.recruitment")) {
                 new RecruitmentGUI("settlement", resident.getSettlement()).open((Player) click.getEvent().getWhoClicked());
             }

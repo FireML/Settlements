@@ -3,8 +3,14 @@ package de.themoep.settlements.utils.adapter;
 import com.destroystokyo.paper.Title;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import io.papermc.paper.text.PaperComponents;
 import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.BaseComponentSerializer;
+import net.md_5.bungee.chat.ComponentSerializer;
+import net.md_5.bungee.chat.TextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Item;
@@ -56,6 +62,9 @@ public class PaperAdapter implements ServerAdapter {
     public ItemMeta createBookMeta(BookMeta bookMeta, String title, String author, List<BaseComponent[]> pages) {
         bookMeta.setTitle(title);
         bookMeta.setAuthor(author);
-        return (ItemMeta) bookMeta.pages(pages.stream().map(c -> BungeeComponentSerializer.get().deserialize(c)).collect(Collectors.toList()));
+
+        return (ItemMeta) bookMeta.pages(pages.stream()
+                .map(c -> GsonComponentSerializer.builder().build().deserialize(ComponentSerializer.toString(c)))
+                .collect(Collectors.toList()));
     }
 }

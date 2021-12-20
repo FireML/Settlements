@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 
 public class FriendAcceptCommand extends PlayerSubCommand {
     public FriendAcceptCommand(PlayerSubCommand parent) {
-        super(parent, "add <name>", "request");
+        super(parent, "accept <name>", "approve");
     }
 
     @Override

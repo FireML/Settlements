@@ -1,7 +1,6 @@
 package de.themoep.settlements.land.gui;
 
 import de.themoep.inventorygui.DynamicGuiElement;
-import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsPlugin;
@@ -85,8 +84,5 @@ public class AllyGUI extends ConfigurableGui implements AllyCommand {
 
             // TODO: Per ally options
         }
-
-
-        gui.addElement(new GuiBackElement('b', getIcon("back"), getText("back")));
     }
 }

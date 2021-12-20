@@ -39,7 +39,7 @@ public class Message {
             rawText = "";
             exists = false;
         }
-        String text = rawText;
+        String text = rawText != null ? rawText : "";
         if (!exists) {
             text = "&cUnknown message &6" + key;
         }
@@ -47,7 +47,7 @@ public class Message {
             components = new MineDown(text).autoAddUrlPrefix(false).toComponent();
             if (!TextComponent.toPlainText(components).isEmpty()) {
                 String newText = TextComponent.toLegacyText(components);
-                if (newText.startsWith(ChatColor.WHITE.toString()) && !text.startsWith(ChatColor.WHITE.toString())) {
+                if (newText.startsWith(ChatColor.WHITE.toString()) && !text.startsWith("&f") && !text.startsWith(ChatColor.WHITE.toString())) {
                     newText = newText.substring(ChatColor.WHITE.toString().length());
                 }
                 text = newText;

@@ -32,19 +32,23 @@ public class ResidentGUI extends ConfigurableGui {
                 ItemUtils.getHead(resident.getUUID(), resident.getName()),
                 getText("info", replacements)));
 
-        gui.addElement(new StaticGuiElement('a', getIcon("a"), getText("a"))); // TODO What is this element?
+        gui.addElement(new StaticGuiElement('a', getIcon("accepted"), getText("accepted.entry",
+                "state", resident.getSettlement().getTag(),
+                "accepted", resident.getSettlementRank() == resident.getSettlement().getDefaultRank()
+                        ? getText("accepted.accepted") : getText("accepted.not-accepted")
+        )));
 
         if (sender.hasPermission("settlement.settaxevasion")) {
             gui.addElement(new GuiStateElement('e', () -> resident.getTaxDebtAction().getKey(),
                     new GuiStateElement.State(click -> {
                         if (sender.hasPermission("settlement.settaxevasion")) {
-                            resident.setTaxDebtAction(TaxDebtAction.NONE);
+                            resident.setTaxDebtAction(TaxDebtAction.KICK);
                             resident.save();
                         }
                     }, TaxDebtAction.NONE.getKey(), getIcon("evasion"), getText("tax-evasion", "action", resident.getTaxDebtAction().getTag())),
                     new GuiStateElement.State(click -> {
                         if (sender.hasPermission("settlement.settaxevasion")) {
-                            resident.setTaxDebtAction(TaxDebtAction.KICK);
+                            resident.setTaxDebtAction(TaxDebtAction.NONE);
                             resident.save();
                         }
                     }, TaxDebtAction.KICK.getKey(), getIcon("evasion"), getText("tax-evasion", "action", resident.getTaxDebtAction().getTag()))));
@@ -150,8 +154,9 @@ public class ResidentGUI extends ConfigurableGui {
                         .text(getText("banish.anvil.placeholder", "player", resident.getName()))
                         .onClose(player -> Utils.runLater(this::open, 1))
                         .onComplete((player, text) -> {
-                            if (settlement.hasPermission(sender, "banish")) {
-                                String reason = text.trim();getMessage("command.settlement.banish.banished").tell(resident.getSettlement().getOnlineResidents(), "name", resident.getName(), "reason", reason);
+                            if (settlement.hasPermission(sender, "banish") && sender.getSettlementRank().above(resident.getSettlementRank())) {
+                                String reason = text.trim();
+                                getMessage("command.settlement.banish.banished").tell(resident.getSettlement().getOnlineResidents(), "name", resident.getName(), "reason", reason);
                                 InviteManager.getInstance().removeInvite(resident, resident.getSettlement());
                                 resident.leaveSettlement();
                                 resident.getSettlement().addBanished(sender, resident, reason);
@@ -161,9 +166,19 @@ public class ResidentGUI extends ConfigurableGui {
                                 getError("no-permission").tell(player);
                             }
                             return AnvilGUI.Response.close();
-                        });
+                        })
+                        .plugin(SettlementsPlugin.getInstance())
+                        .open(sender.getPlayer());
                 return true;
-            }, getText("banish.entry", "player", resident.getName(), "state", resident.getSettlement().getStateTag())));
+            }, getText("banish.entry",
+                    "action", resident.getSettlement().hasPermission(sender, "banish")
+                            ? sender.getSettlementRank().above(resident.getSettlementRank())
+                                    ? getText("unlockables.unlocked.banish")
+                                    : getText("unlockables.locked.rank")
+                            : getText("unlockables.locked.permission"),
+                    "player", resident.getName(),
+                    "state", resident.getSettlement().getStateTag()
+            )));
         }
 
         gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));

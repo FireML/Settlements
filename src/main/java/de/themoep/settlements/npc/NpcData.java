@@ -121,12 +121,12 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
     @Nullable
     @Override
     public NpcLevel getLevelInfo() {
-        return NpcManager.getInstance().getLevel(owner, level).orElse(null);
+        return NpcManager.getInstance().getLevel(owner, type, level).orElse(null);
     }
 
     @Override
     public Optional<NpcLevel> getNextLevel() {
-        return NpcManager.getInstance().getLevel(owner, level + 1);
+        return NpcManager.getInstance().getLevel(owner, type, level + 1);
     }
 
     @Override
@@ -174,7 +174,7 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
 
     @Override
     public Collection<? extends LevelPerk> getPerks(int level) {
-        return NpcManager.getInstance().getLevel(owner, level)
+        return NpcManager.getInstance().getLevel(owner, type, level)
                 .map(l -> l.getPerks().stream().map(p -> NpcManager.getInstance().getPerk(owner, p)).collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
     }

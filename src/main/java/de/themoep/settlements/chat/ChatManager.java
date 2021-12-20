@@ -553,11 +553,11 @@ public class ChatManager implements ConfigMessages, Listener {
         return lastMessage.get(p.getUniqueId());
     }
 
-    private String getPlayerPrefix(Player sender) {
+    public String getPlayerPrefix(Player sender) {
         return SettlementsPlugin.chat != null ? MessageUtils.replaceColorCodes(SettlementsPlugin.chat.getPlayerPrefix(sender)) : "";
     }
 
-    private String getPlayerSuffix(Player sender) {
+    public String getPlayerSuffix(Player sender) {
         return SettlementsPlugin.chat != null ? MessageUtils.replaceColorCodes(SettlementsPlugin.chat.getPlayerSuffix(sender)) : "";
     }
 

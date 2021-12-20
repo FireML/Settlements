@@ -5,6 +5,7 @@ import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.db.DatabaseSerializable;
+import de.themoep.settlements.empire.EmpireLevel;
 import de.themoep.settlements.land.DepositGUI;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.LandownerLevel;
@@ -15,6 +16,7 @@ import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.SettlementLevel;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.HumanReadable;
 import de.themoep.settlements.utils.ItemUtils;
@@ -67,9 +69,12 @@ public class UpgradeGUI extends ConfigurableGui {
                         }
                         return true;
                     }, getText("navigation.entry",
-                                "type", levelable instanceof NpcData ? "npc" : levelable.getTag(),
                                 "description", getText("navigation.description." + (levelable.isMaxLevel() ? "upgraded" : levelable.getLevel() > 0 ? "upgradable" : "locked"),
-                                        "action", getText("navigation.action." + (levelable == selected ? "current" : "switch")))
+                                        "action", getText("navigation.action." + (levelable == selected ? "current" : "switch"))),
+                                "name", levelable instanceof LandOwner
+                                        ? ((LandOwner<?, ?>) levelable).getStateTag() + " " + ((LandOwner<?, ?>) levelable).getName()
+                                        : levelable.getTag(),
+                                "type", levelable instanceof NpcData ? "npc" : levelable.getTag()
             ))));
         }
 
@@ -106,17 +111,56 @@ public class UpgradeGUI extends ConfigurableGui {
         }));
 
         gui.addElement(new DynamicGuiElement('i', who -> {
+            LevelInfo level = selected.getLevelInfo();
             LevelInfo nextLevel = selected.getNextLevel().orElse(null);
             if (nextLevel != null) {
                 Collection<? extends LevelPerk> perks = selected.getPerks(nextLevel.getLevel());
+                List<String> benefits = new ArrayList<>();
+                if (nextLevel instanceof LandownerLevel && level instanceof  LandownerLevel) {
+                    if (((LandownerLevel) nextLevel).getMissions() > ((LandownerLevel) level).getMissions()) {
+                        benefits.add(((LandownerLevel) nextLevel).getMissions() + " Missions");
+                    }
+                    if (nextLevel instanceof SettlementLevel && level instanceof SettlementLevel) {
+                        if (((SettlementLevel) nextLevel).getExtraMissions() > ((SettlementLevel) level).getExtraMissions()) {
+                            benefits.add(((SettlementLevel) nextLevel).getExtraMissions() + " Extra Missions");
+                        }
+                        if (((SettlementLevel) nextLevel).getChunks() > ((SettlementLevel) level).getChunks()) {
+                            benefits.add(((SettlementLevel) nextLevel).getChunks() + " Claims");
+                        }
+                        if (((SettlementLevel) nextLevel).getClaimUpkeep(who.getWorld().getName()) > ((SettlementLevel) level).getClaimUpkeep(who.getWorld().getName())) {
+                            benefits.add(((SettlementLevel) nextLevel).getClaimUpkeep(who.getWorld().getName()) + " Claim Upkeep");
+                        }
+                        if (((SettlementLevel) nextLevel).getOutposts() > ((SettlementLevel) level).getOutposts()) {
+                            benefits.add(((SettlementLevel) nextLevel).getOutposts() + " Outposts");
+                        }
+                    }
+                    if (nextLevel instanceof EmpireLevel && level instanceof EmpireLevel) {
+                        if (((EmpireLevel) nextLevel).getWorldRadius() > ((EmpireLevel) level).getWorldRadius()) {
+                            benefits.add(((EmpireLevel) nextLevel).getWorldRadius() + " World Radius");
+                        }
+                        if (((EmpireLevel) nextLevel).getUpkeep() > ((EmpireLevel) level).getUpkeep()) {
+                            benefits.add(((EmpireLevel) nextLevel).getUpkeep() + " Upkeep");
+                        }
+                        if (((EmpireLevel) nextLevel).getUpkeepReduction() > ((EmpireLevel) level).getUpkeepReduction()) {
+                            benefits.add(((EmpireLevel) nextLevel).getUpkeepReduction() + " Upkeep Reduction");
+                        }
+                    }
+                }
+                List<String> benefitTexts = perks.stream()
+                        .map(p -> getText("benefit",
+                                "name", p.getTag(),
+                                "description", Message.get("description." + p.getKey()).getText()
+                        )).collect(Collectors.toList());
+                for (String benefit : benefits) {
+                    benefitTexts.add(getText("benefit",
+                            "name", benefit,
+                            "description", benefit
+                    ));
+                }
                 return new StaticGuiElement('i', getIcon(selected), getText("info",
                         "name", selected.getTag(),
-                        "benefits", perks.stream()
-                                .map(p -> getText("benefit",
-                                        "name", p.getTag(),
-                                        "description", Message.get("description." + p.getKey()).getText()
-                                )).collect(Collectors.joining("\n")))
-                );
+                        "benefits", String.join("\n", benefitTexts)
+                ));
             }
             return null;
         }));
@@ -161,9 +205,7 @@ public class UpgradeGUI extends ConfigurableGui {
                         }
                         landOwner.add(type, added);
                         if (!selected.checkLevelUp(resident)) {
-                            if (selected instanceof DatabaseSerializable) {
-                                ((DatabaseSerializable) selected).save();
-                            }
+                            selected.save();
                         }
                         click.getGui().draw();
                     }

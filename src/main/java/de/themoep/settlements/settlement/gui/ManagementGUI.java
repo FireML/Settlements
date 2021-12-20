@@ -57,7 +57,7 @@ public class ManagementGUI extends SettlementsGUI {
 
         Collection<Invite<?, ?>> requests = getRequests(resident);
         gui.addElement(new StaticGuiElement('e', ItemUtils.setGlowing(getIcon("recruitment"), !requests.isEmpty()), click -> {
-            if (resident.hasPermission("settlement.recruitment")) {
+            if (resident.getSettlement().hasUnlocked("recruitment") && resident.hasPermission("settlement.recruitment")) {
                 new ListGui<>(resident, "settlement.requests", () -> getRequests(resident), (c, request) -> {
                     // accept invite
                     if (request instanceof JoinRequest) {
@@ -96,7 +96,7 @@ public class ManagementGUI extends SettlementsGUI {
         )));
 
         gui.addElement(new StaticGuiElement('a', getIcon("allies"), click -> {
-            if (resident.hasPermission("settlement.allies")) {
+            if (resident.getSettlement().hasUnlocked("allies") && resident.hasPermission("settlement.allies")) {
                 new AlliesGUI("settlement", resident, resident.getSettlement()).open();
             }
             return true;

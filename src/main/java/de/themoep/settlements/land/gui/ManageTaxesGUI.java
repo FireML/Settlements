@@ -118,7 +118,7 @@ public class ManageTaxesGUI extends SettlementsGUI {
                 "cooldown", "" // TODO: Cooldown
         ));
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
     }
 
     public void open() {

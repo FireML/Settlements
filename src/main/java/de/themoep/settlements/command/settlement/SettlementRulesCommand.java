@@ -26,7 +26,7 @@ public class SettlementRulesCommand extends SettlementSubCommand {
                             "rank", resident.getSettlementRank().getTag(resident.getSettlement())
                     );
                 }
-                return false;
+                return true;
             }
         });
     }
@@ -35,8 +35,8 @@ public class SettlementRulesCommand extends SettlementSubCommand {
     public boolean run(Resident resident, String base, String alias, String... args) {
         List<BaseComponent[]> pages = new ArrayList<>();
 
-        String rawRules = Message.get("rules.book").getRawText().replace(
-                "{rules}", FontWidthUtil.wrap(resident.getSettlement().getRules(), FontWidthUtil.getMaxBookWidth(), true)
+        String rawRules = Message.get("rules.book-text").getReplacedText(
+                "rules", FontWidthUtil.wrap(resident.getSettlement().getRules(), FontWidthUtil.getMaxBookWidth(), true)
         );
 
         String[] lines = rawRules.split("\n");
@@ -55,11 +55,21 @@ public class SettlementRulesCommand extends SettlementSubCommand {
             }
         }
 
-        resident.getPlayer().openBook(SettlementsPlugin.getInstance().getServerAdapter().createBook(
-                "Rules",
-                resident.getSettlement().getStateTag() + " " + resident.getSettlement().getName(),
-                pages
-        ));
+        String page = pageBuilder.toString();
+        if (!page.isEmpty()) {
+            pages.add(MessageUtils.replacePlaceholders(TextComponent.fromLegacyText(page),
+                    "accept", resident.hasPermission("settlement.rules.accept") ? Message.get("rules.accept-action").getComponents() : TextComponent.fromLegacyText("")));
+        }
+
+        if (!pages.isEmpty()) {
+            resident.getPlayer().openBook(SettlementsPlugin.getInstance().getServerAdapter().createBook(
+                    "Rules",
+                    resident.getSettlement().getStateTag() + " " + resident.getSettlement().getName(),
+                    pages
+            ));
+        } else {
+            resident.tell("Error while getting the rules!");
+        }
         return true;
     }
 }

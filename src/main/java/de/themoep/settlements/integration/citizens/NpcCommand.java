@@ -72,6 +72,7 @@ public class NpcCommand extends ResidentSubCommand {
                     } else {
                         citizensIntegration.createNpc(landOwner, type, location);
                     }
+                    getMessage("teleport.success").tell(resident, "type", type.getTag(), "state", landOwner.getStateTag());
                 } else {
                     getError("not-a-claim").tell(resident);
                 }
@@ -110,6 +111,7 @@ public class NpcCommand extends ResidentSubCommand {
                     npc.destroy();
                     citizensIntegration.createNpc(landOwner, type, config, location);
                 }
+                getMessage("skin.success").tell(resident, "type", type.getTag(), "state", landOwner.getStateTag());
                 npcData.save();
                 return true;
             }

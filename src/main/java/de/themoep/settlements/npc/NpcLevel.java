@@ -14,8 +14,11 @@ public class NpcLevel extends LevelInfo {
 
     public NpcLevel(int level, ConfigurationSection config) {
         super(level, config);
-        for (String perk : config.getStringList("perks")) {
-            perks.add(perk.toLowerCase(Locale.ROOT));
+        ConfigurationSection perksConfig = config.getConfigurationSection("perks");
+        if (perksConfig != null) {
+            for (String perk : perksConfig.getKeys(false)) {
+                perks.add(perk.toLowerCase(Locale.ROOT));
+            }
         }
     }
 

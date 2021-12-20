@@ -13,6 +13,7 @@ import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.land.gui.NpcListGUI;
 import de.themoep.settlements.land.gui.plot.SettingsGUI;
 import de.themoep.settlements.lock.LockManager;
 import de.themoep.settlements.rank.SettlementRank;
@@ -69,6 +70,15 @@ public class OverviewGUI extends ConfigurableGui {
                 return true;
             }, getText("unlock", "status", getText("toggle-status." + (isUnlock ? "enabled" : "disabled"))));
         }));
+
+        if (SettlementsPlugin.getInstance().getCitizens() != null && resident.hasPermission("command.npc")) {
+            gui.addElement(new StaticGuiElement('n', getIcon("npc"), click -> {
+                if (resident.hasPermission("command.npc")) {
+                    new NpcListGUI(resident, resident.getSettlement()).open();
+                }
+                return true;
+            }, getText("npc")));
+        }
 
         gui.addElement(new StaticGuiElement('h', getIcon("home"), click -> {
             ((SettlementHomeCommand) CommandManager.getInstance().getCommand("settlement").getSubCommands().get("home"))
@@ -133,7 +143,7 @@ public class OverviewGUI extends ConfigurableGui {
             return true;
         }, getText("friends", "amount", String.valueOf(requests.size()))));
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
     }
 
     private boolean handleJoin(Resident resident, Settlement settlement) {

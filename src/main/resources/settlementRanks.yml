@@ -87,6 +87,7 @@ toggleable-permissions:
 - settlement.mail
 - settlement.group.manage-notes
 - settlement.group.manage-settings
+- settlement.npc.teleport
 - settlement.history
 - settlement.rename
 - settlement.disband
@@ -127,6 +128,7 @@ ranks:
     - settlement.invite
     - settlement.group.manage-shop
     # Extra:
+    - settlement.npc.teleport
     - settlement.lock.admin
     - settlement.chestshop.admin
     - settlement.history
@@ -174,6 +176,7 @@ ranks:
     - settlement.group.admin-allies
     - settlement.group.manage-banished
     - settlement.banish
+    - settlement.npc.teleport
     - settlement.group.manage-ranks
     - settlement.group.manage-notes
     - settlement.group.manage-settings
@@ -187,6 +190,7 @@ ranks:
     inherits: resident
     permissions:
     - settlement.officer
+    - settlement.npc.teleport
     - settlement.group.manage-res
     - settlement.group.manage-ally
     - settlement.group.manage-settings
@@ -199,6 +203,7 @@ ranks:
     permissions:
     - settlement.officer
     - settlement.invite
+    - settlement.npc.teleport
     - settlement.help.recruiter
     - settlement.help.builder
     
@@ -207,6 +212,7 @@ ranks:
     inherits: resident
     permissions:
     - settlement.officer
+    - settlement.npc.teleport
     - settlement.help.builder
   resident:
     icon: stone_sword

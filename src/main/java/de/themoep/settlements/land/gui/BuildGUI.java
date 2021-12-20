@@ -84,7 +84,7 @@ public class BuildGUI extends SettlementsGUI {
 
         gui.addElement(group);
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
     }
 
     public void open(HumanEntity player) {

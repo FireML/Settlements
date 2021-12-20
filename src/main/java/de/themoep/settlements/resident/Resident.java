@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import de.themoep.settlements.chat.ChatManager;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.EmpireMission;
 import de.themoep.settlements.integration.AfkProvider;
@@ -33,6 +34,7 @@ import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -640,12 +642,25 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
                 }),
                 plots(r -> String.valueOf(LandManager.getInstance().getOwnedPlotCount(r.getUUID()))),
                 primarygroup(r -> {
-                    Permission perms = SettlementsPlugin.getInstance().getPermissions();
                     Player player = r.getPlayer();
                     if (player != null) {
-                        return perms.getPrimaryGroup(player);
+                        return SettlementsPlugin.chat.getPrimaryGroup(player);
                     }
-                    return perms.getPrimaryGroup((String) null, r.getName());
+                    return SettlementsPlugin.chat.getPrimaryGroup((String) null, r.getName());
+                }),
+                vaultprefix(r -> {
+                    Player player = r.getPlayer();
+                    if (player != null) {
+                        return ChatManager.getInstance().getPlayerPrefix(player);
+                    }
+                    return SettlementsPlugin.chat == null ? "" : SettlementsPlugin.chat.getPlayerPrefix((String) null, r.getName());
+                }),
+                vaultsuffix(r -> {
+                    Player player = r.getPlayer();
+                    if (player != null) {
+                        return ChatManager.getInstance().getPlayerSuffix(player);
+                    }
+                    return SettlementsPlugin.chat == null ? "" : SettlementsPlugin.chat.getPlayerSuffix((String) null, r.getName());
                 }),
         ;
 
