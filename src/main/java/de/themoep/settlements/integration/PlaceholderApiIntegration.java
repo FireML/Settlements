@@ -205,7 +205,7 @@ public class PlaceholderApiIntegration implements ConfigMessages {
             return "empire";
         }
 
-        return null;
+        return "other";
     }
 
     private String getReplacedSettlementString(Stream<Settlement> settlementStream, String[] args) {
