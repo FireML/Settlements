@@ -33,11 +33,11 @@ public class FriendAddCommand extends PlayerSubCommand {
             }
             Utils.runSync(() -> {
                 FriendRequest request = new FriendRequest(target, res);
-                if (!res.addFriendRequest(request)) {
+                if (!target.addFriendRequest(request)) {
                     getError("already-sent-request").tell(player, "name", target.getName());
                     return;
                 }
-                DatabaseManager.getInstance().save(request);
+                request.save();
                 getMessage("success").tell(player, "name", target.getName());
                 if (target.getPlayer() != null) {
                     getMessage("received").tell(target, "name", res.getName());
