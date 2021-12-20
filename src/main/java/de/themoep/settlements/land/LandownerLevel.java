@@ -11,11 +11,12 @@ import java.util.Set;
 public abstract class LandownerLevel extends LevelInfo {
     private Set<NpcType> npcs = new LinkedHashSet<>();
     private final int missions;
-
+    private final int size;
 
     public LandownerLevel(int level, ConfigurationSection config) {
         super(level, config);
         missions = config.getInt("missions", 0);
+        size = config.getInt("size", -1);
         for (String npc : config.getStringList("npcs")) {
             npcs.add(NpcType.valueOf(npc.replace('-', '_').toUpperCase(Locale.ROOT)));
         }
@@ -27,5 +28,9 @@ public abstract class LandownerLevel extends LevelInfo {
 
     public int getMissions() {
         return missions;
+    }
+
+    public int getSize() {
+        return size;
     }
 }

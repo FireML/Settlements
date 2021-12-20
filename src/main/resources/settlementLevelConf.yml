@@ -11,6 +11,9 @@ village:
     missions: 3
     # Extra empire missions
     extra-missions: 0
+    # Max amount of residents
+    # Default value if not included: -1 = only limited by max size in config.yml
+    size: -1
     npcs:
     - manager
     - quarter_master
@@ -25,6 +28,7 @@ village:
     extra-missions: 0
     requirements:
       CASH: 5 # in bank account
+      MISSIONS: 10 # finished settlement missions
       STONE: 5
       OAK_LOG: 5
   level-3:

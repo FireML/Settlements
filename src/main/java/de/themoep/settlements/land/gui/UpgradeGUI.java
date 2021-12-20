@@ -117,6 +117,9 @@ public class UpgradeGUI extends ConfigurableGui {
                 Collection<? extends LevelPerk> perks = selected.getPerks(nextLevel.getLevel());
                 List<String> benefits = new ArrayList<>();
                 if (nextLevel instanceof LandownerLevel && level instanceof  LandownerLevel) {
+                    if (((LandownerLevel) nextLevel).getSize() > ((LandownerLevel) level).getSize()) {
+                        benefits.add(((LandownerLevel) nextLevel).getSize() + " Members");
+                    }
                     if (((LandownerLevel) nextLevel).getMissions() > ((LandownerLevel) level).getMissions()) {
                         benefits.add(((LandownerLevel) nextLevel).getMissions() + " Missions");
                     }

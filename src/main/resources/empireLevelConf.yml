@@ -11,11 +11,14 @@ levels:
     upkeep-reduction: 20
     # The amount of missions available to member settlements per day
     missions: 3
+    # Maximum members
+    size: 5
   level-2:
     upkeep: 1000
     world-radius: 500
     upkeep-reduction: 30
     missions: 4
+    size: 10
     requirements:
       missions: 10
       Cobblestone: 3500000000
@@ -24,6 +27,7 @@ levels:
     world-radius: 550
     upkeep-reduction: 40
     missions: 5
+    size: 15
     requirements:
       Cobblestone: 3500000000
   level-4:
@@ -31,6 +35,7 @@ levels:
     world-radius: 605
     upkeep-reduction: 50
     missions: 6
+    size: 20
     requirements:
       Cobblestone: 3500000000
   level-5:
@@ -38,5 +43,6 @@ levels:
     world-radius: 740
     upkeep-reduction: 60
     missions: 7
+    size: -1 # only limited by max size in config.yml
     requirements:
       Cobblestone: 3500000000

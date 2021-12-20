@@ -498,6 +498,13 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     public boolean isFull() {
+        EmpireLevel level = getLevelInfo();
+        if (level != null) {
+            int levelSize = level.getSize();
+            if (levelSize > 0) {
+                return getMemberIds().size() >= levelSize;
+            }
+        }
         return Config.Empire.MAX_SIZE > 0 && getMemberIds().size() >= Config.Empire.MAX_SIZE;
     }
 

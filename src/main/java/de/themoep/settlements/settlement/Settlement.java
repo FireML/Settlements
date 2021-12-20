@@ -471,6 +471,13 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     }
 
     public boolean isFull() {
+        SettlementLevel level = getLevelInfo();
+        if (level != null) {
+            int levelSize = level.getSize();
+            if (levelSize > 0) {
+                return getResidentIds().size() >= levelSize;
+            }
+        }
         return Config.Settlement.MAX_SIZE > 0 && getResidentIds().size() >= Config.Settlement.MAX_SIZE;
     }
 
