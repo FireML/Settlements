@@ -93,114 +93,114 @@ commands:
     aliases: [togglewarning]
     usage: /<command> <settlement>
 permissions:
-  kingdoms.admin:
+  settlements.admin:
     description: Permission for admins. Gives access to everything.
     default: op
     children:
-      kingdoms.admin.ss: true
-      kingdoms.admin.command: true
-      kingdoms.staff: true
-      kingdoms.mod: true
-      kingdoms.chat.colour: true
-      kingdoms.channel.admin: true
-      kingdoms.bypass.flyremoval: true
-      kingdoms.admin.scoreboard: true
-  kingdoms.admin.ss:
+      settlements.admin.ss: true
+      settlements.admin.command: true
+      settlements.staff: true
+      settlements.mod: true
+      settlements.chat.colour: true
+      settlements.channel.admin: true
+      settlements.bypass.flyremoval: true
+      settlements.admin.scoreboard: true
+  settlements.admin.ss:
     description: Permission to access social spy.
     default: false
-  kingdoms.admin.command:
+  settlements.admin.command:
     description: Permission to access the villageadmin command.
     default: false
-  kingdoms.admin.scoreboard:
+  settlements.admin.scoreboard:
     description: Permission to access the scoreboardadmin command.
     default: false
-  kingdoms.bypass.banish:
+  settlements.bypass.banish:
     description: Permission to bypass being banished from a settlement.
     default: op
-  kingdoms.bypass.ignore:
+  settlements.bypass.ignore:
     description: Permission to bypass being ignored
     default: op
-  kingdoms.bypass.chatlock:
+  settlements.bypass.chatlock:
     description: Permission to bypass the chat being locked
     default: op
-  kingdoms.bypass.lock:
+  settlements.bypass.lock:
     description: Permission to bypass locks
     default: op
-  kingdoms.bypass.use:
+  settlements.bypass.use:
     description: Permission to bypass claim/world use restriction
     default: op
-  kingdoms.bypass.build:
+  settlements.bypass.build:
     description: Permission to bypass claim/world build restriction
     default: op
-  kingdoms.bypass.buildingradius:
+  settlements.bypass.buildingradius:
     description: Permission to bypass claim radius building restriction
     default: op
-  kingdoms.bypass.pvp:
+  settlements.bypass.pvp:
     description: Permission to bypass claim/world pvp restriction
     default: op
-  kingdoms.bypass.flyremoval:
+  settlements.bypass.flyremoval:
     description: Permission to bypass the removal of flight when leaving empire worlds
     default: op
-  kingdoms.bypass.restriction.chestshop:
+  settlements.bypass.restriction.chestshop:
     description: Permission to bypass shop build restrictions.
     default: op
-  kingdoms.bypass.restriction.lwc:
+  settlements.bypass.restriction.lwc:
     description: Permission to bypass shop build restrictions.
     default: op
-  kingdoms.bypass.teleport:
+  settlements.bypass.teleport:
     description: Permission to bypass any teleport restrictions (E.g. to empire worlds).
     default: op
-  kingdoms.bypass.teleport-delay:
+  settlements.bypass.teleport-delay:
     description: Permission to bypass the teleport wait delay.
     default: op
-  kingdoms.bypass.teleport-cooldown:
+  settlements.bypass.teleport-cooldown:
     description: Permission to bypass the teleport cooldown when the delay was bypassed.
     default: op
-  kingdoms.prefix.staff:
+  settlements.prefix.staff:
     description: Show the staff prefix in private chat.
     default: op
-  kingdoms.staff:
+  settlements.staff:
     description: Permission for staffs. Gives access to some staff only functions.
     default: op
     children:
-      kingdoms.user: true
-      kingdoms.bypass.chatlock: true
-      kingdoms.channel.staff: true
-      kingdoms.autojoinchannel.help: true
-      kingdoms.prefix.staff: true
-      kingdoms.chat.lock: true
-      kingdoms.chat.links: true
-      kingdoms.command.tax.others: true
-  kingdoms.mod:
+      settlements.user: true
+      settlements.bypass.chatlock: true
+      settlements.channel.staff: true
+      settlements.autojoinchannel.help: true
+      settlements.prefix.staff: true
+      settlements.chat.lock: true
+      settlements.chat.links: true
+      settlements.command.tax.others: true
+  settlements.mod:
     description: Permission for mods. Gives access to bypasses to feature limitations
     default: op
     children:
-      kingdoms.user: true
-      kingdoms.bypass.pvp: true
-      kingdoms.bypass.restriction.chestshop: true
-      kingdoms.bypass.restriction.lwc: true
-      kingdoms.bypass.banish: true
-      kingdoms.bypass.locks: true
-      kingdoms.bypass.use: true
-      kingdoms.bypass.build: true
-      kingdoms.bypass.buildingradius: true
-      kingdoms.bypass.ignore: true
-      kingdoms.chat.links: true
-      kingdoms.command.tax.others: true
-  kingdoms.user:
+      settlements.user: true
+      settlements.bypass.pvp: true
+      settlements.bypass.restriction.chestshop: true
+      settlements.bypass.restriction.lwc: true
+      settlements.bypass.banish: true
+      settlements.bypass.locks: true
+      settlements.bypass.use: true
+      settlements.bypass.build: true
+      settlements.bypass.buildingradius: true
+      settlements.bypass.ignore: true
+      settlements.chat.links: true
+      settlements.command.tax.others: true
+  settlements.user:
     description: Permission for users. Gives access to all plugin functions that a user should have.
     default: true
-  kingdoms.command.scoreboard:
+  settlements.command.scoreboard:
     description: Permission for toggling the scoreboard on or off. Does not hide custom scoreboards set with /scoreboardadmin!
-  kingdoms.chat.colour:
+  settlements.chat.colour:
     description: Gives permission to use colours in chat
     default: op
-  kingdoms.chat.links:
+  settlements.chat.links:
     description: Gives permission to use links in chat
     default: op
-  kingdoms.chat.lock:
+  settlements.chat.lock:
     description: Gives permission to lock the chat
     default: op
-  kingdoms.command.tax.others:
+  settlements.command.tax.others:
     description: Gives permission to see tax information of other players
     default: op
