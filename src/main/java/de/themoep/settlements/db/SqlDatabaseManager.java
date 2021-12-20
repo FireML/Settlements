@@ -362,7 +362,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 close(conn);
             }
         } else {
-            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "invites WHERE type = ?, targetType = ?, targetId = ?, sourceType = ?, sourceId = ? LIMIT 1")) {
+            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "invites WHERE type = ? AND targetType = ? AND targetId = ? AND sourceType = ? AND sourceId = ? LIMIT 1")) {
                 sta.setString(1, invite.name());
                 sta.setString(2, invite.getTargetType());
                 sta.setInt(3, (Integer) invite.getTargetId().value());
@@ -688,6 +688,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 ResultSet rs = sta.getGeneratedKeys();
                 if (rs.next()) {
                     resident.setId(IdObject.get(rs.getInt(1)));
+                    ResidentManager.getInstance().addResident(resident);
                 }
             }
             if (resident.getId() != null && !resident.getId().isNull()) {

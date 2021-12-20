@@ -48,7 +48,7 @@ public class InviteManager {
 
     public void addInvite(Resident resident, Settlement settlement) {
         SettlementInvite invite = new SettlementInvite(resident, settlement);
-        addInvite(invite);
+        playerInvites.put(resident.getUUID(), invite);
         invite.save();
     }
 
