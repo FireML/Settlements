@@ -340,6 +340,9 @@ public class CitizensIntegration implements Listener, ConfigMessages {
                 if (npc != null) {
                     npc.despawn();
                     CitizensAPI.getNPCRegistry().deregister(npc);
+                    if (npc.getEntity() != null) {
+                        npc.getEntity().remove();
+                    }
                 }
             }
         }
@@ -355,6 +358,9 @@ public class CitizensIntegration implements Listener, ConfigMessages {
                         npc.teleport(event.getLand().getLandOwner().getHome().toBukkitLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                     } else {
                         npc.despawn();
+                        if (npc.getEntity() != null) {
+                            npc.getEntity().remove();
+                        }
                     }
                 }
             }
@@ -440,6 +446,14 @@ public class CitizensIntegration implements Listener, ConfigMessages {
                 return;
             }
             LandOwner landOwner = getOwner();
+            if (landOwner == null) {
+                npc.despawn();
+                CitizensAPI.getNPCRegistry().deregister(npc);
+                if (npc.getEntity() != null) {
+                    npc.getEntity().remove();
+                }
+                return;
+            }
             int range = Config.Citizens.TALK_RANGE;
             // Check whether any player are nearby and handle talking to them
 
