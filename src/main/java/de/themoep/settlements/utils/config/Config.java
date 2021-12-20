@@ -329,6 +329,9 @@ public class Config {
             @ConfigComment("The amount of minutes that an empire will stay abandoned after not being able to pay their upkeep\n" +
                     "Abandoned empires can be raided and fully accessed")
             public static long ABANDON_TIME = 1440;
+
+            @ConfigComment("Should the capital settlement be excempted from paying their own upkeep?")
+            public static boolean EXEMPT_CAPITAL = false;
         }
     }
 

@@ -239,7 +239,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     }
 
     private void payUpkeep(long lastTax) {
-        if (hasEmpire() && getEmpire().isCapital(this)) {
+        if (Config.Empire.Upkeep.EXEMPT_CAPITAL && hasEmpire() && getEmpire().isCapital(this)) {
             // no upkeep for empire capitals
             if (lastTax > 0) {
                 DatabaseManager.getInstance().saveSettlement(this);

@@ -197,7 +197,10 @@ empire:
     # The amount of minutes that an empire will stay abandoned after not being able to pay their upkeep
     # Abandoned empires can be raided and fully accessed
     abandon-time: 1440
-
+    
+    # Should the capital settlement be excempted from paying their own upkeep?
+    exempt-capital: false
+    
 plot:
   # Maximum value that a plot's tax can be set to. Set to -1 to disable maximum
   max-tax: -1
