@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 public abstract class DatabaseManager {
@@ -215,6 +214,14 @@ public abstract class DatabaseManager {
         );
     }
 
+    public void logDeposit(LandOwner landOwner, Resident resident, long deposited) {
+        if (landOwner instanceof Settlement) {
+            logDeposit((Settlement) landOwner, resident, deposited);
+        } else if (landOwner instanceof Empire && resident.hasSettlement()) {
+            logDeposit((Empire) landOwner, resident.getSettlement(), resident, deposited);
+        }
+    }
+
     public void logDeposit(Settlement settlement, Resident resident, long deposited) {
         log(null, settlement, resident, "deposit", "cash", deposited);
     }
@@ -237,6 +244,14 @@ public abstract class DatabaseManager {
 
     public void logLevelup(Settlement settlement, Resident resident, Map<String, Long> removed) {
         log(null, settlement, resident, "levelup", removed);
+    }
+
+    public void logWithdraw(LandOwner landOwner, Resident resident, long withdrawn) {
+        if (landOwner instanceof Settlement) {
+            logWithdraw((Settlement) landOwner, resident, withdrawn);
+        } else if (landOwner instanceof Empire && resident.hasSettlement()) {
+            logWithdraw((Empire) landOwner, resident.getSettlement(), resident, withdrawn);
+        }
     }
 
     public void logWithdraw(Settlement settlement, Resident resident, long withdrawn) {

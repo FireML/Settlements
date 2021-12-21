@@ -1,31 +1,18 @@
 package de.themoep.settlements.land.gui;
 
-import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.SettlementsGUI;
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.land.LandOwner;
-import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.Utils;
-import de.themoep.settlements.utils.config.Config;
 
-import java.util.concurrent.TimeUnit;
-
-public class BankGUI extends SettlementsGUI {
-    private final Resident resident;
-    private final InventoryGui gui;
+public class BankGUI extends ConfigurableGui {
 
     public BankGUI(Resident resident, LandOwner<?, ?> landOwner) {
-        super(landOwner.getKey() + ".bank");
-        this.resident = resident;
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), getSetup());
-        gui.setCloseAction(close -> false);
-        gui.setFiller(getIcon("filler"));
-        gui.addElements(getConfiguredElements());
+        super(resident, landOwner.getKey() + ".bank");
 
         gui.addElement(new StaticGuiElement('d', getIcon("donation"), getText("donations",
                 "state", landOwner.getStateTag(),
@@ -78,17 +65,24 @@ public class BankGUI extends SettlementsGUI {
                 "acutiontax", Utils.CURRENCY_FORMAT.format(landOwner.getAuctionTax()),
                 "state", landOwner.getStateTag())));
 
-        gui.addElement(new StaticGuiElement('m', getIcon("manage-taxes"), click -> {
-            if (landOwner.hasPermission(resident, "tax.set")) {
-                new ManageTaxesGUI(resident, landOwner).open();
+        gui.addElement(new StaticGuiElement('m', getIcon("manage-finances"), click -> {
+            if (landOwner.hasPermission(resident, "tax.set")
+                    || landOwner.hasPermission(resident, "auctiontax.set")
+                    || landOwner.hasPermission(resident, "bank.withdraw")
+                    || landOwner.hasPermission(resident, "bank.deposit")) {
+                new ManageFinancesGUI(resident, landOwner).open();
             } else {
                 getError("no-permission").tell(resident);
             }
             return true;
-        }, getText("manage-taxes",
+        }, getText("manage-finances",
                 "tax", Utils.CURRENCY_FORMAT.format(landOwner.getTax()),
                 "acutiontax", Utils.CURRENCY_FORMAT.format(landOwner.getAuctionTax()),
-                "action", getText("unlockables.unlocked.options"),
+                "action", getText(landOwner.hasPermission(resident, "tax.set")
+                        || landOwner.hasPermission(resident, "auctiontax.set")
+                        || landOwner.hasPermission(resident, "bank.withdraw")
+                        || landOwner.hasPermission(resident, "bank.deposit")
+                        ? "unlockables.unlocked.options" : "unlockables.locked.nopermission"),
                 "state", landOwner.getStateTag())));
 
     }

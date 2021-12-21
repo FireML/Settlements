@@ -1,9 +1,8 @@
 package de.themoep.settlements.command.empire;
 
 import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.land.TaxDebtAction;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 
@@ -32,8 +31,11 @@ public class EmpireAuctionTaxCommand extends EmpireSubCommand {
                         return true;
                     }
                     resident.getSettlement().getEmpire().setAuctionTax(amount);
-                    getMessage("success").tell(resident.getSettlement().getEmpire(), "amount", Utils.CURRENCY_FORMAT.format(amount));
                     resident.getSettlement().getEmpire().save();
+                    MessageUtils.notify(resident.getSettlement().getEmpire(), resident.getSettlement().getEmpire().getResidents(), getMessage("success"),
+                            "state", resident.getSettlement().getStateTag(),
+                            "amount", Utils.CURRENCY_FORMAT.format(amount)
+                    );
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(resident, "input", args[0]);
                     return false;

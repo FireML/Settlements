@@ -726,6 +726,8 @@ gui:
       unclaim: "&bClick to unclaim"
       join: "&bClick to join"
       banish: "&bClick to banish"
+      withdraw: "&bClick to withdraw"
+      deposit: "&bClick to deposit"
       invited: |-
         &bYou have been invited to join them!
         &bClick to join!
@@ -1069,7 +1071,7 @@ gui:
       &fCurrent Balance: &e${balance}
     storage: |-
       &eStorage Chest
-      &fShared storage of the
+      &fShared storage of the {state}
       
       {action}
     history: |-
@@ -1093,11 +1095,14 @@ gui:
       
       &fResident taxes: &e${tax}
       &fAuction taxes: &e${auctiontax}
-    manage-taxes: |-
-      &eManage Taxes
+    manage-finances: |-
+      &eManage Finances
+      &f- Withdraw and deposit
+      &f- Set taxes
       
       {action}
-  manage-taxes:
+  manage-finances:
+    title: "Manage Finances"
     tax:
       button: |-
         &eChange Taxes
@@ -1106,8 +1111,8 @@ gui:
         &fbalance every {hour}. Server time.
         
         &fCurrent Tax: &e${tax}
-        
-        &bClick to edit
+  
+        {action}
         
         &fCooldown on change: {cooldown}
       anvil:
@@ -1120,13 +1125,29 @@ gui:
         &fAuctioneer!
         
         &fCurrent Tax: &e${auctiontax}
-        
-        &bClick to edit
+  
+        {action}
         
         &fCooldown on change: {cooldown}
       anvil:
         title: "Set auction tax"
         placeholder: "{auctiontax}"
+    deposit:
+      button: |-
+        &eDeposit Money
+  
+        {action}
+      anvil:
+        title: "Set amount to deposit"
+        placeholder: "0"
+    withdraw:
+      button: |-
+        &eWithdraw Money
+        
+        {action}
+      anvil:
+        title: "Set amount to withdraw"
+        placeholder: "0"
   banished:
     title: "Manage Banished"
     sort: |-
@@ -1365,6 +1386,11 @@ gui:
           &7Allows all members to build
         private: |-
           &7Allows only capital residents to build
+    bank:
+      taxes: |-
+        &eCurrent Taxes
+    
+        &fMember taxes: &e${tax}
     perks:
       actions:
         weather:

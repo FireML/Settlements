@@ -324,20 +324,22 @@ guis:
         history: book
         upkeep: gold_ingot
         taxes: map
-        manage-taxes: cartography_table
+        manage-finances: cartography_table
         back: barrier
-    manage-taxes:
+    manage-finances:
       setup:
       - "ooooooooo"
       - "         "
       - "         "
-      - "  t   a  "
+      - " ta   dw "
       - "         "
       - " ooobooo "
       elements:
         o: yellow_stained_glass_pane
         tax: name_tag
-        auction-tax: beacon
+        auctiontax: beacon
+        deposit: hopper
+        withdraw: bell
         back: barrier
     upgrade:
       setup:
@@ -630,6 +632,7 @@ guis:
         rename: anvil
         sethome: purple_banner
         unclaim: red_dye
+        public: beacon
         back: barrier
   empire:
     access:
@@ -789,20 +792,20 @@ guis:
         page: paper
         sort: hopper
         back: barrier
-    manage-taxes:
+    manage-finances:
       setup:
       - "ooooooooo"
       - "         "
       - "         "
-      - "  t   a  "
+      - " ta   dw "
       - "         "
       - " ooobooo "
-      alignments:
-        p: center
       elements:
         o: yellow_stained_glass_pane
         tax: name_tag
-        auction-tax: beacon
+        auction: beacon
+        deposit: hopper
+        withdraw: bell
         back: barrier
     upgrade:
       setup:

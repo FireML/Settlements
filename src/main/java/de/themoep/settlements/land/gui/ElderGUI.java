@@ -65,6 +65,7 @@ public class ElderGUI extends ConfigurableGui {
                     request.save();
                     click.getGui().close();
                     MessageUtils.notify(
+                            landOwner,
                             landOwner.getResidents().stream().filter(r -> r.hasPermission("settlement.recruitment")).collect(Collectors.toList()),
                             Message.get("command.settlement.join.someone-applied"),
                             "name", resident.getName(),

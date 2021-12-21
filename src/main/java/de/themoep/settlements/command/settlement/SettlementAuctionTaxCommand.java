@@ -2,6 +2,7 @@ package de.themoep.settlements.command.settlement;
 
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 
@@ -30,11 +31,11 @@ public class SettlementAuctionTaxCommand extends SettlementSubCommand {
                         return true;
                     }
                     resident.getSettlement().setAuctionTax(amount);
-                    getMessage("success").tell(resident.getSettlement(),
+                    resident.getSettlement().save();
+                    MessageUtils.notify(resident.getSettlement(), resident.getSettlement().getResidents(), getMessage("success"),
                             "state", resident.getSettlement().getStateTag(),
                             "amount", Utils.CURRENCY_FORMAT.format(amount)
                     );
-                    resident.getSettlement().save();
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(resident, "input", args[0]);
                     return false;

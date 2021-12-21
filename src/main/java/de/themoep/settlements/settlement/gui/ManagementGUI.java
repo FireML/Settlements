@@ -24,7 +24,6 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -181,7 +180,7 @@ public class ManagementGUI extends SettlementsGUI {
                 if (settlement.getJoinFee() > 0) {
                     if (SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(resident.getPlayer(), settlement.getJoinFee()).transactionSuccess()) {
                         settlement.addToBank(settlement.getJoinFee());
-                        MessageUtils.notify(resident, Message.get("command.settlement.join.money-paid"), "amount", String.valueOf(settlement.getJoinFee()));
+                        MessageUtils.notify(settlement, resident, Message.get("command.settlement.join.money-paid"), "amount", String.valueOf(settlement.getJoinFee()));
                         settlement.save();
                         DatabaseManager.getInstance().log(settlement, resident, "joinfee", "cash", settlement.getJoinFee());
                     } else {
@@ -190,7 +189,7 @@ public class ManagementGUI extends SettlementsGUI {
                     }
                 }
                 settlement.addMember(resident);
-                MessageUtils.notify(resident, Message.get("command.settlement.join.success"),
+                MessageUtils.notify(settlement, resident, Message.get("command.settlement.join.success"),
                         "name", settlement.getName(), "state", settlement.getState().getTag());
                 Message.get("command.settlement.join.new-resident").tell(settlement, "player", resident.getName());
                 return true;

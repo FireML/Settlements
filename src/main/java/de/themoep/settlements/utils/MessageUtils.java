@@ -6,8 +6,8 @@ import de.themoep.minedown.MineDownParser;
 import de.themoep.minedown.Replacer;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.integration.MailProvider;
+import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.resident.Resident;
-import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -202,18 +202,18 @@ public class MessageUtils {
         return b ? "Yes" : "No";
     }
 
-    public static void notify(List<Resident> residents, Message message, String... replacements) {
+    public static void notify(LandOwner sender, List<Resident> residents, Message message, String... replacements) {
         for (Resident resident : residents) {
-            notify(resident, message, replacements);
+            notify(sender, resident, message, replacements);
         }
     }
 
-    public static void notify(Resident resident, Message message, String... replacements) {
+    public static void notify(LandOwner sender, Resident resident, Message message, String... replacements) {
         if (resident.getPlayer() != null) {
             message.tell(resident, replacements);
         } else {
             for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
-                provider.sendMail(SettlementsPlugin.getInstance().getName(), resident, message.getReplacedText(replacements));
+                provider.sendMail(sender.getStateTag() + " " + sender.getName(), resident, message.getReplacedText(replacements));
             }
         }
     }

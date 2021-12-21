@@ -1,10 +1,9 @@
 package de.themoep.settlements.command.settlement;
 
-import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.TaxDebtAction;
-import de.themoep.settlements.utils.Utils;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.config.Config;
 
 public class SettlementTaxCommand extends SettlementSubCommand {
@@ -32,11 +31,11 @@ public class SettlementTaxCommand extends SettlementSubCommand {
                         return true;
                     }
                     resident.getSettlement().setTax(amount);
-                    getMessage("success").tell(resident.getSettlement().getOnlineResidents(),
+                    resident.getSettlement().save();
+                    MessageUtils.notify(resident.getSettlement(), resident.getSettlement().getResidents(), getMessage("success"),
                             "state", resident.getSettlement().getStateTag(),
                             "amount", String.valueOf(amount)
                     );
-                    resident.getSettlement().save();
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(resident, "input", args[0]);
                     return false;
@@ -54,11 +53,11 @@ public class SettlementTaxCommand extends SettlementSubCommand {
                     TaxDebtAction taxDebtAction = TaxDebtAction.valueOf(args[0].toUpperCase());
                     if (taxDebtAction != resident.getSettlement().getTaxDebtAction()) {
                         resident.getSettlement().setTaxDebtAction(taxDebtAction);
-                        getMessage("success").tell(resident.getSettlement().getOnlineResidents(),
+                        resident.getSettlement().save();
+                        MessageUtils.notify(resident.getSettlement(), resident.getSettlement().getResidents(), getMessage("success"),
                                 "state", resident.getSettlement().getStateTag(),
                                 "action", taxDebtAction.getTag()
                         );
-                        DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
                     } else {
                         getMessage("already-set").tell(resident, "action", taxDebtAction.getTag());
                     }

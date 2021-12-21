@@ -44,6 +44,7 @@ public class SettlementJoinCommand extends ResidentSubCommand {
                     joinSettlement.addJoinRequest(request);
                     request.save();
                     MessageUtils.notify(
+                            joinSettlement,
                             joinSettlement.getResidents().stream().filter(r -> r.hasPermission("settlement.recruitment")).collect(Collectors.toList()),
                             Message.get("command.settlement.join.someone-applied"),
                             "name", resident.getName(),
