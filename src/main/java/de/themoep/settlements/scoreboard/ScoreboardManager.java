@@ -5,6 +5,7 @@ import de.themoep.settlements.scoreboard.commands.CommandScoreboardAdmin;
 import de.themoep.settlements.scoreboard.listeners.ScoreboardListeners;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.CommandManager;
+import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.config.Config;
 import org.bukkit.Bukkit;
@@ -26,7 +27,7 @@ public class ScoreboardManager implements ConfigMessages {
     private long lastUpdate = System.currentTimeMillis();
     private long updateRate;
 
-    private ScoreboardManager() {
+    private void setup() {
         title = getText("sidebar.title");
         SettlementsPlugin.getInstance().registerListener(new ScoreboardListeners(this));
         updateRate = Config.Sidebar.UPDATE;
@@ -91,11 +92,15 @@ public class ScoreboardManager implements ConfigMessages {
         }
     }
 
-    synchronized public static ScoreboardManager getInstance() {
+    public static ScoreboardManager getInstance() {
+        return instance;
+    }
+
+    public static void load() {
         if (instance == null) {
             instance = new ScoreboardManager();
+            instance.setup();
         }
-        return instance;
     }
 
     @Override

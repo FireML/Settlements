@@ -26,7 +26,7 @@ public class CommandManager implements TabExecutor {
     private static CommandManager instance;
     private Map<String, SubCommand> commandMap = new LinkedHashMap<>();
 
-    private CommandManager() {
+    private void setup() {
         registerCommand(new AdminCommand(), false);
         SettlementsPlugin.logDebug("Loaded CommandManager for " + commandMap.size() + " commands");
     }
@@ -91,13 +91,17 @@ public class CommandManager implements TabExecutor {
     }
 
     synchronized public static CommandManager getInstance() {
+        return instance;
+    }
+
+    public static void load() {
         if (instance == null) {
             instance = new CommandManager();
+            instance.setup();
             if (!Config.Chat.CHAT_ONLY) {
                 instance.registerCommands();
             }
         }
-        return instance;
     }
 
     @Override

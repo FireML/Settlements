@@ -76,7 +76,7 @@ public class EmpireManager {
     private Map<String, EmpirePerk> perkTags;
     private Set<String> unlockables;
 
-    public EmpireManager() {
+    private void setup() {
         loadConfig();
         for (Empire empire : DatabaseManager.getInstance().getAllEmpires()) {
             if (Config.Empire.World.ENABLED && Config.Empire.World.RENAME && empire.getWorldName() != null) {
@@ -105,7 +105,7 @@ public class EmpireManager {
             // Loop through all worlds to find empire ones
             for (File world : SettlementsPlugin.getInstance().getServer().getWorldContainer().listFiles(f -> f.isDirectory())) {
                 Empire empire = getEmpireFromWorld(world);
-                if (empire != null && empire.getLevelInfo().getWorldRadius() > 0) {
+                if (empire != null && getLevel(empire.getLevel()).map(EmpireLevel::getWorldRadius).orElse(0) > 0) {
                     empire.setWorldName(world.getName());
                 }
             }
@@ -175,11 +175,15 @@ public class EmpireManager {
         }
     }
 
-    synchronized public static EmpireManager getInstance() {
+    public static EmpireManager getInstance() {
+        return instance;
+    }
+
+    public static void load() {
         if (instance == null) {
             instance = new EmpireManager();
+            instance.setup();
         }
-        return instance;
     }
 
     public Collection<Empire> getEmpires () {

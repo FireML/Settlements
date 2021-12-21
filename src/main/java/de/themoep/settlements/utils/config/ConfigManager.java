@@ -93,7 +93,7 @@ public class ConfigManager {
 
     private ConfigAccessor guisConf;
 
-    private ConfigManager() {
+    private void setup() {
         registerParser("StringSet", new TypelessConfigParser() {
             @Override
             public Object toJava(Object object) {
@@ -555,11 +555,15 @@ public class ConfigManager {
         return iconRpMapping;
     }
 
-    synchronized public static ConfigManager getInstance() {
+    public static ConfigManager getInstance() {
+        return instance;
+    }
+
+    public static void load() {
         if (instance == null) {
             instance = new ConfigManager();
+            instance.setup();
         }
-        return instance;
     }
 
     /**

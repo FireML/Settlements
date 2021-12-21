@@ -5,6 +5,7 @@ import com.google.common.collect.MultimapBuilder;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.Utils;
 
 import java.util.Collection;
@@ -14,19 +15,23 @@ public class InviteManager {
 
     private static InviteManager instance;
 
-    private Multimap<UUID, SettlementInvite> playerInvites = MultimapBuilder.hashKeys().arrayListValues().build();
+    private final Multimap<UUID, SettlementInvite> playerInvites = MultimapBuilder.hashKeys().arrayListValues().build();
 
-    public InviteManager() {
+    private void setup() {
         for (SettlementInvite invite : DatabaseManager.getInstance().getSettlementInvites()) {
             addInvite(invite);
         }
     }
 
     public static InviteManager getInstance() {
+        return instance;
+    }
+
+    public static void load() {
         if (instance == null) {
             instance = new InviteManager();
+            instance.setup();
         }
-        return instance;
     }
 
     public Collection<SettlementInvite> getInvites(Resident resident) {

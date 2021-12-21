@@ -70,7 +70,7 @@ public class EventManager implements ConfigMessages {
     private Map<IdObject, Set<String>> settlementRewards = new HashMap<>();
 
 
-    private EventManager() {
+    private void setup() {
         loadConfig();
         SettlementsPlugin.getInstance().registerListener(new EventListener());
         SettlementsPlugin.logDebug("Loaded EventManager with " + events.size() + " events (" + automaticEvents.size() + " automatic events) and " + rewards.size() + " rewards");
@@ -346,14 +346,21 @@ public class EventManager implements ConfigMessages {
         return rewards.get(id.toLowerCase());
     }
 
-    synchronized public static EventManager getInstance() {
+    public static EventManager getInstance() {
         if (!ConfigManager.getInstance().getEventsConf().getConfig().getBoolean("enabled")) {
             throw new IllegalStateException("Tried to get EventManager while events were disabled!");
         }
+        return instance;
+    }
+
+    public static void load() {
+        if (!ConfigManager.getInstance().getEventsConf().getConfig().getBoolean("enabled")) {
+            throw new IllegalStateException("Tried to load EventManager while events were disabled!");
+        }
         if (instance == null) {
             instance = new EventManager();
+            instance.setup();
         }
-        return instance;
     }
 
     public void handle(Player player, Event.Action action, String... data) {

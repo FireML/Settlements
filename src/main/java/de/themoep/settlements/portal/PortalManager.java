@@ -5,6 +5,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Table;
 import de.themoep.settlements.command.portal.PortalCommand;
+import de.themoep.settlements.settlement.SettlementManager;
 import io.papermc.lib.PaperLib;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.CommandManager;
@@ -45,7 +46,7 @@ public class PortalManager {
     private Table<String, SimpleBlockLocation, Portal> portalLocations = HashBasedTable.create();
     private Multimap<IdObject, IdObject> portalLinks = MultimapBuilder.hashKeys().hashSetValues().build();
 
-    private PortalManager() {
+    private void setup() {
         for (Portal portal : DatabaseManager.getInstance().getAllPortals()) {
             portals.put(portal.getId(), portal);
             portalLocations.put(portal.getLocation().getChunkKey(), portal.getLocation(), portal);
@@ -64,10 +65,17 @@ public class PortalManager {
         if (!Config.Portal.ENABLED) {
             throw new IllegalStateException("Tried to get PortalManager while portals were disabled!");
         }
+        return instance;
+    }
+
+    public static void load() {
+        if (!Config.Portal.ENABLED) {
+            throw new IllegalStateException("Tried to load PortalManager while portals were disabled!");
+        }
         if (instance == null) {
             instance = new PortalManager();
+            instance.setup();
         }
-        return instance;
     }
 
     public Collection<Portal> getLinks(Portal portal) {

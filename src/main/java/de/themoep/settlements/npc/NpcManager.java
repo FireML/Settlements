@@ -32,7 +32,7 @@ public class NpcManager {
     private Multimap<NpcType, NpcLevel> empireLevels = MultimapBuilder.enumKeys(NpcType.class).arrayListValues().build();
     private Map<String, NpcPerk> empirePerks = new LinkedHashMap<>();
 
-    private NpcManager() {
+    private void setup() {
         loadConfig();
     }
 
@@ -107,10 +107,14 @@ public class NpcManager {
     }
 
     public static NpcManager getInstance() {
+        return instance;
+    }
+
+    public static void load() {
         if (instance == null) {
             instance = new NpcManager();
+            instance.setup();
         }
-        return instance;
     }
 
     private NpcLevel getLevelInternal(LandOwner<?, ?> owner, NpcType type, int level) {

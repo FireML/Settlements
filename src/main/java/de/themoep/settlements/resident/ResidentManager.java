@@ -31,7 +31,7 @@ public class ResidentManager {
     private Cache<Object, Resident> residentsByUuid;
     private Cache<Object, Resident> residentsByName;
 
-    private ResidentManager() {
+    private void setup() {
         Expiry<? super Object, Resident> residentExpiry = new Expiry<Object, Resident>() {
             @Override
             public long expireAfterCreate(Object key, Resident resident, long currentTime) {
@@ -58,6 +58,10 @@ public class ResidentManager {
         residentsById = Caffeine.newBuilder().expireAfter(residentExpiry).build();
         residentsByUuid = Caffeine.newBuilder().expireAfter(residentExpiry).build();
         residentsByName = Caffeine.newBuilder().expireAfter(residentExpiry).build();
+
+        for (Settlement settlement : SettlementManager.getInstance().getSettlements()) {
+            settlement.getResidents(); // pre load all residents in a settlement
+        }
         SettlementsPlugin.logDebug("Loaded ResidentManager");
     }
 
@@ -197,14 +201,15 @@ public class ResidentManager {
         return resident != null ? resident.getName() : uuid.toString();
     }
 
-    synchronized public static ResidentManager getInstance() {
+    public static ResidentManager getInstance() {
+        return instance;
+    }
+
+    public static void load() {
         if (instance == null) {
             instance = new ResidentManager();
-            for (Settlement settlement : SettlementManager.getInstance().getSettlements()) {
-                settlement.getResidents(); // pre load all residents in a settlement
-            }
+            instance.setup();
         }
-        return instance;
     }
 
     public boolean doesResidentHaveSettlement(Player player) {

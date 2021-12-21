@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableMap;
 import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.lock.LockCommand;
 import de.themoep.settlements.command.lock.UnlockCommand;
+import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.world.SimpleBlockLocation;
@@ -55,7 +56,7 @@ public class LockManager implements LockProvider {
     private final Cache<UUID, String> interactActions = Caffeine.newBuilder().expireAfterWrite(10, TimeUnit.SECONDS).build();
     private final Cache<UUID, String> toggledActions = Caffeine.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES).build();
 
-    private LockManager() {
+    private void setup() {
         loadChunks(Bukkit.getWorlds().stream()
                 .map(World::getLoadedChunks)
                 .flatMap((Function<Chunk[], Stream<Chunk>>) Arrays::stream)
@@ -308,14 +309,21 @@ public class LockManager implements LockProvider {
         }
     }
 
-    synchronized public static LockManager getInstance() {
+    public static LockManager getInstance() {
+        if (!Config.Lock.ENABLED) {
+            throw new IllegalStateException("Tried to get LockManager while locks were disabled!");
+        }
+        return instance;
+    }
+
+    public static void load() {
         if (!Config.Lock.ENABLED) {
             throw new IllegalStateException("Tried to get LockManager while locks were disabled!");
         }
         if (instance == null) {
             instance = new LockManager();
+            instance.setup();
         }
-        return instance;
     }
 
     public void addAction(UUID playerId, String action) {

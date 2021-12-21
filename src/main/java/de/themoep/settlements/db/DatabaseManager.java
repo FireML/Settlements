@@ -31,6 +31,10 @@ public abstract class DatabaseManager {
     private static DatabaseManager instance;
 
     synchronized public static DatabaseManager getInstance() {
+        return instance;
+    }
+
+    synchronized public static void load() {
         if (instance == null) {
             String type = Config.Storage.TYPE;
             if ("mysql".equalsIgnoreCase(type)) {
@@ -44,7 +48,6 @@ public abstract class DatabaseManager {
                 SettlementsPlugin.getInstance().getServer().getPluginManager().disablePlugin(SettlementsPlugin.getInstance());
             }
         }
-        return instance;
     }
 
     public abstract void connect() throws Exception;

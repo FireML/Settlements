@@ -50,7 +50,6 @@ import de.themoep.settlements.utils.config.ConfigManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementListener;
 import de.themoep.settlements.settlement.SettlementManager;
-import net.milkbowl.vault.permission.Permission;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
@@ -78,11 +77,11 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     private MultiverseIntegration multiverse = null;
     private PlaceholderApiIntegration placeholderApi = null;
 
-    private Set<LockProvider> lockProviders = new LinkedHashSet<>();
-    private Set<IgnoreProvider> ignoreProviders = new LinkedHashSet<>();
-    private Set<AfkProvider> afkProviders = new LinkedHashSet<>();
-    private Set<ShopProvider> shopProviders = new LinkedHashSet<>();
-    private Set<MailProvider> mailProviders = new LinkedHashSet<>();
+    private final Set<LockProvider> lockProviders = new LinkedHashSet<>();
+    private final Set<IgnoreProvider> ignoreProviders = new LinkedHashSet<>();
+    private final Set<AfkProvider> afkProviders = new LinkedHashSet<>();
+    private final Set<ShopProvider> shopProviders = new LinkedHashSet<>();
+    private final Set<MailProvider> mailProviders = new LinkedHashSet<>();
 
     public static Chat chat = null;
     private boolean running = false;
@@ -92,10 +91,10 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     private MCTiming pluginTimings;
     private ServerAdapter serverAdapter;
 
-    private List<Settlement> newlyAbandonedSettlements = new ArrayList<>();
-    private List<Settlement> newlyDeletedSettlements = new ArrayList<>();
-    private List<Empire> newlyAbandonedEmpires = new ArrayList<>();
-    private List<Empire> newlyDeletedEmpires = new ArrayList<>();
+    private final List<Settlement> newlyAbandonedSettlements = new ArrayList<>();
+    private final List<Settlement> newlyDeletedSettlements = new ArrayList<>();
+    private final List<Empire> newlyAbandonedEmpires = new ArrayList<>();
+    private final List<Empire> newlyDeletedEmpires = new ArrayList<>();
 
     @Override
     public void onDisable() {
@@ -127,12 +126,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         }
         this.setupChat();
 
-        ConfigManager.getInstance();
-        try {
-            DatabaseManager.getInstance().connect();
-        } catch (Exception e) {
-            this.getLogger().log(Level.SEVERE, "Disabled due to databaser error!", e);
-            this.getServer().getPluginManager().disablePlugin(this);
+        if (!loadManagers()) {
             return;
         }
 
@@ -179,8 +173,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
                 getLogger().log(Level.INFO, "Hooked into ChestShop " + csIntegration.getChestShop().getDescription().getVersion() + "!");
             }
         }
-
-        this.loadManagers();
 
         registerListener(new SettlementsListener());
 
@@ -323,35 +315,44 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         return lPerks;
     }
 
-    public void loadManagers() {
+    public boolean loadManagers() {
         // Order is important!
-        CommandManager.getInstance();
-        DatabaseManager.getInstance();
-        RankManager.getInstance().load();
-        EmpireManager.getInstance();
-        SettlementManager.getInstance();
-        NpcManager.getInstance();
-        if (!Config.Chat.CHAT_ONLY) {
-            LandManager.getInstance();
+        ConfigManager.load();
+        DatabaseManager.load();
+        try {
+            DatabaseManager.getInstance().connect();
+        } catch (Exception e) {
+            this.getLogger().log(Level.SEVERE, "Disabled due to databaser error!", e);
+            this.getServer().getPluginManager().disablePlugin(this);
+            return false;
         }
-        UseFlagManager.getInstance();
-        ResidentManager.getInstance();
-        InviteManager.getInstance();
+        CommandManager.load();
+        UseFlagManager.load();
+        EmpireManager.load();
+        SettlementManager.load();
+        RankManager.load();
+        NpcManager.load();
+        if (!Config.Chat.CHAT_ONLY) {
+            LandManager.load();
+        }
+        ResidentManager.load();
+        InviteManager.load();
         if (Config.Portal.ENABLED) {
-            PortalManager.getInstance();
+            PortalManager.load();
         }
         if (Config.Lock.ENABLED) {
-            LockManager.getInstance();
+            LockManager.load();
         }
         if (ConfigManager.getInstance().getEventsConf().getConfig().getBoolean("enabled")) {
-            EventManager.getInstance();
+            EventManager.load();
         }
         if (Config.Sidebar.ENABLED) {
-            ScoreboardManager.getInstance();
+            ScoreboardManager.load();
         }
         if (Config.Chat.ENABLED) {
-            ChatManager.getInstance();
+            ChatManager.load();
         }
+        return true;
     }
 
     private boolean setupChat() {

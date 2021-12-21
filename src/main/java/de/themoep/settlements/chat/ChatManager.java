@@ -20,6 +20,7 @@ import de.themoep.settlements.integration.PlaceholderApiIntegration;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
@@ -65,7 +66,7 @@ public class ChatManager implements ConfigMessages, Listener {
     private final static DecimalFormat BALANCE_FORMAT = new DecimalFormat("#,###.##");
     private Cache<UUID, Boolean> notifyCooldowns = Caffeine.newBuilder().expireAfterAccess(Config.Chat.Notify.COOLDOWN, TimeUnit.SECONDS).build();
 
-    private ChatManager() {
+    private void setup() {
 
         ChatCommand chatCommand = new ChatCommand();
         CommandManager.getInstance().registerCommand(chatCommand);
@@ -561,14 +562,21 @@ public class ChatManager implements ConfigMessages, Listener {
         return SettlementsPlugin.chat != null ? MessageUtils.replaceColorCodes(SettlementsPlugin.chat.getPlayerSuffix(sender)) : "";
     }
 
-    synchronized public static ChatManager getInstance() {
+    public static ChatManager getInstance() {
         if (!Config.Chat.ENABLED) {
             throw new IllegalStateException("Tried to get ChatManager while chat was disabled!");
         }
+        return instance;
+    }
+
+    public static void load() {
+        if (!Config.Chat.ENABLED) {
+            throw new IllegalStateException("Tried to load ChatManager while chat was disabled!");
+        }
         if (instance == null) {
             instance = new ChatManager();
+            instance.setup();
         }
-        return instance;
     }
 
     @Override

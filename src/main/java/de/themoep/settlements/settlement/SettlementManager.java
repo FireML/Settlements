@@ -68,7 +68,7 @@ public class SettlementManager {
 
     private Set<String> unlockables;
 
-    private SettlementManager() {
+    private void setup() {
         loadConfig();
         for (Settlement settlement : DatabaseManager.getInstance().getAllSettlements()) {
             settlements.put(settlement.getName().replace(' ', '_').toLowerCase(), settlement);
@@ -85,6 +85,7 @@ public class SettlementManager {
                 }, delay, TimeUnit.MILLISECONDS);
             }
         }
+        checkForMissionDistribution();
         SettlementsPlugin.logDebug("Loaded SettlementManager with " + settlementIDs.size() + " settlements and " + perks.size() + " perks");
     }
 
@@ -137,12 +138,15 @@ public class SettlementManager {
         }
     }
 
-    synchronized public static SettlementManager getInstance() {
+    public static SettlementManager getInstance() {
+        return instance;
+    }
+
+    public static void load() {
         if (instance == null) {
             instance = new SettlementManager();
-            instance.checkForMissionDistribution();
+            instance.setup();
         }
-        return instance;
     }
 
     public Collection<Settlement> getSettlements() {

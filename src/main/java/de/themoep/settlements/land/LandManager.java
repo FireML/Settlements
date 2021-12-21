@@ -30,6 +30,7 @@ import de.themoep.settlements.land.events.LandUnclaimEvent;
 import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.portal.PortalManager;
 import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
@@ -59,6 +60,9 @@ public class LandManager {
 
     private LandManager() {
         nearbyRadius = Config.Claiming.Close.Building.DISTANCE;
+    }
+
+    private void setup() {
         for (OwnedLand land : DatabaseManager.getInstance().getAllLand()) {
             cacheLand(land);
         }
@@ -294,11 +298,15 @@ public class LandManager {
         SettlementsPlugin.getInstance().getLockProviders().forEach(i -> i.removeInChunks(claims));
     }
 
-    synchronized public static LandManager getInstance() {
+    public static LandManager getInstance() {
+        return instance;
+    }
+
+    public static void load() {
         if (instance == null) {
             instance = new LandManager();
+            instance.setup();
         }
-        return instance;
     }
 
     public int getOwnedPlotCount(UUID uniqueId) {

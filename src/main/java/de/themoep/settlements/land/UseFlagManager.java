@@ -1,5 +1,6 @@
 package de.themoep.settlements.land;
 
+import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.MaterialUtils;
 import de.themoep.settlements.utils.config.ConfigManager;
 import de.themoep.settlements.SettlementsPlugin;
@@ -24,7 +25,7 @@ public class UseFlagManager {
     private final Map<String, UseFlag> byId = new LinkedHashMap<>();
     private final Map<Use, UseFlag> byUseType = new EnumMap<>(Use.class);
 
-    private UseFlagManager() {
+    private void setup() {
         loadConfig();
         SettlementsPlugin.logDebug("Loaded UseFlagManager with " + byId.size() + " use flags");
     }
@@ -169,10 +170,14 @@ public class UseFlagManager {
     }
 
     public static UseFlagManager getInstance() {
+        return instance;
+    }
+
+    public static void load() {
         if (instance == null) {
             instance = new UseFlagManager();
+            instance.setup();
         }
-        return instance;
     }
 
     public UseFlag get(String id) {

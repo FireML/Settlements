@@ -36,7 +36,7 @@ public class RankManager {
     private Map<String, PermissionGroup> settlementPermGroups;
     private Collection<String> settlementToggleablePerms;
 
-    public void load() {
+    private void setup() {
         loadEmpireRanks();
         loadSettlementRanks();
         SettlementsPlugin.logDebug("Loaded RankManager with " + settlementRanks.size() + " settlement ranks and " + empireRanks.size() + " empire ranks");
@@ -140,11 +140,15 @@ public class RankManager {
         }
     }
 
-    synchronized public static RankManager getInstance() {
+    public static RankManager getInstance() {
+        return instance;
+    }
+
+    public static void load() {
         if (instance == null) {
             instance = new RankManager();
+            instance.setup();
         }
-        return instance;
     }
 
     public Collection<SettlementRank> getSettlementRanks() {
