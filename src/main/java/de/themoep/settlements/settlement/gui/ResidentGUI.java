@@ -125,13 +125,13 @@ public class ResidentGUI extends ConfigurableGui {
             gui.addElement(new StaticGuiElement('l', getIcon("eviction"), click -> {
                 if (resident.getSettlement().hasPermission(sender, "kicknotice")) {
                     for (MailProvider mailProvider : SettlementsPlugin.getInstance().getMailProviders()) {
-                        mailProvider.sendMail(Message.get("eviction.sender").getReplacedText(
+                        mailProvider.sendMail(Message.get("eviction.letter.sender").getReplacedText(
                                         "state", resident.getSettlement().getStateTag(),
                                         "name", resident.getSettlement().getName(),
                                         "chieftitle", resident.getSettlement().getChief().getSettlementTitle(),
                                         "chiefname", resident.getSettlement().getChief().getName()
                                 ), resident,
-                                Message.get("eviction.letter").getReplacedText(
+                                Message.get("eviction.letter.text").getReplacedText(
                                         "state", resident.getSettlement().getStateTag(),
                                         "name", resident.getSettlement().getName()
                                 ));

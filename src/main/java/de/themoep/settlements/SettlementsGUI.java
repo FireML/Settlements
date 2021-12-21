@@ -9,6 +9,7 @@ import de.themoep.settlements.npc.NpcConfig;
 import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.ItemUtils;
+import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.NameTag;
 import de.themoep.settlements.utils.Next;
 import de.themoep.settlements.utils.config.ConfigManager;
@@ -45,6 +46,10 @@ public abstract class SettlementsGUI implements ConfigMessages {
     }
 
     protected ItemStack getIcon(String c) {
+        return getIcon(c, null);
+    }
+
+    protected ItemStack getIcon(String c, ItemStack def) {
         String matStr = ConfigManager.getInstance().getGuisConfig().getString("guis." + getKey() + ".elements." + c);
         if (matStr != null) {
             Material material;
@@ -61,9 +66,12 @@ public abstract class SettlementsGUI implements ConfigMessages {
             } else {
                 material = Material.matchMaterial(matStr);
             }
+            if (material == null) {
+                return def;
+            }
             return ItemUtils.toIcon(material);
         }
-        return null;
+        return def;
     }
 
     protected ItemStack getIcon(Levelable<?> selected) {
@@ -90,7 +98,12 @@ public abstract class SettlementsGUI implements ConfigMessages {
         if (elementsConfig != null) {
             for (String key : elementsConfig.getKeys(false)) {
                 if (key.length() == 1) {
-                    elements.add(new StaticGuiElement(key.charAt(0), getIcon(key)));
+                    Message loreMessage = getMessage(key);
+                    String lore = "";
+                    if (loreMessage.exists()) {
+                        lore = loreMessage.getText();
+                    }
+                    elements.add(new StaticGuiElement(key.charAt(0), getIcon(key), lore));
                 }
             }
         }

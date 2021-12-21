@@ -616,6 +616,21 @@ guis:
         title: paper
         add: writable_book
         back: barrier
+    outposts:
+      setup:
+      - "ooooioooo"
+      - "         "
+      - "    h    "
+      - "  r   u  "
+      - "         "
+      - " opobooo "
+      elements:
+        o: white_stained_glass_pane
+        info: acacia_sapling
+        rename: anvil
+        sethome: purple_banner
+        unclaim: red_dye
+        back: barrier
   empire:
     access:
       setup:

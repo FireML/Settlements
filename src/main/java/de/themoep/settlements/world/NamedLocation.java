@@ -55,4 +55,15 @@ public class NamedLocation extends SimpleLocation {
         return new NamedLocation((String) map.get("name"), simpleLocation);
     }
 
+    public String[] getReplacements() {
+        return new String[] {
+                "name", getName(),
+                "world", getWorld(),
+                "x", String.valueOf(getBlockX()),
+                "y", String.valueOf(getBlockY()),
+                "z", String.valueOf(getBlockZ()),
+                "yaw", String.valueOf(getYaw()),
+                "pitch", String.valueOf(getPitch())
+        };
+    }
 }

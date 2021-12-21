@@ -5,18 +5,20 @@ import de.themoep.settlements.command.settlement.SettlementSubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.settlement.gui.OutpostsGUI;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.world.NamedLocation;
 
 public class OutpostTeleportCommand extends SettlementSubCommand {
     public OutpostTeleportCommand(SettlementSubCommand parent) {
-        super(parent, "teleport <name>", "tp", "otp");
+        super(parent, "teleport <name>", "tp", "otp", "gui");
     }
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length < 1) {
-            return false;
+            new OutpostsGUI(resident, resident.getSettlement()).open();
+            return true;
         }
         NamedLocation location = resident.getSettlement().getOutpostHomes().get(args[0].toLowerCase());
         if (location != null) {

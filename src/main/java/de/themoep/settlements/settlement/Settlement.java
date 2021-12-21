@@ -318,7 +318,11 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     }
 
     public void setOutpostHome(NamedLocation location) {
-        outpostHomes.put(location.getName().toLowerCase(), location);
+        outpostHomes.put(location.getName().toLowerCase(Locale.ROOT), location);
+    }
+
+    public NamedLocation removeOutpostHome(NamedLocation location) {
+        return outpostHomes.remove(location.getName().toLowerCase(Locale.ROOT));
     }
 
     public Map<String, NamedLocation> getOutpostHomes() {

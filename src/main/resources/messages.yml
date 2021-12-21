@@ -722,6 +722,7 @@ gui:
       view: "&bClick to view"
       edit: "&bClick to edit"
       create: "&bClick to create"
+      unclaim: "&bClick to unclaim"
       join: "&bClick to join"
       banish: "&bClick to banish"
       invited: |-
@@ -1587,8 +1588,49 @@ gui:
       cancel: |-
         &c&lCancel
         &7Click to not transfer
+  outposts:
+    title: "Outposts"
+    entry: |-
+      &e{name}
+      
+      &bClick to teleport
+    options: "&bShift-Click for more options"
+    public: |-
+      &eBrowse Public Settlements
+      &fBrowse settlements that are
+      &fopen to public visiting
+  
+      &bClick to browse
+    back: "&cClose"
+  outpost:
+    title: "Outpost {name}"
+    info: |-
+      &eOutpost {name}
+      &7World: {world}
+      &7X: {x} / Y: {y} / Z: {z}
+    rename: |-
+      &eRename
+      &7Rename the outpost
+      
+      {action}
+    sethome: |-
+      &eSet your location
+      &7Set outpost teleport
+      &7location to your current
+      &7player location
+    
+      {action}
+    unclaim: |-
+      &cDelete Outpost
+      &7This removes the oupost
+      &7and unclaims all chunks
+      &7that are not connected
+      &7to the home or another
+      &7outpost!
+    
+      {action}
   reslist:
-    title:  "Residents"
+    title: "Residents"
     sort: |-
       &fSorted by {state}
       &bClick to sort by {nextstate}

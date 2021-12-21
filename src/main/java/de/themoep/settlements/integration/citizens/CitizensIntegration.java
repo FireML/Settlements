@@ -8,6 +8,7 @@ import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.empire.gui.SettingsGUI;
+import de.themoep.settlements.land.LandAccess;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.LandownerLevel;
 import de.themoep.settlements.land.events.LandClaimedEvent;
@@ -27,6 +28,7 @@ import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.land.events.LandownerAbandonedEvent;
 import de.themoep.settlements.land.events.LandownerCreatedEvent;
 import de.themoep.settlements.settlement.gui.ManagementGUI;
+import de.themoep.settlements.settlement.gui.OutpostsGUI;
 import de.themoep.settlements.teleporter.TeleportersGUI;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
@@ -287,8 +289,14 @@ public class CitizensIntegration implements Listener, ConfigMessages {
                     return;
                 }
                 case TRAVELING_MERCHANT: {
-                    // TODO: Outpost-dedicated GUI
-                    new TeleportersGUI().open(event.getClicker());
+                    if (landOwner instanceof Settlement) {
+                        if (landOwner.isMember(resident) || landOwner.getAccess() == LandAccess.PUBLIC) {
+                            new OutpostsGUI(resident, (Settlement) landOwner).open();
+                        }
+                    } else {
+                        // TODO: Outpost-dedicated GUI
+                        new TeleportersGUI().open(event.getClicker());
+                    }
                     return;
                 }
                 case ELDER: {

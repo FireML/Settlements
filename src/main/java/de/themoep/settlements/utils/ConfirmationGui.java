@@ -19,12 +19,12 @@ public class ConfirmationGui extends SettlementsGUI {
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText(name + ".title", replacements), getSetup());
         gui.addElements(getConfiguredElements());
 
-        gui.addElement(new StaticGuiElement('c', new ItemStack(Material.GREEN_WOOL), click -> {
+        gui.addElement(new StaticGuiElement('c', getIcon("confirm", new ItemStack(Material.GREEN_WOOL)), click -> {
             confirmedAction.accept(click);
             return true;
         }, getText("confirm", replacements)));
 
-        gui.addElement(new StaticGuiElement('b', new ItemStack(Material.RED_WOOL), click -> {
+        gui.addElement(new StaticGuiElement('b', getIcon("cancel", new ItemStack(Material.RED_WOOL)), click -> {
             cancelAction.accept(click);
             return true;
         }, getText("cancel", replacements)));
