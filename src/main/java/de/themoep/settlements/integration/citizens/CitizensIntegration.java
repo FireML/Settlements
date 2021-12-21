@@ -30,7 +30,6 @@ import de.themoep.settlements.land.events.LandownerAbandonedEvent;
 import de.themoep.settlements.land.events.LandownerCreatedEvent;
 import de.themoep.settlements.settlement.gui.ManagementGUI;
 import de.themoep.settlements.settlement.gui.OutpostsGUI;
-import de.themoep.settlements.teleporter.TeleportersGUI;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.config.Config;
@@ -51,6 +50,7 @@ import net.citizensnpcs.trait.SkinTrait;
 import net.citizensnpcs.trait.VillagerProfession;
 import net.citizensnpcs.trait.versioned.VillagerTrait;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -73,6 +73,7 @@ public class CitizensIntegration implements Listener, ConfigMessages {
 
     public CitizensIntegration() {
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SettlementsTrait.class));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(AuctionTaxTrait.class));
 
         SubCommand settlementCommand = CommandManager.getInstance().getCommand("settlement");
         settlementCommand.registerCommand(new NpcCommand(this, settlementCommand, Resident::getSettlement));
@@ -412,6 +413,27 @@ public class CitizensIntegration implements Listener, ConfigMessages {
         return CitizensAPI.getNPCRegistry().isNPC(player);
     }
 
+    public long getNearbyAuctionTax(Location location, int radius) {
+        long tax = Long.MAX_VALUE;
+        for (Entity entity : location.getNearbyEntities(radius, radius, radius)) {
+            NPC npc = CitizensAPI.getNPCRegistry().getNPC(entity);
+            if (npc != null) {
+                SettlementsTrait trait = npc.getTraitNullable(SettlementsTrait.class);
+                if (trait != null && trait.getOwner().getAuctionTax() < tax) {
+                    tax = trait.getOwner().getAuctionTax();
+                }
+                AuctionTaxTrait auctionTrait = npc.getTraitNullable(AuctionTaxTrait.class);
+                if (trait != null && auctionTrait.getAuctionTax() < tax) {
+                    tax = auctionTrait.getAuctionTax();
+                }
+            }
+        }
+        if (tax < Long.MAX_VALUE) {
+            return tax;
+        }
+        return -1;
+    }
+
     @TraitName("settlements")
     public static class SettlementsTrait extends Trait implements ConfigMessages {
 
@@ -548,6 +570,25 @@ public class CitizensIntegration implements Listener, ConfigMessages {
         @Override
         public String type() {
             return "integration";
+        }
+    }
+
+    @TraitName("auctiontax")
+    public static class AuctionTaxTrait extends Trait  {
+
+        public AuctionTaxTrait() {
+            super("auctiontax");
+        }
+
+        @Persist(value = "auctiontax", required = true)
+        private long auctionTax;
+
+        public long getAuctionTax() {
+            return auctionTax;
+        }
+
+        public long setAuctionTax(long auctionTax) {
+            return auctionTax;
         }
     }
 }
