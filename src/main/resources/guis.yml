@@ -477,7 +477,7 @@ guis:
       - "rrrrrrrrr"
       - "rrrrrrrrr"
       - "rrrrrrrrr"
-      - "ppppppsb "
+      - "pppppps b"
       elements:
         o: magenta_stained_glass_pane
         page: paper

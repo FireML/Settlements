@@ -559,11 +559,10 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
                     sender != null ? sender.getUUID() : Utils.ZERO_UUID,
                     reason
             );
-            return true;
         } else if (target instanceof LandOwner) {
             entry = new Banished(
                     ((LandOwner<?, ?>) target).getKey(),
-                    ((LandOwner<?, ?>) target).getId(),
+                    target.getId(),
                     System.currentTimeMillis(),
                     sender != null ? sender.getUUID() : Utils.ZERO_UUID,
                     reason
@@ -571,8 +570,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         } else {
             return false;
         }
-        banished.put(entry.getType(), entry.getBanishedId(), entry);
-        return false;
+        return banished.put(entry.getType(), entry.getBanishedId(), entry) == null;
     }
 
     public boolean removeBanished(Resident sender, Targetable target) {
