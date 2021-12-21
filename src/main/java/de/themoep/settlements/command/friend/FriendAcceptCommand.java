@@ -40,12 +40,12 @@ public class FriendAcceptCommand extends PlayerSubCommand {
             Utils.runSync(() -> {
                 target.addFriend(res.getUUID(), res.getName());
                 res.addFriend(target.getUUID(), target.getName());
-                getMessage("success").tell(player, "name", target.getName());
+                getMessage("success.target").tell(player, "name", target.getName());
                 if (target.getPlayer() != null) {
-                    getMessage("received").tell(target, "name", res.getName());
+                    getMessage("success.sender").tell(target, "name", res.getName());
                 } else {
                     for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
-                        provider.sendMail(res.getSettlementTitle() + " " + res.getName(), target, getText("mail",
+                        provider.sendMail(res.getSettlementTitle() + " " + res.getName(), target, getText("success.mail",
                                 "name", res.getName()
                         ));
                     }

@@ -18,62 +18,79 @@ public class ListGui<T extends Sortable<T>> extends ConfigurableGui {
     private Sortable.Sort<T> sort = null;
 
     public ListGui(Resident resident, String type, Supplier<Collection<T>> sortablesProvider, BiConsumer<GuiElement.Click, T> onSelect, Function<T, String[]> replacementsProvider) {
+        this(resident, type, false, sortablesProvider, onSelect, replacementsProvider);
+    }
+
+    public ListGui(Resident resident, String type, boolean async, Supplier<Collection<T>> sortablesProvider, BiConsumer<GuiElement.Click, T> onSelect, Function<T, String[]> replacementsProvider) {
         super(resident, type);
 
-        Sortable.Sort<T>[] sorts;
-        Collection<T> s = sortablesProvider.get();
-        if (!s.isEmpty()) {
-            sorts = s.iterator().next().getSorts();
-            sort = sorts[0];
-        }
+        Runnable create = () -> {
+            Sortable.Sort<T>[] sorts;
+            Collection<T> s = sortablesProvider.get();
+            if (!s.isEmpty()) {
+                sorts = s.iterator().next().getSorts();
+                sort = sorts[0];
+            }
 
-        DynamicGuiElement sortedGroup = new DynamicGuiElement('e', who -> {
-            GuiElementGroup group = new GuiElementGroup('e');
+            DynamicGuiElement sortedGroup = new DynamicGuiElement('e', who -> {
+                GuiElementGroup group = new GuiElementGroup('e');
+
+                if (sort != null) {
+                    Collection<T> sortables = sortablesProvider.get();
+                    sortables.stream().sorted(sort.getComparator()).forEachOrdered(sortable -> {
+                        Message message = getMessage("entry." + sortable.getKey());
+                        if (!message.exists()) {
+                            message = getMessage("entry");
+                        }
+                        group.addElement(
+                                new StaticGuiElement('e', sortable.getIcon(), click -> {
+                                    onSelect.accept(click, sortable);
+                                    return true;
+                                }, message.getReplacedText(sortable.getReplacements(this, replacementsProvider.apply(sortable))))
+                        );
+                    });
+                }
+                return group;
+            });
+            gui.addElement(sortedGroup);
 
             if (sort != null) {
-                Collection<T> sortables = sortablesProvider.get();
-                sortables.stream().sorted(sort.getComparator()).forEachOrdered(sortable -> {
-                    Message message = getMessage("entry." + sortable.getKey());
-                    if (!message.exists()) {
-                        message = getMessage("entry");
+                gui.addElement(getCycleElement('s', () -> sort, click -> {
+                    if (sort != null) {
+                        sort = sort.next();
                     }
-                    group.addElement(
-                            new StaticGuiElement('e', sortable.getIcon(), click -> {
-                                onSelect.accept(click, sortable);
-                                return true;
-                            }, message.getReplacedText(sortable.getReplacements(this, replacementsProvider.apply(sortable))))
-                    );
-                });
-            }
-            return group;
-        });
-        gui.addElement(sortedGroup);
-
-        if (sort != null) {
-            gui.addElement(getCycleElement('s', () -> sort, click -> {
-                if (sort != null) {
-                    sort = sort.next();
-                }
-                click.getGui().draw();
-                return true;
-            }, "sort"));
-        }
-
-        GuiElementGroup pages = new GuiElementGroup('p');
-        gui.addElement(pages);
-
-        for (int i = 0; i < gui.getPageAmount(resident.getPlayer()) && i < pages.getSlots().length; i++) {
-            int page = i;
-            pages.addElement(new DynamicGuiElement('p', who -> {
-                ItemStack icon = getIcon("page");
-                if (page == gui.getPageNumber(who)) {
-                    ItemUtils.setGlowing(icon, true);
-                }
-                return new StaticGuiElement('p', icon, page + 1, click -> {
-                    gui.setPageNumber(click.getWhoClicked(), page);
+                    click.getGui().draw();
                     return true;
-                }, getText("page", "page", String.valueOf(page + 1), "pages", String.valueOf(gui.getPageAmount(who))));
-            }));
+                }, "sort"));
+            }
+
+            GuiElementGroup pages = new GuiElementGroup('p');
+            gui.addElement(pages);
+
+            gui.draw(resident.getPlayer());
+
+            for (int i = 0; i < gui.getPageAmount(resident.getPlayer()) && i < pages.getSlots().length; i++) {
+                int page = i;
+                pages.addElement(new DynamicGuiElement('p', who -> {
+                    ItemStack icon = getIcon("page");
+                    if (page == gui.getPageNumber(who)) {
+                        ItemUtils.setGlowing(icon, true);
+                    }
+                    return new StaticGuiElement('p', icon, page + 1, click -> {
+                        gui.setPageNumber(click.getWhoClicked(), page);
+                        return true;
+                    }, getText("page", "page", String.valueOf(page + 1), "pages", String.valueOf(gui.getPageAmount(who))));
+                }));
+            }
+        };
+
+        if (async) {
+            Utils.runAsync(() -> {
+                create.run();
+                gui.draw();
+            });
+        } else {
+            create.run();
         }
 
         gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));

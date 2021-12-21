@@ -4,13 +4,14 @@ guis:
       setup:
       - "ooooooooo"
       - "    s    "
-      - "         "
+      - "    f    "
       - "  ic jp  "
       - "         "
       - " ooobooo "
       elements:
         o: brown_stained_glass_pane
         start: book
+        friends: player_head
         requests: crimson_door
         create: white_bed
         join: oak_boat
@@ -34,6 +35,7 @@ guis:
         home: campfire
         plot: grass_block
         friends: player_head
+        requests: crimson_door
         back: barrier
     requests:
       setup:
@@ -61,6 +63,19 @@ guis:
         page: paper
         sort: hopper
         requests: crimson_door
+        back: barrier
+    friend-requests:
+      setup:
+      - "ooooooooo"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "pppppps b"
+      elements:
+        o: brown_stained_glass_pane
+        page: paper
+        sort: hopper
         back: barrier
     settlements:
       setup:

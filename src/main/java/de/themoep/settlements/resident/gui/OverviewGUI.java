@@ -102,65 +102,9 @@ public class OverviewGUI extends ConfigurableGui {
 
         Collection<FriendRequest> requests = resident.getFriendRequests();
         gui.addElement(new StaticGuiElement('f', ItemUtils.setGlowing(getIcon("friends"), !requests.isEmpty()), click -> {
-            ListGui<Friend> friendList = new ListGui<>(resident, "general.friends", resident::getFriends,
-                    (c, friend) -> {
-                        // Unfriend
-                        if (c.getEvent().isRightClick()) {
-                            Resident fRes = friend.getResident();
-                            fRes.removeFriend(resident.getUUID());
-                            resident.save();
-                            fRes.save();
-                            Message.get("friend.remove.success").tell(resident, "name", fRes.getName());
-                            c.getGui().draw();
-                        }
-            }, friend -> friend.getReplacements(this));
-
-            Collection<FriendRequest> currentRequests = resident.getFriendRequests();
-            friendList.addElement(new StaticGuiElement('r', ItemUtils.setGlowing(getIcon("requests"), !currentRequests.isEmpty()), rClick -> {
-                new ListGui<>(resident, "general.requests", () -> new ArrayList<>(resident.getFriendRequests()),
-                        (c, request) -> {
-                            // accept request
-                            if (request instanceof FriendRequest) {
-                                FriendRequest currentRequest = resident.removeFriendRequest(((FriendRequest) request).getSenderName());
-                                if (currentRequest == null) {
-                                    // No request sent?
-                                    c.getGui().draw();
-                                    return;
-                                }
-                                c.getGui().close();
-                                Utils.runAsync(() -> {
-                                    Resident sender = (Resident) request.getSource();
-                                    DatabaseManager.getInstance().delete(request);
-                                    FriendRequest reverseRequest = sender.removeFriendRequest(resident.getName());
-                                    if (reverseRequest != null) {
-                                        DatabaseManager.getInstance().delete(reverseRequest);
-                                    }
-                                    Utils.runSync(() -> {
-                                        sender.addFriend(resident.getUUID(), resident.getName());
-                                        resident.addFriend(sender.getUUID(), sender.getName());
-                                        Message.get("friend.add.success").tell(resident, "name", sender.getName());
-                                        if (sender.getPlayer() != null) {
-                                            Message.get("friend.add.received").tell(sender, "name", resident.getName());
-                                        } else {
-                                            for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
-                                                provider.sendMail(resident.getSettlementTitle() + " " + resident.getName(), sender,
-                                                        Message.get("friend.add.mail").getReplacedText("name", resident.getName())
-                                                );
-                                            }
-                                        }
-                                        sender.save();
-                                        resident.save();
-                                    });
-                                });
-                            }
-                        }, request -> request.getReplacements(this)).open();
-                return true;
-            }));
-            friendList.open();
+            new FriendsList(resident, "general.friends").open();
             return true;
         }, getText("friends", "amount", String.valueOf(requests.size()))));
-
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
     }
 
     private boolean handleJoin(Resident resident, Settlement settlement) {

@@ -199,7 +199,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     }
 
     public boolean addFriendRequest(FriendRequest friendRequest) {
-        return friendRequests.put(friendRequest.getSenderName().toLowerCase(Locale.ROOT), friendRequest) != null;
+        return friendRequests.put(friendRequest.getSenderName().toLowerCase(Locale.ROOT), friendRequest) == null;
     }
 
     public FriendRequest removeFriendRequest(String playerName) {
@@ -637,6 +637,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
                 empire(r -> r.hasEmpire() ? r.getSettlement().getEmpire().getName() : "none"),
                 empirerank(r -> r.hasEmpire() ? r.getEmpireRank().getTag() : "none"),
                 settlement(r -> r.hasSettlement() ? r.getSettlement().getName() : "none"),
+                settlementstate(r -> r.hasSettlement() ? r.getSettlement().getStateTag() : ""),
                 rank(r -> r.hasSettlement() ? r.getSettlementRank().getTag(r.getSettlement()) : "none"),
                 title(r -> r.hasSettlement() ? r.getSettlementTitle() : "none"),
                 balance(r -> Utils.CURRENCY_FORMAT.format(r.getBalance())),

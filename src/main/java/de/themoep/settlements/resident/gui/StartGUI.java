@@ -9,6 +9,7 @@ import de.themoep.settlements.invites.Invite;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.invites.SettlementInvite;
 import de.themoep.settlements.land.LandAccess;
+import de.themoep.settlements.resident.FriendRequest;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.JoinType;
 import de.themoep.settlements.settlement.Settlement;
@@ -170,6 +171,12 @@ public class StartGUI extends ConfigurableGui {
             }, settlement -> new String[0]).open();
             return true;
         }, getText("public")));
+
+        Collection<FriendRequest> friendRequests = resident.getFriendRequests();
+        gui.addElement(new StaticGuiElement('f', ItemUtils.setGlowing(getIcon("friends"), !friendRequests.isEmpty()), click -> {
+            new FriendsList(resident, "general.friends").open();
+            return true;
+        }, getText("friends", "amount", String.valueOf(friendRequests.size()))));
     }
 
     private Collection<Invite<?, ?>> getRequests(Resident resident) {

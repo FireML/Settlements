@@ -765,6 +765,12 @@ gui:
         &fopen to public visiting
         
         &bClick to browse
+      friends: |-
+        &eFriends and requests
+        &fSee your friends and see if
+        &fyou have any new requests!
+  
+        &bClick to browse
       back: Close
     overview:
       title: "{state} Information"
@@ -885,11 +891,29 @@ gui:
       back: "&cBack"
       entry: |-
         {online}{name}
-        &f{settlementstate} {settlement}
+        &f{state} {settlement}
         
         &bRight-Click to remove!
       online: "&a"
       offline: "&c"
+      requests: |-
+        &eFriend requests
+        &fCheck if you have any friend requests
+  
+        &bClick to check
+    friend-requests:
+      title: "Friend Requests"
+      sort: |-
+        &fSorted by {state}
+        &bClick to sort by {nextstate}
+      page: "Page {page}"
+      back: "&cBack"
+      entry: |-
+        &e{name}
+    
+        &aHas sent you a friend request
+    
+        &bClick to accept!
     settlements:
       title: "All Settlements"
       sort: |-
@@ -2510,7 +2534,7 @@ command:
     accept:
       no-request: "&6{name}&c has not sent you a friend request"
       success:
-        target: "&aYou are now friends with 6{name}&a!"
+        target: "&aYou are now friends with &6{name}&a!"
         sender: "&6{name}&a accepted your friend request!"
         mail: "{name} accepted your friend request!"
     remove:
