@@ -109,7 +109,7 @@ public class MySqlDatabase extends SqlDatabaseManager {
 
     @Override
     protected void executeDataMapUpdate(Connection conn, String tableName, String keyColumn, int keyId, String mapKey, Map<String, ?> values, Set<String> columns, String... mapValueColumns) throws SQLException {
-        String insertSql = "INSERT INTO " + tablePrefix + tableName + " (" + keyColumn + "," + mapKey + "," + columns.stream().map(c -> "`" + c + "`").collect(Collectors.joining(",")) + ")"
+        String insertSql = "INSERT INTO " + tablePrefix + tableName + " (`" + keyColumn + "`,`" + mapKey + "`," + columns.stream().map(c -> "`" + c + "`").collect(Collectors.joining(",")) + ")"
                 + " VALUES (?,?," + String.join(",", Collections.nCopies(columns.size(), "?")) + ")"
                 + " ON DUPLICATE KEY UPDATE " + columns.stream().map(c -> "`" + c + "`=VALUES(`" + c + "`)").collect(Collectors.joining(",")) + ";";
         PreparedStatement insertSta = conn.prepareStatement(insertSql);
@@ -126,7 +126,7 @@ public class MySqlDatabase extends SqlDatabaseManager {
                     insertSta.setInt(1, keyId);
                     insertSta.setObject(2, entry.getKey());
                     insertSta.setObject(3, o.getKey() instanceof IdObject ? ((IdObject) o.getKey()).value() : o.getKey());
-                    insertSta.setObject(4, o.getValue() instanceof IdObject ? ((IdObject) o.getValue()).value() : o.getKey());
+                    insertSta.setObject(4, o.getValue() instanceof IdObject ? ((IdObject) o.getValue()).value() : o.getValue());
                     insertSta.addBatch();
                 }
             } else {
