@@ -482,6 +482,12 @@ public class CitizensIntegration implements Listener, ConfigMessages {
             if (!npc.isSpawned()) {
                 return;
             }
+
+            // Don't run if Settlements isn't loaded yet
+            if (SettlementsPlugin.getInstance() == null || !SettlementsPlugin.getInstance().isRunning()) {
+                return;
+            }
+
             LandOwner landOwner = getOwner();
             if (landOwner == null) {
                 npc.despawn();
