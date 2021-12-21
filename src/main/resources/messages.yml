@@ -572,8 +572,8 @@ integration:
     not-enough-space: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 is full! ({seller} tried to sell)"
     not-enough-money: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 can't loose money as you need it to pay your upkeep! ({seller} tried to sell)"
   citizens:
-    new-npc-available: "&7NPC &6&l{npc} &7&lis now available at the {state} Home!"
-    new-npc-unlocked: "&7NPC &6&l{npc} &7&lis now available. Use [&e/{state} npc teleport] to set location it."
+    new-npc-available: "&7NPC &6{npc} &7is now available. Use [&e/{state} npc {type} teleport](/{state} npc {type} teleport) to set its location."
+    new-npc-unlocked: "&7NPC &6{npc} &7unlocked. Use [&e/{state} npc {type} teleport](/{state} npc {type} teleport) to set its location."
     talk: "&e{state} {npc}: &f{message}"
   lwc:
     only-in-settlement: "&c&lYou can only lock things in a settlement claim!"
