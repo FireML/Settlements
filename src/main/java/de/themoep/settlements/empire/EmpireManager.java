@@ -79,7 +79,7 @@ public class EmpireManager {
     public EmpireManager() {
         loadConfig();
         for (Empire empire : DatabaseManager.getInstance().getAllEmpires()) {
-            if (Config.Empire.World.ENABLED && Config.Empire.World.RENAME && empire.hasWorld()) {
+            if (Config.Empire.World.ENABLED && Config.Empire.World.RENAME && empire.getWorldName() != null) {
                 World world = SettlementsPlugin.getInstance().getServer().getWorld(empire.getWorldName());
                 if (world != null) {
                     writeIdFile(world, empire);
