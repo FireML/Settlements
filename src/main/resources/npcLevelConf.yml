@@ -232,7 +232,7 @@ empire:
       perks:
         world-teleport-command:
           unlockables:
-          - command.world.teleport
+          - command.world
   black-market:
     level-1: {}
     level-2:

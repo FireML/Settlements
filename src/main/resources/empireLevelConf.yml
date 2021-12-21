@@ -2,8 +2,12 @@
 
 levels:
   level-1:
-    # The amount an empire needs to pay per day
+    # Base amount an empire needs to pay per day
     upkeep: 1000
+    # Upkeep per day
+    claim-upkeep: 500
+    # Amount of claimable chunks
+    chunks: 20
     # The base radius that an empire world will have at that level
     # Set to 0 or below to disable the empire world on that level
     world-radius: 0
@@ -13,18 +17,24 @@ levels:
     missions: 3
     # Maximum members
     size: 5
+    npcs:
+    - manager
+    - quarter_master
   level-2:
     upkeep: 1000
-    world-radius: 500
+    # Total radius of the world is based on the level value + the perk value
+    world-radius: 0
     upkeep-reduction: 30
     missions: 4
     size: 10
     requirements:
+      # Require a world
+      world: 1
       missions: 10
       Cobblestone: 3500000000
   level-3:
     upkeep: 1000
-    world-radius: 550
+    world-radius: 50
     upkeep-reduction: 40
     missions: 5
     size: 15
@@ -32,7 +42,7 @@ levels:
       Cobblestone: 3500000000
   level-4:
     upkeep: 1000
-    world-radius: 605
+    world-radius: 100
     upkeep-reduction: 50
     missions: 6
     size: 20
@@ -40,7 +50,7 @@ levels:
       Cobblestone: 3500000000
   level-5:
     upkeep: 1000
-    world-radius: 740
+    world-radius: 250
     upkeep-reduction: 60
     missions: 7
     size: -1 # only limited by max size in config.yml

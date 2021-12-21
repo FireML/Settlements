@@ -33,7 +33,7 @@ public class SettlementAllyclaimCommand extends SettlementSubCommand {
             }
         }
         DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
-        getMessage(value ? "enabled" : "disabled").tell(resident, "grace", String.valueOf(Config.Settlement.Claiming.Close.Unclaim.GRACE_DAYS));
+        getMessage(value ? "enabled" : "disabled").tell(resident, "grace", String.valueOf(Config.Claiming.Close.Unclaim.GRACE_DAYS));
 
         return true;
     }

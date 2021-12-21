@@ -56,7 +56,7 @@ perm-groups:
     permissions:
     - settlement.outpost.help
     - settlement.outpost.list
-    - settlement.outpost.teleport # TODO: Add NPC for everywhere
+    - settlement.outpost.teleport
   manage-outpost:
     permissions:
     - settlement.outpost.help.elder

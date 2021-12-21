@@ -69,6 +69,15 @@ resistance1:
     # If the amount is higher than 1 then this is the cost that needs to be paid to trigger it again
     repeating:
       cash: 100
+# Unlock world perk
+world:
+  level: 1
+  icon: map
+  world:
+    radius: 500
+  cost:
+    unlock:
+      cash: 1000
 speed1:
   level: 1
   effects:

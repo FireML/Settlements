@@ -95,7 +95,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     private boolean hasMessagesEnabled = true;
     private boolean notifyEnabled = true;
     private Cache<IdObject, Boolean> closeBuildingNotificationToggles = CacheBuilder.newBuilder()
-            .expireAfterWrite(Config.Settlement.Claiming.Close.Building.TOGGLE_TIME, TimeUnit.MINUTES)
+            .expireAfterWrite(Config.Claiming.Close.Building.TOGGLE_TIME, TimeUnit.MINUTES)
             .build();
 
     public Resident(UUID uuid, String name) {

@@ -36,6 +36,7 @@ perm-groups:
   manage-notes:
     permissions:
     - empire.sethome
+    - empire.setworldspawn
     - empire.discord.set
     - empire.rules.set # TODO
   manage-bank:
@@ -123,6 +124,8 @@ ranks:
     - empire.officer
     - empire.plot.admin
     - empire.npc.teleport
+    - empire.claim
+    - empire.unclaim
     # member permissions
     - empire.allies
     - empire.joinfee

@@ -22,8 +22,12 @@ public class EmpireWorldCommand extends ResidentSubCommand {
             if (!resident.hasEmpire()) {
                 getError("empire-required").tell(resident);
                 return false;
-            } else if (resident.getSettlement().getEmpire().getHome() == null) {
-                getMessage("own-no-home").tell(resident, "chief", EmpireRank.getLeader().getTag());
+            } else if (resident.getSettlement().getEmpire().hasWorld()) {
+                getMessage("no-world").tell(resident,
+                        "chief", EmpireRank.getLeader().getTag(),
+                        "state", resident.getSettlement().getEmpire().getStateTag(),
+                        "name", resident.getSettlement().getEmpire().getName()
+                );
                 return true;
             } else {
                 empire = resident.getSettlement().getEmpire();

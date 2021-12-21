@@ -82,6 +82,66 @@ public class Config {
         public static long DURATION_RESIDENT = 120;
     }
 
+    public static class Claiming {
+        @ConfigEntry(old = {"disabled-claiming-worlds"}, parser = "StringSet")
+        @ConfigComment("Worlds in which claiming of Settlement chunks are disabled")
+        public static Set<String> DISABLED_WORLDS = new HashSet<>();
+
+        @ConfigEntry(old = {"claim-enemy-distance"})
+        @ConfigComment("Distance in chunks that have to be between claims of non-allied settlements")
+        public static int ENEMY_DISTANCE = 4;
+
+        @ConfigEntry(old = {"claim-max-radius"})
+        @ConfigComment("Maximum radius in chunks which can be (un)claimed with the radius (un)claiming commands")
+        public static int MAX_RADIUS = 5;
+
+        @ConfigEntry(old = {"mob-flag-check-period"})
+        @ConfigComment("The seconds between each check for mobs to be removed in claimed land that has mobspawning turned off\n" +
+                "Set to 0 to disable")
+        public static int MOB_FLAG_CHECK_PERIOD = 30;
+
+        public static class Close {
+            public static class Unclaim {
+                @ConfigEntry(old = {"close-claims-grace-days"})
+                @ConfigComment("How many days to wait before automatically unclaiming claims that are too close when unallying\n" +
+                        "Set to -1 to disable the automatic unclaiming of too close lands")
+                public static int GRACE_DAYS = 0;
+
+                @ConfigEntry(old = {"close-claims-unclaims-outposts"})
+                @ConfigComment("Whether or not outposts are unclaimed")
+                public static boolean OUTPOSTS = false;
+            }
+
+            public static class Building {
+                @ConfigEntry(old = {"close-building-notification-distance", "settlement.close.building-notification.distance"}, reload = false)
+                @ConfigComment("The distance in chunks to other settlements in which to allow building\n" +
+                        "Outside of this distance building will not be allowed.\n" +
+                        "If a notification message is set in the messages.yml at 'close-claims'" +
+                        "then that will be sent to the player or members of the settlement.\n" +
+                        "Set to 0 to disable")
+                public static int DISTANCE = 4;
+
+                @ConfigComment("Whether or not to block building outside the range.")
+                public static boolean BLOCK_OUTSIDE = true;
+
+                @ConfigComment("Whether or not to block building inside the range.")
+                public static boolean BLOCK_INSIDE = false;
+
+                @ConfigEntry(parser = "MaterialSet")
+                @ConfigComment("Which blocks are allowed to get built anyways.")
+                public static Set<Material> ALLOWED_BLOCKS;
+
+                private static Set<String> ALLOWED_BLOCKS_DEFAULT = ImmutableSet.of(
+                        "*shulker_box"
+                );
+
+                @ConfigEntry(old = {"close-building-notification-toggle-time", "settlement.close.building-notification.toggle-time"})
+                @ConfigComment("The time in minutes a disabled close building notification stays around")
+                public static int TOGGLE_TIME = 30;
+            }
+        }
+    }
+
     public static class Settlement {
         @ConfigEntry(old = {"village-creation-cost"})
         @ConfigComment("How much a player must pay to create a settlement")
@@ -144,60 +204,6 @@ public class Config {
             @ConfigEntry(old = {"disabled-claiming-worlds"}, parser = "StringSet")
             @ConfigComment("Worlds in which claiming of Settlement chunks are disabled")
             public static Set<String> DISABLED_WORLDS = new HashSet<>();
-
-            @ConfigEntry(old = {"claim-enemy-distance"})
-            @ConfigComment("Distance in chunks that have to be between claims of non-allied settlements")
-            public static int ENEMY_DISTANCE = 4;
-
-            @ConfigEntry(old = {"claim-max-radius"})
-            @ConfigComment("Maximum radius in chunks which can be (un)claimed with the radius (un)claiming commands")
-            public static int MAX_RADIUS = 5;
-
-            @ConfigEntry(old = {"mob-flag-check-period"})
-            @ConfigComment("The seconds between each check for mobs to be removed in claimed land that has mobspawning turned off\n" +
-                    "Set to 0 to disable")
-            public static int MOB_FLAG_CHECK_PERIOD = 30;
-
-            public static class Close {
-                public static class Unclaim {
-                    @ConfigEntry(old = {"close-claims-grace-days"})
-                    @ConfigComment("How many days to wait before automatically unclaiming claims that are too close when unallying\n" +
-                            "Set to -1 to disable the automatic unclaiming of too close lands")
-                    public static int GRACE_DAYS = 0;
-
-                    @ConfigEntry(old = {"close-claims-unclaims-outposts"})
-                    @ConfigComment("Whether or not outposts are unclaimed")
-                    public static boolean OUTPOSTS = false;
-                }
-
-                public static class Building {
-                    @ConfigEntry(old = {"close-building-notification-distance", "settlement.close.building-notification.distance"}, reload = false)
-                    @ConfigComment("The distance in chunks to other settlements in which to allow building\n" +
-                            "Outside of this distance building will not be allowed.\n" +
-                            "If a notification message is set in the messages.yml at 'close-claims'" +
-                            "then that will be sent to the player or members of the settlement.\n" +
-                            "Set to 0 to disable")
-                    public static int DISTANCE = 4;
-
-                    @ConfigComment("Whether or not to block building outside the range.")
-                    public static boolean BLOCK_OUTSIDE = true;
-
-                    @ConfigComment("Whether or not to block building inside the range.")
-                    public static boolean BLOCK_INSIDE = false;
-
-                    @ConfigEntry(parser = "MaterialSet")
-                    @ConfigComment("Which blocks are allowed to get built anyways.")
-                    public static Set<Material> ALLOWED_BLOCKS;
-
-                    private static Set<String> ALLOWED_BLOCKS_DEFAULT = ImmutableSet.of(
-                            "*shulker_box"
-                    );
-
-                    @ConfigEntry(old = {"close-building-notification-toggle-time", "settlement.close.building-notification.toggle-time"})
-                    @ConfigComment("The time in minutes a disabled close building notification stays around")
-                    public static int TOGGLE_TIME = 30;
-                }
-            }
         }
 
         public static class Outpost {
@@ -275,6 +281,15 @@ public class Config {
 
             @ConfigComment("Time in minutes for which block placements should be cached so that break mission abuse isn't possible using (recent) player placed blocks.")
             public static long PLACE_CACHE_TIME = 60;
+        }
+
+        public static class Claiming {
+            @ConfigComment("Is claiming for empires outside their world enabled?")
+            public static boolean ENABLED = true;
+            
+            @ConfigEntry(old = {"disabled-claiming-worlds"}, parser = "StringSet")
+            @ConfigComment("Worlds in which claiming of Empire chunks are disabled")
+            public static Set<String> DISABLED_WORLDS = new HashSet<>();
         }
 
         public static class World {

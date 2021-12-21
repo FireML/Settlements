@@ -87,7 +87,7 @@ empire:
       type: jungle
   traveling-merchant:
     type: wandering_trader
-    name: Traveling Merchant
+    name: Domain Overseer
   black-market:
     type: villager
     name: Black Market

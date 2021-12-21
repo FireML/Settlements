@@ -291,7 +291,7 @@ public class EmpireManager {
         });
     }
 
-    private World createEmpireWorld(Empire empire) {
+    World createEmpireWorld(Empire empire) {
         if (!Config.Empire.World.ENABLED || !empire.hasWorld()) {
             return null;
         }
@@ -368,6 +368,7 @@ public class EmpireManager {
                 }
             }
         }
+        LandManager.getInstance().unclaimLand(empire);
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().deleteEmpire(empire);
             DatabaseManager.getInstance().saveSettlementMissionData(empire.getMembers());
@@ -425,6 +426,7 @@ public class EmpireManager {
                 empire.setMode(mode, Utils.getPlotMode(mode, "abandoned." + empire.getStateKey()));
             }
         }
+
         if (Config.Empire.World.ENABLED && empire.hasWorld()) {
             World empireWorld = Bukkit.getWorld(empire.getWorldName());
             if (empireWorld != null) {
@@ -432,6 +434,9 @@ public class EmpireManager {
                     lockProvider.removeInWorld(empireWorld);
                 }
             }
+        }
+        for (LockProvider lockProvider : SettlementsPlugin.getInstance().getLockProviders()) {
+            lockProvider.removeInChunks(empire.getLand());
         }
         LandManager.getInstance().removeWorld(empire.getWorldName());
         for (Perk perk : empire.getPerks()) {
@@ -502,7 +507,7 @@ public class EmpireManager {
             return false;
         }
 
-        int oldRadius = empire.getLevelInfo().getWorldRadius();
+        int oldRadius = empire.getWorldRadius();
         empire.setLevel(empire.getLevel() + 1);
         MessageUtils.tellResidents(empire.getOnlineResidents(), Message.get("levels.upgrade"), "level", Integer.toString(empire.getLevel()), "state", empire.getStateTag());
         removeLevelRequirements(empire, res);
@@ -521,7 +526,7 @@ public class EmpireManager {
         }
 
         if (Config.Empire.World.ENABLED) {
-            if (oldRadius == 0 && !empire.hasWorld() && empire.getLevelInfo().getWorldRadius() > 0) {
+            if (oldRadius == 0 && !empire.hasWorld() && empire.getWorldRadius() > 0) {
                 if (Config.Empire.World.RENAME) {
                     empire.setWorldName(Config.Empire.World.PREFIX + empire.getName() + Config.Empire.World.SUFFIX);
                 } else {

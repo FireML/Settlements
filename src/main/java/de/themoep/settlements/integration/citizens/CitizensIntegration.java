@@ -8,6 +8,7 @@ import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.empire.gui.SettingsGUI;
+import de.themoep.settlements.empire.gui.WorldGUI;
 import de.themoep.settlements.land.LandAccess;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.LandownerLevel;
@@ -293,9 +294,10 @@ public class CitizensIntegration implements Listener, ConfigMessages {
                         if (landOwner.isMember(resident) || landOwner.getAccess() == LandAccess.PUBLIC) {
                             new OutpostsGUI(resident, (Settlement) landOwner).open();
                         }
-                    } else {
-                        // TODO: Outpost-dedicated GUI
-                        new TeleportersGUI().open(event.getClicker());
+                    } else if (landOwner instanceof Empire) {
+                        if (((Empire) landOwner).canAccess(resident)) {
+                            new WorldGUI(resident, (Empire) landOwner).open();
+                        }
                     }
                     return;
                 }

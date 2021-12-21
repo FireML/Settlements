@@ -16,10 +16,12 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new ChatCommand());
         registerCommand(new EmpireAlliesCommand(this));
         registerCommand(new EmpireAllyCommand(this));
+        registerCommand(new EmpireAllyclaimCommand(this));
         registerCommand(new EmpireAuctionTaxCommand(this));
         registerCommand(new EmpireBanishCommand(this));
         registerCommand(new EmpireBanishedCommand(this));
         registerCommand(new EmpireBuildCommand(this));
+        registerCommand(new EmpireClaimCommand(this));
         registerCommand(new EmpireCreateCommand(this));
         registerCommand(new EmpireDescriptionCommand(this));
         registerCommand(new EmpireDisbandCommand(this));
@@ -51,6 +53,7 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpireSetAccessCommand(this));
         registerCommand(new EmpireSetRecruitmentCommand(this));
         registerCommand(new EmpireSetHomeCommand(this));
+        registerCommand(new EmpireSetWorldSpawnCommand(this));
         registerCommand(new EmpireJoinFeeCommand(this));
         registerCommand(new EmpireSetSymbolCommand(this));
         registerCommand(new EmpireSetRankCommand(this));
@@ -63,6 +66,7 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpireTransferCommand(this));
         registerCommand(new EmpireUnAllyCommand(this));
         registerCommand(new EmpireUnbanishCommand(this));
+        registerCommand(new EmpireUnclaimCommand(this));
         registerCommand(new EmpireUpgradeCommand(this));
         registerCommand(new EmpireUpkeepCommand(this));
         registerCommand(new EmpireUseCommand(this));

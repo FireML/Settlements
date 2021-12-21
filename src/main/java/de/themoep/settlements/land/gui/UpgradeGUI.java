@@ -123,15 +123,15 @@ public class UpgradeGUI extends ConfigurableGui {
                     if (((LandownerLevel) nextLevel).getMissions() > ((LandownerLevel) level).getMissions()) {
                         benefits.add(((LandownerLevel) nextLevel).getMissions() + " Missions");
                     }
+                    if (((LandownerLevel) nextLevel).getChunks() > ((LandownerLevel) level).getChunks()) {
+                        benefits.add(((LandownerLevel) nextLevel).getChunks() + " Claims");
+                    }
+                    if (((LandownerLevel) nextLevel).getClaimUpkeep(who.getWorld().getName()) > ((LandownerLevel) level).getClaimUpkeep(who.getWorld().getName())) {
+                        benefits.add(((LandownerLevel) nextLevel).getClaimUpkeep(who.getWorld().getName()) + " Claim Upkeep");
+                    }
                     if (nextLevel instanceof SettlementLevel && level instanceof SettlementLevel) {
                         if (((SettlementLevel) nextLevel).getExtraMissions() > ((SettlementLevel) level).getExtraMissions()) {
                             benefits.add(((SettlementLevel) nextLevel).getExtraMissions() + " Extra Missions");
-                        }
-                        if (((SettlementLevel) nextLevel).getChunks() > ((SettlementLevel) level).getChunks()) {
-                            benefits.add(((SettlementLevel) nextLevel).getChunks() + " Claims");
-                        }
-                        if (((SettlementLevel) nextLevel).getClaimUpkeep(who.getWorld().getName()) > ((SettlementLevel) level).getClaimUpkeep(who.getWorld().getName())) {
-                            benefits.add(((SettlementLevel) nextLevel).getClaimUpkeep(who.getWorld().getName()) + " Claim Upkeep");
                         }
                         if (((SettlementLevel) nextLevel).getOutposts() > ((SettlementLevel) level).getOutposts()) {
                             benefits.add(((SettlementLevel) nextLevel).getOutposts() + " Outposts");

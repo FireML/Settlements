@@ -79,6 +79,7 @@ error:
   only-player: "&cMust be ran by player."
   unknown-perk: "&cNo unlock with the name &f{perk}&c available!"
   not-in-empire-world: "&cYou are not in your Empire's world!"
+  cant-in-empire-world: "&cYou cant do that in your Empire's world!"
   not-unlocked-yet: "&cThis feature only unlocked with {state} level {level}!"
   level-required: "&cYou must be in a {state} level {level}!"
   no-allies: "&c&lYou have no allies!"
@@ -109,11 +110,11 @@ close-claims:
     place: ""
   player:
     break: |-
-      &cYou are breaking a block near a claim of {state} {settlement}! Avoid doing this! 
-      &cRun [&e/warningtoggle](/warningtoggle {settlement})&c to disable this warning for the next {time} minutes.
+      &cYou are breaking a block near a claim of {state} {name}! Avoid doing this!
+      &cRun [&e/warningtoggle](/warningtoggle {name})&c to disable this warning for the next {time} minutes.
     place: |-
       &cYou are placing a block near a claim of {state} {settlement}! Avoid doing this! 
-      &cRun [&e/warningtoggle](/warningtoggle {settlement})&c to disable this warning for the next {time} minutes.
+      &cRun [&e/warningtoggle](/warningtoggle {name})&c to disable this warning for the next {time} minutes.
     block: |-
      &cYou can only place or break blocks near claims!
      &7Only Shulker Boxes can be places/broken.
@@ -1497,14 +1498,27 @@ gui:
         state: "&e{state}s:&r {members}"
         entry: "&7{name}"
         separator: "&8, "
-    states: |-
-      &eStates
-      &fGroups that you let access to
-      &a➤ &fPrivate = &eCapital Residents
-      &a➤ &fOfficers = &eSenators & Assistant
-      &a➤ &fAlly = &eAllies & Member Residents
-      &a➤ &fTrusted = &eMember Residents
-      &a➤ &fPublic = &eEveryone
+      states: |-
+        &eStates
+        &fGroups that you let access to
+        &a➤ &fPrivate = &eCapital Residents
+        &a➤ &fOfficers = &eSenators & Assistant
+        &a➤ &fAlly = &eAllies & Member Residents
+        &a➤ &fTrusted = &eMember Residents
+        &a➤ &fPublic = &eEveryone
+    world:
+      title: "Empire World"
+      world: |-
+        &eTeleport to World
+        
+        {action}
+      setworldspawn: |-
+        &bShift-Click to set world
+        &bspawn to your location
+      no-world: |-
+        &cWorld not unlocked yet!
+        &fLevel up your Empire and
+        &fpurchase the World perk
   rank-perms:
     title: "Rank Permissions"
     previous: "&7Previous page"
@@ -2759,7 +2773,7 @@ command:
       cant-claim-more: "&c&l(!) &r&7Your settlement can only claim &e{max} chunks of land!"
       no-land-around: "&c&l(!) &r&7Your claim must be connected to an existing settlement claim!"
       success: "&a&lSUCCESS &r&e{player} &7has claimed land for your settlement at {x},{z}!"
-      new-upkeep: "&aYour new upkeep is now &e₲{settlementupkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
+      new-upkeep: "&aYour new upkeep is now &e₲{upkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
       home-set: "&7&l{state} home was set at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
       radius-too-large: "&c&l(!) &r&7Can't use an radius of {radius} for claiming as the maximum is {max}!"
       description: Claim a chunk of land
@@ -3267,7 +3281,7 @@ command:
       home: "&cThis land is your home, you have to move it with &7/{base} sethome&c before unclaiming this land."
       confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l in the next minute to confirm the &e&lunclaiming&c&l of [&e&l{amount}&c&l chunks](&fChunks that will be unclaimed:\n&7{claims}) and [&5{portal-amount} &c&lportals](&fPortals that will be removed:\n&7{portals})."
       success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at &f{x}-{z}!"
-      new-upkeep: "&aYour new upkeep is now &e₲{settlementupkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
+      new-upkeep: "&aYour new upkeep is now &e₲{upkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
       description: Unclaim land which is claimed by your settlement
       "<radius>":
         description: "Unclaims all the chunks in the stated radius (max is 5)"
@@ -3409,6 +3423,10 @@ command:
       accept-info: "[&6&l/e ally {name}](/e ally {name}) &r&7&lto ally them!"
       request-send: "&7&lAlly request sent to &r&6&l{name}"
       description: Ally another settlement or empire
+    allyclaim:
+      enabled: "&7&lAllies &a&lcan now claim&7&l close to your empire!"
+      disabled: "&7&lAllies can &c&lno longer&7&l claim close to your empire! Claims that are too close will be unclaimed in {grace} days."
+      description: Allows toggling of close claims of other empire
     balance:
       balance: "&2&lEmpire Balance: &r&7{amount}"
       description: Check the balance of the bank
@@ -3468,6 +3486,20 @@ command:
       broadcast: "&e{player} has made a empire called {name}!"
       max-level-kingdom-required: "&cYou need at least a Kingdom with level 10 to create an empire!"
       description: Create a new empire.
+    claim:
+      cant-claim-more: "&c&l(!) &r&7Your empire can only claim &e{max} chunks of land!"
+      no-land-around: "&c&l(!) &r&7Your claim must be connected to an existing empire claim!"
+      success: "&a&lSUCCESS &r&e{player} &7has claimed land for your empire at {x},{z}!"
+      new-upkeep: "&aYour new upkeep is now &e₲{empireupkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/e upkeep](/s upkeep)"
+      home-set: "&7&l{state} home was set at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
+      radius-too-large: "&c&l(!) &r&7Can't use an radius of {radius} for claiming as the maximum is {max}!"
+      description: Claim a chunk of land
+      "<radius>":
+        description: "Claims all the chunks in the stated radius (max is 5)"
+      radius:
+        description: "Claims all the chunks in the stated radius (max is 5)"
+      coords:
+        description: "Claims a chunk at specific coordinates"
     setdescription:
       success: "&aSet description of your empire to &r{description}"
       description: Set the description of an empire
@@ -3706,6 +3738,9 @@ command:
     sethome:
       success: "&7&lLeader &f{title} {name} &r&7&l has set the empire home at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
       description: Sets the home for the empire
+    setworldspawn:
+      success: "&7&lLeader &f{title} {name} &r&7&l has set the spawn of the empire world at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
+      description: Sets the spawn of the empire world
     joinfee:
       description: Get and set the fee a settlement needs to pay to join
       current: "&7Your empire's join fee is &e{amount}&7!"
@@ -3849,6 +3884,18 @@ command:
       not-allied: "&c&lYou are not allied to {state} &r&6&l{name}"
       success: "&7&lAlly &6{name} &7removed!"
       description: Remove an ally
+    unclaim:
+      home: "&cThis land is your home, you have to move it with &7/{base} sethome&c before unclaiming this land."
+      confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l in the next minute to confirm the &e&lunclaiming&c&l of [&e&l{amount}&c&l chunks](&fChunks that will be unclaimed:\n&7{claims}) and [&5{portal-amount} &c&lportals](&fPortals that will be removed:\n&7{portals})."
+      success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at &f{x}-{z}!"
+      new-upkeep: "&aYour new upkeep is now &e₲{upkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
+      description: Unclaim land which is claimed by your empire
+      "<radius>":
+        description: "Unclaims all the chunks in the stated radius (max is 5)"
+      radius:
+        description: "Unclaims all the chunks in the stated radius (max is 5)"
+      coords:
+        description: "Unclaims a chunk at specific coordinates"
     upgrade:
       not-possible: "&cThe empire cannot be leveled up! {reason}"
       max-level-reached: "&r&c&lMax Level Reached."
@@ -3863,6 +3910,16 @@ command:
         &3&lCan afford for: &6{afford} days
       afford-infinite: "infinite"
       description: Show empire upkeep information
+    world:
+      success: "&a&lTeleported to world of {state} {name}"
+      success-title: |-
+        &2&lSuccess
+        &fYou have been teleported!
+      fail-title: |-
+        &c&lFailed
+        &fUnable to teleport!
+      no-access: "&c&lYou don't have access to teleport to the world of that empire!"
+      description: Teleport to a empires's world
     perms:
       flags: "&cAvailable flags: {flags}"
       states: "&cAvailable states: {states}"
