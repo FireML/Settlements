@@ -971,8 +971,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     @Override
     public void log(Empire empire, Settlement settlement, Resident resident, String action, Map<String, Long> values) {
         if (values.isEmpty()
-                || (settlement != null && settlement.getId() == null || settlement.getId().isNull())
-                || (empire != null && empire.getId() == null || empire.getId().isNull())) {
+                || (settlement != null && (settlement.getId() == null || settlement.getId().isNull()))
+                || (empire != null && (empire.getId() == null || empire.getId().isNull()))) {
             return;
         }
 
@@ -990,7 +990,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 if (value.getValue() != 0) {
                     sta.setInt(1, empire != null ? (Integer) empire.getId().value() : -1);
                     sta.setInt(2, settlement != null ? (Integer) settlement.getId().value() : -1);
-                    sta.setInt(3, resident != null && resident.getId() != null && !resident.getId().isNull() ? (Integer) resident.getId().value() : -1);
+                    sta.setInt(3, resident != null && (resident.getId() != null && !resident.getId().isNull()) ? (Integer) resident.getId().value() : -1);
                     sta.setString(4, action.toLowerCase());
                     sta.setString(5, value.getKey().toLowerCase());
                     sta.setLong(6, value.getValue());

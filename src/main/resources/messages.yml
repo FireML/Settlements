@@ -572,6 +572,7 @@ integration:
     not-enough-money: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 can't loose money as you need it to pay your upkeep! ({seller} tried to sell)"
   citizens:
     new-npc-available: "&7NPC &6&l{npc} &7&lis now available at the {state} Home!"
+    new-npc-unlocked: "&7NPC &6&l{npc} &7&lis now available. Use [&e/{state} npc teleport] to set location it."
     talk: "&e{state} {npc}: &f{message}"
   lwc:
     only-in-settlement: "&c&lYou can only lock things in a settlement claim!"
@@ -2192,7 +2193,7 @@ gui:
       entry: "{icon}&a{type}&7: {amount}"
       too-expensive: "&cYou can't pay the cost!"
     cooldown: "&aCan be repeated in {cooldown}"
-    back: "&c&lBack To Settings"
+    back: "&cClose"
   perms:
     title: "Manage Perms"
     back: "&eBack"

@@ -315,10 +315,14 @@ public class CitizensIntegration implements Listener, ConfigMessages {
                 unlockNpc(event.getLeveled(), npc);
                 if (event.getLeveled().getHome() != null) {
                     createNpc(event.getLeveled(), npc, event.getLeveled().getHome().toBukkitLocation());
+                    getMessage("new-npc-available").tell(event.getLeveled(),
+                            "npc", npc.getTag(),
+                            "state", event.getLeveled().getStateTag());
+                } else {
+                    getMessage("new-npc-unlocked").tell(event.getLeveled(),
+                            "npc", npc.getTag(),
+                            "state", event.getLeveled().getStateTag());
                 }
-                getMessage("new-npcs-available").tell(event.getLeveled(),
-                        "npc", npc.getTag(),
-                        "state", event.getLeveled().getStateTag());
             }
         }
     }

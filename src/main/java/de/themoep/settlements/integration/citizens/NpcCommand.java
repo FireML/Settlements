@@ -63,6 +63,7 @@ public class NpcCommand extends ResidentSubCommand {
         NPC npc = citizensIntegration.getNpc(landOwner, type);
 
         switch (args[1].toLowerCase(Locale.ROOT)) {
+            case "tp":
             case "teleport": {
                 Location location = resident.getPlayer().getLocation();
                 OwnedLand l = LandManager.getInstance().getLand(location);
