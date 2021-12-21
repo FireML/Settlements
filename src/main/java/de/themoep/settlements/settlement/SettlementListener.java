@@ -122,8 +122,8 @@ public class SettlementListener implements Listener {
         OwnedLand land = LandManager.getInstance().getLand(chunkLocation);
         if (land == null) {
             Collection<LandOwner> landOwners = LandManager.getInstance().getNearbyLandOwners(chunkLocation);
-            if (Config.Settlement.Claiming.Close.Building.BLOCK_OUTSIDE && landOwners.isEmpty()
-                    && !Config.Settlement.Claiming.Close.Building.ALLOWED_BLOCKS.contains(block)
+            if (Config.Claiming.Close.Building.BLOCK_OUTSIDE && landOwners.isEmpty()
+                    && !Config.Claiming.Close.Building.ALLOWED_BLOCKS.contains(block)
                     && !player.hasPermission("settlements.bypass.buildingradius")) {
                 Message.get("close-claims.player.block").tell(player);
                 event.setCancelled(true);
@@ -137,21 +137,21 @@ public class SettlementListener implements Listener {
                     for (Resident r : landOwner.getOnlineResidents()) {
                         if (r.isReceivingCloseBuildingNotification(landOwner)) {
                             notification.tell(r,
-                                    "settlement", landOwner.getName(),
+                                    "name", landOwner.getName(),
                                     "state", landOwner.getStateTag(),
-                                    "time", String.valueOf(Config.Settlement.Claiming.Close.Building.TOGGLE_TIME)
+                                    "time", String.valueOf(Config.Claiming.Close.Building.TOGGLE_TIME)
                             );
                         }
                     }
                 }
                 if (resident.isReceivingCloseBuildingNotification(landOwner)) {
                     Message.get("close-claims.player." + type).tell(player,
-                            "settlement", landOwner.getName(),
+                            "name", landOwner.getName(),
                             "state", landOwner.getStateTag(),
-                            "time", String.valueOf(Config.Settlement.Claiming.Close.Building.TOGGLE_TIME)
+                            "time", String.valueOf(Config.Claiming.Close.Building.TOGGLE_TIME)
                     );
-                    if (Config.Settlement.Claiming.Close.Building.BLOCK_INSIDE
-                            && !Config.Settlement.Claiming.Close.Building.ALLOWED_BLOCKS.contains(block)
+                    if (Config.Claiming.Close.Building.BLOCK_INSIDE
+                            && !Config.Claiming.Close.Building.ALLOWED_BLOCKS.contains(block)
                             && !player.hasPermission("settlements.bypass.buildingradius")) {
                         event.setCancelled(true);
                     }

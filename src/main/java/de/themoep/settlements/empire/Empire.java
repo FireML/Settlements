@@ -418,6 +418,9 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
 
     @Override
     public long getAmount(String key) {
+        if (key.equalsIgnoreCase("world")) {
+            return getWorldRadius();
+        }
         if (key.equalsIgnoreCase("level")) {
             return getLevel();
         }
@@ -462,9 +465,21 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     public void apply(Player player, Perk perk) {
         super.apply(player, perk);
         if (perk instanceof EmpirePerk && ((EmpirePerk) perk).getBonusRadius() > 0) {
-            World world = Bukkit.getWorld(getWorldName());
+            World world = getWorldName() != null ? Bukkit.getWorld(getWorldName()) : null;
             if (world != null) {
                 world.getWorldBorder().setSize(getWorldRadius() * 2, 5);
+            } else if (Config.Empire.World.ENABLED && !hasWorld() && getWorldRadius() > 0) {
+                if (Config.Empire.World.RENAME) {
+                    setWorldName(Config.Empire.World.PREFIX + getName() + Config.Empire.World.SUFFIX);
+                } else {
+                    setWorldName(Config.Empire.World.PREFIX + "id" + getId().value() + Config.Empire.World.SUFFIX);
+                }
+                Utils.runSync(() -> {
+                    try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
+                        EmpireManager.getInstance().createEmpireWorld(this);
+                        Message.get("empire-world-generated").tell(this);
+                    }
+                });
             }
         }
     }
@@ -685,12 +700,20 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
 
     @Override
     public long getUpkeep() {
-        return EmpireManager.getInstance().getLevel(level).map(EmpireLevel::getUpkeep).orElse(0L);
+        long amount = EmpireManager.getInstance().getLevel(level).map(EmpireLevel::getUpkeep).orElse(0L);
+
+        for (OwnedLand land : LandManager.getInstance().getClaimedLand(this)) {
+            amount += getClaimUpkeep(land.getWorld());
+        }
+        return amount;
     }
 
     @Override
     public long getClaimUpkeep(String world) {
-        return 0;
+        if (world.equalsIgnoreCase(getWorldName())) {
+            return 0;
+        }
+        return Math.max(0, EmpireManager.getInstance().getLevel(getLevel()).map(l -> l.getClaimUpkeep(world)).orElse(0L));
     }
 
     @Override
@@ -701,6 +724,19 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     @Override
     public long getAbandonTimeConfig() {
         return Config.Empire.Upkeep.ABANDON_TIME;
+    }
+
+    @Override
+    public boolean canClaim(World world) {
+        return !Config.Empire.Claiming.DISABLED_WORLDS.contains(world.getName())
+                && !Config.Claiming.DISABLED_WORLDS.contains(world.getName())
+                && EmpireManager.getInstance().getEmpireFromWorld(world) == null;
+    }
+
+    @Override
+    public int getMaxClaimableChunks() {
+        return EmpireManager.getInstance().getLevel(getLevel()).map(EmpireLevel::getChunks).orElse(0)
+                + getBonusClaimAmount();
     }
 
     public void setInRegen(boolean inRegen) {
@@ -722,7 +758,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     public boolean hasWorld() {
-        return worldName != null && getLevelInfo().getWorldRadius() > 0;
+        return worldName != null && getWorldRadius() > 0;
     }
 
     private enum State implements NameTag {

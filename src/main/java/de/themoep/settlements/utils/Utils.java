@@ -75,7 +75,10 @@ public class Utils {
     );
 
     public static boolean isWorldClaimable(World world) {
-        return !Config.Settlement.Claiming.DISABLED_WORLDS.contains(world.getName()) || EmpireManager.getInstance().getEmpireFromWorld(world) != null;
+        return !Config.Claiming.DISABLED_WORLDS.contains(world.getName())
+                && !Config.Settlement.Claiming.DISABLED_WORLDS.contains(world.getName())
+                && (!Config.Empire.Claiming.ENABLED || Config.Empire.Claiming.DISABLED_WORLDS.contains(world.getName()))
+                && EmpireManager.getInstance().getEmpireFromWorld(world) != null;
     }
 
     public static int getTeleportDelay(String type) {
@@ -125,7 +128,7 @@ public class Utils {
     }
 
     public static void addDisabledWorld(World world) {
-        Collection<String> temp = Config.Settlement.Claiming.DISABLED_WORLDS;
+        Collection<String> temp = Config.Claiming.DISABLED_WORLDS;
         if (!temp.contains(world.getName())) {
             temp.add(world.getName());
             ConfigManager.getInstance().savePluginConfig();
@@ -133,7 +136,7 @@ public class Utils {
     }
 
     public static void removeDisabledWorld(World world) {
-        Collection<String> temp = Config.Settlement.Claiming.DISABLED_WORLDS;
+        Collection<String> temp = Config.Claiming.DISABLED_WORLDS;
         if (temp.contains(world.getName())) {
             temp.remove(world.getName());
             ConfigManager.getInstance().savePluginConfig();

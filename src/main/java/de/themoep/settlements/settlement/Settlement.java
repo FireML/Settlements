@@ -287,7 +287,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
 
     @Override
     public long getUpkeep() {
-        if (hasEmpire() && getEmpire().isCapital(this)) {
+        if (Config.Empire.Upkeep.EXEMPT_CAPITAL && hasEmpire() && getEmpire().isCapital(this)) {
             return 0;
         }
         long amount = 0;
@@ -311,6 +311,13 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     @Override
     public long getAbandonTimeConfig() {
         return Config.Settlement.Upkeep.ABANDON_TIME;
+    }
+
+    @Override
+    public boolean canClaim(World world) {
+        return !Config.Settlement.Claiming.DISABLED_WORLDS.contains(world.getName())
+                && !Config.Claiming.DISABLED_WORLDS.contains(world.getName())
+                && EmpireManager.getInstance().getEmpireFromWorld(world) == null;
     }
 
     public void setOutpostHome(String name, Location loc) {
@@ -493,6 +500,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         this.settlementState = state;
     }
 
+    @Override
     public int getMaxClaimableChunks() {
         return SettlementManager.getInstance().getLevel(getState(), getLevel()).map(SettlementLevel::getChunks).orElse(0)
                 + getBonusClaimAmount();

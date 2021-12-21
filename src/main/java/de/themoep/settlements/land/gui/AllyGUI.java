@@ -34,7 +34,7 @@ public class AllyGUI extends ConfigurableGui implements AllyCommand {
                     LandManager.getInstance().checkClaimDistance(resident.getSettlement(), ally.getLandOwner());
                 }
                 Message.get("command." + landOwner.getKey() + "." + (ally.isNearbyClaim() ? "enabled" : "disabled")).tell(resident,
-                        "grace", String.valueOf(Config.Settlement.Claiming.Close.Unclaim.GRACE_DAYS));
+                        "grace", String.valueOf(Config.Claiming.Close.Unclaim.GRACE_DAYS));
                 return true;
             }, getText("nearbyclaim",
                     "state", landOwner.getStateTag(),

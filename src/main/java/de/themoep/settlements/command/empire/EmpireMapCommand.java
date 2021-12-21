@@ -29,8 +29,8 @@ public class EmpireMapCommand extends PlayerSubCommand implements Listener {
 
     @Override
     public boolean run(Player player, String base, String alias, String... args) {
-        if (EmpireManager.getInstance().getEmpireFromWorld(player.getWorld()) == null) {
-            getError("not-in-empire-world").tell(player);
+        if (!Utils.isWorldClaimable(player.getWorld())) {
+            getError("world-not-claimable").tell(player);
             return true;
         }
 

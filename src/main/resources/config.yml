@@ -45,6 +45,42 @@ cache:
   #  even if it is not needed elsewhere
   duration-resident: 120
 
+
+claiming:
+  # Worlds in which claiming of chunks are disabled
+  disabled-worlds:
+  - world_nether
+  # Distance in chunks that have to be between claims of non-allied landowners
+  enemy-distance: 4
+  # Maximum radius in chunks which can be (un)claimed with the radius (un)claiming commands
+  max-radius: 5
+  # The seconds between each check for mobs to be removed in claimed land that has mobspawning turned off
+  # Set to 0 to disable
+  mob-flag-check-period: 30
+  close:
+    building:
+      # The distance in chunks to other landownerss in which to allow building
+      # Outside of this distance building will not be allowed.
+      # If a notification message is set in the messages.yml at 'close-claims'
+      # then that will be sent to the player or members of the settlement.
+      # Set to 0 to disable
+      distance: 4
+      # Whether or not to block building outside the range.
+      block-outside: true
+      # Whether or not to block building inside the range.
+      block-inside: false
+      # Which blocks are allowed to get built anyways.
+      allowed-blocks:
+      - "*shulker_box"
+      # The time in minutes a disabled close building notification stays around
+      toggle-time: 30
+    unclaim:
+      # How many days to wait before automatically unclaiming claims that are too close when unallying
+      # Set to -1 to disable the automatic unclaiming of too close lands
+      grace-days: 4
+      # Whether or not outposts are unclaimed
+      outposts: false
+      
 settlement:
   # How much a player must pay to create a settlement
   creation-cost: 1000
@@ -83,40 +119,10 @@ settlement:
     # Time in minutes for which block placements should be cached so that break mission abuse isn't possible using (recent) player placed blocks.
     place-cache-time: 60
     
-  claiming:
-    # Worlds in which claiming of Settlement chunks are disabled
-    disabled-worlds:
-    - world_nether
-    # Distance in chunks that have to be between claims of non-allied settlements
-    enemy-distance: 4
-    # Maximum radius in chunks which can be (un)claimed with the radius (un)claiming commands
-    max-radius: 5
-    # The seconds between each check for mobs to be removed in claimed land that has mobspawning turned off
-    # Set to 0 to disable
-    mob-flag-check-period: 30
-    close:
-      building:
-        # The distance in chunks to other settlements in which to allow building
-        # Outside of this distance building will not be allowed.
-        # If a notification message is set in the messages.yml at 'close-claims'
-        # then that will be sent to the player or members of the settlement.
-        # Set to 0 to disable
-        distance: 4
-        # Whether or not to block building outside the range.
-        block-outside: true
-        # Whether or not to block building inside the range.
-        block-inside: false
-        # Which blocks are allowed to get built anyways.
-        allowed-blocks:
-        - "*shulker_box"
-        # The time in minutes a disabled close building notification stays around
-        toggle-time: 30
-      unclaim:
-        # How many days to wait before automatically unclaiming claims that are too close when unallying
-        # Set to -1 to disable the automatic unclaiming of too close lands
-        grace-days: 4
-        # Whether or not outposts are unclaimed
-        outposts: false
+    claiming:
+      # Worlds in which claiming of Settlement chunks are disabled
+      disabled-worlds:
+      - world_nether
 
   outpost:
     # How much a settlement must pay to create a new outpost
@@ -165,6 +171,13 @@ empire:
     remove-finished-missions: true
     # Time in minutes for which block placements should be cached so that break mission abuse isn't possible using (recent) player placed blocks.
     place-cache-time: 60
+
+  claiming:
+    # Is claiming for empires outside their world enabled?
+    enabled: true
+    # Worlds in which claiming of empire chunks are disabled
+    disabled-worlds:
+    - world_nether
 
   world:
     # Whether each empire should get their own world automatically generated

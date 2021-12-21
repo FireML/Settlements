@@ -830,7 +830,9 @@ guis:
         back: barrier
         requirement:
           missionpoints: red_banner
+          missions: gree_banner
           cash: gold_ingot
+          world: map
     npclist:
       setup:
       - "ooooooooo"
@@ -1114,3 +1116,15 @@ guis:
         o: lime_stained_glass_pane
         title: paper
         add: writable_book
+    world:
+      setup:
+      - "ooooooooo"
+      - "         "
+      - "    w    "
+      - "         "
+      - "         "
+      - " ooobooo "
+      elements:
+        o: blue_stained_glass_pane
+        world: map
+        back: barrier

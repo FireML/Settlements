@@ -33,6 +33,9 @@ public class EmpireLevel extends LandownerLevel {
                 "level=" + getLevel() +
                 ", requirements=" + getRequirements() +
                 ", upkeep=" + upkeep +
+                ", chunks=" + getChunks() +
+                ", claimUpkeep=" + claimUpkeep +
+                ", worldClaimUpkeep=" + worldClaimUpkeep +
                 ", upkeepReduction=" + upkeepReduction +
                 ", worldRadius=" + worldRadius +
                 ", missions=" + getMissions() +

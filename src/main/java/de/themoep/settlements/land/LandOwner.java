@@ -26,6 +26,7 @@ import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.world.SimpleLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -1040,4 +1041,8 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
     public void logDeposit(Resident resident, Map<String, Long> deposited) {
         Utils.runAsync(() -> DatabaseManager.getInstance().logDeposit(this, resident, deposited));
     }
+
+    public abstract boolean canClaim(World world);
+
+    public abstract int getMaxClaimableChunks();
 }

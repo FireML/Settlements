@@ -4,6 +4,7 @@ import co.aikar.timings.lib.MCTiming;
 import de.themoep.settlements.customevents.CreaturePreSpawnEvent;
 import de.themoep.settlements.customevents.EntityPrimeTntEvent;
 import de.themoep.settlements.customevents.PlayerMoveChunkEvent;
+import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Message;
@@ -50,8 +51,8 @@ public class LandModeListener implements LandAccessChecker {
     }
 
     public void reload() {
-        if (mobCheckPeriod != Config.Settlement.Claiming.MOB_FLAG_CHECK_PERIOD) {
-            mobCheckPeriod = Config.Settlement.Claiming.MOB_FLAG_CHECK_PERIOD;
+        if (mobCheckPeriod != Config.Claiming.MOB_FLAG_CHECK_PERIOD) {
+            mobCheckPeriod = Config.Claiming.MOB_FLAG_CHECK_PERIOD;
             if (mobCheckTask != null) {
                 mobCheckTask.cancel();
             }
@@ -273,6 +274,7 @@ public class LandModeListener implements LandAccessChecker {
         Player player = event.getPlayer();
         Resident resident = ResidentManager.getInstance().getResident(player);
         Settlement playerSettlement = resident.getSettlement();
+        Empire playerEmpire = resident.hasEmpire() ? playerSettlement.getEmpire() : null;
         OwnedLand originalLand = LandManager.getInstance().getLand(event.getFrom());
         OwnedLand destinationLand = LandManager.getInstance().getLand(event.getTo());
         boolean sameSettlement = originalLand != null && destinationLand != null && originalLand.getLandOwner().equals(destinationLand.getLandOwner());
@@ -282,7 +284,8 @@ public class LandModeListener implements LandAccessChecker {
                     "name", originalLand.getLandOwner().getName(),
                     "state", originalLand.getLandOwner().getStateTag()
             );
-            if (originalLand.getLandOwner().equals(playerSettlement) && originalLand.getLandOwner().getMode(PlotMode.buff)) {
+            if (originalLand.getLandOwner().getMode(PlotMode.buff)
+                    && (originalLand.isOwnedBy(playerSettlement) || originalLand.isOwnedBy(playerEmpire))) {
                 SettlementsPlugin.getInstance().getLandPerks().removeEffects(player, originalLand, true);
             }
         }
@@ -294,7 +297,8 @@ public class LandModeListener implements LandAccessChecker {
                         "name", destinationLand.getLandOwner().getName(),
                         "state", destinationLand.getLandOwner().getStateTag()
                 );
-                if (destinationLand.getLandOwner().equals(playerSettlement) && destinationLand.getLandOwner().getMode(PlotMode.buff)) {
+                if (destinationLand.getLandOwner().getMode(PlotMode.buff)
+                        && (destinationLand.isOwnedBy(playerSettlement) || destinationLand.isOwnedBy(playerEmpire))) {
                     SettlementsPlugin.getInstance().getLandPerks().giveEffects(player, destinationLand, true);
                 }
             }
