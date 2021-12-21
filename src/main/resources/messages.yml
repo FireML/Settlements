@@ -1532,23 +1532,6 @@ gui:
       &eReset {rank} to default perms
       
       &bClick to reset
-    reset-perms:
-      title: "Reset all {rank} perms?"
-      reset:
-        title: "&cReset all {rank} perms?"
-        confirm: |-
-          &a&lConfirm
-          &7Click to reset the permissions
-          &7of {rank} in {state} {name}
-          &7to their default values!
-        cancel: |-
-          &c&lCancel
-          &7Click to cancel the reseting
-          &7of all rank permissions.
-      back: "&c&lBack To Settings"
-      entry:
-        title: "&3{rank}"
-        edit: "&7Click to edit permissions."
     rank-entry:
       selected: |-
         &e{name}
@@ -1571,6 +1554,17 @@ gui:
         &bClick to grant to &f{rank}
       revoke: |-
         &bClick to revoke from &f{rank}
+  reset-rank-perms:
+    title: "&cReset all {rank} perms?"
+    confirm: |-
+      &a&lConfirm
+      &7Click to reset the permissions
+      &7of {rank} in {state} {name}
+      &7to their default values!
+    cancel: |-
+      &c&lCancel
+      &7Click to cancel the reseting
+      &7of all rank permissions.
   setrank:
     rank-select:
       title: "&2&lSelect the {state} rank"

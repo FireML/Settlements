@@ -204,7 +204,7 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
         ))));
 
         gui.addElement(new DynamicGuiElement('o', h -> new StaticGuiElement('o', getIcon("reset"), click -> {
-            new ConfirmationGui(name() + ".reset-perms", c -> {
+            new ConfirmationGui(type + ".reset-rank-perms", c -> {
                 if (landOwner.hasPermission(res, "perms.reset")) {
                     boolean changed = false;
                     for (String permission : rank.getPermissions()) {

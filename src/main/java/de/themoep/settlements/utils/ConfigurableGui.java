@@ -5,10 +5,11 @@ import de.themoep.inventorygui.InventoryGui;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.resident.Resident;
+import org.bukkit.entity.Player;
 
 public class ConfigurableGui extends SettlementsGUI {
     protected final Resident resident;
-    protected final InventoryGui gui;
+    protected InventoryGui gui;
 
     public ConfigurableGui(Resident resident, String name, String... replacements) {
         super(name);
@@ -22,6 +23,11 @@ public class ConfigurableGui extends SettlementsGUI {
     }
 
     public void open() {
-        gui.show(resident.getPlayer());
+        if (gui != null && resident != null) {
+            Player player = resident.getPlayer();
+            if (player != null) {
+                gui.show(resident.getPlayer());
+            }
+        }
     }
 }

@@ -38,15 +38,14 @@ import java.util.stream.Collectors;
 public class UpgradeGUI extends ConfigurableGui {
 
     private final LandOwner<?, ? extends LandownerLevel> landOwner;
-    private Levelable<? extends LevelInfo> selected;
+    private Levelable<? extends LevelInfo> selected = null;
 
     public UpgradeGUI(Resident resident, LandOwner<?, ? extends LandownerLevel> landOwner) {
         super(resident, landOwner.getKey() + ".upgrade", "state", landOwner.getStateTag());
         this.landOwner = landOwner;
-        selected = landOwner;
 
         List<Levelable<? extends LevelInfo>> levelables = new ArrayList<>();
-        levelables.add(selected);
+        levelables.add(landOwner);
 
         NpcType.AppliesTo landOwnerType = NpcType.AppliesTo.fromKey(landOwner.getKey());
         for (NpcType npcType : NpcType.values()) {
@@ -56,6 +55,18 @@ public class UpgradeGUI extends ConfigurableGui {
                     levelables.add(data);
                 }
             }
+        }
+
+        for (Levelable<? extends LevelInfo> levelable : levelables) {
+            if (!levelable.isMaxLevel()) {
+                selected = levelable;
+                break;
+            }
+        }
+
+        if (selected == null) {
+            this.gui = null;
+            return;
         }
 
         GuiElementGroup navBar = new GuiElementGroup('l');

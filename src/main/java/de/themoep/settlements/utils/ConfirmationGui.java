@@ -10,13 +10,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Consumer;
+import java.util.logging.Level;
 
 public class ConfirmationGui extends SettlementsGUI {
     private final InventoryGui gui;
 
     public ConfirmationGui(String name, Consumer<GuiElement.Click> confirmedAction, Consumer<GuiElement.Click> cancelAction, String... replacements) {
         super(name);
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText(name + ".title", replacements), getSetup());
+        if (getSetup().length == 0) {
+            SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Missing setup for GUI " + name + " in guis.yml!");
+        }
+        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title", replacements), getSetup());
         gui.addElements(getConfiguredElements());
 
         gui.addElement(new StaticGuiElement('c', getIcon("confirm", new ItemStack(Material.GREEN_WOOL)), click -> {

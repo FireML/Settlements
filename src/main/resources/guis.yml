@@ -545,18 +545,18 @@ guis:
         titles: writable_book
         reset: orange_wool
         back: barrier
-      reset-perms:
-        setup:
-        - "ooooooooo"
-        - "         "
-        - "    c    "
-        - "         "
-        - "         "
-        - " ooobooo "
-        elements:
-          o: yellow_stained_glass_pane
-          confirm: green_wool
-          cancel: barrier
+    reset-rank-perms:
+      setup:
+      - "ooooooooo"
+      - "         "
+      - "    c    "
+      - "         "
+      - "         "
+      - " ooobooo "
+      elements:
+        o: yellow_stained_glass_pane
+        confirm: green_wool
+        cancel: barrier
     setrank:
       rank-select:
         setup:
