@@ -86,18 +86,19 @@ public class CitizensIntegration implements Listener, ConfigMessages {
 
     @EventHandler
     public void onSettlementCreate(LandownerCreatedEvent event) {
-        unlockNpc(event.getLandOwner(), NpcType.MANAGER);
-        unlockNpc(event.getLandOwner(), NpcType.QUARTER_MASTER);
-        if (event.getLandOwner().getHome() != null) {
-            createNpc(event.getLandOwner(), NpcType.MANAGER, event.getLandOwner().getHome().toBukkitLocation());
-            createNpc(event.getLandOwner(), NpcType.QUARTER_MASTER, event.getLandOwner().getHome().toBukkitLocation());
+        for (NpcType npc : event.getLandOwner().getLevelInfo().getNPCs()) {
+            unlockNpc(event.getLandOwner(), npc);
+            if (event.getLandOwner().getHome() != null) {
+                createNpc(event.getLandOwner(), npc, event.getLandOwner().getHome().toBukkitLocation());
+            }
         }
     }
 
     @EventHandler
     public void onCaimed(LandClaimedEvent event) {
-        handle(event, NpcType.MANAGER);
-        handle(event, NpcType.QUARTER_MASTER);
+        for (NpcType npc : event.getLandOwner().getLevelInfo().getNPCs()) {
+            handle(event, npc);
+        }
     }
 
     private void handle(LandClaimedEvent event, NpcType type) {
