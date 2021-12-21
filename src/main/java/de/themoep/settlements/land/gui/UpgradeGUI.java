@@ -189,7 +189,7 @@ public class UpgradeGUI extends ConfigurableGui {
         }));
 
         gui.addElement(new DynamicGuiElement('d', who -> new StaticGuiElement('d', getIcon("deposit"), click -> {
-            if (click.getEvent().getCursor() != null) {
+            if (click.getEvent().getCursor() == null) {
                 new DepositGUI<>(landOwner.getKey(), resident, selected).open();
             } else if (click.getType() == ClickType.LEFT && click.getEvent().getCursor() != null) {
                 Map<String, Long> requirements = selected.getNextLevelRequirements();
