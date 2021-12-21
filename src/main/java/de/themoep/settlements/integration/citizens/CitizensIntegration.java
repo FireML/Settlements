@@ -458,9 +458,9 @@ public class CitizensIntegration implements Listener, ConfigMessages {
         private Multimap<UUID, String> spokenMessages = MultimapBuilder.hashKeys().hashSetValues().build();
 
         public LandOwner<?, ?> getOwner() {
-            if (ownerType.equals("settlement")) {
+            if ("settlement".equals(ownerType)) {
                 return SettlementManager.getInstance().getFromId(IdObject.get(ownerId));
-            } else if (ownerType.equals("empire")) {
+            } else if ("empire".equals(ownerType)) {
                 return EmpireManager.getInstance().getEmpireFromId(IdObject.get(ownerId));
             }
             return null;
