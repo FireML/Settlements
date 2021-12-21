@@ -36,14 +36,14 @@ public class EmpireMission extends Mission {
                 return false;
             }
             if (onlyInEmpireWorld()) {
-                return ((Empire) provider).getWorldName() != null
+                return ((Empire) provider).hasWorld()
                         && player.getWorld().getName().equalsIgnoreCase(((Empire) provider).getWorldName());
             }
             if (onlyOnEmpireClaim()) {
                 OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
                 if (land.isOwnedBy((Empire) provider)) {
                     if (!onlyInEmpireWorld()) {
-                        return ((Empire) provider).getWorldName() == null
+                        return ((Empire) provider).hasWorld()
                                 || !player.getWorld().getName().equalsIgnoreCase(((Empire) provider).getWorldName());
                     }
                     return true;

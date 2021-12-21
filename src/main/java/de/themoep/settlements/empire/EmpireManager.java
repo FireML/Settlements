@@ -79,7 +79,7 @@ public class EmpireManager {
     public EmpireManager() {
         loadConfig();
         for (Empire empire : DatabaseManager.getInstance().getAllEmpires()) {
-            if (Config.Empire.World.ENABLED && Config.Empire.World.RENAME) {
+            if (Config.Empire.World.ENABLED && Config.Empire.World.RENAME && empire.hasWorld()) {
                 World world = SettlementsPlugin.getInstance().getServer().getWorld(empire.getWorldName());
                 if (world != null) {
                     writeIdFile(world, empire);
@@ -344,7 +344,9 @@ public class EmpireManager {
         empires.remove(empire.getName().toLowerCase());
         empireIds.remove(empire.getId());
         empireUuids.remove(empire.getUUID());
-        empireWorlds.remove(empire.getWorldName());
+        if (empire.hasWorld()) {
+            empireWorlds.remove(empire.getWorldName());
+        }
         SettlementsPlugin.getInstance().addNewlyDeleted(empire);
         for (Settlement member : empire.getMembers()) {
             if (empire.equals(member.getEmpire())) {
@@ -354,7 +356,7 @@ public class EmpireManager {
             }
             member.getMissionData().clear();
         }
-        if (Config.Empire.World.ENABLED && empire.getWorldName() != null) {
+        if (Config.Empire.World.ENABLED && empire.hasWorld()) {
             World empireWorld = Bukkit.getWorld(empire.getWorldName());
             if (empireWorld != null) {
                 try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Empire world removal")) {
@@ -438,7 +440,9 @@ public class EmpireManager {
         for (LockProvider lockProvider : SettlementsPlugin.getInstance().getLockProviders()) {
             lockProvider.removeInChunks(empire.getLand());
         }
-        LandManager.getInstance().removeWorld(empire.getWorldName());
+        if (empire.hasWorld()) {
+            LandManager.getInstance().removeWorld(empire.getWorldName());
+        }
         for (Perk perk : empire.getPerks()) {
             if (perk.hasEffects()) {
                 PerkData perkData = empire.getPerkData(perk);
@@ -620,10 +624,10 @@ public class EmpireManager {
 
     public boolean changeName(Empire empire, String name) {
         String oldName = empire.getName();
-        World world = Bukkit.getWorld(empire.getWorldName());
         empire.setName(name);
 
         if (Config.Empire.World.ENABLED && Config.Empire.World.RENAME && empire.hasWorld()) {
+            World world = Bukkit.getWorld(empire.getWorldName());
             empire.setInRegen(true);
             empire.setWorldName(Config.Empire.World.PREFIX + empire.getName() + Config.Empire.World.SUFFIX);
             if (!renameWorld(empire, world)) {
@@ -642,7 +646,7 @@ public class EmpireManager {
     }
 
     private boolean renameWorld(Empire empire, World world) {
-        if (world == null || !Config.Empire.World.ENABLED) {
+        if (world == null || !Config.Empire.World.ENABLED || !empire.hasWorld()) {
             return false;
         }
 

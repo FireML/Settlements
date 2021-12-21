@@ -20,7 +20,7 @@ public class EmpirePerk extends LevelPerk<Empire> {
 
     static {
         registerAction("flying", (p, e, t) -> {
-            if (e instanceof Empire) {
+            if (e instanceof Empire && ((Empire) e).hasWorld()) {
                 World world = Bukkit.getWorld(((Empire) e).getWorldName());
                 if (world != null) {
                     if (t) {
@@ -54,7 +54,7 @@ public class EmpirePerk extends LevelPerk<Empire> {
             }
         }, null);
         registerAction("weather", (p, e, t) -> {
-            if (e instanceof Empire) {
+            if (e instanceof Empire && ((Empire) e).hasWorld()) {
                 World world = Bukkit.getWorld(((Empire) e).getWorldName());
                 if (world != null) {
                     WeatherState weather = WorldUtils.getWeatherState(world);
@@ -83,7 +83,7 @@ public class EmpirePerk extends LevelPerk<Empire> {
                 }
             }
         }, e -> {
-            if (e instanceof Empire) {
+            if (e instanceof Empire && ((Empire) e).hasWorld()) {
                 World world = Bukkit.getWorld(((Empire) e).getWorldName());
                 if (world != null) {
                     return WorldUtils.getWeatherState(world).getKey();
@@ -92,14 +92,14 @@ public class EmpirePerk extends LevelPerk<Empire> {
             return null;
         });
         registerAction("time", (p, e, t) -> {
-            if (e instanceof Empire) {
+            if (e instanceof Empire && ((Empire) e).hasWorld()) {
                 World world = Bukkit.getWorld(((Empire) e).getWorldName());
                 if (world != null) {
                     world.setTime(UtilTime.MinecraftTime.getClosest(world.getTime()).next().getTicks());
                 }
             }
         }, e -> {
-            if (e instanceof Empire) {
+            if (e instanceof Empire && ((Empire) e).hasWorld()) {
                 World world = Bukkit.getWorld(((Empire) e).getWorldName());
                 if (world != null) {
                     return UtilTime.MinecraftTime.getClosest(world.getTime()).getKey();

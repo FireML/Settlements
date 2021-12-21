@@ -357,7 +357,9 @@ public class LandManager {
             return settlementLands.get(owner.getId());
         } else if (owner instanceof Empire) {
             List<OwnedLand> land = new ArrayList<>(empireLands.values());
-            land.addAll(landTable.row(((Empire) owner).getWorldName()).values());
+            if (((Empire) owner).hasWorld()) {
+                land.addAll(landTable.row(((Empire) owner).getWorldName()).values());
+            }
             return land;
         }
 
@@ -483,7 +485,8 @@ public class LandManager {
         toUnclaim.clear();
         for (LandOwner landOwner : landUnclaims.keySet()) {
             for (OwnedLand land : getClaimedLand(landOwner)) {
-                if (landOwner instanceof Empire && land.getWorldName().equals(((Empire) landOwner).getWorldName())) {
+                if (landOwner instanceof Empire && ((Empire) landOwner).hasWorld()
+                        && land.getWorldName().equals(((Empire) landOwner).getWorldName())) {
                     continue;
                 }
                 if (!isConnected(land)) {

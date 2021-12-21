@@ -466,7 +466,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     public void apply(Player player, Perk perk) {
         super.apply(player, perk);
         if (perk instanceof EmpirePerk && ((EmpirePerk) perk).getBonusRadius() > 0) {
-            World world = getWorldName() != null ? Bukkit.getWorld(getWorldName()) : null;
+            World world = hasWorld() ? Bukkit.getWorld(getWorldName()) : null;
             if (world != null) {
                 world.getWorldBorder().setSize(getWorldRadius() * 2, 5);
             } else if (Config.Empire.World.ENABLED && !hasWorld() && getWorldRadius() > 0) {
@@ -714,7 +714,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
 
     @Override
     public long getClaimUpkeep(String world) {
-        if (world.equalsIgnoreCase(getWorldName())) {
+        if (hasWorld() && world.equalsIgnoreCase(getWorldName())) {
             return 0;
         }
         return Math.max(0, EmpireManager.getInstance().getLevel(getLevel()).map(l -> l.getClaimUpkeep(world)).orElse(0L));
@@ -789,7 +789,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     @Override
     public boolean setMode(PlotMode mode, boolean value) {
         if (super.setMode(mode, value)) {
-            if (SettlementsPlugin.getInstance().isRunning() && mode == PlotMode.mobSpawning && !value) {
+            if (SettlementsPlugin.getInstance().isRunning() && mode == PlotMode.mobSpawning && !value && hasWorld()) {
                 World world = Bukkit.getWorld(getWorldName());
                 if (world != null) {
                     try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Empire mob spawning mode toggle")) {
