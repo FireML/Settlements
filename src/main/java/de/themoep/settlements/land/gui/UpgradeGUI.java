@@ -13,6 +13,7 @@ import de.themoep.settlements.leveling.LevelInfo;
 import de.themoep.settlements.leveling.Levelable;
 import de.themoep.settlements.npc.NpcConfig;
 import de.themoep.settlements.npc.NpcData;
+import de.themoep.settlements.npc.NpcLevel;
 import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.resident.Resident;
@@ -148,6 +149,9 @@ public class UpgradeGUI extends ConfigurableGui {
                             benefits.add(((EmpireLevel) nextLevel).getUpkeepReduction() + " Upkeep Reduction");
                         }
                     }
+                }
+                if (nextLevel instanceof NpcLevel) {
+                    benefits.add("$" + ((NpcLevel) nextLevel).getUpkeep() + " Upkeep");
                 }
                 List<String> benefitTexts = perks.stream()
                         .map(p -> getText("benefit",

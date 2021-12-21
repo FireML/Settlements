@@ -2,7 +2,9 @@
 
 settlement:
   manager:
-    level-1: {}
+    level-1:
+      # Npc upkeep per level
+      upkeep: 0
     level-2:
       requirements:
         STONE: 100
@@ -115,6 +117,7 @@ settlement:
   auctioneer:
     level-1: {}
     level-2:
+      upkeep: 100
       requirements:
         STONE: 100
       perks:

@@ -15,6 +15,7 @@ import de.themoep.settlements.missions.Mission;
 import de.themoep.settlements.missions.MissionData;
 import de.themoep.settlements.missions.MissionProvider;
 import de.themoep.settlements.missions.MissionTaker;
+import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.settlement.events.SettlementJoinEvent;
@@ -293,6 +294,9 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         long amount = 0;
         for (OwnedLand land : LandManager.getInstance().getClaimedLand(this)) {
             amount += getClaimUpkeep(land.getWorld());
+        }
+        for (NpcData data : getNpcData()) {
+            amount += data.getLevelInfo().getUpkeep();
         }
         return amount;
     }

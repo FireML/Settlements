@@ -7,6 +7,7 @@ import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.missions.MissionData;
 import de.themoep.settlements.missions.MissionProvider;
 import de.themoep.settlements.missions.MissionTaker;
+import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
@@ -704,6 +705,9 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
 
         for (OwnedLand land : LandManager.getInstance().getClaimedLand(this)) {
             amount += getClaimUpkeep(land.getWorld());
+        }
+        for (NpcData data : getNpcData()) {
+            amount += data.getLevelInfo().getUpkeep();
         }
         return amount;
     }
