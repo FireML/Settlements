@@ -49,7 +49,7 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
             return true;
         }
         Utils.runAsync(() -> {
-            Targetable target = getTarget(resident, args);
+            Targetable target = getTarget(resident, args[0]);
             if (target == null) {
                 return;
             }
@@ -99,7 +99,7 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
             return false;
         }
         Utils.runAsync(() -> {
-            Targetable target = getTarget(resident, args);
+            Targetable target = getTarget(resident, String.join(" ", args));
             if (target == null) {
                 return;
             }

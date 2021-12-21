@@ -20,7 +20,7 @@ public class LockAddCommand extends PlayerSubCommand implements TargetParser {
             Utils.runAsync(() -> {
                 boolean toggle = args.length > 1 && "toggle".equalsIgnoreCase(args[args.length - 1]);
                 String[] actionArgs = Arrays.copyOfRange(args, 0, args.length - (toggle ? 1 : 0));
-                Targetable target = getTarget(player, actionArgs);
+                Targetable target = getTarget(player, String.join(" ", actionArgs));
                 if (target != null) {
                     if (toggle) {
                         if (LockManager.getInstance().toggleAction(player.getUniqueId(), "add " + String.join(" ", actionArgs))) {

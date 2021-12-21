@@ -10,27 +10,31 @@ import org.bukkit.entity.Player;
 
 public interface TargetParser extends ConfigMessages {
 
-    default Targetable getTarget(Resident resident, String[] args) {
-        return getTarget(resident.getPlayer(), args);
-    }
-
-    default Targetable getTarget(Player player, String[] args) {
-        return getTarget(player, String.join(" ", args));
+    default Targetable getTarget(Resident resident, String input) {
+        return getTarget(resident.getPlayer(), input);
     }
 
     default Targetable getTarget(Player player, String input) {
         Targetable target;
         if (input.startsWith("empire:") || input.startsWith("e:")) {
-            target = EmpireManager.getInstance().getEmpireFromName(input.split(":")[1]);
+            String name = input.split(":")[1];
+            target = EmpireManager.getInstance().getEmpireFromName(name);
             if (target == null) {
-                getError("empire-doesnt-exist").tell(player, "name", input.split(":")[1]);
-                return null;
+                target = EmpireManager.getInstance().getEmpireFromName(name.replace('_', ' '));
+                if (target == null) {
+                    getError("empire-doesnt-exist").tell(player, "name", name);
+                    return null;
+                }
             }
         } else if (input.startsWith("settlement:") || input.startsWith("s:")) {
-            target = SettlementManager.getInstance().getFromName(input.split(":")[1]);
+            String name = input.split(":")[1];
+            target = SettlementManager.getInstance().getFromName(name);
             if (target == null) {
-                getError("settlement-doesnt-exist").tell(player, "name", input.split(":")[1]);
-                return null;
+                target = SettlementManager.getInstance().getFromName(name.replace('_', ' '));
+                if (target == null) {
+                    getError("settlement-doesnt-exist").tell(player, "name", name);
+                    return null;
+                }
             }
         } else {
             String name = input;
