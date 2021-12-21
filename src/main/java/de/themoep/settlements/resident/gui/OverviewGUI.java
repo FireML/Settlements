@@ -4,7 +4,6 @@ import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.settlement.SettlementHomeCommand;
 import de.themoep.settlements.command.settlement.SettlementRulesCommand;
@@ -16,12 +15,11 @@ import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.gui.NpcListGUI;
 import de.themoep.settlements.land.gui.plot.SettingsGUI;
 import de.themoep.settlements.lock.LockManager;
-import de.themoep.settlements.rank.SettlementRank;
+import de.themoep.settlements.resident.Friend;
 import de.themoep.settlements.resident.FriendRequest;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.JoinType;
 import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.settlement.events.SettlementJoinEvent;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.ListGui;
@@ -104,42 +102,61 @@ public class OverviewGUI extends ConfigurableGui {
 
         Collection<FriendRequest> requests = resident.getFriendRequests();
         gui.addElement(new StaticGuiElement('f', ItemUtils.setGlowing(getIcon("friends"), !requests.isEmpty()), click -> {
-            new ListGui<>(resident, "general.requests", () -> new ArrayList<>(resident.getFriendRequests()), (c, request) -> {
-                // accept request
-                if (request instanceof FriendRequest) {
-                    FriendRequest currentRequest = resident.removeFriendRequest(((FriendRequest) request).getSenderName());
-                    if (currentRequest == null) {
-                        // No request sent?
-                        c.getGui().draw();
-                        return;
-                    }
-                    c.getGui().close();
-                    Utils.runAsync(() -> {
-                        Resident sender = (Resident) request.getSource();
-                        DatabaseManager.getInstance().delete(request);
-                        FriendRequest reverseRequest = sender.removeFriendRequest(resident.getName());
-                        if (reverseRequest != null) {
-                            DatabaseManager.getInstance().delete(reverseRequest);
-                        }
-                        Utils.runSync(() -> {
-                            sender.addFriend(resident.getUUID());
-                            resident.addFriend(sender.getUUID());
-                            getMessage("success").tell(resident, "name", sender.getName());
-                            if (sender.getPlayer() != null) {
-                                getMessage("received").tell(sender, "name", resident.getName());
-                            } else {
-                                for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
-                                    provider.sendMail(resident.getSettlementTitle() + " " + resident.getName(), sender, getText("mail",
-                                            "name", resident.getName()
-                                    ));
-                                }
-                            }
-                            sender.save();
+            ListGui<Friend> friendList = new ListGui<>(resident, "general.friends", resident::getFriends,
+                    (c, friend) -> {
+                        // Unfriend
+                        if (c.getEvent().isRightClick()) {
+                            Resident fRes = friend.getResident();
+                            fRes.removeFriend(resident.getUUID());
                             resident.save();
-                        });
-                    });
-                }
-            }, request -> request.getReplacements(this)).open();
+                            fRes.save();
+                            Message.get("friend.remove.success").tell(resident, "name", fRes.getName());
+                            c.getGui().draw();
+                        }
+            }, friend -> friend.getReplacements(this));
+
+            Collection<FriendRequest> currentRequests = resident.getFriendRequests();
+            friendList.addElement(new StaticGuiElement('r', ItemUtils.setGlowing(getIcon("requests"), !currentRequests.isEmpty()), rClick -> {
+                new ListGui<>(resident, "general.requests", () -> new ArrayList<>(resident.getFriendRequests()),
+                        (c, request) -> {
+                            // accept request
+                            if (request instanceof FriendRequest) {
+                                FriendRequest currentRequest = resident.removeFriendRequest(((FriendRequest) request).getSenderName());
+                                if (currentRequest == null) {
+                                    // No request sent?
+                                    c.getGui().draw();
+                                    return;
+                                }
+                                c.getGui().close();
+                                Utils.runAsync(() -> {
+                                    Resident sender = (Resident) request.getSource();
+                                    DatabaseManager.getInstance().delete(request);
+                                    FriendRequest reverseRequest = sender.removeFriendRequest(resident.getName());
+                                    if (reverseRequest != null) {
+                                        DatabaseManager.getInstance().delete(reverseRequest);
+                                    }
+                                    Utils.runSync(() -> {
+                                        sender.addFriend(resident.getUUID(), resident.getName());
+                                        resident.addFriend(sender.getUUID(), sender.getName());
+                                        Message.get("friend.add.success").tell(resident, "name", sender.getName());
+                                        if (sender.getPlayer() != null) {
+                                            Message.get("friend.add.received").tell(sender, "name", resident.getName());
+                                        } else {
+                                            for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
+                                                provider.sendMail(resident.getSettlementTitle() + " " + resident.getName(), sender,
+                                                        Message.get("friend.add.mail").getReplacedText("name", resident.getName())
+                                                );
+                                            }
+                                        }
+                                        sender.save();
+                                        resident.save();
+                                    });
+                                });
+                            }
+                        }, request -> request.getReplacements(this)).open();
+                return true;
+            }));
+            friendList.open();
             return true;
         }, getText("friends", "amount", String.valueOf(requests.size()))));
 

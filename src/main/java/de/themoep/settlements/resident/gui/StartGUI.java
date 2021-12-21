@@ -79,7 +79,7 @@ public class StartGUI extends ConfigurableGui {
                         .itemLeft(getIcon("create"))
                         .title(getText("create.anvil.title"))
                         .text("")
-                        .onClose(player -> Utils.runLater(this::open, 1))
+                        .onClose(player -> Utils.runLater(() -> new StartGUI(resident).open(), 1))
                         .onComplete((player, name) -> {
                             name = Utils.filterAllCurses(name.trim());
                             if (name.toLowerCase().contains("claims")) {

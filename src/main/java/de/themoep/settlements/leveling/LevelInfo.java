@@ -18,7 +18,7 @@ public abstract class LevelInfo {
             for (String key : requirementsConfig.getKeys(false)) {
                 long value = requirementsConfig.getLong(key, -1);
                 if (value > 0) {
-                    requirements.put(key.toUpperCase(Locale.ROOT), requirementsConfig.getLong(key));
+                    requirements.put(key.toUpperCase(Locale.ROOT), value);
                 }
             }
         }

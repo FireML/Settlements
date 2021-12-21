@@ -28,16 +28,12 @@ public class FriendListCommand extends PlayerSubCommand {
                 getError("no-friends").tell(resident);
             } else {
                 getMessage("head").tell(resident);
-                MessageUtils.tell(player, resident.getFriends().stream().map(id -> {
-                    Player p = Bukkit.getPlayer(id);
+                MessageUtils.tell(player, resident.getFriends().stream().map(friend -> {
+                    Player p = friend.getPlayer();
                     if (p != null && p.isOnline()) {
                         return getMessage("entry").getReplacedText("online", getText("online"), "name", p.getName());
                     }
-                    Resident target = ResidentManager.getInstance().getResident(id);
-                    if (target != null) {
-                        return getMessage("entry").getReplacedText("online", getText("offline"), "name", target.getName());
-                    }
-                    return getMessage("entry").getReplacedText("online", getText("offline"), "name", id.toString());
+                    return getMessage("entry").getReplacedText("online", getText("offline"), "name", friend.getPlayerName());
                 }).collect(Collectors.joining(getText("separator"))));
             }
             if (!resident.getFriendRequests().isEmpty()) {

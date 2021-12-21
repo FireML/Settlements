@@ -113,7 +113,7 @@ ranks:
     - settlement.group.manage-res
     - settlement.kick
     - settlement.titles
-    - settlement.group.manage-ally
+    - settlement.group.manage-allies
     - settlement.group.admin-allies
     - settlement.banish
     - settlement.unbanish
@@ -172,7 +172,7 @@ ranks:
     - settlement.group.manage-res
     - settlement.kick
     - settlement.titles
-    - settlement.group.manage-ally
+    - settlement.group.manage-allies
     - settlement.group.admin-allies
     - settlement.group.manage-banished
     - settlement.banish
@@ -192,7 +192,7 @@ ranks:
     - settlement.officer
     - settlement.npc.teleport
     - settlement.group.manage-res
-    - settlement.group.manage-ally
+    - settlement.group.manage-allies
     - settlement.group.manage-settings
     - settlement.group.manage-outpost
     - settlement.invite

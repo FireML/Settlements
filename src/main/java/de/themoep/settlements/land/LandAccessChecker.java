@@ -90,7 +90,7 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
         if (BuildState.FRIENDS.atLeast(state)) {
             if (land.isPlot()) {
                 owner = ResidentManager.getInstance().getResident(land.getPlotOwner());
-                allowed |= owner.getFriends().contains(building.getUniqueId());
+                allowed |= owner.isFriend(building.getUniqueId());
             }
         }
         if (BuildState.OFFICERS.atLeast(state)) {

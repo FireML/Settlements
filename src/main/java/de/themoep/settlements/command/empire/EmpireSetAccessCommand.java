@@ -14,7 +14,7 @@ public class EmpireSetAccessCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length < 1) {
-            new AccessGUI("empire", resident.getSettlement().getEmpire()).open(resident.getPlayer());
+            new AccessGUI(resident, "empire", resident.getSettlement().getEmpire()).open();
             return true;
         }
         try {

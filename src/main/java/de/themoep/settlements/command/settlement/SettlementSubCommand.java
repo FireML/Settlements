@@ -22,7 +22,7 @@ public abstract class SettlementSubCommand extends ResidentPermsSubCommand {
         }
         if (resident.getSettlement().useGuestRank()
                 && resident.getSettlementRank() == resident.getSettlement().getDefaultRank()
-                && !resident.getSettlementRank().getInheritedPermissionValue(getPermission().substring("settlements.command.".length())).orElse(false)) {
+                && !resident.getSettlement().getEffectivePermissionValue(resident.getSettlementRank(), getPermission().substring("settlements.command.".length())).orElse(false)) {
             getError("rules-not-accepted").tell(resident, "state", resident.getSettlement().getStateTag(), "name", resident.getSettlement().getName());
             return false;
         }

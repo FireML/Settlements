@@ -46,7 +46,7 @@ public class SettlementHomeCommand extends ResidentSubCommand {
 
         if (settlement.getAccess() != LandAccess.PUBLIC && settlement.isMember(resident)
                 && resident.getSettlementRank() == resident.getSettlement().getDefaultRank()
-                && !resident.getSettlementRank().getInheritedPermissionValue("command.home").orElse(false)) {
+                && !resident.getSettlement().getEffectivePermissionValue(resident.getSettlementRank(), "command.home").orElse(false)) {
             getError("rules-not-accepted").tell(resident, "state", resident.getSettlement().getStateTag(), "name", resident.getSettlement().getName());
             return true;
         }

@@ -47,7 +47,7 @@ public class SettingsGUI extends ConfigurableGui {
                         .itemLeft(getIcon("rename"))
                         .title(getText("rename.anvil.title", "name", settlement.getName()))
                         .text(getText("rename.anvil.placeholder", "name", settlement.getName()))
-                        .onClose(player -> Utils.runLater(this::open, 1))
+                        .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))
                         .onComplete((player, text) -> {
                             if (settlement.hasPermission(resident, "rename")) {
                                 String name = Utils.filterAllCurses(text.trim());
@@ -151,7 +151,7 @@ public class SettingsGUI extends ConfigurableGui {
                         .itemLeft(getIcon("discord"))
                         .title(getText("discord.anvil.title", "name", settlement.getName(), "discord", settlement.getDiscord()))
                         .text(getText("discord.anvil.placeholder", "discord", settlement.getDiscord()))
-                        .onClose(player -> Utils.runLater(this::open, 1))
+                        .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))
                         .onComplete((player, text) -> {
                             if (settlement.hasPermission(resident, "discord.set")) {
                                 String link = text.trim();
@@ -169,7 +169,7 @@ public class SettingsGUI extends ConfigurableGui {
                                     );
                                 }
                                 settlement.save();
-                                Utils.runLater(this::open, 1);
+                                Utils.runLater(() -> new SettingsGUI(resident).open(), 1);
                             } else {
                                 getError("no-permission").tell(player);
                             }
@@ -193,7 +193,7 @@ public class SettingsGUI extends ConfigurableGui {
                         .itemLeft(getIcon("joinfee"))
                         .title(getText("joinfee.anvil.title", "name", settlement.getName(), "joinfee", String.valueOf(settlement.getJoinFee())))
                         .text(getText("joinfee.anvil.placeholder", "joinfee", String.valueOf(settlement.getJoinFee())))
-                        .onClose(player -> Utils.runLater(this::open, 1))
+                        .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))
                         .onComplete((player, text) -> {
                             if (settlement.hasPermission(resident, "joinfee.set")) {
                                 try {
@@ -206,7 +206,7 @@ public class SettingsGUI extends ConfigurableGui {
                                         );
                                         settlement.save();
                                     }
-                                    Utils.runLater(this::open, 1);
+                                    Utils.runLater(() -> new SettingsGUI(resident).open(), 1);
                                 } catch (NumberFormatException e) {
                                     return AnvilGUI.Response.text(getError("not-a-number").getReplacedText("input", text));
                                 }
@@ -233,7 +233,7 @@ public class SettingsGUI extends ConfigurableGui {
                         .itemLeft(getIcon("description"))
                         .title(getText("description.anvil.title", "name", settlement.getName(), "description", settlement.getDescription()))
                         .text(getText("description.anvil.placeholder", "description", settlement.getDescription()))
-                        .onClose(player -> Utils.runLater(this::open, 1))
+                        .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))
                         .onComplete((player, text) -> {
                             if (settlement.hasPermission(resident, "setdescription")) {
                                 String description = text.trim();
@@ -245,7 +245,7 @@ public class SettingsGUI extends ConfigurableGui {
                                     );
                                     settlement.save();
                                 }
-                                Utils.runLater(this::open, 1);
+                                Utils.runLater(() -> new SettingsGUI(resident).open(), 1);
                             } else {
                                 getError("no-permission").tell(player);
                             }
@@ -264,7 +264,7 @@ public class SettingsGUI extends ConfigurableGui {
 
         gui.addElement(new StaticGuiElement('a', getIcon("access"), click -> {
             if (resident.hasPermission("settlement.setaccess")) {
-                new AccessGUI("settlement", resident.getSettlement()).open((Player) click.getEvent().getWhoClicked());
+                new AccessGUI(resident, "settlement", resident.getSettlement()).open();
             }
             return true;
         }, getText("access",

@@ -49,16 +49,8 @@ public class SettlementInvite extends Invite<Resident, Settlement> {
 
     @Override
     public String[] getReplacements(ConfigMessages configMessages, String... initial) {
-        Resident target = getTarget();
         Settlement source = getSource();
-        return new String[] {
-                "player", target.getName(),
-                "settlement", source.getName(),
-                "state", source.getStateTag(),
-                "level", String.valueOf(source.getLevel()),
-                "description", source.getDescription(),
-                "size", String.valueOf(source.getResidentIds().size()),
-        };
+        return source.getReplacements(configMessages, initial);
     }
 
     @Override

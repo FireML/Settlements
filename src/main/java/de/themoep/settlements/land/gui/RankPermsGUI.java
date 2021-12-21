@@ -130,7 +130,7 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
                 return new StaticGuiElement('g', item, click -> {
                     if (rank.below(landOwner.getRank(res))) {
                         if (click.getType() != ClickType.MIDDLE) {
-                            if (res.hasPermission(type + "ranks.perms.set") && res.hasPermission(perm)) {
+                            if (landOwner.hasPermission(res, "ranks.perms.set") && landOwner.hasPermission(res, perm)) {
                                 Optional<Boolean> currentValue = landOwner.getEffectivePermissionValue(rank, perm);
                                 R currentFromRank = rank;
                                 if (currentValue.orElse(false)) {
@@ -148,7 +148,7 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
                                 }
                             }
                         } else {
-                            if (res.hasPermission("settlement.ranks.perms.unset")) {
+                            if (landOwner.hasPermission(res, "ranks.perms.unset")) {
                                 if (landOwner.setDefaultPermission(rank, perm)) {
                                     landOwner.save();
                                     gui.draw();
@@ -193,37 +193,39 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
         gui.addElements(ranksGroup);
 
         gui.addElement(new DynamicGuiElement('t', h -> new StaticGuiElement('t', getIcon("titles"), click -> {
-            new TitlesGUI<>(type, res, landOwner, rank).open();
+            if (landOwner.hasPermission(res, "titles")) {
+                new TitlesGUI<>(type, res, landOwner, rank).open();
+            }
             return true;
         }, getText("titles",
                 "rank", rank.getTag(landOwner),
-                "state", landOwner.getStateTag()
+                "state", landOwner.getStateTag(),
+                "action", landOwner.hasPermission(res, "titles") ? getText("unlockables.unlocked.change") : getText("no-permission")
         ))));
 
-        if (res.hasPermission(type + ".ranks.perms.reset")) {
-            gui.addElement(new DynamicGuiElement('o', h -> new StaticGuiElement('o', getIcon("reset"), click -> {
-                new ConfirmationGui(name() + ".reset-perms", c -> {
-                    if (res.hasPermission(type + ".perms.reset")) {
-                        boolean changed = false;
-                        for (String permission : rank.getPermissions()) {
-                            changed |= landOwner.setDefaultPermission(rank, permission);
-                        }
-                        if (changed) {
-                            landOwner.save();
-                        }
+        gui.addElement(new DynamicGuiElement('o', h -> new StaticGuiElement('o', getIcon("reset"), click -> {
+            new ConfirmationGui(name() + ".reset-perms", c -> {
+                if (landOwner.hasPermission(res, "perms.reset")) {
+                    boolean changed = false;
+                    for (String permission : rank.getPermissions()) {
+                        changed |= landOwner.setDefaultPermission(rank, permission);
                     }
-                    InventoryGui.goBack(c.getWhoClicked());
-                }, c -> InventoryGui.goBack(c.getWhoClicked()),
-                        "state", landOwner.getStateTag(),
-                        "name", landOwner.getName(),
-                        "rank", rank.getTag(landOwner)
-                ).open((Player) click.getEvent().getWhoClicked());
-                return true;
-            }, getText("reset",
-                    "rank", rank.getTag(landOwner),
-                    "state", landOwner.getStateTag()
-            ))));
-        }
+                    if (changed) {
+                        landOwner.save();
+                    }
+                }
+                InventoryGui.goBack(c.getWhoClicked());
+            }, c -> InventoryGui.goBack(c.getWhoClicked()),
+                    "state", landOwner.getStateTag(),
+                    "name", landOwner.getName(),
+                    "rank", rank.getTag(landOwner)
+            ).open((Player) click.getEvent().getWhoClicked());
+            return true;
+        }, getText("reset",
+                "rank", rank.getTag(landOwner),
+                "state", landOwner.getStateTag(),
+                "action", landOwner.hasPermission(res, "perms.reset") ? getText("unlockables.unlocked.reset") : getText("no-permission")
+        ))));
 
         gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
     }

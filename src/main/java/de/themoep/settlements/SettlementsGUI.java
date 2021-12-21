@@ -100,7 +100,7 @@ public abstract class SettlementsGUI implements ConfigMessages {
 
     protected GuiElementGroup.Alignment getAlignment(String c) {
         try {
-            return GuiElementGroup.Alignment.valueOf(ConfigManager.getInstance().getGuisConfig().getString("guis." + getKey() + ".alignments." + c, "left").toLowerCase(Locale.ROOT));
+            return GuiElementGroup.Alignment.valueOf(ConfigManager.getInstance().getGuisConfig().getString("guis." + getKey() + ".alignments." + c, "left").toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
             return GuiElementGroup.Alignment.LEFT;
         }

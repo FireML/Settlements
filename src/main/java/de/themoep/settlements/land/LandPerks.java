@@ -148,7 +148,7 @@ public class LandPerks {
                             }
                             break;
                         case PLOT_FRIENDS:
-                            if (!land.isPlot() || !resident.getFriends().contains(land.getPlotOwner())) {
+                            if (!land.isPlot() || !resident.isFriend(land.getPlotOwner())) {
                                 continue;
                             }
                             break;
@@ -229,7 +229,7 @@ public class LandPerks {
                             }
                             break;
                         case PLOT_FRIENDS:
-                            if (!land.isPlot() || !resident.getFriends().contains(land.getPlotOwner())) {
+                            if (!land.isPlot() || !resident.isFriend(land.getPlotOwner())) {
                                 continue;
                             }
                             break;

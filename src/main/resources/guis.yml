@@ -42,7 +42,7 @@ guis:
       - "eeeeeeeee"
       - "eeeeeeeee"
       - "eeeeeeeee"
-      - "ppppppsb "
+      - "pppppps b"
       elements:
         o: brown_stained_glass_pane
         page: paper
@@ -55,11 +55,12 @@ guis:
       - "eeeeeeeee"
       - "eeeeeeeee"
       - "eeeeeeeee"
-      - "ppppppsb "
+      - "ppppppsrb"
       elements:
         o: brown_stained_glass_pane
         page: paper
         sort: hopper
+        requests: crimson_door
         back: barrier
     settlements:
       setup:
@@ -68,7 +69,7 @@ guis:
       - "eeeeeeeee"
       - "eeeeeeeee"
       - "eeeeeeeee"
-      - "ppppppsb "
+      - "pppppps b"
       elements:
         o: brown_stained_glass_pane
         page: paper
@@ -81,7 +82,7 @@ guis:
       - "eeeeeeeee"
       - "eeeeeeeee"
       - "eeeeeeeee"
-      - "ppppppsb "
+      - "pppppps b"
       elements:
         o: brown_stained_glass_pane
         page: paper
@@ -194,7 +195,7 @@ guis:
       - "eeeeeeeee"
       - "eeeeeeeee"
       - "eeeeeeeee"
-      - "ppppppsb "
+      - "pppppps b"
       elements:
         o: lime_stained_glass_pane
         page: paper
@@ -266,7 +267,7 @@ guis:
         joinfee: name_tag
         description: oak_sign
         access: oak_fence_gate
-        recruitement: acacia_door
+        recruitment: acacia_door
         back: barrier
     allies:
       setup:
@@ -361,8 +362,9 @@ guis:
         black-market: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGUwMmZlYmI0YzUyZGIxZmI5ZTFlNWM4NTJhNGU3MmQ4ZGZlNmM0YzA1NWE0NjQ5YWJmM2QzNTdkMjMzZmMxYiJ9fX0=
         back: barrier
         requirement:
-          missionpoints: red_banner
+          missionpoints: green_banner
           cash: gold_ingot
+          missions: red_banner
     shop:
       setup:
       - "ooooooooo"
@@ -392,7 +394,7 @@ guis:
     access:
       setup:
       - "ooooooooo"
-      - "         "
+      - "    i    "
       - " aaaaaaa "
       - " aaaaaaa "
       - "         "
@@ -401,6 +403,7 @@ guis:
         a: center
       elements:
         o: lime_stained_glass_pane
+        i: book
         selected: lime_wool
         available: light_gray_wool
         back: barrier
@@ -881,7 +884,7 @@ guis:
       - "rrrrrrrrr"
       - "rrrrrrrrr"
       - "rrrrrrrrr"
-      - "ppppppsb "
+      - "pppppps b"
       elements:
         o: magenta_stained_glass_pane
         page: paper

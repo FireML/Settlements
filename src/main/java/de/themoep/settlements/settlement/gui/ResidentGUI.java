@@ -35,55 +35,64 @@ public class ResidentGUI extends ConfigurableGui {
         gui.addElement(new StaticGuiElement('a', getIcon("accepted"), getText("accepted.entry",
                 "state", resident.getSettlement().getTag(),
                 "accepted", resident.getSettlementRank() == resident.getSettlement().getDefaultRank()
-                        ? getText("accepted.accepted") : getText("accepted.not-accepted")
+                        ? getText("accepted.not-accepted") : getText("accepted.accepted")
         )));
 
-        if (sender.hasPermission("settlement.settaxevasion")) {
-            gui.addElement(new GuiStateElement('e', () -> resident.getTaxDebtAction().getKey(),
-                    new GuiStateElement.State(click -> {
-                        if (sender.hasPermission("settlement.settaxevasion")) {
-                            resident.setTaxDebtAction(TaxDebtAction.KICK);
-                            resident.save();
-                        }
-                    }, TaxDebtAction.NONE.getKey(), getIcon("evasion"), getText("tax-evasion", "action", resident.getTaxDebtAction().getTag())),
-                    new GuiStateElement.State(click -> {
-                        if (sender.hasPermission("settlement.settaxevasion")) {
-                            resident.setTaxDebtAction(TaxDebtAction.NONE);
-                            resident.save();
-                        }
-                    }, TaxDebtAction.KICK.getKey(), getIcon("evasion"), getText("tax-evasion", "action", resident.getTaxDebtAction().getTag()))));
-        }
+        gui.addElement(new GuiStateElement('e', () -> resident.getTaxDebtAction().getKey(),
+                new GuiStateElement.State(click -> {
+                    if (sender.hasPermission("settlement.settaxevasion")) {
+                        resident.setTaxDebtAction(TaxDebtAction.KICK);
+                        resident.save();
+                    }
+                }, TaxDebtAction.NONE.getKey(), getIcon("evasion"),
+                        getText("tax-evasion",
+                                "taxevasion", resident.getTaxDebtAction().getTag(),
+                                "action", resident.hasPermission("settlement.settaxevasion") ? getText("unlockables.unlocked.change") : getText("no-permission")
+                        )),
+                new GuiStateElement.State(click -> {
+                    if (sender.hasPermission("settlement.settaxevasion")) {
+                        resident.setTaxDebtAction(TaxDebtAction.NONE);
+                        resident.save();
+                    }
+                }, TaxDebtAction.KICK.getKey(), getIcon("evasion"),
+                        getText("tax-evasion",
+                                "taxevasion", resident.getTaxDebtAction().getTag(),
+                                "action", resident.hasPermission("settlement.settaxevasion") ? getText("unlockables.unlocked.change") : getText("no-permission")
+                        ))));
 
-        if (sender.hasPermission("settlement.settaxexempt")) {
-            gui.addElement(new GuiStateElement('x', () -> String.valueOf(resident.isTaxExempted()),
-                    new GuiStateElement.State(click -> {
-                        if (sender.hasPermission("settlement.settaxexempt")) {
-                            resident.setTaxExempted(true);
-                            resident.save();
-                        }
-                    }, Boolean.TRUE.toString(), getIcon("taxes"), getText("taxes.entry",
-                            "donated", Utils.CURRENCY_FORMAT.format(resident.getDonated()),
-                            "taxpaid", Utils.CURRENCY_FORMAT.format(resident.getTaxPaid()),
-                            "exempted", getText("taxes.exempted")
-                    )),
-                    new GuiStateElement.State(click -> {
-                        if (sender.hasPermission("settlement.settaxexempt")) {
-                            resident.setTaxExempted(false);
-                            resident.save();
-                        }
-                    }, Boolean.FALSE.toString(), getIcon("taxes"), getText("taxes.entry",
-                            "donated", Utils.CURRENCY_FORMAT.format(resident.getDonated()),
-                            "taxpaid", Utils.CURRENCY_FORMAT.format(resident.getTaxPaid()),
-                            "exempted", getText("taxes.paying")
-                    ))));
-        }
+        gui.addElement(new GuiStateElement('x', () -> String.valueOf(resident.isTaxExempted()),
+                new GuiStateElement.State(click -> {
+                    if (sender.hasPermission("settlement.settaxexempt")) {
+                        resident.setTaxExempted(true);
+                        resident.save();
+                    }
+                }, Boolean.TRUE.toString(), getIcon("taxes"), getText("taxes.entry",
+                        "donated", Utils.CURRENCY_FORMAT.format(resident.getDonated()),
+                        "taxpaid", Utils.CURRENCY_FORMAT.format(resident.getTaxPaid()),
+                        "exempted", getText("taxes.exempted"),
+                        "action", resident.hasPermission("settlement.settaxexempt") ? getText("unlockables.unlocked.change") : getText("no-permission")
+                )),
+                new GuiStateElement.State(click -> {
+                    if (sender.hasPermission("settlement.settaxexempt")) {
+                        resident.setTaxExempted(false);
+                        resident.save();
+                    }
+                }, Boolean.FALSE.toString(), getIcon("taxes"), getText("taxes.entry",
+                        "donated", Utils.CURRENCY_FORMAT.format(resident.getDonated()),
+                        "taxpaid", Utils.CURRENCY_FORMAT.format(resident.getTaxPaid()),
+                        "exempted", getText("taxes.paying"),
+                        "action", resident.hasPermission("settlement.settaxexempt") ? getText("unlockables.unlocked.change") : getText("no-permission")
+                ))));
 
         gui.addElement(new StaticGuiElement('t', getIcon("settitle"), click -> {
             if (sender.hasPermission("settlement.settitle") && sender.getSettlementRank().above(resident.getSettlementRank())) {
                 new TitleGUI<>("settlement", sender, resident, resident.getSettlement()).open();
             }
             return true;
-        }, getText("settitle", "title", resident.getSettlementTitle())));
+        }, getText("settitle",
+                "title", resident.getSettlementTitle(),
+                "action", resident.hasPermission("settlement.settitle") ? getText("unlockables.unlocked.change") : getText("no-permission")
+        )));
 
         gui.addElement(new StaticGuiElement('r', getIcon("rank"), click -> {
             if (sender.hasPermission("settlement.setrank") && sender.getSettlementRank().above(resident.getSettlementRank())) {
@@ -107,7 +116,10 @@ public class ResidentGUI extends ConfigurableGui {
                 }).open();
             }
             return true;
-        }, getText("rank", "rank", resident.getSettlementRank().getTag())));
+        }, getText("rank",
+                "rank", resident.getSettlementRank().getTag(),
+                "action", resident.hasPermission("settlement.setrank") ? getText("unlockables.unlocked.change") : getText("no-permission")
+        )));
 
         if (sender.hasPermission("settlement.kicknotice")) {
             gui.addElement(new StaticGuiElement('l', getIcon("eviction"), click -> {
@@ -152,14 +164,14 @@ public class ResidentGUI extends ConfigurableGui {
                         .itemLeft(ItemUtils.getHead(resident.getUUID(), resident.getName()))
                         .title(getText("banish.anvil.title", "player", resident.getName()))
                         .text(getText("banish.anvil.placeholder", "player", resident.getName()))
-                        .onClose(player -> Utils.runLater(this::open, 1))
+                        .onClose(player -> Utils.runLater(() -> new ResidentGUI(sender, resident).open(), 1))
                         .onComplete((player, text) -> {
                             if (settlement.hasPermission(sender, "banish") && sender.getSettlementRank().above(resident.getSettlementRank())) {
                                 String reason = text.trim();
                                 getMessage("command.settlement.banish.banished").tell(resident.getSettlement().getOnlineResidents(), "name", resident.getName(), "reason", reason);
                                 InviteManager.getInstance().removeInvite(resident, resident.getSettlement());
-                                resident.leaveSettlement();
                                 resident.getSettlement().addBanished(sender, resident, reason);
+                                resident.leaveSettlement();
 
                                 Utils.runLater(() -> InventoryGui.goBack(player), 1);
                             } else {

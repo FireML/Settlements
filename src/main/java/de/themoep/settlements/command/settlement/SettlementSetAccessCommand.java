@@ -14,7 +14,7 @@ public class SettlementSetAccessCommand extends SettlementSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length < 1) {
-            new AccessGUI("settlement", resident.getSettlement()).open(resident.getPlayer());
+            new AccessGUI(resident, "settlement", resident.getSettlement()).open();
             return true;
         }
         try {

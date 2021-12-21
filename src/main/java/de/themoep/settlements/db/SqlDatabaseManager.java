@@ -20,6 +20,7 @@ import de.themoep.settlements.land.Unbanished;
 import de.themoep.settlements.lock.Lock;
 import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.rank.SettlementRank;
+import de.themoep.settlements.resident.Friend;
 import de.themoep.settlements.resident.FriendRequest;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
@@ -693,7 +694,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             }
             if (resident.getId() != null && !resident.getId().isNull()) {
                 updateList(conn, "resident_channels", "userId", (Integer) resident.getId().value(), "channel", resident.getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
-                updateUserList(conn, "resident_friends", "userId", (Integer) resident.getId().value(), "friendId", resident.getFriends());
+                updateUserList(conn, "resident_friends", "userId", (Integer) resident.getId().value(), "friendId", resident.getFriends().stream().map(Friend::getPlayerId).collect(Collectors.toList()));
                 updateUserList(conn, "resident_ignores", "userId", (Integer) resident.getId().value(), "ignoredId", resident.getIgnore());
                 updateDataMap(conn, "resident_channel_colors", "userId", (Integer) resident.getId().value(), "channel", "color", Arrays.stream(ChatChannel.values())
                         .filter(c -> resident.getChannelColor(c, ChatColorType.MESSAGE) != null)
@@ -1328,7 +1329,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         Map<String, Object> map = toMap(rs);
         int id = rs.getInt("id");
         map.put("channels", selectList(conn, "resident_channels", "userId", id, "channel"));
-        map.put("friends", selectResidentList(conn, "resident_friends", "userId", id, "friendId"));
+        map.put("friends", selectResidentsMap(conn, "resident_friends", "userId", id, "friendId"));
         map.put("friendRequests", getFriendRequests(conn, id));
         map.put("ignores", selectResidentList(conn, "resident_ignores", "userId", id, "ignoredId"));
         map.put("channelColors", selectMap(conn, "resident_channel_colors", "userId", id, "channel", "color", String.class));
@@ -1595,6 +1596,20 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             uuids.add(rs.getString(1));
         }
         return uuids;
+    }
+
+    private Map<UUID, String> selectResidentsMap(Connection conn, String tableName, String keyColumn, int keyValue, String valueColumn) throws SQLException {
+        String sql = "SELECT r.uuid AS uuid, r.name AS name FROM " + tablePrefix + tableName + " AS f" +
+                " JOIN " + tablePrefix + "residents AS r ON f." + valueColumn + " = r.id" +
+                " WHERE f." + keyColumn + "=?";
+        Map<UUID, String> map = new LinkedHashMap<>();
+        PreparedStatement sta = conn.prepareStatement(sql);
+        sta.setInt(1, keyValue);
+        ResultSet rs = sta.executeQuery();
+        while (rs.next()) {
+            map.put(Utils.parseUuid(rs.getString("uuid")), rs.getString("name"));
+        }
+        return map;
     }
 
     private void updateList(Connection conn, String tableName, String keyColumn, int keyId, String entryColumn, Collection<?> entries) throws SQLException {

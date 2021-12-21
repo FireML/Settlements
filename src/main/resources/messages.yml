@@ -714,7 +714,9 @@ gui:
       change: "&bClick to change"
       set: "&bClick to set"
       use: "&bClick to use"
+      send: "&bClick to send"
       options: "&bClick for more options"
+      reset: "&bClick to reset"
       browse: "&bClick to browse"
       view: "&bClick to view"
       edit: "&bClick to edit"
@@ -801,7 +803,7 @@ gui:
           &f{chieftitle}: &e{chief}
           &fMembers:
           &7{residents}
-      special-residents:
+      residents:
         rank: "&e&l{rank}:&r {residents}"
         separator: "&7, "
         online: "&a"
@@ -840,10 +842,11 @@ gui:
         
         {action}
       friends: |-
-        &eFriend requests
-        &fCheck if you have any friend requests
+        &eFriends and requests
+        &fSee your friends and see if
+        &fyou have any new requests!
   
-        &bClick to check
+        &bClick to browse
       back: Close
     requests:
       title: "Requests"
@@ -854,7 +857,7 @@ gui:
       back: "&cBack"
       entry:
         settlementinvite: |-
-          &e{name}
+          &e{settlement}
           &fState: &e{state} {level}
           &fBoard: &e{description}
           &fJoin Fee: &e${joinfee}
@@ -868,6 +871,20 @@ gui:
           &aHas sent you a friend request
           
           &bClick to accept!
+    friends:
+      title: "Friends"
+      sort: |-
+        &fSorted by {state}
+        &bClick to sort by {nextstate}
+      page: "Page {page}"
+      back: "&cBack"
+      entry: |-
+        {online}{name}
+        &f{settlementstate} {settlement}
+        
+        &bRight-Click to remove!
+      online: "&a"
+      offline: "&c"
     settlements:
       title: "All Settlements"
       sort: |-
@@ -1014,6 +1031,14 @@ gui:
     back: "&c&lBack"
     selected: "&a&lCurrently set to &b&l{access}"
     available: "&7{access}"
+    i: |-
+      &eVillage Privacy
+      &fPermit certain players to
+      &fteleport to your /s home
+      &fPublic - Everyone
+      &fTrusted - Residents, Empire, Allies
+      &fAllies - Residents and Allies
+      &fResidents - Residents only
     access:
       public: |-
         &7Everyone can teleport to home
@@ -1432,7 +1457,7 @@ gui:
         
         &fYour Title: &e{title}
   
-        &bClick to set title
+        {change}
       titles-edit: |-
         &eTitle
         &fSet your {state} title
@@ -1479,7 +1504,7 @@ gui:
       &a➤ &fTrusted = &eMember Residents
       &a➤ &fPublic = &eEveryone
   rank-perms:
-    title: "&2&l/s ranks"
+    title: "Rank Permissions"
     previous: "&7Previous page"
     next: "&7Next page"
     titles: |-
@@ -1524,12 +1549,12 @@ gui:
       inherited: |-
         &2Inherited from &f{from}
       unset: |-
-        &7Middle click to reset to default
+        &bMiddle click to reset to default
         &7(Default is {default})
       grant: |-
-        &7Click to grant to &f{rank}
+        &bClick to grant to &f{rank}
       revoke: |-
-        &7Click to revoke from &f{rank}
+        &bClick to revoke from &f{rank}
   setrank:
     rank-select:
       title: "&2&lSelect the {state} rank"
@@ -1562,7 +1587,7 @@ gui:
         &c&lCancel
         &7Click to not transfer
   reslist:
-    title:  "&2&l/s res"
+    title:  "Residents"
     sort: |-
       &fSorted by {state}
       &bClick to sort by {nextstate}
@@ -1579,7 +1604,7 @@ gui:
       
       &bClick for more options
   resident:
-    title: "&2&l/s res {name}"
+    title: "Resident {name}"
     info: |-
       &e&l{name}
       &fTown Info:
@@ -1605,18 +1630,18 @@ gui:
       &fWhat action should be taken if
       &fthe resident can't pay taxes
       
-      &fCurrent: &c{action}
+      &fCurrent: &c{taxevasion}
       &f- Ignore this if they're exempted
-      
-      &bClick to change
+  
+      {action}
     taxes:
       entry: |-
         &eTaxes
         &fTotal Donation: &e${donated}
         &fTotal Tax: &e${taxpaid}
         &fTax Exemption: &a{exempted}
-        
-        &bClick to change
+  
+        {action}
       exempted: Exempted
       paying: Paying
     settitle: |-
@@ -1625,22 +1650,22 @@ gui:
       &fgive any new powers and is purely cosmetic!
       
       &fCurrent Title: &e{title}
-      
-      &bClick to change
+  
+      {action}
     rank: |-
       &eChange rank
       &fChange the rank of the resident!
       &fThis changes their settlement permission!
       
       &fCurrent Rank: &e{rank}
-      
-      &bClick to change
+  
+      {action}
     eviction: |-
       &cSend Eviction Letter
       &fMail the player for his
       &f7 days kick notice
-      
-      &bClick to send
+  
+      {action}
     kick:
       entry: |-
         &cKick
@@ -1662,7 +1687,7 @@ gui:
         title: "&cBanish &e{player}?"
         placeholder: "Reason"
   rewards:
-    title: "&2&l/s rewards"
+    title: "Rewards"
     entry: |-
       &e{reward}
       &7Click to claim!
@@ -1960,8 +1985,8 @@ gui:
       
       &fState: &e{access}
       {action}
-    recruitement: |-
-      &eRecruitement
+    recruitment: |-
+      &eRecruitment
       &fMethod of joining the settlement
       
       &fCurrent: &e{jointype}
@@ -2080,7 +2105,7 @@ gui:
       entry: "{online}{name}"
     close: "&c&lExit"
   teleporters:
-    title: "&2&l/s teleporters"
+    title: "Teleportation"
     locked: "&cLocked"
     private: "&e&lPrivate Warps"
     settlement-home: "&e&l{state} Home"
@@ -2098,7 +2123,7 @@ gui:
       Add/edit titles for {rank}
     back: "&c&lBack"
   titles:
-    title: "&2&l/s titles gui"
+    title: "Manage Titles"
     entry:
       title: |-
         &e{title}
@@ -2133,7 +2158,7 @@ gui:
         &cNot selectable!
         &cRank insufficient
   perks:
-    title: "&2&l/s perks"
+    title: "Manage Perks"
     entry: |-
       &e{name}
     toggleable: "&bClick to toggle."
@@ -2144,7 +2169,7 @@ gui:
       plot:
         purchased: "&7Click to teleport"
   shop:
-    title: "&2&l/s shop"
+    title: "Perks Shop"
     entry:
       locked: |-
         &e{name}
@@ -2169,7 +2194,7 @@ gui:
     cooldown: "&aCan be repeated in {cooldown}"
     back: "&c&lBack To Settings"
   perms:
-    title: "&2&l/s perms"
+    title: "Manage Perms"
     back: "&eBack"
     entry: |-
       &e{flag}
@@ -2179,6 +2204,13 @@ gui:
       &fAccess: &e{access}
       &aClick&b to set
       &aShift click &bfor more options
+    build: |-
+      &eBuild
+      &fSet who can build
+  
+      &fCurrent Settings: &e{build}
+  
+      &bClick to change settings
     descriptions:
       doors: Using doors
       containers: Using containers
@@ -2579,7 +2611,9 @@ command:
       manage-bank:
         description: |-
           &9Manage Bank
+          &9- Withdraw Money
           &9- Set Resident Taxes
+          &9- Set Tax Debt Action
           &9- Set Auction Taxes
       use-bank:
         description: |-
@@ -2631,7 +2665,7 @@ command:
       cant-banish-leader: "&cYou can't banish the leader!"
       cant-banish: "&cYou can't banish &f{title} &f{name}!"
       already-banished: "&cPlayer &f{name}&c is already banished!"
-      banished: "&7Player &6{name}&7 has been &cbanished &7from your settlement! Reason: {reason}"
+      banished: "&7Player &6{name}&7 has been &cbanished &7from your settlement! Reason: &e{reason}"
       description: Add an entry to the banish list
     banished:
       head: "&a⊱&m━━━━&r&6Banished&a&m━━━━&a⊰"

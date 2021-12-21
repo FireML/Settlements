@@ -43,7 +43,7 @@ public class SettingsGUI extends ConfigurableGui {
         if (resident.hasPermission("empire.setaccess")) {
             gui.addElement(new StaticGuiElement('a', ItemUtils.toIcon(Material.IRON_DOOR),click -> {
                 if (resident.hasPermission("empire.setaccess")) {
-                    new AccessGUI("empire", resident.getSettlement().getEmpire()).open((Player) click.getEvent().getWhoClicked());
+                    new AccessGUI(resident, "empire", resident.getSettlement().getEmpire()).open();
                 }
                 return true;
             }, getText("access",

@@ -79,6 +79,10 @@ public class ListGui<T extends Sortable<T>> extends ConfigurableGui {
         gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
     }
 
+    public void addElement(GuiElement element) {
+        gui.addElement(element);
+    }
+
     public void open() {
         gui.show(resident.getPlayer());
     }

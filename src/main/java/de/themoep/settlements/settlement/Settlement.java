@@ -892,6 +892,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         bank((c, v) -> Utils.CURRENCY_FORMAT.format(v.getBank())),
         joinfee((c, v) -> Utils.CURRENCY_FORMAT.format(v.getJoinFee())),
         tax((c, v) -> Utils.CURRENCY_FORMAT.format(v.getTax())),
+        auctiontax((c, v) -> Utils.CURRENCY_FORMAT.format(v.getAuctionTax())),
         taxdebtaction((c, v) -> v.getTaxDebtAction().getTag()),
         missions((c, v) -> String.valueOf(v.getFinishedMissions())),
         missionpoints((c, v) -> String.valueOf(v.getMissionPoints())),

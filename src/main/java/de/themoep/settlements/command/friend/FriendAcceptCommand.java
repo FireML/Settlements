@@ -38,8 +38,8 @@ public class FriendAcceptCommand extends PlayerSubCommand {
                 DatabaseManager.getInstance().delete(reverseRequest);
             }
             Utils.runSync(() -> {
-                target.addFriend(res.getUUID());
-                res.addFriend(target.getUUID());
+                target.addFriend(res.getUUID(), res.getName());
+                res.addFriend(target.getUUID(), target.getName());
                 getMessage("success").tell(player, "name", target.getName());
                 if (target.getPlayer() != null) {
                     getMessage("received").tell(target, "name", res.getName());

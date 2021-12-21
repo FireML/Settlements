@@ -6,7 +6,6 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import de.themoep.settlements.chat.ChatManager;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.empire.EmpireMission;
 import de.themoep.settlements.integration.AfkProvider;
 import de.themoep.settlements.land.TaxDebtAction;
 import de.themoep.settlements.missions.Mission;
@@ -26,20 +25,22 @@ import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.settlement.SettlementMission;
+import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
+import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
+import de.themoep.settlements.utils.Sortable;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.milkbowl.vault.chat.Chat;
-import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     private Set<ChatChannel> channels = EnumSet.of(ChatChannel.GENERAL);
     private Table<ChatChannel, ChatColorType, ChatColor> channelColors = HashBasedTable.create(ChatChannel.values().length, ChatColorType.values().length);
     private Set<UUID> ignore = Collections.newSetFromMap(new ConcurrentHashMap<>());
-    private Set<UUID> friends = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private Map<UUID, Friend> friends = new ConcurrentHashMap<>();
     private Map<String, FriendRequest> friendRequests = new ConcurrentHashMap<>();
     private boolean swear = true;
     private boolean socialSpy = false;
@@ -163,6 +164,9 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
                 return false;
             }
         }
+        if (hasSettlement()) {
+            return !getSettlement().getEffectivePermissionValue(getSettlement().getHighestRank(), rankPerm).isPresent();
+        }
         return !SettlementRank.getChief().getInheritedPermissionValue(rankPerm).isPresent();
     }
 
@@ -170,20 +174,28 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         return settlement != null;
     }
 
-    public Set<UUID> getFriends() {
-        return friends;
+    public Collection<Friend> getFriends() {
+        return friends.values();
     }
 
     public boolean isFriend(Resident resident) {
-        return friends.contains(resident.getUUID());
+        return friends.containsKey(resident.getUUID());
     }
 
-    public boolean addFriend(UUID id) {
-        return friends.add(id);
+    public boolean isFriend(UUID playerId) {
+        return friends.containsKey(playerId);
+    }
+
+    public boolean addFriend(Friend friend) {
+        return friends.put(friend.getPlayerId(), friend) == null;
+    }
+
+    public boolean addFriend(UUID id, String name) {
+        return friends.put(id, new Friend(id, name)) == null;
     }
 
     public boolean removeFriend(UUID id) {
-        return friends.remove(id);
+        return friends.remove(id) != null;
     }
 
     public boolean addFriendRequest(FriendRequest friendRequest) {
@@ -710,7 +722,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         map.put("socialSpy", getSocialSpy());
         map.put("bonusClaims", getBonusClaims());
         map.put("ignores", getIgnore().stream().map(UUID::toString).collect(Collectors.toList()));
-        map.put("friends", getFriends().stream().map(UUID::toString).collect(Collectors.toList()));
+        map.put("friends", getFriends().stream().map(f -> f.getPlayerId().toString()).collect(Collectors.toList()));
         map.put("friendRequests", getFriendRequests());
         return map;
     }
@@ -810,7 +822,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
             ((Collection<String>) map.get("ignores")).stream().map(Utils::parseUuid).filter(Objects::nonNull).forEach(resident::addIgnore);
         }
         if (map.containsKey("friends")) {
-            ((Collection<String>) map.get("friends")).stream().map(Utils::parseUuid).filter(Objects::nonNull).forEach(resident::addFriend);
+            ((Map<UUID, String>) map.get("friends")).forEach(resident::addFriend);
         }
         if (map.containsKey("friendRequests")) {
             ((Collection<FriendRequest>) map.get("friendRequests")).forEach(resident::addFriendRequest);
