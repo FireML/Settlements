@@ -299,12 +299,19 @@ guis:
         requests: nether_star
         back: barrier
     ally:
-      setup:
+      setup-advanced:
       - "ooooioooo"
       - "      cr "
       - "    a    "
       - " uuuuuuu "
       - " uuuuuuu "
+      - " ooobooo "
+      setup:
+      - "ooooioooo"
+      - "         "
+      - "  c   r  "
+      - "         "
+      - "         "
       - " ooobooo "
       elements:
         o: lime_stained_glass_pane
@@ -815,12 +822,28 @@ guis:
       - "aaaaaaaaa"
       - "aaaaaaaaa"
       - "aaaaaaaaa"
-      - "ppppppsb "
+      - "ppppppsrb"
       elements:
         o: lime_stained_glass_pane
         page: paper
         sort: hopper
+        requests: nether_star
         back: barrier
+    ally:
+      setup-advanced:
+      - "ooooioooo"
+      - "      cr "
+      - "    a    "
+      - " uuuuuuu "
+      - " uuuuuuu "
+      - " ooobooo "
+      setup:
+      - "ooooioooo"
+      - "         "
+      - "  c   r  "
+      - "         "
+      - "         "
+      - " ooobooo "
     manage-finances:
       setup:
       - "ooooooooo"
