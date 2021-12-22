@@ -74,9 +74,9 @@ public class BankGUI extends ConfigurableGui {
         },getText(landOwner.hasUnlocked("command.donate") ? "donations" : "donations-locked",
                 "state", landOwner.getStateTag(),
                 "action", landOwner.hasUnlocked("command.donate")
-                        || landOwner.hasPermission(resident, "command.bank.deposit")
+                        || landOwner.hasPermission(resident, "bank.deposit")
                         ? getText("unlockables.unlocked.deposit")
-                        : getText("unlockables.locked.nopermission"))));
+                        : getText("unlockables.locked.permission"))));
 
         // Only donations are allowed to be used by everyone
         if (landOwner.isMember(resident)) {

@@ -83,7 +83,7 @@ public class RankManager {
         }
 
         settlementToggleablePerms = new LinkedHashSet<>();
-        for (String permission : config.getStringList("toggleable-perms")) {
+        for (String permission : config.getStringList("toggleable-permissions")) {
             if (settlementChiefRank.getPermissionValue(permission)) {
                 settlementToggleablePerms.add(permission);
             } else {
@@ -128,7 +128,7 @@ public class RankManager {
         }
 
         empireToggleablePerms = new LinkedHashSet<>();
-        for (String permission : config.getStringList("toggleable-perms")) {
+        for (String permission : config.getStringList("toggleable-permissions")) {
             if (empireLeaderRank.getPermissionValue(permission)) {
                 empireToggleablePerms.add(permission);
             } else {
