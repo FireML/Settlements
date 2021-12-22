@@ -11,8 +11,10 @@ import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.empire.gui.SettingsGUI;
 import de.themoep.settlements.empire.gui.WorldGUI;
 import de.themoep.settlements.land.LandAccess;
+import de.themoep.settlements.land.LandAccessChecker;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.LandownerLevel;
+import de.themoep.settlements.land.Use;
 import de.themoep.settlements.land.events.LandClaimedEvent;
 import de.themoep.settlements.land.events.LandUnclaimEvent;
 import de.themoep.settlements.land.events.LandownerLeveledEvent;
@@ -33,6 +35,8 @@ import de.themoep.settlements.settlement.gui.ManagementGUI;
 import de.themoep.settlements.settlement.gui.OutpostsGUI;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
+import de.themoep.settlements.utils.MessageUtils;
+import de.themoep.settlements.utils.Pair;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
@@ -69,7 +73,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class CitizensIntegration implements Listener, ConfigMessages {
+public class CitizensIntegration implements Listener, ConfigMessages, LandAccessChecker {
 
     private static final Random RANDOM = new Random();
 
@@ -261,6 +265,12 @@ public class CitizensIntegration implements Listener, ConfigMessages {
         if (typeTrait != null) {
             LandOwner<?, ?> landOwner = typeTrait.getOwner();
             if (landOwner == null) {
+                return;
+            }
+
+            Pair<Boolean, String> access = canUse(event.getClicker(), Use.NPC, event.getNPC().getEntity().getLocation());
+            if (!access.getLeft()) {
+                MessageUtils.tell(event.getClicker(), access.getRight());
                 return;
             }
 

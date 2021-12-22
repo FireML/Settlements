@@ -61,6 +61,7 @@ public enum Use implements NameTag {
     CAKE(Material.CAKE),
     SHOP(),
     MAP(Material.MAP),
+    NPC(),
     INTERACT();
 
     private final Collection<Material> materials;

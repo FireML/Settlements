@@ -1,11 +1,12 @@
 package de.themoep.settlements.land;
 
-import de.themoep.settlements.settlement.SettlementManager;
+import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.MaterialUtils;
 import de.themoep.settlements.utils.config.ConfigManager;
 import de.themoep.settlements.SettlementsPlugin;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class UseFlagManager {
@@ -116,21 +118,32 @@ public class UseFlagManager {
                     }
                 }
 
-                Material icon = null;
-                if (config.contains("icon", true)) {
-                    icon = MaterialUtils.getMaterial(config.getString("icon"));
-                }
-                if (icon != null && !icon.isItem()) {
-                    SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, icon + " is not a valid icon type for flag " + name + " in useflags.yml! That type has no item which can be displayed");
-                    icon = null;
-                }
-                if (icon == null) {
-                    if (flags.size() > 0) {
-                        icon = flags.iterator().next().getIcon();
+                ItemStack icon = ItemUtils.toIcon(Material.BARRIER);
+                String matStr = config.getString("icon");
+                if (matStr != null) {
+                    Material material;
+                    if (matStr.contains(",")) {
+                        String[] split = matStr.split(",");
+                        material = Material.matchMaterial(split[0]);
+                        if (material == Material.PLAYER_HEAD && split.length > 1) {
+                            if (split[1].length() > 16) {
+                                icon = ItemUtils.getHead(split[1]);
+                            } else if (split.length > 2 && split[2].length() == 36) {
+                                icon = ItemUtils.getHead(UUID.fromString(split[2]), split[1]);
+                            }
+                        }
+                    } else {
+                        material = Material.matchMaterial(matStr);
+                        if (material != null && material.isItem()) {
+                            icon = ItemUtils.toIcon(material);
+                        } else {
+                            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, matStr + " is not a valid icon type for flag " + name + " in useflags.yml! That type has no item which can be displayed");
+                            icon = ItemUtils.toIcon(Material.BARRIER);
+                        }
                     }
-                    if (icon == null) {
-                        icon = Material.BARRIER;
-                    }
+                } else {
+                    SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, matStr + " is not a valid icon type for flag " + name + " in useflags.yml! That type has no item which can be displayed");
+                    icon = ItemUtils.toIcon(Material.BARRIER);
                 }
 
                 BuildState defaultState = null;

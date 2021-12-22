@@ -72,6 +72,10 @@ groups:
     icon: gold_ingot
     flags:
     - shop
+  npc:
+    icon: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjhkYTE0NjI1NzU0Nzc5NWMzYTk1NGRiNzgxZTBkMGM0ZDBhZjAyN2YwZDE1MWQzOWE0OWUxYmJkMjFjZmM4OCJ9fX0=
+    flags:
+    - npc
 
 # The list of different flags that can be configured by players on their claimed land
 flags:
@@ -212,6 +216,10 @@ flags:
     default-state: public
     type: shop
     icon: oak_sign
+  npc:
+    default-state: public
+    type: npc
+    icon: player_head
   map:
     type: map
     icon: map

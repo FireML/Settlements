@@ -1,8 +1,6 @@
 package de.themoep.settlements.land;
 
-import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.NameTag;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
@@ -10,12 +8,12 @@ import java.util.Collection;
 public class UseGroup implements NameTag {
 
     private final Collection<UseFlag> useFlags;
-    private final Material icon;
+    private final ItemStack icon;
 
     private final String name;
     private final BuildState defaultState;
 
-    public UseGroup(String name, BuildState defaultState, Material icon, Collection<UseFlag> useFlags) {
+    public UseGroup(String name, BuildState defaultState, ItemStack icon, Collection<UseFlag> useFlags) {
         this.name = name;
         this.defaultState = defaultState;
         this.icon = icon;
@@ -23,7 +21,7 @@ public class UseGroup implements NameTag {
     }
 
     public ItemStack getItem() {
-        return ItemUtils.toIcon(icon);
+        return icon;
     }
 
     public Collection<UseFlag> getUseFlags() {
