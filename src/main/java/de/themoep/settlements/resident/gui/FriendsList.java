@@ -70,9 +70,9 @@ public class FriendsList extends SettlementsGUI {
                                 Utils.runSync(() -> {
                                     sender.addFriend(resident.getUUID(), resident.getName());
                                     resident.addFriend(sender.getUUID(), sender.getName());
-                                    Message.get("command.friend.add.success").tell(resident, "name", sender.getName());
+                                    Message.get("command.friend.accept.target").tell(resident, "name", sender.getName());
                                     if (sender.getPlayer() != null) {
-                                        Message.get("command.friend.add.received").tell(sender, "name", resident.getName());
+                                        Message.get("command.friend.accept.sender").tell(sender, "name", resident.getName());
                                     } else {
                                         for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
                                             provider.sendMail(resident.getSettlementTitle() + " " + resident.getName(), sender,
