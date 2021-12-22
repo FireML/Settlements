@@ -8,6 +8,7 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.invites.Invite;
 import de.themoep.settlements.land.JoinRequest;
+import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.gui.AlliesGUI;
 import de.themoep.settlements.land.gui.BanishedGUI;
 import de.themoep.settlements.land.gui.BuildGUI;
@@ -33,6 +34,7 @@ public class ManagementGUI extends SettlementsGUI {
     public ManagementGUI(Resident resident) {
         super("settlement.management");
         this.resident = resident;
+        LandOwner<?, ?> landOwner = resident.getSettlement();
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title",
                 "name", resident.getSettlement().getName(),
                 "state", resident.getSettlement().getStateTag()
@@ -43,18 +45,18 @@ public class ManagementGUI extends SettlementsGUI {
 
         Resident chief = resident.getSettlement().getChief();
         gui.addElement(new StaticGuiElement('r', ItemUtils.getHead(chief.getUUID(), chief.getName()), click -> {
-            if (resident.hasPermission("settlement.reslist")) {
+            if (landOwner.hasPermission(resident, "reslist")) {
                 new ResListGUI(resident, resident.getSettlement()).open();
             }
             return true;
         }, getText("reslist",
-                "state", resident.getSettlement().getStateTag(),
-                "action", resident.hasPermission("settlement.reslist") ? getText("unlockables.unlocked.browse") : getText("no-permission"))));
+                "state", landOwner.getStateTag(),
+                "action", landOwner.hasPermission(resident, "reslist") ? getText("unlockables.unlocked.browse") : getText("no-permission"))));
 
 
         Collection<Invite<?, ?>> requests = getRequests(resident);
         gui.addElement(new StaticGuiElement('e', ItemUtils.setGlowing(getIcon("recruitment"), !requests.isEmpty()), click -> {
-            if (resident.getSettlement().hasUnlocked("recruitment") && resident.hasPermission("settlement.recruitment")) {
+            if (landOwner.hasUnlocked("recruitment") && landOwner.hasPermission(resident, "recruitment")) {
                 new ListGui<>(resident, "settlement.requests", true, () -> getRequests(resident), (c, request) -> {
                     // accept invite
                     if (request instanceof JoinRequest) {
@@ -76,37 +78,37 @@ public class ManagementGUI extends SettlementsGUI {
             return true;
         }, getText("recruitment",
                 "amount", String.valueOf(requests),
-                "action", resident.getSettlement().hasUnlocked("recruitment")
-                        ? resident.hasPermission("settlement.recruitment")
+                "action", landOwner.hasUnlocked("recruitment")
+                        ? landOwner.hasPermission(resident, "recruitment")
                                 ? getText("unlockables.unlocked.browse")
                                 : getText("no-permission")
                         : getText("unlockables.locked.level"),
-                "state", resident.getSettlement().getStateTag()
+                "state", landOwner.getStateTag()
         )));
 
         gui.addElement(new StaticGuiElement('d', getIcon("banished"), click -> {
-            if (resident.hasPermission("settlement.banished")) {
-                new BanishedGUI("settlement", resident, resident.getSettlement()).open();
+            if (landOwner.hasPermission(resident, "banished")) {
+                new BanishedGUI("settlement", resident, landOwner).open();
             }
             return true;
         }, getText("banished",
-                "state", resident.getSettlement().getStateTag(),
-                "action", resident.hasPermission("settlement.banished") ? getText("unlockables.unlocked.browse") : getText("no-permission")
+                "state", landOwner.getStateTag(),
+                "action", landOwner.hasPermission(resident, "banished") ? getText("unlockables.unlocked.browse") : getText("no-permission")
         )));
 
         gui.addElement(new StaticGuiElement('a', getIcon("allies"), click -> {
-            if (resident.getSettlement().hasUnlocked("allies") && resident.hasPermission("settlement.allies")) {
+            if (landOwner.hasUnlocked("allies") && landOwner.hasPermission(resident, "allies")) {
                 new AlliesGUI("settlement", resident, resident.getSettlement()).open();
             }
             return true;
         }, getText("allies",
-                "state", resident.getSettlement().getStateTag(),
-                "action", resident.getSettlement().hasUnlocked("allies") ? resident.hasPermission("settlement.allies") ? getText("unlockables.unlocked.options") : getText("no-permission") : getText("unlockables.locked.npc")
+                "state", landOwner.getStateTag(),
+                "action", landOwner.hasUnlocked("allies") ? landOwner.hasPermission(resident, "allies") ? getText("unlockables.unlocked.options") : getText("no-permission") : getText("unlockables.locked.npc")
         )));
 
-        if (SettlementsPlugin.getInstance().getCitizens() != null && resident.hasPermission("command.npc")) {
+        if (SettlementsPlugin.getInstance().getCitizens() != null && landOwner.hasPermission(resident, "npc")) {
             gui.addElement(new StaticGuiElement('n', getIcon("npc"), click -> {
-                if (resident.hasPermission("command.npc")) {
+                if (landOwner.hasPermission(resident, "npc")) {
                     new NpcListGUI(resident, resident.getSettlement()).open();
                 }
                 return true;
@@ -114,28 +116,28 @@ public class ManagementGUI extends SettlementsGUI {
         }
 
         gui.addElement(new StaticGuiElement('t', getIcon("ranks"), click -> {
-            if (resident.hasPermission("settlement.ranks")) {
+            if (landOwner.hasPermission(resident, "ranks")) {
                 new RankPermsGUI<>("settlement", resident, resident.getSettlement()).open();
             }
             return true;
         }, getText("ranks",
-                "state", resident.getSettlement().getStateTag(),
-                "action", resident.hasPermission("settlement.ranks") ? getText("unlockables.unlocked.options") : getText("no-permission")
+                "state", landOwner.getStateTag(),
+                "action", landOwner.hasPermission(resident, "ranks") ? getText("unlockables.unlocked.options") : getText("no-permission")
         )));
 
         gui.addElement(new StaticGuiElement('s', getIcon("settings"), click -> {
-            if (resident.hasPermission("settlement.settings")) {
+            if (landOwner.hasPermission(resident, "settings")) {
                 new SettingsGUI(resident).open();
             }
             return true;
         }, getText("settings",
-                "state", resident.getSettlement().getStateTag(),
-                "action", resident.hasPermission("settlement.settings") ? getText("unlockables.unlocked.options") : getText("no-permission")
+                "state", landOwner.getStateTag(),
+                "action", landOwner.hasPermission(resident, "settings") ? getText("unlockables.unlocked.options") : getText("no-permission")
         )));
 
         gui.addElement(new StaticGuiElement('l', getIcon("land"), click -> {
-            if (resident.hasPermission("settlement.perms")) {
-                Supplier<Boolean> permCheck = () -> resident.getSettlement().hasPermission(resident, "perms");
+            if (landOwner.hasPermission(resident, "perms")) {
+                Supplier<Boolean> permCheck = () -> landOwner.hasPermission(resident, "perms");
                 new PermsGUI("settlement",
                         resident.getSettlement(),
                         permCheck,
@@ -144,8 +146,8 @@ public class ManagementGUI extends SettlementsGUI {
             }
             return true;
         }, getText("land",
-                "state", resident.getSettlement().getStateTag(),
-                "action", resident.hasPermission("settlement.perms") ? getText("unlockables.unlocked.options") : getText("no-permission")
+                "state", landOwner.getStateTag(),
+                "action", landOwner.hasPermission(resident, "perms") ? getText("unlockables.unlocked.options") : getText("no-permission")
         )));
 
         gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));

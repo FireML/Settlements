@@ -191,7 +191,9 @@ permissions:
     description: Permission for users. Gives access to all plugin functions that a user should have.
     default: true
     children:
+      settlements.command.settlement.npc: true
       settlements.command.settlement.npc.teleport: true
+      settlements.command.empire.npc: true
       settlements.command.empire.npc.teleport: true
   settlements.command.scoreboard:
     description: Permission for toggling the scoreboard on or off. Does not hide custom scoreboards set with /scoreboardadmin!

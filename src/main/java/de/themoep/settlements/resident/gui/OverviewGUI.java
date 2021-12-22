@@ -69,9 +69,9 @@ public class OverviewGUI extends ConfigurableGui {
             }, getText("unlock", "status", getText("toggle-status." + (isUnlock ? "enabled" : "disabled"))));
         }));
 
-        if (SettlementsPlugin.getInstance().getCitizens() != null && resident.hasPermission("command.npc")) {
+        if (SettlementsPlugin.getInstance().getCitizens() != null && resident.getSettlement().hasPermission(resident, "npc")) {
             gui.addElement(new StaticGuiElement('n', getIcon("npc"), click -> {
-                if (resident.hasPermission("command.npc")) {
+                if (resident.getSettlement().hasPermission(resident, "npc")) {
                     new NpcListGUI(resident, resident.getSettlement()).open();
                 }
                 return true;
