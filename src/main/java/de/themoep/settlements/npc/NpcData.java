@@ -232,4 +232,12 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
     public void setNpcSkinName(String npcSkinName) {
         this.npcSkinName = npcSkinName;
     }
+
+    public boolean isAvailable() {
+        return getConfig() != null;
+    }
+
+    public boolean hasLevels() {
+        return !NpcManager.getInstance().getLevels(owner, type).isEmpty();
+    }
 }

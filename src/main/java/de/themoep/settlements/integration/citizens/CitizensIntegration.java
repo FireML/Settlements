@@ -89,8 +89,8 @@ public class CitizensIntegration implements Listener, ConfigMessages {
     @EventHandler
     public void onSettlementCreate(LandownerCreatedEvent event) {
         for (NpcType npc : event.getLandOwner().getLevelInfo().getNPCs()) {
-            unlockNpc(event.getLandOwner(), npc);
-            if (event.getLandOwner().getHome() != null) {
+            if (unlockNpc(event.getLandOwner(), npc)
+                    && event.getLandOwner().getHome() != null) {
                 NpcConfig config = NpcManager.getInstance().getConfig(event.getLandOwner(), npc);
                 createNpc(event.getLandOwner(), npc, config, event.getLandOwner().getHome().toBukkitLocation());
                 getMessage("new-npc-available").tell(event.getLandOwner(),
@@ -352,13 +352,17 @@ public class CitizensIntegration implements Listener, ConfigMessages {
         }
     }
 
-    private void unlockNpc(LandOwner<?, ?> landOwner, NpcType type) {
-        NpcData npcData = landOwner.getNpcData(type);
-        if (!npcData.isUnlocked()) {
-            npcData.setLevel(1);
-            npcData.save();
+    private boolean unlockNpc(LandOwner<?, ?> landOwner, NpcType type) {
+        if (NpcManager.getInstance().getConfig(landOwner, type) != null) {
+            NpcData npcData = landOwner.getNpcData(type);
+            if (!npcData.isUnlocked()) {
+                npcData.setLevel(1);
+                npcData.save();
+            }
+            landOwner.addNpc(npcData);
+            return true;
         }
-        landOwner.addNpc(npcData);
+        return false;
     }
 
     @EventHandler

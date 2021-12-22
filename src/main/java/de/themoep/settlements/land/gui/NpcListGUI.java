@@ -28,6 +28,9 @@ public class NpcListGUI extends ConfigurableGui {
                 continue;
             }
             NpcData npcData = landOwner.getNpcData(type);
+            if (!npcData.isAvailable()) {
+                continue;
+            }
             if (npcData != null && npcData.isUnlocked()) {
                 group.addElement(new StaticGuiElement('n', getIcon(npcData), click -> {
                     if (resident.hasPermission("command.npc")) {

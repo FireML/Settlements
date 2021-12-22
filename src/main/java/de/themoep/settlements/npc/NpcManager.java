@@ -8,6 +8,7 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.land.LandOwner;
+import de.themoep.settlements.land.LandownerLevel;
 import de.themoep.settlements.perk.NpcPerk;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
@@ -56,12 +57,11 @@ public class NpcManager {
             if (config != null) {
                 try {
                     npcConfigs.put(type.getKey(), npcType, new NpcConfig(config));
-                    continue;
                 } catch (IllegalArgumentException e) {
                     SettlementsPlugin.getInstance().getLogger().info("Error while loading " + type.getKey() + " NPC " + npcType.getKey() + ": " + e.getMessage());
+                    npcConfigs.put(type.getKey(), npcType, new NpcConfig(npcType));
                 }
             }
-            npcConfigs.put(type.getKey(), npcType, new NpcConfig(npcType));
         }
     }
 
@@ -138,6 +138,15 @@ public class NpcManager {
 
     public Optional<NpcLevel> getLevel(LandOwner<?, ?> owner, NpcType type, int level) {
         return Optional.ofNullable(getLevelInternal(owner, type, level));
+    }
+
+    public Collection<NpcLevel> getLevels(LandOwner<?,?> owner, NpcType type) {
+        if (owner instanceof Settlement) {
+            return settlementLevels.get(type);
+        } else if (owner instanceof Empire) {
+            return empireLevels.get(type);
+        }
+        return Collections.emptyList();
     }
 
     public NpcPerk getPerk(LandOwner<?, ?> owner, String name) {

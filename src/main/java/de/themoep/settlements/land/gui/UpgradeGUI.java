@@ -14,6 +14,7 @@ import de.themoep.settlements.leveling.Levelable;
 import de.themoep.settlements.npc.NpcConfig;
 import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.npc.NpcLevel;
+import de.themoep.settlements.npc.NpcManager;
 import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.resident.Resident;
@@ -51,7 +52,7 @@ public class UpgradeGUI extends ConfigurableGui {
         for (NpcType npcType : NpcType.values()) {
             if (npcType.appliesTo(landOwnerType)) {
                 NpcData data = landOwner.getNpcData(npcType);
-                if (data != null) {
+                if (data != null && data.isAvailable() && data.hasLevels()) {
                     levelables.add(data);
                 }
             }

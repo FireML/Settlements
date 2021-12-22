@@ -116,23 +116,6 @@ settlement:
           - command.shop
   auctioneer:
     level-1: {}
-    level-2:
-      upkeep: 100
-      requirements:
-        STONE: 100
-      perks:
-        auction-command:
-          unlockables:
-          - command.auction
-  blacksmith:
-    level-1: {}
-    level-2:
-      requirements:
-        STONE: 100
-      perks:
-        refine-command:
-          unlockables:
-          - command.refine
 empire:
   manager:
     level-1: {}

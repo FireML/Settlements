@@ -16,8 +16,8 @@ public enum NpcType implements NameTag, ConfigKey {
     BANKER,
     ELDER,
     TRAVELING_MERCHANT,
-    BLACKSMITH(AppliesTo.SETTLEMENT),
-    AUCTIONEER(AppliesTo.SETTLEMENT),
+    BLACKSMITH,
+    AUCTIONEER,
     BLACK_MARKET,
     ;
 

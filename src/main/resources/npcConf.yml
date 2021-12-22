@@ -34,12 +34,6 @@ settlement:
   traveling-merchant:
     type: wandering_trader
     name: Traveling Merchant
-  blacksmith:
-    type: villager
-    name: Blacksmith
-    villager:
-      profession: armorer
-      type: jungle
   auctioneer:
     type: villager
     name: Auctioneer

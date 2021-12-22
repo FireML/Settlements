@@ -55,7 +55,7 @@ public class NpcCommand extends ResidentSubCommand {
         }
 
         NpcData npcData = landOwner.getNpcData(type);
-        if (!npcData.isUnlocked()) {
+        if (!npcData.isUnlocked() || !npcData.isAvailable()) {
             getError("unknown-npc").tell(resident, "input", args[0], "state", landOwner.getStateTag());
             return false;
         }
