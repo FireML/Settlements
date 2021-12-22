@@ -26,6 +26,11 @@ public class ManageFinancesGUI extends ConfigurableGui {
                         .text(getText("tax.anvil.placeholder", "tax", String.valueOf(landOwner.getTax())))
                         .onClose(player -> Utils.runLater(() -> InventoryGui.goBack(player), 1))
                         .onComplete((player, text) -> {
+                            if (!landOwner.hasPermission(resident, "tax.set")) {
+                                getError("no-permission").actionbar(resident);
+                                Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
+                                return AnvilGUI.Response.close();
+                            }
                             try {
                                 long amount = Long.parseLong(text);
                                 if (amount < 0) {
@@ -45,7 +50,7 @@ public class ManageFinancesGUI extends ConfigurableGui {
                                         "state", resident.getSettlement().getStateTag(),
                                         "amount", String.valueOf(amount)
                                 );
-                                Utils.runLater(() -> InventoryGui.goBack(player), 1);
+                                Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
                                 return AnvilGUI.Response.close();
                             } catch (NumberFormatException e) {
                                 return AnvilGUI.Response.text(getError("not-a-number").getReplacedText("input", text));
@@ -70,6 +75,11 @@ public class ManageFinancesGUI extends ConfigurableGui {
                         .text(getText("auctiontax.anvil.placeholder", "auctiontax", String.valueOf(landOwner.getAuctionTax())))
                         .onClose(player -> Utils.runLater(() -> InventoryGui.goBack(player), 1))
                         .onComplete((player, text) -> {
+                            if (!landOwner.hasPermission(resident, "auctiontax.set")) {
+                                getError("no-permission").actionbar(resident);
+                                Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
+                                return AnvilGUI.Response.close();
+                            }
                             try {
                                 long amount = Long.parseLong(text);
                                 if (amount < 0) {
@@ -89,7 +99,7 @@ public class ManageFinancesGUI extends ConfigurableGui {
                                         "state", resident.getSettlement().getStateTag(),
                                         "amount", String.valueOf(amount)
                                 );
-                                Utils.runLater(() -> InventoryGui.goBack(player), 1);
+                                Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
                                 return AnvilGUI.Response.close();
                             } catch (NumberFormatException e) {
                                 return AnvilGUI.Response.text(getError("not-a-number").getReplacedText("input", text));
@@ -106,13 +116,18 @@ public class ManageFinancesGUI extends ConfigurableGui {
         )));
 
         gui.addElement(new StaticGuiElement('d', getIcon("deposit"), click -> {
-            if (landOwner.hasPermission(resident, "deposit")) {
+            if (landOwner.hasPermission(resident, "bank.deposit")) {
                 new AnvilGUI.Builder()
                         .itemLeft(getIcon("deposit"))
                         .title(getText("deposit.anvil.title"))
                         .text(getText("deposit.anvil.placeholder"))
                         .onClose(player -> Utils.runLater(() -> InventoryGui.goBack(player), 1))
                         .onComplete((player, text) -> {
+                            if (!landOwner.hasPermission(resident, "bank.deposit")) {
+                                getError("no-permission").actionbar(resident);
+                                Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
+                                return AnvilGUI.Response.close();
+                            }
                             try {
                                 long amount = Long.parseLong(text);
                                 if (amount < 0) {
@@ -134,7 +149,7 @@ public class ManageFinancesGUI extends ConfigurableGui {
                                         "name", resident.getName(),
                                         "amount", Utils.CURRENCY_FORMAT.format(amount)
                                 );
-                                Utils.runLater(() -> InventoryGui.goBack(player), 1);
+                                Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
                                 return AnvilGUI.Response.close();
                             } catch (NumberFormatException e) {
                                 return AnvilGUI.Response.text(getError("not-a-number").getReplacedText("input", text));
@@ -149,13 +164,18 @@ public class ManageFinancesGUI extends ConfigurableGui {
         )));
 
         gui.addElement(new StaticGuiElement('w', getIcon("withdraw"), click -> {
-            if (landOwner.hasPermission(resident, "withdraw")) {
+            if (landOwner.hasPermission(resident, "bank.withdraw")) {
                 new AnvilGUI.Builder()
                         .itemLeft(getIcon("withdraw"))
                         .title(getText("withdraw.anvil.title"))
                         .text(getText("withdraw.anvil.placeholder"))
                         .onClose(player -> Utils.runLater(() -> InventoryGui.goBack(player), 1))
                         .onComplete((player, text) -> {
+                            if (!landOwner.hasPermission(resident, "bank.withdraw")) {
+                                getError("no-permission").actionbar(resident);
+                                Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
+                                return AnvilGUI.Response.close();
+                            }
                             try {
                                 long amount = Long.parseLong(text);
                                 if (amount < 0) {
@@ -177,7 +197,7 @@ public class ManageFinancesGUI extends ConfigurableGui {
                                 DatabaseManager.getInstance().logWithdraw(landOwner, resident, amount);
                                 landOwner.addToBank(amount);
                                 landOwner.save();
-                                Utils.runLater(() -> InventoryGui.goBack(player), 1);
+                                Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
                                 return AnvilGUI.Response.close();
                             } catch (NumberFormatException e) {
                                 return AnvilGUI.Response.text(getError("not-a-number").getReplacedText("input", text));

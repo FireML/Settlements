@@ -278,7 +278,7 @@ public class CitizensIntegration implements Listener, ConfigMessages {
                     return;
                 }
                 case BANKER: {
-                    if (landOwner.hasPermission(resident, "bank")) {
+                    if (landOwner.hasPermission(resident, "bank") || landOwner.hasUnlocked("donation")) {
                         new BankGUI(resident, landOwner).open();
                     } else {
                         event.setCancelled(true);

@@ -1090,6 +1090,17 @@ gui:
       &fGive me your money!
       
       {action}
+    donations-locked: |-
+      &eDonations
+      &fGive me your money!
+  
+      &cUpgrade NPC to accept
+      &cdonations from players
+      &coutside the {state}
+      {action}
+    donations-anvil:
+      title: "Set amount to deposit"
+      placeholder: "0"
     balance: |-
       &eBalance
       
