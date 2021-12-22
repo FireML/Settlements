@@ -1,10 +1,10 @@
 # Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:mapconf.yml
 
 color:
-  # Claims of your own settlement/empire
+  # Claims of your own settlement
   own: GREEN
-  # Outposts of your own settelemt
-  own-outpost: DARK_GREEN
+  # Claims of your own empire
+  own-empire: DARK_GREEN
   # Plots owned by you
   own-plot: YELLOW
   # Plots linked to your own plot

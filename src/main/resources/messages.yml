@@ -63,9 +63,9 @@ error:
   not-for-sale: "&cLand is not for sale!"
   not-your-plot: "&cThis is not your plot!"
   world-not-claimable: "&c&lClaiming is disabled in this world!"
-  claim-too-close: "&c&l(!) &r&7You are too close to &e{owner}'s land !"
+  claim-too-close: "&c&l(!) &r&7You are too close to &e{owner}'s&7 land !"
   already-own-land: "&e&l(!) &r&7Your settlement already owns this land!"
-  cant-claim-here: "&c&l(!) &r&7This land is owned by &e{owner}!"
+  cant-claim-here: "&c&l(!) &r&7This land is owned by &e{owner}&7!"
   outpost-not-claimed: "&cOutpost &6{name} &c was removed as its land was no longer claimed by your {state}!"
   outpost-not-found: |-
     &cUnable to find outpost: &6{name}
@@ -3009,20 +3009,21 @@ command:
       sender: "{title} {name}, {settlementstate} {settlementname}"
       sent: "&a&lSUCCESS &r&7Sent mail to {amount} settlement members!"
     map:
-      head: "&a⊱&m━━━━━━━━━━━━━━━&r&6Settlement Map&a&m━━━━━━━━━━━━━━&a⊰"
-      explanation: |-
-        &r &a- &6= your land
-        &r &a₲ &6= for sale
-        &r &ep &6= player plot
-        &r &6p &6= linked plots
-        &r &ae &6= embassy
-        &r &aH &6= home
-        &r &2o &6= outpost
-        &r &3- &6= empire
-        &r &b- &6= ally
-        &r &c- &6= other
-        &r &7- &6= unclaimed
-        &r &7+ &6= current
+      head: "&a⊱&m━━━━━━━━━━━━━━━&r&6Map&a&m━━━━━━━━━━━━━━&a⊰"
+      explanations:
+        own-land: "&r &a- &6= your land"
+        empire-land: "&r &2- &6= your Empire land"
+        for-sale: "&r &a₲ &6= for sale"
+        player-plot: "&r &ep &6= player plot"
+        linked-plot: "&r &6p &6= linked plots"
+        embassy: "&r &ae &6= embassy"
+        home: "&r &aH &6= home"
+        outpost: "&r &eo &6= outpost"
+        empire: "&r &3- &6= empire member"
+        ally: "&r &b- &6= ally"
+        other: "&r &c- &6= other"
+        unclaimed: "&r &7- &6= unclaimed"
+        current: "&r &7+ &6= current"
       not-for-sale: "Not for sale"
       hover:
         click-to-claim: "&9Click to claim &f{x}&9/&f{z}"
@@ -3565,7 +3566,7 @@ command:
       cant-claim-more: "&c&l(!) &r&7Your empire can only claim &e{max} chunks of land!"
       no-land-around: "&c&l(!) &r&7Your claim must be connected to an existing empire claim!"
       success: "&a&lSUCCESS &r&e{player} &7has claimed land for your empire at {x},{z}!"
-      new-upkeep: "&aYour new upkeep is now &e₲{empireupkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/e upkeep](/s upkeep)"
+      new-upkeep: "&aYour new upkeep is now &e₲{upkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/e upkeep](/s upkeep)"
       home-set: "&7&l{state} home was set at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
       radius-too-large: "&c&l(!) &r&7Can't use an radius of {radius} for claiming as the maximum is {max}!"
       description: Claim a chunk of land
@@ -3703,25 +3704,41 @@ command:
       cant-regen: "&c&l(!) &r&7Can't regenerate empire! Please contact an admin!"
       description: Regenerates the empire empire world
     map:
-      head: "&a⊱&m━━━━━━━━━━━━━━━&r&6Empire Map&a&m━━━━━━━━━━━━━━&a⊰"
-      explanation: |-
-        &r &a- &6= your land
-        &r &a₲ &6= for sale
-        &r &ep &6= player plot
-        &r &6p &6= linked plots
-        &r &ae &6= embassy
-        &r &aH &6= home
-        &r &7+ &6= current
-      not-for-sale: "Nor for sale"
+      head: "&a⊱&m━━━━━━━━━━━━━━━&r&6Map&a&m━━━━━━━━━━━━━━&a⊰"
+      explanations:
+        own-land: "&r &a- &6= your land"
+        empire-land: "&r &2- &6= your Empire land"
+        for-sale: "&r &a₲ &6= for sale"
+        player-plot: "&r &ep &6= player plot"
+        linked-plot: "&r &6p &6= linked plots"
+        embassy: "&r &ae &6= embassy"
+        home: "&r &aH &6= home"
+        outpost: "&r &eo &6= outpost"
+        empire: "&r &3- &6= empire member"
+        ally: "&r &b- &6= ally"
+        other: "&r &c- &6= other"
+        unclaimed: "&r &7- &6= unclaimed"
+        current: "&r &7+ &6= current"
+      not-for-sale: "Not for sale"
       hover:
+        click-to-claim: "&9Click to claim &f{x}&9/&f{z}"
+        click-to-unclaim: "&9Click to unclaim &f{x}&9/&f{z}"
+        linked: "&7Linked to &f{linked}&7 other plots. (ID: {linkgroup})"
+        click-to-link: |-
+          &9Click to link &f{x}&9/&f{z}
+          &9to your current plot
+        click-to-unlink: |-
+          &9Click to unlink &f{x}&9/&f{z}
+          &9from your current plot
         own-plot: Your plot
         plot: "Plot Owner: &7{owner}"
         embassy: "Embassy Owner: &7{owner}"
-        for-sale: "For sale: &7{price}"
+        for-sale: "For sale: &7₲{price} &fTax: &7₲{tax}"
+        outpost: "Outpost: &7{name}"
         home: Home
         abandoned: |-
           &c&lABANDONED!!!
-          &c Falls in {abandonedcountdown}
+          &c Falls in {countdown}
       description: Shows you a map of the surrounding chunks
     memberlist:
       head: "&a⊱&m━━━━&r&6Members&a&m━━━━&a⊰"

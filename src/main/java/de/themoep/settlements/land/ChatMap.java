@@ -1,5 +1,6 @@
 package de.themoep.settlements.land;
 
+import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.ConfigKey;
@@ -16,13 +17,14 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,10 +35,13 @@ public class ChatMap {
     private static final int HEIGHT = 13;
     private static final int WIDTH = 29;
     private final ConfigMessages messages;
+    private List<RowEnd> rowEnds;
 
     public ChatMap(Player player, ConfigMessages messages) {
         this.messages = messages;
-        BaseComponent[][][] map = new ChatMap.MapGenerator(player).getComponents();
+        MapGenerator generator = new ChatMap.MapGenerator(player);
+        BaseComponent[][][] map = generator.getComponents();
+        rowEnds = generator.getRowEnds();
         messages.getMessage("head").tell(player);
         for (int i = 0; i < map.length; ++i) {
             ComponentBuilder cb = new ComponentBuilder("");
@@ -110,9 +115,8 @@ public class ChatMap {
     }
 
     private BaseComponent[] getRowEnd(int row) {
-        List<String> lines = messages.getMessage("explanation").getTextList();
-        if (lines.size() > row) {
-            return TextComponent.fromLegacyText(lines.get(row));
+        if (rowEnds.size() > row) {
+            return messages.getMessage("map.explanations." + rowEnds.get(row).getKey()).getComponents();
         }
         return new BaseComponent[0];
     }
@@ -140,6 +144,8 @@ public class ChatMap {
         private boolean canClaimCoords = false;
         private boolean canUnclaimCoords = false;
         private boolean canLinkPlot;
+
+        private Set<RowEnd> legend = EnumSet.of(RowEnd.UNCLAIMED, RowEnd.CURRENT);
 
         public MapGenerator(Player p) {
             this.playerLand = LandManager.getInstance().getLand(p.getLocation());
@@ -198,26 +204,35 @@ public class ChatMap {
             Symbol symbol = Symbol.NORMAL;
             Relation relation;
             if (land.isOutpost()) {
+                legend.add(RowEnd.OUTPOST);
                 symbol = Symbol.OUTPOST;
             }
 
             if (land.getLandOwner().isMember(resident)) {
-                relation = Relation.OWN;
-                if (land.isOutpost() || ownOutposts.contains(land)) {
-                    relation = Relation.OWN_OUTPOST;
+                if (land.getLandOwner() instanceof Empire) {
+                    legend.add(RowEnd.EMPIRE_LAND);
+                    relation = Relation.OWN_EMPIRE;
+                } else {
+                    legend.add(RowEnd.OWN_LAND);
+                    relation = Relation.OWN;
                 }
                 if (land.isForSale()) {
+                    legend.add(RowEnd.FOR_SALE);
                     symbol = Symbol.FOR_SALE;
                 }
                 if (land.containsHome()) {
+                    legend.add(RowEnd.HOME);
                     symbol = Symbol.HOME;
                 }
 
             } else if (resident.hasSettlement() && resident.getSettlement().isAlly(land.getLandOwner())) {
+                legend.add(RowEnd.ALLY);
                 relation = Relation.ALLY;
             } else if (resident.hasEmpire() && resident.getSettlement().isTrusted(land.getLandOwner())) {
+                legend.add(RowEnd.EMPIRE);
                 relation = Relation.EMPIRE;
             } else {
+                legend.add(RowEnd.ENEMY);
                 relation = Relation.ENEMY;
             }
 
@@ -225,9 +240,12 @@ public class ChatMap {
                 if (land.isPlotOwner(resident)) {
                     if (land.isLinked(playerLand)) {
                         relation = Relation.OWN_PLOT_LINKED_CURRENT;
+                        legend.add(RowEnd.LINKED_PLOT);
                     } else if (land.hasLink()) {
+                        legend.add(RowEnd.LINKED_PLOT);
                         relation = Relation.OWN_PLOT_LINKED;
                     } else {
+                        legend.add(RowEnd.PLAYER_PLOT);
                         relation = Relation.OWN_PLOT;
                     }
                 }
@@ -235,6 +253,7 @@ public class ChatMap {
             }
 
             if (land.isEmbassy()) {
+                legend.add(RowEnd.EMBASSY);
                 symbol = Symbol.EMBASSY;
             }
 
@@ -306,11 +325,21 @@ public class ChatMap {
 
             return cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hover.create()))).create();
         }
+
+        public List<RowEnd> getRowEnds() {
+            List<RowEnd> ends = new ArrayList<>();
+            for (RowEnd rowEnd : RowEnd.values()) {
+                if (legend.contains(rowEnd)) {
+                    ends.add(rowEnd);
+                }
+            }
+            return ends;
+        }
     }
 
     enum Relation implements ConfigKey {
         OWN,
-        OWN_OUTPOST,
+        OWN_EMPIRE,
         OWN_PLOT,
         OWN_PLOT_LINKED,
         OWN_PLOT_LINKED_CURRENT,
@@ -358,5 +387,21 @@ public class ChatMap {
         public String getText() {
             return text;
         }
+    }
+
+    enum RowEnd implements ConfigKey {
+        OWN_LAND,
+        EMPIRE_LAND,
+        FOR_SALE,
+        PLAYER_PLOT,
+        LINKED_PLOT,
+        EMBASSY,
+        HOME,
+        OUTPOST,
+        EMPIRE,
+        ALLY,
+        ENEMY,
+        UNCLAIMED,
+        CURRENT
     }
 }
