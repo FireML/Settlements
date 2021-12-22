@@ -1,5 +1,6 @@
 package de.themoep.settlements.settlement.gui;
 
+import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiStateElement;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
@@ -16,6 +17,7 @@ import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.ConfirmationGui;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
+import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import net.wesjd.anvilgui.AnvilGUI;
 
@@ -23,43 +25,42 @@ public class ResidentGUI extends ConfigurableGui {
 
     public ResidentGUI(Resident sender, Resident resident) {
         super(sender, "settlement.resident", resident.getReplacements());
-        String[] replacements = resident.getReplacements();
 
-        gui.addElement(new StaticGuiElement('p',
+        gui.addElement(new DynamicGuiElement('p', who -> new StaticGuiElement('p',
                 ItemUtils.getHead(resident.getUUID(), resident.getName()),
-                getText("info", replacements)));
+                getText("info", resident.getReplacements()))));
 
-        gui.addElement(new StaticGuiElement('a', getIcon("accepted"), getText("accepted.entry",
+        gui.addElement(new DynamicGuiElement('a', who -> new StaticGuiElement('a', getIcon("accepted"), getText("accepted.entry",
                 "state", resident.getSettlement().getTag(),
                 "accepted", resident.getSettlementRank() == resident.getSettlement().getDefaultRank()
                         ? getText("accepted.not-accepted") : getText("accepted.accepted")
-        )));
+        ))));
 
         gui.addElement(new GuiStateElement('e', () -> resident.getTaxDebtAction().getKey(),
                 new GuiStateElement.State(click -> {
-                    if (sender.hasPermission("settlement.settaxevasion")) {
-                        resident.setTaxDebtAction(TaxDebtAction.KICK);
+                    if (resident.getSettlement().hasPermission(sender, "settaxevasion")) {
+                        resident.setTaxDebtAction(TaxDebtAction.NONE);
                         resident.save();
                     }
                 }, TaxDebtAction.NONE.getKey(), getIcon("evasion"),
                         getText("tax-evasion",
-                                "taxevasion", resident.getTaxDebtAction().getTag(),
-                                "action", resident.hasPermission("settlement.settaxevasion") ? getText("unlockables.unlocked.change") : getText("no-permission")
+                                "taxevasion", TaxDebtAction.NONE.getTag(),
+                                "action", resident.getSettlement().hasPermission(sender, "settaxevasion") ? getText("unlockables.unlocked.change") : getText("no-permission")
                         )),
                 new GuiStateElement.State(click -> {
-                    if (sender.hasPermission("settlement.settaxevasion")) {
-                        resident.setTaxDebtAction(TaxDebtAction.NONE);
+                    if (resident.getSettlement().hasPermission(sender, "settaxevasion")) {
+                        resident.setTaxDebtAction(TaxDebtAction.KICK);
                         resident.save();
                     }
                 }, TaxDebtAction.KICK.getKey(), getIcon("evasion"),
                         getText("tax-evasion",
-                                "taxevasion", resident.getTaxDebtAction().getTag(),
-                                "action", resident.hasPermission("settlement.settaxevasion") ? getText("unlockables.unlocked.change") : getText("no-permission")
+                                "taxevasion", TaxDebtAction.KICK.getTag(),
+                                "action", resident.getSettlement().hasPermission(sender, "settaxevasion") ? getText("unlockables.unlocked.change") : getText("no-permission")
                         ))));
 
         gui.addElement(new GuiStateElement('x', () -> String.valueOf(resident.isTaxExempted()),
                 new GuiStateElement.State(click -> {
-                    if (sender.hasPermission("settlement.settaxexempt")) {
+                    if (resident.getSettlement().hasPermission(sender, "settaxexempt")) {
                         resident.setTaxExempted(true);
                         resident.save();
                     }
@@ -67,10 +68,10 @@ public class ResidentGUI extends ConfigurableGui {
                         "donated", Utils.CURRENCY_FORMAT.format(resident.getDonated()),
                         "taxpaid", Utils.CURRENCY_FORMAT.format(resident.getTaxPaid()),
                         "exempted", getText("taxes.exempted"),
-                        "action", resident.hasPermission("settlement.settaxexempt") ? getText("unlockables.unlocked.change") : getText("no-permission")
+                        "action", resident.getSettlement().hasPermission(sender,"settaxexempt") ? getText("unlockables.unlocked.change") : getText("no-permission")
                 )),
                 new GuiStateElement.State(click -> {
-                    if (sender.hasPermission("settlement.settaxexempt")) {
+                    if (resident.getSettlement().hasPermission(sender, "settaxexempt")) {
                         resident.setTaxExempted(false);
                         resident.save();
                     }
@@ -78,49 +79,55 @@ public class ResidentGUI extends ConfigurableGui {
                         "donated", Utils.CURRENCY_FORMAT.format(resident.getDonated()),
                         "taxpaid", Utils.CURRENCY_FORMAT.format(resident.getTaxPaid()),
                         "exempted", getText("taxes.paying"),
-                        "action", resident.hasPermission("settlement.settaxexempt") ? getText("unlockables.unlocked.change") : getText("no-permission")
+                        "action", resident.getSettlement().hasPermission(sender,"settaxexempt") ? getText("unlockables.unlocked.change") : getText("no-permission")
                 ))));
 
-        gui.addElement(new StaticGuiElement('t', getIcon("settitle"), click -> {
-            if (sender.hasPermission("settlement.settitle") && sender.getSettlementRank().above(resident.getSettlementRank())) {
+        gui.addElement(new DynamicGuiElement('t', who -> new StaticGuiElement('t', getIcon("settitle"), click -> {
+            if (resident.getSettlement().hasPermission(sender, "settitle") && sender.getSettlementRank().above(resident.getSettlementRank())) {
                 new TitleGUI<>("settlement", sender, resident, resident.getSettlement()).open();
             }
             return true;
         }, getText("settitle",
                 "title", resident.getSettlementTitle(),
-                "action", resident.hasPermission("settlement.settitle") ? getText("unlockables.unlocked.change") : getText("no-permission")
-        )));
+                "action", resident.getSettlement().hasPermission(sender, "settitle") ? getText("unlockables.unlocked.change") : getText("no-permission")
+        ))));
 
-        gui.addElement(new StaticGuiElement('r', getIcon("rank"), click -> {
-            if (sender.hasPermission("settlement.setrank") && sender.getSettlementRank().above(resident.getSettlementRank())) {
-                new RankSelectGUI<>("settlement.setrank", sender, resident.getSettlement(), rank -> {
+        gui.addElement(new DynamicGuiElement('r', who -> new StaticGuiElement('r', getIcon("rank"), click -> {
+            if (resident.getSettlement().hasPermission(sender, "setrank") && sender.getSettlementRank().above(resident.getSettlementRank())) {
+                new RankSelectGUI<>("settlement.setrank", sender, resident, resident.getSettlement(), rank -> {
                     resident.setSettlementRank(rank);
                     resident.save();
                     InventoryGui.goBack(click.getWhoClicked());
                 }, rank -> {
-                    new ConfirmationGui(name() + "settlement.setrank.transfer", c -> {
-                        resident.getSettlement().transfer(resident);
-                        Message.get("command.settlement.tranfer.success").tell(resident.getSettlement().getOnlineResidents(),
-                                "rank", SettlementRank.getChief().getTag(resident.getSettlement()),
-                                "setter", sender.getName(),
-                                "target", resident.getName()
-                        );
-                        c.getGui().close();
-                    }, c -> InventoryGui.goBack(c.getWhoClicked()),
-                            "player", resident.getName(),
-                            "state", resident.getSettlement().getStateTag(),
-                            "settlement", resident.getSettlement().getName());
+                    if (resident.getSettlement().hasPermission(sender, "transfer")) {
+                        new ConfirmationGui(name() + "settlement.setrank.transfer", c -> {
+                            if (resident.getSettlement().hasPermission(sender, "transfer")) {
+                                resident.getSettlement().transfer(resident);
+                                MessageUtils.notify(resident.getSettlement(), resident.getSettlement().getResidents(), Message.get("command.settlement.tranfer.success"),
+                                        "rank", SettlementRank.getChief().getTag(resident.getSettlement()),
+                                        "setter", sender.getName(),
+                                        "target", resident.getName()
+                                );
+                            } else {
+                                getError("no-permission").tell(sender);
+                            }
+                            c.getGui().close();
+                        }, c -> InventoryGui.goBack(c.getWhoClicked()),
+                                "player", resident.getName(),
+                                "state", resident.getSettlement().getStateTag(),
+                                "settlement", resident.getSettlement().getName());
+                    }
                 }).open();
             }
             return true;
         }, getText("rank",
                 "rank", resident.getSettlementRank().getTag(),
-                "action", getText(resident.hasPermission("settlement.setrank")
+                "action", getText(resident.getSettlement().hasPermission(sender, "setrank")
                         ? sender.getSettlementRank().above(resident.getSettlementRank())
                         ? "unlockables.unlocked.change"
                         : "unlockables.locked.rank"
                         : "no-permission")
-        )));
+        ))));
 
         gui.addElement(new StaticGuiElement('l', getIcon("eviction"), click -> {
             if (resident.getSettlement().hasPermission(sender, "kicknotice") && sender.getSettlementRank().above(resident.getSettlementRank())) {
@@ -161,7 +168,7 @@ public class ResidentGUI extends ConfigurableGui {
         }, getText("kick.entry",
                 "player", resident.getName(),
                 "state", resident.getSettlement().getStateTag(),
-                "action", getText(sender.hasPermission("settlement.kick")
+                "action", getText(resident.getSettlement().hasPermission(sender, "settlement.kick")
                         ? sender.getSettlementRank().above(resident.getSettlementRank())
                         ? "unlockables.unlocked.kick"
                         : "unlockables.locked.rank"

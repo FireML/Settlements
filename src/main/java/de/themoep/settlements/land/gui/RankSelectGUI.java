@@ -16,11 +16,11 @@ import java.util.function.Consumer;
 
 public class RankSelectGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Rank<L, R>> extends ConfigurableGui {
 
-    public RankSelectGUI(@NonNull String type, Resident resident, L landOwner, Consumer<R> rankConsumer) {
-        this(type, resident, landOwner, rankConsumer, rankConsumer);
+    public RankSelectGUI(@NonNull String type, Resident resident, Resident target, L landOwner, Consumer<R> rankConsumer) {
+        this(type, resident, target, landOwner, rankConsumer, rankConsumer);
     }
 
-    public RankSelectGUI(@NonNull String type, Resident resident, L landOwner, Consumer<R> rankConsumer, Consumer<R> chiefRankConsumer) {
+    public RankSelectGUI(@NonNull String type, Resident resident, Resident target, L landOwner, Consumer<R> rankConsumer, Consumer<R> chiefRankConsumer) {
         super(resident, type + ".rank-select", "state", landOwner.getStateTag());
 
         GuiElementGroup group = createGroup('r');
@@ -31,7 +31,7 @@ public class RankSelectGUI<L extends LandOwner<R, ? extends LevelInfo>, R extend
                 return;
             }
             group.addElement(new StaticGuiElement('r',
-                    ItemUtils.setGlowing(rank.getItem(), rank == landOwner.getRank(resident)),
+                    ItemUtils.setGlowing(rank.getItem(), rank == landOwner.getRank(target)),
                     click -> {
                         if (landOwner.isMember(resident) && landOwner.getRank(resident).atLeast(rank)) {
                             rankConsumer.accept(rank);
@@ -47,7 +47,7 @@ public class RankSelectGUI<L extends LandOwner<R, ? extends LevelInfo>, R extend
         });
 
         gui.addElement(new StaticGuiElement('c', ItemUtils.setGlowing(landOwner.getHighestRank().getItem(),
-                landOwner.getHighestRank() == landOwner.getRank(resident)),
+                landOwner.getHighestRank() == landOwner.getRank(target)),
                 click -> {
                     if (landOwner.isMember(resident) && landOwner.getRank(resident).atLeast(landOwner.getHighestRank())) {
                         chiefRankConsumer.accept(landOwner.getHighestRank());

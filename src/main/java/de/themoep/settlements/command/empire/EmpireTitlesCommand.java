@@ -20,7 +20,7 @@ public class EmpireTitlesCommand extends EmpireSubCommand {
         registerCommand(new EmpireSubCommand(this, "gui") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
-                new RankSelectGUI<>("empire.titles", resident, resident.getSettlement().getEmpire(),
+                new RankSelectGUI<>("empire.titles", resident, resident, resident.getSettlement().getEmpire(),
                         rank -> new TitlesGUI<>("empire", resident, resident.getSettlement().getEmpire(), rank).open()).open();
                 return true;
             }

@@ -20,7 +20,7 @@ public class SettlementTitlesCommand extends SettlementSubCommand {
         registerCommand(new SettlementSubCommand(this, "gui") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
-                new RankSelectGUI<>("settlement.titles", resident, resident.getSettlement(), rank -> new TitlesGUI<>("settlement", resident, resident.getSettlement(), rank).open()).open();
+                new RankSelectGUI<>("settlement.titles", resident, resident, resident.getSettlement(), rank -> new TitlesGUI<>("settlement", resident, resident.getSettlement(), rank).open()).open();
                 return true;
             }
         });
