@@ -39,7 +39,8 @@ public class OutpostsGUI extends ConfigurableGui {
                         } else if (settlement.hasPermission(resident, "outpost.teleport")) {
                             OwnedLand land = LandManager.getInstance().getLand(outpost.toChunkLocation());
                             if (land != null && land.isOwnedBy(resident.getSettlement())) {
-                                Utils.teleport(this, resident.getPlayer(), outpost.toBukkitLocation(), "outpost", "name", outpost.getName());
+                                CommandManager.getInstance().getCommand(settlement.getKey()).matchSubCommand("outpost").matchSubCommand("teleport")
+                                        .run(click.getWhoClicked(), settlement.getKey() + " outpost", "teleport", outpost.getName());
                             } else {
                                 if (resident.getSettlement().removeOutpostHome(outpost) != null) {
                                     resident.save();

@@ -20,7 +20,7 @@ import java.util.Collection;
 public class OutpostGUI extends ConfigurableGui {
 
     public OutpostGUI(Resident resident, Settlement settlement, NamedLocation outpost) {
-        super(resident, "settlement.outpost");
+        super(resident, "settlement.outpost", outpost.getReplacements());
 
         gui.addElement(new StaticGuiElement('i', getIcon("info"), getText("info", outpost.getReplacements())));
 
@@ -68,12 +68,15 @@ public class OutpostGUI extends ConfigurableGui {
                         .open(resident.getPlayer());
             }
             return true;
-        }, getText("rename",
+        }, getText("rename.button",
                 "name", outpost.getName(),
                 "action", getText(settlement.hasPermission(resident, "outpost.rename") ? "unlockables.unlocked.edit" : "unlockables.locked.permission")
         )));
 
         gui.addElement(new StaticGuiElement('h', getIcon("sethome"), click -> {
+            if (!settlement.hasPermission(resident, "outpost.sethome")) {
+                return true;
+            }
             OwnedLand currentLand = LandManager.getInstance().getLand(resident.getPlayer().getLocation());
             if (currentLand == null || !currentLand.isOwnedBy(resident.getSettlement())) {
                 getError("not-an-outpost").tell(resident);
@@ -121,9 +124,9 @@ public class OutpostGUI extends ConfigurableGui {
         )));
 
         gui.addElement(new StaticGuiElement('u', getIcon("unclaim"), click -> {
-            if (settlement.hasPermission(resident, "oupost.unclaim")) {
+            if (settlement.hasPermission(resident, "outpost.unclaim")) {
                 CommandManager.getInstance().getCommand(settlement.getKey()).matchSubCommand("outpost").matchSubCommand("unclaim")
-                        .run(click.getWhoClicked(), "unclaim", outpost.getName());
+                        .run(click.getWhoClicked(), settlement.getKey() + " outpost", "unclaim", outpost.getName());
             }
             return true;
         }, getText("unclaim",

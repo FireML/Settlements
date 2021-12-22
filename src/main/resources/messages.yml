@@ -94,6 +94,7 @@ error:
     common: "&cNo portals are linked! Ask your {state} leadership to link it!"
   destination-obstructed: "&c&lCan't teleport. Target location is not safe!"
   destination-unknown: "&c&lCan't teleport. Target {type} is not known!"
+  not-an-outpost: "&cThe land must be an outpost to set the home!"
 move-cancelled:
   title: "&c&lFailed"
   subtitle: "&fDon't move while {action}ing!"
@@ -1678,11 +1679,15 @@ gui:
       &eOutpost {name}
       &7World: {world}
       &7X: {x} / Y: {y} / Z: {z}
-    rename: |-
-      &eRename
-      &7Rename the outpost
+    rename:
+      button: |-
+        &eRename
+        &7Rename the outpost
       
-      {action}
+        {action}
+      anvil:
+        title: "Set the new name"
+        placeholder: "{name}"
     sethome: |-
       &eSet your location
       &7Set outpost teleport
@@ -3071,7 +3076,6 @@ command:
         success: "&a&lSUCCESS &r&e{player} &7has renamed &coutpost&7 &e{oldname}&7 to &e{newname}&7!"
         description: Rename an outpost
       sethome:
-        not-an-outpost: "&cThe land must be an outpost to set the home!"
         success: "&a&lOutpost home &6{name} &aset here"
         description: Sets a outpost home on that specific chunk
       teleport:
