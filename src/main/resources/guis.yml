@@ -637,19 +637,31 @@ guis:
         back: barrier
     outposts:
       setup:
+      - "ooooooooo"
+      - "         "
+      - " eeeeeee "
+      - " eeeeeee "
+      - "         "
+      - " opobooo "
+      elements:
+        o: white_stained_glass_pane
+        outpost: acacia_sapling
+        public: beacon
+        back: barrier
+    outpost:
+      setup:
       - "ooooioooo"
       - "         "
       - "    h    "
       - "  r   u  "
       - "         "
-      - " opobooo "
+      - " ooobooo "
       elements:
         o: white_stained_glass_pane
         info: acacia_sapling
         rename: anvil
         sethome: purple_banner
         unclaim: red_dye
-        public: beacon
         back: barrier
   empire:
     access:
