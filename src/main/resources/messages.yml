@@ -721,6 +721,7 @@ gui:
       reset: "&bClick to reset"
       browse: "&bClick to browse"
       view: "&bClick to view"
+      kick: "&bClick to kick"
       edit: "&bClick to edit"
       create: "&bClick to create"
       unclaim: "&bClick to unclaim"
@@ -1617,7 +1618,7 @@ gui:
       &7of all rank permissions.
   setrank:
     rank-select:
-      title: "&2&lSelect the {state} rank"
+      title: "Select the {state} rank"
       entry: |-
         &e{rank}
       
@@ -1772,8 +1773,8 @@ gui:
         &cKick
         &fSend an Eviction Letter first if the
         &fplayer has not violated any rules!
-        
-        &bClick to kick
+  
+        {action}
       title: "&cReally kick &e{player}?"
       confirm: "&cKick &e{player}"
       cancel: "&aDon't kick &e{player}"
@@ -3132,7 +3133,7 @@ command:
     recruitment:
       success: "&7Recruitment changed to &6{jointype}"
       jointype:
-        invite: Invitation is required to join
+        invite-only: Invitation is required to join
         anyone: Allows everyone to join without an invitation
         apply: Application is required to join
       banished: "&e{name}&c is banished from your {state}!"

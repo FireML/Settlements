@@ -78,10 +78,10 @@ public class ManagementGUI extends SettlementsGUI {
             return true;
         }, getText("recruitment",
                 "amount", String.valueOf(requests),
-                "state", resident.getSettlement().getStateTag(),
                 "action", resident.getSettlement().hasUnlocked("recruitment")
                         ? resident.hasPermission("settlement.recruitment") ? getText("unlockables.unlocked.browse") : getText("no-permission")
-                        : getText("unlockables.locked.level")
+                        : getText("unlockables.locked.level"),
+                "state", resident.getSettlement().getStateTag()
         )));
 
         gui.addElement(new StaticGuiElement('d', getIcon("banished"), click -> {

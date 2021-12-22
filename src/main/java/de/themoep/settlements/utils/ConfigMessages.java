@@ -1,5 +1,9 @@
 package de.themoep.settlements.utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public interface ConfigMessages extends ConfigKey {
     String type();
 
@@ -18,33 +22,40 @@ public interface ConfigMessages extends ConfigKey {
         }
         String[] pathParts = path.split("\\.");
         if (pathParts.length > 1) {
-            for (int sub = 1; sub + 1 < pathParts.length; sub++) {
-                for (int i = pathParts.length - sub; i > 0; i--) {
-                    StringBuilder p = new StringBuilder();
-                    for (int j = 0; j + sub < pathParts.length; j++) {
-                        if (j == i) {
-                            j+=sub;
-                        }
-                        p.append(".").append(pathParts[j]);
-                    }
-                    Message m = Message.get(p + (key.isEmpty() ? "" : "." + key));
-                    if (m.exists()) {
-                        return m;
-                    }
-                }
-            }
-            if (!key.isEmpty()) {
-                Message m = Message.get(pathParts[0] + "." + key);
-                if (m.exists()) {
-                    return m;
-                }
+            String startPart = pathParts[0];
+
+            Message m = getMessage(startPart, Arrays.asList(pathParts).subList(1, pathParts.length), key);
+            if (m != null && m.exists()) {
+                return m;
             }
         }
-        Message keyMessage = Message.get(key);
-        if (keyMessage.exists()) {
-            return keyMessage;
+        if (!key.isEmpty()) {
+            Message keyMessage = Message.get(key);
+            if (keyMessage.exists()) {
+                return keyMessage;
+            }
         }
         return message;
+    }
+
+    default Message getMessage(String start, List<String> partList, String key) {
+        Message message = Message.get(start + (partList.isEmpty() ? "" : "." + String.join(".", partList)) + (key.isEmpty() ? "" : "." + key));
+        if (message.exists()) {
+            return message;
+        }
+        for (int i = 0; i < partList.size(); i++) {
+            List<String> clone = new ArrayList<>();
+            for (int j = 0; j < partList.size(); j++) {
+                if (j != i) {
+                    clone.add(partList.get(j));
+                }
+            }
+            Message m = getMessage(start, clone, key);
+            if (m != null && m.exists()) {
+                return m;
+            }
+        }
+        return null;
     }
 
     default String getBase() {

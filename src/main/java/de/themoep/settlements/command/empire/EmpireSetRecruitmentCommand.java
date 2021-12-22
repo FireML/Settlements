@@ -14,7 +14,7 @@ public class EmpireSetRecruitmentCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length < 1) {
-            new RecruitmentGUI("empire", resident.getSettlement().getEmpire()).open(resident.getPlayer());
+            new RecruitmentGUI(resident, resident.getSettlement().getEmpire()).open();
             return true;
         }
         try {

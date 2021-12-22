@@ -1,30 +1,20 @@
 package de.themoep.settlements.land.gui;
 
 import de.themoep.inventorygui.DynamicGuiElement;
-import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
-import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.SettlementsGUI;
-import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.land.LandAccess;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.JoinType;
+import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.Message;
 import org.bukkit.entity.Player;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
-public class RecruitmentGUI extends SettlementsGUI {
-    private final InventoryGui gui;
+public class RecruitmentGUI extends ConfigurableGui {
 
-    public RecruitmentGUI(@NonNull String type, LandOwner<?, ?> landOwner) {
-        super(type + ".recruitment");
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), getSetup());
-        gui.setCloseAction(close -> false);
-        gui.setFiller(getIcon("filler"));
+    public RecruitmentGUI(Resident res, LandOwner<?, ?> landOwner) {
+        super(res, landOwner.getKey() + ".recruitment");
 
         GuiElementGroup group = new GuiElementGroup('j');
         group.setAlignment(getAlignment("j"));
@@ -37,7 +27,7 @@ public class RecruitmentGUI extends SettlementsGUI {
                         return new StaticGuiElement('j',
                                 getIcon("selected"),
                                 getText("selected", "jointype", joinType.getTag()),
-                                getText("access." + joinType.getKey(), "state", landOwner.getStateTag())
+                                getText("jointype." + joinType.getKey(), "state", landOwner.getStateTag())
                         );
                     }
                     return new StaticGuiElement('j',
@@ -45,7 +35,7 @@ public class RecruitmentGUI extends SettlementsGUI {
                             click -> {
                                 if (landOwner.hasPermission(resident, "recruitment")) {
                                     landOwner.setJoinType(joinType);
-                                    Message.get("command." + type + ".recruitment.success").tell(resident, "jointype", joinType.getTag());
+                                    Message.get("command." + landOwner.getKey() + ".recruitment.success").tell(resident, "jointype", joinType.getTag());
                                     landOwner.save();
                                     gui.draw();
                                 }
@@ -60,11 +50,5 @@ public class RecruitmentGUI extends SettlementsGUI {
         }
 
         gui.addElement(group);
-
-        gui.addElement(new GuiBackElement('n', getIcon("back"), true, getText("back")));
-    }
-
-    public void open(final Player p) {
-        gui.show(p);
     }
 }

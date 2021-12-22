@@ -1,12 +1,9 @@
 package de.themoep.settlements.settlement.gui;
 
-import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiStateElement;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.db.InviteCache;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.land.TaxDebtAction;
@@ -118,81 +115,91 @@ public class ResidentGUI extends ConfigurableGui {
             return true;
         }, getText("rank",
                 "rank", resident.getSettlementRank().getTag(),
-                "action", resident.hasPermission("settlement.setrank") ? getText("unlockables.unlocked.change") : getText("no-permission")
+                "action", getText(resident.hasPermission("settlement.setrank")
+                        ? sender.getSettlementRank().above(resident.getSettlementRank())
+                        ? "unlockables.unlocked.change"
+                        : "unlockables.locked.rank"
+                        : "no-permission")
         )));
 
-        if (sender.hasPermission("settlement.kicknotice")) {
-            gui.addElement(new StaticGuiElement('l', getIcon("eviction"), click -> {
-                if (resident.getSettlement().hasPermission(sender, "kicknotice")) {
-                    for (MailProvider mailProvider : SettlementsPlugin.getInstance().getMailProviders()) {
-                        mailProvider.sendMail(Message.get("eviction.letter.sender").getReplacedText(
-                                        "state", resident.getSettlement().getStateTag(),
-                                        "name", resident.getSettlement().getName(),
-                                        "chieftitle", resident.getSettlement().getChief().getSettlementTitle(),
-                                        "chiefname", resident.getSettlement().getChief().getName()
-                                ), resident,
-                                Message.get("eviction.letter.text").getReplacedText(
-                                        "state", resident.getSettlement().getStateTag(),
-                                        "name", resident.getSettlement().getName()
-                                ));
-                    }
-                    Message.get("command.settlement.kicknotice.success").tell(sender, "name", resident.getName());
-                    Message.get("command.settlement.kicknotice.success").actionbar(sender, "name", resident.getName());
+        gui.addElement(new StaticGuiElement('l', getIcon("eviction"), click -> {
+            if (resident.getSettlement().hasPermission(sender, "kicknotice") && sender.getSettlementRank().above(resident.getSettlementRank())) {
+                for (MailProvider mailProvider : SettlementsPlugin.getInstance().getMailProviders()) {
+                    mailProvider.sendMail(Message.get("eviction.letter.sender").getReplacedText(
+                                    "state", resident.getSettlement().getStateTag(),
+                                    "name", resident.getSettlement().getName(),
+                                    "chieftitle", resident.getSettlement().getChief().getSettlementTitle(),
+                                    "chiefname", resident.getSettlement().getChief().getName()
+                            ), resident,
+                            Message.get("eviction.letter.text").getReplacedText(
+                                    "state", resident.getSettlement().getStateTag(),
+                                    "name", resident.getSettlement().getName()
+                            ));
                 }
-                return true;
-            }, getText("eviction")));
-        }
+                Message.get("command.settlement.kicknotice.success").tell(sender, "name", resident.getName());
+                Message.get("command.settlement.kicknotice.success").actionbar(sender, "name", resident.getName());
+            }
+            return true;
+        }, getText("eviction",
+                "action", getText(sender.hasPermission("settlement.kicknotice")
+                        ? sender.getSettlementRank().above(resident.getSettlementRank())
+                        ? "unlockables.unlocked.send"
+                        : "unlockables.locked.rank"
+                        : "unlockables.locked.nopermission")
+        )));
 
-        if (sender.hasPermission("settlement.kick")) {
-            gui.addElement(new StaticGuiElement('k', getIcon("kick"), click -> {
-                new ConfirmationGui(name() + ".kick", c -> {
-                    if (resident.getSettlement().hasPermission(sender, "settlement.kick")) {
-                        Message.get("command.settlement.kick.kicked-alert").tell(resident.getSettlement().getOnlineResidents(), "player", resident.getName());
-                        InviteManager.getInstance().removeInvite(resident, resident.getSettlement());
-                        resident.leaveSettlement();
-                    }
-                    c.getGui().close();
-                }, c -> InventoryGui.goBack(c.getWhoClicked()), "player", resident.getName(), "state", resident.getSettlement().getStateTag());
-                return true;
-            }, getText("kick.entry", "player", resident.getName(), "state", resident.getSettlement().getStateTag())));
-        }
+        gui.addElement(new StaticGuiElement('k', getIcon("kick"), click -> {
+            new ConfirmationGui(name() + ".kick", c -> {
+                if (resident.getSettlement().hasPermission(sender, "settlement.kick") && sender.getSettlementRank().above(resident.getSettlementRank())) {
+                    Message.get("command.settlement.kick.kicked-alert").tell(resident.getSettlement().getOnlineResidents(), "player", resident.getName());
+                    InviteManager.getInstance().removeInvite(resident, resident.getSettlement());
+                    resident.leaveSettlement();
+                }
+                c.getGui().close();
+            }, c -> InventoryGui.goBack(c.getWhoClicked()), "player", resident.getName(), "state", resident.getSettlement().getStateTag());
+            return true;
+        }, getText("kick.entry",
+                "player", resident.getName(),
+                "state", resident.getSettlement().getStateTag(),
+                "action", getText(sender.hasPermission("settlement.kick")
+                        ? sender.getSettlementRank().above(resident.getSettlementRank())
+                        ? "unlockables.unlocked.kick"
+                        : "unlockables.locked.rank"
+                        : "unlockables.locked.nopermission")
+        )));
 
-        if (sender.hasPermission("settlement.banish")) {
-            gui.addElement(new StaticGuiElement('k', getIcon("banish"), click -> {
-                Settlement settlement = resident.getSettlement();
-                new AnvilGUI.Builder()
-                        .itemLeft(ItemUtils.getHead(resident.getUUID(), resident.getName()))
-                        .title(getText("banish.anvil.title", "player", resident.getName()))
-                        .text(getText("banish.anvil.placeholder", "player", resident.getName()))
-                        .onClose(player -> Utils.runLater(() -> new ResidentGUI(sender, resident).open(), 1))
-                        .onComplete((player, text) -> {
-                            if (settlement.hasPermission(sender, "banish") && sender.getSettlementRank().above(resident.getSettlementRank())) {
-                                String reason = text.trim();
-                                getMessage("command.settlement.banish.banished").tell(resident.getSettlement().getOnlineResidents(), "name", resident.getName(), "reason", reason);
-                                InviteManager.getInstance().removeInvite(resident, resident.getSettlement());
-                                resident.getSettlement().addBanished(sender, resident, reason);
-                                resident.leaveSettlement();
+        gui.addElement(new StaticGuiElement('s', getIcon("banish"), click -> {
+            Settlement settlement = resident.getSettlement();
+            new AnvilGUI.Builder()
+                    .itemLeft(ItemUtils.getHead(resident.getUUID(), resident.getName()))
+                    .title(getText("banish.anvil.title", "player", resident.getName()))
+                    .text(getText("banish.anvil.placeholder", "player", resident.getName()))
+                    .onClose(player -> Utils.runLater(() -> new ResidentGUI(sender, resident).open(), 1))
+                    .onComplete((player, text) -> {
+                        if (settlement.hasPermission(sender, "banish") && sender.getSettlementRank().above(resident.getSettlementRank())) {
+                            String reason = text.trim();
+                            getMessage("command.settlement.banish.banished").tell(resident.getSettlement().getOnlineResidents(), "name", resident.getName(), "reason", reason);
+                            InviteManager.getInstance().removeInvite(resident, resident.getSettlement());
+                            resident.getSettlement().addBanished(sender, resident, reason);
+                            resident.leaveSettlement();
 
-                                Utils.runLater(() -> InventoryGui.goBack(player), 1);
-                            } else {
-                                getError("no-permission").tell(player);
-                            }
-                            return AnvilGUI.Response.close();
-                        })
-                        .plugin(SettlementsPlugin.getInstance())
-                        .open(sender.getPlayer());
-                return true;
-            }, getText("banish.entry",
-                    "action", resident.getSettlement().hasPermission(sender, "banish")
-                            ? sender.getSettlementRank().above(resident.getSettlementRank())
-                                    ? getText("unlockables.unlocked.banish")
-                                    : getText("unlockables.locked.rank")
-                            : getText("unlockables.locked.permission"),
-                    "player", resident.getName(),
-                    "state", resident.getSettlement().getStateTag()
-            )));
-        }
-
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+                            Utils.runLater(() -> InventoryGui.goBack(player), 1);
+                        } else {
+                            getError("no-permission").tell(player);
+                        }
+                        return AnvilGUI.Response.close();
+                    })
+                    .plugin(SettlementsPlugin.getInstance())
+                    .open(sender.getPlayer());
+            return true;
+        }, getText("banish.entry",
+                "action", resident.getSettlement().hasPermission(sender, "banish")
+                        ? sender.getSettlementRank().above(resident.getSettlementRank())
+                                ? getText("unlockables.unlocked.banish")
+                                : getText("unlockables.locked.rank")
+                        : getText("unlockables.locked.permission"),
+                "player", resident.getName(),
+                "state", resident.getSettlement().getStateTag()
+        )));
     }
 }

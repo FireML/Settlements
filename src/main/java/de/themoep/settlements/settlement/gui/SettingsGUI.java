@@ -275,7 +275,7 @@ public class SettingsGUI extends ConfigurableGui {
 
         gui.addElement(new StaticGuiElement('c', getIcon("recruitment"), click -> {
             if (resident.hasPermission("settlement.recruitment")) {
-                new RecruitmentGUI("settlement", resident.getSettlement()).open((Player) click.getEvent().getWhoClicked());
+                new RecruitmentGUI(resident, resident.getSettlement()).open();
             }
             return true;
         }, getText("recruitment",

@@ -446,7 +446,7 @@ guis:
       - "rrrrrrrrr"
       - "rrrrrrrrr"
       - "rrrrrrrrr"
-      - "ppppppsb "
+      - "pppppps b"
       elements:
         o: lime_stained_glass_pane
         page: paper
@@ -465,7 +465,7 @@ guis:
         accepted: book
         evasion: paper
         taxes: gold_ingot
-        settitle: sign
+        settitle: oak_sign
         rank: diamond_helmet
         eviction: paper
         kick: red_dye
@@ -589,6 +589,7 @@ guis:
           o: lime_stained_glass_pane
           title: paper
           add: writable_book
+          back: barrier
     titles:
       setup:
       - "ooooooooo"
@@ -618,6 +619,7 @@ guis:
           o: lime_stained_glass_pane
           title: paper
           add: writable_book
+          back: barrier
     title:
       setup:
       - "ooooooooo"
@@ -967,6 +969,7 @@ guis:
           o: lime_stained_glass_pane
           title: paper
           add: writable_book
+          back: barrier
     titles:
       setup:
       - "ooooooooo"
@@ -996,6 +999,7 @@ guis:
           o: lime_stained_glass_pane
           title: paper
           add: writable_book
+          back: barrier
     title:
       setup:
       - "ooooooooo"
@@ -1134,6 +1138,7 @@ guis:
         o: lime_stained_glass_pane
         title: paper
         add: writable_book
+        back: barrier
     world:
       setup:
       - "ooooooooo"
