@@ -1606,7 +1606,7 @@ gui:
     entry:
       title: |-
         {color}{perm}
-        &9{description}
+        &f{description}
       inherited: |-
         &2Inherited from &f{from}
       unset: |-
@@ -2231,9 +2231,10 @@ gui:
         &7Title of rank {rank}
       select: "&bClick to select"
       current: "&7Your current title!"
+      default: "&7This is the default title!"
     edit: |-
       &eManage Titles
-      Add/edit titles for {rank}
+      &fAdd/edit titles for {rank}
     back: "&c&lBack"
   titles:
     title: "Manage Titles"
@@ -2695,44 +2696,44 @@ command:
     group:
       manage-res:
         description: |-
-          &9Manage Members
-          &9- View active
-          &9- Send kick notices
-          &9- Set ranks
-          &9- Set titles
-          &9- Set tax evasion
-          &9- Set tax excempt
+          &fManage Members
+          &f- View active
+          &f- Send kick notices
+          &f- Set ranks
+          &f- Set titles
+          &f- Set tax evasion
+          &f- Set tax excempt
       manage-allies:
         description: |-
-          &9Manage Allies
-          &9- Set nearby Claim
+          &fManage Allies
+          &f- Set nearby Claim
       admin-allies:
         description: |-
-          &9Administrate Allies
-          &9- Create new ally
-          &9- Break an ally
+          &fAdministrate Allies
+          &f- Create new ally
+          &f- Break an ally
       manage-ranks:
         description: "Manage Ranks"
       manage-settings:
         description: "Manage Settings"
       manage-notes:
         description: |-
-          &9Manage Minor Settings
-          &9- Change Home Location
-          &9- Change rules
-          &9- Set Discord Link
+          &fManage Minor Settings
+          &f- Change Home Location
+          &f- Change rules
+          &f- Set Discord Link
       manage-bank:
         description: |-
-          &9Manage Bank
-          &9- Withdraw Money
-          &9- Set Resident Taxes
-          &9- Set Tax Debt Action
-          &9- Set Auction Taxes
+          &fManage Bank
+          &f- Withdraw Money
+          &f- Set Resident Taxes
+          &f- Set Tax Debt Action
+          &f- Set Auction Taxes
       use-bank:
         description: |-
-          &9Use Bank
-          &9- Use Storage
-          &9- See History
+          &fUse Bank
+          &f- Use Storage
+          &f- See History
       use-outpost:
         description: "Use Outpost Teleports"
       manage-outpost:
