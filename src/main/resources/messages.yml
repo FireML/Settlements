@@ -892,7 +892,7 @@ gui:
       back: "&cBack"
       entry: |-
         {online}{name}
-        &f{state} {settlement}
+        &f{settlementstate} {settlement}
         
         &bRight-Click to remove!
       online: "&a"
