@@ -48,7 +48,7 @@ public class NpcCommand extends ResidentSubCommand {
             return false;
         }
 
-        NpcType type = Utils.parseEnum(NpcType.class, args[0]);
+        NpcType type = NpcType.parse(args[0]);
         if (type == null) {
             getError("unknown-npc-type").tell(resident, "input", args[0]);
             return false;

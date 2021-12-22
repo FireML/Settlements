@@ -1,7 +1,9 @@
 package de.themoep.settlements.npc;
 
+import com.google.common.collect.Table;
 import de.themoep.settlements.utils.ConfigKey;
 import de.themoep.settlements.utils.NameTag;
+import de.themoep.settlements.utils.Utils;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -32,6 +34,17 @@ public enum NpcType implements NameTag, ConfigKey {
 
     public boolean appliesTo(AppliesTo to) {
         return appliesTo.contains(to);
+    }
+
+    public static NpcType parse(String string) {
+        for (Table.Cell<String, NpcType, NpcConfig> config : NpcManager.getInstance().getConfigs()) {
+            if (config.getValue().getName().equalsIgnoreCase(string)
+                    || config.getValue().getName().equalsIgnoreCase(
+                            string.replace('-', ' ').replace('_', ' '))) {
+                return config.getColumnKey();
+            }
+        }
+        return Utils.parseEnum(NpcType.class, string);
     }
 
     public enum AppliesTo implements ConfigKey {

@@ -1,13 +1,14 @@
 package de.themoep.settlements.npc;
 
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.Table;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.perk.NpcPerk;
-import de.themoep.settlements.rank.Rank;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.config.ConfigManager;
@@ -15,19 +16,19 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class NpcManager {
 
     private static NpcManager instance;
 
-    private Map<String, NpcConfig> npcConfigs = new HashMap<>();
+    private Table<String, NpcType, NpcConfig> npcConfigs = HashBasedTable.create();
 
     private Multimap<NpcType, NpcLevel> settlementLevels = MultimapBuilder.enumKeys(NpcType.class).arrayListValues().build();
     private Map<String, NpcPerk> settlementPerks = new LinkedHashMap<>();
@@ -54,13 +55,13 @@ public class NpcManager {
             ConfigurationSection config = ConfigManager.getInstance().getNpcConfig().getConfigurationSection(type.getKey() + "." + npcType.getKey());
             if (config != null) {
                 try {
-                    npcConfigs.put(type.getKey() + "." + npcType.getKey(), new NpcConfig(config));
+                    npcConfigs.put(type.getKey(), npcType, new NpcConfig(config));
                     continue;
                 } catch (IllegalArgumentException e) {
                     SettlementsPlugin.getInstance().getLogger().info("Error while loading " + type.getKey() + " NPC " + npcType.getKey() + ": " + e.getMessage());
                 }
             }
-            npcConfigs.put(type.getKey() + "." + npcType.getKey(), new NpcConfig(npcType));
+            npcConfigs.put(type.getKey(), npcType, new NpcConfig(npcType));
         }
     }
 
@@ -148,8 +149,12 @@ public class NpcManager {
         return null;
     }
 
-    public <R extends Rank> NpcConfig getConfig(LandOwner<?, ?> landOwner, NpcType type) {
-        return npcConfigs.get(landOwner.getKey() + "." + type.getKey());
+    public NpcConfig getConfig(LandOwner<?, ?> landOwner, NpcType type) {
+        return npcConfigs.get(landOwner.getKey(), type);
+    }
+
+    public Set<Table.Cell<String, NpcType, NpcConfig>> getConfigs() {
+        return npcConfigs.cellSet();
     }
 
     public Collection<NpcPerk> getPerks(LandOwner<?, ?> owner) {
