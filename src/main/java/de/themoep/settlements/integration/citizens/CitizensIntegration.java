@@ -436,7 +436,7 @@ public class CitizensIntegration implements Listener, ConfigMessages {
                     tax = trait.getOwner().getAuctionTax();
                 }
                 AuctionTaxTrait auctionTrait = npc.getTraitNullable(AuctionTaxTrait.class);
-                if (trait != null && auctionTrait.getAuctionTax() < tax) {
+                if (auctionTrait != null && auctionTrait.getAuctionTax() < tax) {
                     tax = auctionTrait.getAuctionTax();
                 }
             }
