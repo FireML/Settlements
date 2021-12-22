@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 public class BanishListener implements Listener {
 
@@ -35,7 +36,19 @@ public class BanishListener implements Listener {
             sendInfo(p, landOwner, "teleport");
             if (!e.getPlayer().hasPermission("settlements.bypass.banish")) {
                 e.setCancelled(true);
-                Bukkit.getScheduler().runTask(SettlementsPlugin.getInstance(), () -> Utils.teleportToSpawn(p));
+                if (!e.getTo().getChunk().equals(e.getTo().getChunk())) {
+                    Bukkit.getScheduler().runTask(SettlementsPlugin.getInstance(), () -> Utils.teleportToSpawn(p));
+                }
+            }
+        });
+    }
+
+    @EventHandler
+    public void on(PlayerSpawnLocationEvent e) {
+        ResidentManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getSpawnLocation()), e.getPlayer(), (land, p, landOwner) -> {
+            Utils.runSync(() -> sendInfo(p, landOwner, "join"));
+            if (!e.getPlayer().hasPermission("settlements.bypass.banish")) {
+                e.setSpawnLocation(e.getSpawnLocation().getWorld().getSpawnLocation());
             }
         });
     }
@@ -44,7 +57,7 @@ public class BanishListener implements Listener {
     public void on(PlayerJoinEvent e) {
         Bukkit.getScheduler().runTask(SettlementsPlugin.getInstance(), () -> ResidentManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getPlayer().getLocation()), e.getPlayer(), (land, p, landOwner) -> {
             sendInfo(p, landOwner, "join");
-            if (!e.getPlayer().hasPermission("settlements.bypass.banish")) {
+            if (!e.getPlayer().hasPermission("settlements.bypass.banish") && !e.getPlayer().getChunk().equals(e.getPlayer().getWorld().getSpawnLocation().getChunk())) {
                 Utils.teleportToSpawn(p);
             }
         }));
