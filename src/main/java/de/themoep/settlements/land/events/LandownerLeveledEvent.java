@@ -2,11 +2,11 @@ package de.themoep.settlements.land.events;
 
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.LandownerLevel;
-import de.themoep.settlements.leveling.LevelInfo;
 import de.themoep.settlements.resident.Resident;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Called after a landowner achieved a new level
@@ -17,15 +17,15 @@ public class LandownerLeveledEvent extends Event {
 
     private final Resident resident;
 
-    public LandownerLeveledEvent(LandOwner<?, ? extends LandownerLevel> leveled, Resident resident) {
+    public LandownerLeveledEvent(@NotNull LandOwner<?, ? extends LandownerLevel> leveled, @Nullable Resident resident) {
         this.leveled = leveled;
         this.resident = resident;
     }
-    public LandOwner<?, ? extends LandownerLevel> getLeveled() {
+    public @NotNull LandOwner<?, ? extends LandownerLevel> getLeveled() {
         return leveled;
     }
 
-    public Resident getResident() {
+    public @Nullable Resident getResident() {
         return resident;
     }
 
