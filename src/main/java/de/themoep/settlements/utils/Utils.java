@@ -74,9 +74,7 @@ public class Utils {
 
     public static boolean isWorldClaimable(World world) {
         return !Config.Claiming.DISABLED_WORLDS.contains(world.getName())
-                && !Config.Settlement.Claiming.DISABLED_WORLDS.contains(world.getName())
-                && (!Config.Empire.Claiming.ENABLED || Config.Empire.Claiming.DISABLED_WORLDS.contains(world.getName()))
-                && EmpireManager.getInstance().getEmpireFromWorld(world) != null;
+                || EmpireManager.getInstance().getEmpireFromWorld(world) != null;
     }
 
     public static int getTeleportDelay(String type) {
