@@ -32,7 +32,6 @@ import com.Acrobot.ChestShop.Utils.ItemUtil;
 import com.Acrobot.ChestShop.Utils.uBlock;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import io.papermc.lib.PaperLib;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.EmpireManager;
@@ -139,7 +138,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             for (SimpleChunkLocation chunkLocation : chunks) {
                 World world = Bukkit.getWorld(chunkLocation.getWorld());
                 if (world != null) {
-                    PaperLib.getChunkAtAsync(world, chunkLocation.getX(), chunkLocation.getZ()).thenAccept(this::removeInChunk);
+                    SettlementsPlugin.getInstance().getServerAdapter().getChunkAtAsync(world, chunkLocation.getX(), chunkLocation.getZ()).thenAccept(this::removeInChunk);
                 }
             }
         });

@@ -12,7 +12,13 @@ import net.md_5.bungee.chat.BaseComponentSerializer;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.chat.TextComponentSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.command.CommandMap;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -23,6 +29,8 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
 
 public class PaperAdapter implements ServerAdapter {
@@ -66,5 +74,25 @@ public class PaperAdapter implements ServerAdapter {
         return (ItemMeta) bookMeta.pages(pages.stream()
                 .map(c -> GsonComponentSerializer.builder().build().deserialize(ComponentSerializer.toString(c)))
                 .collect(Collectors.toList()));
+    }
+
+    @Override
+    public CompletableFuture<Boolean> teleportAsync(Entity entity, Location location) {
+        return entity.teleportAsync(location);
+    }
+
+    @Override
+    public CompletionStage<Chunk> getChunkAtAsync(Location location) {
+        return location.getWorld().getChunkAtAsync(location);
+    }
+
+    @Override
+    public CompletionStage<Chunk> getChunkAtAsync(World world, int x, int z) {
+        return world.getChunkAtAsync(x, z);
+    }
+
+    @Override
+    public BlockState getBlockState(Block block, boolean snapshot) {
+        return block.getState(snapshot);
     }
 }

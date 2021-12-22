@@ -1,8 +1,14 @@
 package de.themoep.settlements.utils.adapter;
 
 import net.md_5.bungee.api.chat.BaseComponent;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.command.CommandMap;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -14,6 +20,8 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public interface ServerAdapter {
 
@@ -79,4 +87,36 @@ public interface ServerAdapter {
      * @return The book
      */
     ItemMeta createBookMeta(BookMeta bookMeta, String title, String author, List<BaseComponent[]> pages);
+
+    /**
+     * Teleport somewhere, async if possible
+     * @param entity    The entity to teleport
+     * @param location  The location
+     * @return A completable future for when the teleport was finished (or not)
+     */
+    CompletableFuture<Boolean> teleportAsync(Entity entity, Location location);
+
+    /**
+     * Get a chunk, async if possible
+     * @param location  The location to get the chunk at
+     * @return A completable future for when the chunk is loaded (or not)
+     */
+    CompletionStage<Chunk> getChunkAtAsync(Location location);
+
+    /**
+     * Get a chunk, async if possible
+     * @param world The world
+     * @param x     Chunk x coordinate
+     * @param z     Chunk z coordinate
+     * @return A completable future for when the chunk is loaded (or not)
+     */
+    CompletionStage<Chunk> getChunkAtAsync(World world, int x, int z);
+
+    /**
+     * Get a block state, optionally without creating a snapshot
+     * @param block     The block to get the state of
+     * @param snapshot  Whether to create a snapshot copy
+     * @return The state
+     */
+    BlockState getBlockState(Block block, boolean snapshot);
 }

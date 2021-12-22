@@ -5,9 +5,15 @@ import com.mojang.authlib.properties.Property;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.command.CommandMap;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -20,6 +26,8 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
 
 public class SpigotAdapter implements ServerAdapter {
@@ -90,5 +98,25 @@ public class SpigotAdapter implements ServerAdapter {
         bookMeta.setAuthor(author);
         bookMeta.setPages(pages.stream().map(TextComponent::toLegacyText).collect(Collectors.toList()));
         return bookMeta;
+    }
+
+    @Override
+    public CompletableFuture<Boolean> teleportAsync(Entity entity, Location location) {
+        return CompletableFuture.completedFuture(entity.teleport(entity));
+    }
+
+    @Override
+    public CompletionStage<Chunk> getChunkAtAsync(Location location) {
+        return CompletableFuture.completedFuture(location.getChunk());
+    }
+
+    @Override
+    public CompletionStage<Chunk> getChunkAtAsync(World world, int x, int z) {
+        return CompletableFuture.completedFuture(world.getChunkAt(x, z));
+    }
+
+    @Override
+    public BlockState getBlockState(Block block, boolean snapshot) {
+        return block.getState();
     }
 }

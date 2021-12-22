@@ -10,7 +10,6 @@ import de.themoep.settlements.perk.events.PerkUnlockedEvent;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
-import io.papermc.lib.PaperLib;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
@@ -691,7 +690,7 @@ public class EmpireManager {
             for (Map.Entry<Player, Location> e : positions.entrySet()) {
                 if (e.getKey().isOnline()) {
                     e.getValue().setWorld(newWorld);
-                    PaperLib.teleportAsync(e.getKey(), e.getValue());
+                    SettlementsPlugin.getInstance().getServerAdapter().teleportAsync(e.getKey(), e.getValue());
                 }
             }
         }

@@ -2,7 +2,6 @@ package de.themoep.settlements.integration;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import io.papermc.lib.PaperLib;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.utils.Utils;
 import org.apache.commons.io.FileUtils;
@@ -131,7 +130,7 @@ public class MultiverseIntegration {
         for (Map.Entry<Player, Location> e : positions.entrySet()) {
             if (e.getKey().isOnline()) {
                 e.getValue().setWorld(newWorld);
-                PaperLib.teleportAsync(e.getKey(), e.getValue());
+                SettlementsPlugin.getInstance().getServerAdapter().teleportAsync(e.getKey(), e.getValue());
             }
         }
         return newWorld;

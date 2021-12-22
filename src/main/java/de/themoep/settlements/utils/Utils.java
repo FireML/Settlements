@@ -2,13 +2,11 @@ package de.themoep.settlements.utils;
 
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
-import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import de.themoep.settlements.settlement.Settlement;
-import io.papermc.lib.PaperLib;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.chat.ChatColorType;
@@ -377,7 +375,7 @@ public class Utils {
             return false;
         }
         return teleport(messages, player, type, () -> {
-            PaperLib.getChunkAtAsync(loc).thenAccept(c -> {
+            SettlementsPlugin.getInstance().getServerAdapter().getChunkAtAsync(loc).thenAccept(c -> {
                 if (c == null) {
                     messages.getError("destination-obstructed").tell(player);
                     SettlementsPlugin.logDebug("Could not load chunk at " + loc);
@@ -400,7 +398,7 @@ public class Utils {
 
                 player.sendBlockChange(down.getLocation(), down.getBlockData());
                 loc.setY(block.getY());
-                PaperLib.teleportAsync(player, loc).thenAccept(success -> {
+                SettlementsPlugin.getInstance().getServerAdapter().teleportAsync(player, loc).thenAccept(success -> {
                     String path = success ? "success" : "fail";
                     messages.getMessage(path).tell(player, replacements);
                     new TitleBuilder()
@@ -444,7 +442,7 @@ public class Utils {
                 SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not execute spawn teleport command? Is " + command + " a valid command?");
             }
         } else {
-            PaperLib.teleportAsync(target, Bukkit.getWorlds().get(0).getSpawnLocation());
+            SettlementsPlugin.getInstance().getServerAdapter().teleportAsync(target, Bukkit.getWorlds().get(0).getSpawnLocation());
         }
     }
 

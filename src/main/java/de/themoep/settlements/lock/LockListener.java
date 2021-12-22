@@ -13,7 +13,6 @@ import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.world.SimpleChunkLocation;
-import io.papermc.lib.PaperLib;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.LandManager;
@@ -421,7 +420,7 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
     }
 
     private boolean checkForHopperLock(Player player, Block block) {
-        if (!block.isEmpty() && PaperLib.getBlockState(block, false).getState() instanceof InventoryHolder) {
+        if (!block.isEmpty() && SettlementsPlugin.getInstance().getServerAdapter().getBlockState(block, false) instanceof InventoryHolder) {
             // we use the alternative hopper protection, check if the hopper is placed below a container!
             Lock lock = LockManager.getInstance().getLock(block);
             if (lock != null && !lock.isAllowHoppers() && !lock.canAccess(player)) {

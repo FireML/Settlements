@@ -5,8 +5,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Table;
 import de.themoep.settlements.command.portal.PortalCommand;
-import de.themoep.settlements.settlement.SettlementManager;
-import io.papermc.lib.PaperLib;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.db.DatabaseManager;
@@ -312,7 +310,7 @@ public class PortalManager {
         Bukkit.getPluginManager().callEvent(portalEvent);
         if (!portalEvent.isCancelled()) {
             Location finalLocation = portalEvent.getTo();
-            PaperLib.getChunkAtAsync(location).thenAccept(c -> {
+            SettlementsPlugin.getInstance().getServerAdapter().getChunkAtAsync(location).thenAccept(c -> {
                 if (c == null) {
                     Message.get("error.destination-obstructed").tell(player);
                     SettlementsPlugin.logDebug("Could not load chunk at " + finalLocation);
@@ -335,7 +333,7 @@ public class PortalManager {
                 }
 
                 player.sendBlockChange(down.getLocation(), down.getBlockData());
-                PaperLib.teleportAsync(player, down.getRelative(BlockFace.UP).getLocation().add(0.5, 0, 0.5)).thenAccept(success -> {
+                SettlementsPlugin.getInstance().getServerAdapter().teleportAsync(player, down.getRelative(BlockFace.UP).getLocation().add(0.5, 0, 0.5)).thenAccept(success -> {
                     if (!success) {
                         Message.get("error.destination-obstructed").tell(player);
                         SettlementsPlugin.logDebug("Failed to teleport " + player.getName() + " to " + finalLocation);
