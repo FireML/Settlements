@@ -128,6 +128,9 @@ public class UpgradeGUI extends ConfigurableGui {
             if (nextLevel != null) {
                 Collection<? extends LevelPerk> perks = selected.getPerks(nextLevel.getLevel());
                 List<String> benefits = new ArrayList<>();
+                if (nextLevel instanceof NpcLevel && ((NpcLevel) nextLevel).getUpkeep() > 0) {
+                    benefits.add("NPC Upkeep: " + ((NpcLevel) nextLevel).getUpkeep());
+                }
                 if (nextLevel instanceof LandownerLevel && level instanceof  LandownerLevel) {
                     if (((LandownerLevel) nextLevel).getSize() > ((LandownerLevel) level).getSize()) {
                         benefits.add(((LandownerLevel) nextLevel).getSize() + " Members");
@@ -160,9 +163,6 @@ public class UpgradeGUI extends ConfigurableGui {
                             benefits.add(((EmpireLevel) nextLevel).getUpkeepReduction() + " Upkeep Reduction");
                         }
                     }
-                }
-                if (nextLevel instanceof NpcLevel) {
-                    benefits.add("$" + ((NpcLevel) nextLevel).getUpkeep() + " Upkeep");
                 }
                 List<String> benefitTexts = perks.stream()
                         .map(p -> getText("benefit",
