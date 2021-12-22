@@ -77,6 +77,8 @@ public class CitizensIntegration implements Listener, ConfigMessages {
 
         SubCommand settlementCommand = CommandManager.getInstance().getCommand("settlement");
         settlementCommand.registerCommand(new NpcCommand(this, settlementCommand, Resident::getSettlement));
+        SubCommand empireCommand = CommandManager.getInstance().getCommand("empire");
+        empireCommand.registerCommand(new NpcCommand(this, empireCommand, r -> r.hasEmpire() ? r.getSettlement().getEmpire() : null));
         SettlementsPlugin.getInstance().getServer().getPluginManager().registerEvents(this, SettlementsPlugin.getInstance());
     }
 

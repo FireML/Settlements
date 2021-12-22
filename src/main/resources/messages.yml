@@ -3717,6 +3717,15 @@ command:
     missions:
       wait-for-missions: "&c&lYou do not have any missions from your {state} yet. Wait for the next distribution!"
       description: View missions available to your settlement
+    npc:
+      skin:
+        success: "&aSuccessfully changed the skin of your {state} {type}"
+        description: Change an NPC's skin
+      teleport:
+        success: "&aTeleported your {state} {type} to your location"
+        requires-home: "&cCan't move &e{npc}&c here as it requires a claim connected to your home!"
+        description: Move NPCs
+      description: Manage your NPCs
     officer:
       description: Members that should have officer build access
     ranks:
