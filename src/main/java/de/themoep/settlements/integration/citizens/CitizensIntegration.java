@@ -364,6 +364,7 @@ public class CitizensIntegration implements Listener, ConfigMessages {
             if (npcData.getNpcId() > -1) {
                 NPC npc = CitizensAPI.getNPCRegistry().getById(npcData.getNpcId());
                 if (npc != null) {
+                    SettlementsPlugin.logDebug("Despawning NPC " + npcData.getType() + " due to abandonment of " + event.getLandOwner().getStateTag() + " " + event.getLandOwner().getName());
                     npc.despawn();
                     CitizensAPI.getNPCRegistry().deregister(npc);
                     if (npc.getEntity() != null) {
@@ -383,6 +384,7 @@ public class CitizensIntegration implements Listener, ConfigMessages {
                     if (event.getLand().getLandOwner().getHome() != null) {
                         npc.teleport(event.getLand().getLandOwner().getHome().toBukkitLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                     } else {
+                        SettlementsPlugin.logDebug("Despawning NPC " + npcData.getType() + " due to unclaim of " + event.getLandOwner().getStateTag() + " " + event.getLandOwner().getName() + " land at " + event.getLand().getKey());
                         npc.despawn();
                         if (npc.getEntity() != null) {
                             npc.getEntity().remove();
@@ -505,6 +507,7 @@ public class CitizensIntegration implements Listener, ConfigMessages {
                 if (npc.getEntity() != null) {
                     npc.getEntity().remove();
                 }
+                SettlementsPlugin.logDebug("Despawning NPC " + type + " due to land landowner " + ownerType + " id:" + ownerId + " not being found?");
                 return;
             }
             int range = Config.Citizens.TALK_RANGE;

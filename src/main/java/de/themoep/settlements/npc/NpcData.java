@@ -88,6 +88,18 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
     }
 
     @Override
+    public String toString() {
+        return "NpcData{" +
+                "id=" + id +
+                ", owner=" + owner +
+                ", npcId=" + npcId +
+                ", type=" + type +
+                ", level=" + level +
+                ", npcSkinName='" + npcSkinName + '\'' +
+                '}';
+    }
+
+    @Override
     public String name() {
         return type.getKey();
     }
