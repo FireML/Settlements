@@ -241,7 +241,7 @@ public class SettingsGUI extends PlotGUI {
                             Message.get("command.plot.unlink.disconnected").tell(resident, "amount", String.valueOf(linked));
                         } else if (currentLand.isPlot()) {
                             gui.close();
-                            Utils.runAsync(() -> new ChatMap(resident.getPlayer(), currentLand.getMapKey()));
+                            Utils.runAsync(() -> new ChatMap(resident.getPlayer(), currentLand.getLandOwner(), currentLand.getMapKey()));
                         }
                     }
                 }

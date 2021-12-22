@@ -35,10 +35,12 @@ public class ChatMap {
     private static final int HEIGHT = 13;
     private static final int WIDTH = 29;
     private final ConfigMessages messages;
-    private List<RowEnd> rowEnds;
+    private final List<RowEnd> rowEnds;
+    private final LandOwner<?, ?> landOwner;
 
-    public ChatMap(Player player, ConfigMessages messages) {
+    public ChatMap(Player player, LandOwner<?, ?> landOwner, ConfigMessages messages) {
         this.messages = messages;
+        this.landOwner = landOwner;
         MapGenerator generator = new ChatMap.MapGenerator(player);
         BaseComponent[][][] map = generator.getComponents();
         rowEnds = generator.getRowEnds();
@@ -145,7 +147,7 @@ public class ChatMap {
         private boolean canUnclaimCoords = false;
         private boolean canLinkPlot;
 
-        private Set<RowEnd> legend = EnumSet.of(RowEnd.UNCLAIMED, RowEnd.CURRENT);
+        private final Set<RowEnd> legend = EnumSet.of(RowEnd.CURRENT);
 
         public MapGenerator(Player p) {
             this.playerLand = LandManager.getInstance().getLand(p.getLocation());
@@ -188,8 +190,8 @@ public class ChatMap {
             OwnedLand land = LandManager.getInstance().getLand(x, z, world);
             if (land == null) {
                 ComponentBuilder cb = new ComponentBuilder((current ? Symbol.CURRENT : Symbol.NORMAL).getText());
-                if (claimable && resident.hasSettlement() && canClaimCoords) {
-                    cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/settlement claim " + x + " " + z + " map"));
+                if (landOwner != null && claimable && canClaimCoords) {
+                    cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + landOwner.getKey() + " claim " + x + " " + z + " map"));
                     cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(messages.getMessage("hover.click-to-claim")
                             .getReplacedComponents(
                                     "location", x + "-" + z,
@@ -199,6 +201,7 @@ public class ChatMap {
                                     "z", String.valueOf(z)
                             ))));
                 }
+                legend.add(RowEnd.UNCLAIMED);
                 return cb.color(Relation.UNCLAIMED.getColor()).create();
             }
             Symbol symbol = Symbol.NORMAL;
@@ -208,14 +211,7 @@ public class ChatMap {
                 symbol = Symbol.OUTPOST;
             }
 
-            if (land.getLandOwner().isMember(resident)) {
-                if (land.getLandOwner() instanceof Empire) {
-                    legend.add(RowEnd.EMPIRE_LAND);
-                    relation = Relation.OWN_EMPIRE;
-                } else {
-                    legend.add(RowEnd.OWN_LAND);
-                    relation = Relation.OWN;
-                }
+            if (land.isOwnedBy(landOwner)) {
                 if (land.isForSale()) {
                     legend.add(RowEnd.FOR_SALE);
                     symbol = Symbol.FOR_SALE;
@@ -224,11 +220,20 @@ public class ChatMap {
                     legend.add(RowEnd.HOME);
                     symbol = Symbol.HOME;
                 }
+            }
+            if (land.getLandOwner().isMember(resident)) {
+                if (land.getLandOwner() instanceof Empire) {
+                    legend.add(RowEnd.EMPIRE_LAND);
+                    relation = Relation.OWN_EMPIRE;
+                } else {
+                    legend.add(RowEnd.OWN_LAND);
+                    relation = Relation.OWN;
+                }
 
-            } else if (resident.hasSettlement() && resident.getSettlement().isAlly(land.getLandOwner())) {
+            } else if (landOwner != null && landOwner.isAlly(land.getLandOwner())) {
                 legend.add(RowEnd.ALLY);
                 relation = Relation.ALLY;
-            } else if (resident.hasEmpire() && resident.getSettlement().isTrusted(land.getLandOwner())) {
+            } else if (landOwner != null && landOwner.isTrusted(land.getLandOwner())) {
                 legend.add(RowEnd.EMPIRE);
                 relation = Relation.EMPIRE;
             } else {
@@ -313,14 +318,14 @@ public class ChatMap {
                         cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plot link " + x + " " + z + " map"));
                     }
                 }
-            } else if (claimable && canUnclaimCoords && land.isOwnedBy(resident.getSettlement())) {
+            } else if (claimable && canUnclaimCoords && land.isOwnedBy(landOwner)) {
                 hover.append("\n").append(messages.getMessage("hover.click-to-unclaim")
                         .getReplacedComponents(
                                 "location", x + "-" + z,
                                 "x", String.valueOf(x),
                                 "z", String.valueOf(z)
                         ));
-                cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/settlement unclaim " + x + " " + z + " map"));
+                cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + landOwner.getKey() + " unclaim " + x + " " + z + " map"));
             }
 
             return cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hover.create()))).create();

@@ -3009,7 +3009,7 @@ command:
       sender: "{title} {name}, {settlementstate} {settlementname}"
       sent: "&a&lSUCCESS &r&7Sent mail to {amount} settlement members!"
     map:
-      head: "&a⊱&m━━━━━━━━━━━━━━━&r&6Map&a&m━━━━━━━━━━━━━━&a⊰"
+      head: "&a⊱&m━━━━━━━━━━━━━━━&r&6Settlement Map&a&m━━━━━━━━━━━━━━&a⊰"
       explanations:
         own-land: "&r &a- &6= your land"
         empire-land: "&r &2- &6= your Empire land"
@@ -3026,15 +3026,17 @@ command:
         current: "&r &7+ &6= current"
       not-for-sale: "Not for sale"
       hover:
-        click-to-claim: "&9Click to claim &f{x}&9/&f{z}"
-        click-to-unclaim: "&9Click to unclaim &f{x}&9/&f{z}"
+        click-to-claim: |-
+          &bClick to claim &f{x}&9/&f{z}
+          &bfor your settlement
+        click-to-unclaim: "&bClick to unclaim &f{x}&9/&f{z}"
         linked: "&7Linked to &f{linked}&7 other plots. (ID: {linkgroup})"
         click-to-link: |-
-          &9Click to link &f{x}&9/&f{z}
-          &9to your current plot
+          &bClick to link &f{x}&9/&f{z}
+          &bto your current plot
         click-to-unlink: |-
-          &9Click to unlink &f{x}&9/&f{z}
-          &9from your current plot
+          &bClick to unlink &f{x}&9/&f{z}
+          &bfrom your current plot
         own-plot: Your plot
         plot: "Plot Owner: &7{owner}"
         embassy: "Embassy Owner: &7{owner}"
@@ -3704,7 +3706,7 @@ command:
       cant-regen: "&c&l(!) &r&7Can't regenerate empire! Please contact an admin!"
       description: Regenerates the empire empire world
     map:
-      head: "&a⊱&m━━━━━━━━━━━━━━━&r&6Map&a&m━━━━━━━━━━━━━━&a⊰"
+      head: "&a⊱&m━━━━━━━━━━━━━━━&r&6Empire Map&a&m━━━━━━━━━━━━━━&a⊰"
       explanations:
         own-land: "&r &a- &6= your land"
         empire-land: "&r &2- &6= your Empire land"
@@ -3721,15 +3723,17 @@ command:
         current: "&r &7+ &6= current"
       not-for-sale: "Not for sale"
       hover:
-        click-to-claim: "&9Click to claim &f{x}&9/&f{z}"
-        click-to-unclaim: "&9Click to unclaim &f{x}&9/&f{z}"
+        click-to-claim: |-
+          &bClick to claim &f{x}&9/&f{z}
+          &bfor your Empire
+        click-to-unclaim: "&bClick to unclaim &f{x}&9/&f{z}"
         linked: "&7Linked to &f{linked}&7 other plots. (ID: {linkgroup})"
         click-to-link: |-
-          &9Click to link &f{x}&9/&f{z}
-          &9to your current plot
+          &bClick to link &f{x}&9/&f{z}
+          &bto your current plot
         click-to-unlink: |-
-          &9Click to unlink &f{x}&9/&f{z}
-          &9from your current plot
+          &bClick to unlink &f{x}&9/&f{z}
+          &bfrom your current plot
         own-plot: Your plot
         plot: "Plot Owner: &7{owner}"
         embassy: "Embassy Owner: &7{owner}"

@@ -30,7 +30,7 @@ public class PlotUnlinkCommand extends PlotSubCommand {
             }
             return true;
         } else if (args.length == 1 && "map".equalsIgnoreCase(args[0])) {
-            Utils.runAsync(() -> new ChatMap(res.getPlayer(), land.getMapKey()));
+            Utils.runAsync(() -> new ChatMap(res.getPlayer(), land.getLandOwner(), land.getMapKey()));
         } else if (args.length >= 2) {
             try {
                 int x = Integer.parseInt(args[0]);
@@ -51,7 +51,7 @@ public class PlotUnlinkCommand extends PlotSubCommand {
                             Utils.runAsync(() -> {
                                 DatabaseManager.getInstance().saveLand(toSave);
                                 if (args.length >= 3 && "map".equalsIgnoreCase(args[2])) {
-                                    new ChatMap(res.getPlayer(), land.getMapKey());
+                                    new ChatMap(res.getPlayer(), land.getLandOwner(), land.getMapKey());
                                 }
                             });
                         }

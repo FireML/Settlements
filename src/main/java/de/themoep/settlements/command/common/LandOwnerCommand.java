@@ -205,7 +205,7 @@ public interface LandOwnerCommand extends ConfigMessages {
             Utils.runAsync(() -> {
                 DatabaseManager.getInstance().saveLand(toSave);
                 if (args.length >= 3 && "map".equalsIgnoreCase(args[2])) {
-                    new ChatMap(res.getPlayer(), toSave.get(0).getMapKey());
+                    new ChatMap(res.getPlayer(), landOwner, toSave.get(0).getMapKey());
                 }
             });
         }
@@ -317,7 +317,7 @@ public interface LandOwnerCommand extends ConfigMessages {
                 }
                 if (args.length >= 3 && "map".equalsIgnoreCase(args[2])) {
                     ConfigMessages configMessages = unclaimedLand.iterator().next().getMapKey();
-                    Utils.runAsync(() -> new ChatMap(res.getPlayer(), configMessages));
+                    Utils.runAsync(() -> new ChatMap(res.getPlayer(), landOwner, configMessages));
                 }
                 LandManager.getInstance().unclaimLand(unclaimedLand);
 

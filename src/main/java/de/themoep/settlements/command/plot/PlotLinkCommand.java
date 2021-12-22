@@ -23,7 +23,7 @@ public class PlotLinkCommand extends PlotSubCommand {
     @Override
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
         if (args.length == 1 && "map".equalsIgnoreCase(args[0])) {
-            Utils.runAsync(() -> new ChatMap(res.getPlayer(), land.getMapKey()));
+            Utils.runAsync(() -> new ChatMap(res.getPlayer(), land.getLandOwner(), land.getMapKey()));
         } else if (args.length == 1 && "all".equalsIgnoreCase(args[0])) {
             Collection<OwnedLand> connected = LandManager.getInstance().getAllConnectedLand(land, search -> {
                 if (!search.isPlotOwner(res)) {
@@ -99,7 +99,7 @@ public class PlotLinkCommand extends PlotSubCommand {
                     Utils.runAsync(() -> {
                         DatabaseManager.getInstance().saveLand(toSave);
                         if (args.length >= 3 && "map".equalsIgnoreCase(args[2])) {
-                            new ChatMap(res.getPlayer(), land.getMapKey());
+                            new ChatMap(res.getPlayer(), land.getLandOwner(), land.getMapKey());
                         }
                     });
                 } else {
