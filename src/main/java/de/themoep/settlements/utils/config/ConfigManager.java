@@ -102,7 +102,7 @@ public class ConfigManager {
                         && ((Collection) object).iterator().next() instanceof String) {
                     return new LinkedHashSet<>((Collection<String>) object);
                 }
-                return object;
+                return new LinkedHashSet<String>();
             }
             @Override
             public Object toYaml(Object object) {
@@ -115,8 +115,8 @@ public class ConfigManager {
         registerParser("MaterialSet", new TypelessConfigParser() {
             @Override
             public Object toJava(Object object) {
+                EnumSet<Material> set = EnumSet.noneOf(Material.class);
                 if (object instanceof Collection) {
-                    EnumSet<Material> set = EnumSet.noneOf(Material.class);
                     for (Object o : (Collection) object) {
                         if (o instanceof Material) {
                             set.add((Material) o);
@@ -142,9 +142,8 @@ public class ConfigManager {
                             }
                         }
                     }
-                    return set;
                 }
-                return object;
+                return set;
             }
 
             @Override
