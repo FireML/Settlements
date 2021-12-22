@@ -49,8 +49,10 @@ public class PermsGUI extends SettlementsGUI {
         GuiElementGroup flagGroup = createGroup('u');
         for (UseGroup group : UseFlagManager.getInstance().getGroups()) {
             List<String> flagsList = new ArrayList<>();
-            for (UseFlag flag : group.getUseFlags()) {
-                flagsList.add(getText("flag-line", "name", flag.getTag()));
+            if (group.getUseFlags().size() > 1) {
+                for (UseFlag flag : group.getUseFlags()) {
+                    flagsList.add(getText("flag-line", "name", flag.getTag()));
+                }
             }
 
             flagGroup.addElement(new DynamicGuiElement('u', h -> {
