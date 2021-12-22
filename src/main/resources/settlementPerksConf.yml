@@ -78,15 +78,15 @@ speed1:
   cost:
     unlock:
       cash: 1000
-mapplot:
-  state: kingdom
-  icon: map
-  level: 2
-  actions:
-    plot: true
-  cost:
-    unlock:
-      cash: 0
+#mapplot:
+#  state: kingdom
+#  icon: map
+#  level: 2
+#  actions:
+#    plot: true
+#  cost:
+#    unlock:
+#      cash: 0
 strength1:
   state: kingdom
   level: 3
