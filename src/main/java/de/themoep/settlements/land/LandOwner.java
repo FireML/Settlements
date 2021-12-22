@@ -988,7 +988,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         landOwner.setAllowAllyClaim(Utils.getBoolean(map.get("allowAllyClaim")));
 
         for (Banished banished : ((Collection<Banished>) map.get("banished"))) {
-            landOwner.banished.put(banished.getType(), banished.getId(), banished);
+            landOwner.banished.put(banished.getType(), banished.getBanishedId(), banished);
         }
         landOwner.getUnbanished().addAll(((Collection<Unbanished>) map.get("unbanished")));
         ((Map<String, Object>) map.get("vault")).entrySet().stream()
