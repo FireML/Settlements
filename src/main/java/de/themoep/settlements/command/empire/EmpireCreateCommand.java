@@ -53,7 +53,7 @@ public class EmpireCreateCommand extends SettlementSubCommand {
                     "capital", resident.getSettlement().getName(),
                     "capitalstate", resident.getSettlement().getState().getTag(),
                     "player", resident.getName());
-            EmpireManager.getInstance().registerNewEmpire(empire);
+            EmpireManager.getInstance().registerNewEmpire(resident, empire);
             getMessage("success").tell(resident,
                     "name", empire.getName(),
                     "cost", Utils.CURRENCY_FORMAT.format(Config.Empire.CREATION_COST),

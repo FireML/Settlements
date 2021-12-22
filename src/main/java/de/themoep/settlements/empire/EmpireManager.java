@@ -4,9 +4,9 @@ import co.aikar.timings.lib.MCTiming;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.events.LandownerAbandonedEvent;
+import de.themoep.settlements.land.events.LandownerCreatedEvent;
 import de.themoep.settlements.land.events.LandownerLeveledEvent;
 import de.themoep.settlements.npc.NpcType;
-import de.themoep.settlements.perk.events.PerkUnlockedEvent;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
@@ -259,7 +259,7 @@ public class EmpireManager {
         return perks.values();
     }
 
-    public void registerNewEmpire(Empire empire) {
+    public void registerNewEmpire(Resident resident, Empire empire) {
         if (!empire.getId().isNull()) {
             SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving empire " + empire.getName() + " to the database! It already had an ID defined?");
             return;
@@ -288,6 +288,9 @@ public class EmpireManager {
                         }
                     });
                 }
+                Utils.runSync(() -> {
+                    Utils.callEvent(new LandownerCreatedEvent(empire, resident));
+                });
             } else {
                 SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving empire " + empire.getName() + " to the database! No ID was returned.");
             }

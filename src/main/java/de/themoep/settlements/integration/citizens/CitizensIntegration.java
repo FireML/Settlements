@@ -93,7 +93,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
     }
 
     @EventHandler
-    public void onSettlementCreate(LandownerCreatedEvent event) {
+    public void onCreate(LandownerCreatedEvent event) {
         for (NpcType npc : event.getLandOwner().getLevelInfo().getNPCs()) {
             if (unlockNpc(event.getResident(), event.getLandOwner(), npc)
                     && event.getLandOwner().getHome() != null) {
@@ -389,7 +389,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
     }
 
     @EventHandler
-    public void onSettlementDisband(LandownerAbandonedEvent event) {
+    public void onDisband(LandownerAbandonedEvent event) {
         for (NpcData npcData : event.getLandOwner().getNpcData()) {
             if (npcData.getNpcId() > -1) {
                 NPC npc = CitizensAPI.getNPCRegistry().getById(npcData.getNpcId());
