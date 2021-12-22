@@ -11,6 +11,7 @@ import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.lock.Lock;
 import de.themoep.settlements.missions.MissionTaker;
+import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.IdObject;
@@ -109,6 +110,10 @@ public abstract class DatabaseManager {
     public abstract Collection<Settlement> getAllSettlements();
 
     public abstract Collection<SettlementInvite> getSettlementInvites();
+
+    public abstract void addNewNpc(NpcData npcData);
+
+    public abstract void saveNpc(NpcData npcData);
 
     public abstract <T extends Targetable & DatabaseSerializable, S extends Targetable & DatabaseSerializable> void save(Invite<T,S> invite);
 

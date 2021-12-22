@@ -17,7 +17,7 @@ public class LandownerLeveledEvent extends Event {
 
     private final Resident resident;
 
-    public LandownerLeveledEvent(@NotNull LandOwner<?, ? extends LandownerLevel> leveled, @Nullable Resident resident) {
+    public LandownerLeveledEvent(@NotNull LandOwner<?, ? extends LandownerLevel> leveled, @NotNull Resident resident) {
         this.leveled = leveled;
         this.resident = resident;
     }
@@ -25,7 +25,7 @@ public class LandownerLeveledEvent extends Event {
         return leveled;
     }
 
-    public @Nullable Resident getResident() {
+    public @NotNull Resident getResident() {
         return resident;
     }
 

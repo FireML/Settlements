@@ -79,7 +79,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     private SaveQueue<Portal> portalQueue;
     private SaveQueue<Consumer<Connection>> lockQueue;
     private SaveQueue<Invite<?, ?>> inviteQueue;
-    private SaveQueue<Ally> allyQueue;
+    private SaveQueue<NpcData> npcQueue;
 
     @Override
     public void connect() throws Exception {
@@ -100,6 +100,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         portalQueue = new SaveQueue<>("portal", this, queueSize, queueWait, this::savePortal);
         lockQueue = new SaveQueue<>("lock", this, queueSize, queueWait, (conn, consumer) -> consumer.accept(conn));
         inviteQueue = new SaveQueue<>("invite", this, queueSize, queueWait, this::saveInvite);
+        npcQueue = new SaveQueue<>("npc", this, queueSize, queueWait, this::saveNpc);
 
         initializeTables();
     }
@@ -124,6 +125,11 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     public void addNewEmpire(Empire empire) {
         Utils.catchSync();
         saveEmpire(getConnection(), empire);
+        if (!empire.getId().isNull()) {
+            for (NpcData data : empire.getNpcData()) {
+                saveNpc(data);
+            }
+        }
     }
 
     @Override
@@ -149,13 +155,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                         empire.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
                 updateDataMap(conn, "empire_perks", "empireId", (Integer) empire.getId().value(), "perk", "",
                         empire.getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
-                updateDataMap(conn, "empire_npcs", "empireId", (Integer) empire.getId().value(), "type", "",
-                        empire.getNpcData().stream().collect(Collectors.toMap(e -> e.getType().name(), e -> {
-                            Map<String, Object> map = e.serialize();
-                            map.remove("type");
-                            map.remove("id");
-                            return map;
-                        })));
                 updateDataMap(conn, "empire_permissions", "empireId", (Integer) empire.getId().value(), "rank", "permission", empire.getRanksPermissions(), "value");
                 updateDataMap(conn, "empire_titles", "empireId", (Integer) empire.getId().value(), "rank", "title", empire.getRankTitles());
                 updateDataMap(conn, "empire_defaulttitles", "empireId", (Integer) empire.getId().value(), "rank", "title", empire.getDefaultRankTitles());
@@ -195,6 +194,11 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     public void addNewSettlement(Settlement settlement) {
         Utils.catchSync();
         saveSettlement(getConnection(), settlement);
+        if (!settlement.getId().isNull()) {
+            for (NpcData data : settlement.getNpcData()) {
+                saveNpc(data);
+            }
+        }
     }
 
     @Override
@@ -212,13 +216,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                         settlement.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
                 updateDataMap(conn, "settlement_perks", "settlementId", (Integer) settlement.getId().value(), "perk", "",
                         settlement.getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
-                updateDataMap(conn, "settlement_npcs", "settlementId", (Integer) settlement.getId().value(), "type", "",
-                        settlement.getNpcData().stream().collect(Collectors.toMap(e -> e.getType().name(), e -> {
-                            Map<String, Object> map = e.serialize();
-                            map.remove("type");
-                            map.remove("id");
-                            return map;
-                        })));
                 updateDataMap(conn, "settlement_permissions", "settlementId", (Integer) settlement.getId().value(), "rank", "permission", settlement.getRanksPermissions(), "value");
                 updateDataMap(conn, "settlement_titles", "settlementId", (Integer) settlement.getId().value(), "rank", "title", settlement.getRankTitles());
                 updateDataMap(conn, "settlement_defaulttitles", "settlementId", (Integer) settlement.getId().value(), "rank", "title", settlement.getDefaultRankTitles());
@@ -331,6 +328,31 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             } finally {
                 close(conn);
             }
+        }
+    }
+
+    @Override
+    public void addNewNpc(NpcData npcData) {
+        Utils.catchSync();
+        saveNpc(getConnection(), npcData);
+    }
+
+    @Override
+    public void saveNpc(NpcData npcData) {
+        npcQueue.add(npcData.getId(), npcData);
+        npcQueue.finishAdding();
+    }
+
+    private void saveNpc(Connection conn, NpcData npcData) {
+        if (npcData.getOwner().getId().isNull()) {
+            return;
+        }
+        try {
+            if (!save(conn, npcData, "vault").isNull()) {
+                updateDataMap(conn, npcData.getOwner().getDbName() + "_npc_vaults", "npcId", (Integer) npcData.getId().value(), "content", "amount", npcData.getVault());
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error while saving npc data " + npcData + " to database!", e);
         }
     }
 
@@ -1161,7 +1183,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         map.put("members", members);
 
         map.put("joinRequests", getJoinRequests(conn, "empire", id));
-        map.put("npcs", selectDeserializableList(conn, "empire", id, "npcs", NpcData.class));
         map.put("allies", selectDeserializableList(conn, "empire", id, "allies", Ally.class));
         map.put("allyRequests", getAllyRequests(conn, "empire", id));
         map.put("banished", selectDeserializableList(conn, "empire", id, "banished", Banished.class));
@@ -1170,6 +1191,19 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         map.put("uses", selectMap(conn, "empire_uses", "empireId", id, "type", "state", String.class));
         map.put("vault", selectMap(conn, "empire_vaults", "empireId", id, "content", "amount", Long.class));
         map.put("defaulttitles", selectMap(conn, "empire_defaulttitles", "empireId", id, "rank", "title", String.class));
+
+        PreparedStatement nSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_npcs WHERE empireId = ?;");
+        nSta.setInt(1, id);
+        ResultSet nRs = nSta.executeQuery();
+        List<NpcData> npcs = new ArrayList<>();
+        while (nRs.next()) {
+            Map<String, Object> npc = toMap(nRs);
+
+            npc.put("vault", selectMap(conn, "empire_npc_vaults", "npcId", (Integer) npc.get("id"), "content", "amount", Long.class));
+
+            npcs.add(NpcData.deserialize(npc));
+        }
+        map.put("npcs", npcs);
 
         PreparedStatement pSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_perks WHERE empireId = ?;");
         pSta.setInt(1, id);
@@ -1216,7 +1250,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         map.put("residents", residents);
 
         map.put("joinRequests", getJoinRequests(conn, "settlement", id));
-        map.put("npcs", selectDeserializableList(conn, "settlement", id, "npcs", NpcData.class));
         map.put("allies", selectDeserializableList(conn, "settlement", id, "allies", Ally.class));
         map.put("allyRequests", getAllyRequests(conn, "settlement", id));
         map.put("banished", selectDeserializableList(conn, "settlement", id, "banished", Banished.class));
@@ -1225,6 +1258,19 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         map.put("uses", selectMap(conn, "settlement_uses", "settlementId", id, "type", "state", String.class));
         map.put("vault", selectMap(conn, "settlement_vaults", "settlementId", id, "content", "amount", Long.class));
         map.put("defaulttitles", selectMap(conn, "settlement_defaulttitles", "settlementId", id, "rank", "title", String.class));
+
+        PreparedStatement nSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_npcs WHERE settlementId = ?;");
+        nSta.setInt(1, id);
+        ResultSet nRs = nSta.executeQuery();
+        List<NpcData> npcs = new ArrayList<>();
+        while (nRs.next()) {
+            Map<String, Object> npc = toMap(nRs);
+
+            npc.put("vault", selectMap(conn, "settlement_npc_vaults", "npcId", (Integer) npc.get("id"), "content", "amount", Long.class));
+
+            npcs.add(NpcData.deserialize(npc));
+        }
+        map.put("npcs", npcs);
 
         PreparedStatement oSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_outposts WHERE settlementId = ?;");
         oSta.setInt(1, id);

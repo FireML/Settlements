@@ -103,6 +103,15 @@ public enum MySqlTable {
             + "UNIQUE (empireId, type)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
+    EMPIRE_NPC_VAULT("CREATE TABLE IF NOT EXISTS {tablePrefix}empire_npc_vaults ("
+            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+            + "npcId INTEGER, INDEX(npcId),"
+            + "FOREIGN KEY (npcId) REFERENCES {tablePrefix}empire_npcs(id) ON DELETE CASCADE,"
+            + "content VARCHAR(255) NOT NULL,"
+            + "amount BIGINT,"
+            + "UNIQUE (npcId, content)"
+            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
+
     EMPIRE_USES("CREATE TABLE IF NOT EXISTS {tablePrefix}empire_uses ("
             + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
             + "empireId INTEGER, INDEX(empireId),"
@@ -232,6 +241,15 @@ public enum MySqlTable {
             + "level INTEGER NOT NULL,"
             + "npcSkinName VARCHAR(255) NOT NULL,"
             + "UNIQUE (settlementId, type)"
+            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
+
+    SETTLEMENT_NPC_VAULT("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_npc_vaults ("
+            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+            + "npcId INTEGER, INDEX(npcId),"
+            + "FOREIGN KEY (npcId) REFERENCES {tablePrefix}settlement_npcs(id) ON DELETE CASCADE,"
+            + "content VARCHAR(255) NOT NULL,"
+            + "amount BIGINT,"
+            + "UNIQUE (npcId, content)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     SETTLEMENT_USES("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_uses ("

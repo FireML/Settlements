@@ -100,7 +100,7 @@ public class MySqlDatabase extends SqlDatabaseManager {
 
         int i = 0;
         for (Object value : values.values()) {
-            sta.setObject(++i, value instanceof IdObject ? ((IdObject) value).value() : value);
+            sta.setObject(++i, toDbType(value));
         }
 
         sta.executeUpdate();

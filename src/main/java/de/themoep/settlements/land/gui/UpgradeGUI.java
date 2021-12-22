@@ -4,17 +4,14 @@ import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.db.DatabaseSerializable;
 import de.themoep.settlements.empire.EmpireLevel;
 import de.themoep.settlements.land.DepositGUI;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.LandownerLevel;
 import de.themoep.settlements.leveling.LevelInfo;
 import de.themoep.settlements.leveling.Levelable;
-import de.themoep.settlements.npc.NpcConfig;
 import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.npc.NpcLevel;
-import de.themoep.settlements.npc.NpcManager;
 import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.resident.Resident;
@@ -24,7 +21,6 @@ import de.themoep.settlements.utils.HumanReadable;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
@@ -87,7 +83,8 @@ public class UpgradeGUI extends ConfigurableGui {
                                 "name", levelable instanceof LandOwner
                                         ? ((LandOwner<?, ?>) levelable).getStateTag() + " " + ((LandOwner<?, ?>) levelable).getName()
                                         : levelable.getTag(),
-                                "type", levelable instanceof NpcData ? "npc" : levelable.getTag()
+                                "type", levelable instanceof NpcData ? "npc" : levelable.getTag(),
+                                "level", String.valueOf(levelable.getLevel())
             ))));
         }
 
@@ -109,7 +106,7 @@ public class UpgradeGUI extends ConfigurableGui {
                         icon = getIcon("requirement." + entry.getKey().toLowerCase(Locale.ROOT));
                     }
 
-                    boolean hasReached = landOwner.has(entry.getKey(), entry.getValue());
+                    boolean hasReached = selected.has(entry.getKey(), entry.getValue());
 
                     reqGroup.addElement(new StaticGuiElement('r', ItemUtils.setGlowing(icon, hasReached), getText("requirement." + (hasReached ? "reached" : "left"),
                             "name", HumanReadable.humanizedName(entry.getKey()),
@@ -162,6 +159,11 @@ public class UpgradeGUI extends ConfigurableGui {
                         }
                         if (((EmpireLevel) nextLevel).getUpkeepReduction() > ((EmpireLevel) level).getUpkeepReduction()) {
                             benefits.add(((EmpireLevel) nextLevel).getUpkeepReduction() + " Upkeep Reduction");
+                        }
+                    }
+                    if (!((LandownerLevel) nextLevel).getNPCs().isEmpty()) {
+                        for (NpcType npcType : ((LandownerLevel) nextLevel).getNPCs()) {
+                            benefits.add(npcType.getTag() + " NPC");
                         }
                     }
                 }
@@ -222,7 +224,7 @@ public class UpgradeGUI extends ConfigurableGui {
                         if (cursor.getAmount() <= 0) {
                             click.getEvent().setCursor(null);
                         }
-                        landOwner.add(type, added);
+                        selected.add(type, added);
                         if (!selected.checkLevelUp(resident)) {
                             selected.save();
                         }

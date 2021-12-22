@@ -1,7 +1,9 @@
 package de.themoep.settlements.npc;
 
 import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.DatabaseSerializable;
+import de.themoep.settlements.db.MySqlTable;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.integration.MailProvider;
@@ -19,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -33,6 +36,7 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
     private final NpcType type;
     private int level = 0;
     private String npcSkinName = "";
+    private Map<String, Long> vault = new HashMap<>();
 
     public NpcData(int npcId, NpcType type) {
         this.npcId = npcId;
@@ -62,36 +66,40 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
 
     @Override
     public void save() {
-        // TODO: Per NPC save?
-        owner.save();
+        DatabaseManager.getInstance().saveNpc(this);
     }
 
     @Override
     public LinkedHashMap<String, Object> serialize() {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("id", id.value());
+        map.put(owner.getDbName() + "Id", owner.getId());
         map.put("npcId", npcId);
         map.put("type", type);
         map.put("level", level);
         map.put("npcSkinName", npcSkinName);
+        map.put("vault", vault);
         return map;
     }
 
     public static NpcData deserialize(Map<String, Object> map) {
-        return new NpcData(
+        NpcData data = new NpcData(
                 IdObject.get(map.get("id")),
                 (int) map.get("npcId"),
                 NpcType.valueOf(((String) map.get("type")).toUpperCase(Locale.ROOT)),
                 (int) map.get("level"),
                 (String) map.get("npcSkinName")
         );
+        ((Map<String, Object>) map.get("vault")).entrySet().stream()
+                .filter(e -> e.getValue() instanceof Number)
+                .forEach(e -> data.getVault().put(e.getKey(), Long.parseLong(String.valueOf(e.getValue()))));
+        return data;
     }
 
     @Override
     public String toString() {
         return "NpcData{" +
                 "id=" + id +
-                ", owner=" + owner +
                 ", npcId=" + npcId +
                 ", type=" + type +
                 ", level=" + level +
@@ -153,14 +161,12 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
             return false;
         }
 
+        remove(getNextLevelRequirements());
         setLevel(getLevel() + 1);
-        if (owner instanceof Settlement) {
-            SettlementManager.getInstance().removeLevelRequirements((Settlement) owner, resident);
-        } else if (owner instanceof Empire) {
-            EmpireManager.getInstance().removeLevelRequirements((Empire) owner, resident);
-        }
 
-        Message.get("levels.upgrade").tell(owner, "state", type.getTag(), "level", String.valueOf(level));
+        if (getLevel() > 1) {
+            Message.get("levels.upgrade").tell(owner, "state", type.getTag(), "level", String.valueOf(level));
+        }
 
         List<String> perksDesc = new ArrayList<>();
         for (String perkName : getLevelInfo().getPerks()) {
@@ -194,7 +200,7 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
 
     @Override
     public void logDeposit(Resident resident, Map<String, Long> deposited) {
-        owner.logDeposit(resident, deposited); // TODO: Per NPC
+        owner.logDeposit(resident, deposited); // TODO: Per NPC?
     }
 
     @Override
@@ -204,7 +210,7 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
 
     @Override
     public Map<String, Long> getVault() {
-        return owner.getVault(); // TODO: Per NPC "vault"
+        return vault;
     }
 
     @Override
@@ -238,6 +244,15 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
     }
 
     public boolean hasLevels() {
-        return !NpcManager.getInstance().getLevels(owner, type).isEmpty();
+        return NpcManager.getInstance().getLevels(owner, type).size() > 1;
+    }
+
+    public LandOwner<?, ?> getOwner() {
+        return owner;
+    }
+
+    @Override
+    public String getDbName() {
+        return owner.getDbName() + "_npc";
     }
 }

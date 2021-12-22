@@ -1278,6 +1278,10 @@ gui:
         &cNot unlocked yet
   elder:
     title: "{type}"
+    not-unlocked: |-
+      &cThe {state} does not have
+      &cthe {function} function
+      &cunlocked yet!"
     recruit:
       apply: |-
         &eApply to join!
@@ -2371,7 +2375,7 @@ gui:
     back: "&cClose"
     navigation:
       entry: |-
-        &e{name}
+        &e{name} Level {level}
         
         {description}
       description:
@@ -2418,7 +2422,7 @@ gui:
       &bClick to deposit!
   deposit:
     title: "Deposit Materials"
-    success-deposit: "&6&l{player} &7&lhas deposited:"
+    success-deposit: "&6&l{player} &7&lhas deposited towards your {state}:"
     fail-deposit: "&c&lFailed Deposited Items: {reason}"
     max-level-reached: "&r&c&lMax Level Reached"
     list-entry: "&6{amount} {icon}&e{material}"

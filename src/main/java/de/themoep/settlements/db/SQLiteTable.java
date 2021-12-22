@@ -109,6 +109,16 @@ public enum SQLiteTable {
             + ");"
             + "CREATE INDEX empire_npcs_id ON {tablePrefix}empire_npcs (empireId);"),
 
+    EMPIRE_NPC_VAULTS("CREATE TABLE IF NOT EXISTS {tablePrefix}empire_npc_vaults ("
+            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + "npcId INTEGER,"
+            + "content VARCHAR(255) NOT NULL,"
+            + "amount BIGINT,"
+            + "FOREIGN KEY (npcId) REFERENCES {tablePrefix}empire_npcs(id) ON DELETE CASCADE,"
+            + "UNIQUE (npcId, content)"
+            + ");"
+            + "CREATE INDEX empire_npc_id ON {tablePrefix}empire_npc_vaults (npcId);"),
+
     EMPIRE_USES("CREATE TABLE IF NOT EXISTS {tablePrefix}empire_uses ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "empireId INTEGER,"
@@ -138,7 +148,7 @@ public enum SQLiteTable {
             + "FOREIGN KEY (empireId) REFERENCES {tablePrefix}empires(id) ON DELETE CASCADE,"
             + "UNIQUE (empireId, rank, title)"
             + ");"
-            + "CREATE INDEX empire_vaults_id ON {tablePrefix}empire_vaults (empireId);"),
+            + "CREATE INDEX empire_titles_id ON {tablePrefix}empire_titles (empireId);"),
 
     EMPIRE_DEFAULTTITLES("CREATE TABLE IF NOT EXISTS {tablePrefix}empire_defaulttitles ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -213,7 +223,7 @@ public enum SQLiteTable {
             + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
             + "UNIQUE (settlementId, content)"
             + ");"
-            + "CREATE INDEX settlement_outposts_id ON {tablePrefix}settlement_outposts (settlementId);"),
+            + "CREATE INDEX settlement_vault_id ON {tablePrefix}settlement_vaults (settlementId);"),
 
     SETTLEMENT_MISSIONDATA("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_missiondata ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -249,6 +259,16 @@ public enum SQLiteTable {
             + "UNIQUE (settlementId, type)"
             + ");"
             + "CREATE INDEX settlement_npcs_id ON {tablePrefix}settlement_npcs (settlementId);"),
+
+    SETTLEMENT_NPC_VAULTS("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_npc_vaults ("
+            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + "npcId INTEGER,"
+            + "content VARCHAR(255) NOT NULL,"
+            + "amount BIGINT,"
+            + "FOREIGN KEY (npcId) REFERENCES {tablePrefix}settlement_npcs(id) ON DELETE CASCADE,"
+            + "UNIQUE (npcId, content)"
+            + ");"
+            + "CREATE INDEX settlement_npc_id ON {tablePrefix}settlement_npc_vaults (npcId);"),
 
     SETTLEMENT_USES("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_uses ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"

@@ -152,6 +152,7 @@ public class DepositGUI<L extends Levelable<?> & DatabaseSerializable> extends S
         messages.add(getMessage("fail-deposit").getReplacedComponents("reason", reason));
         for (Map.Entry<Material, Long> entry : fail.entrySet()) {
             messages.add(getMessage("list-entry").getReplacedComponents(
+                    "state", levelable.getTag(),
                     "amount", String.valueOf(entry.getValue()),
                     "icon", Utils.getIcon(resident, entry.getKey().name()),
                     "material", HumanReadable.humanizedName(entry.getKey().name())));
@@ -161,7 +162,10 @@ public class DepositGUI<L extends Levelable<?> & DatabaseSerializable> extends S
 
     private List<BaseComponent[]> buildSuccessDepositMessage(Resident resident, Player p, Map<String, Long> deposited) {
         List<BaseComponent[]> messages = new ArrayList<>();
-        messages.add(getMessage("success-deposit").getReplacedComponents("player", p.getDisplayName()));
+        messages.add(getMessage("success-deposit").getReplacedComponents(
+                "player", p.getDisplayName(),
+                "state", levelable.getTag()
+        ));
         for (Map.Entry<String, Long> entry : deposited.entrySet()) {
             messages.add(getMessage("list-entry").getReplacedComponents(
                     "amount", String.valueOf(entry.getValue()),
