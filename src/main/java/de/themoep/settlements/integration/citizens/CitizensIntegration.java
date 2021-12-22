@@ -89,9 +89,10 @@ public class CitizensIntegration implements Listener, ConfigMessages {
         for (NpcType npc : event.getLandOwner().getLevelInfo().getNPCs()) {
             unlockNpc(event.getLandOwner(), npc);
             if (event.getLandOwner().getHome() != null) {
-                createNpc(event.getLandOwner(), npc, event.getLandOwner().getHome().toBukkitLocation());
+                NpcConfig config = NpcManager.getInstance().getConfig(event.getLandOwner(), npc);
+                createNpc(event.getLandOwner(), npc, config, event.getLandOwner().getHome().toBukkitLocation());
                 getMessage("new-npc-available").tell(event.getLandOwner(),
-                        "npc", npc.getTag(),
+                        "npc", config.getName(),
                         "type", npc.getKey(),
                         "state", event.getLandOwner().getStateTag());
             }
@@ -102,10 +103,6 @@ public class CitizensIntegration implements Listener, ConfigMessages {
     public void onCaimed(LandClaimedEvent event) {
         for (NpcType npc : event.getLandOwner().getLevelInfo().getNPCs()) {
             handle(event, npc);
-            getMessage("new-npc-available").tell(event.getLandOwner(),
-                    "npc", npc.getTag(),
-                    "type", npc.getKey(),
-                    "state", event.getLandOwner().getStateTag());
         }
     }
 
@@ -119,6 +116,10 @@ public class CitizensIntegration implements Listener, ConfigMessages {
                 location = event.getLand().getCenterBukkitLocation();
             }
             createNpc(event.getLandOwner(), type, location);
+            getMessage("new-npc-available").tell(event.getLandOwner(),
+                    "npc", npcData.getConfig().getName(),
+                    "type", type.getKey(),
+                    "state", event.getLandOwner().getStateTag());
         }
     }
 

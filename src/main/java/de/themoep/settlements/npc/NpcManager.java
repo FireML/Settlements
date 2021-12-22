@@ -7,11 +7,14 @@ import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.perk.NpcPerk;
+import de.themoep.settlements.rank.Rank;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -145,8 +148,16 @@ public class NpcManager {
         return null;
     }
 
-    public NpcConfig getConfig(LandOwner<?, ?> landOwner, NpcType type) {
+    public <R extends Rank> NpcConfig getConfig(LandOwner<?, ?> landOwner, NpcType type) {
         return npcConfigs.get(landOwner.getKey() + "." + type.getKey());
     }
 
+    public Collection<NpcPerk> getPerks(LandOwner<?, ?> owner) {
+        if (owner instanceof Settlement) {
+            return settlementPerks.values();
+        } else if (owner instanceof Empire) {
+            return empirePerks.values();
+        }
+        return Collections.emptySet();
+    }
 }

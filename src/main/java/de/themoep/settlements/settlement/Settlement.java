@@ -17,6 +17,7 @@ import de.themoep.settlements.missions.MissionProvider;
 import de.themoep.settlements.missions.MissionTaker;
 import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.perk.LevelPerk;
+import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.settlement.events.SettlementJoinEvent;
 import de.themoep.settlements.settlement.events.SettlementLeaveEvent;
@@ -934,7 +935,14 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
                 : String.valueOf(v.getBonusOutposts())),
         bonus((c, v) -> String.valueOf(v.getBonusClaimAmount())),
         perks((c, v) -> v.getPerksMap().entrySet().stream()
-                .map(p -> (p.getValue().getTimes() > 1 ? p.getValue().getTimes() + "x " : "") + v.getPerk(p.getKey()).getTag())
+                .map(p -> {
+                    Perk perk = v.getPerk(p.getKey());
+                    if (perk != null) {
+                        return (p.getValue().getTimes() > 1 ? p.getValue().getTimes() + "x " : "") + perk.getTag();
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
                 .collect(Collectors.joining(", "))),
         chiefrank((c, v) -> SettlementRank.getChief().getTag(v)),
         chieftitle((c, v) -> {

@@ -9,6 +9,7 @@ import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.DatabaseSerializable;
 import de.themoep.settlements.leveling.Levelable;
 import de.themoep.settlements.npc.NpcData;
+import de.themoep.settlements.npc.NpcManager;
 import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.perk.PerkData;
@@ -188,6 +189,12 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
             return true;
         }
         for (Perk perk : getPerks()) {
+            if (perk.getUnlockables().contains(unlockable.toLowerCase(Locale.ROOT))
+                    && hasUnlocked(perk)) {
+                return true;
+            }
+        }
+        for (Perk perk : NpcManager.getInstance().getPerks(this)) {
             if (perk.getUnlockables().contains(unlockable.toLowerCase(Locale.ROOT))
                     && hasUnlocked(perk)) {
                 return true;
