@@ -42,7 +42,8 @@ public class MySqlDatabase extends SqlDatabaseManager {
         alterColumnOrRecreate(MySqlTable.CLAIMS, "buildState", "VARCHAR(255)");
         addColumn(MySqlTable.EMPIRES, "level", "INTEGER NOT NULL DEFAULT 1 AFTER capitalId");
         addColumn(MySqlTable.EMPIRES, "finishedMissions", "BIGINT NOT NULL DEFAULT 0 AFTER taxDebtAction");
-        addColumn(MySqlTable.EMPIRES, "allyClaim", "BOOLEAN NOT NULL AFTER buildState");
+        removeColumn(MySqlTable.EMPIRES, "allyClaim");
+        addColumn(MySqlTable.EMPIRES, "allowAllyClaim", "BOOLEAN NOT NULL AFTER buildState");
         addColumn(MySqlTable.SETTLEMENTS, "missionPoints", "BIGINT NOT NULL DEFAULT 0 AFTER taxDebtAction");
     }
 
@@ -251,6 +252,15 @@ public class MySqlDatabase extends SqlDatabaseManager {
             sta.execute("ALTER TABLE `" + tablePrefix + table.getDbName() + "` ADD COLUMN `" + column + "` " + definition + ";");
         } catch (SQLException ignored) {
             // column exists
+        }
+    }
+
+    protected void removeColumn(MySqlTable table, String column) {
+        try (Connection conn = getConnection();
+             Statement sta = conn.createStatement()) {
+            sta.execute("ALTER TABLE `" + tablePrefix + table.getDbName() + "` DROP COLUMN `" + column + "`;");
+        } catch (SQLException ignored) {
+            // column doesn't exist
         }
     }
 
