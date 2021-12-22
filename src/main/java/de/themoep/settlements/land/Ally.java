@@ -86,8 +86,8 @@ public class Ally implements DatabaseSerializable {
     }
 
     public static Ally deserialize(Map<String, Object> map) {
-        if (map.containsKey("ally")) {
-            return deserialize((Map<String, Object>) map.get("ally"));
+        if (map.containsKey("allies")) {
+            return deserialize((Map<String, Object>) map.get("allies"));
         }
         String[] allyId = ((String) map.get("id")).split(":");
         return new Ally(
