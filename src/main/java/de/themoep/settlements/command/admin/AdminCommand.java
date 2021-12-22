@@ -19,6 +19,7 @@ public class AdminCommand extends SubCommand {
             this.registerCommand(new AdminBonusCommand(this));
             this.registerCommand(new AdminWorldCommand(this));
             this.registerCommand(new AdminRankCommand(this));
+            this.registerCommand(new AdminEmpireLevelCommand(this));
             this.registerCommand(new AdminEmpireRankCommand(this));
             this.registerCommand(new AdminEmpireMissionCommand(this));
             this.registerCommand(new AdminCooperationPointsCommand(this));

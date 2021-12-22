@@ -518,7 +518,10 @@ public class EmpireManager {
         empire.setLevel(empire.getLevel() + 1);
         MessageUtils.tellResidents(empire.getOnlineResidents(), Message.get("levels.upgrade"), "level", Integer.toString(empire.getLevel()), "state", empire.getStateTag());
         removeLevelRequirements(empire, res);
+        return onLevelUp(empire, res, oldRadius);
+    }
 
+    public boolean onLevelUp(Empire empire, Resident res, int oldRadius) {
         List<String> perksDesc = new ArrayList<>();
         for (EmpirePerk perk : getPerks()) {
             if (empire.getLevel() == perk.getLevel()) {

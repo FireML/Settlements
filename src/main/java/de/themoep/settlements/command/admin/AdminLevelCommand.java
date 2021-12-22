@@ -1,11 +1,9 @@
 package de.themoep.settlements.command.admin;
 
-import de.themoep.settlements.land.events.LandownerLeveledEvent;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.SettlementState;
 import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -33,8 +31,8 @@ public class AdminLevelCommand extends SubCommand {
 
             sender.sendMessage(ChatColor.RED + "Set " + settlement.getName() + " to " + state.getTag() + "/" + level);
 
-            if (args.length > 3 && ("true".equalsIgnoreCase(args[3]) || "triggerevents".equalsIgnoreCase(args[3]))) {
-                Utils.callEvent(new LandownerLeveledEvent(settlement, settlement.getChief()));
+            if (!"false".equalsIgnoreCase(args[3])) {
+                SettlementManager.getInstance().onLevelUp(settlement, settlement.getChief());
                 sender.sendMessage(ChatColor.RED + "Triggered level up events!");
             }
             settlement.save();

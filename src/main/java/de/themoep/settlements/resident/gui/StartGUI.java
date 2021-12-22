@@ -110,7 +110,10 @@ public class StartGUI extends ConfigurableGui {
                                     "name", settlement.getName(),
                                     "state", settlement.getState().getTag(),
                                     "player", resident.getName());
-                            Message.get("command.settlement.create.success").tell(resident, "name", settlement.getName());
+                            Message.get("command.settlement.create.success").tell(resident,
+                                    "name", settlement.getName(),
+                                    "cost", Utils.CURRENCY_FORMAT.format(Config.Settlement.CREATION_COST)
+                            );
                             return AnvilGUI.Response.close();
                         })
                         .plugin(SettlementsPlugin.getInstance())

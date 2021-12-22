@@ -54,7 +54,10 @@ public class SettlementCreateCommand extends ResidentSubCommand {
                     "name", settlement.getName(),
                     "state", settlement.getState().getTag(),
                     "player", resident.getName());
-            getMessage("success").tell(resident, "name", settlement.getName());
+            getMessage("success").tell(resident,
+                    "name", settlement.getName(),
+                    "cost", Utils.CURRENCY_FORMAT.format(Config.Settlement.CREATION_COST)
+            );
         }
         return true;
     }

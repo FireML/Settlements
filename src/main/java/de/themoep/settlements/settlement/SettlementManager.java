@@ -375,7 +375,10 @@ public class SettlementManager {
             MessageUtils.tellResidents(settlement.getOnlineResidents(), Message.get("levels.upgrade"), "level", Integer.toString(settlement.getLevel()), "state", settlement.getState().getTag());
         }
         removeLevelRequirements(settlement, res);
+        return onLevelUp(settlement, res);
+    }
 
+    public boolean onLevelUp(Settlement settlement, Resident res) {
         List<String> perksDesc = new ArrayList<>();
         for (SettlementPerk perk : getPerks()) {
             if (settlement.getState() == perk.getState() && settlement.getLevel() == perk.getLevel()) {
