@@ -68,6 +68,7 @@ public class ResidentManager {
     private boolean keepCached(Resident resident) {
         return !SettlementsPlugin.getInstance().isRunning()
                 || resident.hasSettlement()
+                || !resident.getFriends().isEmpty()
                 || !InviteManager.getInstance().getInvites(resident).isEmpty()
                 || LandManager.getInstance().ownsPlot(resident.getUUID());
     }

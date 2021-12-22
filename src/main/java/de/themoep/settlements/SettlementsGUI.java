@@ -99,7 +99,7 @@ public abstract class SettlementsGUI implements ConfigMessages {
             for (String key : elementsConfig.getKeys(false)) {
                 if (key.length() == 1) {
                     Message loreMessage = getMessage(key);
-                    String lore = "";
+                    String lore = " ";
                     if (loreMessage.exists()) {
                         lore = loreMessage.getText();
                     }

@@ -32,6 +32,12 @@ public class ListGui<T extends Sortable<T>> extends ConfigurableGui {
                 sort = sorts[0];
             }
 
+            // Cache icon and replacements
+            for (T t : s) {
+                t.getIcon();
+                t.getReplacements(this);
+            }
+
             DynamicGuiElement sortedGroup = new DynamicGuiElement('e', who -> {
                 GuiElementGroup group = new GuiElementGroup('e');
 

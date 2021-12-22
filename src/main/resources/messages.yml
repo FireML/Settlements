@@ -1254,7 +1254,7 @@ gui:
   
       {action}
     settings: |-
-      &eMange {state}
+      &eManage {state}
       &fManage Perks and Settings
   
       {action}
@@ -2221,7 +2221,7 @@ gui:
       online: "&a"
       offline: "&c"
       entry: "{online}{name}"
-    close: "&c&lExit"
+    back: "&cClose"
   teleporters:
     title: "Teleportation"
     locked: "&cLocked"

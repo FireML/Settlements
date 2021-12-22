@@ -86,15 +86,15 @@ public class Ally implements DatabaseSerializable {
     }
 
     public static Ally deserialize(Map<String, Object> map) {
-        if (map.size() == 1) {
-            return deserialize((Map<String, Object>) map.values().iterator().next());
+        if (map.containsKey("ally")) {
+            return deserialize((Map<String, Object>) map.get("ally"));
         }
         String[] allyId = ((String) map.get("id")).split(":");
         return new Ally(
                 allyId[0],
                 IdObject.get(Integer.parseInt(allyId[1])),
                 (Long) map.get("created"),
-                (Boolean) map.get("allies_nearbyClaim"));
+                (Boolean) map.get("nearbyClaim"));
     }
 
     public Ally removeAlly(LandOwner landOwner) {

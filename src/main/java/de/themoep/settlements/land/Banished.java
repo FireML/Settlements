@@ -2,20 +2,26 @@ package de.themoep.settlements.land;
 
 import de.themoep.settlements.db.DatabaseSerializable;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.invites.Invite;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.SettlementManager;
+import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
+import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.NameTag;
 import de.themoep.settlements.utils.Next;
+import de.themoep.settlements.utils.Sortable;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
+import org.bukkit.inventory.ItemStack;
 
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Banished implements DatabaseSerializable {
+public class Banished implements DatabaseSerializable, Sortable<Banished> {
     private final String type;
     private final IdObject banishedId;
     private final long banishDate;
@@ -73,7 +79,7 @@ public class Banished implements DatabaseSerializable {
     @Override
     public LinkedHashMap<String, Object> serialize() {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-        map.put("id", getId());
+        map.put("id", getId().value());
         map.put("date", getBanishDate());
         map.put("sender", getSenderId());
         map.put("reason", getReason());
@@ -81,20 +87,20 @@ public class Banished implements DatabaseSerializable {
     }
 
     public static Banished deserialize(Map<String, Object> map) {
-        if (map.size() == 1) {
-            return deserialize((Map<String, Object>) map.values().iterator().next());
+        if (map.containsKey("banished")) {
+            return deserialize((Map<String, Object>) map.get("banished"));
         }
-        String[] allyId = ((String) map.get("id")).split(":");
+        String[] banishedId = ((String) map.get("id")).split(":");
         IdObject id;
-        if ("player".equals(allyId[0])) {
-            id = IdObject.get(UUID.fromString(allyId[1]));
+        if ("player".equals(banishedId[0])) {
+            id = IdObject.get(UUID.fromString(banishedId[1]));
         } else {
-            id = IdObject.get(Integer.parseInt(allyId[1]));
+            id = IdObject.get(Integer.parseInt(banishedId[1]));
         }
         return new Banished(
-                allyId[0],
+                banishedId[0],
                 id,
-                (Long) map.get("created"),
+                (Long) map.get("date"),
                 UUID.fromString((String) map.get("sender")),
                 (String) map.get("reason")
         );
@@ -135,13 +141,46 @@ public class Banished implements DatabaseSerializable {
         );
     }
 
-    public enum Sort implements NameTag, Next<Sort> {
-        DATE,
-        NAME;
+    @Override
+    public String[] getReplacements(ConfigMessages configMessages, String... initial) {
+        return initial;
+    }
+
+    @Override
+    public Sortable.Sort<Banished>[] getSorts() {
+        return Sort.values();
+    }
+
+    @Override
+    public ItemStack getIcon() {
+        Targetable t = getTargetable();
+        if (t instanceof Resident) {
+            return ItemUtils.getHead((UUID) getBanishedId().value(), t.getName());
+        } else if (t instanceof LandOwner) {
+            return ItemUtils.getHead(((LandOwner<?, ?>) t).getChiefId(), ((LandOwner<?, ?>) t).getChiefId().toString());
+        }
+        return null;
+    }
+
+    public enum Sort implements Sortable.Sort<Banished> {
+        DATE((b1, b2) -> Long.compare(b2.getBanishDate(), b1.getBanishDate())),
+        NAME((b1, b2) -> b1.getTargetable().getName().compareToIgnoreCase(b2.getTargetable().getName())),
+        ;
+
+        private final Comparator<Banished> comparator;
+
+        Sort(Comparator<Banished> comparator) {
+            this.comparator = comparator;
+        }
 
         @Override
-        public Sort[] getValues() {
+        public Sortable.Sort<Banished>[] getValues() {
             return values();
+        }
+
+        @Override
+        public Comparator<Banished> getComparator() {
+            return comparator;
         }
     }
 }

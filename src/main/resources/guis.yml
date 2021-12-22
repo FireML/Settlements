@@ -474,10 +474,10 @@ guis:
     banished:
       setup:
       - "ooooooooo"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
       - "ppppppsub"
       elements:
         o: magenta_stained_glass_pane
@@ -488,10 +488,10 @@ guis:
     unbanished:
       setup:
       - "ooooooooo"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
       - "pppppps b"
       elements:
         o: magenta_stained_glass_pane
@@ -915,10 +915,10 @@ guis:
     banished:
       setup:
       - "ooooooooo"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
       - "ppppppsub"
       elements:
         o: magenta_stained_glass_pane
@@ -929,10 +929,10 @@ guis:
     unbanished:
       setup:
       - "ooooooooo"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
       - "pppppps b"
       elements:
         o: magenta_stained_glass_pane

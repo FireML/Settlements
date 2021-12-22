@@ -5,16 +5,19 @@ import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.SettlementManager;
+import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
-import de.themoep.settlements.utils.NameTag;
-import de.themoep.settlements.utils.Next;
+import de.themoep.settlements.utils.ItemUtils;
+import de.themoep.settlements.utils.Sortable;
 import de.themoep.settlements.utils.Targetable;
+import org.bukkit.inventory.ItemStack;
 
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Unbanished implements DatabaseSerializable {
+public class Unbanished implements DatabaseSerializable, Sortable<Unbanished> {
     private final String type;
     private final IdObject banishedId;
     private final long banishDate;
@@ -94,8 +97,8 @@ public class Unbanished implements DatabaseSerializable {
     }
 
     public static Unbanished deserialize(Map<String, Object> map) {
-        if (map.size() == 1) {
-            return deserialize((Map<String, Object>) map.values().iterator().next());
+        if (map.containsKey("unbanished")) {
+            return deserialize((Map<String, Object>) map.get("unbanished"));
         }
         String[] allyId = ((String) map.get("id")).split(":");
         IdObject id;
@@ -140,14 +143,47 @@ public class Unbanished implements DatabaseSerializable {
         return null;
     }
 
-    public enum Sort implements NameTag, Next<Sort> {
-        BANISH_DATE,
-        UNBANISH_DATE,
-        NAME;
+    @Override
+    public String[] getReplacements(ConfigMessages configMessages, String... initial) {
+        return initial;
+    }
+
+    @Override
+    public Sortable.Sort<Unbanished>[] getSorts() {
+        return Sort.values();
+    }
+
+    @Override
+    public ItemStack getIcon() {
+        Targetable t = getTargetable();
+        if (t instanceof Resident) {
+            return ItemUtils.getHead((UUID) getBanishedId().value(), t.getName());
+        } else if (t instanceof LandOwner) {
+            return ItemUtils.getHead(((LandOwner<?, ?>) t).getChiefId(), ((LandOwner<?, ?>) t).getChiefId().toString());
+        }
+        return null;
+    }
+
+    public enum Sort implements Sortable.Sort<Unbanished> {
+        UNBANISH_DATE((b1, b2) -> Long.compare(b2.getUnbanishDate(), b1.getUnbanishDate())),
+        BANISH_DATE((b1, b2) -> Long.compare(b2.getBanishDate(), b1.getBanishDate())),
+        NAME((b1, b2) -> b1.getTargetable().getName().compareToIgnoreCase(b2.getTargetable().getName())),
+        ;
+
+        private final Comparator<Unbanished> comparator;
+
+        Sort(Comparator<Unbanished> comparator) {
+            this.comparator = comparator;
+        }
 
         @Override
-        public Sort[] getValues() {
+        public Sortable.Sort<Unbanished>[] getValues() {
             return values();
+        }
+
+        @Override
+        public Comparator<Unbanished> getComparator() {
+            return comparator;
         }
     }
 }
