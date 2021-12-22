@@ -106,7 +106,8 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
 
     @Override
     public String getTag() {
-        return type.getTag();
+        NpcConfig config = NpcManager.getInstance().getConfig(owner, type);
+        return config != null ? config.getName() : type.getTag();
     }
 
     public int getNpcId() {

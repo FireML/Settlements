@@ -3055,6 +3055,7 @@ command:
         description: Change an NPC's skin
       teleport:
         success: "&aTeleported your {state} {type} to your location"
+        requires-home: "&cCan't move &e{npc}&c here as it requires a claim connected to your home!"
         description: Move NPCs
       description: Manage your NPCs
     officer:

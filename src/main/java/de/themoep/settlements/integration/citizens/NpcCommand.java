@@ -68,6 +68,18 @@ public class NpcCommand extends ResidentSubCommand {
                 Location location = resident.getPlayer().getLocation();
                 OwnedLand l = LandManager.getInstance().getLand(location);
                 if (l != null && l.isOwnedBy(landOwner)) {
+                    if (type == NpcType.TRAVELING_MERCHANT) {
+                        boolean connectedToHome = LandManager.getInstance().getAllConnectedLand(l, search -> {
+                            if (search.containsHome()) {
+                                return LandManager.FilterResponse.RETURN;
+                            }
+                            return LandManager.FilterResponse.CONTINUE;
+                        }).size() > 0;
+                        if (!connectedToHome) {
+                            getError("requires-home").tell(resident, "npc", npcData.getTag());
+                            return true;
+                        }
+                    }
                     if (npc != null) {
                         npc.teleport(resident.getPlayer().getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                     } else {
