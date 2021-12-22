@@ -37,8 +37,8 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
     private final LWC lwc;
     private final SettlementsPlugin plugin = SettlementsPlugin.getInstance();
 
-    public LWCIntegration(LWC lwc) {
-        this.lwc = lwc;
+    public LWCIntegration() {
+        this.lwc = LWC.getInstance();
         lwc.getModuleLoader().registerModule(plugin, this);
         plugin.getLockProviders().add(this);
     }

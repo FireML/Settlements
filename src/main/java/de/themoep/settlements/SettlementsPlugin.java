@@ -2,7 +2,6 @@ package de.themoep.settlements;
 
 import co.aikar.timings.lib.MCTiming;
 import co.aikar.timings.lib.TimingManager;
-import com.griefcraft.lwc.LWC;
 import de.themoep.settlements.banish.BanishListener;
 import de.themoep.settlements.chat.ChatManager;
 import de.themoep.settlements.command.CommandManager;
@@ -50,17 +49,24 @@ import de.themoep.settlements.utils.config.ConfigManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementListener;
 import de.themoep.settlements.settlement.SettlementManager;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginEnableEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -96,6 +102,8 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     private final List<Empire> newlyAbandonedEmpires = new ArrayList<>();
     private final List<Empire> newlyDeletedEmpires = new ArrayList<>();
 
+    private Map<String, Function<Plugin, Boolean>> dependencies = new HashMap<>();
+
     @Override
     public void onDisable() {
         timer.cancel();
@@ -109,6 +117,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         instance = this;
+        registerListener(this);
         try {
             Class.forName("com.destroystokyo.paper.PaperConfig");
             serverAdapter = (ServerAdapter) Class.forName(getClass().getPackage().getName() + ".utils.adapter.PaperAdapter").newInstance();
@@ -130,47 +139,10 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             return;
         }
 
-        if (getServer().getPluginManager().isPluginEnabled("CMI")) {
-            CmiIntegration cmiIntegration = new CmiIntegration();
-            getLogger().log(Level.INFO, "Hooked into CMI " + cmiIntegration.getCmi().getDescription().getVersion() + "!");
-        }
-        if (getServer().getPluginManager().isPluginEnabled("Essentials")) {
-            EssentialsIntegration essentialsIntegration = new EssentialsIntegration();
-            getLogger().log(Level.INFO, "Hooked into Essentials " + essentialsIntegration.getEssentials().getDescription().getVersion() + "!");
-        }
-        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            placeholderApi = new PlaceholderApiIntegration();
-            getLogger().log(Level.INFO, "Hooked into PlaceholderAPI " + placeholderApi.getPlaceholderAPI().getDescription().getVersion() + "!");
-        }
-        if (getServer().getPluginManager().isPluginEnabled("Brewery")) {
-            BreweryIntegration breweryIntegration = new BreweryIntegration();
-            getLogger().log(Level.INFO, "Hooked into Brewery " + breweryIntegration.getBrewery().getDescription().getVersion() + "!");
-        }
-        if (getServer().getPluginManager().isPluginEnabled("PlotSquared")) {
-            PlotSquaredIntegration plotSquaredIntegration = new PlotSquaredIntegration();
-            getLogger().log(Level.INFO, "Hooked into PlotSquared " + plotSquaredIntegration.getPlotSquaredVersion());
-        }
-        if (getServer().getPluginManager().isPluginEnabled("Citizens")) {
-            citizensIntegration = new CitizensIntegration();
-            getLogger().log(Level.INFO, "Hooked into Citizens " + citizensIntegration.getCitizensVersion());
-        }
-        if (getServer().getPluginManager().isPluginEnabled("Denizen")) {
-            DenizenIntegration denizenIntegration = new DenizenIntegration();
-            getLogger().log(Level.INFO, "Hooked into Denizen " + denizenIntegration.getDenizenVersion());
-        }
-
-        if (!Config.Chat.CHAT_ONLY) {
-            if (getServer().getPluginManager().isPluginEnabled("Multiverse-Core")) {
-                multiverse = new MultiverseIntegration(this);
-                this.getLogger().log(Level.INFO, "Hooked into Multiverse-Core v" + multiverse.getVersion());
-            }
-            if (getServer().getPluginManager().isPluginEnabled("LWC")) {
-                LWCIntegration lwcIntegration = new LWCIntegration(LWC.getInstance());
-                getLogger().log(Level.INFO, "Hooked into LWC " + lwcIntegration.getLWC().getPlugin().getDescription().getVersion() + "!");
-            }
-            if (getServer().getPluginManager().isPluginEnabled("ChestShop")) {
-                ChestShopIntegration csIntegration = new ChestShopIntegration();
-                getLogger().log(Level.INFO, "Hooked into ChestShop " + csIntegration.getChestShop().getDescription().getVersion() + "!");
+        for (Map.Entry<String, Function<Plugin, Boolean>> entry : dependencies.entrySet()) {
+            Plugin plugin = getServer().getPluginManager().getPlugin(entry.getKey());
+            if (plugin != null && plugin.isEnabled()) {
+                handleDependency(plugin);
             }
         }
 
@@ -313,6 +285,82 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             lPerks = new LandPerks();
         }
         return lPerks;
+    }
+
+    @Override
+    public void onLoad() {
+        registerDependency("CMI", p -> {
+            new CmiIntegration();
+            return true;
+        });
+        registerDependency("Essentials", p -> {
+            new EssentialsIntegration();
+            return true;
+        });
+        registerDependency("PlaceholderAPI", p -> {
+            placeholderApi = new PlaceholderApiIntegration();
+            return true;
+        });
+        registerDependency("Brewery", p -> {
+            new BreweryIntegration();
+            return true;
+        });
+        registerDependency("PlotSquared", p -> {
+            if (!Config.Chat.CHAT_ONLY) {
+                new PlotSquaredIntegration();
+            }
+            return true;
+        });
+        registerDependency("Citizens", p -> {
+            if (!Config.Chat.CHAT_ONLY) {
+                citizensIntegration = new CitizensIntegration();
+            }
+            return true;
+        });
+        registerDependency("Denizen", p -> {
+            if (!Config.Chat.CHAT_ONLY) {
+                new DenizenIntegration();
+            }
+            return true;
+        });
+        registerDependency("Multiverse-Core", p -> {
+            if (!Config.Chat.CHAT_ONLY) {
+                new MultiverseIntegration(this);
+            }
+            return true;
+        });
+        registerDependency("LWC", p -> {
+            if (!Config.Chat.CHAT_ONLY) {
+                new LWCIntegration();
+            }
+            return true;
+        });
+        registerDependency("ChestShop", p -> {
+            if (!Config.Chat.CHAT_ONLY) {
+                new ChestShopIntegration();
+            }
+            return true;
+        });
+    }
+
+    private void registerDependency(String name, Function<Plugin, Boolean> hook) {
+        dependencies.put(name.toLowerCase(Locale.ROOT), hook);
+    }
+
+    private void handleDependency(Plugin plugin) {
+        Function<Plugin, Boolean> hook = dependencies.get(plugin.getName().toLowerCase(Locale.ROOT));
+        if (hook != null) {
+            if (hook.apply(plugin)) {
+                getLogger().log(Level.INFO, "Hooked into " + plugin.getName() + " " + plugin.getDescription().getVersion());
+            } else {
+                getLogger().log(Level.WARNING, "Error while trying to hook into " + plugin.getName() + " " + plugin.getDescription().getVersion());
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPluginEnable(PluginEnableEvent event) {
+        handleDependency(event.getPlugin());
     }
 
     public boolean loadManagers() {
