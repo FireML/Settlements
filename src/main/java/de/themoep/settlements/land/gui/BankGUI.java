@@ -21,7 +21,7 @@ public class BankGUI extends ConfigurableGui {
         gui.addElement(new StaticGuiElement('d', getIcon("donations"), click -> {
             if (landOwner.hasUnlocked("donation") || landOwner.hasPermission(resident, "bank.deposit")) {
                 new AnvilGUI.Builder()
-                        .itemLeft(getIcon("donation"))
+                        .itemLeft(getIcon("donations"))
                         .title(getText("donations-anvil.title"))
                         .text(getText("donations-anvil.placeholder"))
                         .onClose(player -> Utils.runLater(() -> InventoryGui.goBack(player), 1))
@@ -75,7 +75,7 @@ public class BankGUI extends ConfigurableGui {
                 "state", landOwner.getStateTag(),
                 "action", landOwner.hasUnlocked("command.donate")
                         || landOwner.hasPermission(resident, "command.bank.deposit")
-                        ? getText("unlockables.unlocked.use")
+                        ? getText("unlockables.unlocked.deposit")
                         : getText("unlockables.locked.nopermission"))));
 
         // Only donations are allowed to be used by everyone
@@ -84,17 +84,14 @@ public class BankGUI extends ConfigurableGui {
                     "balance", Utils.CURRENCY_FORMAT.format(landOwner.getBank()),
                     "state", landOwner.getStateTag())));
 
+            /* Remove for now while not working
             gui.addElement(new StaticGuiElement('s', getIcon("storage"), click -> {
                 // TODO: Storage GUI
                 return true;
             }, getText("storage",
                     "state", landOwner.getStateTag(),
                     "action", landOwner.hasUnlocked("storage") ? getText("unlockables.unlocked.open") : getText("unlockables.locked.npc"))));
-
-            gui.addElement(new StaticGuiElement('s', getIcon("storage"), click -> {
-                // TODO: Storage GUI
-                return true;
-            }, getText("storage", "state", landOwner.getStateTag())));
+            */
 
             gui.addElement(new StaticGuiElement('h', getIcon("history"), click -> {
                 // TODO: GUI?
