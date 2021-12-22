@@ -117,21 +117,21 @@ public class MySqlDatabase extends SqlDatabaseManager {
             if (entry.getValue() instanceof Collection) {
                 for (Object o : (Collection<Object>) entry.getValue()) {
                     insertSta.setInt(1, keyId);
-                    insertSta.setObject(2, entry.getKey());
-                    insertSta.setObject(3, o instanceof IdObject ? ((IdObject) o).value() : o);
+                    insertSta.setObject(2, toDbType(entry.getKey()));
+                    insertSta.setObject(3, toDbType(o));
                     insertSta.addBatch();
                 }
             } else if (entry.getValue() instanceof Map && mapValueColumns.length > 0) {
                 for (Map.Entry<Object, Object> o : ((Map<Object, Object>) entry.getValue()).entrySet()) {
                     insertSta.setInt(1, keyId);
-                    insertSta.setObject(2, entry.getKey());
-                    insertSta.setObject(3, o.getKey() instanceof IdObject ? ((IdObject) o.getKey()).value() : o.getKey());
-                    insertSta.setObject(4, o.getValue() instanceof IdObject ? ((IdObject) o.getValue()).value() : o.getValue());
+                    insertSta.setObject(2, toDbType(entry.getKey()));
+                    insertSta.setObject(3, toDbType(o.getKey()));
+                    insertSta.setObject(4, toDbType(o.getValue()));
                     insertSta.addBatch();
                 }
             } else {
                 insertSta.setInt(1, keyId);
-                insertSta.setObject(2, entry.getKey());
+                insertSta.setObject(2, toDbType(entry.getKey()));
 
                 int j = 3;
                 Map<String, Object> map = null;
@@ -144,12 +144,10 @@ public class MySqlDatabase extends SqlDatabaseManager {
                     Map<String, Object> serMap = getValues(conn, map, mapKey);
                     for (String column : columns) {
                         Object o = serMap.get(column);
-                        insertSta.setObject(j++, o instanceof IdObject ? ((IdObject) o).value() : o);
+                        insertSta.setObject(j++, toDbType(o));
                     }
-                } else if (entry.getValue() instanceof Enum) {
-                    insertSta.setObject(j, ((Enum) entry.getValue()).name());
                 } else {
-                    insertSta.setObject(j, entry.getValue() instanceof IdObject ? ((IdObject) entry.getValue()).value() : entry.getValue());
+                    insertSta.setObject(j, toDbType(entry.getValue()));
                 }
                 insertSta.addBatch();
             }

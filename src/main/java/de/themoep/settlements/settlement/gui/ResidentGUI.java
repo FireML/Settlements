@@ -162,7 +162,7 @@ public class ResidentGUI extends ConfigurableGui {
                     InviteManager.getInstance().removeInvite(resident, resident.getSettlement());
                     resident.leaveSettlement();
                 }
-                c.getGui().close();
+                new ResListGUI(sender, sender.getSettlement()).open();
             }, c -> InventoryGui.goBack(c.getWhoClicked()), "player", resident.getName(), "state", resident.getSettlement().getStateTag());
             return true;
         }, getText("kick.entry",
@@ -190,7 +190,7 @@ public class ResidentGUI extends ConfigurableGui {
                             resident.getSettlement().addBanished(sender, resident, reason);
                             resident.leaveSettlement();
 
-                            Utils.runLater(() -> InventoryGui.goBack(player), 1);
+                            Utils.runLater(() -> new ResListGUI(sender, settlement).open(), 1);
                         } else {
                             getError("no-permission").tell(player);
                         }

@@ -98,7 +98,7 @@ public class SQLiteDatabase extends SqlDatabaseManager {
         PreparedStatement insertSta = conn.prepareStatement(insertSql, serializable.getId().isNull() ? PreparedStatement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS);
         int i = 0;
         for (Object value : values.values()) {
-            insertSta.setObject(++i, value);
+            insertSta.setObject(++i, toDbType(value));
         }
         insertSta.executeUpdate();
 
@@ -114,28 +114,28 @@ public class SQLiteDatabase extends SqlDatabaseManager {
         for (Map.Entry<String, ?> entry : values.entrySet()) {
             if (entry.getValue() instanceof Collection) {
                 for (Object o : (Collection<Object>) entry.getValue()) {
-                    updateSta.setObject(1, o);
-                    updateSta.setObject(2, entry.getKey());
+                    updateSta.setObject(1, toDbType(o));
+                    updateSta.setObject(2, toDbType(entry.getKey()));
                     updateSta.setInt(3, keyId);
                     updateSta.addBatch();
 
                     insertSta.setInt(1, keyId);
-                    insertSta.setObject(2, entry.getKey());
-                    insertSta.setObject(3, o);
+                    insertSta.setObject(2, toDbType(entry.getKey()));
+                    insertSta.setObject(3, toDbType(o));
                     insertSta.addBatch();
                 }
             } else if (entry.getValue() instanceof Map && mapValueColumns.length > 0) {
                 for (Map.Entry<Object, Object> o : ((Map<Object, Object>) entry.getValue()).entrySet()) {
-                    updateSta.setObject(1, o.getKey());
-                    updateSta.setObject(2, o.getValue());
-                    updateSta.setObject(3, entry.getKey());
+                    updateSta.setObject(1, toDbType(o.getKey()));
+                    updateSta.setObject(2, toDbType(o.getValue()));
+                    updateSta.setObject(3, toDbType(entry.getKey()));
                     updateSta.setInt(4, keyId);
                     updateSta.addBatch();
 
                     insertSta.setInt(1, keyId);
-                    insertSta.setObject(2, entry.getKey());
-                    insertSta.setObject(3, o.getKey());
-                    insertSta.setObject(4, o.getValue());
+                    insertSta.setObject(2, toDbType(entry.getKey()));
+                    insertSta.setObject(3, toDbType(o.getKey()));
+                    insertSta.setObject(4, toDbType(o.getValue()));
                     insertSta.addBatch();
                 }
             } else {
@@ -149,33 +149,25 @@ public class SQLiteDatabase extends SqlDatabaseManager {
                     Map<String, Object> serMap = getValues(conn, map, mapKey);
 
                     updateSta.setInt(columns.size() + 1, keyId);
-                    updateSta.setObject(columns.size() + 2, entry.getKey());
+                    updateSta.setObject(columns.size() + 2, toDbType(entry.getKey()));
 
                     insertSta.setInt(1, keyId);
-                    insertSta.setObject(2, entry.getKey());
+                    insertSta.setObject(2, toDbType(entry.getKey()));
 
                     int j = 0;
                     for (String column : columns) {
                         j++;
-                        updateSta.setObject(j, serMap.get(column));
-                        insertSta.setObject(2 + j, serMap.get(column));
+                        updateSta.setObject(j, toDbType(serMap.get(column)));
+                        insertSta.setObject(2 + j, toDbType(serMap.get(column)));
                     }
-                } else if (entry.getValue() instanceof Enum) {
-                    updateSta.setObject(1, ((Enum) entry.getValue()).name());
-                    updateSta.setInt(2, keyId);
-                    updateSta.setObject(3, entry.getKey());
-
-                    insertSta.setInt(1, keyId);
-                    insertSta.setObject(2, entry.getKey());
-                    insertSta.setObject(3, ((Enum) entry.getValue()).name());
                 } else {
-                    updateSta.setObject(1, entry.getValue());
+                    updateSta.setObject(1, toDbType(entry.getValue()));
                     updateSta.setInt(2, keyId);
-                    updateSta.setObject(3, entry.getKey());
+                    updateSta.setObject(3, toDbType(entry.getKey()));
 
                     insertSta.setInt(1, keyId);
-                    insertSta.setObject(2, entry.getKey());
-                    insertSta.setObject(3, entry.getValue());
+                    insertSta.setObject(2, toDbType(entry.getKey()));
+                    insertSta.setObject(3, toDbType(entry.getValue()));
                 }
                 updateSta.addBatch();
                 insertSta.addBatch();

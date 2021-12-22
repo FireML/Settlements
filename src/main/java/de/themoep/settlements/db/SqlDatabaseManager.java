@@ -1503,7 +1503,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
         PreparedStatement deleteSta = conn.prepareStatement(deleteSql);
         for (Map.Entry<Integer, Object> entry : deleteObjects.entrySet()) {
-            deleteSta.setObject(entry.getKey(), entry.getValue());
+            deleteSta.setObject(entry.getKey(), toDbType(entry.getValue()));
         }
         deleteSta.executeUpdate();
 
@@ -1624,7 +1624,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 andSql = "";
                 Collection<String> keys = ((DatabaseSerializable) o).serialize().keySet();
                 for (String key : keys) {
-                    andSql += " AND " + entryColumn + "_id" + " NOT IN (" + String.join(",", Collections.nCopies(entries.size(), "?")) + ")";
+                    andSql += " AND " + entryColumn + "_" + key + " NOT IN (" + String.join(",", Collections.nCopies(entries.size(), "?")) + ")";
                 }
             } else {
                 andSql = " AND " + entryColumn + " NOT IN (" + String.join(",", Collections.nCopies(entries.size(), "?")) + ")";
@@ -1637,12 +1637,12 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         deleteSta.setInt(1, keyId);
         int i = 2;
         for (Object entry : entries) {
-            if (entry instanceof IdObject) {
-                deleteSta.setObject(i++, ((IdObject) entry).value());
-            } else if (entry instanceof DatabaseSerializable) {
-                deleteSta.setObject(i++, ((DatabaseSerializable) entry).getId().value());
+            if (entry instanceof DatabaseSerializable) {
+                for (Map.Entry<String, Object> e : ((DatabaseSerializable) entry).serialize().entrySet()) {
+                    deleteSta.setObject(i++, toDbType(e.getValue()));
+                }
             } else {
-                deleteSta.setObject(i++, entry);
+                deleteSta.setObject(i++, toDbType(entry));
             }
         }
         deleteSta.executeUpdate();
@@ -1655,7 +1655,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 for (String key : keys) {
                     insertSql += ", " + entryColumn + "_" + key;
                 }
-                insertSql += ") VALUES (" + Collections.nCopies(keys.size(), "?") + ");";
+                insertSql += ") VALUES (?, " + String.join(", ", Collections.nCopies(keys.size(), "?")) + ");";
             } else {
                 insertSql += ", " + entryColumn + ") VALUES (?,?);";
             }
@@ -1663,19 +1663,13 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             PreparedStatement insertSta = conn.prepareStatement(insertSql);
             for (Object entry : entries) {
                 insertSta.setInt(1, keyId);
-                if (entry instanceof IdObject) {
-                    insertSta.setObject(2, ((IdObject) entry).value());
-                } else if (entry instanceof DatabaseSerializable) {
+                if (entry instanceof DatabaseSerializable) {
                     int j = 2;
                     for (Map.Entry<String, Object> e : ((DatabaseSerializable) entry).serialize().entrySet()) {
-                        if (e.getValue() instanceof IdObject) {
-                            insertSta.setObject(j++, ((IdObject) e.getValue()).value());
-                        } else {
-                            insertSta.setObject(j++, e.getValue());
-                        }
+                        insertSta.setObject(j++, toDbType(e.getValue()));
                     }
                 } else {
-                    insertSta.setObject(2, entry);
+                    insertSta.setObject(2, toDbType(entry));
                 }
                 insertSta.addBatch();
             }
@@ -1782,6 +1776,22 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         }
         map.putAll(specials);
         return map;
+    }
+
+    protected Object toDbType(Object value) {
+        if (value instanceof DatabaseSerializable) {
+            throw new IllegalArgumentException(value + " is DatabaseSerializable and should be serialized properly!");
+        }
+        if (value instanceof IdObject) {
+            value = ((IdObject) value).value();
+        }
+        if (value instanceof UUID) {
+            value = value.toString();
+        }
+        if (value instanceof Enum) {
+            value = ((Enum<?>) value).name();
+        }
+        return value;
     }
 
     // ---- Setup helpers --- ///
