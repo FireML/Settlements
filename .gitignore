@@ -1,0 +1,11 @@
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+
+# General files
+/*.jar
+*.zip
+*.schem
+dependency-reduced-pom.xml
