@@ -80,11 +80,7 @@ public class NpcCommand extends ResidentSubCommand {
                             return true;
                         }
                     }
-                    if (npc != null) {
-                        npc.teleport(resident.getPlayer().getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                    } else {
-                        citizensIntegration.createNpc(landOwner, type, location);
-                    }
+                    citizensIntegration.createNpc(landOwner, type, location);
                     getMessage("teleport.success").tell(resident, "type", type.getTag(), "state", landOwner.getStateTag());
                 } else {
                     getError("not-a-claim").tell(resident);

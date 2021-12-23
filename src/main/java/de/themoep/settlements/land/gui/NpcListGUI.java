@@ -37,12 +37,7 @@ public class NpcListGUI extends ConfigurableGui {
                         Location location = resident.getPlayer().getLocation();
                         OwnedLand l = LandManager.getInstance().getLand(location);
                         if (l != null && l.isOwnedBy(landOwner)) {
-                            NPC npc = SettlementsPlugin.getInstance().getCitizens().getNpc(landOwner, type);
-                            if (npc != null) {
-                                npc.teleport(resident.getPlayer().getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                            } else {
-                                SettlementsPlugin.getInstance().getCitizens().createNpc(landOwner, type, location);
-                            }
+                            SettlementsPlugin.getInstance().getCitizens().createNpc(landOwner, type, location);
                         } else {
                             getError("not-a-claim").tell(resident);
                         }
