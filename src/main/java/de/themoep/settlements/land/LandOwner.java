@@ -56,7 +56,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
     private long bank = 0;
     private long joinFee = 0;
     private long tax = 0;
-    private long auctionTax = 0;
+    private double auctionTax = 0;
     private TaxDebtAction taxDebtAction = TaxDebtAction.KICK;
     protected boolean allowAllyClaim = false;
     private Map<PlotMode, Boolean> modes = new EnumMap<>(PlotMode.class);
@@ -743,18 +743,22 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         this.tax = tax;
     }
 
-    public long getAuctionTax() {
-        if (getMaxAuctionTax() > -1 && tax > getMaxAuctionTax() ) {
+    public double getAuctionTax() {
+        if (getMaxAuctionTax() > -1 && auctionTax > getMaxAuctionTax() ) {
             return getMaxAuctionTax();
         }
         return auctionTax;
     }
 
     public void setAuctionTax(long auctionTax) {
+        setAuctionTax(auctionTax / 100d);
+    }
+
+    public void setAuctionTax(double auctionTax) {
         this.auctionTax = auctionTax;
     }
 
-    public abstract long getMaxAuctionTax();
+    public abstract double getMaxAuctionTax();
 
     public TaxDebtAction getTaxDebtAction() {
         return taxDebtAction;
@@ -952,7 +956,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
             landOwner.addJoinRequest(request);
         }
         landOwner.setTax(Utils.getLong(map.get("tax")));
-        landOwner.setAuctionTax(Utils.getLong(map.get("auctionTax")));
+        landOwner.setAuctionTax(Utils.getDouble(map.get("auctionTax")));
         try {
             landOwner.setTaxDebtAction(TaxDebtAction.valueOf((String) map.get("taxDebtAction")));
         } catch (IllegalArgumentException ignored) {}

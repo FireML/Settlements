@@ -42,6 +42,9 @@ import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import de.themoep.settlements.world.SimpleLocation;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.command.CommandConfigurable;
+import net.citizensnpcs.api.command.CommandContext;
+import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.api.event.NPCClickEvent;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
@@ -456,8 +459,8 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
         return CitizensAPI.getNPCRegistry().isNPC(player);
     }
 
-    public long getNearbyAuctionTax(Location location, int radius) {
-        long tax = Long.MAX_VALUE;
+    public double getNearbyAuctionTax(Location location, int radius) {
+        double tax = Double.MAX_VALUE;
         for (Entity entity : location.getNearbyEntities(radius, radius, radius)) {
             NPC npc = CitizensAPI.getNPCRegistry().getNPC(entity);
             if (npc != null) {
@@ -471,7 +474,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
                 }
             }
         }
-        if (tax < Long.MAX_VALUE) {
+        if (tax < Double.MAX_VALUE) {
             return tax;
         }
         return -1;
@@ -624,21 +627,35 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
     }
 
     @TraitName("auctiontax")
-    public static class AuctionTaxTrait extends Trait  {
+    public static class AuctionTaxTrait extends Trait implements CommandConfigurable {
 
         public AuctionTaxTrait() {
             super("auctiontax");
         }
 
-        @Persist(value = "auctiontax", required = true)
-        private long auctionTax;
+        @Persist(value = "amount", required = true)
+        private double amount;
 
-        public long getAuctionTax() {
-            return auctionTax;
+        public double getAuctionTax() {
+            return amount;
         }
 
-        public long setAuctionTax(long auctionTax) {
-            return auctionTax;
+        public void setAuctionTax(double amount) {
+            this.amount = amount;
+        }
+
+        @Override
+        public void configure(CommandContext args) throws CommandException {
+            if (args.length() > 1 && "amount".equalsIgnoreCase(args.getString(1))) {
+                double input = args.getDouble(2, -1);
+                if (input > -1) {
+                    amount = input / 100d;
+                    // Citizens can't send messages to the sender ?!?
+                    throw new CommandException("Set auction tax amount to " + Utils.toPercentage(amount) + "%");
+                } else {
+                    throw new CommandException("Please specify a positive auction tax amount or 0 for no tax!");
+                }
+            }
         }
     }
 }

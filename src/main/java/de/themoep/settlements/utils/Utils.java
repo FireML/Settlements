@@ -53,6 +53,7 @@ import java.util.logging.Level;
 public class Utils {
     public final static DecimalFormat CURRENCY_FORMAT = new DecimalFormat("#,###");
     public final static DecimalFormat SUFFIX_FORMAT = new DecimalFormat("#.##");
+    private final static DecimalFormat PERCENTAGE_FORMAT = new DecimalFormat("#.##");
     private final static char[] SUFFIXES = {'k', 'M', 'B', 'T', 'P', 'E'};
     public final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
     public final static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat();
@@ -71,6 +72,10 @@ public class Utils {
             EntityType.SQUID,
             EntityType.IRON_GOLEM
     );
+
+    public static String toPercentage(double v) {
+        return PERCENTAGE_FORMAT.format(v * 100);
+    }
 
     public static boolean isWorldClaimable(World world) {
         return !Config.Claiming.DISABLED_WORLDS.contains(world.getName())
@@ -550,6 +555,17 @@ public class Utils {
             return ((Number) o).intValue();
         }
         return Integer.parseInt(String.valueOf(o));
+    }
+
+    public static double getDouble(Object o) {
+        if (o == null) {
+            return 0;
+        } else if (o instanceof Double) {
+            return (Double) o;
+        } else if (o instanceof Number) {
+            return ((Number) o).doubleValue();
+        }
+        return Double.parseDouble(String.valueOf(o));
     }
 
     public static float getFloat(Object o) {

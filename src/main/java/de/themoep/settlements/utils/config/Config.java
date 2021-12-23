@@ -160,7 +160,7 @@ public class Config {
         public static long MAX_TAX = -1;
 
         @ConfigComment("Maximum value that a settlement's auction tax can be set to. Set to -1 to disable maximum")
-        public static long MAX_AUCTION_TAX = -1;
+        public static double MAX_AUCTION_TAX = -1;
 
         @ConfigEntry(old = {"titles-per-rank"})
         @ConfigComment("How many different titles can be configured for a rank")
@@ -244,7 +244,7 @@ public class Config {
         public static long MAX_TAX = -1;
 
         @ConfigComment("Maximum value that an empire's auction tax can be set to. Set to -1 to disable maximum")
-        public static long MAX_AUCTION_TAX = -1;
+        public static double MAX_AUCTION_TAX = -1;
 
         @ConfigEntry(old = {"max-empire-size"})
         @ConfigComment("Maximum size an empire can have (0 disables the size check)")

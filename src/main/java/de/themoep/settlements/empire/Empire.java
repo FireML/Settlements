@@ -330,7 +330,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     @Override
-    public long getMaxAuctionTax() {
+    public double getMaxAuctionTax() {
         return Config.Empire.MAX_AUCTION_TAX;
     }
 
@@ -859,6 +859,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         bank((c, e) -> Utils.CURRENCY_FORMAT.format(e.getBank())),
         joinfee((c, e) -> Utils.CURRENCY_FORMAT.format(e.getJoinFee())),
         tax((c, e) -> Utils.CURRENCY_FORMAT.format(e.getTax())),
+        auctiontax((c, e) -> Utils.toPercentage(e.getAuctionTax())),
         taxdebtaction((c, e) -> e.getTaxDebtAction().getTag()),
         dailymissions((c, e) -> String.valueOf(e.getLevelInfo() != null ? e.getLevelInfo().getMissions() : 0)),
         missions((c, e) -> String.valueOf(e.finishedMissions)),

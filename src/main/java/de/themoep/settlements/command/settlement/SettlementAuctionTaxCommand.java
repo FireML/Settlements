@@ -34,7 +34,7 @@ public class SettlementAuctionTaxCommand extends SettlementSubCommand {
                     resident.getSettlement().save();
                     MessageUtils.notify(resident.getSettlement(), resident.getSettlement().getResidents(), getMessage("success"),
                             "state", resident.getSettlement().getStateTag(),
-                            "amount", Utils.CURRENCY_FORMAT.format(amount)
+                            "amount", Utils.toPercentage(resident.getSettlement().getAuctionTax())
                     );
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(resident, "input", args[0]);
@@ -50,7 +50,7 @@ public class SettlementAuctionTaxCommand extends SettlementSubCommand {
         if (args.length == 0) {
             getMessage("current").tell(resident,
                     "state", resident.getSettlement().getStateTag(),
-                    "amount", Utils.CURRENCY_FORMAT.format(resident.getSettlement().getAuctionTax())
+                    "amount", Utils.toPercentage(resident.getSettlement().getAuctionTax())
             );
             return true;
         }

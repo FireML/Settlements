@@ -95,6 +95,7 @@ error:
   destination-obstructed: "&c&lCan't teleport. Target location is not safe!"
   destination-unknown: "&c&lCan't teleport. Target {type} is not known!"
   not-an-outpost: "&cThe land must be an outpost to set the home!"
+  not-near-npc: "&cYou are not close to any {name}"
 move-cancelled:
   title: "&c&lFailed"
   subtitle: "&fDon't move while {action}ing!"
@@ -788,7 +789,7 @@ gui:
           &fUpkeep: &e{upkeep}
           &fJoin Fee: &e{joinfee}
           &fDaily Tax: &e{tax}
-          &fAuction Tax: &e{auctiontax}
+          &fAuction Tax: &e{auctiontax}%
           &fTax Evasion Action: &e{taxdebtaction}
           &fMission Points: &e{missionpoints}
           &fLand: &e{land}&f/&e{maxland}{bonusclaims}
@@ -808,7 +809,7 @@ gui:
           &fUpkeep: &e{upkeep}
           &fJoin Fee: &e{joinfee}
           &fDaily Tax: &e{tax}
-          &fAuction Tax: &e{auctiontax}
+          &fAuction Tax: &e{auctiontax}%
           &fTax Evasion Action: &e{taxdebtaction}
           &fMission Points: &e{missionpoints}
           &fLand: &e{land}&f/&e{maxland}{bonusclaims}
@@ -1131,7 +1132,7 @@ gui:
       &eCurrent Taxes
       
       &fResident taxes: &e${tax}
-      &fAuction taxes: &e${auctiontax}
+      &fAuction taxes: &e${auctiontax}%
     manage-finances: |-
       &eManage Finances
       &f- Withdraw and deposit
@@ -1161,13 +1162,13 @@ gui:
         &fCharge players for using the
         &fAuctioneer!
         
-        &fCurrent Tax: &e${auctiontax}
+        &fCurrent Tax: &e${auctiontax}%
   
         {action}
         
         &fCooldown on change: {cooldown}
       anvil:
-        title: "Set auction tax"
+        title: "Set auction tax percentage"
         placeholder: "{auctiontax}"
     deposit:
       button: |-
@@ -3286,11 +3287,11 @@ command:
       exempt:
         description: Exempts a resident from having to pay the tax
     auctiontax:
-      current: "&7Your {state}'s auction tax is &e{amount}&7!"
+      current: "&7Your {state}'s auction tax is &e{amount}%&7!"
       description: Settlement auction taxes
       set:
-        success: "&e&l(!) &r&7{state} auction tax was set &e{amount}&7!"
-        above-max: "&c&l(!) &cMax auction tax amount is &e{max}&c!"
+        success: "&e&l(!) &r&7{state} auction tax was set &e{amount}%&7!"
+        above-max: "&c&l(!) &cMax auction tax amount is &e{max}%&c!"
         below-zero: "&c&l(!) &cAuction tax amount cannot be negative!"
         description: Sets the auction tax a player needs to pay when putting up an item for auction
     teleporters:
@@ -3935,8 +3936,8 @@ command:
       current: "&7Your empire's auction tax is &e{amount}&7!"
       description: Empire auction taxes
       set:
-        success: "&e&l(!) &r&7Empire auction tax was set &e{amount}&7!"
-        above-max: "&c&l(!) &cMax auction tax amount is &e{max}&c!"
+        success: "&e&l(!) &r&7Empire auction tax was set &e{amount}%&7!"
+        above-max: "&c&l(!) &cMax auction tax amount is &e{max}%&c!"
         below-zero: "&c&l(!) &cAuction tax amount cannot be negative!"
         description: Sets the auction tax a player needs to pay when putting up an item for auction
     title:

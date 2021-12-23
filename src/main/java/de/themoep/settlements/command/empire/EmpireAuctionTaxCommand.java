@@ -33,8 +33,8 @@ public class EmpireAuctionTaxCommand extends EmpireSubCommand {
                     resident.getSettlement().getEmpire().setAuctionTax(amount);
                     resident.getSettlement().getEmpire().save();
                     MessageUtils.notify(resident.getSettlement().getEmpire(), resident.getSettlement().getEmpire().getResidents(), getMessage("success"),
-                            "state", resident.getSettlement().getStateTag(),
-                            "amount", Utils.CURRENCY_FORMAT.format(amount)
+                            "state", resident.getSettlement().getEmpire().getStateTag(),
+                            "amount", Utils.toPercentage(resident.getSettlement().getEmpire().getAuctionTax())
                     );
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(resident, "input", args[0]);
@@ -48,7 +48,7 @@ public class EmpireAuctionTaxCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length == 0) {
-            getMessage("current").tell(resident, "amount", Utils.CURRENCY_FORMAT.format(resident.getSettlement().getEmpire().getAuctionTax()));
+            getMessage("current").tell(resident, "amount", Utils.toPercentage(resident.getSettlement().getEmpire().getAuctionTax()));
             return true;
         }
         return false;

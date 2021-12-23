@@ -807,7 +807,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     }
 
     @Override
-    public long getMaxAuctionTax() {
+    public double getMaxAuctionTax() {
         return Config.Settlement.MAX_AUCTION_TAX;
     }
 

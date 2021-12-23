@@ -97,7 +97,7 @@ public class ManageFinancesGUI extends ConfigurableGui {
                                 landOwner.save();
                                 MessageUtils.notify(landOwner, landOwner.getResidents(), Message.get("command." + landOwner.getKey() + ".auctiontax.set.success"),
                                         "state", resident.getSettlement().getStateTag(),
-                                        "amount", String.valueOf(amount)
+                                        "amount", Utils.toPercentage(resident.getSettlement().getAuctionTax())
                                 );
                                 Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
                                 return AnvilGUI.Response.close();
@@ -111,7 +111,7 @@ public class ManageFinancesGUI extends ConfigurableGui {
             return true;
         }, getText("auctiontax.button",
                 "action", getText(landOwner.hasPermission(resident, "auctiontax.set") ? "unlockables.unlocked.edit" : "unlockables.locked.nopermission"),
-                "auctiontax", Utils.CURRENCY_FORMAT.format(landOwner.getAuctionTax()),
+                "auctiontax", Utils.toPercentage(landOwner.getAuctionTax()),
                 "cooldown", "" // TODO: Cooldown
         )));
 

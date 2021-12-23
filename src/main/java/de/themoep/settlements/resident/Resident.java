@@ -632,6 +632,11 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         return SettlementsPlugin.getInstance().getEconomy().getBalance(Bukkit.getOfflinePlayer(getUUID()));
     }
 
+    public boolean hasUnlocked(String unlock) {
+        return hasSettlement() && getSettlement().hasUnlocked(unlock)
+                || hasEmpire() && getSettlement().getEmpire().hasUnlocked(unlock);
+    }
+
     public enum Placeholder {
                 name(Resident::getName),
                 empire(r -> r.hasEmpire() ? r.getSettlement().getEmpire().getName() : "none"),
