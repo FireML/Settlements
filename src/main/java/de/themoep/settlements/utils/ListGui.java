@@ -63,7 +63,11 @@ public class ListGui<T extends Sortable<T>> extends ConfigurableGui {
             if (sort != null) {
                 gui.addElement(getCycleElement('s', () -> sort, click -> {
                     if (sort != null) {
-                        sort = sort.next();
+                        if (click.getType().isLeftClick()) {
+                            sort = sort.next();
+                        } else if (click.getType().isRightClick()) {
+                            sort = sort.previous();
+                        }
                     }
                     click.getGui().draw();
                     return true;

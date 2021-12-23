@@ -44,7 +44,13 @@ public class ResListGUI extends ConfigurableGui {
         gui.addElement(sortedGroup);
 
         gui.addElement(getCycleElement('s', () -> sort, click -> {
-            sort = sort.next();
+            if (sort != null) {
+                if (click.getType().isLeftClick()) {
+                    sort = sort.next();
+                } else if (click.getType().isRightClick()) {
+                    sort = sort.previous();
+                }
+            }
             click.getGui().draw();
             return true;
         }, "sort"));
