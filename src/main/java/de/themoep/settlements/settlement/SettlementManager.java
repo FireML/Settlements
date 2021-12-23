@@ -396,11 +396,15 @@ public class SettlementManager {
             perksDesc.add(npc.getTag());
         }
 
-        String mail = Message.get("levels.upgrade-mail").getReplacedText(
+        String mail = Message.get("levels.mail-upgrade.general").getReplacedText(
                 "name", settlement.getStateTag(),
-                "level", String.valueOf(settlement.getLevel()),
-                "perks", String.join(", ", perksDesc)
+                "level", String.valueOf(settlement.getLevel())
         );
+        if (!perksDesc.isEmpty()) {
+            mail += "\n" + Message.get("levels.mail-upgrade.perks").getReplacedText(
+                    "perks", String.join(", ", perksDesc)
+            );
+        }
         for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
             for (Resident r : settlement.getResidents()) {
                 provider.sendMail(settlement.getStateTag() + " " + settlement.getName(), r, mail);

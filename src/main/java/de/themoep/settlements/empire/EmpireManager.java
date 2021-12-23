@@ -563,11 +563,15 @@ public class EmpireManager {
             perksDesc.add(npc.getTag());
         }
 
-        String mail = Message.get("levels.upgrade-mail").getReplacedText(
+        String mail = Message.get("levels.mail-upgrade.general").getReplacedText(
                 "name", empire.getStateTag(),
-                "level", String.valueOf(empire.getLevel()),
-                "perks", String.join(", ", perksDesc)
+                "level", String.valueOf(empire.getLevel())
         );
+        if (!perksDesc.isEmpty()) {
+            mail += "\n" + Message.get("levels.mail-upgrade.perks").getReplacedText(
+                    "perks", String.join(", ", perksDesc)
+            );
+        }
         for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
             for (Resident r : empire.getResidents()) {
                 provider.sendMail(empire.getStateTag() + " " + empire.getName(), r, mail);

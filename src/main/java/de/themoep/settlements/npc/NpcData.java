@@ -178,11 +178,22 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
             }
         }
 
-        String mail = Message.get("levels.upgrade-mail").getReplacedText(
-                "name", type.getTag(),
-                "level", String.valueOf(level),
-                "perks", String.join(", ", perksDesc)
-        );
+        String mail;
+        if (level == 1) {
+             mail = Message.get("levels.mail-upgrade.general").getReplacedText(
+                    "name", type.getTag(),
+                    "level", String.valueOf(level)
+            );
+        } else {
+            mail = Message.get("levels.perlk-unlocked").getReplacedText(
+                    "perk", type.getTag()
+            );
+        }
+        if (!perksDesc.isEmpty()) {
+            mail += "\n" + Message.get("levels.mail-upgrade.perks").getReplacedText(
+                    "perks", String.join(", ", perksDesc)
+            );
+        }
         for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
             for (Resident r : owner.getResidents()) {
                 provider.sendMail(owner.getStateTag() + " " + getTag(), r, mail);
