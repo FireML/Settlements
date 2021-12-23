@@ -17,7 +17,7 @@ public class MoneyWithdrawCommand extends SettlementSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (!resident.getSettlement().hasUnlocked("command.bank")) {
-            Message.get("gui.unlockables.locked.npc").tell(resident);
+            resident.tell(getUnlockText(resident.getSettlement(), "command.bank"));
             return true;
         }
 

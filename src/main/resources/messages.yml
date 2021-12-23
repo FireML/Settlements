@@ -705,6 +705,8 @@ gui:
   unlockables:
     locked:
       npc: "&cUpgrade NPC to unlock!"
+      unlock: "&cUnlock {type} to unlock!"
+      upgrade: "&c{type} lv{level} required!"
       not-on-land: "&cNot on a claim!"
       not-own-plot: "&cNot your plot!"
       level: "&cUpgrade {state} to unlock!"

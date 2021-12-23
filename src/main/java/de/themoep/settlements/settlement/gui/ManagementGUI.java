@@ -81,8 +81,8 @@ public class ManagementGUI extends SettlementsGUI {
                 "action", landOwner.hasUnlocked("recruitment")
                         ? landOwner.hasPermission(resident, "recruitment")
                                 ? getText("unlockables.unlocked.browse")
-                                : getText("no-permission")
-                        : getText("unlockables.locked.level"),
+                                : getText("unlockables.locked.permission")
+                        : getUnlockText(landOwner, "recruitment"),
                 "state", landOwner.getStateTag()
         )));
 
@@ -93,7 +93,7 @@ public class ManagementGUI extends SettlementsGUI {
             return true;
         }, getText("banished",
                 "state", landOwner.getStateTag(),
-                "action", landOwner.hasPermission(resident, "banished") ? getText("unlockables.unlocked.browse") : getText("no-permission")
+                "action", landOwner.hasPermission(resident, "banished") ? getText("unlockables.unlocked.browse") : getText("unlockables.locked.permission")
         )));
 
         gui.addElement(new StaticGuiElement('a', getIcon("allies"), click -> {
@@ -103,7 +103,7 @@ public class ManagementGUI extends SettlementsGUI {
             return true;
         }, getText("allies",
                 "state", landOwner.getStateTag(),
-                "action", landOwner.hasUnlocked("allies") ? landOwner.hasPermission(resident, "allies") ? getText("unlockables.unlocked.options") : getText("no-permission") : getText("unlockables.locked.npc")
+                "action", landOwner.hasUnlocked("allies") ? landOwner.hasPermission(resident, "allies") ? getText("unlockables.unlocked.options") : getText("unlockables.locked.permission") : getUnlockText(landOwner, "allies")
         )));
 
         if (SettlementsPlugin.getInstance().getCitizens() != null && landOwner.hasPermission(resident, "npc")) {
@@ -122,7 +122,7 @@ public class ManagementGUI extends SettlementsGUI {
             return true;
         }, getText("ranks",
                 "state", landOwner.getStateTag(),
-                "action", landOwner.hasPermission(resident, "ranks") ? getText("unlockables.unlocked.options") : getText("no-permission")
+                "action", landOwner.hasPermission(resident, "ranks") ? getText("unlockables.unlocked.options") : getText("unlockables.locked.permission")
         )));
 
         gui.addElement(new StaticGuiElement('s', getIcon("settings"), click -> {
@@ -132,7 +132,7 @@ public class ManagementGUI extends SettlementsGUI {
             return true;
         }, getText("settings",
                 "state", landOwner.getStateTag(),
-                "action", landOwner.hasPermission(resident, "settings") ? getText("unlockables.unlocked.options") : getText("no-permission")
+                "action", landOwner.hasPermission(resident, "settings") ? getText("unlockables.unlocked.options") : getText("unlockables.locked.permission")
         )));
 
         gui.addElement(new StaticGuiElement('l', getIcon("land"), click -> {
@@ -147,7 +147,7 @@ public class ManagementGUI extends SettlementsGUI {
             return true;
         }, getText("land",
                 "state", landOwner.getStateTag(),
-                "action", landOwner.hasPermission(resident, "perms") ? getText("unlockables.unlocked.options") : getText("no-permission")
+                "action", landOwner.hasPermission(resident, "perms") ? getText("unlockables.unlocked.options") : getText("unlockables.locked.permission")
         )));
 
         gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));

@@ -17,7 +17,7 @@ public abstract class SettlementSubCommand extends ResidentPermsSubCommand {
             return false;
         }
         if (!resident.getSettlement().hasUnlocked(getPermission())) {
-            getError("function-not-unlocked").tell(resident, "state", resident.getSettlement().getStateTag(), "name", resident.getSettlement().getName());
+            resident.tell(getUnlockText(resident.getSettlement(), getPermission()));
             return false;
         }
         if (resident.getSettlement().useGuestRank()

@@ -17,6 +17,7 @@ import de.themoep.settlements.missions.MissionProvider;
 import de.themoep.settlements.missions.MissionTaker;
 import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.npc.NpcLevel;
+import de.themoep.settlements.npc.NpcManager;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.rank.EmpireRank;
@@ -645,6 +646,14 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
             return true;
         }
         return false;
+    }
+
+    @Override
+    public Collection<? extends Perk> getAvailablePerks() {
+        List<Perk> perks = new ArrayList<>();
+        perks.addAll(SettlementManager.getInstance().getPerks());
+        perks.addAll(NpcManager.getInstance().getPerks(this));
+        return perks;
     }
 
     @Override

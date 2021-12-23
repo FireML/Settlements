@@ -172,6 +172,8 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         return getId().hashCode();
     }
 
+    public abstract Collection<? extends Perk> getAvailablePerks();
+
     public Map<String, PerkData> getPerksMap() {
         return perks;
     }
@@ -179,6 +181,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
     public abstract Perk getPerk(String name);
 
     public boolean hasUnlocked(String unlockable) {
+        unlockable = unlockable.toLowerCase(Locale.ROOT);
         if (unlockable.startsWith("settlements.")) {
             unlockable = unlockable.substring("settlements.".length());
         }

@@ -51,7 +51,7 @@ public class SettlementJoinCommand extends ResidentSubCommand {
                             "state", joinSettlement.getStateTag()
                     );
                 } else {
-                    getError("not-unlocked").tell(resident, "function", "recruitment", "name", joinSettlement.getName(), "state", joinSettlement.getStateTag());
+                    resident.tell(getUnlockText(joinSettlement, "recruitment"));
                     getMessage("no-invite").tell(resident, "name", joinSettlement.getName(), "state", joinSettlement.getStateTag());
                 }
             } else {

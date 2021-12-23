@@ -1,14 +1,41 @@
 package de.themoep.settlements.utils;
 
+import de.themoep.settlements.land.LandOwner;
+import de.themoep.settlements.perk.LevelPerk;
+import de.themoep.settlements.perk.Perk;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public interface ConfigMessages extends ConfigKey {
     String type();
 
     default String getText(String key, String... replacements) {
         return getMessage(key).getReplacedText(replacements);
+    }
+
+    default String getUnlockText(LandOwner<?, ?> landOwner, String unlockable) {
+        unlockable = unlockable.toLowerCase(Locale.ROOT);
+        if (unlockable.startsWith("settlements.")) {
+            unlockable = unlockable.substring("settlements.".length());
+        }
+        if (unlockable.contains(landOwner.getKey() + ".")) {
+            unlockable = unlockable.replace(landOwner.getKey() + ".", "");
+        }
+        for (Perk perk : landOwner.getAvailablePerks()) {
+            if (perk.getUnlockables().contains(unlockable)) {
+                if (perk instanceof LevelPerk && ((LevelPerk<?>) perk).getLevel() > 1) {
+                    return getText("unlockables.locked.upgrade",
+                            "type", perk.getTag(),
+                            "level", String.valueOf(((LevelPerk<?>) perk).getLevel())
+                    );
+                }
+                return getText("unlockables.locked.unlock", "type", perk.getTag());
+            }
+        }
+        return getText("unlockables.locked.level", "state", landOwner.getStateTag());
     }
 
     default Message getMessage(String key) {

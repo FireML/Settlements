@@ -86,7 +86,7 @@ public class NpcManager {
                             ConfigurationSection perkConfig = levelConfig.getConfigurationSection("perks." + perkName);
                             if (perkConfig != null) {
                                 perkConfig.set("level", i);
-                                NpcPerk perk = new NpcPerk(perkConfig);
+                                NpcPerk perk = new NpcPerk(npcType, perkConfig);
                                 if (perks.putIfAbsent(perk.name().toLowerCase(Locale.ROOT), perk) != null) {
                                     SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Duplicate " + type + " NPC perk " + perkName + "!");
                                 }

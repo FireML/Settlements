@@ -38,7 +38,7 @@ public class SettlementMoneyCommand extends SettlementSubCommand {
             if (resident.getSettlement().hasUnlocked("command.bank")) {
                 new BankGUI(resident, resident.getSettlement()).open();
             } else {
-                Message.get("gui.unlockables.locked.npc").tell(resident);
+                resident.tell(getUnlockText(resident.getSettlement(), "command.bank"));
             }
             return true;
         }

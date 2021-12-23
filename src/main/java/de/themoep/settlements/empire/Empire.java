@@ -8,6 +8,7 @@ import de.themoep.settlements.missions.MissionData;
 import de.themoep.settlements.missions.MissionProvider;
 import de.themoep.settlements.missions.MissionTaker;
 import de.themoep.settlements.npc.NpcData;
+import de.themoep.settlements.npc.NpcManager;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
@@ -303,6 +304,14 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     @Override
     public Collection<OwnedLand> getLand() {
         return LandManager.getInstance().getClaimedLand(this);
+    }
+
+    @Override
+    public Collection<? extends Perk> getAvailablePerks() {
+        List<Perk> perks = new ArrayList<>();
+        perks.addAll(EmpireManager.getInstance().getPerks());
+        perks.addAll(NpcManager.getInstance().getPerks(this));
+        return perks;
     }
 
     @Override

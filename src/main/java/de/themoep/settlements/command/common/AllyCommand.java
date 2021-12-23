@@ -18,14 +18,14 @@ public interface AllyCommand extends LandOwnerCommand {
         if (landOwner.hasUnlocked("allies")) {
             new AlliesGUI(landOwner.getKey(), resident, landOwner).open();
         } else {
-            Message.get("gui.unlockables.locked.npc").tell(resident);
+            resident.tell(getUnlockText(landOwner, "allies"));
         }
         return true;
     }
 
     default boolean addAlly(Resident resident, LandOwner source, String[] args) {
         if (!source.hasUnlocked("allies")) {
-            Message.get("gui.unlockables.locked.npc").tell(resident);
+            resident.tell(getUnlockText(source, "allies"));
             return true;
         }
 

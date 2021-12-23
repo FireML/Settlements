@@ -32,7 +32,7 @@ public class EmpireDonateCommand extends ResidentSubCommand {
             return false;
         }
         if (!empire.hasUnlocked("command.donate")) {
-            Message.get("gui.unlockables.locked.npc").tell(resident);
+            resident.tell(getUnlockText(empire, "command.donate"));
             return true;
         }
         try {
