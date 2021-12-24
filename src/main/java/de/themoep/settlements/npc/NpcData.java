@@ -3,17 +3,13 @@ package de.themoep.settlements.npc;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.DatabaseSerializable;
-import de.themoep.settlements.db.MySqlTable;
-import de.themoep.settlements.empire.Empire;
-import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.leveling.Levelable;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.perk.NpcPerk;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.settlement.SettlementManager;
+import de.themoep.settlements.utils.HumanReadable;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Message;
 import org.jetbrains.annotations.Nullable;
@@ -174,18 +170,20 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
             if (perk != null) {
                 Message.get("levels.perk-unlocked").tell(owner, "perk", perk.getTag());
                 owner.unlockPerk(resident, perk);
-                perksDesc.add(perk.getTag());
+                for (String unlockable : perk.getUnlockables()) {
+                    perksDesc.add(HumanReadable.humanizedName(unlockable));
+                }
             }
         }
 
         String mail;
-        if (level == 1) {
+        if (level > 1) {
              mail = Message.get("levels.mail-upgrade.general").getReplacedText(
                     "name", type.getTag(),
                     "level", String.valueOf(level)
             );
         } else {
-            mail = Message.get("levels.perlk-unlocked").getReplacedText(
+            mail = Message.get("levels.perk-unlocked").getReplacedText(
                     "perk", type.getTag()
             );
         }
