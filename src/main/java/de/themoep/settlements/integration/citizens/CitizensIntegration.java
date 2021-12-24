@@ -53,6 +53,7 @@ import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.TraitInfo;
 import net.citizensnpcs.api.trait.TraitName;
+import net.citizensnpcs.api.trait.trait.Spawned;
 import net.citizensnpcs.trait.Anchors;
 import net.citizensnpcs.trait.LookClose;
 import net.citizensnpcs.trait.SkinTrait;
@@ -89,6 +90,29 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
         SubCommand empireCommand = CommandManager.getInstance().getCommand("empire");
         empireCommand.registerCommand(new NpcCommand(this, empireCommand, r -> r.hasEmpire() ? r.getSettlement().getEmpire() : null));
         SettlementsPlugin.getInstance().getServer().getPluginManager().registerEvents(this, SettlementsPlugin.getInstance());
+
+        if (Config.Citizens.FORCE_RESPAWN_NPCS) {
+            for (Settlement settlement : SettlementManager.getInstance().getSettlements()) {
+                forceSpawn(settlement);
+            }
+            for (Empire empire : EmpireManager.getInstance().getEmpires()) {
+                forceSpawn(empire);
+            }
+        }
+    }
+
+    private void forceSpawn(LandOwner<?, ?> landOwner) {
+        for (NpcData npcData : landOwner.getNpcData()) {
+            if (npcData.isUnlocked() && npcData.isAvailable()) {
+                NPC npc = getNpc(landOwner, npcData.getType());
+                if (npc != null && !npc.isSpawned()) {
+                    Location location = npc.getStoredLocation();
+                    if (location != null) {
+                        npc.spawn(location);
+                    }
+                }
+            }
+        }
     }
 
     public String getCitizensVersion() {
@@ -169,6 +193,8 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
         npc = CitizensAPI.getNPCRegistry().createNPC(entityType, config.getName());
 
         npc.setProtected(true);
+
+        npc.getOrAddTrait(Spawned.class).setSpawned(true);
 
         SettlementsTrait typeTrait = npc.getOrAddTrait(SettlementsTrait.class);
         typeTrait.type = type;

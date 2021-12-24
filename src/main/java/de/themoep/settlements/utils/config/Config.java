@@ -653,5 +653,8 @@ public class Config {
 
         @ConfigComment("Repeat messages while inside range")
         public static boolean REPEAT_MESSAGES = false;
+
+        @ConfigComment("Attempt to force respawn NPCs on startup if they are missing (e.g. for Villagers)")
+        public static boolean FORCE_RESPAWN_NPCS = false;
     }
 }

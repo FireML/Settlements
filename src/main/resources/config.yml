@@ -457,3 +457,5 @@ citizens:
   talk-delay: 10
   # Repeat messages while inside range
   repeat-messages: false
+  # Attempt to force respawn NPCs on startup if they are missing (e.g. for Villagers)
+  force-respawn-npcs: false
