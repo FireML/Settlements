@@ -28,7 +28,7 @@ public class BankGUI extends ConfigurableGui {
                         .onComplete((player, text) -> {
                             if (!landOwner.hasUnlocked("donation") && !landOwner.hasPermission(resident, "bank.deposit")) {
                                 getError("no-permission").actionbar(resident);
-                                Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
+                                Utils.runLater(() -> new BankGUI(resident, landOwner).open(), 1);
                                 return AnvilGUI.Response.close();
                             }
                             try {
@@ -53,7 +53,7 @@ public class BankGUI extends ConfigurableGui {
                                 );
                                 if (landOwner.isMember(resident)) {
                                     DatabaseManager.getInstance().logDeposit(landOwner, resident, amount);
-                                    Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
+                                    Utils.runLater(() -> new BankGUI(resident, landOwner).open(), 1);
                                 } else {
                                     Utils.runAsync(() -> DatabaseManager.getInstance().log(landOwner, resident, "donate", "cash", amount));
                                     Message.get("command." + landOwner.getKey() + ".donate.success").tell(resident,
