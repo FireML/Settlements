@@ -1070,16 +1070,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public List<String[]> getLog(Settlement settlement, Resident resident, int page, LogType type) {
-        return getLog("settlementId", settlement.getId(), resident, page, type);
-    }
-
-    @Override
-    public List<String[]> getLog(Empire empire, Resident resident, int page, LogType type) {
-        return getLog("empireId", empire.getId(), resident, page, type);
-    }
-
-    @Override
     public void disable() {
         settlementQueue.forceSave();
         settlementMissionDataQueue.forceSave();
@@ -1094,9 +1084,11 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         }
     }
 
-    private List<String[]> getLog(String column, IdObject id, Resident resident, int page, LogType type) {
+    @Override
+    public List<String[]> getLog(LandOwner<?, ?> landOwner, Resident resident, int page, LogType type) {
+        String column = landOwner.getDbName() + "Id";
         List<String[]> log = new ArrayList<>();
-        if (id == null || id.isNull() || page < 1) {
+        if (landOwner.getId() == null || landOwner.getId().isNull() || page < 1) {
             return log;
         }
         int start = (page-1) * Config.ENTRIES_PER_PAGE;
@@ -1118,7 +1110,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         sql += " ORDER BY l.id DESC LIMIT " + start + "," + Config.ENTRIES_PER_PAGE + ";";
         Connection conn = getConnection();
         try (PreparedStatement sta = conn.prepareStatement(sql)) {
-            sta.setInt(1, (Integer) id.value());
+            sta.setInt(1, (Integer) landOwner.getId().value());
             ResultSet rs = sta.executeQuery();
             while (rs.next()) {
                 int amount = rs.getInt("amount");
@@ -1144,6 +1136,10 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                     empire = EmpireManager.getInstance().getEmpireFromId(IdObject.get(empireId));
                 }
 
+                String title = hasPlayer ? rs.getString("playerTitle") : "";
+                if (title == null) {
+                    title = rank.getTag(settlement);
+                }
                 log.add(new String[] {
                         "settlement", settlement != null ? settlement.getName() : settlementId > -1 ? "id:" + settlementId : "",
                         "settlementstate", settlement != null ? settlement.getState().getTag() : settlementId > -1 ? "Unknown" : "",
@@ -1151,7 +1147,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                         "name", hasPlayer ? rs.getString("playerName") : "",
                         "uuid", hasPlayer ? rs.getString("playerId") : "",
                         "rank", hasPlayer ? rank.getTag(settlement) : "",
-                        "title", hasPlayer ? rs.getString("playerTitle") : "",
+                        "title", title,
                         "action", rs.getString("action") != null ? rs.getString("action") : "",
                         "type", rs.getString("type") != null ? rs.getString("type") : "?",
                         "icon", Utils.getIcon(resident, rs.getString("type")),
@@ -1160,7 +1156,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 });
             }
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while trying to get log for " + id, e);
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to get log for " + landOwner.getDbName() + "/" + landOwner.getId(), e);
         } finally {
             close(conn);
         }

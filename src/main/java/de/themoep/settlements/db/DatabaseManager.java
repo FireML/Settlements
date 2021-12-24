@@ -271,9 +271,7 @@ public abstract class DatabaseManager {
 
     public abstract int getLogPageCount(Empire Empire, Resident resident, LogType type);
 
-    public abstract List<String[]> getLog(Settlement settlement, Resident resident, int page, LogType type);
-
-    public abstract List<String[]> getLog(Empire Empire, Resident resident, int page, LogType type);
+    public abstract List<String[]> getLog(LandOwner<?, ?> landOwner, Resident resident, int page, LogType type);
 
     public void save(LandOwner landOwner) {
         landOwner.save();
