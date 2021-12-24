@@ -1323,7 +1323,7 @@ gui:
       {missions}
       
       &bClick for more details
-    mission-entry: "&f{action} &e{title}"
+    mission-entry: "&e{title}"
     back: "&cClose"
     
   build:
@@ -1375,6 +1375,7 @@ gui:
       harvest: "&eHarves material"
     finished: "&e&lFinished"
     only-in-empire: "&eOnly in {empire} Domain"
+    mission-entry: "&f{action} &e{title}"
     requirement:
       todo: "&r&f(&e{progress}&f/&e{required}&f) {type}"
       done: "&r&f(&a{progress}&f/&a{required}&f) {type}"
