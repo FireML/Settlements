@@ -31,7 +31,7 @@ public class AdminLevelCommand extends SubCommand {
 
             sender.sendMessage(ChatColor.RED + "Set " + settlement.getName() + " to " + state.getTag() + "/" + level);
 
-            if (!"false".equalsIgnoreCase(args[3])) {
+            if (args.length < 4 || !"false".equalsIgnoreCase(args[3])) {
                 SettlementManager.getInstance().onLevelUp(settlement, settlement.getChief());
                 sender.sendMessage(ChatColor.RED + "Triggered level up events!");
             }
