@@ -156,8 +156,8 @@ public class ChatMap {
             this.resident = ResidentManager.getInstance().getResident(p);
             this.canLinkPlot = playerLand != null && (playerLand.isPlotOwner(resident) || playerLand.canAdmin(resident));
             if (resident.hasSettlement()) {
-                this.canClaimCoords = resident.hasPermission("settlements.command.settlement.claim.coords");
-                this.canUnclaimCoords = resident.hasPermission("settlements.command.settlement.unclaim.coords");
+                this.canClaimCoords = resident.hasPermission("settlements.command." + landOwner.getKey() + ".claim.coords");
+                this.canUnclaimCoords = resident.hasPermission("settlements.command." + landOwner.getKey() + ".unclaim.coords");
                 for (NamedLocation o : resident.getSettlement().getOutpostHomes().values()) {
                     OwnedLand outpostLand = LandManager.getInstance().getLand(o.toChunkLocation());
                     if (outpostLand != null && !outpostLand.containsHome()) {
@@ -262,7 +262,11 @@ public class ChatMap {
                 symbol = Symbol.EMBASSY;
             }
 
-            ComponentBuilder hover = new ComponentBuilder(land.getLandOwner().getName());
+            ComponentBuilder hover = new ComponentBuilder();
+            hover.append(messages.getMessage("hover.info").getReplacedComponents(
+                    "state", land.getLandOwner().getStateTag(),
+                    "name", land.getLandOwner().getName()
+            ));
             if (land.getLandOwner().isAbandoned()) {
                 hover.append("\n").append(messages.getMessage("hover.abandoned").getReplacedComponents(
                         "countdown", UtilTime.format(land.getLandOwner().getCreated()

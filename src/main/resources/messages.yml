@@ -3036,6 +3036,7 @@ command:
         current: "&r &7+ &6= current"
       not-for-sale: "Not for sale"
       hover:
+        info: "&7{state} &f{name}"
         click-to-claim: |-
           &bClick to claim &f{x}&9/&f{z}
           &bfor your settlement
@@ -3733,6 +3734,7 @@ command:
         current: "&r &7+ &6= current"
       not-for-sale: "Not for sale"
       hover:
+        info: "&7{state} &f{name}"
         click-to-claim: |-
           &bClick to claim &f{x}&9/&f{z}
           &bfor your Empire
