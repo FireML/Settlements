@@ -18,7 +18,7 @@ public abstract class EmpireSubCommand extends ResidentSubCommand {
         }
         if (!resident.getSettlement().getEmpire().hasUnlocked(getPermission())) {
             resident.tell(getUnlockText(resident.getSettlement().getEmpire(), getPermission()));
-            return true;
+            return false;
         }
         return super.testAccess(resident);
     }
