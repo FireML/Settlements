@@ -27,15 +27,15 @@ public interface ConfigMessages extends ConfigKey {
         for (Perk perk : landOwner.getAvailablePerks()) {
             if (perk.getUnlockables().contains(unlockable)) {
                 if (perk instanceof LevelPerk && ((LevelPerk<?>) perk).getLevel() > 1) {
-                    return Message.get("unlockables.locked.upgrade").getReplacedText(
+                    return getText("unlockables.locked.upgrade",
                             "type", perk.getTag(),
                             "level", String.valueOf(((LevelPerk<?>) perk).getLevel())
                     );
                 }
-                return Message.get("unlockables.locked.unlock").getReplacedText("type", perk.getTag());
+                return getText("unlockables.locked.unlock", "type", perk.getTag());
             }
         }
-        return Message.get("unlockables.locked.level").getReplacedText("state", landOwner.getStateTag());
+        return getText("unlockables.locked.level", "state", landOwner.getStateTag());
     }
 
     default Message getMessage(String key) {

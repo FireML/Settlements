@@ -695,6 +695,41 @@ lock:
       ally: "&e&l(!) &r&7You are not allied to &e{state} {name}&7."
       private: "&e&l(!) &r&7Only the &ePlot owner&7 can build here."
       friends: "&e&l(!) &r&7Only the &ePlot owner's friends&7 can build here."
+unlockables:
+  locked:
+    npc: "&cUpgrade NPC to unlock!"
+    unlock: "&cUnlock {type} to unlock!"
+    upgrade: "&c{type} lv{level} required!"
+    not-on-land: "&cNot on a claim!"
+    not-own-plot: "&cNot your plot!"
+    level: "&cUpgrade {state} to unlock!"
+    perk: "&cNot purchased yet!"
+    money: "&cNot enough money"
+    rank: "&cRank too low"
+    permission: "&cNo Permission"
+    invite-only: "&cInvite only"
+    application-required: "&cApply at Elder"
+  unlocked:
+    open: "&bClick to open"
+    change: "&bClick to change"
+    set: "&bClick to set"
+    use: "&bClick to use"
+    send: "&bClick to send"
+    options: "&bClick for more options"
+    reset: "&bClick to reset"
+    browse: "&bClick to browse"
+    view: "&bClick to view"
+    kick: "&bClick to kick"
+    edit: "&bClick to edit"
+    create: "&bClick to create"
+    unclaim: "&bClick to unclaim"
+    join: "&bClick to join"
+    banish: "&bClick to banish"
+    withdraw: "&bClick to withdraw"
+    deposit: "&bClick to deposit"
+    invited: |-
+      &bYou have been invited to join them!
+      &bClick to join!
 gui:
   no-permission: "&cUnable to modify"
   back: "&cBack"
@@ -702,41 +737,6 @@ gui:
   close: "&cClose"
   enabled: "&aEnabled"
   disabled: "&cDisabled"
-  unlockables:
-    locked:
-      npc: "&cUpgrade NPC to unlock!"
-      unlock: "&cUnlock {type} to unlock!"
-      upgrade: "&c{type} lv{level} required!"
-      not-on-land: "&cNot on a claim!"
-      not-own-plot: "&cNot your plot!"
-      level: "&cUpgrade {state} to unlock!"
-      perk: "&cNot purchased yet!"
-      money: "&cNot enough money"
-      rank: "&cRank too low"
-      permission: "&cNo Permission"
-      invite-only: "&cInvite only"
-      application-required: "&cApply at Elder"
-    unlocked:
-      open: "&bClick to open"
-      change: "&bClick to change"
-      set: "&bClick to set"
-      use: "&bClick to use"
-      send: "&bClick to send"
-      options: "&bClick for more options"
-      reset: "&bClick to reset"
-      browse: "&bClick to browse"
-      view: "&bClick to view"
-      kick: "&bClick to kick"
-      edit: "&bClick to edit"
-      create: "&bClick to create"
-      unclaim: "&bClick to unclaim"
-      join: "&bClick to join"
-      banish: "&bClick to banish"
-      withdraw: "&bClick to withdraw"
-      deposit: "&bClick to deposit"
-      invited: |-
-        &bYou have been invited to join them!
-        &bClick to join!
   general:
     start:
       title: "General Information"
