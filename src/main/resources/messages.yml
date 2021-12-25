@@ -3362,7 +3362,7 @@ command:
       home: "&cThis land is your home, you have to move it with &7/{base} sethome&c before unclaiming this land."
       confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l in the next minute to confirm the &e&lunclaiming&c&l of [&e&l{amount}&c&l chunks](&fChunks that will be unclaimed:\n&7{claims}) and [&5{portal-amount} &c&lportals](&fPortals that will be removed:\n&7{portals})."
       success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at &f{x}-{z}!"
-      new-upkeep: "&aYour new upkeep is now &e₲{upkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
+      new-upkeep: "&aYour new upkeep is now &e₲{upkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/e upkeep](/e upkeep)"
       description: Unclaim land which is claimed by your settlement
       "<radius>":
         description: "Unclaims all the chunks in the stated radius (max is 5)"
@@ -3567,10 +3567,10 @@ command:
         &r&7        You have created a new empire!
         &r&7  &6${cost}&7 have been deducated from your {capitalstate} bank!
         &r&7
-        &r&7  Make sure to deposit money into your [&a/e bank](/e bank)&7
-        &r&7             for the [&a/e upkeep](/e upkeep)
+        &r&7   Make sure to deposit money into your [&a/e bank](/e bank)&7
+        &r&7                  for the [&a/e upkeep](/e upkeep)
         &r&7
-        &r&7    Start by creating your first claim with [&e/e claim](/e claim)
+        &r&7  Start by creating your first claim with [&e/e claim](/e claim)
         &7
       broadcast: "&e{player} has made a empire called {name}!"
       max-level-kingdom-required: "&cYou need at least a Kingdom with level 10 to create an empire!"
