@@ -309,17 +309,17 @@ public interface LandOwnerCommand extends ConfigMessages {
                         "x", String.valueOf(l.getX()),
                         "z", String.valueOf(l.getZ()))
                 );
+                if (args.length >= 3 && "map".equalsIgnoreCase(args[2])) {
+                    ConfigMessages configMessages = unclaimedLand.iterator().next().getMapKey();
+                    Utils.runAsync(() -> new ChatMap(res.getPlayer(), landOwner, configMessages));
+                }
+                LandManager.getInstance().unclaimLand(unclaimedLand);
                 if (landOwner.getLevel() == 1) {
                     getMessage("new-upkeep").tell(res,
                             "upkeep", String.valueOf(landOwner.getUpkeep()),
                             "upkeepperclaim", String.valueOf(landOwner.getClaimUpkeep(player.getWorld().getName()))
                     );
                 }
-                if (args.length >= 3 && "map".equalsIgnoreCase(args[2])) {
-                    ConfigMessages configMessages = unclaimedLand.iterator().next().getMapKey();
-                    Utils.runAsync(() -> new ChatMap(res.getPlayer(), landOwner, configMessages));
-                }
-                LandManager.getInstance().unclaimLand(unclaimedLand);
 
             };
             Set<Portal> portals = new HashSet<>();
