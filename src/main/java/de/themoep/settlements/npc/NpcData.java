@@ -168,7 +168,6 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
         for (String perkName : getLevelInfo().getPerks()) {
             NpcPerk perk = NpcManager.getInstance().getPerk(owner, perkName);
             if (perk != null) {
-                Message.get("levels.perk-unlocked").tell(owner, "perk", perk.getTag());
                 owner.unlockPerk(resident, perk);
                 for (String unlockable : perk.getUnlockables()) {
                     perksDesc.add(HumanReadable.humanizedName(unlockable));
@@ -189,8 +188,12 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
         }
         if (!perksDesc.isEmpty()) {
             mail += "\n" + Message.get("levels.mail-upgrade.perks").getReplacedText(
-                    "perks", String.join(", ", perksDesc)
+                    "perks", perksDesc.stream().map(p -> Message.get("levels.mail-upgrade.perks-entry").getReplacedText("perk", p))
+                            .collect(Collectors.joining("\n"))
             );
+            Message.get("levels.perks").tell(owner,
+                    "perks", perksDesc.stream().map(p -> Message.get("levels.perks-entry").getReplacedText("perk", p))
+                            .collect(Collectors.joining("\n")));
         }
         for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
             for (Resident r : owner.getResidents()) {

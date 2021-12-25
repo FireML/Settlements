@@ -182,15 +182,20 @@ scoreboard:
         &7/scoreboard
 empire-world-generated: "&a&lCreated your own empire world!"
 levels:
-  upgrade: "&d&lLEVEL UP &r&7Your {state} is now level &d{level}"
+  upgrade: "&d{state}&7 was upgraded to level &d{level}"
+  perks: |-
+    &7Access granted to:
+    {perks}
+  perks-entry: "&7- &f{perk}"
   mail-upgrade:
     general: "{name} was upgraded to {level}!"
     perks: |-
       Access granted to:
       {perks}
-  upgrade-settlement: "&a&lSUCCESS &r&7The settlement has been upgraded to &e{state}!"
-  perk-available: "&7Perk &6&l{perk} &7&lcan be unlocked!"
-  perk-unlocked: "&6&l{perk} &7&lhas been unlocked!"
+    perks-entry: "- {perk}"
+  upgrade-settlement: "&7The settlement has been upgraded to &e{state}!"
+  perk-available: "&7Perk &6{perk} &7can be unlocked!"
+  perk-unlocked: "&6{perk} &7has been unlocked!"
 missions:
   completed: "&e&l(!) &r&e{state} {name}&7 has completed the mission &e{mission}&7! {finishedmissions} missions finished!"
 upkeep:

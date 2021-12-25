@@ -167,11 +167,20 @@ public class UpgradeGUI extends ConfigurableGui {
                         }
                     }
                 }
-                List<String> benefitTexts = perks.stream()
-                        .map(p -> getText("benefit",
-                                "name", p.getTag(),
-                                "description", Message.get("description." + p.getKey()).getText()
-                        )).collect(Collectors.toList());
+                List<String> benefitTexts = new ArrayList<>();
+                for (LevelPerk perk : perks) {
+                    if (perk.getUnlockables().isEmpty() || getMessage("description." + perk.getKey()).exists()) {
+                        benefitTexts.add(getText("benefit",
+                                "name", perk.getTag(),
+                                "description", getText("description." + perk.getKey())));
+                    } else {
+                        for (String unlockable : perk.getUnlockables()) {
+                            benefitTexts.add(getText("benefit",
+                                    "name", HumanReadable.humanizedName(unlockable),
+                                    "description", HumanReadable.humanizedName(unlockable)));
+                        }
+                    }
+                }
                 for (String benefit : benefits) {
                     benefitTexts.add(getText("benefit",
                             "name", benefit,

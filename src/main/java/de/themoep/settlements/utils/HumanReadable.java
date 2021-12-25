@@ -12,7 +12,11 @@ public interface HumanReadable {
     }
 
     static String humanizedName(String string) {
-        return WordUtils.capitalizeFully(string.replace('_', ' ').replace('-', ' '));
+        return WordUtils.capitalizeFully(string
+                .replace('.', ' ')
+                .replace('_', ' ')
+                .replace('-', ' ')
+        );
     }
 
     public String name();
