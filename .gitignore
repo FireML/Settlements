@@ -9,3 +9,6 @@ gen
 *.zip
 *.schem
 dependency-reduced-pom.xml
+
+# Build files
+target

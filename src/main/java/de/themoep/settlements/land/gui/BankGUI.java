@@ -11,6 +11,7 @@ import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.Utils;
+import net.milkbowl.vault.economy.EconomyResponse;
 import net.wesjd.anvilgui.AnvilGUI;
 
 public class BankGUI extends ConfigurableGui {
@@ -40,6 +41,10 @@ public class BankGUI extends ConfigurableGui {
                                     return AnvilGUI.Response.text(getError("not-enough-money").getReplacedText(
                                             "amount", String.valueOf(amount)
                                     ));
+                                }
+                                EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(player, (double) amount);
+                                if (!r2.transactionSuccess()) {
+                                    return AnvilGUI.Response.text("&cAn error occurred, please tell an admin!");
                                 }
                                 landOwner.addToBank(amount);
                                 landOwner.save();
