@@ -2350,6 +2350,11 @@ gui:
       &fCurrent Settings: &e{build}
   
       &bClick to change settings
+    modes: |-
+      &eModes
+      &fToggle plot modes
+  
+      &bClick to change settings
     descriptions:
       doors: Use doors
       containers: Use containers

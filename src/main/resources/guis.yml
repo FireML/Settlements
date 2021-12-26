@@ -509,7 +509,7 @@ guis:
       setup:
       - "ooooooooo"
       - "    s    "
-      - "    a    "
+      - "   a m   "
       - " uuuuuuu "
       - " uuuuuuu "
       - " ooobooo "
@@ -518,6 +518,7 @@ guis:
       elements:
         o: lime_stained_glass_pane
         build: diamond_pickaxe # 'a'
+        modes: gold_shovel # 'a'
         states: book
         back: barrier
     build:
@@ -705,7 +706,7 @@ guis:
       setup:
       - "ooooooooo"
       - "    s    "
-      - "    a    "
+      - "   a m   "
       - " uuuuuuu "
       - " uuuuuuu "
       - " ooobooo "
@@ -714,6 +715,7 @@ guis:
       elements:
         o: lime_stained_glass_pane
         build: diamond_pickaxe # 'a'
+        modes: gold_shovel # 'a'
         states: book
         back: barrier
     build:
@@ -749,6 +751,19 @@ guis:
         states: book
         previous: arrow
         next: arrow
+        back: barrier
+    mode:
+      setup:
+      - "ooooooooo"
+      - "         "
+      - " mmmmmmm "
+      - " mmmmmmm "
+      - "         "
+      - " ooobooo "
+      allignment:
+        m: center
+      elements:
+        o: lime_stained_glass_pane
         back: barrier
     bank:
       setup:
@@ -1114,7 +1129,7 @@ guis:
       setup:
       - "ooooooooo"
       - "    s    "
-      - "    a    "
+      - "   a m   "
       - " uuuuuuu "
       - " uuuuuuu "
       - " ooobooo "
@@ -1123,6 +1138,7 @@ guis:
       elements:
         o: lime_stained_glass_pane
         build: diamond_pickaxe # 'a'
+        modes: gold_shovel # 'a'
         states: book
         back: barrier
     build:

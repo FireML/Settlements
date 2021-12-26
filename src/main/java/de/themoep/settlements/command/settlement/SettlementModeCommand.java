@@ -1,7 +1,7 @@
 package de.themoep.settlements.command.settlement;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.settlement.gui.ModeGUI;
+import de.themoep.settlements.land.gui.ModeGUI;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.PlotMode;
@@ -17,7 +17,7 @@ public class SettlementModeCommand extends SettlementSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length < 1) {
-            new ModeGUI(res).open();
+            new ModeGUI(res, res.getSettlement()).open();
             return true;
         }
 

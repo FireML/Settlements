@@ -11,12 +11,17 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.land.BuildState;
 import de.themoep.settlements.land.BuildStateable;
 import de.themoep.settlements.land.FlagAble;
+import de.themoep.settlements.land.LandOwner;
+import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.UseFlag;
 import de.themoep.settlements.land.UseFlagManager;
 import de.themoep.settlements.land.UseGroup;
 import de.themoep.settlements.land.UseGroupSetter;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Message;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +47,21 @@ public class PermsGUI extends SettlementsGUI {
             }
             return true;
         }, getText("build",
+                "build", flagAble.getBuildState().getTag(),
+                "state", flagAble.getStateTag()
+        )));
+
+        gui.addElement(new StaticGuiElement('m', getIcon("modes"), click -> {
+            if (permCheck.get()) {
+                Resident resident = ResidentManager.getInstance().getResident((Player) click.getWhoClicked());
+                if (flagAble instanceof LandOwner) {
+                    new ModeGUI(resident, (LandOwner<?, ?>) flagAble).open();
+                } else if (flagAble instanceof OwnedLand) {
+                    new de.themoep.settlements.land.gui.plot.ModeGUI(resident, (OwnedLand) flagAble).open();
+                }
+            }
+            return true;
+        }, getText("modes",
                 "build", flagAble.getBuildState().getTag(),
                 "state", flagAble.getStateTag()
         )));
