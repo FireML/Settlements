@@ -46,6 +46,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -61,7 +62,7 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class Resident implements ConfigurationSerializable, DatabaseSerializable, Targetable, MissionTaker<SettlementMission> {
+public class Resident implements ConfigurationSerializable, DatabaseSerializable, Targetable, MissionTaker<SettlementMission>, Sortable<Resident> {
     private IdObject id = IdObject.get(null);
     private UUID uuid;
     private String name;
@@ -635,6 +636,43 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     public boolean hasUnlocked(String unlock) {
         return hasSettlement() && getSettlement().hasUnlocked(unlock)
                 || hasEmpire() && getSettlement().getEmpire().hasUnlocked(unlock);
+    }
+
+    @Override
+    public String[] getReplacements(ConfigMessages configMessages, String... initial) {
+        return getReplacements(initial);
+    }
+
+    @Override
+    public Sortable.Sort<Resident>[] getSorts() {
+        return Sort.values();
+    }
+
+    @Override
+    public ItemStack getIcon() {
+        return ItemUtils.getHead(uuid, name);
+    }
+
+    public enum Sort implements Sortable.Sort<Resident> {
+        RANK((r1, r2) -> r1.getSettlementRank().compareTo(r2.getSettlementRank())),
+        LAST_LOGIN((r1, r2) -> Long.compare(r2.getLastLogin(), r1.getLastLogin())),
+        ;
+
+        private Comparator<Resident> comparator;
+
+        Sort(Comparator<Resident> comparator) {
+            this.comparator = comparator;
+        }
+
+        @Override
+        public Sortable.Sort<Resident>[] getValues() {
+            return Sort.values();
+        }
+
+        @Override
+        public Comparator<Resident> getComparator() {
+            return comparator;
+        }
     }
 
     public enum Placeholder {

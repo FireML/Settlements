@@ -1,87 +1,22 @@
 package de.themoep.settlements.settlement.gui;
 
-import de.themoep.inventorygui.DynamicGuiElement;
-import de.themoep.inventorygui.GuiBackElement;
-import de.themoep.inventorygui.GuiElementGroup;
-import de.themoep.inventorygui.InventoryGui;
-import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsGUI;
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.utils.ConfigurableGui;
-import de.themoep.settlements.utils.ItemUtils;
-import de.themoep.settlements.utils.NameTag;
-import de.themoep.settlements.utils.Next;
-import org.bukkit.inventory.ItemStack;
+import de.themoep.settlements.utils.ListGui;
 
-public class ResListGUI extends ConfigurableGui {
+public class ResListGUI extends SettlementsGUI {
 
-    private Sort sort = Sort.RANK;
+    private final ListGui<Resident> gui;
 
     public ResListGUI(Resident resident, Settlement settlement) {
-        super(resident, "settlement.reslist");
-
-        DynamicGuiElement sortedGroup = new DynamicGuiElement('r', who -> {
-            GuiElementGroup group = createGroup('r');
-            settlement.getResidents().stream().sorted((r1, r2) -> {
-                switch (sort) {
-                    case RANK:
-                        return r1.getSettlementRank().compareTo(r2.getSettlementRank());
-                    case LAST_LOGIN:
-                        return Long.compare(r2.getLastLogin(), r1.getLastLogin());
-                }
-                return 0;
-            }).forEach(r -> group.addElement(
-                    new StaticGuiElement('r', ItemUtils.getHead(r.getUUID(), r.getName()), click -> {
-                        new ResidentGUI(resident, r).open();
-                        return true;
-                    }, getText("entry", r.getReplacements()))
-            ));
-            return group;
-        });
-
-        gui.addElement(sortedGroup);
-
-        gui.addElement(getCycleElement('s', () -> sort, click -> {
-            if (sort != null) {
-                if (click.getType().isLeftClick()) {
-                    sort = sort.next();
-                } else if (click.getType().isRightClick()) {
-                    sort = sort.previous();
-                }
-            }
-            click.getGui().draw();
-            return true;
-        }, "sort"));
-
-        GuiElementGroup pages = new GuiElementGroup('p');
-        gui.addElement(pages);
-
-        for (int i = 0; i < gui.getPageAmount(resident.getPlayer()) && i < pages.getSlots().length; i++) {
-            int page = i;
-            pages.addElement(new DynamicGuiElement('p', who -> {
-                ItemStack icon = getIcon("page");
-                if (page == gui.getPageNumber(who)) {
-                    ItemUtils.setGlowing(icon, true);
-                }
-                return new StaticGuiElement('p', icon, page + 1, click -> {
-                    gui.setPageNumber(click.getWhoClicked(), page);
-                    return true;
-                }, getText("page", "page", String.valueOf(page + 1), "pages", String.valueOf(gui.getPageAmount(who))));
-            }));
-        }
-
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+        super("settlement.reslist");
+        gui = new ListGui<>(resident, name(), true, settlement::getResidents, (click, r) -> {
+            new ResidentGUI(resident, r).open();
+        }, r -> r.getReplacements(this));
     }
 
-    private enum Sort implements NameTag, Next<Sort> {
-        RANK,
-        LAST_LOGIN;
-
-        @Override
-        public Sort[] getValues() {
-            return values();
-        }
+    public void open() {
+        gui.open();
     }
 }

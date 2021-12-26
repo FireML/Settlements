@@ -437,10 +437,10 @@ guis:
     reslist:
       setup:
       - "ooooooooo"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
+      - "eeeeeeeee"
       - "pppppps b"
       elements:
         o: lime_stained_glass_pane
