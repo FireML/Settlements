@@ -118,7 +118,7 @@ public class ChatMap {
 
     private BaseComponent[] getRowEnd(int row) {
         if (rowEnds.size() > row) {
-            return messages.getMessage("map.explanations." + rowEnds.get(row).getKey()).getComponents();
+            return messages.getMessage("explanations." + rowEnds.get(row).getKey()).getComponents();
         }
         return new BaseComponent[0];
     }
