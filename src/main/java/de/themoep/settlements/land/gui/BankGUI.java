@@ -102,6 +102,7 @@ public class BankGUI extends ConfigurableGui {
                 // TODO: GUI?
                 CommandManager.getInstance().getCommand(landOwner.getKey())
                         .execute(click.getWhoClicked(), null, landOwner.getKey(), "money", "history");
+                click.getGui().close();
                 return true;
             }, getText("history",
                     "state", landOwner.getStateTag(),
