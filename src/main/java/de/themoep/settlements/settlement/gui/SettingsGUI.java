@@ -109,7 +109,7 @@ public class SettingsGUI extends ConfigurableGui {
                         getMessage("rules.updated").tell(landOwner.getOnlineResidents(), "state", landOwner.getStateTag());
                         for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
                             for (Resident r : landOwner.getResidents()) {
-                                provider.sendMail(resident.getName(), r, getText("mail",
+                                provider.sendMail(resident.getName(), r, getText("rules.mail",
                                         "state", landOwner.getStateTag(),
                                         "date", Utils.DATE_FORMAT.format(System.currentTimeMillis())
                                 ));
@@ -129,7 +129,7 @@ public class SettingsGUI extends ConfigurableGui {
                         getMessage("rules.updated").tell(landOwner.getOnlineResidents(), "state", landOwner.getStateTag());
                         for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
                             for (Resident r : landOwner.getResidents()) {
-                                provider.sendMail(resident.getName(), r, getText("mail",
+                                provider.sendMail(resident.getName(), r, getText("rules.mail",
                                         "state", landOwner.getStateTag(),
                                         "date", Utils.DATE_FORMAT.format(System.currentTimeMillis())
                                 ));
