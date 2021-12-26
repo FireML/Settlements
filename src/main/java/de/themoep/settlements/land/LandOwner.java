@@ -1057,4 +1057,6 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
     public abstract boolean canClaim(World world);
 
     public abstract int getMaxClaimableChunks();
+
+    public abstract int getMaxSize();
 }

@@ -752,6 +752,12 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
                 + getBonusClaimAmount();
     }
 
+    @Override
+    public int getMaxSize() {
+        int maxSize = getLevelInfo() != null ? getLevelInfo().getSize() : -1;
+        return maxSize > 0 ? maxSize : Config.Empire.MAX_SIZE;
+    }
+
     public void setInRegen(boolean inRegen) {
         lastRename = System.currentTimeMillis();
         this.inRegen = inRegen;

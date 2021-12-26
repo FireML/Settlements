@@ -791,6 +791,7 @@ gui:
           &fBoard: &e{description}
           &fState: &e{state}
           &fLevel: &e{level}
+          &fSize: &e{size}&f/&e{maxsize}
           &fPrivacy: &e{access}
           &fRecruitment: &e{jointype}
           &fBank: &e{bank}
@@ -810,6 +811,7 @@ gui:
           &fBoard: &e{description}
           &fState: &e{state}
           &fLevel: &e{level}
+          &fSize: &e{size}&f/&e{maxsize}
           &fEmpire: &e{empire}
           &fPrivacy: &e{access}
           &fRecruitment: &e{jointype}
@@ -1009,6 +1011,7 @@ gui:
         &e{name}
         &fBoard: &e{description}
         &f{state}: &eLevel {level}
+        &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fBank: &e${bank}
         &fCooperation Points: &e{missionpoints}
@@ -1022,6 +1025,7 @@ gui:
         &fBoard: &e{description}
         &fSymbol: &e{symbol}
         &fEmpire: &eLevel {level}
+        &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fBank: &e${bank}
         &fDaily Missions: &e{dailymissions}
@@ -1550,6 +1554,7 @@ gui:
         &fBoard: &e{description}
         &fSymbol: &e{symbol}
         &fEmpire: &eLevel {level}
+        &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
         &fBank: &e${bank}
@@ -2213,6 +2218,7 @@ gui:
       &e{name}
       &fBoard: &e{description}
       &f{state}: &eLevel {level}
+      &fSize: &e{size}&f/&e{maxsize}
       &fAccess: &e{access}
       &fRecruitment: &e{jointype}
       &fBank: &e${bank}
@@ -2905,6 +2911,7 @@ command:
         &e&l{name}
         &fBoard: &e{description}
         &f{state}: &eLevel {level}
+        &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
         &fBank: &e${bank}
@@ -2919,6 +2926,7 @@ command:
         &e&l{name}
         &fBoard: &e{description}
         &f{state}: &eLevel {level}
+        &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
         &fBank: &e${bank}
@@ -3240,6 +3248,7 @@ command:
         &e&l{name}
         &fBoard: &e{description}
         &f{state}: &eLevel {level}
+        &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
         &fBank: &e${bank}
@@ -3254,6 +3263,7 @@ command:
         &e&l{name}
         &fBoard: &e{description}
         &f{state}: &eLevel {level}
+        &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
         &fBank: &e${bank}
@@ -3613,6 +3623,7 @@ command:
         &e&l{name}&
         &fBoard; &e{description}
         &fEmpire: &eLevel {level} | &a&lSymbol &e{symbol}
+        &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment_ &e{jointype}
         &fBank: &e${bank}
@@ -3896,6 +3907,7 @@ command:
         &e&l{name}&
         &fBoard; &e{description}
         &fEmpire: &eLevel {level} | &a&lSymbol &e{symbol}
+        &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment_ &e{jointype}
         &fBank: &e${bank}

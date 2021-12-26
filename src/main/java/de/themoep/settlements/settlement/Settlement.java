@@ -516,6 +516,12 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
                 + getBonusClaimAmount();
     }
 
+    @Override
+    public int getMaxSize() {
+        int maxSize = getLevelInfo() != null ? getLevelInfo().getSize() : -1;
+        return maxSize > 0 ? maxSize : Config.Settlement.MAX_SIZE;
+    }
+
     public int getBonusClaimAmount() {
         return getBonusClaims() + getPerksMap().entrySet().stream()
                 .filter(e -> getPerk(e.getKey()) != null)
@@ -976,6 +982,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         }),
         residents((c, v) -> c != null ? v.getResidentsToString(c.getMessage("residents.rank"), c.getMessage("residents.entry"), c.getMessage("residents.more"), c.getText("residents.online"), c.getText("residents.offline"), c.getText("residents.separator")) : ""),
         size((c, v) -> String.valueOf(v.getResidentIds().size())),
+        maxsize((c, v) -> String.valueOf(v.getMaxSize())),
         resonlinecount((c, v) -> String.valueOf(v.getOnlineCount())),
         resotheronlinecount((c, v) -> String.valueOf(v.getOnlineCount() - 1)),
         officerranks((c, v) -> Arrays.stream(SettlementRank.values())
