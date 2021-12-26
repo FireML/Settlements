@@ -57,7 +57,7 @@ perm-groups:
 # Permissions that a user can toggle
 toggleable-permissions:
 - empire.memberlist
-- empire.group.manage-.member
+- empire.group.manage-member
 - empire.kick
 - empire.titles
 - empire.group.use-bank
@@ -83,8 +83,6 @@ toggleable-permissions:
 - empire.unclaim
 - empire.plot.admin
 - empire.portal.admin
-- empire.group.manage-outpost
-- empire.outpost.unclaim
 - empire.invite
 - empire.group.manage-shop
 - empire.lock.admin
@@ -126,6 +124,12 @@ ranks:
     - empire.npc.teleport
     - empire.claim
     - empire.unclaim
+    - empire.titles
+    - empire.group.use-bank
+    - empire.history
+    - empire.rewards
+    - empire.portal.admin
+    - empire.group.manage-shop
     # member permissions
     - empire.allies
     - empire.joinfee
