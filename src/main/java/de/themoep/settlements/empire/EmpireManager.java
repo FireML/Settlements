@@ -355,6 +355,7 @@ public class EmpireManager {
         }
         SettlementsPlugin.getInstance().addNewlyDeleted(empire);
         for (Settlement member : empire.getMembers()) {
+            member.setEmpireDisband(System.currentTimeMillis());
             if (empire.equals(member.getEmpire())) {
                 member.setEmpire(null);
             } else {

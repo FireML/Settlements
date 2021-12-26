@@ -2887,6 +2887,7 @@ command:
       description: Set the description of a settlement
     disband:
       capital-cant-disband: "&c&l(!) &r&7You cannot disband your {state} as long as it is the capital of an empire!"
+      wait-longer: "&c&l(!) &r&7You cannot disband your {state} yet as you just disbanded your empire! Wait a bit longer!"
       confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l to confirm the &r&e&ldisbanding&r&c&l of your settlement."
       success: "&e&l(!) &r&7Your {title} has deleted your {state}."
       description: Disbands the current settlement

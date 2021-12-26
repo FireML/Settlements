@@ -8,6 +8,7 @@ import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.Message;
+import de.themoep.settlements.utils.config.Config;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -23,6 +24,8 @@ public class SettlementDisbandCommand extends SettlementSubCommand {
     public boolean run(Resident res, String base, String alias, String... args) {
         if (res.getSettlement().isCapital()) {
             getMessage("capital-cant-disband").tell(res, "state", res.getSettlement().getStateTag(), "name", res.getSettlement().getName());
+        } else if (res.getSettlement().getEmpireDisband() + Config.Storage.Queue.WAIT * 1000L > System.currentTimeMillis()) {
+            getMessage("wait-longer").tell(res, "state", res.getSettlement().getStateTag(), "name", res.getSettlement().getName());
         } else if (confirm.getIfPresent(res.getUUID()) == null || args.length == 0 || !args[0].equalsIgnoreCase("confirm")) {
             confirm.put(res.getUUID(), true);
             getMessage("confirm").tell(res, "command", base + " " + alias + " confirm");

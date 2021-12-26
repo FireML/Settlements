@@ -90,6 +90,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     private long missionPoints = 0;
     private long finishedMissions = 0;
     private Map<String, MissionData> missionData = new LinkedHashMap<>();
+    private long empireDisband = 0;
 
     protected Settlement() {
         super();
@@ -912,6 +913,14 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         } catch (IllegalArgumentException ex) {
             return null;
         }
+    }
+
+    public void setEmpireDisband(long empireDisband) {
+        this.empireDisband = empireDisband;
+    }
+
+    public long getEmpireDisband() {
+        return empireDisband;
     }
 
     public enum Placeholder {
