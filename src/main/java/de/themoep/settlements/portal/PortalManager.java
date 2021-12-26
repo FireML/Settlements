@@ -323,7 +323,7 @@ public class PortalManager {
                     return;
                 }
                 Block down = block.getRelative(BlockFace.DOWN);
-                while (!down.getType().isSolid() && down.getY() > 0) {
+                while (!down.getType().isSolid() && down.getY() > down.getWorld().getMinHeight()) {
                     down = down.getRelative(BlockFace.DOWN);
                 }
                 if (!down.getType().isSolid()) {

@@ -386,11 +386,11 @@ public class Utils {
                 }
                 Block block = loc.getBlock();
                 Block up;
-                while (block.getY() < 256 && ((up = block.getRelative(BlockFace.UP)).isPassable() || !block.isPassable())) {
+                while (block.getY() < block.getWorld().getMaxHeight() && ((up = block.getRelative(BlockFace.UP)).isPassable() || !block.isPassable())) {
                     block = up;
                 }
                 Block down;
-                while (!(down = block.getRelative(BlockFace.DOWN)).getType().isSolid() && down.getY() > 0) {
+                while (!(down = block.getRelative(BlockFace.DOWN)).getType().isSolid() && down.getY() > down.getWorld().getMinHeight()) {
                     block = down;
                 }
                 if (!down.getType().isSolid()) {
