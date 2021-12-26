@@ -166,7 +166,9 @@ public class ManagementGUI extends SettlementsGUI {
                 "name", resident.getName(),
                 "state", settlement.getState().getTag()
         };
-        if (settlement.isAbandoned()) {
+        if (settlement.isMember(resident)) {
+            getError("free-required").actionbar(sender);
+        } else if (settlement.isAbandoned()) {
             getError("settlement-doesnt-exist").actionbar(sender, "name", settlement.getName());
         } else if (settlement.getId().isNull()) {
             getError("missing-settlement-id").actionbar(sender, "name", settlement.getName());

@@ -189,7 +189,9 @@ public class StartGUI extends ConfigurableGui {
     private boolean handleJoin(Resident resident, Settlement settlement) {
         boolean hasInvite = InviteManager.getInstance().getInvite(resident, settlement) != null;
         if (settlement.getJoinType() == JoinType.ANYONE || hasInvite) {
-            if (settlement.isAbandoned()) {
+            if (settlement.isMember(resident)) {
+                getError("free-required").actionbar(resident);
+            } else if (settlement.isAbandoned()) {
                 getError("settlement-doesnt-exist").actionbar(resident, "name", settlement.getName());
             } else if (settlement.getId().isNull()) {
                 getError("missing-settlement-id").actionbar(resident, "name", settlement.getName());
