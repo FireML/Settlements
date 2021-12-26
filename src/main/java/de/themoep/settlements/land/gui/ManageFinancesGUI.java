@@ -11,7 +11,10 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
+import net.milkbowl.vault.economy.EconomyResponse;
 import net.wesjd.anvilgui.AnvilGUI;
+
+import java.util.logging.Level;
 
 public class ManageFinancesGUI extends ConfigurableGui {
 
@@ -138,6 +141,10 @@ public class ManageFinancesGUI extends ConfigurableGui {
                                             "amount", String.valueOf(amount)
                                     ));
                                 }
+                                EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(player, (double) amount);
+                                if (!r2.transactionSuccess()) {
+                                    return AnvilGUI.Response.text("&cAn error occurred, please tell an admin!");
+                                }
                                 landOwner.addToBank(amount);
                                 landOwner.save();
                                 DatabaseManager.getInstance().logDeposit(landOwner, resident, amount);
@@ -186,6 +193,12 @@ public class ManageFinancesGUI extends ConfigurableGui {
                                             "amount", String.valueOf(amount)
                                     ));
                                 }
+                                landOwner.removeFromBank(amount);
+                                EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().depositPlayer(player, (double) amount);
+                                if (!r2.transactionSuccess()) {
+                                    landOwner.addToBank(amount);
+                                    return AnvilGUI.Response.text("&cAn error occurred, please tell an admin!");
+                                }
                                 Message.get("command." + landOwner.getKey() + ".bank.withdraw.withdrawn").tell(resident.getSettlement(),
                                         "state", landOwner.getStateTag(),
                                         "rank", landOwner.getRank(resident).getTag(),
@@ -195,7 +208,6 @@ public class ManageFinancesGUI extends ConfigurableGui {
                                         "amount", Utils.CURRENCY_FORMAT.format(amount)
                                 );
                                 DatabaseManager.getInstance().logWithdraw(landOwner, resident, amount);
-                                landOwner.addToBank(amount);
                                 landOwner.save();
                                 Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
                                 return AnvilGUI.Response.close();
