@@ -7,6 +7,7 @@ import de.themoep.settlements.command.empire.EmpireHomeCommand;
 import de.themoep.settlements.command.empire.EmpireSetHomeCommand;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.land.gui.AccessGUI;
+import de.themoep.settlements.land.gui.ModeGUI;
 import de.themoep.settlements.land.gui.RankPermsGUI;
 import de.themoep.settlements.land.gui.TitleGUI;
 import de.themoep.settlements.resident.Resident;
@@ -16,7 +17,6 @@ import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.land.gui.BuildGUI;
 import de.themoep.settlements.land.gui.PermsGUI;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import java.util.function.Supplier;
 
@@ -88,7 +88,7 @@ public class SettingsGUI extends ConfigurableGui {
         if (resident.hasPermission("empire.mode")) {
             gui.addElement(new StaticGuiElement('m', ItemUtils.toIcon(Material.REPEATER),click -> {
                 if (resident.hasPermission("empire.mode")) {
-                    new ModeGUI(resident).open();
+                    new ModeGUI(resident, resident.getSettlement().getEmpire()).open();
                 }
                 return true;
             }, getText("mode",

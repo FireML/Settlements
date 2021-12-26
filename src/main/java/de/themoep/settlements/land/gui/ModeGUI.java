@@ -14,7 +14,7 @@ import de.themoep.settlements.utils.Message;
 public class ModeGUI extends ConfigurableGui {
 
     public ModeGUI(Resident resident, LandOwner<?, ?> landOwner) {
-        super(resident, "mode");
+        super(resident, landOwner.getKey() + ".mode");
 
         GuiElementGroup group = createGroup('m');
 

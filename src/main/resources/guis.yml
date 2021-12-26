@@ -518,7 +518,7 @@ guis:
       elements:
         o: lime_stained_glass_pane
         build: diamond_pickaxe # 'a'
-        modes: gold_shovel # 'a'
+        modes: golden_shovel # 'm'
         states: book
         back: barrier
     build:
@@ -715,7 +715,7 @@ guis:
       elements:
         o: lime_stained_glass_pane
         build: diamond_pickaxe # 'a'
-        modes: gold_shovel # 'a'
+        modes: golden_shovel # 'm'
         states: book
         back: barrier
     build:
@@ -816,19 +816,6 @@ guis:
         description: oak_sign
         access: oak_fence_gate
         recruitement: acacia_door
-        back: barrier
-    mode:
-      setup:
-      - "ooooooooo"
-      - "         "
-      - " mmmmmmm "
-      - " mmmmmmm "
-      - "         "
-      - " ooobooo "
-      allignment:
-        m: center
-      elements:
-        o: lime_stained_glass_pane
         back: barrier
     allies:
       setup:
