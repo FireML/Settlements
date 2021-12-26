@@ -124,7 +124,12 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     @Override
     public void addNewEmpire(Empire empire) {
         Utils.catchSync();
-        saveEmpire(getConnection(), empire);
+        Connection conn = getConnection();
+        try {
+            saveEmpire(conn, empire);
+        } finally {
+            close(conn);
+        }
         if (!empire.getId().isNull()) {
             for (NpcData data : empire.getNpcData()) {
                 saveNpc(data);
@@ -193,7 +198,13 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     @Override
     public void addNewSettlement(Settlement settlement) {
         Utils.catchSync();
-        saveSettlement(getConnection(), settlement);
+        Utils.catchSync();
+        Connection conn = getConnection();
+        try {
+            saveSettlement(conn, settlement);
+        } finally {
+            close(conn);
+        }
         if (!settlement.getId().isNull()) {
             for (NpcData data : settlement.getNpcData()) {
                 saveNpc(data);
@@ -334,7 +345,12 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     @Override
     public void addNewNpc(NpcData npcData) {
         Utils.catchSync();
-        saveNpc(getConnection(), npcData);
+        Connection conn = getConnection();
+        try {
+            saveNpc(conn, npcData);
+        } finally {
+            close(conn);
+        }
     }
 
     @Override
