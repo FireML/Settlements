@@ -10,6 +10,7 @@ import de.themoep.settlements.integration.AfkProvider;
 import de.themoep.settlements.land.TaxDebtAction;
 import de.themoep.settlements.missions.Mission;
 import de.themoep.settlements.missions.MissionData;
+import de.themoep.settlements.missions.MissionProvider;
 import de.themoep.settlements.missions.MissionTaker;
 import de.themoep.settlements.rank.PermissionGroup;
 import de.themoep.settlements.rank.RankManager;
@@ -335,6 +336,11 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
 
     public void setMissionPoints(long missionPoints) {
         this.missionPoints = missionPoints;
+    }
+
+    @Override
+    public MissionProvider<SettlementMission> getMissionProvider() {
+        return getSettlement();
     }
 
     public Player getPlayer() {

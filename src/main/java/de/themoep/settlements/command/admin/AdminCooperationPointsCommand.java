@@ -1,14 +1,15 @@
 package de.themoep.settlements.command.admin;
 
-import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.settlement.SettlementManager;
+import de.themoep.settlements.command.common.TargetParser;
+import de.themoep.settlements.db.DatabaseSerializable;
+import de.themoep.settlements.missions.MissionTaker;
 import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.utils.Targetable;
 import org.bukkit.command.CommandSender;
 
-public class AdminCooperationPointsCommand extends SubCommand {
+public class AdminCooperationPointsCommand extends SubCommand implements TargetParser {
     public AdminCooperationPointsCommand(SubCommand parent) {
-        super(parent, "cooperationpoints add|set|remove <empire> <amount>", "coop", "cp", "missionpoints", "mp");
+        super(parent, "cooperationpoints add|set|remove <s:settlement|r:resident> <amount>", "coop", "cp", "missionpoints", "mp");
         setPermission("settlements.admin.command.cooperationpoints");
     }
 
@@ -31,15 +32,17 @@ public class AdminCooperationPointsCommand extends SubCommand {
             return false;
         }
 
-        Settlement settlement = SettlementManager.getInstance().getFromName(args[1]);
-        if (settlement != null) {
-            if (operation.apply(settlement, amount)) {
+        Targetable targetable = getTarget(sender, args[1]);
+        if (targetable instanceof MissionTaker) {
+            if (operation.apply((MissionTaker) targetable, amount)) {
                 getMessage("success").tell(sender,
                         "operation", operation.name().toLowerCase(),
                         "amount", String.valueOf(amount),
-                        "name", settlement.getName()
+                        "name", targetable.getName()
                 );
-                DatabaseManager.getInstance().saveSettlement(settlement);
+                if (targetable instanceof DatabaseSerializable) {
+                    ((DatabaseSerializable) targetable).save();
+                }
             }
         } else {
             getError("empire-doesnt-exist").tell(sender, "name", args[1]);
@@ -51,29 +54,29 @@ public class AdminCooperationPointsCommand extends SubCommand {
     private enum Operation {
         ADD() {
             @Override
-            public boolean apply(Settlement settlement, int amount) {
+            public boolean apply(MissionTaker settlement, int amount) {
                 settlement.setMissionPoints(settlement.getMissionPoints() + amount);
                 return true;
             }
         },
         SET() {
             @Override
-            public boolean apply(Settlement empire, int amount) {
-                empire.setMissionPoints(amount);
+            public boolean apply(MissionTaker missionTaker, int amount) {
+                missionTaker.setMissionPoints(amount);
                 return true;
             }
         },
         REMOVE() {
             @Override
-            public boolean apply(Settlement empire, int amount) {
-                if (empire.getMissionPoints() >= amount) {
-                    empire.setMissionPoints(empire.getMissionPoints() - amount);
+            public boolean apply(MissionTaker missionTaker, int amount) {
+                if (missionTaker.getMissionPoints() >= amount) {
+                    missionTaker.setMissionPoints(missionTaker.getMissionPoints() - amount);
                     return true;
                 }
                 return false;
             }
         };
 
-        public abstract boolean apply(Settlement empire, int amount);
+        public abstract boolean apply(MissionTaker missionTaker, int amount);
     }
 }

@@ -924,6 +924,33 @@ guis:
         blacksmith: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWRhZDZjYThlYWU1MDViYWVhOGE0ZjJlY2ZmZTcxOWYzMTU1YTIyZDI4ZjgyZDgyZDUyODQ0MGYxYTc3YWExNCJ9fX0=
         auctioneer: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGM0ZDdlYTAzODE4Nzc3MGNjMmU0ODE3YzkyMDllMTliNzRmNWQyODhlZDYzMzI4MWVjY2NhZjVjOGViYzc2NyJ9fX0=
         black-market: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGUwMmZlYmI0YzUyZGIxZmI5ZTFlNWM4NTJhNGU3MmQ4ZGZlNmM0YzA1NWE0NjQ5YWJmM2QzNTdkMjMzZmMxYiJ9fX0=
+    elder:
+      setup:
+      - "ooooooooo"
+      - "         "
+      - "    e    "
+      - "         "
+      - "         "
+      - " ooobooo "
+      elements:
+        o: blue_stained_glass_pane
+        recruit: crimson_door
+        missions: orange_banner
+        back: barrier
+    missions:
+      setup:
+      - "ooooioooo"
+      - "         "
+      - " mmmmmmm "
+      - " mmmmmmm "
+      - "         "
+      - " ooobooo "
+      alignments:
+        m: center
+      elements:
+        o: blue_stained_glass_pane
+        info: orange_banner
+        back: barrier
     shop:
       setup:
       - "ooooooooo"

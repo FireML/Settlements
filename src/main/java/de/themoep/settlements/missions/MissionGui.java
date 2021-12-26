@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class MissionGui extends ConfigurableGui {
 
     public MissionGui(Resident resident, MissionProvider<?> provider, MissionTaker<?> taker) {
-        super(resident, "missions");
+        super(resident, provider.name() + ".missions");
 
         gui.addElement(new StaticGuiElement('i', getIcon("info"), getText("info",
                 Mission.getReplacements(this, provider, taker))));

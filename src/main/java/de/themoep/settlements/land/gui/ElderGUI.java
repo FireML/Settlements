@@ -14,6 +14,7 @@ import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.JoinType;
 import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.settlement.SettlementMission;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
@@ -27,13 +28,20 @@ public class ElderGUI extends ConfigurableGui {
         super(resident, landOwner.getKey() + ".elder", "type", NpcType.ELDER.getTag());
 
         if (landOwner.isMember(resident)) {
-            if (landOwner instanceof MissionProvider && !((MissionProvider<?>) landOwner).getMissionTaker(resident).getMissionData().isEmpty()) {
-                gui.addElement(new StaticGuiElement('e', getIcon("missions"), click -> {
-                    new MissionGui(resident, (MissionProvider<?>) landOwner, ((MissionProvider<?>) landOwner).getMissionTaker(resident)).open();
-                    return true;
-                }, getText("missions",
-                        Mission.getReplacements(this, (MissionProvider<?>) landOwner, resident)
-                )));
+            if (landOwner instanceof MissionProvider) {
+                if (!((MissionProvider<?>) landOwner).getMissionTaker(resident).getMissionData().isEmpty()) {
+                    gui.addElement(new StaticGuiElement('e', getIcon("missions"), click -> {
+                        new MissionGui(resident, (MissionProvider<?>) landOwner, ((MissionProvider<?>) landOwner).getMissionTaker(resident)).open();
+                        return true;
+                    }, getText("missions",
+                            Mission.getReplacements(this, (MissionProvider<?>) landOwner, resident)
+                    )));
+                } else {
+                    gui.addElement(new StaticGuiElement('e', getIcon("missions"), getText("wait-for-missions",
+                            "state", resident.getSettlement().getStateTag(),
+                            "name", resident.getSettlement().getName()
+                    )));
+                }
             }
         } else if (landOwner.isBanished(resident)) {
             gui.addElement(new StaticGuiElement('e', getIcon("recruit"), getText("recruit.banished",

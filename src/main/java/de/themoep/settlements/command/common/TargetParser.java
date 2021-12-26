@@ -6,6 +6,7 @@ import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.Targetable;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public interface TargetParser extends ConfigMessages {
@@ -14,7 +15,7 @@ public interface TargetParser extends ConfigMessages {
         return getTarget(resident.getPlayer(), input);
     }
 
-    default Targetable getTarget(Player player, String input) {
+    default Targetable getTarget(CommandSender sender, String input) {
         Targetable target;
         if (input.startsWith("empire:") || input.startsWith("e:")) {
             String name = input.split(":")[1];
@@ -22,7 +23,7 @@ public interface TargetParser extends ConfigMessages {
             if (target == null) {
                 target = EmpireManager.getInstance().getEmpireFromName(name.replace('_', ' '));
                 if (target == null) {
-                    getError("empire-doesnt-exist").tell(player, "name", name);
+                    getError("empire-doesnt-exist").tell(sender, "name", name);
                     return null;
                 }
             }
@@ -32,7 +33,7 @@ public interface TargetParser extends ConfigMessages {
             if (target == null) {
                 target = SettlementManager.getInstance().getFromName(name.replace('_', ' '));
                 if (target == null) {
-                    getError("settlement-doesnt-exist").tell(player, "name", name);
+                    getError("settlement-doesnt-exist").tell(sender, "name", name);
                     return null;
                 }
             }
@@ -43,7 +44,7 @@ public interface TargetParser extends ConfigMessages {
             }
             target = ResidentManager.getInstance().getResident(name);
             if (target == null) {
-                getError("player-not-found").tell(player, "name", name);
+                getError("player-not-found").tell(sender, "name", name);
                 return null;
             }
         }

@@ -398,6 +398,11 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         this.missionPoints = missionPoints;
     }
 
+    @Override
+    public MissionProvider<EmpireMission> getMissionProvider() {
+        return getEmpire();
+    }
+
     public int getExtraMissions() {
         SettlementLevel settlementLevel = getLevelInfo();
         return settlementLevel != null ? settlementLevel.getExtraMissions() : 0;

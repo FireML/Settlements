@@ -11,4 +11,10 @@ public interface MissionProvider<M extends Mission> {
     String getStateTag();
 
     MissionTaker<M> getMissionTaker(Resident resident);
+
+    String name();
+
+    long getFinishedMissions();
+
+    void setFinishedMissions(long missions);
 }
