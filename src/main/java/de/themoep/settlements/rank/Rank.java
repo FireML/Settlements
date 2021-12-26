@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
@@ -39,14 +40,15 @@ public abstract class Rank<L extends LandOwner, R extends Rankable> implements N
         this.name = name;
         if (config != null) {
             for (String permission : config.getStringList("permissions")) {
-                String permName = permission.toLowerCase();
-                permissions.add(permName);
-                if (Bukkit.getPluginManager().getPermission("settlements.command." + permName) == null) {
-                    Bukkit.getPluginManager().addPermission(new Permission(
-                            "settlements.command." + permName,
-                            Message.orElse("command." + permName + ".permission.description", Message.get("command." + permName + ".description")).getText(),
-                            PermissionDefault.TRUE
-                    ));
+                String permName = permission.toLowerCase(Locale.ROOT);
+                addPermission(permName);
+                if (permName.contains(".group.")) {
+                    PermissionGroup group = RankManager.getInstance().getPermissionGroup(permName);
+                    if (group != null) {
+                        for (String groupPermission : group.getPermissions()) {
+                            addPermission(groupPermission);
+                        }
+                    }
                 }
             }
             if (config.isString("icon")) {
@@ -63,6 +65,17 @@ public abstract class Rank<L extends LandOwner, R extends Rankable> implements N
             if (config.isString("inherits")) {
                 inherits = config.getString("inherits");
             }
+        }
+    }
+
+    private void addPermission(String permName) {
+        permissions.add(permName);
+        if (Bukkit.getPluginManager().getPermission("settlements.command." + permName) == null) {
+            Bukkit.getPluginManager().addPermission(new Permission(
+                    "settlements.command." + permName,
+                    Message.orElse("command." + permName + ".permission.description", Message.get("command." + permName + ".description")).getText(),
+                    PermissionDefault.TRUE
+            ));
         }
     }
 

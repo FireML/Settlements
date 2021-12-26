@@ -43,8 +43,18 @@ public class RankManager {
     }
 
     private void loadSettlementRanks() {
-        settlementRanks = new LinkedHashMap<>();
         Configuration config = ConfigManager.getInstance().getSettlementRanksConf().getConfig();
+        settlementPermGroups = new LinkedHashMap<>();
+        ConfigurationSection groups = config.getConfigurationSection("perm-groups");
+        for (String groupName : groups.getKeys(false)) {
+            try {
+                settlementPermGroups.put(groupName.toLowerCase(), new PermissionGroup(groups.getConfigurationSection(groupName)));
+            } catch (InvalidConfigurationException e) {
+                SettlementsPlugin.getInstance().getLogger().severe("Error while loading " + groupName + " settlement group! " + e.getMessage());
+            }
+        }
+
+        settlementRanks = new LinkedHashMap<>();
         ConfigurationSection ranks = config.getConfigurationSection("ranks");
         for (String rankName : ranks.getKeys(false)) {
             settlementRanks.put(rankName.toLowerCase(), new SettlementRank(rankName, ranks.getConfigurationSection(rankName)));
@@ -72,16 +82,6 @@ public class RankManager {
             }
         }
 
-        settlementPermGroups = new LinkedHashMap<>();
-        ConfigurationSection groups = config.getConfigurationSection("perm-groups");
-        for (String groupName : groups.getKeys(false)) {
-            try {
-                settlementPermGroups.put(groupName.toLowerCase(), new PermissionGroup(groups.getConfigurationSection(groupName)));
-            } catch (InvalidConfigurationException e) {
-                SettlementsPlugin.getInstance().getLogger().severe("Error while loading " + groupName + " settlement group! " + e.getMessage());
-            }
-        }
-
         settlementToggleablePerms = new LinkedHashSet<>();
         for (String permission : config.getStringList("toggleable-permissions")) {
             if (settlementChiefRank.getPermissionValue(permission)) {
@@ -96,8 +96,18 @@ public class RankManager {
     }
 
     private void loadEmpireRanks() {
-        empireRanks = new LinkedHashMap<>();
         Configuration config = ConfigManager.getInstance().getEmpireRanksConf().getConfig();
+        empirePermGroups = new LinkedHashMap<>();
+        ConfigurationSection groups = config.getConfigurationSection("perm-groups");
+        for (String groupName : groups.getKeys(false)) {
+            try {
+                empirePermGroups.put(groupName.toLowerCase(), new PermissionGroup(groups.getConfigurationSection(groupName)));
+            } catch (InvalidConfigurationException e) {
+                SettlementsPlugin.getInstance().getLogger().severe("Error while loading " + groupName + " empire group! " + e.getMessage());
+            }
+        }
+
+        empireRanks = new LinkedHashMap<>();
         ConfigurationSection ranks = config.getConfigurationSection("ranks");
         for (String rankName : ranks.getKeys(false)) {
             empireRanks.put(rankName.toLowerCase(), new EmpireRank(rankName, ranks.getConfigurationSection(rankName)));
@@ -116,16 +126,6 @@ public class RankManager {
             lastRank = rank;
         }
         empireDefaultRank = lastRank;
-
-        empirePermGroups = new LinkedHashMap<>();
-        ConfigurationSection groups = config.getConfigurationSection("perm-groups");
-        for (String groupName : groups.getKeys(false)) {
-            try {
-                empirePermGroups.put(groupName.toLowerCase(), new PermissionGroup(groups.getConfigurationSection(groupName)));
-            } catch (InvalidConfigurationException e) {
-                SettlementsPlugin.getInstance().getLogger().severe("Error while loading " + groupName + " empire group! " + e.getMessage());
-            }
-        }
 
         empireToggleablePerms = new LinkedHashSet<>();
         for (String permission : config.getStringList("toggleable-permissions")) {
