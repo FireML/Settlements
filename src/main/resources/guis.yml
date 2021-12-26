@@ -159,18 +159,6 @@ guis:
         title: paper
         add: writable_book
         back: barrier
-    kick:
-      setup:
-      - "ooooooooo"
-      - "         "
-      - "    c    "
-      - "         "
-      - "         "
-      - " ooobooo "
-      elements:
-        o: yellow_stained_glass_pane
-        confirm: red_dye
-        cancel: barrier
   settlement:
     management:
       setup:
@@ -478,6 +466,18 @@ guis:
         kick: red_dye
         banish: red_wool
         back: barrier
+      kick:
+        setup:
+        - "ooooooooo"
+        - "         "
+        - "    c    "
+        - "         "
+        - "         "
+        - " ooobooo "
+        elements:
+          o: yellow_stained_glass_pane
+          confirm: red_dye
+          cancel: barrier
     banished:
       setup:
       - "ooooooooo"
