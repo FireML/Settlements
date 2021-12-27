@@ -562,7 +562,7 @@ guis:
       - "ppppppppp"
       - "ppppppppp"
       - "ppppppppp"
-      - "rrrrr tob"
+      - "rrrrrrtob"
       elements:
         set: lime_wool
         inherited: green_wool
@@ -998,7 +998,7 @@ guis:
       - "ppppppppp"
       - "ppppppppp"
       - "ppppppppp"
-      - "rrrrr tob"
+      - "rrrrrrtob"
       elements:
         set: lime_wool
         inherited: green_wool

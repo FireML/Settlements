@@ -166,10 +166,7 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
         GuiElementGroup ranksGroup = createGroup('r');
 
         landOwner.getRanks().stream().sorted(Comparator.reverseOrder()).forEachOrdered(r -> {
-            if (r == landOwner.getHighestRank()) {
-                // Don't show leader/chief permissions as they can't be edited anyways and they have all
-                return;
-            } else if (landOwner.useGuestRank() && r == landOwner.getDefaultRank()) {
+            if (landOwner.useGuestRank() && r == landOwner.getDefaultRank()) {
                 // Can't configure guest rank
                 return;
             }
