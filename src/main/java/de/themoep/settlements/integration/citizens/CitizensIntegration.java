@@ -12,8 +12,10 @@ import de.themoep.settlements.empire.gui.SettingsGUI;
 import de.themoep.settlements.empire.gui.WorldGUI;
 import de.themoep.settlements.land.LandAccess;
 import de.themoep.settlements.land.LandAccessChecker;
+import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.LandownerLevel;
+import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.Use;
 import de.themoep.settlements.land.events.LandClaimedEvent;
 import de.themoep.settlements.land.events.LandUnclaimEvent;
@@ -116,7 +118,10 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
                 if (npc != null && !npc.isSpawned()) {
                     Location location = npc.getStoredLocation();
                     if (location != null) {
-                        npc.spawn(location);
+                        OwnedLand land = LandManager.getInstance().getLand(location);
+                        if (land != null && land.isOwnedBy(landOwner)) {
+                            npc.spawn(location);
+                        }
                     }
                 }
             }
@@ -138,25 +143,32 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
 
     @EventHandler
     public void onCreate(LandownerCreatedEvent event) {
-        for (NpcType npc : event.getLandOwner().getLevelInfo().getNPCs()) {
-            if (unlockNpc(event.getResident(), event.getLandOwner(), npc)
-                    && event.getLandOwner().getHome() != null) {
-                NpcConfig config = NpcManager.getInstance().getConfig(event.getLandOwner(), npc);
-                createNpc(event.getLandOwner(), npc, config, event.getLandOwner().getHome().toBukkitLocation());
-                getMessage("new-npc-available").tell(event.getLandOwner(),
+        checkForNew(event.getResident(), event.getLandOwner());
+    }
+
+    public void checkForNew(Resident resident, LandOwner<?, ?> landOwner) {
+        for (NpcType npc : landOwner.getLevelInfo().getInheritedNPCs()) {
+            NpcData npcData = landOwner.getNpcData(npc);
+            if (!npcData.isUnlocked()
+                    && unlockNpc(resident, landOwner, npc)
+                    && landOwner.getHome() != null) {
+                NpcConfig config = NpcManager.getInstance().getConfig(landOwner, npc);
+                createNpc(landOwner, npc, config, landOwner.getHome().toBukkitLocation());
+                getMessage("new-npc-available").tell(landOwner,
                         "npc", config.getName(),
                         "type", npc.getKey(),
-                        "state", event.getLandOwner().getStateTag());
+                        "state", landOwner.getStateTag());
             }
         }
     }
 
     @EventHandler
     public void onCaimed(LandClaimedEvent event) {
+        checkForNew(event.getLandOwner().getChief(), event.getLandOwner());
         for (NpcData data : event.getLandOwner().getNpcData()) {
             handle(event, data.getType());
         }
-        for (NpcType npc : event.getLandOwner().getLevelInfo().getNPCs()) {
+        for (NpcType npc : event.getLandOwner().getLevelInfo().getInheritedNPCs()) {
             handle(event, npc);
         }
     }
@@ -204,6 +216,11 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
                 npc.spawn(location);
             }
             return npc;
+        }
+
+        OwnedLand land = LandManager.getInstance().getLand(location);
+        if (land != null && !land.isOwnedBy(landOwner)) {
+            return null;
         }
 
         EntityType entityType = npcData.getNpcSkinName().isEmpty() ? config.getEntityType() : EntityType.PLAYER;

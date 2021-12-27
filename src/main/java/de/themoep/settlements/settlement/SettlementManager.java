@@ -106,8 +106,10 @@ public class SettlementManager {
     private void loadLevels() {
         levels.clear();
         List<SettlementLevel> settlementLevels = new ArrayList<>();
+        SettlementLevel lastLevel = null;
         for (int i = 1; i <= Config.Settlement.Leveling.VILLAGE_MAX_LEVEL; i++) {
-            SettlementLevel level = new SettlementLevel(i, ConfigManager.getInstance().getSettlementLevelConfig().getConfigurationSection("village.level-" + i));
+            SettlementLevel level = new SettlementLevel(i, lastLevel, ConfigManager.getInstance().getSettlementLevelConfig().getConfigurationSection("village.level-" + i));
+            lastLevel = level;
             settlementLevels.add(level);
             SettlementsPlugin.logDebug("Loaded " + level);
         }
@@ -115,7 +117,8 @@ public class SettlementManager {
 
         List<SettlementLevel> kingdomLevels = new ArrayList<>();
         for (int i = 1; i <= Config.Settlement.Leveling.KINGDOM_MAX_LEVEL; i++) {
-            SettlementLevel level = new SettlementLevel(i, ConfigManager.getInstance().getSettlementLevelConfig().getConfigurationSection("kingdom.level-" + i));
+            SettlementLevel level = new SettlementLevel(i, lastLevel, ConfigManager.getInstance().getSettlementLevelConfig().getConfigurationSection("kingdom.level-" + i));
+            lastLevel = level;
             kingdomLevels.add(level);
             SettlementsPlugin.logDebug("Loaded " + level);
         }

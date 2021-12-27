@@ -77,9 +77,11 @@ public class NpcManager {
             ConfigurationSection config = ConfigManager.getInstance().getNpcLevelConfig().getConfigurationSection(type.getKey() + "." + npcType.getKey());
             if (config != null) {
                 int amount = config.getKeys(false).size();
+                NpcLevel lastLevel = null;
                 for (int i = 1; i <= amount; i++) {
                     ConfigurationSection levelConfig = config.getConfigurationSection("level-" + i);
-                    NpcLevel level = new NpcLevel(i, levelConfig);
+                    NpcLevel level = new NpcLevel(i, lastLevel, levelConfig);
+                    lastLevel = level;
                     levels.put(npcType, level);
                     SettlementsPlugin.logDebug("Loaded " + type + " " + npcType + " " + level);
 

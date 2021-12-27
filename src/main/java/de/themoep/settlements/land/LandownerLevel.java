@@ -18,8 +18,8 @@ public abstract class LandownerLevel extends LevelInfo {
     private final int missions;
     private final int size;
 
-    public LandownerLevel(int level, ConfigurationSection config) {
-        super(level, config);
+    public LandownerLevel(int level, LandownerLevel previous, ConfigurationSection config) {
+        super(level, previous, config);
         chunks = config.getInt("chunks", 0);
         missions = config.getInt("missions", 0);
         claimUpkeep = config.getLong("claim-upkeep", 0);
@@ -43,6 +43,14 @@ public abstract class LandownerLevel extends LevelInfo {
         return worldClaimUpkeep.getOrDefault(world, claimUpkeep);
     }
 
+    public Set<NpcType> getInheritedNPCs() {
+        Set<NpcType> combinedNpcs = new LinkedHashSet<>(npcs);
+        if (getPrevious() != null) {
+            combinedNpcs.addAll(getPrevious().getInheritedNPCs());
+        }
+        return combinedNpcs;
+    }
+
     public Set<NpcType> getNPCs() {
         return npcs;
     }
@@ -53,5 +61,9 @@ public abstract class LandownerLevel extends LevelInfo {
 
     public int getSize() {
         return size;
+    }
+
+    public LandownerLevel getPrevious() {
+        return (LandownerLevel) super.getPrevious();
     }
 }

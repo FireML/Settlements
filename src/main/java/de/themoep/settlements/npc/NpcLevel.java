@@ -2,7 +2,6 @@ package de.themoep.settlements.npc;
 
 import de.themoep.settlements.leveling.LevelInfo;
 import org.bukkit.configuration.ConfigurationSection;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashSet;
 import java.util.Locale;
@@ -12,8 +11,8 @@ public class NpcLevel extends LevelInfo {
     private long upkeep;
     private Set<String> perks = new LinkedHashSet<>();
 
-    public NpcLevel(int level, ConfigurationSection config) {
-        super(level, config);
+    public NpcLevel(int level, NpcLevel previous, ConfigurationSection config) {
+        super(level, previous, config);
         upkeep = config.getLong("upkeep", 0);
         ConfigurationSection perksConfig = config.getConfigurationSection("perks");
         if (perksConfig != null) {
@@ -35,6 +34,7 @@ public class NpcLevel extends LevelInfo {
     public String toString() {
         return "NpcLevel{" +
                 "level=" + getLevel() +
+                ", previous=" + (getPrevious() != null ? String.valueOf(getPrevious().getLevel()) : "none") +
                 ", requirements=" + getRequirements() +
                 ", upkeep=" + upkeep +
                 ", perks=" + perks +

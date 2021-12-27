@@ -20,6 +20,8 @@ public class NpcListGUI extends ConfigurableGui {
     public NpcListGUI(Resident resident, LandOwner<?, ?> landOwner) {
         super(resident, landOwner.getKey() + ".npclist");
 
+        SettlementsPlugin.getInstance().getCitizens().checkForNew(resident, landOwner);
+
         GuiElementGroup group = createGroup('n');
 
         NpcType.AppliesTo appliesTo = NpcType.AppliesTo.fromKey(landOwner.getKey());

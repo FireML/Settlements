@@ -10,8 +10,8 @@ public class SettlementLevel extends LandownerLevel {
     private final int outposts;
     private final int extraMissions;
 
-    public SettlementLevel(int level, ConfigurationSection config) {
-        super(level, config);
+    public SettlementLevel(int level, SettlementLevel previous, ConfigurationSection config) {
+        super(level, previous, config);
         outposts = config.getInt("outposts", 0);
         extraMissions = config.getInt("extra-missions", 0);
     }
@@ -28,6 +28,7 @@ public class SettlementLevel extends LandownerLevel {
     public String toString() {
         return "SettlementLevel{" +
                 "level=" + getLevel() +
+                ", previous=" + (getPrevious() != null ? String.valueOf(getPrevious().getLevel()) : "none") +
                 ", requirements=" + getRequirements() +
                 ", chunks=" + getChunks() +
                 ", outposts=" + outposts +

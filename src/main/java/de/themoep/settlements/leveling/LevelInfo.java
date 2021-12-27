@@ -8,11 +8,13 @@ import java.util.Map;
 
 public abstract class LevelInfo {
     private final int level;
+    private final LevelInfo previous;
     private final Map<String, Long> requirements = new LinkedHashMap<>();
 
 
-    public LevelInfo(int level, ConfigurationSection config) {
+    public LevelInfo(int level, LevelInfo previous, ConfigurationSection config) {
         this.level = level;
+        this.previous = previous;
         ConfigurationSection requirementsConfig = config.getConfigurationSection("requirements");
         if (requirementsConfig != null) {
             for (String key : requirementsConfig.getKeys(false)) {
@@ -30,5 +32,9 @@ public abstract class LevelInfo {
 
     public Map<String, Long> getRequirements() {
         return requirements;
+    }
+
+    public LevelInfo getPrevious() {
+        return previous;
     }
 }

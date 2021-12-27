@@ -120,8 +120,10 @@ public class EmpireManager {
 
     private void loadLevels() {
         levels.clear();
+        EmpireLevel lastLevel = null;
         for (int i = 1; i <= Config.Empire.Leveling.MAX_LEVEL; i++) {
-            EmpireLevel level = new EmpireLevel(i, ConfigManager.getInstance().getEmpireLevelConfig().getConfigurationSection("levels.level-" + i));
+            EmpireLevel level = new EmpireLevel(i, lastLevel, ConfigManager.getInstance().getEmpireLevelConfig().getConfigurationSection("levels.level-" + i));
+            lastLevel = level;
             levels.add(level);
             SettlementsPlugin.logDebug("Loaded " + level);
         }

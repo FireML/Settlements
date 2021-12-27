@@ -8,8 +8,8 @@ public class EmpireLevel extends LandownerLevel {
     private final long upkeepReduction;
     private final int worldRadius;
 
-    public EmpireLevel(int level, ConfigurationSection config) {
-        super(level, config);
+    public EmpireLevel(int level, EmpireLevel previous, ConfigurationSection config) {
+        super(level, previous, config);
         upkeep = config.getLong("upkeep", 0);
         upkeepReduction = config.getLong("upkeep-reduction", 0);
         worldRadius = config.getInt("world-radius", 0);
@@ -31,6 +31,7 @@ public class EmpireLevel extends LandownerLevel {
     public String toString() {
         return "EmpireLevel{" +
                 "level=" + getLevel() +
+                ", previous=" + (getPrevious() != null ? String.valueOf(getPrevious().getLevel()) : "none") +
                 ", requirements=" + getRequirements() +
                 ", upkeep=" + upkeep +
                 ", chunks=" + getChunks() +
