@@ -454,7 +454,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
 
     @Override
     public boolean hasPermission(Resident resident, String perm) {
-        return isMember(resident) && resident.hasPermission("settlement." + perm);
+        return isMember(resident) && resident.hasPermission(perm.startsWith("settlement.") ? perm : "settlement." + perm);
     }
 
     @Override

@@ -673,7 +673,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
 
     @Override
     public boolean hasPermission(Resident resident, String perm) {
-        return isMember(resident) && resident.hasPermission("empire." + perm);
+        return isMember(resident) && resident.hasPermission(perm.startsWith("empire.") ? perm : "empire." + perm);
     }
 
     @Override
