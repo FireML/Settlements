@@ -54,6 +54,7 @@ import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.TraitInfo;
 import net.citizensnpcs.api.trait.TraitName;
 import net.citizensnpcs.api.trait.trait.Spawned;
+import net.citizensnpcs.api.util.Colorizer;
 import net.citizensnpcs.trait.Anchors;
 import net.citizensnpcs.trait.LookClose;
 import net.citizensnpcs.trait.SkinTrait;
@@ -99,18 +100,34 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
                 forceSpawn(empire);
             }
         }
+
+        for (Settlement settlement : SettlementManager.getInstance().getSettlements()) {
+            updateName(settlement);
+        }
+        for (Empire empire : EmpireManager.getInstance().getEmpires()) {
+            updateName(empire);
+        }
     }
 
     private void forceSpawn(LandOwner<?, ?> landOwner) {
         for (NpcData npcData : landOwner.getNpcData()) {
             if (npcData.isUnlocked() && npcData.isAvailable()) {
-                NPC npc = getNpc(landOwner, npcData.getType());
+                NPC npc = getNpc(npcData);
                 if (npc != null && !npc.isSpawned()) {
                     Location location = npc.getStoredLocation();
                     if (location != null) {
                         npc.spawn(location);
                     }
                 }
+            }
+        }
+    }
+
+    private void updateName(LandOwner<?, ?> landOwner) {
+        for (NpcData npcData : landOwner.getNpcData()) {
+            NPC npc = getNpc(npcData);
+            if (npc != null && !npc.getName().equals(Colorizer.stripColors(npcData.getConfig().getName()))) {
+                npc.setName(npcData.getConfig().getName());
             }
         }
     }
@@ -147,7 +164,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
     private void handle(LandClaimedEvent event, NpcType type) {
         NpcData npcData = event.getLandOwner().getNpcData(type);
         if (npcData.isUnlocked() && npcData.isAvailable()) {
-            NPC npc = getNpc(event.getLandOwner(), type);
+            NPC npc = getNpc(npcData);
             if (npc == null || !npc.isSpawned()) {
                 Location location;
                 if (event.getLandOwner().getHome() != null) {
@@ -177,7 +194,9 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
             SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Tried to create " + type + " NPC for " + landOwner.getKey() + " " + landOwner.getName() + " but there was no config specified for that NPC type?");
             return null;
         }
-        NPC npc = getNpc(landOwner, type);
+
+        NpcData npcData = landOwner.getNpcData(type);
+        NPC npc = getNpc(npcData);
         if (npc != null) {
             if (npc.isSpawned()) {
                 npc.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
@@ -186,8 +205,6 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
             }
             return npc;
         }
-
-        NpcData npcData = landOwner.getNpcData(type);
 
         EntityType entityType = npcData.getNpcSkinName().isEmpty() ? config.getEntityType() : EntityType.PLAYER;
         npc = CitizensAPI.getNPCRegistry().createNPC(entityType, config.getName());
@@ -454,8 +471,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
         }
     }
 
-    public NPC getNpc(LandOwner<?, ?> landOwner, NpcType type) {
-        NpcData npcData = landOwner.getNpcData(type);
+    public NPC getNpc(NpcData npcData) {
         if (npcData == null || npcData.getNpcId() < 0) {
             return null;
         }

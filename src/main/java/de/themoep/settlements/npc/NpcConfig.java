@@ -1,5 +1,6 @@
 package de.themoep.settlements.npc;
 
+import de.themoep.settlements.utils.MessageUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
@@ -26,7 +27,7 @@ public class NpcConfig {
     private final int messageRange;
 
     public NpcConfig(ConfigurationSection config) {
-        name = config.getString("name");
+        name = MessageUtils.replaceColorCodes(config.getString("name"));
         entityType = EntityType.valueOf(config.getString("type", "villager").toUpperCase(Locale.ROOT));
 
         villagerType = Villager.Type.valueOf(config.getString("villager.type", "plains").toUpperCase(Locale.ROOT));

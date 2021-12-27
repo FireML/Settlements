@@ -60,7 +60,7 @@ public class NpcCommand extends ResidentSubCommand {
             return false;
         }
 
-        NPC npc = citizensIntegration.getNpc(landOwner, type);
+        NPC npc = citizensIntegration.getNpc(npcData);
 
         switch (args[1].toLowerCase(Locale.ROOT)) {
             case "tp":
