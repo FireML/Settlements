@@ -49,6 +49,7 @@ public class NpcManager {
     }
 
     private void loadNpcs(NpcType.AppliesTo type) {
+        npcConfigs.clear();
         for (NpcType npcType : NpcType.values()) {
             if (!npcType.appliesTo(type)) {
                 continue;
@@ -67,6 +68,7 @@ public class NpcManager {
 
     private void loadLevels(NpcType.AppliesTo type, Multimap<NpcType, NpcLevel> levels, Map<String, NpcPerk> perks) {
         levels.clear();
+        perks.clear();
 
         for (NpcType npcType : NpcType.values()) {
             if (!npcType.appliesTo(type)) {

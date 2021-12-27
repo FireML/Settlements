@@ -1,6 +1,7 @@
 package de.themoep.settlements.utils.config;
 
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.npc.NpcManager;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.event.EventManager;
@@ -191,6 +192,7 @@ public class ConfigManager {
         } else if (SettlementsPlugin.getInstance().isRunning()) {
             EmpireManager.getInstance().loadConfig();
             SettlementManager.getInstance().loadConfig();
+            NpcManager.getInstance().loadConfig();
             UseFlagManager.getInstance().loadConfig();
             Message.clearCache();
             SettlementsPlugin.getInstance().getLandModeListener().reload();
