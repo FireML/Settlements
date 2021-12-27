@@ -163,7 +163,11 @@ public class NpcManager {
     }
 
     public NpcConfig getConfig(LandOwner<?, ?> landOwner, NpcType type) {
-        return npcConfigs.get(landOwner.getKey(), type);
+        return getConfig(landOwner.getKey(), type);
+    }
+
+    public NpcConfig getConfig(String ownerType, NpcType type) {
+        return npcConfigs.get(ownerType, type);
     }
 
     public Set<Table.Cell<String, NpcType, NpcConfig>> getConfigs() {

@@ -73,7 +73,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
@@ -234,7 +233,6 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
         typeTrait.type = type;
         typeTrait.ownerType = landOwner.getDbName();
         typeTrait.ownerId = (int) landOwner.getId().value();
-        typeTrait.messages = config.getMessages();
         npc.addTrait(typeTrait);
 
         LookClose lookTrait = npc.getOrAddTrait(LookClose.class);
@@ -555,9 +553,6 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
         @Persist(value = "ownerId", required = true)
         private int ownerId;
 
-        @Persist("messages")
-        private List<String> messages;
-
         private Map<UUID, Long> speakCooldown = new HashMap<>();
         private Multimap<UUID, String> spokenMessages = MultimapBuilder.hashKeys().hashSetValues().build();
 
@@ -650,18 +645,19 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
          */
         private String chooseMessage(Player player) {
             Collection<String> spoken = spokenMessages.get(player.getUniqueId());
-            if (spoken.size() < messages.size()) {
-                int startIndex = RANDOM.nextInt(messages.size());
+            NpcConfig config = NpcManager.getInstance().getConfig(ownerType, type);
+            if (spoken.size() < config.getMessages().size()) {
+                int startIndex = RANDOM.nextInt(config.getMessages().size());
                 if (Config.Citizens.REPEAT_MESSAGES) {
-                    return messages.get(startIndex);
+                    return config.getMessages().get(startIndex);
                 }
                 int index = startIndex;
                 String message;
                 // Get the message at the index and check if it was already spoken it
-                while (spoken.contains(message = messages.get(index))) {
+                while (spoken.contains(message = config.getMessages().get(index))) {
                     index++;
                     // Loop back to start as the start index is somewhere at random
-                    if (index == messages.size()) {
+                    if (index == config.getMessages().size()) {
                         index = 0;
                     }
                     // We haven't found anything if we reached the start again
