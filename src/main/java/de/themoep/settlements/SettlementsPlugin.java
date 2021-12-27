@@ -380,10 +380,10 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         SettlementManager.load();
         RankManager.load();
         NpcManager.load();
+        ResidentManager.load();
         if (!Config.Chat.CHAT_ONLY) {
             LandManager.load();
         }
-        ResidentManager.load();
         InviteManager.load();
         if (Config.Portal.ENABLED) {
             PortalManager.load();
