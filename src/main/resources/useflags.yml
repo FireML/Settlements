@@ -32,6 +32,8 @@ groups:
     - cartography_table
     - loom
     - brewing_stand
+    - enchantment_table
+    - crafting_table
   redstone:
     icon: redstone_block
     flags:
