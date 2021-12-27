@@ -42,6 +42,7 @@ public class NpcManager {
     }
 
     public void loadConfig() {
+        npcConfigs.clear();
         loadNpcs(NpcType.AppliesTo.SETTLEMENT);
         loadNpcs(NpcType.AppliesTo.EMPIRE);
         loadLevels(NpcType.AppliesTo.SETTLEMENT, settlementLevels, settlementPerks);
@@ -49,7 +50,6 @@ public class NpcManager {
     }
 
     private void loadNpcs(NpcType.AppliesTo type) {
-        npcConfigs.clear();
         for (NpcType npcType : NpcType.values()) {
             if (!npcType.appliesTo(type)) {
                 continue;
