@@ -12,7 +12,7 @@ import org.bukkit.command.CommandSender;
 
 public class AdminDistributeMissionCommand extends SubCommand implements TargetParser {
     public AdminDistributeMissionCommand(SubCommand parent) {
-        super(parent, "distributemission <s:settlement|r:resident>", "distributemission");
+        super(parent, "distributemission <s:settlement|r:resident>");
         setPermission("settlements.admin.command.distributemission");
     }
 
