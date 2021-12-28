@@ -3,9 +3,7 @@ package de.themoep.settlements.resident;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
-import de.themoep.settlements.integration.citizens.CitizensIntegration;
 import de.themoep.settlements.invites.InviteManager;
-import de.themoep.settlements.invites.SettlementInvite;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.SettlementsPlugin;
@@ -86,8 +84,9 @@ public class ResidentManager {
     }
 
     public void uncachePlayer(Player player) {
-        Resident resident = getResidentIfPreset(player.getUniqueId());
+        Resident resident = getResidentIfPresent(player.getUniqueId());
         if (resident != null) {
+            resident.save();
             if (!keepCached(resident)) {
                 if (!resident.getId().isNull()) {
                     residentsById.invalidate(resident.getId());
@@ -197,7 +196,7 @@ public class ResidentManager {
         return resident;
     }
 
-    public Resident getResidentIfPreset(UUID playerId) {
+    public Resident getResidentIfPresent(UUID playerId) {
         return residentsByUuid.getIfPresent(playerId);
     }
 

@@ -29,7 +29,7 @@ public class ScoreBoard {
         if (member == null || !member.isOnline()) {
             return null;
         }
-        Resident resident = ResidentManager.getInstance().getResidentIfPreset(member.getUniqueId());
+        Resident resident = ResidentManager.getInstance().getResidentIfPresent(member.getUniqueId());
         if (resident == null || !resident.showSidebar()) {
             return null;
         }

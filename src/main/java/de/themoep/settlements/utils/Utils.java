@@ -596,7 +596,7 @@ public class Utils {
             return player.getName();
         }
 
-        Resident resident = ResidentManager.getInstance().getResidentIfPreset(playerId);
+        Resident resident = ResidentManager.getInstance().getResidentIfPresent(playerId);
         if (resident != null) {
             return resident.getName();
         }
