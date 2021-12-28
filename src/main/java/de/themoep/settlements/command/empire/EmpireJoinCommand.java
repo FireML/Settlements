@@ -61,7 +61,6 @@ public class EmpireJoinCommand extends SettlementSubCommand {
             }
             InviteCache.getPendingEmpireInvites().remove(resident.getSettlement().getId(), joinEmpire.getId());
             DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
-            DatabaseManager.getInstance().saveMissionData(resident.getSettlement());
             getMessage("success").tell(resident.getSettlement().getOnlineResidents(),
                     "name", joinEmpire.getName(),
                     "state", resident.getSettlement().getState().getTag()

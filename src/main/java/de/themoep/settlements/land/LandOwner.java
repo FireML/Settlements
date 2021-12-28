@@ -1018,6 +1018,8 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         return landOwner;
     }
 
+    public abstract void doUpkeep();
+
     public abstract long getUpkeep();
 
     public abstract long getClaimUpkeep(String world);

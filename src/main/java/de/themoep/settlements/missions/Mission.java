@@ -3,6 +3,7 @@ package de.themoep.settlements.missions;
 import de.themoep.settlements.empire.EmpireMission;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.SettlementMission;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.ItemUtils;
@@ -56,6 +57,9 @@ public abstract class Mission implements NameTag {
         }
         if ("empiremission".equalsIgnoreCase(split[0])) {
             return EmpireManager.getInstance().getMission(split[1]);
+        }
+        if ("settlementmission".equalsIgnoreCase(split[0])) {
+            return SettlementManager.getInstance().getMission(split[1]);
         }
         return null;
     }

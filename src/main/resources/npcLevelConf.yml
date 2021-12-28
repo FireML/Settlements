@@ -88,6 +88,9 @@ settlement:
         recruitment:
           unlockables:
           - recruitment
+        missions:
+          unlockables:
+          - missions
     level-2:
       requirements:
         STONE: 100
@@ -202,6 +205,9 @@ empire:
         recruitment:
           unlockables:
           - recruitment
+        missions:
+          unlockables:
+          - missions
     level-2:
       requirements:
         STONE: 100

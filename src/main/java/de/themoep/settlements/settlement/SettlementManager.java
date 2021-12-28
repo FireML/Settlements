@@ -85,15 +85,15 @@ public class SettlementManager {
                 }, delay, TimeUnit.MILLISECONDS);
             }
         }
-        checkForMissionDistribution();
         SettlementsPlugin.logDebug("Loaded SettlementManager with " + settlementIDs.size() + " settlements and " + perks.size() + " perks");
     }
 
-    private void checkForMissionDistribution() {
+    public void postLoad() {
         for (Settlement settlement : getSettlements()) {
-            if (settlement.hasEmpire() && settlement.getMissionData().isEmpty()
-                    && settlement.getEmpire().distributeNewMissions(settlement)) {
-                DatabaseManager.getInstance().saveMissionData(settlement);
+            for (SettlementPerk perk : getPerks()) {
+                if (perk.matchesLevelRequirement(settlement)) {
+                    settlement.unlockPerk(settlement.getChief(), perk);
+                }
             }
         }
     }

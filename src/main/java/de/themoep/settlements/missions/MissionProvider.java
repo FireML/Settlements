@@ -6,6 +6,8 @@ import de.themoep.settlements.settlement.Settlement;
 public interface MissionProvider<M extends Mission> {
     String getName();
 
+    boolean distributeNewMissions();
+
     <T extends MissionTaker<M>> boolean distributeNewMissions(T taker);
 
     String getStateTag();

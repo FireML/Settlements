@@ -379,8 +379,11 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         EmpireManager.load();
         SettlementManager.load();
         RankManager.load();
-        NpcManager.load();
         ResidentManager.load();
+        // Post load actions after residents, settlements and empires are accessible
+        EmpireManager.getInstance().postLoad();
+        SettlementManager.getInstance().postLoad();
+        NpcManager.load();
         if (!Config.Chat.CHAT_ONLY) {
             LandManager.load();
         }

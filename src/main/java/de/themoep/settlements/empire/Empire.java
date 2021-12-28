@@ -92,10 +92,12 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         this.level = level;
     }
 
+    @Override
     public void save() {
         DatabaseManager.getInstance().saveEmpire(this);
     }
 
+    @Override
     public void doUpkeep() {
         if (isAbandoned()) {
             SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " is abandoned. No upkeep.");
@@ -222,7 +224,11 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         }
     }
 
-    private boolean distributeNewMissions() {
+    @Override
+    public boolean distributeNewMissions() {
+        if (!hasUnlocked("missions")) {
+            return false;
+        }
         boolean modified = false;
         for (Settlement member : getMembers()) {
             modified |= distributeNewMissions(member);
@@ -232,6 +238,9 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
 
     @Override
     public <T extends MissionTaker<EmpireMission>> boolean distributeNewMissions(T member) {
+        if (!hasUnlocked("missions")) {
+            return false;
+        }
         EmpireLevel levelInfo = getLevelInfo();
         if (levelInfo != null && levelInfo.getMissions() > 0) {
             List<EmpireMission> missions = new ArrayList<>(EmpireManager.getInstance().getMissions());
@@ -249,6 +258,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
             for (int i = 0; member.getMissionData().size() < toDistribute && i < missions.size(); i++) {
                 member.addMissionData(new MissionData(missions.get(i)));
             }
+            DatabaseManager.getInstance().saveMissionData(member);
             return !member.getMissionData().isEmpty();
         }
         return false;

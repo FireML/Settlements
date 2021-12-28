@@ -29,7 +29,9 @@ public class ElderGUI extends ConfigurableGui {
 
         if (landOwner.isMember(resident)) {
             if (landOwner instanceof MissionProvider) {
-                if (!((MissionProvider<?>) landOwner).getMissionTaker(resident).getMissionData().isEmpty()) {
+                if (!landOwner.hasUnlocked("missions")) {
+                    gui.addElement(new StaticGuiElement('e', getIcon("missions"), getUnlockText(landOwner, "missions")));
+                } else if (!((MissionProvider<?>) landOwner).getMissionTaker(resident).getMissionData().isEmpty()) {
                     gui.addElement(new StaticGuiElement('e', getIcon("missions"), click -> {
                         new MissionGui(resident, (MissionProvider<?>) landOwner, ((MissionProvider<?>) landOwner).getMissionTaker(resident)).open();
                         return true;
@@ -38,8 +40,8 @@ public class ElderGUI extends ConfigurableGui {
                     )));
                 } else {
                     gui.addElement(new StaticGuiElement('e', getIcon("missions"), getText("wait-for-missions",
-                            "state", resident.getSettlement().getStateTag(),
-                            "name", resident.getSettlement().getName()
+                            "state", landOwner.getStateTag(),
+                            "name", landOwner.getName()
                     )));
                 }
             }

@@ -2,6 +2,7 @@ package de.themoep.settlements.command.admin;
 
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.command.common.TargetParser;
+import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.DatabaseSerializable;
 import de.themoep.settlements.missions.MissionProvider;
 import de.themoep.settlements.missions.MissionTaker;

@@ -6,10 +6,12 @@ import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Table;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.empire.Empire;
+import de.themoep.settlements.empire.EmpireLevel;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.LandownerLevel;
 import de.themoep.settlements.perk.NpcPerk;
+import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.config.ConfigManager;
@@ -97,9 +99,15 @@ public class NpcManager {
                                 switch (type) {
                                     case SETTLEMENT:
                                         SettlementManager.getInstance().getUnlockables().addAll(perk.getUnlockables());
+                                        for (Settlement settlement : SettlementManager.getInstance().getSettlements()) {
+                                            checkNpcUnlocks(settlement, npcType, perk);
+                                        }
                                         break;
                                     case EMPIRE:
                                         EmpireManager.getInstance().getUnlockables().addAll(perk.getUnlockables());
+                                        for (Empire empire : EmpireManager.getInstance().getEmpires()) {
+                                            checkNpcUnlocks(empire, npcType, perk);
+                                        }
                                         break;
                                 }
                             }
@@ -110,6 +118,15 @@ public class NpcManager {
                 }
             } else {
                 SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "No levels configured for " + type + " NPC " + npcType);
+            }
+        }
+    }
+
+    private void checkNpcUnlocks(LandOwner<?, ?> landOwner, NpcType npcType, NpcPerk perk) {
+        if (!landOwner.hasUnlocked(perk)) {
+            NpcData data = landOwner.getNpcData(npcType);
+            if (perk.matchesLevelRequirement(data)) {
+                landOwner.unlockPerk(landOwner.getChief(), perk);
             }
         }
     }

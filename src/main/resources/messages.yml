@@ -3453,6 +3453,9 @@ command:
       description: Distribute new missions to a settlement/resident
       success: "&aSUCCESS: {name} now has {amount} missions"
       none-distributed: "&cUnable to give {name} new missions. Does the level have missions?"
+    upkeep:
+      description: Trigger the entire upkeep process for an empire or settlement
+      success: "&aSUCCESS: Ran upkeep for {state} {name}"
     world:
       description: World admin commands
       info:

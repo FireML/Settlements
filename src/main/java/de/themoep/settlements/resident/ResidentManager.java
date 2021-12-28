@@ -79,6 +79,10 @@ public class ResidentManager {
         }
         residentsByUuid.put(res.getUUID(), res);
         residentsByName.put(res.getName().toLowerCase(), res);
+
+        if (res.hasSettlement() && res.getMissionData().isEmpty()) {
+            res.getSettlement().distributeNewMissions(res);
+        }
     }
 
     public void uncachePlayer(Player player) {

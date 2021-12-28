@@ -7,6 +7,7 @@ import de.themoep.settlements.land.events.LandownerAbandonedEvent;
 import de.themoep.settlements.land.events.LandownerCreatedEvent;
 import de.themoep.settlements.land.events.LandownerLeveledEvent;
 import de.themoep.settlements.npc.NpcType;
+import de.themoep.settlements.perk.SettlementPerk;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
@@ -110,6 +111,23 @@ public class EmpireManager {
             }
         }
         SettlementsPlugin.logDebug("Loaded EmpireManager with " + empireIds.size() + " empires, " + levels.size() + " levels, " + missions.size() + " missions and " + perks.size() + " perks");
+    }
+
+    public void postLoad() {
+        for (Empire empire : getEmpires()) {
+            if (!empire.isAbandoned()) {
+                for (Settlement member : empire.getMembers()) {
+                    if (member.getMissionData().isEmpty()) {
+                        empire.distributeNewMissions(member);
+                    }
+                }
+                for (EmpirePerk perk : getPerks()) {
+                    if (perk.matchesLevelRequirement(empire)) {
+                        empire.unlockPerk(empire.getChief(), perk);
+                    }
+                }
+            }
+        }
     }
 
     public void loadConfig() {

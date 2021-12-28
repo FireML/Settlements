@@ -347,7 +347,6 @@ public class EmpireTag implements ObjectTag, Adjustable {
             }
             InviteCache.getPendingEmpireInvites().remove(settlement.getId(), empire.getId());
             DatabaseManager.getInstance().saveSettlement(settlement);
-            DatabaseManager.getInstance().saveMissionData(settlement);
             DatabaseManager.getInstance().saveEmpire(empire);
             return;
         }

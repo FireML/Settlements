@@ -104,10 +104,12 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         this.settlementState = state;
     }
 
+    @Override
     public void save() {
         DatabaseManager.getInstance().saveSettlement(this);
     }
 
+    @Override
     public void doUpkeep() {
         if (isAbandoned()) {
             SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " is abandoned. No upkeep.");
@@ -194,7 +196,11 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         }
     }
 
-    private boolean distributeNewMissions() {
+    @Override
+    public boolean distributeNewMissions() {
+        if (!hasUnlocked("missions")) {
+            return false;
+        }
         boolean modified = false;
         for (Resident resident : getResidents()) {
             modified |= distributeNewMissions(resident);
@@ -204,6 +210,9 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
 
     @Override
     public <T extends MissionTaker<SettlementMission>> boolean distributeNewMissions(T taker) {
+        if (!hasUnlocked("missions")) {
+            return false;
+        }
         SettlementLevel levelInfo = getLevelInfo();
         if (levelInfo != null && levelInfo.getMissions() > 0) {
             List<EmpireMission> missions = new ArrayList<>(EmpireManager.getInstance().getMissions());
@@ -221,6 +230,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
             for (int i = 0; taker.getMissionData().size() < toDistribute && i < missions.size(); i++) {
                 taker.addMissionData(new MissionData(missions.get(i)));
             }
+            DatabaseManager.getInstance().saveMissionData(taker);
             return !taker.getMissionData().isEmpty();
         }
         return false;
