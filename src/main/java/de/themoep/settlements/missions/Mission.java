@@ -134,27 +134,7 @@ public abstract class Mission implements NameTag {
         return new String[] {
                 "amount", String.valueOf(taker.getMissionData().size()),
                 "missions", taker.getMissionData().stream()
-                .map(m -> messages.getText("mission-entry",
-                        "title", m.getMission().getTag(),
-                        "requirements", m.getMission().getRequirements().entrySet().stream().map(e ->
-                                messages.getText("requirement." + (m.getProgress(e.getKey()) < e.getValue() ? "todo" : "done"),
-                                        "progress", String.valueOf(m.getProgress(e.getKey())),
-                                        "required", String.valueOf(e.getValue()),
-                                        "type", WordUtils.capitalizeFully(e.getKey().replace('_', ' '))
-                                )).collect(Collectors.joining("\n")),
-                        "action", (m.isFinished() ? messages.getText("finished") : "")
-                                + (m.getMission() instanceof EmpireMission && ((EmpireMission) m.getMission()).onlyInEmpireWorld()
-                                        ? messages.getText("only-in-empire", "empire", provider.getName())
-                                        : m.getMission() instanceof EmpireMission && ((EmpireMission) m.getMission()).onlyOnEmpireClaim()
-                                        ? messages.getText("only-on-claim", "state", provider.getStateTag(), "name", provider.getName())
-                                        : m.getMission() instanceof SettlementMission && ((SettlementMission) m.getMission()).onlyOnSettlementClaim()
-                                        ? messages.getText("only-on-claim", "state", provider.getStateTag(), "name", provider.getName())
-                                        : "")
-                                + m.getMission().getType().getTag()
-                        ,
-                        "missionpoints", String.valueOf(m.getMission().getMissionPoints()),
-                        "contributionpoints", String.valueOf(m.getMission().getMissionPoints())
-                )).collect(Collectors.joining("\n")),
+                .map(m -> messages.getText("mission-entry", m.getReplacements(messages, provider))).collect(Collectors.joining("\n")),
                 "state", provider.getStateTag(),
                 "name", provider.getName()
         };

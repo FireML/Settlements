@@ -4,12 +4,8 @@ import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.empire.EmpireMission;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfigurableGui;
-import org.apache.commons.lang.WordUtils;
-
-import java.util.stream.Collectors;
 
 public class MissionGui extends ConfigurableGui {
 
@@ -23,21 +19,7 @@ public class MissionGui extends ConfigurableGui {
         group.setAlignment(getAlignment("m"));
         for (MissionData missionData : taker.getMissionData()) {
             group.addElement(new DynamicGuiElement('m', who -> {
-                StaticGuiElement element = new StaticGuiElement('m', missionData.getMission().getIcon(), getText("entry",
-                        "title", missionData.getMission().getTag(),
-                        "requirements", missionData.getMission().getRequirements().entrySet().stream().map(e ->
-                                getText("requirement." + (missionData.getProgress(e.getKey()) < e.getValue() ? "todo" : "done"),
-                                        "progress", String.valueOf(missionData.getProgress(e.getKey())),
-                                        "required", String.valueOf(e.getValue()),
-                                        "type", WordUtils.capitalizeFully(e.getKey().replace('_', ' '))
-                        )).collect(Collectors.joining("\n")),
-                        "action", missionData.isFinished()
-                                ? getText("finished")
-                                : (missionData.getMission() instanceof EmpireMission && ((EmpireMission) missionData.getMission()).onlyInEmpireWorld()
-                                        ? getText("only-in-empire", "empire", resident.getSettlement().getEmpire().getName())
-                                        : getText("types." + missionData.getMission().getType().getKey())
-                                )
-                ));
+                StaticGuiElement element = new StaticGuiElement('m', missionData.getMission().getIcon(), getText("entry", missionData.getReplacements(this, provider)));
                 if (missionData.getMission().getType() == Mission.Type.TURN_IN && !missionData.isFinished()) {
                     element.setAction(click -> {
                         new TurnInGUI(resident, missionData).open();
