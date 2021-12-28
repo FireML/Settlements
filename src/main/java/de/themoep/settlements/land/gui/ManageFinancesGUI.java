@@ -188,16 +188,16 @@ public class ManageFinancesGUI extends ConfigurableGui {
                                 if (amount < 0) {
                                     return AnvilGUI.Response.text(getError("not-a-number").getReplacedText("input", text));
                                 }
-                                if (!SettlementsPlugin.getInstance().getEconomy().has(player, amount)) {
+                                if (landOwner.removeFromBank(amount)) {
+                                    EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().depositPlayer(player, (double) amount);
+                                    if (!r2.transactionSuccess()) {
+                                        landOwner.addToBank(amount);
+                                        return AnvilGUI.Response.text("&cAn error occurred, please tell an admin!");
+                                    }
+                                } else {
                                     return AnvilGUI.Response.text(getError("not-enough-money").getReplacedText(
                                             "amount", String.valueOf(amount)
                                     ));
-                                }
-                                landOwner.removeFromBank(amount);
-                                EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().depositPlayer(player, (double) amount);
-                                if (!r2.transactionSuccess()) {
-                                    landOwner.addToBank(amount);
-                                    return AnvilGUI.Response.text("&cAn error occurred, please tell an admin!");
                                 }
                                 Message.get("command." + landOwner.getKey() + ".bank.withdraw.withdrawn").tell(resident.getSettlement(),
                                         "state", landOwner.getStateTag(),
