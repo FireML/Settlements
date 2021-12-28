@@ -1381,9 +1381,9 @@ gui:
       &eContribution Points
     entry: |-
       &a&l{title}
-      {requirements}
+      &f{requirements}
       
-      {action}
+      &e{action}
     types:
       turn-in: "&eClick to deposit items"
       break: "&eBreak blocks"
