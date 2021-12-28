@@ -881,7 +881,7 @@ gui:
       back: "&cBack"
       entry:
         settlementinvite: |-
-          &e{settlement}
+          &e{name}
           &fState: &e{state} {level}
           &fBoard: &e{description}
           &fJoin Fee: &e${joinfee}
