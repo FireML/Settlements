@@ -143,7 +143,7 @@ public class SettingsGUI extends ConfigurableGui {
 
         Empire empire = resident.getSettlement().getEmpire();
         gui.addElement(new StaticGuiElement('i', ItemUtils.toIcon(Material.BLUE_BED),
-                Utils.wrap(getText("entry", empire.getReplacements(SettingsGUI.this)), 48)));
+                Utils.wrapLore(getText("entry", empire.getReplacements(SettingsGUI.this)))));
 
         gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
     }

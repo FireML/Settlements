@@ -298,6 +298,10 @@ public class Utils {
         return String.join(" ", split).substring(0, length);
     }
 
+    public static String wrapLore(String lore) {
+        return wrap(lore, 48);
+    }
+
     /**
      * Wrap a string to lines with a certain length.
      * @param string The string to wrap

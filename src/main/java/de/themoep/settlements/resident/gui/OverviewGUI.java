@@ -16,6 +16,7 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.ItemUtils;
+import de.themoep.settlements.utils.Utils;
 
 import java.util.Collection;
 
@@ -33,7 +34,7 @@ public class OverviewGUI extends ConfigurableGui {
         Settlement settlement = resident.getSettlement();
 
         gui.addElement(new StaticGuiElement('s', getIcon("settlement"),
-                getText("settlement." + (settlement.hasEmpire() ? "empire" : "no-empire"), settlement.getReplacements(this))));
+                Utils.wrapLore(getText("settlement." + (settlement.hasEmpire() ? "empire" : "no-empire"), settlement.getReplacements(this)))));
 
         gui.addElement(new StaticGuiElement('r', getIcon("rules"), click -> {
             ((SettlementRulesCommand) CommandManager.getInstance().getCommand("settlement").getSubCommands().get("rules"))
