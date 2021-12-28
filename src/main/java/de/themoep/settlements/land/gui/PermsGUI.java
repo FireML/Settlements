@@ -47,7 +47,7 @@ public class PermsGUI extends SettlementsGUI {
             }
             return true;
         }, getText("build",
-                "build", flagAble.getBuildState().getTag(),
+                "build", flagAble.getBuildState() != null ? flagAble.getBuildState().getTag() : flagAble.getDefaultBuildState().getTag(),
                 "state", flagAble.getStateTag()
         )));
 
@@ -62,7 +62,7 @@ public class PermsGUI extends SettlementsGUI {
             }
             return true;
         }, getText("modes",
-                "build", flagAble.getBuildState().getTag(),
+                "build", flagAble.getBuildState() != null ? flagAble.getBuildState().getTag() : flagAble.getDefaultBuildState().getTag(),
                 "state", flagAble.getStateTag()
         )));
 
