@@ -19,6 +19,7 @@ import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.Use;
 import de.themoep.settlements.land.events.LandClaimedEvent;
 import de.themoep.settlements.land.events.LandUnclaimEvent;
+import de.themoep.settlements.land.events.LandownerDisbandEvent;
 import de.themoep.settlements.land.events.LandownerLeveledEvent;
 import de.themoep.settlements.land.gui.BankGUI;
 import de.themoep.settlements.land.gui.ElderGUI;
@@ -450,12 +451,21 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
     }
 
     @EventHandler
-    public void onDisband(LandownerAbandonedEvent event) {
-        for (NpcData npcData : event.getLandOwner().getNpcData()) {
+    public void onAbandon(LandownerAbandonedEvent event) {
+        removeAll(event.getLandOwner());
+    }
+
+    @EventHandler
+    public void onDisband(LandownerDisbandEvent event) {
+        removeAll(event.getLandOwner());
+    }
+
+    private void removeAll(LandOwner<?, ?> landOwner) {
+        for (NpcData npcData : landOwner.getNpcData()) {
             if (npcData.getNpcId() > -1) {
                 NPC npc = CitizensAPI.getNPCRegistry().getById(npcData.getNpcId());
                 if (npc != null) {
-                    SettlementsPlugin.logDebug("Despawning NPC " + npcData.getType() + " due to abandonment of " + event.getLandOwner().getStateTag() + " " + event.getLandOwner().getName());
+                    SettlementsPlugin.logDebug("Despawning NPC " + npcData.getType() + " due to removal of " + landOwner.getStateTag() + " " + landOwner.getName());
                     npc.despawn();
                     CitizensAPI.getNPCRegistry().deregister(npc);
                     if (npc.getEntity() != null) {
@@ -472,8 +482,9 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
             if (npcData.getNpcId() > -1) {
                 NPC npc = CitizensAPI.getNPCRegistry().getById(npcData.getNpcId());
                 if (npc != null && npc.isSpawned() && event.getLand().contains(new SimpleLocation(npc.getEntity().getLocation()))) {
-                    if (event.getLand().getLandOwner().getHome() != null) {
-                        npc.teleport(event.getLand().getLandOwner().getHome().toBukkitLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                    Location location = event.getLand().getLandOwner().getHome() != null ? event.getLand().getLandOwner().getHome().toBukkitLocation() : null;
+                    if (location != null) {
+                        npc.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
                     } else {
                         SettlementsPlugin.logDebug("Despawning NPC " + npcData.getType() + " due to unclaim of " + event.getLandOwner().getStateTag() + " " + event.getLandOwner().getName() + " land at " + event.getLand().getKey());
                         npc.despawn();
