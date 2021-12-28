@@ -20,6 +20,7 @@ public class SettlementRulesCommand extends SettlementSubCommand {
             public boolean run(Resident resident, String base, String alias, String... args) {
                 if (resident.getSettlement().useGuestRank() && resident.getSettlementRank() == resident.getSettlement().getDefaultRank()) {
                     resident.setSettlementRank(resident.getSettlement().getDefaultRank().previous());
+                    resident.save();
                     getMessage("success").tell(resident,
                             "state", resident.getSettlement().getStateTag(),
                             "name", resident.getSettlement().getName(),
