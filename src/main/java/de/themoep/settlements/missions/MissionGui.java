@@ -6,7 +6,6 @@ import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.empire.EmpireMission;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfigurableGui;
 import org.apache.commons.lang.WordUtils;
 
@@ -20,11 +19,9 @@ public class MissionGui extends ConfigurableGui {
         gui.addElement(new StaticGuiElement('i', getIcon("info"), getText("info",
                 Mission.getReplacements(this, provider, taker))));
 
-        Settlement settlement = (Settlement) provider;
-
         GuiElementGroup group = new GuiElementGroup('m');
         group.setAlignment(getAlignment("m"));
-        for (MissionData missionData : settlement.getMissionData()) {
+        for (MissionData missionData : taker.getMissionData()) {
             group.addElement(new DynamicGuiElement('m', who -> {
                 StaticGuiElement element = new StaticGuiElement('m', missionData.getMission().getIcon(), getText("entry",
                         "title", missionData.getMission().getTag(),

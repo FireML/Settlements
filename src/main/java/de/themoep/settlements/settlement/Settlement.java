@@ -215,7 +215,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         }
         SettlementLevel levelInfo = getLevelInfo();
         if (levelInfo != null && levelInfo.getMissions() > 0) {
-            List<EmpireMission> missions = new ArrayList<>(EmpireManager.getInstance().getMissions());
+            List<SettlementMission> missions = new ArrayList<>(SettlementManager.getInstance().getMissions());
             taker.getMissionData().removeIf(md -> {
                 if (md.isFinished()) {
                     return Config.Settlement.Missions.REMOVE_FINISHED_MISSIONS;

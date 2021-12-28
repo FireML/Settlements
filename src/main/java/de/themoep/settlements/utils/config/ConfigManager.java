@@ -75,6 +75,7 @@ public class ConfigManager {
     private ConfigAccessor commands;
     private ConfigAccessor data;
     private ConfigAccessor settlementLevelConf;
+    private ConfigAccessor settlementMissionsConf;
     private ConfigAccessor empireLevelConf;
     private ConfigAccessor empireMissionsConf;
     private ConfigAccessor mapConf;
@@ -168,6 +169,7 @@ public class ConfigManager {
         data = new ConfigAccessor(SettlementsPlugin.getInstance(), "data.yml");
         commands = new ConfigAccessor(SettlementsPlugin.getInstance(), "commands.yml");
         settlementLevelConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "settlementLevelConf.yml");
+        settlementMissionsConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "settlementMissions.yml");
         empireLevelConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "empireLevelConf.yml");
         convertEmpireLevels();
         empireMissionsConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "empireMissions.yml");
@@ -498,6 +500,10 @@ public class ConfigManager {
 
     public FileConfiguration getEmpireMissionsConfig() {
         return empireMissionsConf.getConfig();
+    }
+
+    public FileConfiguration getSettlementMissionsConfig() {
+        return settlementMissionsConf.getConfig();
     }
 
     public FileConfiguration getMapConfig() {

@@ -5,6 +5,7 @@ import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.empire.EmpireMission;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.LandAccess;
@@ -101,6 +102,7 @@ public class SettlementManager {
     public void loadConfig() {
         loadLevels();
         loadPerks();
+        loadMissions();
     }
 
     private void loadLevels() {
@@ -137,6 +139,17 @@ public class SettlementManager {
                 unlockables.addAll(perk.getUnlockables());
             } catch (IllegalArgumentException e) {
                 SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Config for Perk " + perkName + " was invalid! " + e.getMessage());
+            }
+        }
+    }
+
+    private void loadMissions() {
+        missions.clear();
+        for (String missionId : ConfigManager.getInstance().getSettlementMissionsConfig().getKeys(false)) {
+            try {
+                missions.put(missionId.toLowerCase(Locale.ROOT), new SettlementMission(ConfigManager.getInstance().getSettlementMissionsConfig().getConfigurationSection(missionId)));
+            } catch (IllegalArgumentException e) {
+                SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Config for Settlement Mission " + missionId + " was invalid! " + e.getMessage());
             }
         }
     }

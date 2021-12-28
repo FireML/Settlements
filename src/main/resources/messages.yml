@@ -460,9 +460,9 @@ names:
       harvest: "Harvest"
       kill: "Kill"
   empiremission:
-    stones: "Turn in 500 Stones"
-    dirt: "Turn in 1000 Dirt"
-    wheat: "Harvest 5000 Wheat"
+    stones: "500 Stones"
+    dirt: "1000 Dirt"
+    wheat: "5000 Wheat"
   plot: Plot
   buildstate:
     varied: "Varied"
@@ -1332,7 +1332,10 @@ gui:
       {missions}
       
       &bClick for more details
-    mission-entry: "&e{title}"
+    finished: "&eFinished&f "
+    only-in-empire: "&7In {name} Domain:&f "
+    only-on-claim: "&7On {state} claim:&f "
+    mission-entry: "&f{action} &e{title}"
     wait-for-missions: |-
       &cYou do not have any missions
       &cfrom your {state} yet.
@@ -1386,15 +1389,16 @@ gui:
       break: "&eBreak blocks"
       place: "&ePlace blocks"
       kill: "&eKill monster"
-      harvest: "&eHarves material"
+      harvest: "&eHarvest material"
     finished: "&e&lFinished"
-    only-in-empire: "&eOnly in {empire} Domain"
+    only-in-empire: "&eOnly in {name} Domain"
+    only-on-claim: "&eOnly on {state} claim"
     mission-entry: "&f{action} &e{title}"
     requirement:
       todo: "&r&f(&e{progress}&f/&e{required}&f) {type}"
       done: "&r&f(&a{progress}&f/&a{required}&f) {type}"
   turnin:
-    title: "&2{mission}"
+    title: "{action} &2{mission}"
     success-turn-in: "&7&lTurned in:"
     fail-turn-in: "&c&lFailed turning in Items: {reason}"
     mission-finished: "&r&c&lMission {mission} is already finished!"

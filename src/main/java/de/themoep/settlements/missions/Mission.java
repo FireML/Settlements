@@ -142,15 +142,15 @@ public abstract class Mission implements NameTag {
                                         "required", String.valueOf(e.getValue()),
                                         "type", WordUtils.capitalizeFully(e.getKey().replace('_', ' '))
                                 )).collect(Collectors.joining("\n")),
-                        "action", m.isFinished()
-                                ? messages.getText("finished")
-                                : m.getMission() instanceof EmpireMission && ((EmpireMission) m.getMission()).onlyInEmpireWorld()
-                                ? messages.getText("only-in-empire", "empire", provider.getName())
-                                : m.getMission() instanceof EmpireMission && ((EmpireMission) m.getMission()).onlyOnEmpireClaim()
-                                ? messages.getText("only-on-claim", "state", provider.getStateTag(), "name", provider.getName())
-                                : m.getMission() instanceof SettlementMission && ((SettlementMission) m.getMission()).onlyOnSettlementClaim()
-                                ? messages.getText("only-on-claim", "state", provider.getStateTag(), "name", provider.getName())
-                                : messages.getText("types." + m.getMission().getType().getKey())
+                        "action", (m.isFinished() ? messages.getText("finished") : "")
+                                + (m.getMission() instanceof EmpireMission && ((EmpireMission) m.getMission()).onlyInEmpireWorld()
+                                        ? messages.getText("only-in-empire", "empire", provider.getName())
+                                        : m.getMission() instanceof EmpireMission && ((EmpireMission) m.getMission()).onlyOnEmpireClaim()
+                                        ? messages.getText("only-on-claim", "state", provider.getStateTag(), "name", provider.getName())
+                                        : m.getMission() instanceof SettlementMission && ((SettlementMission) m.getMission()).onlyOnSettlementClaim()
+                                        ? messages.getText("only-on-claim", "state", provider.getStateTag(), "name", provider.getName())
+                                        : "")
+                                + m.getMission().getType().getTag()
                         ,
                         "missionpoints", String.valueOf(m.getMission().getMissionPoints()),
                         "contributionpoints", String.valueOf(m.getMission().getMissionPoints())
