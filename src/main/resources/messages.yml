@@ -2541,7 +2541,7 @@ command:
           &fLast Login: &e{lastlogin}
         in-settlement: |-
           &e&l{name}
-          &fSettlement: e{settlement}
+          &fSettlement: &e{settlement}
           &fRank: &e{title}
           &fBalance: &e${balance}
           &fTax: &e${tax}
@@ -2558,7 +2558,7 @@ command:
           &fBalance: &e${balance}
           &fTax: &e${tax}
           &fCooperation Points: &e${missionpoints}
-          &fBonus claims: e{bonus}
+          &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
       description: Shows you information about a resident
