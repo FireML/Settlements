@@ -43,7 +43,7 @@ public class AlliesGUI extends SettlementsGUI {
                     .sorted((a1, a2) -> a1.compareTo(sort, a2))
                     .forEach(a -> group.addElement(
                             new StaticGuiElement('a', ItemUtils.getHead(resident.getUUID(), resident.getName()), click -> {
-                                if (resident.hasPermission("manageally")) {
+                                if (landOwner.hasPermission(resident, "manageally")) {
                                     new AllyGUI(landOwner, resident, a).open();
                                 }
                                 return true;
@@ -67,11 +67,11 @@ public class AlliesGUI extends SettlementsGUI {
         }, "sort"));
 
         Collection<AllyRequest> requests = landOwner.getAllyRequests();
-        if (resident.hasPermission("settlement.manageally")) {
+        if (landOwner.hasPermission(resident, "manageally")) {
             gui.addElement(new StaticGuiElement('f', ItemUtils.setGlowing(getIcon("requests"), !requests.isEmpty()), click -> {
                 new ListGui<>(resident, "general.requests", () -> new ArrayList<>(landOwner.getAllyRequests()), (c, request) -> {
                     // accept request
-                    if (resident.hasPermission("manageally") && request instanceof AllyRequest) {
+                    if (landOwner.hasPermission(resident, "manageally") && request instanceof AllyRequest) {
                         AllyRequest currentRequest = landOwner.removeAllyRequest(((AllyRequest) request));
                         if (currentRequest == null) {
                             // No request sent?

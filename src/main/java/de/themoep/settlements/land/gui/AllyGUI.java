@@ -25,16 +25,18 @@ public class AllyGUI extends ConfigurableGui implements AllyCommand {
 
         gui.addElement(new StaticGuiElement('i', ally.getLandOwner().getIcon(), Utils.wrapLore(getText("info." + ally.getType(), ally.getLandOwner().getReplacements(this)))));
 
-        if (resident.hasPermission("manageally")) {
+        if (landOwner.hasPermission(resident, "manageally")) {
             gui.addElement(new DynamicGuiElement('c', who -> new StaticGuiElement('c', getIcon("nearbyclaim"), click -> {
-                ally.setNearbyClaim(!ally.isNearbyClaim());
-                ally.save();
+                if (landOwner.hasPermission(resident, "allyclaim")) {
+                    ally.setNearbyClaim(!ally.isNearbyClaim());
+                    ally.save();
 
-                if (!ally.isNearbyClaim()) {
-                    LandManager.getInstance().checkClaimDistance(resident.getSettlement(), ally.getLandOwner());
+                    if (!ally.isNearbyClaim()) {
+                        LandManager.getInstance().checkClaimDistance(resident.getSettlement(), ally.getLandOwner());
+                    }
+                    Message.get("command." + landOwner.getKey() + "." + (ally.isNearbyClaim() ? "enabled" : "disabled")).tell(resident,
+                            "grace", String.valueOf(Config.Claiming.Close.Unclaim.GRACE_DAYS));
                 }
-                Message.get("command." + landOwner.getKey() + "." + (ally.isNearbyClaim() ? "enabled" : "disabled")).tell(resident,
-                        "grace", String.valueOf(Config.Claiming.Close.Unclaim.GRACE_DAYS));
                 return true;
             }, getText("nearbyclaim",
                     "state", landOwner.getStateTag(),
@@ -43,10 +45,15 @@ public class AllyGUI extends ConfigurableGui implements AllyCommand {
 
             gui.addElement(new StaticGuiElement('r', getIcon("unally"), click -> {
                 new ConfirmationGui(name() + ".unally", c -> {
+                    if (!landOwner.hasPermission(resident, "unally")) {
+                        c.getGui().close();
+                        return;
+                    }
                     LandOwner target = ally.getLandOwner();
 
                     if (!landOwner.isAlly(target)) {
                         c.getGui().close();
+                        return;
                     }
 
                     Ally sourceAlly = landOwner.removeAlly(target);
