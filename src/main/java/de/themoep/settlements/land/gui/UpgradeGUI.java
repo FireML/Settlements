@@ -5,7 +5,6 @@ import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.empire.EmpireLevel;
-import de.themoep.settlements.land.DepositGUI;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.LandownerLevel;
 import de.themoep.settlements.leveling.LevelInfo;
@@ -19,7 +18,6 @@ import de.themoep.settlements.settlement.SettlementLevel;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.HumanReadable;
 import de.themoep.settlements.utils.ItemUtils;
-import de.themoep.settlements.utils.Message;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -30,7 +28,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class UpgradeGUI extends ConfigurableGui {
 

@@ -1,4 +1,4 @@
-package de.themoep.settlements.land;
+package de.themoep.settlements.land.gui;
 
 import de.themoep.inventorygui.GuiStorageElement;
 import de.themoep.inventorygui.InventoryGui;
