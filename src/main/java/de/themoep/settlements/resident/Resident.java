@@ -309,10 +309,12 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         return channelColors.remove(channel, type);
     }
 
+    @Override
     public MissionData getMissionData(String missionId) {
         return missionData.get(missionId.toLowerCase(Locale.ROOT));
     }
 
+    @Override
     public Collection<MissionData> getMissionData() {
         return missionData.values();
     }

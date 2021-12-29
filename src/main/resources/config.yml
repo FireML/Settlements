@@ -109,7 +109,11 @@ settlement:
     # Whether or not settlement missions should be given to residents
     enabled: true
     # Should newly joined residents be granted missions instantly or do they need to wait until the upkeep?
-    distribute-on-join: false
+    distribute-on-join: true
+    # Should additional missions be distributed when leveling up or do they need to wait until the upkeep?
+    distribute-on-levelup: true
+    # Allow distribution of duplicate missions?
+    duplicate-missions: false
     # Should missions that are not started yet be removed and replaced by new missions on reset?
     remove-not-started-missions: true
     # Should already started missions be removed and replaced by new missions on reset?
@@ -162,7 +166,11 @@ empire:
     # Whether or not empire missions should be given to empire member settlements
     enabled: false
     # Should newly joined settlements be granted missions instantly or do they need to wait until the upkeep?
-    distribute-on-join: false
+    distribute-on-join: true
+    # Should additional missions be distributed when leveling up or do they need to wait until the upkeep?
+    distribute-on-levelup: true
+    # Allow distribution of duplicate missions?
+    duplicate-missions: false
     # Should missions that are not started yet be removed and replaced by new missions on reset?
     remove-not-started-missions: true
     # Should already started missions be removed and replaced by new missions on reset?

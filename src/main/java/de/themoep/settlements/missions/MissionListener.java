@@ -3,6 +3,7 @@ package de.themoep.settlements.missions;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import de.themoep.settlements.empire.Empire;
+import de.themoep.settlements.land.events.LandownerLeveledEvent;
 import de.themoep.settlements.perk.events.PerkUnlockedEvent;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
@@ -124,6 +125,16 @@ public class MissionListener implements Listener {
     public void onPerkUnlock(PerkUnlockedEvent event) {
         if (event.getPerk().getUnlockables().contains("missions") && event.getLandOwner() instanceof MissionProvider) {
             ((MissionProvider<?>) event.getLandOwner()).distributeNewMissions();
+        }
+    }
+
+    @EventHandler
+    public void onLevelUp(LandownerLeveledEvent event) {
+        if (event.getLeveled() instanceof MissionProvider
+                && ((MissionProvider<?>) event.getLeveled()).distributeMissionsOnLevelUp()
+                && event.getLeveled().getLevelInfo() != null
+                && event.getLeveled().getLevelInfo().getMissions() > 0) {
+            ((MissionProvider<?>) event.getLeveled()).distributeAdditionalMissions();
         }
     }
 

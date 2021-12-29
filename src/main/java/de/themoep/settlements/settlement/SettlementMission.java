@@ -37,7 +37,7 @@ public class SettlementMission extends Mission {
                 return false;
             }
             OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
-            return land.isOwnedBy((Settlement) provider);
+            return land != null && land.isOwnedBy((Settlement) provider);
         }
         return false;
     }

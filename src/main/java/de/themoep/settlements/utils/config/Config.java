@@ -185,7 +185,13 @@ public class Config {
             public static boolean ENABLED = true;
 
             @ConfigComment("Should newly joined resident be granted missions instantly or do they need to wait until the upkeep?")
-            public static boolean DISTRIBUTE_ON_JOIN = false;
+            public static boolean DISTRIBUTE_ON_JOIN = true;
+
+            @ConfigComment("Should additional missions be distributed when leveling up or do they need to wait until the upkeep?")
+            public static boolean DISTRIBUTE_ON_LEVELUP = true;
+
+            @ConfigComment("Allow distribution of duplicate missions?")
+            public static boolean DUPLICATE_MISSIONS = false;
 
             @ConfigComment("Should missions that are not started yet be removed and replaced by new missions on reset?")
             public static boolean REMOVE_NOT_STARTED_MISSIONS = true;
@@ -268,7 +274,13 @@ public class Config {
             public static boolean ENABLED = false;
 
             @ConfigComment("Should newly joined settlements be granted missions instantly or do they need to wait until the upkeep?")
-            public static boolean DISTRIBUTE_ON_JOIN = false;
+            public static boolean DISTRIBUTE_ON_JOIN = true;
+
+            @ConfigComment("Should additional missions be distributed when leveling up or do they need to wait until the upkeep?")
+            public static boolean DISTRIBUTE_ON_LEVELUP = true;
+
+            @ConfigComment("Allow distribution of duplicate missions?")
+            public static boolean DUPLICATE_MISSIONS = false;
 
             @ConfigComment("Should missions that are not started yet be removed and replaced by new missions on reset?")
             public static boolean REMOVE_NOT_STARTED_MISSIONS = true;

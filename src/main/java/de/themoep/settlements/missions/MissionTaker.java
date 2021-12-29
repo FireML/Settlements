@@ -1,8 +1,13 @@
 package de.themoep.settlements.missions;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public interface MissionTaker<M extends Mission> {
+
+    MissionData getMissionData(String missionId);
 
     Collection<MissionData> getMissionData();
 
@@ -15,4 +20,8 @@ public interface MissionTaker<M extends Mission> {
     void setMissionPoints(long missionPoints);
 
     MissionProvider<M> getMissionProvider();
+
+    default boolean hasMission(M mission) {
+        return getMissionData(mission.getId()) != null;
+    }
 }

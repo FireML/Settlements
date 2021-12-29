@@ -7,6 +7,7 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
+import de.themoep.settlements.empire.EmpireLevel;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.empire.EmpireMission;
 import de.themoep.settlements.invites.InviteManager;
@@ -213,27 +214,63 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         if (!hasUnlocked("missions")) {
             return false;
         }
+        taker.getMissionData().removeIf(md -> {
+            if (md.isFinished()) {
+                return Config.Settlement.Missions.REMOVE_FINISHED_MISSIONS;
+            }
+            if (md.hasProgress()) {
+                return Config.Settlement.Missions.REMOVE_STARTED_MISSIONS;
+            }
+            return Config.Settlement.Missions.REMOVE_NOT_STARTED_MISSIONS;
+        });
+        return distributeAdditionalMissions(taker);
+    }
+
+    @Override
+    public boolean distributeAdditionalMissions() {
+        if (!hasUnlocked("missions")) {
+            return false;
+        }
+        boolean modified = false;
+        for (Resident resident : getResidents()) {
+            modified |= distributeAdditionalMissions(resident);
+        }
+        return modified;
+    }
+
+    @Override
+    public <T extends MissionTaker<SettlementMission>> boolean distributeAdditionalMissions(T taker) {
+        if (!hasUnlocked("missions")) {
+            return false;
+        }
         SettlementLevel levelInfo = getLevelInfo();
         if (levelInfo != null && levelInfo.getMissions() > 0) {
-            List<SettlementMission> missions = new ArrayList<>(SettlementManager.getInstance().getMissions());
-            taker.getMissionData().removeIf(md -> {
-                if (md.isFinished()) {
-                    return Config.Settlement.Missions.REMOVE_FINISHED_MISSIONS;
+            int toDistribute = levelInfo.getMissions() + taker.getExtraMissions() - taker.getMissionData().size();
+            if (toDistribute > 0) {
+                List<SettlementMission> missions = new ArrayList<>(getMissions());
+                Collections.shuffle(missions);
+                for (int i = 0; i < toDistribute && i < missions.size(); i++) {
+                    if (Config.Settlement.Missions.DUPLICATE_MISSIONS) {
+                        taker.addMissionData(new MissionData(missions.get(i)));
+                    } else {
+                        for (int j = i; j < missions.size(); j++) {
+                            if (!taker.hasMission(missions.get(j))) {
+                                taker.addMissionData(new MissionData(missions.get(j)));
+                                break;
+                            }
+                        }
+                    }
                 }
-                if (md.hasProgress()) {
-                    return Config.Settlement.Missions.REMOVE_STARTED_MISSIONS;
-                }
-                return Config.Settlement.Missions.REMOVE_NOT_STARTED_MISSIONS;
-            });
-            Collections.shuffle(missions);
-            int toDistribute = levelInfo.getMissions() + taker.getExtraMissions();
-            for (int i = 0; taker.getMissionData().size() < toDistribute && i < missions.size(); i++) {
-                taker.addMissionData(new MissionData(missions.get(i)));
+                DatabaseManager.getInstance().saveMissionData(taker);
             }
-            DatabaseManager.getInstance().saveMissionData(taker);
             return !taker.getMissionData().isEmpty();
         }
         return false;
+    }
+
+    @Override
+    public boolean distributeMissionsOnLevelUp() {
+        return Config.Settlement.Missions.DISTRIBUTE_ON_LEVELUP;
     }
 
     private Map<Resident, Long> getLandTaxes() {
@@ -578,10 +615,12 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         return empire != null;
     }
 
+    @Override
     public MissionData getMissionData(String missionId) {
         return missionData.get(missionId.toLowerCase(Locale.ROOT));
     }
 
+    @Override
     public Collection<MissionData> getMissionData() {
         return missionData.values();
     }
@@ -646,6 +685,11 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
 
     public void setFinishedMissions(long finishedMissions) {
         this.finishedMissions = finishedMissions;
+    }
+
+    @Override
+    public Collection<SettlementMission> getMissions() {
+        return SettlementManager.getInstance().getMissions();
     }
 
     @Override

@@ -41,7 +41,7 @@ public class EmpireMission extends Mission {
             }
             if (onlyOnEmpireClaim()) {
                 OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
-                if (land.isOwnedBy((Empire) provider)) {
+                if (land != null && land.isOwnedBy((Empire) provider)) {
                     if (!onlyInEmpireWorld()) {
                         return ((Empire) provider).hasWorld()
                                 || !player.getWorld().getName().equalsIgnoreCase(((Empire) provider).getWorldName());

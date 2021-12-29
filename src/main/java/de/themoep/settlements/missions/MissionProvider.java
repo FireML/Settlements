@@ -1,7 +1,8 @@
 package de.themoep.settlements.missions;
 
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.settlement.Settlement;
+
+import java.util.Collection;
 
 public interface MissionProvider<M extends Mission> {
     String getName();
@@ -9,6 +10,12 @@ public interface MissionProvider<M extends Mission> {
     boolean distributeNewMissions();
 
     <T extends MissionTaker<M>> boolean distributeNewMissions(T taker);
+
+    boolean distributeAdditionalMissions();
+
+    <T extends MissionTaker<M>> boolean distributeAdditionalMissions(T taker);
+
+    boolean distributeMissionsOnLevelUp();
 
     String getStateTag();
 
@@ -19,4 +26,6 @@ public interface MissionProvider<M extends Mission> {
     long getFinishedMissions();
 
     void setFinishedMissions(long missions);
+
+    Collection<M> getMissions();
 }
