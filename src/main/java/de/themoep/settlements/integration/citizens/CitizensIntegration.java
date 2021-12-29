@@ -542,7 +542,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
                 }
             }
         }
-        if (tax < Double.MAX_VALUE) {
+        if (tax <= 1) {
             return tax;
         }
         return -1;
