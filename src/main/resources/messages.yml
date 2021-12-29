@@ -1680,10 +1680,11 @@ gui:
         &cNot selectable!
         &cRank insufficient
     transfer:
+      title: "Tranfer to {target}?"
       confirm: |-
         &a&lConfirm
         &7Click to transfer {state}
-        &7{settlement} to {name}
+        &7{name} to {target}
       cancel: |-
         &c&lCancel
         &7Click to not transfer
@@ -1819,7 +1820,7 @@ gui:
         &fplayer has not violated any rules!
   
         {action}
-      title: "&cReally kick &e{player}?"
+      title: "&4Really kick &1{player}?"
       confirm: "&cKick &e{player}"
       cancel: "&aDon't kick &e{player}"
     banish:

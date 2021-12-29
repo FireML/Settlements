@@ -20,6 +20,7 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import net.wesjd.anvilgui.AnvilGUI;
+import org.bukkit.entity.Player;
 
 public class ResidentGUI extends ConfigurableGui {
 
@@ -100,7 +101,7 @@ public class ResidentGUI extends ConfigurableGui {
                     InventoryGui.goBack(click.getWhoClicked());
                 }, rank -> {
                     if (resident.getSettlement().hasPermission(sender, "transfer")) {
-                        new ConfirmationGui(name() + "settlement.setrank.transfer", c -> {
+                        new ConfirmationGui("settlement.setrank.transfer", c -> {
                             if (resident.getSettlement().hasPermission(sender, "transfer")) {
                                 resident.getSettlement().transfer(resident);
                                 MessageUtils.notify(resident.getSettlement(), resident.getSettlement().getResidents(), Message.get("command.settlement.tranfer.success"),
@@ -113,9 +114,9 @@ public class ResidentGUI extends ConfigurableGui {
                             }
                             c.getGui().close();
                         }, c -> InventoryGui.goBack(c.getWhoClicked()),
-                                "player", resident.getName(),
+                                "target", resident.getName(),
                                 "state", resident.getSettlement().getStateTag(),
-                                "settlement", resident.getSettlement().getName());
+                                "name", resident.getSettlement().getName()).open((Player) click.getWhoClicked());
                     }
                 }).open();
             }
@@ -163,7 +164,8 @@ public class ResidentGUI extends ConfigurableGui {
                     resident.leaveSettlement();
                 }
                 new ResListGUI(sender, sender.getSettlement()).open();
-            }, c -> InventoryGui.goBack(c.getWhoClicked()), "player", resident.getName(), "state", resident.getSettlement().getStateTag());
+            }, c -> InventoryGui.goBack(c.getWhoClicked()), "player", resident.getName(), "state", resident.getSettlement().getStateTag())
+                    .open((Player) click.getWhoClicked());
             return true;
         }, getText("kick.entry",
                 "player", resident.getName(),

@@ -598,6 +598,18 @@ guis:
           title: paper
           add: writable_book
           back: barrier
+      transfer:
+        setup:
+        - "ooooooooo"
+        - "         "
+        - "    c    "
+        - "         "
+        - "         "
+        - " ooobooo "
+        elements:
+          o: yellow_stained_glass_pane
+          confirm: green_wool
+          cancel: barrier
     titles:
       setup:
       - "ooooooooo"
