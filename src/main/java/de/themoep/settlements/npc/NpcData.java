@@ -227,6 +227,26 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
     }
 
     @Override
+    public long getAmount(String key) {
+        if ("missions".equalsIgnoreCase(key)
+                || "missionpoints".equalsIgnoreCase(key)
+                || "level".equalsIgnoreCase(key)
+                || "world".equalsIgnoreCase(key)) {
+            return owner.getAmount(key);
+        }
+        return Levelable.super.getAmount(key);
+    }
+
+    @Override
+    public void setAmount(String key, long amount) {
+        if ("missions".equalsIgnoreCase(key) || "missionpoints".equalsIgnoreCase(key)) {
+            owner.setAmount(key, amount);
+        } else {
+            Levelable.super.setAmount(key, amount);
+        }
+    }
+
+    @Override
     public long getBank() {
         return owner.getBank();
     }

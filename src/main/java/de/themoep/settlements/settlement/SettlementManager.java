@@ -17,6 +17,7 @@ import de.themoep.settlements.land.Use;
 import de.themoep.settlements.land.events.LandownerDisbandEvent;
 import de.themoep.settlements.land.events.LandownerLeveledEvent;
 import de.themoep.settlements.lock.LockProvider;
+import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.perk.SettlementPerk;
 import de.themoep.settlements.perk.Perk;
@@ -474,6 +475,7 @@ public class SettlementManager {
                 "finishedmissions", String.valueOf(settlement.getFinishedMissions())
         );
         SettlementsPlugin.logDebug(resident.getName() + " finished mission " + mission.getTag() + " for " + settlement.getStateTag() + " " + settlement.getName());
+        settlement.checkLevelUp(resident);
         settlement.save();
         resident.save();
     }

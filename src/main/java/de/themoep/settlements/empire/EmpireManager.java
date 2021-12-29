@@ -6,8 +6,8 @@ import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.events.LandownerAbandonedEvent;
 import de.themoep.settlements.land.events.LandownerCreatedEvent;
 import de.themoep.settlements.land.events.LandownerLeveledEvent;
+import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.npc.NpcType;
-import de.themoep.settlements.perk.SettlementPerk;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
@@ -263,8 +263,10 @@ public class EmpireManager {
                 "finishedmissions", String.valueOf(empire.getFinishedMissions())
         );
         SettlementsPlugin.logDebug(settlement.getStateTag() + " " + settlement.getName() + " finished mission " + mission.getTag() + " for empire " + empire.getName());
-        DatabaseManager.getInstance().saveSettlement(settlement);
-        DatabaseManager.getInstance().saveEmpire(empire);
+        settlement.checkLevelUp(resident);
+        empire.checkLevelUp(resident);
+        settlement.save();
+        empire.save();
     }
 
     public EmpirePerk getPerk(String name) {
