@@ -101,11 +101,11 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
         }
         if (BuildState.ALLY == state) {
             Resident resident = ResidentManager.getInstance().getResident(building);
-            allowed |= land.getLandOwner().equals(resident.getSettlement()) || land.getLandOwner().isAlly(resident);
+            allowed |= land.getLandOwner().isMember(resident) || land.getLandOwner().isAlly(resident);
         }
         if (BuildState.TRUSTED == state) {
             Resident resident = ResidentManager.getInstance().getResident(building);
-            allowed |= land.getLandOwner().equals(resident.getSettlement()) || land.getLandOwner().isTrusted(resident);
+            allowed |= land.getLandOwner().isMember(resident) || land.getLandOwner().isTrusted(resident);
         }
         if (BuildState.PUBLIC.atLeast(state)) {
             allowed = true;

@@ -600,6 +600,7 @@ public class EmpireManager {
         }
 
         Utils.callEvent(new LandownerLeveledEvent(empire, res));
+        empire.save();
         return true;
     }
 

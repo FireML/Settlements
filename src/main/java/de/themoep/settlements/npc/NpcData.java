@@ -200,6 +200,7 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
                 provider.sendMail(owner.getStateTag() + " " + getTag(), r, mail);
             }
         }
+        save();
         return true;
     }
 

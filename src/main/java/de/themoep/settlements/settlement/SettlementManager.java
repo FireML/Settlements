@@ -428,6 +428,7 @@ public class SettlementManager {
         }
 
         Utils.callEvent(new LandownerLeveledEvent(settlement, res));
+        settlement.save();
         return true;
     }
 
