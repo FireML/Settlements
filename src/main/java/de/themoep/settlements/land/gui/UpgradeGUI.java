@@ -231,7 +231,9 @@ public class UpgradeGUI extends ConfigurableGui {
                             click.getEvent().setCursor(null);
                         }
                         selected.add(type, added);
-                        selected.checkLevelUp(resident);
+                        if (!selected.checkLevelUp(resident)) {
+                            selected.save();
+                        }
                         click.getGui().draw();
                     }
                 }
