@@ -354,6 +354,14 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
+    public void saveNpcs(Collection<NpcData> npcData) {
+        for (NpcData data : npcData) {
+            npcQueue.add(data.getId(), data);
+        }
+        npcQueue.finishAdding();
+    }
+
+    @Override
     public void saveNpc(NpcData npcData) {
         npcQueue.add(npcData.getId(), npcData);
         npcQueue.finishAdding();
@@ -696,10 +704,16 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public void saveResident(Resident... residents) {
+    public void saveResidents(Collection<Resident> residents) {
         for (Resident resident : residents) {
             residentQueue.add(IdObject.get(resident.getId()), resident);
         }
+        residentQueue.finishAdding();
+    }
+
+    @Override
+    public void saveResident(Resident resident) {
+        residentQueue.add(IdObject.get(resident.getId()), resident);
         residentQueue.finishAdding();
     }
 
@@ -750,7 +764,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public void savePortals(Portal... portals) {
+    public void savePortals(Collection<Portal> portals) {
         for (Portal portal : portals) {
             portalQueue.add(portal.getId(), portal);
         }
@@ -863,7 +877,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public void saveLocks(Lock... locks) {
+    public void saveLocks(Collection<Lock> locks) {
         for (Lock lock : locks) {
             if (lock.isValid()) {
                 lockQueue.add(lock.getId(), conn -> {
@@ -876,6 +890,20 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             }
         }
         lockQueue.finishAdding();
+    }
+
+    @Override
+    public void saveLock(Lock lock) {
+        if (lock.isValid()) {
+            lockQueue.add(lock.getId(), conn -> {
+                try {
+                    save(conn, lock);
+                } catch (SQLException e) {
+                    plugin.getLogger().log(Level.SEVERE, "Error while saving lock at " + lock.getLocation().getKey() + " to database!", e);
+                }
+            });
+            lockQueue.finishAdding();
+        }
     }
 
     @Override
@@ -1087,6 +1115,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     @Override
     public void disable() {
+        residentMissionDataQueue.forceSave();
         settlementQueue.forceSave();
         settlementMissionDataQueue.forceSave();
         empireQueue.forceSave();
@@ -1921,7 +1950,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             if (SettlementsPlugin.getInstance().isRunning() && queue.size() >= maxSize) {
                 SettlementsPlugin.logDebug("Triggering " + type + " save queue due to add reaching max size (" + queue.size() + ")");
                 Utils.runAsync(saving);
-            } else if (!forceSave && task == null) {
+            } else if (!forceSave && task == null && SettlementsPlugin.getInstance().isEnabled()) {
                 task = Bukkit.getScheduler().runTaskLaterAsynchronously(SettlementsPlugin.getInstance(), saving, saveWait * 20);
             }
         }
@@ -1934,6 +1963,9 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
              if (forceSave || (SettlementsPlugin.getInstance().isRunning() && queue.size()  > maxSize / 2)) {
                  if (queue.size()  > maxSize / 2) {
                      SettlementsPlugin.logDebug("Triggering " + type + " save queue due to finnish reaching half size (" + queue.size() + ")");
+                 }
+                 if (task != null) {
+                     task.cancel();
                  }
                  Utils.runAsync(saving);
                  return true;

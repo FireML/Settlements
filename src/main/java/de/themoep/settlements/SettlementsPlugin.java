@@ -110,6 +110,28 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         if (running) {
             running = false;
         }
+        if (Config.Storage.SAVE_ON_SHUTDOWN) {
+            getLogger().log(Level.INFO, "Saving all resident data...");
+            DatabaseManager.getInstance().saveResidents(ResidentManager.getInstance().getCachedResidents());
+            DatabaseManager.getInstance().saveResidentMissionData(ResidentManager.getInstance().getCachedResidents());
+            getLogger().log(Level.INFO, "Saving all settlement data...");
+            DatabaseManager.getInstance().saveSettlements(SettlementManager.getInstance().getSettlements());
+            DatabaseManager.getInstance().saveSettlementMissionData(SettlementManager.getInstance().getSettlements());
+            for (Settlement settlement : SettlementManager.getInstance().getSettlements()) {
+                DatabaseManager.getInstance().saveNpcs(settlement.getNpcData());
+            }
+            getLogger().log(Level.INFO, "Saving all empire data...");
+            DatabaseManager.getInstance().saveEmpires(EmpireManager.getInstance().getEmpires());
+            for (Empire empire : EmpireManager.getInstance().getEmpires()) {
+                DatabaseManager.getInstance().saveNpcs(empire.getNpcData());
+            }
+            getLogger().log(Level.INFO, "Saving all lock data...");
+            DatabaseManager.getInstance().saveLocks(LockManager.getInstance().getLocks());
+            getLogger().log(Level.INFO, "Saving all land data...");
+            DatabaseManager.getInstance().saveLand(LandManager.getInstance().getAllLand());
+            getLogger().log(Level.INFO, "Saving all portal data...");
+            DatabaseManager.getInstance().savePortals(PortalManager.getInstance().getPortals());
+        }
         ConfigManager.getInstance().getDataConfig().saveConfig();
         DatabaseManager.getInstance().disable();
     }

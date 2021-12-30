@@ -153,7 +153,7 @@ public class LockManager implements LockProvider {
         for (Lock lock : locks) {
             cacheLock(lock);
         }
-        DatabaseManager.getInstance().saveLocks(locks);
+        DatabaseManager.getInstance().saveLocks(Arrays.asList(locks));
     }
 
     private void cacheLock(Lock lock) {

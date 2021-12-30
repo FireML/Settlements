@@ -50,6 +50,9 @@ public class Config {
         public static String URL_PARAMETERS = "";
         @ConfigComment("MySQL connection timeout in ms")
         public static long CONNECTION_TIMEOUT = 30000;
+        @ConfigComment("Should all data be saved again on shutdown? Normally modifications \n" +
+                "are saved directly, this just makes sure it's all saved!")
+        public static boolean SAVE_ON_SHUTDOWN = true;
 
         public static class Queue {
             @ConfigComment("Max size of the queue before saving happens")

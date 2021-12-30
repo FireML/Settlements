@@ -250,7 +250,7 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
                             if (target != null) {
                                 if (l.grantAccess(target)) {
                                     getMessage("access.granted").tell(event.getPlayer(), "block", NameTag.getTag(l.getBlock()), "name", target.getName());
-                                    DatabaseManager.getInstance().saveLocks(l);
+                                    DatabaseManager.getInstance().saveLock(l);
                                     return;
                                 } else {
                                     getMessage("access.already-granted").tell(event.getPlayer(), "block", NameTag.getTag(l.getBlock()), "name", target.getName());
@@ -282,7 +282,7 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
                     if (lock.isOwner(event.getPlayer())) {
                         lock.setAllowHoppers(!lock.isAllowHoppers());
                         getMessage("hoppers." + (lock.isAllowHoppers() ? "enabled" : ".disabled")).tell(event.getPlayer(), "block", NameTag.getTag(lock.getBlock()));
-                        DatabaseManager.getInstance().saveLocks(lock);
+                        DatabaseManager.getInstance().saveLock(lock);
                         return;
                     } else if (lock.canAccess(event.getPlayer())) {
                         Utils.runAsync(() -> {
@@ -300,7 +300,7 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
                         if (target != null) {
                             if (lock.revokeAccess(target)) {
                                 getMessage("access.revoked").tell(event.getPlayer(), "block", NameTag.getTag(lock.getBlock()), "name", target.getName());
-                                DatabaseManager.getInstance().saveLocks(lock);
+                                DatabaseManager.getInstance().saveLock(lock);
                                 return;
                             } else {
                                 getMessage("access.already-revoked").tell(event.getPlayer(), "block", NameTag.getTag(lock.getBlock()), "name", target.getName());

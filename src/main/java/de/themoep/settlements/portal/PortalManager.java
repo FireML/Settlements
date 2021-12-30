@@ -271,7 +271,8 @@ public class PortalManager {
         portalLinks.put(target.getId(), source.getId());
 
         if (save) {
-            Utils.runAsync(() -> DatabaseManager.getInstance().savePortals(source, target));
+            source.save();
+            target.save();
         }
         return true;
     }
@@ -289,7 +290,8 @@ public class PortalManager {
         portalLinks.remove(target.getId(), source.getId());
 
         if (save) {
-            Utils.runAsync(() -> DatabaseManager.getInstance().savePortals(source, target));
+            source.save();
+            target.save();
         }
         return true;
     }
@@ -341,5 +343,9 @@ public class PortalManager {
                 });
             });
         }
+    }
+
+    public Collection<Portal> getPortals() {
+        return portals.values();
     }
 }

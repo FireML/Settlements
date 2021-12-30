@@ -115,6 +115,8 @@ public abstract class DatabaseManager {
 
     public abstract void saveNpc(NpcData npcData);
 
+    public abstract void saveNpcs(Collection<NpcData> npcData);
+
     public abstract <T extends Targetable & DatabaseSerializable, S extends Targetable & DatabaseSerializable> void save(Invite<T,S> invite);
 
     public abstract <T extends Targetable & DatabaseSerializable, S extends Targetable & DatabaseSerializable> void delete(Invite<T,S> invite);
@@ -129,11 +131,9 @@ public abstract class DatabaseManager {
 
     public abstract Resident getResident(String name);
 
-    public void saveResident(Collection<Resident> residents) {
-        saveResident(residents.toArray(new Resident[0]));
-    }
+    public abstract void saveResidents(Collection<Resident> residents);
 
-    public abstract void saveResident(Resident... residents);
+    public abstract void saveResident(Resident residents);
 
     /**
      * Saves the resident information directly to the database, bypassing the queue!
@@ -145,7 +145,7 @@ public abstract class DatabaseManager {
 
     public abstract void savePortal(Portal portal);
 
-    public abstract void savePortals(Portal... portals);
+    public abstract void savePortals(Collection<Portal> portals);
 
     public abstract void deletePortals(Portal... portals);
 
@@ -153,7 +153,13 @@ public abstract class DatabaseManager {
      * Queue locks for saving, does not have to be run async
      * @param locks The locks to save
      */
-    public abstract void saveLocks(Lock... locks);
+    public abstract void saveLocks(Collection<Lock> locks);
+
+    /**
+     * Queue a lock for saving, does not have to be run async
+     * @param lock The lock to save
+     */
+    public abstract void saveLock(Lock lock);
 
     /**
      * Queue lock deletion, does not have to be run async

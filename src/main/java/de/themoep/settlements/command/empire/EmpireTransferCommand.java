@@ -49,7 +49,8 @@ public class EmpireTransferCommand extends EmpireSubCommand {
         newLeader.setEmpireRank(EmpireRank.getLeader());
         empire.setCapital(targetSettlement);
         DatabaseManager.getInstance().saveEmpire(empire);
-        DatabaseManager.getInstance().saveResident(oldLeader, newLeader);
+        oldLeader.save();
+        newLeader.save();
         MessageUtils.tellResidents(empire.getOnlineResidents(), getMessage("success"),
                 "rank", EmpireRank.getLeader().getTag(),
                 "setter", res.getName(),

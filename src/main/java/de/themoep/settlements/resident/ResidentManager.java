@@ -19,6 +19,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import de.themoep.settlements.db.DatabaseManager;
 
+import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -232,5 +233,9 @@ public class ResidentManager {
                 customRunnable.run(land, p, landOwner);
             }
         }
+    }
+
+    public Collection<Resident> getCachedResidents() {
+        return residentsByUuid.asMap().values();
     }
 }

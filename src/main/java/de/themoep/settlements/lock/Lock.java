@@ -84,7 +84,7 @@ public class Lock implements DatabaseSerializable {
 
     @Override
     public void save() {
-        DatabaseManager.getInstance().saveLocks(this);
+        DatabaseManager.getInstance().saveLock(this);
     }
 
     public boolean canAccess(Player player) {

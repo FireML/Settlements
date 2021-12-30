@@ -5,7 +5,6 @@ import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
-import de.themoep.settlements.empire.EmpireMission;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.LandAccess;
@@ -17,7 +16,6 @@ import de.themoep.settlements.land.Use;
 import de.themoep.settlements.land.events.LandownerDisbandEvent;
 import de.themoep.settlements.land.events.LandownerLeveledEvent;
 import de.themoep.settlements.lock.LockProvider;
-import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.perk.SettlementPerk;
 import de.themoep.settlements.perk.Perk;
@@ -244,7 +242,7 @@ public class SettlementManager {
             removeResidentFromSettlement(resident);
         }
         LandManager.getInstance().unclaimLand(settlement);
-        DatabaseManager.getInstance().saveResident(residents);
+        DatabaseManager.getInstance().saveResidents(residents);
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().deleteSettlement(settlement);
             for (Ally ally : settlement.getAllies()) {
@@ -326,7 +324,7 @@ public class SettlementManager {
 
         DatabaseManager.getInstance().saveSettlement(settlement);
         DatabaseManager.getInstance().saveAllies(allies);
-        DatabaseManager.getInstance().saveResident(residents);
+        DatabaseManager.getInstance().saveResidents(residents);
         DatabaseManager.getInstance().saveLand(changedLand);
         Utils.runLater(() -> {
             SettlementsPlugin.getInstance().getLogger().log(Level.INFO, settlement.getStateTag() + " " + settlement.getName() + " was removed because it has been abandoned for " + Config.Settlement.Upkeep.ABANDON_TIME + " minutes!");

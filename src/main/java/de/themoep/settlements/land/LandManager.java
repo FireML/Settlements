@@ -589,6 +589,10 @@ public class LandManager {
         return owners;
     }
 
+    public Collection<OwnedLand> getAllLand() {
+        return landTable.values();
+    }
+
     public enum FilterResponse {
         /**
          * Aborts and returns an empty collection

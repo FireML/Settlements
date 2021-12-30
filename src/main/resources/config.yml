@@ -23,6 +23,9 @@ storage:
   url-parameters: ""
   # MySQL connection timeout in ms
   connection-timeout: 30000
+  # Should all data be saved again on shutdown? Normally modifications
+  # are saved directly, this just makes sure it's all saved!
+  save-on-shutdown: true
   queue:
     # Max size of the queue before saving happens
     size: 100

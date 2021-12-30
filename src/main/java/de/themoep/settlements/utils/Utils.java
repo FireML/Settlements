@@ -172,7 +172,7 @@ public class Utils {
      * @return The BukkitTask that was started or null if we are already on an async thread
      */
     public static BukkitTask runAsync(Runnable run, boolean force) {
-        if ((force || Bukkit.isPrimaryThread()) && SettlementsPlugin.getInstance().isRunning()) {
+        if ((force || Bukkit.isPrimaryThread()) && SettlementsPlugin.getInstance().isRunning() && SettlementsPlugin.getInstance().isEnabled()) {
             return Bukkit.getScheduler().runTaskAsynchronously(SettlementsPlugin.getInstance(), run);
         } else {
             run.run();

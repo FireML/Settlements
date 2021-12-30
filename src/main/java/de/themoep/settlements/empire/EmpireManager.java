@@ -6,7 +6,6 @@ import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.events.LandownerAbandonedEvent;
 import de.themoep.settlements.land.events.LandownerCreatedEvent;
 import de.themoep.settlements.land.events.LandownerLeveledEvent;
-import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
@@ -491,7 +490,7 @@ public class EmpireManager {
         DatabaseManager.getInstance().saveAllies(allies);
         DatabaseManager.getInstance().saveSettlementMissionData(modifiedSettlements);
         DatabaseManager.getInstance().saveSettlements(modifiedSettlements);
-        DatabaseManager.getInstance().saveResident(modifiedResidents);
+        DatabaseManager.getInstance().saveResidents(modifiedResidents);
 
         Utils.runLater(() -> {
             SettlementsPlugin.getInstance().getLogger().log(Level.INFO, empire.getStateTag() + " " + empire.getName() + " was removed because it has been abandoned for " + Config.Empire.Upkeep.ABANDON_TIME + " minutes!");
@@ -526,7 +525,7 @@ public class EmpireManager {
         settlement.getMissionData().clear();
         DatabaseManager.getInstance().saveMissionData(settlement);
         DatabaseManager.getInstance().saveSettlement(settlement);
-        DatabaseManager.getInstance().saveResident(toSave);
+        DatabaseManager.getInstance().saveResidents(toSave);
     }
 
     /**
