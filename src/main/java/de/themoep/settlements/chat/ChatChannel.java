@@ -43,7 +43,7 @@ public enum ChatChannel implements NameTag {
         @Override
         public boolean canChat(Player player) {
             Resident resident = ResidentManager.getInstance().getResident(player);
-            return resident.hasSettlement() && !resident.getSettlement().hasSettlementAllies();
+            return resident.hasSettlement() && resident.getSettlement().hasSettlementAllies();
         }
 
         @Override
@@ -59,7 +59,7 @@ public enum ChatChannel implements NameTag {
         @Override
         public boolean canChat(Player player) {
             Resident resident = ResidentManager.getInstance().getResident(player);
-            return resident.hasSettlement() && (!resident.getSettlement().hasEmpireAllies() ||
+            return resident.hasSettlement() && (resident.getSettlement().hasEmpireAllies() ||
                     resident.hasEmpire() && resident.getSettlement().getEmpire().hasAllies());
         }
 
