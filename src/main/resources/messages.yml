@@ -3054,6 +3054,7 @@ command:
       head: "&a⊱&m━━━━━━━━━━━━━━━&r&6Settlement Map&a&m━━━━━━━━━━━━━━&a⊰"
       explanations:
         own-land: "&r &a- &6= your land"
+        enemy: "&r &2- &6= other"
         empire-land: "&r &2- &6= your Empire land"
         for-sale: "&r &a₲ &6= for sale"
         player-plot: "&r &ep &6= player plot"
@@ -3765,6 +3766,7 @@ command:
       head: "&a⊱&m━━━━━━━━━━━━━━━&r&6Empire Map&a&m━━━━━━━━━━━━━━&a⊰"
       explanations:
         own-land: "&r &a- &6= your land"
+        enemy: "&r &2- &6= other"
         empire-land: "&r &2- &6= your Empire land"
         for-sale: "&r &a₲ &6= for sale"
         player-plot: "&r &ep &6= player plot"
