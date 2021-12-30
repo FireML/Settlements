@@ -2,6 +2,7 @@ package de.themoep.settlements.utils;
 
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.config.Config;
@@ -80,6 +81,16 @@ public class Utils {
     public static boolean isWorldClaimable(World world) {
         return !Config.Claiming.DISABLED_WORLDS.contains(world.getName())
                 || EmpireManager.getInstance().getEmpireFromWorld(world) != null;
+    }
+
+    public static boolean isWorldClaimable(LandOwner<?, ?> landOwner, World world) {
+        if (landOwner instanceof Settlement) {
+            return !Config.Claiming.DISABLED_WORLDS.contains(world.getName()) && !Config.Settlement.Claiming.DISABLED_WORLDS.contains(world.getName());
+        } else if (landOwner instanceof Empire) {
+            return !Config.Claiming.DISABLED_WORLDS.contains(world.getName()) && !Config.Empire.Claiming.DISABLED_WORLDS.contains(world.getName())
+                    || EmpireManager.getInstance().getEmpireFromWorld(world) == landOwner;
+        }
+        return false;
     }
 
     public static int getTeleportDelay(String type) {

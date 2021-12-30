@@ -245,6 +245,14 @@ plot-tax:
       couldnt-pay: "&e{player}&c was not able to pay the tax of &e{amount}&c for his plot {x} {z} and is has been removed!"
 first-to-reach-level: "&6&l{name} &7&l is the first to reach &6&l{state} &7&llevel &6&l{level}"
 land-unclaim: "&e{amount}&7 chunks were automatically unclaimed!"
+portal:
+  only-in-claim: "&cYou can only create portals in claims!"
+  created: "&aCreated portal!"
+  destroyed: "&aPortal destroyed!"
+  destroy-broadcast: "&5Portal in world &e{world}&5 at &e{x}&5/&e{y}&5/&e{z}&5 was destroyed."
+  not-allowed:
+    destroy: "&cYou are not allowed to destroy portals in your &e{state}"
+    create: "&cYou are not allowed to create portals in your &e{state}"
 events:
   started: "&6&l{title} &7&lstarted! Duration: {duration}"
   ended: "&6&l{title} &7&lended! &6&l{state} {name}&7&l won it with {amount}!"

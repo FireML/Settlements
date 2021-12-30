@@ -88,8 +88,15 @@ public class PortalListener implements Listener, ConfigMessages {
             }
 
             if (Utils.isWorldClaimable(e.getWorld())) {
-                PortalManager.getInstance().addPortal(e.getBlocks(), entity);
-                getMessage("created").tell(entity);
+                if ((resident.hasSettlement()
+                        && resident.getSettlement().canAdminPortals(resident)
+                        && Utils.isWorldClaimable(resident.getSettlement(), e.getWorld())
+                ) || (resident.hasEmpire()
+                        && resident.getSettlement().getEmpire().canAdminPortals(resident)
+                        && Utils.isWorldClaimable(resident.getSettlement().getEmpire(), e.getWorld()))) {
+                    PortalManager.getInstance().addPortal(e.getBlocks(), entity);
+                    getMessage("created").tell(entity);
+                }
             }
         } else {
             // Not possible to support non-player portal creation
@@ -180,7 +187,7 @@ public class PortalListener implements Listener, ConfigMessages {
         }
 
         OwnedLand land = LandManager.getInstance().getLand(e.getBlock().getLocation());
-        if (land == null || !(land.getLandOwner() instanceof Settlement)) {
+        if (land == null) {
             return;
         }
 
