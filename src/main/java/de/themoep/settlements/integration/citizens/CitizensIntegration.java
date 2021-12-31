@@ -164,7 +164,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
     }
 
     @EventHandler
-    public void onCaimed(LandClaimedEvent event) {
+    public void onClaimed(LandClaimedEvent event) {
         checkForNew(event.getLandOwner().getChief(), event.getLandOwner());
         for (NpcData data : event.getLandOwner().getNpcData()) {
             handle(event, data.getType());
@@ -178,7 +178,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
         NpcData npcData = event.getLandOwner().getNpcData(type);
         if (npcData.isUnlocked() && npcData.isAvailable()) {
             NPC npc = getNpc(npcData);
-            if (npc == null || !npc.isSpawned()) {
+            if (npc == null) {
                 Location location;
                 if (event.getLandOwner().getHome() != null) {
                     location = event.getLandOwner().getHome().toBukkitLocation();
@@ -424,18 +424,19 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
         LandownerLevel level = event.getLeveled().getLevelInfo();
         if (level != null) {
             for (NpcType npc : level.getNPCs()) {
-                unlockNpc(event.getResident(), event.getLeveled(), npc);
-                if (event.getLeveled().getHome() != null) {
-                    createNpc(event.getLeveled(), npc, event.getLeveled().getHome().toBukkitLocation());
-                    getMessage("new-npc-available").tell(event.getLeveled(),
-                            "npc", npc.getTag(),
-                            "type", npc.getKey(),
-                            "state", event.getLeveled().getStateTag());
-                } else {
-                    getMessage("new-npc-unlocked").tell(event.getLeveled(),
-                            "npc", npc.getTag(),
-                            "type", npc.getKey(),
-                            "state", event.getLeveled().getStateTag());
+                if (unlockNpc(event.getResident(), event.getLeveled(), npc)) {
+                    if (event.getLeveled().getHome() != null) {
+                        createNpc(event.getLeveled(), npc, event.getLeveled().getHome().toBukkitLocation());
+                        getMessage("new-npc-available").tell(event.getLeveled(),
+                                "npc", npc.getTag(),
+                                "type", npc.getKey(),
+                                "state", event.getLeveled().getStateTag());
+                    } else {
+                        getMessage("new-npc-unlocked").tell(event.getLeveled(),
+                                "npc", npc.getTag(),
+                                "type", npc.getKey(),
+                                "state", event.getLeveled().getStateTag());
+                    }
                 }
             }
         }
