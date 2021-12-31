@@ -987,7 +987,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
             }
         }
         for (Ally ally : ((Collection<Ally>) map.get("allies"))) {
-            landOwner.allies.put(ally.getType(), ally.getId(), ally);
+            landOwner.allies.put(ally.getType(), ally.getLandOwnerId(), ally);
         }
         for (AllyRequest request : ((Collection<AllyRequest>) map.get("allyRequests"))) {
             landOwner.addAllyRequest(request);
