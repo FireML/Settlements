@@ -74,10 +74,16 @@ public class PortalListener implements Listener, ConfigMessages {
             Resident resident = ResidentManager.getInstance().getResident((Player) entity);
             for (BlockState block : e.getBlocks()) {
                 OwnedLand land = LandManager.getInstance().getLand(block.getLocation());
-                if (land == null || !(land.getLandOwner() instanceof Settlement)) {
+                if (land == null) {
                     if (Config.Portal.ONLY_INSIDE_CLAIMS) {
                         e.setCancelled(true);
                         getMessage("only-in-claim").tell(entity);
+                    }
+                    return;
+                } else if (land.isEmbassy() && land.isOwnedBy(resident) && !land.getLandOwner().isMember(resident)) {
+                    if (!resident.hasSettlement() || !resident.getSettlement().canAdminPortals(resident)) {
+                        e.setCancelled(true);
+                        getMessage("not-allowed.create").tell(e.getEntity(), "state", land.getLandOwner().getStateTag());
                     }
                     return;
                 } else if (!land.getLandOwner().canAdminPortals(resident)) {
@@ -195,7 +201,8 @@ public class PortalListener implements Listener, ConfigMessages {
 
         if (portal != null) {
             Resident resident = ResidentManager.getInstance().getResident(e.getPlayer());
-            if (!land.getLandOwner().canAdminPortals(resident)) {
+            if (!land.getLandOwner().canAdminPortals(resident) && !land.isEmbassy() && !land.isOwnedBy(resident)
+                    && (!resident.hasSettlement() || !resident.getSettlement().canAdminPlots(resident))) {
                 e.setCancelled(true);
                 getMessage("not-allowed.destroy").tell(resident, "state", land.getLandOwner().getStateTag());
             } else if (PortalManager.getInstance().removePortal(portal)) {
