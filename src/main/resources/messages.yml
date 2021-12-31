@@ -591,6 +591,22 @@ integration:
     new-npc-available: "&7NPC &6{npc} &7is now available. Use [&e/{state} npc {type} teleport](/{state} npc {type} teleport) to set its location."
     new-npc-unlocked: "&7NPC &6{npc} &7unlocked. Use [&e/{state} npc {type} teleport](/{state} npc {type} teleport) to set its location."
     talk: "&e{state} {npc}: &f{message}"
+    state:
+      use:
+        residents: "&e&l(!) &r&eNPCs&7 are limited to &eresidents&7 of &e{state} {name}&7."
+        officers: "&e&l(!) &r&eNPCs&7 are limited to &eofficer only &7."
+        trusted: "&e&l(!) &r&eNPCs&7 are limited to &eallies or members of the same empire&7 of &e{state} {name}&7."
+        ally: "&e&l(!) &r&eNPCs&7 are limited to &eallies&7 of &e{state} {name}&7."
+        private: "&e&l(!) &r&eNPCs&7 are is limited to the &ePlot owner&7."
+        members: "&e&l(!) &r&eNPCs&7 are is limited to &ePlot members&7."
+        friends: "&e&l(!) &r&eNPCs&7 are is limited to &ePlot members and the owner's friends&7."
+        empire:
+          trusted: "&e&l(!) &r&eNPCs&7 are is limited to &emembers&7 of &e{state} {name}&7."
+          landowner:
+            private: "&e&l(!) &r&eNPCs&7 are is limited to the &eCapital of {state} {name}&7."
+        settlement:
+          landowner:
+            private: "&e&l(!) &r&eNPCs&7 are is limited to &eResidents of {state} {name}&7."
   lwc:
     only-in-settlement: "&c&lYou can only lock things in a settlement claim!"
     state:
