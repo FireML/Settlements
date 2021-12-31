@@ -59,6 +59,7 @@ import net.citizensnpcs.api.trait.TraitName;
 import net.citizensnpcs.api.trait.trait.Spawned;
 import net.citizensnpcs.api.util.Colorizer;
 import net.citizensnpcs.trait.Anchors;
+import net.citizensnpcs.trait.CurrentLocation;
 import net.citizensnpcs.trait.LookClose;
 import net.citizensnpcs.trait.SkinTrait;
 import net.citizensnpcs.trait.VillagerProfession;
@@ -210,6 +211,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
         NpcData npcData = landOwner.getNpcData(type);
         NPC npc = getNpc(npcData);
         if (npc != null) {
+            npc.getOrAddTrait(CurrentLocation.class).setLocation(location);
             if (npc.isSpawned()) {
                 npc.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
             } else {
@@ -227,6 +229,8 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
         npc = CitizensAPI.getNPCRegistry().createNPC(entityType, config.getName());
 
         npc.setProtected(true);
+
+        npc.getOrAddTrait(CurrentLocation.class).setLocation(location);
 
         npc.getOrAddTrait(Spawned.class).setSpawned(true);
 
