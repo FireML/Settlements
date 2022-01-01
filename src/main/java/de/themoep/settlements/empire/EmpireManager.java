@@ -6,6 +6,7 @@ import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.events.LandownerAbandonedEvent;
 import de.themoep.settlements.land.events.LandownerCreatedEvent;
 import de.themoep.settlements.land.events.LandownerLeveledEvent;
+import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
@@ -581,8 +582,10 @@ public class EmpireManager {
             }
         }
 
+
         for (NpcType npc : empire.getLevelInfo().getNPCs()) {
-            perksDesc.add(npc.getTag());
+            NpcData npcData = empire.getNpcData(npc);
+            perksDesc.add(npcData.getTag());
         }
 
         String mail = Message.get("levels.mail-upgrade.general").getReplacedText(

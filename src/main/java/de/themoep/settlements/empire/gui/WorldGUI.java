@@ -13,7 +13,7 @@ import de.themoep.settlements.utils.ConfigurableGui;
 public class WorldGUI extends ConfigurableGui {
 
     public WorldGUI(Resident resident, Empire empire) {
-        super(resident, "empire.world", "type", NpcType.ELDER.getTag());
+        super(resident, "empire.world", "type", empire.getNpcData(NpcType.ELDER).getTag());
 
         if (empire.hasWorld()) {
             gui.addElement(new StaticGuiElement('w', getIcon("world"), click -> {

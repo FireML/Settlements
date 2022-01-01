@@ -11,13 +11,11 @@ import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.npc.NpcManager;
 import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.utils.Utils;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.waypoint.WanderWaypointProvider;
 import net.citizensnpcs.trait.waypoint.WaypointProvider;
 import net.citizensnpcs.trait.waypoint.Waypoints;
 import org.bukkit.Location;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.Locale;
 import java.util.function.Function;
@@ -84,7 +82,7 @@ public class NpcCommand extends ResidentSubCommand {
                         }
                     }
                     citizensIntegration.createNpc(landOwner, type, location);
-                    getMessage("teleport.success").tell(resident, "type", type.getTag(), "state", landOwner.getStateTag());
+                    getMessage("teleport.success").tell(resident, "type", npcData.getTag(), "state", landOwner.getStateTag());
                 } else {
                     getError("not-a-claim").tell(resident);
                 }
@@ -123,7 +121,7 @@ public class NpcCommand extends ResidentSubCommand {
                     npc.destroy();
                     citizensIntegration.createNpc(landOwner, type, config, location);
                 }
-                getMessage("skin.success").tell(resident, "type", type.getTag(), "state", landOwner.getStateTag());
+                getMessage("skin.success").tell(resident, "type", npcData.getTag(), "state", landOwner.getStateTag());
                 npcData.save();
                 return true;
             }

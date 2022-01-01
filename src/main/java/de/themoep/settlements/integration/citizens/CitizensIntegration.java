@@ -187,8 +187,8 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
                 }
                 npc = createNpc(event.getLandOwner(), type, location);
                 getMessage("new-npc-available").tell(event.getLandOwner(),
-                        "npc", npcData.getConfig().getName(),
-                        "type", type.getKey(),
+                        "npc", npcData.getTag(),
+                        "type", npcData.getTag().replace(' ', '_'),
                         "state", event.getLandOwner().getStateTag());
                 if (npcData.getNpcId() != npc.getId()) {
                     npcData.setNpcId(npc.getId());
@@ -429,12 +429,12 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
                         createNpc(event.getLeveled(), npc, event.getLeveled().getHome().toBukkitLocation());
                         getMessage("new-npc-available").tell(event.getLeveled(),
                                 "npc", npc.getTag(),
-                                "type", npc.getKey(),
+                                "type", npc.getTag().replace(' ', '_'),
                                 "state", event.getLeveled().getStateTag());
                     } else {
                         getMessage("new-npc-unlocked").tell(event.getLeveled(),
                                 "npc", npc.getTag(),
-                                "type", npc.getKey(),
+                                "type", npc.getTag().replace(' ', '_'),
                                 "state", event.getLeveled().getStateTag());
                     }
                 }
@@ -618,6 +618,8 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
 
             long currentTime = System.currentTimeMillis();
 
+            NpcData npcData = landOwner.getNpcData(type);
+
             for (Player player : npc.getEntity().getWorld().getPlayers()) {
                 if (player.getLocation().distanceSquared(npc.getEntity().getLocation()) < range * range) {
                     long lastSpoken = speakCooldown.getOrDefault(player.getUniqueId(), 0L);
@@ -632,7 +634,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
                                     "state", landOwner.getStateTag(),
                                     "name", landOwner.getName(),
                                     "player", player.getName(),
-                                    "npc", type.getTag()
+                                    "npc", npcData.getTag()
                             );
                             if (!Config.Citizens.REPEAT_MESSAGES) {
                                 spokenMessages.put(player.getUniqueId(), message);

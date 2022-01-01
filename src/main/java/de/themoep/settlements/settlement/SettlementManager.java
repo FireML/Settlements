@@ -16,6 +16,8 @@ import de.themoep.settlements.land.Use;
 import de.themoep.settlements.land.events.LandownerDisbandEvent;
 import de.themoep.settlements.land.events.LandownerLeveledEvent;
 import de.themoep.settlements.lock.LockProvider;
+import de.themoep.settlements.npc.NpcConfig;
+import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.perk.SettlementPerk;
 import de.themoep.settlements.perk.Perk;
@@ -408,7 +410,8 @@ public class SettlementManager {
         }
 
         for (NpcType npc : settlement.getLevelInfo().getNPCs()) {
-            perksDesc.add(npc.getTag());
+            NpcData npcData = settlement.getNpcData(npc);
+            perksDesc.add(npcData.getTag());
         }
 
         String mail = Message.get("levels.mail-upgrade.general").getReplacedText(
