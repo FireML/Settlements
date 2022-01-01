@@ -18,8 +18,8 @@ public class OutpostClaimCommand extends SettlementSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        if (!Utils.isWorldClaimable(resident.getPlayer().getWorld())) {
-            resident.tell(getError("world-not-claimable"), "world", resident.getPlayer().getWorld().getName());
+        if (!resident.getSettlement().canClaim(resident.getPlayer().getWorld())) {
+            getError("world-not-claimable").tell(resident, "world", resident.getPlayer().getWorld().getName());
             return true;
         }
         if (args.length < 1) {

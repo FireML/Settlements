@@ -32,13 +32,13 @@ public class EmpireMapCommand extends ResidentSubCommand implements Listener {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         Player player = resident.getPlayer();
-        if (!Utils.isWorldClaimable(player.getWorld())) {
+        Empire empire = resident.hasEmpire() ? resident.getSettlement().getEmpire() : null;
+        if (empire != null && !empire.canClaim(player.getWorld()) || !Utils.isWorldClaimable(player.getWorld())) {
             getError("world-not-claimable").tell(resident);
             return true;
         }
 
         Utils.runAsync(() -> {
-            Empire empire = resident.hasEmpire() ? resident.getSettlement().getEmpire() : null;
             new ChatMap(resident.getPlayer(), empire, this);
         });
         if (args.length > 0 && "auto".equalsIgnoreCase(args[0])) {

@@ -151,7 +151,7 @@ public class ChatMap {
 
         public MapGenerator(Player p) {
             this.playerLand = LandManager.getInstance().getLand(p.getLocation());
-            this.claimable = Utils.isWorldClaimable(p.getWorld());
+            this.claimable = landOwner.canClaim(p.getWorld());
             this.player = p;
             this.resident = ResidentManager.getInstance().getResident(p);
             this.canLinkPlot = playerLand != null && (playerLand.isPlotOwner(resident) || playerLand.canAdmin(resident));

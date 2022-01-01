@@ -96,10 +96,10 @@ public class PortalListener implements Listener, ConfigMessages {
             if (Utils.isWorldClaimable(e.getWorld())) {
                 if ((resident.hasSettlement()
                         && resident.getSettlement().canAdminPortals(resident)
-                        && Utils.isWorldClaimable(resident.getSettlement(), e.getWorld())
+                        && resident.getSettlement().canClaim(e.getWorld())
                 ) || (resident.hasEmpire()
                         && resident.getSettlement().getEmpire().canAdminPortals(resident)
-                        && Utils.isWorldClaimable(resident.getSettlement().getEmpire(), e.getWorld()))) {
+                        && resident.getSettlement().getEmpire().canClaim(e.getWorld()))) {
                     PortalManager.getInstance().addPortal(e.getBlocks(), entity);
                     getMessage("created").tell(entity);
                 }

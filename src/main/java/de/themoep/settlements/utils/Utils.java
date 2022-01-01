@@ -78,19 +78,13 @@ public class Utils {
         return PERCENTAGE_FORMAT.format(v * 100);
     }
 
+    /**
+     * @deprecated Use {@link LandOwner#canClaim(World)} whenever possible!
+     */
+    @Deprecated
     public static boolean isWorldClaimable(World world) {
         return !Config.Claiming.DISABLED_WORLDS.contains(world.getName())
                 || EmpireManager.getInstance().getEmpireFromWorld(world) != null;
-    }
-
-    public static boolean isWorldClaimable(LandOwner<?, ?> landOwner, World world) {
-        if (landOwner instanceof Settlement) {
-            return !Config.Claiming.DISABLED_WORLDS.contains(world.getName()) && !Config.Settlement.Claiming.DISABLED_WORLDS.contains(world.getName());
-        } else if (landOwner instanceof Empire) {
-            return !Config.Claiming.DISABLED_WORLDS.contains(world.getName()) && !Config.Empire.Claiming.DISABLED_WORLDS.contains(world.getName())
-                    || EmpireManager.getInstance().getEmpireFromWorld(world) == landOwner;
-        }
-        return false;
     }
 
     public static int getTeleportDelay(String type) {
