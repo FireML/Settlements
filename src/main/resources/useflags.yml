@@ -87,6 +87,12 @@ flags:
   barrel:
     type: barrel
     icon: barrel
+  crafting_table:
+    type: crafting_table
+    icon: crafting_table
+  enchantment_table:
+    type: enchantment_table
+    icon: enchanting_table
   lever:
     type: lever
     icon: lever
