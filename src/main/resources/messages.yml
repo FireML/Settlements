@@ -1356,7 +1356,7 @@ gui:
       {missions}
       
       &bClick for more details
-    finished: "&eFinished&f "
+    finished: "&aFinished&f "
     only-in-empire: "&7In {name} Domain:&f "
     only-on-claim: "&7On {state} claim:&f "
     mission-entry: "&f{action} &e{title}"
@@ -1400,11 +1400,11 @@ gui:
   missions:
     title: "Available Missions"
     info: |-
-      &a&lDaily Missions
-      &eDoing missions will reward
-      &eContribution Points
+      &eDaily Missions
+      &fDoing missions will reward
+      &fContribution Points
     entry: |-
-      &a&l{title}
+      &e{title}
       &f{requirements}
       
       &e{action}
@@ -1414,9 +1414,9 @@ gui:
       place: "&ePlace blocks"
       kill: "&eKill monster"
       harvest: "&eHarvest material"
-    finished: "&e&lFinished"
-    only-in-empire: "&eOnly in {name} Domain"
-    only-on-claim: "&eOnly on {state} claim"
+    finished: "&aFinished &e"
+    only-in-empire: "&7Only in {name} Domain&e "
+    only-on-claim: "&7Only on {state} claim&e "
     mission-entry: "&f{action} &e{title}"
     requirement:
       todo: "&r&f(&e{progress}&f/&e{required}&f) {type}"
@@ -2450,10 +2450,10 @@ gui:
     requirement:
       left: |-
         &e{name}
-        &f(&e{progress}&f/&e{required})
+        &f(&e{progress}&f/&e{required}&f)
       reached: |-
         &e{name}
-        &a({progress}/{required}) Completed!
+        &f(&a{progress}&f/&a{required}&f) &aCompleted!
     info: |-
       &eProgress for {name}
       &fUpgrading this to the next level
