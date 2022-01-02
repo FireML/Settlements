@@ -66,7 +66,7 @@ public class SettingsGUI extends ConfigurableGui {
                                         SettlementManager.getInstance().changeName((Settlement) landOwner, name);
                                     }
                                     Message.get("command." + landOwner.getKey() + ".rename.success").tell(landOwner, "name", landOwner.getName(), "state", landOwner.getStateTag());
-                                    Utils.runLater(() -> new SettingsGUI(player), 1);
+                                    Utils.runLater(() -> new SettingsGUI(player).open(), 1);
                                 }
                             } else {
                                 getError("no-permission").tell(player);
@@ -95,7 +95,7 @@ public class SettingsGUI extends ConfigurableGui {
         )));
 
         gui.addElement(new StaticGuiElement('r', getIcon("rules"), click -> {
-            if (!landOwner.hasPermission(resident, "setrules")) {
+            if (!landOwner.hasPermission(resident, "rules.set")) {
                 return true;
             }
             if (click.getType() == ClickType.LEFT) {
@@ -121,7 +121,7 @@ public class SettingsGUI extends ConfigurableGui {
             }
             getMessage("rules.info,actionbar").actionbar(resident);
             new SignGui(text -> {
-                if (landOwner.hasPermission(resident, "setrules")) {
+                if (landOwner.hasPermission(resident, "rules.set")) {
                     String rules = String.join("\n", text).trim();
                     if (!rules.isEmpty() && !rules.equals(landOwner.getRules())) {
                         landOwner.setRules(rules);
@@ -137,12 +137,12 @@ public class SettingsGUI extends ConfigurableGui {
                         }
                     }
                 }
-                open();
+                Utils.runLater(() -> new SettingsGUI(resident).open(), 1);
             }).open((Player) click.getWhoClicked());
             return true;
         }, getText("rules.entry",
                 "state", landOwner.getStateTag(),
-                "action", landOwner.hasPermission(resident, "setrules") ? getText("unlockables.unlocked.change") : getText("no-permission"))
+                "action", landOwner.hasPermission(resident, "rules.set") ? getText("unlockables.unlocked.change") : getText("no-permission"))
         ));
 
         gui.addElement(new StaticGuiElement('d', getIcon("discord"), click -> {
