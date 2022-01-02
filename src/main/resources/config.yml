@@ -106,7 +106,7 @@ settlement:
     # The amount of levels until a settlement converts from a Village to a Kingdom
     village-max-level: 5
     #The maximum amount of Kingdom levels
-    kingdom-max-level: 10
+    kingdom-max-level: 15
 
   missions:
     # Whether or not settlement missions should be given to residents

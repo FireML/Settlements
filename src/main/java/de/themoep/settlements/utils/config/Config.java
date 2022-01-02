@@ -180,7 +180,7 @@ public class Config {
             public static int VILLAGE_MAX_LEVEL = 5;
 
             @ConfigComment("The maximum amount of Kingdom levels")
-            public static int KINGDOM_MAX_LEVEL = 10;
+            public static int KINGDOM_MAX_LEVEL = 15;
         }
 
         public static class Missions {

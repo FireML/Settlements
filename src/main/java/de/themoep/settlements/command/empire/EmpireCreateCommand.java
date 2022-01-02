@@ -12,7 +12,7 @@ import de.themoep.settlements.utils.config.Config;
 import java.util.regex.Pattern;
 
 public class EmpireCreateCommand extends SettlementSubCommand {
-    private Pattern allowed = Pattern.compile("[\\w-]+");
+    private final Pattern allowed = Pattern.compile("[\\w-]+");
 
     public EmpireCreateCommand(SubCommand parent) {
         super(parent, "create <name>");
@@ -20,13 +20,15 @@ public class EmpireCreateCommand extends SettlementSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        if (!resident.getSettlement().isMaxLevel()) {
-            getError("max-level-kingdom-required").tell(resident,
-                    "state", resident.getSettlement().getState().getTag(),
-                    "level", String.valueOf(resident.getSettlement().getLevel())
+        if (!resident.getSettlement().hasUnlocked("empire.create")) {
+            getError("not-unlocked").tell(resident,
+                    "state", resident.getSettlement().getStateTag(),
+                    "name", resident.getSettlement().getName(),
+                    "function", "Empire"
             );
             return true;
         }
+
         if (args.length < 1) {
             return false;
         }

@@ -3647,7 +3647,6 @@ command:
         &r&7  Start by creating your first claim with [&e/e claim](/e claim)
         &7
       broadcast: "&e{player} has made a empire called {name}!"
-      max-level-kingdom-required: "&cYou need at least a Kingdom with level 10 to create an empire!"
       description: Create a new empire.
     claim:
       cant-claim-more: "&c&l(!) &r&7Your empire can only claim &e{max} chunks of land!"

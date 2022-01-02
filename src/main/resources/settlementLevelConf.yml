@@ -152,12 +152,62 @@ kingdom:
     requirements:
       STONE: 1
   level-10:
-    claim-upkeep: 200
+    claim-upkeep: 220
     per-world-upkeep:
       Kingdoms_nether: 400
-    chunks: 1000
+    chunks: 1100
     outposts: 12
     missions: 15
     extra-missions: 13
+    requirements:
+      STONE: 1
+  level-11:
+    claim-upkeep: 200
+    per-world-upkeep:
+      Kingdoms_nether: 360
+    chunks: 1200
+    outposts: 13
+    missions: 16
+    extra-missions: 14
+    requirements:
+      STONE: 1
+  level-12:
+    claim-upkeep: 180
+    per-world-upkeep:
+      Kingdoms_nether: 320
+    chunks: 1300
+    outposts: 14
+    missions: 17
+    extra-missions: 15
+    requirements:
+      STONE: 1
+  level-13:
+    claim-upkeep: 160
+    per-world-upkeep:
+      Kingdoms_nether: 280
+    chunks: 1400
+    outposts: 15
+    missions: 18
+    extra-missions: 16
+    requirements:
+      STONE: 1
+  level-14:
+    claim-upkeep: 140
+    per-world-upkeep:
+      Kingdoms_nether: 240
+    chunks: 1500
+    outposts: 16
+    missions: 19
+    extra-missions: 17
+    requirements:
+      STONE: 1
+  level-15:
+    claim-upkeep: 120
+    per-world-upkeep:
+      Kingdoms_nether: 220
+    chunks: 1600
+    outposts: 17
+    missions: 20
+    extra-missions: 18
     requirements:
       STONE: 1

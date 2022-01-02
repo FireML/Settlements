@@ -181,3 +181,8 @@ extra-outpost:
       cash: 1000
     repeat:
       cash: 1000
+empire:
+  state: kingdom
+  level: 6
+  unlockables:
+  - empire.create
