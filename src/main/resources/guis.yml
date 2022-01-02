@@ -230,13 +230,14 @@ guis:
       - "ooooooooo"
       - "         "
       - "    e    "
-      - "         "
+      - "    r    "
       - "         "
       - " ooobooo "
       elements:
         o: blue_stained_glass_pane
         recruit: crimson_door
         missions: orange_banner
+        redistribute: bell
         back: barrier
     missions:
       setup:

@@ -1,8 +1,10 @@
 package de.themoep.settlements.land.gui;
 
+import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.command.common.MissionCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.land.JoinRequest;
@@ -30,18 +32,47 @@ public class ElderGUI extends ConfigurableGui {
             if (landOwner instanceof MissionProvider) {
                 if (!landOwner.hasUnlocked("missions")) {
                     gui.addElement(new StaticGuiElement('e', getIcon("missions"), getUnlockText(landOwner, "missions")));
-                } else if (!((MissionProvider<?>) landOwner).getMissionTaker(resident).getMissionData().isEmpty()) {
-                    gui.addElement(new StaticGuiElement('e', getIcon("missions"), click -> {
-                        new MissionGui(resident, (MissionProvider<?>) landOwner, ((MissionProvider<?>) landOwner).getMissionTaker(resident)).open();
-                        return true;
-                    }, getText("missions",
-                            Mission.getReplacements(this, (MissionProvider<?>) landOwner, resident)
-                    )));
                 } else {
-                    gui.addElement(new StaticGuiElement('e', getIcon("missions"), getText("wait-for-missions",
-                            "state", landOwner.getStateTag(),
-                            "name", landOwner.getName()
-                    )));
+                    if (!((MissionProvider<?>) landOwner).getMissionTaker(resident).getMissionData().isEmpty()) {
+                        gui.addElement(new DynamicGuiElement('e', who -> new StaticGuiElement('e', getIcon("missions"), click -> {
+                            new MissionGui(resident, (MissionProvider<?>) landOwner, ((MissionProvider<?>) landOwner).getMissionTaker(resident)).open();
+                            return true;
+                        }, getText("missions",
+                                Mission.getReplacements(this, (MissionProvider<?>) landOwner, resident)
+                        ))));
+                    } else {
+                        gui.addElement(new DynamicGuiElement('e', who -> new StaticGuiElement('e', getIcon("missions"), getText("wait-for-missions",
+                                "state", landOwner.getStateTag(),
+                                "name", landOwner.getName()
+                        ))));
+                    }
+                    if (((MissionProvider<?>) landOwner).getMissionRedistributePrice() > -1 && landOwner.hasPermission(resident,"mission.redistribute")) {
+                        gui.addElement(new StaticGuiElement('r', getIcon("redistribute"), click -> {
+                            if (landOwner.hasPermission(resident,"mission.redistribute")) {
+                                new MissionCommand() {
+
+                                    @Override
+                                    public String type() {
+                                        return "command";
+                                    }
+
+                                    @Override
+                                    public String name() {
+                                        return landOwner.getKey() + ".missions.redistribute";
+                                    }
+                                }.distributeNewMissions(resident, (MissionProvider<?>) landOwner);
+                                click.getGui().draw();
+                            }
+                            return true;
+                        }, getText("redistribute-missions",
+                                "state", landOwner.getStateTag(),
+                                "name", landOwner.getName(),
+                                "price", String.valueOf(((MissionProvider<?>) landOwner).getMissionRedistributePrice()),
+                                "action", landOwner.has(((MissionProvider<?>) landOwner).getMissionRedistributePrice())
+                                        ? getText("unlockables.unlocked.purchase")
+                                        : getText("unlockables.locked.money")
+                        )));
+                    }
                 }
             }
         } else if (landOwner.isBanished(resident)) {

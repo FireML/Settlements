@@ -693,6 +693,11 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     }
 
     @Override
+    public long getMissionRedistributePrice() {
+        return Config.Settlement.Missions.REDISTRIBUTE_PRICE;
+    }
+
+    @Override
     public boolean setMode(PlotMode mode, boolean value) {
         if (super.setMode(mode, value)) {
             if (SettlementsPlugin.getInstance().isRunning() && mode == PlotMode.mobSpawning && !value) {

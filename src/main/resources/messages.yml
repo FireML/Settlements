@@ -756,6 +756,7 @@ unlockables:
     banish: "&bClick to banish"
     withdraw: "&bClick to withdraw"
     deposit: "&bClick to deposit"
+    purchase: "&bClick to purchase"
     invited: |-
       &bYou have been invited to join them!
       &bClick to join!
@@ -1356,6 +1357,15 @@ gui:
       {missions}
       
       &bClick for more details
+    redistribute-missions: |-
+      &eGet new missions
+      
+      &fRemove current missions
+      &fand get new ones!
+      
+      &fCost: &e${price}
+      
+      {action}
     finished: "&aFinished&f "
     only-in-empire: "&7In {name} Domain:&f "
     only-on-claim: "&7On {state} claim:&f "
@@ -3113,6 +3123,9 @@ command:
     missions:
       wait-for-missions: "&c&lYou do not have any missions from your {state} yet. Wait for the next distribution!"
       description: View missions available to your settlement
+      redistribute:
+        success: "&eDistributed {amount} new missions for ${price}"
+        description: Distribute new missions to all residents in your settlement for a price
     mode:
       modes: "&cAvailable modes: {modes}"
       success: "&7Settlement mode &6{mode}&7: &6{value}"
@@ -3826,6 +3839,9 @@ command:
     missions:
       wait-for-missions: "&c&lYou do not have any missions from your {state} yet. Wait for the next distribution!"
       description: View missions available to your settlement
+      redistribute:
+        success: "&eDistributed {amount} new missions for ${price}"
+        description: Distribute new missions to all member settlements in your empire for a price
     npc:
       skin:
         success: "&aSuccessfully changed the skin of your {state} {type}"

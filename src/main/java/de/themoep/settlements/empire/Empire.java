@@ -710,6 +710,11 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     @Override
+    public long getMissionRedistributePrice() {
+        return Config.Empire.Missions.REDISTRIBUTE_PRICE;
+    }
+
+    @Override
     public List<Resident> getResidents() {
         return getMembers().stream().flatMap(v -> v.getResidents().stream()).collect(Collectors.toList());
     }

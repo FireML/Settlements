@@ -123,6 +123,8 @@ settlement:
     remove-started-missions: false
     # Should finished missions be reset? If those are not reset then the resident needs to wait for the settlement to upgrade to get more!
     remove-finished-missions: true
+    # Amount to pay from a settlement's bank to distribute new missions. (Set to -1 to disable this functionality)
+    redistribute-price: 1000
     # Time in minutes for which block placements should be cached so that break mission abuse isn't possible using (recent) player placed blocks.
     place-cache-time: 60
     
@@ -180,6 +182,8 @@ empire:
     remove-started-missions: false
     # Should finished missions be reset? If those are not reset then the settlement needs to wait for the empire to upgrade to get more!
     remove-finished-missions: true
+    # Amount to pay from an empire's bank to distribute new missions. (Set to -1 to disable this functionality)
+    redistribute-price: 1000
     # Time in minutes for which block placements should be cached so that break mission abuse isn't possible using (recent) player placed blocks.
     place-cache-time: 60
 

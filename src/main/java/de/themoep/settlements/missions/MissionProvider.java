@@ -28,4 +28,6 @@ public interface MissionProvider<M extends Mission> {
     void setFinishedMissions(long missions);
 
     Collection<M> getMissions();
+
+    long getMissionRedistributePrice();
 }

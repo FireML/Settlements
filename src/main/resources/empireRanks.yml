@@ -79,6 +79,7 @@ toggleable-permissions:
 - empire.disband
 - empire.rewards
 - empire.transfer
+- empire.mission.redistribute
 - empire.claim
 - empire.unclaim
 - empire.plot.admin
@@ -130,6 +131,7 @@ ranks:
     - empire.rewards
     - empire.portal.admin
     - empire.group.manage-shop
+    - empire.mission.redistribute
     # member permissions
     - empire.allies
     - empire.joinfee
@@ -162,6 +164,7 @@ ranks:
     - empire.group.manage-bank
     - empire.plot.admin
     - empire.group.manage-member
+    - empire.mission.redistribute
     - empire.invite
     - empire.kick
     - empire.help.member
