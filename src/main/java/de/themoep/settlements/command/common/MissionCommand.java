@@ -11,13 +11,13 @@ public interface MissionCommand extends ConfigMessages {
 
     default void distributeNewMissions(Resident resident, MissionProvider<?> missionProvider) {
         if (missionProvider.getMissionRedistributePrice() > 0) {
-            if (!resident.getSettlement().removeFromBank(missionProvider.getMissionRedistributePrice())) {
-                getError("not-enough-money").tell(resident,
-                        "amount", Utils.CURRENCY_FORMAT.format(missionProvider.getMissionRedistributePrice())
-                );
-                return;
-            }
             if (missionProvider instanceof LandOwner) {
+                if (!((LandOwner) missionProvider).removeFromBank(missionProvider.getMissionRedistributePrice())) {
+                    getError("not-enough-money").tell(resident,
+                            "amount", Utils.CURRENCY_FORMAT.format(missionProvider.getMissionRedistributePrice())
+                    );
+                    return;
+                }
                 DatabaseManager.getInstance().log((LandOwner) missionProvider, resident, "new-missions", "cash", missionProvider.getMissionRedistributePrice());
             }
         }
