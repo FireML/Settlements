@@ -40,6 +40,7 @@ import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Pair;
+import de.themoep.settlements.utils.Tax;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
@@ -532,25 +533,22 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
         return CitizensAPI.getNPCRegistry().isNPC(player);
     }
 
-    public double getNearbyAuctionTax(Location location, int radius) {
-        double tax = Double.MAX_VALUE;
+    public Tax getNearbyAuctionTax(Location location, int radius) {
+        Tax tax = null;
         for (Entity entity : location.getNearbyEntities(radius, radius, radius)) {
             NPC npc = CitizensAPI.getNPCRegistry().getNPC(entity);
             if (npc != null) {
                 SettlementsTrait trait = npc.getTraitNullable(SettlementsTrait.class);
-                if (trait != null && trait.getOwner().getAuctionTax() < tax) {
-                    tax = trait.getOwner().getAuctionTax();
+                if (trait != null && (tax == null || trait.getOwner().getAuctionTax() < tax.getAmount())) {
+                    tax = new Tax(trait.getOwner().getAuctionTax(), trait.getOwner().getIdKey());
                 }
                 AuctionTaxTrait auctionTrait = npc.getTraitNullable(AuctionTaxTrait.class);
-                if (auctionTrait != null && auctionTrait.getAuctionTax() < tax) {
-                    tax = auctionTrait.getAuctionTax();
+                if (auctionTrait != null && (tax == null || auctionTrait.getAuctionTax() < tax.getAmount())) {
+                    tax = new Tax(auctionTrait.getAuctionTax(), "npc:" + npc.getId());
                 }
             }
         }
-        if (tax <= 1) {
-            return tax;
-        }
-        return -1;
+        return tax;
     }
 
     @TraitName("settlements")
