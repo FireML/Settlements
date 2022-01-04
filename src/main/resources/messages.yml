@@ -3125,8 +3125,8 @@ command:
       wait-for-missions: "&c&lYou do not have any missions from your {state} yet. Wait for the next distribution!"
       description: View missions available to your settlement
       redistribute:
-        success: "&eDistributed {amount} new missions for ${price}"
-        description: Distribute new missions to all residents in your settlement for a price
+        success: "&eGot {amount} new missions for ${price}"
+        description: Get new new missions for a price
     mode:
       modes: "&cAvailable modes: {modes}"
       success: "&7Settlement mode &6{mode}&7: &6{value}"
@@ -3840,8 +3840,8 @@ command:
       wait-for-missions: "&c&lYou do not have any missions from your {state} yet. Wait for the next distribution!"
       description: View missions available to your settlement
       redistribute:
-        success: "&eDistributed {amount} new missions for ${price}"
-        description: Distribute new missions to all member settlements in your empire for a price
+        success: "&eGot {amount} new missions for ${price}"
+        description: Get new missions for your settlement for a price
     npc:
       skin:
         success: "&aSuccessfully changed the skin of your {state} {type}"
