@@ -100,7 +100,7 @@ public class Banished implements DatabaseSerializable, Sortable<Banished> {
         return new Banished(
                 banishedId[0],
                 id,
-                (Long) map.get("date"),
+                Utils.getLong(map.get("date")),
                 UUID.fromString((String) map.get("sender")),
                 (String) map.get("reason")
         );

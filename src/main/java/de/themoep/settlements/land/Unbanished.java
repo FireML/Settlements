@@ -10,6 +10,7 @@ import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Sortable;
 import de.themoep.settlements.utils.Targetable;
+import de.themoep.settlements.utils.Utils;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Comparator;
@@ -110,11 +111,11 @@ public class Unbanished implements DatabaseSerializable, Sortable<Unbanished> {
         return new Unbanished(
                 allyId[0],
                 id,
-                (Long) map.get("created"),
+                Utils.getLong(map.get("date")),
                 UUID.fromString((String) map.get("sender")),
                 (String) map.get("reason"),
                 UUID.fromString((String) map.get("unbanisher")),
-                (Long) map.get("unbanishdate")
+                Utils.getLong(map.get("unbanishdate"))
         );
     }
 

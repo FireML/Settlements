@@ -1640,17 +1640,22 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     private <D extends DatabaseSerializable> List<D> selectDeserializableList(Connection conn, String tableName, String keyColumn, int keyValue, String valueType, Class<D> deserializable) throws SQLException {
         try {
+            Method deserialize = deserializable.getMethod("deserialize", Map.class);
             PreparedStatement sta = conn.prepareStatement("SELECT * FROM " + tablePrefix + tableName + " WHERE " + keyColumn + "=?;");
             sta.setInt(1, keyValue);
             ResultSet rs = sta.executeQuery();
             List<D> list = new ArrayList<>();
-            Method deserialize = deserializable.getMethod("deserialize", Map.class);
             while (rs.next()) {
-                list.add((D) deserialize.invoke(null, toMap(rs)));
+                Map<String, Object> map = toMap(rs);
+                try {
+                    list.add((D) deserialize.invoke(null, map));
+                } catch (InvocationTargetException | IllegalAccessException e) {
+                    SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Unable to deserialize " + deserializable.getSimpleName() + " object from " + tableName + " with values " + map, e);
+                }
             }
             return list;
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, deserializable.getSimpleName() + " class does not have static deserialize method?", e);
         }
         return Collections.emptyList();
     }
