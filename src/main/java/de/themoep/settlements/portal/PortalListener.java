@@ -80,12 +80,13 @@ public class PortalListener implements Listener, ConfigMessages {
                         getMessage("only-in-claim").tell(entity);
                     }
                     return;
-                } else if (land.isEmbassy() && land.isOwnedBy(resident) && !land.getLandOwner().isMember(resident)) {
+                } else if (land.isEmbassy() && !land.getLandOwner().isMember(resident)
+                        && (land.isPlotOwner(resident) || land.getPlotOwnerResident().isFriend(resident))) {
                     if (!resident.hasSettlement() || !resident.getSettlement().canAdminPortals(resident)) {
                         e.setCancelled(true);
                         getMessage("not-allowed.create").tell(e.getEntity(), "state", land.getLandOwner().getStateTag());
+                        return;
                     }
-                    return;
                 } else if (!land.getLandOwner().canAdminPortals(resident)) {
                     e.setCancelled(true);
                     getMessage("not-allowed.create").tell(e.getEntity(), "state", land.getLandOwner().getStateTag());
@@ -151,7 +152,7 @@ public class PortalListener implements Listener, ConfigMessages {
                 PortalManager.getInstance().teleport((Player) e.getEntity(), portal, links.iterator().next());
             } else if (!links.isEmpty()) {
                 e.getEntity().teleport(e.getLocation().subtract(e.getLocation().getDirection().setY(0)));
-                Utils.runLater(() -> new PortalTeleportGUI(portal, links).show((Player) e.getEntity()), 2);
+                Utils.runLater(() -> new PortalTeleportGUI(ResidentManager.getInstance().getResident((Player) e.getEntity()), portal, links).open(), 2);
             }
         }
     }

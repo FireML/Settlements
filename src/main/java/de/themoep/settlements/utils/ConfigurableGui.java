@@ -1,6 +1,7 @@
 package de.themoep.settlements.utils;
 
 import de.themoep.inventorygui.GuiBackElement;
+import de.themoep.inventorygui.GuiPageElement;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
@@ -17,9 +18,11 @@ public class ConfigurableGui extends SettlementsGUI {
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title", replacements), getSetup());
         gui.setCloseAction(close -> false);
         gui.setFiller(getIcon("filler"));
-        gui.addElements(getConfiguredElements());
-
         gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+        gui.addElement(new GuiPageElement('n', getIcon("next"), GuiPageElement.PageAction.NEXT, getText("next")));
+        gui.addElement(new GuiPageElement('p', getIcon("previous"), GuiPageElement.PageAction.PREVIOUS, getText("previous")));
+
+        gui.addElements(getConfiguredElements());
     }
 
     public void open() {

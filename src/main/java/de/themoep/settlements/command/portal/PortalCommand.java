@@ -18,7 +18,7 @@ public class PortalCommand extends PlayerSubCommand {
         registerCommand(new PortalSubCommand(this, "link") {
             @Override
             public boolean run(Resident resident, Portal portal, String base, String alias, String... args) {
-                new PortalLinkGUI(portal, resident).show();
+                new PortalLinkGUI(portal, resident).open();
                 return true;
             }
         });
@@ -35,7 +35,7 @@ public class PortalCommand extends PlayerSubCommand {
                     return true;
                 }
 
-                new PortalUnlinkGUI(portal).show(resident);
+                new PortalUnlinkGUI(resident, portal).open();
                 return true;
             }
         });

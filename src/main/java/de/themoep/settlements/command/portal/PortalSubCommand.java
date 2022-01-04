@@ -7,6 +7,7 @@ import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.portal.PortalManager;
+import de.themoep.settlements.resident.ResidentManager;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
@@ -45,7 +46,7 @@ public abstract class PortalSubCommand extends ResidentSubCommand {
         if (!super.testAccess(resident)) {
             return false;
         }
-        if (resident.hasSettlement() && resident.getSettlement().canAdminPortals(resident)) {
+        if (isPortalAdmin(resident)) {
             return true;
         }
         getError("cant-admin-portals").tell(resident);
@@ -66,14 +67,25 @@ public abstract class PortalSubCommand extends ResidentSubCommand {
         }
 
         OwnedLand land = LandManager.getInstance().getLand(portal.getLocation());
-        if (!land.isOwnedBy(resident.getSettlement())) {
+        if (land == null) {
+            getError("no-settlement").tell(resident);
+            return false;
+        }
+
+        if (land.isEmbassy() && !land.getLandOwner().isMember(resident)
+                && (land.isPlotOwner(resident) || land.getPlotOwnerResident().isFriend(resident))) {
+            if (!resident.hasSettlement() || !resident.getSettlement().canAdminPortals(resident)) {
+                getError("not-your-settlement").tell(resident, "state", land.getLandOwner().getStateTag());
+                return false;
+            }
+        } else if (!land.getLandOwner().canAdminPortals(resident)) {
             getError("not-your-settlement").tell(resident, "state", land.getLandOwner().getStateTag());
             return false;
         }
         return true;
     }
 
-    private boolean isPlotAdmin(Resident resident) {
+    private boolean isPortalAdmin(Resident resident) {
         if (adminCommand) {
             if (resident != null) {
                 if (resident.hasSettlement() && resident.getSettlement().canAdminPlots(resident)) {

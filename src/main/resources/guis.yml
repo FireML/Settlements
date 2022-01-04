@@ -1229,3 +1229,43 @@ guis:
         o: blue_stained_glass_pane
         world: map
         back: barrier
+  portal:
+    teleport:
+      setup:
+      - "ooooooooo"
+      - "         "
+      - " ttttttt "
+      - " ttttttt "
+      - "         "
+      - "pooobooon"
+      elements:
+        o: purple_stained_glass_pane
+        previous: arrow
+        next: arrow
+        back: barrier
+    link:
+      setup:
+      - "ooooooooo"
+      - "         "
+      - " ttttttt "
+      - " ttttttt "
+      - "         "
+      - "pooobooon"
+      elements:
+        o: purple_stained_glass_pane
+        previous: arrow
+        next: arrow
+        back: barrier
+    unlink:
+      setup:
+      - "ooooooooo"
+      - "         "
+      - " ttttttt "
+      - " ttttttt "
+      - "         "
+      - "pooobooon"
+      elements:
+        o: purple_stained_glass_pane
+        previous: arrow
+        next: arrow
+        back: barrier

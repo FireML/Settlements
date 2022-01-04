@@ -1,14 +1,15 @@
 package de.themoep.settlements.portal.gui;
 
-import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.utils.ConfigurableGui;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.UUID;
 
-public abstract class PortalGUI extends SettlementsGUI {
+public abstract class PortalGUI extends ConfigurableGui {
     protected static final ItemStack PORTAL;
     static {
         PORTAL = new ItemStack(Material.PLAYER_HEAD);
@@ -22,7 +23,7 @@ public abstract class PortalGUI extends SettlementsGUI {
         PORTAL.setItemMeta(meta);
     }
 
-    public PortalGUI(String name) {
-        super("portal." + name);
+    public PortalGUI(Resident resident, String name) {
+        super(resident, "portal." + name);
     }
 }

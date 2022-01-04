@@ -214,6 +214,10 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         return plotOwner;
     }
 
+    public Resident getPlotOwnerResident() {
+        return ResidentManager.getInstance().getResident(plotOwner);
+    }
+
     public Set<UUID> getPlotMembers() {
         return plotMembers;
     }

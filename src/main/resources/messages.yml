@@ -250,6 +250,7 @@ portal:
   created: "&aCreated portal!"
   destroyed: "&aPortal destroyed!"
   destroy-broadcast: "&5Portal in world &e{world}&5 at &e{x}&5/&e{y}&5/&e{z}&5 was destroyed."
+  not-registered: "&cPortal isn't known?"
   not-allowed:
     destroy: "&cYou are not allowed to destroy portals in your &e{state}"
     create: "&cYou are not allowed to create portals in your &e{state}"
@@ -1957,7 +1958,7 @@ gui:
   
         &a➤ /plot build
       use: |-
-        &elUse
+        &eUse
         &fSet different usage rights
         &fin the plot
   
@@ -2060,15 +2061,15 @@ gui:
         &7Target: &f{world} {x}/{y}/{z}
       previous: "Previous Page"
       next: "Next Page"
-      close: "&cClose"
+      back: "&cClose"
     link:
       title: "&5/portal link"
       portal: |-
-        &5{world} {x}/{y}/{z}
+        &5{world} {x}/{y}/{z}t
         &cClick to link
       previous: "Previous Page"
       next: "Next Page"
-      close: "&cClose"
+      back: "&cClose"
       success: "&aLinked to Portal at &e{world} {x}/{y}/{z}"
       error: "&cAn error occurred while linking! Please contact an admin."
     unlink:
@@ -2078,7 +2079,7 @@ gui:
         &cClick to unlink
       previous: "Previous Page"
       next: "Next Page"
-      close: "&cClose"
+      back: "&cClose"
       success: "&aUnlinked from Portal at &e{world} {x}/{y}/{z}"
       error: "&cAn error occurred while unlinking! Please contact an admin."
   private-teleports:
