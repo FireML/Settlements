@@ -80,7 +80,7 @@ public class SettingsGUI extends ConfigurableGui {
                     ).open(resident.getPlayer());
                 }
                 return true;
-            }, getText("use",
+            }, getText("perms",
                     "state", resident.getSettlement().getEmpire().getStateTag()
             )));
         }
@@ -102,7 +102,7 @@ public class SettingsGUI extends ConfigurableGui {
                     new RankPermsGUI<>("empire", resident, resident.getSettlement().getEmpire()).open();
                 }
                 return true;
-            }, getText("perms",
+            }, getText("ranks",
                     "state", resident.getSettlement().getEmpire().getStateTag()
             )));
         }
