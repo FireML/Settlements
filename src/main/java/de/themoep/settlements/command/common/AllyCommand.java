@@ -16,7 +16,7 @@ public interface AllyCommand extends LandOwnerCommand {
 
     default boolean listAllies(Resident resident, LandOwner<?, ?> landOwner) {
         if (landOwner.hasUnlocked("allies")) {
-            new AlliesGUI(landOwner.getKey(), resident, landOwner).open();
+            new AlliesGUI(resident, landOwner).open();
         } else {
             resident.tell(getUnlockText(landOwner, "allies"));
         }

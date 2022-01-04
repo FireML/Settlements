@@ -57,7 +57,7 @@ public class ManagementGUI extends SettlementsGUI {
         Collection<Invite<?, ?>> requests = getRequests(resident);
         gui.addElement(new StaticGuiElement('e', ItemUtils.setGlowing(getIcon("recruitment"), !requests.isEmpty()), click -> {
             if (landOwner.hasUnlocked("recruitment") && landOwner.hasPermission(resident, "recruitment")) {
-                new ListGui<>(resident, "settlement.requests", true, () -> getRequests(resident), (c, request) -> {
+                new ListGui<>(resident, landOwner.getKey() + ".requests", true, () -> getRequests(resident), (c, request) -> {
                     // accept invite
                     if (request instanceof JoinRequest) {
                         Resident source = (Resident) request.getSource();
@@ -88,7 +88,7 @@ public class ManagementGUI extends SettlementsGUI {
 
         gui.addElement(new StaticGuiElement('d', getIcon("banished"), click -> {
             if (landOwner.hasPermission(resident, "banished")) {
-                new BanishedGUI("settlement", resident, landOwner).open();
+                new BanishedGUI(resident, landOwner).open();
             }
             return true;
         }, getText("banished",
@@ -98,7 +98,7 @@ public class ManagementGUI extends SettlementsGUI {
 
         gui.addElement(new StaticGuiElement('a', getIcon("allies"), click -> {
             if (landOwner.hasUnlocked("allies") && landOwner.hasPermission(resident, "allies")) {
-                new AlliesGUI("settlement", resident, resident.getSettlement()).open();
+                new AlliesGUI(resident, resident.getSettlement()).open();
             }
             return true;
         }, getText("allies",
@@ -117,7 +117,7 @@ public class ManagementGUI extends SettlementsGUI {
 
         gui.addElement(new StaticGuiElement('t', getIcon("ranks"), click -> {
             if (landOwner.hasPermission(resident, "ranks")) {
-                new RankPermsGUI<>("settlement", resident, resident.getSettlement()).open();
+                new RankPermsGUI<>(landOwner.getKey(), resident, resident.getSettlement()).open();
             }
             return true;
         }, getText("ranks",
@@ -138,10 +138,10 @@ public class ManagementGUI extends SettlementsGUI {
         gui.addElement(new StaticGuiElement('l', getIcon("land"), click -> {
             if (landOwner.hasPermission(resident, "perms")) {
                 Supplier<Boolean> permCheck = () -> landOwner.hasPermission(resident, "perms");
-                new PermsGUI("settlement",
+                new PermsGUI(landOwner.getKey(),
                         resident.getSettlement(),
                         permCheck,
-                        (flagAble, c) -> new BuildGUI("empire", flagAble, permCheck).open(c.getWhoClicked())
+                        (flagAble, c) -> new BuildGUI(landOwner.getKey(), flagAble, permCheck).open(c.getWhoClicked())
                 ).open(resident.getPlayer());
             }
             return true;

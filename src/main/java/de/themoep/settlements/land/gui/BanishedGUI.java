@@ -16,15 +16,15 @@ public class BanishedGUI extends SettlementsGUI {
 
     private final ListGui<Banished> gui;
 
-    public BanishedGUI(@NonNull String type, Resident resident, LandOwner<?, ?> landOwner) {
-        super(type + ".banished");
+    public BanishedGUI(Resident resident, LandOwner<?, ?> landOwner) {
+        super(landOwner.getKey() + ".banished");
         gui = new ListGui<>(resident, name(), true, landOwner::getBanished, (click, banished) -> {
             Targetable t = banished.getTargetable();
             if (landOwner.hasPermission(resident, "unbanish")
                     && landOwner.removeBanished(resident, t)) {
                 landOwner.save();
                 click.getGui().draw();
-                Message.get("command." + type + ".unbanish.unbanished").tell(landOwner.getOnlineResidents(), "target", t.getName());
+                Message.get("command." + landOwner.getKey() + ".unbanish.unbanished").tell(landOwner.getOnlineResidents(), "target", t.getName());
             }
         }, b -> {
             Targetable t = b.getTargetable();
@@ -37,7 +37,7 @@ public class BanishedGUI extends SettlementsGUI {
         });
 
         gui.addElement(new StaticGuiElement('u', getIcon("unbanished"), click -> {
-            new UnbanishedGUI(type, resident, landOwner).open();
+            new UnbanishedGUI(resident, landOwner).open();
             return true;
         }, getText("unbanished")));
     }

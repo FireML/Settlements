@@ -14,8 +14,8 @@ public class UnbanishedGUI extends SettlementsGUI {
 
     private final ListGui<Unbanished> gui;
 
-    public UnbanishedGUI(@NonNull String type, Resident resident, LandOwner<?, ?> landOwner) {
-        super(type + ".unbanished");
+    public UnbanishedGUI(Resident resident, LandOwner<?, ?> landOwner) {
+        super(landOwner.getKey() + ".unbanished");
 
         gui = new ListGui<>(resident, name(), true,  landOwner::getUnbanished, null, b -> {
             Targetable t = b.getTargetable();

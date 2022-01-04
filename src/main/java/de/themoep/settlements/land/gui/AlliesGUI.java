@@ -28,8 +28,8 @@ public class AlliesGUI extends SettlementsGUI {
     private final Resident resident;
     private Ally.Sort sort = Ally.Sort.ALLY_DATE;
 
-    public AlliesGUI(@NonNull String type, Resident resident, LandOwner<?, ?> landOwner) {
-        super(type + ".allies");
+    public AlliesGUI(Resident resident, LandOwner<?, ?> landOwner) {
+        super(landOwner.getKey() + ".allies");
         this.resident = resident;
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), getSetup());
         gui.setCloseAction(close -> false);
