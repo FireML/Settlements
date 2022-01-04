@@ -4,9 +4,10 @@ import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.command.common.MissionCommand;
 import de.themoep.settlements.missions.MissionGui;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.SettlementMission;
 import de.themoep.settlements.utils.config.Config;
 
-public class SettlementMissionsCommand extends SettlementSubCommand implements MissionCommand {
+public class SettlementMissionsCommand extends SettlementSubCommand implements MissionCommand<SettlementMission> {
     public SettlementMissionsCommand(SubCommand parent) {
         super(parent, "missions", "quests", "mission", "quest");
         if (Config.Settlement.Missions.REDISTRIBUTE_PRICE > -1) {

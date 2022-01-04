@@ -226,6 +226,7 @@ ranks:
     - settlement.banished
     - settlement.group.use-bank
     - settlement.bank.deposit
+    - settlement.mission.redistribute
   guest:
     icon: stone_shovel
     permissions:

@@ -1,12 +1,13 @@
 package de.themoep.settlements.command.empire;
 
 import de.themoep.settlements.command.common.MissionCommand;
+import de.themoep.settlements.empire.EmpireMission;
 import de.themoep.settlements.missions.MissionGui;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.utils.config.Config;
 
-public class EmpireMissionsCommand extends EmpireSubCommand implements MissionCommand {
+public class EmpireMissionsCommand extends EmpireSubCommand implements MissionCommand<EmpireMission> {
     public EmpireMissionsCommand(SubCommand parent) {
         super(parent, "missions", "quests", "mission", "quest");
         if (Config.Empire.Missions.REDISTRIBUTE_PRICE > -1) {
