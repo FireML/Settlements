@@ -7,7 +7,6 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
-import de.themoep.settlements.empire.EmpireLevel;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.empire.EmpireMission;
 import de.themoep.settlements.invites.InviteManager;
@@ -47,6 +46,7 @@ import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import de.themoep.settlements.world.NamedLocation;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -154,7 +154,8 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
             if (player == null) {
                 player = Bukkit.getOfflinePlayer(resident.getUUID());
             }
-            if (SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(player, tax).transactionSuccess()) {
+            EconomyResponse response = SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(player, tax);
+            if (response.transactionSuccess()) {
                 resident.addTaxPaid(tax);
                 resident.save();
                 addToBank(tax);
@@ -165,7 +166,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
                             "state", getState().getTag(),
                             "name", getName());
                 }
-            } else {
+            } else if (!SettlementsPlugin.getInstance().getEconomy().has(player, tax)) {
                 Message.get("tax.debt-action." + getTaxDebtAction().getKey() + ".couldnt-pay").tell(getOnlineResidents(),
                         "player", resident.getName(),
                         "amount", String.valueOf(tax),
@@ -183,6 +184,8 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
                         }
                     }
                 }
+            } else {
+                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while trying to withdraw " + tax + " tax from " + resident.getName() + ": " + response.errorMessage);
             }
         }
 
