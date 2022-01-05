@@ -9,6 +9,8 @@ debug: true
 entries-per-page: 10
 # How many players should show up in settlement/empire member lists
 players-in-info: 40
+# Max lengths of the rules
+max-rules-length: 10000
 # How long in seconds a player has time to confirm certain commands
 command-confirm-time: 30
 

@@ -6,6 +6,7 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.FontWidthUtil;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
+import de.themoep.settlements.utils.config.Config;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -35,6 +36,11 @@ public class SettlementRulesCommand extends SettlementSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         List<BaseComponent[]> pages = new ArrayList<>();
+
+        String rules = resident.getSettlement().getRules();
+        if (rules.length() > Config.MAX_RULES_LENGTH) {
+            rules = rules.substring(0, Config.MAX_RULES_LENGTH);
+        }
 
         String rawRules = Message.get("rules.book-text").getReplacedText(
                 "rules", FontWidthUtil.wrap(resident.getSettlement().getRules(), FontWidthUtil.getMaxBookWidth(), true)

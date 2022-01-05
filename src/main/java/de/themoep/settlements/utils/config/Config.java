@@ -28,6 +28,9 @@ public class Config {
     @ConfigComment("How many players should show up in settlement/empire member lists")
     public static int PLAYERS_IN_INFO = 40;
 
+    @ConfigComment("Max lengths of the rules")
+    public static int MAX_RULES_LENGTH = 10000;
+
     @ConfigComment("How long in seconds a player has time to confirm certain commands")
     public static int COMMAND_CONFIRM_TIME = 30;
 

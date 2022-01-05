@@ -104,6 +104,10 @@ public class SettingsGUI extends ConfigurableGui {
                     ItemMeta meta = cursor.getItemMeta();
                     if (meta instanceof BookMeta) {
                         String rules = String.join("\n", ((BookMeta) meta).getPages());
+                        if (rules.length() > Config.MAX_RULES_LENGTH) {
+                            getError("too-long").tell(resident, "input", "Text", "amount", String.valueOf(Config.MAX_RULES_LENGTH));
+                            return true;
+                        }
                         landOwner.setRules(rules);
                         landOwner.save();
                         getMessage("rules.updated").tell(landOwner.getOnlineResidents(), "state", landOwner.getStateTag());
@@ -124,6 +128,10 @@ public class SettingsGUI extends ConfigurableGui {
                 if (landOwner.hasPermission(resident, "rules.set")) {
                     String rules = String.join("\n", text).trim();
                     if (!rules.isEmpty() && !rules.equals(landOwner.getRules())) {
+                        if (rules.length() > Config.MAX_RULES_LENGTH) {
+                            getError("too-long").tell(resident, "input", "Text", "amount", String.valueOf(Config.MAX_RULES_LENGTH));
+                            return;
+                        }
                         landOwner.setRules(rules);
                         landOwner.save();
                         getMessage("rules.updated").tell(landOwner.getOnlineResidents(), "state", landOwner.getStateTag());
