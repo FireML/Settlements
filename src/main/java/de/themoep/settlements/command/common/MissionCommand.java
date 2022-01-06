@@ -18,10 +18,29 @@ public interface MissionCommand<M extends Mission> extends ConfigMessages {
                 return;
             }
         }
-        missionProvider.distributeNewMissions(missionProvider.getMissionTaker(resident));
-        getMessage("success").tell(resident,
-                "amount", String.valueOf(missionProvider.getMissionTaker(resident).getMissionData().size()),
-                "price", Utils.CURRENCY_FORMAT.format(missionProvider.getMissionRedistributePrice())
-        );
+
+        int distributed = missionProvider.distributeNewMissions(missionProvider.getMissionTaker(resident));
+        if (distributed > 0) {
+            getMessage("success").tell(resident,
+                    "amount", String.valueOf(distributed),
+                    "price", Utils.CURRENCY_FORMAT.format(missionProvider.getMissionRedistributePrice())
+            );
+        } else {
+            if (missionProvider.getMissionRedistributePrice() > 0) {
+                SettlementsPlugin.getInstance().getEconomy().depositPlayer(resident.getPlayer(), missionProvider.getMissionRedistributePrice());
+            }
+            if (distributed < 0 || missionProvider.getMissionTaker(resident).getMissionData().isEmpty()) {
+                getError("not-unlocked").tell(resident,
+                        "state", missionProvider.getStateTag(),
+                        "name", missionProvider.getName(),
+                        "function", "missions"
+                );
+            } else {
+                getMessage("fail").tell(resident,
+                        "state", missionProvider.getStateTag(),
+                        "name", missionProvider.getName()
+                );
+            }
+        }
     }
 }

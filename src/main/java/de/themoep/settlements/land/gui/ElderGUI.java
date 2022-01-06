@@ -46,9 +46,9 @@ public class ElderGUI extends ConfigurableGui {
                                 "name", landOwner.getName()
                         ))));
                     }
-                    if (((MissionProvider<?>) landOwner).getMissionRedistributePrice() > -1 && landOwner.hasPermission(resident,"mission.redistribute")) {
+                    if (((MissionProvider<?>) landOwner).getMissionRedistributePrice() > -1 && landOwner.hasPermission(resident,"missions.redistribute")) {
                         gui.addElement(new StaticGuiElement('r', getIcon("redistribute"), click -> {
-                            if (landOwner.hasPermission(resident,"mission.redistribute")) {
+                            if (landOwner.hasPermission(resident,"missions.redistribute")) {
                                 new MissionCommand() {
 
                                     @Override

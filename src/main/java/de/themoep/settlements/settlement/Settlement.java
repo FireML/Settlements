@@ -196,27 +196,27 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         }
         payUpkeep(totalTax);
 
-        if (distributeNewMissions()) {
+        if (distributeNewMissions() > -1) {
             DatabaseManager.getInstance().saveResidentMissionData(getResidents());
         }
     }
 
     @Override
-    public boolean distributeNewMissions() {
+    public int distributeNewMissions() {
         if (!hasUnlocked("missions")) {
-            return false;
+            return -1;
         }
-        boolean modified = false;
+        int distributed = 0;
         for (Resident resident : getResidents()) {
-            modified |= distributeNewMissions(resident);
+            distributed += distributeNewMissions(resident);
         }
-        return modified;
+        return distributed;
     }
 
     @Override
-    public <T extends MissionTaker<SettlementMission>> boolean distributeNewMissions(T taker) {
+    public <T extends MissionTaker<SettlementMission>> int distributeNewMissions(T taker) {
         if (!hasUnlocked("missions")) {
-            return false;
+            return 0;
         }
         taker.getMissionData().removeIf(md -> {
             if (md.isFinished()) {
@@ -231,35 +231,38 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     }
 
     @Override
-    public boolean distributeAdditionalMissions() {
+    public int distributeAdditionalMissions() {
         if (!hasUnlocked("missions")) {
-            return false;
+            return -1;
         }
-        boolean modified = false;
+        int distributed = 0;
         for (Resident resident : getResidents()) {
-            modified |= distributeAdditionalMissions(resident);
+            distributed += distributeAdditionalMissions(resident);
         }
-        return modified;
+        return distributed;
     }
 
     @Override
-    public <T extends MissionTaker<SettlementMission>> boolean distributeAdditionalMissions(T taker) {
+    public <T extends MissionTaker<SettlementMission>> int distributeAdditionalMissions(T taker) {
         if (!hasUnlocked("missions")) {
-            return false;
+            return 0;
         }
         SettlementLevel levelInfo = getLevelInfo();
         if (levelInfo != null && levelInfo.getMissions() > 0) {
             int toDistribute = levelInfo.getMissions() + taker.getExtraMissions() - taker.getMissionData().size();
+            int distributed = 0;
             if (toDistribute > 0) {
                 List<SettlementMission> missions = new ArrayList<>(getMissions());
                 Collections.shuffle(missions);
                 for (int i = 0; i < toDistribute && i < missions.size(); i++) {
                     if (Config.Settlement.Missions.DUPLICATE_MISSIONS) {
                         taker.addMissionData(new MissionData(missions.get(i)));
+                        distributed++;
                     } else {
                         for (int j = i; j < missions.size(); j++) {
                             if (!taker.hasMission(missions.get(j))) {
                                 taker.addMissionData(new MissionData(missions.get(j)));
+                                distributed++;
                                 break;
                             }
                         }
@@ -267,9 +270,9 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
                 }
                 DatabaseManager.getInstance().saveMissionData(taker);
             }
-            return !taker.getMissionData().isEmpty();
+            return distributed;
         }
-        return false;
+        return 0;
     }
 
     @Override

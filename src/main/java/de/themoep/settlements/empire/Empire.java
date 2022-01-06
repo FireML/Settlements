@@ -4,7 +4,6 @@ import co.aikar.timings.lib.MCTiming;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import de.themoep.settlements.land.Ally;
-import de.themoep.settlements.missions.Mission;
 import de.themoep.settlements.missions.MissionData;
 import de.themoep.settlements.missions.MissionProvider;
 import de.themoep.settlements.missions.MissionTaker;
@@ -15,7 +14,6 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
-import de.themoep.settlements.settlement.SettlementMission;
 import de.themoep.settlements.settlement.SettlementState;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
@@ -146,7 +144,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
             DatabaseManager.getInstance().saveSettlements(getMembers());
         }
 
-        if (distributeNewMissions()) {
+        if (distributeNewMissions() > -1) {
             DatabaseManager.getInstance().saveSettlementMissionData(getMembers());
         }
 
@@ -227,21 +225,21 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     @Override
-    public boolean distributeNewMissions() {
+    public int distributeNewMissions() {
         if (!hasUnlocked("missions")) {
-            return false;
+            return -1;
         }
-        boolean modified = false;
+        int distributed = 0;
         for (Settlement member : getMembers()) {
-            modified |= distributeNewMissions(member);
+            distributed += distributeNewMissions(member);
         }
-        return modified;
+        return distributed;
     }
 
     @Override
-    public <T extends MissionTaker<EmpireMission>> boolean distributeNewMissions(T taker) {
+    public <T extends MissionTaker<EmpireMission>> int distributeNewMissions(T taker) {
         if (!hasUnlocked("missions")) {
-            return false;
+            return 0;
         }
         taker.getMissionData().removeIf(md -> {
             if (md.isFinished()) {
@@ -256,21 +254,21 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     @Override
-    public boolean distributeAdditionalMissions() {
+    public int distributeAdditionalMissions() {
         if (!hasUnlocked("missions")) {
-            return false;
+            return -1;
         }
-        boolean modified = false;
+        int distributed = 0;
         for (Settlement member : getMembers()) {
-            modified |= distributeAdditionalMissions(member);
+            distributed += distributeAdditionalMissions(member);
         }
-        return modified;
+        return distributed;
     }
 
     @Override
-    public <T extends MissionTaker<EmpireMission>> boolean distributeAdditionalMissions(T taker) {
+    public <T extends MissionTaker<EmpireMission>> int distributeAdditionalMissions(T taker) {
         if (!hasUnlocked("missions")) {
-            return false;
+            return 0;
         }
         EmpireLevel levelInfo = getLevelInfo();
         if (levelInfo != null && levelInfo.getMissions() > 0) {
@@ -278,23 +276,26 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
             if (toDistribute > 0) {
                 List<EmpireMission> missions = new ArrayList<>(getMissions());
                 Collections.shuffle(missions);
+                int distributed = 0;
                 for (int i = 0; i < toDistribute && i < missions.size(); i++) {
                     if (Config.Empire.Missions.DUPLICATE_MISSIONS) {
                         taker.addMissionData(new MissionData(missions.get(i)));
+                        distributed++;
                     } else {
                         for (int j = i; j < missions.size(); j++) {
                             if (!taker.hasMission(missions.get(j))) {
                                 taker.addMissionData(new MissionData(missions.get(j)));
+                                distributed++;
                                 break;
                             }
                         }
                     }
                 }
                 DatabaseManager.getInstance().saveMissionData(taker);
+                return distributed;
             }
-            return !taker.getMissionData().isEmpty();
         }
-        return false;
+        return 0;
     }
 
     @Override

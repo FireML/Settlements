@@ -26,7 +26,7 @@ public class AdminDistributeMissionCommand extends SubCommand implements TargetP
         if (targetable instanceof MissionTaker) {
             MissionProvider provider = ((MissionTaker) targetable).getMissionProvider();
             if (provider != null) {
-                if (provider.distributeNewMissions((MissionTaker) targetable)) {
+                if (provider.distributeNewMissions((MissionTaker) targetable) > 0) {
                     getMessage("success").tell(sender,
                             "name", targetable.getName(),
                             "amount", String.valueOf(((MissionTaker<?>) targetable).getMissionData().size()));

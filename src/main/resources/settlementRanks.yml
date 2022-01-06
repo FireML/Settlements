@@ -93,7 +93,7 @@ toggleable-permissions:
 - settlement.disband
 - settlement.rewards
 - settlement.transfer
-- settlement.mission.redistribute
+- settlement.missions.redistribute
 - settlement.claim
 - settlement.unclaim
 - settlement.plot.admin
@@ -142,7 +142,7 @@ ranks:
     - settlement.plot.admin
     - settlement.portal.admin
     - settlement.officer
-    - settlement.mission.redistribute
+    - settlement.missions.redistribute
     
     # resident base perms
     - settlement.allies
@@ -184,7 +184,7 @@ ranks:
     - settlement.group.manage-settings
     - settlement.group.manage-bank
     - settlement.group.manage-outpost
-    - settlement.mission.redistribute
+    - settlement.missions.redistribute
     - settlement.invite
     - settlement.lock.admin
     
@@ -198,7 +198,7 @@ ranks:
     - settlement.group.manage-allies
     - settlement.group.manage-settings
     - settlement.group.manage-outpost
-    - settlement.mission.redistribute
+    - settlement.missions.redistribute
     - settlement.invite
     
   recruiter:
@@ -226,7 +226,7 @@ ranks:
     - settlement.banished
     - settlement.group.use-bank
     - settlement.bank.deposit
-    - settlement.mission.redistribute
+    - settlement.missions.redistribute
   guest:
     icon: stone_shovel
     permissions:

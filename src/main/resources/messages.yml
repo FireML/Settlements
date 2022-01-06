@@ -1361,7 +1361,7 @@ gui:
     redistribute-missions: |-
       &eGet new missions
       
-      &fRemove current missions
+      &fRemove unstarted missions
       &fand get new ones!
       
       &fCost: &e${price}
@@ -3126,6 +3126,7 @@ command:
       description: View missions available to your settlement
       redistribute:
         success: "&eGot {amount} new missions for ${price}"
+        fail: "&cUnable to distribute new missions. Please complete your started ones!"
         description: Get new new missions for a price
     mode:
       modes: "&cAvailable modes: {modes}"
@@ -3841,6 +3842,7 @@ command:
       description: View missions available to your settlement
       redistribute:
         success: "&eGot {amount} new missions for ${price}"
+        fail: "&cUnable to distribute new missions. Please complete your started ones!"
         description: Get new missions for your settlement for a price
     npc:
       skin:

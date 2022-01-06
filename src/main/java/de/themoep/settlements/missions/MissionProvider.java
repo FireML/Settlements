@@ -7,13 +7,13 @@ import java.util.Collection;
 public interface MissionProvider<M extends Mission> {
     String getName();
 
-    boolean distributeNewMissions();
+    int distributeNewMissions();
 
-    <T extends MissionTaker<M>> boolean distributeNewMissions(T taker);
+    <T extends MissionTaker<M>> int distributeNewMissions(T taker);
 
-    boolean distributeAdditionalMissions();
+    int distributeAdditionalMissions();
 
-    <T extends MissionTaker<M>> boolean distributeAdditionalMissions(T taker);
+    <T extends MissionTaker<M>> int distributeAdditionalMissions(T taker);
 
     boolean distributeMissionsOnLevelUp();
 
