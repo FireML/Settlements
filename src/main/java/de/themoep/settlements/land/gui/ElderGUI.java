@@ -31,7 +31,9 @@ public class ElderGUI extends ConfigurableGui {
         if (landOwner.isMember(resident)) {
             if (landOwner instanceof MissionProvider) {
                 if (!landOwner.hasUnlocked("missions") || landOwner.getLevelInfo().getMissions() <= 0) {
-                    gui.addElement(new StaticGuiElement('e', getIcon("missions"), getUnlockText(landOwner, "missions")));
+                    gui.addElement(new StaticGuiElement('e', getIcon("missions"), landOwner.getLevelInfo().getMissions() <= 0
+                            ? getText("unlockables.locked.level", "state", landOwner.getStateTag())
+                            : getUnlockText(landOwner, "missions")));
                 } else {
                     if (!((MissionProvider<?>) landOwner).getMissionTaker(resident).getMissionData().isEmpty()) {
                         gui.addElement(new DynamicGuiElement('e', who -> new StaticGuiElement('e', getIcon("missions"), click -> {
