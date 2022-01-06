@@ -3500,7 +3500,7 @@ command:
       none-distributed: "&cUnable to give {name} new missions. Does the level have missions?"
     distributenewmissions:
       description: Distribute new missions to all empire/settlement members
-      success: "&aSUCCESS: Distributed new missions to all {tate} {name} members"
+      success: "&aSUCCESS: Distributed new missions to all {state} {name} members"
     upkeep:
       description: Trigger the entire upkeep process for an empire or settlement
       success: "&aSUCCESS: Ran upkeep for {state} {name}"

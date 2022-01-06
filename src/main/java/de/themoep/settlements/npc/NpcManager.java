@@ -125,8 +125,8 @@ public class NpcManager {
     private void checkNpcUnlocks(LandOwner<?, ?> landOwner, NpcType npcType, NpcPerk perk) {
         if (!landOwner.hasUnlocked(perk)) {
             NpcData data = landOwner.getNpcData(npcType);
-            if (perk.matchesLevelRequirement(data)) {
-                landOwner.unlockPerk(landOwner.getChief(), perk);
+            if (perk.matchesLevelRequirement(data) && landOwner.unlockPerk(landOwner.getChief(), perk)) {
+                landOwner.save();
             }
         }
     }
