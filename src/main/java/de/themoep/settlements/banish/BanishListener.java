@@ -46,7 +46,7 @@ public class BanishListener implements Listener {
     @EventHandler
     public void on(PlayerSpawnLocationEvent e) {
         ResidentManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getSpawnLocation()), e.getPlayer(), (land, p, landOwner) -> {
-            Utils.runSync(() -> sendInfo(p, landOwner, "join"));
+            Utils.runLater(() -> sendInfo(p, landOwner, "join"), 10);
             if (!e.getPlayer().hasPermission("settlements.bypass.banish")) {
                 e.setSpawnLocation(e.getSpawnLocation().getWorld().getSpawnLocation());
             }
@@ -55,12 +55,12 @@ public class BanishListener implements Listener {
 
     @EventHandler
     public void on(PlayerJoinEvent e) {
-        Bukkit.getScheduler().runTask(SettlementsPlugin.getInstance(), () -> ResidentManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getPlayer().getLocation()), e.getPlayer(), (land, p, landOwner) -> {
+        Utils.runLater( () -> ResidentManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getPlayer().getLocation()), e.getPlayer(), (land, p, landOwner) -> {
             sendInfo(p, landOwner, "join");
             if (!e.getPlayer().hasPermission("settlements.bypass.banish") && !e.getPlayer().getChunk().equals(e.getPlayer().getWorld().getSpawnLocation().getChunk())) {
                 Utils.teleportToSpawn(p);
             }
-        }));
+        }), 1);
     }
 
     private void sendInfo(Player p, LandOwner landOwner, String type) {
