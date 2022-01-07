@@ -45,6 +45,10 @@ public class MySqlDatabase extends SqlDatabaseManager {
         removeColumn(MySqlTable.EMPIRES, "allyClaim");
         addColumn(MySqlTable.EMPIRES, "allowAllyClaim", "BOOLEAN NOT NULL AFTER buildState");
         addColumn(MySqlTable.SETTLEMENTS, "missionPoints", "BIGINT NOT NULL DEFAULT 0 AFTER taxDebtAction");
+        alterColumnOrRecreate(MySqlTable.EMPIRE_UNBANISHED, "unbanished_unbanishdate", "BIGINT(11)");
+        alterColumnOrRecreate(MySqlTable.SETTLEMENT_UNBANISHED, "unbanished_unbanishdate", "BIGINT(11)");
+        alterOrRecreate(MySqlTable.EMPIRE_UNBANISHED, "ADD CONSTRAINT list UNIQUE (empireId, unbanished_id, unbanished_date)");
+        alterOrRecreate(MySqlTable.SETTLEMENT_UNBANISHED, "ADD CONSTRAINT list UNIQUE (settlementId, unbanished_id, unbanished_date)");
     }
 
     @Override

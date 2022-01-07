@@ -93,7 +93,7 @@ public class Unbanished implements DatabaseSerializable, Sortable<Unbanished> {
         map.put("sender", getBanisherId());
         map.put("reason", getReason());
         map.put("unbanisher", getUnbanisherId());
-        map.put("unbanishdate", getUnbanisherId());
+        map.put("unbanishdate", getUnbanishDate());
         return map;
     }
 
@@ -101,15 +101,15 @@ public class Unbanished implements DatabaseSerializable, Sortable<Unbanished> {
         if (map.containsKey("unbanished")) {
             return deserialize((Map<String, Object>) map.get("unbanished"));
         }
-        String[] allyId = ((String) map.get("id")).split(":");
+        String[] unbanishedId = ((String) map.get("id")).split(":");
         IdObject id;
-        if ("player".equals(allyId[0])) {
-            id = IdObject.get(UUID.fromString(allyId[1]));
+        if ("player".equals(unbanishedId[0])) {
+            id = IdObject.get(UUID.fromString(unbanishedId[1]));
         } else {
-            id = IdObject.get(Integer.parseInt(allyId[1]));
+            id = IdObject.get(Integer.parseInt(unbanishedId[1]));
         }
         return new Unbanished(
-                allyId[0],
+                unbanishedId[0],
                 id,
                 Utils.getLong(map.get("date")),
                 UUID.fromString((String) map.get("sender")),

@@ -2854,8 +2854,8 @@ command:
       cant-banish-yourself: "&cYou can't banish yourself!"
       cant-banish-leader: "&cYou can't banish the leader!"
       cant-banish: "&cYou can't banish &f{title} &f{name}!"
-      already-banished: "&cPlayer &f{name}&c is already banished!"
-      banished: "&7Player &6{name}&7 has been &cbanished &7from your settlement! Reason: &e{reason}"
+      already-banished: "&c{type} &f{name}&c is already banished!"
+      banished: "&7{type} &6{name}&7 has been &cbanished &7from your settlement! Reason: &e{reason}"
       description: Add an entry to the banish list
     banished:
       head: "&a⊱&m━━━━&r&6Banished&a&m━━━━&a⊰"
@@ -2863,8 +2863,8 @@ command:
       separator: "&7, "
       description: List all banished users
     unbanish:
-      not-banished: "&cPlayer &f{name}&c is not banished?"
-      unbanished: "&6{target}&7 is no longer &cbanished &7from your settlement!"
+      not-banished: "&c{type} &f{name}&c is not banished?"
+      unbanished: "&7{type} &6{target}&7 is no longer &cbanished &7from your settlement!"
       description: Remove an entry from the banish list
     balance:
       balance: "&2&lSettlement Balance: &r&7{amount}"
@@ -3611,8 +3611,8 @@ command:
       cant-banish-leader: "&cYou can't banish the leader!"
       cant-banish-capital: "&cYou can't banish the capital!"
       cant-banish: "&cYou can't banish &f{title} &f{name}!"
-      already-banished: "&f{name}&c is already banished!"
-      banished: "&6{name}&7 has been &cbanished &7from your empire world!"
+      already-banished: "&c{type} &f{name}&c is already banished!"
+      banished: "&7{type} &6{name}&7 has been &cbanished &7from your empire world!"
       description: Add an entry to the banish list
     banished:
       head: "&a⊱&m━━━━&r&6Banished&a&m━━━━&a⊰"

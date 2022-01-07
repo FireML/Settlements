@@ -29,7 +29,7 @@ public class BanishedGUI extends SettlementsGUI {
         }, b -> {
             Targetable t = b.getTargetable();
             return new String[] {
-                    "name", t.getName(),
+                    "name", (t instanceof LandOwner ? ((LandOwner<?, ?>) t).getStateTag() + " ": "") + t.getName(),
                     "date", Utils.DATE_FORMAT.format(b.getBanishDate()),
                     "reason", b.getReason(),
                     "banisher", b.getSenderId() != Utils.ZERO_UUID ? ResidentManager.getInstance().getResidentName(b.getSenderId()) : "[Auto]"

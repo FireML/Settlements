@@ -73,11 +73,16 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
             Utils.runSync(() -> {
                 String reason = Arrays.stream(args).skip(1).collect(Collectors.joining(" "));
                 if (!source.addBanished(resident, target, reason)) {
-                    getError("already-banished").tell(resident, "name", target.getName());
+                    getError("already-banished").tell(resident,
+                            "type", target instanceof LandOwner ? ((LandOwner<?, ?>) target).getStateTag() : "Player",
+                            "name", target.getName());
                     return;
                 }
 
-                getMessage("banished").tell(source.getOnlineResidents(), "name", target.getName(), "reason", reason);
+                getMessage("banished").tell(source.getOnlineResidents(),
+                        "type", target instanceof LandOwner ? ((LandOwner<?, ?>) target).getStateTag() : "Player",
+                        "name", target.getName(),
+                        "reason", reason);
                 for (Resident r : target.getOnlineResidents()) {
                     Player p = r.getPlayer();
                     if (p != null) {
@@ -106,11 +111,15 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
 
             Utils.runSync(() -> {
                 if (!source.removeBanished(resident, target)) {
-                    getError("not-banished").tell(resident, "name", target.getName());
+                    getError("not-banished").tell(resident,
+                            "type", target instanceof LandOwner ? ((LandOwner<?, ?>) target).getStateTag() : "Player",
+                            "name", target.getName());
                     return;
                 }
 
-                getMessage("unbanished").tell(source.getOnlineResidents(), "target", target.getName());
+                getMessage("unbanished").tell(source.getOnlineResidents(),
+                        "type", target instanceof LandOwner ? ((LandOwner<?, ?>) target).getStateTag() : "Player",
+                        "target", target.getName());
                 source.save();
             });
         });

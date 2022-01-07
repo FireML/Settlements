@@ -59,7 +59,8 @@ public enum MySqlTable {
             + "unbanished_sender VARCHAR(36),"
             + "unbanished_reason TEXT,"
             + "unbanished_unbanisher VARCHAR(36),"
-            + "unbanished_unbanishdate VARCHAR(36)"
+            + "unbanished_unbanishdate BIGINT(11) NOT NULL,"
+            + "UNIQUE list (empireId, unbanished_id, unbanished_date)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     EMPIRE_ALLIES("CREATE TABLE IF NOT EXISTS {tablePrefix}empire_allies ("
@@ -281,7 +282,8 @@ public enum MySqlTable {
             + "unbanished_sender VARCHAR(36),"
             + "unbanished_reason TEXT,"
             + "unbanished_unbanisher VARCHAR(36),"
-            + "unbanished_unbanishdate VARCHAR(36)"
+            + "unbanished_unbanishdate BIGINT(11) NOT NULL,"
+            + "UNIQUE list (settlementId, unbanished_id, unbanished_date)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     SETTLEMENT_ALLIES("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_allies ("

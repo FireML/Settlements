@@ -1713,11 +1713,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             String andSql = "";
             Object o = entries.iterator().next();
             if (o instanceof DatabaseSerializable) {
-                andSql = "";
-                Collection<String> keys = ((DatabaseSerializable) o).serialize().keySet();
-                for (String key : keys) {
-                    andSql += " AND " + entryColumn + "_" + key + " NOT IN (" + String.join(",", Collections.nCopies(entries.size(), "?")) + ")";
-                }
+                andSql = " AND " + entryColumn + "_id NOT IN (" + String.join(",", Collections.nCopies(entries.size(), "?")) + ")";
             } else {
                 andSql = " AND " + entryColumn + " NOT IN (" + String.join(",", Collections.nCopies(entries.size(), "?")) + ")";
             }
@@ -1730,9 +1726,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         int i = 2;
         for (Object entry : entries) {
             if (entry instanceof DatabaseSerializable) {
-                for (Map.Entry<String, Object> e : ((DatabaseSerializable) entry).serialize().entrySet()) {
-                    deleteSta.setObject(i++, toDbType(e.getValue()));
-                }
+                deleteSta.setObject(i++, toDbType(((DatabaseSerializable) entry).getId()));
             } else {
                 deleteSta.setObject(i++, toDbType(entry));
             }
