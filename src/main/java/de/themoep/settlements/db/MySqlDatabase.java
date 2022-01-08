@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -219,7 +220,9 @@ public class MySqlDatabase extends SqlDatabaseManager {
                 sta.executeBatch();
             }
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while trying to alter table " + table.getDbName(), e);
+            if (!e.getMessage().toLowerCase(Locale.ROOT).contains("duplicate")) {
+                plugin.getLogger().log(Level.SEVERE, "Error while trying to alter table " + table.getDbName(), e);
+            }
         }
     }
 
