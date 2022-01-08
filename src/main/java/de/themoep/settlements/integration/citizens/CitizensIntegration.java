@@ -539,7 +539,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
             NPC npc = CitizensAPI.getNPCRegistry().getNPC(entity);
             if (npc != null) {
                 SettlementsTrait trait = npc.getTraitNullable(SettlementsTrait.class);
-                if (trait != null && (tax == null || trait.getOwner().getAuctionTax() < tax.getAmount())) {
+                if (trait != null && trait.getType() == NpcType.AUCTIONEER && (tax == null || trait.getOwner().getAuctionTax() < tax.getAmount())) {
                     tax = new Tax(trait.getOwner().getAuctionTax(), trait.getOwner().getIdKey());
                 }
                 AuctionTaxTrait auctionTrait = npc.getTraitNullable(AuctionTaxTrait.class);
