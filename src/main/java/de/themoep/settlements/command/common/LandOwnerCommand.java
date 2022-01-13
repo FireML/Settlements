@@ -81,7 +81,7 @@ public interface LandOwnerCommand extends ConfigMessages {
         int maxClaimAllowed = landOwner.getMaxClaimableChunks();
         Set<SimpleChunkLocation> toClaim = new LinkedHashSet<>();
         if (args.length == 1) {
-            if (res.hasPermission("claim.radius")) {
+            if (landOwner.hasPermission(res, "claim.radius")) {
                 try {
                     int radius = Integer.parseInt(args[0]);
                     int maxRadius = Config.Claiming.MAX_RADIUS;
@@ -95,15 +95,21 @@ public interface LandOwnerCommand extends ConfigMessages {
                     getError("not-a-number").tell(res, "input", args[0]);
                     return false;
                 }
+            } else {
+                getError("no-permission").tell(res, "permission", "claim.radius");
+                return true;
             }
         } else if (args.length >= 2) {
-            if (res.hasPermission("claim.coords")) {
+            if (landOwner.hasPermission(res, "claim.coords")) {
                 try {
                     toClaim.add(new SimpleChunkLocation(player.getWorld().getName(), Integer.parseInt(args[0]), Integer.parseInt(args[1])));
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(res, "input", args[0] + " " + args[1]);
                     return false;
                 }
+            } else {
+                getError("no-permission").tell(res, "permission", "claim.coords");
+                return true;
             }
         } else {
             toClaim.add(new SimpleChunkLocation(player.getLocation()));
@@ -233,7 +239,7 @@ public interface LandOwnerCommand extends ConfigMessages {
                 }
                 return true;
             }
-            if (res.hasPermission("settlements.command." + landOwner.getKey() + ".unclaim.radius")) {
+            if (landOwner.hasPermission(res, "unclaim.radius")) {
                 try {
                     int radius = Integer.parseInt(args[0]);
                     int maxRadius = Config.Claiming.MAX_RADIUS;
@@ -247,15 +253,21 @@ public interface LandOwnerCommand extends ConfigMessages {
                     getError("not-a-number").tell(res, "input", args[0]);
                     return false;
                 }
+            } else {
+                getError("no-permission").tell(res, "permission", "unclaim.coords");
+                return true;
             }
         } else if (args.length >= 2) {
-            if (res.hasPermission("settlements.command." + landOwner.getKey() + ".unclaim.coords")) {
+            if (landOwner.hasPermission(res, "unclaim.coords")) {
                 try {
                     toUnclaim.add(new SimpleChunkLocation(player.getWorld().getName(), Integer.parseInt(args[0]), Integer.parseInt(args[1])));
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(res, "input", args[0] + " " + args[1]);
                     return false;
                 }
+            } else {
+                getError("no-permission").tell(res, "permission", "unclaim.coords");
+                return true;
             }
         }
 

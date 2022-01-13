@@ -156,8 +156,8 @@ public class ChatMap {
             this.resident = ResidentManager.getInstance().getResident(p);
             this.canLinkPlot = playerLand != null && (playerLand.isPlotOwner(resident) || playerLand.canAdmin(resident));
             if (resident.hasSettlement()) {
-                this.canClaimCoords = resident.hasPermission("settlements.command." + landOwner.getKey() + ".claim.coords");
-                this.canUnclaimCoords = resident.hasPermission("settlements.command." + landOwner.getKey() + ".unclaim.coords");
+                this.canClaimCoords = landOwner.hasPermission(resident, "claim.coords");
+                this.canUnclaimCoords = landOwner.hasPermission(resident, "unclaim.coords");
                 for (NamedLocation o : resident.getSettlement().getOutpostHomes().values()) {
                     OwnedLand outpostLand = LandManager.getInstance().getLand(o.toChunkLocation());
                     if (outpostLand != null && !outpostLand.containsHome()) {
