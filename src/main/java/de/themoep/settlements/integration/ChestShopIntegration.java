@@ -365,8 +365,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             if (!Toggle.isIgnoring(resident.getUUID()) && landOwner.hasPermission(resident, "chestshop.admin")) {
                 Player player = resident.getPlayer();
                 if (Properties.SHOWITEM_MESSAGE) {
-                    replacementMap.put("item", "%item");
-                    if (MaterialUtil.Show.sendMessage(player, playerName, new ChestShopMessage(rawMessage), stock, replacementMap)) {
+                    if (MaterialUtil.Show.sendMessage(player, playerName, new ChestShopMessage(rawMessage, "item", "%item"), stock, replacementMap)) {
                         return;
                     }
                 }
@@ -528,14 +527,16 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
 
     private class ChestShopMessage extends Messages.Message {
         private final Message message;
+        private final String[] replacements;
 
-        public ChestShopMessage(Message message) {
+        public ChestShopMessage(Message message, String... replacements) {
             super(message.getRawText());
             this.message = message;
+            this.replacements = replacements;
         }
 
         public BaseComponent[] getComponents(CommandSender sender, boolean prefixSuffix, Map<String, String> replacementMap, String... replacements) {
-            return message.getReplacer().replace(replacementMap).replace(replacements).getComponents();
+            return message.getReplacer().replace(replacementMap).replace(replacements).replace(this.replacements).getComponents();
         }
 
         public Component getComponent(CommandSender sender, boolean prefixSuffix, Map<String, String> replacementMap, String... replacements) {
