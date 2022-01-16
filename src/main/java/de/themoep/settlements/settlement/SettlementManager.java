@@ -93,7 +93,7 @@ public class SettlementManager {
     public void postLoad() {
         for (Settlement settlement : getSettlements()) {
             for (SettlementPerk perk : getPerks()) {
-                if (perk.matchesLevelRequirement(settlement)) {
+                if (perk.matchesLevelRequirement(settlement) && perk.getUnlockCost().isEmpty()) {
                     settlement.unlockPerk(settlement.getChief(), perk);
                 }
             }

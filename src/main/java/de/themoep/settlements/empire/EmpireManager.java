@@ -122,7 +122,7 @@ public class EmpireManager {
                     }
                 }
                 for (EmpirePerk perk : getPerks()) {
-                    if (perk.matchesLevelRequirement(empire)) {
+                    if (perk.matchesLevelRequirement(empire) && perk.getUnlockCost().isEmpty()) {
                         empire.unlockPerk(empire.getChief(), perk);
                     }
                 }
