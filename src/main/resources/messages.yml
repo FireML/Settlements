@@ -3081,7 +3081,7 @@ command:
       head: "&a⊱&m━━━━━━━━━━━━━━━&r&6Settlement Map&a&m━━━━━━━━━━━━━━&a⊰"
       explanations:
         own-land: "&r &a- &6= your land"
-        enemy: "&r &2- &6= other"
+        enemy: "&r &c- &6= other"
         empire-land: "&r &2- &6= your Empire land"
         for-sale: "&r &a₲ &6= for sale"
         player-plot: "&r &ep &6= player plot"
@@ -3091,7 +3091,6 @@ command:
         outpost: "&r &eo &6= outpost"
         empire: "&r &3- &6= empire member"
         ally: "&r &b- &6= ally"
-        other: "&r &c- &6= other"
         unclaimed: "&r &7- &6= unclaimed"
         current: "&r &7+ &6= current"
       not-for-sale: "Not for sale"
@@ -3796,7 +3795,7 @@ command:
       head: "&a⊱&m━━━━━━━━━━━━━━━&r&6Empire Map&a&m━━━━━━━━━━━━━━&a⊰"
       explanations:
         own-land: "&r &a- &6= your land"
-        enemy: "&r &2- &6= other"
+        enemy: "&r &c- &6= other"
         empire-land: "&r &2- &6= your Empire land"
         for-sale: "&r &a₲ &6= for sale"
         player-plot: "&r &ep &6= player plot"
@@ -3806,7 +3805,6 @@ command:
         outpost: "&r &eo &6= outpost"
         empire: "&r &3- &6= empire member"
         ally: "&r &b- &6= ally"
-        other: "&r &c- &6= other"
         unclaimed: "&r &7- &6= unclaimed"
         current: "&r &7+ &6= current"
       not-for-sale: "Not for sale"
