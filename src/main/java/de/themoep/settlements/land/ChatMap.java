@@ -3,6 +3,7 @@ package de.themoep.settlements.land;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfigKey;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.MessageUtils;
@@ -151,24 +152,26 @@ public class ChatMap {
 
         public MapGenerator(Player p) {
             this.playerLand = LandManager.getInstance().getLand(p.getLocation());
-            this.claimable = landOwner.canClaim(p.getWorld());
+            this.claimable = landOwner != null && landOwner.canClaim(p.getWorld());
             this.player = p;
             this.resident = ResidentManager.getInstance().getResident(p);
             this.canLinkPlot = playerLand != null && (playerLand.isPlotOwner(resident) || playerLand.canAdmin(resident));
-            if (resident.hasSettlement()) {
+            if (landOwner != null) {
                 this.canClaimCoords = landOwner.hasPermission(resident, "claim.coords");
                 this.canUnclaimCoords = landOwner.hasPermission(resident, "unclaim.coords");
-                for (NamedLocation o : resident.getSettlement().getOutpostHomes().values()) {
-                    OwnedLand outpostLand = LandManager.getInstance().getLand(o.toChunkLocation());
-                    if (outpostLand != null && !outpostLand.containsHome()) {
-                        ownOutposts.addAll(LandManager.getInstance().getAllConnectedLand(outpostLand, search -> {
-                            if (search.isOutpost()) {
-                                return LandManager.FilterResponse.SKIP_BRANCH;
-                            } else if (search.containsHome()) {
-                                return LandManager.FilterResponse.SKIP_BRANCH;
-                            }
-                            return LandManager.FilterResponse.ACCEPT;
-                        }));
+                if (landOwner instanceof Settlement) {
+                    for (NamedLocation o : ((Settlement) landOwner).getOutpostHomes().values()) {
+                        OwnedLand outpostLand = LandManager.getInstance().getLand(o.toChunkLocation());
+                        if (outpostLand != null && !outpostLand.containsHome()) {
+                            ownOutposts.addAll(LandManager.getInstance().getAllConnectedLand(outpostLand, search -> {
+                                if (search.isOutpost()) {
+                                    return LandManager.FilterResponse.SKIP_BRANCH;
+                                } else if (search.containsHome()) {
+                                    return LandManager.FilterResponse.SKIP_BRANCH;
+                                }
+                                return LandManager.FilterResponse.ACCEPT;
+                            }));
+                        }
                     }
                 }
             }

@@ -33,7 +33,7 @@ public class EmpireMapCommand extends ResidentSubCommand implements Listener {
     public boolean run(Resident resident, String base, String alias, String... args) {
         Player player = resident.getPlayer();
         Empire empire = resident.hasEmpire() ? resident.getSettlement().getEmpire() : null;
-        if (empire != null && !empire.canClaim(player.getWorld()) || !Utils.isWorldClaimable(player.getWorld())) {
+        if ((empire != null && !empire.canClaim(player.getWorld())) || !Utils.isWorldClaimable(player.getWorld())) {
             getError("world-not-claimable").tell(resident);
             return true;
         }

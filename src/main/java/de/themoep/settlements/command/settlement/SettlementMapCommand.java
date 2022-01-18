@@ -30,7 +30,7 @@ public class SettlementMapCommand extends ResidentSubCommand implements Listener
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         Player player = resident.getPlayer();
-        if (!resident.getSettlement().canClaim(player.getWorld())) {
+        if ((resident.hasSettlement() && !resident.getSettlement().canClaim(player.getWorld())) || !Utils.isWorldClaimable(player.getWorld())) {
             getError("world-not-claimable").tell(resident);
             return true;
         }
