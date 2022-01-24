@@ -15,6 +15,7 @@ import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.utils.config.Config;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -130,7 +131,7 @@ public class TitlesGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Ra
                                         return AnvilGUI.Response.text(getError("too-long").getReplacedText("input", text, "amount", "16"));
                                     } else if (!SettlementTitlesCommand.TITLE_PATTERN.matcher(text).matches()) {
                                         return AnvilGUI.Response.text(getError("invalid-characters").getReplacedText("input", text));
-                                    } else if (Utils.containsAnyCurses(text)) {
+                                    } else if (Config.Titles.BLOCK_CURSES && Utils.containsAnyCurses(text)) {
                                         return AnvilGUI.Response.text(getError("prohibited-words").getReplacedText("input", text));
                                     } else if (landOwner.addTitle(rank, text)) {
                                         Message.get("command." + type + ".titles.add.success").tell(resident, "title", text, "rank", rank.getTag(landOwner));

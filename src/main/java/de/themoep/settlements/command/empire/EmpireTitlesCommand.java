@@ -60,7 +60,7 @@ public class EmpireTitlesCommand extends EmpireSubCommand {
                         getError("too-long").tell(res, "input", args[1]);
                     } else if (!TITLE_PATTERN.matcher(args[1]).matches()) {
                         getError("invalid-characters").tell(res, "input", args[1]);
-                    } else if (Utils.containsAnyCurses(args[1])) {
+                    } else if (Config.Titles.BLOCK_CURSES && Utils.containsAnyCurses(args[1])) {
                         getError("prohibited-words").tell(res, "input", args[1]);
                     } else if (res.getSettlement().getEmpire().addTitle(rank, args[1])) {
                         getMessage("success").tell(res, "title", args[1], "rank", rank.getTag());
@@ -101,7 +101,7 @@ public class EmpireTitlesCommand extends EmpireSubCommand {
                             getError("too-long").tell(res, "input", args[1]);
                         } else if (!TITLE_PATTERN.matcher(args[1]).matches()) {
                             getError("invalid-characters").tell(res, "input", args[1]);
-                        } else if (Utils.containsAnyCurses(args[1])) {
+                        } else if (Config.Titles.BLOCK_CURSES && Utils.containsAnyCurses(args[1])) {
                             getError("prohibited-words").tell(res, "input", args[1]);
                         } else {
                             res.getSettlement().getEmpire().setDefaultTitle(rank, args[1]);

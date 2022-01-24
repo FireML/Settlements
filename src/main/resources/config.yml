@@ -439,6 +439,10 @@ sidebar:
   # Whether PlaceholderAPI placeholders should be replaced in the sidebar
   placeholder-api: true
 
+titles:
+  # Whether or not to block curses inside player-set settlement/empire titles
+  block-curses: true
+
 chestshop:
   # Whether or not it is allowed for a settlement's/empire's shop to be sold to if the owner goes below their next upkeep
   allow-selling-below-upkeep: false

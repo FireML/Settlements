@@ -633,6 +633,11 @@ public class Config {
         public static boolean PLACEHOLDER_API = true;
     }
 
+    public static class Titles {
+        @ConfigComment("Whether or not to block curses inside player-set settlement/empire titles")
+        public static boolean BLOCK_CURSES = true;
+    }
+
     public static class Chestshop {
         @ConfigComment("Whether or not it is allowed for a settlement's/empire's shop to be sold to if the owner goes below their next upkeep")
         public static boolean ALLOW_SELLING_BELOW_UPKEEP = false;
