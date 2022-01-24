@@ -684,48 +684,51 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     }
 
     public enum Placeholder {
-                name(Resident::getName),
-                empire(r -> r.hasEmpire() ? r.getSettlement().getEmpire().getName() : "none"),
-                empirerank(r -> r.hasEmpire() ? r.getEmpireRank().getTag() : "none"),
-                settlement(r -> r.hasSettlement() ? r.getSettlement().getName() : "none"),
-                settlementstate(r -> r.hasSettlement() ? r.getSettlement().getStateTag() : ""),
-                rank(r -> r.hasSettlement() ? r.getSettlementRank().getTag(r.getSettlement()) : "none"),
-                title(r -> r.hasSettlement() ? r.getSettlementTitle() : "none"),
-                balance(r -> Utils.CURRENCY_FORMAT.format(r.getBalance())),
-                tax(r -> Utils.CURRENCY_FORMAT.format(r.getTax())),
-                bonus(r -> Utils.CURRENCY_FORMAT.format(r.getBonusClaims())),
-                missionpoints(r -> String.valueOf(r.getMissionPoints())),
-                joindate(r -> Utils.DATE_FORMAT.format(new Date(Bukkit.getOfflinePlayer(r.getUUID()).getFirstPlayed()))),
-                lastlogin(r -> Utils.DATE_FORMAT.format(new Date(r.getLastLogin()))),
-                lastloginduration(r -> {
-                     Player player = r.getPlayer();
-                     if (player != null && player.isOnline()) {
-                         return Message.get("names.online").getText();
-                     }
-                     return UtilTime.format(System.currentTimeMillis() - r.getLastLogin(), false) + " " + Message.get("names.ago").getText();
-                }),
-                plots(r -> String.valueOf(LandManager.getInstance().getOwnedPlotCount(r.getUUID()))),
-                primarygroup(r -> {
-                    Player player = r.getPlayer();
-                    if (player != null) {
-                        return SettlementsPlugin.chat.getPrimaryGroup(player);
-                    }
-                    return SettlementsPlugin.chat.getPrimaryGroup((String) null, r.getName());
-                }),
-                vaultprefix(r -> {
-                    Player player = r.getPlayer();
-                    if (player != null) {
-                        return ChatManager.getInstance().getPlayerPrefix(player);
-                    }
-                    return SettlementsPlugin.chat == null ? "" : SettlementsPlugin.chat.getPlayerPrefix((String) null, r.getName());
-                }),
-                vaultsuffix(r -> {
-                    Player player = r.getPlayer();
-                    if (player != null) {
-                        return ChatManager.getInstance().getPlayerSuffix(player);
-                    }
-                    return SettlementsPlugin.chat == null ? "" : SettlementsPlugin.chat.getPlayerSuffix((String) null, r.getName());
-                }),
+        name(Resident::getName),
+        title(r -> r.hasSettlement() ? r.getDisplayTitle() : "none"),
+        empire(r -> r.hasEmpire() ? r.getSettlement().getEmpire().getName() : "none"),
+        empirerank(r -> r.hasEmpire() ? r.getEmpireRank().getTag() : "none"),
+        settlement(r -> r.hasSettlement() ? r.getSettlement().getName() : "none"),
+        settlementstate(r -> r.hasSettlement() ? r.getSettlement().getStateTag() : ""),
+        rank(r -> r.hasSettlement() ? r.getSettlementRank().getTag(r.getSettlement()) : "none"),
+        settlementrank(r -> r.hasSettlement() ? r.getSettlementRank().getTag(r.getSettlement()) : "none"),
+        settlementtitle(r -> r.hasSettlement() ? r.getSettlementTitle() : "none"),
+        empiretitle(r -> r.hasEmpire() ? r.getEmpireTitle() : "none"),
+        balance(r -> Utils.CURRENCY_FORMAT.format(r.getBalance())),
+        tax(r -> Utils.CURRENCY_FORMAT.format(r.getTax())),
+        bonus(r -> Utils.CURRENCY_FORMAT.format(r.getBonusClaims())),
+        missionpoints(r -> String.valueOf(r.getMissionPoints())),
+        joindate(r -> Utils.DATE_FORMAT.format(new Date(Bukkit.getOfflinePlayer(r.getUUID()).getFirstPlayed()))),
+        lastlogin(r -> Utils.DATE_FORMAT.format(new Date(r.getLastLogin()))),
+        lastloginduration(r -> {
+             Player player = r.getPlayer();
+             if (player != null && player.isOnline()) {
+                 return Message.get("names.online").getText();
+             }
+             return UtilTime.format(System.currentTimeMillis() - r.getLastLogin(), false) + " " + Message.get("names.ago").getText();
+        }),
+        plots(r -> String.valueOf(LandManager.getInstance().getOwnedPlotCount(r.getUUID()))),
+        primarygroup(r -> {
+            Player player = r.getPlayer();
+            if (player != null) {
+                return SettlementsPlugin.chat.getPrimaryGroup(player);
+            }
+            return SettlementsPlugin.chat.getPrimaryGroup((String) null, r.getName());
+        }),
+        vaultprefix(r -> {
+            Player player = r.getPlayer();
+            if (player != null) {
+                return ChatManager.getInstance().getPlayerPrefix(player);
+            }
+            return SettlementsPlugin.chat == null ? "" : SettlementsPlugin.chat.getPlayerPrefix((String) null, r.getName());
+        }),
+        vaultsuffix(r -> {
+            Player player = r.getPlayer();
+            if (player != null) {
+                return ChatManager.getInstance().getPlayerSuffix(player);
+            }
+            return SettlementsPlugin.chat == null ? "" : SettlementsPlugin.chat.getPlayerSuffix((String) null, r.getName());
+        }),
         ;
 
         private final Function<Resident, String> valueProvider;
