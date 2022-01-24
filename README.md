@@ -14,21 +14,23 @@ General information about the player can be queried with `settlements_player_<va
 
 Settlement or empire info via `settlements_player_settlement_<var>`/`settlements_player_empire_<var>`
 
-| Placeholder                            | Functionality |
-|----------------------------------------|--------------------- |
-|`settlements_player_info_name`          | Player name |
-|`settlements_player_info_settlement`    | Name of the player's settlement |
-|`settlements_player_info_rank`          | Name of the rank that the player has in the settlement |
-|`settlements_player_info_title`         | The title the player has selected |
-|`settlements_player_info_empire`        | Name of the player's empire |
-|`settlements_player_info_empirerank`    | Name of the rank that the player has in the empire |
-|`settlements_player_info_balance`       | The players economy balance |
-|`settlements_player_info_tax`           | The amount of daily tax the player has to pay |
-|`settlements_player_info_bonus`         | The amount of bonus claim points the player owns |
-|`settlements_player_info_joindate`      | The date the player joined at |
-|`settlements_player_info_lastlogin`     | The date of the player's last login |
-|`settlements_player_settlement_<var>`   | Information about the player's settlement or empty if not in one. See [Settlement Info](#settlement-info) |
-|`settlements_player_empire_<var>`       | Information about the player's empire or empty if not in one. See [Empire Info](#empire-info) |
+| Placeholder                               | Functionality |
+|-------------------------------------------|--------------------- |
+|`settlements_player_info_name`             | Player name |
+|`settlements_player_info_title`            | The full title the player has |
+|`settlements_player_info_settlement`       | Name of the player's settlement |
+|`settlements_player_info_settlementrank`   | Name of the rank that the player has in the settlement |
+|`settlements_player_info_settlementtitle`  | The settlement title the player has selected |
+|`settlements_player_info_empire`           | Name of the player's empire |
+|`settlements_player_info_empirerank`       | Name of the rank that the player has in the empire |
+|`settlements_player_info_empiretitle`      | The empire title the player has selected |
+|`settlements_player_info_balance`          | The players economy balance |
+|`settlements_player_info_tax`              | The amount of daily tax the player has to pay |
+|`settlements_player_info_bonus`            | The amount of bonus claim points the player owns |
+|`settlements_player_info_joindate`         | The date the player joined at |
+|`settlements_player_info_lastlogin`        | The date of the player's last login |
+|`settlements_player_settlement_<var>`      | Information about the player's settlement or empty if not in one. See [Settlement Info](#settlement-info) |
+|`settlements_player_empire_<var>`          | Information about the player's empire or empty if not in one. See [Empire Info](#empire-info) |
 
 #### Relation info
 
