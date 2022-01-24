@@ -160,10 +160,11 @@ scoreboard:
       settlement: |-
         &a&l{settlementstate}
         &a(&e{settlementname}&a)
-        &aRank &e{settlementtitle}
         &aBank &b₲&e{settlementbalance}
+        &aRank &e{settlementrank}
         &aOnline &e{settlementresonlinecount}
-
+  
+        &aTitle &e{title}
         &aBal &b₲&e{balance}
         &7/scoreboard
       empire: |-
@@ -175,10 +176,11 @@ scoreboard:
         &a&l{settlementstate}
         &a(&e{settlementname}&a)
         &aBank &b₲&e{settlementbalance}
+        &aRank &e{settlementrank}
         &aOnline &e{settlementresonlinecount}
-        
+  
+        &aTitle &e{title}
         &aBal &b₲&e{balance}
-        &aRank &e{settlementtitle}
         &7/scoreboard
 empire-world-generated: "&a&lCreated your own empire world!"
 levels:
@@ -421,7 +423,9 @@ chat:
     bonus: "\n&aBonus claims &f{bonus}"
     settlement: "\n&a{state} &f{name}"
     empire: "\n&aEmpire &f{name}"
-    rank: "\n&aRank &f{title}"
+    rank: |-
+      &a{state} Rank &f{rank}
+      &aTitle &f{title}
     click-to-open-url: "&9Click to open url"
   staff: "&c&lStaff "
   format:
