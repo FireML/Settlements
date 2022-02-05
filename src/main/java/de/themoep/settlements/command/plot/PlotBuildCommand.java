@@ -42,7 +42,7 @@ public class PlotBuildCommand extends PlotSubCommand {
                 BuildState newState = BuildState.valueOf(args[0].toUpperCase(), land.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(land.getLandOwner()));
                 land.setBuildState(newState);
                 LandManager.getInstance().saveLand(land);
-                getMessage("success").tell(res, "state", newState.getTag());
+                getMessage("success").tell(res, "state", newState.getTag(), "type", land.getBuildTag());
             } catch (IllegalArgumentException e) {
                 Message.get("usage.head").tell(res, "type", "", "name", "Plot Build");
                 if (land.isPlot()) {

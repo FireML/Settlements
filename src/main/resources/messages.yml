@@ -2649,7 +2649,7 @@ command:
     admin:
       description: "Allows administrating of plots"
     build:
-      success: "&aSet build state of {flagable} to {state}"
+      success: "&aSet {type} state of {flagable} to {state}"
       states:
         residents: residents and officers to build in claimed land
         officers: only officers are allowed to build in claimed land
@@ -2893,7 +2893,7 @@ command:
         next: "&b Next >>"
         description: Show the bank's history
     build:
-      success: "&aSet build state of {flagable} to {state}"
+      success: "&aSet {type} state of {flagable} to {state}"
       states:
         residents: residents and officers to build in claimed land
         officers: only officers are allowed to build in claimed land
@@ -3627,7 +3627,7 @@ command:
       unbanished: "&6{target}&7 is no longer &cbanished &7from your empire world!"
       description: Remove an entry from the banish list
     build:
-      success: "&aSet build state of {flagable} to {state}"
+      success: "&aSet {type} state of {flagable} to {state}"
       states:
         private: only residents of members can build in empire world
         public: allows everyone to build in empire world

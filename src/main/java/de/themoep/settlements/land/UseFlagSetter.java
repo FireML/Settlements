@@ -26,7 +26,7 @@ public class UseFlagSetter implements BuildStateable {
 
     @Override
     public String getStateTag() {
-        return useFlag.getTag();
+        return flagAble.getStateTag();
     }
 
     @Override

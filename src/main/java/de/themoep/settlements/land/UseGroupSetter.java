@@ -26,7 +26,7 @@ public class UseGroupSetter implements BuildStateable {
 
     @Override
     public String getStateTag() {
-        return group.getTag();
+        return flagAble.getStateTag();
     }
 
     @Override

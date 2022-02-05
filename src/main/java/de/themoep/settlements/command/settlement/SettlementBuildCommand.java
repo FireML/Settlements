@@ -26,7 +26,7 @@ public class SettlementBuildCommand extends SettlementSubCommand {
             BuildState newState = BuildState.valueOf(args[0].toUpperCase(), BuildState.AppliesTo.SETTLEMENT);
             res.getSettlement().setBuildState(newState);
             DatabaseManager.getInstance().saveSettlement(res.getSettlement());
-            res.tell(getMessage("success"), "state", newState.getTag());
+            res.tell(getMessage("success"), "state", newState.getTag(), "type", res.getSettlement().getBuildTag());
         } catch (IllegalArgumentException e) {
             res.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base));
             for (BuildState state : BuildState.values(BuildState.AppliesTo.SETTLEMENT)) {
