@@ -30,6 +30,11 @@ public class UseGroupSetter implements BuildStateable {
     }
 
     @Override
+    public String getBuildTag() {
+        return "use " + group.getTag();
+    }
+
+    @Override
     public BuildState getDefaultBuildState() {
         return group.getDefault(flagAble.getDefaultBuildState());
     }

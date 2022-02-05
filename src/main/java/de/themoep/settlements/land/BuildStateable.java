@@ -10,6 +10,10 @@ public interface BuildStateable {
 
     String getStateTag();
 
+    default String getBuildTag() {
+        return "Build";
+    }
+
     BuildState getDefaultBuildState();
 
     BuildState.AppliesTo getBuildStateType();

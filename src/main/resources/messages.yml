@@ -1383,35 +1383,35 @@ gui:
     back: "&cClose"
     
   build:
-    title: "Manage Building"
-    set-state: "&7&lAllow &b&l{state}&7&l to Build"
-    selected-state: "&e&lBuilding is currently set to &a&l{state}"
-    individual-state: "&7&lPlot build is set to &a&l{state}&7&l but overridden!"
-    inherited-state: "&e&lBuilding state &a&l{state}&e&l is default!"
+    title: "Manage {type}"
+    set-state: "&7&lAllow &b&l{state}&7&l to {type}"
+    selected-state: "&e&l{type} is currently set to &a&l{state}"
+    individual-state: "&7&lPlot {type} is set to &a&l{state}&7&l but overridden!"
+    inherited-state: "&e&l{type} state &a&l{state}&e&l is default!"
     description: "&7{description}"
     back: "&c&lBack To Settings"
     build:
       public: |-
-        &7Allows everyone to build
+        &7Allows everyone to {type}
       trusted: |-
         &7Allows:
         &7- {state} Residents
         &7- Empire Members
-        &7to build
+        &7to {type}.
       ally: |-
         &7Allows
         &7- {state} Residents
         &7- Allies
-        &7to build
+        &7to {type}.
       residents: |-
-        &7Allows {state} Residents to build
+        &7Allows {state} Residents to {type}
       officers: |-
         &7Allows:
         &7- Recruiter
         &7- Builder
         &7- Elder
         &7- Assistant
-        &7to build.
+        &7to {type}.
   missions:
     title: "Available Missions"
     info: |-
@@ -1472,23 +1472,23 @@ gui:
           &7Can teleport to {state} home:
           &7- Residents of the capital
     build:
-      title: "Manage Building"
-      individual-state: "&7&lPlot build is set to &a&l{state}&7&l but overridden!"
-      inherited-state: "&e&lBuilding state &a&l{state}&e&l is default!"
+      title: "Manage {type}"
+      individual-state: "&7&lPlot {type} is set to &a&l{state}&7&l but overridden!"
+      inherited-state: "&e&l{type} state &a&l{state}&e&l is default!"
       build:
         public: |-
-          &7Allows everyone to build
+          &7Allows everyone to {type}
         ally: |-
           &7Allows
           &7- Members
           &7- Allies
-          &7to build
+          &7to {type}
         officers: |-
-          &7Allows senators to build
+          &7Allows senators to {type}
         trusted: |-
-          &7Allows all members to build
+          &7Allows all members to {type}
         private: |-
-          &7Allows only capital residents to build
+          &7Allows only capital residents to {type}
     bank:
       taxes: |-
         &eCurrent Taxes
@@ -1919,23 +1919,23 @@ gui:
           &7from parent {parent} again
     build:
       title: "&2&l/plot build"
-      individual-state: "&7&lPlot build is set to &a&l{state}&7&l but overridden!"
-      inherited-state: "&e&lBuilding state &a&l{state}&e&l is inherited!"
+      individual-state: "&7&lPlot {type} is set to &a&l{state}&7&l but overridden!"
+      inherited-state: "&e&l{type} state &a&l{state}&e&l is inherited!"
       build:
         public: |-
-          &7Allows everyone to build
+          &7Allows everyone to {type}
         trusted: |-
           &7Allows:
           &7- {state} Residents
           &7- Empire Members
-          &7to build
+          &7to {type}
         ally: |-
           &7Allows
           &7- {state} Residents
           &7- Allies
-          &7to build
+          &7to {type}
         residents: |-
-          &7Allows {state} Residents to build
+          &7Allows {state} Residents to {type}
         officers: |-
           &7Allows {state}:
           &7- Recruiter
@@ -1943,13 +1943,13 @@ gui:
           &7- Elder
           &7- Assistant
           &7- Plot Owner
-          &7to build.
+          &7to {type}.
         friends: |-
-          &7Allows only your friends and members to build
+          &7Allows only your friends and members to {type}
         members: |-
-          &7Allows only members of the plot to build
+          &7Allows only members of the plot to {type}
         private: |-
-          &7Allows only you to build
+          &7Allows only you to {type}
     settings:
       title: "&2&l/plot settings"
       build: |-

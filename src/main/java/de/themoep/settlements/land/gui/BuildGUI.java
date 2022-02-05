@@ -24,11 +24,14 @@ public class BuildGUI extends SettlementsGUI {
 
     public BuildGUI(@NonNull String type, BuildStateable stateAble, Supplier<Boolean> permCheck) {
         super(type + ".build");
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), getSetup());
+        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title", "type", stateAble.getBuildTag()), getSetup());
         gui.setCloseAction(close -> false);
         gui.setFiller(getIcon("filler"));
         gui.addElements(getConfiguredElements());
-        gui.addElement(new StaticGuiElement('s', getIcon("states"), getText("states", "state", stateAble.getParent().getStateTag())));
+        gui.addElement(new StaticGuiElement('s', getIcon("states"), getText("states",
+                "state", stateAble.getParent().getStateTag(),
+                "type", stateAble.getBuildTag()
+        )));
 
         GuiElementGroup group = new GuiElementGroup('g');
         group.setAlignment(getAlignment("g"));
@@ -41,7 +44,11 @@ public class BuildGUI extends SettlementsGUI {
                 if (permCheck.get()) {
                     String[] replacements = {
                             "state", state.getTag(),
-                            "description", getMessage("build." + state.getKey()).getReplacedText("state", stateAble.getStateTag())
+                            "description", getMessage("build." + state.getKey()).getReplacedText(
+                                    "state", stateAble.getStateTag(),
+                                    "type", stateAble.getBuildTag()
+                            ),
+                            "type", stateAble.getBuildTag()
                     };
                     ItemStack icon;
                     List<String> description = new ArrayList<>();
@@ -69,7 +76,11 @@ public class BuildGUI extends SettlementsGUI {
                             click -> {
                                 if (permCheck.get()) {
                                     stateAble.setBuildState(state);
-                                    Message.get("command." + type + ".build.success").tell(click.getWhoClicked(), "flagable", stateAble.getStateTag(), "state", state.getTag());
+                                    Message.get("command." + type + ".build.success").tell(click.getWhoClicked(),
+                                            "flagable", stateAble.getStateTag(),
+                                            "state", state.getTag(),
+                                            "type", stateAble.getBuildTag()
+                                    );
                                     stateAble.save();
                                     gui.draw();
                                 }

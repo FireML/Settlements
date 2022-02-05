@@ -500,6 +500,11 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
             public String getStateTag() {
                 return LandOwner.this.getStateTag();
             }
+
+            @Override
+            public String getBuildTag() {
+                return LandOwner.this.getTag();
+            }
         };
     }
 

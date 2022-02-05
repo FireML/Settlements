@@ -30,6 +30,11 @@ public class UseFlagSetter implements BuildStateable {
     }
 
     @Override
+    public String getBuildTag() {
+        return "use " + useFlag.getTag();
+    }
+
+    @Override
     public BuildState getDefaultBuildState() {
         return useFlag.getDefault(flagAble.getDefaultBuildState());
     }
