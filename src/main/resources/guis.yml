@@ -1097,17 +1097,15 @@ guis:
       setup:
       - "ooooioooo"
       - "         "
-      - " pm s nd "
-      - " al    e "
+      - " pl s nd "
+      - "       e "
       - "         "
       - "ooooboooo"
       elements:
         o: lime_stained_glass_pane
         info: green_banner
-        access: diamond_pickaxe
         perms: lever
-        mode: redstone
-        name: name_tax
+        name: name_tag
         description: writable_book
         members: player_head
         sale: emerald
@@ -1165,7 +1163,7 @@ guis:
       elements:
         o: lime_stained_glass_pane
         build: diamond_pickaxe # 'a'
-        modes: gold_shovel # 'a'
+        modes: golden_shovel
         states: book
         back: barrier
     build:

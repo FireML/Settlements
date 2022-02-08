@@ -1918,7 +1918,7 @@ gui:
           &7Middle click to inherit &b{value}
           &7from parent {parent} again
     build:
-      title: "&2&l/plot build"
+      title: "&2&l/plot perms"
       individual-state: "&7&lPlot {type} is set to &a&l{state}&7&l but overridden!"
       inherited-state: "&e&l{type} state &a&l{state}&e&l is inherited!"
       build:
@@ -1952,23 +1952,14 @@ gui:
           &7Allows only you to {type}
     settings:
       title: "&2&l/plot settings"
-      build: |-
-        &eBuild
-        &fSet who can build in the plot
-  
-        &fCurrent Settings: &e{build}
-        
-        &bClick to change settings
-  
-        &a➤ /plot build
-      use: |-
-        &eUse
-        &fSet different usage rights
-        &fin the plot
+      perms: |-
+        &ePerms
+        &fSet different build and
+        &fusage rights in the plot
   
         &bClick to change settings
   
-        &a➤ /plot use
+        &a➤ /plot perms
       mode: |-
         &eMode
         &fToggle settings including

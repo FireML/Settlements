@@ -35,24 +35,6 @@ public class SettingsGUI extends PlotGUI {
         super(resident, LandManager.getInstance().getLand(resident.getPlayer().getLocation()), "settings");
         OwnedLand openedOnLand = LandManager.getInstance().getLand(landLocation);
 
-        gui.addElement(new StaticGuiElement('a', getIcon("access"), click -> {
-            OwnedLand land = LandManager.getInstance().getLand(landLocation);
-            if (land != null) {
-                new BuildGUI(
-                        "plot",
-                        land,
-                        () -> {
-                            OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
-                            if (currentLand != null) {
-                                return currentLand.isPlotOwner(resident) || currentLand.canAdmin(resident);
-                            }
-                            return false;
-                        }
-                ).open(resident.getPlayer());
-            }
-            return true;
-        }, getText("build", openedOnLand.getReplacements())));
-
         gui.addElement(new StaticGuiElement('p', getIcon("perms"), click -> {
             OwnedLand land = LandManager.getInstance().getLand(landLocation);
             if (land != null) {
@@ -71,7 +53,7 @@ public class SettingsGUI extends PlotGUI {
                 ).open(resident.getPlayer());
             }
             return true;
-        }, getText("use")));
+        }, getText("perms")));
 
         gui.addElement(new StaticGuiElement('m', getIcon("mode"), click -> {
             OwnedLand land = LandManager.getInstance().getLand(landLocation);
