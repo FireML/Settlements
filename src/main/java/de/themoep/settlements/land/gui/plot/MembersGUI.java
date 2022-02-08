@@ -50,7 +50,7 @@ public class MembersGUI extends PlotGUI {
         }));
 
         gui.addElement(new StaticGuiElement('a', new ItemStack(Material.PLAYER_HEAD), click -> {
-            new PlayerSelectGUI(this, resident, editedLand, "players",
+            new PlayerSelectGUI(resident, name() + ".players",
                     player -> player != click.getWhoClicked() && !editedLand.isPlotOwner(player) && !editedLand.getPlotMembers().contains(player.getUniqueId()),
                     player -> {
                 OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);

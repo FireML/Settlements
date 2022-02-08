@@ -1126,19 +1126,19 @@ guis:
         page: paper
         sort: hopper
         back: barrier
-    players:
-      setup:
-      - "ooooooooo"
-      - "ggggggggg"
-      - "ggggggggg"
-      - "ggggggggg"
-      - "ggggggggg"
-      - "pppppp  b"
-      elements:
-        o: lime_stained_glass_pane
-        page: paper
-        sort: hopper
-        back: barrier
+      players:
+        setup:
+        - "ooooooooo"
+        - "ggggggggg"
+        - "ggggggggg"
+        - "ggggggggg"
+        - "ggggggggg"
+        - "pppppp  b"
+        elements:
+          o: lime_stained_glass_pane
+          page: paper
+          sort: hopper
+          back: barrier
     mode:
       setup:
       - "ooooooooo"
