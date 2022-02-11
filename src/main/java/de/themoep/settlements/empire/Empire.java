@@ -515,7 +515,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         return EmpireManager.getInstance().getPerk(name);
     }
 
-    @EventHandler
+    @Override
     public boolean isUnlockable(String unlockable) {
         return EmpireManager.getInstance().getUnlockables().contains(unlockable);
     }
@@ -995,6 +995,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         }),
         specialresidents((c, e) -> c != null ? e.getResidentsToString(c.getMessage("special-residents.rank"), c.getMessage("special-residents.entry"), c.getText("special-residents.online"), c.getText("special-residents.offline"), c.getText("special-residents.separator")) : ""),
         size((c, e) -> String.valueOf(e.getMembers().size())),
+        maxsize((c, e) -> String.valueOf(e.getMaxSize())),
         members((c, e) -> c != null ? e.getMembersToString(c) : ""),
         resonlinecount((c, e) -> String.valueOf(e.getOnlineCount())),
         resotheronlinecount((c, e) -> String.valueOf(e.getOnlineCount() - 1)),

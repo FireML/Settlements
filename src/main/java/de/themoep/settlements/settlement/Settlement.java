@@ -739,7 +739,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         return SettlementManager.getInstance().getPerk(name);
     }
 
-    @EventHandler
+    @Override
     public boolean isUnlockable(String unlockable) {
         return SettlementManager.getInstance().getUnlockables().contains(unlockable);
     }

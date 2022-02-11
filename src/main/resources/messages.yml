@@ -3679,8 +3679,8 @@ command:
       description: Donate money to a certain empire
     here:
       general: |-
-        &e&l{name}&
-        &fBoard; &e{description}
+        &e&l{name}
+        &fBoard: &e{description}
         &fEmpire: &eLevel {level} | &a&lSymbol &e{symbol}
         &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
@@ -3967,12 +3967,12 @@ command:
       success: "&bSet empire symbol to &e{symbol}"
     show:
       general: |-
-        &e&l{name}&
-        &fBoard; &e{description}
+        &e&l{name}
+        &fBoard: &e{description}
         &fEmpire: &eLevel {level} | &a&lSymbol &e{symbol}
         &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
-        &fRecruitment_ &e{jointype}
+        &fRecruitment: &e{jointype}
         &fBank: &e${bank}
         &fUpkeep: &e{upkeep} | &fDaily tax: &e{tax} | &fJoin fee: &e{joinfee}
         &fTax Evasion: &e{taxdebtaction}
