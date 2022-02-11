@@ -957,7 +957,14 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
             return capital != null ? capital.getStateTag() : "-";
         }),
         perks((c, e) -> e.getPerksMap().entrySet().stream()
-                .map(p -> (p.getValue().getTimes() > 1 ? p.getValue().getTimes() + "x " : "") + e.getPerk(p.getKey()).getTag())
+                .map(p -> {
+                    Perk perk = e.getPerk(p.getKey());
+                    if (perk != null) {
+                        return (p.getValue().getTimes() > 1 ? p.getValue().getTimes() + "x " : "") + perk.getTag();
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
                 .collect(Collectors.joining(", "))),
         chiefrank((c, e) -> {
             Settlement capital = e.getCapital();
