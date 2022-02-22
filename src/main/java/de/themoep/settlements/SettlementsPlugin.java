@@ -347,7 +347,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         });
         registerDependency("Multiverse-Core", p -> {
             if (!Config.Chat.CHAT_ONLY) {
-                new MultiverseIntegration(this);
+                multiverse = new MultiverseIntegration(this);
             }
             return true;
         });

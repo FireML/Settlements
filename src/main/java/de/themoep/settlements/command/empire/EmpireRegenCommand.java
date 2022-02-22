@@ -18,7 +18,7 @@ public class EmpireRegenCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         Empire empire = res.getSettlement().getEmpire();
-        if (empire.hasWorld()) {
+        if (!empire.hasWorld()) {
             getError("no-world").tell(res, "state", empire.getStateTag(), "name", empire.getName());
         } else if (SettlementsPlugin.getInstance().getConfig().isSet("empires-world.seed")) {
             getError("not-possible").tell(res);

@@ -131,7 +131,7 @@ public class SimpleChunkLocation implements ConfigurationSerializable {
     public Location getCenterBukkitLocation() {
         World world = Bukkit.getWorld(getWorld());
         double x = getX() * 16 + 8.5;
-        double z = getX() * 16 + 8.5;
+        double z = getZ() * 16 + 8.5;
         return new Location(world, x, world.getHighestBlockYAt((int) x, (int) z), z);
     }
 

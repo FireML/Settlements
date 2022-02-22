@@ -355,12 +355,13 @@ public class EmpireManager {
         writeIdFile(world, empire);
         world.getWorldBorder().setCenter(0, 0);
         world.getWorldBorder().setSize(empire.getWorldRadius() * 2);
-        if (empire.getHome() == null) {
-            empire.setHome(new SimpleLocation(worldName, 0, world.getHighestBlockYAt(0, 0), 0));
-        } else {
-            empire.getHome().setWorld(worldName);
+        // check if world spawn is valid (inside world border, above min-y and under max-y)
+        if (!world.getWorldBorder().isInside(world.getSpawnLocation())
+                || world.getSpawnLocation().getY() <= world.getMinHeight()
+                || world.getSpawnLocation().getY() > world.getMinHeight()) {
+            // if not set to highest at 0 0
+            world.setSpawnLocation(new Location(world, 0, world.getHighestBlockYAt(0, 0), 0));
         }
-        world.setSpawnLocation(empire.getHome().toBukkitLocation());
         if (SettlementsPlugin.getInstance().getMultiverse() != null) {
             SettlementsPlugin.getInstance().getMultiverse().importWorld(world);
         }

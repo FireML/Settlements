@@ -22,13 +22,6 @@ public class EmpireWorldCommand extends ResidentSubCommand {
             if (!resident.hasEmpire()) {
                 getError("empire-required").tell(resident);
                 return false;
-            } else if (resident.getSettlement().getEmpire().hasWorld()) {
-                getMessage("no-world").tell(resident,
-                        "chief", EmpireRank.getLeader().getTag(),
-                        "state", resident.getSettlement().getEmpire().getStateTag(),
-                        "name", resident.getSettlement().getEmpire().getName()
-                );
-                return true;
             } else {
                 empire = resident.getSettlement().getEmpire();
             }
@@ -47,7 +40,11 @@ public class EmpireWorldCommand extends ResidentSubCommand {
         }
 
         if (!empire.hasWorld()) {
-            getError("no-world").tell(resident, "state", empire.getStateTag(), "name", empire.getName());
+            getError("no-world").tell(resident,
+                    "chief", EmpireRank.getLeader().getTag(),
+                    "state", empire.getStateTag(),
+                    "name", empire.getName()
+            );
             return true;
         }
 

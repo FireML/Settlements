@@ -3,8 +3,8 @@ package de.themoep.settlements.empire.gui;
 import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.command.CommandManager;
-import de.themoep.settlements.command.empire.EmpireHomeCommand;
-import de.themoep.settlements.command.empire.EmpireSetHomeCommand;
+import de.themoep.settlements.command.empire.EmpireSetWorldSpawnCommand;
+import de.themoep.settlements.command.empire.EmpireWorldCommand;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.resident.Resident;
@@ -21,11 +21,11 @@ public class WorldGUI extends ConfigurableGui {
                     if (click.getType().isShiftClick()) {
                         if (resident.hasPermission("empire.setworldspawn")) {
                             click.getGui().close();
-                            ((EmpireSetHomeCommand) CommandManager.getInstance().getCommand("empire").getSubCommands().get("setworldspawn")).run(resident, "empire", "setworldspawn");
+                            ((EmpireSetWorldSpawnCommand) CommandManager.getInstance().getCommand("empire").getSubCommands().get("setworldspawn")).run(resident, "empire", "setworldspawn");
                         }
                     } else if (click.getType().isLeftClick()) {
                         click.getGui().close();
-                        ((EmpireHomeCommand) CommandManager.getInstance().getCommand("empire").getSubCommands().get("world")).run(resident, "empire", "world");
+                        ((EmpireWorldCommand) CommandManager.getInstance().getCommand("empire").getSubCommands().get("world")).run(resident, "empire", "world");
                     }
                 }
                 return true;
