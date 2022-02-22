@@ -5,8 +5,8 @@ import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.command.settlement.SettlementSubCommand;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.WorldUtils;
-import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.world.NamedLocation;
 import de.themoep.settlements.world.SimpleChunkLocation;
@@ -52,7 +52,21 @@ public class OutpostClaimCommand extends SettlementSubCommand {
         OwnedLand land = LandManager.getInstance().getLand(resident.getPlayer().getLocation());
         if (land != null) {
             if (land.isOwnedBy(resident.getSettlement())) {
-                resident.tell(getError("already-own-land"));
+                if (land.isOutpost()) {
+                    getError("already-own-land").tell(resident);
+                } else {
+                    // Check surrounding land if it is connected to outpost or home
+                    if (LandManager.getInstance().isConnected(land)) {
+                        getError("already-own-land").tell(resident);
+                    } else {
+                        // If not connected set outpost at current location
+                        land.setOutpost(args[0]);
+                        resident.getSettlement().setOutpostHome(args[0], resident.getPlayer().getLocation());
+                        resident.getSettlement().save();
+                        land.save();
+                        Message.get("command.settlement.outpost.sethome.success").tell(resident, "name", args[0]);
+                    }
+                }
             } else {
                 resident.tell(getError("cant-claim-here"), "owner", land.getLandOwner().getName());
             }
