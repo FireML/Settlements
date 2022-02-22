@@ -708,6 +708,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
              return UtilTime.format(System.currentTimeMillis() - r.getLastLogin(), false) + " " + Message.get("names.ago").getText();
         }),
         plots(r -> String.valueOf(LandManager.getInstance().getOwnedPlotCount(r.getUUID()))),
+        activechannel(r -> r.getActiveChannel().getTag()),
         primarygroup(r -> {
             Player player = r.getPlayer();
             if (player != null) {

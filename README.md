@@ -29,6 +29,7 @@ Settlement or empire info via `settlements_player_settlement_<var>`/`settlements
 |`settlements_player_info_bonus`            | The amount of bonus claim points the player owns |
 |`settlements_player_info_joindate`         | The date the player joined at |
 |`settlements_player_info_lastlogin`        | The date of the player's last login |
+|`settlements_player_info_activechannel`    | The player's active chat channel |
 |`settlements_player_settlement_<var>`      | Information about the player's settlement or empty if not in one. See [Settlement Info](#settlement-info) |
 |`settlements_player_empire_<var>`          | Information about the player's empire or empty if not in one. See [Empire Info](#empire-info) |
 
