@@ -127,7 +127,7 @@ public class BankGUI extends ConfigurableGui {
 
             gui.addElement(new StaticGuiElement('t', getIcon("taxes"), getText("taxes",
                     "tax", Utils.CURRENCY_FORMAT.format(landOwner.getTax()),
-                    "auctiontax", Utils.CURRENCY_FORMAT.format(landOwner.getAuctionTax()),
+                    "auctiontax", Utils.toPercentage(landOwner.getAuctionTax()),
                     "state", landOwner.getStateTag())));
 
             gui.addElement(new StaticGuiElement('m', getIcon("manage-finances"), click -> {

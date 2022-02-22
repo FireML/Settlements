@@ -1176,7 +1176,7 @@ gui:
       &eCurrent Taxes
       
       &fResident taxes: &e${tax}
-      &fAuction taxes: &e${auctiontax}%
+      &fAuction taxes: &e{auctiontax}%
     manage-finances: |-
       &eManage Finances
       &f- Withdraw and deposit
@@ -1206,7 +1206,7 @@ gui:
         &fCharge players for using the
         &fAuctioneer!
         
-        &fCurrent Tax: &e${auctiontax}%
+        &fCurrent Tax: &e{auctiontax}%
   
         {action}
         
