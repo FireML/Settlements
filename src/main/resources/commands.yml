@@ -8,7 +8,7 @@ help-order:
     - s balance
     - bank
     - create
-    - deposit
+    - upgrade
     - donate
     - s event
     - here
@@ -18,7 +18,6 @@ help-order:
     - leave
     - list
     - map
-    - materials
     - outpost
     - reslist
     - rules
@@ -92,16 +91,14 @@ help-order:
     - bank
     - banished
     - create
-    - deposit
+    - upgrade
     - donate
     - here
     - home
     - join
     - joinfee
     - list
-    - materials
     - memberlist
-    - missions
     - show
     - tax
     - upkeep
