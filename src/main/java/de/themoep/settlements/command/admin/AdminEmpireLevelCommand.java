@@ -16,23 +16,25 @@ public class AdminEmpireLevelCommand extends SubCommand {
 
     @Override
     public boolean run(CommandSender sender, String base, String alias, String... args) {
-        if (args.length < 3) {
-            return false;
-        }
         Empire empire = EmpireManager.getInstance().getEmpireFromName(args[0]);
         if (empire == null) {
             getError("empire-doesnt-exist").tell(sender, "name", args[0]);
             return true;
         }
         try {
-            int level = Integer.parseInt(args[2]);
+            int level = Integer.parseInt(args[1]);
+
+            if (!EmpireManager.getInstance().getLevel(level).isPresent()) {
+                getError("no-level").tell(sender, "level", String.valueOf(level));
+                return true;
+            }
 
             int oldRadius = empire.getWorldRadius();
             empire.setLevel(level);
 
             sender.sendMessage(ChatColor.RED + "Set " + empire.getName() + " to " + level);
 
-            if (!"false".equalsIgnoreCase(args[3])) {
+            if (args.length < 3 || !"false".equalsIgnoreCase(args[2])) {
                 EmpireManager.getInstance().onLevelUp(empire, empire.getChief(), oldRadius);
                 sender.sendMessage(ChatColor.RED + "Triggered level up events!");
             }

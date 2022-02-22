@@ -1066,4 +1066,8 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
     public abstract int getMaxClaimableChunks();
 
     public abstract int getMaxSize();
+
+    public abstract boolean isValidName(String name);
+
+    public abstract boolean changeName(String name);
 }

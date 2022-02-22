@@ -38,7 +38,7 @@ public class EmpireJoinCommand extends SettlementSubCommand {
                     "name", joinEmpire.getName(),
                     "state", resident.getSettlement().getState().getTag()
             );
-        } else if (joinEmpire.getJoinFee() > 0 && resident.getSettlement().getBank() < joinEmpire.getJoinFee()) {
+        } else if (joinEmpire.getJoinFee() > 0 && !resident.getSettlement().has(joinEmpire.getJoinFee())) {
             resident.tell(getError("not-enough-money"),
                     "name", joinEmpire.getName(),
                     "amount", String.valueOf(joinEmpire.getJoinFee()),
@@ -52,15 +52,7 @@ public class EmpireJoinCommand extends SettlementSubCommand {
                 DatabaseManager.getInstance().saveEmpire(joinEmpire);
                 DatabaseManager.getInstance().log(joinEmpire, resident, "joinfee", "cash", joinEmpire.getJoinFee());
             }
-            resident.getSettlement().setEmpire(joinEmpire);
-            if (Config.Empire.Missions.DISTRIBUTE_ON_JOIN) {
-                joinEmpire.distributeNewMissions(resident.getSettlement());
-            }
-            for (Resident member : resident.getSettlement().getOnlineResidents()) {
-                member.addChannel(ChatChannel.EMPIRE);
-            }
-            InviteCache.getPendingEmpireInvites().remove(resident.getSettlement().getId(), joinEmpire.getId());
-            DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
+            joinEmpire.addMember(resident.getSettlement());
             getMessage("success").tell(resident.getSettlement().getOnlineResidents(),
                     "name", joinEmpire.getName(),
                     "state", resident.getSettlement().getState().getTag()

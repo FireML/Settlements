@@ -10,11 +10,9 @@ import de.themoep.settlements.utils.config.Config;
 import java.util.regex.Pattern;
 
 public class SettlementRenameCommand extends SettlementSubCommand {
-    private final Pattern allowed;
 
     public SettlementRenameCommand(SubCommand parent) {
         super(parent, "rename <name>");
-        allowed = Pattern.compile(Config.Settlement.NAME_VALIDATION);
     }
 
     @Override
@@ -30,7 +28,7 @@ public class SettlementRenameCommand extends SettlementSubCommand {
             getError("settlement-exists").tell(res, "name", name);
         } else if (name.length() > Config.Settlement.NAME_LENGTH) {
             getError("too-long").tell(res, "input", name, "amount", String.valueOf(Config.Settlement.NAME_LENGTH));
-        } else if (!allowed.matcher(name).matches()) {
+        } else if (!settlement.isValidName(name)) {
             getError("invalid-characters").tell(res, "input", name);
         } else {
             SettlementManager.getInstance().changeName(settlement, name);

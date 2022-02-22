@@ -76,6 +76,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static de.themoep.settlements.utils.MessageUtils.yesOrNo;
@@ -580,6 +581,16 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     public int getMaxSize() {
         int maxSize = getLevelInfo() != null ? getLevelInfo().getSize() : -1;
         return maxSize > 0 ? maxSize : Config.Settlement.MAX_SIZE;
+    }
+
+    @Override
+    public boolean isValidName(String name) {
+        return Pattern.matches(Config.Settlement.NAME_VALIDATION, name);
+    }
+
+    @Override
+    public boolean changeName(String name) {
+        return SettlementManager.getInstance().changeName(this, name);
     }
 
     public int getBonusClaimAmount() {

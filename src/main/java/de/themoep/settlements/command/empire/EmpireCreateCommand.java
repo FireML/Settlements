@@ -12,10 +12,11 @@ import de.themoep.settlements.utils.config.Config;
 import java.util.regex.Pattern;
 
 public class EmpireCreateCommand extends SettlementSubCommand {
-    private final Pattern allowed = Pattern.compile("[\\w-]+");
+    private final Pattern allowed;
 
     public EmpireCreateCommand(SubCommand parent) {
         super(parent, "create <name>");
+        allowed = Pattern.compile(Config.Empire.NAME_VALIDATION);
     }
 
     @Override
@@ -37,8 +38,8 @@ public class EmpireCreateCommand extends SettlementSubCommand {
             getError("invalid-characters").tell(resident, "input", name);
         } else if (empireExists(name)) {
             getError("empire-exists").tell(resident, "name", name);
-        } else if (name.length() > 20) {
-            getError("too-long").tell(resident, "input", name, "amount", String.valueOf(20));
+        } else if (name.length() > Config.Empire.NAME_LENGTH) {
+            getError("too-long").tell(resident, "input", name, "amount", String.valueOf(Config.Empire.NAME_LENGTH));
         } else if (!allowed.matcher(name).matches()) {
             getError("invalid-characters").tell(resident, "input", name);
         } else {

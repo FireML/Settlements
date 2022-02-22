@@ -101,7 +101,7 @@ settlement:
   titles-per-rank: 10
   # The maximum length of the settlement names
   name-length: 20
-  # What regex settlement names need to match")
+  # What regex settlement names need to match
   name-validation: "[\\w-]+"
   
   leveling:
@@ -164,6 +164,10 @@ empire:
   rename-cooldown: 30
   # How many different titles can be configured for a rank
   titles-per-rank: 10
+  # The maximum length of the empire names
+  name-length: 20
+  # What regex empire names need to match
+  name-validation: "[\\w-]+"
   
   leveling:
     # The amount of levels an Empire can reach

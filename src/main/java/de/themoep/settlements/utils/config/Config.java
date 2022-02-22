@@ -278,6 +278,12 @@ public class Config {
             public static int MAX_LEVEL = 5;
         }
 
+        @ConfigComment("The maximum length of the empire names")
+        public static int NAME_LENGTH = 20;
+
+        @ConfigComment("What regex empire names need to match")
+        public static String NAME_VALIDATION = "[\\w-]+";
+
         public static class Missions {
             @ConfigComment("Whether or not empire missions should be given to empire member settlements")
             public static boolean ENABLED = false;

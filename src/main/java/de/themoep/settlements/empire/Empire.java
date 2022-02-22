@@ -3,6 +3,8 @@ package de.themoep.settlements.empire;
 import co.aikar.timings.lib.MCTiming;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import de.themoep.settlements.chat.ChatChannel;
+import de.themoep.settlements.db.InviteCache;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.missions.MissionData;
 import de.themoep.settlements.missions.MissionProvider;
@@ -46,7 +48,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,6 +68,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static de.themoep.settlements.utils.MessageUtils.yesOrNo;
@@ -318,9 +320,24 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     @Override
     public void removeMember(Targetable target) {
         if (target instanceof Settlement && isMember((Settlement) target)) {
-            members.remove(((Settlement) target).getId());
+            members.remove(target.getId());
             EmpireManager.getInstance().leaveEmpire((Settlement) target);
         }
+    }
+
+    public void addMember(Settlement settlement) {
+        if (!isMember(settlement)) {
+            members.add(settlement.getId());
+        }
+        settlement.setEmpire(this);
+        if (Config.Empire.Missions.DISTRIBUTE_ON_JOIN) {
+            distributeNewMissions(settlement);
+        }
+        for (Resident member : settlement.getOnlineResidents()) {
+            member.addChannel(ChatChannel.EMPIRE);
+        }
+        InviteCache.getPendingEmpireInvites().remove(settlement.getId(), getId());
+        settlement.save();
     }
 
     @Override
@@ -815,6 +832,16 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     public int getMaxSize() {
         int maxSize = getLevelInfo() != null ? getLevelInfo().getSize() : -1;
         return maxSize > 0 ? maxSize : Config.Empire.MAX_SIZE;
+    }
+
+    @Override
+    public boolean isValidName(String name) {
+        return Pattern.matches(Config.Empire.NAME_VALIDATION, name);
+    }
+
+    @Override
+    public boolean changeName(String name) {
+        return EmpireManager.getInstance().changeName(this, name);
     }
 
     public void setInRegen(boolean inRegen) {

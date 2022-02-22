@@ -1,14 +1,13 @@
-package de.themoep.settlements.settlement.gui;
+package de.themoep.settlements.land.gui;
 
 import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.empire.Empire;
+import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.LandOwner;
-import de.themoep.settlements.land.gui.AccessGUI;
-import de.themoep.settlements.land.gui.RecruitmentGUI;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.ConfigurableGui;
@@ -23,21 +22,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class SettingsGUI extends ConfigurableGui {
-    private final Pattern namePattern;
 
-    public SettingsGUI(Player player) {
-        this(ResidentManager.getInstance().getResident(player));
-    }
-
-    public SettingsGUI(Resident resident) {
+    public SettingsGUI(Resident resident, LandOwner<?, ?> landOwner) {
         super(resident, "settlement.settings");
-        namePattern = Pattern.compile(Config.Settlement.NAME_VALIDATION);
-
-        LandOwner<?, ?> landOwner = resident.getSettlement();
 
         gui.addElement(new StaticGuiElement('n', getIcon("rename"), click -> {
             if (landOwner.hasPermission(resident, "rename")) {
@@ -45,7 +35,7 @@ public class SettingsGUI extends ConfigurableGui {
                         .itemLeft(getIcon("rename"))
                         .title(getText("rename.anvil.title", "name", landOwner.getName()))
                         .text(getText("rename.anvil.placeholder", "name", landOwner.getName()))
-                        .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))
+                        .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident, landOwner).open(), 1))
                         .onComplete((player, text) -> {
                             if (landOwner.hasPermission(resident, "rename")) {
                                 String name = Utils.filterAllCurses(text.trim());
@@ -58,15 +48,21 @@ public class SettingsGUI extends ConfigurableGui {
                                 } else if (landOwner instanceof Settlement && name.length() > Config.Settlement.NAME_LENGTH) {
                                     getError("too-long").tell(player, "input", name, "amount", String.valueOf(Config.Settlement.NAME_LENGTH));
                                     return AnvilGUI.Response.text(getError("too-long").getReplacedText("input", name, "amount", String.valueOf(Config.Settlement.NAME_LENGTH)));
-                                } else if (!namePattern.matcher(name).matches()) {
+                                } else if (landOwner instanceof Empire && EmpireManager.getInstance().getEmpireFromName(name) != null) {
+                                    getError("empire-exists").tell(player, "input", name);
+                                    return AnvilGUI.Response.text(getError("empire-exists").getReplacedText("name", name));
+                                } else if (landOwner instanceof Empire && name.length() > Config.Empire.NAME_LENGTH) {
+                                    getError("too-long").tell(player, "input", name, "amount", String.valueOf(Config.Empire.NAME_LENGTH));
+                                    return AnvilGUI.Response.text(getError("too-long").getReplacedText("input", name, "amount", String.valueOf(Config.Empire.NAME_LENGTH)));
+                                } else if (!landOwner.isValidName(name)) {
                                     getError("invalid-characters").tell(player, "input", name);
                                     return AnvilGUI.Response.text(getError("invalid-characters").getReplacedText("input", name));
-                                } else {
-                                    if (landOwner instanceof Settlement) {
-                                        SettlementManager.getInstance().changeName((Settlement) landOwner, name);
-                                    }
+                                } else if (landOwner.changeName(name)) {
                                     Message.get("command." + landOwner.getKey() + ".rename.success").tell(landOwner, "name", landOwner.getName(), "state", landOwner.getStateTag());
-                                    Utils.runLater(() -> new SettingsGUI(player).open(), 1);
+                                    Utils.runLater(() -> new SettingsGUI(resident, landOwner).open(), 1);
+                                } else {
+                                    getError("cant-rename").tell(player);
+                                    return AnvilGUI.Response.text(getErrorText("cant-rename"));
                                 }
                             } else {
                                 getError("no-permission").tell(player);
@@ -85,7 +81,11 @@ public class SettingsGUI extends ConfigurableGui {
 
         gui.addElement(new StaticGuiElement('p', getIcon("perks"), click -> {
             if (landOwner.hasPermission(resident, "perks")) {
-                new PerksGUI(resident).open();
+                if (landOwner instanceof Settlement) {
+                    new de.themoep.settlements.settlement.gui.PerksGUI(resident).open();
+                } else if (landOwner instanceof Empire) {
+                    new de.themoep.settlements.empire.gui.PerksGUI(resident).open();
+                }
             }
             return true;
         }, getText("perks.entry",
@@ -145,7 +145,7 @@ public class SettingsGUI extends ConfigurableGui {
                         }
                     }
                 }
-                Utils.runLater(() -> new SettingsGUI(resident).open(), 1);
+                Utils.runLater(() -> new SettingsGUI(resident, landOwner).open(), 1);
             }).open((Player) click.getWhoClicked());
             return true;
         }, getText("rules.entry",
@@ -159,7 +159,7 @@ public class SettingsGUI extends ConfigurableGui {
                         .itemLeft(getIcon("discord"))
                         .title(getText("discord.anvil.title", "name", landOwner.getName(), "discord", landOwner.getDiscord()))
                         .text(getText("discord.anvil.placeholder", "discord", landOwner.getDiscord()))
-                        .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))
+                        .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident, landOwner).open(), 1))
                         .onComplete((player, text) -> {
                             if (landOwner.hasPermission(resident, "discord.set")) {
                                 String link = text.trim();
@@ -177,7 +177,7 @@ public class SettingsGUI extends ConfigurableGui {
                                     );
                                 }
                                 landOwner.save();
-                                Utils.runLater(() -> new SettingsGUI(resident).open(), 1);
+                                Utils.runLater(() -> new SettingsGUI(resident, landOwner).open(), 1);
                             } else {
                                 getError("no-permission").tell(player);
                             }
@@ -200,7 +200,7 @@ public class SettingsGUI extends ConfigurableGui {
                         .itemLeft(getIcon("joinfee"))
                         .title(getText("joinfee.anvil.title", "name", landOwner.getName(), "joinfee", String.valueOf(landOwner.getJoinFee())))
                         .text(getText("joinfee.anvil.placeholder", "joinfee", String.valueOf(landOwner.getJoinFee())))
-                        .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))
+                        .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident, landOwner).open(), 1))
                         .onComplete((player, text) -> {
                             if (landOwner.hasPermission(resident, "joinfee.set")) {
                                 try {
@@ -213,7 +213,7 @@ public class SettingsGUI extends ConfigurableGui {
                                         );
                                         landOwner.save();
                                     }
-                                    Utils.runLater(() -> new SettingsGUI(resident).open(), 1);
+                                    Utils.runLater(() -> new SettingsGUI(resident, landOwner).open(), 1);
                                 } catch (NumberFormatException e) {
                                     return AnvilGUI.Response.text(getError("not-a-number").getReplacedText("input", text));
                                 }
@@ -239,7 +239,7 @@ public class SettingsGUI extends ConfigurableGui {
                         .itemLeft(getIcon("description"))
                         .title(getText("description.anvil.title", "name", landOwner.getName(), "description", landOwner.getDescription()))
                         .text(getText("description.anvil.placeholder", "description", landOwner.getDescription()))
-                        .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))
+                        .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident, landOwner).open(), 1))
                         .onComplete((player, text) -> {
                             if (landOwner.hasPermission(resident, "setdescription")) {
                                 String description = text.trim();
@@ -251,7 +251,7 @@ public class SettingsGUI extends ConfigurableGui {
                                     );
                                     landOwner.save();
                                 }
-                                Utils.runLater(() -> new SettingsGUI(resident).open(), 1);
+                                Utils.runLater(() -> new SettingsGUI(resident, landOwner).open(), 1);
                             } else {
                                 getError("no-permission").tell(player);
                             }

@@ -493,11 +493,12 @@ public class SettlementManager {
         return perks.values();
     }
 
-    public void changeName(Settlement settlement, String name) {
+    public boolean changeName(Settlement settlement, String name) {
         settlements.remove(settlement.getName().replace(' ', '_').toLowerCase());
         settlement.setName(name);
         settlements.put(settlement.getName().replace(' ', '_').toLowerCase(), settlement);
         DatabaseManager.getInstance().saveSettlement(settlement);
+        return true;
     }
 
     public Set<String> getUnlockables() {

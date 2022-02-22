@@ -32,6 +32,7 @@ error:
   not-in-empire: "&c&l(!) &r&7Not currently in your empire."
   unknown-npc-type: "&c&l(!) &r&7{input} is not a valid NPC type!"
   unknown-npc: "&c&l(!) &r&7No {input} NPC in your {state}!"
+  no-level: "&cNo level {level} exists!"
   no-permission: "&cNo permission."
   no-world: "&c{state} {name} has not unlocked a world."
   rules-not-accepted: "&cYou must accept the [&e{state} rules](/s rules) first!"
@@ -762,6 +763,7 @@ unlockables:
     withdraw: "&bClick to withdraw"
     deposit: "&bClick to deposit"
     purchase: "&bClick to purchase"
+    teleport: "&bClick to teleport"
     invited: |-
       &bYou have been invited to join them!
       &bClick to join!
@@ -1494,6 +1496,14 @@ gui:
         &eCurrent Taxes
     
         &fMember taxes: &e${tax}
+
+    management:
+      title: "Manage {state}"
+      memberlist: |-
+        &eView Members
+        &fInformation about the members
+    
+        {action}
     perks:
       actions:
         weather:
@@ -3738,7 +3748,7 @@ command:
       not-enough-money: "&c&l(!) &r&7Your {state} does not have enough money to pay the join fee of {amount}!"
       money-paid: "&7Paid &e{amount}&7 to join!"
       no-invite: "&c&l(!) &r&7Your {state} does not have an invite for this empire."
-      success: "&a&lSUCCESS &r&7Your {state} has joined {state} {name}."
+      success: "&a&lSUCCESS &r&7Your {state} has joined Empire {name}."
       new-member: "&e&l(!) &r&e{state} {name}&7 has joined the empire!"
       is-full: "&e&l(!) &r&7The Empire {name} is full."
       description: Join an empire

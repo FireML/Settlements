@@ -8,7 +8,6 @@ import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
-import de.themoep.settlements.empire.gui.SettingsGUI;
 import de.themoep.settlements.empire.gui.WorldGUI;
 import de.themoep.settlements.land.LandAccess;
 import de.themoep.settlements.land.LandAccessChecker;
@@ -34,7 +33,6 @@ import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.land.events.LandownerAbandonedEvent;
 import de.themoep.settlements.land.events.LandownerCreatedEvent;
-import de.themoep.settlements.settlement.gui.ManagementGUI;
 import de.themoep.settlements.settlement.gui.OutpostsGUI;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
@@ -351,9 +349,9 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
                 case MANAGER: {
                     if (landOwner.hasPermission(resident, "settings")) {
                         if (landOwner instanceof Settlement) {
-                            new ManagementGUI(resident).open();
+                            new de.themoep.settlements.settlement.gui.ManagementGUI(resident).open();
                         } else if (landOwner instanceof Empire) {
-                            new SettingsGUI(resident).open();
+                            new de.themoep.settlements.empire.gui.ManagementGUI(resident).open();
                         }
                     } else {
                         event.setCancelled(true);

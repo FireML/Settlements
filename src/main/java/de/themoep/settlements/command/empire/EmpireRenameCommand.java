@@ -7,10 +7,7 @@ import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 
-import java.util.regex.Pattern;
-
 public class EmpireRenameCommand extends EmpireSubCommand {
-    private Pattern allowed = Pattern.compile("[\\w-]+");
 
     public EmpireRenameCommand(SubCommand parent) {
         super(parent, "rename <name>");
@@ -27,9 +24,9 @@ public class EmpireRenameCommand extends EmpireSubCommand {
             getError("invalid-characters").tell(res, "input", name);
         } else if (empireExists(name)) {
             getError("empire-exists").tell(res, "name", name);
-        } else if (name.length() > 20) {
-            getError("too-long").tell(res, "input", name, "amount", String.valueOf(20));
-        } else if (!allowed.matcher(name).matches()) {
+        } else if (name.length() > Config.Empire.NAME_LENGTH) {
+            getError("too-long").tell(res, "input", name, "amount", String.valueOf(Config.Empire.NAME_LENGTH));
+        } else if (!empire.isValidName(name)) {
             getError("invalid-characters").tell(res, "input", name);
         } else if (empire.isInRegen()) {
             getError("rename-in-progress").tell(res);

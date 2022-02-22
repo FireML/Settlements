@@ -9,6 +9,7 @@ import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.invites.Invite;
 import de.themoep.settlements.land.JoinRequest;
 import de.themoep.settlements.land.LandOwner;
+import de.themoep.settlements.land.gui.SettingsGUI;
 import de.themoep.settlements.land.gui.AlliesGUI;
 import de.themoep.settlements.land.gui.BanishedGUI;
 import de.themoep.settlements.land.gui.BuildGUI;
@@ -36,14 +37,14 @@ public class ManagementGUI extends SettlementsGUI {
         this.resident = resident;
         LandOwner<?, ?> landOwner = resident.getSettlement();
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title",
-                "name", resident.getSettlement().getName(),
-                "state", resident.getSettlement().getStateTag()
+                "name", landOwner.getName(),
+                "state", landOwner.getStateTag()
         ), getSetup());
         gui.setCloseAction(close -> false);
         gui.addElements(getConfiguredElements());
         gui.setFiller(getIcon("filler"));
 
-        Resident chief = resident.getSettlement().getChief();
+        Resident chief = landOwner.getChief();
         gui.addElement(new StaticGuiElement('r', ItemUtils.getHead(chief.getUUID(), chief.getName()), click -> {
             if (landOwner.hasPermission(resident, "reslist")) {
                 new ResListGUI(resident, resident.getSettlement()).open();
@@ -127,7 +128,7 @@ public class ManagementGUI extends SettlementsGUI {
 
         gui.addElement(new StaticGuiElement('s', getIcon("settings"), click -> {
             if (landOwner.hasPermission(resident, "settings")) {
-                new SettingsGUI(resident).open();
+                new SettingsGUI(resident, landOwner).open();
             }
             return true;
         }, getText("settings",
