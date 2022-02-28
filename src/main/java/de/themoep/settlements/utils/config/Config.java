@@ -111,7 +111,7 @@ public class Config {
                 @ConfigEntry(old = {"close-claims-grace-days"})
                 @ConfigComment("How many days to wait before automatically unclaiming claims that are too close when unallying\n" +
                         "Set to -1 to disable the automatic unclaiming of too close lands")
-                public static int GRACE_DAYS = 0;
+                public static int GRACE_DAYS = 1;
 
                 @ConfigEntry(old = {"close-claims-unclaims-outposts"})
                 @ConfigComment("Whether or not outposts are unclaimed")

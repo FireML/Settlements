@@ -30,7 +30,6 @@ import de.themoep.settlements.land.events.LandUnclaimEvent;
 import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.portal.PortalManager;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
@@ -520,26 +519,28 @@ public class LandManager {
     }
 
     public void checkClaimDistance(LandOwner source, LandOwner oldAlly) {
-        if (Config.Claiming.ENEMY_DISTANCE > 0 && (!(source instanceof Settlement) || !source.isAllowAllyClaim())) {
-            if (oldAlly instanceof Settlement) {
-                checkClaimDistance(source, (Settlement) oldAlly);
-            } else if (oldAlly instanceof Empire) {
-                for (Settlement v : ((Empire) oldAlly).getMembers()) {
-                    checkClaimDistance(source, v);
-                }
-            }
+        if (Config.Claiming.ENEMY_DISTANCE <= 0) {
+            return;
         }
-    }
 
-    private void checkClaimDistance(LandOwner source, Settlement oldAlly) {
         int graceDays = Config.Claiming.Close.Unclaim.GRACE_DAYS;
         if (graceDays < 0) {
             return;
         }
+
+        if (source.isAllowAllyClaim()) {
+            return;
+        }
+
+        Ally ally = source.getAlly(oldAlly);
+        if (ally != null && ally.isNearbyClaim()) {
+            return;
+        }
+
         List<OwnedLand> toSave = new ArrayList<>();
         List<OwnedLand> toUnclaim = new ArrayList<>();
         for (OwnedLand land : getClaimedLand(oldAlly)) {
-            if (Config.Claiming.ENEMY_DISTANCE > 0 && (Config.Claiming.Close.Unclaim.OUTPOSTS || !land.isOutpost())) {
+            if (Config.Claiming.ENEMY_DISTANCE > 0 && !land.containsHome() && (Config.Claiming.Close.Unclaim.OUTPOSTS || !land.isOutpost())) {
                 for (SimpleChunkLocation c : WorldUtils.getChunksAround(land, Config.Claiming.ENEMY_DISTANCE)) {
                     OwnedLand around = getLand(c);
                     if (around != null && around.isOwnedBy(source)) {
