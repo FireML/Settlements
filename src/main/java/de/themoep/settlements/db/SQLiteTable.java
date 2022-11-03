@@ -301,9 +301,9 @@ public enum SQLiteTable {
             + "unbanished_sender VARCHAR(36),"
             + "unbanished_reason TEXT,"
             + "unbanished_unbanisher VARCHAR(36),"
-            + "unbanished_unbanishdate VARCHAR(36)."
+            + "unbanished_unbanishdate VARCHAR(36),"
             + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
-            + "UNIQUE (settlementId, banished_id, unbanished_date)"
+            + "UNIQUE (settlementId, unbanished_id, unbanished_date)"
             + ");"
             + "CREATE INDEX settlement_unbanished_id ON {tablePrefix}settlement_unbanished (settlementId);"),
 

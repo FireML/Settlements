@@ -97,10 +97,10 @@ public class LandTag implements ObjectTag, Adjustable {
         return true;
     }
 
-    @Override
+    /*@Override
     public String getObjectType() {
         return PREFIX;
-    }
+    }*/
 
     @Override
     public String identify() {

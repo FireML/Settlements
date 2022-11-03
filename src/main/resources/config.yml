@@ -77,6 +77,8 @@ claiming:
       # Which blocks are allowed to get built anyways.
       allowed-blocks:
       - "*shulker_box"
+      allowed-worlds:
+      - "Kingdoms"
       # The time in minutes a disabled close building notification stays around
       toggle-time: 30
     unclaim:

@@ -124,6 +124,7 @@ public class SettlementListener implements Listener {
             Collection<LandOwner> landOwners = LandManager.getInstance().getNearbyLandOwners(chunkLocation);
             if (Config.Claiming.Close.Building.BLOCK_OUTSIDE && landOwners.isEmpty()
                     && !Config.Claiming.Close.Building.ALLOWED_BLOCKS.contains(block)
+                    && !Config.Claiming.Close.Building.ALLOWED_WORLDS.contains(location.getWorld().getName())
                     && !player.hasPermission("settlements.bypass.buildingradius")) {
                 Message.get("close-claims.player.block").tell(player);
                 event.setCancelled(true);

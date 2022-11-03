@@ -3,6 +3,7 @@ package de.themoep.settlements.utils.config;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
 
@@ -140,6 +141,10 @@ public class Config {
                 private static Set<String> ALLOWED_BLOCKS_DEFAULT = ImmutableSet.of(
                         "*shulker_box"
                 );
+
+                @ConfigEntry(parser = "StringSet")
+                @ConfigComment("Which worlds should this check be ignored in?")
+                public static Set<String> ALLOWED_WORLDS = new HashSet<>();
 
                 @ConfigEntry(old = {"close-building-notification-toggle-time", "settlement.close.building-notification.toggle-time"})
                 @ConfigComment("The time in minutes a disabled close building notification stays around")

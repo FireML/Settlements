@@ -74,10 +74,10 @@ public class ResidentTag implements ObjectTag {
         return true;
     }
 
-    @Override
+    /*@Override
     public String getObjectType() {
         return PREFIX;
-    }
+    }*/
 
     @Override
     public String identify() {
