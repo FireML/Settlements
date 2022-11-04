@@ -9,6 +9,7 @@ import de.themoep.settlements.integration.denizen.objects.EmpireTag;
 import de.themoep.settlements.integration.denizen.objects.LandTag;
 import de.themoep.settlements.integration.denizen.objects.ResidentTag;
 import de.themoep.settlements.integration.denizen.objects.SettlementTag;
+import de.themoep.settlements.utils.config.Config;
 
 public class DenizenIntegration {
 
@@ -87,6 +88,11 @@ public class DenizenIntegration {
             }
             return LandTag.valueOf(attribute.getParam(), attribute.context);
         });
+
+        EmpireTag.registerTags();
+        LandTag.registerTags();
+        ResidentTag.registerTags();
+        SettlementTag.registerTags();
     }
 
     public String getDenizenVersion() {
