@@ -241,6 +241,7 @@ public class ChatManager implements ConfigMessages, Listener {
                         .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
                 break;
             case ADMIN:
+            case CONTENT_CREATOR:
             case STAFF:
                 new ArrayList<>(Bukkit.getOnlinePlayers()).stream()
                         .filter(channel::canChat)

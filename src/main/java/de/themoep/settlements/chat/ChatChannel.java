@@ -117,6 +117,22 @@ public enum ChatChannel implements NameTag {
             return false;
         }
     },
+
+    CONTENT_CREATOR("content-creator", "cc") {
+        @Override
+        public boolean canChat(Player player) {
+            return player.hasPermission("settlements.channel.content-creator");
+        }
+
+        @Override
+        public boolean canChatM(Player player) {
+            if (this.canChat(player)) {
+                return true;
+            }
+            MessageUtils.tell(player, Message.get("error.no-channel-permission"), "channel", name());
+            return false;
+        }
+    },
     PRIVATE_SENT(true),
     PRIVATE_RECEIVED(true);
 
