@@ -2975,7 +2975,7 @@ command:
         &fTax Evasion: &e{taxdebtaction}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
-        &ferks: &r&7{perks}
+        &fPerks: &r&7{perks}
         &e{chieftitle}: &r&7{chiefonline}{chief}
         {residents}
       empire: |-
@@ -2990,7 +2990,7 @@ command:
         &fTax Evasion: &e{taxdebtaction}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
-        &ferks: &r&7{perks}
+        &fPerks: &r&7{perks}
         &e{chieftitle}: &r&7{chiefonline}{chief}
         {residents}
       abandoned: |-
@@ -3281,7 +3281,7 @@ command:
       usage:
         entry: "&e• [&e{usage}](suggest_command={{usage})"
     shop:
-      description: Purchase perks
+      description: Purchase Perks
       unlock:
         success: "&6&l{perk} &7&lhas been unlocked!"
         level-too-low: "&cCan't unlock &f{perk}&c! It requires a level {level} {state}!"
@@ -3316,7 +3316,7 @@ command:
         &fTax Evasion: &e{taxdebtaction}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
-        &ferks: &r&7{perks}
+        &fPerks: &r&7{perks}
         &e{chieftitle}: &r&7{chiefonline}{chief}
         {residents}
       empire: |-
@@ -3331,7 +3331,7 @@ command:
         &fTax Evasion: &e{taxdebtaction}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
-        &ferks: &r&7{perks}
+        &fPerks: &r&7{perks}
         &e{chieftitle}: &r&7{chiefonline}{chief}
         {residents}
       abandoned: |-
