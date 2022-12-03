@@ -15,7 +15,7 @@ rules:
 start-guide:
   book:
     page1: |-
-      Welcome on ApeironMC
+      Welcome to PoleisMC
     
       Explore the previous
       GUI to get started!
@@ -150,38 +150,37 @@ broadcast:
   empires-tag: "{name}"
 scoreboard:
   sidebar:
-    title: "&a&lApeiron&f&lMC"
+    title: "&x&0&d&e&2&e&8Poleis&f&lMC"
     entries:
       no-settlement: |-
-        &aBal &b₲&e{balance}
+        &aBal &e%vault_eco_balance_formatted%
 
-        &aKills&3 &e{kills}
-        &aDeaths&3 &e{deaths}
+        &aChat &e%settlements_player_info_activechannel%
         &7/scoreboard
       settlement: |-
         &a&l{settlementstate}
         &a(&e{settlementname}&a)
-        &aBank &b₲&e{settlementbalance}
+        &aBank &e${settlementbalance}
         &aRank &e{settlementrank}
-        &aOnline &e{settlementresonlinecount}
+        &aOnline &e{settlementresonlinecount}/{settlementsize}
   
-        &aTitle &e{title}
-        &aBal &b₲&e{balance}
+        &aBal &e%vault_eco_balance_formatted%
+        &aChat &e%settlements_player_info_activechannel%
         &7/scoreboard
       empire: |-
         &a&lEmpire
         &a(&e{empirename}&a)
-        &aBank &b₲&e{empirebalance}
+        &aBank &e${empirebalance}
         &aRank &e{empirerank}
         
         &a&l{settlementstate}
         &a(&e{settlementname}&a)
-        &aBank &b₲&e{settlementbalance}
+        &aBank &e${settlementbalance}
         &aRank &e{settlementrank}
-        &aOnline &e{settlementresonlinecount}
+        &aOnline &e{settlementresonlinecount}/{settlementsize}
   
-        &aTitle &e{title}
-        &aBal &b₲&e{balance}
+        &aBal &e%vault_eco_balance_formatted%
+        &aChat &e%settlements_player_info_activechannel%
         &7/scoreboard
 empire-world-generated: "&a&lCreated your own empire world!"
 levels:
