@@ -244,7 +244,7 @@ plot-tax:
       couldnt-pay: "&e{player}&c was not able to pay the plot tax of &e{amount}&c for plot {x} {z}"
     kick:
       cant-pay: "&cYou can't pay the tax of &e{amount}&c for at least one of your plots and some of them will be removed if you still can't pay it!"
-      couldnt-pay: "&e{player}&c was not able to pay the tax of &e{amount}&c for his plot {x} {z} and is has been removed!"
+      couldnt-pay: "&e{player}&c was not able to pay the tax of &e{amount}&c for their plot {x} {z} and is has been removed!"
 first-to-reach-level: "&6&l{name} &7&l is the first to reach &6&l{state} &7&llevel &6&l{level}"
 land-unclaim: "&e{amount}&7 chunks were automatically unclaimed!"
 portal:
@@ -628,7 +628,7 @@ integration:
         trusted: "&e&l(!) &r&7Only &eallies or members of the same empire&7 as &e{state} {name}&7 can build here."
         ally: "&e&l(!) &r&7Only &eallies&e7 of &e{state} {name}&7 can build here."
         private: "&e&l(!) &r&7Only the &ePlot owner&7 can build here."
-        friends: "&e&l(!) &r&7Only the &ePlot owner and his friends&7 can build here."
+        friends: "&e&l(!) &r&7Only the &ePlot owner and their friends&7 can build here."
   placeholder-api:
     none: "-"
     bonus-outposts: " Bonus: {amount}"
@@ -689,7 +689,7 @@ protection:
       ally: "&e&l(!) &r&7Only &eallies&e7 of &e{state} {name}&7 can build here."
       private: "&e&l(!) &r&7Only the &ePlot owner&7 can build here."
       members: "&e&l(!) &r&7Only the &ePlot owner and members of the plot&7 can build here."
-      friends: "&e&l(!) &r&7Only the &ePlot owner, his friends and member so the plot&7 can build here."
+      friends: "&e&l(!) &r&7Only the &ePlot owner, their friends and member so the plot&7 can build here."
       empire:
         trusted: "&e&l(!) &r&7Only &members of {state} {name}&7 can build here."
         landowner:
@@ -1857,7 +1857,7 @@ gui:
       {action}
     eviction: |-
       &cSend Eviction Letter
-      &fMail the player for his
+      &fMail the player for their
       &f7 days kick notice
   
       {action}
