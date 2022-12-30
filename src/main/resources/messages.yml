@@ -160,7 +160,7 @@ scoreboard:
       settlement: |-
         &a&l{settlementstate}
         &a(&e{settlementname}&a)
-        &aBank &e${settlementbalance}
+        &aBank &eꟼ{settlementbalance}
         &aRank &e{settlementrank}
         &aOnline &e{settlementresonlinecount}/{settlementsize}
   
@@ -170,12 +170,12 @@ scoreboard:
       empire: |-
         &a&lEmpire
         &a(&e{empirename}&a)
-        &aBank &e${empirebalance}
+        &aBank &eꟼ{empirebalance}
         &aRank &e{empirerank}
         
         &a&l{settlementstate}
         &a(&e{settlementname}&a)
-        &aBank &e${settlementbalance}
+        &aBank &eꟼ{settlementbalance}
         &aRank &e{settlementrank}
         &aOnline &e{settlementresonlinecount}/{settlementsize}
   
@@ -368,8 +368,8 @@ plot:
     title: ""
     subtitle: "{name}"
   for-sale:
-    message: "&9&lLand is for sale for ${amount}, type [&e/s plot buy](suggest_command=/s plot buy)&9 to buy it"
-    actionbar: "&9&lLand is for sale for ${amount} &f{description}"
+    message: "&9&lLand is for sale for ꟼ{amount}, type [&e/s plot buy](suggest_command=/s plot buy)&9 to buy it"
+    actionbar: "&9&lLand is for sale for ꟼ{amount} &f{description}"
     title: ""
     subtitle: "{name}"
   for-sale-description:
@@ -399,8 +399,8 @@ embassy:
     title: ""
     subtitle: "{name}"
   for-sale:
-    message: "&9&lEmbassy is for sale for ${amount}, type [&e/s plot buy](suggest_command=/s plot buy)&9 to buy it"
-    actionbar: "&9&lEmbassy is for sale for ${amount} &f{description}"
+    message: "&9&lEmbassy is for sale for ꟼ{amount}, type [&e/s plot buy](suggest_command=/s plot buy)&9 to buy it"
+    actionbar: "&9&lEmbassy is for sale for ꟼ{amount} &f{description}"
     title: ""
     subtitle: "{name}"
   for-sale-description:
@@ -790,7 +790,7 @@ gui:
         entry: |-
           &eCreate Settlement
           &fStart a new settlement, a place to build
-          Price to create: &e${amount}
+          Price to create: &eꟼ{amount}
           
           {action}
         anvil:
@@ -915,7 +915,7 @@ gui:
           &e{name}
           &fState: &e{state} {level}
           &fBoard: &e{description}
-          &fJoin Fee: &e${joinfee}
+          &fJoin Fee: &eꟼ{joinfee}
           
           &fPopulation: &e{size}
           &bYou have been invited to join them!
@@ -969,7 +969,7 @@ gui:
         &e{name}
         &fState: &e{state} {level}
         &fBoard: &e{description}
-        &fJoin Fee: &e${joinfee}
+        &fJoin Fee: &eꟼ{joinfee}
         
         &fPopulation: &e{size}
         &b{action}
@@ -1044,7 +1044,7 @@ gui:
         &f{state}: &eLevel {level}
         &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
-        &fBank: &e${bank}
+        &fBank: &eꟼ{bank}
         &fCooperation Points: &e{missionpoints}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims}
         &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}
@@ -1058,7 +1058,7 @@ gui:
         &fEmpire: &eLevel {level}
         &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
-        &fBank: &e${bank}
+        &fBank: &eꟼ{bank}
         &fDaily Missions: &e{dailymissions}
         &fFinished Missions: &e{missions}
         &fCapital: &e{capitalstate}{capital}
@@ -1149,7 +1149,7 @@ gui:
     balance: |-
       &eBalance
       
-      &fCurrent Balance: &e${balance}
+      &fCurrent Balance: &eꟼ{balance}
     storage: |-
       &eStorage Chest
       &fShared storage of the {state}
@@ -1165,8 +1165,8 @@ gui:
       &fPrepare for upkeep to prevent
       &fyour {state} from degrading
       
-      &fLand tax: &e${upkeepperclaim} per claim
-      &fUpkeep cost: &e${upkeep}
+      &fLand tax: &eꟼ{upkeepperclaim} per claim
+      &fUpkeep cost: &eꟼ{upkeep}
       
       &fCan afford for: &e{afford} days
       &fTime till upkeep: &e{time}
@@ -1174,7 +1174,7 @@ gui:
     taxes: |-
       &eCurrent Taxes
       
-      &fResident taxes: &e${tax}
+      &fResident taxes: &eꟼ{tax}
       &fAuction taxes: &e{auctiontax}%
     manage-finances: |-
       &eManage Finances
@@ -1191,7 +1191,7 @@ gui:
         &fThese taxes will be taken from their
         &fbalance every {hour}. Server time.
         
-        &fCurrent Tax: &e${tax}
+        &fCurrent Tax: &eꟼ{tax}
   
         {action}
         
@@ -1330,15 +1330,15 @@ gui:
       apply: |-
         &eApply to join!
         &fRequest to join the {state}
-        &fJoin Fee: &e${joinfee}
-        &fTaxes: &e${tax}
+        &fJoin Fee: &eꟼ{joinfee}
+        &fTaxes: &eꟼ{tax}
         
         &bClick here to request
       cancel-apply: |-
         &eYou have applied to join!
         &fWait until you have been approved!
-        &fJoin Fee: &e${joinfee}
-        &fTaxes: &e${tax}
+        &fJoin Fee: &eꟼ{joinfee}
+        &fTaxes: &eꟼ{tax}
         
         &cClick to cancel your request
       invite-only: |-
@@ -1346,14 +1346,14 @@ gui:
         &cbeing invited
       invited: |-
         &eYou have been invited!
-        &fJoin Fee: &e${joinfee}
-        &fTaxes: &e${tax}
+        &fJoin Fee: &eꟼ{joinfee}
+        &fTaxes: &eꟼ{tax}
         
         &bClick to join
       anyone: |-
         &eAnyone can join the {state}
-        &fJoin Fee: &e${joinfee}
-        &fTaxes: &e${tax}
+        &fJoin Fee: &eꟼ{joinfee}
+        &fTaxes: &eꟼ{tax}
         
         &bClick to join &f{name}
       banished: |-
@@ -1369,7 +1369,7 @@ gui:
       &fRemove unstarted missions
       &fand get new ones!
       
-      &fCost: &e${price}
+      &fCost: &eꟼ{price}
       
       {action}
     finished: "&aFinished&f "
@@ -1494,7 +1494,7 @@ gui:
       taxes: |-
         &eCurrent Taxes
     
-        &fMember taxes: &e${tax}
+        &fMember taxes: &eꟼ{tax}
 
     management:
       title: "Manage {state}"
@@ -1614,10 +1614,10 @@ gui:
         &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
-        &fBank: &e${bank}
-        &fUpkeep: &e${upkeep}
-        &fJoin Fee: &e${joinfee}
-        &fDaily Tax: &e${tax}
+        &fBank: &eꟼ{bank}
+        &fUpkeep: &eꟼ{upkeep}
+        &fJoin Fee: &eꟼ{joinfee}
+        &fDaily Tax: &eꟼ{tax}
         &fTax Evasion: &e{taxdebtaction}
         &fDaily Missions: &e{dailymissions}
         &fFinished Missions: &e{missions}
@@ -1808,7 +1808,7 @@ gui:
   
       Player Info
       &f➤ Rank: &6{vaultprefix}
-      &f➤ Balance: &6${balance}
+      &f➤ Balance: &6ꟼ{balance}
       &f➤ Cooperation Points: &6{missionpoints}
       &f➤ Last Login &c{lastloginduration}
     accepted:
@@ -1832,8 +1832,8 @@ gui:
     taxes:
       entry: |-
         &eTaxes
-        &fTotal Donation: &e${donated}
-        &fTotal Tax: &e${taxpaid}
+        &fTotal Donation: &eꟼ{donated}
+        &fTotal Tax: &eꟼ{taxpaid}
         &fTax Exemption: &a{exempted}
   
         {action}
@@ -2142,7 +2142,7 @@ gui:
         &eSet Join Fee
         &fAdd a charge for joining
         
-        &fCurrent Joining fee: &e${joinfee}
+        &fCurrent Joining fee: &eꟼ{joinfee}
   
         {action}
       anvil:
@@ -2193,7 +2193,7 @@ gui:
     title: "Join Requests"
     entry: |-
       &e{name}
-      &fBalance: &e${balance}
+      &fBalance: &eꟼ{balance}
       
       &bLeft-Click to accept
       &cRight-Click to reject
@@ -2270,11 +2270,11 @@ gui:
       &fSize: &e{size}&f/&e{maxsize}
       &fAccess: &e{access}
       &fRecruitment: &e{jointype}
-      &fBank: &e${bank}
-      &fUpkeep: &e${upkeep}
-      &fJoin Fee: &e${joinfee}
-      &fDaily Tax: &e${tax}
-      &fAuction Tax: &e${tax}
+      &fBank: &eꟼ{bank}
+      &fUpkeep: &eꟼ{upkeep}
+      &fJoin Fee: &eꟼ{joinfee}
+      &fDaily Tax: &eꟼ{tax}
+      &fAuction Tax: &eꟼ{tax}
       &fTax Evasion Action: &e{taxdebtaction}
       &fCooperation Points: &e{missionpoints}
       &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims}
@@ -2574,8 +2574,8 @@ command:
         free: |-
           &e&l{name}
           &fSettlement: &enone
-          &fBalance: &e${balance}
-          &fTax: &e${tax}
+          &fBalance: &eꟼ{balance}
+          &fTax: &eꟼ{tax}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
@@ -2583,9 +2583,9 @@ command:
           &e&l{name}
           &fSettlement: &e{settlement}
           &fRank: &e{title}
-          &fBalance: &e${balance}
-          &fTax: &e${tax}
-          &fCooperation Points: &e${missionpoints}
+          &fBalance: &eꟼ{balance}
+          &fTax: &eꟼ{tax}
+          &fCooperation Points: &eꟼ{missionpoints}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
@@ -2595,9 +2595,9 @@ command:
           &fEmpire Rank: &e{empirerank}
           &fSettlement: &e{settlement}
           &fRank: &e{title}
-          &fBalance: &e${balance}
-          &fTax: &e${tax}
-          &fCooperation Points: &e${missionpoints}
+          &fBalance: &eꟼ{balance}
+          &fTax: &eꟼ{tax}
+          &fCooperation Points: &eꟼ{missionpoints}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
@@ -2969,8 +2969,8 @@ command:
         &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
-        &fBank: &e${bank}
-        &fUpkeep: &e{upkeep} | &fDaily tax: &e${tax} | &fJoin fee: &e${joinfee}
+        &fBank: &eꟼ{bank}
+        &fUpkeep: &e{upkeep} | &fDaily tax: &eꟼ{tax} | &fJoin fee: &eꟼ{joinfee}
         &fTax Evasion: &e{taxdebtaction}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
@@ -2984,8 +2984,8 @@ command:
         &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
-        &fBank: &e${bank}
-        &fUpkeep: &e{upkeep} | &fDaily tax: &e${tax} | &fJoin fee: &e${joinfee}
+        &fBank: &eꟼ{bank}
+        &fUpkeep: &e{upkeep} | &fDaily tax: &eꟼ{tax} | &fJoin fee: &eꟼ{joinfee}
         &fTax Evasion: &e{taxdebtaction}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
@@ -3032,11 +3032,11 @@ command:
     invite:
       already-in-settlement: "&c&l{name} is already in a {state}"
       already-has-invite: "&c&l{name} already has an invite from your {state}"
-      joinfee: "&7Fee to join is &e${amount}!"
+      joinfee: "&7Fee to join is &eꟼ{amount}!"
       received: |-
         &e&l(!) &r&7Invite received from {state} {name}! 
         &7Click or type [&e/s join {name}](suggest_command=/s join {name}) &7to join.
-      mail: "You have been invited to join {state} {name}! Join via /s. Fee is ${amount} and it has a ${tax} tax!"
+      mail: "You have been invited to join {state} {name}! Join via /s. Fee is ꟼ{amount} and it has a ꟼ{tax} tax!"
       alert: "&e&l(!) &r&e{player}&7 has been invited to the settlement."
       description: Invite someone to join your settlement
     join:
@@ -3128,7 +3128,7 @@ command:
       wait-for-missions: "&c&lYou do not have any missions from your {state} yet. Wait for the next distribution!"
       description: View missions available to your settlement
       redistribute:
-        success: "&eGot {amount} new missions for ${price}"
+        success: "&eGot {amount} new missions for ꟼ{price}"
         fail: "&cUnable to distribute new missions. Please complete your started ones!"
         description: Get new new missions for a price
     mode:
@@ -3310,8 +3310,8 @@ command:
         &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
-        &fBank: &e${bank}
-        &fUpkeep: &e{upkeep} | &fDaily tax: &e${tax} | &fJoin fee: &e${joinfee}
+        &fBank: &eꟼ{bank}
+        &fUpkeep: &e{upkeep} | &fDaily tax: &eꟼ{tax} | &fJoin fee: &eꟼ{joinfee}
         &fTax Evasion: &e{taxdebtaction}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &6&lOutposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
@@ -3325,8 +3325,8 @@ command:
         &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
-        &fBank: &e${bank}
-        &fUpkeep: &e{upkeep} | &fDaily tax: &e${tax} | &fJoin fee: &e${joinfee}
+        &fBank: &eꟼ{bank}
+        &fUpkeep: &e{upkeep} | &fDaily tax: &eꟼ{tax} | &fJoin fee: &eꟼ{joinfee}
         &fTax Evasion: &e{taxdebtaction}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
@@ -3644,7 +3644,7 @@ command:
         &7
         &a&l               Congratulations
         &r&7        You have created a new empire!
-        &r&7  &6${cost}&7 have been deducated from your {capitalstate} bank!
+        &r&7  &6ꟼ{cost}&7 have been deducated from your {capitalstate} bank!
         &r&7
         &r&7   Make sure to deposit money into your [&a/e bank](/e bank)&7
         &r&7                  for the [&a/e upkeep](/e upkeep)
@@ -3694,7 +3694,7 @@ command:
         &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
-        &fBank: &e${bank}
+        &fBank: &eꟼ{bank}
         &fUpkeep: &e{upkeep} | &fDaily tax: &e{tax} | &fJoin fee: &e{joinfee}
         &fTax Evasion: &e{taxdebtaction}
         &fDaily Missions: &e{dailymissions}
@@ -3843,7 +3843,7 @@ command:
       wait-for-missions: "&c&lYou do not have any missions from your {state} yet. Wait for the next distribution!"
       description: View missions available to your settlement
       redistribute:
-        success: "&eGot {amount} new missions for ${price}"
+        success: "&eGot {amount} new missions for ꟼ{price}"
         fail: "&cUnable to distribute new missions. Please complete your started ones!"
         description: Get new missions for your settlement for a price
     npc:
@@ -3982,7 +3982,7 @@ command:
         &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
-        &fBank: &e${bank}
+        &fBank: &eꟼ{bank}
         &fUpkeep: &e{upkeep} | &fDaily tax: &e{tax} | &fJoin fee: &e{joinfee}
         &fTax Evasion: &e{taxdebtaction}
         &fDaily Missions: &e{dailymissions}
