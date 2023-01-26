@@ -75,7 +75,7 @@ claiming:
       # Set to 0 to disable
       distance: 4
       # Whether or not to block building outside the range.
-      block-outside: true
+      block-outside: false
       # Whether or not to block building inside the range.
       block-inside: false
       # Which blocks are allowed to get built anyways.
