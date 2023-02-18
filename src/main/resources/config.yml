@@ -324,6 +324,8 @@ lock:
   - dispenser
   - dropper
   - furnace
+  - smoker
+  - blast_furnace
   - '*shulker_box'
   - '*_door'
   - '*_trapdoor'
