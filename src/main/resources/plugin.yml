@@ -2,7 +2,7 @@ main: de.themoep.settlements.SettlementsPlugin
 version: "${minecraft.plugin.version}"
 name: Settlements
 depend: [Vault]
-softdepend: [LWC, ChestShop, Multiverse-Core, Essentials, CMI, PlaceholderAPI, Brewery, PlotSquared, Citizens, Denizen]
+softdepend: [LWC, ChestShop, Multiverse-Core, CMI, PlaceholderAPI, Brewery, PlotSquared, Citizens, Denizen]
 authors: [Phoenix616, Oheers, FireML]
 api-version: 1.19
 commands:

@@ -239,10 +239,6 @@
             <url>https://zebradrive.de/maven/</url>
         </repository>-->
         <repository>
-            <id>essentials-releases</id>
-            <url>https://repo.essentialsx.net/releases/</url>
-        </repository>
-        <repository>
             <id>IntellectualSites</id>
             <url>https://mvn.intellectualsites.com/content/groups/public/</url>
         </repository>
@@ -348,12 +344,6 @@
                     <artifactId>metrics</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>net.essentialsx</groupId>
-            <artifactId>EssentialsX</artifactId>
-            <version>2.19.7</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.zrips.cmi</groupId>

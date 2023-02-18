@@ -16,7 +16,6 @@ import de.themoep.settlements.integration.ChestShopIntegration;
 import de.themoep.settlements.integration.CmiIntegration;
 import de.themoep.settlements.integration.citizens.CitizensIntegration;
 import de.themoep.settlements.integration.denizen.DenizenIntegration;
-import de.themoep.settlements.integration.EssentialsIntegration;
 import de.themoep.settlements.integration.IgnoreProvider;
 import de.themoep.settlements.integration.LWCIntegration;
 import de.themoep.settlements.integration.MailProvider;
@@ -313,10 +312,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     public void onLoad() {
         registerDependency("CMI", p -> {
             new CmiIntegration();
-            return true;
-        });
-        registerDependency("Essentials", p -> {
-            new EssentialsIntegration();
             return true;
         });
         registerDependency("PlaceholderAPI", p -> {
