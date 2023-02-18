@@ -43,7 +43,7 @@ commands:
     aliases: [trade,tc]
   generalchat:
     description: General chat
-    aliases: [general,gc]
+    aliases: [general,gc,g]
   helpchat:
     description: Help chat
   eventchat:
@@ -67,6 +67,9 @@ commands:
   staffchat:
     description: Staff chat
     aliases: [staff,stc]
+  content_creatorchat:
+    description: Content Creator Chat
+    aliases: [content-creator, cc]
   message:
     description: Private message command
     aliases: [msg, tell, pm, m, w, t, whisper, emsg, etell, epm, ewhisper]
