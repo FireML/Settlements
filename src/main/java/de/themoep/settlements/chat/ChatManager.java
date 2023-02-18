@@ -20,7 +20,6 @@ import de.themoep.settlements.integration.PlaceholderApiIntegration;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
