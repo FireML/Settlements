@@ -7,7 +7,6 @@ import com.google.common.collect.ImmutableMap;
 import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.lock.LockCommand;
 import de.themoep.settlements.command.lock.UnlockCommand;
-import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.world.SimpleBlockLocation;
