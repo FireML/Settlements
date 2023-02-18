@@ -3,8 +3,8 @@ version: "${minecraft.plugin.version}"
 name: Settlements
 depend: [Vault]
 softdepend: [LWC, ChestShop, Multiverse-Core, Essentials, CMI, PlaceholderAPI, Brewery, PlotSquared, Citizens, Denizen]
-author: Phoenix616
-api-version: 1.16
+authors: [Phoenix616, Oheers, FireML]
+api-version: 1.19
 commands:
   plot:
     description: Plot Commands.
