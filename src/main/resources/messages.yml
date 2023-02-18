@@ -586,7 +586,7 @@ names:
     passivespawning: "Passive Mobspawning"
 integration:
   chestshop:
-    not-allowed: "&cYou can only create shops in the Kingdoms Worlds!"
+    not-allowed: "&cYou can only create shops inside of Claims!"
     bought-from-shop: "&a[Shop] {buyer} bought {item} for {price} from your {state} shop at {world}/{x}/{y}/{z}."
     out-of-stock: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 is out of stock! ({buyer} tried to buy)"
     sold-to-shop: "&a[Shop] {seller} sold {item} for {price} to your {state} shop at {world}/{x}/{y}/{z}."
