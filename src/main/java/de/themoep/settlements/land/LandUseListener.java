@@ -7,27 +7,20 @@ import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Pair;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.SettlementsPlugin;
-import org.bukkit.FluidCollisionMode;
-import org.bukkit.Location;
-import org.bukkit.Tag;
+import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Creeper;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.Mob;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.Material;
-import org.bukkit.entity.Cow;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
@@ -37,7 +30,6 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.EventHandler;
-import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTakeLecternBookEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.projectiles.BlockProjectileSource;
@@ -76,17 +68,20 @@ public class LandUseListener implements LandAccessChecker, Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void on(PlayerPickupItemEvent e) {
-        if (MaterialUtils.FARM_ITEMS.contains(e.getItem().getItemStack().getType())
-                || MaterialUtils.FARM_BLOCKS.contains(e.getItem().getItemStack().getType())
-                || MaterialUtils.FARM_BLOCKS_DESTROY.contains(e.getItem().getItemStack().getType())) {
-            if (this.canUse(e.getPlayer(), Tag.SAPLINGS.isTagged(e.getItem().getItemStack().getType()) ? Use.TREES : Use.FARMING, e.getPlayer().getLocation()).getLeft()) {
-                return;
+    public void on(EntityPickupItemEvent e) {
+        if (e.getEntityType() == EntityType.PLAYER) {
+            Player player = (Player) Bukkit.getOfflinePlayer(e.getEntity().getUniqueId());
+            if (MaterialUtils.FARM_ITEMS.contains(e.getItem().getItemStack().getType())
+                    || MaterialUtils.FARM_BLOCKS.contains(e.getItem().getItemStack().getType())
+                    || MaterialUtils.FARM_BLOCKS_DESTROY.contains(e.getItem().getItemStack().getType())) {
+                if (this.canUse(player, Tag.SAPLINGS.isTagged(e.getItem().getItemStack().getType()) ? Use.TREES : Use.FARMING, player.getLocation()).getLeft()) {
+                    return;
+                }
             }
-        }
-        Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.ITEM, e.getPlayer().getLocation());
-        if (!response.getLeft()) {
-            e.setCancelled(true);
+            Pair<Boolean, String> response = this.canUse(player, Use.ITEM, player.getLocation());
+            if (!response.getLeft()) {
+                e.setCancelled(true);
+            }
         }
     }
 
