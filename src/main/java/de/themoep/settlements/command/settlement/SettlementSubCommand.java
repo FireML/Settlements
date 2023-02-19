@@ -3,6 +3,7 @@ package de.themoep.settlements.command.settlement;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.ResidentPermsSubCommand;
 import de.themoep.settlements.command.SubCommand;
+import de.themoep.settlements.utils.config.Config;
 
 public abstract class SettlementSubCommand extends ResidentPermsSubCommand {
 
@@ -16,7 +17,7 @@ public abstract class SettlementSubCommand extends ResidentPermsSubCommand {
             getError("settlement-required").tell(resident);
             return false;
         }
-        if (!resident.getSettlement().hasUnlocked(getPermission())) {
+        if (!resident.getSettlement().hasUnlocked(getPermission()) && Config.Citizens.UNLOCK_DEPENDENCY) {
             resident.tell(getUnlockText(resident.getSettlement(), getPermission()));
             return false;
         }

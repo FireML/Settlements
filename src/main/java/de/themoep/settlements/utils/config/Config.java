@@ -696,5 +696,8 @@ public class Config {
 
         @ConfigComment("Attempt to force respawn NPCs on startup if they are missing (e.g. for Villagers)")
         public static boolean FORCE_RESPAWN_NPCS = false;
+
+        @ConfigComment("Are the NPCs needed to be unlocked run certain Settlements related commands?")
+        public static boolean UNLOCK_DEPENDENCY = false;
     }
 }

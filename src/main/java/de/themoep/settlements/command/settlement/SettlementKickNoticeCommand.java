@@ -37,13 +37,13 @@ public class SettlementKickNoticeCommand extends SettlementSubCommand {
             }
             if (res.getSettlement().hasPermission(player, "kicknotice")) {
                 for (MailProvider mailProvider : SettlementsPlugin.getInstance().getMailProviders()) {
-                    mailProvider.sendMail(Message.get("eviction.sender").getReplacedText(
+                    mailProvider.sendMail(Message.get("eviction.letter.sender").getReplacedText(
                                     "state", res.getSettlement().getStateTag(),
                                     "name", res.getSettlement().getName(),
                                     "chieftitle", res.getSettlement().getChief().getSettlementTitle(),
                                     "chiefname", res.getSettlement().getChief().getName()
                             ), res,
-                            Message.get("eviction.letter").getReplacedText(
+                            Message.get("eviction.letter.text").getReplacedText(
                                     "state", res.getSettlement().getStateTag(),
                                     "name", res.getSettlement().getName()
                             ));

@@ -88,11 +88,6 @@ public class DenizenIntegration {
             }
             return LandTag.valueOf(attribute.getParam(), attribute.context);
         });
-
-        EmpireTag.registerTags();
-        LandTag.registerTags();
-        ResidentTag.registerTags();
-        SettlementTag.registerTags();
     }
 
     public String getDenizenVersion() {

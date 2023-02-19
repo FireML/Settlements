@@ -486,3 +486,5 @@ citizens:
   repeat-messages: false
   # Attempt to force respawn NPCs on startup if they are missing (e.g. for Villagers)
   force-respawn-npcs: false
+  # Are the NPCs needed to be unlocked run certain Settlements related commands?
+  unlock-dependency: false

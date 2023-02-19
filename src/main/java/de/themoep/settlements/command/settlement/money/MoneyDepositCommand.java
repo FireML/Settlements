@@ -7,6 +7,7 @@ import de.themoep.settlements.command.settlement.SettlementSubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
+import de.themoep.settlements.utils.config.Config;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 public class MoneyDepositCommand extends SettlementSubCommand {
@@ -16,7 +17,7 @@ public class MoneyDepositCommand extends SettlementSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        if (!resident.getSettlement().hasUnlocked("command.bank")) {
+        if (!resident.getSettlement().hasUnlocked("command.bank") && Config.Citizens.UNLOCK_DEPENDENCY) {
             resident.tell(getUnlockText(resident.getSettlement(), "command.bank"));
             return true;
         }

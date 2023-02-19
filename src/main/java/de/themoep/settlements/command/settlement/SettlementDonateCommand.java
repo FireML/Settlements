@@ -9,6 +9,7 @@ import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
+import de.themoep.settlements.utils.config.Config;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.entity.Player;
 
@@ -31,7 +32,7 @@ public class SettlementDonateCommand extends ResidentSubCommand {
             getError("settlement-doesnt-exist").tell(player, "name", name);
             return false;
         }
-        if (!settlement.hasUnlocked("command.donate")) {
+        if (!settlement.hasUnlocked("command.donate") && Config.Citizens.UNLOCK_DEPENDENCY) {
             Message.get("gui.unlockables.locked.npc").tell(resident);
             return true;
         }
