@@ -5,6 +5,7 @@ import co.aikar.timings.lib.TimingManager;
 import de.themoep.settlements.banish.BanishListener;
 import de.themoep.settlements.chat.ChatManager;
 import de.themoep.settlements.command.CommandManager;
+import de.themoep.settlements.command.TownyCommand;
 import de.themoep.settlements.customevents.CustomEventManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireListener;
@@ -188,6 +189,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             this.upkeep();
         }
         running = true;
+        getCommand("towny").setExecutor(new TownyCommand());
     }
 
     private void upkeep() {

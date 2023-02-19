@@ -72,7 +72,7 @@ commands:
     aliases: [content-creator, cc]
   message:
     description: Private message command
-    aliases: [msg, tell, pm, m, w, t, whisper, emsg, etell, epm, ewhisper]
+    aliases: [msg, tell, pm, m, w, whisper, emsg, etell, epm, ewhisper]
   reply:
     description: PM reply command
     aliases: [r]
@@ -95,6 +95,8 @@ commands:
     description: Toggle the warning when building near settlements
     aliases: [togglewarning]
     usage: /<command> <settlement>
+  towny:
+    aliases: [t]
 permissions:
   settlements.admin:
     description: Permission for admins. Gives access to everything.
