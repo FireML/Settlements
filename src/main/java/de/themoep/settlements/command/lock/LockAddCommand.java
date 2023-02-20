@@ -1,7 +1,7 @@
 package de.themoep.settlements.command.lock;
 
-import de.themoep.settlements.command.common.TargetParser;
 import de.themoep.settlements.command.PlayerSubCommand;
+import de.themoep.settlements.command.common.TargetParser;
 import de.themoep.settlements.lock.LockManager;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;

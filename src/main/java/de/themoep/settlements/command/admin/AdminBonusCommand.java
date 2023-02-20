@@ -1,13 +1,13 @@
 package de.themoep.settlements.command.admin;
 
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.command.CommandSender;

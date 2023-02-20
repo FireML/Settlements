@@ -2,11 +2,10 @@ package de.themoep.settlements.rank;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import de.themoep.settlements.utils.Message;
-import de.themoep.settlements.utils.Next;
+import de.themoep.settlements.perk.PerkEffect;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementState;
-import de.themoep.settlements.perk.PerkEffect;
+import de.themoep.settlements.utils.Message;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 

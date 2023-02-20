@@ -1,32 +1,25 @@
 package de.themoep.settlements.lock;
 
+import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.db.DatabaseSerializable;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.land.LandManager;
+import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.MaterialUtils;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
-import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.world.SimpleBlockLocation;
-import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.db.DatabaseSerializable;
-import de.themoep.settlements.land.LandManager;
-import de.themoep.settlements.land.OwnedLand;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public class Lock implements DatabaseSerializable {

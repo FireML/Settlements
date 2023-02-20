@@ -1,17 +1,17 @@
 package de.themoep.settlements.command.admin;
 
+import de.themoep.settlements.command.SubCommand;
+import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.land.events.LandownerChiefChangeEvent;
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.land.events.LandownerChiefChangeEvent;
 import de.themoep.settlements.utils.Message;
-import de.themoep.settlements.utils.Utils;
-import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.MessageUtils;
+import de.themoep.settlements.utils.Utils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import de.themoep.settlements.command.SubCommand;
 
 public class AdminRankCommand extends SubCommand {
     public AdminRankCommand(SubCommand parent) {

@@ -1,12 +1,12 @@
 package de.themoep.settlements.command.plot;
 
 import com.google.common.collect.ImmutableMap;
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.gui.plot.MembersGUI;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Pair;
 import de.themoep.settlements.utils.Utils;

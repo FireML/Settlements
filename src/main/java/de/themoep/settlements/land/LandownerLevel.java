@@ -4,11 +4,7 @@ import de.themoep.settlements.leveling.LevelInfo;
 import de.themoep.settlements.npc.NpcType;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class LandownerLevel extends LevelInfo {
     private Set<NpcType> npcs = new LinkedHashSet<>();

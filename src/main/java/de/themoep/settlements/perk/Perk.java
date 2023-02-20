@@ -1,21 +1,13 @@
 package de.themoep.settlements.perk;
 
+import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.utils.ConfigKey;
 import de.themoep.settlements.utils.NameTag;
-import de.themoep.settlements.land.LandOwner;
-import de.themoep.settlements.world.SimpleChunkLocation;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public class Perk implements NameTag {
     protected static final Map<String, Action> AVAILABLE_ACTIONS = new HashMap<>();

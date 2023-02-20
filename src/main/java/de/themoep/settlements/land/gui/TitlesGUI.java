@@ -1,20 +1,16 @@
 package de.themoep.settlements.land.gui;
 
-import de.themoep.inventorygui.DynamicGuiElement;
-import de.themoep.inventorygui.GuiBackElement;
-import de.themoep.inventorygui.GuiElementGroup;
-import de.themoep.inventorygui.InventoryGui;
-import de.themoep.inventorygui.StaticGuiElement;
+import de.themoep.inventorygui.*;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.settlement.SettlementTitlesCommand;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.leveling.LevelInfo;
 import de.themoep.settlements.rank.Rank;
+import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
-import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.config.Config;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.ChatColor;

@@ -1,6 +1,5 @@
 package de.themoep.settlements.command.portal;
 
-import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.HelpCommand;
 import de.themoep.settlements.command.PlayerSubCommand;
 import de.themoep.settlements.land.LandManager;
@@ -8,6 +7,7 @@ import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.portal.gui.PortalLinkGUI;
 import de.themoep.settlements.portal.gui.PortalUnlinkGUI;
+import de.themoep.settlements.resident.Resident;
 import org.bukkit.entity.Player;
 
 public class PortalCommand extends PlayerSubCommand {

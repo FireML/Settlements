@@ -2,10 +2,10 @@ package de.themoep.settlements.command.settlement;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import de.themoep.settlements.command.ResidentSubCommand;
-import de.themoep.settlements.customevents.PlayerMoveChunkEvent;
 import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.command.ResidentSubCommand;
 import de.themoep.settlements.command.SubCommand;
+import de.themoep.settlements.customevents.PlayerMoveChunkEvent;
 import de.themoep.settlements.land.ChatMap;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;

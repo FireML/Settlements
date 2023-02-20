@@ -3,17 +3,13 @@ package de.themoep.settlements.portal;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.DatabaseSerializable;
-import de.themoep.settlements.utils.WorldUtils;
 import de.themoep.settlements.utils.IdObject;
+import de.themoep.settlements.utils.WorldUtils;
 import de.themoep.settlements.world.SimpleBlockLocation;
 import org.bukkit.block.BlockFace;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 public class Portal implements DatabaseSerializable {

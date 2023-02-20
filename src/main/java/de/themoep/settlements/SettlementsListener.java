@@ -1,11 +1,11 @@
 package de.themoep.settlements;
 
 import de.themoep.settlements.chat.ChatChannel;
+import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.db.DatabaseManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;

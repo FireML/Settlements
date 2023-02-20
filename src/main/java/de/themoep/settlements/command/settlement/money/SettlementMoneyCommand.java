@@ -1,14 +1,13 @@
 package de.themoep.settlements.command.settlement.money;
 
-import de.themoep.settlements.land.gui.BankGUI;
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.command.HelpCommand;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.command.settlement.SettlementHistoryCommand;
 import de.themoep.settlements.command.settlement.SettlementSubCommand;
 import de.themoep.settlements.db.LogType;
-import de.themoep.settlements.utils.Message;
+import de.themoep.settlements.land.gui.BankGUI;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.entity.Player;
 

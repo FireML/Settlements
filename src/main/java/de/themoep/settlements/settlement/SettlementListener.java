@@ -1,7 +1,5 @@
 package de.themoep.settlements.settlement;
 
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.land.LandManager;
@@ -9,6 +7,8 @@ import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.TaxDebtAction;
 import de.themoep.settlements.rank.SettlementRank;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.world.SimpleChunkLocation;

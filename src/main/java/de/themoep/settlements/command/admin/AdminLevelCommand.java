@@ -1,9 +1,9 @@
 package de.themoep.settlements.command.admin;
 
+import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.SettlementState;
-import de.themoep.settlements.command.SubCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 

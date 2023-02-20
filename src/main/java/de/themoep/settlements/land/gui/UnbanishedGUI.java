@@ -8,7 +8,6 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.ListGui;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class UnbanishedGUI extends SettlementsGUI {
 

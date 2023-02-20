@@ -2,20 +2,15 @@ package de.themoep.settlements.utils;
 
 import de.themoep.minedown.MineDown;
 import de.themoep.minedown.Replacer;
+import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.config.ConfigManager;
-import de.themoep.settlements.SettlementsPlugin;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 

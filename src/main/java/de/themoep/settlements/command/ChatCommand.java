@@ -1,11 +1,11 @@
 package de.themoep.settlements.command;
 
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.chat.ChatManager;
 import de.themoep.settlements.chat.gui.ColorChannelSelectGui;
 import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.config.Config;

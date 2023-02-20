@@ -11,9 +11,7 @@ import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfigurableGui;
-import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Location;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class NpcListGUI extends ConfigurableGui {
 

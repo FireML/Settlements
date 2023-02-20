@@ -2,10 +2,10 @@ package de.themoep.settlements.missions;
 
 import de.themoep.inventorygui.GuiStorageElement;
 import de.themoep.inventorygui.InventoryGui;
-import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.HumanReadable;
 import de.themoep.settlements.utils.Utils;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -17,11 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public class TurnInGUI extends SettlementsGUI {
 

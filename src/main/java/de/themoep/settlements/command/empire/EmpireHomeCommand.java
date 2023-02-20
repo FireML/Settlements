@@ -1,14 +1,14 @@
 package de.themoep.settlements.command.empire;
 
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.land.LandManager;
-import de.themoep.settlements.land.OwnedLand;
-import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.ResidentSubCommand;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.land.LandManager;
+import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.rank.EmpireRank;
+import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.Location;
 

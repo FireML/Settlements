@@ -5,7 +5,6 @@ import com.google.common.collect.MultimapBuilder;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.Utils;
 
 import java.util.Collection;

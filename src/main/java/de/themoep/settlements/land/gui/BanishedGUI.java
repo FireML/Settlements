@@ -10,7 +10,6 @@ import de.themoep.settlements.utils.ListGui;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class BanishedGUI extends SettlementsGUI {
 

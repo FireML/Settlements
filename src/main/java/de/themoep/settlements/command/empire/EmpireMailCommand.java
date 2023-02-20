@@ -1,10 +1,10 @@
 package de.themoep.settlements.command.empire;
 
+import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.command.SubCommand;
 import org.bukkit.ChatColor;
 
 public class EmpireMailCommand extends EmpireSubCommand {

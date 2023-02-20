@@ -1,18 +1,12 @@
 package de.themoep.settlements.portal.gui;
 
 import de.themoep.inventorygui.GuiElementGroup;
-import de.themoep.inventorygui.GuiPageElement;
-import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.land.LandManager;
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.portal.PortalManager;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import de.themoep.settlements.resident.Resident;
 
 import java.util.ArrayList;
 import java.util.List;

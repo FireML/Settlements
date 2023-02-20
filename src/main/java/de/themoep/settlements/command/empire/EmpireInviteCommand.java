@@ -1,10 +1,10 @@
 package de.themoep.settlements.command.empire;
 
+import de.themoep.settlements.command.SubCommand;
+import de.themoep.settlements.db.InviteCache;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
-import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.db.InviteCache;
 
 public class EmpireInviteCommand extends EmpireSubCommand {
     public EmpireInviteCommand(SubCommand parent) {

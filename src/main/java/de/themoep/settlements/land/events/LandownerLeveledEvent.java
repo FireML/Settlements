@@ -6,7 +6,6 @@ import de.themoep.settlements.resident.Resident;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Called after a landowner achieved a new level

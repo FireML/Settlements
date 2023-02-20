@@ -1,11 +1,11 @@
 package de.themoep.settlements.command.admin;
 
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.rank.EmpireRank;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;

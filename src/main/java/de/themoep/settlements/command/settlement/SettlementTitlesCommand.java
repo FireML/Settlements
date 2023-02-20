@@ -1,10 +1,10 @@
 package de.themoep.settlements.command.settlement;
 
-import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.land.gui.RankSelectGUI;
 import de.themoep.settlements.land.gui.TitlesGUI;
-import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.rank.SettlementRank;
+import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 

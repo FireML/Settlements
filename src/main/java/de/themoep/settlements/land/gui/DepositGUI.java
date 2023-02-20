@@ -2,11 +2,11 @@ package de.themoep.settlements.land.gui;
 
 import de.themoep.inventorygui.GuiStorageElement;
 import de.themoep.inventorygui.InventoryGui;
+import de.themoep.settlements.SettlementsGUI;
+import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseSerializable;
 import de.themoep.settlements.leveling.Levelable;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.SettlementsGUI;
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.utils.HumanReadable;
 import de.themoep.settlements.utils.Utils;
 import net.md_5.bungee.api.chat.BaseComponent;

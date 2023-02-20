@@ -3,8 +3,6 @@ package de.themoep.settlements.invites;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.DatabaseSerializable;
 import de.themoep.settlements.utils.IdObject;
-import de.themoep.settlements.utils.NameTag;
-import de.themoep.settlements.utils.Next;
 import de.themoep.settlements.utils.Sortable;
 import de.themoep.settlements.utils.Targetable;
 

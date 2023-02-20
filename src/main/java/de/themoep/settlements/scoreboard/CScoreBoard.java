@@ -3,18 +3,16 @@ package de.themoep.settlements.scoreboard;
 import co.aikar.timings.lib.MCTiming;
 import de.themoep.settlements.SettlementsPlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.Team;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static de.themoep.settlements.utils.Utils.trim;
 

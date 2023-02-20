@@ -1,12 +1,12 @@
 package de.themoep.settlements.command.settlement;
 
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.ResidentSubCommand;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import net.milkbowl.vault.economy.EconomyResponse;

@@ -1,20 +1,13 @@
 package de.themoep.settlements.rank;
 
-import de.themoep.settlements.utils.config.ConfigManager;
-import de.themoep.settlements.settlement.SettlementState;
 import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.settlement.SettlementState;
+import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
 public class RankManager {

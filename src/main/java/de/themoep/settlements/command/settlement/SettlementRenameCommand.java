@@ -1,13 +1,11 @@
 package de.themoep.settlements.command.settlement;
 
+import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
-import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-
-import java.util.regex.Pattern;
 
 public class SettlementRenameCommand extends SettlementSubCommand {
 

@@ -1,7 +1,7 @@
 package de.themoep.settlements.customevents;
 
-import de.themoep.settlements.customevents.listeners.SpigotListener;
 import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.customevents.listeners.SpigotListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

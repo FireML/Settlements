@@ -1,11 +1,10 @@
 package de.themoep.settlements.scoreboard;
 
+import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.scoreboard.commands.CommandScoreboard;
 import de.themoep.settlements.scoreboard.commands.CommandScoreboardAdmin;
 import de.themoep.settlements.scoreboard.listeners.ScoreboardListeners;
-import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.command.CommandManager;
-import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.config.Config;
 import org.bukkit.Bukkit;

@@ -9,7 +9,6 @@ import de.themoep.settlements.integration.denizen.objects.EmpireTag;
 import de.themoep.settlements.integration.denizen.objects.LandTag;
 import de.themoep.settlements.integration.denizen.objects.ResidentTag;
 import de.themoep.settlements.integration.denizen.objects.SettlementTag;
-import de.themoep.settlements.utils.config.Config;
 
 public class DenizenIntegration {
 

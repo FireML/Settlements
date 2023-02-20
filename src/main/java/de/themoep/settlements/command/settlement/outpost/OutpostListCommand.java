@@ -1,7 +1,7 @@
 package de.themoep.settlements.command.settlement.outpost;
 
-import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.settlement.SettlementSubCommand;
+import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.world.NamedLocation;
 
 import java.text.DecimalFormat;

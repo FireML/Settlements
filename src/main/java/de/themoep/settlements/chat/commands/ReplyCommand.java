@@ -1,8 +1,8 @@
 package de.themoep.settlements.chat.commands;
 
+import de.themoep.settlements.chat.ChatManager;
 import de.themoep.settlements.command.PlayerSubCommand;
 import de.themoep.settlements.utils.MessageUtils;
-import de.themoep.settlements.chat.ChatManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

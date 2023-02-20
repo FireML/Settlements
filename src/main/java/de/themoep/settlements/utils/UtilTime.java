@@ -1,7 +1,6 @@
 package de.themoep.settlements.utils;
 
 import java.text.DecimalFormat;
-import java.util.concurrent.TimeUnit;
 
 public class UtilTime {
     private static final DecimalFormat SECONDS_FORMAT = new DecimalFormat("#.#");

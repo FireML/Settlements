@@ -1,10 +1,10 @@
 package de.themoep.settlements.chat.commands;
 
 import de.themoep.settlements.command.ResidentSubCommand;
+import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Utils;
-import de.themoep.settlements.db.DatabaseManager;
 
 import java.util.stream.Collectors;
 

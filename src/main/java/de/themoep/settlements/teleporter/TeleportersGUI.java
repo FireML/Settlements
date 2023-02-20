@@ -8,11 +8,11 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.empire.EmpireHomeCommand;
 import de.themoep.settlements.command.settlement.SettlementHomeCommand;
-import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
+import de.themoep.settlements.utils.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 

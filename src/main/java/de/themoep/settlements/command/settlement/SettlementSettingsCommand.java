@@ -1,8 +1,8 @@
 package de.themoep.settlements.command.settlement;
 
+import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.gui.ManagementGUI;
-import de.themoep.settlements.command.SubCommand;
 
 public class SettlementSettingsCommand extends SettlementSubCommand {
     public SettlementSettingsCommand(SubCommand parent) {
