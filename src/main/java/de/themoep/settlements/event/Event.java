@@ -2,8 +2,8 @@ package de.themoep.settlements.event;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import de.themoep.settlements.utils.NameTag;
 import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.utils.NameTag;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;

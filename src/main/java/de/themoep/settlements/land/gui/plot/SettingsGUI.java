@@ -3,6 +3,11 @@ package de.themoep.settlements.land.gui.plot;
 import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.StaticGuiElement;
+import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.land.ChatMap;
+import de.themoep.settlements.land.LandManager;
+import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.gui.BuildGUI;
 import de.themoep.settlements.land.gui.PermsGUI;
 import de.themoep.settlements.resident.Resident;
@@ -12,21 +17,12 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.land.ChatMap;
-import de.themoep.settlements.land.LandManager;
-import de.themoep.settlements.land.OwnedLand;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class SettingsGUI extends PlotGUI {

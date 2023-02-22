@@ -2,20 +2,11 @@ package de.themoep.settlements.db;
 
 import com.zaxxer.hikari.HikariDataSource;
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.config.Config;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.sql.*;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 

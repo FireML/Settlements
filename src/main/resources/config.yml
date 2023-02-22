@@ -54,7 +54,11 @@ cache:
 claiming:
   # Worlds in which claiming of chunks are disabled
   disabled-worlds:
-  - world_nether
+  - Resource
+  - Resource_nether
+  - Resource_the_end
+  - Spawn
+  - Events
   # Distance in chunks that have to be between claims of non-allied landowners
   enemy-distance: 4
   # Maximum radius in chunks which can be (un)claimed with the radius (un)claiming commands
@@ -64,39 +68,43 @@ claiming:
   mob-flag-check-period: 30
   close:
     building:
-      # The distance in chunks to other landownerss in which to allow building
+      # The distance in chunks to other landowners in which to allow building
       # Outside of this distance building will not be allowed.
       # If a notification message is set in the messages.yml at 'close-claims'
       # then that will be sent to the player or members of the settlement.
       # Set to 0 to disable
       distance: 4
       # Whether or not to block building outside the range.
-      block-outside: true
+      block-outside: false
       # Whether or not to block building inside the range.
       block-inside: false
       # Which blocks are allowed to get built anyways.
       allowed-blocks:
       - "*shulker_box"
       allowed-worlds:
-      - "Kingdoms"
+      - "Resource"
+      - "Resource_nether"
+      - "Resource_the_end"
+      - "Events"
+      - "Spawn"
       # The time in minutes a disabled close building notification stays around
       toggle-time: 30
     unclaim:
       # How many days to wait before automatically unclaiming claims that are too close when unallying
       # Set to -1 to disable the automatic unclaiming of too close lands
-      grace-days: 4
+      grace-days: 0
       # Whether or not outposts are unclaimed
       outposts: false
       
 settlement:
   # How much a player must pay to create a settlement
-  creation-cost: 1000
+  creation-cost: 0
   # How much money a settlement starts with
   start-balance: 1000
   # Maximum size a settlement can have (0 disables the size check)
   max-size: 30
   # Maximum value that a settlement's tax can be set to. Set to -1 to disable maximum
-  max-tax: -1
+  max-tax: 10000
   # Maximum value that a settlement's auction tax can be set to. Set to -1 to disable maximum
   max-auction-tax: 30
   # How many different titles can be configured for a rank
@@ -108,7 +116,7 @@ settlement:
   
   leveling:
     # The amount of levels until a settlement converts from a Village to a Kingdom
-    village-max-level: 5
+    village-max-level: 6
     #The maximum amount of Kingdom levels
     kingdom-max-level: 15
 
@@ -124,7 +132,7 @@ settlement:
     # Should missions that are not started yet be removed and replaced by new missions on reset?
     remove-not-started-missions: true
     # Should already started missions be removed and replaced by new missions on reset?
-    remove-started-missions: false
+    remove-started-missions: true
     # Should finished missions be reset? If those are not reset then the resident needs to wait for the settlement to upgrade to get more!
     remove-finished-missions: true
     # Amount to pay from a settlement's bank to distribute new missions. (Set to -1 to disable this functionality)
@@ -135,7 +143,11 @@ settlement:
     claiming:
       # Worlds in which claiming of Settlement chunks are disabled
       disabled-worlds:
-      - world_nether
+      - Spawn
+      - Resource
+      - Resource_the_end
+      - Resource_nether
+      - Events
 
   outpost:
     # How much a settlement must pay to create a new outpost
@@ -144,7 +156,7 @@ settlement:
   upkeep:
     # The amount of minutes that a settlement will stay abandoned after not being able to pay their upkeep
     # Abandoned settlements can be raided and fully accessed but nobody can claim them
-    abandon-time: 30
+    abandon-time: 120
     # The amount of days that a settlement's chief can be offline until it gets deleted
     # Set to -1 if you don't want to delete them at all
     inactive-time: 30
@@ -153,11 +165,11 @@ empire:
   # Whether or not a player can transfer their bought claims to an empire
   claim-transfer: false
   # How much a settlement must pay to create an empire
-  creation-cost: 0
+  creation-cost: 2000000
   # How much money an empire starts with
-  start-balance: 0
+  start-balance: 10000
   # Maximum value that an empire's tax can be set to. Set to -1 to disable maximum
-  max-tax: 1000000
+  max-tax: 100000
   # Maximum value that an empire's auction tax can be set to. Set to -1 to disable maximum
   max-auction-tax: 30
   # Maximum size an empire can have (0 disables the size check)
@@ -187,7 +199,7 @@ empire:
     # Should missions that are not started yet be removed and replaced by new missions on reset?
     remove-not-started-missions: true
     # Should already started missions be removed and replaced by new missions on reset?
-    remove-started-missions: false
+    remove-started-missions: true
     # Should finished missions be reset? If those are not reset then the settlement needs to wait for the empire to upgrade to get more!
     remove-finished-missions: true
     # Amount to pay from an empire's bank to distribute new missions. (Set to -1 to disable this functionality)
@@ -200,11 +212,15 @@ empire:
     enabled: true
     # Worlds in which claiming of empire chunks are disabled
     disabled-worlds:
-    - world_nether
+    - Spawn
+    - Resource
+    - Resource_the_end
+    - Resource_nether
+    - Events
 
   world:
     # Whether each empire should get their own world automatically generated
-    enabled: true
+    enabled: false
     # The prefix of all empire worlds. WARNING: Changing this with existing worlds will break them!
     prefix: ''
     # The suffix of all empire worlds. WARNING: Changing this with existing worlds will break them!
@@ -308,6 +324,8 @@ lock:
   - dispenser
   - dropper
   - furnace
+  - smoker
+  - blast_furnace
   - '*shulker_box'
   - '*_door'
   - '*_trapdoor'
@@ -367,7 +385,7 @@ chat:
   # Useful for cross-server chat (requires ConnectorPlugin)
   chat-only: false
   # Should all channels be set to the default config on player login or be the same as on logout
-  reset-channels-on-login: true
+  reset-channels-on-login: false
   
   # The default chat channel colors
   channel-colors:

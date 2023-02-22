@@ -1,9 +1,9 @@
 package de.themoep.settlements.lock;
 
-import de.themoep.settlements.utils.ConfigMessages;
-import de.themoep.settlements.world.SimpleChunkLocation;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.land.LandAccessChecker;
+import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.world.SimpleChunkLocation;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;

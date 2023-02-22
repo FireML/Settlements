@@ -1,11 +1,11 @@
 package de.themoep.settlements.command.settlement;
 
+import de.themoep.settlements.command.SubCommand;
+import de.themoep.settlements.perk.PerkData;
+import de.themoep.settlements.perk.SettlementPerk;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.gui.PerksGUI;
-import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.perk.SettlementPerk;
-import de.themoep.settlements.perk.PerkData;
 
 public class SettlementPerksCommand extends SettlementSubCommand {
     public SettlementPerksCommand(SubCommand parent) {

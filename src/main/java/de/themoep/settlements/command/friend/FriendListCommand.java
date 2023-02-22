@@ -1,19 +1,17 @@
 package de.themoep.settlements.command.friend;
 
+import de.themoep.settlements.command.PlayerSubCommand;
 import de.themoep.settlements.resident.FriendRequest;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import net.md_5.bungee.api.chat.ComponentBuilder;
-import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import de.themoep.settlements.utils.MessageUtils;
-import org.bukkit.entity.Player;
-import de.themoep.settlements.command.PlayerSubCommand;
 
 public class FriendListCommand extends PlayerSubCommand {
     public FriendListCommand(PlayerSubCommand parent) {

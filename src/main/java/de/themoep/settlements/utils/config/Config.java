@@ -3,7 +3,6 @@ package de.themoep.settlements.utils.config;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
 
@@ -11,7 +10,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 public class Config {
 

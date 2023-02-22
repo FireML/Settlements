@@ -1,10 +1,10 @@
 package de.themoep.settlements.command.settlement.outpost;
 
-import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.settlement.SettlementSubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.resident.Resident;
 
 import java.util.Collection;
 

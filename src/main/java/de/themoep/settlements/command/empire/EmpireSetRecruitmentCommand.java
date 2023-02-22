@@ -2,9 +2,9 @@ package de.themoep.settlements.command.empire;
 
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.land.gui.RecruitmentGUI;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.JoinType;
-import de.themoep.settlements.land.gui.RecruitmentGUI;
 
 public class EmpireSetRecruitmentCommand extends EmpireSubCommand {
     public EmpireSetRecruitmentCommand(SubCommand parent) {

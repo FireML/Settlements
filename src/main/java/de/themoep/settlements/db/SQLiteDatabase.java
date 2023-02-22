@@ -4,11 +4,7 @@ import de.themoep.settlements.SettlementsPlugin;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;

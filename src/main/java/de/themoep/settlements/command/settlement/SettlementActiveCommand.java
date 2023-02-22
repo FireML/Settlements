@@ -1,8 +1,8 @@
 package de.themoep.settlements.command.settlement;
 
 import com.google.common.collect.ImmutableMap;
-import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.SubCommand;
+import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.Utils;

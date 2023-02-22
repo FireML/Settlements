@@ -1,9 +1,9 @@
 package de.themoep.settlements.command.plot;
 
-import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 

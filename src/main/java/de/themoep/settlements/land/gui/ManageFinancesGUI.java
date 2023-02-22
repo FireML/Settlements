@@ -14,8 +14,6 @@ import de.themoep.settlements.utils.config.Config;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.wesjd.anvilgui.AnvilGUI;
 
-import java.util.logging.Level;
-
 public class ManageFinancesGUI extends ConfigurableGui {
 
     public ManageFinancesGUI(Resident resident, LandOwner<?, ?> landOwner) {

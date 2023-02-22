@@ -1,12 +1,11 @@
 package de.themoep.settlements.command.resident;
 
+import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.utils.Utils;
-
 import de.themoep.settlements.utils.MessageUtils;
+import de.themoep.settlements.utils.Utils;
 import org.bukkit.command.CommandSender;
-import de.themoep.settlements.command.SubCommand;
 import org.bukkit.entity.Player;
 
 public class ResidentShowCommand extends SubCommand {

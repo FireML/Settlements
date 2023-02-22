@@ -3,7 +3,6 @@ package de.themoep.settlements.command.settlement;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.integration.MailProvider;
-import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Message;

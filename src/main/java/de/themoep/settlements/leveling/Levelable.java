@@ -1,17 +1,14 @@
 package de.themoep.settlements.leveling;
 
 import de.themoep.settlements.perk.LevelPerk;
-import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.perk.Vaultable;
+import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.NameTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 

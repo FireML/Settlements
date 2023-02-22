@@ -1,18 +1,14 @@
 package de.themoep.settlements.command.plot;
 
-import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.ChatMap;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.world.SimpleChunkLocation;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PlotLinkCommand extends PlotSubCommand {

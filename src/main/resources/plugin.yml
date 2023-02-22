@@ -2,9 +2,9 @@ main: de.themoep.settlements.SettlementsPlugin
 version: "${minecraft.plugin.version}"
 name: Settlements
 depend: [Vault]
-softdepend: [LWC, ChestShop, Multiverse-Core, Essentials, CMI, PlaceholderAPI, Brewery, PlotSquared, Citizens, Denizen]
-author: Phoenix616
-api-version: 1.16
+softdepend: [LWC, ChestShop, Multiverse-Core, CMI, PlaceholderAPI, Brewery, PlotSquared, Citizens, Denizen]
+authors: [Phoenix616, Oheers, FireML]
+api-version: 1.19
 commands:
   plot:
     description: Plot Commands.
@@ -43,7 +43,7 @@ commands:
     aliases: [trade,tc]
   generalchat:
     description: General chat
-    aliases: [general,gc]
+    aliases: [general,gc,g]
   helpchat:
     description: Help chat
   eventchat:
@@ -67,9 +67,12 @@ commands:
   staffchat:
     description: Staff chat
     aliases: [staff,stc]
+  content_creatorchat:
+    description: Content Creator Chat
+    aliases: [content-creator, cc]
   message:
     description: Private message command
-    aliases: [msg, tell, pm, m, w, t, whisper, emsg, etell, epm, ewhisper]
+    aliases: [msg, tell, pm, m, w, whisper, emsg, etell, epm, ewhisper]
   reply:
     description: PM reply command
     aliases: [r]
@@ -92,6 +95,8 @@ commands:
     description: Toggle the warning when building near settlements
     aliases: [togglewarning]
     usage: /<command> <settlement>
+  towny:
+    aliases: [t]
 permissions:
   settlements.admin:
     description: Permission for admins. Gives access to everything.

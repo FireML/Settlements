@@ -2,12 +2,12 @@ package de.themoep.settlements.command.settlement.outpost;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.settlement.SettlementSubCommand;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.portal.PortalManager;
+import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.config.Config;
 import org.bukkit.Chunk;

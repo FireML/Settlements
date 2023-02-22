@@ -1,12 +1,12 @@
 package de.themoep.settlements.command.settlement;
 
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.command.ResidentSubCommand;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.land.LandAccess;
 import de.themoep.settlements.rank.SettlementRank;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.Utils;
 
 public class SettlementHomeCommand extends ResidentSubCommand {

@@ -1,12 +1,10 @@
 package de.themoep.settlements.utils;
 
-import java.util.Random;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.block.Block;
 
-import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class UtilMath {
     public UtilMath() {

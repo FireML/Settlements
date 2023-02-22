@@ -1,8 +1,8 @@
 package de.themoep.settlements.command.empire;
 
 import de.themoep.settlements.command.ResidentSubCommand;
-import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.SubCommand;
+import de.themoep.settlements.resident.Resident;
 
 public abstract class EmpireSubCommand extends ResidentSubCommand {
 

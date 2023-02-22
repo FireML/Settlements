@@ -14,18 +14,13 @@ import de.themoep.settlements.missions.MissionTaker;
 import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.world.SimpleChunkLocation;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class DatabaseManager {
     private static DatabaseManager instance;

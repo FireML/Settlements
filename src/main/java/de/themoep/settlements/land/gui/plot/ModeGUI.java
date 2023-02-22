@@ -4,12 +4,12 @@ import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.utils.ItemUtils;
-import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.PlotMode;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.utils.ItemUtils;
+import de.themoep.settlements.utils.Message;
 import org.bukkit.event.inventory.ClickType;
 
 import java.util.ArrayList;

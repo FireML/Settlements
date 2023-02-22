@@ -1,11 +1,11 @@
 package de.themoep.settlements.command.empire;
 
-import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.empire.gui.PerksGUI;
 import de.themoep.settlements.perk.EmpirePerk;
 import de.themoep.settlements.perk.PerkData;
+import de.themoep.settlements.resident.Resident;
 
 public class EmpirePerksCommand extends EmpireSubCommand {
     public EmpirePerksCommand(SubCommand parent) {

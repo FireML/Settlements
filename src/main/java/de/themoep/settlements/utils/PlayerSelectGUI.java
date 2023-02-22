@@ -1,10 +1,6 @@
 package de.themoep.settlements.utils;
 
-import de.themoep.inventorygui.DynamicGuiElement;
-import de.themoep.inventorygui.GuiBackElement;
-import de.themoep.inventorygui.GuiElementGroup;
-import de.themoep.inventorygui.InventoryGui;
-import de.themoep.inventorygui.StaticGuiElement;
+import de.themoep.inventorygui.*;
 import de.themoep.settlements.resident.Resident;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

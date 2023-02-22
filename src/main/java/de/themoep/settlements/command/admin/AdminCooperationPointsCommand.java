@@ -1,9 +1,9 @@
 package de.themoep.settlements.command.admin;
 
+import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.command.common.TargetParser;
 import de.themoep.settlements.db.DatabaseSerializable;
 import de.themoep.settlements.missions.MissionTaker;
-import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.utils.Targetable;
 import org.bukkit.command.CommandSender;
 

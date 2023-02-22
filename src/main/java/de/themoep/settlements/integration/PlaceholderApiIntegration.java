@@ -1,20 +1,20 @@
 package de.themoep.settlements.integration;
 
 import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.empire.Empire;
+import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.land.LandAccess;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import me.clip.placeholderapi.PlaceholderAPI;
-import me.clip.placeholderapi.PlaceholderAPIPlugin;
-import de.themoep.settlements.empire.Empire;
-import de.themoep.settlements.empire.EmpireManager;
-import de.themoep.settlements.land.LandAccess;
-import de.themoep.settlements.utils.ConfigMessages;
-import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.SettlementState;
+import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.Utils;
+import me.clip.placeholderapi.PlaceholderAPI;
+import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.clip.placeholderapi.expansion.Relational;
 import org.bukkit.entity.Player;

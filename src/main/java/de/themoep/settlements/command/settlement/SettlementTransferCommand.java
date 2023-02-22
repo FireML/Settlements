@@ -1,10 +1,10 @@
 package de.themoep.settlements.command.settlement;
 
+import de.themoep.settlements.command.SubCommand;
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 

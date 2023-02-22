@@ -1,47 +1,30 @@
 package de.themoep.settlements.land;
 
+import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.db.DatabaseSerializable;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.world.NamedLocation;
 import de.themoep.settlements.world.SimpleChunkLocation;
-import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.db.DatabaseSerializable;
-import org.bukkit.ChatColor;
-import org.bukkit.World;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.Material;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
-
-import java.util.ArrayList;
-
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 
 public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializable, ModeAble, FlagAble {
     private IdObject id = IdObject.get(null);

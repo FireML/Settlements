@@ -1,11 +1,11 @@
 package de.themoep.settlements.empire;
 
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.perk.EmpirePerk;
 import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.perk.PerkData;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.GameMode;
 import org.bukkit.World;

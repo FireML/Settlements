@@ -1,17 +1,16 @@
 package de.themoep.settlements.utils;
 
-import de.themoep.settlements.customevents.PlayerMoveBlockEvent;
 import de.themoep.settlements.SettlementsPlugin;
-import org.bukkit.event.EventHandler;
+import de.themoep.settlements.customevents.PlayerMoveBlockEvent;
 import org.bukkit.entity.Player;
-
-import java.util.HashMap;
-import java.util.UUID;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExecuteMoveUtil implements Listener {
     private static ExecuteMoveUtil instance;

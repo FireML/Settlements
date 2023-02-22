@@ -1,9 +1,9 @@
 package de.themoep.settlements.command.settlement;
 
-import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.event.Event;
 import de.themoep.settlements.event.EventManager;
+import de.themoep.settlements.settlement.Settlement;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;

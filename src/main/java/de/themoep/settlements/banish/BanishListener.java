@@ -1,10 +1,10 @@
 package de.themoep.settlements.banish;
 
-import de.themoep.settlements.customevents.PlayerMoveChunkEvent;
-import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.customevents.PlayerMoveChunkEvent;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
+import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.Bukkit;

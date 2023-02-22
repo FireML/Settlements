@@ -1,8 +1,8 @@
 package de.themoep.settlements.command.plot;
 
-import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.resident.Resident;
 
 public class PlotSaleCommand extends PlotSubCommand {
     public PlotSaleCommand(PlotCommand parent) {

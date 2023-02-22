@@ -1,12 +1,5 @@
 package de.themoep.settlements.command.settlement;
 
-import de.themoep.settlements.command.settlement.money.SettlementMoneyCommand;
-import de.themoep.settlements.command.settlement.outpost.OutpostTeleportCommand;
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.resident.gui.OverviewGUI;
-import de.themoep.settlements.resident.gui.StartGUI;
-import de.themoep.settlements.teleporter.TeleportersGUI;
 import de.themoep.settlements.command.ChatCommand;
 import de.themoep.settlements.command.HelpCommand;
 import de.themoep.settlements.command.PlayerSubCommand;
@@ -14,7 +7,14 @@ import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.command.lock.LockCommand;
 import de.themoep.settlements.command.lock.UnlockCommand;
 import de.themoep.settlements.command.plot.PlotCommand;
+import de.themoep.settlements.command.settlement.money.SettlementMoneyCommand;
+import de.themoep.settlements.command.settlement.outpost.OutpostTeleportCommand;
 import de.themoep.settlements.db.LogType;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.resident.gui.OverviewGUI;
+import de.themoep.settlements.resident.gui.StartGUI;
+import de.themoep.settlements.teleporter.TeleportersGUI;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.command.CommandSender;

@@ -1,9 +1,9 @@
 package de.themoep.settlements.command.settlement;
 
-import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.command.PlayerSubCommand;
 import de.themoep.settlements.command.SubCommand;
+import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.settlement.SettlementManager;
 import org.bukkit.entity.Player;
 
 public class SettlementHereCommand extends PlayerSubCommand {
