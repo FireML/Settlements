@@ -23,6 +23,10 @@ public class DenizenIntegration {
         ObjectFetcher.registerWithObjectFetcher(EmpireTag.class, EmpireTag.tagProcessor);
 
         ScriptEvent.registerScriptEvent(new SettlementScriptEvent());
+        SettlementTag.registerTags();
+        ResidentTag.registerTags();
+        LandTag.registerTags();
+        EmpireTag.registerTags();
 
         // <--[tag]
         // @attribute <resident[<name>]>
