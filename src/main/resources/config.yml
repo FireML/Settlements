@@ -418,6 +418,22 @@ chat:
     empire: aqua
     private-sent: dark_gray
     private-received: dark_gray
+
+  channel-cooldowns:
+    general: 0
+    event: 0
+    local: 0
+    admin: 0
+    staff: 0
+    help: 60
+    settlement: 0
+    trade: 300
+    ally: 0
+    empireally: 0
+    empire: 0
+    private-sent: 0
+    private-received: 0
+
   
   # The colors that players can use for chat channels
   selectable-colors:

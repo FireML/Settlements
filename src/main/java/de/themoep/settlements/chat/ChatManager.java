@@ -95,6 +95,11 @@ public class ChatManager implements ConfigMessages, Listener {
         Resident res = ResidentManager.getInstance().getResident(sender);
         Settlement settlement = res.getSettlement();
         ChatChannel channel = res.getActiveChannel();
+        if (!ChannelCooldown.getInstance().validateChatEvent(sender.getUniqueId(), channel)) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage("Too quick fam.");
+            return;
+        }
 
         boolean resetChannel = false;
         if (settlement == null) {
