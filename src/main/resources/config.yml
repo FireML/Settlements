@@ -250,7 +250,7 @@ empire:
     # Abandoned empires can be raided and fully accessed
     abandon-time: 1440
     
-    # Should the capital settlement be excempted from paying their own upkeep?
+    # Should the capital settlement be exempt from paying their own upkeep?
     exempt-capital: false
     
 plot:
@@ -474,7 +474,7 @@ chestshop:
   notification-cooldown: 5
   
 brewery:
-  # Players with a drunkeness above that value can no longer write in the channel
+  # Players with a drunkenness above that value can no longer write in the channel
   block-channels:
     local: 9001
     trade: 1
