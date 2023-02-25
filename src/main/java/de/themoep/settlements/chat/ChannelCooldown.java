@@ -20,26 +20,26 @@ public class ChannelCooldown {
         return instance;
     }
 
-    public boolean validateChatEvent(UUID sender, ChatChannel channel) {
-        if (channel.getCooldown() == 0) return true;
+    public long validateChatEvent(UUID sender, ChatChannel channel) {
+        if (channel.getCooldown() == 0) return 0;
         if (chatHistory.containsKey(sender)) {
             if (chatHistory.get(sender).containsKey(channel)) {
                 long lastMSG = chatHistory.get(sender).get(channel);
                 long currentMSG;
-                if ((currentMSG = Instant.now().getEpochSecond()) - lastMSG < channel.getCooldown()) return false;
+                if ((currentMSG = Instant.now().getEpochSecond()) - lastMSG < channel.getCooldown()) return channel.getCooldown() - (currentMSG - lastMSG);
                 else {
                     chatHistory.get(sender).put(channel, currentMSG);
-                    return true;
+                    return 0;
                 }
             } else {
                 chatHistory.get(sender).put(channel, Instant.now().getEpochSecond());
-                return true;
+                return 0;
             }
         } else {
             Map<ChatChannel, Long> newUserMap = new HashMap<>();
             newUserMap.put(channel, Instant.now().getEpochSecond());
             chatHistory.put(sender, newUserMap);
-            return true;
+            return 0;
         }
     }
 }
