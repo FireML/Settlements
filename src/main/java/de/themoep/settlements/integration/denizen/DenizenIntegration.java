@@ -4,6 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.tags.TagManager;
+import de.themoep.settlements.integration.denizen.events.SettlementChatScriptEvent;
 import de.themoep.settlements.integration.denizen.events.SettlementScriptEvent;
 import de.themoep.settlements.integration.denizen.objects.EmpireTag;
 import de.themoep.settlements.integration.denizen.objects.LandTag;
@@ -23,6 +24,7 @@ public class DenizenIntegration {
         ObjectFetcher.registerWithObjectFetcher(EmpireTag.class, EmpireTag.tagProcessor);
 
         ScriptEvent.registerScriptEvent(new SettlementScriptEvent());
+        ScriptEvent.registerScriptEvent(new SettlementChatScriptEvent());
 
         // <--[tag]
         // @attribute <resident[<name>]>
