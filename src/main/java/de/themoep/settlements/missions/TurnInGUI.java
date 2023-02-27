@@ -83,16 +83,20 @@ public class TurnInGUI extends SettlementsGUI {
                     String material = item.getType().name();
                     long required = missionData.getMission().getRequirement(material);
                     if (required > 0) {
-                        if (required <= total.get(material)) {
+                        long requiredAmount = 0L;
+                        for (String materialList : total.keySet()) {
+                            if (materialList.contains(material)) requiredAmount = total.get(materialList);
+                        }
+                        if (required <= requiredAmount) {
                             addToInventory(player, item);
                             Utils.addAmount(fail, item.getType(), (long) item.getAmount());
                         } else {
-                            long totalAdd = item.getAmount() + total.get(material);
+                            long totalAdd = item.getAmount() + requiredAmount;
                             if (required - totalAdd >= 0) {
                                 Utils.addAmount(total, material, (long) item.getAmount());
                                 Utils.addAmount(deposited, material, (long) item.getAmount());
                             } else {
-                                long rv = required - total.get(material);
+                                long rv = required - requiredAmount;
                                 long drv = item.getAmount() - rv;
                                 Utils.addAmount(total, material, item.getAmount() - drv);
                                 Utils.addAmount(deposited, material, item.getAmount() - drv);
