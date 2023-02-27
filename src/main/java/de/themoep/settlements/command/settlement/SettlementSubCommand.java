@@ -2,8 +2,8 @@ package de.themoep.settlements.command.settlement;
 
 import de.themoep.settlements.command.ResidentPermsSubCommand;
 import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.utils.config.Config;
 
 public abstract class SettlementSubCommand extends ResidentPermsSubCommand {
 
