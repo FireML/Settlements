@@ -108,7 +108,7 @@ public class ResidentTag implements ObjectTag {
         return residentTag.getResident().getUUID().equals(getResident().getUUID());
     }
 
-    public static void registerTags() {
+    public static void register() {
         // <--[tag]
         // @attribute <Resident.player>
         // @returns PlayerTag

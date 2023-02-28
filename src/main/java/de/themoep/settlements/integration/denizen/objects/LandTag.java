@@ -130,7 +130,7 @@ public class LandTag implements ObjectTag, Adjustable {
         return residentTag.getLand().equals(getLand());
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <Land.is_owned_by_settlement>
