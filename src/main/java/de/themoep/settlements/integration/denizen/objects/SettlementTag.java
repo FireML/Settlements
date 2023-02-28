@@ -123,7 +123,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         return residentTag.getSettlement().getId().equals(getSettlement().getId());
     }
 
-    public static void register() {
+    public static void registerTags() {
         // <--[tag]
         // @attribute <Settlement.name>
         // @returns ElementTag

@@ -4,14 +4,12 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.tags.TagManager;
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.integration.denizen.events.SettlementChatScriptEvent;
 import de.themoep.settlements.integration.denizen.events.SettlementScriptEvent;
 import de.themoep.settlements.integration.denizen.objects.EmpireTag;
 import de.themoep.settlements.integration.denizen.objects.LandTag;
 import de.themoep.settlements.integration.denizen.objects.ResidentTag;
 import de.themoep.settlements.integration.denizen.objects.SettlementTag;
-import org.bukkit.event.Listener;
 
 public class DenizenIntegration {
 

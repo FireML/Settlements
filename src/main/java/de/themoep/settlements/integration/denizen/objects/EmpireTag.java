@@ -126,7 +126,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         return residentTag.getEmpire().getId().equals(getEmpire().getId());
     }
 
-    public static void register() {
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <Empire.name>
