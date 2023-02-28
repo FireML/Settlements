@@ -97,7 +97,10 @@ public abstract class Mission implements NameTag {
     }
 
     public long getRequirement(String type) {
-        return getRequirements().getOrDefault(type.toUpperCase(Locale.ROOT), 0L);
+        for (String requirementType : getRequirements().keySet()) {
+            if (requirementType.contains(type.toUpperCase(Locale.ROOT))) return getRequirements().get(requirementType.toUpperCase(Locale.ROOT));
+        }
+        return 0L;
     }
 
     public ItemStack getIcon() {
@@ -105,12 +108,14 @@ public abstract class Mission implements NameTag {
             return ItemUtils.toIcon(icon);
         }
         for (String r : getRequirements().keySet()) {
-            try {
-                Material type = Material.valueOf(r);
-                if (type.isItem()) {
-                    return ItemUtils.toIcon(type);
-                }
-            } catch (IllegalArgumentException ignored) {}
+            for (String rP : r.split(", ")) {
+                try {
+                    Material type = Material.valueOf(rP);
+                    if (type.isItem()) {
+                        return ItemUtils.toIcon(type);
+                    }
+                } catch (IllegalArgumentException ignored) {}
+            }
         }
         return ItemUtils.toIcon(Material.DIRT);
     }

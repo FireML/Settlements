@@ -95,6 +95,12 @@ public class ChatManager implements ConfigMessages, Listener {
         Resident res = ResidentManager.getInstance().getResident(sender);
         Settlement settlement = res.getSettlement();
         ChatChannel channel = res.getActiveChannel();
+        long cooldownTime;
+        if ((cooldownTime = ChannelCooldown.getInstance().validateChatEvent(sender.getUniqueId(), channel)) > 0) {
+            event.setCancelled(true);
+            getError("channel-cooldown-alert").tell(event.getPlayer(), "time", Long.toString(cooldownTime));
+            return;
+        }
 
         boolean resetChannel = false;
         if (settlement == null) {
@@ -104,21 +110,15 @@ public class ChatManager implements ConfigMessages, Listener {
                 case SETTLEMENT:
                     resetChannel = true;
             }
-        } else if (!res.hasEmpire() && channel == ChatChannel.EMPIRE) {
+        } else if ((!res.hasEmpire() && channel == ChatChannel.EMPIRE)) {
             resetChannel = true;
         }
 
         if (resetChannel) {
-            if (res.isListening(ChatChannel.GENERAL)) {
-                channel = ChatChannel.GENERAL;
-            } else {
-                channel = res.getChannels().iterator().next();
-            }
-            if (res.setActiveChannel(channel) && !Config.Chat.RESET_CHANNELS_ON_LOGIN) {
-                DatabaseManager.getInstance().saveResident(res);
-            }
+            channel = resetResidentChannel(res, channel);
         }
         event.setCancelled(true);
+        res.setLastChannel(channel);
 
         sendChannelMessage(sender, channel, event.getMessage());
     }

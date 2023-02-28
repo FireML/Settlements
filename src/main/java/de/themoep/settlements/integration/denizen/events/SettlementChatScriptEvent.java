@@ -16,7 +16,9 @@ public class SettlementChatScriptEvent extends BukkitScriptEvent implements List
     // @Events
     // settlements player chats
     //
-    // @Cancellable false
+    // @Cancellable true
+    //
+    // @Switch channel:<channel> to only process the event if it came from the specified chat channel.
     //
     // @Triggers when a player chats
     //
@@ -36,6 +38,14 @@ public class SettlementChatScriptEvent extends BukkitScriptEvent implements List
     @Override
     public boolean couldMatch(ScriptPath path) {
         return path.eventLower.startsWith("settlements player chats");
+    }
+
+    @Override
+    public boolean matches(ScriptPath path) {
+        if (!runGenericSwitchCheck(path, "channel", String.valueOf(event.getChannel()))) {
+            return false;
+        }
+        return super.matches(path);
     }
 
     @Override
