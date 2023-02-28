@@ -392,7 +392,6 @@ public class SettlementTag implements ObjectTag, Adjustable {
             }
 
             resident.leaveSettlement();
-            return;
         }
     }
 
