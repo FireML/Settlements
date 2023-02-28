@@ -104,23 +104,33 @@ public class ChatManager implements ConfigMessages, Listener {
                 case SETTLEMENT:
                     resetChannel = true;
             }
-        } else if (!res.hasEmpire() && channel == ChatChannel.EMPIRE) {
+        } else if ((!res.hasEmpire() && channel == ChatChannel.EMPIRE)) {
             resetChannel = true;
         }
 
         if (resetChannel) {
-            if (res.isListening(ChatChannel.GENERAL)) {
-                channel = ChatChannel.GENERAL;
-            } else {
-                channel = res.getChannels().iterator().next();
-            }
-            if (res.setActiveChannel(channel) && !Config.Chat.RESET_CHANNELS_ON_LOGIN) {
-                DatabaseManager.getInstance().saveResident(res);
-            }
+            channel = resetResidentChannel(res, channel);
         }
         event.setCancelled(true);
+        res.setLastChannel(channel);
 
         sendChannelMessage(sender, ResidentManager.getInstance().getResident(sender), channel, event.getMessage());
+
+        if (Config.Chat.RESET_CHANNEL_ON_TRADE && channel == ChatChannel.TRADE) {
+            channel = resetResidentChannel(res, channel);
+        }
+    }
+
+    private ChatChannel resetResidentChannel(Resident res, ChatChannel channel) {
+        if (res.isListening(ChatChannel.GENERAL)) {
+            channel = ChatChannel.GENERAL;
+        } else {
+            channel = res.getChannels().iterator().next();
+        }
+        if (res.setActiveChannel(channel) && !Config.Chat.RESET_CHANNELS_ON_LOGIN) {
+            DatabaseManager.getInstance().saveResident(res);
+        }
+        return channel;
     }
 
     public void sendChannelMessage(Player player, ChatChannel channel, String message) {

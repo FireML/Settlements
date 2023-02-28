@@ -386,6 +386,8 @@ chat:
   chat-only: false
   # Should all channels be set to the default config on player login or be the same as on logout
   reset-channels-on-login: false
+  # Should the player be removed from the trade channel when they talk?
+  reset-channel-on-trade: true
   
   # The default chat channel colors
   channel-colors:

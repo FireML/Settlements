@@ -53,6 +53,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     private String empireTitle = null;
     private Settlement settlement = null;
     private ChatChannel activeChannel = ChatChannel.GENERAL;
+    private ChatChannel lastChannel;
     private Set<ChatChannel> channels = EnumSet.of(ChatChannel.GENERAL);
     private Table<ChatChannel, ChatColorType, ChatColor> channelColors = HashBasedTable.create(ChatChannel.values().length, ChatColorType.values().length);
     private Set<UUID> ignore = Collections.newSetFromMap(new ConcurrentHashMap<>());
@@ -951,5 +952,13 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     @Override
     public String name() {
         return "Resident";
+    }
+
+    public ChatChannel getLastChannel() {
+        return lastChannel;
+    }
+
+    public void setLastChannel(ChatChannel lastChannel) {
+        this.lastChannel = lastChannel;
     }
 }
