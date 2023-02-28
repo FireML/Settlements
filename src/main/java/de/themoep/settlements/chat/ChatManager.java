@@ -120,7 +120,7 @@ public class ChatManager implements ConfigMessages, Listener {
         }
         event.setCancelled(true);
 
-        sendChannelMessage(sender, ResidentManager.getInstance().getResident(sender), channel, event.getMessage());
+        sendChannelMessage(sender, channel, event.getMessage());
     }
 
     public void sendChannelMessage(Player player, ChatChannel channel, String message) {
