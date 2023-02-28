@@ -542,9 +542,6 @@ public class Config {
         @ConfigComment("Should all channels be set to the default config on player login or be the same as on logout")
         public static boolean RESET_CHANNELS_ON_LOGIN = true;
 
-        @ConfigComment("Should the player be removed from the trade channel when they talk?")
-        public static boolean RESET_CHANNEL_ON_TRADE = true;
-
         @ConfigComment("The default chat channel colors")
         public static class ChannelColors {
             public static String GENERAL = "white";

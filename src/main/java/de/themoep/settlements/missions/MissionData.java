@@ -97,7 +97,7 @@ public class MissionData implements ConfigurationSerializable {
                 messages.getText("requirement." + (getProgress(e.getKey()) < e.getValue() ? "todo" : "done"),
                         "progress", String.valueOf(getProgress(e.getKey())),
                         "required", String.valueOf(e.getValue()),
-                        "type", WordUtils.capitalizeFully(e.getKey().replace('_', ' ').replace(", ", " / "))
+                        "type", WordUtils.capitalizeFully(e.getKey().replace('_', ' '))
                 )).collect(Collectors.joining("\n")),
                 "action", (isFinished() ? messages.getText("finished") : "")
                         + (getMission() instanceof EmpireMission && ((EmpireMission) getMission()).onlyInEmpireWorld()

@@ -5,7 +5,6 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.NameTag;
-import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -52,7 +51,7 @@ public enum ChatChannel implements NameTag {
             return false;
         }
     },
-    EMPIREALLY("empireally", "eally", "ea", "alliance") {
+    EMPIREALLY("eally", "ea", "alliance") {
         @Override
         public boolean canChat(Player player) {
             Resident resident = ResidentManager.getInstance().getResident(player);
@@ -161,10 +160,6 @@ public enum ChatChannel implements NameTag {
 
     public boolean autoJoin(Player player) {
         return canChat(player);
-    }
-
-    public int getCooldown() {
-        return ConfigManager.getInstance().getConfig().getInt("chat.channel-cooldowns." + aliases.get(0), 0);
     }
 
     public boolean canChatM(Player player) {

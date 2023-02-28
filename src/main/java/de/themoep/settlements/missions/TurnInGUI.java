@@ -83,21 +83,19 @@ public class TurnInGUI extends SettlementsGUI {
                     String material = item.getType().name();
                     long required = missionData.getMission().getRequirement(material);
                     if (required > 0) {
-                        long depositedThisTime = 0L;
-                        for (String materialList : total.keySet()) {
-                            if (materialList.contains(material)) depositedThisTime = total.get(materialList);
-                        }
-                        if (required <= depositedThisTime) {
+                        if (required <= total.get(material)) {
                             addToInventory(player, item);
                             Utils.addAmount(fail, item.getType(), (long) item.getAmount());
                         } else {
-                            long totalAdd = item.getAmount() + depositedThisTime;
+                            long totalAdd = item.getAmount() + total.get(material);
                             if (required - totalAdd >= 0) {
-                                incrementDepositedCounter(material, (long) item.getAmount(), total, deposited);
+                                Utils.addAmount(total, material, (long) item.getAmount());
+                                Utils.addAmount(deposited, material, (long) item.getAmount());
                             } else {
-                                long rv = required - depositedThisTime;
+                                long rv = required - total.get(material);
                                 long drv = item.getAmount() - rv;
-                                incrementDepositedCounter(material, item.getAmount() - drv, total, deposited);
+                                Utils.addAmount(total, material, item.getAmount() - drv);
+                                Utils.addAmount(deposited, material, item.getAmount() - drv);
                                 ItemStack temp = item.clone();
                                 temp.setAmount(Math.toIntExact(drv));
                                 addToInventory(player, temp);
@@ -136,26 +134,6 @@ public class TurnInGUI extends SettlementsGUI {
             for (BaseComponent[] components : buildFailDepositMessage(resident, fail, getMessage("mission-finished")
                     .getReplacedComponents("mission", missionData.getMission().getTag()))) {
                 player.sendMessage(components);
-            }
-        }
-    }
-
-    /**
-     * Finds the key in the total count to increment, for example if it's diamond ore and there's an entry for diamond_ore
-     * and deepslate_diamond_ore it'll fetch that rather than adding a new entry for diamond_ore. This is then used
-     * as the key for deposited items in this run.
-     *
-     * @param material The material being deposited
-     * @param amount The amount of this material being deposited.
-     * @param totalCount The map of all-time total deposited items for the settlement's active missions
-     * @param depositInstance The total deposited items in this one cycle of depositing.
-     */
-    private void incrementDepositedCounter(String material, Long amount, Map<String, Long> totalCount, Map<String, Long> depositInstance) {
-        for (String materialList : totalCount.keySet()) {
-            if (materialList.contains(material)) {
-                Utils.addAmount(totalCount, materialList, amount);
-                Utils.addAmount(depositInstance, materialList, amount);
-                return;
             }
         }
     }

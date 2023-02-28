@@ -4,7 +4,6 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.Fetchable;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
@@ -152,17 +151,6 @@ public class ResidentTag implements ObjectTag {
             }
             return new SettlementTag(object.getResident().getSettlement());
         });
-
-        // <--[tag]
-        // @attribute <Resident.chat_channels>
-        // @returns ListTag
-        // @plugin Settlements
-        // @description
-        // Returns the Player's Chat Channels as a ListTag
-        // -->
-        tagProcessor.registerTag(ListTag.class, "player",
-                (attribute, object) -> new ListTag(object.getResident().getChannels()));
-
         tagProcessor.registerTag(SettlementTag.class, "settlement", settlementGetter);
         tagProcessor.registerTag(SettlementTag.class, "village", settlementGetter);
         tagProcessor.registerTag(SettlementTag.class, "kingdom", settlementGetter);

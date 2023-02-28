@@ -40,7 +40,6 @@ error:
   not-unlocked: "&cThe {state} does not have the {function} function unlocked yet!"
   no-channel-permission: "&cNo permission to use {channel} channel!"
   not-a-channel: "&cChat Channel &6{name}&c is not valid channel!"
-  channel-cooldown-alert: "&cYou need to wait {time} seconds before speaking in this channel again."
   not-enough-money: "&c&lNot enough money in your account to pay &r&6&l{amount}&r&c&l!"
   not-your-settlement: "&c&lThis is not your {state}!"
   no-settlement: "&c&lNo settlement at your location!"
