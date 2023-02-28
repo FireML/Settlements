@@ -52,6 +52,7 @@
                     <version>1.19-R0.1-SNAPSHOT</version>
                     <scope>provided</scope>
                 </dependency>
+
             </dependencies>
             <properties>
                 <spigot>true</spigot>
@@ -473,6 +474,11 @@
             <artifactId>denizen</artifactId>
             <version>1.2.5-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
         </dependency>
     </dependencies>
 

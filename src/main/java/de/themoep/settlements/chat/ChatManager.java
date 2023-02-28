@@ -95,6 +95,12 @@ public class ChatManager implements ConfigMessages, Listener {
         Resident res = ResidentManager.getInstance().getResident(sender);
         Settlement settlement = res.getSettlement();
         ChatChannel channel = res.getActiveChannel();
+        long cooldownTime;
+        if ((cooldownTime = ChannelCooldown.getInstance().validateChatEvent(sender.getUniqueId(), channel)) > 0) {
+            event.setCancelled(true);
+            getError("channel-cooldown-alert").tell(event.getPlayer(), "time", Long.toString(cooldownTime));
+            return;
+        }
 
         boolean resetChannel = false;
         if (settlement == null) {
