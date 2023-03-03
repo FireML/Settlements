@@ -12,7 +12,7 @@ import de.themoep.settlements.settlement.events.SettlementLeaveEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class SettlementScriptEvent extends BukkitScriptEvent implements Listener {
+public class SettlementsSettlementScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -63,11 +63,6 @@ public class SettlementScriptEvent extends BukkitScriptEvent implements Listener
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "SettlementsSettlementEvent";
     }
 
     @Override

@@ -10,7 +10,7 @@ import de.themoep.settlements.chat.events.ChannelChatEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class SettlementChatScriptEvent extends BukkitScriptEvent implements Listener {
+public class SettlementsChatScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
