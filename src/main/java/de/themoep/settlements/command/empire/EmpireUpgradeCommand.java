@@ -1,7 +1,8 @@
 package de.themoep.settlements.command.empire;
 
 import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.land.gui.UpgradeGUI;
+import de.themoep.settlements.command.settlement.SettlementUpgradeCommand;
+import de.themoep.settlements.land.gui.DepositGUI;
 import de.themoep.settlements.resident.Resident;
 
 public class EmpireUpgradeCommand extends EmpireSubCommand {
@@ -12,7 +13,7 @@ public class EmpireUpgradeCommand extends EmpireSubCommand {
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
-        new UpgradeGUI(res, res.getSettlement().getEmpire()).open();
+        new DepositGUI<>(res.getSettlement().getEmpire().getKey(), res, SettlementUpgradeCommand.getLevellable(res.getSettlement().getEmpire())).open();
         return true;
     }
 }
