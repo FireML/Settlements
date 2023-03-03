@@ -39,6 +39,13 @@ public class SettlementChatScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
+    public boolean matches(ScriptPath path) {
+        if (!runGenericSwitchCheck(path, "channel", String.valueOf(event.getChannel()))) {
+            return false;
+        }
+        return super.matches(path);
+    }
+    @Override
     public ObjectTag getContext(String name) {
         if (name.equals("message")) {
             return new ElementTag(event.getMessage());
