@@ -364,12 +364,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.Oheers</groupId>
-            <artifactId>EvenMoreFish</artifactId>
-            <!-- Latest EMF Commit at the time of addition -->
-            <version>3668b1f5bd</version>
-        </dependency>
-        <dependency>
             <groupId>com.griefcraft</groupId>
             <artifactId>lwc</artifactId>
             <version>4.5.0-SNAPSHOT</version>
