@@ -7,6 +7,8 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.InviteCache;
+import de.themoep.settlements.empire.events.EmpireJoinEvent;
+import de.themoep.settlements.empire.events.EmpireLeaveEvent;
 import de.themoep.settlements.land.*;
 import de.themoep.settlements.missions.MissionData;
 import de.themoep.settlements.missions.MissionProvider;
@@ -291,6 +293,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     @Override
     public void removeMember(Targetable target) {
         if (target instanceof Settlement && isMember((Settlement) target)) {
+            Utils.callEvent(new EmpireLeaveEvent(this, (Settlement) target));
             members.remove(target.getId());
             EmpireManager.getInstance().leaveEmpire((Settlement) target);
         }
@@ -300,6 +303,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         if (!isMember(settlement)) {
             members.add(settlement.getId());
         }
+        Utils.callEvent(new EmpireJoinEvent(this, settlement));
         settlement.setEmpire(this);
         if (Config.Empire.Missions.DISTRIBUTE_ON_JOIN) {
             distributeNewMissions(settlement);
