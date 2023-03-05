@@ -3645,7 +3645,7 @@ command:
         &7
         &a&l               Congratulations
         &r&7        You have created a new empire!
-        &r&7  &6☧ {cost}&7 have been deducated from your {capitalstate} bank!
+        &r&7  &6☧ {cost}&7 have been deducted from your {capitalstate} bank!
         &r&7
         &r&7   Make sure to deposit money into your [&a/e bank](/e bank)&7
         &r&7                  for the [&a/e upkeep](/e upkeep)

@@ -32,7 +32,7 @@ public class SettlementsEmpireScriptEvent extends BukkitScriptEvent implements L
     //
     // @Plugin Settlements
     //
-    // @Switch empire:<name> to only process the event if the settlement matches the input.
+    // @Switch empire:<name> to only process the event if the empire matches the input.
     //
     // @Group Settlements
     //
