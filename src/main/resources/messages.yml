@@ -150,7 +150,7 @@ broadcast:
   empires-tag: "{name}"
 scoreboard:
   sidebar:
-    title: "&x&0&d&e&2&e&8Poleis&f&lMC"
+    title: "&x&0&d&e&2&e&8&lPoleis&f&lMC"
     entries:
       no-settlement: |-
         &aBal &e%vault_eco_balance_formatted%
