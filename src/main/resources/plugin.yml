@@ -67,9 +67,9 @@ commands:
   staffchat:
     description: Staff chat
     aliases: [staff,stc]
-  content_creatorchat:
-    description: Content Creator Chat
-    aliases: [content-creator, cc]
+  ccem:
+    description: CCEM Chat
+    aliases: [content, cc]
   message:
     description: Private message command
     aliases: [msg, tell, pm, m, w, whisper, emsg, etell, epm, ewhisper]

@@ -394,6 +394,7 @@ chat:
     local: yellow
     admin: dark_purple
     staff: gold
+    ccem: gold
     help: white
     settlement: yellow
     trade: light_purple
@@ -410,6 +411,7 @@ chat:
     local: yellow
     admin: red
     staff: blue
+    ccem: light_purple
     help: red
     settlement: aqua
     trade: light_purple
