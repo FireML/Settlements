@@ -96,8 +96,9 @@ public class SettlementCommand extends SubCommand {
         registerCommand(new SettlementTransferCommand(this));
         registerCommand(new SettlementUnAllyCommand(this));
         registerCommand(new SettlementUnclaimCommand(this));
-        registerCommand(new SettlementUpgradeCommand(this));
+        registerCommand(new SettlementDepositCommand(this));
         registerCommand(new SettlementUpkeepCommand(this));
+        registerCommand(new SettlementUpgradeCommand(this));
         registerCommand(new SettlementUseCommand(this));
     }
 

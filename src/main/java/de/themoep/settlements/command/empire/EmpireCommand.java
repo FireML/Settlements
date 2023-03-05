@@ -64,10 +64,11 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpireTitleCommand(this));
         registerCommand(new EmpireTitlesCommand(this));
         registerCommand(new EmpireTransferCommand(this));
+        registerCommand(new EmpireUpgradeCommand(this));
         registerCommand(new EmpireUnAllyCommand(this));
         registerCommand(new EmpireUnbanishCommand(this));
         registerCommand(new EmpireUnclaimCommand(this));
-        registerCommand(new EmpireUpgradeCommand(this));
+        registerCommand(new EmpireDepositCommand(this));
         registerCommand(new EmpireUpkeepCommand(this));
         registerCommand(new EmpireUseCommand(this));
         if (Config.Empire.World.ENABLED) {
