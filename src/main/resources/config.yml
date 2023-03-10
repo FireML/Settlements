@@ -116,7 +116,7 @@ settlement:
   
   leveling:
     # The amount of levels until a settlement converts from a Village to a Kingdom
-    village-max-level: 6
+    village-max-level: 5
     #The maximum amount of Kingdom levels
     kingdom-max-level: 15
 
