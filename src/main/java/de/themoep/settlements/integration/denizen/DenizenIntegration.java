@@ -28,6 +28,11 @@ public class DenizenIntegration {
         ScriptEvent.registerScriptEvent(new SettlementsChatScriptEvent());
         ScriptEvent.registerScriptEvent(new SettlementsEmpireScriptEvent());
 
+        EmpireTag.registerTags();
+        LandTag.registerTags();
+        ResidentTag.registerTags();
+        SettlementTag.registerTags();
+
         // <--[tag]
         // @attribute <resident[<name>]>
         // @returns ResidentTag

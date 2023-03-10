@@ -114,10 +114,10 @@ public enum ChatChannel implements NameTag {
         }
     },
 
-    CONTENT_CREATOR("content-creator", "cc") {
+    CCEM("content", "cc") {
         @Override
         public boolean canChat(Player player) {
-            return player.hasPermission("settlements.channel.content-creator");
+            return player.hasPermission("settlements.channel.ccem");
         }
 
         @Override

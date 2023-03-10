@@ -150,7 +150,7 @@ broadcast:
   empires-tag: "{name}"
 scoreboard:
   sidebar:
-    title: "&x&0&d&e&2&e&8Poleis&f&lMC"
+    title: "&x&0&d&e&2&e&8&lPoleis&f&lMC"
     entries:
       no-settlement: |-
         &aBal &e%vault_eco_balance_formatted%
@@ -447,7 +447,7 @@ chat:
       local: "{prefixColor}[Local] &7{sender}&r &b➦ {color}{message}"
       admin: "{prefixColor}[Admin] &7{sender}&r &b➦ {color}{message}"
       staff: "{prefixColor}[Staff] &7{sender}&r &b➦ {color}{message}"
-      content-creator: "{prefixColor}[Content] &7{sender}&r &b➦ {color}{message}"
+      ccem: "{prefixColor}[CCEM] &7{sender}&r &b➦ {color}{message}"
       help: "{prefixColor}[Help] &7{sender} &b➦ {color}{message}"
       settlement: "{prefixColor}[S] &7{sender}&r &b➦ {color}{message}"
       trade: "{prefixColor}[Trade] &7{sender}&r &b➦ {color}{message}"
@@ -3645,7 +3645,7 @@ command:
         &7
         &a&l               Congratulations
         &r&7        You have created a new empire!
-        &r&7  &6☧ {cost}&7 have been deducated from your {capitalstate} bank!
+        &r&7  &6☧ {cost}&7 have been deducted from your {capitalstate} bank!
         &r&7
         &r&7   Make sure to deposit money into your [&a/e bank](/e bank)&7
         &r&7                  for the [&a/e upkeep](/e upkeep)
