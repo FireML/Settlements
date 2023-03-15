@@ -287,7 +287,7 @@ public class SettingsGUI extends ConfigurableGui {
         }, getText("recruitment",
                 "jointype", landOwner.getJoinType().getTag(),
                 "state", landOwner.getStateTag(),
-                "action", landOwner.hasUnlocked("recruitment") ? landOwner.hasPermission(resident, "recruitment") ? getText("unlockables.unlocked.change") : getText("no-permission") : getUnlockText(landOwner, "recruitment")
+                "action", (landOwner.hasUnlocked("recruitment") || !Config.Citizens.UNLOCK_DEPENDENCY) ? landOwner.hasPermission(resident, "recruitment") ? getText("unlockables.unlocked.change") : getText("no-permission") : getUnlockText(landOwner, "recruitment")
         )));
 
         gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));

@@ -13,6 +13,7 @@ import de.themoep.settlements.land.gui.*;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.*;
+import de.themoep.settlements.utils.config.Config;
 
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -47,7 +48,7 @@ public class ManagementGUI extends SettlementsGUI {
 
         Collection<Invite<?, ?>> requests = getRequests(resident);
         gui.addElement(new StaticGuiElement('e', ItemUtils.setGlowing(getIcon("recruitment"), !requests.isEmpty()), click -> {
-            if (landOwner.hasUnlocked("recruitment") && landOwner.hasPermission(resident, "recruitment")) {
+            if ((landOwner.hasUnlocked("recruitment") || !Config.Citizens.UNLOCK_DEPENDENCY) && landOwner.hasPermission(resident, "recruitment")) {
                 new ListGui<>(resident, landOwner.getKey() + ".requests", true, () -> getRequests(resident), (c, request) -> {
                     // accept invite
                     if (request instanceof JoinRequest) {
@@ -69,7 +70,7 @@ public class ManagementGUI extends SettlementsGUI {
             return true;
         }, getText("recruitment",
                 "amount", String.valueOf(requests),
-                "action", landOwner.hasUnlocked("recruitment")
+                "action", (landOwner.hasUnlocked("recruitment") || !Config.Citizens.UNLOCK_DEPENDENCY)
                         ? landOwner.hasPermission(resident, "recruitment")
                                 ? getText("unlockables.unlocked.browse")
                                 : getText("unlockables.locked.permission")
@@ -88,13 +89,13 @@ public class ManagementGUI extends SettlementsGUI {
         )));
 
         gui.addElement(new StaticGuiElement('a', getIcon("allies"), click -> {
-            if (landOwner.hasUnlocked("allies") && landOwner.hasPermission(resident, "allies")) {
+            if ((landOwner.hasUnlocked("allies") || !Config.Citizens.UNLOCK_DEPENDENCY) && landOwner.hasPermission(resident, "allies")) {
                 new AlliesGUI(resident, resident.getSettlement()).open();
             }
             return true;
         }, getText("allies",
                 "state", landOwner.getStateTag(),
-                "action", landOwner.hasUnlocked("allies") ? landOwner.hasPermission(resident, "allies") ? getText("unlockables.unlocked.options") : getText("unlockables.locked.permission") : getUnlockText(landOwner, "allies")
+                "action", (landOwner.hasUnlocked("allies") || !Config.Citizens.UNLOCK_DEPENDENCY) ? landOwner.hasPermission(resident, "allies") ? getText("unlockables.unlocked.options") : getText("unlockables.locked.permission") : getUnlockText(landOwner, "allies")
         )));
 
         if (SettlementsPlugin.getInstance().getCitizens() != null && landOwner.hasPermission(resident, "npc")) {
