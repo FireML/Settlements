@@ -298,12 +298,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             new BreweryIntegration();
             return true;
         });
-        registerDependency("PlotSquared", p -> {
-            if (!Config.Chat.CHAT_ONLY) {
-                new PlotSquaredIntegration();
-            }
-            return true;
-        });
         registerDependency("Citizens", p -> {
             if (!Config.Chat.CHAT_ONLY) {
                 citizensIntegration = new CitizensIntegration();
