@@ -116,7 +116,8 @@ settlement:
   
   leveling:
     # The amount of levels until a settlement converts from a Village to a Kingdom
-    village-max-level: 5
+    # Set to 6 because another village level was added for the "camp" idea. - FireML
+    village-max-level: 6
     #The maximum amount of Kingdom levels
     kingdom-max-level: 15
 
