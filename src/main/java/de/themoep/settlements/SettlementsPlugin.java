@@ -328,6 +328,12 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             }
             return true;
         });
+        registerDependency("UpgradeableHoppers", p -> {
+            if (!Config.Chat.CHAT_ONLY) {
+                getServer().getPluginManager().registerEvents(new UpgradeableHoppersIntegration(), this);
+            }
+            return true;
+        });
     }
 
     private void registerDependency(String name, Function<Plugin, Boolean> hook) {
