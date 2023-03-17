@@ -65,7 +65,6 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
     private List<Unbanished> unbanished = new ArrayList<>();
 
     private Map<NpcType, NpcData> npcs = new EnumMap<>(NpcType.class);
-    private boolean enableNPCs = false;
 
     protected LandOwner() {}
 
@@ -900,7 +899,6 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         map.put("rules", getDescription());
         map.put("discord", getDiscord());
         map.put("created", getCreated());
-        map.put("enableNPCs", isEnableNPCs());
         for (PlotMode mode : PlotMode.values(PlotMode.AppliesTo.LAND_OWNER)) {
             map.put(mode.name(), getMode(mode));
         }
@@ -946,7 +944,6 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         landOwner.setId(IdObject.get(map));
         landOwner.setBank(Utils.getLong(map.get("bank")));
         landOwner.setJoinFee(Utils.getLong(map.get("joinFee")));
-        landOwner.setEnableNPCs(Utils.getBoolean(map.get("enableNPCs")));
         for (JoinRequest request : ((Collection<JoinRequest>) map.get("joinRequests"))) {
             landOwner.addJoinRequest(request);
         }
@@ -1041,14 +1038,6 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
 
     public Collection<NpcData> getNpcData() {
         return npcs.values();
-    }
-
-    public boolean isEnableNPCs() {
-        return enableNPCs;
-    }
-
-    public void setEnableNPCs(boolean enableNPCs) {
-        this.enableNPCs = enableNPCs;
     }
 
     @Override

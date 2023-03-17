@@ -1247,15 +1247,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         }
         map.put("titles", rankTitles);
 
-        PreparedStatement npcSta = conn.prepareStatement("SELECT enableNPCs FROM " + tablePrefix + "empires WHERE empireId = ?;");
-        npcSta.setInt(1, id);
-        ResultSet npcRs = npcSta.executeQuery();
-        boolean enableNPCs = false;
-        while (npcRs.next()) {
-            enableNPCs = npcRs.getBoolean("enableNPCs");
-        }
-        map.put("enableNPCs", enableNPCs);
-
         return Empire.deserialize(map);
     }
 
@@ -1341,15 +1332,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             rankTitles.computeIfAbsent(tpRs.getString("rank").toLowerCase(), k -> new LinkedHashSet<>()).add(tpRs.getString("title"));
         }
         map.put("titles", rankTitles);
-
-        PreparedStatement npcSta = conn.prepareStatement("SELECT enableNPCs FROM " + tablePrefix + "settlements WHERE id = ?;");
-        npcSta.setInt(1, id);
-        ResultSet npcRs = npcSta.executeQuery();
-        boolean enableNPCs = false;
-        while (npcRs.next()) {
-            enableNPCs = npcRs.getBoolean("enableNPCs");
-        }
-        map.put("enableNPCs", enableNPCs);
 
 
         return Settlement.deserialize(map);

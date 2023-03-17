@@ -36,8 +36,7 @@ public enum MySqlTable {
             + "homeLoc_y DOUBLE,"
             + "homeLoc_z DOUBLE,"
             + "homeLoc_yaw FLOAT,"
-            + "homeLoc_pitch FLOAT,"
-            + "npc BOOLEAN NOT NULL"
+            + "homeLoc_pitch FLOAT"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     EMPIRE_BANISHED("CREATE TABLE IF NOT EXISTS {tablePrefix}empire_banished ("
@@ -187,8 +186,7 @@ public enum MySqlTable {
             + "homeLoc_y DOUBLE,"
             + "homeLoc_z DOUBLE,"
             + "homeLoc_yaw FLOAT,"
-            + "homeLoc_pitch FLOAT,"
-            + "enableNPCs BOOLEAN NOT NULL"
+            + "homeLoc_pitch FLOAT"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     SETTLEMENT_OUTPOSTS("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_outposts ("
