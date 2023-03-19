@@ -363,7 +363,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         try {
             DatabaseManager.getInstance().connect();
         } catch (Exception e) {
-            this.getLogger().log(Level.SEVERE, "Disabled due to databaser error!", e);
+            this.getLogger().log(Level.SEVERE, "Disabled due to database error!", e);
             this.getServer().getPluginManager().disablePlugin(this);
             return false;
         }
