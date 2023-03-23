@@ -457,11 +457,7 @@
             <groupId>com.github.angeschossen</groupId>
             <artifactId>UpgradeableHoppersAPI</artifactId>
             <version>4.12.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.Oheers</groupId>
-            <artifactId>EvenMoreFish</artifactId>
-            <version>3668b1f5bd</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
