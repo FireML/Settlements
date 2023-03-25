@@ -43,6 +43,7 @@ import net.citizensnpcs.api.trait.trait.Spawned;
 import net.citizensnpcs.api.util.Colorizer;
 import net.citizensnpcs.trait.*;
 import net.citizensnpcs.trait.versioned.VillagerTrait;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -382,12 +383,11 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
                     return;
                 }
                 case AUCTIONEER: {
-                    // Handled in auction plugin
+                    Bukkit.dispatchCommand(resident.getPlayer(), "ah");
                     return;
                 }
                 case BLACKSMITH: {
                     // Handled in refine plugin
-                    return;
                 }
             }
         }
