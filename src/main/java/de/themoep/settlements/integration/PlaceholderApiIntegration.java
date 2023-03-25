@@ -53,6 +53,9 @@ public class PlaceholderApiIntegration implements ConfigMessages {
         }
 
         @Override
+        public boolean persist() { return true; }
+
+        @Override
         public String getVersion() {
             return SettlementsPlugin.getInstance().getDescription().getVersion();
         }
