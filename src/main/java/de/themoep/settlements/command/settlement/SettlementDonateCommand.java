@@ -45,6 +45,7 @@ public class SettlementDonateCommand extends ResidentSubCommand {
                 EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(player, (double) donate);
                 if (r2.transactionSuccess()) {
                     settlement.addToBank(donate);
+                    SettlementDepositCommand.getLevellable(settlement).checkLevelUp(resident);
                     DatabaseManager.getInstance().saveSettlement(settlement);
                     Utils.runAsync(() -> DatabaseManager.getInstance().log(null, settlement, resident, "donate", "cash", donate));
                     if (!settlement.isMember(resident)) {

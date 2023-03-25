@@ -3,6 +3,7 @@ package de.themoep.settlements.command.empire;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.ResidentSubCommand;
 import de.themoep.settlements.command.SubCommand;
+import de.themoep.settlements.command.settlement.SettlementDepositCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
@@ -43,6 +44,7 @@ public class EmpireDonateCommand extends ResidentSubCommand {
                 EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(player, (double) donate);
                 if (r2.transactionSuccess()) {
                     empire.addToBank(donate);
+                    SettlementDepositCommand.getLevellable(empire).checkLevelUp(resident);
                     Utils.runAsync(() -> {
                         DatabaseManager.getInstance().saveEmpire(empire);
                         DatabaseManager.getInstance().log(empire, null, resident, "donate", "cash", donate);

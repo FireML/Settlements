@@ -2,6 +2,7 @@ package de.themoep.settlements.command.settlement.money;
 
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.SubCommand;
+import de.themoep.settlements.command.settlement.SettlementDepositCommand;
 import de.themoep.settlements.command.settlement.SettlementSubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.resident.Resident;
@@ -34,6 +35,7 @@ public class MoneyDepositCommand extends SettlementSubCommand {
                 if (r2.transactionSuccess()) {
                     resident.getSettlement().addToBank(deposit);
                     resident.addDonated(deposit);
+                    SettlementDepositCommand.getLevellable(resident.getSettlement()).checkLevelUp(resident);
                     resident.getSettlement().save();
                     resident.save();
                     DatabaseManager.getInstance().logDeposit(resident.getSettlement(), resident, deposit);

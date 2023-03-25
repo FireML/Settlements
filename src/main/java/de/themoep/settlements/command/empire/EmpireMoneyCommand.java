@@ -3,6 +3,7 @@ package de.themoep.settlements.command.empire;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.HelpCommand;
 import de.themoep.settlements.command.SubCommand;
+import de.themoep.settlements.command.settlement.SettlementDepositCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.LogType;
 import de.themoep.settlements.land.gui.BankGUI;
@@ -42,6 +43,7 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                         EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(resident.getPlayer(), (double) deposit);
                         if (r2.transactionSuccess()) {
                             resident.getSettlement().getEmpire().addToBank(deposit);
+                            SettlementDepositCommand.getLevellable(resident.getSettlement().getEmpire()).checkLevelUp(resident);
                             DatabaseManager.getInstance().saveEmpire(resident.getSettlement().getEmpire());
                             Utils.runAsync(() -> DatabaseManager.getInstance().logDeposit(resident.getSettlement().getEmpire(), resident.getSettlement(), resident, deposit));
                             getMessage("deposited").tell(resident.getSettlement().getEmpire().getOnlineResidents(),
