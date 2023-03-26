@@ -96,7 +96,7 @@ public class LandModeListener implements LandAccessChecker {
         OwnedLand land = LandManager.getInstance().getLand(event.getChunk());
         if (land != null && !land.getMode(PlotMode.mobSpawning)) {
             for (Entity entity : event.getChunk().getEntities()) {
-                if (entity instanceof LivingEntity && Utils.isHostile((LivingEntity) entity)) {
+                if (entity instanceof LivingEntity && Utils.isHostile(entity)) {
                     entity.remove();
                 }
             }

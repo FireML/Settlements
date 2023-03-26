@@ -42,7 +42,10 @@ public class Utils {
     private static final Set<EntityType> SPECIAL_HOSTILE = EnumSet.of(
             EntityType.SHULKER,
             EntityType.SLIME,
-            EntityType.PHANTOM
+            EntityType.PHANTOM,
+            EntityType.HOGLIN,
+            EntityType.MAGMA_CUBE,
+            EntityType.GHAST
     );
     private static final Set<EntityType> SPECIAL_PASSIVE = EnumSet.of(
             EntityType.SNOWMAN,
