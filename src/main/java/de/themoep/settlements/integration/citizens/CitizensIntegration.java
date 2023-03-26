@@ -139,7 +139,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
     }
 
     @EventHandler
-    public void onClaimed(LandClaimedEvent event) {
+    public void onClaimed(LandClaimEvent event) {
         checkForNew(event.getLandOwner().getChief(), event.getLandOwner());
         for (NpcData data : event.getLandOwner().getNpcData()) {
             handle(event, data.getType());
@@ -149,7 +149,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
         }
     }
 
-    private void handle(LandClaimedEvent event, NpcType type) {
+    private void handle(LandClaimEvent event, NpcType type) {
         NpcData npcData = event.getLandOwner().getNpcData(type);
         if (npcData.isUnlocked() && npcData.isAvailable()) {
             NPC npc = getNpc(npcData);

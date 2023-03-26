@@ -5,8 +5,8 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.land.events.LandPreClaimEvent;
 import de.themoep.settlements.land.events.LandClaimEvent;
-import de.themoep.settlements.land.events.LandClaimedEvent;
 import de.themoep.settlements.land.events.LandUnclaimEvent;
 import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.portal.PortalManager;
@@ -86,7 +86,7 @@ public class LandManager {
 
     public OwnedLand claimLand(SimpleChunkLocation chunk, Location location, LandOwner landOwner) {
         OwnedLand land = new OwnedLand(landOwner, chunk);
-        Utils.callEvent(new LandClaimEvent(land));
+        Utils.callEvent(new LandPreClaimEvent(land));
         if (this.getClaimedLandSize(landOwner) == 0) {
             SimpleLocation home = new SimpleLocation(location);
             if (chunk.contains(home)) {
@@ -98,7 +98,7 @@ public class LandManager {
         }
         SettlementsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + land.getKey() + " was claimed by " + landOwner.getStateTag() + " " + landOwner.getName() + "");
         cacheLand(land);
-        Utils.callEvent(new LandClaimedEvent(land));
+        Utils.callEvent(new LandClaimEvent(land));
         return land;
     }
 

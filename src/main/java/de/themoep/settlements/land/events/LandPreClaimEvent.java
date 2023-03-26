@@ -7,13 +7,13 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Called after a land was successfully claimed
+ * Called before a land was claimed
  */
-public class LandClaimedEvent extends Event {
+public class LandPreClaimEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private final OwnedLand land;
 
-    public LandClaimedEvent(OwnedLand land) {
+    public LandPreClaimEvent(OwnedLand land) {
         this.land = land;
     }
 

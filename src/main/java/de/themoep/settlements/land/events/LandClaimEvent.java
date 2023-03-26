@@ -7,7 +7,7 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Called before a land was claimed
+ * Called after a land was successfully claimed
  */
 public class LandClaimEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
