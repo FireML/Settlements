@@ -185,6 +185,10 @@
             <url>file://${project.basedir}/repo/</url>
         </repository>
         <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
+        </repository>
+        <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
@@ -192,14 +196,6 @@
             <id>paper-repo</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
-        <repository>
-            <id>codemc-repo</id>
-            <url>https://repo.codemc.io/repository/maven-snapshots/</url>
-        </repository>
-        <!--<repository>
-            <id>vault-repo</id>
-            <url>https://nexus.hc.to/content/repositories/pub_releases</url>
-        </repository>-->
         <repository>
             <id>minebench-repo</id>
             <url>https://repo.minebench.de</url>
@@ -234,10 +230,6 @@
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
-        <!--<repository>
-            <id>brewery-repo</id>
-            <url>https://zebradrive.de/maven/</url>
-        </repository>-->
         <repository>
             <id>IntellectualSites</id>
             <url>https://mvn.intellectualsites.com/content/groups/public/</url>
@@ -366,67 +358,8 @@
         <dependency>
             <groupId>com.griefcraft</groupId>
             <artifactId>lwc</artifactId>
-            <version>4.5.0-SNAPSHOT</version>
+            <version>2.2.9-dev</version>
             <scope>provided</scope>
-            <!-- dmulloy2's LWC's maven artifact is a bit annoying to use... -->
-            <exclusions>
-                <exclusion>
-                    <groupId>BOSEconomy</groupId>
-                    <artifactId>BOSEconomy</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>CreeperHeal</groupId>
-                    <artifactId>CreeperHeal</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>Essentials</groupId>
-                    <artifactId>Essentials</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>Heroes</groupId>
-                    <artifactId>Heroes</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>iConomy5</groupId>
-                    <artifactId>iConomy5</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>iConomy6</groupId>
-                    <artifactId>iConomy6</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>MobArena</groupId>
-                    <artifactId>MobArena</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>PermissionsBukkit</groupId>
-                    <artifactId>PermissionsBukkit</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>PermissionsEx</groupId>
-                    <artifactId>PermissionsEx</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>Showcase</groupId>
-                    <artifactId>Showcase</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>Towny</groupId>
-                    <artifactId>Towny</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>Towny_Advanced</groupId>
-                    <artifactId>Towny_Advanced</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>WorldEdit</groupId>
-                    <artifactId>WorldEdit</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>WorldGuard</groupId>
-                    <artifactId>WorldGuard</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>me.clip</groupId>

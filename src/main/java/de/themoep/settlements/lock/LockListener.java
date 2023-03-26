@@ -378,7 +378,6 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
         Lock destinationLock = LockManager.getInstance().getLock(event.getDestination().getHolder());
         if (destinationLock != null && !destinationLock.isAllowHoppers()) {
             event.setCancelled(true);
-            return;
         }
     }
 
@@ -400,7 +399,6 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
         if (event.getBlock().getType() == Material.HOPPER || event.getBlock().getType() == Material.DROPPER) {
             if (checkForHopperLock(event.getPlayer(), event.getBlock().getRelative(((Directional) event.getBlock().getBlockData()).getFacing()))) {
                 event.setCancelled(true);
-                return;
             }
         }
     }

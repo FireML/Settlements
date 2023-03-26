@@ -18,6 +18,7 @@ import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.world.SimpleBlockLocation;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -98,9 +99,9 @@ public class Lock implements DatabaseSerializable {
         if (target instanceof Resident) {
             return isOwner((Resident) target) || allowedPlayers.contains(((Resident) target).getUUID());
         } else if (target instanceof Settlement) {
-            return allowedSettlements.contains(((Settlement) target).getId());
+            return allowedSettlements.contains(target.getId());
         } else if (target instanceof Empire) {
-            return allowedEmpires.contains(((Empire) target).getId());
+            return allowedEmpires.contains(target.getId());
         }
         return false;
     }
@@ -109,9 +110,9 @@ public class Lock implements DatabaseSerializable {
         if (target instanceof Resident) {
             return allowedPlayers.add(((Resident) target).getUUID());
         } else if (target instanceof Settlement) {
-            return allowedSettlements.add(((Settlement) target).getId());
+            return allowedSettlements.add(target.getId());
         } else if (target instanceof Empire) {
-            return allowedEmpires.add(((Empire) target).getId());
+            return allowedEmpires.add(target.getId());
         }
         return false;
     }
@@ -120,9 +121,9 @@ public class Lock implements DatabaseSerializable {
         if (target instanceof Resident) {
             return allowedPlayers.remove(((Resident) target).getUUID());
         } else if (target instanceof Settlement) {
-            return allowedSettlements.remove(((Settlement) target).getId());
+            return allowedSettlements.remove(target.getId());
         } else if (target instanceof Empire) {
-            return allowedEmpires.remove(((Empire) target).getId());
+            return allowedEmpires.remove(target.getId());
         }
         return false;
     }
@@ -167,6 +168,7 @@ public class Lock implements DatabaseSerializable {
         return allowedEmpires;
     }
 
+    @NotNull
     @Override
     public LinkedHashMap<String, Object> serialize() {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
@@ -200,7 +202,7 @@ public class Lock implements DatabaseSerializable {
         }
         lock.setId(IdObject.get(map));
         lock.setAllowHoppers(Utils.getBoolean(map.get("allowHoppers")));
-        for (String s : ((Collection<String>) map.get("allowed"))) {
+        for (String s : ((String[]) map.get("allowed"))) {
             String[] split = s.split(":", 2);
             try {
                 if (split.length == 1) {
@@ -208,18 +210,18 @@ public class Lock implements DatabaseSerializable {
                 } else {
                     IdObject id = IdObject.get(Integer.parseInt(split[1]));
                     switch (split[0]) {
-                        case "settlement":
+                        case "settlement" -> {
                             Settlement settlement = SettlementManager.getInstance().getFromId(id);
                             if (settlement != null) {
                                 lock.getAllowedSettlementIds().add(id);
                             }
-                            break;
-                        case "empire":
+                        }
+                        case "empire" -> {
                             Empire empire = EmpireManager.getInstance().getEmpireFromId(id);
                             if (empire != null) {
                                 lock.getAllowedEmpireIds().add(id);
                             }
-                            break;
+                        }
                     }
                 }
             } catch (IllegalArgumentException e) {

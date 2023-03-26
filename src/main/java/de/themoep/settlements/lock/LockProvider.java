@@ -27,9 +27,7 @@ public interface LockProvider extends ConfigMessages, LandAccessChecker {
     void removeInChunks(Collection<? extends SimpleChunkLocation> chunks);
 
     @Override
-    default String type() {
-        return "integration";
-    }
+    default String type() { return "integration"; }
 
     void removeInWorld(World world);
 
