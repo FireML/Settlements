@@ -37,13 +37,13 @@ commands:
     aliases: [c]
   localchat:
     description: Local chat
-    aliases: [local,lc]
+    aliases: [local,lc,cl]
   tradechat:
     description: Trade chat
-    aliases: [trade,tc]
+    aliases: [trade,tc,ct]
   generalchat:
     description: General chat
-    aliases: [general,gc,g]
+    aliases: [general,gc,g,cg]
   helpchat:
     description: Help chat
   eventchat:
@@ -51,25 +51,25 @@ commands:
     aliases: [event,evc]
   settlementchat:
     description: Settlement chat
-    aliases: [villagechat,sc,vc]
+    aliases: [villagechat,sc,vc,cs,cv]
   allychat:
     description: Ally chat
-    aliases: [ally,ac]
+    aliases: [ally,ac,ca]
   empirechat:
     description: Empire chat
-    aliases: [ec]
+    aliases: [ec,ce]
   empireallychat:
     description: Empire ally chat
-    aliases: [eally,eac,alliance]
+    aliases: [eally,eac,alliance,cea]
   adminchat:
     description: Admin chat
-    aliases: [admin,adc]
+    aliases: [admin,adc,cad]
   staffchat:
     description: Staff chat
-    aliases: [staff,stc]
-  ccem:
+    aliases: [staff,stc,cst]
+  ccemchat:
     description: CCEM Chat
-    aliases: [content, cc]
+    aliases: [content, cc, ccem]
   message:
     description: Private message command
     aliases: [msg, tell, pm, m, w, whisper, emsg, etell, epm, ewhisper]
