@@ -13,6 +13,9 @@ public class AdminEmpireLevelCommand extends SubCommand {
 
     @Override
     public boolean run(CommandSender sender, String base, String alias, String... args) {
+        if (args.length < 2) {
+            return false;
+        }
         Empire empire = EmpireManager.getInstance().getEmpireFromName(args[0]);
         if (empire == null) {
             getError("empire-doesnt-exist").tell(sender, "name", args[0]);
@@ -21,7 +24,7 @@ public class AdminEmpireLevelCommand extends SubCommand {
         try {
             int level = Integer.parseInt(args[1]);
 
-            if (!EmpireManager.getInstance().getLevel(level).isPresent()) {
+            if (EmpireManager.getInstance().getLevel(level).isEmpty()) {
                 getError("no-level").tell(sender, "level", String.valueOf(level));
                 return true;
             }

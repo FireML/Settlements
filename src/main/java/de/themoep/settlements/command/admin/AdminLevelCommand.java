@@ -26,7 +26,7 @@ public class AdminLevelCommand extends SubCommand {
             SettlementState state = SettlementState.valueOf(args[1].toUpperCase());
             int level = Integer.parseInt(args[2]);
 
-            if (!SettlementManager.getInstance().getLevel(state, level).isPresent()) {
+            if (SettlementManager.getInstance().getLevel(state, level).isEmpty()) {
                 getError("no-level").tell(sender, "level", String.valueOf(level));
                 return true;
             }
