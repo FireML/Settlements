@@ -151,7 +151,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @description
         // Returns the capital of this Empire.
         // -->
-        tagProcessor.registerTag(SettlementTag.class, "leader",
+        tagProcessor.registerTag(SettlementTag.class, "capital",
                 (attribute, object) -> new SettlementTag(object.getEmpire().getCapital()));
 
         // <--[tag]
@@ -307,10 +307,42 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @description
         // Sets the money balance of an empire.
         // @tags
-        // <empireTag.balance>
+        // <EmpireTag.balance>
         // -->
         if (mechanism.matches("balance")) {
             empire.setBank(mechanism.getValue().asLong());
+            DatabaseManager.getInstance().saveEmpire(empire);
+            return;
+        }
+
+        // <--[mechanism]
+        // @object EmpireTag
+        // @name add_balance
+        // @input ElementTag(Decimal)
+        // @plugin Settlements
+        // @description
+        // Adds to the money balance of an empire.
+        // @tags
+        // <EmpireTag.add_balance>
+        // -->
+        if (mechanism.matches("add_balance")) {
+            empire.addToBank(mechanism.getValue().asLong());
+            DatabaseManager.getInstance().saveEmpire(empire);
+            return;
+        }
+
+        // <--[mechanism]
+        // @object EmpireTag
+        // @name remove_balance
+        // @input ElementTag(Decimal)
+        // @plugin Settlements
+        // @description
+        // Takes from the money balance of an empire.
+        // @tags
+        // <EmpireTag.remove_balance>
+        // -->
+        if (mechanism.matches("remove_balance")) {
+            empire.removeFromBank(mechanism.getValue().asLong());
             DatabaseManager.getInstance().saveEmpire(empire);
             return;
         }
@@ -323,7 +355,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @description
         // Add a member to this empire
         // @tags
-        // <empireTag.add_member>
+        // <EmpireTag.add_member>
         // -->
         if (mechanism.matches("add_member")) {
             String name = mechanism.getValue().asString();

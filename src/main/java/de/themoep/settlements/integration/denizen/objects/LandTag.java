@@ -128,13 +128,13 @@ public class LandTag implements ObjectTag, Adjustable {
     public static void registerTags() {
 
         // <--[tag]
-        // @attribute <land.is_owned_by_settlement>
+        // @attribute <land.settlement_owned>
         // @returns ElementTag
         // @plugin Settlements
         // @description
         // Returns whether this land is owned by a settlement.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "is_owned_by_settlement",
+        tagProcessor.registerTag(ElementTag.class, "settlement_owned",
                 (attribute, object) -> new ElementTag(object.getLand().getLandOwner() instanceof Settlement));
 
         // <--[tag]
@@ -152,13 +152,13 @@ public class LandTag implements ObjectTag, Adjustable {
         }));
 
         // <--[tag]
-        // @attribute <land.is_owned_by_empire>
+        // @attribute <land.empire_owned>
         // @returns ElementTag
         // @plugin Settlements
         // @description
         // Returns whether this land is owned by an empire.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "is_owned_by_empire",
+        tagProcessor.registerTag(ElementTag.class, "empire_owned",
                 (attribute, object) -> new ElementTag(object.getLand().getLandOwner() instanceof Empire));
 
         // <--[tag]
@@ -196,13 +196,13 @@ public class LandTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getLand().isEmbassy()));
 
         // <--[tag]
-        // @attribute <land.is_owned>
+        // @attribute <land.player_owned>
         // @returns ElementTag
         // @plugin Settlements
         // @description
         // Returns whether the land is owned by a player.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "is_owned",
+        tagProcessor.registerTag(ElementTag.class, "player_owned",
                 (attribute, object) -> new ElementTag(object.getLand().getPlotOwner() != null));
 
         // <--[tag]

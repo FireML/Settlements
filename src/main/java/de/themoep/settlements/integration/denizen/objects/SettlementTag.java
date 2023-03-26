@@ -130,11 +130,11 @@ public class SettlementTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getSettlement().getName()));
 
         // <--[tag]
-        // @attribute <settlement.chief>
+        // @attribute <settlement.leader>
         // @returns ResidentTag
         // @plugin Settlements
         // @description
-        // Returns the chief of this settlement.
+        // Returns the leader of this settlement.
         // -->
         tagProcessor.registerTag(ResidentTag.class, "leader",
                 (attribute, object) -> new ResidentTag(object.getSettlement().getChief()));
@@ -158,13 +158,31 @@ public class SettlementTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <settlement.online_residents>
+        // @returns ListTag(PlayerTag)
+        // @plugin Settlements
+        // @description
+        // Returns the online residents of the Settlement.
+        // -->
+        tagProcessor.registerTag(ListTag.class, "online_residents", (attribute, object) -> {
+            List<PlayerTag> members = new ArrayList<>();
+            for (UUID residentId : object.getSettlement().getResidentIds()) {
+                Player player = Bukkit.getPlayer(residentId);
+                if (player != null) {
+                    members.add(new PlayerTag(residentId));
+                }
+            }
+            return new ListTag(members);
+        });
+
+        // <--[tag]
         // @attribute <settlement.residents>
         // @returns ListTag(PlayerTag)
         // @plugin Settlements
         // @description
         // Returns the residents of the Settlement.
         // -->
-        tagProcessor.registerTag(ListTag.class, "online_residents", (attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "residents", (attribute, object) -> {
             List<PlayerTag> members = new ArrayList<>();
             for (UUID residentId : object.getSettlement().getResidentIds()) {
                 members.add(new PlayerTag(residentId));
@@ -342,6 +360,38 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // -->
         if (mechanism.matches("balance")) {
             settlement.setBank(mechanism.getValue().asLong());
+            DatabaseManager.getInstance().saveSettlement(settlement);
+            return;
+        }
+
+        // <--[mechanism]
+        // @object SettlementTag
+        // @name add_balance
+        // @input SettlementTag(Decimal)
+        // @plugin Settlements
+        // @description
+        // Adds to the money balance of a settlement.
+        // @tags
+        // <SettlementTag.balance>
+        // -->
+        if (mechanism.matches("add_balance")) {
+            settlement.addToBank(mechanism.getValue().asLong());
+            DatabaseManager.getInstance().saveSettlement(settlement);
+            return;
+        }
+
+        // <--[mechanism]
+        // @object SettlementTag
+        // @name add_balance
+        // @input SettlementTag(Decimal)
+        // @plugin Settlements
+        // @description
+        // Adds to the money balance of a settlement.
+        // @tags
+        // <SettlementTag.balance>
+        // -->
+        if (mechanism.matches("remove_balance")) {
+            settlement.removeFromBank(mechanism.getValue().asLong());
             DatabaseManager.getInstance().saveSettlement(settlement);
             return;
         }
