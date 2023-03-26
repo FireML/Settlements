@@ -68,7 +68,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
                 }
             }
             Pair<Boolean, String> response = this.canUse(player, Use.ITEM, player.getLocation());
-            if (!response.getLeft()) {
+            if (!response.getLeft() && e.getItem().getThrower() != player.getUniqueId()) {
                 e.setCancelled(true);
             }
         }
