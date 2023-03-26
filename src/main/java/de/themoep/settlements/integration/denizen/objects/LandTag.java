@@ -1,7 +1,7 @@
 package de.themoep.settlements.integration.denizen.objects;
 
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Adjustable;
 import com.denizenscript.denizencore.objects.Fetchable;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -30,7 +30,7 @@ public class LandTag implements ObjectTag, Adjustable {
     // @base ElementTag
     // @format
     // The identity format for land is their chunk coordinates
-    // For example, 'land@world,x,y'.
+    // For example, 'land@world,x,z'.
     //
     // @plugin Settlements
     // @description
@@ -40,7 +40,7 @@ public class LandTag implements ObjectTag, Adjustable {
 
     public static final ObjectTagProcessor<LandTag> tagProcessor = new ObjectTagProcessor<>();
 
-    private static final String PREFIX = "Land";
+    private static final String PREFIX = "land";
 
     private final OwnedLand land;
     private String prefix = PREFIX;
@@ -97,11 +97,6 @@ public class LandTag implements ObjectTag, Adjustable {
         return true;
     }
 
-    /*@Override
-    public String getObjectType() {
-        return PREFIX;
-    }*/
-
     @Override
     public String identify() {
         return PREFIX.toLowerCase(Locale.ROOT) + "@" + land.getWorldName() + "," + land.getX() + "," + land.getZ();
@@ -133,7 +128,7 @@ public class LandTag implements ObjectTag, Adjustable {
     public static void registerTags() {
 
         // <--[tag]
-        // @attribute <Land.is_owned_by_settlement>
+        // @attribute <land.is_owned_by_settlement>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -143,7 +138,7 @@ public class LandTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getLand().getLandOwner() instanceof Settlement));
 
         // <--[tag]
-        // @attribute <Land.settlement>
+        // @attribute <land.settlement>
         // @returns SettlementTag
         // @plugin Settlements
         // @description
@@ -157,7 +152,7 @@ public class LandTag implements ObjectTag, Adjustable {
         }));
 
         // <--[tag]
-        // @attribute <Land.is_owned_by_empire>
+        // @attribute <land.is_owned_by_empire>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -167,7 +162,7 @@ public class LandTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getLand().getLandOwner() instanceof Empire));
 
         // <--[tag]
-        // @attribute <Land.empire>
+        // @attribute <land.empire>
         // @returns EmpireTag
         // @plugin Settlements
         // @description
@@ -181,7 +176,7 @@ public class LandTag implements ObjectTag, Adjustable {
         }));
 
         // <--[tag]
-        // @attribute <Land.is_plot>
+        // @attribute <land.is_plot>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -191,7 +186,7 @@ public class LandTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getLand().isPlot()));
 
         // <--[tag]
-        // @attribute <Land.is_embassy>
+        // @attribute <land.is_embassy>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -201,7 +196,7 @@ public class LandTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getLand().isEmbassy()));
 
         // <--[tag]
-        // @attribute <Land.is_owned>
+        // @attribute <land.is_owned>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -211,7 +206,7 @@ public class LandTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getLand().getPlotOwner() != null));
 
         // <--[tag]
-        // @attribute <Land.owner>
+        // @attribute <land.owner>
         // @returns PlayerTag
         // @plugin Settlements
         // @description
@@ -225,7 +220,7 @@ public class LandTag implements ObjectTag, Adjustable {
         }));
 
         // <--[tag]
-        // @attribute <Land.price>
+        // @attribute <land.price>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -235,7 +230,7 @@ public class LandTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getLand().getPrice()));
 
         // <--[tag]
-        // @attribute <Land.name>
+        // @attribute <land.name>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -245,7 +240,7 @@ public class LandTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getLand().getName()));
 
         // <--[tag]
-        // @attribute <Land.description>
+        // @attribute <land.description>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -298,7 +293,7 @@ public class LandTag implements ObjectTag, Adjustable {
                 LandManager.getInstance().setPlotOwner(land, null);
                 return;
             }
-            Resident resident = null;
+            Resident resident;
             if (name.length() == 36) {
                 try {
                     resident = ResidentManager.getInstance().getResident(UUID.fromString(name));
@@ -313,7 +308,6 @@ public class LandTag implements ObjectTag, Adjustable {
                 return;
             }
             LandManager.getInstance().setPlotOwner(land, resident.getUUID());
-            return;
         }
     }
 

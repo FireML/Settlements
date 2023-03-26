@@ -30,7 +30,7 @@ public class ResidentTag implements ObjectTag {
 
     public static final ObjectTagProcessor<ResidentTag> tagProcessor = new ObjectTagProcessor<>();
 
-    private static final String PREFIX = "Resident";
+    private static final String PREFIX = "resident";
 
     private final Resident resident;
     private String prefix = PREFIX;
@@ -74,11 +74,6 @@ public class ResidentTag implements ObjectTag {
         return true;
     }
 
-    /*@Override
-    public String getObjectType() {
-        return PREFIX;
-    }*/
-
     @Override
     public String identify() {
         return PREFIX.toLowerCase(Locale.ROOT) + "@" + resident.getName();
@@ -109,7 +104,7 @@ public class ResidentTag implements ObjectTag {
 
     public static void registerTags() {
         // <--[tag]
-        // @attribute <Resident.player>
+        // @attribute <resident.player>
         // @returns PlayerTag
         // @plugin Settlements
         // @description
@@ -119,7 +114,7 @@ public class ResidentTag implements ObjectTag {
                 (attribute, object) -> new PlayerTag(object.getResident().getPlayer()));
 
         // <--[tag]
-        // @attribute <Resident.name>
+        // @attribute <resident.name>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -129,7 +124,7 @@ public class ResidentTag implements ObjectTag {
                 (attribute, object) -> new ElementTag(object.getResident().getName()));
 
         // <--[tag]
-        // @attribute <Resident.title>
+        // @attribute <resident.title>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -139,7 +134,7 @@ public class ResidentTag implements ObjectTag {
                 (attribute, object) -> new ElementTag(object.getResident().getDisplayTitle()));
 
         // <--[tag]
-        // @attribute <Resident.settlement>
+        // @attribute <resident.settlement>
         // @returns SettlementTag
         // @plugin Settlements
         // @description

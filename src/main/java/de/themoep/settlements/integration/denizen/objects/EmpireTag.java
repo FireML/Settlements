@@ -3,7 +3,7 @@ package de.themoep.settlements.integration.denizen.objects;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.objects.WorldTag;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Adjustable;
 import com.denizenscript.denizencore.objects.Fetchable;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -49,7 +49,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
 
     public static final ObjectTagProcessor<EmpireTag> tagProcessor = new ObjectTagProcessor<>();
 
-    private static final String PREFIX = "Empire";
+    private static final String PREFIX = "empire";
 
     private final Empire empire;
     private String prefix = PREFIX;
@@ -93,11 +93,6 @@ public class EmpireTag implements ObjectTag, Adjustable {
         return true;
     }
 
-    /*@Override
-    public String getObjectType() {
-        return PREFIX;
-    }*/
-
     @Override
     public String identify() {
         return PREFIX.toLowerCase(Locale.ROOT) + "@" + empire.getName();
@@ -129,7 +124,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
     public static void registerTags() {
 
         // <--[tag]
-        // @attribute <Empire.name>
+        // @attribute <empire.name>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -139,7 +134,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getEmpire().getName()));
 
         // <--[tag]
-        // @attribute <Empire.leader>
+        // @attribute <empire.leader>
         // @returns ResidentTag
         // @plugin Settlements
         // @description
@@ -150,7 +145,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
 
 
         // <--[tag]
-        // @attribute <Empire.capital>
+        // @attribute <empire.capital>
         // @returns SettlementTag
         // @plugin Settlements
         // @description
@@ -160,7 +155,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new SettlementTag(object.getEmpire().getCapital()));
 
         // <--[tag]
-        // @attribute <Empire.online_residents>
+        // @attribute <empire.online_residents>
         // @returns ListTag(PlayerTag)
         // @plugin Settlements
         // @description
@@ -180,7 +175,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <Empire.residents>
+        // @attribute <empire.residents>
         // @returns ListTag(PlayerTag)
         // @plugin Settlements
         // @description
@@ -197,7 +192,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <Empire.members>
+        // @attribute <empire.members>
         // @returns ListTag(SettlementTag)
         // @plugin Settlements
         // @description
@@ -212,7 +207,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <Empire.level>
+        // @attribute <empire.level>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -222,7 +217,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getEmpire().getLevel()));
 
         // <--[tag]
-        // @attribute <Empire.balance>
+        // @attribute <empire.balance>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -232,7 +227,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getEmpire().getBank()));
 
         // <--[tag]
-        // @attribute <Empire.tax>
+        // @attribute <empire.tax>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -242,7 +237,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getEmpire().getTax()));
 
         // <--[tag]
-        // @attribute <Settlement.world>
+        // @attribute <empire.world>
         // @returns WorldTag
         // @plugin Settlements
         // @description
@@ -252,7 +247,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new WorldTag(object.getEmpire().getWorldName()));
 
         // <--[tag]
-        // @attribute <Empire.home>
+        // @attribute <empire.home>
         // @returns LocationTag
         // @plugin Settlements
         // @description
@@ -267,7 +262,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <Empire.upkeep>
+        // @attribute <empire.upkeep>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -278,7 +273,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
 
         for (PlotMode mode : PlotMode.values()) {
             // <--[tag]
-            // @attribute <Empire.mode_name>
+            // @attribute <empire.mode_name>
             // @returns ElementTag
             // @plugin Settlements
             // @description
@@ -290,7 +285,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
 
         for (Use use : Use.values()) {
             // <--[tag]
-            // @attribute <Empire.use_name>
+            // @attribute <empire.use_name>
             // @returns ElementTag
             // @plugin Settlements
             // @description
@@ -312,7 +307,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @description
         // Sets the money balance of an empire.
         // @tags
-        // <EmpireTag.balance>
+        // <empireTag.balance>
         // -->
         if (mechanism.matches("balance")) {
             empire.setBank(mechanism.getValue().asLong());
@@ -322,13 +317,13 @@ public class EmpireTag implements ObjectTag, Adjustable {
 
         // <--[mechanism]
         // @object EmpireTag
-        // @name balance
+        // @name add_member
         // @input ElementTag(String)
         // @plugin Settlements
         // @description
         // Add a member to this empire
         // @tags
-        // <EmpireTag.add_member>
+        // <empireTag.add_member>
         // -->
         if (mechanism.matches("add_member")) {
             String name = mechanism.getValue().asString();
@@ -353,13 +348,13 @@ public class EmpireTag implements ObjectTag, Adjustable {
 
         // <--[mechanism]
         // @object EmpireTag
-        // @name balance
+        // @name remove_member
         // @input ElementTag(String)
         // @plugin Settlements
         // @description
         // Remove a member from this empire
         // @tags
-        // <EmpireTag.remove_member>
+        // <empireTag.remove_member>
         // -->
         if (mechanism.matches("remove_member")) {
             String name = mechanism.getValue().asString();
@@ -370,7 +365,6 @@ public class EmpireTag implements ObjectTag, Adjustable {
             }
 
             settlement.leaveEmpire();
-            return;
         }
     }
 

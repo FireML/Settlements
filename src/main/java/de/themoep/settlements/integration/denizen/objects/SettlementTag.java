@@ -2,7 +2,7 @@ package de.themoep.settlements.integration.denizen.objects;
 
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Adjustable;
 import com.denizenscript.denizencore.objects.Fetchable;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -46,7 +46,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
 
     public static final ObjectTagProcessor<SettlementTag> tagProcessor = new ObjectTagProcessor<>();
 
-    private static final String PREFIX = "Settlement";
+    private static final String PREFIX = "settlement";
 
     private final Settlement settlement;
     private String prefix = PREFIX;
@@ -90,11 +90,6 @@ public class SettlementTag implements ObjectTag, Adjustable {
         return true;
     }
 
-    /*@Override
-    public String getObjectType() {
-        return PREFIX;
-    }*/
-
     @Override
     public String identify() {
         return PREFIX.toLowerCase(Locale.ROOT) + "@" + settlement.getName();
@@ -125,7 +120,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
 
     public static void registerTags() {
         // <--[tag]
-        // @attribute <Settlement.name>
+        // @attribute <settlement.name>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -135,7 +130,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getSettlement().getName()));
 
         // <--[tag]
-        // @attribute <Settlement.chief>
+        // @attribute <settlement.chief>
         // @returns ResidentTag
         // @plugin Settlements
         // @description
@@ -145,7 +140,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ResidentTag(object.getSettlement().getChief()));
 
         // <--[tag]
-        // @attribute <Settlement.online_residents>
+        // @attribute <settlement.online_residents>
         // @returns ListTag(PlayerTag)
         // @plugin Settlements
         // @description
@@ -163,7 +158,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <Settlement.residents>
+        // @attribute <settlement.residents>
         // @returns ListTag(PlayerTag)
         // @plugin Settlements
         // @description
@@ -178,7 +173,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <Settlement.state>
+        // @attribute <settlement.state>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -188,7 +183,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getSettlement().getStateTag()));
 
         // <--[tag]
-        // @attribute <Settlement.level>
+        // @attribute <settlement.level>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -198,7 +193,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getSettlement().getLevel()));
 
         // <--[tag]
-        // @attribute <Settlement.balance>
+        // @attribute <settlement.balance>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -208,7 +203,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getSettlement().getBank()));
 
         // <--[tag]
-        // @attribute <Settlement.tax>
+        // @attribute <settlement.tax>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -218,7 +213,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getSettlement().getTax()));
 
         // <--[tag]
-        // @attribute <Settlement.empire>
+        // @attribute <settlement.empire>
         // @returns EmpireTag
         // @plugin Settlements
         // @description
@@ -233,7 +228,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <Settlement.home>
+        // @attribute <settlement.home>
         // @returns LocationTag
         // @plugin Settlements
         // @description
@@ -248,7 +243,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <Settlement.claimable_land>
+        // @attribute <settlement.claimable_land>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -258,7 +253,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getSettlement().getMaxClaimableChunks()));
 
         // <--[tag]
-        // @attribute <Settlement.claimable_outposts>
+        // @attribute <settlement.claimable_outposts>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -268,7 +263,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getSettlement().getMaxOutposts()));
 
         // <--[tag]
-        // @attribute <Settlement.upkeep>
+        // @attribute <settlement.upkeep>
         // @returns ElementTag
         // @plugin Settlements
         // @description
@@ -278,7 +273,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
                 (attribute, object) -> new ElementTag(object.getSettlement().getUpkeep()));
 
         // <--[tag]
-        // @attribute <Settlement.outposts>
+        // @attribute <settlement.outposts>
         // @returns ListTag(LocationTag)
         // @plugin Settlements
         // @description
@@ -293,7 +288,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <Settlement.claimed_land>
+        // @attribute <settlement.claimed_land>
         // @returns ListTag(LandTag)
         // @plugin Settlements
         // @description
@@ -309,7 +304,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
 
         for (PlotMode mode : PlotMode.values()) {
             // <--[tag]
-            // @attribute <Settlement.mode_name>
+            // @attribute <settlement.mode_name>
             // @returns ElementTag
             // @plugin Settlements
             // @description
@@ -321,7 +316,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
 
         for (Use use : Use.values()) {
             // <--[tag]
-            // @attribute <Settlement.use_name>
+            // @attribute <settlement.use_name>
             // @returns ElementTag
             // @plugin Settlements
             // @description
@@ -353,7 +348,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
 
         // <--[mechanism]
         // @object SettlementTag
-        // @name balance
+        // @name add_member
         // @input ElementTag(String)
         // @plugin Settlements
         // @description
@@ -375,7 +370,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
 
         // <--[mechanism]
         // @object EmpireTag
-        // @name balance
+        // @name remove_member
         // @input ElementTag(String)
         // @plugin Settlements
         // @description
