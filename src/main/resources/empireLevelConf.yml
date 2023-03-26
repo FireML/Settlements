@@ -19,7 +19,12 @@ levels:
     size: 5
     npcs:
     - manager
-    - quarter_master
+    - quarter-master
+    - banker
+    - elder
+    - traveling_merchant
+    - auctioneer
+    - black-market
   level-2:
     upkeep: 1000
     # Total radius of the world is based on the level value + the perk value
@@ -31,7 +36,7 @@ levels:
       # Require a world
       world: 1
       missions: 10
-      Cobblestone: 3500000000
+      bedrock: 1
   level-3:
     upkeep: 1000
     world-radius: 50
@@ -39,7 +44,7 @@ levels:
     missions: 5
     size: 15
     requirements:
-      Cobblestone: 3500000000
+      bedrock: 1
   level-4:
     upkeep: 1000
     world-radius: 100
@@ -47,7 +52,7 @@ levels:
     missions: 6
     size: 20
     requirements:
-      Cobblestone: 3500000000
+      bedrock: 1
   level-5:
     upkeep: 1000
     world-radius: 250
@@ -55,4 +60,4 @@ levels:
     missions: 7
     size: -1 # only limited by max size in config.yml
     requirements:
-      Cobblestone: 3500000000
+      bedrock: 1
