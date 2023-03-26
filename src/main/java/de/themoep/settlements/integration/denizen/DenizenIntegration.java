@@ -70,7 +70,7 @@ public class DenizenIntegration {
         // @returns EmpireTag
         // @plugin Settlements
         // @description
-        // Returns a EmpireTag object constructed from the input value.
+        // Returns an EmpireTag object constructed from the input value.
         // Refer to <@link objecttype EmpireTag>.
         // -->
         TagManager.registerTagHandler(EmpireTag.class, "empire", (attribute) -> {
