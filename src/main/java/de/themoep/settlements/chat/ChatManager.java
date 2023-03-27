@@ -307,7 +307,7 @@ public class ChatManager implements ConfigMessages, Listener {
                         .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
                 break;
         }
-        Bukkit.getLogger().info(TextComponent.toLegacyText(replacer.replace("message", unfilteredMessage).replaceIn(getFormat(sender, channel, channelDefault, channelPrefixDefault))));
+        Bukkit.getLogger().info(TextComponent.toPlainText(replacer.replace("message", unfilteredMessage).replaceIn(getFormat(sender, channel, channelDefault, channelPrefixDefault))));
     }
 
     private void tell(Player sender, Resident receiver, Replacer replacer, ChatChannel channel, ChatColor defaultColor, ChatColor defaultPrefixColor, BaseComponent[] unfilteredMessage, BaseComponent[] filteredMessage) {
