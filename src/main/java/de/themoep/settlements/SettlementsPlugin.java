@@ -2,7 +2,6 @@ package de.themoep.settlements;
 
 import co.aikar.timings.lib.MCTiming;
 import co.aikar.timings.lib.TimingManager;
-import com.denizenscript.denizencore.events.ScriptEvent;
 import de.themoep.settlements.banish.BanishListener;
 import de.themoep.settlements.chat.ChatManager;
 import de.themoep.settlements.command.CommandManager;
@@ -16,7 +15,6 @@ import de.themoep.settlements.event.EventManager;
 import de.themoep.settlements.integration.*;
 import de.themoep.settlements.integration.citizens.CitizensIntegration;
 import de.themoep.settlements.integration.denizen.DenizenIntegration;
-import de.themoep.settlements.integration.denizen.events.SettlementsChatScriptEvent;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.land.*;
 import de.themoep.settlements.lock.LockManager;
@@ -310,7 +308,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             if (!Config.Chat.CHAT_ONLY) {
                 new DenizenIntegration();
             }
-            ScriptEvent.registerScriptEvent(new SettlementsChatScriptEvent());
             return true;
         });
         registerDependency("Multiverse-Core", p -> {

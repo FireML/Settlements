@@ -25,6 +25,7 @@ public class DenizenIntegration {
         ObjectFetcher.registerWithObjectFetcher(EmpireTag.class, EmpireTag.tagProcessor);
 
         ScriptEvent.registerScriptEvent(new SettlementsSettlementScriptEvent());
+        ScriptEvent.registerScriptEvent(new SettlementsChatScriptEvent());
         ScriptEvent.registerScriptEvent(new SettlementsEmpireScriptEvent());
 
         EmpireTag.registerTags();
