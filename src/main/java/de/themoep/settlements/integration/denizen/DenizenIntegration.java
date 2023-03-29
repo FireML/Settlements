@@ -9,6 +9,7 @@ import de.themoep.settlements.integration.denizen.events.SettlementsEmpireScript
 import de.themoep.settlements.integration.denizen.events.SettlementsSettlementScriptEvent;
 import de.themoep.settlements.integration.denizen.objects.EmpireTag;
 import de.themoep.settlements.integration.denizen.objects.LandTag;
+import de.themoep.settlements.integration.denizen.objects.ResidentTag;
 import de.themoep.settlements.integration.denizen.objects.SettlementTag;
 
 public class DenizenIntegration {
@@ -63,6 +64,20 @@ public class DenizenIntegration {
         TagManager.registerTagHandler(EmpireTag.class, "empire", attribute -> {
             if (attribute.hasParam()) {
                 return EmpireTag.valueOf(attribute.getParam(), attribute.context);
+            }
+            return null;
+        });
+
+        // <--[tag]
+        // @attribute <resident[<name>]>
+        // @returns ResidentTag
+        // @plugin Settlements
+        // @description
+        // Returns the ResidentTag with the given name.
+        // -->
+        TagManager.registerTagHandler(ResidentTag.class, "resident", attribute -> {
+            if (attribute.hasParam()) {
+                return ResidentTag.valueOf(attribute.getParam(), attribute.context);
             }
             return null;
         });
