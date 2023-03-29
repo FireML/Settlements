@@ -3,7 +3,6 @@ package de.themoep.settlements.integration.denizen.events;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import de.themoep.settlements.integration.denizen.objects.ResidentTag;
 import de.themoep.settlements.integration.denizen.objects.SettlementTag;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
@@ -47,10 +46,7 @@ public class SettlementsSettlementScriptEvent extends BukkitScriptEvent implemen
             return false;
         }
         String type = path.eventArgLowerAt(2);
-        if (!type.equals("join") && !type.equals("leave")) {
-            return false;
-        }
-        return true;
+        return type.equals("join") || type.equals("leave");
     }
 
     @Override
@@ -69,9 +65,6 @@ public class SettlementsSettlementScriptEvent extends BukkitScriptEvent implemen
     public ObjectTag getContext(String name) {
         if (name.equals("settlement")) {
             return new SettlementTag(settlement);
-        }
-        if (name.equals("resident")) {
-            return new ResidentTag(resident);
         }
         if (name.equals("state")) {
             return new ElementTag(updateType);

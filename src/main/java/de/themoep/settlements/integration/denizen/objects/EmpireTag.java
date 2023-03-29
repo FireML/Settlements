@@ -3,43 +3,38 @@ package de.themoep.settlements.integration.denizen.objects;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.objects.WorldTag;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizencore.objects.Adjustable;
 import com.denizenscript.denizencore.objects.Fetchable;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
-import de.themoep.settlements.chat.ChatChannel;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.db.InviteCache;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
-import de.themoep.settlements.land.PlotMode;
-import de.themoep.settlements.land.Use;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
-import de.themoep.settlements.utils.config.Config;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
 
-public class EmpireTag implements ObjectTag, Adjustable {
+public class EmpireTag implements ObjectTag {
+
+    public static ObjectTagProcessor<EmpireTag> tagProcessor = new ObjectTagProcessor<>();
 
     // <--[ObjectType]
     // @name EmpireTag
     // @prefix empire
     // @base ElementTag
     // @format
-    // The identity format for empire is their name
-    // For example, 'empire@CoolEmpire'.
+    // The identity format for empires is their names.
+    // For example, 'empire@my_empire'.
     //
     // @plugin Settlements
     // @description
@@ -47,41 +42,35 @@ public class EmpireTag implements ObjectTag, Adjustable {
     //
     // -->
 
-    public static final ObjectTagProcessor<EmpireTag> tagProcessor = new ObjectTagProcessor<>();
-
-    private static final String PREFIX = "empire";
-
-    private final Empire empire;
-    private String prefix = PREFIX;
-
-    public static EmpireTag valueOf(String string) {
-        return EmpireTag.valueOf(string, null);
-    }
-
-    @Fetchable("settlement")
+    @Fetchable("empire")
     public static EmpireTag valueOf(String string, TagContext context) {
         if (string == null) {
             return null;
         }
 
-        string = string.replaceFirst(PREFIX.toLowerCase(Locale.ROOT) + "@", "");
+        ////////
+        // Match Empire name
 
+        string = string.replace("empire@", "");
         Empire empire = EmpireManager.getInstance().getEmpireFromName(string);
         if (empire == null) {
             return null;
         }
-
         return new EmpireTag(empire);
     }
 
-    public static boolean matches(String arg) {
-        arg = arg.replaceFirst(PREFIX.toLowerCase(Locale.ROOT) + "@", "");
-        return EmpireManager.getInstance().getEmpireFromName(arg) != null;
-    }
+    Empire empire = null;
 
     public EmpireTag(Empire empire) {
-        this.empire = empire;
+        if (empire != null) {
+            this.empire = empire;
+        }
+        else {
+            Debug.echoError("Empire referenced is null!");
+        }
     }
+
+    String prefix = "empire";
 
     @Override
     public String getPrefix() {
@@ -95,7 +84,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
 
     @Override
     public String identify() {
-        return PREFIX.toLowerCase(Locale.ROOT) + "@" + empire.getName();
+        return "empire@" + empire.getName();
     }
 
     @Override
@@ -109,6 +98,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         return this;
     }
 
+    @Override
     public String toString() {
         return identify();
     }
@@ -117,186 +107,180 @@ public class EmpireTag implements ObjectTag, Adjustable {
         return empire;
     }
 
-    public boolean equals(EmpireTag residentTag) {
-        return residentTag.getEmpire().getId().equals(getEmpire().getId());
+    public boolean equals(Empire empire1) {
+        return empire1.equals(this.empire);
     }
 
-    public static void registerTags() {
+    @Override
+    public ObjectTag getObjectAttribute(Attribute attribute) {
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
-        // @attribute <empire.name>
+        // @attribute <EmpireTag.name>
         // @returns ElementTag
         // @plugin Settlements
         // @description
-        // Returns the name of the Empire.
+        // Returns the name of the empire.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "name",
-                (attribute, object) -> new ElementTag(object.getEmpire().getName()));
+        if (attribute.startsWith("name")) {
+            return new ElementTag(empire.getName());
+        }
 
         // <--[tag]
-        // @attribute <empire.leader>
-        // @returns ResidentTag
+        // @attribute <EmpireTag.leader>
+        // @returns PlayerTag
         // @plugin Settlements
         // @description
-        // Returns the leader of this Empire.
+        // Returns the leader of the empire.
         // -->
-        tagProcessor.registerTag(ResidentTag.class, "leader",
-                (attribute, object) -> new ResidentTag(object.getEmpire().getCapital().getChief()));
-
+        if (attribute.startsWith("leader")) {
+            return new PlayerTag(empire.getCapital().getChief().getPlayer());
+        }
 
         // <--[tag]
-        // @attribute <empire.capital>
+        // @attribute <EmpireTag.capital>
         // @returns SettlementTag
         // @plugin Settlements
         // @description
-        // Returns the capital of this Empire.
+        // Returns the capital of the empire.
         // -->
-        tagProcessor.registerTag(SettlementTag.class, "capital",
-                (attribute, object) -> new SettlementTag(object.getEmpire().getCapital()));
+        if (attribute.startsWith("capital")) {
+            return new SettlementTag(empire.getCapital());
+        }
 
         // <--[tag]
-        // @attribute <empire.online_residents>
+        // @attribute <EmpireTag.online_residents>
         // @returns ListTag(PlayerTag)
         // @plugin Settlements
         // @description
-        // Returns the online residents of the Empire.
+        // Returns the online residents of the empire.
         // -->
-        tagProcessor.registerTag(ListTag.class, "online_residents", (attribute, object) -> {
-            List<PlayerTag> members = new ArrayList<>();
-            for (Settlement member : object.getEmpire().getMembers()) {
-                for (UUID residentId : member.getResidentIds()) {
-                    Player player = Bukkit.getPlayer(residentId);
-                    if (player != null) {
-                        members.add(new PlayerTag(player));
-                    }
-                }
+        if (attribute.startsWith("online_residents")) {
+            List<PlayerTag> residents = new ArrayList<>();
+            for (Resident resident : empire.getOnlineResidents()) {
+                residents.add(new PlayerTag(resident.getPlayer()));
             }
-            return new ListTag(members);
-        });
+            return new ListTag(residents);
+        }
 
         // <--[tag]
-        // @attribute <empire.residents>
+        // @attribute <EmpireTag.residents>
         // @returns ListTag(PlayerTag)
         // @plugin Settlements
         // @description
-        // Returns the residents of the Empire.
+        // Returns the residents of the empire.
         // -->
-        tagProcessor.registerTag(ListTag.class, "residents", (attribute, object) -> {
-            List<PlayerTag> members = new ArrayList<>();
-            for (Settlement member : object.getEmpire().getMembers()) {
-                for (UUID residentId : member.getResidentIds()) {
-                    members.add(new PlayerTag(residentId));
-                }
+        if (attribute.startsWith("residents")) {
+            List<PlayerTag> residents = new ArrayList<>();
+            for (Resident resident : empire.getResidents()) {
+                residents.add(new PlayerTag(resident.getPlayer()));
             }
-            return new ListTag(members);
-        });
+            return new ListTag(residents);
+        }
 
         // <--[tag]
-        // @attribute <empire.members>
-        // @returns ListTag(SettlementTag)
+        // @attribute <EmpireTag.members>
+        // @returns ListTag(EmpireTag)
         // @plugin Settlements
         // @description
-        // Returns the member settlements of the Empire.
+        // Returns the member settlements of the empire.
         // -->
-        tagProcessor.registerTag(ListTag.class, "members", (attribute, object) -> {
+        if (attribute.startsWith("members")) {
             List<SettlementTag> members = new ArrayList<>();
-            for (Settlement member : object.getEmpire().getMembers()) {
-                members.add(new SettlementTag(member));
+            for (Settlement settlement : empire.getMembers()) {
+                members.add(new SettlementTag(settlement));
             }
             return new ListTag(members);
-        });
+        }
 
         // <--[tag]
-        // @attribute <empire.level>
-        // @returns ElementTag
+        // @attribute <EmpireTag.level>
+        // @returns ElementTag(Decimal)
         // @plugin Settlements
         // @description
-        // Returns the level of the Empire.
+        // Returns the level of the empire.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "level",
-                (attribute, object) -> new ElementTag(object.getEmpire().getLevel()));
+        if (attribute.startsWith("level")) {
+            return new ElementTag(empire.getLevel());
+        }
 
         // <--[tag]
-        // @attribute <empire.balance>
-        // @returns ElementTag
+        // @attribute <EmpireTag.balance>
+        // @returns ElementTag(Decimal)
         // @plugin Settlements
         // @description
-        // Returns the balance of the Empire.
+        // Returns the balance of the empire.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "balance",
-                (attribute, object) -> new ElementTag(object.getEmpire().getBank()));
+        if (attribute.startsWith("balance")) {
+            return new ElementTag(empire.getBank());
+        }
 
         // <--[tag]
-        // @attribute <empire.tax>
-        // @returns ElementTag
+        // @attribute <EmpireTag.tax>
+        // @returns ElementTag(Decimal)
         // @plugin Settlements
         // @description
-        // Returns the tax of the Empire.
+        // Returns the tax of the empire.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "tax",
-                (attribute, object) -> new ElementTag(object.getEmpire().getTax()));
+        if (attribute.startsWith("tax")) {
+            return new ElementTag(empire.getTax());
+        }
 
         // <--[tag]
-        // @attribute <empire.world>
+        // @attribute <EmpireTag.world>
         // @returns WorldTag
         // @plugin Settlements
         // @description
-        // Returns the world of the Empire.
+        // Returns the world of the empire.
         // -->
-        tagProcessor.registerTag(WorldTag.class, "world",
-                (attribute, object) -> new WorldTag(object.getEmpire().getWorldName()));
+        if (attribute.startsWith("tax")) {
+            if (!empire.hasWorld()) {
+                return null;
+            }
+            return new WorldTag(empire.getWorldName());
+        }
 
         // <--[tag]
-        // @attribute <empire.home>
+        // @attribute <EmpireTag.home>
         // @returns LocationTag
         // @plugin Settlements
         // @description
-        // Returns the home of this empire.
+        // Returns the home of the empire.
         // -->
-        tagProcessor.registerTag(LocationTag.class, "home", (attribute, object) -> {
-            if (object.getEmpire().getHome() == null) {
+        if (attribute.startsWith("home")) {
+            if (!empire.hasHome()) {
                 return null;
             }
-
-            return new LocationTag(object.getEmpire().getHome().toBukkitLocation());
-        });
+            return new LocationTag(empire.getHome().toBukkitLocation());
+        }
 
         // <--[tag]
-        // @attribute <empire.upkeep>
-        // @returns ElementTag
+        // @attribute <EmpireTag.upkeep>
+        // @returns ElementTag(Decimal)
         // @plugin Settlements
         // @description
         // Returns the upkeep of the empire.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "upkeep",
-                (attribute, object) -> new ElementTag(object.getEmpire().getUpkeep()));
-
-        for (PlotMode mode : PlotMode.values()) {
-            // <--[tag]
-            // @attribute <empire.mode_name>
-            // @returns ElementTag
-            // @plugin Settlements
-            // @description
-            // Returns whether the mode is enabled for the empire.
-            // -->
-            tagProcessor.registerTag(ElementTag.class, "mode_" + mode.name().toLowerCase(Locale.ROOT),
-                    (attribute, object) -> new ElementTag(object.getEmpire().getMode(mode)));
+        if (attribute.startsWith("upkeep")) {
+            return new ElementTag(empire.getUpkeep());
         }
 
-        for (Use use : Use.values()) {
-            // <--[tag]
-            // @attribute <empire.use_name>
-            // @returns ElementTag
-            // @plugin Settlements
-            // @description
-            // Returns the use flag state of the empire.
-            // -->
-            tagProcessor.registerTag(ElementTag.class, "use_" + use.name().toLowerCase(Locale.ROOT),
-                    (attribute, object) -> new ElementTag(object.getEmpire().getUseState(use).name().toLowerCase(Locale.ROOT)));
+        // <--[tag]
+        // @attribute <EmpireTag.upkeep>
+        // @returns ElementTag(Decimal)
+        // @plugin Settlements
+        // @description
+        // Returns the upkeep of the empire.
+        // -->
+        if (attribute.startsWith("upkeep")) {
+            return new ElementTag(empire.getUpkeep());
         }
+
+        return new ElementTag(identify()).getObjectAttribute(attribute);
     }
 
-    @Override
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
@@ -305,14 +289,13 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @input ElementTag(Decimal)
         // @plugin Settlements
         // @description
-        // Sets the money balance of an empire.
+        // Sets the money balance of a empire.
         // @tags
         // <EmpireTag.balance>
         // -->
         if (mechanism.matches("balance")) {
             empire.setBank(mechanism.getValue().asLong());
             DatabaseManager.getInstance().saveEmpire(empire);
-            return;
         }
 
         // <--[mechanism]
@@ -321,14 +304,13 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @input ElementTag(Decimal)
         // @plugin Settlements
         // @description
-        // Adds to the money balance of an empire.
+        // Adds to the money balance of a empire.
         // @tags
         // <EmpireTag.add_balance>
         // -->
         if (mechanism.matches("add_balance")) {
             empire.addToBank(mechanism.getValue().asLong());
             DatabaseManager.getInstance().saveEmpire(empire);
-            return;
         }
 
         // <--[mechanism]
@@ -337,14 +319,13 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @input ElementTag(Decimal)
         // @plugin Settlements
         // @description
-        // Takes from the money balance of an empire.
+        // Takes from the money balance of a empire.
         // @tags
         // <EmpireTag.remove_balance>
         // -->
         if (mechanism.matches("remove_balance")) {
             empire.removeFromBank(mechanism.getValue().asLong());
             DatabaseManager.getInstance().saveEmpire(empire);
-            return;
         }
 
         // <--[mechanism]
@@ -353,29 +334,18 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @input ElementTag(String)
         // @plugin Settlements
         // @description
-        // Add a member to this empire
+        // Add a member to this empire.
         // @tags
         // <EmpireTag.add_member>
         // -->
         if (mechanism.matches("add_member")) {
-            String name = mechanism.getValue().asString();
-            Settlement settlement = SettlementManager.getInstance().getFromName(name);
+            Settlement settlement = SettlementManager.getInstance().getFromName(mechanism.getValue().asString());
             if (settlement == null) {
-                mechanism.echoError("No settlement found for '" + name + "'");
+                mechanism.echoError("No settlement found for '" + mechanism.getValue().asString() + "'");
                 return;
             }
-
-            settlement.setEmpire(empire);
-            if (Config.Empire.Missions.DISTRIBUTE_ON_JOIN) {
-                empire.distributeNewMissions(settlement);
-            }
-            for (Resident member : settlement.getOnlineResidents()) {
-                member.addChannel(ChatChannel.EMPIRE);
-            }
-            InviteCache.getPendingEmpireInvites().remove(settlement.getId(), empire.getId());
-            DatabaseManager.getInstance().saveSettlement(settlement);
+            empire.addMember(settlement);
             DatabaseManager.getInstance().saveEmpire(empire);
-            return;
         }
 
         // <--[mechanism]
@@ -384,24 +354,21 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @input ElementTag(String)
         // @plugin Settlements
         // @description
-        // Remove a member from this empire
+        // Removes a member from this empire.
         // @tags
-        // <empireTag.remove_member>
+        // <EmpireTag.remove_member>
         // -->
         if (mechanism.matches("remove_member")) {
-            String name = mechanism.getValue().asString();
-            Settlement settlement = SettlementManager.getInstance().getFromName(name);
-            if (settlement == null || !empire.isMember(settlement)) {
-                mechanism.echoError("No member found for '" + name + "'");
+            Settlement settlement = SettlementManager.getInstance().getFromName(mechanism.getValue().asString());
+            if (settlement == null) {
+                mechanism.echoError("No settlement found for '" + mechanism.getValue().asString() + "'");
                 return;
             }
-
-            settlement.leaveEmpire();
+            empire.removeMember(settlement);
+            DatabaseManager.getInstance().saveEmpire(empire);
         }
-    }
 
-    @Override
-    public void applyProperty(Mechanism mechanism) {
-        Debug.echoError("Cannot apply properties to an empire!");
+        tagProcessor.processMechanism(this, mechanism);
+        CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 }
