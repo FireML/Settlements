@@ -165,7 +165,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         if (attribute.startsWith("online_residents")) {
             List<PlayerTag> residents = new ArrayList<>();
             for (Resident resident : empire.getOnlineResidents()) {
-                residents.add(new PlayerTag(resident.getPlayer()));
+                residents.add(new PlayerTag(resident.getUUID()));
             }
             return new ListTag(residents);
         }
@@ -180,7 +180,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         if (attribute.startsWith("residents")) {
             List<PlayerTag> residents = new ArrayList<>();
             for (Resident resident : empire.getResidents()) {
-                residents.add(new PlayerTag(resident.getPlayer()));
+                residents.add(new PlayerTag(resident.getUUID()));
             }
             return new ListTag(residents);
         }
