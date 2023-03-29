@@ -306,7 +306,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         });
         registerDependency("Denizen", p -> {
             if (!Config.Chat.CHAT_ONLY) {
-                new DenizenIntegration();
+                new DenizenIntegration().init();
             }
             return true;
         });
