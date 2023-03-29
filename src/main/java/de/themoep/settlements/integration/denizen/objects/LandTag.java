@@ -1,5 +1,6 @@
 package de.themoep.settlements.integration.denizen.objects;
 
+import com.denizenscript.denizencore.objects.Adjustable;
 import com.denizenscript.denizencore.objects.Fetchable;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -7,16 +8,13 @@ import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.world.SimpleChunkLocation;
 
-import java.util.UUID;
-
-public class LandTag implements ObjectTag {
+public class LandTag implements ObjectTag, Adjustable {
 
     public static ObjectTagProcessor<LandTag> tagProcessor = new ObjectTagProcessor<>();
 
@@ -113,6 +111,11 @@ public class LandTag implements ObjectTag {
 
     public boolean equals(OwnedLand land1) {
         return land1.equals(this.land);
+    }
+
+    @Override
+    public void applyProperty(Mechanism mechanism) {
+        mechanism.echoError("Cannot apply Properties to an empire!");
     }
 
     public void adjust(Mechanism mechanism) {

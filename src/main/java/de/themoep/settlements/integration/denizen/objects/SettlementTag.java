@@ -2,6 +2,7 @@ package de.themoep.settlements.integration.denizen.objects;
 
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizencore.objects.Adjustable;
 import com.denizenscript.denizencore.objects.Fetchable;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -23,7 +24,7 @@ import de.themoep.settlements.world.NamedLocation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettlementTag implements ObjectTag {
+public class SettlementTag implements ObjectTag, Adjustable {
 
     public static ObjectTagProcessor<SettlementTag> tagProcessor = new ObjectTagProcessor<>();
 
@@ -58,7 +59,7 @@ public class SettlementTag implements ObjectTag {
         return new SettlementTag(settlement);
     }
 
-    Settlement settlement  = null;
+    Settlement settlement = null;
 
     public SettlementTag(Settlement settlement) {
         if (settlement != null) {
@@ -108,6 +109,11 @@ public class SettlementTag implements ObjectTag {
 
     public boolean equals(Settlement settlement1) {
         return settlement1.equals(this.settlement);
+    }
+
+    @Override
+    public void applyProperty(Mechanism mechanism) {
+        mechanism.echoError("Cannot apply Properties to a settlement!");
     }
 
     @Override

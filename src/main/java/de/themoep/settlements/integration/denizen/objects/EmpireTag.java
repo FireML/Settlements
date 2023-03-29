@@ -3,6 +3,7 @@ package de.themoep.settlements.integration.denizen.objects;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.objects.WorldTag;
+import com.denizenscript.denizencore.objects.Adjustable;
 import com.denizenscript.denizencore.objects.Fetchable;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -17,14 +18,13 @@ import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmpireTag implements ObjectTag {
+public class EmpireTag implements ObjectTag, Adjustable {
 
     public static ObjectTagProcessor<EmpireTag> tagProcessor = new ObjectTagProcessor<>();
 
@@ -109,6 +109,11 @@ public class EmpireTag implements ObjectTag {
 
     public boolean equals(Empire empire1) {
         return empire1.equals(this.empire);
+    }
+
+    @Override
+    public void applyProperty(Mechanism mechanism) {
+        mechanism.echoError("Cannot apply Properties to an empire!");
     }
 
     @Override
@@ -281,6 +286,7 @@ public class EmpireTag implements ObjectTag {
         return new ElementTag(identify()).getObjectAttribute(attribute);
     }
 
+    @Override
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
