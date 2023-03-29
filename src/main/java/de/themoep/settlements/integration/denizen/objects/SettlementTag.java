@@ -141,7 +141,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // Returns the leader of the settlement.
         // -->
         if (attribute.startsWith("leader")) {
-            return new PlayerTag(settlement.getChief().getPlayer());
+            return new PlayerTag(settlement.getChief().getUUID());
         }
 
         // <--[tag]

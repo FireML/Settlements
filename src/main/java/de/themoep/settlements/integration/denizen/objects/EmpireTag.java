@@ -141,7 +141,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // Returns the leader of the empire.
         // -->
         if (attribute.startsWith("leader")) {
-            return new PlayerTag(empire.getCapital().getChief().getPlayer());
+            return new PlayerTag(empire.getCapital().getChief().getUUID());
         }
 
         // <--[tag]
