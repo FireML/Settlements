@@ -2,6 +2,19 @@
 
 village:
   level-1:
+    claim-upkeep: 0
+    per-world-upkeep:
+      Kingdoms_nether: 0
+    chunks: 1
+    outposts: 0
+    # The amount of settlement missions available to residents per day
+    missions: 0
+    # Extra empire missions
+    extra-missions: 0
+    # Max amount of residents
+    # Default value if not included: -1 = only limited by max size in config.yml
+    size: 2
+  level-2:
     claim-upkeep: 500
     per-world-upkeep:
       Kingdoms_nether: 1000
@@ -11,13 +24,20 @@ village:
     missions: 3
     # Extra empire missions
     extra-missions: 0
+    requirements:
+      bedrock: 1
     # Max amount of residents
     # Default value if not included: -1 = only limited by max size in config.yml
     size: -1
     npcs:
     - manager
-    - quarter_master
-  level-2:
+    - quarter-master
+    - banker
+    - elder
+    - traveling_merchant
+    - auctioneer
+    - black-market
+  level-3:
     claim-upkeep: 480
     per-world-upkeep:
       Kingdoms_nether: 960
@@ -27,11 +47,8 @@ village:
     missions: 3
     extra-missions: 0
     requirements:
-      CASH: 5 # in bank account
-      MISSIONS: 10 # finished settlement missions
-      STONE: 5
-      OAK_LOG: 5
-  level-3:
+      bedrock: 1
+  level-4:
     claim-upkeep: 460
     per-world-upkeep:
       Kingdoms_nether: 960
@@ -40,8 +57,8 @@ village:
     missions: 4
     extra-missions: 1
     requirements:
-      SAND: 10
-  level-4:
+      bedrock: 1
+  level-5:
     claim-upkeep: 440
     per-world-upkeep:
       Kingdoms_nether: 960
@@ -50,8 +67,8 @@ village:
     missions: 5
     extra-missions: 2
     requirements:
-      COBBLESTONE: 64
-  level-5:
+      bedrock: 1
+  level-6:
     claim-upkeep: 420
     per-world-upkeep:
       Kingdoms_nether: 960
@@ -60,7 +77,7 @@ village:
     missions: 6
     extra-missions: 3
     requirements:
-      SAND: 64
+      bedrock: 1
 kingdom:
   level-1:
     claim-upkeep: 400
@@ -71,7 +88,7 @@ kingdom:
     missions: 7
     extra-missions: 4
     requirements:
-      STONE: 1
+      bedrock: 1
   level-2:
     claim-upkeep: 380
     per-world-upkeep:
@@ -81,7 +98,7 @@ kingdom:
     missions: 8
     extra-missions: 5
     requirements:
-      STONE: 1
+      bedrock: 1
   level-3:
     claim-upkeep: 360
     per-world-upkeep:
@@ -90,7 +107,7 @@ kingdom:
     outposts: 6
     extra-missions: 6
     requirements:
-      STONE: 1
+      bedrock: 1
   level-4:
     claim-upkeep: 340
     per-world-upkeep:
@@ -100,7 +117,7 @@ kingdom:
     missions: 9
     extra-missions: 7
     requirements:
-      STONE: 1
+      bedrock: 1
   level-5:
     claim-upkeep: 320
     per-world-upkeep:
@@ -110,7 +127,7 @@ kingdom:
     missions: 10
     extra-missions: 8
     requirements:
-      STONE: 1
+      bedrock: 1
   level-6:
     claim-upkeep: 300
     per-world-upkeep:
@@ -120,7 +137,7 @@ kingdom:
     missions: 11
     extra-missions: 9
     requirements:
-      STONE: 1
+      bedrock: 1
   level-7:
     claim-upkeep: 280
     per-world-upkeep:
@@ -130,7 +147,7 @@ kingdom:
     missions: 12
     extra-missions: 10
     requirements:
-      STONE: 1
+      bedrock: 1
   level-8:
     claim-upkeep: 260
     per-world-upkeep:
@@ -140,7 +157,7 @@ kingdom:
     missions: 13
     extra-missions: 11
     requirements:
-      STONE: 1
+      bedrock: 1
   level-9:
     claim-upkeep: 240
     per-world-upkeep:
@@ -150,7 +167,7 @@ kingdom:
     missions: 14
     extra-missions: 12
     requirements:
-      STONE: 1
+      bedrock: 1
   level-10:
     claim-upkeep: 220
     per-world-upkeep:
@@ -160,7 +177,7 @@ kingdom:
     missions: 15
     extra-missions: 13
     requirements:
-      STONE: 1
+      bedrock: 1
   level-11:
     claim-upkeep: 200
     per-world-upkeep:
@@ -170,7 +187,7 @@ kingdom:
     missions: 16
     extra-missions: 14
     requirements:
-      STONE: 1
+      bedrock: 1
   level-12:
     claim-upkeep: 180
     per-world-upkeep:
@@ -180,7 +197,7 @@ kingdom:
     missions: 17
     extra-missions: 15
     requirements:
-      STONE: 1
+      bedrock: 1
   level-13:
     claim-upkeep: 160
     per-world-upkeep:
@@ -190,7 +207,7 @@ kingdom:
     missions: 18
     extra-missions: 16
     requirements:
-      STONE: 1
+      bedrock: 1
   level-14:
     claim-upkeep: 140
     per-world-upkeep:
@@ -200,7 +217,7 @@ kingdom:
     missions: 19
     extra-missions: 17
     requirements:
-      STONE: 1
+      bedrock: 1
   level-15:
     claim-upkeep: 120
     per-world-upkeep:
@@ -210,4 +227,4 @@ kingdom:
     missions: 20
     extra-missions: 18
     requirements:
-      STONE: 1
+      bedrock: 1
