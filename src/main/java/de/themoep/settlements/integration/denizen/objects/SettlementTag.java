@@ -116,7 +116,11 @@ public class SettlementTag implements ObjectTag, Adjustable {
         mechanism.echoError("Cannot apply Properties to a settlement!");
     }
 
-    public static void register() {
+    @Override
+    public ObjectTag getObjectAttribute(Attribute attribute) {
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <SettlementTag.name>
@@ -125,9 +129,6 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // @description
         // Returns the name of the settlement.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "name", (attribute, object) -> {
-            return new ElementTag(object.getJob().getDescription());
-        });
         if (attribute.startsWith("name")) {
             return new ElementTag(settlement.getName());
         }

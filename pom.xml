@@ -185,6 +185,10 @@
             <url>file://${project.basedir}/repo/</url>
         </repository>
         <repository>
+            <id>everything</id>
+            <url>https://maven.citizensnpcs.co/repo</url>
+        </repository>
+        <repository>
             <id>codemc-repo</id>
             <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
@@ -234,11 +238,6 @@
             <id>IntellectualSites</id>
             <url>https://mvn.intellectualsites.com/content/groups/public/</url>
         </repository>
-        <repository>
-            <id>citizens-repo</id>
-            <url>https://repo.citizensnpcs.co/</url>
-        </repository>
-
     </repositories>
 
     <dependencies>
