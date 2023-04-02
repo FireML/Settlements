@@ -20,7 +20,11 @@ public class DenizenIntegration {
 
         ObjectFetcher.registerWithObjectFetcher(LandTag.class, LandTag.tagProcessor);
         ObjectFetcher.registerWithObjectFetcher(SettlementTag.class, SettlementTag.tagProcessor);
+        SettlementTag.register();
         ObjectFetcher.registerWithObjectFetcher(EmpireTag.class, EmpireTag.tagProcessor);
+        EmpireTag.register();
+        ObjectFetcher.registerWithObjectFetcher(ResidentTag.class, ResidentTag.tagProcessor);
+        ResidentTag.register();
 
         ScriptEvent.registerScriptEvent(new SettlementsSettlementScriptEvent());
         ScriptEvent.registerScriptEvent(new SettlementsChatScriptEvent());
@@ -33,12 +37,7 @@ public class DenizenIntegration {
         // @description
         // Returns the LandTag with the given location.
         // -->
-        TagManager.registerTagHandler(LandTag.class, "land", attribute -> {
-            if (attribute.hasParam()) {
-                return LandTag.valueOf(attribute.getParam(), attribute.context);
-            }
-            return null;
-        });
+        TagManager.registerTagHandler(LandTag.class, "land", (attribute) -> LandTag.valueOf(attribute.getParam(), attribute.context));
 
         // <--[tag]
         // @attribute <settlement[<name>]>
@@ -47,12 +46,7 @@ public class DenizenIntegration {
         // @description
         // Returns the SettlementTag with the given name.
         // -->
-        TagManager.registerTagHandler(SettlementTag.class, "settlement", attribute -> {
-            if (attribute.hasParam()) {
-                return SettlementTag.valueOf(attribute.getParam(), attribute.context);
-            }
-            return null;
-        });
+        TagManager.registerTagHandler(SettlementTag.class, "settlement", (attribute) -> SettlementTag.valueOf(attribute.getParam(), attribute.context));
 
         // <--[tag]
         // @attribute <empire[<name>]>
@@ -61,12 +55,7 @@ public class DenizenIntegration {
         // @description
         // Returns the EmpireTag with the given name.
         // -->
-        TagManager.registerTagHandler(EmpireTag.class, "empire", attribute -> {
-            if (attribute.hasParam()) {
-                return EmpireTag.valueOf(attribute.getParam(), attribute.context);
-            }
-            return null;
-        });
+        TagManager.registerTagHandler(EmpireTag.class, "empire", (attribute) -> EmpireTag.valueOf(attribute.getParam(), attribute.context));
 
         // <--[tag]
         // @attribute <resident[<name>]>
@@ -75,12 +64,7 @@ public class DenizenIntegration {
         // @description
         // Returns the ResidentTag with the given name.
         // -->
-        TagManager.registerTagHandler(ResidentTag.class, "resident", attribute -> {
-            if (attribute.hasParam()) {
-                return ResidentTag.valueOf(attribute.getParam(), attribute.context);
-            }
-            return null;
-        });
+        TagManager.registerTagHandler(ResidentTag.class, "resident", (attribute) -> ResidentTag.valueOf(attribute.getParam(), attribute.context));
     }
 
     public String getDenizenVersion() {

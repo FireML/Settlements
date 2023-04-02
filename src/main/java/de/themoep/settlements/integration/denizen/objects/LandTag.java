@@ -72,6 +72,13 @@ public class LandTag implements ObjectTag, Adjustable {
         }
     }
 
+    public static boolean matches(String arg) {
+        if (valueOf(arg, CoreUtilities.noDebugContext) != null) {
+            return true;
+        }
+        return false;
+    }
+
     String prefix = "land";
 
     @Override

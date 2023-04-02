@@ -9,6 +9,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -70,6 +71,13 @@ public class EmpireTag implements ObjectTag, Adjustable {
         }
     }
 
+    public static boolean matches(String arg) {
+        if (valueOf(arg, CoreUtilities.noDebugContext) != null) {
+            return true;
+        }
+        return false;
+    }
+
     String prefix = "empire";
 
     @Override
@@ -118,9 +126,11 @@ public class EmpireTag implements ObjectTag, Adjustable {
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {
-        if (attribute == null) {
-            return null;
-        }
+        return tagProcessor.getObjectAttribute(this, attribute);
+    }
+
+    public static void register() {
+        PropertyParser.registerPropertyTagHandlers(EmpireTag.class, tagProcessor);
 
         // <--[tag]
         // @attribute <EmpireTag.name>
@@ -129,9 +139,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @description
         // Returns the name of the empire.
         // -->
-        if (attribute.startsWith("name")) {
-            return new ElementTag(empire.getName());
-        }
+        tagProcessor.registerTag(ElementTag.class, "name", (attribute, object) -> new ElementTag(object.getEmpire().getName()));
 
         // <--[tag]
         // @attribute <EmpireTag.leader>
@@ -140,9 +148,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @description
         // Returns the leader of the empire.
         // -->
-        if (attribute.startsWith("leader")) {
-            return new PlayerTag(empire.getCapital().getChief().getUUID());
-        }
+        tagProcessor.registerTag(ResidentTag.class, "leader", (attribute, object) -> new ResidentTag(object.getEmpire().getCapital().getChief()));
 
         // <--[tag]
         // @attribute <EmpireTag.capital>
@@ -151,9 +157,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @description
         // Returns the capital of the empire.
         // -->
-        if (attribute.startsWith("capital")) {
-            return new SettlementTag(empire.getCapital());
-        }
+        tagProcessor.registerTag(SettlementTag.class, "capital", (attribute, object) -> new SettlementTag(object.getEmpire().getCapital()));
 
         // <--[tag]
         // @attribute <EmpireTag.online_residents>
@@ -162,13 +166,13 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @description
         // Returns the online residents of the empire.
         // -->
-        if (attribute.startsWith("online_residents")) {
+        tagProcessor.registerTag(ListTag.class, "online_residents", (attribute, object) -> {
             List<PlayerTag> residents = new ArrayList<>();
-            for (Resident resident : empire.getOnlineResidents()) {
+            for (Resident resident : object.getEmpire().getOnlineResidents()) {
                 residents.add(new PlayerTag(resident.getUUID()));
             }
             return new ListTag(residents);
-        }
+        });
 
         // <--[tag]
         // @attribute <EmpireTag.residents>
@@ -177,13 +181,13 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @description
         // Returns the residents of the empire.
         // -->
-        if (attribute.startsWith("residents")) {
+        tagProcessor.registerTag(ListTag.class, "residents", (attribute, object) -> {
             List<PlayerTag> residents = new ArrayList<>();
-            for (Resident resident : empire.getResidents()) {
+            for (Resident resident : object.getEmpire().getResidents()) {
                 residents.add(new PlayerTag(resident.getUUID()));
             }
             return new ListTag(residents);
-        }
+        });
 
         // <--[tag]
         // @attribute <EmpireTag.members>
@@ -192,13 +196,13 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @description
         // Returns the member settlements of the empire.
         // -->
-        if (attribute.startsWith("members")) {
+        tagProcessor.registerTag(ListTag.class, "members", (attribute, object) -> {
             List<SettlementTag> members = new ArrayList<>();
-            for (Settlement settlement : empire.getMembers()) {
+            for (Settlement settlement : object.getEmpire().getMembers()) {
                 members.add(new SettlementTag(settlement));
             }
             return new ListTag(members);
-        }
+        });
 
         // <--[tag]
         // @attribute <EmpireTag.level>
@@ -207,9 +211,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @description
         // Returns the level of the empire.
         // -->
-        if (attribute.startsWith("level")) {
-            return new ElementTag(empire.getLevel());
-        }
+        tagProcessor.registerTag(ElementTag.class, "level", (attribute, object) -> new ElementTag(object.getEmpire().getLevel()));
 
         // <--[tag]
         // @attribute <EmpireTag.balance>
@@ -218,9 +220,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @description
         // Returns the balance of the empire.
         // -->
-        if (attribute.startsWith("balance")) {
-            return new ElementTag(empire.getBank());
-        }
+        tagProcessor.registerTag(ElementTag.class, "balance", (attribute, object) -> new ElementTag(object.getEmpire().getBank()));
 
         // <--[tag]
         // @attribute <EmpireTag.tax>
@@ -229,9 +229,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @description
         // Returns the tax of the empire.
         // -->
-        if (attribute.startsWith("tax")) {
-            return new ElementTag(empire.getTax());
-        }
+        tagProcessor.registerTag(ElementTag.class, "tax", (attribute, object) -> new ElementTag(object.getEmpire().getTax()));
 
         // <--[tag]
         // @attribute <EmpireTag.world>
@@ -240,12 +238,12 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @description
         // Returns the world of the empire.
         // -->
-        if (attribute.startsWith("tax")) {
-            if (!empire.hasWorld()) {
+        tagProcessor.registerTag(WorldTag.class, "world", (attribute, object) -> {
+            if (!object.getEmpire().hasWorld()) {
                 return null;
             }
-            return new WorldTag(empire.getWorldName());
-        }
+            return new WorldTag(object.getEmpire().getWorldName());
+        });
 
         // <--[tag]
         // @attribute <EmpireTag.home>
@@ -254,12 +252,12 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @description
         // Returns the home of the empire.
         // -->
-        if (attribute.startsWith("home")) {
-            if (!empire.hasHome()) {
+        tagProcessor.registerTag(LocationTag.class, "home", (attribute, object) -> {
+            if (!object.getEmpire().hasHome()) {
                 return null;
             }
-            return new LocationTag(empire.getHome().toBukkitLocation());
-        }
+            return new LocationTag(object.getEmpire().getHome().toBukkitLocation());
+        });
 
         // <--[tag]
         // @attribute <EmpireTag.upkeep>
@@ -268,22 +266,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // @description
         // Returns the upkeep of the empire.
         // -->
-        if (attribute.startsWith("upkeep")) {
-            return new ElementTag(empire.getUpkeep());
-        }
-
-        // <--[tag]
-        // @attribute <EmpireTag.upkeep>
-        // @returns ElementTag(Decimal)
-        // @plugin Settlements
-        // @description
-        // Returns the upkeep of the empire.
-        // -->
-        if (attribute.startsWith("upkeep")) {
-            return new ElementTag(empire.getUpkeep());
-        }
-
-        return new ElementTag(identify()).getObjectAttribute(attribute);
+        tagProcessor.registerTag(ElementTag.class, "upkeep", (attribute, object) -> new ElementTag(object.getEmpire().getUpkeep()));
     }
 
     @Override

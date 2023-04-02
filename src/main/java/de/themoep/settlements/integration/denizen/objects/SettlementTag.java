@@ -8,6 +8,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -70,6 +71,13 @@ public class SettlementTag implements ObjectTag, Adjustable {
         }
     }
 
+    public static boolean matches(String arg) {
+        if (valueOf(arg, CoreUtilities.noDebugContext) != null) {
+            return true;
+        }
+        return false;
+    }
+
     String prefix = "settlement";
 
     @Override
@@ -118,9 +126,11 @@ public class SettlementTag implements ObjectTag, Adjustable {
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {
-        if (attribute == null) {
-            return null;
-        }
+        return tagProcessor.getObjectAttribute(this, attribute);
+    }
+
+    public static void register() {
+        PropertyParser.registerPropertyTagHandlers(SettlementTag.class, tagProcessor);
 
         // <--[tag]
         // @attribute <SettlementTag.name>
@@ -129,9 +139,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // @description
         // Returns the name of the settlement.
         // -->
-        if (attribute.startsWith("name")) {
-            return new ElementTag(settlement.getName());
-        }
+        tagProcessor.registerTag(ElementTag.class, "name", (attribute, object) -> new ElementTag(object.getSettlement().getName()));
 
         // <--[tag]
         // @attribute <SettlementTag.leader>
@@ -140,9 +148,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // @description
         // Returns the leader of the settlement.
         // -->
-        if (attribute.startsWith("leader")) {
-            return new PlayerTag(settlement.getChief().getUUID());
-        }
+        tagProcessor.registerTag(ResidentTag.class, "name", (attribute, object) -> new ResidentTag(object.getSettlement().getChief()));
 
         // <--[tag]
         // @attribute <SettlementTag.online_residents>
@@ -151,13 +157,13 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // @description
         // Returns the online residents of the settlement.
         // -->
-        if (attribute.startsWith("online_residents")) {
+        tagProcessor.registerTag(ListTag.class, "online_residents", (attribute, object) -> {
             List<PlayerTag> residents = new ArrayList<>();
-            for (Resident resident : settlement.getOnlineResidents()) {
+            for (Resident resident : object.getSettlement().getOnlineResidents()) {
                 residents.add(new PlayerTag(resident.getUUID()));
             }
             return new ListTag(residents);
-        }
+        });
 
         // <--[tag]
         // @attribute <SettlementTag.residents>
@@ -166,13 +172,13 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // @description
         // Returns the residents of the settlement.
         // -->
-        if (attribute.startsWith("residents")) {
+        tagProcessor.registerTag(ListTag.class, "residents", (attribute, object) -> {
             List<PlayerTag> residents = new ArrayList<>();
-            for (Resident resident : settlement.getResidents()) {
+            for (Resident resident : object.getSettlement().getResidents()) {
                 residents.add(new PlayerTag(resident.getUUID()));
             }
             return new ListTag(residents);
-        }
+        });
 
         // <--[tag]
         // @attribute <SettlementTag.state>
@@ -181,9 +187,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // @description
         // Returns the state of the settlement.
         // -->
-        if (attribute.startsWith("state")) {
-            return new ElementTag(settlement.getStateTag());
-        }
+        tagProcessor.registerTag(ElementTag.class, "state", (attribute, object) -> new ElementTag(object.getSettlement().getStateTag()));
 
         // <--[tag]
         // @attribute <SettlementTag.level>
@@ -192,9 +196,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // @description
         // Returns the level of the settlement.
         // -->
-        if (attribute.startsWith("level")) {
-            return new ElementTag(settlement.getLevel());
-        }
+        tagProcessor.registerTag(ElementTag.class, "level", (attribute, object) -> new ElementTag(object.getSettlement().getLevel()));
 
         // <--[tag]
         // @attribute <SettlementTag.balance>
@@ -203,9 +205,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // @description
         // Returns the balance of the settlement.
         // -->
-        if (attribute.startsWith("balance")) {
-            return new ElementTag(settlement.getBank());
-        }
+        tagProcessor.registerTag(ElementTag.class, "balance", (attribute, object) -> new ElementTag(object.getSettlement().getBank()));
 
         // <--[tag]
         // @attribute <SettlementTag.tax>
@@ -214,9 +214,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // @description
         // Returns the tax of the settlement.
         // -->
-        if (attribute.startsWith("tax")) {
-            return new ElementTag(settlement.getTax());
-        }
+        tagProcessor.registerTag(ElementTag.class, "tax", (attribute, object) -> new ElementTag(object.getSettlement().getTax()));
 
         // <--[tag]
         // @attribute <SettlementTag.empire>
@@ -225,12 +223,12 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // @description
         // Returns the empire that the settlement belongs to.
         // -->
-        if (attribute.startsWith("empire")) {
-            if (!settlement.hasEmpire()) {
+        tagProcessor.registerTag(EmpireTag.class, "residents", (attribute, object) -> {
+            if (!object.getSettlement().hasEmpire()) {
                 return null;
             }
-            return new EmpireTag(settlement.getEmpire());
-        }
+            return new EmpireTag(object.getSettlement().getEmpire());
+        });
 
         // <--[tag]
         // @attribute <SettlementTag.home>
@@ -239,12 +237,12 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // @description
         // Returns the home of this settlement.
         // -->
-        if (attribute.startsWith("home")) {
-            if (!settlement.hasHome()) {
+        tagProcessor.registerTag(LocationTag.class, "home", (attribute, object) -> {
+            if (!object.getSettlement().hasHome()) {
                 return null;
             }
-            return new LocationTag(settlement.getHome().toBukkitLocation());
-        }
+            return new LocationTag(object.getSettlement().getHome().toBukkitLocation());
+        });
 
         // <--[tag]
         // @attribute <SettlementTag.claimable_land>
@@ -253,9 +251,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // @description
         // Returns the amount of land the settlement can claim.
         // -->
-        if (attribute.startsWith("claimable_land")) {
-            return new ElementTag(settlement.getMaxClaimableChunks());
-        }
+        tagProcessor.registerTag(ElementTag.class, "claimable_land", (attribute, object) -> new ElementTag(object.getSettlement().getMaxClaimableChunks()));
 
         // <--[tag]
         // @attribute <SettlementTag.claimable_outposts>
@@ -264,9 +260,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // @description
         // Returns the amount of outposts the settlement can claim.
         // -->
-        if (attribute.startsWith("claimable_outposts")) {
-            return new ElementTag(settlement.getMaxOutposts());
-        }
+        tagProcessor.registerTag(ElementTag.class, "claimable_outposts", (attribute, object) -> new ElementTag(object.getSettlement().getMaxOutposts()));
 
         // <--[tag]
         // @attribute <SettlementTag.upkeep>
@@ -275,9 +269,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // @description
         // Returns the upkeep of the settlement.
         // -->
-        if (attribute.startsWith("upkeep")) {
-            return new ElementTag(settlement.getUpkeep());
-        }
+        tagProcessor.registerTag(ElementTag.class, "upkeep", (attribute, object) -> new ElementTag(object.getSettlement().getUpkeep()));
 
         // <--[tag]
         // @attribute <SettlementTag.claimed_outposts>
@@ -286,13 +278,13 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // @description
         // Returns the claimed outposts of the settlement.
         // -->
-        if (attribute.startsWith("claimed_outposts")) {
+        tagProcessor.registerTag(ListTag.class, "claimed_outposts", (attribute, object) -> {
             List<LocationTag> outposts = new ArrayList<>();
-            for (NamedLocation location : settlement.getOutpostHomes().values()) {
+            for (NamedLocation location : object.getSettlement().getOutpostHomes().values()) {
                 outposts.add(new LocationTag(location.toBukkitLocation()));
             }
             return new ListTag(outposts);
-        }
+        });
 
         // <--[tag]
         // @attribute <SettlementTag.claimed_land>
@@ -301,15 +293,13 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // @description
         // Returns the land claimed by the settlement.
         // -->
-        if (attribute.startsWith("claimed_land")) {
+        tagProcessor.registerTag(ListTag.class, "claimed_land", (attribute, object) -> {
             List<LandTag> lands = new ArrayList<>();
-            for (OwnedLand land : settlement.getLand()) {
+            for (OwnedLand land : object.getSettlement().getLand()) {
                 lands.add(new LandTag(land));
             }
             return new ListTag(lands);
-        }
-
-        return new ElementTag(identify()).getObjectAttribute(attribute);
+        });
     }
 
     public void adjust(Mechanism mechanism) {
