@@ -22,6 +22,7 @@ public class SettlementsChatScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Context
     // <context.message> returns the message as an ElementTag
+    // <context.channel> returns the chat channel as an ElementTag
     //
     // @Player Always.
     //
