@@ -154,10 +154,6 @@
                             <shadedPattern>de.themoep.settlements.libs.inventorygui</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>co.aikar.timings.lib</pattern>
-                            <shadedPattern>de.themoep.settlements.libs.timings</shadedPattern>
-                        </relocation>
-                        <relocation>
                             <pattern>org.intellij</pattern>
                             <shadedPattern>de.themoep.settlements.libs.jetbrains</shadedPattern>
                         </relocation>
@@ -211,10 +207,6 @@
         <repository>
             <id>multiverse-repo</id>
             <url>https://repo.onarandombox.com/content/repositories/multiverse</url>
-        </repository>
-        <repository>
-            <id>aikar</id>
-            <url>https://repo.aikar.co/nexus/content/groups/aikar/</url>
         </repository>
         <repository>
             <id>elmakers-repo</id>
@@ -281,12 +273,6 @@
             <groupId>net.wesjd</groupId>
             <artifactId>anvilgui</artifactId>
             <version>1.6.3-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>co.aikar</groupId>
-            <artifactId>minecraft-timings</artifactId>
-            <version>1.0.4</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

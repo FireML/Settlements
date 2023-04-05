@@ -1,6 +1,5 @@
 package de.themoep.settlements.land;
 
-import co.aikar.timings.lib.MCTiming;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.customevents.CreaturePreSpawnEvent;
 import de.themoep.settlements.customevents.EntityPrimeTntEvent;
@@ -33,13 +32,11 @@ import java.util.logging.Level;
 
 public class LandModeListener implements LandAccessChecker {
     private TitleBuilder tbPvp = new TitleBuilder();
-    private final MCTiming mobCheckTiming;
     private BukkitTask mobCheckTask = null;
-    private int mobCheckPeriod = 0;
+    private long mobCheckPeriod = 0;
 
     public LandModeListener() {
         reload();
-        mobCheckTiming = SettlementsPlugin.getInstance().getTiming("Mob spawning mode check");
     }
 
     public void reload() {
@@ -51,16 +48,14 @@ public class LandModeListener implements LandAccessChecker {
             if (mobCheckPeriod > 0) {
                 mobCheckTask = Bukkit.getScheduler().runTaskTimer(SettlementsPlugin.getInstance(), () -> {
                     int amount = 0;
-                    try (MCTiming ignored = mobCheckTiming.startTiming()) {
-                        for (World world : Bukkit.getWorlds()) {
-                            if (Utils.isWorldClaimable(world) && LandManager.getInstance().hasLand(world)) {
-                                for (LivingEntity entity : world.getLivingEntities()) {
-                                    if (Utils.isHostile(entity)) {
-                                        OwnedLand land = LandManager.getInstance().getLand(entity.getLocation());
-                                        if (land != null && !land.getMode(PlotMode.mobSpawning)) {
-                                            entity.remove();
-                                            amount++;
-                                        }
+                    for (World world : Bukkit.getWorlds()) {
+                        if (Utils.isWorldClaimable(world) && LandManager.getInstance().hasLand(world)) {
+                            for (LivingEntity entity : world.getLivingEntities()) {
+                                if (Utils.isHostile(entity)) {
+                                    OwnedLand land = LandManager.getInstance().getLand(entity.getLocation());
+                                    if (land != null && !land.getMode(PlotMode.mobSpawning)) {
+                                        entity.remove();
+                                        amount++;
                                     }
                                 }
                             }

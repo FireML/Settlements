@@ -1,7 +1,5 @@
 package de.themoep.settlements;
 
-import co.aikar.timings.lib.MCTiming;
-import co.aikar.timings.lib.TimingManager;
 import de.themoep.settlements.banish.BanishListener;
 import de.themoep.settlements.chat.ChatManager;
 import de.themoep.settlements.command.CommandManager;
@@ -67,8 +65,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     private boolean running = false;
     private static final Timer timer = new Timer();
     private LandModeListener landModeListener;
-    private TimingManager timingManager;
-    private MCTiming pluginTimings;
     private ServerAdapter serverAdapter;
 
     private final List<Settlement> newlyAbandonedSettlements = new ArrayList<>();
@@ -121,8 +117,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             serverAdapter = new SpigotAdapter();
         }
-        timingManager = TimingManager.of(this);
-        pluginTimings = timingManager.of("Plugin actions");
         this.checkDataFolder();
         if (!this.setupEconomy()) {
             this.getLogger().log(Level.SEVERE, "Disabled due to missing economy!");
@@ -477,14 +471,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
 
     public LandModeListener getLandModeListener() {
         return landModeListener;
-    }
-
-    public MCTiming getTiming(String name) {
-        return timingManager.of(name, pluginTimings);
-    }
-
-    public MCTiming getAndStartTiming(String name) {
-        return timingManager.ofStart(name, pluginTimings);
     }
 
     public ServerAdapter getServerAdapter() {

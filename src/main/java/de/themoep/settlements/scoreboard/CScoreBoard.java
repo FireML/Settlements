@@ -1,7 +1,5 @@
 package de.themoep.settlements.scoreboard;
 
-import co.aikar.timings.lib.MCTiming;
-import de.themoep.settlements.SettlementsPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -34,9 +32,7 @@ public class CScoreBoard {
     }
 
     public void update() {
-        try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Scoreboard Update Sidebar")) {
-            updateSidebar();
-        }
+        updateSidebar();
     }
 
     public void updateSidebar() {

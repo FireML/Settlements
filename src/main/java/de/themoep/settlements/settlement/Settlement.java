@@ -1,6 +1,5 @@
 package de.themoep.settlements.settlement;
 
-import co.aikar.timings.lib.MCTiming;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import de.themoep.settlements.SettlementsPlugin;
@@ -692,14 +691,12 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     public boolean setMode(PlotMode mode, boolean value) {
         if (super.setMode(mode, value)) {
             if (SettlementsPlugin.getInstance().isRunning() && mode == PlotMode.mobSpawning && !value) {
-                try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Settlement mob spawning mode toggle")) {
-                    for (OwnedLand land : LandManager.getInstance().getClaimedLand(this)) {
-                        World world = Bukkit.getWorld(land.getWorldName());
-                        if (world != null && world.isChunkLoaded(land.getX(), land.getZ())) {
-                            for (Entity entity : land.getChunk().getEntities()) {
-                                if (entity instanceof LivingEntity && Utils.isHostile((LivingEntity) entity)) {
-                                    entity.remove();
-                                }
+                for (OwnedLand land : LandManager.getInstance().getClaimedLand(this)) {
+                    World world = Bukkit.getWorld(land.getWorldName());
+                    if (world != null && world.isChunkLoaded(land.getX(), land.getZ())) {
+                        for (Entity entity : land.getChunk().getEntities()) {
+                            if (entity instanceof LivingEntity && Utils.isHostile((LivingEntity) entity)) {
+                                entity.remove();
                             }
                         }
                     }

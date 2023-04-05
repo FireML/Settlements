@@ -1,6 +1,5 @@
 package de.themoep.settlements.lock;
 
-import co.aikar.timings.lib.MCTiming;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.ImmutableMap;
@@ -72,23 +71,17 @@ public class LockManager implements LockProvider {
             // Mark all chunks that did not have locks as cached
             boolean isPresent = false;
             Map<SimpleChunkLocation, Map<String, Lock>> worldCache;
-            try (MCTiming ignored1 = SettlementsPlugin.getInstance().getAndStartTiming("LockManager create world chunk cache")) {
-                worldCache = lockTable.get(chunk.getWorld());
-                if (worldCache == null) {
-                    worldCache = new ConcurrentHashMap<>();
-                    lockTable.put(chunk.getWorld(), worldCache);
-                } else {
-                    isPresent = true;
-                }
+            worldCache = lockTable.get(chunk.getWorld());
+            if (worldCache == null) {
+                worldCache = new ConcurrentHashMap<>();
+                lockTable.put(chunk.getWorld(), worldCache);
+            } else {
+                isPresent = true;
             }
-            try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("LockManager check chunk lock cache")) {
-                isPresent = isPresent && worldCache.containsKey(chunk);
-            }
-            try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("LockManager create chunk lock cache")) {
-                if (!isPresent) {
-                    notLoaded.add(chunk);
-                    worldCache.put(chunk, new ConcurrentHashMap<>(ImmutableMap.of(LOADING_KEY, new Lock(null, null, null))));
-                }
+            isPresent = isPresent && worldCache.containsKey(chunk);
+            if (!isPresent) {
+                notLoaded.add(chunk);
+                worldCache.put(chunk, new ConcurrentHashMap<>(ImmutableMap.of(LOADING_KEY, new Lock(null, null, null))));
             }
         }
         queueChunkLoad(notLoaded);

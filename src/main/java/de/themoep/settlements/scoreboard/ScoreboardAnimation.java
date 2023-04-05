@@ -1,6 +1,5 @@
 package de.themoep.settlements.scoreboard;
 
-import co.aikar.timings.lib.MCTiming;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.config.Config;
@@ -35,7 +34,6 @@ public class ScoreboardAnimation implements Listener {
     }
 
     public void onUpdate() {
-        MCTiming timing = SettlementsPlugin.getInstance().getAndStartTiming("Scoreboard Title Animation");
         ++counter;
         String s;
         if (counter < 0) {
@@ -58,6 +56,5 @@ public class ScoreboardAnimation implements Listener {
             s = SECONDARY + title.substring(0, counter) + PRIMARY + title.substring(counter);
         }
         manager.setTitle(s);
-        timing.stopTiming();
     }
 }

@@ -1,6 +1,5 @@
 package de.themoep.settlements.empire;
 
-import co.aikar.timings.lib.MCTiming;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import de.themoep.settlements.SettlementsPlugin;
@@ -526,10 +525,8 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
                     setWorldName(Config.Empire.World.PREFIX + "id" + getId().value() + Config.Empire.World.SUFFIX);
                 }
                 Utils.runSync(() -> {
-                    try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
-                        EmpireManager.getInstance().createEmpireWorld(this);
-                        Message.get("empire-world-generated").tell(this);
-                    }
+                    EmpireManager.getInstance().createEmpireWorld(this);
+                    Message.get("empire-world-generated").tell(this);
                 });
             }
         }
@@ -868,11 +865,9 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
             if (SettlementsPlugin.getInstance().isRunning() && mode == PlotMode.mobSpawning && !value && hasWorld()) {
                 World world = Bukkit.getWorld(getWorldName());
                 if (world != null) {
-                    try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Empire mob spawning mode toggle")) {
-                        for (LivingEntity entity : world.getLivingEntities()) {
-                            if (Utils.isHostile(entity)) {
-                                entity.remove();
-                            }
+                    for (LivingEntity entity : world.getLivingEntities()) {
+                        if (Utils.isHostile(entity)) {
+                            entity.remove();
                         }
                     }
                 }

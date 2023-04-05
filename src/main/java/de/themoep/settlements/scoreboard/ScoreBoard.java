@@ -1,6 +1,5 @@
 package de.themoep.settlements.scoreboard;
 
-import co.aikar.timings.lib.MCTiming;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.integration.PlaceholderApiIntegration;
 import de.themoep.settlements.resident.Resident;
@@ -35,47 +34,39 @@ public class ScoreBoard {
         }
 
         Map<String, String> replacements;
-        try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Scoreboard get player sidebar replacements")) {
-            replacements = Utils.toMap(
-                    "balance", Utils.withSuffix((long) SettlementsPlugin.getInstance().getEconomy().getBalance(member)),
-                    "bank", Utils.CURRENCY_FORMAT.format((long) SettlementsPlugin.getInstance().getEconomy().getBalance(member)),
-                    "kills", String.valueOf(member.getStatistic(Statistic.PLAYER_KILLS)),
-                    "deaths", String.valueOf(member.getStatistic(Statistic.DEATHS)),
-                    "bonus", String.valueOf(resident.getBonusClaims()),
-                    "title", resident.getDisplayTitle(),
-                    "settlementtitle", resident.getSettlementTitle(),
-                    "settlementrank", resident.hasSettlement() ? resident.getSettlementRank().getTag(resident.getSettlement()) : "",
-                    "empiretitle", resident.getEmpireTitle(),
-                    "empirerank", resident.hasEmpire() ? resident.getEmpireRank().getTag() : ""
-            );
-            if (resident.hasSettlement()) {
-                String[] settlementRepl = resident.getSettlement().getReplacements(null);
-                for (int i = 0; i + 1 < settlementRepl.length; i += 2) {
-                    replacements.put("settlement" + settlementRepl[i], settlementRepl[i + 1]);
-                }
-                if (resident.hasEmpire()) {
-                    String[] empireRepl = resident.getSettlement().getEmpire().getReplacements(null);
-                    for (int i = 0; i + 1 < empireRepl.length; i += 2) {
-                        replacements.put("empire" + empireRepl[i], empireRepl[i + 1]);
-                    }
+        replacements = Utils.toMap(
+                "balance", Utils.withSuffix((long) SettlementsPlugin.getInstance().getEconomy().getBalance(member)),
+                "bank", Utils.CURRENCY_FORMAT.format((long) SettlementsPlugin.getInstance().getEconomy().getBalance(member)),
+                "kills", String.valueOf(member.getStatistic(Statistic.PLAYER_KILLS)),
+                "deaths", String.valueOf(member.getStatistic(Statistic.DEATHS)),
+                "bonus", String.valueOf(resident.getBonusClaims()),
+                "title", resident.getDisplayTitle(),
+                "settlementtitle", resident.getSettlementTitle(),
+                "settlementrank", resident.hasSettlement() ? resident.getSettlementRank().getTag(resident.getSettlement()) : "",
+                "empiretitle", resident.getEmpireTitle(),
+                "empirerank", resident.hasEmpire() ? resident.getEmpireRank().getTag() : ""
+        );
+        if (resident.hasSettlement()) {
+            String[] settlementRepl = resident.getSettlement().getReplacements(null);
+            for (int i = 0; i + 1 < settlementRepl.length; i += 2) {
+                replacements.put("settlement" + settlementRepl[i], settlementRepl[i + 1]);
+            }
+            if (resident.hasEmpire()) {
+                String[] empireRepl = resident.getSettlement().getEmpire().getReplacements(null);
+                for (int i = 0; i + 1 < empireRepl.length; i += 2) {
+                    replacements.put("empire" + empireRepl[i], empireRepl[i + 1]);
                 }
             }
         }
 
         Message sidebar;
-        try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Scoreboard get player sidebar message")) {
-            sidebar = manager.getMessage("sidebar.entries." + (resident.hasSettlement() ? resident.hasEmpire() ? "empire" : "settlement" : "no-settlement"));
-        }
+        sidebar = manager.getMessage("sidebar.entries." + (resident.hasSettlement() ? resident.hasEmpire() ? "empire" : "settlement" : "no-settlement"));
         List<String> text;
-        try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Scoreboard get player sidebar replaced text")) {
-            text = sidebar.getReplacedTextList(replacements);
-        }
+        text = sidebar.getReplacedTextList(replacements);
         if (SettlementsPlugin.getInstance().getPlaceholderApi() != null && Config.Sidebar.PLACEHOLDER_API) {
-            try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Scoreboard get player sidebar placeholder api replacements")) {
-                String[] replacedText = PlaceholderApiIntegration.setPlaceholders(member, String.join("\n", text)).split("\n");
-                text = new ArrayList<>();
-                Collections.addAll(text, replacedText);
-            }
+            String[] replacedText = PlaceholderApiIntegration.setPlaceholders(member, String.join("\n", text)).split("\n");
+            text = new ArrayList<>();
+            Collections.addAll(text, replacedText);
         }
         return text;
     }

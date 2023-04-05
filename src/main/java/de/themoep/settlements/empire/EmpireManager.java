@@ -1,6 +1,5 @@
 package de.themoep.settlements.empire;
 
-import co.aikar.timings.lib.MCTiming;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
@@ -163,10 +162,8 @@ public class EmpireManager {
     }
 
     public void loadEmpireWorlds() {
-        try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
-            for (Empire empire : getEmpires()) {
-                createEmpireWorld(empire);
-            }
+        for (Empire empire : getEmpires()) {
+            createEmpireWorld(empire);
         }
     }
 
@@ -280,10 +277,8 @@ public class EmpireManager {
                         empire.setWorldName(Config.Empire.World.PREFIX + "id" + empire.getId().value() + Config.Empire.World.SUFFIX);
                     }
                     Utils.runSync(() -> {
-                        try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
-                            createEmpireWorld(empire);
-                            Message.get("empire-world-generated").tell(empire.getOnlineResidents());
-                        }
+                        createEmpireWorld(empire);
+                        Message.get("empire-world-generated").tell(empire.getOnlineResidents());
                     });
                 }
                 Utils.runSync(() -> {
@@ -365,15 +360,13 @@ public class EmpireManager {
         if (Config.Empire.World.ENABLED && empire.hasWorld()) {
             World empireWorld = Bukkit.getWorld(empire.getWorldName());
             if (empireWorld != null) {
-                try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Empire world removal")) {
-                    for (Player player : empireWorld.getPlayers()) {
-                        Utils.teleportToSpawn(player);
-                    }
-                    for (LockProvider lockProvider : SettlementsPlugin.getInstance().getLockProviders()) {
-                        lockProvider.removeInWorld(empireWorld);
-                    }
-                    deleteWorld(empireWorld);
+                for (Player player : empireWorld.getPlayers()) {
+                    Utils.teleportToSpawn(player);
                 }
+                for (LockProvider lockProvider : SettlementsPlugin.getInstance().getLockProviders()) {
+                    lockProvider.removeInWorld(empireWorld);
+                }
+                deleteWorld(empireWorld);
             }
         }
         LandManager.getInstance().unclaimLand(empire);
@@ -546,10 +539,8 @@ public class EmpireManager {
                     empire.setWorldName(Config.Empire.World.PREFIX + "id" + empire.getId().value() + Config.Empire.World.SUFFIX);
                 }
                 Utils.runSync(() -> {
-                    try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("Empire world creation")) {
-                        createEmpireWorld(empire);
-                        Message.get("empire-world-generated").tell(empire.getOnlineResidents());
-                    }
+                    createEmpireWorld(empire);
+                    Message.get("empire-world-generated").tell(empire.getOnlineResidents());
                 });
             } else if (empire.hasWorld()) {
                 World world = Bukkit.getWorld(empire.getWorldName());

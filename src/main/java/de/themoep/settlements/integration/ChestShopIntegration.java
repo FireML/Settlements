@@ -1,6 +1,5 @@
 package de.themoep.settlements.integration;
 
-import co.aikar.timings.lib.MCTiming;
 import com.Acrobot.Breeze.Utils.MaterialUtil;
 import com.Acrobot.ChestShop.ChestShop;
 import com.Acrobot.ChestShop.Commands.Toggle;
@@ -144,16 +143,14 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
 
     private int removeInChunk(Chunk chunk) {
         int amount = 0;
-        try (MCTiming ignored = SettlementsPlugin.getInstance().getAndStartTiming("ChestShop chunk shop removal")) {
-            for (BlockState blockState : chunk.getTileEntities()) {
-                if (blockState instanceof Sign && ChestShopSign.isValid((Sign) blockState)) {
-                    Sign sign = (Sign) blockState;
-                    Container container = uBlock.findConnectedContainer(sign);
-                    Bukkit.getPluginManager().callEvent(new ShopDestroyedEvent(null, (Sign) sign.getBlock().getState(), container));
-                    Arrays.fill(sign.getLines(), "");
-                    sign.update(true);
-                    amount++;
-                }
+        for (BlockState blockState : chunk.getTileEntities()) {
+            if (blockState instanceof Sign && ChestShopSign.isValid((Sign) blockState)) {
+                Sign sign = (Sign) blockState;
+                Container container = uBlock.findConnectedContainer(sign);
+                Bukkit.getPluginManager().callEvent(new ShopDestroyedEvent(null, (Sign) sign.getBlock().getState(), container));
+                Arrays.fill(sign.getLines(), "");
+                sign.update(true);
+                amount++;
             }
         }
         return amount;
