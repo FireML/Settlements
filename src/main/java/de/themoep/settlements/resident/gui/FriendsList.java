@@ -25,7 +25,7 @@ public class FriendsList extends SettlementsGUI {
         gui = new ListGui<>(resident, "general.friends", true, resident::getFriends,
                 (c, friend) -> {
                     // Unfriend
-                    if (c.getEvent().isRightClick()) {
+                    if (c.getType().isRightClick()) {
                         Resident fRes = friend.getResident();
                         fRes.removeFriend(resident.getUUID());
                         resident.removeFriend(fRes.getUUID());

@@ -74,7 +74,7 @@ public class PrivateTeleportersGUI extends SettlementsGUI {
         ));
 
         gui.addElement(new StaticGuiElement('b', ItemUtils.toIcon(Material.BARRIER), click -> {
-            new TeleportersGUI().open((Player) click.getEvent().getWhoClicked());
+            new TeleportersGUI().open((Player) click.getWhoClicked());
             return true;
         }, getText("back")));
 
@@ -101,7 +101,7 @@ public class PrivateTeleportersGUI extends SettlementsGUI {
                                 if (settlement.getOutpostHomes().containsKey(outpost.getKey())) {
                                     Utils.teleport(
                                             new PathedConfigMessages("command.settlement.outpost.teleport"),
-                                            (Player) click.getEvent().getWhoClicked(),
+                                            (Player) click.getWhoClicked(),
                                             settlement.getOutpostHomes().get(outpost.getKey()).toBukkitLocation(),
                                             "outpost",
                                             "name", outpost.getValue().getName()
@@ -149,14 +149,14 @@ public class PrivateTeleportersGUI extends SettlementsGUI {
                                 click.getGui().close();
                                 if (landOwner instanceof Empire) {
                                     ((EmpireHomeCommand) CommandManager.getInstance().getCommand("empire").getSubCommands().get("home")).run(
-                                            ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked()),
+                                            ResidentManager.getInstance().getResident((Player) click.getWhoClicked()),
                                             "empire",
                                             "home",
                                             landOwner.getName()
                                     );
                                 } else if (landOwner instanceof Settlement) {
                                     ((SettlementHomeCommand) CommandManager.getInstance().getCommand("settlement").getSubCommands().get("home")).run(
-                                            ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked()),
+                                            ResidentManager.getInstance().getResident((Player) click.getWhoClicked()),
                                             "settlement",
                                             "home",
                                             landOwner.getName()

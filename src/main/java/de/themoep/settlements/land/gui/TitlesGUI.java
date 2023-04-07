@@ -137,7 +137,7 @@ public class TitlesGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Ra
                                     }
                                 })
                                 .plugin(SettlementsPlugin.getInstance())
-                                .open((Player) click.getEvent().getWhoClicked());
+                                .open((Player) click.getWhoClicked());
                     }
                     return true;
                 }, getText("add.title",

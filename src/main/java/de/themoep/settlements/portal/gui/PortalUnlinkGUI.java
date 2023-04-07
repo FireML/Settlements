@@ -19,9 +19,9 @@ public class PortalUnlinkGUI extends PortalGUI {
         for (Portal linked : links) {
             portalGroup.addElement(new StaticGuiElement('t', PORTAL, click -> {
                 if (PortalManager.getInstance().unlinkPortals(portal, linked)) {
-                    getMessage("success").tell(click.getEvent().getWhoClicked(), linked.getReplacements());
+                    getMessage("success").tell(click.getWhoClicked(), linked.getReplacements());
                 } else {
-                    getMessage("error").tell(click.getEvent().getWhoClicked(), linked.getReplacements());
+                    getMessage("error").tell(click.getWhoClicked(), linked.getReplacements());
                 }
                 click.getGui().close();
                 return true;

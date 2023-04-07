@@ -204,11 +204,11 @@ public class UpgradeGUI extends ConfigurableGui {
         }));
 
         gui.addElement(new DynamicGuiElement('d', who -> new StaticGuiElement('d', getIcon("deposit"), click -> {
-            if (click.getEvent().getCursor() == null || click.getEvent().getCursor().getType().isEmpty()) {
+            if (click.getCursor() == null || click.getCursor().getType().isEmpty()) {
                 new DepositGUI<>(landOwner.getKey(), resident, selected).open();
-            } else if (click.getType() == ClickType.LEFT && click.getEvent().getCursor() != null) {
+            } else if (click.getType() == ClickType.LEFT && click.getCursor() != null) {
                 Map<String, Long> requirements = selected.getNextLevelRequirements();
-                ItemStack cursor = click.getEvent().getCursor();
+                ItemStack cursor = click.getCursor();
                 String type = cursor.getType().name();
                 if (requirements.containsKey(type)) {
                     long required = requirements.get(type);
@@ -223,7 +223,7 @@ public class UpgradeGUI extends ConfigurableGui {
                         }
                         cursor.setAmount(cursor.getAmount() - added);
                         if (cursor.getAmount() <= 0) {
-                            click.getEvent().setCursor(null);
+                            click.setCursor(null);
                         }
                         selected.add(type, added);
                         if (!selected.checkLevelUp(resident)) {

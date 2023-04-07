@@ -53,13 +53,13 @@ public class ManagementGUI extends SettlementsGUI {
                     // accept invite
                     if (request instanceof JoinRequest) {
                         Resident source = (Resident) request.getSource();
-                        if (c.getEvent().isLeftClick()) {
+                        if (c.getType().isLeftClick()) {
                             if (handleJoin(resident, source, resident.getSettlement())) {
                                 c.getGui().close();
                             } else {
                                 c.getGui().draw();
                             }
-                        } else if (c.getEvent().isRightClick()) {
+                        } else if (c.getType().isRightClick()) {
                             resident.getSettlement().removeJoinRequest((JoinRequest) request);
                             Utils.runAsync(() -> DatabaseManager.getInstance().delete(request));
                             c.getGui().draw();

@@ -113,7 +113,7 @@ public class StartGUI extends ConfigurableGui {
                             return AnvilGUI.Response.close();
                         })
                         .plugin(SettlementsPlugin.getInstance())
-                        .open((Player) click.getEvent().getWhoClicked());
+                        .open((Player) click.getWhoClicked());
             }
             return true;
         }, getText("create.entry",

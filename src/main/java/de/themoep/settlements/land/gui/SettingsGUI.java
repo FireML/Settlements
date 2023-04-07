@@ -99,7 +99,7 @@ public class SettingsGUI extends ConfigurableGui {
                 return true;
             }
             if (click.getType() == ClickType.LEFT) {
-                ItemStack cursor = click.getEvent().getCursor();
+                ItemStack cursor = click.getCursor();
                 if (cursor != null) {
                     ItemMeta meta = cursor.getItemMeta();
                     if (meta instanceof BookMeta) {

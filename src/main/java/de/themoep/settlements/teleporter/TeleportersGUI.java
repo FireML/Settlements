@@ -35,7 +35,7 @@ public class TeleportersGUI extends SettlementsGUI {
         gui.setCloseAction(close -> false);
 
         gui.addElement('p', ItemUtils.toIcon(Material.PLAYER_HEAD), click -> {
-            Player p = (Player) click.getEvent().getWhoClicked();
+            Player p = (Player) click.getWhoClicked();
             new PrivateTeleportersGUI(p);
             return true;
         }, getText("private"));
@@ -52,7 +52,7 @@ public class TeleportersGUI extends SettlementsGUI {
                     'v',
                     ItemUtils.getHead(chief.getUUID(), chief.getName()),
                     click -> {
-                        Resident resident = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
+                        Resident resident = ResidentManager.getInstance().getResident((Player) click.getWhoClicked());
                         if (!resident.hasSettlement() || !resident.getSettlement().hasHome()) {
                             gui.draw();
                             return true;
@@ -60,7 +60,7 @@ public class TeleportersGUI extends SettlementsGUI {
 
                         click.getGui().close();
                         ((SettlementHomeCommand) CommandManager.getInstance().getCommand("settlement").getSubCommands().get("home")).run(
-                                ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked()),
+                                ResidentManager.getInstance().getResident((Player) click.getWhoClicked()),
                                 "settlement",
                                 "home"
                         );
@@ -82,7 +82,7 @@ public class TeleportersGUI extends SettlementsGUI {
                     'e',
                     ItemUtils.getHead(leader.getUUID(), leader.getName()),
                     click -> {
-                        Resident resident = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
+                        Resident resident = ResidentManager.getInstance().getResident((Player) click.getWhoClicked());
                         if (!resident.hasEmpire() || !resident.getSettlement().getEmpire().hasHome()) {
                             gui.draw();
                             return true;
@@ -90,7 +90,7 @@ public class TeleportersGUI extends SettlementsGUI {
 
                         click.getGui().close();
                         ((EmpireHomeCommand) CommandManager.getInstance().getCommand("empire").getSubCommands().get("home")).run(
-                                ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked()),
+                                ResidentManager.getInstance().getResident((Player) click.getWhoClicked()),
                                 "empire",
                                 "home"
                         );

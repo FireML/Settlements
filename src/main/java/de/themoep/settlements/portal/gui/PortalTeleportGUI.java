@@ -20,7 +20,7 @@ public class PortalTeleportGUI extends PortalGUI {
         for (Portal linked : links) {
             teleports.addElement(new StaticGuiElement('t', PORTAL, click -> {
                 click.getGui().close();
-                Utils.runLater(() -> PortalManager.getInstance().teleport((Player) click.getEvent().getWhoClicked(), portal, linked), 2);
+                Utils.runLater(() -> PortalManager.getInstance().teleport((Player) click.getWhoClicked(), portal, linked), 2);
                 return true;
             }, getText("portal", linked.getReplacements())));
         }

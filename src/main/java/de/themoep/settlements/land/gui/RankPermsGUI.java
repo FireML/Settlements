@@ -208,7 +208,7 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
                     "state", landOwner.getStateTag(),
                     "name", landOwner.getName(),
                     "rank", rank.getTag(landOwner)
-            ).open((Player) click.getEvent().getWhoClicked());
+            ).open((Player) click.getWhoClicked());
             return true;
         }, getText("reset",
                 "rank", rank.getTag(landOwner),

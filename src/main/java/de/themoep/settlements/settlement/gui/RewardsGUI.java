@@ -34,8 +34,8 @@ public class RewardsGUI extends SettlementsGUI {
             group.addElement(new StaticGuiElement('g', reward.getIcon(), click -> {
                 if (rewards.contains(rewardId)) {
                     rewards.remove(rewardId);
-                    EventManager.getInstance().giveReward(reward, (Player) click.getEvent().getWhoClicked(), settlement);
-                    new RewardsGUI(settlement).open((Player) click.getEvent().getWhoClicked());
+                    EventManager.getInstance().giveReward(reward, (Player) click.getWhoClicked(), settlement);
+                    new RewardsGUI(settlement).open((Player) click.getWhoClicked());
                 }
                 return true;
             }, getText("entry", "reward", reward.getName())));

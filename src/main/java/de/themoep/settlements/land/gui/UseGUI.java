@@ -83,7 +83,7 @@ public class UseGUI extends SettlementsGUI {
                     for (UseFlag u : UseFlagManager.getInstance().getUseFlags()) {
                         flagAble.setUseState(u, state);
                     }
-                    Message.get("command." + type + ".use.success-all").tell(click.getEvent().getWhoClicked(),
+                    Message.get("command." + type + ".use.success-all").tell(click.getWhoClicked(),
                             "state", state.getTag()
                     );
                     flagAble.save();

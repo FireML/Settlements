@@ -35,7 +35,7 @@ public class ColorSelectGui extends ConfigurableGui {
                     'g',
                     ItemUtils.setGlowing(ColorUtils.getColorHead(chatColor), residentColor == chatColor),
                     click -> {
-                        Resident r = ResidentManager.getInstance().getResident((Player) click.getEvent().getWhoClicked());
+                        Resident r = ResidentManager.getInstance().getResident((Player) click.getWhoClicked());
                         r.setChannelColor(channel, type, chatColor);
                         DatabaseManager.getInstance().saveResident(r);
                         Utils.runLater(() -> {

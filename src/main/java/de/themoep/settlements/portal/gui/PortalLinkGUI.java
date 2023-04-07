@@ -46,9 +46,9 @@ public class PortalLinkGUI extends PortalGUI {
             }
             portalGroup.addElement(new StaticGuiElement('t', PORTAL, click -> {
                 if (PortalManager.getInstance().linkPortals(portal, available)) {
-                    getMessage("success").tell(click.getEvent().getWhoClicked(), available.getReplacements());
+                    getMessage("success").tell(click.getWhoClicked(), available.getReplacements());
                 } else {
-                    getMessage("error").tell(click.getEvent().getWhoClicked(), available.getReplacements());
+                    getMessage("error").tell(click.getWhoClicked(), available.getReplacements());
                 }
                 click.getGui().close();
                 return true;
