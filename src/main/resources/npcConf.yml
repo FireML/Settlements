@@ -8,11 +8,6 @@ settlement:
       uuid: playerid
       textures: texturedata
       signature: texturesignature
-    messages:
-    - Hello
-    - Hi
-    message-delay: 20
-    message-range: 5
   quarter-master:
     type: villager
     name: Quarter Master
@@ -56,11 +51,6 @@ empire:
       uuid: playerid
       textures: texturedata
       signature: texturesignature
-    messages:
-    - Hello
-    - Hi
-    message-delay: 20
-    message-range: 5
   quarter-master:
     type: villager
     name: Quarter Master
