@@ -94,7 +94,7 @@ claiming:
       # Set to -1 to disable the automatic unclaiming of too close lands
       grace-days: 0
       # Whether or not outposts are unclaimed
-      outposts: false
+      outposts: true
       
 settlement:
   # How much a player must pay to create a settlement
@@ -160,7 +160,7 @@ settlement:
     abandon-time: 120
     # The amount of days that a settlement's chief can be offline until it gets deleted
     # Set to -1 if you don't want to delete them at all
-    inactive-time: 30
+    inactive-time: 60
 
 empire:
   # Whether or not a player can transfer their bought claims to an empire
@@ -210,7 +210,7 @@ empire:
 
   claiming:
     # Is claiming for empires outside their world enabled?
-    enabled: true
+    enabled: false
     # Worlds in which claiming of empire chunks are disabled
     disabled-worlds:
     - Spawn
@@ -221,7 +221,7 @@ empire:
 
   world:
     # Whether each empire should get their own world automatically generated
-    enabled: false
+    enabled: true
     # The prefix of all empire worlds. WARNING: Changing this with existing worlds will break them!
     prefix: ''
     # The suffix of all empire worlds. WARNING: Changing this with existing worlds will break them!
@@ -283,6 +283,8 @@ modes:
     Resource:
       explosions: true
     world_nether:
+      explosions: false
+    world_end:
       explosions: false
   # Modes in abandoned settlements/empires
   abandoned:
@@ -458,7 +460,7 @@ chat:
 
 sidebar:
   # Enable or disable the inbuilt sidebar
-  enabled: true
+  enabled: false
   # Seconds between scoreboard updates
   update: 1
   # Ticks for the scoreboard header animation (set to 0 to disable it)
@@ -500,9 +502,9 @@ plotsquared:
   
 citizens:
   # The range in blocks in which NPCs will talk with players
-  talk-range: 3
+  talk-range: 0
   # The delay in seconds between messages
-  talk-delay: 10
+  talk-delay: 84600
   # Repeat messages while inside range
   repeat-messages: false
   # Attempt to force respawn NPCs on startup if they are missing (e.g. for Villagers)
