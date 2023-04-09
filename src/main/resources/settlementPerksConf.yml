@@ -69,6 +69,7 @@ resistance1:
     # If the amount is higher than 1 then this is the cost that needs to be paid to trigger it again
     repeating:
       cash: 100
+# Kingdom level 2
 speed1:
   state: kingdom
   level: 2
@@ -78,15 +79,7 @@ speed1:
   cost:
     unlock:
       cash: 1000
-#mapplot:
-#  state: kingdom
-#  icon: map
-#  level: 2
-#  actions:
-#    plot: true
-#  cost:
-#    unlock:
-#      cash: 0
+# Kingdom level 3
 strength1:
   state: kingdom
   level: 3
@@ -96,6 +89,7 @@ strength1:
   cost:
     unlock:
       cash: 1000
+# Kingdom level 4
 regen1:
   state: kingdom
   level: 4
@@ -105,6 +99,7 @@ regen1:
   cost:
     unlock:
       cash: 1000
+# Kingdom level 5
 speed2:
   state: kingdom
   level: 5
@@ -114,6 +109,7 @@ speed2:
   cost:
     unlock:
       cash: 1000
+# Kingdom level 6
 resistance2:
   state: kingdom
   level: 6
@@ -123,6 +119,13 @@ resistance2:
   cost:
     unlock:
       cash: 1000
+empire:
+  state: kingdom
+  level: 6
+  unlockables:
+  - empire.create
+# Kingdom level 7
+# Kingdom level 8
 regen2:
   state: kingdom
   level: 8
@@ -132,6 +135,7 @@ regen2:
   cost:
     unlock:
       cash: 1000
+# Kingdom level 9
 haste1:
   state: kingdom
   level: 9
@@ -141,6 +145,7 @@ haste1:
   cost:
     unlock:
       cash: 1000
+# Kingdom level 10
 haste2:
   state: kingdom
   level: 10
@@ -181,8 +186,15 @@ extra-outpost:
       cash: 1000
     repeat:
       cash: 1000
-empire:
+# Kingdom level 15
+fly:
   state: kingdom
-  level: 6
-  unlockables:
-  - empire.create
+  level: 15
+  effects:
+    - type: fly
+      strength: 1
+      in: own-settlement
+      to: members
+  cost:
+    unlock:
+      cash: 1000000
