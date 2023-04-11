@@ -1429,8 +1429,8 @@ gui:
       turn-in: "&eClick to deposit items"
       break: "&eBreak blocks"
       place: "&ePlace blocks"
-      kill: "&eKill monster"
-      harvest: "&eHarvest material"
+      kill: "&eKill mobs"
+      harvest: "&eHarvest materials"
     finished: "&aFinished &e"
     only-in-empire: "&7Only in {name} Domain&e "
     only-on-claim: "&7Only on {state} claim&e "
@@ -2494,6 +2494,7 @@ gui:
       &bClick to deposit!
   deposit:
     title: "Deposit Materials"
+    description: Deposit materials for your upgrade
     success-deposit: "&6&l{player} &7&lhas deposited towards your {state}:"
     fail-deposit: "&c&lFailed Deposited Items: {reason}"
     max-level-reached: "&r&c&lMax Level Reached"
