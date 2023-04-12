@@ -9,9 +9,9 @@ village:
     chunks: 1
     outposts: 0
     # The amount of settlement missions available to residents per day
-    missions: 0
+    missions: 1
     # Extra empire missions
-    extra-missions: 0
+    extra-missions: 1
     # Max amount of residents
     # Default value if not included: -1 = only limited by max size in config.yml
     size: 2
@@ -23,11 +23,9 @@ village:
     chunks: 20
     outposts: 1
     # The amount of settlement missions available to residents per day
-    missions: 0
+    missions: 2
     # Extra empire missions
-    extra-missions: 0
-    requirements:
-      money: 25000
+    extra-missions: 1
     # Max amount of residents
     # Default value if not included: -1 = only limited by max size in config.yml
     size: -1
@@ -47,8 +45,8 @@ village:
     chunks: 40
     outposts: 1
     # The amount of settlement missions available to residents per day
-    missions: 0
-    extra-missions: 0
+    missions: 3
+    extra-missions: 1
     requirements:
       acacia_door: 25
       acacia_log: 200
@@ -71,8 +69,8 @@ village:
       Kingdoms_the_end: 960
     chunks: 60
     outposts: 1
-    missions: 0
-    extra-missions: 0
+    missions: 4
+    extra-missions: 1
     requirements:
       amethyst_block: 100
       powder_snow_bucket: 25
@@ -98,8 +96,8 @@ village:
       Kingdoms_the_end: 960
     chunks: 80
     outposts: 2
-    missions: 0
-    extra-missions: 0
+    missions: 5
+    extra-missions: 2
     requirements:
       bedrock: 1
   level-6:
@@ -121,8 +119,8 @@ kingdom:
       Kingdoms_the_end: 800
     chunks: 150
     outposts: 4
-    missions: 0
-    extra-missions: 0
+    missions: 6
+    extra-missions: 3
     requirements:
       bedrock: 1
   level-2:
@@ -132,8 +130,8 @@ kingdom:
       Kingdoms_the_end: 760
     chunks: 175
     outposts: 4
-    missions: 0
-    extra-missions: 0
+    missions: 7
+    extra-missions: 4
     requirements:
       bedrock: 1
   level-3:
@@ -143,8 +141,8 @@ kingdom:
       Kingdoms_the_end: 720
     chunks: 200
     outposts: 6
-    missions: 0
-    extra-missions: 0
+    missions: 8
+    extra-missions: 5
     requirements:
       bedrock: 1
   level-4:
@@ -154,8 +152,8 @@ kingdom:
       Kingdoms_the_end: 680
     chunks: 250
     outposts: 6
-    missions: 0
-    extra-missions: 0
+    missions: 9
+    extra-missions: 5
     requirements:
       bedrock: 1
   level-5:
@@ -165,8 +163,8 @@ kingdom:
       Kingdoms_the_end: 640
     chunks: 300
     outposts: 6
-    missions: 0
-    extra-missions: 0
+    missions: 10
+    extra-missions: 5
     requirements:
       bedrock: 1
   level-6:
@@ -176,8 +174,8 @@ kingdom:
       Kingdoms_the_end: 600
     chunks: 400
     outposts: 8
-    missions: 0
-    extra-missions: 0
+    missions: 11
+    extra-missions: 6
     requirements:
       bedrock: 1
   level-7:
@@ -187,8 +185,8 @@ kingdom:
       Kingdoms_the_end: 560
     chunks: 650
     outposts: 8
-    missions: 0
-    extra-missions: 0
+    missions: 12
+    extra-missions: 7
     requirements:
       bedrock: 1
   level-8:
@@ -198,8 +196,8 @@ kingdom:
       Kingdoms_the_end: 520
     chunks: 800
     outposts: 8
-    missions: 0
-    extra-missions: 0
+    missions: 13
+    extra-missions: 8
     requirements:
       bedrock: 1
   level-9:
@@ -209,8 +207,8 @@ kingdom:
       Kingdoms_the_end: 480
     chunks: 1000
     outposts: 12
-    missions: 0
-    extra-missions: 0
+    missions: 14
+    extra-missions: 9
     requirements:
       bedrock: 1
   level-10:
@@ -220,8 +218,8 @@ kingdom:
       Kingdoms_the_end: 400
     chunks: 1100
     outposts: 12
-    missions: 0
-    extra-missions: 0
+    missions: 15
+    extra-missions: 10
     requirements:
       bedrock: 1
   level-11:
@@ -231,8 +229,8 @@ kingdom:
       Kingdoms_the_end: 360
     chunks: 1200
     outposts: 13
-    missions: 0
-    extra-missions: 0
+    missions: 16
+    extra-missions: 10
     requirements:
       bedrock: 1
   level-12:
@@ -242,8 +240,8 @@ kingdom:
       Kingdoms_the_end: 320
     chunks: 1300
     outposts: 14
-    missions: 0
-    extra-missions: 0
+    missions: 17
+    extra-missions: 10
     requirements:
       bedrock: 1
   level-13:
@@ -253,8 +251,8 @@ kingdom:
       Kingdoms_the_end: 280
     chunks: 1400
     outposts: 15
-    missions: 0
-    extra-missions: 0
+    missions: 18
+    extra-missions: 10
     requirements:
       bedrock: 1
   level-14:
@@ -264,8 +262,8 @@ kingdom:
       Kingdoms_the_end: 240
     chunks: 1500
     outposts: 16
-    missions: 0
-    extra-missions: 0
+    missions: 19
+    extra-missions: 10
     requirements:
       bedrock: 1
   level-15:
@@ -275,7 +273,7 @@ kingdom:
       Kingdoms_the_end: 220
     chunks: 1600
     outposts: 17
-    missions: 0
-    extra-missions: 0
+    missions: 20
+    extra-missions: 10
     requirements:
       bedrock: 1
