@@ -27,20 +27,7 @@ village:
     # Extra empire missions
     extra-missions: 0
     requirements:
-      acacia_door: 25
-      acacia_log: 200
-      cobblestone: 200
-      deepslate_gold_ore: 50
-      dripstone: 300
-      enchantment_table: 2
-      glass: 150
-      jungle_log: 200
-      lilypad: 50
-      mangrove_roots: 40
-      paper: 50
-      red_wool: 25
-      tuff: 250
-      vine: 50
+      money: 25000
     # Max amount of residents
     # Default value if not included: -1 = only limited by max size in config.yml
     size: -1
@@ -63,6 +50,30 @@ village:
     missions: 0
     extra-missions: 0
     requirements:
+      acacia_door: 25
+      acacia_log: 200
+      cobblestone: 200
+      deepslate_gold_ore: 50
+      dripstone_block: 300
+      enchanting_table: 2
+      glass: 150
+      jungle_log: 200
+      lily_pad: 50
+      mangrove_roots: 40
+      paper: 50
+      red_wool: 25
+      tuff: 250
+      vine: 50
+  level-4:
+    claim-upkeep: 460
+    per-world-upkeep:
+      Kingdoms_nether: 960
+      Kingdoms_the_end: 960
+    chunks: 60
+    outposts: 1
+    missions: 0
+    extra-missions: 0
+    requirements:
       amethyst_block: 100
       powder_snow_bucket: 25
       chorus_fruit: 50
@@ -80,17 +91,6 @@ village:
       smoker: 15
       water_bucket: 50
       wheat: 150
-  level-4:
-    claim-upkeep: 460
-    per-world-upkeep:
-      Kingdoms_nether: 960
-      Kingdoms_the_end: 960
-    chunks: 60
-    outposts: 1
-    missions: 0
-    extra-missions: 0
-    requirements:
-      bedrock: 1
   level-5:
     claim-upkeep: 440
     per-world-upkeep:
