@@ -3780,6 +3780,15 @@ command:
       description: "Allows sending a mail to all chiefs of empire member settlements"
       sender: "Leader {name}, Empire {empirename}"
       sent: "&a&lSUCCESS &r&7Sent mail to {amount} chiefs of empire member settlements!"
+    materials:
+      description: View the materials you need to upgrade your empire 
+    missions:
+      wait-for-missions: "&c&lYou do not have any missions from your empire yet. Wait for the next distribution!"
+      description: View missions available to your empire
+      redistribute:
+        success: "&eGot {amount} new missions for ☧ {price}"
+        fail: "&cUnable to distribute new missions. Please complete your started ones!"
+        description: Get new new missions for a price
     mode:
       modes: "&cAvailable modes: {modes}"
       success: "&7Empire mode &6{mode}&7 set to &6{value}"
@@ -3837,6 +3846,8 @@ command:
           &c&lABANDONED!!!
           &c Falls in {countdown}
       description: Shows you a map of the surrounding chunks
+    materials:
+      description: View the materials you need to upgrade your settlement
     memberlist:
       head: "&a⊱&m━━━━&r&6Members&a&m━━━━&a⊰"
       entry: "&e• [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{size} players\n&f{description})"
