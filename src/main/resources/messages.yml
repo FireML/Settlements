@@ -2540,8 +2540,8 @@ command:
       unmuted: "&c&lGeneral Chat has been un-muted by &6&l{name}"
     swear:
       description: "Toggles swearing"
-      enabled: "&7&lSwearing has been &aEnabled"
-      disabled: "&7&lSwearing has been &cDisabled"
+      enabled: "&7&lSwear Filter has been &cDisabled"
+      disabled: "&7&lSwear Filter has been &aEnabled"
   ignore:
     description: "Ignores a players chat and messages"
     ignored: "&7Player &6{name}&7 has been &cignored&7!"
