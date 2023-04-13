@@ -2838,7 +2838,7 @@ command:
       footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
       previous: "&b<< Prev "
       next: "&b Next >>"
-      description: Show the vault's history
+      description: Shows the last online time of each resident.
     allies:
       head: "&a⊱&m━━━━&r&6Allies&a&m━━━━&a⊰"
       entry: "&a{state} {name}"
