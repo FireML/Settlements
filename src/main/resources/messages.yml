@@ -3013,12 +3013,12 @@ command:
         entry: "{online}{name}"
       description: "Shows information on the settlement you are standing in "
     history:
-      head: "&a⊱&m━━━━&r&6Log History [{page}/{maxpage}]&a&m━━━━&a⊰"
+      head: "&a⊱&m━━━━&r&6Bank History [{page}/{maxpage}]&a&m━━━━&a⊰"
       entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
       footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
       previous: "&b<< Prev "
       next: "&b Next >>"
-      description: Show the log history
+      description: Show the settlement's bank history
     home:
       own-no-home: "&c&lYour settlement doesn't have a home ask your {chief} to set one!"
       no-home: "&c&lThat {state} doesn't have a home!"
