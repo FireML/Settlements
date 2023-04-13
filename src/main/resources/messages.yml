@@ -16,7 +16,7 @@ start-guide:
   book:
     page1: |-
       Welcome to PoleisMC
-    
+      
       Explore the previous
       GUI to get started!
     page2: |-
@@ -119,8 +119,8 @@ close-claims:
       &cYou are placing a block near a claim of {state} {settlement}! Avoid doing this! 
       &cRun [&e/warningtoggle](/warningtoggle {name})&c to disable this warning for the next {time} minutes.
     block: |-
-     &cYou can only place or break blocks near claims!
-     &7Only Shulker Boxes can be places/broken.
+      &cYou can only place or break blocks near claims!
+      &7Only Shulker Boxes can be places/broken.
 banished:
   move:
     message: "&cYou're banished from the {state} {name}!"
@@ -163,7 +163,7 @@ scoreboard:
         &aBank &e☧ {settlementbalance}
         &aRank &e{settlementrank}
         &aOnline &e{settlementresonlinecount}/{settlementsize}
-  
+        
         &aBal &e%vault_eco_balance_formatted%
         &aChat &e%settlements_player_info_activechannel%
         &7/scoreboard
@@ -178,7 +178,7 @@ scoreboard:
         &aBank &e☧ {settlementbalance}
         &aRank &e{settlementrank}
         &aOnline &e{settlementresonlinecount}/{settlementsize}
-  
+        
         &aBal &e%vault_eco_balance_formatted%
         &aChat &e%settlements_player_info_activechannel%
         &7/scoreboard
@@ -314,11 +314,11 @@ kingdom:
     subtitle: ""
   rank:
     chief:
-    - King
-    - Queen
+      - King
+      - Queen
     assistant:
-    - Duke
-    - Duchess
+      - Duke
+      - Duchess
     elder: Noble
     builder: Architect
     recruiter: Greeter
@@ -812,7 +812,7 @@ gui:
         &eFriends and requests
         &fSee your friends and see if
         &fyou have any new requests!
-  
+        
         &bClick to browse
       back: Close
     overview:
@@ -888,7 +888,7 @@ gui:
       npc: |-
         &eNPC
         &fManage your NPCs
-    
+        
         &bClick to view
       home: |-
         &e{state} Home
@@ -901,7 +901,7 @@ gui:
         &eFriends and requests
         &fSee your friends and see if
         &fyou have any new requests!
-  
+        
         &bClick to browse
       back: Close
     requests:
@@ -944,7 +944,7 @@ gui:
       requests: |-
         &eFriend requests
         &fCheck if you have any friend requests
-  
+        
         &bClick to check
     friend-requests:
       title: "Friend Requests"
@@ -955,9 +955,9 @@ gui:
       back: "&cBack"
       entry: |-
         &e{name}
-    
+        
         &aHas sent you a friend request
-    
+        
         &bClick to accept!
     settlements:
       title: "All Settlements"
@@ -1025,12 +1025,12 @@ gui:
         &bClick for more options
       empire: |-
         &e{name}
-  
+        
         &fAlliance Date: {allydate}
         &fState: {state} Level {level}
         &fCapital: {capitalstate} {capital}
         &fMembers: {size} Settlements
-  
+        
         &bClick for more options
     sort: |-
       &fSorted by {state}
@@ -1077,7 +1077,7 @@ gui:
         state: "&e{state}:&r {members}"
         entry: "&7{name}"
         separator: "&8, "
-      
+
     nearbyclaim: |-
       &fAllow Ally near us
       
@@ -1139,7 +1139,7 @@ gui:
     donations-locked: |-
       &eDonations
       &fGive me your money!
-  
+      
       &cUpgrade NPC to accept
       &cdonations from players
       &coutside the {state}
@@ -1159,7 +1159,7 @@ gui:
     history: |-
       &eBank History
       &fList of recent bank donations
-  
+      
       {action}
     upkeep: |-
       &eUpkeep
@@ -1193,7 +1193,7 @@ gui:
         &fbalance every {hour}. Server time.
         
         &fCurrent Tax: &e☧ {tax}
-  
+        
         {action}
         
         &fCooldown on change: {cooldown}
@@ -1207,7 +1207,7 @@ gui:
         &fAuctioneer!
         
         &fCurrent Tax: &e{auctiontax}%
-  
+        
         {action}
         
         &fCooldown on change: {cooldown}
@@ -1217,7 +1217,7 @@ gui:
     deposit:
       button: |-
         &eDeposit Money
-  
+        
         {action}
       anvil:
         title: "Set amount to deposit"
@@ -1242,7 +1242,7 @@ gui:
       &fBanished Date: &e{date}
       &fReason: &e{reason}
       &fBanisher: &e{banisher}
-  
+      
       &bClick to unbanish
     unbanished: |-
       &eUnbanishment History
@@ -1270,13 +1270,13 @@ gui:
       &fSee a list of everyone who
       &fapplied to join the {state}
       &fand accept or reject them
-  
+      
       {action}
     reslist: |-
       &eManage Residents
       &fInformation about the residents
       &fSet their Rank, Title and Taxes
-  
+      
       {action}
     banished: |-
       &eBanished List
@@ -1291,23 +1291,23 @@ gui:
       &bClick to view
     allies: |-
       &eManage Allies
-  
+      
       {action}
     ranks: |-
       &eManage Ranks and Titles
       &f{state} Rank management
-  
+      
       {action}
     settings: |-
       &eManage {state}
       &fManage Perks and Settings
-  
+      
       {action}
     land: |-
       &eManage Land Settings
       &fModify the modes and access
       &fto your claimed land
-  
+      
       {action}
   npclist:
     title: "Manage your NPCs"
@@ -1383,7 +1383,7 @@ gui:
       
       &cWait for the next distribution!
     back: "&cClose"
-    
+
   build:
     title: "Manage {type}"
     set-state: "&7&lAllow &b&l{state}&7&l to {type}"
@@ -1494,7 +1494,7 @@ gui:
     bank:
       taxes: |-
         &eCurrent Taxes
-    
+        
         &fMember taxes: &e☧ {tax}
 
     management:
@@ -1502,7 +1502,7 @@ gui:
       memberlist: |-
         &eView Members
         &fInformation about the members
-    
+        
         {action}
     perks:
       actions:
@@ -1536,16 +1536,16 @@ gui:
       title: "&2&lEmpire Settings"
       home: |-
         &e{state} Home
-  
+        
         &eClick to teleport
-  
+        
         &a➤ /e home
       sethome: |-
         &e{state} Home
-  
+        
         &bClick to teleport
         &bShift-Click to set new /e home
-  
+        
         &a➤ /e home
         &a➤ /e sethome
 
@@ -1553,14 +1553,14 @@ gui:
         &eBuild
         &fSet who can build on
         &fun-owned plots
-  
+        
         &fCurrent Settings: &e{build}
         &bClick to change settings
       access: |-
         &eAccess
         &fSet who can use your &e/e home
         &fSet who can join the {state}
-  
+        
         &fCurrent Settings: &e{access}
         
         &bClick to change settings
@@ -1568,44 +1568,44 @@ gui:
         &ePerms
         &fSet different usage rights
         &fin your {state}
-  
+        
         &bClick to change settings
       mode: |-
         &eMode
         &fToggle settings including
         &fexplosions, mob spawning,
         &fPvP and more!
-  
+        
         &bClick to change settings
       ranks: |-
         &eRanks
         &fSet your {state}'s
         &fpermissions by rank
-  
+        
         &bClick to change settings
       perks: |-
         &ePerks
         &7Toggle your {state} perks
-  
+        
         &bClick to change settings
       shop: |-
         &eShop
         &fUnlock new {state} perks
-  
+        
         &bClick to open shop
       titles: |-
         &eTitle
         &fSet your {state} title
         
         &fYour Title: &e{title}
-  
+        
         {change}
       titles-edit: |-
         &eTitle
         &fSet your {state} title
-  
+        
         &fYour Title: &e{title}
-  
+        
         &bClick to set title and edit titles
       entry: |-
         &e{name}
@@ -1710,22 +1710,22 @@ gui:
       title: "Select the {state} rank"
       entry: |-
         &e{rank}
-      
+        
         &bClick to select
       entry-not-selectable: |-
         &e{rank}
-      
+        
         &cNot selectable!
         &cRank insufficient
       entry-chief: |-
         &eTransfer Ownership
         &fMake sure the player is abiding all
         &fthe server rules to avoid any issues!
-      
+        
         &b2 Click to transfer
       entry-chief-not-selectable: |-
         &e{rank}
-      
+        
         &cNot selectable!
         &cRank insufficient
     transfer:
@@ -1748,7 +1748,7 @@ gui:
       &eBrowse Public Settlements
       &fBrowse settlements that are
       &fopen to public visiting
-  
+      
       &bClick to browse
     back: "&cClose"
   outpost:
@@ -1761,7 +1761,7 @@ gui:
       button: |-
         &eRename
         &7Rename the outpost
-      
+        
         {action}
       anvil:
         title: "Set the new name"
@@ -1771,7 +1771,7 @@ gui:
       &7Set outpost teleport
       &7location to your current
       &7player location
-    
+      
       {action}
     unclaim: |-
       &cDelete Outpost
@@ -1780,7 +1780,7 @@ gui:
       &7that are not connected
       &7to the home or another
       &7outpost!
-    
+      
       {action}
   reslist:
     title: "Residents"
@@ -1806,7 +1806,7 @@ gui:
       &fTown Info:
       &f➤ Rank: &6{rank}
       &f➤ Plots Owned: &6{plots}
-  
+      
       Player Info
       &f➤ Rank: &6{vaultprefix}
       &f➤ Balance: &6☧ {balance}
@@ -1828,7 +1828,7 @@ gui:
       
       &fCurrent: &c{taxevasion}
       &f- Ignore this if they're exempted
-  
+      
       {action}
     taxes:
       entry: |-
@@ -1836,7 +1836,7 @@ gui:
         &fTotal Donation: &e☧ {donated}
         &fTotal Tax: &e☧ {taxpaid}
         &fTax Exemption: &a{exempted}
-  
+        
         {action}
       exempted: Exempted
       paying: Paying
@@ -1846,7 +1846,7 @@ gui:
       &fgive any new powers and is purely cosmetic!
       
       &fCurrent Title: &e{title}
-  
+      
       {action}
     rank: |-
       &eChange rank
@@ -1854,20 +1854,20 @@ gui:
       &fThis changes their settlement permission!
       
       &fCurrent Rank: &e{rank}
-  
+      
       {action}
     eviction: |-
       &cSend Eviction Letter
       &fMail the player for their
       &f7 days kick notice
-  
+      
       {action}
     kick:
       entry: |-
         &cKick
         &fSend an Eviction Letter first if the
         &fplayer has not violated any rules!
-  
+        
         {action}
       title: "&4Really kick &1{player}?"
       confirm: "&cKick &e{player}"
@@ -1877,7 +1877,7 @@ gui:
         &cBanish the player
         &fKick and block a player from your
         &fsettlement if they violated the rules!
-  
+        
         {action}
       anvil:
         title: "&cBanish &e{player}?"
@@ -1966,18 +1966,18 @@ gui:
         &ePerms
         &fSet different build and
         &fusage rights in the plot
-  
+        
         &bClick to change settings
-  
+        
         &a➤ /plot perms
       mode: |-
         &eMode
         &fToggle settings including
         &fexplosions, mob spawning,
         &fPvP and more!
-  
+        
         &bClick to change settings
-  
+        
         &a➤ /plot mode
       name:
         button: |-
@@ -1998,7 +1998,7 @@ gui:
           &fSet the description of the plot
           
           &fCurrent Description: &e{description}
-  
+          
           &bClick to change description
           
           &a➤ /plot description <description>
@@ -2016,12 +2016,12 @@ gui:
         button: |-
           &eSell plot
           &fSet the price for the plot
-  
+          
           &fCurrent Price: &e{price}
           
           &bClick to set the price for the plot
           &bShift click to make the plot not buyable
-  
+          
           &a➤ /plot sale <price>|false
         anvil:
           title: "Set price"
@@ -2031,9 +2031,9 @@ gui:
         &fGrant individual players
         &fbuild rights on the plot!
         &f{amount} players added.
-  
+        
         &bClick to change settings
-  
+        
         &a➤ /plot members
       entry: |-
         &ePlot Info
@@ -2102,7 +2102,7 @@ gui:
     rename:
       entry: |-
         &eRename {state}
-  
+        
         {action}
       anvil:
         title: "Input new name"
@@ -2111,7 +2111,7 @@ gui:
       entry: |-
         &eControl your perks!
         {perks}
-  
+        
         {action}
       list: "&f{name}"
     rules:
@@ -2123,7 +2123,7 @@ gui:
         
         &bClick with a book to use
         &bbook text as rules!
-  
+        
         {action}
       info:
         actionbar: "Write your new rules or leave empty to keep old ones!"
@@ -2133,7 +2133,7 @@ gui:
       entry: |-
         &eSet Discord link
         &f{discord}
-  
+        
         {action}
       anvil:
         title: "Input new discord link"
@@ -2144,7 +2144,7 @@ gui:
         &fAdd a charge for joining
         
         &fCurrent Joining fee: &e☧ {joinfee}
-  
+        
         {action}
       anvil:
         title: "Input new join fee"
@@ -2156,7 +2156,7 @@ gui:
         &fyour settlement!
         
         &fCurrent: &e{description}
-  
+        
         {action}
       anvil:
         title: "Input new message"
@@ -2207,10 +2207,10 @@ gui:
       &a➤ /s home
     sethome: |-
       &e{state} Home
-    
+      
       &bClick to teleport
       &bShift-Click to set new /s home
-    
+      
       &a➤ /s home
       &a➤ /s sethome
     build: |-
@@ -2225,44 +2225,44 @@ gui:
       &ePerms
       &fSet different usage rights
       &fin your {state}
-  
+      
       &bClick to change settings
     mode: |-
       &eMode
       &fToggle settings including
       &fexplosions, mob spawning,
       &fPvP and more!
-  
+      
       &bClick to change settings
     ranks: |-
       &eRanks
       &fSet your {state}'s
       &fpermissions by rank
-  
+      
       &bClick to change settings
     shop: |-
       &eShop
       &fUnlock new {state} perks
-  
+      
       &bClick to open shop
     titles: |-
       &eTitle
       &fSet your {state} title
       
       &fCurrent title: &e{title}
-  
+      
       &bClick to set title
-  
+      
       &a▶ /s titles
     titles-edit: |-
       &eTitle
       &fSet your {state} title
       &fEdit available titles
-  
+      
       &fCurrent title: &e{title}
-  
+      
       &bClick to set and edit titles
-    
+      
       &a▶ /s titles
     entry: |-
       &e{name}
@@ -2330,20 +2330,20 @@ gui:
       title: "&2&lSelect the {state} rank"
       entry: |-
         &e{rank}
-    
+        
         &bClick to select
       entry-not-selectable: |-
         &e{rank}
-    
+        
         &cNot selectable!
         &cRank insufficient
       entry-chief: |-
         &e{rank}
-    
+        
         &bClick to select
       entry-chief-not-selectable: |-
         &e{rank}
-    
+        
         &cNot selectable!
         &cRank insufficient
   perks:
@@ -2396,14 +2396,14 @@ gui:
     build: |-
       &eBuild
       &fSet who can build
-  
+      
       &fCurrent Settings: &e{build}
-  
+      
       &bClick to change settings
     modes: |-
       &eModes
       &fToggle plot modes
-  
+      
       &bClick to change settings
     descriptions:
       doors: Use doors
@@ -2425,7 +2425,7 @@ gui:
         &e{flag}
         
         &fAccess: &e{access}
-  
+        
         &aClick&b to set
       parent: "&7(Inherited from parent {parent})"
       click-to-unset: |-
@@ -2504,7 +2504,7 @@ usage:
   head: "&a⊱&m━━━━&r&6{type}{name} Commands&a&m━━━━&a⊰"
   entry: "&e• [&e{usage}](hover=&f{usage}\n&9Click to add it to your input{aliases} suggest_command={/{path}) &7- {description}"
   entry-general: "&e• [&e{usage}](hover=&f{usage}\n&9Click to add it to your input{aliases} suggest_command={/{path}) &7- {description}"
-    # Name of the permission group or command type
+  # Name of the permission group or command type
   entry-plot: "&e• [&a{usage}](hover=&f{usage}\n&9Click to add it to your input{aliases} suggest_command={/{path}) &7- {description}"
   entry-officer: "&e• [&b{usage}](hover=&f{usage}\n&9Click to add it to your input{aliases} suggest_command={/{path}) &7- {description}"
   entry-settings: "&e• [&b{usage}](hover=&f{usage}\n&9Click to add it to your input{aliases} suggest_command={/{path}) &7- {description}"
@@ -2728,7 +2728,7 @@ command:
       no-longer-for-sale: "&a&lSUCCESS &7This land is no longer for sale!"
       description: Gets or sets the price of a claimed chunk
     tax:
-      current: "&7This plots's tax is &e₲{tax}&7!"
+      current: "&7This plot's tax is &e₲{tax}&7!"
       description: Plot taxes
       set:
         success: "&e&l(!) &r&7Daily tax of this plot was set to &e₲{amount}&7!"
@@ -2893,7 +2893,7 @@ command:
         footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
         previous: "&b<< Prev "
         next: "&b Next >>"
-        description: Show the bank's history
+        description: Shows the settlement bank's history
     build:
       success: "&aSet {type} state of {flagable} to {state}"
       states:
@@ -3018,7 +3018,7 @@ command:
       footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
       previous: "&b<< Prev "
       next: "&b Next >>"
-      description: Show the settlement's bank history
+      description: Shows the empire's bank history
     home:
       own-no-home: "&c&lYour settlement doesn't have a home ask your {chief} to set one!"
       no-home: "&c&lThat {state} doesn't have a home!"
@@ -3342,7 +3342,7 @@ command:
         &fState: &e{state}
         &fAccess: &e{access}
         &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
-        &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} 
+        &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims}
       bonus-outposts: " Bonus: {amount}"
       bonus-claims: " Bonus: {amount}"
       residents:
@@ -3738,7 +3738,7 @@ command:
         &c&lFailed
         &fUnable to teleport!
       no-access: "&c&lYou don't have access to teleport to the home of that empire!"
-      description: Teleport to a empires's home
+      description: Teleport to an empire's home
     invite:
       already-in-empire: "&c&l{name} is already in an Empire"
       joinfee: "&7Fee to join is &e{amount}!"
@@ -3781,7 +3781,7 @@ command:
       sender: "Leader {name}, Empire {empirename}"
       sent: "&a&lSUCCESS &r&7Sent mail to {amount} chiefs of empire member settlements!"
     materials:
-      description: View the materials you need to upgrade your empire 
+      description: View the materials you need to upgrade your empire
     missions:
       wait-for-missions: "&c&lYou do not have any missions from your empire yet. Wait for the next distribution!"
       description: View missions available to your empire
@@ -3846,19 +3846,10 @@ command:
           &c&lABANDONED!!!
           &c Falls in {countdown}
       description: Shows you a map of the surrounding chunks
-    materials:
-      description: View the materials you need to upgrade your settlement
     memberlist:
       head: "&a⊱&m━━━━&r&6Members&a&m━━━━&a⊰"
       entry: "&e• [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{size} players\n&f{description})"
       description: List all empire members
-    missions:
-      wait-for-missions: "&c&lYou do not have any missions from your {state} yet. Wait for the next distribution!"
-      description: View missions available to your settlement
-      redistribute:
-        success: "&eGot {amount} new missions for ☧ {price}"
-        fail: "&cUnable to distribute new missions. Please complete your started ones!"
-        description: Get new missions for your settlement for a price
     npc:
       skin:
         success: "&aSuccessfully changed the skin of your {state} {type}"
@@ -4133,7 +4124,7 @@ command:
         &c&lFailed
         &fUnable to teleport!
       no-access: "&c&lYou don't have access to teleport to the world of that empire!"
-      description: Teleport to a empires's world
+      description: Teleport to an empire's world
     perms:
       flags: "&cAvailable flags: {flags}"
       states: "&cAvailable states: {states}"
