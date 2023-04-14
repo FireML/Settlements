@@ -3716,7 +3716,7 @@ command:
         &fState: &eEmpire | &fSymbol &r&7{symbol}
         &fAccess: &e{access}
       not-in-empire: "&cYou are not currently in an empire world!"
-      description: Show in which empire world you are
+      description: "Show which empire world you are in"
       special-residents:
         rank: "&e&l{rank}:&r {residents}"
         separator: "&7, "
@@ -3738,13 +3738,13 @@ command:
         &c&lFailed
         &fUnable to teleport!
       no-access: "&c&lYou don't have access to teleport to the home of that empire!"
-      description: Teleport to an empire's home
+      description: "Teleport to an empire's home"
     invite:
       already-in-empire: "&c&l{name} is already in an Empire"
       joinfee: "&7Fee to join is &e{amount}!"
       received: "&e&l(!) &r&7Invite received from Empire {name}! Click or type [&e/e join {name}](suggest_command=/e join {name}) &7to join."
       alert: "&e&l(!) &r&e{name}&7 has been invited to the empire."
-      description: Invite someone to join your empire
+      description: "Invite someone to join your empire"
     join:
       not-enough-money: "&c&l(!) &r&7Your {state} does not have enough money to pay the join fee of {amount}!"
       money-paid: "&7Paid &e{amount}&7 to join!"
@@ -3752,19 +3752,19 @@ command:
       success: "&a&lSUCCESS &r&7Your {state} has joined Empire {name}."
       new-member: "&e&l(!) &r&e{state} {name}&7 has joined the empire!"
       is-full: "&e&l(!) &r&7The Empire {name} is full."
-      description: Join an empire
+      description: "Join an empire"
     kick:
       cant-kick-yourself: "&cYou cannot kick your own settlement!"
       cant-kick-capital: "&cYou cannot kick the capital&c!"
       not-in-current: "&c{name} is not in your Empire!"
       kicked-alert: "&a&l(!) &r&e{state} {name}&7 has been kicked from the empire."
-      description: Kick a player from your empire
+      description: "Kick a player from your empire"
     leave:
       cant-leave-own: "&c&l(!) &r&7You cannot leave your own empire. You must delete it."
       confirm: "&eConfirm that you want to leave by running the command again in the next &c{time} seconds&e!"
       success: "&a&lSUCCESS &r&7Your {state} has left the empire  {empire}."
       alert: "&e&l(!) &r&e{state} {name}&7 has left the empire."
-      description: Leave your current empire
+      description: "Leave your current empire"
     list:
       description: "List empire"
       head: "&a⊱&m━━━━&r&6Empires [{page}/{maxpage}]&a&m━━━━&a⊰"
@@ -3781,31 +3781,31 @@ command:
       sender: "Leader {name}, Empire {empirename}"
       sent: "&a&lSUCCESS &r&7Sent mail to {amount} chiefs of empire member settlements!"
     materials:
-      description: View the materials you need to upgrade your empire
+      description: "View the materials you need to upgrade your empire"
     missions:
       wait-for-missions: "&c&lYou do not have any missions from your empire yet. Wait for the next distribution!"
-      description: View missions available to your empire
+      description: "View missions available to your empire"
       redistribute:
         success: "&eGot {amount} new missions for ☧ {price}"
         fail: "&cUnable to distribute new missions. Please complete your started ones!"
-        description: Get new new missions for a price
+        description: "Get new new missions for a price"
     mode:
       modes: "&cAvailable modes: {modes}"
       success: "&7Empire mode &6{mode}&7 set to &6{value}"
-      description: Changes settings for your empire world
+      description: "Changes settings for your empire world"
     rename:
       success: "&7&lEmpire has been renamed to &6&l{name}"
       rename-in-progress: "&c&l(!) &r&7Renaming of empire is already in progress!"
       rename-on-cooldown: "&c&l(!) &r&7You have to wait at least {cooldown} seconds between each rename!"
       cant-rename: "&c&l(!) &r&7Can't rename empire! Please contact an admin!"
-      description: Renames the current empire to something else
+      description: "Renames the current empire to something else"
     regen:
       success: "&7&lEmpire world has been regenerated!"
       not-possible: "&cRegenerating an empire world is not possible."
       in-progress: "&c&l(!) &r&7Regeneration of empire world is already in progress!"
       no-longer-possible: "&c&l(!) &r&7You can only regenerate the world in the first {duration} minutes after creation!"
       cant-regen: "&c&l(!) &r&7Can't regenerate empire! Please contact an admin!"
-      description: Regenerates the empire empire world
+      description: "Regenerates the empire empire world"
     map:
       head: "&a⊱&m━━━━━━━━━━━━━━━&r&6Empire Map&a&m━━━━━━━━━━━━━━&a⊰"
       explanations:
@@ -3845,54 +3845,54 @@ command:
         abandoned: |-
           &c&lABANDONED!!!
           &c Falls in {countdown}
-      description: Shows you a map of the surrounding chunks
+      description: "Shows you a map of the surrounding chunks"
     memberlist:
       head: "&a⊱&m━━━━&r&6Members&a&m━━━━&a⊰"
       entry: "&e• [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{size} players\n&f{description})"
-      description: List all empire members
+      description: "List all empire members"
     npc:
       skin:
         success: "&aSuccessfully changed the skin of your {state} {type}"
-        description: Change an NPC's skin
+        description: "Change an NPC's skin"
       teleport:
         success: "&aTeleported your {state} {type} to your location"
         requires-home: "&cCan't move &e{npc}&c here as it requires a claim connected to your home!"
-        description: Move NPCs
-      description: Manage your NPCs
+        description: "Move NPCs"
+      description: "Manage your NPCs"
     officer:
-      description: Members that should have officer build access
+      description: "Members that should have officer build access"
     ranks:
-      description: Manage rank permissions
+      description: "Manage rank permissions"
       permission:
         name: "Manage ranks"
       show:
-        description: Show all permissions that a certain rank has
+        description: "Show all permissions that a certain rank has"
         head: "&a⊱&m━━━━&r&6{rank} Perms&r&8&l--------"
         entry: "&e• &f[{color}{permission}](hover={{color}{value}\n&9Click to set {opposite}} run_command=/s perms set {rank} {permission} {opposite})"
         footer: "&a⊱&m━━━━&r&6/s perms&a&m━━━━&a⊰" # TODO: Pagination
       set:
-        description: Set the permissions of a rank
+        description: "Set the permissions of a rank"
         cant-edit-perms-permission: "&cYou can't edit the perms managing permission from the chief rank!"
         cant-edit-permission: "&cYou can't edit the permission &e{permission}&c as you don't have it yourself!"
         success: "&aSet permission &e{permission}&a to &e{value}&a for rank &a{rank}&a!"
       unset:
-        description: Unset the permissions of a rank
+        description: "Unset the permissions of a rank"
         success: "&aUnset permission &e{permission}&a for rank &a{rank}&a! Is now &a{value}!"
         success-all: "&aUnset all permissions for rank &a{rank}&a!"
       reset:
-        description: Reset all permissions to the default values
+        description: "Reset all permissions to the default values"
     perks:
       toggle:
         active: "&6&l{perk} &7&lhas been &a&lactivated"
         deactived: "&6&l{perk} &7&lhas been &c&ldeactivated"
         not-unlocked: "&cPerk &f{perk} &cis not unlocked!"
         no-effects: "&cPerk &f{perk} &chas no effects that can be toggled!"
-        description: Toggle perks
+        description: "Toggle perks"
         permission:
-          description: Allows toggling of perks
-      description: Manage unlocked perks
+          description: "Allows toggling of perks"
+      description: "Manage unlocked perks"
       permission:
-        description: Allows viewing of perks
+        description: "Allows viewing of perks"
     plot:
       admin:
         description: "Allows administrating of empire plots"
