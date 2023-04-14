@@ -2609,12 +2609,12 @@ command:
     info:
       info: |-
         &a&m---------------
-        &6{state} tax: &e₲{tax}
-        &6Total Plot Tax: &e₲{plottax}
-        &6Total Tax: &e₲{totaltax}
+        &6{state} tax: &e☧ {tax}
+        &6Total Plot Tax: &e☧ {plottax}
+        &6Total Tax: &e☧ {totaltax}
         &6Plots owned: &e{plotamount}
         &a&m---------------
-        &c&l₲{totaltax} is deducted from your balance every upkeep
+        &c&l☧ {totaltax} is deducted from your balance every upkeep
       description: Tax information command
     description: Tax command
   friend:
@@ -2663,7 +2663,7 @@ command:
       description: Sets the build mode of a plot
     buy:
       cant-buy-embassy: "&cYou can't buy this plot as it is an embassy of your {state}!"
-      tax-warning: "&6There is plot tax of &e₲{tax}&6, type [&e/plot buy](/plot buy) again to confirm!"
+      tax-warning: "&6There is plot tax of &e☧ {tax}&6, type [&e/plot buy](/plot buy) again to confirm!"
       purchased: "&aSuccessfully purchased the land for {price}."
       description: Buys the chunk you are standing in
     info:
@@ -2675,8 +2675,8 @@ command:
         &9&lMembers: &r{members} &7[(Click to view)](/plot members list)
         &9&lModes: &7Hostile MobSpawning: &6{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explosions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}&r&7 (from {buildsource}) | Embassy: &6{embassy}
       owner: "&a&lPlot Owner: &7{name}"
-      price: "&a&lPlot Price: &7₲{price}"
-      tax: "&a&lPlot Tax: &7₲{tax}"
+      price: "&a&lPlot Price: &7☧ {price}"
+      tax: "&a&lPlot Tax: &7☧ {tax}"
       link: "[&aLinked to &7{amount}&a other plots!](&a{x}/{z} is linked to:\n&f{linked})"
       description: Get information about the current plot
     link:
@@ -2724,14 +2724,14 @@ command:
     sale:
       current: "&7&lThe current price of this land is: &6&l {price}"
       already-owned: "&cLand is already owned"
-      success: "&a&lSUCCESS &7This land has been put on sale for &e₲{price}&7!"
+      success: "&a&lSUCCESS &7This land has been put on sale for &e☧ {price}&7!"
       no-longer-for-sale: "&a&lSUCCESS &7This land is no longer for sale!"
       description: Gets or sets the price of a claimed chunk
     tax:
-      current: "&7This plot's tax is &e₲{tax}&7!"
+      current: "&7This plot's tax is &e☧ {tax}&7!"
       description: Plot taxes
       set:
-        success: "&e&l(!) &r&7Daily tax of this plot was set to &e₲{amount}&7!"
+        success: "&e&l(!) &r&7Daily tax of this plot was set to &e☧ {amount}&7!"
         above-max: "&c&l(!) &cMax tax amount is &e{max}&c!"
         below-zero: "&c&l(!) &cTax amount cannot be negative!"
         already-owned: "&c&l(!) &cYou can only change the tax of unowned claims!"
@@ -2889,7 +2889,7 @@ command:
         description: Check the balance of the bank
       history:
         head: "&a⊱&m━━━━&r&6Bank History [{page}/{maxpage}]&a&m━━━━&a⊰"
-        entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6₲{amount}](&eAt {timestamp})"
+        entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6☧ {amount}](&eAt {timestamp})"
         footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
         previous: "&b<< Prev "
         next: "&b Next >>"
@@ -2912,7 +2912,7 @@ command:
       cant-claim-more: "&c&l(!) &r&7Your settlement can only claim &e{max} chunks of land!"
       no-land-around: "&c&l(!) &r&7Your claim must be connected to an existing settlement claim!"
       success: "&a&lSUCCESS &r&e{player} &7has claimed land for your settlement at {x},{z}!"
-      new-upkeep: "&aYour new upkeep is now &e₲{upkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
+      new-upkeep: "&aYour new upkeep is now &e☧ {upkeep}&a (☧ {upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
       home-set: "&7&l{state} home was set at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
       radius-too-large: "&c&l(!) &r&7Can't use an radius of {radius} for claiming as the maximum is {max}!"
       description: Claim a chunk of land
@@ -3089,7 +3089,7 @@ command:
         own-land: "&r &a- &6= your land"
         enemy: "&r &c- &6= other"
         empire-land: "&r &2- &6= your Empire land"
-        for-sale: "&r &a₲ &6= for sale"
+        for-sale: "&r &a☧  &6= for sale"
         player-plot: "&r &ep &6= player plot"
         linked-plot: "&r &6p &6= linked plots"
         embassy: "&r &ae &6= embassy"
@@ -3116,7 +3116,7 @@ command:
         own-plot: Your plot
         plot: "Plot Owner: &7{owner}"
         embassy: "Embassy Owner: &7{owner}"
-        for-sale: "For sale: &7₲{price} &fTax: &7₲{tax}"
+        for-sale: "For sale: &7☧ {price} &fTax: &7☧ {tax}"
         outpost: "Outpost: &7{name}"
         home: Home
         abandoned: |-
@@ -3433,7 +3433,7 @@ command:
       home: "&cThis land is your home, you have to move it with &7/{base} sethome&c before unclaiming this land."
       confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l in the next minute to confirm the &e&lunclaiming&c&l of [&e&l{amount}&c&l chunks](&fChunks that will be unclaimed:\n&7{claims}) and [&5{portal-amount} &c&lportals](&fPortals that will be removed:\n&7{portals})."
       success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at &f{x}-{z}!"
-      new-upkeep: "&aYour new upkeep is now &e₲{upkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/e upkeep](/e upkeep)"
+      new-upkeep: "&aYour new upkeep is now &e☧ {upkeep}&a (☧ {upkeepperclaim} per claim in this world) [&e/e upkeep](/e upkeep)"
       description: Unclaim land which is claimed by your settlement
       "<radius>":
         description: "Unclaims all the chunks in the stated radius (max is 5)"
@@ -3463,7 +3463,7 @@ command:
       info: |-
         &a⊱&m━━━━&r&6Upkeep&a&m━━━━&a⊰
         &a&lUpkeep cost:&e {cost}
-        &a&lUpkeep: &e{upkeep}₲ &7/&e claim &7/&e day in this world
+        &a&lUpkeep: &e{upkeep}☧  &7/&e claim &7/&e day in this world
         &a&lTime Till Upkeep: &e{time}
         &a&lCan afford for: &6{afford} days
       afford-infinite: "infinite"
@@ -3606,7 +3606,7 @@ command:
         description: Check the balance of the bank
       history:
         head: "&a⊱&m━━━━&r&6Bank History [{page}/{maxpage}]&a&m━━━━&a⊰"
-        entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6₲{amount}](&eAt {timestamp})"
+        entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6☧ {amount}](&eAt {timestamp})"
         footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
         previous: "&b<< Prev "
         next: "&b Next >>"
@@ -3659,7 +3659,7 @@ command:
       cant-claim-more: "&c&l(!) &r&7Your empire can only claim &e{max} chunks of land!"
       no-land-around: "&c&l(!) &r&7Your claim must be connected to an existing empire claim!"
       success: "&a&lSUCCESS &r&e{player} &7has claimed land for your empire at {x},{z}!"
-      new-upkeep: "&aYour new upkeep is now &e₲{upkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/e upkeep](/s upkeep)"
+      new-upkeep: "&aYour new upkeep is now &e☧ {upkeep}&a (☧ {upkeepperclaim} per claim in this world) [&e/e upkeep](/s upkeep)"
       home-set: "&7&l{state} home was set at &r&6&l{x}&r&7&l,&r&6&l{y}&r&7&l,&r&6&l{z}"
       radius-too-large: "&c&l(!) &r&7Can't use an radius of {radius} for claiming as the maximum is {max}!"
       description: Claim a chunk of land
@@ -3812,7 +3812,7 @@ command:
         own-land: "&r &a- &6= your land"
         enemy: "&r &c- &6= other"
         empire-land: "&r &2- &6= your Empire land"
-        for-sale: "&r &a₲ &6= for sale"
+        for-sale: "&r &a☧  &6= for sale"
         player-plot: "&r &ep &6= player plot"
         linked-plot: "&r &6p &6= linked plots"
         embassy: "&r &ae &6= embassy"
@@ -3839,7 +3839,7 @@ command:
         own-plot: Your plot
         plot: "Plot Owner: &7{owner}"
         embassy: "Embassy Owner: &7{owner}"
-        for-sale: "For sale: &7₲{price} &fTax: &7₲{tax}"
+        for-sale: "For sale: &7☧ {price} &fTax: &7☧ {tax}"
         outpost: "Outpost: &7{name}"
         home: Home
         abandoned: |-
@@ -4093,7 +4093,7 @@ command:
       home: "&cThis land is your home, you have to move it with &7/{base} sethome&c before unclaiming this land."
       confirm: "&c&lPlease do [&e&l/{command}](/{command})&c&l in the next minute to confirm the &e&lunclaiming&c&l of [&e&l{amount}&c&l chunks](&fChunks that will be unclaimed:\n&7{claims}) and [&5{portal-amount} &c&lportals](&fPortals that will be removed:\n&7{portals})."
       success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at &f{x}-{z}!"
-      new-upkeep: "&aYour new upkeep is now &e₲{upkeep}&a (₲{upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
+      new-upkeep: "&aYour new upkeep is now &e☧ {upkeep}&a (☧ {upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
       description: Unclaim land which is claimed by your empire
       "<radius>":
         description: "Unclaims all the chunks in the stated radius (max is 5)"
