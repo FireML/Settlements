@@ -3,75 +3,75 @@
 help-order:
   settlement:
     general:
-    - allies
-    - banished
+    - s allies
+    - s banished
     - s balance
-    - bank
-    - create
-    - upgrade
-    - donate
+    - s bank
+    - s create
+    - s upgrade
+    - s donate
     - s event
-    - here
-    - home
-    - join
-    - joinfee
-    - leave
-    - list
-    - map
-    - outpost
-    - reslist
-    - rules
-    - show <name>
-    - tax
-    - teleporters
-    - title
-    - upkeep
-    - chat
-    - lock
-    - unlock
+    - s here
+    - s home
+    - s join
+    - s joinfee
+    - s leave
+    - s list
+    - s map
+    - s outpost
+    - s reslist
+    - s rules
+    - s show <name>
+    - s tax
+    - s teleporters
+    - s title
+    - s upkeep
+    - s chat
+    - s lock
+    - s unlock
     # Plot
     - s plot
     # Officer/Settings
     - e leave
     - s access
-    - active
-    - ally
-    - allyclaim
+    - s active
+    - s ally
+    - s allyclaim
     - s banish <player>|s:<settlement>|e:<empire>
-    - build
-    - claim
-    - disband
-    - history
-    - invite
+    - s build
+    - s claim
+    - s disband
+    - s history
+    - s invite
     - s joinfee set
-    - kick
-    - mail
-    - mode
-    - perks
-    - perms
-    - rename
-    - setdescription
-    - sethome
+    - s kick
+    - s mail
+    - s mode
+    - s perks
+    - s perms
+    - s rename
+    - s setdescription
+    - s sethome
     - s setrank
-    - settings
-    - shop
+    - s settings
+    - s shop
     - s tax set
-    - titles
-    - unally
+    - s titles
+    - s unally
     - s unbanish <player>|s:<settlement>|e:<empire>
-    - unclaim
-    - perms
+    - s unclaim
+    - s perms
     outpost:
-    - list
+    - s outpost list
     - s outpost tp <name>
-    - sethome
-    - claim
-    - unclaim
+    - s outpost sethome
+    - s outpost claim
+    - s outpost unclaim
     bank:
-    - balance
-    - deposit
-    - withdraw
-    - history
+    - s bank balance
+    - s bank deposit
+    - s bank withdraw
+    - s bank history
     - s tax
     - s tax set
     - s joinfee set
@@ -86,58 +86,58 @@ help-order:
     - s allyclaim
   empire:
     general:
-    - allies
+    - e allies
     - e balance
-    - bank
-    - banished
-    - create
-    - upgrade
-    - donate
-    - here
-    - home
-    - join
-    - joinfee
-    - list
-    - memberlist
-    - show
-    - tax
-    - upkeep
-    - chat
-    - lock
-    - unlock
+    - e bank
+    - e banished
+    - e create
+    - e upgrade
+    - e donate
+    - e here
+    - e home
+    - e join
+    - e joinfee
+    - e list
+    - e memberlist
+    - e show
+    - e tax
+    - e upkeep
+    - e chat
+    - e lock
+    - e unlock
     - # Plot
     - e plot
     # Officer/Settings
     - e access
-    - ally
+    - e ally
     - e banish <player>|s:<settlement>|e:<empire>
-    - build
-    - disband
-    - invite
+    - e build
+    - e disband
+    - e invite
     - e joinfee set
-    - kick
-    - leave
-    - mail
-    - mode
-    - perks
-    - perms
-    - regen
-    - rename
-    - setdescription
-    - sethome
+    - e kick
+    - e leave
+    - e mail
+    - e mode
+    - e perks
+    - e perms
+    - e regen
+    - e rename
+    - e setdescription
+    - e sethome
     - e setrank
-    - settings
-    - setsymbol
-    - shop
+    - e settings
+    - e setsymbol
+    - e shop
     - e tax set
-    - transfer
-    - unally
+    - e transfer
+    - e unally
     - e unbanish <player>|s:<settlement>|e:<empire>
-    - perms
+    - e perms
     bank:
-    - balance
-    - deposit
-    - withdraw
+    - e bank balance
+    - e bank deposit
+    - e bank withdraw
     - e tax
     - e tax set
     - e joinfee set
