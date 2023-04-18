@@ -1,34 +1,211 @@
 # Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:settlementissions.yml
 
-stones:
-  # Specify the material of the GUI icon, will use the requirements list if not set
-  icon: stone
-  # Only count if action occurs on settlement claim (should be false when using turn_in)
+#name:
+# icon: material name
+# on-settlement-claim: true or false
+#   ^^ should be false when using the type "turn_in"
+# mission-points: #
+# contribution-points: 1
+# type: type of mission
+# - turn_in requires Deposit items into GUI
+# - place requires Placing blocks
+# - break requires Breaking blocks
+# - harvest requires Harvesting crops and certain other stuff like berry bushes, dropping an apple, etc. based on requirements
+# - kill requires Killing certain monsters/animals
+# requirements:
+#   item: amount
+
+    # ----------------------------------------
+    # All items are in alphabetical order
+    # ----------------------------------------
+
+        # Break section
+    # Blocks
+acacia_log:
+  icon: acacia_log
   on-settlement-claim: false
-  # How many mission points the settlement receives when the missions were completed
   mission-points: 1
-  # How many contribution points a resident receives for finishing those
-  contribution-points: 1
-  # The type of this mission. Available ones are:
-  # - turn_in: Deposit items into GUI
-  # - place: Place blocks
-  # - break: Break blocks
-  # - harvest: Harvest crops and certain other stuff like berry bushes, dropping an apple etc. depends on the requirements
-  # - kill: Kill certain monsters/animals
-  type: turn_in
+  type: break
   requirements:
-    stone: 500
+    acacia_log: 300
+andesite:
+  icon: andesite
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    andesite: 500
+amethyst_block:
+  icon: block_of_amethyst
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    block_of_amethyst: 200
+birch_log:
+  icon: birch_log
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    birch_log: 300
+calcite:
+  icon: calcite
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    calcite: 200
+cobbled_deepslate:
+  icon: cobbled_deepslate
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    cobbled_deepslate: 500
+cobblestone:
+  icon: cobblestone
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    cobblestone: 500
+deepslate:
+  icon: deepslate
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    deepslate: 250
+diorite:
+  icon: diorite
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    diorite: 500
 dirt:
+  icon: dirt
   on-settlement-claim: false
   mission-points: 1
-  contribution-points: 1
-  type: turn_in
+  type: break
   requirements:
-    dirt: 1000
+    dirt: 500
+dripstone_block:
+  icon: dripstone_block
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    dripstone_block: 250
+end_stone:
+  icon: end_stone
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    end_stone: 300
+granite:
+  icon: granite
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    granite: 500
+mossy_cobblestone:
+  icon: mossy_cobblestone
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    mossy_cobblestone: 200
+mycelium:
+  icon: mycelium
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    mycelium: 250
+obsidian:
+  icon: obsidian
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    obsidian: 100
+podzol:
+  icon: podzol
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    podzol: 250
+red_sandstone:
+  icon: red_sandstone
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    red_sandstone: 200
+sandstone:
+  icon: sandstone
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    sandstone: 200
+sculk:
+  icon: sculk
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    sculk: 300
+stone:
+  icon: stone
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    stone: 250
+tuff:
+  icon: tuff
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    tuff: 350
+
+
+        # Harvest section
 wheat:
   on-settlement-claim: true
   mission-points: 1
-  contribution-points: 1
   type: harvest
   requirements:
     wheat: 5000
+
+
+        # Kill section
+
+ender_dragon:
+  icon: dragon_egg
+  on-settlement-claim: false
+  mission-points: 3
+  type: kill
+  requirements:
+    ender_dragon: 1
+enderman:
+  icon: enderman
+  on-settlement-claim: false
+  mission-points: 1
+  type: kill
+  requirements:
+    enderman: 100
+shulker:
+  icon: shulker_shell
+  on-settlement-claim: false
+  mission-points: 1
+  type: kill
+  requirements:
+    shulker: 50
