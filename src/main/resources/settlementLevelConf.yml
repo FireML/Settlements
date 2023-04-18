@@ -55,6 +55,119 @@ village:
     extra-missions: 1
     # To get to Level 2 Village
     requirements:
+      basalt: 75
+      beehive: 5
+      campfire: 10
+      cobblestone: 50
+      dirt: 200
+      fishing_rod: 15
+      grindstone: 10
+      obsidian: 30
+      vine: 50
+    # Level 3 Village
+  level-4:
+    claim-upkeep: 460
+    per-world-upkeep:
+      Kingdoms_nether: 960
+      Kingdoms_the_end: 960
+    chunks: 60
+    outposts: 1
+    missions: 4
+    extra-missions: 1
+    # To get to Level 3 Village
+    requirements:
+      calcite: 125
+      glowstone: 50
+      grass: 250
+      honey_bottle: 30
+      lantern: 25
+      lectern: 15
+      lily_pad: 75
+      magma_block: 40
+      map: 5
+    # Level 4 Village
+  level-5:
+    claim-upkeep: 440
+    per-world-upkeep:
+      Kingdoms_nether: 960
+      Kingdoms_the_end: 960
+    chunks: 80
+    outposts: 2
+    missions: 5
+    extra-missions: 2
+    # To get to Level 4 Village
+    requirements:
+      blast_furnace: 20
+      crying_obsidian: 50
+      glow_lichen: 100
+      heart_of the_sea: 10
+      honeycomb: 35
+      moss: 200
+      netherrack: 150
+      phantom_membrane: 30
+      soul_campfire: 30
+      tuff: 150
+    # Level 5 Village
+  level-6:
+    claim-upkeep: 420
+    per-world-upkeep:
+      Kingdoms_nether: 960
+      Kingdoms_the_end: 960
+    chunks: 100
+    outposts: 2
+    missions: 0
+    extra-missions: 0
+    # To get to Level 5 Village
+    requirements:
+      beacon: 1
+      bee_nest: 10
+      cobbled_deepslate: 200
+      golden_horse_armor: 3
+      saddle: 3
+      sand: 300
+      soul_soil: 225
+      stonecutter: 25
+      sweet_berries: 150
+      torch: 200
+      trident: 2
+kingdom:
+    # Level 1 Kingdom
+  level-1:
+    claim-upkeep: 400
+    per-world-upkeep:
+      Kingdoms_nether: 800
+      Kingdoms_the_end: 800
+    chunks: 150
+    outposts: 4
+    missions: 6
+    extra-missions: 3
+    # To get to Level 1 Kingdom
+    requirements:
+      bow: 50
+      composter: 30
+      diamond_horse_armor: 5
+      glow_berries: 200
+      honeycomb_block: 12
+      lead: 5
+      nautilus_shell: 20
+      red_sand: 400
+      respawn_anchor: 5
+      soul_lantern: 25
+      soul_sand: 300
+      stone: 250
+      vine: 50
+    # Level 2 Kingdom
+  level-2:
+    claim-upkeep: 380
+    per-world-upkeep:
+      Kingdoms_nether: 760
+      Kingdoms_the_end: 760
+    chunks: 175
+    outposts: 4
+    missions: 7
+    extra-missions: 4
+    # To get to Level 2 Kingdom
+    requirements:
       acacia_door: 25
       acacia_log: 200
       cobblestone: 200
@@ -69,17 +182,17 @@ village:
       red_wool: 25
       tuff: 250
       vine: 50
-    # Level 3 Village
-  level-4:
-    claim-upkeep: 460
+    # Level 3 Kingdom
+  level-3:
+    claim-upkeep: 360
     per-world-upkeep:
-      Kingdoms_nether: 960
-      Kingdoms_the_end: 960
-    chunks: 60
-    outposts: 1
-    missions: 4
-    extra-missions: 1
-    # To get to Level 3 Village
+      Kingdoms_nether: 720
+      Kingdoms_the_end: 720
+    chunks: 200
+    outposts: 6
+    missions: 8
+    extra-missions: 5
+    # To get to Level 3 Kingdom
     requirements:
       amethyst_block: 100
       powder_snow_bucket: 25
@@ -98,17 +211,17 @@ village:
       smoker: 15
       water_bucket: 50
       wheat: 150
-    # Level 4 Village
-  level-5:
-    claim-upkeep: 440
+    # Level 4 Kingdom
+  level-4:
+    claim-upkeep: 340
     per-world-upkeep:
-      Kingdoms_nether: 960
-      Kingdoms_the_end: 960
-    chunks: 80
-    outposts: 2
-    missions: 5
-    extra-missions: 2
-    # To get to Level 4 Village
+      Kingdoms_nether: 680
+      Kingdoms_the_end: 680
+    chunks: 250
+    outposts: 6
+    missions: 9
+    extra-missions: 5
+    # To get to Level 4 Kingdom
     requirements:
       diamond: 50
       birch_log: 500
@@ -129,17 +242,17 @@ village:
       slime_ball: 100
       spruce_sapling: 300
       tube_coral_fan: 100
-    # Level 5 Village
-  level-6:
-    claim-upkeep: 420
+    # Level 5 Kingdom
+  level-5:
+    claim-upkeep: 320
     per-world-upkeep:
-      Kingdoms_nether: 960
-      Kingdoms_the_end: 960
-    chunks: 100
-    outposts: 2
-    missions: 0
-    extra-missions: 0
-    # To get to Level 5 Village
+      Kingdoms_nether: 640
+      Kingdoms_the_end: 640
+    chunks: 300
+    outposts: 6
+    missions: 10
+    extra-missions: 5
+    # To get to Level 5 Kingdom
     requirements:
       bed: 150
       beetroot: 4000
@@ -162,18 +275,17 @@ village:
       snow_block: 1000
       stone: 3000
       stripped_birch_log: 200
-kingdom:
-    # Level 1 Kingdom
-  level-1:
-    claim-upkeep: 400
+    # Level 6 Kingdom
+  level-6:
+    claim-upkeep: 300
     per-world-upkeep:
-      Kingdoms_nether: 800
-      Kingdoms_the_end: 800
-    chunks: 150
-    outposts: 4
-    missions: 6
-    extra-missions: 3
-    # To get to Level 1 Kingdom
+      Kingdoms_nether: 600
+      Kingdoms_the_end: 600
+    chunks: 400
+    outposts: 8
+    missions: 11
+    extra-missions: 6
+    # To get to Level 6 Kingdom
     requirements:
       acacia_sapling: 4000
       baked_potato: 8000
@@ -198,17 +310,17 @@ kingdom:
       soul_campfire: 75
       tinted_glass: 1500
       vine: 6000
-    # Level 2 Kingdom
-  level-2:
-    claim-upkeep: 380
+    # Level 7 Kingdom
+  level-7:
+    claim-upkeep: 280
     per-world-upkeep:
-      Kingdoms_nether: 760
-      Kingdoms_the_end: 760
-    chunks: 175
-    outposts: 4
-    missions: 7
-    extra-missions: 4
-    # To get to Level 2 Kingdom
+      Kingdoms_nether: 560
+      Kingdoms_the_end: 560
+    chunks: 650
+    outposts: 8
+    missions: 12
+    extra-missions: 7
+    # To get to Level 7 Kingdom
     requirements:
       amethyst_cluster: 800
       blast_furnace: 40
@@ -235,17 +347,17 @@ kingdom:
       sculk_catalyst: 1000
       spruce_log: 3500
       stripped_acacia_log: 3000
-    # Level 3 Kingdom
-  level-3:
-    claim-upkeep: 360
+    # Level 8 Kingdom
+  level-8:
+    claim-upkeep: 260
     per-world-upkeep:
-      Kingdoms_nether: 720
-      Kingdoms_the_end: 720
-    chunks: 200
-    outposts: 6
-    missions: 8
-    extra-missions: 5
-    # To get to Level 3 Kingdom
+      Kingdoms_nether: 520
+      Kingdoms_the_end: 520
+    chunks: 800
+    outposts: 8
+    missions: 13
+    extra-missions: 8
+    # To get to Level 8 Kingdom
     requirements:
       acacia_boat: 1000
       bell: 100
@@ -273,17 +385,17 @@ kingdom:
       stone_bricks: 9000
       sugarcane: 6000
       yellow_dye: 500
-    # Level 4 Kingdom
-  level-4:
-    claim-upkeep: 340
+    # Level 9 Kingdom
+  level-9:
+    claim-upkeep: 240
     per-world-upkeep:
-      Kingdoms_nether: 680
-      Kingdoms_the_end: 680
-    chunks: 250
-    outposts: 6
-    missions: 9
-    extra-missions: 5
-    # To get to Level 4 Kingdom
+      Kingdoms_nether: 480
+      Kingdoms_the_end: 480
+    chunks: 1000
+    outposts: 12
+    missions: 14
+    extra-missions: 9
+    # To get to Level 9 Kingdom
     requirements:
       ancient_debris: 500
       apple: 2500
@@ -313,17 +425,17 @@ kingdom:
       soul_sand: 8000
       soul_lantern: 250
       warped_hyphae: 3000
-    # Level 5 Kingdom
-  level-5:
-    claim-upkeep: 320
+    # Level 10 Kingdom
+  level-10:
+    claim-upkeep: 220
     per-world-upkeep:
-      Kingdoms_nether: 640
-      Kingdoms_the_end: 640
-    chunks: 300
-    outposts: 6
-    missions: 10
-    extra-missions: 5
-    # To get to Level 5 Kingdom
+      Kingdoms_nether: 400
+      Kingdoms_the_end: 400
+    chunks: 1100
+    outposts: 12
+    missions: 15
+    extra-missions: 10
+    # To get to Level 10 Kingdom
     requirements:
       azalea_leaves: 2000
       beef: 8500
@@ -355,71 +467,6 @@ kingdom:
       verdant_froglight: 1750
       vine: 4000
       warped_nylium: 3000
-    # Level 6 Kingdom
-  level-6:
-    claim-upkeep: 300
-    per-world-upkeep:
-      Kingdoms_nether: 600
-      Kingdoms_the_end: 600
-    chunks: 400
-    outposts: 8
-    missions: 11
-    extra-missions: 6
-    # To get to Level 6 Kingdom
-    requirements:
-      bedrock: 1
-    # Level 7 Kingdom
-  level-7:
-    claim-upkeep: 280
-    per-world-upkeep:
-      Kingdoms_nether: 560
-      Kingdoms_the_end: 560
-    chunks: 650
-    outposts: 8
-    missions: 12
-    extra-missions: 7
-    # To get to Level 7 Kingdom
-    requirements:
-      bedrock: 1
-    # Level 8 Kingdom
-  level-8:
-    claim-upkeep: 260
-    per-world-upkeep:
-      Kingdoms_nether: 520
-      Kingdoms_the_end: 520
-    chunks: 800
-    outposts: 8
-    missions: 13
-    extra-missions: 8
-    # To get to Level 8 Kingdom
-    requirements:
-      bedrock: 1
-    # Level 9 Kingdom
-  level-9:
-    claim-upkeep: 240
-    per-world-upkeep:
-      Kingdoms_nether: 480
-      Kingdoms_the_end: 480
-    chunks: 1000
-    outposts: 12
-    missions: 14
-    extra-missions: 9
-    # To get to Level 9 Kingdom
-    requirements:
-      bedrock: 1
-    # Level 10 Kingdom
-  level-10:
-    claim-upkeep: 220
-    per-world-upkeep:
-      Kingdoms_nether: 400
-      Kingdoms_the_end: 400
-    chunks: 1100
-    outposts: 12
-    missions: 15
-    extra-missions: 10
-    # To get to Level 10 Kingdom
-    requirements:
-      bedrock: 1
     # Level 11 Kingdom
   level-11:
     claim-upkeep: 200
@@ -432,7 +479,36 @@ kingdom:
     extra-missions: 10
     # To get to Level 11 Kingdom
     requirements:
-      bedrock: 1
+      black_dye: 750
+      bow: 3000
+      bread: 8000
+      brick: 4000
+      cartography_table: 80
+      cobweb: 5000
+      crying_obsidian: 2000
+      dead_bush: 2500
+      deepslate_emerald_ore: 150
+      diamond_horse_armor: 20
+      diamond_block: 200
+      ghast_tear: 760
+      glow_ink_sac: 5000
+      heart_of_the_sea: 300
+      horn_coral_block: 950
+      lodestone: 25
+      moss: 5000
+      music_disc_5: 5
+      phantom_membrane: 500
+      poisonous_potato: 500
+      porkchop: 9000
+      rabbit_foot: 1000
+      shulker_shell: 500
+      slime_block: 2000
+      soul_sand: 9000
+      spyglass: 550
+      totem_of_undying: 50
+      trident: 15
+      turtle_egg: 2500
+      warped_stem: 5000
     # Level 12 Kingdom
   level-12:
     claim-upkeep: 180
@@ -445,7 +521,36 @@ kingdom:
     extra-missions: 10
     # To get to Level 12 Kingdom
     requirements:
-      bedrock: 1
+      brewing_stand: 50
+      brown_dye: 3500
+      cake: 7000
+      crimson_nylium: 3500
+      dead_tube_coral_fan: 1000
+      deepslate_coal_ore: 250
+      end_stone_brick_slab: 4500
+      flowering_azalea_leaves: 3500
+      ghast_tear: 50
+      glistering_melon_slice: 2000
+      glow_berries: 500
+      glow_ink_sac: 2000
+      golden_apple: 2000
+      honey_bottle: 3000
+      ice: 4500
+      lily_pad: 2000
+      lodestone: 50
+      nether_star: 25
+      netherite_ingot: 50
+      oxidized_cut_copper: 1500
+      pearlescent_froglight: 2000
+      recovery_compass: 30
+      rooted_dirt: 3000
+      saddle: 75
+      sculk_sensor: 1500
+      shroomlight: 3000
+      stripped_crimson_Stem: 4000
+      stripped_spruce_log: 5000
+      sugar: 2000
+      suspicious_stew: 1000
     # Level 13 Kingdom
   level-13:
     claim-upkeep: 160
@@ -458,7 +563,36 @@ kingdom:
     extra-missions: 10
     # To get to Level 13 Kingdom
     requirements:
-      bedrock: 1
+      acacia_log: 2000
+      apple: 4500
+      awkward_potion: 275
+      baked_potato: 2500
+      beacon: 10
+      beetroot: 6000
+      bookshelf: 2000
+      bread: 1000
+      brown_mushroom: 4000
+      cactus: 5000
+      carrot: 6000
+      cyan_bed: 200
+      dark_oak_leaves: 2000
+      dark_prismarine: 2000
+      deepslate_coal_ore: 750
+      egg: 5500
+      end_stone: 4000
+      glass_bottle: 2500
+      golden_apple: 1000
+      leather: 4000
+      melon: 2500
+      mushroom_stem: 2000
+      nether_wart: 6000
+      poisonous_potato: 750
+      pumpkin: 3000
+      quartz_ore: 2000
+      rabbit_stew: 100
+      sugarcane: 5000
+      vine: 3000
+      wheat: 6000
     # Level 14 Kingdom
   level-14:
     claim-upkeep: 140
@@ -471,7 +605,36 @@ kingdom:
     extra-missions: 10
     # To get to Level 14 Kingdom
     requirements:
-      bedrock: 1
+      amethyst_block: 2500
+      bamboo: 6000
+      cake: 200
+      chorus_flower: 500
+      coal: 7000
+      cobblestone: 7000
+      cooked_cod: 2000
+      crying_obsidian: 150
+      deepslate_copper_ore: 2000
+      diamond: 1500
+      emerald: 2000
+      ender_eye: 4000
+      gold_ingot: 1500
+      gold_ore: 3000
+      gray_dye: 3000
+      heart_of_the_sea: 50
+      iron_ingot: 2500
+      nautilus_shell: 60
+      nether_star: 15
+      poisonous_potato: 1000
+      prismarine_shard: 6000
+      redstone: 7000
+      sea_pickle: 3000
+      sponge: 40
+      string: 5000
+      tropical_fish_bucket: 300
+      twisted_vine: 2500
+      verdant_froglight: 75
+      waxed_exposed_copper: 250
+      wither_rose: 10
     # Level 15 Kingdom
   level-15:
     claim-upkeep: 120
@@ -484,4 +647,33 @@ kingdom:
     extra-missions: 10
     # To get to Level 15 Kingdom
     requirements:
-      bedrock: 1
+      axolotl_bucket: 100
+      black_shulker_box: 20
+      bucket_of_snow: 150
+      cactus: 5000
+      chorus_fruit: 2500
+      deepslate_redstone_ore: 1000
+      dragon_breath: 200
+      elytra: 10
+      end_rod: 1500
+      end_stone: 4000
+      ender_chest: 150
+      ender_pearl: 6000
+      fermented_spider_eye: 250
+      flowering_azalea: 1250
+      golden_carrot: 750
+      ink_sac: 5000
+      lapis_block: 10000
+      lightning_rod: 75
+      obsidian: 3000
+      oxidized_copper: 75
+      prismarine_crystal: 3000
+      pumpkin: 4000
+      purpur_block: 5000
+      red_mushroom: 2000
+      rooted_dirt: 300
+      rotten_flesh: 5000
+      scaffolding: 1500
+      spore_blossom: 1000
+      totem_of_undying: 50
+      vine: 2500
