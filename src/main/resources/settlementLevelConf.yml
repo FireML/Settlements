@@ -194,7 +194,7 @@ kingdom:
     extra-missions: 5
     # To get to Level 3 Kingdom
     requirements:
-      amethyst_block: 100
+      block_of_amethyst: 100
       powder_snow_bucket: 25
       chorus_fruit: 50
       clock: 25
