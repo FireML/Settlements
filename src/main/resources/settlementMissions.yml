@@ -20,7 +20,7 @@
     # ----------------------------------------
 
         # Break section
-    # Blocks
+
 acacia_log:
   icon: acacia_log
   on-settlement-claim: false
@@ -49,6 +49,13 @@ birch_log:
   type: break
   requirements:
     birch_log: 300
+blue_ice:
+  icon: blue_ice
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    blue_ice: 300
 calcite:
   icon: calcite
   on-settlement-claim: false
@@ -70,6 +77,19 @@ cobblestone:
   type: break
   requirements:
     cobblestone: 500
+crimson_stem:
+  icon: crimson_stem
+  on-settlement-claim: false
+  mission-points: 1
+  requirements:
+    crimson_stem: 300
+dark_oak_log:
+  icon: dark_oak_log
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    dark_oak_log: 300
 deepslate:
   icon: deepslate
   on-settlement-claim: false
@@ -112,6 +132,27 @@ granite:
   type: break
   requirements:
     granite: 500
+ice:
+  icon: ice
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    ice: 400
+jungle_log:
+  icon: jungle_log
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    jungle_log: 300
+mangrove_log:
+  icon: mangrove_log
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    mangrove_log: 300
 mossy_cobblestone:
   icon: mossy_cobblestone
   on-settlement-claim: false
@@ -119,6 +160,13 @@ mossy_cobblestone:
   type: break
   requirements:
     mossy_cobblestone: 200
+mushroom_stem:
+  icon: mushroom_stem
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    mushroom_stem: 300
 mycelium:
   icon: mycelium
   on-settlement-claim: false
@@ -126,6 +174,13 @@ mycelium:
   type: break
   requirements:
     mycelium: 250
+oak_log:
+  icon: oak_log
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    oak_log: 300
 obsidian:
   icon: obsidian
   on-settlement-claim: false
@@ -133,6 +188,13 @@ obsidian:
   type: break
   requirements:
     obsidian: 100
+packed_ice:
+  icon: packed_ice
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    packed_ice: 500
 podzol:
   icon: podzol
   on-settlement-claim: false
@@ -161,6 +223,13 @@ sculk:
   type: break
   requirements:
     sculk: 300
+spruce_log:
+  icon: spruce_log
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    spruce_log: 300
 stone:
   icon: stone
   on-settlement-claim: false
@@ -175,19 +244,270 @@ tuff:
   type: break
   requirements:
     tuff: 350
+warped_stem:
+  icon: warped_stem
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    warped_stem: 300
 
 
         # Harvest section
+
+bamboo:
+  icon: bamboo
+  on-settlement-claim: false
+  mission-points: 1
+  type: harvest
+  requirements:
+    bamboo: 300
+beetroot:
+  icon: beetroot
+  on-settlement-claim: false
+  mission-points: 1
+  type: harvest
+  requirements:
+    beetroots: 300
+brown_mushroom:
+  icon: brown_mushroom
+  on-settlement-claim: false
+  mission-points: 1
+  type: harvest
+  requirements:
+    brown_mushroom: 300
+cactus:
+  icon: cactus
+  on-settlement-claim: false
+  mission-points: 1
+  type: harvest
+  requirements:
+    cactus: 300
+carrot:
+  icon: carrot
+  on-settlement-claim: false
+  mission-points: 1
+  type: harvest
+  requirements:
+    carrots: 300
+cocoa:
+  icon: cocoa
+  on-settlement-claim: false
+  mission-points: 1
+  type: harvest
+  requirements:
+    cocoa: 300
+glow_berries:
+  icon: glow_berries
+  on-settlement-claim: false
+  mission-points: 1
+  type: harvest
+  requirements:
+    glow_berries: 300
+glow_lichen:
+  icon: glow_lichen
+  on-settlement-claim: false
+  mission-points: 1
+  type: harvest
+  requirements:
+    glow_lichen: 300
+melon:
+  icon: melon
+  on-settlement-claim: false
+  mission-points: 1
+  type: harvest
+  requirements:
+    melon: 300
+potatoes:
+  icon: potato
+  on-settlement-claim: false
+  mission-points: 1
+  type: harvest
+  requirements:
+    potatoes: 300
+pumpkin:
+  icon: pumpkin
+  on-settlement-claim: false
+  mission-points: 1
+  type: harvest
+  requirements:
+    pumpkin: 300
+red_mushroom:
+  icon: red_mushroom
+  on-settlement-claim: false
+  mission-points: 1
+  type: harvest
+  requirements:
+    red_mushroom: 300
+sugar_cane:
+  icon: sugar_cane
+  on-settlement-claim: false
+  mission-points: 1
+  type: harvest
+  requirements:
+    sugar_cane: 300
+sweet_berries:
+  icon: sweet_berries
+  on-settlement-claim: false
+  mission-points: 1
+  type: harvest
+  requirements:
+    sweet_berries: 300
+twisted_vine:
+  icon: twisted_vine
+  on-settlement-claim: false
+  mission-points: 1
+  type: harvest
+  requirements:
+    twisted_vines: 300
 wheat:
+  icon: wheat
   on-settlement-claim: true
   mission-points: 1
   type: harvest
   requirements:
     wheat: 5000
+vines:
+  icon: vine
+  on-settlement-claim: false
+  mission-points: 1
+  type: harvest
+  requirements:
+    vines: 300
+warped_vine:
+  icon: warped_vine
+  on-settlement-claim: false
+  mission-points: 1
+  type: harvest
+  requirements:
+    warped_vines: 300
+
+
+        # Plant section
+
+acacia_sapling:
+  icon: acacia_sapling
+  on-settlement-claim: false
+  mission-points: 1
+  type: place
+  requirements:
+    acacia_sapling: 50
+beetroot_seeds:
+  icon: beetroot_seed
+  on-settlement-claim: false
+  mission-points: 1
+  type: place
+  requirements:
+    beetroot_seeds: 100
+birch_sapling:
+  icon: birch_sapling
+  on-settlement-claim: false
+  mission-points: 1
+  type: place
+  requirements:
+    birch_sapling: 50
+cocoa_beans:
+  icon: cocoa
+  on-settlement-claim: false
+  mission-points: 1
+  type: place
+  requirements:
+    cocoa: 100
+dark_oak_sapling:
+  icon: dark_oak_sapling
+  on-settlement-claim: false
+  mission-points: 1
+  type: place
+  requirements:
+    dark_oak_sapling: 50
+jungle_sapling:
+  icon: jungle_sapling
+  on-settlement-claim: false
+  mission-points: 1
+  type: place
+  requirements:
+    jungle_sapling: 50
+mangrove_propagule:
+  icon: mangrove_propagule
+  on-settlement-claim: false
+  mission-points: 1
+  type: place
+  requirements:
+    mangrove_propagule: 50
+melon_seed:
+  icon: melon_seed
+  on-settlement-claim: false
+  mission-points: 1
+  type: place
+  requirements:
+    melon_seed: 25
+oak_sapling:
+  icon: oak_sapling
+  on-settlement-claim: false
+  mission-points: 1
+  type: place
+  requirements:
+    oak_sapling: 50
+pumpkin_seed:
+  icon: pumpkin_seed
+  on-settlement-claim: false
+  mission-points: 1
+  type: place
+  requirements:
+    pumpkin_seed: 25
+spruce_sapling:
+  icon: spruce_sapling
+  on-settlement-claim: false
+  mission-points: 1
+  type: place
+  requirements:
+    spruce_sapling: 50
+wheat_seeds:
+  icon: wheat_seeds
+  on-settlement-claim: false
+  mission-points: 1
+  type: place
+  requirements:
+    wheat_seeds: 100
 
 
         # Kill section
 
+cave_spider:
+  icon: spider_eye
+  on-settlement-claim: false
+  mission-points: 1
+  type: kill
+  requirements:
+    cave_spider: 25
+chicken:
+  icon: chicken
+  on-settlement-claim: false
+  mission-points: 1
+  type: kill
+  requirements:
+    chicken: 50    
+cow:
+  icon: leather
+  on-settlement-claim: false
+  mission-points: 1
+  type: kill
+  requirements:
+    cow: 50
+creeper:
+  icon:
+  on-settlement-claim: false
+  mission-points: 1
+  type: kill
+  requirements:
+    creeper: 25
+drowned:
+  icon: trident
+  on-settlement-claim: false
+  mission-points: 1
+  type: kill
+  requirements:
+    drowned: 50
 ender_dragon:
   icon: dragon_egg
   on-settlement-claim: false
@@ -201,11 +521,169 @@ enderman:
   mission-points: 1
   type: kill
   requirements:
-    enderman: 100
+    enderman: 50
+glow_squid:
+  icon: glow_ink_sac
+  on-settlement-claim: false
+  mission-points: 1
+  type: kill
+  requirements:
+    glow_squid: 35
+guardian:
+  icon: prismarine_crystal
+  on-settlement-claim: false
+  mission-points: 1
+  type: kill
+  requirements:
+    guardian: 45
+pig:
+  icon: porkchop
+  on-settlement-claim: false
+  mission-points: 1
+  type: kill
+  requirements:
+    pig: 50
+polar_bear:
+  icon: snowball
+  on-settlement-claim: false
+  mission-points: 1
+  type: kill
+  requirements:
+    polar_bear: 25
+rabbit:
+  icon: rabbit
+  on-settlement-claim: false
+  mission-points: 1
+  type: kill
+  requirements:
+    rabbit: 25
+sheep:
+  icon: mutton
+  on-settlement-claim: false
+  mission-points: 1
+  type: kill
+  requirements:
+    sheep: 50
 shulker:
   icon: shulker_shell
   on-settlement-claim: false
   mission-points: 1
   type: kill
   requirements:
-    shulker: 50
+    shulker: 35
+skeleton:
+  icon: arrow
+  on-settlement-claim: false
+  mission-points: 1
+  type: kill
+  requirements:
+    skeleton: 50
+slime:
+  icon: slime_ball
+  on-settlement-claim: false
+  mission-points: 1
+  type: kill
+  requirements:
+    slime: 20
+spider:
+  icon: string
+  on-settlement-claim: false
+  mission-points: 1
+  type: kill
+  requirements:
+    spider: 50
+squid:
+  icon: ink_sac
+  on-settlement-claim: false
+  mission-points: 1
+  type: kill
+  requirements:
+    squid: 45
+zombie:
+  icon: rotten_flesh
+  on-settlement-claim: false
+  mission-points: 1
+  type: kill
+  requirements:
+    zombie: 50
+
+
+        # Turn in section
+
+amethyst_shard:
+  icon: amethyst_shard
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    amethyst_shard: 128
+coal:
+  icon: coal
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    coal: 128
+copper:
+  icon: copper_ingot
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    copper_ingot: 128
+diamond:
+  icon: diamond
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    diamond: 128
+echo_shard:
+  icon: echo_shard
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    echo_shard: 32
+emerald:
+  icon: emerald
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    emerald: 128
+gold:
+  icon: gold_ingot
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    gold_ingot: 128
+iron:
+  icon: iron_ingot
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    iron_ingot: 128
+lapis lazuli:
+  icon: lapis_lazuli
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    lapis_lazuli: 128
+netherite_ingot:
+  icon: netherite_ingot
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    netherite_ingot: 8
+redstone:
+  icon: redstone
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    redstone: 128
