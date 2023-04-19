@@ -102,7 +102,7 @@ village:
       glow_lichen: 100
       heart_of the_sea: 10
       honeycomb: 35
-      moss: 200
+      moss_block: 200
       netherrack: 150
       phantom_membrane: 30
       soul_campfire: 30
@@ -495,7 +495,7 @@ kingdom:
       heart_of_the_sea: 300
       horn_coral_block: 950
       lodestone: 25
-      moss: 5000
+      moss_block: 5000
       music_disc_5: 5
       phantom_membrane: 500
       poisonous_potato: 500
