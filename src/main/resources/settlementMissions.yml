@@ -63,20 +63,6 @@ calcite:
   type: break
   requirements:
     calcite: 200
-cobbled_deepslate:
-  icon: cobbled_deepslate
-  on-settlement-claim: false
-  mission-points: 1
-  type: break
-  requirements:
-    cobbled_deepslate: 500
-cobblestone:
-  icon: cobblestone
-  on-settlement-claim: false
-  mission-points: 1
-  type: break
-  requirements:
-    cobblestone: 500
 crimson_stem:
   icon: crimson_stem
   on-settlement-claim: false
@@ -353,13 +339,6 @@ sweet_berries:
   type: harvest
   requirements:
     sweet_berries: 300
-twisted_vine:
-  icon: twisted_vine
-  on-settlement-claim: false
-  mission-points: 1
-  type: harvest
-  requirements:
-    twisted_vines: 300
 wheat:
   icon: wheat
   on-settlement-claim: true
@@ -374,13 +353,6 @@ vines:
   type: harvest
   requirements:
     vines: 300
-warped_vine:
-  icon: warped_vine
-  on-settlement-claim: false
-  mission-points: 1
-  type: harvest
-  requirements:
-    warped_vines: 300
 
 
         # Plant section
