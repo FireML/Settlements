@@ -609,7 +609,7 @@ diamond:
   mission-points: 1
   type: turn_in
   requirements:
-    diamond: 128
+    diamond: 16
 echo_shard:
   icon: echo_shard
   on-settlement-claim: false
@@ -630,14 +630,14 @@ gold:
   mission-points: 1
   type: turn_in
   requirements:
-    gold_ingot: 128
+    gold_ingot: 32
 iron:
   icon: iron_ingot
   on-settlement-claim: false
   mission-points: 1
   type: turn_in
   requirements:
-    iron_ingot: 128
+    iron_ingot: 64
 lapis lazuli:
   icon: lapis_lazuli
   on-settlement-claim: false
@@ -651,7 +651,7 @@ netherite_ingot:
   mission-points: 1
   type: turn_in
   requirements:
-    netherite_ingot: 8
+    netherite_ingot: 4
 redstone:
   icon: redstone
   on-settlement-claim: false
