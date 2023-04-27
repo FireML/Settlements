@@ -40,10 +40,10 @@ import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.TraitInfo;
 import net.citizensnpcs.api.trait.TraitName;
 import net.citizensnpcs.api.trait.trait.Spawned;
-import net.citizensnpcs.api.util.Colorizer;
 import net.citizensnpcs.trait.*;
 import net.citizensnpcs.trait.versioned.VillagerTrait;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -107,7 +107,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
     private void updateName(LandOwner<?, ?> landOwner) {
         for (NpcData npcData : landOwner.getNpcData()) {
             NPC npc = getNpc(npcData);
-            if (npc != null && !npc.getName().equals(Colorizer.stripColors(npcData.getConfig().getName()))) {
+            if (npc != null && !npc.getName().equals(ChatColor.stripColor(npcData.getConfig().getName()))) {
                 npc.setName(npcData.getConfig().getName());
             }
         }
