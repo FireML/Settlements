@@ -27,7 +27,7 @@ acacia_log:
   mission-points: 1
   type: break
   requirements:
-    acacia_log: 300
+    acacia_log: 200
 andesite:
   icon: andesite
   on-settlement-claim: false
@@ -262,13 +262,6 @@ brown_mushroom:
   type: harvest
   requirements:
     brown_mushroom: 300
-cactus:
-  icon: cactus
-  on-settlement-claim: false
-  mission-points: 1
-  type: harvest
-  requirements:
-    cactus: 300
 carrot:
   icon: carrot
   on-settlement-claim: false
@@ -325,13 +318,6 @@ red_mushroom:
   type: harvest
   requirements:
     red_mushroom: 300
-sugar_cane:
-  icon: sugar_cane
-  on-settlement-claim: false
-  mission-points: 1
-  type: harvest
-  requirements:
-    sugar_cane: 300
 sweet_berries:
   icon: sweet_berries
   on-settlement-claim: false
@@ -341,7 +327,7 @@ sweet_berries:
     sweet_berries: 300
 wheat:
   icon: wheat
-  on-settlement-claim: true
+  on-settlement-claim: false
   mission-points: 1
   type: harvest
   requirements:
@@ -440,7 +426,7 @@ wheat_seeds:
   mission-points: 1
   type: place
   requirements:
-    wheat_seeds: 100
+    wheat: 100
 
 
         # Kill section
@@ -582,6 +568,7 @@ zombie:
 
         # Turn in section
 
+  # Ores
 amethyst_shard:
   icon: amethyst_shard
   on-settlement-claim: false
@@ -659,3 +646,26 @@ redstone:
   type: turn_in
   requirements:
     redstone: 128
+
+  # Non-ores
+deposit_cobblestone:
+  icon: cobblestone
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    cobblestone: 1500
+deposit_cobbled_deepslate:
+  icon: cobbled_deepslate
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    cobbled_deepslate: 1000
+deposit_dirt:
+  icon: dirt
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    dirt: 1500
