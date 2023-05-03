@@ -138,7 +138,7 @@ mangrove_log:
   mission-points: 1
   type: break
   requirements:
-    mangrove_log: 300
+    mangrove_log: 125
 mossy_cobblestone:
   icon: mossy_cobblestone
   on-settlement-claim: false
@@ -528,7 +528,7 @@ shulker:
   mission-points: 1
   type: kill
   requirements:
-    shulker: 35
+    shulker: 10
 skeleton:
   icon: arrow
   on-settlement-claim: false
