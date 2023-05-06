@@ -36,12 +36,12 @@ andesite:
   requirements:
     andesite: 500
 amethyst_block:
-  icon: block_of_amethyst
+  icon: amethyst_block
   on-settlement-claim: false
   mission-points: 1
   type: break
   requirements:
-    block_of_amethyst: 200
+    amethyst_block: 200
 birch_log:
   icon: birch_log
   on-settlement-claim: false
@@ -67,6 +67,7 @@ crimson_stem:
   icon: crimson_stem
   on-settlement-claim: false
   mission-points: 1
+  type: break
   requirements:
     crimson_stem: 300
 dark_oak_log:
@@ -270,12 +271,12 @@ carrot:
   requirements:
     carrots: 300
 cocoa:
-  icon: cocoa
+  icon: cocoa_beans
   on-settlement-claim: false
   mission-points: 1
   type: harvest
   requirements:
-    cocoa: 300
+    cocoa_beans: 300
 glow_berries:
   icon: glow_berries
   on-settlement-claim: false
@@ -351,7 +352,7 @@ acacia_sapling:
   requirements:
     acacia_sapling: 50
 beetroot_seeds:
-  icon: beetroot_seed
+  icon: beetroot_seeds
   on-settlement-claim: false
   mission-points: 1
   type: place
@@ -365,7 +366,7 @@ birch_sapling:
   requirements:
     birch_sapling: 50
 cocoa_beans:
-  icon: cocoa
+  icon: cocoa_beans
   on-settlement-claim: false
   mission-points: 1
   type: place
@@ -393,7 +394,7 @@ mangrove_propagule:
   requirements:
     mangrove_propagule: 50
 melon_seed:
-  icon: melon_seed
+  icon: melon_seeds
   on-settlement-claim: false
   mission-points: 1
   type: place
@@ -407,7 +408,7 @@ oak_sapling:
   requirements:
     oak_sapling: 50
 pumpkin_seed:
-  icon: pumpkin_seed
+  icon: pumpkin_seeds
   on-settlement-claim: false
   mission-points: 1
   type: place
@@ -474,7 +475,7 @@ ender_dragon:
   requirements:
     ender_dragon: 1
 enderman:
-  icon: enderman
+  icon: ender_pearl
   on-settlement-claim: false
   mission-points: 1
   type: kill
@@ -488,7 +489,7 @@ glow_squid:
   requirements:
     glow_squid: 35
 guardian:
-  icon: prismarine_crystal
+  icon: prismarine_crystals
   on-settlement-claim: false
   mission-points: 1
   type: kill
