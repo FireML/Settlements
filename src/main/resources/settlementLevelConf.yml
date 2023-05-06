@@ -38,7 +38,7 @@ village:
     extra-missions: 1
     # Max amount of residents
     # Default value if not included: -1 = only limited by max size in config.yml
-    size: -1
+    size: 5
     # To get to Level 1 Village
     requirements:
       cash: 25000
@@ -51,14 +51,16 @@ village:
     chunks: 40
     outposts: 1
     # The amount of settlement missions available to residents per day
-    missions: 3
+    missions: 2
     extra-missions: 1
+    size: 10
     # To get to Level 2 Village
     requirements:
+      missions: 24
       basalt: 75
       beehive: 5
       campfire: 10
-      cobblestone: 50
+      cobblestone: 200
       dirt: 200
       fishing_rod: 15
       grindstone: 10
@@ -72,17 +74,19 @@ village:
       Kingdoms_the_end: 960
     chunks: 60
     outposts: 1
-    missions: 4
+    missions: 3
     extra-missions: 1
+    size: 17
     # To get to Level 3 Village
     requirements:
+      missions: 42
       calcite: 125
       glowstone: 50
       grass: 250
       honey_bottle: 30
       lantern: 25
       lectern: 15
-      lily_pad: 75
+      lily_pad: 25
       magma_block: 40
       map: 5
     # Level 4 Village
@@ -93,14 +97,16 @@ village:
       Kingdoms_the_end: 960
     chunks: 80
     outposts: 2
-    missions: 5
+    missions: 4
     extra-missions: 2
+    size: 25
     # To get to Level 4 Village
     requirements:
+      missions: 66
       blast_furnace: 20
       crying_obsidian: 50
       glow_lichen: 100
-      heart_of the_sea: 10
+      heart_of_the_sea: 10
       honeycomb: 35
       moss_block: 200
       netherrack: 150
@@ -114,11 +120,13 @@ village:
       Kingdoms_nether: 960
       Kingdoms_the_end: 960
     chunks: 100
-    outposts: 2
-    missions: 0
-    extra-missions: 0
+    outposts: 3
+    missions: 5
+    extra-missions: 3
+    size: -1
     # To get to Level 5 Village
     requirements:
+      missions: 100
       beacon: 1
       bee_nest: 10
       cobbled_deepslate: 200
@@ -143,6 +151,7 @@ kingdom:
     extra-missions: 3
     # To get to Level 1 Kingdom
     requirements:
+      missions: 168
       bow: 50
       composter: 30
       diamond_horse_armor: 5
@@ -168,6 +177,7 @@ kingdom:
     extra-missions: 4
     # To get to Level 2 Kingdom
     requirements:
+      missions: 225
       acacia_door: 25
       acacia_log: 200
       cobblestone: 200
@@ -194,7 +204,8 @@ kingdom:
     extra-missions: 5
     # To get to Level 3 Kingdom
     requirements:
-      block_of_amethyst: 100
+      missions: 288
+      amethyst_block: 100
       powder_snow_bucket: 25
       chorus_fruit: 50
       clock: 25
@@ -219,14 +230,15 @@ kingdom:
       Kingdoms_the_end: 680
     chunks: 250
     outposts: 6
-    missions: 9
+    missions: 10
     extra-missions: 5
     # To get to Level 4 Kingdom
     requirements:
+      missions: 371
       diamond: 50
       birch_log: 500
       book: 250
-      carrots: 2500
+      carrot: 2500
       clay: 200
       cooked_chicken: 1000
       copper_ore: 300
@@ -250,11 +262,11 @@ kingdom:
       Kingdoms_the_end: 640
     chunks: 300
     outposts: 6
-    missions: 10
+    missions: 12
     extra-missions: 5
     # To get to Level 5 Kingdom
     requirements:
-      bed: 150
+      missions: 448
       beetroot: 4000
       big_dripleaf: 1000
       birch_sapling: 1750
@@ -266,6 +278,7 @@ kingdom:
       gold_ore: 1000
       ink_sac: 2000
       iron_chestplate: 20
+      light_blue_bed: 150
       milk_bucket: 250
       mud: 2500
       music_disc_chirp: 6
@@ -283,10 +296,11 @@ kingdom:
       Kingdoms_the_end: 600
     chunks: 400
     outposts: 8
-    missions: 11
+    missions: 14
     extra-missions: 6
     # To get to Level 6 Kingdom
     requirements:
+      missions: 531
       acacia_sapling: 4000
       baked_potato: 8000
       bookshelf: 1000
@@ -296,7 +310,7 @@ kingdom:
       cooked_beef: 4000
       deepslate_diamond_ore: 150
       end_stone: 4000
-      hanging_roots: 1500
+      hanging_roots: 3500
       iron_door: 600
       iron_pickaxe: 50
       music_disc_far: 8
@@ -304,7 +318,7 @@ kingdom:
       oak_log: 3000
       pufferfish: 2000
       red_mushroom_block: 300
-      red_sand: 6500
+      red_sand: 2500
       sculk_vein: 2000
       seagrass: 2500
       soul_campfire: 75
@@ -318,16 +332,17 @@ kingdom:
       Kingdoms_the_end: 560
     chunks: 650
     outposts: 8
-    missions: 12
+    missions: 16
     extra-missions: 7
     # To get to Level 7 Kingdom
     requirements:
+      missions: 650
       amethyst_cluster: 800
       blast_furnace: 40
       brown_mushroom: 3000
       calcite: 4000
       campfire: 80
-      chiseled_red_sandstone: 4000
+      chiseled_red_sandstone: 2000
       compass: 1000
       conduit: 20
       cooked_salmon: 6000
@@ -337,11 +352,11 @@ kingdom:
       golden_chestplate: 60
       gravel: 7000
       magenta_dye: 400
-      mangrove_propagule: 4500
+      mangrove_propagule: 8000
       melon: 8500
       mushroom_stem: 600
       mushroom_stew: 500
-      music_disc_stall: 10
+      music_disc_stal: 10
       obsidian: 1500
       rabbit_hide: 1250
       sculk_catalyst: 1000
@@ -355,10 +370,11 @@ kingdom:
       Kingdoms_the_end: 520
     chunks: 800
     outposts: 8
-    missions: 13
+    missions: 18
     extra-missions: 8
     # To get to Level 8 Kingdom
     requirements:
+      missions: 759
       acacia_boat: 1000
       bell: 100
       blaze_powder: 3000
@@ -373,7 +389,7 @@ kingdom:
       ender_eye: 2000
       glow_lichen: 3000
       gold_block: 100
-      golen_pickaxe: 70
+      golden_pickaxe: 70
       honeycomb: 1000
       horn_coral_fan: 750
       ink_sac: 450
@@ -383,7 +399,7 @@ kingdom:
       music_disc_strad: 12
       ochre_froglight: 1500
       stone_bricks: 9000
-      sugarcane: 6000
+      sugar_cane: 6000
       yellow_dye: 500
     # Level 9 Kingdom
   level-9:
@@ -393,10 +409,11 @@ kingdom:
       Kingdoms_the_end: 480
     chunks: 1000
     outposts: 12
-    missions: 14
+    missions: 20
     extra-missions: 9
     # To get to Level 9 Kingdom
     requirements:
+      missions: 876
       ancient_debris: 500
       apple: 2500
       blaze_rod: 2500
@@ -433,10 +450,11 @@ kingdom:
       Kingdoms_the_end: 400
     chunks: 1100
     outposts: 12
-    missions: 15
+    missions: 24
     extra-missions: 10
     # To get to Level 10 Kingdom
     requirements:
+      missions: 1053
       azalea_leaves: 2000
       beef: 8500
       bone: 3500
@@ -475,10 +493,11 @@ kingdom:
       Kingdoms_the_end: 360
     chunks: 1200
     outposts: 13
-    missions: 16
+    missions: 26
     extra-missions: 10
     # To get to Level 11 Kingdom
     requirements:
+      missions: 1204
       black_dye: 750
       bow: 3000
       bread: 8000
@@ -498,7 +517,7 @@ kingdom:
       moss_block: 5000
       music_disc_5: 5
       phantom_membrane: 500
-      poisonous_potato: 500
+      poisonous_potato: 350
       porkchop: 9000
       rabbit_foot: 1000
       shulker_shell: 500
@@ -517,13 +536,14 @@ kingdom:
       Kingdoms_the_end: 320
     chunks: 1300
     outposts: 14
-    missions: 17
+    missions: 28
     extra-missions: 10
     # To get to Level 12 Kingdom
     requirements:
+      missions: 1335
       brewing_stand: 50
       brown_dye: 3500
-      cake: 7000
+      cake: 1750
       crimson_nylium: 3500
       dead_tube_coral_fan: 1000
       deepslate_coal_ore: 250
@@ -536,7 +556,7 @@ kingdom:
       golden_apple: 2000
       honey_bottle: 3000
       ice: 4500
-      lily_pad: 2000
+      lily_pad: 1250
       lodestone: 50
       nether_star: 25
       netherite_ingot: 50
@@ -559,13 +579,14 @@ kingdom:
       Kingdoms_the_end: 280
     chunks: 1400
     outposts: 15
-    missions: 18
+    missions: 30
     extra-missions: 10
     # To get to Level 13 Kingdom
     requirements:
+      missions: 1472
       acacia_log: 2000
       apple: 4500
-      awkward_potion: 275
+      potion: 275
       baked_potato: 2500
       beacon: 10
       beetroot: 6000
@@ -588,9 +609,9 @@ kingdom:
       nether_wart: 6000
       poisonous_potato: 750
       pumpkin: 3000
-      quartz_ore: 2000
+      nether_quartz_ore: 2000
       rabbit_stew: 100
-      sugarcane: 5000
+      sugar_cane: 5000
       vine: 3000
       wheat: 6000
     # Level 14 Kingdom
@@ -601,10 +622,11 @@ kingdom:
       Kingdoms_the_end: 240
     chunks: 1500
     outposts: 16
-    missions: 19
+    missions: 33
     extra-missions: 10
     # To get to Level 14 Kingdom
     requirements:
+      missions: 1615
       amethyst_block: 2500
       bamboo: 6000
       cake: 200
@@ -624,14 +646,14 @@ kingdom:
       iron_ingot: 2500
       nautilus_shell: 60
       nether_star: 15
-      poisonous_potato: 1000
+      poisonous_potato: 650
       prismarine_shard: 6000
       redstone: 7000
       sea_pickle: 3000
       sponge: 40
       string: 5000
       tropical_fish_bucket: 300
-      twisted_vine: 2500
+      twisting_vine: 2500
       verdant_froglight: 75
       waxed_exposed_copper: 250
       wither_rose: 10
@@ -643,17 +665,18 @@ kingdom:
       Kingdoms_the_end: 220
     chunks: 1600
     outposts: 17
-    missions: 20
+    missions: 36
     extra-missions: 10
     # To get to Level 15 Kingdom
     requirements:
+      missions: 1782
       axolotl_bucket: 100
       black_shulker_box: 20
-      bucket_of_snow: 150
+      snow_block: 4000
       cactus: 5000
       chorus_fruit: 2500
       deepslate_redstone_ore: 1000
-      dragon_breath: 200
+      dragon_breath: 512
       elytra: 10
       end_rod: 1500
       end_stone: 4000
@@ -667,7 +690,7 @@ kingdom:
       lightning_rod: 75
       obsidian: 3000
       oxidized_copper: 75
-      prismarine_crystal: 3000
+      prismarine_crystals: 3000
       pumpkin: 4000
       purpur_block: 5000
       red_mushroom: 2000
