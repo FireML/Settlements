@@ -10,7 +10,20 @@ automatic-events:
   # The events that should be automatic
   events:
   - mining
-  - digging
+  - dirt
+  - sand
+  - gravel
+  - wheat
+  - beetroot
+  - potato
+  - carrots
+  - chorus_flower
+  - planted
+  - saplings
+  - overworld_hostile
+  - overworld_neutral
+  - nether_mobs
+  - end_mobs
   times:
   - "1:00"
   - "3:00"
@@ -42,40 +55,39 @@ rewards:
   first:
     name: "&bFirst Place!"
     icon: gold_ingot
-    money: 1000
+    money: 500
     #items: bukkit items
     #- type: diamond
     #  amount: 3
     commands:
-    - ecrates key give {onlineresidentid} rare_key
+    - ecrates key give {onlineresident} rare_key 1
   second:
     name: "&bSecond Place!"
     icon: iron_ingot
-    money: 500
+    money: 250
     commands:
-    - ecrates key give {onlineresidentid} common_key
+    - ecrates key give {onlineresident} common_key 1
   third:
     name: "&bThird Place!"
     icon: copper_ingot
-    money: 250
+    money: 125
     commands:
-    - spawner giveshard {onlineresidentid} 1
+    - spawner giveshard {onlineresident} 1
   participation:
     name: "&bParticipation"
     icon: lapis_lazuli
-    money: 50
+    money: 15
+
+    # Break Events
+  # Blocks
 events:
   mining:
-    # Whatever worlds that it should only work in
-    worlds:
+    worlds: # To work in
     - Resource
     - Resource_Nether
     - Resource_the_end
-    # Title: This will show on our boss bar
     title: "Most Stone Broken - RESOURCE ONLY"
-    # How long should the competition be, in seconds
-    time: 600
-    # The list of rewards that can be achieved in this event
+    time: 600 # Seconds
     rewards:
       '1':
       - first
@@ -86,24 +98,17 @@ events:
       rest:
       - participation
     actions:
-      # What blocks need to be broken
       break:
       - stone
-      # What blocks need to be placed (works for crops too)
-      # place:
+      # place: Crops too!
       # - blocktype
-      # What items need to be crafted (make sure to not include circular crafting patterns to prevent exploits)
-      # craft:
+      # craft: Avoid Circular crafting
       # - itemtype
-      # What entities need to be killed
       # kill:
       # - entityname
-      # How a traveled distance is tracked (possible values: walk, sneak, run, swim, enderpearl, boat, minecart, elytra, horse, llama, pig (or any other entity)
-      # distance:
+      # distance: Walk, Sneak, Run, Swim, Enderpearl, Rideable entity, etc
       # - sneak
-      # - run
-      # - walk
-  digging:
+  dirt:
     worlds:
     - Resource
     - Resource_Nether
@@ -122,3 +127,358 @@ events:
     actions:
       break:
       - dirt
+  sand:
+    worlds:
+    - Resource
+    - Resource_Nether
+    - Resource_the_end
+    title: "Most Sand Broken - RESOURCE ONLY"
+    time: 600
+    rewards:
+      '1':
+      - first
+      '2':
+      - second
+      '3':
+      - third
+      rest:
+      - participation
+    actions:
+      break:
+      - sand
+  gravel:
+    worlds:
+    - Resource
+    - Resource_Nether
+    - Resource_the_end
+    title: "Most Sand Broken - RESOURCE ONLY"
+    time: 600
+    rewards:
+      '1':
+      - first
+      '2':
+      - second
+      '3':
+      - third
+      rest:
+      - participation
+    actions:
+      break:
+      - gravel
+  # Crops
+  wheat:
+    worlds:
+    - Kingdoms
+    - Kingdoms_Nether
+    - Kingdoms_the_end
+    title: "Most Wheat Broken - KINGODMS ONLY"
+    time: 600
+    rewards:
+      '1':
+      - first
+      '2':
+      - second
+      '3':
+      - third
+      rest:
+      - participation
+    actions:
+      break:
+      - wheat
+  beetroot:
+    worlds:
+    - Kingdoms
+    - Kingdoms_Nether
+    - Kingdoms_the_end
+    title: "Most Beetroots Broken - KINGODMS ONLY"
+    time: 600
+    rewards:
+      '1':
+      - first
+      '2':
+      - second
+      '3':
+      - third
+      rest:
+      - participation
+    actions:
+      break:
+      - beetroot
+  potato:
+    worlds:
+    - Kingdoms
+    - Kingdoms_Nether
+    - Kingdoms_the_end
+    title: "Most Potatoes Broken - KINGODMS ONLY"
+    time: 600
+    rewards:
+      '1':
+      - first
+      '2':
+      - second
+      '3':
+      - third
+      rest:
+      - participation
+    actions:
+      break:
+      - potato
+  carrots:
+    worlds:
+    - Kingdoms
+    - Kingdoms_Nether
+    - Kingdoms_the_end
+    title: "Most Carrots Broken - KINGODMS ONLY"
+    time: 600
+    rewards:
+      '1':
+      - first
+      '2':
+      - second
+      '3':
+      - third
+      rest:
+      - participation
+    actions:
+      break:
+      - carrots
+  chorus_flower:
+    worlds:
+    - Kingdoms
+    - Kingdoms_Nether
+    - Kingdoms_the_end
+    title: "Most Chorus Flower Broken - KINGODMS ONLY"
+    time: 600
+    rewards:
+      '1':
+      - first
+      '2':
+      - second
+      '3':
+      - third
+      rest:
+      - participation
+    actions:
+      break:
+      - chorus_flower
+    # Place Events
+  # Planting Crops
+  planted:
+    worlds:
+    - Kingdoms
+    - Kingdoms_Nether
+    - Kingdoms_the_end
+    title: "Most Planted - KINGODMS ONLY"
+    time: 600
+    rewards:
+      '1':
+      - first
+      '2':
+      - second
+      '3':
+      - third
+      rest:
+      - participation
+    actions:
+      place:
+      - beetroot_seeds
+      - wheat_seeds
+      - pumpkin_seeds
+      - melon_seeds
+      - cocoa_beans
+      - carrot
+      - potato
+      - chorus_flower
+      - nether_wart
+  # Planting Trees
+  saplings:
+    worlds:
+    - Kingdoms
+    - Kingdoms_Nether
+    - Kingdoms_the_end
+    - Resource
+    - Resource_Nether
+    - Resource_the_end
+    title: "Most Saplings Placed - KINGDOMS/RESOURCE"
+    time: 600
+    rewards:
+      '1':
+      - first
+      '2':
+      - second
+      '3':
+      - third
+      rest:
+      - participation
+    actions:
+      place:
+      - oak_sapling
+      - spruce_sapling
+      - birch_sapling
+      - jungle_sapling
+      - acacia_sapling
+      - dark_oak_sapling
+      - mangrove_propagule
+    # Kill Events
+  overworld_hostile:
+    worlds:
+    - Kingdoms
+    - Kingdoms_Nether
+    - Kingdoms_the_end
+    - Resource
+    - Resource_Nether
+    - Resource_the_end
+    title: "Most Overworld Hostiles Killed - KINGDOMS/RESOURCE"
+    time: 600
+    rewards:
+      '1':
+      - first
+      '2':
+      - second
+      '3':
+      - third
+      rest:
+      - participation
+    actions:
+      kill:
+      - cave_spider
+      - creeper
+      - husk
+      - iron_golem
+      - polar_bear
+      - silverfish
+      - skeleton
+      - skeleton_horse
+      - slime
+      - spider
+      - stray
+      - warden
+      - zombie
+      - zombie_horse
+      - zombie_villager
+      - evoker
+      - illusioner
+      - phantom
+      - pillager
+      - ravager
+      - vex
+      - vindicator
+      - witch
+      - drowned
+      - guardian
+      - elder_guardian
+  overworld_neutral:
+    worlds:
+    - Kingdoms
+    - Kingdoms_Nether
+    - Kingdoms_the_end
+    - Resource
+    - Resource_Nether
+    - Resource_the_end
+    title: "Most Overworld Neutral Killed - KINGDOMS/RESOURCE"
+    time: 600
+    rewards:
+      '1':
+      - first
+      '2':
+      - second
+      '3':
+      - third
+      rest:
+      - participation
+    actions:
+      kill:
+      - allay
+      - axolotl
+      - bat
+      - bee
+      - cat
+      - chicken
+      - cow
+      - donkey
+      - fox
+      - frog
+      - goat
+      - horse
+      - llama
+      - mule
+      - mooshroom
+      - ocelot
+      - panda
+      - parrot
+      - pig
+      - rabbit
+      - sheep
+      - snowman
+      - trader_llama
+      - villager
+      - wandering_villager
+      - wolf
+      - dolphin
+      - tadpole
+      - turtle
+      - cod
+      - pufferfish
+      - salmon
+      - tropical_fish
+      - squid
+      - glow_squid
+  nether_mobs:
+    worlds:
+    - Kingdoms
+    - Kingdoms_Nether
+    - Kingdoms_the_end
+    - Resource
+    - Resource_Nether
+    - Resource_the_end
+    title: "Most Nether Mobs Killed - KINGDOMS/RESOURCE"
+    time: 600
+    rewards:
+      '1':
+      - first
+      '2':
+      - second
+      '3':
+      - third
+      rest:
+      - participation
+    actions:
+      kill:
+      - blaze
+      - ghast
+      - hoglin
+      - magma_cube
+      - piglin
+      - piglin_brute
+      - strider
+      - skeleton
+      - wither
+      - wither_skeleton
+      - zoglin
+      - zombified_piglin
+  end_mobs:
+    worlds:
+    - Kingdoms
+    - Kingdoms_Nether
+    - Kingdoms_the_end
+    - Resource
+    - Resource_Nether
+    - Resource_the_end
+    title: "Most End Mobs Killed - KINGDOMS/RESOURCE"
+    time: 600
+    rewards:
+      '1':
+      - first
+      '2':
+      - second
+      '3':
+      - third
+      rest:
+      - participation
+    actions:
+      kill:
+      - end_crystal
+      - ender_dragon
+      - enderman
+      - endermite
+      - shulker
