@@ -257,10 +257,10 @@ portal:
     destroy: "&cYou are not allowed to destroy portals in your &e{state}"
     create: "&cYou are not allowed to create portals in your &e{state}"
 events:
-  started: "&6{title} &7started! Duration: {duration}"
-  ended: "&6{title} &7ended! &6{state} {name}&7 won it with {amount}!"
-  stats: "&7Your {state} managed to reach {place}. place with {amount}"
-  reward-info: "&7Your {state} can now claim event rewards by running [/s rewards](/s rewards)"
+  started: "&6{title} &7started for {duration}"
+  ended: "&6{title} &7ended! &6{state} {name}&7 came first place with a score of {amount}!"
+  stats: "&7Your {state} was #{place} with {amount}"
+  reward-info: "&7Claim your rewards with [/s rewards](/s rewards)"
   first: "&6{state} {name}&7 took &6first&7 place in &6{title}&7 with {amount}!"
 village:
   enter:
