@@ -171,7 +171,7 @@ events:
     - Kingdoms
     - Kingdoms_Nether
     - Kingdoms_the_end
-    title: "Most Wheat Broken - KINGODMS"
+    title: "Most Wheat Broken - KINGDOMS"
     time: 600
     rewards:
       '1':
@@ -190,7 +190,7 @@ events:
     - Kingdoms
     - Kingdoms_Nether
     - Kingdoms_the_end
-    title: "Most Beetroots Broken - KINGODMS"
+    title: "Most Beetroots Broken - KINGDOMS"
     time: 600
     rewards:
       '1':
@@ -209,7 +209,7 @@ events:
     - Kingdoms
     - Kingdoms_Nether
     - Kingdoms_the_end
-    title: "Most Potatoes Broken - KINGODMS"
+    title: "Most Potatoes Broken - KINGDOMS"
     time: 600
     rewards:
       '1':
@@ -228,7 +228,7 @@ events:
     - Kingdoms
     - Kingdoms_Nether
     - Kingdoms_the_end
-    title: "Most Carrots Broken - KINGODMS"
+    title: "Most Carrots Broken - KINGDOMS"
     time: 600
     rewards:
       '1':
@@ -247,7 +247,7 @@ events:
     - Kingdoms
     - Kingdoms_Nether
     - Kingdoms_the_end
-    title: "Most Chorus Flower Broken - KINGODMS"
+    title: "Most Chorus Flower Broken - KINGDOMS"
     time: 600
     rewards:
       '1':
@@ -268,7 +268,7 @@ events:
     - Kingdoms
     - Kingdoms_Nether
     - Kingdoms_the_end
-    title: "Most Planted - KINGODMS"
+    title: "Most Planted - KINGDOMS"
     time: 600
     rewards:
       '1':
