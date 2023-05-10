@@ -36,7 +36,7 @@ public class SettlementHomeCommand extends ResidentSubCommand {
             }
         }
 
-        if (!settlement.isMember(resident)
+        if (!resident.getPlayer().isOp() && !settlement.isMember(resident)
                 && (settlement.getAccess() == LandAccess.PRIVATE
                 || (settlement.getAccess() == LandAccess.ALLY && !settlement.isAlly(resident))
                 || (settlement.getAccess() == LandAccess.TRUSTED && !settlement.isTrusted(resident)))) {
