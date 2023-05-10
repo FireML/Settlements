@@ -236,7 +236,7 @@ public class EventManager implements ConfigMessages {
                 "id", activeEvent.getId(),
                 "timeleft", UtilTime.format((double) activeEvent.getTime())
         )), bossBarColor, bossBarStyle, bossBarFlags.toArray(new BarFlag[0]));
-        activeBar.setProgress(0);
+        activeBar.setProgress(1);
         Bukkit.getOnlinePlayers().forEach(activeBar::addPlayer);
         activeBar.setVisible(true);
         activeBarTask = Utils.runRepeating(() -> {
@@ -257,7 +257,7 @@ public class EventManager implements ConfigMessages {
                         "id", activeEvent.getId(),
                         "timeleft", UtilTime.format((double) Math.round(left / 1000.0))
                 )));
-                activeBar.setProgress(1 - left / (double) length);
+                activeBar.setProgress(left / (double) length);
             }
         }, 1, 1, TimeUnit.SECONDS);
 
