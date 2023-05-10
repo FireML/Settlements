@@ -70,8 +70,8 @@ village:
   level-4:
     claim-upkeep: 460
     per-world-upkeep:
-      Kingdoms_nether: 960
-      Kingdoms_the_end: 960
+      Kingdoms_nether: 920
+      Kingdoms_the_end: 920
     chunks: 60
     outposts: 1
     missions: 3
@@ -93,8 +93,8 @@ village:
   level-5:
     claim-upkeep: 440
     per-world-upkeep:
-      Kingdoms_nether: 960
-      Kingdoms_the_end: 960
+      Kingdoms_nether: 880
+      Kingdoms_the_end: 880
     chunks: 80
     outposts: 2
     missions: 4
@@ -117,8 +117,8 @@ village:
   level-6:
     claim-upkeep: 420
     per-world-upkeep:
-      Kingdoms_nether: 960
-      Kingdoms_the_end: 960
+      Kingdoms_nether: 840
+      Kingdoms_the_end: 840
     chunks: 100
     outposts: 3
     missions: 5
