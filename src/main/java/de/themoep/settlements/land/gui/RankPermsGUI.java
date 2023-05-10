@@ -10,7 +10,7 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfirmationGui;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;

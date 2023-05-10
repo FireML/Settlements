@@ -1,7 +1,7 @@
 package de.themoep.settlements.perk;
 
 import com.google.common.collect.ImmutableMap;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 import java.util.Map;

@@ -4,7 +4,7 @@ import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.ConfigKey;
 import de.themoep.settlements.utils.NameTag;
 import de.themoep.settlements.utils.Utils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 

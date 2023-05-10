@@ -4,7 +4,7 @@ import de.themoep.settlements.empire.EmpireMission;
 import de.themoep.settlements.settlement.SettlementMission;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.Utils;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.jetbrains.annotations.NotNull;
 

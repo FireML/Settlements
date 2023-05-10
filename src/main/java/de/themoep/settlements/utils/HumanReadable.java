@@ -1,6 +1,6 @@
 package de.themoep.settlements.utils;
 
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 
 public interface HumanReadable {
     default String humanizedName() {
