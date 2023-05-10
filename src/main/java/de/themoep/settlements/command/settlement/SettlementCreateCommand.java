@@ -3,6 +3,7 @@ package de.themoep.settlements.command.settlement;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.ResidentSubCommand;
 import de.themoep.settlements.command.SubCommand;
+import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
@@ -10,6 +11,7 @@ import de.themoep.settlements.settlement.SettlementState;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
+import de.themoep.settlements.world.SimpleChunkLocation;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 import java.util.regex.Pattern;
@@ -49,6 +51,7 @@ public class SettlementCreateCommand extends ResidentSubCommand {
             }
             Settlement settlement = new Settlement(name, resident.getUUID(), 1, SettlementState.VILLAGE);
             SettlementManager.getInstance().registerNew(resident, settlement);
+            LandManager.getInstance().claimLand(new SimpleChunkLocation(resident.getPlayer().getChunk()), resident.getPlayer().getLocation(), settlement);
 
             getMessage("broadcast").broadcast(
                     "name", settlement.getName(),
