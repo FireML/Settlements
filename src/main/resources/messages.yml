@@ -414,6 +414,7 @@ embassy:
     title: ""
     subtitle: "{name}"
 pvp-is-enabled: " - &cPvp is enabled!&7"
+pvp-is-enabled-bossbar: "&cPvP is Enabled inside this Claim!"
 chat:
   locked: "&cChat is currently locked!"
   nobody-nearby: "&cThere is nobody around you who could hear you!"

@@ -34,6 +34,11 @@ import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
@@ -71,7 +76,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     private final List<Settlement> newlyDeletedSettlements = new ArrayList<>();
     private final List<Empire> newlyAbandonedEmpires = new ArrayList<>();
     private final List<Empire> newlyDeletedEmpires = new ArrayList<>();
-
     private Map<String, Function<Plugin, Boolean>> dependencies = new HashMap<>();
 
     @Override
@@ -155,6 +159,8 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             EmpireManager.getInstance().loadEmpireWorlds();
 
             this.upkeep();
+
+            ConfigManager.getInstance().updateBossBar();
         }
         running = true;
         getCommand("towny").setExecutor(new TownyCommand());

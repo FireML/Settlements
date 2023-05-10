@@ -9,7 +9,11 @@ import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.CursesFilter;
 import de.themoep.settlements.utils.IconRpMapping;
 import de.themoep.settlements.utils.Message;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -80,6 +84,7 @@ public class ConfigManager {
     private ConfigAccessor empireRanksConf;
 
     private ConfigAccessor guisConf;
+    private BossBar pvpBossBar;
 
     private void setup() {
         registerParser("StringSet", new TypelessConfigParser() {
@@ -184,6 +189,7 @@ public class ConfigManager {
             UseFlagManager.getInstance().loadConfig();
             Message.clearCache();
             SettlementsPlugin.getInstance().getLandModeListener().reload();
+            updateBossBar();
             if (getEventsConf().getConfig().getBoolean("enabled")) {
                 EventManager.getInstance().loadConfig();
             }
@@ -576,5 +582,9 @@ public class ConfigManager {
     public long getLastUpkeep() {
         return lastUpkeepConf.getConfig().getLong("last-upkeep");
     }
+
+    public BossBar getBossBar() { return pvpBossBar; }
+
+    public void updateBossBar() { pvpBossBar = Bukkit.createBossBar(Message.get("pvp-is-enabled-bossbar").getText(), BarColor.GREEN, BarStyle.SOLID); }
 
 }

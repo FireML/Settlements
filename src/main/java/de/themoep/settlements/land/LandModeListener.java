@@ -13,9 +13,11 @@ import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.TitleBuilder;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
+import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -114,6 +116,22 @@ public class LandModeListener implements LandAccessChecker {
             return;
         }
         e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onPlayerEnterChunk(PlayerMoveChunkEvent e) {
+        BossBar bb = ConfigManager.getInstance().getBossBar();
+        Player p = e.getPlayer();
+        OwnedLand land = LandManager.getInstance().getLand(e.getTo());
+        if (land == null || !land.getMode(PlotMode.pvp)) {
+            if (bb.getPlayers().contains(p)) {
+                bb.removePlayer(p);
+            }
+        } else {
+            if (!bb.getPlayers().contains(p)) {
+                bb.addPlayer(p);
+            }
+        }
     }
 
     @EventHandler
