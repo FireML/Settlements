@@ -1,6 +1,5 @@
 package de.themoep.settlements.land;
 
-import de.themoep.settlements.customevents.EntityPrimeTntEvent;
 import de.themoep.settlements.utils.MaterialUtils;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Pair;
@@ -56,20 +55,19 @@ public class LandBlockListener implements LandAccessChecker, Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void on(EntityPrimeTntEvent e) {
+    public void on(TNTPrimeEvent e) {
         Player player = null;
-        if (e.getReason() == EntityPrimeTntEvent.Reason.PROJECTILE && e.getEntity() instanceof Projectile) {
-            Projectile projectile = (Projectile) e.getEntity();
+        if (e.getCause() == TNTPrimeEvent.PrimeCause.PROJECTILE && e.getPrimingEntity() instanceof Projectile projectile) {
             ProjectileSource source = projectile.getShooter();
-            if (projectile.getShooter() instanceof Player) {
+            if (source instanceof Player) {
                 player = (Player) projectile.getShooter();
-            } else if (projectile.getShooter() instanceof Entity || projectile.getShooter() == null) {
+            } else if (source instanceof Entity || projectile.getShooter() == null) {
                 // directly cancel any shooter that isn't a player
                 OwnedLand land = LandManager.getInstance().getLand(e.getBlock().getLocation());
                 if (land != null) {
                     e.setCancelled(true);
                 }
-            } else if (projectile.getShooter() instanceof BlockProjectileSource) {
+            } else if (source instanceof BlockProjectileSource) {
                 OwnedLand land = LandManager.getInstance().getLand(e.getBlock().getLocation());
                 if (land != null) {
                     OwnedLand originLand = LandManager.getInstance().getLand(((BlockProjectileSource) projectile.getShooter()).getBlock().getLocation());
@@ -78,8 +76,8 @@ public class LandBlockListener implements LandAccessChecker, Listener {
                     }
                 }
             }
-        } else if (e.getReason() == EntityPrimeTntEvent.Reason.ITEM && e.getEntity() instanceof Player) {
-            player = (Player) e.getEntity();
+        } else if (e.getCause() == TNTPrimeEvent.PrimeCause.PLAYER && e.getPrimingEntity() instanceof Player) {
+            player = (Player) e.getPrimingEntity();
         }
         if (player != null) {
             Pair<Boolean, String> response = this.getCanBuildAll(player, e.getBlock().getLocation());

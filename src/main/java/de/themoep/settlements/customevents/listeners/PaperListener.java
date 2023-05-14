@@ -1,11 +1,9 @@
 package de.themoep.settlements.customevents.listeners;
 
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
-import com.destroystokyo.paper.event.block.TNTPrimeEvent;
 import com.destroystokyo.paper.event.entity.PhantomPreSpawnEvent;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import de.themoep.settlements.customevents.CreaturePreSpawnEvent;
-import de.themoep.settlements.customevents.EntityPrimeTntEvent;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.portal.Portal;
@@ -17,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.TNTPrimeEvent;
 
 public class PaperListener implements Listener {
 
@@ -36,9 +35,7 @@ public class PaperListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onTntPrime(TNTPrimeEvent e) {
-        if (!new EntityPrimeTntEvent(e.getBlock(), EntityPrimeTntEvent.Reason.valueOf(e.getReason().name()), e.getPrimerEntity()).callEvent()) {
-            e.setCancelled(true);
-        }
+        e.setCancelled(true);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

@@ -2,7 +2,6 @@ package de.themoep.settlements.land;
 
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.customevents.CreaturePreSpawnEvent;
-import de.themoep.settlements.customevents.EntityPrimeTntEvent;
 import de.themoep.settlements.customevents.PlayerMoveChunkEvent;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.resident.Resident;
@@ -24,6 +23,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.TNTPrimeEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -33,7 +33,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.logging.Level;
 
 public class LandModeListener implements LandAccessChecker {
-    private TitleBuilder tbPvp = new TitleBuilder();
+    private final TitleBuilder tbPvp = new TitleBuilder();
     private BukkitTask mobCheckTask = null;
     private long mobCheckPeriod = 0;
 
@@ -180,8 +180,8 @@ public class LandModeListener implements LandAccessChecker {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onTntPrime(EntityPrimeTntEvent e) {
-        if (e.getReason() == EntityPrimeTntEvent.Reason.EXPLOSION && !isAllowed(e.getBlock().getLocation(), PlotMode.explosions)) {
+    public void onTntPrime(TNTPrimeEvent e) {
+        if (e.getCause() == TNTPrimeEvent.PrimeCause.EXPLOSION && !isAllowed(e.getBlock().getLocation(), PlotMode.explosions)) {
             e.setCancelled(true);
         }
     }
