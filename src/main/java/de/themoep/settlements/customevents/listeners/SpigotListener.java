@@ -29,11 +29,6 @@ public class SpigotListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onTntPrime(TNTPrimeEvent e) {
-        e.setCancelled(true);
-    }
-
     // Try to catch portal removal
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPortalDestroy(BlockPhysicsEvent e) {

@@ -33,11 +33,6 @@ public class PaperListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onTntPrime(TNTPrimeEvent e) {
-        e.setCancelled(true);
-    }
-
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPortalDestroy(BlockDestroyEvent e) {
         if (!Config.Portal.ENABLED) {
