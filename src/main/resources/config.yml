@@ -100,7 +100,7 @@ settlement:
   # How much a player must pay to create a settlement
   creation-cost: 0
   # How much money a settlement starts with
-  start-balance: 1000
+  start-balance: 0
   # Maximum size a settlement can have (0 disables the size check)
   max-size: 30
   # Maximum value that a settlement's tax can be set to. Set to -1 to disable maximum
@@ -137,7 +137,7 @@ settlement:
     # Should finished missions be reset? If those are not reset then the resident needs to wait for the settlement to upgrade to get more!
     remove-finished-missions: true
     # Amount to pay from a settlement's bank to distribute new missions. (Set to -1 to disable this functionality)
-    redistribute-price: 1000
+    redistribute-price: 5000
     # Time in minutes for which block placements should be cached so that break mission abuse isn't possible using (recent) player placed blocks.
     place-cache-time: 60
     
