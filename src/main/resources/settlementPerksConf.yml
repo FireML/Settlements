@@ -1,10 +1,11 @@
 # Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:settlementperksconf.yml
 
-resistance1:
+# Kingdom level 1
+fast_digging2:
   # The icon that should be shown in the GUI. If it's a potion (the default value is a lingering one)
   # and an effect is defined then it will just use a potion of the configured effect
   # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
-  icon: lingering_potion
+  icon: diamond_shovel
   # The amount of times this upgrade can be repeated. This allows to make re-purchasable upgrades to trigger effects
   # Default if not added is 0
   repeat: 0
@@ -17,8 +18,8 @@ resistance1:
   # The effects (a map list) that members of the settlement get applied
   effects:
       # the type  https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html
-    - type: damage_resistance
-      strength: 1
+    - type: fast_digging
+      strength: 2
       # the length of the effect after applying in seconds
       # leave empty or set to -1 (default) to make it indefinite
       length: -1
@@ -63,138 +64,532 @@ resistance1:
     # or any material to pay from vault
     # If empty it will be instantly granted when the state and level are reached
     unlock:
-      missionpoints: 1000
+      missionpoints: 225
       cash: 1000
-      stone: 100
     # If the amount is higher than 1 then this is the cost that needs to be paid to trigger it again
     repeating:
-      cash: 100
+      cash: 0
+claims1:
+  icon: light_blue_stained_glass
+  repeat: 4
+  cooldown: 0
+  state: kingdom
+  level: 1
+  bonus:
+    claims: 5
+  cost:
+    unlock:
+      missionpoints: 200
+      cash: 5000
+    repeating:
+      cash: 5000
 # Kingdom level 2
-speed1:
+water_breathing:
+  icon: water_bucket
+  repeat: 0
+  cooldown: 0
   state: kingdom
   level: 2
   effects:
-    - type: speed
+    - type: water_breathing
       strength: 1
+      length: -1
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
   cost:
     unlock:
+      missionpoints: 225
       cash: 1000
 # Kingdom level 3
-strength1:
+dolphins_grace:
+  icon: dolphin_spawn_egg
+  repeat: 0
+  cooldown: 0
   state: kingdom
   level: 3
   effects:
-    - type: increase_damage
+    - type: dolphins_grace
       strength: 1
+      length: -1
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
   cost:
     unlock:
+      missionpoints: 225
       cash: 1000
+fast_digging3:
+  icon: netherite_shovel
+  repeat: -1
+  cooldown: 0
+  state: kingdom
+  level: 3
+  effects:
+    - type: fast_digging
+      strength: 3
+      length: 600
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
+  cost:
+    unlock:
+      missionpoints: 300
+      cash: 6500
+    repeating:
+      cash: 6000
 # Kingdom level 4
-regen1:
+damage_resistance1:
+  icon: shield
+  repeat: 0
+  cooldown: 0
   state: kingdom
   level: 4
   effects:
-    - type: regeneration
-      strength: 1
-  cost:
-    unlock:
-      cash: 1000
-# Kingdom level 5
-speed2:
-  state: kingdom
-  level: 5
-  effects:
-    - type: speed
-      strength: 2
-  cost:
-    unlock:
-      cash: 1000
-# Kingdom level 6
-resistance2:
-  state: kingdom
-  level: 6
-  effects:
     - type: damage_resistance
-      strength: 2
-  cost:
-    unlock:
-      cash: 1000
-empire:
-  state: kingdom
-  level: 6
-  unlockables:
-  - empire.create
-# Kingdom level 7
-# Kingdom level 8
-regen2:
-  state: kingdom
-  level: 8
-  effects:
-    - type: regeneration
-      strength: 2
-  cost:
-    unlock:
-      cash: 1000
-# Kingdom level 9
-haste1:
-  state: kingdom
-  level: 9
-  effects:
-    - type: fast_digging
       strength: 1
+      length: -1
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
   cost:
     unlock:
+      missionpoints: 225
       cash: 1000
-# Kingdom level 10
-haste2:
+outpost1:
+  icon: light_blue_banner
+  repeat: 3
+  cooldown: 0
   state: kingdom
-  level: 10
-  effects:
-    - type: fast_digging
-      strength: 1
-  cost:
-    unlock:
-      cash: 1000
-nightvision:
-  state: kingdom
-  level: 10
-  effects:
-    - type: night_vision
-      strength: 1
-  cost:
-    unlock:
-      cash: 1000
-extra-claims:
-  state: kingdom
-  level: 10
-  repeat: -1 # as often as you want
-  bonus:
-    claims: 10
-  cost:
-    unlock:
-      cash: 1000
-    repeat:
-      cash: 1000
-extra-outpost:
-  state: kingdom
-  level: 10
-  repeat: -1
+  level: 4
   bonus:
     outposts: 1
   cost:
     unlock:
+      missionpoints: 200
+      cash: 7500
+    repeating:
+      cash: 7500
+# Kingdom level 5
+night_vision:
+  icon: spyglass
+  repeat: 0
+  cooldown: 0
+  state: kingdom
+  level: 5
+  effects:
+    - type: night_vision
+      strength: 1
+      length: -1
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
+  cost:
+    unlock:
+      missionpoints: 225
       cash: 1000
-    repeat:
+haste1:
+  icon: diamond_pickaxe
+  repeat: 0
+  cooldown: 0
+  state: kingdom
+  level: 5
+  effects:
+    - type: haste
+      strength: 1
+      length: -1
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
+  cost:
+    unlock:
+      missionpoints: 225
+      cash: 1000
+#     Empires are not ready. Uncomment and delete this line when they are ready
+#  unlockables:
+#  - empire.create
+# Kingdom level 6
+speed:
+  icon: ntherite_boots
+  repeat: 0
+  cooldown: 0
+  state: kingdom
+  level: 6
+  effects:
+    - type: speed
+      strength: 1
+      length: -1
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
+  cost:
+    unlock:
+      missionpoints: 275
+      cash: 1000
+jump:
+  icon: lingering_potion
+  repeat: -1
+  cooldown: 0
+  state: kingdom
+  level: 3
+  effects:
+    - type: fast_digging
+      strength: 3
+      length: 600
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
+  cost:
+    unlock:
+      missionpoints: 350
+      cash: 8000
+    repeating:
+      cash: 7000
+# Kingdom level 7
+increase_damage:
+  icon: netherite_sword
+  repeat: 0
+  cooldown: 0
+  state: kingdom
+  level: 7
+  effects:
+    - type: increase_damage
+      strength: 1
+      length: -1
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
+  cost:
+    unlock:
+      missionpoints: 275
+      cash: 1000
+claims2:
+  icon: blue_stained_glass
+  repeat: 3
+  cooldown: 0
+  state: kingdom
+  level: 7
+  bonus:
+    claims: 10
+  cost:
+    unlock:
+      missionpoints: 250
+      cash: 10000
+    repeating:
+      cash: 10000
+# Kingdom level 8
+regeneration:
+  icon: splash_potion
+  repeat: 0
+  cooldown: 0
+  state: kingdom
+  level: 8
+  effects:
+    - type: regeneration
+      strength: 1
+      length: -1
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
+  cost:
+    unlock:
+      missionpoints: 275
+      cash: 1000
+# Kingdom level 9
+saturation:
+  icon: cooked_beef
+  repeat: 0
+  cooldown: 0
+  state: kingdom
+  level: 9
+  effects:
+    - type: saturation
+      strength: 1
+      length: -1
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
+  cost:
+    unlock:
+      missionpoints: 275
+      cash: 1000
+glowing:
+  icon: enchantment_table
+  repeat: -1
+  cooldown: 0
+  state: kingdom
+  level: 9
+  effects:
+    - type: glowing
+      strength: 1
+      length: 600
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
+  cost:
+    unlock:
+      missionpoints: 350
+      cash: 10000
+    repeating:
+      cash: 8500
+# Kingdom level 10
+fly:
+  icon: elytra
+  repeat: 0
+  cooldown: 0
+  state: kingdom
+  level: 10
+  permissions:
+    - "cmi.command.fly"
+#      apply:
+#        in: own-settlement
+#        to: members
+  cost:
+    unlock:
+      missionpoints: 275
+      cash: 1000
+haste2:
+  icon: netherite_pickaxe
+  repeat: 0
+  cooldown: 0
+  state: kingdom
+  level: 10
+  effects:
+    - type: haste
+      strength: 2
+      length: -1
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
+  cost:
+    unlock:
+      missionpoints: 275
+      cash: 1000
+outpost2:
+  icon: blue_banner
+  repeat: 2
+  cooldown: 0
+  state: kingdom
+  level: 10
+  bonus:
+    outposts: 3
+  cost:
+    unlock:
+      missionpoints: 250
+      cash: 15000
+    repeating:
+      cash: 15000
+# Kingdom level 11
+slow_falling:
+  icon: feather
+  repeat: 0
+  cooldown: 0
+  state: kingdom
+  level: 11
+  effects:
+    - type: slow_falling
+      strength: 1
+      length: -1
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
+  cost:
+    unlock:
+      missionpoints: 325
+      cash: 1000
+# Kingdom level 12
+fire_resistance:
+  icon: flint_and_steel
+  repeat: 0
+  cooldown: 0
+  state: kingdom
+  level: 12
+  effects:
+    - type: fire_resistance
+      strength: 1
+      length: -1
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
+  cost:
+    unlock:
+      missionpoints: 325
+      cash: 1000
+wither:
+  icon: wither_rose
+  repeat: -1
+  cooldown: 0
+  state: kingdom
+  level: 12
+  effects:
+    - type: wither
+      strength: 1
+      length: 300
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
+  cost:
+    unlock:
+      missionpoints: 400
+      cash: 12500
+    repeating:
+      cash: 10000
+# Kingdom level 13
+hero_of_the_village:
+  icon: totem_oF_undying
+  repeat: 0
+  cooldown: 0
+  state: kingdom
+  level: 13
+  effects:
+    - type: hero_of_the_village
+      strength: 1
+      length: -1
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
+  cost:
+    unlock:
+      missionpoints: 325
+      cash: 1000
+claims3:
+  icon: cyan_stained_glass
+  repeat: 3
+  cooldown: 0
+  state: kingdom
+  level: 13
+  bonus:
+    claims: 15
+  cost:
+    unlock:
+      missionpoints: 300
+      cash: 15000
+    repeating:
+      cash: 15000
+# Kingdom level 14
+luck:
+  icon: raw_gold
+  repeat: 0
+  cooldown: 0
+  state: kingdom
+  level: 14
+  effects:
+    - type: luck
+      strength: 1
+      length: -1
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
+  cost:
+    unlock:
+      missionpoints: 325
       cash: 1000
 # Kingdom level 15
-fly:
+conduit_power:
+  icon: conduit
+  repeat: 0
+  cooldown: 0
   state: kingdom
   level: 15
   effects:
-    - type: fly
+    - type: conduit_power
       strength: 1
-      in: own-settlement
-      to: members
+      length: -1
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
   cost:
     unlock:
-      cash: 1000000
+      missionpoints: 325
+      cash: 1000
+luck2:
+  icon: gold_ingot
+  repeat: -1
+  cooldown: 0
+  state: kingdom
+  level: 9
+  effects:
+    - type: glowing
+      strength: 1
+      length: 300
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
+  cost:
+    unlock:
+      missionpoints: 400
+      cash: 16000
+    repeating:
+      cash: 11500
+outpost3:
+  icon: cyan_banner
+  repeat: 0
+  cooldown: 0
+  state: kingdom
+  level: 10
+  bonus:
+    outposts: 6
+  cost:
+    unlock:
+      missionpoints: 300
+      cash: 20000
