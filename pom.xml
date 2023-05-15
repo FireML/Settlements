@@ -357,14 +357,8 @@
             <groupId>com.denizenscript</groupId>
             <artifactId>denizen</artifactId>
             <version>1.2.7-SNAPSHOT</version>
-            <type>jar</type>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
+            <scope>system</scope>
+            <systemPath>${basedir}/repo/Denizen-1.2.7.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.github.angeschossen</groupId>
