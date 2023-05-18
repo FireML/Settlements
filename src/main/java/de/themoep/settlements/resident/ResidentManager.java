@@ -31,7 +31,7 @@ public class ResidentManager {
     private Cache<Object, Resident> residentsByName;
 
     private void setup() {
-        Expiry<? super Object, Resident> residentExpiry = new Expiry<Object, Resident>() {
+        Expiry<? super Object, Resident> residentExpiry = new Expiry<>() {
             @Override
             public long expireAfterCreate(Object key, Resident resident, long currentTime) {
                 return getDuration(resident);
