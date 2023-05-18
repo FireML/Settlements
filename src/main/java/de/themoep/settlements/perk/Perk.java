@@ -23,7 +23,7 @@ public class Perk implements NameTag {
     private List<PerkEffect> effects = new ArrayList<>();
     private int bonusClaims = 0;
     private int bonusOutposts = 0;
-    private List<String> commands = new ArrayList<>();
+    private List<String> commands;
     private Collection<String> unlockables = new LinkedHashSet<>();
     private Map<String, Long> unlockCost = new HashMap<>();
     private Map<String, Long> repeatCost = new HashMap<>();
