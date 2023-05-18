@@ -28,6 +28,7 @@ import de.themoep.settlements.settlement.SettlementListener;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
+import de.themoep.settlements.utils.adapter.PaperAdapter;
 import de.themoep.settlements.utils.adapter.ServerAdapter;
 import de.themoep.settlements.utils.adapter.SpigotAdapter;
 import de.themoep.settlements.utils.config.Config;
@@ -114,13 +115,8 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     public void onEnable() {
         instance = this;
         registerListener(this);
-        try {
-            Class.forName("com.destroystokyo.paper.PaperConfig");
-            serverAdapter = (ServerAdapter) Class.forName(getClass().getPackage().getName() + ".utils.adapter.PaperAdapter").newInstance();
-            logDebug("Using improved API provided by Paper.");
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            serverAdapter = new SpigotAdapter();
-        }
+        serverAdapter = new PaperAdapter();
+        logDebug("Using improved API provided by Paper.");
         this.checkDataFolder();
         if (!this.setupEconomy()) {
             this.getLogger().log(Level.SEVERE, "Disabled due to missing economy!");
