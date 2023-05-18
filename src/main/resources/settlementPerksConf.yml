@@ -1,17 +1,15 @@
 # Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:settlementperksconf.yml
 
 # Kingdom level 1
-fast_digging2:
-  # The icon that should be shown in the GUI.
-  # If it's a potion (the default value is a lingering potion)
-  # and an effect is defined, then it will just use a potion of the configured effect
+fast_digging1:
+  # The icon that should be shown in the GUI. If it's a potion (the default value is a lingering one)
+  # and an effect is defined then it will just use a potion of the configured effect
   # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
   icon: diamond_shovel
-  # The amount of times this upgrade can be repeated.
-  # This allows making re-purchasable upgrades to trigger effects
+  # The amount of times this upgrade can be repeated. This allows to make re-purchasable upgrades to trigger effects
   # Default if not added is 0
   repeat: 0
-  # How long one has to wait (in seconds) between unlocks if the amount is above 1
+  # How long one has to wait (in seconds) between unlocks if amount is above 1
   cooldown: 0
   # the state that unlocks it
   state: kingdom
@@ -19,17 +17,17 @@ fast_digging2:
   level: 1
   # The effects (a map list) that members of the settlement get applied
   effects:
-    # the type  https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html
+      # the type  https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html
     - type: fast_digging
-      strength: 2
-      # The length of the effect after applying in seconds
-      # Leave empty or set to -1 (default) to make it indefinite
+      strength: 1
+      # the length of the effect after applying in seconds
+      # leave empty or set to -1 (default) to make it indefinite
       length: -1
-      # Whether particles should be more translucent (default is true)
+      # Whether or not particles should be more translucent (default is true)
       ambient: true
-      # Whether to show potion particles, default is to not show them (false)
+      # Whether or not to show potion particles, default is to not show them (false)
       particles: false
-      # Whether to show the icon of the effect
+      # Whether or not to show the icon of the effect
       icon: true
       apply:
         # Where the effect should happen
@@ -62,14 +60,13 @@ fast_digging2:
   # run-command:
   # - some {player} command
   cost:
-    # Cost to unlock.
-    # Can include "cash" to pay with the bank, "missionpoints" to pay with mission points
+    # Cost to unlock. Can include "cash" to pay with bank, "missionpoints" to pay with mission points
     # or any material to pay from vault
     # If empty it will be instantly granted when the state and level are reached
     unlock:
       missionpoints: 225
       cash: 1000
-    # If the amount is higher than 1, then this is the cost that needs to be paid to trigger it again
+    # If the amount is higher than 1 then this is the cost that needs to be paid to trigger it again
     repeating:
       cash: 0
 claims1:
@@ -128,7 +125,7 @@ dolphins_grace:
     unlock:
       missionpoints: 225
       cash: 1000
-fast_digging3:
+fast_digging2:
   icon: netherite_shovel
   repeat: -1
   cooldown: 0
@@ -136,7 +133,7 @@ fast_digging3:
   level: 3
   effects:
     - type: fast_digging
-      strength: 3
+      strength: 2
       length: 600
       ambient: true
       particles: false
@@ -206,7 +203,7 @@ night_vision:
     unlock:
       missionpoints: 225
       cash: 1000
-haste1:
+fast_digging3:
   icon: diamond_pickaxe
   repeat: 0
   cooldown: 0
@@ -214,7 +211,7 @@ haste1:
   level: 5
   effects:
     - type: fast_digging
-      strength: 1
+      strength: 3
       length: -1
       ambient: true
       particles: false
@@ -226,8 +223,7 @@ haste1:
     unlock:
       missionpoints: 225
       cash: 1000
-#     Empires are not ready.
-#     Uncomment and delete these lines when they are ready.
+#     Empires are not ready. Uncomment and delete this line when they are ready
 #  unlockables:
 #  - empire.create
 # Kingdom level 6
@@ -258,7 +254,7 @@ jump:
   state: kingdom
   level: 3
   effects:
-    - type: fast_digging
+    - type: jump
       strength: 3
       length: 600
       ambient: true
@@ -351,7 +347,7 @@ saturation:
       missionpoints: 275
       cash: 1000
 glowing:
-  icon: enchanting_table
+  icon: enchantment_table
   repeat: -1
   cooldown: 0
   state: kingdom
@@ -373,6 +369,7 @@ glowing:
     repeating:
       cash: 8500
 # Kingdom level 10
+    # Fly to be added when we can.
 #fly:
 #  icon: elytra
 #  repeat: 0
@@ -395,7 +392,7 @@ haste2:
   state: kingdom
   level: 10
   effects:
-    - type: fast_digging
+    - type: haste
       strength: 2
       length: -1
       ambient: true
