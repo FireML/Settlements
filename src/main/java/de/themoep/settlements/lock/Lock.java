@@ -29,10 +29,10 @@ public class Lock implements DatabaseSerializable {
     private final SimpleBlockLocation location;
     private final Material block;
 
-    private Set<UUID> allowedPlayers = new LinkedHashSet<>();
+    private final Set<UUID> allowedPlayers = new LinkedHashSet<>();
 
-    private Set<IdObject> allowedSettlements = new LinkedHashSet<>();
-    private Set<IdObject> allowedEmpires = new LinkedHashSet<>();
+    private final Set<IdObject> allowedSettlements = new LinkedHashSet<>();
+    private final Set<IdObject> allowedEmpires = new LinkedHashSet<>();
     private boolean allowHoppers = false;
 
     public Lock(UUID owner, SimpleBlockLocation location, Material block) {
