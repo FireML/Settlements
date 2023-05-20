@@ -1047,7 +1047,7 @@ gui:
         &fSize: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fBank: &e☧ {bank}
-        &fCooperation Points: &e{missionpoints}
+        &fMission Points: &e{missionpoints}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims}
         &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}
         &f{chieftitle}: &r&7{chief}
@@ -1811,7 +1811,7 @@ gui:
       Player Info
       &f➤ Rank: &6{vaultprefix}
       &f➤ Balance: &6☧ {balance}
-      &f➤ Cooperation Points: &6{missionpoints}
+      &f➤ Mission Points: &6{missionpoints}
       &f➤ Last Login &c{lastloginduration}
     accepted:
       entry: |-
@@ -2278,7 +2278,7 @@ gui:
       &fDaily Tax: &e☧ {tax}
       &fAuction Tax: &e☧ {tax}
       &fTax Evasion Action: &e{taxdebtaction}
-      &fCooperation Points: &e{missionpoints}
+      &fMission Points: &e{missionpoints}
       &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims}
       &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}
       &f{chieftitle}: &r&7{chief}
@@ -2588,7 +2588,7 @@ command:
           &fRank: &e{title}
           &fBalance: &e☧ {balance}
           &fTax: &e☧ {tax}
-          &fCooperation Points: &e☧ {missionpoints}
+          &fMission Points: &e☧ {missionpoints}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
@@ -2600,7 +2600,7 @@ command:
           &fRank: &e{title}
           &fBalance: &e☧ {balance}
           &fTax: &e☧ {tax}
-          &fCooperation Points: &e☧ {missionpoints}
+          &fMission Points: &e☧ {missionpoints}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
@@ -3495,7 +3495,7 @@ command:
       same-version: "&cConfig is already version {version}."
       success: "&aSUCCESS: Converted config from version {from} to {to}"
     cooperationpoints:
-      description: Add/set/remove finished cooperation points of Settlements/Residents
+      description: Add/set/remove finished Mission Points of Settlements/Residents
       success: "&aSUCCESS: {operation} {amount} to {name}"
     mission:
       description: Add/set/remove finished mission count of settlements/empires
