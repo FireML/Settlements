@@ -997,11 +997,11 @@ guis:
     perks:
       setup:
       - "ooooooooo"
-      - "         "
-      - " ppppppp "
-      - " ppppppp "
-      - "         "
-      - " ooobooo "
+      - "opppppppo"
+      - "opppppppo"
+      - "opppppppo"
+      - "opppppppo"
+      - "ooooboooo"
       alignments:
         p: center
       elements:
