@@ -1,6 +1,5 @@
 package de.themoep.settlements.command.resident;
 
-import de.themoep.settlements.chat.commands.IgnoreCommand;
 import de.themoep.settlements.command.HelpCommand;
 import de.themoep.settlements.command.SubCommand;
 import org.bukkit.command.CommandSender;
@@ -15,7 +14,6 @@ public class ResidentCommand extends SubCommand {
         setHelpCommand(new HelpCommand(this));
         showCommand = new ResidentShowCommand(this);
         registerCommand(showCommand);
-        registerCommand(new IgnoreCommand());
         registerCommand(new ResidentClaimTransferCommand(this));
     }
 

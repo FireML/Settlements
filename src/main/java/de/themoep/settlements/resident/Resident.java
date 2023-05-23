@@ -205,11 +205,6 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         return this.ignore.add(ignore);
     }
 
-    public boolean removeIgnore(UUID ignore) {
-        SettlementsPlugin.getInstance().getIgnoreProviders().forEach(i -> i.removeIgnore(this, ignore));
-        return this.ignore.remove(ignore);
-    }
-
     public boolean isAfk() {
         for (AfkProvider provider : SettlementsPlugin.getInstance().getAfkProviders()) {
             if (provider.isAfk(this)) {
@@ -853,9 +848,6 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         }
         if (map.containsKey("bonusClaims")) {
             resident.setBonusClaims((Integer) map.get("bonusClaims"));
-        }
-        if (map.containsKey("ignores")) {
-            ((Collection<String>) map.get("ignores")).stream().map(Utils::parseUuid).filter(Objects::nonNull).forEach(resident::addIgnore);
         }
         if (map.containsKey("friends")) {
             ((Map<UUID, String>) map.get("friends")).forEach(resident::addFriend);

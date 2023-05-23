@@ -7,7 +7,6 @@ import de.themoep.minedown.MineDown;
 import de.themoep.minedown.MineDownParser;
 import de.themoep.minedown.Replacer;
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.chat.commands.*;
 import de.themoep.settlements.chat.events.ChannelChatEvent;
 import de.themoep.settlements.command.ChatCommand;
 import de.themoep.settlements.command.CommandManager;
@@ -26,6 +25,7 @@ import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
+import io.papermc.paper.event.player.AsyncChatEvent;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
@@ -74,11 +74,6 @@ public class ChatManager implements ConfigMessages, Listener {
                 });
             }
         }
-        CommandManager.getInstance().registerCommand(new MessageCommand());
-        CommandManager.getInstance().registerCommand(new ReplyCommand());
-        CommandManager.getInstance().registerCommand(new IgnoreCommand());
-        CommandManager.getInstance().registerCommand(new MsgToggleCommand());
-        CommandManager.getInstance().registerCommand(new NotifyToggleCommand());
 
         SettlementsPlugin.getInstance().registerListener(this);
         SettlementsPlugin.getInstance().registerListener(new ChatListener());

@@ -70,23 +70,9 @@ commands:
   ccemchat:
     description: CCEM Chat
     aliases: [content, cc, ccem]
-  message:
-    description: Private message command
-    aliases: [msg, tell, pm, m, w, whisper, emsg, etell, epm, ewhisper]
-  reply:
-    description: PM reply command
-    aliases: [r]
   friend:
     aliases: [friends, f]
     description: Friending command
-  ignore:
-    description: Player ignore command
-  msgtoggle:
-    description: Toggle private messages on or off
-    aliases: [messagetoggle, togglemsg, togglemessages]
-  notify:
-    description: Toggle mention notification sounds on or off
-    aliases: [notifytoggle, togglenotify, nottoggle, notif, notiftoggle]
   scoreboard:
     description: Scoreboard command
   scoreboardadmin:
