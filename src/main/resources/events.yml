@@ -55,28 +55,28 @@ rewards:
   first:
     name: "&bFirst Place!"
     icon: gold_ingot
-    money: 500
+    money: 750
     #items: bukkit items
     #- type: diamond
     #  amount: 3
     commands:
-    - ecrates key give {onlineresident} rare_key 1
+    - cc give p RareCrate 1 {onlineresident}
   second:
     name: "&bSecond Place!"
     icon: iron_ingot
-    money: 250
+    money: 500
     commands:
-    - ecrates key give {onlineresident} common_key 1
+    - cc give p CommonCrate 1 {onlineresident}
   third:
     name: "&bThird Place!"
     icon: copper_ingot
-    money: 125
+    money: 250
     commands:
     - spawner giveshard {onlineresident} 1
   participation:
     name: "&bParticipation"
     icon: lapis_lazuli
-    money: 15
+    money: 7
 
     # Break Events
   # Blocks
@@ -127,6 +127,9 @@ events:
     actions:
       break:
       - dirt
+      - grass_block
+      - podzol
+      - mycelium
   sand:
     worlds:
     - Resource
@@ -146,6 +149,7 @@ events:
     actions:
       break:
       - sand
+      - red_sand
   gravel:
     worlds:
     - Resource
