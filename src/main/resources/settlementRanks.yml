@@ -187,6 +187,7 @@ ranks:
     - settlement.missions.redistribute
     - settlement.invite
     - settlement.lock.admin
+    - settlement.rewards
     
   elder:
     icon: iron_sword
@@ -200,6 +201,7 @@ ranks:
     - settlement.group.manage-outpost
     - settlement.missions.redistribute
     - settlement.invite
+    - settlement.rewards
     
   recruiter:
     icon: golden_sword
@@ -210,6 +212,7 @@ ranks:
     - settlement.npc.teleport
     - settlement.help.recruiter
     - settlement.help.builder
+    - settlement.rewards
     
   builder:
     icon: iron_sword
@@ -218,6 +221,7 @@ ranks:
     - settlement.officer
     - settlement.npc.teleport
     - settlement.help.builder
+    - settlement.rewards
   resident:
     icon: stone_sword
     permissions:
@@ -227,6 +231,7 @@ ranks:
     - settlement.group.use-bank
     - settlement.bank.deposit
     - settlement.missions.redistribute
+    - settlement.rewards
   guest:
     icon: stone_shovel
     permissions:
