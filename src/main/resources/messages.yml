@@ -425,7 +425,7 @@ chat:
     settlement: "\n&a{state} &f{name}"
     empire: "\n&aEmpire &f{name}"
     rank: |-
-      &a{state} Rank &f{rank}
+      &r &a{state} Rank &f{rank}
       &aTitle &f{title}
     click-to-open-url: "&9Click to open url"
   staff: "&cStaff "
