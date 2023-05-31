@@ -206,6 +206,28 @@ night_vision:
     unlock:
       missionpoints: 225
       cash: 1000
+temporary_bad_omen_level_2:
+  icon: emerald
+  repeat: -1
+  cooldown: 300
+  state: kingdom
+  level: 5
+  effects:
+    - type: bad_omen
+      strength: 2
+      length: 600
+      ambient: true
+      particles: false
+      icon: true
+      apply:
+        in: own-settlement
+        to: members
+  cost:
+    unlock:
+      missionpoints: 350
+      cash: 8000
+    repeating:
+      cash: 8000
 #     Empires are not ready.
 #     Uncomment and delete these lines when they are ready.
 #  unlockables:
@@ -252,7 +274,7 @@ temporary_jump_level_2:
       missionpoints: 350
       cash: 8000
     repeating:
-      cash: 7000
+      cash: 8000
 # Kingdom level 7
 increase_damage_level_1:
   icon: netherite_sword
