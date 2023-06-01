@@ -143,6 +143,7 @@ ranks:
     - settlement.portal.admin
     - settlement.officer
     - settlement.missions.redistribute
+    - settlement.npc
     
     # resident base perms
     - settlement.allies
@@ -150,6 +151,8 @@ ranks:
     - settlement.banished
     - settlement.group.use-bank
     - settlement.bank.deposit
+    - settlement.npc
+    - settlement.rewards
   
     # non-toggleable
     - settlement.outpost.help.chief
@@ -188,6 +191,7 @@ ranks:
     - settlement.invite
     - settlement.lock.admin
     - settlement.rewards
+    - settlement.npc
     
   elder:
     icon: iron_sword
@@ -201,6 +205,7 @@ ranks:
     - settlement.group.manage-outpost
     - settlement.missions.redistribute
     - settlement.invite
+    - settlement.npc
     - settlement.rewards
     
   recruiter:
@@ -213,6 +218,7 @@ ranks:
     - settlement.help.recruiter
     - settlement.help.builder
     - settlement.rewards
+    - settlement.npc
     
   builder:
     icon: iron_sword
@@ -222,6 +228,7 @@ ranks:
     - settlement.npc.teleport
     - settlement.help.builder
     - settlement.rewards
+    - settlement.npc
   resident:
     icon: stone_sword
     permissions:
@@ -232,6 +239,7 @@ ranks:
     - settlement.bank.deposit
     - settlement.missions.redistribute
     - settlement.rewards
+    - settlement.npc
   guest:
     icon: stone_shovel
     permissions:
