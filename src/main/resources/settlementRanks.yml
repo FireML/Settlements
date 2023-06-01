@@ -246,3 +246,4 @@ ranks:
     - settlement.rules
     - settlement.rules.accept
     - settlement.leave
+    - settlement.npc
