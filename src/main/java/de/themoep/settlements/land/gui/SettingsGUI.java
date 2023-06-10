@@ -1,12 +1,15 @@
 package de.themoep.settlements.land.gui;
 
 import de.themoep.inventorygui.GuiBackElement;
+import de.themoep.inventorygui.GuiStateElement;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.LandOwner;
+import de.themoep.settlements.land.events.LandownerDisbandEvent;
+import de.themoep.settlements.npc.events.NPCToggleEvent;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
@@ -192,6 +195,27 @@ public class SettingsGUI extends ConfigurableGui {
                 "discord", landOwner.getDiscord(),
                 "action", landOwner.hasPermission(resident, "discord.set") ? getText("unlockables.unlocked.change") : getText("no-permission")
         )));
+
+        gui.addElement(new GuiStateElement('t', () -> String.valueOf(landOwner.isEnableNPCs()),
+                new GuiStateElement.State(click -> {
+                    if (resident.getSettlement().hasPermission(resident, "togglenpc")) {
+                        resident.getSettlement().setEnableNPCs(true);
+                        resident.getSettlement().save();
+                        Utils.callEvent(new NPCToggleEvent(true, resident));
+                    }
+                }, Boolean.TRUE.toString(), getIcon("toggle"), getText("toggle-npc.entry",
+                        "npc-toggle", getMessage("enabled").getRawText()
+                )),
+                new GuiStateElement.State(click -> {
+                    if (resident.getSettlement().hasPermission(resident, "togglenpc")) {
+                        resident.getSettlement().setEnableNPCs(false);
+                        resident.getSettlement().save();
+                        Utils.callEvent(new NPCToggleEvent(false, resident));
+                    }
+                }, Boolean.FALSE.toString(), getIcon("toggle"), getText("toggle-npc.entry",
+                        "npc-toggle", getMessage("disabled").getRawText()
+                ))
+        ));
 
 
         gui.addElement(new StaticGuiElement('j', getIcon("joinfee"), click -> {

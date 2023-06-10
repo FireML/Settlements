@@ -45,7 +45,8 @@ public class SettingsGUI extends PlotGUI {
                         "plot",
                         land,
                         permCheck,
-                        (flagAble, c) -> new BuildGUI("plot", flagAble, permCheck).open(c.getWhoClicked())
+                        (flagAble, c) -> new BuildGUI("plot", flagAble, permCheck).open(c.getWhoClicked()),
+                        resident
                 ).open(resident.getPlayer());
             }
             return true;

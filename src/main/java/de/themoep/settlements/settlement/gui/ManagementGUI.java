@@ -133,7 +133,8 @@ public class ManagementGUI extends SettlementsGUI {
                 new PermsGUI(landOwner.getKey(),
                         resident.getSettlement(),
                         permCheck,
-                        (flagAble, c) -> new BuildGUI(landOwner.getKey(), flagAble, permCheck).open(c.getWhoClicked())
+                        (flagAble, c) -> new BuildGUI(landOwner.getKey(), flagAble, permCheck).open(c.getWhoClicked()),
+                        resident
                 ).open(resident.getPlayer());
             }
             return true;

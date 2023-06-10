@@ -25,17 +25,19 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
     private int level = 0;
     private String npcSkinName = "";
     private Map<String, Long> vault = new HashMap<>();
+    private int enabled = 1;
 
     public NpcData(int npcId, NpcType type) {
         this.npcId = npcId;
         this.type = type;
     }
 
-    protected NpcData(IdObject id, int npcId, NpcType type, int level, String npcSkinName) {
+    protected NpcData(IdObject id, int npcId, NpcType type, int level, String npcSkinName, int enabled) {
         this(npcId, type);
         this.id = id;
         this.level = level;
         this.npcSkinName = npcSkinName;
+        this.enabled = enabled;
     }
 
     public boolean isUnlocked() {
@@ -67,6 +69,7 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
         map.put("level", level);
         map.put("npcSkinName", npcSkinName);
         map.put("vault", vault);
+        map.put("enabled", enabled);
         return map;
     }
 
@@ -76,7 +79,8 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
                 (int) map.get("npcId"),
                 NpcType.valueOf(((String) map.get("type")).toUpperCase(Locale.ROOT)),
                 (int) map.get("level"),
-                (String) map.get("npcSkinName")
+                (String) map.get("npcSkinName"),
+                (int) map.get("enabled")
         );
         ((Map<String, Object>) map.get("vault")).entrySet().stream()
                 .filter(e -> e.getValue() instanceof Number)
@@ -92,6 +96,7 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
                 ", type=" + type +
                 ", level=" + level +
                 ", npcSkinName='" + npcSkinName + '\'' +
+                ", enabled=" + enabled +
                 '}';
     }
 
@@ -125,6 +130,14 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
     @Override
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    public int isEnabled() {
+        return enabled;
+    }
+
+    public void toggle() {
+        this.enabled = 1 - this.enabled;
     }
 
     @Nullable

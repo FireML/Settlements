@@ -2115,6 +2115,13 @@ gui:
         
         {action}
       list: "&f{name}"
+    toggle-npc:
+      entry: |-
+        &eToggle NPCs
+        &fClick here to remove NPCs
+        &ffrom your town.
+        
+        &fCurrent: &e{npc-toggle}
     rules:
       entry: |-
         &e{state} rules

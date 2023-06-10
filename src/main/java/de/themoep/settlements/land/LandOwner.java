@@ -43,6 +43,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
     private double auctionTax = 0;
     private TaxDebtAction taxDebtAction = TaxDebtAction.KICK;
     protected boolean allowAllyClaim = false;
+    private boolean enableNPCs = false;
     private Map<PlotMode, Boolean> modes = new EnumMap<>(PlotMode.class);
     private int bonusClaims = 0;
     private Map<String, Long> vault = new HashMap<>();
@@ -1054,4 +1055,12 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
     public abstract boolean isValidName(String name);
 
     public abstract boolean changeName(String name);
+
+    public boolean isEnableNPCs() {
+        return enableNPCs;
+    }
+
+    public void setEnableNPCs(boolean enableNPCs) {
+        this.enableNPCs = enableNPCs;
+    }
 }
