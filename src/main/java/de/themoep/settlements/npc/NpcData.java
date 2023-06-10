@@ -25,14 +25,14 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
     private int level = 0;
     private String npcSkinName = "";
     private Map<String, Long> vault = new HashMap<>();
-    private int enabled = 1;
+    private boolean enabled = false;
 
     public NpcData(int npcId, NpcType type) {
         this.npcId = npcId;
         this.type = type;
     }
 
-    protected NpcData(IdObject id, int npcId, NpcType type, int level, String npcSkinName, int enabled) {
+    protected NpcData(IdObject id, int npcId, NpcType type, int level, String npcSkinName, boolean enabled) {
         this(npcId, type);
         this.id = id;
         this.level = level;
@@ -80,7 +80,7 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
                 NpcType.valueOf(((String) map.get("type")).toUpperCase(Locale.ROOT)),
                 (int) map.get("level"),
                 (String) map.get("npcSkinName"),
-                (int) map.get("enabled")
+                (boolean) map.get("enabled")
         );
         ((Map<String, Object>) map.get("vault")).entrySet().stream()
                 .filter(e -> e.getValue() instanceof Number)
@@ -132,12 +132,12 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
         this.level = level;
     }
 
-    public int isEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
 
     public void toggle() {
-        this.enabled = 1 - this.enabled;
+        this.enabled = !this.enabled;
     }
 
     @Nullable
