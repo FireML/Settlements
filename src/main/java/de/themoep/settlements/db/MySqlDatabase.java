@@ -266,8 +266,8 @@ public class MySqlDatabase extends SqlDatabaseManager {
     }
 
     private void addTrigger(MySqlTable table, String triggerName, String triggerType, String definition) {
-        String sql = "CREATE TRIGGER " + triggerName + " ON " + triggerType + table.getDbName() + " FOR EACH ROW BEGIN " +
-                definition + " END;";
+        String sql = "CREATE TRIGGER " + triggerName + " " + triggerType + " ON " + table.getDbName() + " FOR EACH ROW " +
+                definition + ";";
         try {
             Connection conn = getConnection();
             Statement sta = conn.createStatement();
