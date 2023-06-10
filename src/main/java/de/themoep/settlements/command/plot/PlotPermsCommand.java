@@ -61,7 +61,8 @@ public class PlotPermsCommand extends PlotSubCommand {
                     "plot",
                     land,
                     permCheck,
-                    (flagAble, click) -> new BuildGUI("plot", flagAble, permCheck).open(click.getWhoClicked())
+                    (flagAble, click) -> new BuildGUI("plot", flagAble, permCheck).open(click.getWhoClicked()),
+                    res
             ).open(res.getPlayer());
         } else {
             UseFlag use = UseFlagManager.getInstance().get(args[0]);

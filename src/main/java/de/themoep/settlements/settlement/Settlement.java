@@ -757,6 +757,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         map.put("residents", getResidentIds().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("outposts", getOutpostHomes().values().stream().collect(Collectors.toMap(NamedLocation::getName, NamedLocation::serialize)));
         map.put("missiondata", getMissionData().stream().collect(Collectors.toMap(md -> md.getMission().getDbId(), md -> md.getProgress())));
+        map.put("enableNPCs", isEnableNPCs());
         return map;
     }
 
@@ -907,6 +908,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         settlement.setFinishedMissions(Utils.getLong(map.get("finishedMissions")));
         settlement.setMissionPoints(Utils.getLong(map.get("missionPoints")));
         settlement.setEmpire(EmpireManager.getInstance().getEmpireFromId(IdObject.get(map.get("empireId"))));
+        settlement.setEnableNPCs(Utils.getBoolean(map.get("enableNPCs")));
         ((Collection<String>) map.get("residents")).stream().map(UUID::fromString).forEach(u -> settlement.getResidentIds().add(u));
         ((Map<String, Map<String, Object>>) map.get("outposts")).values().stream()
                 .map(NamedLocation::deserialize)

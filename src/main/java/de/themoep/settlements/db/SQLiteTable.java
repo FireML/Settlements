@@ -36,6 +36,7 @@ public enum SQLiteTable {
             + "homeLoc_z DOUBLE,"
             + "homeLoc_yaw FLOAT,"
             + "homeLoc_pitch FLOAT,"
+            + "enableNPCs BOOLEAN,"
             + "FOREIGN KEY (capitalId) REFERENCES {tablePrefix}settlements(id) ON DELETE RESTRICT"
             + ");"
             + "CREATE UNIQUE INDEX empires_name ON {tablePrefix}empires (name);"),

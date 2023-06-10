@@ -18,6 +18,7 @@ import de.themoep.settlements.npc.NpcConfig;
 import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.npc.NpcManager;
 import de.themoep.settlements.npc.NpcType;
+import de.themoep.settlements.npc.events.NPCToggleEvent;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
@@ -31,10 +32,12 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.command.CommandConfigurable;
 import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.command.exception.CommandException;
+import net.citizensnpcs.api.event.CitizensEnableEvent;
 import net.citizensnpcs.api.event.NPCClickEvent;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.TraitInfo;
@@ -88,6 +91,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
     }
 
     private void forceSpawn(LandOwner<?, ?> landOwner) {
+        if (!landOwner.isEnableNPCs()) return;
         for (NpcData npcData : landOwner.getNpcData()) {
             if (npcData.isUnlocked() && npcData.isAvailable()) {
                 NPC npc = getNpc(npcData);
@@ -431,20 +435,57 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
 
     @EventHandler
     public void onAbandon(LandownerAbandonedEvent event) {
-        removeAll(event.getLandOwner());
+        removeAll(event.getLandOwner(), "removal of");
     }
 
     @EventHandler
     public void onDisband(LandownerDisbandEvent event) {
-        removeAll(event.getLandOwner());
+        removeAll(event.getLandOwner(), "removal of");
     }
 
-    private void removeAll(LandOwner<?, ?> landOwner) {
+    @EventHandler
+    public void onNPCToggle(NPCToggleEvent event) {
+        if (event.isCancelled()) return;
+        validateNPCSpawning(event.getLandOwner(), event.getNewState(), true);
+    }
+
+    @EventHandler
+    public void onCitizensLoad(CitizensEnableEvent event) {
+        for (Settlement settlement : SettlementManager.getInstance().getSettlements()) {
+            validateNPCSpawning(settlement, settlement.isEnableNPCs(), false);
+        }
+        for (Empire empire : EmpireManager.getInstance().getEmpires()) {
+            validateNPCSpawning(empire, empire.isEnableNPCs(), false);
+        }
+    }
+
+    public void validateNPCSpawning(LandOwner<?, ?> landOwner, boolean newState, boolean modifyData) {
+        if (newState) {
+            for (NpcData npcData : landOwner.getNpcData()) {
+                if (modifyData) npcData.toggle();
+                NPC npc = CitizensAPI.getNPCRegistry().getById(npcData.getNpcId());
+                if (npc != null) {
+                    npc.spawn(landOwner.getHome().toBukkitLocation());
+                }
+            }
+        } else {
+            for (NpcData npcData : landOwner.getNpcData()) {
+                npcData.toggle();
+                NPC npc = CitizensAPI.getNPCRegistry().getById(npcData.getNpcId());
+                NPCRegistry registry = CitizensAPI.getNPCRegistry();
+                if (npc != null) {
+                    npc.despawn();
+                }
+            }
+        }
+    }
+
+    private void removeAll(LandOwner<?, ?> landOwner, String reason) {
         for (NpcData npcData : landOwner.getNpcData()) {
             if (npcData.getNpcId() > -1) {
                 NPC npc = CitizensAPI.getNPCRegistry().getById(npcData.getNpcId());
                 if (npc != null) {
-                    SettlementsPlugin.logDebug("Despawning NPC " + npcData.getType() + " due to removal of " + landOwner.getStateTag() + " " + landOwner.getName());
+                    SettlementsPlugin.logDebug("Despawning NPC " + npcData.getType() + " due to " + reason + landOwner.getStateTag() + " " + landOwner.getName());
                     npc.despawn();
                     CitizensAPI.getNPCRegistry().deregister(npc);
                     if (npc.getEntity() != null) {

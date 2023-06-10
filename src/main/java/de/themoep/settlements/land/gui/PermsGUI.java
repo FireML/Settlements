@@ -20,7 +20,7 @@ public class PermsGUI extends SettlementsGUI {
 
     private final InventoryGui gui;
 
-    public PermsGUI(String type, FlagAble flagAble, Supplier<Boolean> permCheck, BiConsumer<BuildStateable, GuiElement.Click> buildSetter) {
+    public PermsGUI(String type, FlagAble flagAble, Supplier<Boolean> permCheck, BiConsumer<BuildStateable, GuiElement.Click> buildSetter, Resident resident) {
         super(type + ".perms");
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), getSetup());
         gui.setCloseAction(close -> false);
@@ -40,11 +40,11 @@ public class PermsGUI extends SettlementsGUI {
 
         gui.addElement(new StaticGuiElement('m', getIcon("modes"), click -> {
             if (permCheck.get()) {
-                Resident resident = ResidentManager.getInstance().getResident((Player) click.getWhoClicked());
+                Resident clickResident = ResidentManager.getInstance().getResident((Player) click.getWhoClicked());
                 if (flagAble instanceof LandOwner) {
-                    new ModeGUI(resident, (LandOwner<?, ?>) flagAble).open();
+                    new ModeGUI(clickResident, (LandOwner<?, ?>) flagAble).open();
                 } else if (flagAble instanceof OwnedLand) {
-                    new de.themoep.settlements.land.gui.plot.ModeGUI(resident, (OwnedLand) flagAble).open();
+                    new de.themoep.settlements.land.gui.plot.ModeGUI(clickResident, (OwnedLand) flagAble).open();
                 }
             }
             return true;
@@ -55,6 +55,7 @@ public class PermsGUI extends SettlementsGUI {
 
         GuiElementGroup flagGroup = createGroup('u');
         for (UseGroup group : UseFlagManager.getInstance().getGroups()) {
+            if (group.name().equals("npc") && resident.hasSettlement() && !resident.getSettlement().isEnableNPCs()) continue;
             List<String> flagsList = new ArrayList<>();
             if (group.getUseFlags().size() > 1) {
                 for (UseFlag flag : group.getUseFlags()) {

@@ -44,7 +44,8 @@ public class SettlementUseCommand extends SettlementSubCommand {
                     "settlement",
                     res.getSettlement(),
                     permCheck,
-                    (flagAble, click) -> new BuildGUI("settlement", flagAble, permCheck).open(click.getWhoClicked())
+                    (flagAble, click) -> new BuildGUI("settlement", flagAble, permCheck).open(click.getWhoClicked()),
+                    res
             ).open(res.getPlayer());
         } else {
             UseFlag useFlag = UseFlagManager.getInstance().get(args[0]);

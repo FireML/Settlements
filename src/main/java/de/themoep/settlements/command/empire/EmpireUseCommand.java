@@ -44,7 +44,8 @@ public class EmpireUseCommand extends EmpireSubCommand {
                     "empire",
                     res.getSettlement().getEmpire(),
                     permCheck,
-                    (flagAble, click) -> new BuildGUI("empire", flagAble, permCheck).open(click.getWhoClicked())
+                    (flagAble, click) -> new BuildGUI("empire", flagAble, permCheck).open(click.getWhoClicked()),
+                    res
             ).open(res.getPlayer());
         } else {
             UseFlag useFlag = UseFlagManager.getInstance().get(args[0]);
