@@ -41,7 +41,7 @@ public class MySqlDatabase extends SqlDatabaseManager {
         alterColumnOrRecreate(MySqlTable.SETTLEMENT_UNBANISHED, "unbanished_unbanishdate", "BIGINT(11)");
         alterOrRecreate(MySqlTable.EMPIRE_UNBANISHED, "ADD CONSTRAINT list UNIQUE (empireId, unbanished_id, unbanished_date)");
         alterOrRecreate(MySqlTable.SETTLEMENT_UNBANISHED, "ADD CONSTRAINT list UNIQUE (settlementId, unbanished_id, unbanished_date)");
-        addTrigger(MySqlTable.SETTLEMENT_NPCS, "update_settlements_npcs", "AFTER UPDATE", "UPDATE settlements_settlement_npcs\n" +
+        addTrigger(MySqlTable.SETTLEMENT_NPCS, "update_settlements_npcs", "AFTER UPDATE", "UPDATE settlements_settlements_npcs\n" +
                 "  SET enabled = NEW.enableNPCs\n" +
                 "  WHERE settlementId = NEW.id;");
     }
@@ -266,7 +266,7 @@ public class MySqlDatabase extends SqlDatabaseManager {
     }
 
     private void addTrigger(MySqlTable table, String triggerName, String triggerType, String definition) {
-        String sql = "CREATE TRIGGER " + triggerName + " " + triggerType + " ON " + table.getDbName() + " FOR EACH ROW " +
+        String sql = "CREATE TRIGGER " + triggerName + " " + triggerType + " ON " + tablePrefix + table.getDbName() + " FOR EACH ROW " +
                 definition + ";";
         try {
             Connection conn = getConnection();
