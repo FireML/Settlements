@@ -28,7 +28,7 @@ settlement:
       type: jungle
   traveling-merchant:
     type: wandering_trader
-    name: Traveling Merchant
+    name: Guide
   auctioneer:
     type: villager
     name: Auctioneer
