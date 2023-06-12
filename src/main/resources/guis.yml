@@ -258,7 +258,7 @@ guis:
       setup:
       - "ooooooooo"
       - "         "
-      - "  np je  "
+      - "  nptje  "
       - "  rd ac  "
       - "         "
       - " ooobooo "
@@ -268,6 +268,7 @@ guis:
         perks: potion
         rules: writable_book
         discord: blue_dye
+        toggle: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTY5ODQ3N2Q3ZDUzMjc0OGFmNGUwOTExNWVmMTZiYjk1OTk0ZjBlNThiMDkwZTZkMzA2NDQ1OGJiOWFlMTY4NyJ9fX0=
         joinfee: name_tag
         description: oak_sign
         access: oak_fence_gate
