@@ -187,8 +187,12 @@ permissions:
       settlements.command.empire.npc: true
       settlements.command.empire.npc.teleport: true
       settlements.command.settlement.claim.coords: true
+      settlements.command.settlement.claim.radius: true
+      settlements.command.settlement.claim.5: true
       settlements.command.settlement.unclaim.coords: true
       settlements.command.empire.claim.coords: true
+      settlements.command.empire.claim.radius: true
+      settlements.command.empire.claim.5: true
       settlements.command.empire.unclaim.coords: true
   settlements.command.scoreboard:
     description: Permission for toggling the scoreboard on or off. Does not hide custom scoreboards set with /scoreboardadmin!
