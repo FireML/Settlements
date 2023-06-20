@@ -277,7 +277,7 @@ guis:
     allies:
       setup:
       - "ooooooooo"
-      - "aaaaaaaaa"
+      - "iiiiiiiii"
       - "aaaaaaaaa"
       - "aaaaaaaaa"
       - "aaaaaaaaa"
@@ -288,6 +288,7 @@ guis:
         sort: hopper
         requests: nether_star
         back: barrier
+        info: player_head
     ally:
       setup-advanced:
       - "ooooioooo"
@@ -308,7 +309,7 @@ guis:
         info: player_head
         nearbyclaim: grass_block
         unally: red_dye
-        build: diamond_pickaxe
+        back: barrier
       unally:
         setup:
         - "ooooooooo"
