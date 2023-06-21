@@ -14,7 +14,6 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.resident.gui.OverviewGUI;
 import de.themoep.settlements.resident.gui.StartGUI;
-import de.themoep.settlements.teleporter.TeleportersGUI;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.command.CommandSender;
@@ -84,13 +83,6 @@ public class SettlementCommand extends SubCommand {
         registerCommand(new SettlementShopCommand(this));
         registerCommand(new SettlementShowCommand(this));
         registerCommand(new SettlementTaxCommand(this));
-        registerCommand(new PlayerSubCommand(this, "teleporters") {
-            @Override
-            public boolean run(Player player, String base, String alias, String... args) {
-                new TeleportersGUI().open(player);
-                return true;
-            }
-        });
         registerCommand(new SettlementTitleCommand(this));
         registerCommand(new SettlementTitlesCommand(this));
         registerCommand(new SettlementTransferCommand(this));

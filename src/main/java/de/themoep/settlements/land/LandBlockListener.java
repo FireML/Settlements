@@ -189,7 +189,7 @@ public class LandBlockListener implements LandAccessChecker, Listener {
                 if (!getCanBuildAll((Player) e.getEntity(), e.getBlock().getLocation()).getLeft()) {
                     e.setCancelled(true);
                 }
-            } else if (Utils.isHostile((LivingEntity) e.getEntity())) {
+            } else if (Utils.isHostile(e.getEntity())) {
                 e.setCancelled(true);
             }
         }
@@ -197,7 +197,7 @@ public class LandBlockListener implements LandAccessChecker, Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onEntityChangeBlock(EntityChangeBlockEvent e) {
-        if (e.getEntity() instanceof LivingEntity && Utils.isHostile((LivingEntity) e.getEntity())) {
+        if (e.getEntity() instanceof LivingEntity && Utils.isHostile(e.getEntity())) {
             e.setCancelled(true);
         }
     }

@@ -2118,16 +2118,6 @@ gui:
       back: "&cClose"
       success: "&aUnlinked from Portal at &e{world} {x}/{y}/{z}"
       error: "&cAn error occurred while unlinking! Please contact an admin."
-  private-teleports:
-    title: "&2&lSettlement teleports:"
-    entry: "{state} &b{name}"
-    outpost: |-
-      Outpost &b{name}
-      {state} {owner}
-    page:
-      next: "&7Go to next page {page}"
-      previous: "&7Go to previous page {page}"
-    back: "&cBack To Teleporters"
   settings:
     title: "&2&lSettlement Settings"
     rename:
@@ -2330,12 +2320,6 @@ gui:
       offline: "&c"
       entry: "{online}{name}"
     back: "&cClose"
-  teleporters:
-    title: "Teleportation"
-    locked: "&cLocked"
-    private: "&e&lPrivate Warps"
-    settlement-home: "&e&l{state} Home"
-    empire-home: "&e&lEmpire Home"
   title:
     title: "&2&lSelect your title"
     entry:
@@ -3413,8 +3397,6 @@ command:
         above-max: "&c(!) &cMax auction tax amount is &e{max}%&c!"
         below-zero: "&c(!) &cAuction tax amount cannot be negative!"
         description: Sets the auction tax a player needs to pay when putting up an item for auction
-    teleporters:
-      description: Teleporter GUI
     title:
       description: "Set your title"
       success:
