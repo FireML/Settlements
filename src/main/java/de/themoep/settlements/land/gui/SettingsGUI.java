@@ -8,7 +8,6 @@ import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.LandOwner;
-import de.themoep.settlements.land.events.LandownerDisbandEvent;
 import de.themoep.settlements.npc.events.NPCToggleEvent;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;

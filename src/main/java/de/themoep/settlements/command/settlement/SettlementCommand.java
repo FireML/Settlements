@@ -2,7 +2,6 @@ package de.themoep.settlements.command.settlement;
 
 import de.themoep.settlements.command.ChatCommand;
 import de.themoep.settlements.command.HelpCommand;
-import de.themoep.settlements.command.PlayerSubCommand;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.command.lock.LockCommand;
 import de.themoep.settlements.command.lock.UnlockCommand;

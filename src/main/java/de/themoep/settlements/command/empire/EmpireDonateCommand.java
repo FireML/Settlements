@@ -9,7 +9,6 @@ import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.leveling.Levelable;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.Utils;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.entity.Player;
