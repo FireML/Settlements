@@ -13,8 +13,10 @@ import de.themoep.settlements.utils.TitleBuilder;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
+import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.*;
@@ -130,6 +132,7 @@ public class LandModeListener implements LandAccessChecker {
         } else {
             if (!bb.getPlayers().contains(p)) {
                 bb.addPlayer(p);
+                p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.02F, 1);
             }
         }
     }
