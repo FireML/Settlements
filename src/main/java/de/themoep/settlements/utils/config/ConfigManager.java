@@ -585,6 +585,6 @@ public class ConfigManager {
 
     public BossBar getBossBar() { return pvpBossBar; }
 
-    public void updateBossBar() { pvpBossBar = Bukkit.createBossBar(Message.get("pvp-is-enabled-bossbar").getText(), BarColor.PURPLE, BarStyle.SOLID); }
+    public void updateBossBar() { pvpBossBar = Bukkit.createBossBar(Message.get("pvp-is-enabled-bossbar").getText(), BarColor.RED, BarStyle.SOLID); }
 
 }
