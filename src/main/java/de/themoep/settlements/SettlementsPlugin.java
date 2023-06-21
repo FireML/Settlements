@@ -76,6 +76,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         timer.cancel();
+        ConfigManager.getInstance().getBossBar().removeAll();
         if (running) {
             running = false;
         }

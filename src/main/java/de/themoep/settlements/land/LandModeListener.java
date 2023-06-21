@@ -29,6 +29,7 @@ import org.bukkit.event.block.TNTPrimeEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -125,6 +126,30 @@ public class LandModeListener implements LandAccessChecker {
         BossBar bb = ConfigManager.getInstance().getBossBar();
         Player p = e.getPlayer();
         OwnedLand land = LandManager.getInstance().getLand(e.getTo());
+        OwnedLand previousLand = LandManager.getInstance().getLand(e.getFrom());
+        if (land == null || !land.getMode(PlotMode.pvp)) {
+            if (bb.getPlayers().contains(p)) {
+                bb.removePlayer(p);
+                MessageUtils.tellAdvanced(p, land.getLandOwner().getStateKey() + ".leavePvP",
+                        "state", land.getLandOwner().getStateTag()
+                );
+            }
+        } else {
+            if (!bb.getPlayers().contains(p) && !previousLand.getMode(PlotMode.pvp)) {
+                bb.addPlayer(p);
+                p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.02F, 1);
+                MessageUtils.tellAdvanced(p, land.getLandOwner().getStateKey() + ".enterPvP",
+                        "state", land.getLandOwner().getStateTag()
+                );
+            }
+        }
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent e) {
+        BossBar bb = ConfigManager.getInstance().getBossBar();
+        Player p = e.getPlayer();
+        OwnedLand land = LandManager.getInstance().getLand(p.getLocation().getChunk());
         if (land == null || !land.getMode(PlotMode.pvp)) {
             if (bb.getPlayers().contains(p)) {
                 bb.removePlayer(p);
@@ -133,6 +158,9 @@ public class LandModeListener implements LandAccessChecker {
             if (!bb.getPlayers().contains(p)) {
                 bb.addPlayer(p);
                 p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.02F, 1);
+                MessageUtils.tellAdvanced(p, land.getLandOwner().getStateKey() + ".enterPvP",
+                        "state", land.getLandOwner().getStateTag()
+                );
             }
         }
     }
