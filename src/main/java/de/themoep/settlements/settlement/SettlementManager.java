@@ -231,7 +231,7 @@ public class SettlementManager {
         });
     }
 
-    void abandon(Settlement settlement) {
+    public void abandon(Settlement settlement) {
         if (settlement.hasEmpire()) {
             settlement.getEmpire().getMemberIds().remove(settlement.getId());
         }
