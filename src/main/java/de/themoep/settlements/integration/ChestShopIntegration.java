@@ -1,5 +1,6 @@
 package de.themoep.settlements.integration;
 
+import com.Acrobot.Breeze.Utils.BlockUtil;
 import com.Acrobot.Breeze.Utils.MaterialUtil;
 import com.Acrobot.ChestShop.ChestShop;
 import com.Acrobot.ChestShop.Commands.Toggle;
@@ -25,6 +26,7 @@ import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.land.events.LandUnclaimEvent;
 import de.themoep.settlements.lock.Lock;
 import de.themoep.settlements.lock.LockManager;
 import de.themoep.settlements.lock.LockProvider;
@@ -37,21 +39,20 @@ import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.world.SimpleChunkLocation;
 import net.md_5.bungee.api.chat.BaseComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.math.BigDecimal;
@@ -144,12 +145,10 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
     private int removeInChunk(Chunk chunk) {
         int amount = 0;
         for (BlockState blockState : chunk.getTileEntities()) {
-            if (blockState instanceof Sign && ChestShopSign.isValid((Sign) blockState)) {
-                Sign sign = (Sign) blockState;
-                Container container = uBlock.findConnectedContainer(sign);
-                Bukkit.getPluginManager().callEvent(new ShopDestroyedEvent(null, (Sign) sign.getBlock().getState(), container));
-                Arrays.fill(sign.getLines(), "");
-                sign.update(true);
+            if (blockState instanceof Sign s && ChestShopSign.isValid(s)) {
+                s.getWorld().getBlockAt(s.getLocation()).setType(Material.AIR);
+                Container container = uBlock.findConnectedContainer(s);
+                Bukkit.getPluginManager().callEvent(new ShopDestroyedEvent(null, s, container));
                 amount++;
             }
         }
@@ -205,6 +204,12 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPreShopCreation(PreShopCreationEvent event) {
+        if (!LandManager.getInstance().isLandClaimed(event.getSign().getLocation()) || !LandManager.getInstance().isLandClaimed(BlockUtil.getAttachedBlock(event.getSign()).getLocation())) {
+            event.setCancelled(true);
+            Location signloc = event.getSign().getLocation();
+            event.getSign().getWorld().getBlockAt(signloc).breakNaturally();
+            getError("not-allowed").tell(event.getPlayer());
+        }
         if (event.getOwnerAccount() == null) {
             String name = event.getSignLine(NAME_LINE);
             LandOwner landOwner = getLandOwner(name);
@@ -504,6 +509,11 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             event.canHold(true);
             event.setHandled(true);
         }
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onUnclaim(LandUnclaimEvent event) {
+        removeInChunk(event.getLand().getChunk());
     }
 
     private class ChestShopMessage extends Messages.Message {
