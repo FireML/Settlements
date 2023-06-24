@@ -15,9 +15,9 @@
 # requirements:
 #   item: amount
 
-    # ----------------------------------------
-    # All items are in alphabetical order
-    # ----------------------------------------
+    # ----------------------------------------#
+    #   All items are in alphabetical order   #
+    # ----------------------------------------#
 
         # Break section
 
@@ -63,6 +63,13 @@ calcite:
   type: break
   requirements:
     calcite: 200
+cherry_log:
+  icon: cherry_log
+  on-settlement-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    cherry_log: 200
 crimson_stem:
   icon: crimson_stem
   on-settlement-claim: false
@@ -298,6 +305,13 @@ melon:
   type: harvest
   requirements:
     melon: 300
+pitcher_plant:
+  icon: pitcher_plant
+  on-settlement-claim: false
+  mission-points: 1
+  type: harvest
+  requirements:
+    pitcher_plant: 300
 potatoes:
   icon: potato
   on-settlement-claim: false
@@ -326,6 +340,13 @@ sweet_berries:
   type: harvest
   requirements:
     sweet_berries: 300
+torchflower:
+  icon: torchflower
+  on-settlement-claim: false
+  mission-points: 1
+  type: harvest
+  requirements:
+    torchflower: 300
 wheat:
   icon: wheat
   on-settlement-claim: false
@@ -365,6 +386,13 @@ birch_sapling:
   type: place
   requirements:
     birch_sapling: 50
+cherry_sapling:
+  icon: cherry_sapling
+  on-settlement-claim: false
+  mission-points: 1
+  type: place
+  requirements:
+    cherry_sapling: 50
 cocoa_beans:
   icon: cocoa_beans
   on-settlement-claim: false
@@ -407,6 +435,13 @@ oak_sapling:
   type: place
   requirements:
     oak_sapling: 50
+pitcher_pod:
+  icon: pitcher_pod
+  on-settlement-claim: false
+  mission-points: 1
+  type: place
+  requirements:
+    pitcher_pod: 100
 pumpkin_seed:
   icon: pumpkin_seeds
   on-settlement-claim: false
@@ -421,6 +456,13 @@ spruce_sapling:
   type: place
   requirements:
     spruce_sapling: 50
+planttorchflower:
+  icon: torchflower_seeds
+  on-settlement-claim: false
+  mission-points: 1
+  type: place
+  requirements:
+    torchflower: 100
 wheat_seeds:
   icon: wheat_seeds
   on-settlement-claim: false
@@ -432,6 +474,14 @@ wheat_seeds:
 
         # Kill section
 
+camel:
+  icon: saddle
+  in-empire-world: true
+  on-empire-claim: false
+  mission-points: 1
+  type: kill
+  requirements:
+    camel: 20
 cave_spider:
   icon: spider_eye
   on-settlement-claim: false
@@ -454,7 +504,7 @@ cow:
   requirements:
     cow: 50
 creeper:
-  icon:
+  icon: gunpowder
   on-settlement-claim: false
   mission-points: 1
   type: kill
@@ -544,6 +594,13 @@ slime:
   type: kill
   requirements:
     slime: 20
+sniffer:
+  icon: torchflower
+  on-settlement-claim: false
+  mission-points: 1
+  type: kill
+  requirements:
+    sniffer: 10
 spider:
   icon: string
   on-settlement-claim: false
