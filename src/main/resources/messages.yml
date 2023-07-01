@@ -148,6 +148,10 @@ broadcast:
   empire-abandoned: "&cEmpire &f{name}&c has been abandoned! You have 24 hours to raid it!"
   empires-abandoned: "&cEmpires &f{empires} have been abandoned! You have 24 hours to raid it!"
   empires-tag: "{name}"
+pvp-claim:
+  enter: "&f[&eSettlements&f] &cPvP is enabled in this claim!"
+  exit: "&f[&eSettlements&f] &cPvP is no longer enabled."
+  bossbar: "&cPvP is Enabled inside this Claim!"
 scoreboard:
   sidebar:
     title: "&x&0&d&e&2&e&8&lPoleis&f&lMC"
@@ -268,11 +272,6 @@ village:
     actionbar: ""
     title: ""
     subtitle: ""
-  enterPvP:
-    message: "&f[&eVillage&f] &cPvP is enabled in this claim!"
-    actionbar: ""
-    title: ""
-    subtitle: ""
   enter-abandoned:
     message: "&f[&cAbandoned&f] &eEntering &c{name}{pvp}"
     actionbar: ""
@@ -280,11 +279,6 @@ village:
     subtitle: ""
   leave:
     message: "&f[&eVillage&f] &7Leaving &a{name}"
-    actionbar: ""
-    title: ""
-    subtitle: ""
-  leavePvP:
-    message: "&f[&eVillage&f] &cPvP is no longer enabled."
     actionbar: ""
     title: ""
     subtitle: ""
@@ -307,11 +301,6 @@ kingdom:
     actionbar: ""
     title: ""
     subtitle: ""
-  enterPvP:
-    message: "&f[&eKingdoms&f] &cPvP is enabled in this claim!"
-    actionbar: ""
-    title: ""
-    subtitle: ""
   enter-abandoned:
     message: "&f[&eKingdoms&f] &7Entering &cabandoned {name}{pvp}"
     actionbar: ""
@@ -319,11 +308,6 @@ kingdom:
     subtitle: ""
   leave:
     message: "&f[&eKingdoms&f] &7Leaving &a{name}"
-    actionbar: ""
-    title: ""
-    subtitle: ""
-  leavePvP:
-    message: "&f[&eKingdoms&f] &cPvP is no longer enabled."
     actionbar: ""
     title: ""
     subtitle: ""
@@ -350,11 +334,6 @@ empire:
     actionbar: ""
     title: ""
     subtitle: ""
-  enterPvP:
-    message: "&f[&eEmpire&f] &cPvP is enabled in this claim!"
-    actionbar: ""
-    title: ""
-    subtitle: ""
   enter-abandoned:
     message: "&f[&eEmpire&f] &7Entering &cabandoned {name}{pvp}"
     actionbar: ""
@@ -362,11 +341,6 @@ empire:
     subtitle: ""
   leave:
     message: "&f[&eEmpire&f] &7Leaving &a{name}"
-    actionbar: ""
-    title: ""
-    subtitle: ""
-  enterPvP:
-    message: "&f[&eEmpire&f] &cPvP is no longer enabled."
     actionbar: ""
     title: ""
     subtitle: ""
@@ -444,7 +418,6 @@ embassy:
     title: ""
     subtitle: "{name}"
 pvp-is-enabled: " - &cPvp is enabled!&7"
-pvp-is-enabled-bossbar: "&cPvP is Enabled inside this Claim!"
 chat:
   locked: "&cChat is currently locked!"
   nobody-nearby: "&cThere is nobody around you who could hear you!"
