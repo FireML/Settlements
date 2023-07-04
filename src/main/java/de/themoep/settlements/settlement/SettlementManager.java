@@ -387,19 +387,11 @@ public class SettlementManager {
             }
         }
 
-        for (NpcType npc : settlement.getLevelInfo().getNPCs()) {
-            NpcData npcData = settlement.getNpcData(npc);
-            perksDesc.add(npcData.getTag());
-        }
-
-        String mail = Message.get("levels.mail-upgrade.general").getReplacedText(
-                "name", settlement.getStateTag(),
-                "level", String.valueOf(settlement.getLevel())
-        );
-        if (!perksDesc.isEmpty()) {
-            mail += "\n" + Message.get("levels.mail-upgrade.perks").getReplacedText(
-                    "perks", String.join(", ", perksDesc)
-            );
+        if (settlement.getLevelInfo().getNPCs() != null) {
+            for (NpcType npc : settlement.getLevelInfo().getNPCs()) {
+                NpcData npcData = settlement.getNpcData(npc);
+                perksDesc.add(npcData.getTag());
+            }
         }
 
         Utils.callEvent(new LandownerLeveledEvent(settlement, res));
