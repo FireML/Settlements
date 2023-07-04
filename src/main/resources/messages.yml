@@ -1174,7 +1174,7 @@ gui:
       &fUpkeep cost: &e☧ {upkeep}
       
       &fCan afford for: &e{afford} days
-      &fTime till upkeep: &e{time}
+      &fTime until next Upkeep: &2{time}
       &fPayment for upkeep is taken directly from Bank
     taxes: |-
       &eCurrent Taxes
@@ -3454,11 +3454,13 @@ command:
       description: Manually trigger a settlement upgrade
     upkeep:
       info: |-
-        &a⊱&m━━━━&r&6Upkeep&a&m━━━━&a⊰
-        &a&lUpkeep cost:&e {cost}
-        &a&lUpkeep: &e{upkeep}☧  &7/&e claim &7/&e day in this world
-        &a&lTime Till Upkeep: &e{time}
-        &a&lCan afford for: &6{afford} days
+        &a&m━━━━↠&r &bUpkeep &a&m↞━━━━
+        &f&lTotal daily upkeep cost: &a☧ {global_cost} &b(&e{global_total} claims&b)
+        &f&l  &3↪ &fKingdoms: &a☧ {overworld_cost} &b(&e{overworld_total} claims&b)
+        &f&l  &3↪ &fKingdoms_Nether: &a☧ {nether_cost} &b(&e{nether_total} claims&b)
+        &f&l  &3↪ &fKingdoms_End: &a☧ {end_cost} &b(&e{end_total} claims&b)
+        &f&lDays of upkeep in bank: &6{afford} days
+        &f&lTime until next Upkeep: &2{time}
       afford-infinite: "infinite"
       description: Show settlement upkeep information
     perms:
@@ -4102,10 +4104,10 @@ command:
       description: Manually trigger an empire upgrade
     upkeep:
       info: |-
-        &a⊱&m━━━━&r&6Upkeep&a&m━━━━&a⊰
-        &3&lUpkeep cost:&e {cost} &7/&e day
-        &3&lTime Till Upkeep: &e{time}
-        &3&lCan afford for: &6{afford} days
+        &a&m━━━━↠&r &bUpkeep &a&m↞━━━━
+        &f&lTotal daily upkeep cost: &a☧ {global_cost} &b(&e{global_total} claims&b)
+        &f&lDays of upkeep in bank: &6{afford} days
+        &f&lTime until next Upkeep: &2{time}
       afford-infinite: "infinite"
       description: Show empire upkeep information
     world:
