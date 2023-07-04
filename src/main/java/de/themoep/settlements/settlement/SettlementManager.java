@@ -401,11 +401,6 @@ public class SettlementManager {
                     "perks", String.join(", ", perksDesc)
             );
         }
-        for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
-            for (Resident r : settlement.getResidents()) {
-                provider.sendMail(settlement.getStateTag() + " " + settlement.getName(), r, mail);
-            }
-        }
 
         Utils.callEvent(new LandownerLeveledEvent(settlement, res));
         settlement.save();

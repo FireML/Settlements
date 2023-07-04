@@ -565,11 +565,6 @@ public class EmpireManager {
                     "perks", String.join(", ", perksDesc)
             );
         }
-        for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
-            for (Resident r : empire.getResidents()) {
-                provider.sendMail(empire.getStateTag() + " " + empire.getName(), r, mail);
-            }
-        }
 
         Utils.callEvent(new LandownerLeveledEvent(empire, res));
         empire.save();

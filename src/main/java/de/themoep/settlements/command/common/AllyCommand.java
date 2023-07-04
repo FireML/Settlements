@@ -54,14 +54,6 @@ public interface AllyCommand extends LandOwnerCommand {
             source.addAlly(target).save();
             getMessage("now-allied-to").tell(target, "name", source.getName(), "state", source.getStateTag());
             getMessage("now-allied-to").tell(source, "name", target.getName(), "state", target.getStateTag());
-            for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
-                provider.sendMail(source.getStateTag() + " " + source.getName(), target.getChief(), getText("now-allied-to",
-                        "name", source.getName(), "state", source.getStateTag()
-                ));
-                provider.sendMail(target.getStateTag() + " " + target.getName(), source.getChief(), getText("now-allied-to",
-                        "name", target.getName(), "state", target.getStateTag()
-                ));
-            }
         } else {
             AllyRequest request = new AllyRequest(target, source);
             target.addAllyRequest(request);
@@ -107,14 +99,6 @@ public interface AllyCommand extends LandOwnerCommand {
             }
             getMessage("success").tell(target, "name", source.getName(), "state", source.getStateTag());
             getMessage("success").tell(source, "name", target.getName(), "state", target.getStateTag());
-            for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
-                provider.sendMail(source.getStateTag() + " " + source.getName(), target.getChief(), getText("success",
-                        "name", source.getName(), "state", source.getStateTag()
-                ));
-                provider.sendMail(target.getStateTag() + " " + target.getName(), source.getChief(), getText("success",
-                        "name", target.getName(), "state", target.getStateTag()
-                ));
-            }
         }
         return true;
     }

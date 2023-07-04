@@ -200,11 +200,6 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
                     "perks", perksDesc.stream().map(p -> Message.get("levels.perks-entry").getReplacedText("perk", p))
                             .collect(Collectors.joining("\n")));
         }
-        for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
-            for (Resident r : owner.getResidents()) {
-                provider.sendMail(owner.getStateTag() + " " + getTag(), r, mail);
-            }
-        }
         save();
         return true;
     }
