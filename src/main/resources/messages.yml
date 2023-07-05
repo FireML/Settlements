@@ -1423,7 +1423,7 @@ gui:
     info: |-
       &eDaily Missions
       &fDoing missions will reward
-      &fContribution Points
+      &fMission Points
     entry: |-
       &e{title}
       &f{requirements}
@@ -2582,7 +2582,7 @@ command:
           &fRank: &e{title}
           &fBalance: &e☧ {balance}
           &fTax: &e☧ {tax}
-          &fMission Points: &e☧ {missionpoints}
+          &fMission Points: &e{missionpoints}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
@@ -2594,7 +2594,7 @@ command:
           &fRank: &e{title}
           &fBalance: &e☧ {balance}
           &fTax: &e☧ {tax}
-          &fMission Points: &e☧ {missionpoints}
+          &fMission Points: &e{missionpoints}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
