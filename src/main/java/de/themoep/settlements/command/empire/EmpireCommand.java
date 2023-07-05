@@ -75,6 +75,7 @@ public class EmpireCommand extends SubCommand {
             registerCommand(new EmpireWorldCommand(this));
             registerCommand(new EmpireRegenCommand(this));
         }
+        registerCommand(new EmpireCommandsCommand(this));
     }
 
     @Override

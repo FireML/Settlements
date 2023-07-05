@@ -91,6 +91,7 @@ public class SettlementCommand extends SubCommand {
         registerCommand(new SettlementUpkeepCommand(this));
         registerCommand(new SettlementUpgradeCommand(this));
         registerCommand(new SettlementUseCommand(this));
+        registerCommand(new SettlementCommandsCommand(this));
     }
 
     @Override
