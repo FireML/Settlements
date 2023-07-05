@@ -113,6 +113,7 @@ public class HelpCommand extends SubCommand {
                 if (page > maxPage) {
                     page = maxPage;
                 }
+                String base1 = base.contains(" ") ? base.substring(0, base.lastIndexOf(' ')) : "";
                 getParent().getMessage("usage.head").tell(sender,
                         "type", direct ? "" : WordUtils.capitalizeFully(type) + " ",
                         "usage", getParent().getUsage(base.contains(" ") ? base.substring(0, base.lastIndexOf(' ')) : ""),
@@ -130,7 +131,7 @@ public class HelpCommand extends SubCommand {
                 if (page == maxPage) {
                     limit *= 2;
                 }
-                commands.stream().skip((page - 1) * entriesPerPage).limit(limit).forEachOrdered(e -> {
+                commands.stream().skip((long) (page - 1) * entriesPerPage).limit(limit).forEachOrdered(e -> {
                     SubCommand s = e.getValue();
                     String usage;
                     String displayPath;
@@ -197,10 +198,11 @@ public class HelpCommand extends SubCommand {
                 if (maxPage > 1) {
                     ComponentBuilder next = new ComponentBuilder("")
                             .append(getParent().getMessage("usage.pagination.next").getReplacedComponents("next", String.valueOf(page + 1)));
+                    String s = base.isEmpty() ? "" : base + " ";
                     if (page + 1 > maxPage) {
                         next.color(net.md_5.bungee.api.ChatColor.GRAY);
                     } else {
-                        next.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + (base.isEmpty() ? "" : base + " ") + alias + " " + type + " " + (page + 1)));
+                        next.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + s + alias + " " + type + " " + (page + 1)));
                         next.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText(net.md_5.bungee.api.ChatColor.YELLOW + ">>"))));
                     }
                     ComponentBuilder previous = new ComponentBuilder("")
@@ -208,7 +210,7 @@ public class HelpCommand extends SubCommand {
                     if (page - 1 <= 0) {
                         previous.color(net.md_5.bungee.api.ChatColor.GRAY);
                     } else {
-                        previous.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + (base.isEmpty() ? "" : base + " ") + alias + " " + type + " " + (page - 1)));
+                        previous.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + s + alias + " " + type + " " + (page - 1)));
                         previous.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText(net.md_5.bungee.api.ChatColor.YELLOW + "<<"))));
                     }
 
