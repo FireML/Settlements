@@ -1,5 +1,12 @@
 # Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:settlementperksconf.yml
 
+
+        ###########################################################
+        #                                                         #
+        # Fly is enabled when a settlement reaches Kingdom status #
+        #                                                         #
+        ###########################################################
+
 # Kingdom level 1
 haste_level_1:
   # The icon that should be shown in the GUI.
@@ -374,23 +381,6 @@ temporary_glowing_level_1:
       cash: 10000
     repeating:
       cash: 8500
-# Kingdom level 10
-    # Will add fly when it's possible
-#fly:
-#  icon: elytra
-#  repeat: 0
-#  cooldown: 0
-#  state: kingdom
-#  level: 10
-#  permissions:
-#    - "cmi.command.fly"
-#      apply:
-#        in: own-settlement
-#        to: members
-#  cost:
-#    unlock:
-#      missionpoints: 275
-#      cash: 1000
 haste_level_3:
   icon: netherite_pickaxe
   repeat: 0
