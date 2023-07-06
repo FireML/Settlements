@@ -37,7 +37,7 @@ public class AlliesGUI extends SettlementsGUI {
                     .filter(a -> a.getLandOwner() != null)
                     .sorted((a1, a2) -> a1.compareTo(sort, a2))
                     .forEach(a -> group.addElement(
-                            new StaticGuiElement('a', ItemUtils.getHead(resident.getUUID(), resident.getName()), click -> {
+                            new StaticGuiElement('a', ItemUtils.getHead(a.getLandOwner().getChief().getUUID(), resident.getName()), click -> {
                                 if (landOwner.hasPermission(resident, "manageally")) {
                                     new AllyGUI(landOwner, resident, a).open();
                                 }
